@@ -1,2 +1,2 @@
-* text=false
+* text=auto eol=lf
 . !text !filter !merge !diff
