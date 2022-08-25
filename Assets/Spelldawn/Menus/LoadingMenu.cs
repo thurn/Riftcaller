@@ -21,7 +21,7 @@ namespace Spelldawn.Menus
 {
   public sealed class LoadingMenu: MonoBehaviour
   {
-    [SerializeField] GameObject _rotate;
+    [SerializeField] GameObject _rotate = null!;
     
     void Start()
     {

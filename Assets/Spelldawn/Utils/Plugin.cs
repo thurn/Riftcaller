@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if USE_UNITY_PLUGIN
+
 #nullable enable
 
 using System.Runtime.InteropServices;
@@ -97,3 +99,5 @@ namespace Spelldawn.Utils
       int responseLength);
   }
 }
+
+#endif // USE_UNITY_PLUGIN

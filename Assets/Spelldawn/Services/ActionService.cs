@@ -82,11 +82,13 @@ namespace Spelldawn.Services
         StartCoroutine(HandleActionAsync(_actionQueue.Dequeue()));
       }
 
+#if USE_UNITY_PLUGIN      
       var pollCommands = Plugin.Poll();
       if (pollCommands != null)
-      {
+      { 
         StartCoroutine(_registry.CommandService.HandleCommands(pollCommands));
       }
+#endif
     }
 
     async void ConnectToRulesEngine()
@@ -121,11 +123,16 @@ namespace Spelldawn.Services
     /// <summary>Connects to an existing offline game, handling responses.</summary>
     public IEnumerator ConnectToOfflineGame(ConnectRequest request)
     {
+#if USE_UNITY_PLUGIN      
       var commands = Plugin.Connect(request);
       if (commands != null)
       {
         yield return _registry.CommandService.HandleCommands(commands);
       }
+#else
+      Debug.LogError("Plugin not enabled");
+      yield break;
+#endif      
     }
 
     IEnumerator HandleActionAsync(GameAction action)
@@ -150,7 +157,11 @@ namespace Spelldawn.Services
 
       if (OfflineMode)
       {
+#if USE_UNITY_PLUGIN        
         yield return _registry.CommandService.HandleCommands(Plugin.PerformAction(request));
+#else
+        Debug.LogError("Plugin not enabled");
+#endif        
       }
       else
       {
@@ -164,9 +175,6 @@ namespace Spelldawn.Services
             yield return _registry.CommandService.HandleCommands(task.GetResult());
             break;
           case StatusCode.Unavailable:
-            Debug.LogError($"Server {ServerAddress} is not available! Attempting to fall back to offline.");
-            yield return _registry.CommandService.HandleCommands(Plugin.PerformAction(request));
-            break;
           default:
             Debug.LogError($"Error connecting to {ServerAddress}: {call.GetStatus().Detail}");
             break;

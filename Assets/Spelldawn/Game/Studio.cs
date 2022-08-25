@@ -14,14 +14,12 @@
 
 #nullable enable
 
-using Spelldawn.Services;
 using UnityEngine;
 
 namespace Spelldawn.Game
 {
   public sealed class Studio : MonoBehaviour
   {
-    [SerializeField] Registry _registry = null!;
     [SerializeField] Transform _subjectPosition = null!;
     [SerializeField] GameObject? _subject;
     int _studioLayer;
@@ -37,7 +35,7 @@ namespace Spelldawn.Game
     {
       if (!Application.isPlaying)
       {
-        Debug.LogError("NOT PLAYING?!");
+        Debug.LogError("Not Playing");
         return;
       }
 

@@ -162,7 +162,7 @@ namespace Spelldawn.Services
           var result = request.Result as Object;
           if (result)
           {
-            _assets[address] = result;
+            _assets[address] = result!;
           }
           else
           {
