@@ -17,6 +17,7 @@ using Spelldawn.Services;
 using Spelldawn.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 #nullable enable
 
@@ -26,8 +27,10 @@ namespace Spelldawn.Game
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] PlayerName _owner;
-    [SerializeField] GameObject _pressEffect = null!;
-    [SerializeField] GameObject _changeEffect = null!;
+    [SerializeField] AssetReferenceGameObject _onPress = null!;
+    [SerializeField] Transform _onPressPosition = null!;
+    [SerializeField] AssetReferenceGameObject _onChange = null!;
+    [SerializeField] Transform _onChangePosition = null!;
     [SerializeField] TextMeshPro _manaText = null!;
     [SerializeField] TextMeshPro _bonusManaText = null!;
     [SerializeField] TextMeshPro _manaSymbol = null!;
@@ -70,8 +73,8 @@ namespace Spelldawn.Game
 
       if (currentMana != _currentMana && !_animationDisabled)
       {
-        _changeEffect.SetActive(false);
-        _changeEffect.SetActive(true);
+        StartCoroutine(
+          _registry.AssetPoolService.CreateFromReference(_onChange, _onChangePosition.position, _onChangePosition));        
       }
 
       _currentMana = currentMana;
@@ -84,16 +87,16 @@ namespace Spelldawn.Game
 
       if (bonusMana != _currentBonusMana)
       {
-        _changeEffect.SetActive(false);
-        _changeEffect.SetActive(true);
+        StartCoroutine(
+          _registry.AssetPoolService.CreateFromReference(_onChange, _onChangePosition.position, _onChangePosition));
       }
 
       _currentBonusMana = bonusMana;
-      
+
       _bonusManaText.gameObject.SetActive(bonusMana > 0);
       _bonusManaText.text = "" + _currentBonusMana;
-    }    
-    
+    }
+
     void OnMouseDown()
     {
       if (Clickable)
@@ -114,8 +117,8 @@ namespace Spelldawn.Game
     {
       if (Clickable)
       {
-        _pressEffect.SetActive(false);
-        _pressEffect.SetActive(true);
+        StartCoroutine(
+          _registry.AssetPoolService.CreateFromReference(_onPress, _onPressPosition.position, _onPressPosition));
         _registry.ActionService.HandleAction(new GameAction
         {
           GainMana = new GainManaAction()

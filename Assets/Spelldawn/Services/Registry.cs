@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections;
 using System.Linq;
 using Spelldawn.Game;
 using Spelldawn.Protos;
@@ -186,7 +187,7 @@ namespace Spelldawn.Services
 
     public ScreenshotTestService? ScreenshotTests { get; private set; }
 
-    void Start()
+    IEnumerator Start()
     {
       Application.targetFrameRate = 60;
       var runTests = false;
@@ -203,6 +204,7 @@ namespace Spelldawn.Services
       DocumentService.Initialize();
       MusicService.Initialize(GlobalGameMode);
       GameService.Initialize(GlobalGameMode);
+      yield return ArenaService.Initialize();
 
       if (runTests)
       {

@@ -1,0 +1,9 @@
+henryk_siemiradzki.png:
+  - "Gypsy woman" by Henryk Siemiradzki
+  - Public Domain
+  - https://commons.wikimedia.org/wiki/File:Siemiradzki-Cyganka.jpg
+
+francisco_goya_lucientes.png
+  - Porträt der Francisca Sabasa y Garcia by Francisco de Goya
+  - Public Domain
+  - https://commons.wikimedia.org/wiki/File:Francisca_Sabasa_y_Garc%C3%ADa_por_Goya.jpg

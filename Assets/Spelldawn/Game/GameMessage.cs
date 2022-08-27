@@ -20,6 +20,7 @@ using Spelldawn.Services;
 using Spelldawn.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 #nullable enable
 
@@ -30,8 +31,8 @@ namespace Spelldawn.Game
     [Serializable]
     public class MessageContent
     {
-      [SerializeField] GameObject _effect = null!;
-      public GameObject Effect => _effect;
+      [SerializeField] AssetReferenceGameObject _effectReference = null!;
+      public AssetReferenceGameObject EffectReference => _effectReference;
 
       [SerializeField] TextMeshPro _text = null!;
       public TextMeshPro Text => _text;
@@ -43,6 +44,7 @@ namespace Spelldawn.Game
     [SerializeField] MessageContent _dusk = null!;
     [SerializeField] MessageContent _victory = null!;
     [SerializeField] MessageContent _defeat = null!;
+    GameObject? _currentEffect;
 
     public IEnumerator Show(DisplayGameMessageCommand command)
     {
@@ -77,8 +79,14 @@ namespace Spelldawn.Game
     IEnumerator ShowContent(MessageContent content, float durationSeconds, bool moveToTop)
     {
       content.Text.transform.position = transform.position;
-      content.Effect.gameObject.SetActive(false);
-      content.Effect.gameObject.SetActive(true);
+      yield return _registry.AssetPoolService.CreateFromReference(
+        content.EffectReference, 
+        transform.position,
+        onCreate: result =>
+        {
+          _currentEffect = result;
+        }
+        );
       content.Text.gameObject.SetActive(true);
       content.Text.alpha = 0f;
       yield return DOTween
@@ -89,10 +97,13 @@ namespace Spelldawn.Game
       if (moveToTop)
       {
         _registry.InterfaceOverlay.Enable(translucent: false);
-        yield return TweenUtils.Sequence("MoveToTop")
-          .Insert(0, content.Text.transform.DOMove(_top.position, 0.3f))
-          .Insert(0, content.Effect.transform.DOMove(_top.position, 0.3f))
-          .WaitForCompletion();
+        var sequence = TweenUtils.Sequence("MoveToTop")
+          .Insert(0, content.Text.transform.DOMove(_top.position, 0.3f));
+        if (_currentEffect)
+        {
+          sequence.Insert(0, _currentEffect!.transform.DOMove(_top.position, 0.3f));
+        }
+        yield return sequence.WaitForCompletion();
       }
       else
       {

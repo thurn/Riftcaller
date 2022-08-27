@@ -12,9 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using Spelldawn.Assets;
 using Spelldawn.Utils;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 #nullable enable
 
@@ -26,6 +31,28 @@ namespace Spelldawn.Services
 
     public T Create<T>(T prefab, Vector3 position, Transform? parent = null) where T : Component =>
       ComponentUtils.GetComponent<T>(Create(prefab.gameObject, position, parent));
+
+    public IEnumerator CreateFromReference(
+      AssetReferenceGameObject prefabReference,
+      Vector3 position,
+      Transform? parent = null,
+      Action<GameObject>? onCreate = null)
+    {
+      if (AssetPreference.UseProductionAssets)
+      {
+        var operation = Addressables.LoadAssetAsync<GameObject>(prefabReference);
+        yield return operation;
+        if (operation.Status == AsyncOperationStatus.Succeeded)
+        {
+          var result = Create(operation.Result, position, parent);
+          onCreate?.Invoke(result);
+        }
+        else
+        {
+          Debug.LogError($"Error: Failed to load asset {prefabReference}");
+        }
+      }
+    }
 
     public GameObject Create(GameObject prefab, Vector3 position, Transform? parent = null)
     {

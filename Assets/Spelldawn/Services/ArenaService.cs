@@ -16,10 +16,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Spelldawn.Assets;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.SceneManagement;
 
 #nullable enable
 
@@ -35,6 +39,7 @@ namespace Spelldawn.Services
     [SerializeField] TimedEffect _initiateRaidPrefab = null!;
     [SerializeField] TimedEffect _levelUpRoomPrefab = null!;
     [SerializeField] Room? _curentRoomSelector;
+    [SerializeField] AssetReference _arenaScene = null!;
 
     public Room? CurrentRoomSelector => _curentRoomSelector;
 
@@ -44,6 +49,18 @@ namespace Spelldawn.Services
     public bool RoomsOnBottom { get; private set; }
 
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
+
+    public IEnumerator Initialize()
+    {
+      if (AssetPreference.UseProductionAssets)
+      {
+        yield return Addressables.LoadSceneAsync(_arenaScene, LoadSceneMode.Additive);
+        foreach (var target in GameObject.FindGameObjectsWithTag("RemoveOnLoad"))
+        {
+          Destroy(target);
+        }        
+      }
+    }
 
     public void UpdateViewForSide(PlayerSide side)
     {

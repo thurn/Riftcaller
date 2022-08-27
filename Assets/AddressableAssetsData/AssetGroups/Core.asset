@@ -21,6 +21,14 @@ MonoBehaviour:
     m_Address: Fonts
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 94c52fb31c8d94d359d82fad9513f710
+    m_Address: Assets/Content/Sprites/DiscardCard.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b2d6dd15e51b740959670e5a637fb730
+    m_Address: Assets/Content/Placeholders/CardBack.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

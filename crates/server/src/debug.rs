@@ -121,7 +121,7 @@ pub fn handle_debug_action(
             game.id = game_id.with_error(|| "Expected GameId")?;
             database.write_game(&game)?;
             Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
-                scene_name: "Labyrinth".to_string(),
+                scene_name: "Game".to_string(),
                 mode: SceneLoadMode::Single.into(),
             })]))
         }
@@ -152,7 +152,7 @@ fn write_default_player(
 
 fn load_scene() -> Result<GameResponse> {
     Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
-        scene_name: "Labyrinth".to_string(),
+        scene_name: "Game".to_string(),
         mode: SceneLoadMode::Single as i32,
     })]))
 }

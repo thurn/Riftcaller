@@ -10,20 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Labyrinth
+  m_Name: GameScene
   m_EditorClassIdentifier: 
-  m_GroupName: Labyrinth
+  m_GroupName: GameScene
   m_Data:
     m_SerializedData: []
-  m_GUID: 6a604b77a93d24fd0bf7ed348435598b
-  m_SerializeEntries:
-  - m_GUID: 207a8dd1a9c40469b871174e9e555431
-    m_Address: Assets/Scenes/Labyrinth.unity
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+  m_GUID: f95c9d1cb7eb14467ae312d2c5dcb4fc
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 8b1025f65695e49cbb991a5f6aefff6e, type: 2}
-    - {fileID: 11400000, guid: 8f948ca92301f48f691dcc7d0dd6d1a7, type: 2}
+    - {fileID: 11400000, guid: 9c53f1701e06848d180eee260bc7b0a2, type: 2}
+    - {fileID: 11400000, guid: 62c8a237f793a4e3197f5161ff6d10b8, type: 2}
