@@ -15,6 +15,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Spelldawn.Assets;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
@@ -31,14 +32,6 @@ namespace Spelldawn.Services
   {
     readonly Dictionary<string, Object> _assets = new();
 
-    IEnumerator Start()
-    {
-      Debug.Log($"Start: Starting pre-fetch download");
-      var startTime = Time.time;
-      yield return Addressables.DownloadDependenciesAsync("Fonts/Roboto.ttf");
-      Debug.Log($"Start: Done download in {Time.time - startTime} seconds");
-    }
-    
     public TResult Get<TResult>(string address) where TResult: Object
     {
       Errors.CheckNotNull(address, "Address is null");
@@ -53,9 +46,9 @@ namespace Spelldawn.Services
       }
     }    
 
-    public Sprite GetSprite(SpriteAddress address)
+    public Sprite? GetSprite(SpriteAddress address)
     {
-      return Get<Sprite>(address.Address);
+      return AssetPreference.UseProductionAssets ? Get<Sprite>(address.Address) : null;
     }
 
     public void AssignSprite(SpriteRenderer spriteRenderer, SpriteAddress? address, float? referenceWidth = null)
@@ -63,11 +56,16 @@ namespace Spelldawn.Services
       if (address != null)
       {
         var sprite = GetSprite(address);
+        if (sprite == null)
+        {
+          return;
+        }
+        
         if (referenceWidth != null)
         {
           spriteRenderer.transform.localScale = (referenceWidth.Value / sprite.texture.width) * Vector3.one;
         }
-
+        
         spriteRenderer.sprite = sprite;
       }
     }
@@ -101,7 +99,11 @@ namespace Spelldawn.Services
 
     public IEnumerator LoadAssets(CommandList commandList)
     {
-      Debug.Log($"Start: Starting LoadAssets download");
+      if (!AssetPreference.UseProductionAssets)
+      {
+        yield break;
+      }
+      
       var startTime = Time.time;      
       var requests = new Dictionary<string, AsyncOperationHandle>();
 
@@ -146,6 +148,11 @@ namespace Spelldawn.Services
 
     public IEnumerator LoadAssetsForNode(Node node)
     {
+      if (!AssetPreference.UseProductionAssets)
+      {
+        yield break;
+      }
+      
       var requests = new Dictionary<string, AsyncOperationHandle>();
       LoadNodeAssets(requests, node);
       yield return WaitForRequests(requests);

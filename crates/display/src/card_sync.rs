@@ -49,6 +49,7 @@ pub fn card_view(
             definition.card_type,
             definition.config.lineage,
         )),
+        face_down_arena_frame: Some(assets::face_down_arena_frame()),
         owning_player: builder.to_player_name(definition.side),
         revealed_card: revealed.then(|| revealed_card_view(builder, game, card)),
         create_position: if builder.state.animate {
@@ -96,6 +97,7 @@ pub fn ability_card_view(
             ..CardIcons::default()
         }),
         arena_frame: None,
+        face_down_arena_frame: None,
         owning_player: builder.to_player_name(ability_id.card_id.side),
         revealed_card: Some(revealed_ability_card_view(
             builder,

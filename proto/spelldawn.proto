@@ -709,25 +709,29 @@ message CardView {
 
     CardIcons card_icons = 6;
 
+    // Frame shown on arena card when face-up
     SpriteAddress arena_frame = 7;
 
+    // Frame shown on arena card when face-down
+    SpriteAddress face_down_arena_frame = 8;
+
     // Used to e.g. determine which card back to display for this card.
-    PlayerName owning_player = 8;
+    PlayerName owning_player = 9;
 
     // Card information which is only present on revealed cards.
-    RevealedCardView revealed_card = 9;
+    RevealedCardView revealed_card = 10;
 
     // Optionally, a position at which to create this card.
     //
     // If this card does not already exist, it will be created at this position
     // before being animated to its 'card_position'.
-    ObjectPosition create_position = 10;
+    ObjectPosition create_position = 11;
 
     // Optionally, a position at which to destroy this card.
     //
     // If provided, the card will be animated to this position before being
     // destroyed.
-    ObjectPosition destroy_position = 11;
+    ObjectPosition destroy_position = 12;
 }
 
 message PlayerInfo {

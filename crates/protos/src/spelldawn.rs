@@ -661,25 +661,29 @@ pub struct CardView {
     pub is_face_up: bool,
     #[prost(message, optional, tag = "6")]
     pub card_icons: ::core::option::Option<CardIcons>,
+    /// Frame shown on arena card when face-up
     #[prost(message, optional, tag = "7")]
     pub arena_frame: ::core::option::Option<SpriteAddress>,
+    /// Frame shown on arena card when face-down
+    #[prost(message, optional, tag = "8")]
+    pub face_down_arena_frame: ::core::option::Option<SpriteAddress>,
     /// Used to e.g. determine which card back to display for this card.
-    #[prost(enumeration = "PlayerName", tag = "8")]
+    #[prost(enumeration = "PlayerName", tag = "9")]
     pub owning_player: i32,
     /// Card information which is only present on revealed cards.
-    #[prost(message, optional, tag = "9")]
+    #[prost(message, optional, tag = "10")]
     pub revealed_card: ::core::option::Option<RevealedCardView>,
     /// Optionally, a position at which to create this card.
     ///
     /// If this card does not already exist, it will be created at this position
     /// before being animated to its 'card_position'.
-    #[prost(message, optional, tag = "10")]
+    #[prost(message, optional, tag = "11")]
     pub create_position: ::core::option::Option<ObjectPosition>,
     /// Optionally, a position at which to destroy this card.
     ///
     /// If provided, the card will be animated to this position before being
     /// destroyed.
-    #[prost(message, optional, tag = "11")]
+    #[prost(message, optional, tag = "12")]
     pub destroy_position: ::core::option::Option<ObjectPosition>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

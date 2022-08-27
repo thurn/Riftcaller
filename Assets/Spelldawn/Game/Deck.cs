@@ -38,7 +38,7 @@ namespace Spelldawn.Game
         if (spriteRenderer)
         {
           // Update card back images for placeholder cards
-          spriteRenderer.sprite = _registry.AssetService.GetSprite(spriteAddress);          
+          _registry.AssetService.AssignSprite(spriteRenderer, spriteAddress);
         }
       }
     }

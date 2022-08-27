@@ -46,6 +46,7 @@ namespace Spelldawn.Game
     [SerializeField] TextMeshPro _rulesText = null!;
     [SerializeField] SpriteRenderer? _jewel;
     [SerializeField] SpriteRenderer _arenaFrame = null!;
+    [SerializeField] SpriteRenderer _faceDownArenaFrame = null!;
     [SerializeField] GameObject _arenaShadow = null!;
     [SerializeField] Transform _topLeftAnchor = null!;
     [SerializeField] Transform _topRightAnchor = null!;
@@ -129,11 +130,12 @@ namespace Spelldawn.Game
 
       if (cardView.OwningPlayer != PlayerName.Unspecified)
       {
-        _cardBack.sprite = Registry.AssetService.GetSprite(Registry.CardService.GetCardBack(cardView.OwningPlayer));
+        Registry.AssetService.AssignSprite(_cardBack, Registry.CardService.GetCardBack(cardView.OwningPlayer));
       }
 
       _outline.sortingOrder = -1;
       Registry.AssetService.AssignSprite(_arenaFrame, cardView.ArenaFrame);
+      Registry.AssetService.AssignSprite(_faceDownArenaFrame, cardView.FaceDownArenaFrame);
       DestroyPosition = cardView.DestroyPosition;
 
       if (cardView.RevealedToViewer)

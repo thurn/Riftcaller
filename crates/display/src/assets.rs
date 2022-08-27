@@ -193,6 +193,10 @@ pub fn arena_frame(side: Side, card_type: CardType, lineage: Option<Lineage>) ->
     }
 }
 
+pub fn face_down_arena_frame() -> SpriteAddress {
+    SpriteAddress { address: "SpriteWay/Icons/Clean Frames/9052.png".to_string() }
+}
+
 /// Address for the rarity jewel to display on a card
 pub fn jewel(rarity: Rarity) -> SpriteAddress {
     SpriteAddress {
