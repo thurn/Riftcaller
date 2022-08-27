@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Spelldawn.Assets;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -91,7 +92,7 @@ namespace Spelldawn.Services
             yield return _registry.ArenaService.HandleVisitRoom(command.VisitRoom);
             break;
           case GameCommand.CommandOneofCase.PlaySound:
-            _registry.MainAudioSource.PlayOneShot(_registry.AssetService.GetAudioClip(command.PlaySound.Sound));
+            AssetUtil.PlayOneShot(_registry.MainAudioSource, _registry.AssetService.GetAudioClip(command.PlaySound.Sound));
             break;
           case GameCommand.CommandOneofCase.SetMusic:
             _registry.MusicService.SetMusicState(command.SetMusic.MusicState);
@@ -150,7 +151,7 @@ namespace Spelldawn.Services
 
       if (command.Sound != null)
       {
-        _registry.MainAudioSource.PlayOneShot(_registry.AssetService.GetAudioClip(command.Sound));
+        AssetUtil.PlayOneShot(_registry.MainAudioSource, _registry.AssetService.GetAudioClip(command.Sound));
       }
 
       yield return new WaitForSeconds(DataUtils.ToSeconds(command.Duration, 0));

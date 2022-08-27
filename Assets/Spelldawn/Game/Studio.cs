@@ -24,7 +24,7 @@ namespace Spelldawn.Game
     [SerializeField] GameObject? _subject;
     int _studioLayer;
 
-    public string TextureAddress => "Textures/StudioRenderTexture";
+    public const string TextureAddress = "Textures/StudioRenderTexture";
 
     void Start()
     {

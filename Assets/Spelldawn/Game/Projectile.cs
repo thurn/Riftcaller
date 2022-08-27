@@ -14,6 +14,7 @@
 
 using System.Collections;
 using DG.Tweening;
+using Spelldawn.Assets;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
@@ -58,7 +59,7 @@ namespace Spelldawn.Game
 
       if (fireSound != null)
       {
-        registry.MainAudioSource.PlayOneShot(registry.AssetService.GetAudioClip(fireSound));
+        AssetUtil.PlayOneShot(registry.MainAudioSource, registry.AssetService.GetAudioClip(fireSound));
       }
       else
       {
@@ -79,7 +80,7 @@ namespace Spelldawn.Game
 
       if (impactSound != null)
       {
-        registry.MainAudioSource.PlayOneShot(registry.AssetService.GetAudioClip(impactSound));
+        AssetUtil.PlayOneShot(registry.MainAudioSource, registry.AssetService.GetAudioClip(impactSound));
       }
       else
       {

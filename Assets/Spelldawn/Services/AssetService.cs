@@ -30,9 +30,12 @@ namespace Spelldawn.Services
 {
   public sealed class AssetService : MonoBehaviour
   {
+    [SerializeField] RenderTexture _studioRenderTexture = null!;
+    [SerializeField] DevelopmentAssets _developmentAssets = null!;
+
     readonly Dictionary<string, Object> _assets = new();
 
-    public TResult Get<TResult>(string address) where TResult: Object
+    TResult Get<TResult>(string address) where TResult : Object
     {
       Errors.CheckNotNull(address, "Address is null");
       if (_assets.ContainsKey(address))
@@ -44,11 +47,20 @@ namespace Spelldawn.Services
         Debug.LogError($"Asset not found: {address}");
         return null!;
       }
-    }    
+    }
 
     public Sprite? GetSprite(SpriteAddress address)
     {
       return AssetPreference.UseProductionAssets ? Get<Sprite>(address.Address) : null;
+    }
+
+    public RenderTexture? GetRenderTexture(RenderTextureAddress address)
+    {
+      return address.Address switch
+      {
+        Studio.TextureAddress => _studioRenderTexture,
+        _ => null
+      };
     }
 
     public void AssignSprite(SpriteRenderer spriteRenderer, SpriteAddress? address, float? referenceWidth = null)
@@ -60,41 +72,38 @@ namespace Spelldawn.Services
         {
           return;
         }
-        
+
         if (referenceWidth != null)
         {
           spriteRenderer.transform.localScale = (referenceWidth.Value / sprite.texture.width) * Vector3.one;
         }
-        
+
         spriteRenderer.sprite = sprite;
       }
     }
 
-    public Font GetFont(FontAddress address)
+    public Font? GetFont(FontAddress address)
     {
-      Errors.CheckNotNull(address, "Address is null");
-      Errors.CheckArgument(_assets.ContainsKey(address.Address), $"Asset not found: {address}");
-      return (Font)_assets[address.Address];
+      return AssetPreference.UseProductionAssets ? Get<Font>(address.Address) : null;
     }
 
     public Projectile GetProjectile(ProjectileAddress address)
     {
-      Errors.CheckNotNull(address, "Address is null");
-      Errors.CheckArgument(_assets.ContainsKey(address.Address), $"Asset not found: {address}");
-      return ComponentUtils.GetComponent<Projectile>((GameObject)_assets[address.Address]);
+      return AssetPreference.UseProductionAssets
+        ? Get<Projectile>(address.Address)
+        : _developmentAssets.GetProjectile(address);
     }
 
     public TimedEffect GetEffect(EffectAddress address)
     {
-      Errors.CheckNotNull(address, "Address is null");
-      Errors.CheckArgument(_assets.ContainsKey(address.Address), $"Asset not found: {address}");
-      return ComponentUtils.GetComponent<TimedEffect>((GameObject)_assets[address.Address]);
+      return AssetPreference.UseProductionAssets
+        ? Get<TimedEffect>(address.Address)
+        : _developmentAssets.GetTimedEffect(address);
     }
 
-    public AudioClip GetAudioClip(AudioClipAddress address)
+    public AudioClip? GetAudioClip(AudioClipAddress address)
     {
-      Errors.CheckNotNull(address, "Address is null");
-      return (AudioClip)_assets[address.Address];
+      return AssetPreference.UseProductionAssets ? Get<AudioClip>(address.Address) : null;
     }
 
     public IEnumerator LoadAssets(CommandList commandList)
@@ -103,8 +112,8 @@ namespace Spelldawn.Services
       {
         yield break;
       }
-      
-      var startTime = Time.time;      
+
+      var startTime = Time.time;
       var requests = new Dictionary<string, AsyncOperationHandle>();
 
       foreach (var command in commandList.Commands)
@@ -152,7 +161,7 @@ namespace Spelldawn.Services
       {
         yield break;
       }
-      
+
       var requests = new Dictionary<string, AsyncOperationHandle>();
       LoadNodeAssets(requests, node);
       yield return WaitForRequests(requests);
@@ -176,7 +185,7 @@ namespace Spelldawn.Services
             Debug.LogError($"Null asset for {address}");
           }
         }
-      }    
+      }
     }
 
     void LoadUpdatePanelsAssets(IDictionary<string, AsyncOperationHandle> requests, UpdatePanelsCommand command)
@@ -200,7 +209,7 @@ namespace Spelldawn.Services
         }
       }
     }
-    
+
     void LoadNodeAssets(IDictionary<string, AsyncOperationHandle> requests, Node? node)
     {
       if (node != null)
@@ -232,7 +241,7 @@ namespace Spelldawn.Services
         LoadPlayerAssets(requests, game.User);
         LoadPlayerAssets(requests, game.Opponent);
         LoadCardListAssets(requests, game.Cards);
-        LoadInterfaceMainControlsAssets(requests, game.MainControls);        
+        LoadInterfaceMainControlsAssets(requests, game.MainControls);
       }
     }
 
@@ -305,7 +314,7 @@ namespace Spelldawn.Services
         LoadSprite(requests, playerInfo.Portrait);
       }
     }
-    
+
     void LoadBackground(IDictionary<string, AsyncOperationHandle> requests, NodeBackground? background)
     {
       if (background != null)
@@ -328,8 +337,8 @@ namespace Spelldawn.Services
       {
         requests[address] = Addressables.LoadAssetAsync<T>(address);
       }
-    }    
-    
+    }
+
     void LoadSprite(IDictionary<string, AsyncOperationHandle> requests, SpriteAddress? address)
     {
       if (!string.IsNullOrWhiteSpace(address?.Address) && !_assets.ContainsKey(address.Address))

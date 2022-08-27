@@ -15,22 +15,17 @@
 #nullable enable
 
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
-namespace Spelldawn.Menus
+namespace Spelldawn.Assets
 {
-  public sealed class LoadingMenu: MonoBehaviour
+  public static class AssetUtil
   {
-    [SerializeField] GameObject _rotate = null!;
-    
-    void Start()
+    public static void PlayOneShot(AudioSource source, AudioClip? clip)
     {
-      Addressables.LoadSceneAsync("Assets/Scenes/Labyrinth.unity");
-    }
-
-    void Update()
-    {
-      _rotate.transform.Rotate(Vector3.up * 100 * Time.deltaTime);      
+      if (clip)
+      {
+        source.PlayOneShot(clip!);
+      }
     }
   }
 }

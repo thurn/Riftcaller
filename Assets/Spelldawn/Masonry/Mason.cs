@@ -400,7 +400,7 @@ namespace Spelldawn.Masonry
             e.style.backgroundImage = new StyleBackground(sprite);            
             break;
           case NodeBackground.BackgroundAddressOneofCase.RenderTexture:
-            var renderTexture = registry.AssetService.Get<RenderTexture>(bi.RenderTexture.Address);
+            var renderTexture = registry.AssetService.GetRenderTexture(bi.RenderTexture);
             e.style.backgroundImage = new StyleBackground(new Background { renderTexture = renderTexture});               
             break;
         }

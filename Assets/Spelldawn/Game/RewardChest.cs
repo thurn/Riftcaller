@@ -15,6 +15,7 @@
 using System.Collections;
 using System.Linq;
 using DG.Tweening;
+using Spelldawn.Assets;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
@@ -51,7 +52,7 @@ namespace Spelldawn.Game
     {
       _buildupGlow.SetActive(false);
       _openEffect.SetActive(true);
-      _audio.PlayOneShot(_openSound);
+      AssetUtil.PlayOneShot(_audio, _openSound);
       if (_currentCommand != null)
       {
         StartCoroutine(DisplayCards(_currentCommand));
@@ -88,7 +89,7 @@ namespace Spelldawn.Game
       {
         _canBeOpened = false;
         _buildupGlow.SetActive(true);
-        _audio.PlayOneShot(_buildUpSound);
+        AssetUtil.PlayOneShot(_audio, _buildUpSound);
         yield return new WaitForSecondsRealtime(_openDelay);
         _animator.SetTrigger(Open);
       }

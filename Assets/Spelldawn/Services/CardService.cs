@@ -222,7 +222,7 @@ namespace Spelldawn.Services
             {
               RenderTexture = new RenderTextureAddress
               {
-                Address = _registry.Studio.TextureAddress
+                Address = Studio.TextureAddress
               }
             }
           }),

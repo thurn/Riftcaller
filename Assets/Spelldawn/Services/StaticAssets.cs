@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using Spelldawn.Assets;
 using UnityEngine;
 
 #nullable enable
@@ -59,9 +60,9 @@ namespace Spelldawn.Services
     [SerializeField] List<AudioClip> _impactSounds = null!;
     public void PlayImpactSound() => PlayRandomSound(_impactSounds);
 
-    void Play(AudioClip clip)
+    void Play(AudioClip? clip)
     {
-      _registry.MainAudioSource.PlayOneShot(clip);
+      AssetUtil.PlayOneShot(_registry.MainAudioSource, clip);
     }
 
     void PlayRandomSound(List<AudioClip> list)

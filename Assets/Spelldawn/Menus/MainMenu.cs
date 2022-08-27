@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Spelldawn.Assets;
 using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -47,7 +48,7 @@ namespace Spelldawn.Menus
         _audioSource.Play();
       };
 
-      _sceneLoading = SceneManager.LoadSceneAsync("Labyrinth");
+      _sceneLoading = SceneManager.LoadSceneAsync("Game");
       _sceneLoading.allowSceneActivation = false;
     }
 
@@ -89,7 +90,7 @@ namespace Spelldawn.Menus
 
     void PlayClick()
     {
-      _audioSource.PlayOneShot(_click);
+      AssetUtil.PlayOneShot(_audioSource, _click);
     }
 
     void Clear()

@@ -80,7 +80,7 @@ namespace Spelldawn.Tests
         yield return RunTest(asset);
         yield return WaitForAnimations();
         _sceneLoaded = false;
-        SceneManager.LoadSceneAsync("Labyrinth");
+        SceneManager.LoadSceneAsync("Game");
         yield return new WaitUntil(() => _sceneLoaded);
         _sequences.Clear();
         yield return new WaitForEndOfFrame();
