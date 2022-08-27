@@ -14,20 +14,44 @@
 
 #nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using UnityEngine;
 
 namespace Spelldawn.Assets
 {
-  public sealed class DevelopmentAssets: MonoBehaviour
+  [Serializable]
+  public sealed class SpriteOverride
+  {
+    [SerializeField] string _substring = null!;
+    public string Substring => _substring;
+
+    [SerializeField] Sprite _sprite = null!;
+    public Sprite Sprite => _sprite;
+  }
+
+  public sealed class DevelopmentAssets : MonoBehaviour
   {
     [SerializeField] Projectile _placeholderProjectile = null!;
     [SerializeField] TimedEffect _placeholderTimedEffect = null!;
-    
+    [SerializeField] Font _placeholderFont = null!;
+    [SerializeField] List<SpriteOverride> _spriteOverrides = null!;
+
     public Sprite? GetSprite(SpriteAddress address)
     {
-      return null;
+      return (
+        from spriteOverride in _spriteOverrides
+        where address.Address.Contains(spriteOverride.Substring)
+        select spriteOverride.Sprite
+      ).FirstOrDefault();
+    }
+
+    public Font GetFont(FontAddress address)
+    {
+      return _placeholderFont;
     }
 
     public Projectile GetProjectile(ProjectileAddress address)

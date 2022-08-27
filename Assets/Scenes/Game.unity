@@ -1671,7 +1671,17 @@ MonoBehaviour:
   - {fileID: 1936599912}
   _sceneBackground: {fileID: 348475426}
   _initiateRaidPrefab: {fileID: 4016580843455598104, guid: 03ebfdfd5c822864993fc270171a4d62, type: 3}
+  _initiateRaidPrefabReference:
+    m_AssetGUID: 03ebfdfd5c822864993fc270171a4d62
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _levelUpRoomPrefab: {fileID: 6473978600369089418, guid: 7aecd72ab12564a45b1aadaccf4b2490, type: 3}
+  _levelUpRoomPrefabReference:
+    m_AssetGUID: 7aecd72ab12564a45b1aadaccf4b2490
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _curentRoomSelector: {fileID: 0}
   _arenaScene:
     m_AssetGUID: 207a8dd1a9c40469b871174e9e555431
@@ -6957,10 +6967,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17af30ea5f6345b4a533a3e5ecdc139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pieceSize: 0.5
-  _pieceFadeDistance: 0.35
-  _headPrefab: {fileID: 0}
-  _piecePrefab: {fileID: 0}
+  _pieceSize: 2
+  _pieceFadeDistance: 1.5
+  _headPrefab: {fileID: 1047237291554972, guid: 54906e8377663c64384ec02c430495dd, type: 3}
+  _piecePrefab: {fileID: 1648654368789128, guid: ab82086137c07244abcfb06ec0e02ce9, type: 3}
 --- !u!224 &1437158730 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8076396049406040626, guid: b0f79d1e100864eb9ac5e30cc9f854f9, type: 3}
@@ -7314,6 +7324,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _placeholderProjectile: {fileID: 4256999393009571986, guid: 63de023e3e16f41369bd0cc412fff2d4, type: 3}
   _placeholderTimedEffect: {fileID: 3318958223312939121, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
+  _placeholderFont: {fileID: 12800000, guid: b4fc778eddc48499a97db66ce14dcee5, type: 3}
+  _spriteOverrides:
+  - _substring: Rescaled/Button_Gray.png
+    _sprite: {fileID: 21300000, guid: bb21458c863a248499b7dc5e1c84b723, type: 3}
+  - _substring: Rescaled/Button_Orange.png
+    _sprite: {fileID: 21300000, guid: 2a7b24ef7c6b945deaf1ae922921e710, type: 3}
+  - _substring: Basic_window_big_recolored.png
+    _sprite: {fileID: 21300000, guid: 658b172d5a947491b86f478c8b3c141e, type: 3}
+  - _substring: Basic_big_bar_512.png
+    _sprite: {fileID: 21300000, guid: 9a2736617a5fb4fd8a44bf1a7ebf5a22, type: 3}
+  - _substring: Button_RED_s.png
+    _sprite: {fileID: 21300000, guid: cef1ea39688d24025afa53a5a8912980, type: 3}
 --- !u!1 &1447040684
 GameObject:
   m_ObjectHideFlags: 0
@@ -7734,8 +7756,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pieceSize: 0.5
   _pieceFadeDistance: 0.35
-  _headPrefab: {fileID: 0}
-  _piecePrefab: {fileID: 0}
+  _headPrefab: {fileID: 1125102575994816, guid: abccd1539dd924c9faf729c2a48d5381, type: 3}
+  _piecePrefab: {fileID: 1609189630421558, guid: 0d61da43ae7394e4abfa0cb737559af5, type: 3}
 --- !u!114 &1529987592 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7175482041013916864, guid: 2957de4c508df47ecadbf26b568c3355, type: 3}
@@ -9632,10 +9654,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17af30ea5f6345b4a533a3e5ecdc139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pieceSize: 0.5
-  _pieceFadeDistance: 0.35
-  _headPrefab: {fileID: 0}
-  _piecePrefab: {fileID: 0}
+  _pieceSize: 1.5
+  _pieceFadeDistance: 1
+  _headPrefab: {fileID: 1558564487493764, guid: 6284aac27f98f4fc29ae2be01a3b047f, type: 3}
+  _piecePrefab: {fileID: 1121374110014508, guid: 7f941b8ee9927448f99bd0fa712bbc11, type: 3}
 --- !u!1 &2055897282
 GameObject:
   m_ObjectHideFlags: 0
@@ -55626,63 +55648,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.5, y: 5, z: 2}
   m_Center: {x: 0.25, y: 0, z: 0}
---- !u!1001 &3318958223530365267
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3318958223312939086, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_Name
-      value: PlaceholderTimedEffect
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_RootOrder
-      value: 57
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3318958223312939122, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b69bfb549606f49538befd3dc8e52871, type: 3}
 --- !u!4 &3471970735675205836
 Transform:
   m_ObjectHideFlags: 0

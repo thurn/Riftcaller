@@ -309,7 +309,7 @@ fn handle_new_game(
     }
 
     let commands = command_list(vec![Command::LoadScene(LoadSceneCommand {
-        scene_name: "Labyrinth".to_string(),
+        scene_name: "Game".to_string(),
         mode: SceneLoadMode::Single as i32,
     })]);
 

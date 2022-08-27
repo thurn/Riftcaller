@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,15 +52,15 @@ namespace Spelldawn.Services
 
     public Sprite? GetSprite(SpriteAddress address)
     {
-      return AssetPreference.UseProductionAssets ? Get<Sprite>(address.Address) : null;
+      return AssetPreference.UseProductionAssets ? Get<Sprite>(address.Address) : _developmentAssets.GetSprite(address);
     }
 
-    public RenderTexture? GetRenderTexture(RenderTextureAddress address)
+    public RenderTexture GetRenderTexture(RenderTextureAddress address)
     {
       return address.Address switch
       {
         Studio.TextureAddress => _studioRenderTexture,
-        _ => null
+        _ => throw new InvalidOperationException($"Unknown address {address.Address}")
       };
     }
 
@@ -82,9 +83,9 @@ namespace Spelldawn.Services
       }
     }
 
-    public Font? GetFont(FontAddress address)
+    public Font GetFont(FontAddress address)
     {
-      return AssetPreference.UseProductionAssets ? Get<Font>(address.Address) : null;
+      return AssetPreference.UseProductionAssets ? Get<Font>(address.Address) : _developmentAssets.GetFont(address);
     }
 
     public Projectile GetProjectile(ProjectileAddress address)
@@ -152,7 +153,6 @@ namespace Spelldawn.Services
       }
 
       yield return WaitForRequests(requests);
-      Debug.Log($"Done LoadAssets downloads in {Time.time - startTime} seconds");
     }
 
     public IEnumerator LoadAssetsForNode(Node node)
@@ -270,6 +270,7 @@ namespace Spelldawn.Services
       {
         LoadCardIconsAssets(requests, card.CardIcons);
         LoadSprite(requests, card.ArenaFrame);
+        LoadSprite(requests, card.FaceDownArenaFrame);
         LoadRevealedCardAssets(requests, card.RevealedCard);
       }
     }

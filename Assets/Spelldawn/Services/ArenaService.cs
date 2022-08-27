@@ -37,7 +37,9 @@ namespace Spelldawn.Services
     [SerializeField] List<Room> _rooms = null!;
     [SerializeField] SceneBackground _sceneBackground = null!;
     [SerializeField] TimedEffect _initiateRaidPrefab = null!;
+    [SerializeField] AssetReferenceGameObject _initiateRaidPrefabReference = null!;
     [SerializeField] TimedEffect _levelUpRoomPrefab = null!;
+    [SerializeField] AssetReferenceGameObject _levelUpRoomPrefabReference = null!;
     [SerializeField] Room? _curentRoomSelector;
     [SerializeField] AssetReference _arenaScene = null!;
 
@@ -45,7 +47,7 @@ namespace Spelldawn.Services
 
     public ObjectDisplay LeftItems => _leftItems;
     public ObjectDisplay RightIems => _rightItems;
-    
+
     public bool RoomsOnBottom { get; private set; }
 
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
@@ -58,7 +60,7 @@ namespace Spelldawn.Services
         foreach (var target in GameObject.FindGameObjectsWithTag("RemoveOnLoad"))
         {
           Destroy(target);
-        }        
+        }
       }
     }
 
@@ -138,13 +140,12 @@ namespace Spelldawn.Services
           .DOMove(room.position, 0.3f).SetEase(Ease.OutSine))
         .AppendCallback(() =>
         {
-          var effect = _registry.AssetPoolService.Create(command.VisitType switch
+          StartCoroutine(_registry.AssetPoolService.CreateFromReference(command.VisitType switch
           {
-            RoomVisitType.InitiateRaid => _initiateRaidPrefab,
-            RoomVisitType.LevelUpRoom => _levelUpRoomPrefab,
+            RoomVisitType.InitiateRaid => _initiateRaidPrefabReference,
+            RoomVisitType.LevelUpRoom => _levelUpRoomPrefabReference,
             _ => throw new ArgumentOutOfRangeException(nameof(command.VisitType), command.VisitType, null)
-          }, room.position);
-          effect.transform.localScale = 5f * Vector3.one;
+          }, room.position, onCreate: result => result.transform.localScale = 5f * Vector3.one));
         })
         .Append(identityCard
           .DOMove(_registry.IdentityCardPositionForPlayer(command.Initiator).transform.position, 0.3f)
