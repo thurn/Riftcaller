@@ -18,6 +18,7 @@ using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Tests;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #nullable enable
 
@@ -114,8 +115,8 @@ namespace Spelldawn.Services
     [SerializeField] StaticAssets _staticAssets = null!;
     public StaticAssets StaticAssets => _staticAssets;
 
-    [SerializeField] RewardChest _rewardChest = null!;
-    public RewardChest RewardChest => _rewardChest;
+    [FormerlySerializedAs("_rewardChest")] [SerializeField] RewardDisplay _rewardDisplay = null!;
+    public RewardDisplay RewardDisplay => _rewardDisplay;
 
     [SerializeField] CurveObjectDisplay _userHand = null!;
     [SerializeField] CurveObjectDisplay _opponentHand = null!;

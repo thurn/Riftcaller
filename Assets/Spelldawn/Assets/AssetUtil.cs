@@ -14,7 +14,10 @@
 
 #nullable enable
 
+using System.Collections;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Spelldawn.Assets
 {
@@ -25,6 +28,20 @@ namespace Spelldawn.Assets
       if (clip)
       {
         source.PlayOneShot(clip!);
+      }
+    }
+    
+    public static IEnumerator PlayReferenceOneShot(AudioSource source, AssetReference reference)
+    {
+      var operation = Addressables.LoadAssetAsync<AudioClip>(reference);
+      yield return operation;
+      if (operation.Status == AsyncOperationStatus.Succeeded)
+      {
+        PlayOneShot(source, operation.Result);
+      }
+      else
+      {
+        Debug.LogError($"Error loading asset {reference}");
       }
     }
   }

@@ -29,6 +29,26 @@ MonoBehaviour:
     m_Address: Assets/Content/Placeholders/CardBack.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: c9578ff47b9b241f886f835cf42fda29
+    m_Address: Assets/ThirdParty/RivermillStudios/Character_Respawn_FX/Prefabs/Custom/AppearEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9cf45039e591f4ee5b987300dcf0d0b9
+    m_Address: Assets/ThirdParty/BitGem/Treasure_Chest_Set/Custom/MediumChest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e7d4193df0d1e4567bdc2e6efd37a16a
+    m_Address: Assets/ThirdParty/RivermillStudios/Loot_Box_FX/Audio/chestBuildup.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6e6016709da024a53a25ceb618e4521c
+    m_Address: Assets/ThirdParty/RivermillStudios/Loot_Box_FX/Custom/OpenEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f05da5cc35119410cb630bdf7d7ba5c9
+    m_Address: Assets/ThirdParty/RivermillStudios/Loot_Box_FX/Audio/chestOpen.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:
