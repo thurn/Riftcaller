@@ -203,7 +203,6 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   _openDelay: 0.9
-  _animator: {fileID: 0}
   _audioSource: {fileID: 21974848}
   _openEffectReference:
     m_AssetGUID: 6e6016709da024a53a25ceb618e4521c
@@ -7506,6 +7505,20 @@ MonoBehaviour:
     _sprite: {fileID: 21300000, guid: 9a2736617a5fb4fd8a44bf1a7ebf5a22, type: 3}
   - _substring: Button_RED_s.png
     _sprite: {fileID: 21300000, guid: cef1ea39688d24025afa53a5a8912980, type: 3}
+  - _substring: Icon_Mana_Color_01.png
+    _sprite: {fileID: 21300000, guid: e55c8e79776824f66bb5c9ffdcefe41c, type: 3}
+  - _substring: Attack_Icons_Color_4.png
+    _sprite: {fileID: 21300000, guid: 779ae364fb1314de3aa4b51753074434, type: 3}
+  - _substring: Heart_Icons_Color_5.png
+    _sprite: {fileID: 21300000, guid: 2fa2a32492efc43c3b83aa057a27a7a4, type: 3}
+  - _substring: Number_Icons_Color_6.png
+    _sprite: {fileID: 21300000, guid: 5fbe93bafeb9e432a942465e02be2652, type: 3}
+  - _substring: Number_Back_Color_3.png
+    _sprite: {fileID: 21300000, guid: 2748e253a96f04fad9a33c2d1c496988, type: 3}
+  - _substring: Back_Card_Color_07_Logo_Crystal
+    _sprite: {fileID: 21300000, guid: d20948b5f901d4724afe09c764dec545, type: 3}
+  - _substring: Number_Icons_Color_3
+    _sprite: {fileID: 21300000, guid: 37d0489200587493ca23d349f475881f, type: 3}
 --- !u!1 &1447040684
 GameObject:
   m_ObjectHideFlags: 0
