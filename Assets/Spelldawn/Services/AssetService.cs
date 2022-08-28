@@ -36,20 +36,6 @@ namespace Spelldawn.Services
 
     readonly Dictionary<string, Object> _assets = new();
 
-    TResult Get<TResult>(string address) where TResult : Object
-    {
-      Errors.CheckNotNull(address, "Address is null");
-      if (_assets.ContainsKey(address))
-      {
-        return (TResult)_assets[address];
-      }
-      else
-      {
-        Debug.LogError($"Asset not found: {address}");
-        return null!;
-      }
-    }
-
     public Sprite? GetSprite(SpriteAddress address)
     {
       return AssetPreference.UseProductionAssets ? Get<Sprite>(address.Address) : _developmentAssets.GetSprite(address);
@@ -91,14 +77,14 @@ namespace Spelldawn.Services
     public Projectile GetProjectile(ProjectileAddress address)
     {
       return AssetPreference.UseProductionAssets
-        ? Get<Projectile>(address.Address)
+        ? GetComponent<Projectile>(address.Address)
         : _developmentAssets.GetProjectile(address);
     }
 
     public TimedEffect GetEffect(EffectAddress address)
     {
       return AssetPreference.UseProductionAssets
-        ? Get<TimedEffect>(address.Address)
+        ? GetComponent<TimedEffect>(address.Address)
         : _developmentAssets.GetTimedEffect(address);
     }
 
@@ -188,6 +174,34 @@ namespace Spelldawn.Services
       }
     }
 
+    TResult Get<TResult>(string address) where TResult : Object
+    {
+      Errors.CheckNotNull(address, "Address is null");
+      if (_assets.ContainsKey(address))
+      {
+        return (TResult)_assets[address];
+      }
+      else
+      {
+        Debug.LogError($"Asset not found: {address}");
+        return null!;
+      }
+    }
+    
+    TResult GetComponent<TResult>(string address) where TResult : Component
+    {
+      Errors.CheckNotNull(address, "Address is null");
+      if (_assets.ContainsKey(address))
+      {
+        return ComponentUtils.GetComponent<TResult>((GameObject)_assets[address]);
+      }
+      else
+      {
+        Debug.LogError($"Asset not found: {address}");
+        return null!;
+      }
+    }    
+    
     void LoadUpdatePanelsAssets(IDictionary<string, AsyncOperationHandle> requests, UpdatePanelsCommand command)
     {
       foreach (var panel in command.Panels)
@@ -326,7 +340,7 @@ namespace Spelldawn.Services
             LoadSprite(requests, background.Sprite);
             break;
           case NodeBackground.BackgroundAddressOneofCase.RenderTexture:
-            Load<RenderTexture>(requests, background.RenderTexture.Address);
+            // Currently statically assigned
             break;
         }
       }

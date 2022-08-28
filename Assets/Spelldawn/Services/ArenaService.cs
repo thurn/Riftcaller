@@ -35,10 +35,7 @@ namespace Spelldawn.Services
     [SerializeField] LinearObjectDisplay _leftItems = null!;
     [SerializeField] LinearObjectDisplay _rightItems = null!;
     [SerializeField] List<Room> _rooms = null!;
-    [SerializeField] SceneBackground _sceneBackground = null!;
-    [SerializeField] TimedEffect _initiateRaidPrefab = null!;
     [SerializeField] AssetReferenceGameObject _initiateRaidPrefabReference = null!;
-    [SerializeField] TimedEffect _levelUpRoomPrefab = null!;
     [SerializeField] AssetReferenceGameObject _levelUpRoomPrefabReference = null!;
     [SerializeField] Room? _curentRoomSelector;
     [SerializeField] AssetReference _arenaScene = null!;
@@ -57,6 +54,7 @@ namespace Spelldawn.Services
       if (AssetPreference.UseProductionAssets)
       {
         yield return Addressables.LoadSceneAsync(_arenaScene, LoadSceneMode.Additive);
+        FlipView();
         foreach (var target in GameObject.FindGameObjectsWithTag("RemoveOnLoad"))
         {
           Destroy(target);
@@ -67,7 +65,7 @@ namespace Spelldawn.Services
     public void UpdateViewForSide(PlayerSide side)
     {
       RoomsOnBottom = side == PlayerSide.Overlord;
-      _sceneBackground.SetRoomsOnBottom(side == PlayerSide.Overlord);
+      FlipView();
     }
 
     public Room FindRoom(RoomIdentifier roomId)
@@ -167,6 +165,14 @@ namespace Spelldawn.Services
       SetGameObjectsEnabledForPlayer(PlayerName.User, command);
       SetGameObjectsEnabledForPlayer(PlayerName.Opponent, command);
       yield break;
+    }
+
+    void FlipView()
+    {
+      foreach (var background in FindObjectsOfType<SceneBackground>())
+      {
+        background.SetRoomsOnBottom(RoomsOnBottom);
+      }      
     }
 
     void SetGameObjectsEnabledForPlayer(PlayerName playerName, SetGameObjectsEnabledCommand command)
