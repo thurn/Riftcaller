@@ -29,9 +29,19 @@ namespace Spelldawn.Game
 
     readonly List<Transform> _segments = new();
     readonly List<MeshRenderer> _renderers = new();
-
+    
     public Vector3 Source { get; set; }
     public Vector3 Target { get; set; }
+    
+    public GameObject HeadPrefab
+    {
+      set => _headPrefab = value;
+    }
+    
+    public GameObject PiecePrefab
+    {
+      set => _piecePrefab = value;
+    }    
 
     void Update()
     {

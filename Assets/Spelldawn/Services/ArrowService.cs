@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using Spelldawn.Assets;
 using Spelldawn.Game;
 using UnityEngine;
 
@@ -44,7 +45,22 @@ namespace Spelldawn.Services
     [SerializeField] Arrow? _currentArrow;
     [SerializeField] Vector3 _startPosition;
     [SerializeField] float _dragStartScreenZ;
+    [SerializeField] GameObject _placeholderHeadPrefab = null!;
+    [SerializeField] GameObject _placeholderPiecePrefab = null!;
     IArrowDelegate? _delegate;
+
+    void Start()
+    {
+      if (!AssetPreference.UseProductionAssets)
+      {
+        _redArrow.HeadPrefab = _placeholderHeadPrefab;
+        _redArrow.PiecePrefab = _placeholderPiecePrefab;
+        _greenArrow.HeadPrefab = _placeholderHeadPrefab;
+        _greenArrow.PiecePrefab = _placeholderPiecePrefab;
+        _blueArrow.HeadPrefab = _placeholderHeadPrefab;
+        _blueArrow.PiecePrefab = _placeholderPiecePrefab;        
+      }
+    }
 
     public void ShowArrow(Type type, Transform start, IArrowDelegate arrowDelegate)
     {
