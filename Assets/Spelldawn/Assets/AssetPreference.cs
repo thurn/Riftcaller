@@ -25,14 +25,14 @@ namespace Spelldawn.Assets
   {
     const string MenuName = "Tools/Use Production Assets";
     const string SettingName = "UseProductionAssets";
- 
+    
+#if UNITY_EDITOR 
     public static bool UseProductionAssets
     {
       get => EditorPrefs.GetBool(SettingName, false);
       set => EditorPrefs.SetBool(SettingName, value);
     }
 
-#if UNITY_EDITOR    
     [MenuItem(MenuName)]
     static void ToggleAction()
     {
@@ -45,6 +45,8 @@ namespace Spelldawn.Assets
       Menu.SetChecked(MenuName, UseProductionAssets);
       return true;
     }
-#endif    
+#else
+    public static bool UseProductionAssets => true;
+#endif
   }
 }
