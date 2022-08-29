@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using Google.Protobuf.WellKnownTypes;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using UnityEngine;
@@ -25,6 +26,8 @@ namespace Spelldawn.Game
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] Panel _panel;
+    float? _pressTime;
+    bool _wasLongPress;
 
     enum Panel
     {
@@ -32,21 +35,46 @@ namespace Spelldawn.Game
       Feedback
     }
 
+    void OnMouseDown()
+    {
+      _pressTime = Time.time;
+      _wasLongPress = false;
+    }
+
+    void OnMouseDrag()
+    {
+      if (_pressTime is { } time && !_wasLongPress && (Time.time - time) > 1)
+      {
+        _wasLongPress = true;
+        StartCoroutine(_registry.CommandService.HandleCommands(new GameCommand
+        {
+          Debug = new ClientDebugCommand
+          {
+            ShowLogs = new Empty()
+          }
+        }));        
+      }
+    }
+
     void OnMouseUpAsButton()
     {
       _registry.StaticAssets.PlayButtonSound();
+      _pressTime = null;
 
-      var address = new InterfacePanelAddress
+      if (!_wasLongPress)
       {
-        ClientPanel = _panel switch
+        var address = new InterfacePanelAddress
         {
-          Panel.GameMenu => throw new NotImplementedException(),
-          Panel.Feedback => ClientPanelAddress.DebugPanel,
-          _ => throw new ArgumentOutOfRangeException()
-        }
-      };
+          ClientPanel = _panel switch
+          {
+            Panel.GameMenu => throw new NotImplementedException(),
+            Panel.Feedback => ClientPanelAddress.DebugPanel,
+            _ => throw new ArgumentOutOfRangeException()
+          }
+        };
       
-      _registry.DocumentService.TogglePanel(!_registry.DocumentService.IsOpen(address), address);
+        _registry.DocumentService.TogglePanel(!_registry.DocumentService.IsOpen(address), address);        
+      }
     }
   }
 }

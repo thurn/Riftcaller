@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Linq;
+using Google.Protobuf.WellKnownTypes;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Tests;
@@ -210,6 +212,30 @@ namespace Spelldawn.Services
       if (runTests)
       {
         ScreenshotTests!.RunTests();
+      }
+    }
+
+    void OnEnable()
+    {
+      Application.logMessageReceived += HandleLog;
+    }
+    
+    void OnDisable()
+    {
+      Application.logMessageReceived -= HandleLog;
+    }    
+
+    void HandleLog(string condition, string stacktrace, LogType type)
+    {
+      if (type is LogType.Error or LogType.Exception)
+      {
+        StartCoroutine(CommandService.HandleCommands(new GameCommand
+        {
+          Debug = new ClientDebugCommand
+          {
+            ShowLogs = new Empty()
+          }
+        }));
       }
     }
   }

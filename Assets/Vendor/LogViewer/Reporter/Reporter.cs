@@ -2091,7 +2091,7 @@ public class Reporter : MonoBehaviour
 #endif
 
 		if (!string.IsNullOrEmpty(www.error)) {
-			Debug.LogError(www.error);
+			// Debug.LogError(www.error);
 		}
 		else {
 #if UNITY_CHANGE4
