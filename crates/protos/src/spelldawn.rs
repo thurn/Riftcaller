@@ -1507,6 +1507,7 @@ pub enum CardPrefab {
 pub enum ClientPanelAddress {
     Unspecified = 0,
     DebugPanel = 1,
+    GameMenu = 2,
 }
 /// Possible corners which can be anchored.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]

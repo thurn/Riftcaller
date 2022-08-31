@@ -16,12 +16,14 @@
 //! be opened or closed by the user, such as a game menu or window.
 
 pub mod debug_panel;
-pub mod panel_address;
+pub mod game_menu_panel;
 pub mod set_player_name_panel;
 
 use anyhow::Result;
 use core_ui::{panel, rendering};
 use debug_panel::DebugPanel;
+use deck_editor::deck_panel::DeckEditorPanel;
+use panel_address::PanelAddress;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_panel_address::AddressType;
 use protos::spelldawn::{
@@ -30,7 +32,7 @@ use protos::spelldawn::{
 use serde_json::de;
 use with_error::WithError;
 
-use crate::panel_address::PanelAddress;
+use crate::game_menu_panel::GameMenuPanel;
 use crate::set_player_name_panel::SetPlayerNamePanel;
 
 /// Appends a command to `commands` to render commonly-used panels on connect.
@@ -57,6 +59,7 @@ pub fn render_panel(address: InterfacePanelAddress) -> Result<UpdatePanelsComman
 fn render_server_panel(address: PanelAddress) -> Option<Node> {
     match address {
         PanelAddress::SetPlayerName(side) => rendering::component(SetPlayerNamePanel::new(side)),
+        PanelAddress::DeckEditor(data) => rendering::component(DeckEditorPanel::new(data)),
     }
 }
 
@@ -64,5 +67,6 @@ fn render_client_panel(address: ClientPanelAddress) -> Option<Node> {
     match address {
         ClientPanelAddress::Unspecified => None,
         ClientPanelAddress::DebugPanel => rendering::component(DebugPanel {}),
+        ClientPanelAddress::GameMenu => rendering::component(GameMenuPanel {}),
     }
 }

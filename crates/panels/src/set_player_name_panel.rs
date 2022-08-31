@@ -19,8 +19,7 @@ use core_ui::prelude::*;
 use data::game_actions::DebugAction;
 use data::player_name::NamedPlayer;
 use data::primitives::Side;
-
-use crate::PanelAddress;
+use panel_address::PanelAddress;
 
 #[derive(Debug)]
 pub struct SetPlayerNamePanel {

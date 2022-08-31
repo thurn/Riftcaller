@@ -67,7 +67,7 @@ namespace Spelldawn.Game
         {
           ClientPanel = _panel switch
           {
-            Panel.GameMenu => throw new NotImplementedException(),
+            Panel.GameMenu => ClientPanelAddress.GameMenu,
             Panel.Feedback => ClientPanelAddress.DebugPanel,
             _ => throw new ArgumentOutOfRangeException()
           }

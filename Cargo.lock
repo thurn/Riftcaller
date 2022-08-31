@@ -404,6 +404,7 @@ version = "0.0.0"
 dependencies = [
  "data",
  "protos",
+ "serde",
  "serde_json",
 ]
 
@@ -582,6 +583,21 @@ dependencies = [
  "serde",
  "serde_with",
  "strum_macros",
+ "with_error",
+]
+
+[[package]]
+name = "deck_editor"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "core_ui",
+ "data",
+ "enum-iterator",
+ "panel_address",
+ "protos",
+ "serde",
+ "serde_json",
  "with_error",
 ]
 
@@ -1118,13 +1134,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "648001efe5d5c0102d8cea768e348da85d90af8ba91f0bea908f157951493cd4"
 
 [[package]]
+name = "panel_address"
+version = "0.0.0"
+dependencies = [
+ "data",
+ "protos",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "panels"
 version = "0.0.0"
 dependencies = [
  "anyhow",
  "core_ui",
  "data",
+ "deck_editor",
  "enum-iterator",
+ "panel_address",
  "protos",
  "serde",
  "serde_json",

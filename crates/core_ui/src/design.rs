@@ -60,12 +60,14 @@ pub fn as_hex(color: FlexColor) -> String {
 #[derive(Debug, Clone, Copy)]
 pub enum BackgroundColor {
     CardInfo,
+    DeckEditorPanel,
 }
 
 impl From<BackgroundColor> for FlexColor {
     fn from(color: BackgroundColor) -> Self {
         match color {
             BackgroundColor::CardInfo => BLACK_ALPHA_75,
+            BackgroundColor::DeckEditorPanel => BLACK,
         }
     }
 }

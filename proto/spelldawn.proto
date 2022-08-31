@@ -945,6 +945,7 @@ message DelayCommand {
 enum ClientPanelAddress {
     CLIENT_PANEL_ADDRESS_UNSPECIFIED = 0;
     CLIENT_PANEL_ADDRESS_DEBUG_PANEL = 1;
+    CLIENT_PANEL_ADDRESS_GAME_MENU = 2;
 }
 
 // Identifies an InterfacePanel.
