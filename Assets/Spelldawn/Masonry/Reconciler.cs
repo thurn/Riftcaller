@@ -53,6 +53,7 @@ namespace Spelldawn.Masonry
       }
       else
       {
+        // Otherwise, create a new VisualElement matching this node
         return UpdateWhenNew(registry, node);
       }
     }
@@ -76,7 +77,6 @@ namespace Spelldawn.Masonry
 
     static VisualElement UpdateWhenNew(Registry registry, Node node)
     {
-      // Otherwise, create a new VisualElement matching this node
       var result = Mason.CreateElement(node);
       foreach (var child in CreateChildren(registry, node))
       {

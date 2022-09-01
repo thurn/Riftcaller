@@ -12,8 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Renders the deck editor window
+use core_ui::design::BackgroundColor;
+use core_ui::prelude::*;
+use data::player_name::PlayerId;
 
-pub mod collection_browser;
-pub mod deck_panel;
-pub mod decks_browser;
+#[derive(Debug)]
+pub struct CollectionBrowser {
+    player_id: PlayerId,
+}
+
+impl CollectionBrowser {
+    pub fn new(player_id: PlayerId) -> Self {
+        Self { player_id }
+    }
+}
+
+impl Component for CollectionBrowser {
+    fn build(self) -> RenderResult {
+        Column::new(format!("CollectionBrowser for {:?}", self.player_id))
+            .style(Style::new().background_color(BackgroundColor::DebugGreen).flex_grow(1.0))
+            .build()
+    }
+}

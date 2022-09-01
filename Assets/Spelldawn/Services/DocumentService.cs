@@ -87,7 +87,10 @@ namespace Spelldawn.Services
     {
       if (open)
       {
-        _openPanels.Add(address);
+        if (!_openPanels.Contains(address))
+        {
+          _openPanels.Add(address);
+        }
         _registry.ActionService.HandleAction(new GameAction
         {
           FetchPanel = new FetchPanelAction
@@ -129,7 +132,7 @@ namespace Spelldawn.Services
         ref _cardControlsNode,
         ref _cardControls,
         CardAnchors(mainControls?.CardAnchorNodes ?? Enumerable.Empty<CardAnchorNode>()));
-    }
+    } 
 
     void RenderPanels()
     {

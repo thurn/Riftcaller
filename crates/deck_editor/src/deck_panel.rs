@@ -14,16 +14,21 @@
 
 use core_ui::design::BackgroundColor;
 use core_ui::prelude::*;
+use data::player_name::PlayerId;
 use panel_address::DeckEditorData;
+
+use crate::collection_browser::CollectionBrowser;
+use crate::decks_browser::DecksBrowser;
 
 #[derive(Debug)]
 pub struct DeckEditorPanel {
+    player_id: PlayerId,
     data: DeckEditorData,
 }
 
 impl DeckEditorPanel {
-    pub fn new(data: DeckEditorData) -> Self {
-        Self { data }
+    pub fn new(player_id: PlayerId, data: DeckEditorData) -> Self {
+        Self { player_id, data }
     }
 }
 
@@ -36,6 +41,8 @@ impl Component for DeckEditorPanel {
                     .width(100.pct())
                     .height(100.pct()),
             )
+            .child(CollectionBrowser::new(self.player_id))
+            .child(DecksBrowser::new(self.player_id))
             .build()
     }
 }
