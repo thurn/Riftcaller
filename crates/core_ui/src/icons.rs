@@ -20,3 +20,4 @@ pub const ARROW: &str = "\u{f30b}";
 pub const TRIGGER: &str = "\u{f0e7}";
 pub const SAVE: &str = "\u{f0c7}";
 pub const RESTORE: &str = "\u{f019}";
+pub const REFRESH: &str = "\u{f2f9}";

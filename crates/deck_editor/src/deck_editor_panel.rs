@@ -18,6 +18,7 @@ use data::player_name::PlayerId;
 use panel_address::DeckEditorData;
 
 use crate::collection_browser::CollectionBrowser;
+use crate::collection_controls::CollectionControls;
 use crate::decks_browser::DecksBrowser;
 
 #[derive(Debug)]
@@ -41,7 +42,12 @@ impl Component for DeckEditorPanel {
                     .width(100.pct())
                     .height(100.pct()),
             )
-            .child(CollectionBrowser::new(self.player_id))
+            .child(
+                Column::new("Collection")
+                    .style(Style::new().flex_grow(1.0))
+                    .child(CollectionControls::new(self.player_id))
+                    .child(CollectionBrowser::new(self.player_id)),
+            )
             .child(DecksBrowser::new(self.player_id))
             .build()
     }

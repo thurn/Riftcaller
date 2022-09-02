@@ -13,12 +13,14 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Game;
 using Spelldawn.Masonry;
 using static Spelldawn.Masonry.MasonUtil;
 using Spelldawn.Protos;
+using Spelldawn.Tools;
 using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -50,6 +52,7 @@ namespace Spelldawn.Services
     Node _cardControlsNode = null!;
     VisualElement _infoZoom = null!;
     Node _infoZoomNode = null!;
+    Coroutine? _autoRefresh = null;
 
     public VisualElement RootVisualElement => _document.rootVisualElement;
 
@@ -60,6 +63,37 @@ namespace Spelldawn.Services
       AddRoot("Card Controls", out _cardControls, out _cardControlsNode);
       AddRoot("InfoZoom", out _infoZoom, out _infoZoomNode);
       AddRoot("Full Screen", out _fullScreen, out _fullScreenNode);
+    }
+
+    void Update()
+    {
+      if (_autoRefresh == null && AutoRefreshPreference.AutomaticallyRefreshPanels)
+      {
+        _autoRefresh = StartCoroutine(AutoRefresh());
+      }
+      else if (_autoRefresh != null && !AutoRefreshPreference.AutomaticallyRefreshPanels)
+      {
+        StopCoroutine(_autoRefresh);
+      }
+    }
+
+    IEnumerator AutoRefresh()
+    {
+      while (true)
+      {
+        yield return new WaitForSeconds(1.0f);
+        
+        foreach (var address in _openPanels)
+        {
+          _registry.ActionService.HandleAction(new GameAction
+          {
+            FetchPanel = new FetchPanelAction
+            {
+              PanelAddress = address
+            }
+          });
+        }        
+      }
     }
 
     float ScreenPxToElementDip(float value) => value * _document.panelSettings.referenceDpi / Screen.dpi;
@@ -91,6 +125,7 @@ namespace Spelldawn.Services
         {
           _openPanels.Add(address);
         }
+
         _registry.ActionService.HandleAction(new GameAction
         {
           FetchPanel = new FetchPanelAction
@@ -132,7 +167,7 @@ namespace Spelldawn.Services
         ref _cardControlsNode,
         ref _cardControls,
         CardAnchors(mainControls?.CardAnchorNodes ?? Enumerable.Empty<CardAnchorNode>()));
-    } 
+    }
 
     void RenderPanels()
     {

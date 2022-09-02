@@ -111,6 +111,7 @@ impl Component for Panel {
                         panel_address: Some(self.address),
                         open: false,
                     }))
+                    .show_frame(true)
                     .layout(
                         Layout::new()
                             .position_type(FlexPosition::Absolute)

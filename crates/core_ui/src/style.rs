@@ -165,6 +165,14 @@ impl Style {
         self
     }
 
+    pub fn background_image_option(self, sprite: Option<SpriteAddress>) -> Self {
+        if let Some(s) = sprite {
+            self.background_image(s)
+        } else {
+            self
+        }
+    }
+
     pub fn background_image(mut self, sprite: SpriteAddress) -> Self {
         self.wrapped_style.background_image =
             Some(NodeBackground { background_address: Some(BackgroundAddress::Sprite(sprite)) });

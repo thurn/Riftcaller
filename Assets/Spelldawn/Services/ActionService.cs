@@ -26,6 +26,7 @@ using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using Grpc.Net.Compression;
 using Spelldawn.Protos;
+using Spelldawn.Tools;
 using Spelldawn.Utils;
 using UnityEngine;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
@@ -146,7 +147,10 @@ namespace Spelldawn.Services
       }
 
       // Introduce simulated server delay
-      yield return new WaitForSeconds(Random.Range(0f, 0.5f));
+      if (!AutoRefreshPreference.AutomaticallyRefreshPanels)
+      {
+        yield return new WaitForSeconds(Random.Range(0f, 0.5f));
+      }
 
       // Send to server
       var request = new GameRequest
@@ -176,7 +180,11 @@ namespace Spelldawn.Services
             break;
           case StatusCode.Unavailable:
           default:
-            Debug.LogError($"Error connecting to {ServerAddress}: {call.GetStatus().Detail}");
+            if (!AutoRefreshPreference.AutomaticallyRefreshPanels)
+            {
+              // Don't show this during auto-refresh because it happens constantly.
+              Debug.LogError($"Error connecting to {ServerAddress}: {call.GetStatus().Detail}");
+            }
             break;
         }
       }

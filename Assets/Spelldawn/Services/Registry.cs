@@ -198,7 +198,7 @@ namespace Spelldawn.Services
 
       if (GlobalGameMode == GlobalGameMode.ScreenshotTest ||
           testService ||
-          System.Environment.GetCommandLineArgs().Any(arg => arg.Contains("test")))
+          Environment.GetCommandLineArgs().Any(arg => arg.Contains("test")))
       {
         GlobalGameMode = GlobalGameMode.ScreenshotTest;
         ScreenshotTests = ScreenshotTestService.Initialize(this, out runTests);
@@ -229,13 +229,16 @@ namespace Spelldawn.Services
     {
       if (type is LogType.Error or LogType.Exception)
       {
-        StartCoroutine(CommandService.HandleCommands(new GameCommand
+        if (!condition.Contains("RpcException"))
         {
-          Debug = new ClientDebugCommand
+          StartCoroutine(CommandService.HandleCommands(new GameCommand
           {
-            ShowLogs = new Empty()
-          }
-        }));
+            Debug = new ClientDebugCommand
+            {
+              ShowLogs = new Empty()
+            }
+          }));          
+        }
       }
     }
   }

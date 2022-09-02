@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::BackgroundColor;
+use core_ui::design::GREEN_900;
 use core_ui::prelude::*;
 use data::player_name::PlayerId;
 
@@ -30,7 +30,7 @@ impl CollectionBrowser {
 impl Component for CollectionBrowser {
     fn build(self) -> RenderResult {
         Column::new(format!("CollectionBrowser for {:?}", self.player_id))
-            .style(Style::new().background_color(BackgroundColor::DebugGreen).flex_grow(1.0))
+            .style(Style::new().background_color(GREEN_900).flex_grow(1.0))
             .build()
     }
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::BackgroundColor;
+use core_ui::design::RED_900;
 use core_ui::prelude::*;
 use data::player_name::PlayerId;
 
@@ -30,7 +30,7 @@ impl DecksBrowser {
 impl Component for DecksBrowser {
     fn build(self) -> RenderResult {
         Column::new(format!("DecksBrowser for {:?}", self.player_id))
-            .style(Style::new().background_color(BackgroundColor::DebugRed).width(100.px()))
+            .style(Style::new().background_color(RED_900).width(350.px()))
             .build()
     }
 }

@@ -23,7 +23,7 @@ use anyhow::Result;
 use core_ui::{panel, rendering};
 use data::player_name::PlayerId;
 use debug_panel::DebugPanel;
-use deck_editor::deck_panel::DeckEditorPanel;
+use deck_editor::deck_editor_panel::DeckEditorPanel;
 use panel_address::PanelAddress;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_panel_address::AddressType;

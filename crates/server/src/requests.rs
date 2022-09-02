@@ -33,7 +33,7 @@ use protos::spelldawn::game_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::{
-    card_target, CardTarget, CommandList, ConnectRequest, GameCommand, GameRequest,
+    card_target, CardTarget, CommandList, ConnectRequest, GameAction, GameCommand, GameRequest,
     LoadSceneCommand, NewGameAction, PlayerIdentifier, SceneLoadMode, StandardAction,
 };
 use rules::{dispatch, mutations};
@@ -190,7 +190,10 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
         .with_error(|| "GameAction is required")?;
 
     let _span = warn_span!("handle_request", ?player_id, ?game_id, ?game_action).entered();
-    warn!(?player_id, ?game_id, ?game_action, "received_request");
+    if !matches!(request.action, Some(GameAction { action: Some(Action::FetchPanel(_)) })) {
+        // Don't log FetchPanel because we send it every 1 second in autorefresh mode
+        warn!(?player_id, ?game_id, ?game_action, "received_request");
+    }
 
     let response = match game_action {
         Action::StandardAction(standard_action) => {

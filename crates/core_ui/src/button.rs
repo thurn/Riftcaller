@@ -132,8 +132,9 @@ impl Component for Button {
 
 #[derive(Debug, Clone, Copy)]
 pub enum IconButtonType {
-    /// Red button background, used to close a window
-    Close,
+    /// Red button background, used to e.g. close a window
+    Destructive,
+    DestructiveLarge,
 }
 
 #[derive(Debug)]
@@ -142,6 +143,7 @@ pub struct IconButton {
     layout: Layout,
     button_type: IconButtonType,
     action: Box<dyn InterfaceAction>,
+    show_frame: bool,
 }
 
 impl IconButton {
@@ -149,8 +151,9 @@ impl IconButton {
         Self {
             icon: icon.into(),
             layout: Layout::default(),
-            button_type: IconButtonType::Close,
+            button_type: IconButtonType::Destructive,
             action: Box::new(NoAction {}),
+            show_frame: false,
         }
     }
 
@@ -168,6 +171,11 @@ impl IconButton {
         self.action = Box::new(action);
         self
     }
+
+    pub fn show_frame(mut self, show_frame: bool) -> Self {
+        self.show_frame = show_frame;
+        self
+    }
 }
 
 impl Component for IconButton {
@@ -175,11 +183,20 @@ impl Component for IconButton {
         let frame = style::sprite(
             "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Square/EPIC_silver_fr_s",
         );
+
         let background = style::sprite(match self.button_type {
-            IconButtonType::Close => {
+            IconButtonType::Destructive => {
                 "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Square/Button_RED_s"
             }
+            IconButtonType::DestructiveLarge => {
+                "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Rescaled/Button_Red"
+            }
         });
+
+        let (background_size, position_offset) = match self.button_type {
+            IconButtonType::Destructive => (56, 16),
+            IconButtonType::DestructiveLarge => (88, 0),
+        };
 
         Row::new("IconButton")
             .style(
@@ -192,23 +209,27 @@ impl Component for IconButton {
                     .flex_shrink(0.0),
             )
             .on_click(self.action)
-            .child(
-                Row::new("Frame").style(
-                    Style::new()
-                        .position_type(FlexPosition::Absolute)
-                        .position(Edge::All, 6.px())
-                        .height(76.px())
-                        .width(76.px())
-                        .background_image(frame),
-                ),
-            )
+            .child(if self.show_frame {
+                Some(
+                    Row::new("Frame").style(
+                        Style::new()
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::All, 6.px())
+                            .height(76.px())
+                            .width(76.px())
+                            .background_image(frame),
+                    ),
+                )
+            } else {
+                None
+            })
             .child(
                 Row::new("Background").style(
                     Style::new()
                         .position_type(FlexPosition::Absolute)
-                        .position(Edge::All, 16.px())
-                        .height(56.px())
-                        .width(56.px())
+                        .position(Edge::All, position_offset.px())
+                        .height(background_size.px())
+                        .width(background_size.px())
                         .background_image(background),
                 ),
             )

@@ -15,5 +15,6 @@
 //! Renders the deck editor window
 
 pub mod collection_browser;
-pub mod deck_panel;
+pub mod collection_controls;
+pub mod deck_editor_panel;
 pub mod decks_browser;
