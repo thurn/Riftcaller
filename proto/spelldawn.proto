@@ -433,16 +433,21 @@ message ScrollViewNode {
     ScrollBarVisibility vertical_scroll_bar_visibility = 9;
 }
 
-message EventHandlers {
-    GameAction on_click = 1;
+message DraggableNode {
 }
 
 message NodeType {
     oneof node_type {
         Text text = 1;
         ScrollViewNode scroll_view_node = 2;
+        DraggableNode draggable_node = 3;
     }
 }
+
+message EventHandlers {
+    GameAction on_click = 1;
+}
+
 
 message Node {
     // Used to identify this node in the hierarchy, should be unique among

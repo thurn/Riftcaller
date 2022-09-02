@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use core_ui::design::ORANGE_900;
+use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 
 #[derive(Debug, Default, Clone)]
@@ -29,13 +30,15 @@ impl UICard {
 
 impl Component for UICard {
     fn build(self) -> RenderResult {
-        Column::new("UICard")
-            .style(
-                self.layout
-                    .to_style()
-                    .background_color(ORANGE_900)
-                    .width(200.px())
-                    .height(400.px()),
+        Draggable::new("CardDraggable")
+            .child(
+                Column::new("UICard").style(
+                    self.layout
+                        .to_style()
+                        .background_color(ORANGE_900)
+                        .width(200.px())
+                        .height(400.px()),
+                ),
             )
             .build()
     }

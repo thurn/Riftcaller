@@ -52,10 +52,11 @@ namespace Spelldawn.Services
     Node _cardControlsNode = null!;
     VisualElement _infoZoom = null!;
     Node _infoZoomNode = null!;
-    Coroutine? _autoRefresh = null;
+    VisualElement? _currentlyDragging; 
+    Coroutine? _autoRefresh;
 
     public VisualElement RootVisualElement => _document.rootVisualElement;
-
+    
     public void Initialize()
     {
       _document.rootVisualElement.Clear();
@@ -67,6 +68,16 @@ namespace Spelldawn.Services
 
     void Update()
     {
+      switch (Input.GetMouseButton(0))
+      {
+          case true when _currentlyDragging != null:
+            MouseMove(_currentlyDragging);
+            break;
+          case false when _currentlyDragging != null:
+            MouseUp(_currentlyDragging);
+            break;
+      }
+
       if (_autoRefresh == null && AutoRefreshPreference.AutomaticallyRefreshPanels)
       {
         _autoRefresh = StartCoroutine(AutoRefresh());
@@ -94,6 +105,7 @@ namespace Spelldawn.Services
           });
         }        
       }
+      // ReSharper disable once IteratorNeverReturns
     }
 
     float ScreenPxToElementDip(float value) => value * _document.panelSettings.referenceDpi / Screen.dpi;
@@ -198,6 +210,42 @@ namespace Spelldawn.Services
     {
       Reconcile(ref _infoZoomNode, ref _infoZoom, node);
     }
+
+    public void SetCurrentlyDragging(VisualElement element, Vector2 initialPosition)
+    {
+      element.name = "<DragElement>";
+      SetPosition(element, initialPosition);
+      element.style.position = Position.Absolute;
+      RootVisualElement.Add(element);
+      element.BringToFront();
+      _currentlyDragging = element;
+    }
+
+    void MouseMove(VisualElement currentlyDragging)
+    {
+      SetPosition(currentlyDragging, GetMousePosition(currentlyDragging));
+    }
+    
+    void MouseUp(VisualElement currentlyDragging)
+    {
+      currentlyDragging.RemoveFromHierarchy();
+      _currentlyDragging = null;
+    }
+
+    Vector2 GetMousePosition(VisualElement element)
+    {
+      var mousePosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+      return new Vector2(
+        mousePosition.x - (element.layout.width / 2),
+        mousePosition.y - (element.layout.height / 2));
+    }
+
+    
+    void SetPosition(VisualElement element, Vector2 pos)
+    {
+      element.style.left = pos.x;
+      element.style.top = pos.y;
+    }    
 
     void AddRoot(string elementName, out VisualElement element, out Node node)
     {

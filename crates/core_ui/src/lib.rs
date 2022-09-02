@@ -18,6 +18,7 @@ pub mod actions;
 pub mod button;
 pub mod component;
 pub mod design;
+pub mod draggable;
 pub mod flexbox;
 pub mod icons;
 pub mod list_cell;

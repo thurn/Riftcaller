@@ -330,13 +330,10 @@ pub struct ScrollViewNode {
     pub vertical_scroll_bar_visibility: i32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct EventHandlers {
-    #[prost(message, optional, tag = "1")]
-    pub on_click: ::core::option::Option<GameAction>,
-}
+pub struct DraggableNode {}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
-    #[prost(oneof = "node_type::NodeType", tags = "1, 2")]
+    #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3")]
     pub node_type: ::core::option::Option<node_type::NodeType>,
 }
 /// Nested message and enum types in `NodeType`.
@@ -347,7 +344,14 @@ pub mod node_type {
         Text(super::Text),
         #[prost(message, tag = "2")]
         ScrollViewNode(super::ScrollViewNode),
+        #[prost(message, tag = "3")]
+        DraggableNode(super::DraggableNode),
     }
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct EventHandlers {
+    #[prost(message, optional, tag = "1")]
+    pub on_click: ::core::option::Option<GameAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {

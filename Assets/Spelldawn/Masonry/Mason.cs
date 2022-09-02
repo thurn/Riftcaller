@@ -40,7 +40,7 @@ namespace Spelldawn.Masonry
     /// </summary>
     public static VisualElement Render(Registry registry, Node node)
     {
-      var element = CreateElement(node);
+      var element = CreateElement(registry, node);
       ApplyToElement(registry, element, node);
 
       foreach (var child in node.Children)
@@ -51,10 +51,11 @@ namespace Spelldawn.Masonry
       return element;
     }
 
-    public static VisualElement CreateElement(Node node) => node.NodeType?.NodeTypeCase switch
+    public static VisualElement CreateElement(Registry registry, Node node) => node.NodeType?.NodeTypeCase switch
     {
       NodeType.NodeTypeOneofCase.Text => new NodeLabel(),
       NodeType.NodeTypeOneofCase.ScrollViewNode => new NodeScrollView(),
+      NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(registry, node),
       _ => new NodeVisualElement()
     };
 
@@ -69,6 +70,8 @@ namespace Spelldawn.Masonry
         case NodeType.NodeTypeOneofCase.ScrollViewNode:
           ScrollViews.Apply(registry, (NodeScrollView)element, node.NodeType.ScrollViewNode);
           break;
+        case NodeType.NodeTypeOneofCase.DraggableNode:
+          break;
       }
 
       ApplyNode(registry, node, element);
@@ -79,64 +82,73 @@ namespace Spelldawn.Masonry
       element.name = node.Name;
 
       ApplyStyle(registry, element, node.Style);
-      var callbacks = ((INodeCallbacks)element);
 
-      if (node.HoverStyle != null)
+      if (element is INodeCallbacks callbacks)
       {
-        var hoverStyle = new FlexStyle();
-        hoverStyle.MergeFrom(node.Style);
-        hoverStyle.MergeFrom(node.HoverStyle);
-        callbacks.SetCallback(Callbacks.Event.MouseEnter, () => { ApplyStyle(registry, element, hoverStyle); });
-        callbacks.SetCallback(Callbacks.Event.MouseLeave, () => { ApplyStyle(registry, element, node.Style); });
-      }
-      else
-      {
-        callbacks.SetCallback(Callbacks.Event.MouseEnter, null);
-        callbacks.SetCallback(Callbacks.Event.MouseLeave, null);
-      }
-
-      if (node.PressedStyle != null)
-      {
-        var pressedStyle = new FlexStyle();
-        pressedStyle.MergeFrom(node.Style);
-        pressedStyle.MergeFrom(node.PressedStyle);
-        callbacks.SetCallback(Callbacks.Event.MouseDown, () => { ApplyStyle(registry, element, pressedStyle); });
-        callbacks.SetCallback(Callbacks.Event.MouseUp, () =>
+        if (node.HoverStyle != null)
         {
-          var style = node.Style;
-          if (node.HoverStyle != null)
+          var hoverStyle = new FlexStyle();
+          hoverStyle.MergeFrom(node.Style);
+          hoverStyle.MergeFrom(node.HoverStyle);
+          callbacks.SetCallback(Callbacks.Event.MouseEnter, () => { ApplyStyle(registry, element, hoverStyle); });
+          callbacks.SetCallback(Callbacks.Event.MouseLeave, () => { ApplyStyle(registry, element, node.Style); });
+        }
+        else
+        {
+          callbacks.SetCallback(Callbacks.Event.MouseEnter, null);
+          callbacks.SetCallback(Callbacks.Event.MouseLeave, null);
+        }
+
+        if (node.PressedStyle != null)
+        {
+          var pressedStyle = new FlexStyle();
+          pressedStyle.MergeFrom(node.Style);
+          pressedStyle.MergeFrom(node.PressedStyle);
+          callbacks.SetCallback(Callbacks.Event.MouseDown, () => { ApplyStyle(registry, element, pressedStyle); });
+          callbacks.SetCallback(Callbacks.Event.MouseUp, () =>
           {
-            style = new FlexStyle();
-            style.MergeFrom(node.Style);
-            style.MergeFrom(node.HoverStyle);
-          }
+            var style = node.Style;
+            if (node.HoverStyle != null)
+            {
+              style = new FlexStyle();
+              style.MergeFrom(node.Style);
+              style.MergeFrom(node.HoverStyle);
+            }
 
-          ApplyStyle(registry, element, style);
-        });
+            ApplyStyle(registry, element, style);
+          });
+        }
+        else
+        {
+          callbacks.SetCallback(Callbacks.Event.MouseDown, null);
+          callbacks.SetCallback(Callbacks.Event.MouseUp, null);
+        }
+
+        if (node.EventHandlers?.OnClick is { } onClick)
+        {
+          callbacks.SetCallback(Callbacks.Event.Click, () => { registry.ActionService.HandleAction(onClick); });
+        }
+        else
+        {
+          callbacks.SetCallback(Callbacks.Event.Click, null);
+        }
+        
+        if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
+        {
+          element.pickingMode = PickingMode.Position;
+        }
+        else
+        {
+          // Ignore mouse events on non-interactive elements
+          element.pickingMode = PickingMode.Ignore;
+        }        
       }
       else
       {
-        callbacks.SetCallback(Callbacks.Event.MouseDown, null);
-        callbacks.SetCallback(Callbacks.Event.MouseUp, null);
-      }
-
-      if (node.EventHandlers?.OnClick is { } onClick)
-      {
-        callbacks.SetCallback(Callbacks.Event.Click, () => { registry.ActionService.HandleAction(onClick); });
-      }
-      else
-      {
-        callbacks.SetCallback(Callbacks.Event.Click, null);
-      }
-
-      if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
-      {
-        element.pickingMode = PickingMode.Position;
-      }
-      else
-      {
-        // Ignore mouse events on non-interactive elements
-        element.pickingMode = PickingMode.Ignore;
+        if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
+        {
+          Debug.LogError($"Custom element {element} cannot have interaction");
+        }
       }
     }
 
