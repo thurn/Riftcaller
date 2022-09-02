@@ -43,7 +43,7 @@ impl Component for CollectionControls {
             .child(
                 IconButton::new(icons::CLOSE)
                     .button_type(IconButtonType::DestructiveLarge)
-                    .layout(Layout::new().margin(Edge::All, 8.px())),
+                    .layout(Layout::new().margin(Edge::Left, 16.px()).margin(Edge::Right, 8.px())),
             )
             .child(
                 Button::new("Overlord")
@@ -52,7 +52,7 @@ impl Component for CollectionControls {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             )
             .child(
-                Button::new("Neutral")
+                Button::new("Primal")
                     .button_type(ButtonType::Secondary)
                     .width_mode(WidthMode::Flexible)
                     .layout(Layout::new().margin(Edge::All, 8.px())),
@@ -61,7 +61,7 @@ impl Component for CollectionControls {
                 Button::new("Filter")
                     .button_type(ButtonType::Secondary)
                     .width_mode(WidthMode::Flexible)
-                    .layout(Layout::new().margin(Edge::All, 8.px())),
+                    .layout(Layout::new().margin(Edge::Left, 8.px()).margin(Edge::Right, 16.px())),
             )
             .build()
     }

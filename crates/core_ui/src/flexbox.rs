@@ -122,6 +122,33 @@ pub trait HasRenderNode: Sized {
     }
 }
 
+pub trait HasNodeChildren: HasRenderNode {
+    fn get_internal_children(&mut self) -> &mut Vec<Box<dyn Component>>;
+
+    fn child(mut self, child: impl Component + 'static) -> Self {
+        self.get_internal_children().push(Box::new(child));
+        self
+    }
+
+    fn child_boxed(mut self, child: Box<dyn Component>) -> Self {
+        self.get_internal_children().push(child);
+        self
+    }
+
+    fn children(mut self, children: impl Iterator<Item = impl Component + 'static>) -> Self {
+        self.get_internal_children().extend(children.map(|child| {
+            let result: Box<dyn Component> = Box::new(child);
+            result
+        }));
+        self
+    }
+
+    fn children_boxed(mut self, children: Vec<Box<dyn Component>>) -> Self {
+        self.get_internal_children().extend(children);
+        self
+    }
+}
+
 /// Primary container component for the UI system. Lays out its children
 /// following flexbox spacing rules. Typically used via its [Row] or [Column]
 /// aliases.

@@ -12,9 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::iter;
+
 use core_ui::design::GREEN_900;
 use core_ui::prelude::*;
+use core_ui::scroll_view::ScrollView;
 use data::player_name::PlayerId;
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexWrap};
+
+use crate::ui_card::UICard;
 
 #[derive(Debug)]
 pub struct CollectionBrowser {
@@ -29,8 +35,31 @@ impl CollectionBrowser {
 
 impl Component for CollectionBrowser {
     fn build(self) -> RenderResult {
-        Column::new(format!("CollectionBrowser for {:?}", self.player_id))
-            .style(Style::new().background_color(GREEN_900).flex_grow(1.0))
+        ScrollView::new(format!("CollectionBrowser for {:?}", self.player_id))
+            .style(
+                Style::new()
+                    .background_color(GREEN_900)
+                    .flex_grow(1.0)
+                    .align_items(FlexAlign::Center)
+                    .justify_content(FlexJustify::Center),
+            )
+            .child(
+                Row::new("CollectionContents")
+                    .style(
+                        Style::new()
+                            .background_color(GREEN_900)
+                            .flex_grow(1.0)
+                            .align_items(FlexAlign::Center)
+                            .justify_content(FlexJustify::Center)
+                            .wrap(FlexWrap::Wrap),
+                    )
+                    .children(
+                        iter::repeat(
+                            UICard::default().layout(Layout::new().margin(Edge::All, 16.px())),
+                        )
+                        .take(20),
+                    ),
+            )
             .build()
     }
 }

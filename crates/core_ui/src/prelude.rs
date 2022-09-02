@@ -16,5 +16,5 @@
 //! wildcard import.
 
 pub use crate::component::{Component, RenderResult};
-pub use crate::flexbox::{Column, HasRenderNode, Row};
+pub use crate::flexbox::{Column, HasNodeChildren, HasRenderNode, Row};
 pub use crate::style::{DimensionExt, Edge, Layout, Style};

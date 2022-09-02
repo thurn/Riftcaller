@@ -83,7 +83,7 @@ namespace Spelldawn.Services
         StartCoroutine(HandleActionAsync(_actionQueue.Dequeue()));
       }
 
-#if USE_UNITY_PLUGIN      
+#if USE_UNITY_PLUGIN
       var pollCommands = Plugin.Poll();
       if (pollCommands != null)
       { 
@@ -110,13 +110,20 @@ namespace Spelldawn.Services
         Debug.Log($"Connecting to {ServerAddress} with {request}");
         using var call = _client.Connect(request);
 
-        while (await call.ResponseStream.MoveNext())
+        try
         {
-          if (this != null)
+          while (await call.ResponseStream.MoveNext())
           {
-            var commands = call.ResponseStream.Current;
-            StartCoroutine(_registry.CommandService.HandleCommands(commands));
+            if (this != null)
+            {
+              var commands = call.ResponseStream.Current;
+              StartCoroutine(_registry.CommandService.HandleCommands(commands));
+            }
           }
+        }
+        catch (RpcException e)
+        {
+          Debug.Log($"RpcException: {e.Message}");
         }
       }
     }
@@ -124,7 +131,7 @@ namespace Spelldawn.Services
     /// <summary>Connects to an existing offline game, handling responses.</summary>
     public IEnumerator ConnectToOfflineGame(ConnectRequest request)
     {
-#if USE_UNITY_PLUGIN      
+#if USE_UNITY_PLUGIN
       var commands = Plugin.Connect(request);
       if (commands != null)
       {
@@ -133,7 +140,7 @@ namespace Spelldawn.Services
 #else
       Debug.LogError("Plugin not enabled");
       yield break;
-#endif      
+#endif
     }
 
     IEnumerator HandleActionAsync(GameAction action)
@@ -161,11 +168,11 @@ namespace Spelldawn.Services
 
       if (OfflineMode)
       {
-#if USE_UNITY_PLUGIN        
+#if USE_UNITY_PLUGIN
         yield return _registry.CommandService.HandleCommands(Plugin.PerformAction(request));
 #else
         Debug.LogError("Plugin not enabled");
-#endif        
+#endif
       }
       else
       {
@@ -185,6 +192,7 @@ namespace Spelldawn.Services
               // Don't show this during auto-refresh because it happens constantly.
               Debug.LogError($"Error connecting to {ServerAddress}: {call.GetStatus().Detail}");
             }
+
             break;
         }
       }
@@ -209,11 +217,12 @@ namespace Spelldawn.Services
               switch (command.CommandCase)
               {
                 case GameCommand.CommandOneofCase.TogglePanel:
-                  _registry.DocumentService.TogglePanel(command.TogglePanel.Open, command.TogglePanel.PanelAddress);                  
+                  _registry.DocumentService.TogglePanel(command.TogglePanel.Open, command.TogglePanel.PanelAddress);
                   break;
               }
             }
           }
+
           break;
       }
     }

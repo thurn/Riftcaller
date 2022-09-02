@@ -18,3 +18,4 @@ pub mod collection_browser;
 pub mod collection_controls;
 pub mod deck_editor_panel;
 pub mod decks_browser;
+pub mod ui_card;

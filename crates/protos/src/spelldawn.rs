@@ -292,13 +292,51 @@ pub struct Text {
     pub label: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ScrollBar {
+    #[prost(message, optional, tag = "1")]
+    pub style: ::core::option::Option<FlexStyle>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ScrollViewNode {
+    /// The amount of elasticity to use when a user tries to scroll past
+    /// the boundaries of the scroll view.
+    #[prost(message, optional, tag = "1")]
+    pub elasticity: ::core::option::Option<f32>,
+    /// Controls the scrolling speed of the horizontal scrollbar.
+    #[prost(message, optional, tag = "2")]
+    pub horizontal_page_size: ::core::option::Option<f32>,
+    /// Horizontal scrollbar
+    #[prost(message, optional, tag = "3")]
+    pub horizontal_scroll_bar: ::core::option::Option<ScrollBar>,
+    /// Specifies whether the horizontal scroll bar is visible.
+    #[prost(enumeration = "ScrollBarVisibility", tag = "4")]
+    pub horizontal_scroll_bar_visibility: i32,
+    /// Controls the rate at which the scrolling movement slows after a user
+    /// scrolls using a touch interaction.
+    #[prost(message, optional, tag = "5")]
+    pub scroll_deceleration_rate: ::core::option::Option<f32>,
+    /// The behavior to use when a user tries to scroll past the boundaries of
+    /// the ScrollView content using a touch interaction.
+    #[prost(enumeration = "TouchScrollBehavior", tag = "6")]
+    pub touch_scroll_behavior: i32,
+    /// Controls the scrolling speed of the vertical scrollbar.
+    #[prost(message, optional, tag = "7")]
+    pub vertical_page_size: ::core::option::Option<f32>,
+    /// Vertical scrollbar
+    #[prost(message, optional, tag = "8")]
+    pub vertical_scroll_bar: ::core::option::Option<ScrollBar>,
+    /// Specifies whether the vertical scroll bar is visible.
+    #[prost(enumeration = "ScrollBarVisibility", tag = "9")]
+    pub vertical_scroll_bar_visibility: i32,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventHandlers {
     #[prost(message, optional, tag = "1")]
     pub on_click: ::core::option::Option<GameAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
-    #[prost(oneof = "node_type::NodeType", tags = "1")]
+    #[prost(oneof = "node_type::NodeType", tags = "1, 2")]
     pub node_type: ::core::option::Option<node_type::NodeType>,
 }
 /// Nested message and enum types in `NodeType`.
@@ -307,16 +345,16 @@ pub mod node_type {
     pub enum NodeType {
         #[prost(message, tag = "1")]
         Text(super::Text),
+        #[prost(message, tag = "2")]
+        ScrollViewNode(super::ScrollViewNode),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
-    ///
     /// Used to identify this node in the hierarchy, should be unique among
     /// siblings. If not provided, index will be used instead.
     #[prost(string, tag = "1")]
     pub id: ::prost::alloc::string::String,
-    ///
     /// Used to identify this node in debugging tools
     #[prost(string, tag = "2")]
     pub name: ::prost::alloc::string::String,
@@ -1437,6 +1475,30 @@ pub enum FlexPickingMode {
     Position = 1,
     /// Picking disabled, events ignored.
     Ignore = 2,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum ScrollBarVisibility {
+    Unspecified = 0,
+    /// Displays a scroll bar only if the content does not fit in the scroll
+    /// view. Otherwise, hides the scroll bar.
+    Auto = 1,
+    /// The scroll bar is always visible.
+    AlwaysVisible = 2,
+    /// The scroll bar is always hidden.
+    Hidden = 3,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum TouchScrollBehavior {
+    Unspecified = 0,
+    /// The content position can move past the ScrollView boundaries.
+    Unrestricted = 1,
+    /// The content position can overshoot the ScrollView boundaries, but
+    /// then "snaps" back within them.
+    Elastic = 2,
+    /// The content position is clamped to the ScrollView boundaries.
+    Clamped = 3,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

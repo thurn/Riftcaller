@@ -54,6 +54,7 @@ namespace Spelldawn.Masonry
     public static VisualElement CreateElement(Node node) => node.NodeType?.NodeTypeCase switch
     {
       NodeType.NodeTypeOneofCase.Text => new NodeLabel(),
+      NodeType.NodeTypeOneofCase.ScrollViewNode => new NodeScrollView(),
       _ => new NodeVisualElement()
     };
 
@@ -63,7 +64,10 @@ namespace Spelldawn.Masonry
       switch (node.NodeType?.NodeTypeCase)
       {
         case NodeType.NodeTypeOneofCase.Text:
-          ApplyText(node.NodeType.Text, (NodeLabel)element);
+          ApplyText((NodeLabel)element, node.NodeType.Text);
+          break;
+        case NodeType.NodeTypeOneofCase.ScrollViewNode:
+          ScrollViews.Apply(registry, (NodeScrollView)element, node.NodeType.ScrollViewNode);
           break;
       }
 
@@ -136,7 +140,7 @@ namespace Spelldawn.Masonry
       }
     }
 
-    static void ApplyText(Text text, Label label)
+    static void ApplyText(Label label, Text text)
     {
       label.text = text.Label;
     }

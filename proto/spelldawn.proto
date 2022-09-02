@@ -369,6 +369,70 @@ message Text {
     string label = 1;
 }
 
+message ScrollBar {
+    FlexStyle style = 1;
+}
+
+enum ScrollBarVisibility {
+    SCROLL_BAR_VISIBILITY_UNSPECIFIED = 0;
+
+    // Displays a scroll bar only if the content does not fit in the scroll
+    // view. Otherwise, hides the scroll bar.
+    SCROLL_BAR_VISIBILITY_AUTO = 1;
+
+    // The scroll bar is always visible.
+    SCROLL_BAR_VISIBILITY_ALWAYS_VISIBLE = 2;
+
+    // The scroll bar is always hidden.
+    SCROLL_BAR_VISIBILITY_HIDDEN = 3;
+}
+
+enum TouchScrollBehavior {
+    TOUCH_SCROLL_BEHAVIOR_UNSPECIFIED = 0;
+
+    // The content position can move past the ScrollView boundaries.
+    TOUCH_SCROLL_BEHAVIOR_UNRESTRICTED = 1;
+
+    // The content position can overshoot the ScrollView boundaries, but
+    // then "snaps" back within them.
+    TOUCH_SCROLL_BEHAVIOR_ELASTIC = 2;
+
+    // The content position is clamped to the ScrollView boundaries.
+    TOUCH_SCROLL_BEHAVIOR_CLAMPED = 3;
+}
+
+message ScrollViewNode {
+    // The amount of elasticity to use when a user tries to scroll past
+    // the boundaries of the scroll view.
+    google.protobuf.FloatValue elasticity = 1;
+
+    // Controls the scrolling speed of the horizontal scrollbar.
+    google.protobuf.FloatValue horizontal_page_size = 2;
+
+    // Horizontal scrollbar
+    ScrollBar horizontal_scroll_bar = 3;
+
+    // Specifies whether the horizontal scroll bar is visible.
+    ScrollBarVisibility horizontal_scroll_bar_visibility = 4;
+
+    // Controls the rate at which the scrolling movement slows after a user
+    // scrolls using a touch interaction.
+    google.protobuf.FloatValue scroll_deceleration_rate = 5;
+
+    // The behavior to use when a user tries to scroll past the boundaries of
+    // the ScrollView content using a touch interaction.
+    TouchScrollBehavior touch_scroll_behavior = 6;
+
+    // Controls the scrolling speed of the vertical scrollbar.
+    google.protobuf.FloatValue vertical_page_size = 7;
+
+    // Vertical scrollbar
+    ScrollBar vertical_scroll_bar = 8;
+
+    // Specifies whether the vertical scroll bar is visible.
+    ScrollBarVisibility vertical_scroll_bar_visibility = 9;
+}
+
 message EventHandlers {
     GameAction on_click = 1;
 }
@@ -376,19 +440,16 @@ message EventHandlers {
 message NodeType {
     oneof node_type {
         Text text = 1;
+        ScrollViewNode scroll_view_node = 2;
     }
 }
 
 message Node {
-    /*
-    * Used to identify this node in the hierarchy, should be unique among
-    * siblings. If not provided, index will be used instead.
-    */
+    // Used to identify this node in the hierarchy, should be unique among
+    // siblings. If not provided, index will be used instead.
     string id = 1;
 
-    /*
-    * Used to identify this node in debugging tools
-    */
+    // Used to identify this node in debugging tools
     string name = 2;
 
     NodeType node_type = 3;
