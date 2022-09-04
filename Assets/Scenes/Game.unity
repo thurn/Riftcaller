@@ -7285,6 +7285,7 @@ MonoBehaviour:
   _cardService: {fileID: 1445473052}
   _commandService: {fileID: 1445473043}
   _documentService: {fileID: 1445473046}
+  _inputService: {fileID: 1445473057}
   _musicService: {fileID: 1445473054}
   _arrowService: {fileID: 1936342445}
   _arenaService: {fileID: 348475427}

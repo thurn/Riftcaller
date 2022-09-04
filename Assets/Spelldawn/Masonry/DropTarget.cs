@@ -12,27 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::RED_900;
-use core_ui::prelude::*;
-use data::player_name::PlayerId;
+#nullable enable
 
-use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
+using UnityEngine.UIElements;
 
-#[derive(Debug)]
-pub struct DecksBrowser {
-    player_id: PlayerId,
-}
+namespace Spelldawn.Masonry
+{
+  public sealed class DropTarget : VisualElement
+  {
+    public string Identifier { get; }
 
-impl DecksBrowser {
-    pub fn new(player_id: PlayerId) -> Self {
-        Self { player_id }
+    public DropTarget(string identifier)
+    {
+      Identifier = identifier;
     }
-}
-
-impl Component for DecksBrowser {
-    fn build(self) -> RenderResult {
-        Column::new(format!("DecksBrowser for {:?}", self.player_id))
-            .style(Style::new().background_color(RED_900).width(EDITOR_COLUMN_WIDTH.vw()))
-            .build()
-    }
+  }
 }

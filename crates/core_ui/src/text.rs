@@ -112,11 +112,11 @@ impl TextNode {
     pub fn new(text: impl Into<String>) -> Self {
         Self {
             render_node: Node {
-                node_type: Some(NodeType {
+                node_type: Some(Box::new(NodeType {
                     node_type: Some(node_type::NodeType::Text(protos::spelldawn::Text {
                         label: text.into(),
                     })),
-                }),
+                })),
                 ..Node::default()
             },
         }

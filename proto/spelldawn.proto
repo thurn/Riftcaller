@@ -438,6 +438,17 @@ message ScrollViewNode {
 }
 
 message DraggableNode {
+    // Identifiers of DropTargetNodes that are valid drop targets for this
+    // draggable.
+    repeated string drop_target_identifiers = 1;
+
+    // Node to change the drag indicator to when this draggable is over a
+    // valid target.
+    Node over_target_indicator = 2;
+}
+
+message DropTargetNode {
+    string identifier = 1;
 }
 
 message NodeType {
@@ -445,6 +456,7 @@ message NodeType {
         Text text = 1;
         ScrollViewNode scroll_view_node = 2;
         DraggableNode draggable_node = 3;
+        DropTargetNode drop_target_node = 4;
     }
 }
 

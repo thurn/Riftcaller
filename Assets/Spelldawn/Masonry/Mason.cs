@@ -55,7 +55,12 @@ namespace Spelldawn.Masonry
     {
       NodeType.NodeTypeOneofCase.Text => new NodeLabel(),
       NodeType.NodeTypeOneofCase.ScrollViewNode => new NodeScrollView(),
-      NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(registry, node),
+      NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(registry, node,
+        node.NodeType.DraggableNode.DropTargetIdentifiers.ToList())
+      {
+        OverTargetIndicator = node.NodeType.DraggableNode.OverTargetIndicator
+      },
+      NodeType.NodeTypeOneofCase.DropTargetNode => new DropTarget(node.NodeType.DropTargetNode.Identifier),
       _ => new NodeVisualElement()
     };
 

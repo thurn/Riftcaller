@@ -68,16 +68,6 @@ namespace Spelldawn.Services
 
     void Update()
     {
-      switch (Input.GetMouseButton(0))
-      {
-        case true when _currentlyDragging != null:
-          MouseMove(_currentlyDragging);
-          break;
-        case false when _currentlyDragging != null:
-          MouseUp(_currentlyDragging);
-          break;
-      }
-
       if (_autoRefresh == null && AutoRefreshPreference.AutomaticallyRefreshPanels)
       {
         _autoRefresh = StartCoroutine(AutoRefresh());
@@ -210,41 +200,6 @@ namespace Spelldawn.Services
     public void RenderInfoZoom(Node node)
     {
       Reconcile(ref _infoZoomNode, ref _infoZoom, node);
-    }
-
-    public void SetCurrentlyDragging(VisualElement element, Vector2 initialPosition)
-    {
-      element.name = "<DragElement>";
-      SetPosition(element, initialPosition);
-      element.style.position = Position.Absolute;
-      RootVisualElement.Add(element);
-      element.BringToFront();
-      _currentlyDragging = element;
-    }
-
-    void MouseMove(VisualElement currentlyDragging)
-    {
-      SetPosition(currentlyDragging, GetMousePosition(currentlyDragging));
-    }
-
-    void MouseUp(VisualElement currentlyDragging)
-    {
-      currentlyDragging.RemoveFromHierarchy();
-      _currentlyDragging = null;
-    }
-
-    Vector2 GetMousePosition(VisualElement element)
-    {
-      var position = ScreenPositionToElementPosition(Input.mousePosition);
-      return new Vector2(
-        position.Left - (element.layout.width / 2),
-        position.Top - (element.layout.height / 2));
-    }
-
-    void SetPosition(VisualElement element, Vector2 pos)
-    {
-      element.style.left = pos.x;
-      element.style.top = pos.y;
     }
 
     void AddRoot(string elementName, out VisualElement element, out Node node)

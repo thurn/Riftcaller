@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::ORANGE_900;
+use core_ui::design::{ORANGE_900, PINK_900};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 
@@ -33,7 +33,11 @@ impl UICard {
 
 impl Component for UICard {
     fn build(self) -> RenderResult {
-        Draggable::new("CardDraggable")
+        Draggable::new(vec!["player_decks_browser"])
+            .over_target_indicator(
+                Row::new("CardTitle")
+                    .style(Style::new().width(20.vw()).height(10.vh()).background_color(PINK_900)),
+            )
             .child(
                 Column::new("UICard").style(
                     self.layout

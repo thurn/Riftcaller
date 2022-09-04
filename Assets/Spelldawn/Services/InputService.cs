@@ -18,7 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Game;
+using Spelldawn.Masonry;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Spelldawn.Services
 {
@@ -26,14 +28,38 @@ namespace Spelldawn.Services
   {
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
     Displayable? _lastClicked;
+    Draggable? _currentlyDragging;
+    VisualElement? _overTargetIndicator;
+    bool _overTarget;
     [SerializeField] Registry _registry = null!;
+
+    public void SetCurrentlyDragging(Draggable element, Vector2 initialPosition)
+    {
+      element.name = "<DragElement>";
+      SetPosition(element, initialPosition);
+      element.style.position = Position.Absolute;
+      _registry.DocumentService.RootVisualElement.Add(element);
+      element.BringToFront();
+      _currentlyDragging = element;
+
+      if (element.OverTargetIndicator != null)
+      {
+        _overTargetIndicator = Mason.Render(_registry, element.OverTargetIndicator);
+        _overTargetIndicator.name = "<OverTargetIndicator>";
+        _overTargetIndicator.style.position = Position.Absolute;
+        _overTargetIndicator.style.visibility = Visibility.Hidden;
+        _registry.DocumentService.RootVisualElement.Add(_overTargetIndicator);
+        _overTargetIndicator.BringToFront();        
+      }
+    }
 
     void Update()
     {
+      // I don't trust any of Unity's event handling code. They couldn't event-handle their way
+      // out of a wet paper bag.      
+
       switch (Input.GetMouseButton(0))
       {
-        // I don't trust any of Unity's event handling code. They couldn't event-handle their way
-        // out of a wet paper bag.
         case true when _lastClicked:
           _lastClicked!.MouseDrag();
           break;
@@ -45,6 +71,16 @@ namespace Spelldawn.Services
           _lastClicked = null;
           _registry.CardService.ClearInfoZoom();
           last!.MouseUp();
+          break;
+      }
+
+      switch (Input.GetMouseButton(0))
+      {
+        case true when _currentlyDragging != null:
+          ElementMouseMove(_currentlyDragging);
+          break;
+        case false when _currentlyDragging != null:
+          ElementMouseUp(_currentlyDragging);
           break;
       }
     }
@@ -77,6 +113,58 @@ namespace Spelldawn.Services
 
       Array.Clear(_raycastHitsTempBuffer, 0, _raycastHitsTempBuffer.Length);
       return fired;
+    }
+
+    void ElementMouseMove(Draggable currentlyDragging)
+    {
+      var dropTargets = _registry.DocumentService.RootVisualElement.Query<DropTarget>().Build().ToList();
+
+      var dragger = (_overTarget && _overTargetIndicator != null) ? _overTargetIndicator : currentlyDragging;
+      var target = dropTargets.Where(target =>
+        target.layout.Overlaps(dragger.layout) &&
+        currentlyDragging.TargetIdentifiers.Contains(target.Identifier))
+        .OrderBy(x => 
+          Vector2.Distance(x.worldBound.position, 
+            dragger.worldBound.position)).FirstOrDefault();
+      _overTarget = target != null;
+
+      if (target != null && _overTargetIndicator != null)
+      {
+        currentlyDragging.style.visibility = Visibility.Hidden;
+        _overTargetIndicator.style.visibility = Visibility.Visible;
+        SetPosition(_overTargetIndicator, GetMousePosition(_overTargetIndicator));
+      }
+      else
+      {
+        if (_overTargetIndicator != null)
+        {
+          _overTargetIndicator.style.visibility = Visibility.Hidden;
+          currentlyDragging.style.visibility = Visibility.Visible;
+        }
+        SetPosition(currentlyDragging, GetMousePosition(currentlyDragging));
+      }
+    }
+
+    void ElementMouseUp(Draggable currentlyDragging)
+    {
+      currentlyDragging.RemoveFromHierarchy();
+      _overTargetIndicator?.RemoveFromHierarchy();
+      _currentlyDragging = null;
+      _overTargetIndicator = null;
+    }
+
+    Vector2 GetMousePosition(VisualElement element)
+    {
+      var position = _registry.DocumentService.ScreenPositionToElementPosition(Input.mousePosition);
+      return new Vector2(
+        position.Left - (element.layout.width / 2),
+        position.Top - (element.layout.height / 2));
+    }
+
+    void SetPosition(VisualElement element, Vector2 pos)
+    {
+      element.style.left = pos.x;
+      element.style.top = pos.y;
     }
   }
 }

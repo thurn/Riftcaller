@@ -72,6 +72,9 @@ namespace Spelldawn.Services
     [SerializeField] DocumentService _documentService = null!;
     public DocumentService DocumentService => _documentService;
 
+    [SerializeField] InputService _inputService = null!;
+    public InputService InputService => _inputService;
+
     [SerializeField] MusicService _musicService = null!;
     public MusicService MusicService => _musicService;
 

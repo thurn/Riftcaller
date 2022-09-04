@@ -14,6 +14,7 @@
 
 #nullable enable
 
+using System.Collections.Generic;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using UnityEngine.UIElements;
@@ -24,11 +25,15 @@ namespace Spelldawn.Masonry
   {
     readonly Registry _registry;
     readonly Node _node;
+        
+    public List<string> TargetIdentifiers { get; }
+    public Node? OverTargetIndicator { get; init; }
     
-    public Draggable(Registry registry, Node node)
+    public Draggable(Registry registry, Node node, List<string> targetIdentifiers)
     {
       _registry = registry;
       _node = node;
+      TargetIdentifiers = targetIdentifiers;
       RegisterCallback<MouseDownEvent>(OnMouseDown);
     }
 
@@ -40,7 +45,7 @@ namespace Spelldawn.Masonry
     void OnMouseDown(MouseDownEvent evt)
     {
       var dragElement = (Draggable)Mason.Render(_registry, _node);
-      _registry.DocumentService.SetCurrentlyDragging(dragElement, worldBound.position);
+      _registry.InputService.SetCurrentlyDragging(dragElement, worldBound.position);
     }
   }
 }

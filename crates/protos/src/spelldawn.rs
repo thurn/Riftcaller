@@ -330,10 +330,24 @@ pub struct ScrollViewNode {
     pub vertical_scroll_bar_visibility: i32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct DraggableNode {}
+pub struct DraggableNode {
+    /// Identifiers of DropTargetNodes that are valid drop targets for this
+    /// draggable.
+    #[prost(string, repeated, tag = "1")]
+    pub drop_target_identifiers: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Node to change the drag indicator to when this draggable is over a
+    /// valid target.
+    #[prost(message, optional, boxed, tag = "2")]
+    pub over_target_indicator: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DropTargetNode {
+    #[prost(string, tag = "1")]
+    pub identifier: ::prost::alloc::string::String,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
-    #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3")]
+    #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3, 4")]
     pub node_type: ::core::option::Option<node_type::NodeType>,
 }
 /// Nested message and enum types in `NodeType`.
@@ -345,7 +359,9 @@ pub mod node_type {
         #[prost(message, tag = "2")]
         ScrollViewNode(super::ScrollViewNode),
         #[prost(message, tag = "3")]
-        DraggableNode(super::DraggableNode),
+        DraggableNode(::prost::alloc::boxed::Box<super::DraggableNode>),
+        #[prost(message, tag = "4")]
+        DropTargetNode(super::DropTargetNode),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -362,8 +378,8 @@ pub struct Node {
     /// Used to identify this node in debugging tools
     #[prost(string, tag = "2")]
     pub name: ::prost::alloc::string::String,
-    #[prost(message, optional, tag = "3")]
-    pub node_type: ::core::option::Option<NodeType>,
+    #[prost(message, optional, boxed, tag = "3")]
+    pub node_type: ::core::option::Option<::prost::alloc::boxed::Box<NodeType>>,
     #[prost(message, repeated, tag = "4")]
     pub children: ::prost::alloc::vec::Vec<Node>,
     #[prost(message, optional, tag = "5")]

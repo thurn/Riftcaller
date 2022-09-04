@@ -18,14 +18,14 @@ use crate::component::{Component, RenderResult};
 
 /// Primary rendering function for turning a [Component] into a [Node].
 pub fn component(component: impl Component + 'static) -> Option<Node> {
-    run(Box::new(component))
+    component_boxed(Box::new(component))
 }
 
-fn run(component: Box<dyn Component>) -> Option<Node> {
+pub fn component_boxed(component: Box<dyn Component>) -> Option<Node> {
     match component.render_boxed() {
         RenderResult::Container(mut node, children) => {
             for child in children {
-                if let Some(n) = run(child) {
+                if let Some(n) = component_boxed(child) {
                     node.children.push(n);
                 }
             }

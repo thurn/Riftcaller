@@ -336,8 +336,10 @@ impl Summarize for AnchorCorner {
 
 impl Summarize for Node {
     fn summarize(self, summary: &mut Summary) {
-        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) = self.node_type {
-            summary.child_node("text", s.label)
+        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) =
+            self.node_type.as_deref()
+        {
+            summary.child_node("text", s.label.clone())
         }
 
         summary.values(self.children)

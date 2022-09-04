@@ -16,25 +16,29 @@ use protos::spelldawn::{node_type, DraggableNode, Node, NodeType};
 
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
+use crate::rendering;
 
 #[derive(Debug)]
 pub struct Draggable {
     render_node: Node,
     children: Vec<Box<dyn Component>>,
+    identifiers: Vec<String>,
+    over_target_indicator: Option<Box<dyn Component>>,
 }
 
 impl Draggable {
-    pub fn new(name: impl Into<String>) -> Self {
+    pub fn new(identifiers: Vec<impl Into<String>>) -> Self {
         Self {
-            render_node: Node {
-                name: name.into(),
-                node_type: Some(NodeType {
-                    node_type: Some(node_type::NodeType::DraggableNode(DraggableNode::default())),
-                }),
-                ..Node::default()
-            },
+            render_node: Node::default(),
             children: vec![],
+            identifiers: identifiers.into_iter().map(Into::into).collect(),
+            over_target_indicator: None,
         }
+    }
+
+    pub fn over_target_indicator(mut self, indicator: impl Component + 'static) -> Self {
+        self.over_target_indicator = Some(Box::new(indicator));
+        self
     }
 }
 
@@ -51,7 +55,15 @@ impl HasNodeChildren for Draggable {
 }
 
 impl Component for Draggable {
-    fn build(self) -> RenderResult {
+    fn build(mut self) -> RenderResult {
+        self.render_node.node_type = Some(Box::new(NodeType {
+            node_type: Some(node_type::NodeType::DraggableNode(Box::new(DraggableNode {
+                drop_target_identifiers: self.identifiers,
+                over_target_indicator: self
+                    .over_target_indicator
+                    .and_then(|c| rendering::component_boxed(c).map(Box::new)),
+            }))),
+        }));
         RenderResult::Container(Box::new(self.render_node), self.children)
     }
 }

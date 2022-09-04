@@ -12,65 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{node_type, Node, NodeType, ScrollBarVisibility, ScrollViewNode};
+use protos::spelldawn::{node_type, DropTargetNode, Node, NodeType};
 
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
 
 #[derive(Debug)]
-pub struct ScrollView {
+pub struct DropTarget {
     render_node: Node,
     children: Vec<Box<dyn Component>>,
 }
 
-impl ScrollView {
-    pub fn new(name: impl Into<String>) -> Self {
+impl DropTarget {
+    pub fn new(identifier: impl Into<String>) -> Self {
         Self {
             render_node: Node {
-                name: name.into(),
                 node_type: Some(Box::new(NodeType {
-                    node_type: Some(node_type::NodeType::ScrollViewNode(ScrollViewNode::default())),
+                    node_type: Some(node_type::NodeType::DropTargetNode(DropTargetNode {
+                        identifier: identifier.into(),
+                    })),
                 })),
                 ..Node::default()
             },
             children: vec![],
         }
     }
-
-    pub fn horizontal_scrollbar_visibility(mut self, visibility: ScrollBarVisibility) -> Self {
-        self.internal_node().unwrap().horizontal_scroll_bar_visibility = visibility.into();
-        self
-    }
-
-    pub fn vertical_scrollbar_visibility(mut self, visibility: ScrollBarVisibility) -> Self {
-        self.internal_node().unwrap().vertical_scroll_bar_visibility = visibility.into();
-        self
-    }
-
-    fn internal_node(&mut self) -> Option<&mut ScrollViewNode> {
-        if let Some(node_type::NodeType::ScrollViewNode(n)) =
-            self.render_node.node_type.as_mut()?.node_type.as_mut()
-        {
-            Some(n)
-        } else {
-            None
-        }
-    }
 }
 
-impl HasRenderNode for ScrollView {
+impl HasRenderNode for DropTarget {
     fn render_node(&mut self) -> &mut Node {
         &mut self.render_node
     }
 }
 
-impl HasNodeChildren for ScrollView {
+impl HasNodeChildren for DropTarget {
     fn get_internal_children(&mut self) -> &mut Vec<Box<dyn Component>> {
         &mut self.children
     }
 }
 
-impl Component for ScrollView {
+impl Component for DropTarget {
     fn build(self) -> RenderResult {
         RenderResult::Container(Box::new(self.render_node), self.children)
     }

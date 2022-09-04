@@ -683,7 +683,9 @@ pub trait HasText {
 impl HasText for Node {
     fn has_text(&self, text: impl Into<String>) -> bool {
         let string = text.into();
-        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) = &self.node_type {
+        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) =
+            self.node_type.as_deref()
+        {
             if s.label.contains(string.as_str()) {
                 return true;
             }
@@ -718,7 +720,9 @@ impl HasText for Node {
 
     fn get_text(&self) -> Vec<String> {
         let mut result = vec![];
-        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) = &self.node_type {
+        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) =
+            self.node_type.as_deref()
+        {
             result.push(s.label.clone())
         }
 
