@@ -12,14 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::BackgroundColor;
+use core_ui::icons;
 use core_ui::prelude::*;
 use data::player_name::PlayerId;
 use panel_address::DeckEditorData;
+use protos::spelldawn::FlexPosition;
 
 use crate::collection_browser::CollectionBrowser;
 use crate::collection_controls::CollectionControls;
 use crate::decks_browser::DecksBrowser;
+
+pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
 #[derive(Debug)]
 pub struct DeckEditorPanel {
@@ -44,11 +49,31 @@ impl Component for DeckEditorPanel {
             )
             .child(
                 Column::new("Collection")
-                    .style(Style::new().flex_grow(1.0))
+                    .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
                     .child(CollectionControls::new(self.player_id))
                     .child(CollectionBrowser::new(self.player_id)),
             )
             .child(DecksBrowser::new(self.player_id))
+            .child(
+                IconButton::new(icons::PREVIOUS_PAGE)
+                    .button_type(IconButtonType::SecondaryLarge)
+                    .layout(
+                        Layout::new()
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::Left, 1.vw())
+                            .position(Edge::Top, 50.pct()),
+                    ),
+            )
+            .child(
+                IconButton::new(icons::NEXT_PAGE)
+                    .button_type(IconButtonType::SecondaryLarge)
+                    .layout(
+                        Layout::new()
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::Right, (EDITOR_COLUMN_WIDTH + 1).vw())
+                            .position(Edge::Top, 50.pct()),
+                    ),
+            )
             .build()
     }
 }

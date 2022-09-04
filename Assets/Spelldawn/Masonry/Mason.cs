@@ -132,7 +132,7 @@ namespace Spelldawn.Masonry
         {
           callbacks.SetCallback(Callbacks.Event.Click, null);
         }
-        
+
         if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
         {
           element.pickingMode = PickingMode.Position;
@@ -141,7 +141,7 @@ namespace Spelldawn.Masonry
         {
           // Ignore mouse events on non-interactive elements
           element.pickingMode = PickingMode.Ignore;
-        }        
+        }
       }
       else
       {
@@ -170,15 +170,19 @@ namespace Spelldawn.Masonry
 
     static Vector3 AdaptVector3(FlexVector3? input) => input is { } v ? new Vector3(v.X, v.Y, v.Z) : Vector2.zero;
 
-    static Length AdaptDimensionNonNull(Dimension dimension, float multiplier = 1f) => dimension.Unit switch
+    static Length AdaptDimensionNonNull(Registry registry, Dimension dimension) => dimension.Unit switch
     {
-      DimensionUnit.Pixels => new Length(dimension.Value * multiplier),
-      DimensionUnit.Percentage => Length.Percent(dimension.Value * multiplier),
+      DimensionUnit.Pixels => new Length(dimension.Value),
+      DimensionUnit.Percentage => Length.Percent(dimension.Value),
+      DimensionUnit.ViewportWidth => new Length(
+        registry.DocumentService.ScreenPxToElementPx((dimension.Value / 100) * Screen.safeArea.width)),
+      DimensionUnit.ViewportHeight => new Length(
+        registry.DocumentService.ScreenPxToElementPx((dimension.Value / 100) * Screen.safeArea.height)),
       _ => throw new ArgumentOutOfRangeException()
     };
 
-    static StyleLength AdaptDimension(Dimension? dimension) =>
-      dimension is { } d ? AdaptDimensionNonNull(d) : new StyleLength(StyleKeyword.Null);
+    static StyleLength AdaptDimension(Registry registry, Dimension? dimension) =>
+      dimension is { } d ? AdaptDimensionNonNull(registry, d) : new StyleLength(StyleKeyword.Null);
 
     static StyleEnum<Align> AdaptAlign(FlexAlign input) => input switch
     {
@@ -210,18 +214,18 @@ namespace Spelldawn.Masonry
       e.style.borderRightColor = AdaptColor(input.BorderColor?.Right);
       e.style.borderBottomColor = AdaptColor(input.BorderColor?.Bottom);
       e.style.borderLeftColor = AdaptColor(input.BorderColor?.Left);
-      e.style.borderTopLeftRadius = AdaptDimension(input.BorderRadius?.TopLeft);
-      e.style.borderTopRightRadius = AdaptDimension(input.BorderRadius?.TopRight);
-      e.style.borderBottomRightRadius = AdaptDimension(input.BorderRadius?.BottomRight);
-      e.style.borderBottomLeftRadius = AdaptDimension(input.BorderRadius?.BottomLeft);
+      e.style.borderTopLeftRadius = AdaptDimension(registry, input.BorderRadius?.TopLeft);
+      e.style.borderTopRightRadius = AdaptDimension(registry, input.BorderRadius?.TopRight);
+      e.style.borderBottomRightRadius = AdaptDimension(registry, input.BorderRadius?.BottomRight);
+      e.style.borderBottomLeftRadius = AdaptDimension(registry, input.BorderRadius?.BottomLeft);
       e.style.borderTopWidth = AdaptFloat(input.BorderWidth?.Top);
       e.style.borderRightWidth = AdaptFloat(input.BorderWidth?.Right);
       e.style.borderBottomWidth = AdaptFloat(input.BorderWidth?.Bottom);
       e.style.borderLeftWidth = AdaptFloat(input.BorderWidth?.Left);
-      e.style.top = AdaptDimension(input.Inset?.Top);
-      e.style.right = AdaptDimension(input.Inset?.Right);
-      e.style.bottom = AdaptDimension(input.Inset?.Bottom);
-      e.style.left = AdaptDimension(input.Inset?.Left);
+      e.style.top = AdaptDimension(registry, input.Inset?.Top);
+      e.style.right = AdaptDimension(registry, input.Inset?.Right);
+      e.style.bottom = AdaptDimension(registry, input.Inset?.Bottom);
+      e.style.left = AdaptDimension(registry, input.Inset?.Left);
       e.style.color = AdaptColor(input.Color);
       e.style.display = input.Display switch
       {
@@ -229,7 +233,7 @@ namespace Spelldawn.Masonry
         FlexDisplayStyle.None => DisplayStyle.None,
         _ => new StyleEnum<DisplayStyle>(StyleKeyword.Null)
       };
-      e.style.flexBasis = AdaptDimension(input.FlexBasis);
+      e.style.flexBasis = AdaptDimension(registry, input.FlexBasis);
       e.style.flexDirection = input.FlexDirection switch
       {
         FlexDirection.Column => UnityEngine.UIElements.FlexDirection.Column,
@@ -247,8 +251,8 @@ namespace Spelldawn.Masonry
         FlexWrap.WrapReverse => Wrap.WrapReverse,
         _ => new StyleEnum<Wrap>(StyleKeyword.Null)
       };
-      e.style.fontSize = AdaptDimension(input.FontSize);
-      e.style.height = AdaptDimension(input.Height);
+      e.style.fontSize = AdaptDimension(registry, input.FontSize);
+      e.style.height = AdaptDimension(registry, input.Height);
       e.style.justifyContent = input.JustifyContent switch
       {
         FlexJustify.FlexStart => Justify.FlexStart,
@@ -258,15 +262,15 @@ namespace Spelldawn.Masonry
         FlexJustify.SpaceAround => Justify.SpaceAround,
         _ => new StyleEnum<Justify>(StyleKeyword.Null)
       };
-      e.style.letterSpacing = AdaptDimension(input.LetterSpacing);
-      e.style.marginTop = AdaptDimension(input.Margin?.Top);
-      e.style.marginRight = AdaptDimension(input.Margin?.Right);
-      e.style.marginBottom = AdaptDimension(input.Margin?.Bottom);
-      e.style.marginLeft = AdaptDimension(input.Margin?.Left);
-      e.style.maxHeight = AdaptDimension(input.MaxHeight);
-      e.style.maxWidth = AdaptDimension(input.MaxWidth);
-      e.style.minHeight = AdaptDimension(input.MinHeight);
-      e.style.minWidth = AdaptDimension(input.MinWidth);
+      e.style.letterSpacing = AdaptDimension(registry, input.LetterSpacing);
+      e.style.marginTop = AdaptDimension(registry, input.Margin?.Top);
+      e.style.marginRight = AdaptDimension(registry, input.Margin?.Right);
+      e.style.marginBottom = AdaptDimension(registry, input.Margin?.Bottom);
+      e.style.marginLeft = AdaptDimension(registry, input.Margin?.Left);
+      e.style.maxHeight = AdaptDimension(registry, input.MaxHeight);
+      e.style.maxWidth = AdaptDimension(registry, input.MaxWidth);
+      e.style.minHeight = AdaptDimension(registry, input.MinHeight);
+      e.style.minWidth = AdaptDimension(registry, input.MinWidth);
       e.style.opacity = AdaptFloat(input.Opacity);
       e.style.overflow = input.Overflow switch
       {
@@ -274,10 +278,10 @@ namespace Spelldawn.Masonry
         FlexOverflow.Hidden => Overflow.Hidden,
         _ => new StyleEnum<Overflow>(StyleKeyword.Null)
       };
-      e.style.paddingTop = AdaptDimension(input.Padding?.Top);
-      e.style.paddingRight = AdaptDimension(input.Padding?.Right);
-      e.style.paddingBottom = AdaptDimension(input.Padding?.Bottom);
-      e.style.paddingLeft = AdaptDimension(input.Padding?.Left);
+      e.style.paddingTop = AdaptDimension(registry, input.Padding?.Top);
+      e.style.paddingRight = AdaptDimension(registry, input.Padding?.Right);
+      e.style.paddingBottom = AdaptDimension(registry, input.Padding?.Bottom);
+      e.style.paddingLeft = AdaptDimension(registry, input.Padding?.Left);
       e.style.position = input.Position switch
       {
         FlexPosition.Relative => Position.Relative,
@@ -303,7 +307,7 @@ namespace Spelldawn.Masonry
         }
         : new StyleTextShadow(StyleKeyword.Null);
       e.style.transformOrigin = input.TransformOrigin is { } to
-        ? new TransformOrigin(AdaptDimensionNonNull(to.X), AdaptDimensionNonNull(to.Y), to.Z)
+        ? new TransformOrigin(AdaptDimensionNonNull(registry, to.X), AdaptDimensionNonNull(registry, to.Y), to.Z)
         : new StyleTransformOrigin(StyleKeyword.Null);
       e.style.transitionDelay =
         AdaptList(input.TransitionDelays, t => new TimeValue(t.Milliseconds, TimeUnit.Millisecond));
@@ -338,7 +342,8 @@ namespace Spelldawn.Masonry
         _ => UnityEngine.UIElements.EasingMode.Ease
       }));
       e.style.translate = input.Translate is { } translate
-        ? new Translate(AdaptDimensionNonNull(translate.X), AdaptDimensionNonNull(translate.Y), translate.Z)
+        ? new Translate(AdaptDimensionNonNull(registry, translate.X), AdaptDimensionNonNull(registry, translate.Y),
+          translate.Z)
         : new StyleTranslate(StyleKeyword.Null);
       e.style.unityBackgroundImageTintColor = AdaptColor(input.BackgroundImageTintColor);
       e.style.unityBackgroundScaleMode = input.BackgroundImageScaleMode switch
@@ -365,7 +370,7 @@ namespace Spelldawn.Masonry
         OverflowClipBox.ContentBox => UnityEngine.UIElements.OverflowClipBox.ContentBox,
         _ => new StyleEnum<UnityEngine.UIElements.OverflowClipBox>(StyleKeyword.Null)
       };
-      e.style.unityParagraphSpacing = AdaptDimension(input.ParagraphSpacing);
+      e.style.unityParagraphSpacing = AdaptDimension(registry, input.ParagraphSpacing);
       e.style.unitySliceTop = AdaptInt(input.ImageSlice?.Top);
       e.style.unitySliceRight = AdaptInt(input.ImageSlice?.Right);
       e.style.unitySliceBottom = AdaptInt(input.ImageSlice?.Bottom);
@@ -404,8 +409,8 @@ namespace Spelldawn.Masonry
         WhiteSpace.NoWrap => UnityEngine.UIElements.WhiteSpace.NoWrap,
         _ => new StyleEnum<UnityEngine.UIElements.WhiteSpace>(StyleKeyword.Null)
       };
-      e.style.width = AdaptDimension(input.Width);
-      e.style.wordSpacing = AdaptDimension(input.WordSpacing);
+      e.style.width = AdaptDimension(registry, input.Width);
+      e.style.wordSpacing = AdaptDimension(registry, input.WordSpacing);
 
       if (input.BackgroundImage is { } bi)
       {
@@ -413,11 +418,11 @@ namespace Spelldawn.Masonry
         {
           case NodeBackground.BackgroundAddressOneofCase.Sprite:
             var sprite = registry.AssetService.GetSprite(bi.Sprite);
-            e.style.backgroundImage = new StyleBackground(sprite);            
+            e.style.backgroundImage = new StyleBackground(sprite);
             break;
           case NodeBackground.BackgroundAddressOneofCase.RenderTexture:
             var renderTexture = registry.AssetService.GetRenderTexture(bi.RenderTexture);
-            e.style.backgroundImage = new StyleBackground(new Background { renderTexture = renderTexture});               
+            e.style.backgroundImage = new StyleBackground(new Background { renderTexture = renderTexture });
             break;
         }
       }

@@ -16,6 +16,8 @@ use core_ui::design::RED_900;
 use core_ui::prelude::*;
 use data::player_name::PlayerId;
 
+use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
+
 #[derive(Debug)]
 pub struct DecksBrowser {
     player_id: PlayerId,
@@ -30,7 +32,7 @@ impl DecksBrowser {
 impl Component for DecksBrowser {
     fn build(self) -> RenderResult {
         Column::new(format!("DecksBrowser for {:?}", self.player_id))
-            .style(Style::new().background_color(RED_900).width(350.px()))
+            .style(Style::new().background_color(RED_900).width(EDITOR_COLUMN_WIDTH.vw()))
             .build()
     }
 }

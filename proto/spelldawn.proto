@@ -228,6 +228,10 @@ enum DimensionUnit {
     DIMENSION_UNIT_PIXELS = 1;
     // Percentage of parent container
     DIMENSION_UNIT_PERCENTAGE = 2;
+    // Units relative to 1% of the screen width
+    DIMENSION_UNIT_VIEWPORT_WIDTH = 3;
+    // Units relative to 1% of the screen height
+    DIMENSION_UNIT_VIEWPORT_HEIGHT = 4;
 }
 
 message Dimension {

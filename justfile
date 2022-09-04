@@ -208,12 +208,15 @@ ios-plugin:
     mkdir -p {{plugin_out}}/iOS/Device
     cp target/{{target_ios}}/release/libplugin.a {{plugin_out}}/iOS/Device
 
-plugin: mac-plugin windows-plugin ios-plugin ios-simulator-plugin android-plugin
+plugin: mac-plugin windows-plugin ios-plugin android-plugin
 
 doc:
     cargo doc
 
 fix: git-status fix-lints fmt clippy-fix
+
+watch:
+    cargo watch -c -w crates -x run
 
 fix-amend: git-status fix-lints git-amend1 fmt git-amend2 clippy-fix git-amend3
 

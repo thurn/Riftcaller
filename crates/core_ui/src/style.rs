@@ -42,6 +42,26 @@ impl From<Percentage> for Dimension {
     }
 }
 
+/// Units relative to 1% of the screen safe area width
+#[derive(Debug)]
+pub struct ViewportWidth(f32);
+
+impl From<ViewportWidth> for Dimension {
+    fn from(viewport_width: ViewportWidth) -> Self {
+        Self { unit: DimensionUnit::ViewportWidth as i32, value: viewport_width.0 }
+    }
+}
+
+/// Units relative to 1% of the screen safe area height
+#[derive(Debug)]
+pub struct ViewportHeight(f32);
+
+impl From<ViewportHeight> for Dimension {
+    fn from(viewport_height: ViewportHeight) -> Self {
+        Self { unit: DimensionUnit::ViewportHeight as i32, value: viewport_height.0 }
+    }
+}
+
 /// Angular unit, used for rotations
 #[derive(Debug)]
 pub struct Degrees(f32);
@@ -51,6 +71,10 @@ pub trait DimensionExt {
     fn px(self) -> Pixels;
 
     fn pct(self) -> Percentage;
+
+    fn vw(self) -> ViewportWidth;
+
+    fn vh(self) -> ViewportHeight;
 
     fn milliseconds(self) -> TimeValue;
 
@@ -64,6 +88,14 @@ impl DimensionExt for i32 {
 
     fn pct(self) -> Percentage {
         Percentage(self as f32)
+    }
+
+    fn vw(self) -> ViewportWidth {
+        ViewportWidth(self as f32)
+    }
+
+    fn vh(self) -> ViewportHeight {
+        ViewportHeight(self as f32)
     }
 
     fn milliseconds(self) -> TimeValue {
@@ -82,6 +114,14 @@ impl DimensionExt for f32 {
 
     fn pct(self) -> Percentage {
         Percentage(self)
+    }
+
+    fn vw(self) -> ViewportWidth {
+        ViewportWidth(self)
+    }
+
+    fn vh(self) -> ViewportHeight {
+        ViewportHeight(self)
     }
 
     fn milliseconds(self) -> TimeValue {
@@ -542,6 +582,11 @@ impl Layout {
 
     pub fn visibility(mut self, visibility: FlexVisibility) -> Self {
         self.style = self.style.visibility(visibility);
+        self
+    }
+
+    pub fn translate(mut self, x: impl Into<Dimension>, y: impl Into<Dimension>) -> Self {
+        self.style = self.style.translate(x, y);
         self
     }
 

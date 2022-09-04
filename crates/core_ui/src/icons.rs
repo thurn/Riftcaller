@@ -21,3 +21,5 @@ pub const TRIGGER: &str = "\u{f0e7}";
 pub const SAVE: &str = "\u{f0c7}";
 pub const RESTORE: &str = "\u{f019}";
 pub const REFRESH: &str = "\u{f2f9}";
+pub const NEXT_PAGE: &str = "\u{f061}";
+pub const PREVIOUS_PAGE: &str = "\u{f060}";

@@ -16,6 +16,9 @@ use core_ui::design::ORANGE_900;
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 
+const CARD_ASPECT_RATIO: f32 = 0.6348214;
+const CARD_HEIGHT: f32 = 36.0;
+
 #[derive(Debug, Default, Clone)]
 pub struct UICard {
     layout: Layout,
@@ -36,8 +39,8 @@ impl Component for UICard {
                     self.layout
                         .to_style()
                         .background_color(ORANGE_900)
-                        .width(200.px())
-                        .height(400.px()),
+                        .width((CARD_HEIGHT * CARD_ASPECT_RATIO).vh())
+                        .height(CARD_HEIGHT.vh()),
                 ),
             )
             .build()

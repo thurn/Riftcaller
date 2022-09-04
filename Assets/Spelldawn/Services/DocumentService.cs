@@ -52,11 +52,11 @@ namespace Spelldawn.Services
     Node _cardControlsNode = null!;
     VisualElement _infoZoom = null!;
     Node _infoZoomNode = null!;
-    VisualElement? _currentlyDragging; 
+    VisualElement? _currentlyDragging;
     Coroutine? _autoRefresh;
 
     public VisualElement RootVisualElement => _document.rootVisualElement;
-    
+
     public void Initialize()
     {
       _document.rootVisualElement.Clear();
@@ -70,12 +70,12 @@ namespace Spelldawn.Services
     {
       switch (Input.GetMouseButton(0))
       {
-          case true when _currentlyDragging != null:
-            MouseMove(_currentlyDragging);
-            break;
-          case false when _currentlyDragging != null:
-            MouseUp(_currentlyDragging);
-            break;
+        case true when _currentlyDragging != null:
+          MouseMove(_currentlyDragging);
+          break;
+        case false when _currentlyDragging != null:
+          MouseUp(_currentlyDragging);
+          break;
       }
 
       if (_autoRefresh == null && AutoRefreshPreference.AutomaticallyRefreshPanels)
@@ -85,6 +85,7 @@ namespace Spelldawn.Services
       else if (_autoRefresh != null && !AutoRefreshPreference.AutomaticallyRefreshPanels)
       {
         StopCoroutine(_autoRefresh);
+        _autoRefresh = null;
       }
     }
 
@@ -93,7 +94,7 @@ namespace Spelldawn.Services
       while (true)
       {
         yield return new WaitForSeconds(1.0f);
-        
+
         foreach (var address in _openPanels)
         {
           _registry.ActionService.HandleAction(new GameAction
@@ -103,12 +104,12 @@ namespace Spelldawn.Services
               PanelAddress = address
             }
           });
-        }        
+        }
       }
       // ReSharper disable once IteratorNeverReturns
     }
 
-    float ScreenPxToElementDip(float value) => value * _document.panelSettings.referenceDpi / Screen.dpi;
+    public float ScreenPxToElementPx(float value) => value * _document.panelSettings.referenceDpi / Screen.dpi;
 
     /// <summary>
     /// Returns an ElementPosition in interface coordinates corresponding to a screen position.
@@ -116,10 +117,10 @@ namespace Spelldawn.Services
     public ElementPosition ScreenPositionToElementPosition(Vector3 screenPosition) =>
       new()
       {
-        Top = ScreenPxToElementDip(Screen.height - screenPosition.y),
-        Right = ScreenPxToElementDip(Screen.width - screenPosition.x),
-        Bottom = ScreenPxToElementDip(screenPosition.y),
-        Left = ScreenPxToElementDip(screenPosition.x)
+        Top = ScreenPxToElementPx(Screen.height - screenPosition.y),
+        Right = ScreenPxToElementPx(Screen.width - screenPosition.x),
+        Bottom = ScreenPxToElementPx(screenPosition.y),
+        Left = ScreenPxToElementPx(screenPosition.x)
       };
 
     /// <summary>
@@ -225,7 +226,7 @@ namespace Spelldawn.Services
     {
       SetPosition(currentlyDragging, GetMousePosition(currentlyDragging));
     }
-    
+
     void MouseUp(VisualElement currentlyDragging)
     {
       currentlyDragging.RemoveFromHierarchy();
@@ -234,18 +235,17 @@ namespace Spelldawn.Services
 
     Vector2 GetMousePosition(VisualElement element)
     {
-      var mousePosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+      var position = ScreenPositionToElementPosition(Input.mousePosition);
       return new Vector2(
-        mousePosition.x - (element.layout.width / 2),
-        mousePosition.y - (element.layout.height / 2));
+        position.Left - (element.layout.width / 2),
+        position.Top - (element.layout.height / 2));
     }
 
-    
     void SetPosition(VisualElement element, Vector2 pos)
     {
       element.style.left = pos.x;
       element.style.top = pos.y;
-    }    
+    }
 
     void AddRoot(string elementName, out VisualElement element, out Node node)
     {
@@ -259,10 +259,26 @@ namespace Spelldawn.Services
       _document.rootVisualElement.Add(element);
     }
 
-    static Node FullScreen(IEnumerable<Node> children) =>
+    DimensionGroup GetSafeArea(IPanel panel)
+    {
+      var safeLeftTop = RuntimePanelUtils.ScreenToPanel(
+        panel,
+        new Vector2(Screen.safeArea.xMin, Screen.height - Screen.safeArea.yMax)
+      );
+      var safeRightBottom = RuntimePanelUtils.ScreenToPanel(
+        panel,
+        new Vector2(Screen.width - Screen.safeArea.xMax, Screen.safeArea.yMin)
+      );
+
+      return GroupDip(top: safeLeftTop.y, right: safeRightBottom.x, bottom: safeRightBottom.y,
+        left: safeLeftTop.x);
+    }
+    
+    Node FullScreen(IEnumerable<Node> children) =>
       Row("FullScreen", new FlexStyle
       {
         Position = FlexPosition.Absolute,
+        Padding = GetSafeArea(RootVisualElement.panel),
         Inset = AllDip(0),
       }, children);
 

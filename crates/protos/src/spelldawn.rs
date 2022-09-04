@@ -1468,6 +1468,10 @@ pub enum DimensionUnit {
     Pixels = 1,
     /// Percentage of parent container
     Percentage = 2,
+    /// Units relative to 1% of the screen width
+    ViewportWidth = 3,
+    /// Units relative to 1% of the screen height
+    ViewportHeight = 4,
 }
 /// Controls whether elements respond to interface events.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{node_type, Node, NodeType, ScrollViewNode};
+use protos::spelldawn::{node_type, Node, NodeType, ScrollBarVisibility, ScrollViewNode};
 
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
@@ -34,6 +34,26 @@ impl ScrollView {
                 ..Node::default()
             },
             children: vec![],
+        }
+    }
+
+    pub fn horizontal_scrollbar_visibility(mut self, visibility: ScrollBarVisibility) -> Self {
+        self.internal_node().unwrap().horizontal_scroll_bar_visibility = visibility.into();
+        self
+    }
+
+    pub fn vertical_scrollbar_visibility(mut self, visibility: ScrollBarVisibility) -> Self {
+        self.internal_node().unwrap().vertical_scroll_bar_visibility = visibility.into();
+        self
+    }
+
+    fn internal_node(&mut self) -> Option<&mut ScrollViewNode> {
+        if let Some(node_type::NodeType::ScrollViewNode(n)) =
+            self.render_node.node_type.as_mut()?.node_type.as_mut()
+        {
+            Some(n)
+        } else {
+            None
         }
     }
 }

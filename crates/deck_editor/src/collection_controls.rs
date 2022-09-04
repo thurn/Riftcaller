@@ -37,7 +37,7 @@ impl Component for CollectionControls {
             .style(
                 Style::new()
                     .background_color(BLUE_900)
-                    .height(100.px())
+                    .height(15.vh())
                     .align_items(FlexAlign::Center),
             )
             .child(
@@ -58,7 +58,7 @@ impl Component for CollectionControls {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             )
             .child(
-                Button::new("Filter")
+                Button::new("Filters")
                     .button_type(ButtonType::Secondary)
                     .width_mode(WidthMode::Flexible)
                     .layout(Layout::new().margin(Edge::Left, 8.px()).margin(Edge::Right, 16.px())),

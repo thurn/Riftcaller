@@ -32,6 +32,8 @@ namespace Spelldawn.Services
     {
       switch (Input.GetMouseButton(0))
       {
+        // I don't trust any of Unity's event handling code. They couldn't event-handle their way
+        // out of a wet paper bag.
         case true when _lastClicked:
           _lastClicked!.MouseDrag();
           break;

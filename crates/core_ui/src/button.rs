@@ -132,7 +132,8 @@ impl Component for Button {
 
 #[derive(Debug, Clone, Copy)]
 pub enum IconButtonType {
-    /// Red button background, used to e.g. close a window
+    Secondary,
+    SecondaryLarge,
     Destructive,
     DestructiveLarge,
 }
@@ -185,6 +186,12 @@ impl Component for IconButton {
         );
 
         let background = style::sprite(match self.button_type {
+            IconButtonType::Secondary => {
+                "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Square/Button_GRAY_s"
+            }
+            IconButtonType::SecondaryLarge => {
+                "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Rescaled/Button_Gray"
+            }
             IconButtonType::Destructive => {
                 "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Square/Button_RED_s"
             }
@@ -194,8 +201,8 @@ impl Component for IconButton {
         });
 
         let (background_size, position_offset) = match self.button_type {
-            IconButtonType::Destructive => (56, 16),
-            IconButtonType::DestructiveLarge => (88, 0),
+            IconButtonType::Secondary | IconButtonType::Destructive => (56, 16),
+            IconButtonType::SecondaryLarge | IconButtonType::DestructiveLarge => (88, 0),
         };
 
         Row::new("IconButton")

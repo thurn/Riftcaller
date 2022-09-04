@@ -14,11 +14,10 @@
 
 use std::iter;
 
-use core_ui::design::GREEN_900;
+use core_ui::design::BLACK;
 use core_ui::prelude::*;
-use core_ui::scroll_view::ScrollView;
 use data::player_name::PlayerId;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexWrap};
+use protos::spelldawn::{FlexAlign, FlexJustify};
 
 use crate::ui_card::UICard;
 
@@ -33,33 +32,36 @@ impl CollectionBrowser {
     }
 }
 
+fn card_row(cards: impl Iterator<Item = UICard>) -> impl Component {
+    Row::new("CardRow")
+        .style(
+            Style::new()
+                .flex_grow(1.0)
+                .align_items(FlexAlign::Center)
+                .justify_content(FlexJustify::Center),
+        )
+        .children(cards)
+}
+
 impl Component for CollectionBrowser {
     fn build(self) -> RenderResult {
-        ScrollView::new(format!("CollectionBrowser for {:?}", self.player_id))
+        Column::new(format!("CollectionBrowser for {:?}", self.player_id))
             .style(
                 Style::new()
-                    .background_color(GREEN_900)
+                    .background_color(BLACK)
                     .flex_grow(1.0)
+                    .margin(Edge::Horizontal, 112.px())
                     .align_items(FlexAlign::Center)
                     .justify_content(FlexJustify::Center),
             )
-            .child(
-                Row::new("CollectionContents")
-                    .style(
-                        Style::new()
-                            .background_color(GREEN_900)
-                            .flex_grow(1.0)
-                            .align_items(FlexAlign::Center)
-                            .justify_content(FlexJustify::Center)
-                            .wrap(FlexWrap::Wrap),
-                    )
-                    .children(
-                        iter::repeat(
-                            UICard::default().layout(Layout::new().margin(Edge::All, 16.px())),
-                        )
-                        .take(20),
-                    ),
-            )
+            .child(card_row(
+                iter::repeat(UICard::default().layout(Layout::new().margin(Edge::All, 16.px())))
+                    .take(4),
+            ))
+            .child(card_row(
+                iter::repeat(UICard::default().layout(Layout::new().margin(Edge::All, 16.px())))
+                    .take(4),
+            ))
             .build()
     }
 }
