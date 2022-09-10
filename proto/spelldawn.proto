@@ -445,6 +445,9 @@ message DraggableNode {
     // Node to change the drag indicator to when this draggable is over a
     // valid target.
     Node over_target_indicator = 2;
+
+    /// Action to invoke when the node is dropped over a target.
+    GameAction on_drop = 3;
 }
 
 message DropTargetNode {
@@ -1305,6 +1308,41 @@ message ClientDebugCommand {
     }
 }
 
+// Animates an element to appear as a child node of a parent container.
+//
+// Automatically removes any absolute positioning on the element.
+message AnimateToChildIndex {
+    string parent_element_name = 1;
+    uint32 index = 2;
+    TimeValue duration = 3;
+    EasingMode easing = 4;
+}
+
+// Animates an element's center point to match the center point of another
+// element.
+message AnimateToElementPosition {
+    string target_element_name = 1;
+    TimeValue duration = 2;
+    EasingMode easing = 3;
+}
+
+// Changes the text content of a node. If multiple text elements are children
+// of this node, only the first is updated.
+message UpdateText {
+    string new_text = 1;
+}
+
+message UpdateInterfaceElementCommand {
+    string element_name = 1;
+
+    oneof interface_update {
+        AnimateToChildIndex animate_to_child_index = 2;
+        AnimateToElementPosition animate_to_element_position = 3;
+        google.protobuf.Empty destroy = 4;
+        UpdateText update_text = 5;
+    }
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -1323,6 +1361,7 @@ message GameCommand {
         LoadSceneCommand load_scene = 14;
         MoveGameObjectsCommand move_game_objects = 15;
         CreateTokenCardCommand create_token_card = 16;
+        UpdateInterfaceElementCommand update_interface_element = 17;
     }
 }
 

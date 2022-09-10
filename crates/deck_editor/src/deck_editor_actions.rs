@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Renders the deck editor window
+use anyhow::Result;
+use data::game_actions::DeckEditorAction;
 
-pub mod collection_browser;
-pub mod collection_controls;
-pub mod deck_editor_actions;
-pub mod deck_editor_panel;
-pub mod player_decks_browser;
-pub mod ui_card;
+pub fn handle(_: DeckEditorAction) -> Result<()> {
+    Ok(())
+}

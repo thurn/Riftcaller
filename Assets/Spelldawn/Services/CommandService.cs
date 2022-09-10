@@ -123,8 +123,13 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.CreateTokenCard:
             yield return HandleCreateTokenCard(command.CreateTokenCard);
             break;
+          case GameCommand.CommandOneofCase.UpdateInterfaceElement:
+            yield return _registry.UpdateInterfaceService.HandleUpdateInterface(command.UpdateInterfaceElement);
+            break;
           case GameCommand.CommandOneofCase.None:
+            break;
           default:
+            Debug.LogError($"Unknown game command: {command.CommandCase}");
             break;
         }
       }

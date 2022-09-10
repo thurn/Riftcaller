@@ -28,6 +28,7 @@ namespace Spelldawn.Masonry
         
     public List<string> TargetIdentifiers { get; }
     public Node? OverTargetIndicator { get; init; }
+    public GameAction? OnDrop { get; init; }
     
     public Draggable(Registry registry, Node node, List<string> targetIdentifiers)
     {

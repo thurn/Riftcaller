@@ -339,6 +339,9 @@ pub struct DraggableNode {
     /// valid target.
     #[prost(message, optional, boxed, tag = "2")]
     pub over_target_indicator: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
+    //// Action to invoke when the node is dropped over a target.
+    #[prost(message, optional, tag = "3")]
+    pub on_drop: ::core::option::Option<GameAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {
@@ -1267,11 +1270,62 @@ pub mod client_debug_command {
         SetBooleanPreference(super::SetBooleanPreference),
     }
 }
+/// Animates an element to appear as a child node of a parent container.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AnimateToChildIndex {
+    #[prost(string, tag = "1")]
+    pub parent_element_name: ::prost::alloc::string::String,
+    #[prost(uint32, tag = "2")]
+    pub index: u32,
+    #[prost(message, optional, tag = "3")]
+    pub duration: ::core::option::Option<TimeValue>,
+    #[prost(enumeration = "EasingMode", tag = "4")]
+    pub easing: i32,
+}
+/// Animates an element's center point to match the center point of another
+/// element.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AnimateToElementPosition {
+    #[prost(string, tag = "1")]
+    pub target_element_name: ::prost::alloc::string::String,
+    #[prost(message, optional, tag = "2")]
+    pub duration: ::core::option::Option<TimeValue>,
+    #[prost(enumeration = "EasingMode", tag = "3")]
+    pub easing: i32,
+}
+/// Changes the text content of a node. If multiple text elements are children
+/// of this node, only the first is updated.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateText {
+    #[prost(string, tag = "1")]
+    pub new_text: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateInterfaceElementCommand {
+    #[prost(string, tag = "1")]
+    pub element_name: ::prost::alloc::string::String,
+    #[prost(oneof = "update_interface_element_command::InterfaceUpdate", tags = "2, 3, 4, 5")]
+    pub interface_update: ::core::option::Option<update_interface_element_command::InterfaceUpdate>,
+}
+/// Nested message and enum types in `UpdateInterfaceElementCommand`.
+pub mod update_interface_element_command {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum InterfaceUpdate {
+        #[prost(message, tag = "2")]
+        AnimateToChildIndex(super::AnimateToChildIndex),
+        #[prost(message, tag = "3")]
+        AnimateToElementPosition(super::AnimateToElementPosition),
+        #[prost(message, tag = "4")]
+        Destroy(()),
+        #[prost(message, tag = "5")]
+        UpdateText(super::UpdateText),
+    }
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -1311,6 +1365,8 @@ pub mod game_command {
         MoveGameObjects(super::MoveGameObjectsCommand),
         #[prost(message, tag = "16")]
         CreateTokenCard(super::CreateTokenCardCommand),
+        #[prost(message, tag = "17")]
+        UpdateInterfaceElement(super::UpdateInterfaceElementCommand),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

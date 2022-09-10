@@ -27,6 +27,12 @@ pub trait InterfaceAction: Debug {
     fn as_game_action(&self) -> Option<Action>;
 }
 
+impl InterfaceAction for StandardAction {
+    fn as_game_action(&self) -> Option<Action> {
+        Some(Action::StandardAction(self.clone()))
+    }
+}
+
 impl<T: InterfaceAction + Clone> InterfaceAction for Option<T> {
     fn as_game_action(&self) -> Option<Action> {
         self.as_ref().and_then(|action| action.clone().as_game_action())
@@ -91,11 +97,11 @@ impl InterfaceAction for Vec<Command> {
     }
 }
 
-fn payload(action: UserAction) -> Vec<u8> {
+pub fn payload(action: UserAction) -> Vec<u8> {
     ser::to_vec(&action).expect("Serialization failed")
 }
 
-fn command_list(commands: Vec<Command>) -> CommandList {
+pub fn command_list(commands: Vec<Command>) -> CommandList {
     CommandList {
         commands: commands.into_iter().map(|c| GameCommand { command: Some(c) }).collect(),
     }

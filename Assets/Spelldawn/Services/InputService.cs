@@ -45,11 +45,10 @@ namespace Spelldawn.Services
       if (element.OverTargetIndicator != null)
       {
         _overTargetIndicator = Mason.Render(_registry, element.OverTargetIndicator);
-        _overTargetIndicator.name = "<OverTargetIndicator>";
         _overTargetIndicator.style.position = Position.Absolute;
         _overTargetIndicator.style.visibility = Visibility.Hidden;
         _registry.DocumentService.RootVisualElement.Add(_overTargetIndicator);
-        _overTargetIndicator.BringToFront();        
+        _overTargetIndicator.BringToFront();
       }
     }
 
@@ -118,13 +117,13 @@ namespace Spelldawn.Services
     void ElementMouseMove(Draggable currentlyDragging)
     {
       var dropTargets = _registry.DocumentService.RootVisualElement.Query<DropTarget>().Build().ToList();
-
       var dragger = (_overTarget && _overTargetIndicator != null) ? _overTargetIndicator : currentlyDragging;
+      var mousePosition = _registry.DocumentService.ScreenPositionToElementPosition(Input.mousePosition);
       var target = dropTargets.Where(target =>
-        target.layout.Overlaps(dragger.layout) &&
-        currentlyDragging.TargetIdentifiers.Contains(target.Identifier))
-        .OrderBy(x => 
-          Vector2.Distance(x.worldBound.position, 
+          target.layout.Contains(new Vector2(mousePosition.Left, mousePosition.Top)) &&
+          currentlyDragging.TargetIdentifiers.Contains(target.Identifier))
+        .OrderBy(x =>
+          Vector2.Distance(x.worldBound.position,
             dragger.worldBound.position)).FirstOrDefault();
       _overTarget = target != null;
 
@@ -141,14 +140,30 @@ namespace Spelldawn.Services
           _overTargetIndicator.style.visibility = Visibility.Hidden;
           currentlyDragging.style.visibility = Visibility.Visible;
         }
+
         SetPosition(currentlyDragging, GetMousePosition(currentlyDragging));
       }
     }
 
     void ElementMouseUp(Draggable currentlyDragging)
     {
-      currentlyDragging.RemoveFromHierarchy();
-      _overTargetIndicator?.RemoveFromHierarchy();
+      // Leave the currently-visible drag object in the hierarchy, the OnDrop action is responsible for removing it.
+      
+      if (currentlyDragging.style.visibility == Visibility.Hidden)
+      {
+        currentlyDragging.RemoveFromHierarchy();
+      }
+
+      if (_overTargetIndicator?.style.visibility == Visibility.Hidden)
+      {
+        _overTargetIndicator.RemoveFromHierarchy();
+      }
+
+      if (currentlyDragging.OnDrop != null && _overTarget)
+      {
+        _registry.ActionService.HandleAction(currentlyDragging.OnDrop);
+      }
+
       _currentlyDragging = null;
       _overTargetIndicator = null;
     }

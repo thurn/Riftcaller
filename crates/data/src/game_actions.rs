@@ -20,9 +20,12 @@ use anyhow::{anyhow, Result};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 
+use crate::card_name::CardName;
 use crate::game::MulliganDecision;
 use crate::player_name::NamedPlayer;
-use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, PointsValue, RoomId, Side};
+use crate::primitives::{
+    AbilityId, ActionCount, CardId, DeckId, ManaValue, PointsValue, RoomId, Side,
+};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum EncounterAction {
@@ -144,11 +147,18 @@ impl CardTarget {
     }
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub enum DeckEditorAction {
+    AddToDeck(CardName, DeckId),
+    RemoveFromDeck(CardName, DeckId),
+}
+
 /// All possible actions a player can take during a game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
     Debug(DebugAction),
     PromptAction(PromptAction),
+    DeckEditorAction(DeckEditorAction),
     GainMana,
     DrawCard,
     PlayCard(CardId, CardTarget),

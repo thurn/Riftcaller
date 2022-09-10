@@ -12,32 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{node_type, DraggableNode, Node, NodeType};
+use protos::spelldawn::{node_type, DraggableNode, GameAction, Node, NodeType};
 
+use crate::actions::InterfaceAction;
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
 use crate::rendering;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Draggable {
     render_node: Node,
     children: Vec<Box<dyn Component>>,
     identifiers: Vec<String>,
     over_target_indicator: Option<Box<dyn Component>>,
+    on_drop: Option<Box<dyn InterfaceAction>>,
 }
 
 impl Draggable {
-    pub fn new(identifiers: Vec<impl Into<String>>) -> Self {
-        Self {
-            render_node: Node::default(),
-            children: vec![],
-            identifiers: identifiers.into_iter().map(Into::into).collect(),
-            over_target_indicator: None,
-        }
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn identifiers(mut self, identifiers: Vec<impl Into<String>>) -> Self {
+        self.identifiers = identifiers.into_iter().map(Into::into).collect();
+        self
     }
 
     pub fn over_target_indicator(mut self, indicator: impl Component + 'static) -> Self {
         self.over_target_indicator = Some(Box::new(indicator));
+        self
+    }
+
+    pub fn on_drop(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.on_drop = Some(Box::new(action));
         self
     }
 }
@@ -62,6 +69,7 @@ impl Component for Draggable {
                 over_target_indicator: self
                     .over_target_indicator
                     .and_then(|c| rendering::component_boxed(c).map(Box::new)),
+                on_drop: self.on_drop.map(|d| GameAction { action: d.as_game_action() }),
             }))),
         }));
         RenderResult::Container(Box::new(self.render_node), self.children)

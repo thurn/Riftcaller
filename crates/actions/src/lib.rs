@@ -28,6 +28,7 @@ use data::game::{GamePhase, GameState, MulliganDecision};
 use data::game_actions::{CardTarget, PromptAction, UserAction};
 use data::primitives::{AbilityId, CardId, RoomId, Side};
 use data::updates::{GameUpdate, InitiatedBy};
+use deck_editor::deck_editor_actions;
 use raids::RaidDataExt;
 use rules::mana::ManaPurpose;
 use rules::{card_prompt, dispatch, flags, mana, mutations, queries};
@@ -42,6 +43,7 @@ pub fn handle_user_action(game: &mut GameState, user_side: Side, action: UserAct
         UserAction::PromptAction(prompt_action) => {
             handle_prompt_action(game, user_side, prompt_action)
         }
+        UserAction::DeckEditorAction(action) => deck_editor_actions::handle(action),
         UserAction::GainMana => gain_mana_action(game, user_side),
         UserAction::DrawCard => draw_card_action(game, user_side),
         UserAction::PlayCard(card_id, target) => play_card_action(game, user_side, card_id, target),

@@ -15,31 +15,46 @@
 use core_ui::design::{ORANGE_900, PINK_900};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
+use data::card_name::CardName;
+use protos::spelldawn::StandardAction;
 
 const CARD_ASPECT_RATIO: f32 = 0.6348214;
 const CARD_HEIGHT: f32 = 36.0;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct UICard {
     layout: Layout,
+    card_name: CardName,
+    on_drop: Option<StandardAction>,
 }
 
 impl UICard {
+    pub fn new(card_name: CardName) -> Self {
+        Self { card_name, layout: Layout::default(), on_drop: None }
+    }
+
     pub fn layout(mut self, layout: Layout) -> Self {
         self.layout = layout;
+        self
+    }
+
+    pub fn on_drop(mut self, on_drop: StandardAction) -> Self {
+        self.on_drop = Some(on_drop);
         self
     }
 }
 
 impl Component for UICard {
     fn build(self) -> RenderResult {
-        Draggable::new(vec!["player_decks_browser"])
+        Draggable::new()
+            .identifiers(vec!["PlayerDecksBrowser"])
             .over_target_indicator(
-                Row::new("CardTitle")
+                Row::new(format!("{}Title", self.card_name))
                     .style(Style::new().width(20.vw()).height(10.vh()).background_color(PINK_900)),
             )
+            .on_drop(self.on_drop)
             .child(
-                Column::new("UICard").style(
+                Column::new(self.card_name.to_string()).style(
                     self.layout
                         .to_style()
                         .background_color(ORANGE_900)

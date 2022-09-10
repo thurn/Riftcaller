@@ -12,12 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::iter;
-
+use core_ui::actions;
 use core_ui::design::BLACK;
 use core_ui::prelude::*;
+use data::card_name::CardName;
+use data::game_actions::{DeckEditorAction, UserAction};
 use data::player_name::PlayerId;
-use protos::spelldawn::{FlexAlign, FlexJustify};
+use data::primitives::DeckId;
+use protos::spelldawn::game_command::Command;
+use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
+use protos::spelldawn::{
+    AnimateToChildIndex, EasingMode, FlexAlign, FlexJustify, StandardAction, TimeValue,
+    UpdateInterfaceElementCommand,
+};
 
 use crate::ui_card::UICard;
 
@@ -32,8 +39,8 @@ impl CollectionBrowser {
     }
 }
 
-fn card_row(cards: impl Iterator<Item = UICard>) -> impl Component {
-    Row::new("CardRow")
+fn card_row(number: u32, cards: impl Iterator<Item = UICard>) -> impl Component {
+    Row::new(format!("CardRow{number}"))
         .style(
             Style::new()
                 .flex_grow(1.0)
@@ -45,7 +52,20 @@ fn card_row(cards: impl Iterator<Item = UICard>) -> impl Component {
 
 impl Component for CollectionBrowser {
     fn build(self) -> RenderResult {
-        Column::new(format!("CollectionBrowser for {:?}", self.player_id))
+        let row_one = vec![
+            CardName::TestOverlordSpell,
+            CardName::TestOverlordIdentity,
+            CardName::TestScheme31,
+            CardName::TestMinionDealDamage,
+        ];
+        let row_two = vec![
+            CardName::TestMortalMinion,
+            CardName::TestAbyssalMinion,
+            CardName::TestInfernalMinion,
+            CardName::TestProject2Cost,
+        ];
+
+        Column::new(format!("CollectionBrowser{:?}", self.player_id))
             .style(
                 Style::new()
                     .background_color(BLACK)
@@ -55,13 +75,41 @@ impl Component for CollectionBrowser {
                     .justify_content(FlexJustify::Center),
             )
             .child(card_row(
-                iter::repeat(UICard::default().layout(Layout::new().margin(Edge::All, 16.px())))
-                    .take(4),
+                1,
+                row_one.into_iter().map(|card_name| {
+                    UICard::new(card_name)
+                        .layout(Layout::new().margin(Edge::All, 16.px()))
+                        .on_drop(drop_action(card_name, DeckId::new(1)))
+                }),
             ))
             .child(card_row(
-                iter::repeat(UICard::default().layout(Layout::new().margin(Edge::All, 16.px())))
-                    .take(4),
+                2,
+                row_two.into_iter().map(|card_name| {
+                    UICard::new(card_name)
+                        .layout(Layout::new().margin(Edge::All, 16.px()))
+                        .on_drop(drop_action(card_name, DeckId::new(1)))
+                }),
             ))
             .build()
+    }
+}
+
+fn drop_action(name: CardName, active_deck: DeckId) -> StandardAction {
+    StandardAction {
+        payload: actions::payload(UserAction::DeckEditorAction(DeckEditorAction::AddToDeck(
+            name,
+            active_deck,
+        ))),
+        update: Some(actions::command_list(vec![Command::UpdateInterfaceElement(
+            UpdateInterfaceElementCommand {
+                element_name: format!("{}Title", name),
+                interface_update: Some(InterfaceUpdate::AnimateToChildIndex(AnimateToChildIndex {
+                    parent_element_name: "PlayerDecksBrowser".to_string(),
+                    index: 0,
+                    duration: Some(TimeValue { milliseconds: 300 }),
+                    easing: EasingMode::Linear.into(),
+                })),
+            },
+        )])),
     }
 }

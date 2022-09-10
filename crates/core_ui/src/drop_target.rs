@@ -17,25 +17,21 @@ use protos::spelldawn::{node_type, DropTargetNode, Node, NodeType};
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct DropTarget {
     render_node: Node,
     children: Vec<Box<dyn Component>>,
+    identifier: Option<String>,
 }
 
 impl DropTarget {
-    pub fn new(identifier: impl Into<String>) -> Self {
-        Self {
-            render_node: Node {
-                node_type: Some(Box::new(NodeType {
-                    node_type: Some(node_type::NodeType::DropTargetNode(DropTargetNode {
-                        identifier: identifier.into(),
-                    })),
-                })),
-                ..Node::default()
-            },
-            children: vec![],
-        }
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn identifier(mut self, identifier: impl Into<String>) -> Self {
+        self.identifier = Some(identifier.into());
+        self
     }
 }
 
@@ -52,7 +48,16 @@ impl HasNodeChildren for DropTarget {
 }
 
 impl Component for DropTarget {
-    fn build(self) -> RenderResult {
+    fn build(mut self) -> RenderResult {
+        self.render_node.name = format!(
+            "{}DropTarget",
+            self.identifier.clone().unwrap_or_else(|| "Unnamed".to_string())
+        );
+        self.render_node.node_type = Some(Box::new(NodeType {
+            node_type: Some(node_type::NodeType::DropTargetNode(DropTargetNode {
+                identifier: self.identifier.unwrap_or_default(),
+            })),
+        }));
         RenderResult::Container(Box::new(self.render_node), self.children)
     }
 }
