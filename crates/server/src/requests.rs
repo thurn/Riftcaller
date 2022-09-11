@@ -21,12 +21,14 @@ use cards::decklists;
 use dashmap::DashMap;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
-use data::game_actions::UserAction;
+use data::game_actions::GameAction;
 use data::player_data::{CurrentGame, NewGameRequest};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
 use data::updates::{UpdateTracker, Updates};
+use data::user_actions::UserAction;
 use data::{game_actions, player_data};
+use deck_editor::deck_editor_actions;
 use display::render;
 use once_cell::sync::Lazy;
 use protos::spelldawn::client_action::Action;
@@ -206,30 +208,34 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             )?)]))
         }
         Action::NewGame(create_game) => handle_new_game(database, player_id, create_game),
-        Action::DrawCard(_) => handle_action(database, player_id, game_id, UserAction::DrawCard),
+        Action::DrawCard(_) => {
+            handle_game_action(database, player_id, game_id, GameAction::DrawCard)
+        }
         Action::PlayCard(action) => {
             let action =
                 match adapters::server_card_id(action.card_id.with_error(|| "CardID expected")?)? {
                     ServerCardId::CardId(card_id) => {
-                        UserAction::PlayCard(card_id, card_target(&action.target))
+                        GameAction::PlayCard(card_id, card_target(&action.target))
                     }
                     ServerCardId::AbilityId(ability_id) => {
-                        UserAction::ActivateAbility(ability_id, card_target(&action.target))
+                        GameAction::ActivateAbility(ability_id, card_target(&action.target))
                     }
                 };
-            handle_action(database, player_id, game_id, action)
+            handle_game_action(database, player_id, game_id, action)
         }
-        Action::GainMana(_) => handle_action(database, player_id, game_id, UserAction::GainMana),
+        Action::GainMana(_) => {
+            handle_game_action(database, player_id, game_id, GameAction::GainMana)
+        }
         Action::InitiateRaid(action) => {
             let room_id = adapters::room_id(action.room_id)?;
-            handle_action(database, player_id, game_id, UserAction::InitiateRaid(room_id))
+            handle_game_action(database, player_id, game_id, GameAction::InitiateRaid(room_id))
         }
         Action::LevelUpRoom(level_up) => {
             let room_id = adapters::room_id(level_up.room_id)?;
-            handle_action(database, player_id, game_id, UserAction::LevelUpRoom(room_id))
+            handle_game_action(database, player_id, game_id, GameAction::LevelUpRoom(room_id))
         }
         Action::SpendActionPoint(_) => {
-            handle_action(database, player_id, game_id, UserAction::SpendActionPoint)
+            handle_game_action(database, player_id, game_id, GameAction::SpendActionPoint)
         }
     }?;
 
@@ -340,7 +346,7 @@ fn requested_deck(
 }
 
 /// Queries the [GameState] for a game from the [Database] and then invokes the
-/// [actions::handle_user_action] function to apply the provided [UserAction].
+/// [actions::handle_game_action] function to apply the provided [UserAction].
 ///
 /// Converts the resulting [GameState] into a series of client updates for both
 /// players in the form of a [GameResponse] and then writes the new game state
@@ -348,14 +354,14 @@ fn requested_deck(
 ///
 /// Schedules an AI Agent response if one is required for the current game
 /// state.
-pub fn handle_action(
+pub fn handle_game_action(
     database: &mut impl Database,
     player_id: PlayerId,
     game_id: Option<GameId>,
-    action: UserAction,
+    action: GameAction,
 ) -> Result<GameResponse> {
     handle_custom_action(database, player_id, game_id, |game, user_side| {
-        actions::handle_user_action(game, user_side, action)
+        actions::handle_game_action(game, user_side, action)
     })
 }
 
@@ -414,7 +420,10 @@ fn handle_standard_action(
         UserAction::Debug(debug_action) => {
             debug::handle_debug_action(database, player_id, game_id, debug_action)
         }
-        _ => handle_action(database, player_id, game_id, action),
+        UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
+        UserAction::DeckEditorAction(a) => {
+            Ok(GameResponse::from_commands(deck_editor_actions::handle(a)?))
+        }
     }
 }
 

@@ -16,9 +16,9 @@ use core_ui::actions;
 use core_ui::design::BLACK;
 use core_ui::prelude::*;
 use data::card_name::CardName;
-use data::game_actions::{DeckEditorAction, UserAction};
 use data::player_name::PlayerId;
 use data::primitives::DeckId;
+use data::user_actions::{DeckEditorAction, UserAction};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{

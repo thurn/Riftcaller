@@ -19,7 +19,7 @@ use ai_monte_carlo::uct1::Uct1;
 use ai_tree_search::alpha_beta::AlphaBetaAlgorithm;
 use ai_tree_search::minimax::MinimaxAlgorithm;
 use anyhow::Result;
-use data::game_actions::UserAction;
+use data::game_actions::GameAction;
 use data::player_name::NamedPlayer;
 use with_error::fail;
 
@@ -70,7 +70,7 @@ impl Agent<SpelldawnState> for NoActionAgent {
         "NO_ACTION"
     }
 
-    fn pick_action(&self, _: AgentConfig, _: &SpelldawnState) -> Result<UserAction> {
+    fn pick_action(&self, _: AgentConfig, _: &SpelldawnState) -> Result<GameAction> {
         fail!("No Action")
     }
 }

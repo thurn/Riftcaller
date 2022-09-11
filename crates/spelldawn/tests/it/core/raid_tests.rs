@@ -15,7 +15,7 @@
 use cards::test_cards::WEAPON_COST;
 use core_ui::icons;
 use data::card_name::CardName;
-use data::game_actions::{AccessPhaseAction, EncounterAction, PromptAction, UserAction};
+use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
 use data::primitives::{RoomId, Side};
 use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
@@ -76,13 +76,13 @@ fn initiate_raid() {
     assert_eq!(
         g.legal_actions(Side::Champion),
         vec![
-            UserAction::PromptAction(PromptAction::EncounterAction(
+            GameAction::PromptAction(PromptAction::EncounterAction(
                 EncounterAction::UseWeaponAbility(
                     server_card_id(weapon_id),
                     server_card_id(minion_id)
                 )
             )),
-            UserAction::PromptAction(PromptAction::EncounterAction(EncounterAction::NoWeapon))
+            GameAction::PromptAction(PromptAction::EncounterAction(EncounterAction::NoWeapon))
         ]
     );
 
@@ -194,10 +194,10 @@ fn score_scheme_card() {
     assert_eq!(
         g.legal_actions(Side::Champion),
         vec![
-            UserAction::PromptAction(PromptAction::AccessPhaseAction(
+            GameAction::PromptAction(PromptAction::AccessPhaseAction(
                 AccessPhaseAction::ScoreCard(server_card_id(scheme_id))
             )),
-            UserAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))
+            GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))
         ]
     );
 
@@ -224,7 +224,7 @@ fn score_scheme_card() {
 
     assert_eq!(
         g.legal_actions(Side::Champion),
-        vec![UserAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))]
+        vec![GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))]
     );
 
     assert_snapshot!(Summary::summarize(&response));

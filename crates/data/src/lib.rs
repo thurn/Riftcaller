@@ -29,4 +29,5 @@ pub mod random;
 pub mod special_effects;
 pub mod text;
 pub mod updates;
+pub mod user_actions;
 pub mod utils;

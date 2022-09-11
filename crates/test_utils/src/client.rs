@@ -24,7 +24,7 @@ use anyhow::Result;
 use data::card_name::CardName;
 use data::card_state::{CardPosition, CardState};
 use data::game::GameState;
-use data::game_actions::UserAction;
+use data::game_actions::GameAction;
 use data::player_name::PlayerId;
 use data::primitives::{
     ActionCount, CardId, CardType, GameId, ManaValue, PointsValue, RoomId, Side,
@@ -342,12 +342,12 @@ impl TestSession {
     pub fn legal_actions_result<'a>(
         &'a self,
         side: Side,
-    ) -> Result<Box<dyn Iterator<Item = UserAction> + 'a>> {
+    ) -> Result<Box<dyn Iterator<Item = GameAction> + 'a>> {
         legal_actions::evaluate(self.database.game.as_ref().expect("game"), side)
     }
 
     /// Evaluates legal actions for the [Side] player in the current game state.
-    pub fn legal_actions(&self, side: Side) -> Vec<UserAction> {
+    pub fn legal_actions(&self, side: Side) -> Vec<GameAction> {
         legal_actions::evaluate(self.database.game.as_ref().expect("game"), side)
             .expect("Error evaluating legal actions")
             .collect()

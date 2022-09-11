@@ -14,7 +14,8 @@
 
 use std::fmt::Debug;
 
-use data::game_actions::{DebugAction, PromptAction, UserAction};
+use data::game_actions::{GameAction, PromptAction};
+use data::user_actions::{DebugAction, UserAction};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{CommandList, GameCommand, StandardAction};
@@ -64,16 +65,19 @@ impl InterfaceAction for DebugAction {
     }
 }
 
-impl InterfaceAction for UserAction {
+impl InterfaceAction for GameAction {
     fn as_client_action(&self) -> Option<Action> {
-        Some(Action::StandardAction(StandardAction { payload: payload(*self), update: None }))
+        Some(Action::StandardAction(StandardAction {
+            payload: payload(UserAction::GameAction(*self)),
+            update: None,
+        }))
     }
 }
 
 impl InterfaceAction for PromptAction {
     fn as_client_action(&self) -> Option<Action> {
         Some(Action::StandardAction(StandardAction {
-            payload: payload(UserAction::PromptAction(*self)),
+            payload: payload(UserAction::GameAction(GameAction::PromptAction(*self))),
             update: None,
         }))
     }

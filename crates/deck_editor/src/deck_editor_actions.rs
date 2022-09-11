@@ -13,8 +13,9 @@
 // limitations under the License.
 
 use anyhow::Result;
-use data::game_actions::DeckEditorAction;
+use data::user_actions::DeckEditorAction;
+use protos::spelldawn::game_command::Command;
 
-pub fn handle(_: DeckEditorAction) -> Result<()> {
-    Ok(())
+pub fn handle(_: DeckEditorAction) -> Result<Vec<Command>> {
+    Ok(vec![])
 }

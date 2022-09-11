@@ -15,7 +15,7 @@
 use cards::test_cards::{ARTIFACT_COST, MANA_STORED, MANA_TAKEN, UNVEIL_COST};
 use data::card_name::CardName;
 use data::game_actions;
-use data::game_actions::UserAction;
+use data::game_actions::GameAction;
 use data::primitives::{RoomId, Side};
 use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
@@ -425,7 +425,7 @@ fn legal_actions() {
     assert!(g.legal_actions_result(Side::Champion).is_err());
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
-        vec![UserAction::GainMana, UserAction::DrawCard],
+        vec![GameAction::GainMana, GameAction::DrawCard],
     );
 
     let spell_id = server_card_id(g.add_to_hand(CardName::TestOverlordSpell));
@@ -433,9 +433,9 @@ fn legal_actions() {
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![
-            UserAction::GainMana,
-            UserAction::DrawCard,
-            UserAction::PlayCard(spell_id, game_actions::CardTarget::None),
+            GameAction::GainMana,
+            GameAction::DrawCard,
+            GameAction::PlayCard(spell_id, game_actions::CardTarget::None),
         ],
     );
 
@@ -444,17 +444,17 @@ fn legal_actions() {
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![
-            UserAction::GainMana,
-            UserAction::DrawCard,
-            UserAction::PlayCard(spell_id, game_actions::CardTarget::None),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Sanctum)),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Vault)),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Crypts)),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomA)),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomB)),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomC)),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomD)),
-            UserAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomE)),
+            GameAction::GainMana,
+            GameAction::DrawCard,
+            GameAction::PlayCard(spell_id, game_actions::CardTarget::None),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Sanctum)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Vault)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Crypts)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomA)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomB)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomC)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomD)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomE)),
         ],
     );
 }
@@ -465,7 +465,7 @@ fn legal_actions_level_up_room() {
     g.play_from_hand(CardName::TestScheme31);
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
-        vec![UserAction::GainMana, UserAction::DrawCard, UserAction::LevelUpRoom(RoomId::RoomA)],
+        vec![GameAction::GainMana, GameAction::DrawCard, GameAction::LevelUpRoom(RoomId::RoomA)],
     );
 }
 
@@ -476,11 +476,11 @@ fn champion_legal_actions() {
     assert_contents_equal(
         g.legal_actions(Side::Champion),
         vec![
-            UserAction::GainMana,
-            UserAction::DrawCard,
-            UserAction::InitiateRaid(RoomId::Sanctum),
-            UserAction::InitiateRaid(RoomId::Vault),
-            UserAction::InitiateRaid(RoomId::Crypts),
+            GameAction::GainMana,
+            GameAction::DrawCard,
+            GameAction::InitiateRaid(RoomId::Sanctum),
+            GameAction::InitiateRaid(RoomId::Vault),
+            GameAction::InitiateRaid(RoomId::Crypts),
         ],
     );
 }

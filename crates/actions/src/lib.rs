@@ -25,10 +25,9 @@ use data::delegates::{
     AbilityActivated, ActivateAbilityEvent, CardPlayed, CastCardEvent, DrawCardActionEvent,
 };
 use data::game::{GamePhase, GameState, MulliganDecision};
-use data::game_actions::{CardTarget, PromptAction, UserAction};
+use data::game_actions::{CardTarget, GameAction, PromptAction};
 use data::primitives::{AbilityId, CardId, RoomId, Side};
 use data::updates::{GameUpdate, InitiatedBy};
-use deck_editor::deck_editor_actions;
 use raids::RaidDataExt;
 use rules::mana::ManaPurpose;
 use rules::{card_prompt, dispatch, flags, mana, mutations, queries};
@@ -36,25 +35,23 @@ use tracing::{info, instrument};
 use with_error::{fail, verify, WithError};
 
 /// Top level dispatch function responsible for mutating [GameState] in response
-/// to all [UserAction]s
-pub fn handle_user_action(game: &mut GameState, user_side: Side, action: UserAction) -> Result<()> {
+/// to all [GameAction]s
+pub fn handle_game_action(game: &mut GameState, user_side: Side, action: GameAction) -> Result<()> {
     match action {
-        UserAction::Debug(_) => fail!("Rules engine does not handle debug actions!"),
-        UserAction::PromptAction(prompt_action) => {
+        GameAction::PromptAction(prompt_action) => {
             handle_prompt_action(game, user_side, prompt_action)
         }
-        UserAction::DeckEditorAction(action) => deck_editor_actions::handle(action),
-        UserAction::GainMana => gain_mana_action(game, user_side),
-        UserAction::DrawCard => draw_card_action(game, user_side),
-        UserAction::PlayCard(card_id, target) => play_card_action(game, user_side, card_id, target),
-        UserAction::ActivateAbility(ability_id, target) => {
+        GameAction::GainMana => gain_mana_action(game, user_side),
+        GameAction::DrawCard => draw_card_action(game, user_side),
+        GameAction::PlayCard(card_id, target) => play_card_action(game, user_side, card_id, target),
+        GameAction::ActivateAbility(ability_id, target) => {
             activate_ability_action(game, user_side, ability_id, target)
         }
-        UserAction::InitiateRaid(room_id) => {
+        GameAction::InitiateRaid(room_id) => {
             raids::handle_initiate_action(game, user_side, room_id)
         }
-        UserAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, room_id),
-        UserAction::SpendActionPoint => spend_action_point_action(game, user_side),
+        GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, room_id),
+        GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
     }
 }
 

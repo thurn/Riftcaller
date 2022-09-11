@@ -8,7 +8,6 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "data",
- "deck_editor",
  "enum-iterator",
  "raids",
  "rules",
@@ -1693,6 +1692,7 @@ dependencies = [
  "concurrent-queue",
  "dashmap",
  "data",
+ "deck_editor",
  "display",
  "enum-iterator",
  "once_cell",

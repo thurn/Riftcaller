@@ -20,12 +20,8 @@ use anyhow::{anyhow, Result};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 
-use crate::card_name::CardName;
 use crate::game::MulliganDecision;
-use crate::player_name::NamedPlayer;
-use crate::primitives::{
-    AbilityId, ActionCount, CardId, DeckId, ManaValue, PointsValue, RoomId, Side,
-};
+use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, RoomId, Side};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum EncounterAction {
@@ -100,30 +96,6 @@ impl GamePrompt {
     }
 }
 
-/// Actions that can be taken from the debug panel, should not be exposed in
-/// production.
-#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
-pub enum DebugAction {
-    // Creates a new game with ID 0, using the canonical decklist for [Side], playing against an
-    // opponent who will take no actions. Overwrites the current player's player data with the
-    // canonical decklists.
-    NewGame(Side),
-
-    // Adds the current player to the game with ID 0, overwriting the non-human player in this
-    // game. Overwrites the current player's player data with the canonical decklists.
-    JoinGame,
-
-    // Swaps which side the current player is playing as in their current game.
-    FlipViewpoint,
-
-    AddMana(ManaValue),
-    AddActionPoints(ActionCount),
-    AddScore(PointsValue),
-    SaveState(u64),
-    LoadState(u64),
-    SetNamedPlayer(Side, NamedPlayer),
-}
-
 /// Possible targets for the 'play card' action. Note that many types of targets
 /// are *not* selected in the original PlayCard action request but are instead
 /// selected via a follow-up prompt, and thus are not represented here.
@@ -147,18 +119,10 @@ impl CardTarget {
     }
 }
 
+/// Possible actions a player can take to mutate a GameState
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub enum DeckEditorAction {
-    AddToDeck(CardName, DeckId),
-    RemoveFromDeck(CardName, DeckId),
-}
-
-/// All possible actions a player can take during a game.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub enum UserAction {
-    Debug(DebugAction),
+pub enum GameAction {
     PromptAction(PromptAction),
-    DeckEditorAction(DeckEditorAction),
     GainMana,
     DrawCard,
     PlayCard(CardId, CardTarget),

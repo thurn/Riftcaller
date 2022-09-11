@@ -16,9 +16,9 @@ use core_ui::button::Button;
 use core_ui::list_cell::ListCell;
 use core_ui::panel::Panel;
 use core_ui::prelude::*;
-use data::game_actions::DebugAction;
 use data::player_name::NamedPlayer;
 use data::primitives::Side;
+use data::user_actions::DebugAction;
 use panel_address::PanelAddress;
 
 #[derive(Debug)]

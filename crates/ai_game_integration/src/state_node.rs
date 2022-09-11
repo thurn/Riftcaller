@@ -18,7 +18,7 @@ use actions::legal_actions;
 use ai_core::game_state_node::{GameStateNode, GameStatus};
 use anyhow::Result;
 use data::game::{GamePhase, GameState};
-use data::game_actions::UserAction;
+use data::game_actions::GameAction;
 use data::primitives::Side;
 
 /// Wrapper over [GameState] to allow trait to be implemented in this crate.
@@ -39,7 +39,7 @@ impl DerefMut for SpelldawnState {
 }
 
 impl GameStateNode for SpelldawnState {
-    type Action = UserAction;
+    type Action = GameAction;
     type PlayerName = Side;
 
     fn make_copy(&self) -> Self {
@@ -62,11 +62,11 @@ impl GameStateNode for SpelldawnState {
     fn legal_actions<'a>(
         &'a self,
         player: Side,
-    ) -> Result<Box<dyn Iterator<Item = UserAction> + 'a>> {
+    ) -> Result<Box<dyn Iterator<Item = GameAction> + 'a>> {
         legal_actions::evaluate(self, player)
     }
 
-    fn execute_action(&mut self, player: Side, action: UserAction) -> Result<()> {
-        actions::handle_user_action(self, player, action)
+    fn execute_action(&mut self, player: Side, action: GameAction) -> Result<()> {
+        actions::handle_game_action(self, player, action)
     }
 }

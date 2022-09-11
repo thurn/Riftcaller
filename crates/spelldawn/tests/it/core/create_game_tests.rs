@@ -16,7 +16,7 @@ use cards::initialize;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::game::MulliganDecision;
-use data::game_actions::{PromptAction, UserAction};
+use data::game_actions::{GameAction, PromptAction};
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
@@ -78,15 +78,15 @@ fn mulligan_legal_actions() {
     assert_contents_equal(
         session.legal_actions(Side::Overlord),
         vec![
-            UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
-            UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
+            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
         ],
     );
     assert_contents_equal(
         session.legal_actions(Side::Champion),
         vec![
-            UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
-            UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
+            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
         ],
     );
 
@@ -95,8 +95,8 @@ fn mulligan_legal_actions() {
     assert_contents_equal(
         session.legal_actions(Side::Champion),
         vec![
-            UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
-            UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
+            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
         ],
     );
 }

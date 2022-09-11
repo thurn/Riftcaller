@@ -94,7 +94,7 @@ async fn run_agent_loop(
         let game = SpelldawnState(database.game(game_id)?);
         let commands = if let Some((side, agent)) = active_agent(&game) {
             let action = agent.pick_action(AgentConfig::with_deadline(3), &game)?;
-            let response = requests::handle_action(
+            let response = requests::handle_game_action(
                 &mut database,
                 game.player(side).id,
                 Some(game_id),

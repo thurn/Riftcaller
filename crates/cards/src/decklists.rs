@@ -17,7 +17,7 @@ use anyhow::Result;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState, MulliganDecision};
-use data::game_actions::{PromptAction, UserAction};
+use data::game_actions::{GameAction, PromptAction};
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{GameId, Side};
 use maplit::hashmap;
@@ -95,15 +95,15 @@ pub fn canonical_game() -> Result<GameState> {
 
     dispatch::populate_delegate_cache(&mut game);
     mutations::deal_opening_hands(&mut game)?;
-    actions::handle_user_action(
+    actions::handle_game_action(
         &mut game,
         Side::Overlord,
-        UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
-    actions::handle_user_action(
+    actions::handle_game_action(
         &mut game,
         Side::Champion,
-        UserAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
 
     Ok(game)
