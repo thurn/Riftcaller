@@ -45,8 +45,11 @@ namespace Spelldawn.Masonry
 
     void OnMouseDown(MouseDownEvent evt)
     {
-      var dragElement = (Draggable)Mason.Render(_registry, _node);
-      _registry.InputService.SetCurrentlyDragging(dragElement, worldBound.position);
+      if (_registry.CapabilityService.CanDragInterfaceElement())
+      {
+        var dragElement = (Draggable)Mason.Render(_registry, _node);
+        _registry.InputService.SetCurrentlyDragging(dragElement, worldBound.position);        
+      }
     }
   }
 }

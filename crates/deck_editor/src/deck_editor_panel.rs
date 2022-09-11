@@ -22,7 +22,7 @@ use protos::spelldawn::FlexPosition;
 
 use crate::collection_browser::CollectionBrowser;
 use crate::collection_controls::CollectionControls;
-use crate::player_decks_browser::PlayerDecksBrowser;
+use crate::deck_card_list::DeckCardList;
 
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
@@ -53,7 +53,7 @@ impl Component for DeckEditorPanel {
                     .child(CollectionControls::new(self.player_id))
                     .child(CollectionBrowser::new(self.player_id)),
             )
-            .child(PlayerDecksBrowser::new(self.player_id))
+            .child(DeckCardList::new(self.player_id))
             .child(
                 IconButton::new(icons::PREVIOUS_PAGE)
                     .button_type(IconButtonType::SecondaryLarge)

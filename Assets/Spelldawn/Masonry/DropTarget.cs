@@ -20,11 +20,5 @@ namespace Spelldawn.Masonry
 {
   public sealed class DropTarget : VisualElement
   {
-    public string Identifier { get; }
-
-    public DropTarget(string identifier)
-    {
-      Identifier = identifier;
-    }
   }
 }

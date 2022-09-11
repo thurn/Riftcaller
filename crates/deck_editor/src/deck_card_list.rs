@@ -20,28 +20,26 @@ use protos::spelldawn::{FlexAlign, FlexDirection};
 
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
+/// Displays the cards contained within a single deck
 #[derive(Debug, Default)]
-pub struct PlayerDecksBrowser {}
+pub struct DeckCardList {}
 
-impl PlayerDecksBrowser {
+impl DeckCardList {
     pub fn new(_: PlayerId) -> Self {
         Self::default()
     }
 }
 
-impl Component for PlayerDecksBrowser {
+impl Component for DeckCardList {
     fn build(self) -> RenderResult {
-        DropTarget::new()
-            .identifier("PlayerDecksBrowser")
-            .style(Style::new().flex_direction(FlexDirection::Row))
-            .child(
-                Column::new("PlayerDecksBrowser").style(
-                    Style::new()
-                        .background_color(RED_900)
-                        .width(EDITOR_COLUMN_WIDTH.vw())
-                        .align_items(FlexAlign::Center)
-                        .padding(Edge::All, 1.vw()),
-                ),
+        DropTarget::new("DeckCardList")
+            .style(
+                Style::new()
+                    .flex_direction(FlexDirection::Column)
+                    .background_color(RED_900)
+                    .width(EDITOR_COLUMN_WIDTH.vw())
+                    .align_items(FlexAlign::Center)
+                    .padding(Edge::All, 1.vw()),
             )
             .build()
     }

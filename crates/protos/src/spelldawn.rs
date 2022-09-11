@@ -344,10 +344,7 @@ pub struct DraggableNode {
     pub on_drop: ::core::option::Option<GameAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct DropTargetNode {
-    #[prost(string, tag = "1")]
-    pub identifier: ::prost::alloc::string::String,
-}
+pub struct DropTargetNode {}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
     #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3, 4")]
@@ -1271,6 +1268,8 @@ pub mod client_debug_command {
     }
 }
 /// Animates an element to appear as a child node of a parent container.
+///
+/// Automatically removes any absolute positioning on the element.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AnimateToChildIndex {
     #[prost(string, tag = "1")]

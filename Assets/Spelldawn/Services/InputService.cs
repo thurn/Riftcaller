@@ -121,7 +121,7 @@ namespace Spelldawn.Services
       var mousePosition = _registry.DocumentService.ScreenPositionToElementPosition(Input.mousePosition);
       var target = dropTargets.Where(target =>
           target.layout.Contains(new Vector2(mousePosition.Left, mousePosition.Top)) &&
-          currentlyDragging.TargetIdentifiers.Contains(target.Identifier))
+          currentlyDragging.TargetIdentifiers.Contains(target.name))
         .OrderBy(x =>
           Vector2.Distance(x.worldBound.position,
             dragger.worldBound.position)).FirstOrDefault();

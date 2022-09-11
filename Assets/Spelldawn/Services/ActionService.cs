@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Grpc.Core;
@@ -53,7 +54,10 @@ namespace Spelldawn.Services
     [SerializeField] bool _currentlyHandlingAction;
     readonly Queue<GameAction> _actionQueue = new();
     PlayerIdentifier? _playerIdentifier;
+    
     public bool OfflineMode { get; private set; }
+
+    public bool Active => _currentlyHandlingAction || _actionQueue.Count > 0;
 
     public void Connect(PlayerIdentifier playerIdentifier, bool offlineMode)
     {

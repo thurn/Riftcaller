@@ -451,7 +451,6 @@ message DraggableNode {
 }
 
 message DropTargetNode {
-    string identifier = 1;
 }
 
 message NodeType {

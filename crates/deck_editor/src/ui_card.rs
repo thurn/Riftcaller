@@ -46,21 +46,19 @@ impl UICard {
 
 impl Component for UICard {
     fn build(self) -> RenderResult {
-        Draggable::new()
-            .identifiers(vec!["PlayerDecksBrowser"])
+        Draggable::new(self.card_name.to_string())
+            .drop_targets(vec!["DeckCardList"])
             .over_target_indicator(
                 Row::new(format!("{}Title", self.card_name))
                     .style(Style::new().width(20.vw()).height(10.vh()).background_color(PINK_900)),
             )
             .on_drop(self.on_drop)
-            .child(
-                Column::new(self.card_name.to_string()).style(
-                    self.layout
-                        .to_style()
-                        .background_color(ORANGE_900)
-                        .width((CARD_HEIGHT * CARD_ASPECT_RATIO).vh())
-                        .height(CARD_HEIGHT.vh()),
-                ),
+            .style(
+                self.layout
+                    .to_style()
+                    .background_color(ORANGE_900)
+                    .width((CARD_HEIGHT * CARD_ASPECT_RATIO).vh())
+                    .height(CARD_HEIGHT.vh()),
             )
             .build()
     }

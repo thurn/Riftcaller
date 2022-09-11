@@ -23,18 +23,20 @@ use crate::rendering;
 pub struct Draggable {
     render_node: Node,
     children: Vec<Box<dyn Component>>,
-    identifiers: Vec<String>,
+    drop_targets: Vec<String>,
     over_target_indicator: Option<Box<dyn Component>>,
     on_drop: Option<Box<dyn InterfaceAction>>,
 }
 
 impl Draggable {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(name: impl Into<String>) -> Self {
+        let mut result = Self::default();
+        result.render_node.name = name.into();
+        result
     }
 
-    pub fn identifiers(mut self, identifiers: Vec<impl Into<String>>) -> Self {
-        self.identifiers = identifiers.into_iter().map(Into::into).collect();
+    pub fn drop_targets(mut self, identifiers: Vec<impl Into<String>>) -> Self {
+        self.drop_targets = identifiers.into_iter().map(Into::into).collect();
         self
     }
 
@@ -65,7 +67,7 @@ impl Component for Draggable {
     fn build(mut self) -> RenderResult {
         self.render_node.node_type = Some(Box::new(NodeType {
             node_type: Some(node_type::NodeType::DraggableNode(Box::new(DraggableNode {
-                drop_target_identifiers: self.identifiers,
+                drop_target_identifiers: self.drop_targets,
                 over_target_indicator: self
                     .over_target_indicator
                     .and_then(|c| rendering::component_boxed(c).map(Box::new)),

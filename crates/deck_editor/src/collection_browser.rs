@@ -104,7 +104,7 @@ fn drop_action(name: CardName, active_deck: DeckId) -> StandardAction {
             UpdateInterfaceElementCommand {
                 element_name: format!("{}Title", name),
                 interface_update: Some(InterfaceUpdate::AnimateToChildIndex(AnimateToChildIndex {
-                    parent_element_name: "PlayerDecksBrowser".to_string(),
+                    parent_element_name: "DeckCardList".to_string(),
                     index: 0,
                     duration: Some(TimeValue { milliseconds: 300 }),
                     easing: EasingMode::Linear.into(),

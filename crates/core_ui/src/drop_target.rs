@@ -21,17 +21,13 @@ use crate::prelude::*;
 pub struct DropTarget {
     render_node: Node,
     children: Vec<Box<dyn Component>>,
-    identifier: Option<String>,
 }
 
 impl DropTarget {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn identifier(mut self, identifier: impl Into<String>) -> Self {
-        self.identifier = Some(identifier.into());
-        self
+    pub fn new(name: impl Into<String>) -> Self {
+        let mut result = Self::default();
+        result.render_node.name = name.into();
+        result
     }
 }
 
@@ -49,14 +45,8 @@ impl HasNodeChildren for DropTarget {
 
 impl Component for DropTarget {
     fn build(mut self) -> RenderResult {
-        self.render_node.name = format!(
-            "{}DropTarget",
-            self.identifier.clone().unwrap_or_else(|| "Unnamed".to_string())
-        );
         self.render_node.node_type = Some(Box::new(NodeType {
-            node_type: Some(node_type::NodeType::DropTargetNode(DropTargetNode {
-                identifier: self.identifier.unwrap_or_default(),
-            })),
+            node_type: Some(node_type::NodeType::DropTargetNode(DropTargetNode::default())),
         }));
         RenderResult::Container(Box::new(self.render_node), self.children)
     }

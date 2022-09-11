@@ -61,7 +61,7 @@ namespace Spelldawn.Masonry
         OverTargetIndicator = node.NodeType.DraggableNode.OverTargetIndicator,
         OnDrop = node.NodeType.DraggableNode.OnDrop
       },
-      NodeType.NodeTypeOneofCase.DropTargetNode => new DropTarget(node.NodeType.DropTargetNode.Identifier),
+      NodeType.NodeTypeOneofCase.DropTargetNode => new DropTarget(),
       _ => new NodeVisualElement()
     };
 

@@ -74,7 +74,6 @@ namespace Spelldawn.Services
       }
     }
 
-
     /// <summary>
     /// Can the user currently perform a game action of the provided type?
     /// </summary>
@@ -100,6 +99,8 @@ namespace Spelldawn.Services
       (allowInOverlay || !AnyOverlayOpen()) &&
       (allowInOverlay || !_registry.RaidService.RaidActive) &&
       (!actionPointRequired || _registry.ActionDisplayForPlayer(PlayerName.User).AvailableActions > 0);
+
+    public bool CanDragInterfaceElement() => !_registry.CommandService.Active && !_registry.ActionService.Active;
 
     void Update()
     {
