@@ -50,9 +50,9 @@ namespace Spelldawn.Game
 
     void OnMouseUpAsButton()
     {
-      if (_clickable && _registry.CapabilityService.CanExecuteAction(GameAction.ActionOneofCase.DrawCard))
+      if (_clickable && _registry.CapabilityService.CanExecuteAction(ClientAction.ActionOneofCase.DrawCard))
       {
-        _registry.ActionService.HandleAction(new GameAction
+        _registry.ActionService.HandleAction(new ClientAction
         {
           DrawCard = new DrawCardAction()
         });

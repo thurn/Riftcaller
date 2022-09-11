@@ -22,11 +22,11 @@ use data::game_actions::DebugAction;
 use data::player_data::{CurrentGame, PlayerData};
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{DeckId, GameId, Side};
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::client_debug_command::DebugCommand;
-use protos::spelldawn::game_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
-    ClientDebugCommand, CommandList, GameAction, GameCommand, GameIdentifier, LoadSceneCommand,
+    ClientAction, ClientDebugCommand, CommandList, GameCommand, GameIdentifier, LoadSceneCommand,
     NewGameAction, NewGameDebugOptions, SceneLoadMode,
 };
 use rules::mana;
@@ -51,7 +51,7 @@ pub fn handle_debug_action(
                 command_list: CommandList {
                     commands: vec![GameCommand {
                         command: Some(Command::Debug(ClientDebugCommand {
-                            debug_command: Some(DebugCommand::InvokeAction(GameAction {
+                            debug_command: Some(DebugCommand::InvokeAction(ClientAction {
                                 action: Some(Action::NewGame(NewGameAction {
                                     opponent_id: Some(adapters::named_player_identifier(
                                         NamedPlayer::TestNoAction,

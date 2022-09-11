@@ -87,7 +87,7 @@ namespace Spelldawn.Services
 
         foreach (var address in _openPanels)
         {
-          _registry.ActionService.HandleAction(new GameAction
+          _registry.ActionService.HandleAction(new ClientAction
           {
             FetchPanel = new FetchPanelAction
             {
@@ -129,7 +129,7 @@ namespace Spelldawn.Services
           _openPanels.Add(address);
         }
 
-        _registry.ActionService.HandleAction(new GameAction
+        _registry.ActionService.HandleAction(new ClientAction
         {
           FetchPanel = new FetchPanelAction
           {

@@ -42,7 +42,7 @@ use data::primitives::{
 };
 use maplit::hashmap;
 use prost::Message;
-use protos::spelldawn::game_action::Action;
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{
     CardIdentifier, CommandList, GameCommand, LevelUpRoomAction, RoomIdentifier,
     SpendActionPointAction,

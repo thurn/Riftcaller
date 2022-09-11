@@ -29,11 +29,11 @@ use data::updates::{UpdateTracker, Updates};
 use data::{game_actions, player_data};
 use display::render;
 use once_cell::sync::Lazy;
-use protos::spelldawn::game_action::Action;
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::{
-    card_target, CardTarget, CommandList, ConnectRequest, GameAction, GameCommand, GameRequest,
+    card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
     LoadSceneCommand, NewGameAction, PlayerIdentifier, SceneLoadMode, StandardAction,
 };
 use rules::{dispatch, mutations};
@@ -190,7 +190,7 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
         .with_error(|| "GameAction is required")?;
 
     let _span = warn_span!("handle_request", ?player_id, ?game_id, ?game_action).entered();
-    if !matches!(request.action, Some(GameAction { action: Some(Action::FetchPanel(_)) })) {
+    if !matches!(request.action, Some(ClientAction { action: Some(Action::FetchPanel(_)) })) {
         // Don't log FetchPanel because we send it every 1 second in autorefresh mode
         warn!(?player_id, ?game_id, ?game_action, "received_request");
     }

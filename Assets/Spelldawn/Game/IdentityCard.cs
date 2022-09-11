@@ -112,7 +112,7 @@ namespace Spelldawn.Game
         switch (Side)
         {
           case PlayerSide.Champion:
-            _registry.ActionService.HandleAction(new GameAction
+            _registry.ActionService.HandleAction(new ClientAction
             {
               InitiateRaid = new InitiateRaidAction
               {
@@ -121,7 +121,7 @@ namespace Spelldawn.Game
             });
             break;
           case PlayerSide.Overlord:
-            _registry.ActionService.HandleAction(new GameAction
+            _registry.ActionService.HandleAction(new ClientAction
             {
               LevelUpRoom = new LevelUpRoomAction
               {

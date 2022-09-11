@@ -355,7 +355,7 @@ namespace Spelldawn.Game
 
       Registry.ArenaService.HideRoomSelector();
 
-      Registry.ActionService.HandleAction(new GameAction
+      Registry.ActionService.HandleAction(new ClientAction
       {
         PlayCard = action
       });
@@ -367,7 +367,7 @@ namespace Spelldawn.Game
 
     bool ShouldReturnToHandOnRelease()
     {
-      if (!Registry.CapabilityService.CanExecuteAction(GameAction.ActionOneofCase.PlayCard))
+      if (!Registry.CapabilityService.CanExecuteAction(ClientAction.ActionOneofCase.PlayCard))
       {
         return true;
       }

@@ -15,7 +15,7 @@
 use std::fmt::Debug;
 
 use data::game_actions::{DebugAction, PromptAction, UserAction};
-use protos::spelldawn::game_action::Action;
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{CommandList, GameCommand, StandardAction};
 use serde_json::ser;
@@ -24,24 +24,24 @@ use serde_json::ser;
 /// a server request and performing an immediate client update are both
 /// supported forms of action.
 pub trait InterfaceAction: Debug {
-    fn as_game_action(&self) -> Option<Action>;
+    fn as_client_action(&self) -> Option<Action>;
 }
 
 impl InterfaceAction for StandardAction {
-    fn as_game_action(&self) -> Option<Action> {
+    fn as_client_action(&self) -> Option<Action> {
         Some(Action::StandardAction(self.clone()))
     }
 }
 
 impl<T: InterfaceAction + Clone> InterfaceAction for Option<T> {
-    fn as_game_action(&self) -> Option<Action> {
-        self.as_ref().and_then(|action| action.clone().as_game_action())
+    fn as_client_action(&self) -> Option<Action> {
+        self.as_ref().and_then(|action| action.clone().as_client_action())
     }
 }
 
 impl<T: ?Sized + InterfaceAction> InterfaceAction for Box<T> {
-    fn as_game_action(&self) -> Option<Action> {
-        self.as_ref().as_game_action()
+    fn as_client_action(&self) -> Option<Action> {
+        self.as_ref().as_client_action()
     }
 }
 
@@ -50,13 +50,13 @@ impl<T: ?Sized + InterfaceAction> InterfaceAction for Box<T> {
 pub struct NoAction {}
 
 impl InterfaceAction for NoAction {
-    fn as_game_action(&self) -> Option<Action> {
+    fn as_client_action(&self) -> Option<Action> {
         None
     }
 }
 
 impl InterfaceAction for DebugAction {
-    fn as_game_action(&self) -> Option<Action> {
+    fn as_client_action(&self) -> Option<Action> {
         Some(Action::StandardAction(StandardAction {
             payload: payload(UserAction::Debug(*self)),
             update: None,
@@ -65,13 +65,13 @@ impl InterfaceAction for DebugAction {
 }
 
 impl InterfaceAction for UserAction {
-    fn as_game_action(&self) -> Option<Action> {
+    fn as_client_action(&self) -> Option<Action> {
         Some(Action::StandardAction(StandardAction { payload: payload(*self), update: None }))
     }
 }
 
 impl InterfaceAction for PromptAction {
-    fn as_game_action(&self) -> Option<Action> {
+    fn as_client_action(&self) -> Option<Action> {
         Some(Action::StandardAction(StandardAction {
             payload: payload(UserAction::PromptAction(*self)),
             update: None,
@@ -80,7 +80,7 @@ impl InterfaceAction for PromptAction {
 }
 
 impl InterfaceAction for Command {
-    fn as_game_action(&self) -> Option<Action> {
+    fn as_client_action(&self) -> Option<Action> {
         Some(Action::StandardAction(StandardAction {
             payload: vec![],
             update: Some(command_list(vec![self.clone()])),
@@ -89,7 +89,7 @@ impl InterfaceAction for Command {
 }
 
 impl InterfaceAction for Vec<Command> {
-    fn as_game_action(&self) -> Option<Action> {
+    fn as_client_action(&self) -> Option<Action> {
         Some(Action::StandardAction(StandardAction {
             payload: vec![],
             update: Some(command_list(self.clone())),

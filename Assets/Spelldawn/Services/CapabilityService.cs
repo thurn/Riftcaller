@@ -77,19 +77,19 @@ namespace Spelldawn.Services
     /// <summary>
     /// Can the user currently perform a game action of the provided type?
     /// </summary>
-    public bool CanExecuteAction(GameAction.ActionOneofCase actionType) => actionType switch
+    public bool CanExecuteAction(ClientAction.ActionOneofCase actionType) => actionType switch
     {
-      GameAction.ActionOneofCase.StandardAction => CanAct(
+      ClientAction.ActionOneofCase.StandardAction => CanAct(
         allowInOverlay: true,
         actionPointRequired: false,
         allowWithPanelOpen: true),
-      GameAction.ActionOneofCase.FetchPanel => true,
-      GameAction.ActionOneofCase.NewGame => true,
-      GameAction.ActionOneofCase.GainMana => CanAct(),
-      GameAction.ActionOneofCase.DrawCard => CanAct(),
-      GameAction.ActionOneofCase.PlayCard => CanAct(),
-      GameAction.ActionOneofCase.LevelUpRoom => CanAct(),
-      GameAction.ActionOneofCase.InitiateRaid => CanAct(),
+      ClientAction.ActionOneofCase.FetchPanel => true,
+      ClientAction.ActionOneofCase.NewGame => true,
+      ClientAction.ActionOneofCase.GainMana => CanAct(),
+      ClientAction.ActionOneofCase.DrawCard => CanAct(),
+      ClientAction.ActionOneofCase.PlayCard => CanAct(),
+      ClientAction.ActionOneofCase.LevelUpRoom => CanAct(),
+      ClientAction.ActionOneofCase.InitiateRaid => CanAct(),
       _ => false
     };
 
@@ -109,7 +109,7 @@ namespace Spelldawn.Services
 
       switch (_registry.CapabilityService.CurrentPriority)
       {
-        case PlayerName.User when CanExecuteAction(GameAction.ActionOneofCase.PlayCard):
+        case PlayerName.User when CanExecuteAction(ClientAction.ActionOneofCase.PlayCard):
           userLight.SetActive(true);
           break;
         case PlayerName.Opponent:

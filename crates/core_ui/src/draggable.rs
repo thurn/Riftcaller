@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{node_type, DraggableNode, GameAction, Node, NodeType};
+use protos::spelldawn::{node_type, ClientAction, DraggableNode, Node, NodeType};
 
 use crate::actions::InterfaceAction;
 use crate::flexbox::HasNodeChildren;
@@ -71,7 +71,7 @@ impl Component for Draggable {
                 over_target_indicator: self
                     .over_target_indicator
                     .and_then(|c| rendering::component_boxed(c).map(Box::new)),
-                on_drop: self.on_drop.map(|d| GameAction { action: d.as_game_action() }),
+                on_drop: self.on_drop.map(|d| ClientAction { action: d.as_client_action() }),
             }))),
         }));
         RenderResult::Container(Box::new(self.render_node), self.children)

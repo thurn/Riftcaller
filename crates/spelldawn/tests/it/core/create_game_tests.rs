@@ -22,7 +22,7 @@ use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
 use insta::assert_snapshot;
 use maplit::hashmap;
-use protos::spelldawn::game_action::Action;
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     DeckIdentifier, NewGameAction, NewGameDebugOptions, PlayerIdentifier, PlayerName,

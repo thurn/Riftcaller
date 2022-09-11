@@ -14,7 +14,7 @@
 
 use data::card_name::CardName;
 use data::primitives::Side;
-use protos::spelldawn::game_action::Action;
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{DrawCardAction, ObjectPositionIdentity, PlayerName};
 use test_utils::*;

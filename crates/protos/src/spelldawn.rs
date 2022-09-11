@@ -341,7 +341,7 @@ pub struct DraggableNode {
     pub over_target_indicator: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
     //// Action to invoke when the node is dropped over a target.
     #[prost(message, optional, tag = "3")]
-    pub on_drop: ::core::option::Option<GameAction>,
+    pub on_drop: ::core::option::Option<ClientAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}
@@ -367,7 +367,7 @@ pub mod node_type {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventHandlers {
     #[prost(message, optional, tag = "1")]
-    pub on_click: ::core::option::Option<GameAction>,
+    pub on_click: ::core::option::Option<ClientAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
@@ -931,12 +931,12 @@ pub struct SpendActionPointAction {}
 /// for a server response. The client should not send multiple actions at the
 /// same time -- interaction should be disabled while an action is pending.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GameAction {
-    #[prost(oneof = "game_action::Action", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9")]
-    pub action: ::core::option::Option<game_action::Action>,
+pub struct ClientAction {
+    #[prost(oneof = "client_action::Action", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9")]
+    pub action: ::core::option::Option<client_action::Action>,
 }
-/// Nested message and enum types in `GameAction`.
-pub mod game_action {
+/// Nested message and enum types in `ClientAction`.
+pub mod client_action {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Action {
         #[prost(message, tag = "1")]
@@ -970,7 +970,7 @@ pub struct ConnectRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameRequest {
     #[prost(message, optional, tag = "1")]
-    pub action: ::core::option::Option<GameAction>,
+    pub action: ::core::option::Option<ClientAction>,
     /// Identifies the user making this request. At some point I'm going to
     /// figure out how to set up authentication, but currently we operate on
     /// the honor system :)
@@ -1260,7 +1260,7 @@ pub mod client_debug_command {
         #[prost(message, tag = "1")]
         ShowLogs(()),
         #[prost(message, tag = "2")]
-        InvokeAction(super::GameAction),
+        InvokeAction(super::ClientAction),
         #[prost(message, tag = "3")]
         LogMessage(super::LogMessage),
         #[prost(message, tag = "4")]

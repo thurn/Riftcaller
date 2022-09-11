@@ -30,13 +30,13 @@ use data::primitives::{
     ActionCount, CardId, CardType, GameId, ManaValue, PointsValue, RoomId, Side,
 };
 use protos::spelldawn::card_targeting::Targeting;
-use protos::spelldawn::game_action::Action;
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     card_target, node_type, ArrowTargetRoom, CardAnchorNode, CardIdentifier, CardTarget, CardView,
-    ClientItemLocation, ClientRoomLocation, CommandList, EventHandlers, GameAction,
+    ClientAction, ClientItemLocation, ClientRoomLocation, CommandList, EventHandlers,
     GameMessageType, GameObjectIdentifier, GameRequest, InitiateRaidAction, NoTargeting, Node,
     NodeType, ObjectPosition, ObjectPositionBrowser, ObjectPositionDiscardPile, ObjectPositionHand,
     ObjectPositionItem, ObjectPositionRevealedCards, ObjectPositionRoom, PlayCardAction,
@@ -137,7 +137,7 @@ impl TestSession {
         let response = requests::handle_request(
             &mut self.database,
             &GameRequest {
-                action: Some(GameAction { action: Some(action) }),
+                action: Some(ClientAction { action: Some(action) }),
                 player_id: Some(fake_database::to_player_identifier(player_id)),
             },
         )?;

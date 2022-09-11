@@ -18,7 +18,7 @@ use data::game_actions;
 use data::game_actions::UserAction;
 use data::primitives::{RoomId, Side};
 use insta::assert_snapshot;
-use protos::spelldawn::game_action::Action;
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     card_target, CardTarget, ClientRoomLocation, DrawCardAction, GainManaAction, GameMessageType,

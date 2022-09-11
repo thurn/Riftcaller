@@ -447,7 +447,7 @@ message DraggableNode {
     Node over_target_indicator = 2;
 
     /// Action to invoke when the node is dropped over a target.
-    GameAction on_drop = 3;
+    ClientAction on_drop = 3;
 }
 
 message DropTargetNode {
@@ -463,7 +463,7 @@ message NodeType {
 }
 
 message EventHandlers {
-    GameAction on_click = 1;
+    ClientAction on_click = 1;
 }
 
 
@@ -974,7 +974,7 @@ message SpendActionPointAction {}
 // Actions have an associated 'optimistic' behavior to display while waiting
 // for a server response. The client should not send multiple actions at the
 // same time -- interaction should be disabled while an action is pending.
-message GameAction {
+message ClientAction {
     oneof action {
         StandardAction standard_action = 1;
         FetchPanelAction fetch_panel = 2;
@@ -996,7 +996,7 @@ message ConnectRequest {
 }
 
 message GameRequest {
-    GameAction action = 1;
+    ClientAction action = 1;
 
     // Identifies the user making this request. At some point I'm going to
     // figure out how to set up authentication, but currently we operate on
@@ -1301,7 +1301,7 @@ message LogMessage {
 message ClientDebugCommand {
     oneof debug_command {
         google.protobuf.Empty ShowLogs = 1;
-        GameAction invoke_action = 2;
+        ClientAction invoke_action = 2;
         LogMessage log_message = 3;
         SetBooleanPreference set_boolean_preference = 4;
     }

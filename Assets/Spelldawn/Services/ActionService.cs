@@ -19,7 +19,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Grpc.Core;
@@ -52,7 +51,7 @@ namespace Spelldawn.Services
 
     [SerializeField] Registry _registry = null!;
     [SerializeField] bool _currentlyHandlingAction;
-    readonly Queue<GameAction> _actionQueue = new();
+    readonly Queue<ClientAction> _actionQueue = new();
     PlayerIdentifier? _playerIdentifier;
     
     public bool OfflineMode { get; private set; }
@@ -66,7 +65,7 @@ namespace Spelldawn.Services
       ConnectToRulesEngine();
     }
 
-    public void HandleAction(GameAction action)
+    public void HandleAction(ClientAction action)
     {
       if (!_registry.CapabilityService.CanExecuteAction(action.ActionCase))
       {
@@ -147,10 +146,10 @@ namespace Spelldawn.Services
 #endif
     }
 
-    IEnumerator HandleActionAsync(GameAction action)
+    IEnumerator HandleActionAsync(ClientAction action)
     {
       StartCoroutine(ApplyOptimisticResponse(action));
-      if (action.ActionCase == GameAction.ActionOneofCase.StandardAction && action.StandardAction.Payload.Length == 0)
+      if (action.ActionCase == ClientAction.ActionOneofCase.StandardAction && action.StandardAction.Payload.Length == 0)
       {
         // No need to send empty payload to server
         _currentlyHandlingAction = false;
@@ -208,11 +207,11 @@ namespace Spelldawn.Services
     /// Immediate action handling, without waiting for the queue. This is needed to avoid things that feel
     /// broken, like waiting for animations before closing a panel.
     /// </summary>
-    void ApplyImmediateResponse(GameAction action)
+    void ApplyImmediateResponse(ClientAction action)
     {
       switch (action.ActionCase)
       {
-        case GameAction.ActionOneofCase.StandardAction:
+        case ClientAction.ActionOneofCase.StandardAction:
           _registry.StaticAssets.PlayButtonSound();
           if (action.StandardAction.Update is { } update)
           {
@@ -231,31 +230,31 @@ namespace Spelldawn.Services
       }
     }
 
-    IEnumerator ApplyOptimisticResponse(GameAction action)
+    IEnumerator ApplyOptimisticResponse(ClientAction action)
     {
       switch (action.ActionCase)
       {
-        case GameAction.ActionOneofCase.StandardAction:
+        case ClientAction.ActionOneofCase.StandardAction:
           if (action.StandardAction.Update is { } update)
           {
             yield return _registry.CommandService.HandleCommands(update);
           }
 
           break;
-        case GameAction.ActionOneofCase.DrawCard:
+        case ClientAction.ActionOneofCase.DrawCard:
           _registry.StaticAssets.PlayDrawCardStartSound();
           _registry.ActionDisplayForPlayer(PlayerName.User).SpendActions(1);
           _registry.CardService.DrawOptimisticCard();
           break;
-        case GameAction.ActionOneofCase.PlayCard:
+        case ClientAction.ActionOneofCase.PlayCard:
           yield return HandlePlayCard(action.PlayCard);
           break;
-        case GameAction.ActionOneofCase.GainMana:
+        case ClientAction.ActionOneofCase.GainMana:
           _registry.StaticAssets.PlayAddManaSound();
           _registry.ActionDisplayForPlayer(PlayerName.User).SpendActions(1);
           _registry.ManaDisplayForPlayer(PlayerName.User).GainMana(1);
           break;
-        case GameAction.ActionOneofCase.InitiateRaid:
+        case ClientAction.ActionOneofCase.InitiateRaid:
           _registry.ActionDisplayForPlayer(PlayerName.User).SpendActions(1);
           yield return _registry.CommandService.HandleCommands(new GameCommand
           {
@@ -267,7 +266,7 @@ namespace Spelldawn.Services
             }
           });
           break;
-        case GameAction.ActionOneofCase.LevelUpRoom:
+        case ClientAction.ActionOneofCase.LevelUpRoom:
           _registry.ActionDisplayForPlayer(PlayerName.User).SpendActions(1);
           yield return _registry.CommandService.HandleCommands(new GameCommand
           {

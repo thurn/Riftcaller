@@ -41,7 +41,7 @@ namespace Spelldawn.Game
     public uint CurrentMana => _currentMana;
 
     bool Clickable => _owner == PlayerName.User &&
-                      _registry.CapabilityService.CanExecuteAction(GameAction.ActionOneofCase.GainMana);
+                      _registry.CapabilityService.CanExecuteAction(ClientAction.ActionOneofCase.GainMana);
 
     public void RenderManaDisplay(ManaView manaView)
     {
@@ -119,7 +119,7 @@ namespace Spelldawn.Game
       {
         StartCoroutine(
           _registry.AssetPoolService.CreateFromReference(_onPress, _onPressPosition.position, _onPressPosition));
-        _registry.ActionService.HandleAction(new GameAction
+        _registry.ActionService.HandleAction(new ClientAction
         {
           GainMana = new GainManaAction()
         });
