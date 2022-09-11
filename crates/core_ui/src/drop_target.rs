@@ -14,6 +14,7 @@
 
 use protos::spelldawn::{node_type, DropTargetNode, Node, NodeType};
 
+use crate::flexbox;
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
 
@@ -44,10 +45,11 @@ impl HasNodeChildren for DropTarget {
 }
 
 impl Component for DropTarget {
-    fn build(mut self) -> RenderResult {
+    fn build(mut self) -> Option<Node> {
         self.render_node.node_type = Some(Box::new(NodeType {
             node_type: Some(node_type::NodeType::DropTargetNode(DropTargetNode::default())),
         }));
-        RenderResult::Container(Box::new(self.render_node), self.children)
+
+        flexbox::build_with_children(self.render_node, self.children)
     }
 }

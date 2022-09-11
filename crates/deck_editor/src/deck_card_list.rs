@@ -31,7 +31,7 @@ impl DeckCardList {
 }
 
 impl Component for DeckCardList {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         DropTarget::new("DeckCardList")
             .style(
                 Style::new()

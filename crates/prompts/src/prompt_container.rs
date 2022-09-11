@@ -37,7 +37,7 @@ impl PromptContainer {
 }
 
 impl Component for PromptContainer {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         Row::new("PromptContainer")
             .style(
                 Style::new()

@@ -15,9 +15,9 @@
 use protos::spelldawn::{node_type, ClientAction, DraggableNode, Node, NodeType};
 
 use crate::actions::InterfaceAction;
+use crate::flexbox;
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
-use crate::rendering;
 
 #[derive(Debug, Default)]
 pub struct Draggable {
@@ -64,16 +64,17 @@ impl HasNodeChildren for Draggable {
 }
 
 impl Component for Draggable {
-    fn build(mut self) -> RenderResult {
+    fn build(mut self) -> Option<Node> {
         self.render_node.node_type = Some(Box::new(NodeType {
             node_type: Some(node_type::NodeType::DraggableNode(Box::new(DraggableNode {
                 drop_target_identifiers: self.drop_targets,
                 over_target_indicator: self
                     .over_target_indicator
-                    .and_then(|c| rendering::component_boxed(c).map(Box::new)),
+                    .and_then(|c| c.build_boxed().map(Box::new)),
                 on_drop: self.on_drop.map(|d| ClientAction { action: d.as_client_action() }),
             }))),
         }));
-        RenderResult::Container(Box::new(self.render_node), self.children)
+
+        flexbox::build_with_children(self.render_node, self.children)
     }
 }

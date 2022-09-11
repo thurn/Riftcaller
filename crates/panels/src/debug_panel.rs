@@ -34,7 +34,7 @@ use protos::spelldawn::{
 pub struct DebugPanel {}
 
 impl Component for DebugPanel {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let close = Command::TogglePanel(TogglePanelCommand {
             panel_address: Some(panel::client(ClientPanelAddress::DebugPanel)),
             open: false,

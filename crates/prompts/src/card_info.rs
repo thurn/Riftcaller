@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::component::{Component, RenderResult};
+use core_ui::component::Component;
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::style::Corner;
@@ -31,7 +31,7 @@ impl SupplementalCardInfo {
 }
 
 impl Component for SupplementalCardInfo {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let mut result = Column::new("SupplementalInfo").style(
             Style::new()
                 .align_items(FlexAlign::FlexStart)
@@ -68,7 +68,7 @@ impl InfoNode {
 }
 
 impl Component for InfoNode {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         Row::new("InfoNode")
             .style(
                 Style::new()

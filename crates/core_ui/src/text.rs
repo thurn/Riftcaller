@@ -84,7 +84,7 @@ impl Text {
 }
 
 impl Component for Text {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         TextNode::new(self.text)
             .style(
                 self.layout
@@ -130,7 +130,7 @@ impl HasRenderNode for TextNode {
 }
 
 impl Component for TextNode {
-    fn build(self) -> RenderResult {
-        RenderResult::Node(Box::new(self.render_node))
+    fn build(self) -> Option<Node> {
+        Some(self.render_node)
     }
 }

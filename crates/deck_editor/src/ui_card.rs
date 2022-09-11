@@ -45,7 +45,7 @@ impl UICard {
 }
 
 impl Component for UICard {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         Draggable::new(self.card_name.to_string())
             .drop_targets(vec!["DeckCardList"])
             .over_target_indicator(

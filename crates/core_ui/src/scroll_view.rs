@@ -14,6 +14,7 @@
 
 use protos::spelldawn::{node_type, Node, NodeType, ScrollBarVisibility, ScrollViewNode};
 
+use crate::flexbox;
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
 
@@ -71,7 +72,7 @@ impl HasNodeChildren for ScrollView {
 }
 
 impl Component for ScrollView {
-    fn build(self) -> RenderResult {
-        RenderResult::Container(Box::new(self.render_node), self.children)
+    fn build(self) -> Option<Node> {
+        flexbox::build_with_children(self.render_node, self.children)
     }
 }

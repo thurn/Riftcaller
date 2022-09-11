@@ -16,8 +16,9 @@
 
 use std::fmt::Write as _;
 
+use core_ui::component::Component;
 use core_ui::design::FontColor;
-use core_ui::{design, icons, rendering};
+use core_ui::{design, icons};
 use data::card_definition::{Ability, AbilityType, CardDefinition, Cost};
 use data::card_state::CardState;
 use data::delegates::Scope;
@@ -95,7 +96,7 @@ pub fn build_supplemental_info(
     }
 
     process_keywords(&mut keywords, &mut result);
-    rendering::component(SupplementalCardInfo::new(result))
+    SupplementalCardInfo::new(result).build()
 }
 
 fn ability_cost_string(cost: &Cost<AbilityId>) -> String {

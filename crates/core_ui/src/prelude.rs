@@ -15,6 +15,8 @@
 //! Re-exports commonly-used types for UI rendering, intended to be used via
 //! wildcard import.
 
-pub use crate::component::{Component, RenderResult};
+pub use protos::spelldawn::Node;
+
+pub use crate::component::Component;
 pub use crate::flexbox::{Column, HasNodeChildren, HasRenderNode, Row};
 pub use crate::style::{DimensionExt, Edge, Layout, Style};

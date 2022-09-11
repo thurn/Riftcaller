@@ -84,7 +84,7 @@ impl Panel {
 }
 
 impl Component for Panel {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let background = style::sprite("Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/QuarterSize/Basic_window_big_recolored");
         Row::new(self.title.clone().unwrap_or_else(|| "Panel".to_string()))
             .style(
@@ -136,7 +136,7 @@ impl TitleBar {
 }
 
 impl Component for TitleBar {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let background = style::sprite(
             "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/QuarterSize/Basic_big_bar_512",
         );

@@ -32,7 +32,7 @@ impl CollectionControls {
 }
 
 impl Component for CollectionControls {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         Row::new(format!("CollectionControls for {:?}", self.player_id))
             .style(
                 Style::new()

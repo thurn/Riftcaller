@@ -45,7 +45,7 @@ impl ListCell {
 }
 
 impl Component for ListCell {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let mut result = Row::new(format!("ListCell {}", self.text))
             .style(
                 self.layout

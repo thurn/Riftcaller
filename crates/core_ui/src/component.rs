@@ -22,42 +22,29 @@ use protos::spelldawn::Node;
 /// properties settable via a builder pattern.
 ///
 /// Components can either return another component, typically by invoking its
-/// `build` method, or can create a UI node directly, as discussed in
-/// [RenderResult].
+/// `build` method, or can create and return UI node directly
 pub trait Component: Debug + ComponentExt {
-    fn build(self) -> RenderResult;
+    fn build(self) -> Option<Node>;
 }
 
-/// Return type of the `render` function, representing the nodes of the final UI
-/// hierarchy. Can be a single [Node] or a container with its own child
-/// components. Additionally, components can return `RenderResult::None` to
-/// request that they be excluded from the hierarchy.
-///
-/// Typically you invoke the `build` method of another component instead of
-/// creating this type directly.
-pub enum RenderResult {
-    Container(Box<Node>, Vec<Box<dyn Component>>),
-    Node(Box<Node>),
-    None,
-}
-
+/// Lets Option<Component> be used as a component
 impl<T: Component> Component for Option<T> {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         if let Some(c) = self {
             c.build()
         } else {
-            RenderResult::None
+            None
         }
     }
 }
 
 /// Helper trait to let components be moved into a `Box`.
 pub trait ComponentExt {
-    fn render_boxed(self: Box<Self>) -> RenderResult;
+    fn build_boxed(self: Box<Self>) -> Option<Node>;
 }
 
 impl<T: Component> ComponentExt for T {
-    fn render_boxed(self: Box<Self>) -> RenderResult {
+    fn build_boxed(self: Box<Self>) -> Option<Node> {
         self.build()
     }
 }
@@ -67,7 +54,7 @@ impl<T: Component> ComponentExt for T {
 pub struct EmptyComponent;
 
 impl Component for EmptyComponent {
-    fn build(self) -> RenderResult {
-        RenderResult::None
+    fn build(self) -> Option<Node> {
+        None
     }
 }

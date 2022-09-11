@@ -20,7 +20,8 @@ pub mod game_menu_panel;
 pub mod set_player_name_panel;
 
 use anyhow::Result;
-use core_ui::{panel, rendering};
+use core_ui::component::Component;
+use core_ui::panel;
 use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
@@ -64,17 +65,15 @@ pub fn render_panel(
 
 fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Option<Node> {
     match address {
-        PanelAddress::SetPlayerName(side) => rendering::component(SetPlayerNamePanel::new(side)),
-        PanelAddress::DeckEditor(data) => {
-            rendering::component(DeckEditorPanel::new(player.id, data))
-        }
+        PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
+        PanelAddress::DeckEditor(data) => DeckEditorPanel { player, data }.build(),
     }
 }
 
 fn render_client_panel(address: ClientPanelAddress) -> Option<Node> {
     match address {
         ClientPanelAddress::Unspecified => None,
-        ClientPanelAddress::DebugPanel => rendering::component(DebugPanel {}),
-        ClientPanelAddress::GameMenu => rendering::component(GameMenuPanel {}),
+        ClientPanelAddress::DebugPanel => DebugPanel {}.build(),
+        ClientPanelAddress::GameMenu => GameMenuPanel {}.build(),
     }
 }

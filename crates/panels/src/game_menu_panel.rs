@@ -30,7 +30,7 @@ use protos::spelldawn::{ClientPanelAddress, FlexAlign, FlexJustify, TogglePanelC
 pub struct GameMenuPanel {}
 
 impl Component for GameMenuPanel {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let close = Command::TogglePanel(TogglePanelCommand {
             panel_address: Some(panel::client(ClientPanelAddress::GameMenu)),
             open: false,

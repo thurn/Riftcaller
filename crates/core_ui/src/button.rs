@@ -85,7 +85,7 @@ impl Button {
 }
 
 impl Component for Button {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let background = style::sprite(match self.button_type {
             ButtonType::Primary => {
                 "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Rescaled/Button_Orange"
@@ -180,7 +180,7 @@ impl IconButton {
 }
 
 impl Component for IconButton {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let frame = style::sprite(
             "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Square/EPIC_silver_fr_s",
         );

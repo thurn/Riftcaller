@@ -18,7 +18,7 @@ use std::marker::PhantomData;
 use protos::spelldawn::{ClientAction, EventHandlers, FlexDirection, Node};
 
 use crate::actions::InterfaceAction;
-use crate::component::{Component, RenderResult};
+use crate::component::Component;
 use crate::style::Style;
 
 /// Renders a [Flexbox] which lays out its children horizontally, from left to
@@ -200,8 +200,20 @@ impl<D: FlexboxDirection> Flexbox<D> {
     }
 }
 
+pub fn build_with_children(
+    mut render_node: Node,
+    children: Vec<Box<dyn Component>>,
+) -> Option<Node> {
+    for child in children {
+        if let Some(c) = child.build_boxed() {
+            render_node.children.push(c);
+        }
+    }
+    Some(render_node)
+}
+
 impl<D: FlexboxDirection> Component for Flexbox<D> {
-    fn build(self) -> RenderResult {
-        RenderResult::Container(Box::new(self.render_node), self.children)
+    fn build(self) -> Option<Node> {
+        build_with_children(self.render_node, self.children)
     }
 }

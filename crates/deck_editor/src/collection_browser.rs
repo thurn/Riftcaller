@@ -51,7 +51,7 @@ fn card_row(number: u32, cards: impl Iterator<Item = UICard>) -> impl Component 
 }
 
 impl Component for CollectionBrowser {
-    fn build(self) -> RenderResult {
+    fn build(self) -> Option<Node> {
         let row_one = vec![
             CardName::TestOverlordSpell,
             CardName::TestOverlordIdentity,

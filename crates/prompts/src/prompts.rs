@@ -15,7 +15,6 @@
 use anyhow::Result;
 use core_ui::design::FontSize;
 use core_ui::prelude::Component;
-use core_ui::rendering;
 use core_ui::text::Text;
 use data::game::GameState;
 use data::game_actions::{GamePrompt, PromptContext};
@@ -48,7 +47,7 @@ pub fn action_prompt(
     }
 
     Ok(Some(InterfaceMainControls {
-        node: rendering::component(PromptContainer::new().children(main_controls)),
+        node: PromptContainer::new().children(main_controls).build(),
         card_anchor_nodes,
     }))
 }
