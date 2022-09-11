@@ -45,7 +45,9 @@ pub enum DebugAction {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum DeckEditorAction {
+    // Add one copy of a card to a deck
     AddToDeck(CardName, DeckId),
+    // Remove one copy of a card from a deck
     RemoveFromDeck(CardName, DeckId),
 }
 

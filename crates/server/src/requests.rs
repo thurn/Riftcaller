@@ -22,7 +22,7 @@ use dashmap::DashMap;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
-use data::player_data::{CurrentGame, NewGameRequest};
+use data::player_data::{CurrentGame, NewGameRequest, PlayerData};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
 use data::updates::{UpdateTracker, Updates};
@@ -36,7 +36,8 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::{
     card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
-    LoadSceneCommand, NewGameAction, PlayerIdentifier, SceneLoadMode, StandardAction,
+    InterfacePanelAddress, LoadSceneCommand, NewGameAction, PlayerIdentifier, SceneLoadMode,
+    StandardAction,
 };
 use rules::{dispatch, mutations};
 use serde_json::de;
@@ -183,27 +184,31 @@ impl GameResponse {
 pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Result<GameResponse> {
     let player_id = player_id(database, &request.player_id)?;
     let game_id = player_data::current_game_id(database.player(player_id)?);
-    let game_action = request
+    let client_action = request
         .action
         .as_ref()
         .with_error(|| "Action is required")?
         .action
         .as_ref()
-        .with_error(|| "GameAction is required")?;
+        .with_error(|| "ClientAction is required")?;
 
-    let _span = warn_span!("handle_request", ?player_id, ?game_id, ?game_action).entered();
+    let _span = warn_span!("handle_request", ?player_id, ?game_id, ?client_action).entered();
     if !matches!(request.action, Some(ClientAction { action: Some(Action::FetchPanel(_)) })) {
         // Don't log FetchPanel because we send it every 1 second in autorefresh mode
-        warn!(?player_id, ?game_id, ?game_action, "received_request");
+        warn!(?player_id, ?game_id, ?client_action, "received_request");
     }
 
-    let response = match game_action {
-        Action::StandardAction(standard_action) => {
-            handle_standard_action(database, player_id, game_id, standard_action)
-        }
+    let response = match client_action {
+        Action::StandardAction(standard_action) => handle_standard_action(
+            database,
+            player_id,
+            game_id,
+            &request.open_panels,
+            standard_action,
+        ),
         Action::FetchPanel(fetch_panel) => {
             Ok(GameResponse::from_commands(vec![Command::UpdatePanels(panels::render_panel(
-                player_id,
+                &find_player(database, player_id)?,
                 fetch_panel.panel_address.clone().with_error(|| "missing address")?,
             )?)]))
         }
@@ -253,7 +258,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
             let game = database.game(game_id)?;
             let side = user_side(player_id, &game)?;
             let mut commands = render::connect(&game, side)?;
-            panels::append_standard_panels(player_id, &mut commands)?;
+            panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
             Ok(command_list(commands))
         } else {
             fail!("Game not found: {:?}", game_id)
@@ -274,7 +279,7 @@ fn handle_new_game(
     let opponent_id = player_id(database, &action.opponent_id)?;
     let deck_id = adapters::deck_id(action.deck.with_error(|| "Expected Deck ID")?);
     let mut user = database.player(user_id)?.with_error(|| "User not found")?;
-    let user_deck = user.deck(deck_id).clone();
+    let user_deck = user.deck(deck_id)?.clone();
     let opponent_deck =
         if let Some(deck) = requested_deck(database, opponent_id, user_deck.side.opponent())? {
             deck
@@ -338,7 +343,11 @@ fn requested_deck(
     Ok(match player_id {
         PlayerId::Database(_) => {
             let player = database.player(player_id)?.with_error(|| "Player not found")?;
-            player.requested_deck_id().map(|deck_id| player.deck(deck_id).clone())
+            if let Some(deck_id) = player.requested_deck_id() {
+                Some(player.deck(deck_id)?.clone())
+            } else {
+                None
+            }
         }
         // TODO: Each named player should have their own decklist
         PlayerId::Named(_) => Some(decklists::canonical_deck(player_id, side)),
@@ -391,6 +400,17 @@ pub fn handle_custom_action(
     })
 }
 
+fn handle_player_action(
+    database: &mut impl Database,
+    player_id: PlayerId,
+    function: impl Fn(&mut PlayerData) -> Result<()>,
+) -> Result<GameResponse> {
+    let mut player = find_player(database, player_id)?;
+    function(&mut player)?;
+    database.write_player(&player)?;
+    Ok(GameResponse::from_commands(vec![]))
+}
+
 /// Sends a game response to a given player, if they are connected to the
 /// server.
 pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
@@ -406,25 +426,35 @@ pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
 }
 
 /// Parses the serialized payload in a [StandardAction] and dispatches to the
-/// correct handler.
+/// correct handler. Updates interface panels provided in 'open_panels'.
 fn handle_standard_action(
     database: &mut impl Database,
     player_id: PlayerId,
     game_id: Option<GameId>,
+    open_panels: &Vec<InterfacePanelAddress>,
     standard_action: &StandardAction,
 ) -> Result<GameResponse> {
     verify!(!standard_action.payload.is_empty(), "Empty action payload received");
     let action: UserAction = de::from_slice(&standard_action.payload)
         .with_error(|| "Failed to deserialize action payload")?;
-    match action {
+    let mut result = match action {
         UserAction::Debug(debug_action) => {
             debug::handle_debug_action(database, player_id, game_id, debug_action)
         }
         UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
-        UserAction::DeckEditorAction(a) => {
-            Ok(GameResponse::from_commands(deck_editor_actions::handle(a)?))
-        }
+        UserAction::DeckEditorAction(a) => handle_player_action(database, player_id, |player| {
+            deck_editor_actions::handle(player, a)
+        }),
+    }?;
+
+    let player = find_player(database, player_id)?;
+    for address in open_panels {
+        result.command_list.commands.push(GameCommand {
+            command: Some(Command::UpdatePanels(panels::render_panel(&player, address.clone())?)),
+        });
     }
+
+    Ok(result)
 }
 
 /// Look up the state for a game which is expected to exist and assigns an
@@ -439,6 +469,12 @@ pub fn find_game(database: &impl Database, game_id: Option<GameId>) -> Result<Ga
     });
 
     Ok(game)
+}
+
+/// Look up the [PlayerData] for a player, or creates a new instance if none
+/// already exists.
+pub fn find_player(database: &impl Database, player_id: PlayerId) -> Result<PlayerData> {
+    Ok(database.player(player_id)?.unwrap_or_else(|| PlayerData::new(player_id)))
 }
 
 /// Turns an `&Option<PlayerIdentifier>` into a [PlayerId], or returns an error

@@ -976,6 +976,10 @@ pub struct GameRequest {
     /// the honor system :)
     #[prost(message, optional, tag = "2")]
     pub player_id: ::core::option::Option<PlayerIdentifier>,
+    /// Interface panels which were open at the time of the action, to be
+    /// updated.
+    #[prost(message, repeated, tag = "3")]
+    pub open_panels: ::prost::alloc::vec::Vec<InterfacePanelAddress>,
 }
 // ============================================================================
 // Commands

@@ -168,6 +168,7 @@ namespace Spelldawn.Services
         Action = action,
         PlayerId = Errors.CheckNotNull(_playerIdentifier),
       };
+      request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);
 
       if (OfflineMode)
       {

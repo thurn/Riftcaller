@@ -14,8 +14,10 @@
 
 use std::collections::HashMap;
 
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
+use with_error::WithError;
 
 use crate::card_name::CardName;
 use crate::deck::Deck;
@@ -55,6 +57,10 @@ pub struct PlayerData {
 }
 
 impl PlayerData {
+    pub fn new(id: PlayerId) -> Self {
+        Self { id, current_game: None, decks: vec![], collection: HashMap::default() }
+    }
+
     /// Returns the [DeckId] this player requested to use for a new game.
     pub fn requested_deck_id(&self) -> Option<DeckId> {
         match &self.current_game {
@@ -64,12 +70,12 @@ impl PlayerData {
     }
 
     /// Retrieves one of a player's decks based on its [DeckId].
-    pub fn deck(&self, deck_id: DeckId) -> &Deck {
-        &self.decks[deck_id.value as usize]
+    pub fn deck(&self, deck_id: DeckId) -> Result<&Deck> {
+        self.decks.get(deck_id.value as usize).with_error(|| "Deck not found")
     }
 
-    pub fn deck_mut(&mut self, deck_id: DeckId) -> &mut Deck {
-        &mut self.decks[deck_id.value as usize]
+    pub fn deck_mut(&mut self, deck_id: DeckId) -> Result<&mut Deck> {
+        self.decks.get_mut(deck_id.value as usize).with_error(|| "Deck not found")
     }
 }
 

@@ -57,6 +57,8 @@ namespace Spelldawn.Services
 
     public VisualElement RootVisualElement => _document.rootVisualElement;
 
+    public IEnumerable<InterfacePanelAddress> OpenPanels => _openPanels;
+
     public void Initialize()
     {
       _document.rootVisualElement.Clear();

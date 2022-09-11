@@ -21,7 +21,7 @@ pub mod set_player_name_panel;
 
 use anyhow::Result;
 use core_ui::{panel, rendering};
-use data::player_name::PlayerId;
+use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use panel_address::PanelAddress;
@@ -37,22 +37,22 @@ use crate::game_menu_panel::GameMenuPanel;
 use crate::set_player_name_panel::SetPlayerNamePanel;
 
 /// Appends a command to `commands` to render commonly-used panels on connect.
-pub fn append_standard_panels(player_id: PlayerId, commands: &mut Vec<Command>) -> Result<()> {
+pub fn append_standard_panels(player: &PlayerData, commands: &mut Vec<Command>) -> Result<()> {
     commands.push(Command::UpdatePanels(render_panel(
-        player_id,
+        player,
         panel::client(ClientPanelAddress::DebugPanel),
     )?));
     Ok(())
 }
 
 pub fn render_panel(
-    player_id: PlayerId,
+    player: &PlayerData,
     address: InterfacePanelAddress,
 ) -> Result<UpdatePanelsCommand> {
     let node = match address.address_type.as_ref().with_error(|| "missing address_type")? {
         AddressType::Serialized(payload) => {
             let address = de::from_slice(payload).with_error(|| "deserialization failed")?;
-            render_server_panel(player_id, address)
+            render_server_panel(player, address)
         }
         AddressType::ClientPanel(client_panel) => render_client_panel(
             ClientPanelAddress::from_i32(*client_panel).with_error(|| "invalid known panel")?,
@@ -62,11 +62,11 @@ pub fn render_panel(
     Ok(UpdatePanelsCommand { panels: vec![InterfacePanel { address: Some(address), node }] })
 }
 
-fn render_server_panel(player_id: PlayerId, address: PanelAddress) -> Option<Node> {
+fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Option<Node> {
     match address {
         PanelAddress::SetPlayerName(side) => rendering::component(SetPlayerNamePanel::new(side)),
         PanelAddress::DeckEditor(data) => {
-            rendering::component(DeckEditorPanel::new(player_id, data))
+            rendering::component(DeckEditorPanel::new(player.id, data))
         }
     }
 }

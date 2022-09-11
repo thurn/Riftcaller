@@ -1002,6 +1002,10 @@ message GameRequest {
     // figure out how to set up authentication, but currently we operate on
     // the honor system :)
     PlayerIdentifier player_id = 2;
+
+    // Interface panels which were open at the time of the action, to be
+    // updated.
+    repeated InterfacePanelAddress open_panels = 3;
 }
 
 // ============================================================================

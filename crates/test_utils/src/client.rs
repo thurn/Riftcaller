@@ -139,6 +139,7 @@ impl TestSession {
             &GameRequest {
                 action: Some(ClientAction { action: Some(action) }),
                 player_id: Some(fake_database::to_player_identifier(player_id)),
+                open_panels: vec![],
             },
         )?;
 

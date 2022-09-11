@@ -13,9 +13,29 @@
 // limitations under the License.
 
 use anyhow::Result;
+use data::player_data::PlayerData;
 use data::user_actions::DeckEditorAction;
-use protos::spelldawn::game_command::Command;
+use with_error::{fail, WithError};
 
-pub fn handle(_: DeckEditorAction) -> Result<Vec<Command>> {
-    Ok(vec![])
+pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
+    match action {
+        DeckEditorAction::AddToDeck(card_name, deck_id) => {
+            player.deck_mut(deck_id)?.cards.entry(card_name).and_modify(|e| *e += 1).or_insert(1);
+        }
+        DeckEditorAction::RemoveFromDeck(card_name, deck_id) => {
+            let deck = player.deck_mut(deck_id)?;
+            let count = *deck.cards.get(&card_name).with_error(|| "Card not present")?;
+            match count {
+                0 => fail!("Card count is zero"),
+                1 => {
+                    deck.cards.remove(&card_name);
+                }
+                _ => {
+                    deck.cards.insert(card_name, count - 1);
+                }
+            }
+        }
+    }
+
+    Ok(())
 }
