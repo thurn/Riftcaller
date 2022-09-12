@@ -21,7 +21,7 @@ use crate::prelude::*;
 #[derive(Debug, Default)]
 pub struct DropTarget {
     render_node: Node,
-    children: Vec<Box<dyn Component>>,
+    children: Vec<Node>,
 }
 
 impl DropTarget {
@@ -39,7 +39,7 @@ impl HasRenderNode for DropTarget {
 }
 
 impl HasNodeChildren for DropTarget {
-    fn get_internal_children(&mut self) -> &mut Vec<Box<dyn Component>> {
+    fn get_internal_children(&mut self) -> &mut Vec<Node> {
         &mut self.children
     }
 }

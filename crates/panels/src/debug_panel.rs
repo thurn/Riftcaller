@@ -30,8 +30,14 @@ use protos::spelldawn::{
     ClientDebugCommand, ClientPanelAddress, FlexAlign, FlexJustify, FlexWrap, TogglePanelCommand,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct DebugPanel {}
+
+impl DebugPanel {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {

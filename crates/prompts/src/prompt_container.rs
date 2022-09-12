@@ -15,7 +15,7 @@
 use core_ui::prelude::*;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexWrap};
 
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct PromptContainer {
     children: Vec<Box<dyn Component>>,
 }

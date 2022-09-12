@@ -26,8 +26,9 @@ use protos::spelldawn::{
     UpdateInterfaceElementCommand,
 };
 
-use crate::ui_card::UICard;
+use crate::deck_card::DeckCard;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct CollectionBrowser {
     player_id: PlayerId,
@@ -39,7 +40,7 @@ impl CollectionBrowser {
     }
 }
 
-fn card_row(number: u32, cards: impl Iterator<Item = UICard>) -> impl Component {
+fn card_row(number: u32, cards: impl Iterator<Item = DeckCard>) -> impl Component {
     Row::new(format!("CardRow{number}"))
         .style(
             Style::new()
@@ -65,7 +66,7 @@ impl Component for CollectionBrowser {
             CardName::TestProject2Cost,
         ];
 
-        Column::new(format!("CollectionBrowser{:?}", self.player_id))
+        Column::new("CollectionBrowser".to_string())
             .style(
                 Style::new()
                     .background_color(BLACK)
@@ -77,7 +78,7 @@ impl Component for CollectionBrowser {
             .child(card_row(
                 1,
                 row_one.into_iter().map(|card_name| {
-                    UICard::new(card_name)
+                    DeckCard::new(card_name)
                         .layout(Layout::new().margin(Edge::All, 16.px()))
                         .on_drop(drop_action(card_name, DeckId::new(1)))
                 }),
@@ -85,7 +86,7 @@ impl Component for CollectionBrowser {
             .child(card_row(
                 2,
                 row_two.into_iter().map(|card_name| {
-                    UICard::new(card_name)
+                    DeckCard::new(card_name)
                         .layout(Layout::new().margin(Edge::All, 16.px()))
                         .on_drop(drop_action(card_name, DeckId::new(1)))
                 }),

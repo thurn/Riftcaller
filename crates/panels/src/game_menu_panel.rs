@@ -26,8 +26,14 @@ use panel_address::{DeckEditorData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientPanelAddress, FlexAlign, FlexJustify, TogglePanelCommand};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct GameMenuPanel {}
+
+impl GameMenuPanel {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 
 impl Component for GameMenuPanel {
     fn build(self) -> Option<Node> {

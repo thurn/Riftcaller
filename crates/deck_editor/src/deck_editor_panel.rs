@@ -17,6 +17,7 @@ use core_ui::design::BackgroundColor;
 use core_ui::icons;
 use core_ui::prelude::*;
 use data::player_data::PlayerData;
+use data::primitives::DeckId;
 use panel_address::DeckEditorData;
 use protos::spelldawn::FlexPosition;
 
@@ -28,8 +29,14 @@ pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
 #[derive(Debug)]
 pub struct DeckEditorPanel<'a> {
-    pub player: &'a PlayerData,
-    pub data: DeckEditorData,
+    player: &'a PlayerData,
+    data: DeckEditorData,
+}
+
+impl<'a> DeckEditorPanel<'a> {
+    pub fn new(player: &'a PlayerData, data: DeckEditorData) -> Self {
+        Self { player, data }
+    }
 }
 
 impl<'a> Component for DeckEditorPanel<'a> {
@@ -47,7 +54,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                     .child(CollectionControls::new(self.player.id))
                     .child(CollectionBrowser::new(self.player.id)),
             )
-            .child(DeckCardList::new(self.player.id))
+            .child(DeckCardList::new(self.player, DeckId::new(1)))
             .child(
                 IconButton::new(icons::PREVIOUS_PAGE)
                     .button_type(IconButtonType::SecondaryLarge)

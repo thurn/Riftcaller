@@ -21,7 +21,6 @@ use crate::style::WidthMode;
 use crate::text::Text;
 
 /// Represents a row within a list of items
-#[derive(Debug)]
 pub struct ListCell {
     text: String,
     layout: Layout,

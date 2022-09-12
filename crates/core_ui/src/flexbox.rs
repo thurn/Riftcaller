@@ -123,28 +123,37 @@ pub trait HasRenderNode: Sized {
 }
 
 pub trait HasNodeChildren: HasRenderNode {
-    fn get_internal_children(&mut self) -> &mut Vec<Box<dyn Component>>;
+    fn get_internal_children(&mut self) -> &mut Vec<Node>;
 
-    fn child(mut self, child: impl Component + 'static) -> Self {
-        self.get_internal_children().push(Box::new(child));
+    fn child(mut self, child: impl Component) -> Self {
+        if let Some(n) = child.build() {
+            self.get_internal_children().push(n);
+        }
         self
     }
 
     fn child_boxed(mut self, child: Box<dyn Component>) -> Self {
-        self.get_internal_children().push(child);
+        if let Some(n) = child.build_boxed() {
+            self.get_internal_children().push(n);
+        }
         self
     }
 
-    fn children(mut self, children: impl Iterator<Item = impl Component + 'static>) -> Self {
-        self.get_internal_children().extend(children.map(|child| {
-            let result: Box<dyn Component> = Box::new(child);
-            result
-        }));
+    fn children(mut self, children: impl Iterator<Item = impl Component>) -> Self {
+        for child in children {
+            if let Some(n) = child.build() {
+                self.get_internal_children().push(n);
+            }
+        }
         self
     }
 
     fn children_boxed(mut self, children: Vec<Box<dyn Component>>) -> Self {
-        self.get_internal_children().extend(children);
+        for child in children {
+            if let Some(n) = child.build_boxed() {
+                self.get_internal_children().push(n);
+            }
+        }
         self
     }
 }
@@ -154,7 +163,7 @@ pub trait HasNodeChildren: HasRenderNode {
 /// aliases.
 #[derive(Debug, Default)]
 pub struct Flexbox<D: FlexboxDirection> {
-    children: Vec<Box<dyn Component>>,
+    children: Vec<Node>,
     render_node: Node,
     phantom: PhantomData<D>,
 }
@@ -169,46 +178,24 @@ impl<D: FlexboxDirection> HasRenderNode for Flexbox<D> {
     }
 }
 
+impl<D: FlexboxDirection> HasNodeChildren for Flexbox<D> {
+    fn get_internal_children(&mut self) -> &mut Vec<Node> {
+        &mut self.children
+    }
+}
+
 impl<D: FlexboxDirection> Flexbox<D> {
     pub fn new(name: impl Into<String>) -> Self {
         let mut result = Self::default();
         result.render_node.name = name.into();
         result
     }
-
-    pub fn child(mut self, child: impl Component + 'static) -> Self {
-        self.children.push(Box::new(child));
-        self
-    }
-
-    pub fn child_boxed(mut self, child: Box<dyn Component>) -> Self {
-        self.children.push(child);
-        self
-    }
-
-    pub fn children(mut self, children: impl Iterator<Item = impl Component + 'static>) -> Self {
-        self.children.extend(children.map(|child| {
-            let result: Box<dyn Component> = Box::new(child);
-            result
-        }));
-        self
-    }
-
-    pub fn children_boxed(mut self, children: Vec<Box<dyn Component>>) -> Self {
-        self.children.extend(children);
-        self
-    }
 }
 
-pub fn build_with_children(
-    mut render_node: Node,
-    children: Vec<Box<dyn Component>>,
-) -> Option<Node> {
-    for child in children {
-        if let Some(c) = child.build_boxed() {
-            render_node.children.push(c);
-        }
-    }
+/// Adds the provided child components to the 'render_node' [Node] by invoking
+/// their `build()` method.
+pub fn build_with_children(mut render_node: Node, children: Vec<Node>) -> Option<Node> {
+    render_node.children = children;
     Some(render_node)
 }
 

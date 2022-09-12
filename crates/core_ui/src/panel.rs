@@ -34,7 +34,6 @@ use crate::{icons, style};
 
 /// A rectangular interface element that displays content centered on-screen,
 /// optionally including a title or close button.
-#[derive(Debug)]
 pub struct Panel {
     address: InterfacePanelAddress,
     width: Pixels,

@@ -18,12 +18,12 @@ use protos::spelldawn::Node;
 
 /// A component is any reusable piece of UI.
 ///
-/// Typically this is a struct that implements `Debug` and has one or more
-/// properties settable via a builder pattern.
+/// Typically this is a struct that has one or more properties settable via a
+/// builder pattern.
 ///
 /// Components can either return another component, typically by invoking its
 /// `build` method, or can create and return UI node directly
-pub trait Component: Debug + ComponentExt {
+pub trait Component: ComponentExt {
     fn build(self) -> Option<Node>;
 }
 

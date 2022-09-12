@@ -19,12 +19,12 @@ use crate::flexbox;
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
 
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct Draggable {
     render_node: Node,
-    children: Vec<Box<dyn Component>>,
+    children: Vec<Node>,
     drop_targets: Vec<String>,
-    over_target_indicator: Option<Box<dyn Component>>,
+    over_target_indicator: Option<Box<dyn Fn() -> Option<Node>>>,
     on_drop: Option<Box<dyn InterfaceAction>>,
 }
 
@@ -40,13 +40,15 @@ impl Draggable {
         self
     }
 
-    pub fn over_target_indicator(mut self, indicator: impl Component + 'static) -> Self {
+    pub fn over_target_indicator(mut self, indicator: impl Fn() -> Option<Node> + 'static) -> Self {
         self.over_target_indicator = Some(Box::new(indicator));
         self
     }
 
-    pub fn on_drop(mut self, action: impl InterfaceAction + 'static) -> Self {
-        self.on_drop = Some(Box::new(action));
+    pub fn on_drop(mut self, action: Option<impl InterfaceAction + 'static>) -> Self {
+        if let Some(a) = action {
+            self.on_drop = Some(Box::new(a));
+        }
         self
     }
 }
@@ -58,19 +60,24 @@ impl HasRenderNode for Draggable {
 }
 
 impl HasNodeChildren for Draggable {
-    fn get_internal_children(&mut self) -> &mut Vec<Box<dyn Component>> {
+    fn get_internal_children(&mut self) -> &mut Vec<Node> {
         &mut self.children
     }
 }
 
 impl Component for Draggable {
     fn build(mut self) -> Option<Node> {
+        dbg!("Building draggable");
         self.render_node.node_type = Some(Box::new(NodeType {
             node_type: Some(node_type::NodeType::DraggableNode(Box::new(DraggableNode {
                 drop_target_identifiers: self.drop_targets,
-                over_target_indicator: self
-                    .over_target_indicator
-                    .and_then(|c| c.build_boxed().map(Box::new)),
+                over_target_indicator: if self.on_drop.is_some() {
+                    // Only build indicator when a drop action is actually present -- prevents
+                    // infinitely deep hierarchies.
+                    self.over_target_indicator.and_then(|indicator| indicator()).map(Box::new)
+                } else {
+                    None
+                },
                 on_drop: self.on_drop.map(|d| ClientAction { action: d.as_client_action() }),
             }))),
         }));

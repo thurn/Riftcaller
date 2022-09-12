@@ -15,22 +15,27 @@
 use core_ui::design::RED_900;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
-use data::player_name::PlayerId;
+use data::player_data::PlayerData;
+use data::primitives::DeckId;
 use protos::spelldawn::{FlexAlign, FlexDirection};
 
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
 /// Displays the cards contained within a single deck
-#[derive(Debug, Default)]
-pub struct DeckCardList {}
+#[allow(dead_code)]
+#[derive(Debug)]
+pub struct DeckCardList<'a> {
+    player: &'a PlayerData,
+    deck_id: DeckId,
+}
 
-impl DeckCardList {
-    pub fn new(_: PlayerId) -> Self {
-        Self::default()
+impl<'a> DeckCardList<'a> {
+    pub fn new(player: &'a PlayerData, deck_id: DeckId) -> Self {
+        DeckCardList { player, deck_id }
     }
 }
 
-impl Component for DeckCardList {
+impl<'a> Component for DeckCardList<'a> {
     fn build(self) -> Option<Node> {
         DropTarget::new("DeckCardList")
             .style(

@@ -21,7 +21,7 @@ use crate::prelude::*;
 #[derive(Debug)]
 pub struct ScrollView {
     render_node: Node,
-    children: Vec<Box<dyn Component>>,
+    children: Vec<Node>,
 }
 
 impl ScrollView {
@@ -66,7 +66,7 @@ impl HasRenderNode for ScrollView {
 }
 
 impl HasNodeChildren for ScrollView {
-    fn get_internal_children(&mut self) -> &mut Vec<Box<dyn Component>> {
+    fn get_internal_children(&mut self) -> &mut Vec<Node> {
         &mut self.children
     }
 }

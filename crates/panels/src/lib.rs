@@ -66,14 +66,14 @@ pub fn render_panel(
 fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Option<Node> {
     match address {
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
-        PanelAddress::DeckEditor(data) => DeckEditorPanel { player, data }.build(),
+        PanelAddress::DeckEditor(data) => DeckEditorPanel::new(player, data).build(),
     }
 }
 
 fn render_client_panel(address: ClientPanelAddress) -> Option<Node> {
     match address {
         ClientPanelAddress::Unspecified => None,
-        ClientPanelAddress::DebugPanel => DebugPanel {}.build(),
-        ClientPanelAddress::GameMenu => GameMenuPanel {}.build(),
+        ClientPanelAddress::DebugPanel => DebugPanel::new().build(),
+        ClientPanelAddress::GameMenu => GameMenuPanel::new().build(),
     }
 }
