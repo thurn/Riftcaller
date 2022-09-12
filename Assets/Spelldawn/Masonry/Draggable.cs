@@ -15,26 +15,38 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Spelldawn.Masonry
 {
   public sealed class Draggable : VisualElement
   {
-    readonly Registry _registry;
-    readonly Node _node;
-        
-    public List<string> TargetIdentifiers { get; }
-    public Node? OverTargetIndicator { get; init; }
-    public ClientAction? OnDrop { get; init; }
-    
-    public Draggable(Registry registry, Node node, List<string> targetIdentifiers)
+    public Registry Registry { get; set; }
+    public Node Node { get; set; }
+    public List<string> TargetIdentifiers { get; set; }
+    public Node? OverTargetIndicator { get; set; }
+    public ClientAction? OnDrop { get; set; }
+    public uint? HorizontalDragStartDistance { get; set; }
+
+    public static void Apply(Registry registry, Draggable view, Node data)
     {
-      _registry = registry;
-      _node = node;
-      TargetIdentifiers = targetIdentifiers;
+      view.Registry = registry;
+      view.Node = data;
+      view.TargetIdentifiers = data.NodeType.DraggableNode.DropTargetIdentifiers.ToList();
+      view.OverTargetIndicator = data.NodeType.DraggableNode.OverTargetIndicator;
+      view.OnDrop = data.NodeType.DraggableNode.OnDrop;
+      view.HorizontalDragStartDistance = data.NodeType.DraggableNode.HorizontalDragStartDistance;
+    }
+
+    public Draggable()
+    {
+      Registry = null!;
+      Node = null!;
+      TargetIdentifiers = new List<string>();
       RegisterCallback<MouseDownEvent>(OnMouseDown);
     }
 
@@ -45,10 +57,10 @@ namespace Spelldawn.Masonry
 
     void OnMouseDown(MouseDownEvent evt)
     {
-      if (_registry.CapabilityService.CanDragInterfaceElement())
+      if (Registry.CapabilityService.CanDragInterfaceElement())
       {
-        var dragElement = (Draggable)Mason.Render(_registry, _node);
-        _registry.InputService.SetCurrentlyDragging(dragElement, worldBound.position);        
+        var dragElement = (Draggable)Mason.Render(Registry, Node);
+        Registry.InputService.SetCurrentlyDragging(dragElement, worldBound.position);        
       }
     }
   }

@@ -22,12 +22,14 @@ use serde_with::serde_as;
 
 use crate::card_name::CardName;
 use crate::player_name::PlayerId;
-use crate::primitives::Side;
+use crate::primitives::{DeckId, Side};
 
 /// Represents a player deck outside of an active game
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Deck {
+    /// Identifies this deck
+    pub id: DeckId,
     /// Identifies the user who owns this deck
     pub owner_id: PlayerId,
     /// Identifies which side this deck plays as.
@@ -40,8 +42,9 @@ pub struct Deck {
 }
 
 impl Deck {
-    pub fn single_card_champion(owner_id: PlayerId, card_name: CardName) -> Deck {
+    pub fn single_card_champion(id: DeckId, owner_id: PlayerId, card_name: CardName) -> Deck {
         Deck {
+            id,
             owner_id,
             side: Side::Champion,
             identity: CardName::TestChampionIdentity,
@@ -49,8 +52,9 @@ impl Deck {
         }
     }
 
-    pub fn single_card_overlord(owner_id: PlayerId, card_name: CardName) -> Deck {
+    pub fn single_card_overlord(id: DeckId, owner_id: PlayerId, card_name: CardName) -> Deck {
         Deck {
+            id,
             owner_id,
             side: Side::Overlord,
             identity: CardName::TestOverlordIdentity,

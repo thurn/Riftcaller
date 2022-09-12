@@ -22,10 +22,10 @@ use crate::prelude::*;
 #[derive(Default)]
 pub struct Draggable {
     render_node: Node,
+    draggable: DraggableNode,
     children: Vec<Node>,
-    drop_targets: Vec<String>,
     over_target_indicator: Option<Box<dyn Fn() -> Option<Node>>>,
-    on_drop: Option<Box<dyn InterfaceAction>>,
+    enabled: bool,
 }
 
 impl Draggable {
@@ -36,7 +36,7 @@ impl Draggable {
     }
 
     pub fn drop_targets(mut self, identifiers: Vec<impl Into<String>>) -> Self {
-        self.drop_targets = identifiers.into_iter().map(Into::into).collect();
+        self.draggable.drop_target_identifiers = identifiers.into_iter().map(Into::into).collect();
         self
     }
 
@@ -46,9 +46,16 @@ impl Draggable {
     }
 
     pub fn on_drop(mut self, action: Option<impl InterfaceAction + 'static>) -> Self {
-        if let Some(a) = action {
-            self.on_drop = Some(Box::new(a));
-        }
+        self.enabled = action.is_some();
+        self.draggable.on_drop = action.map(|d| ClientAction { action: d.as_client_action() });
+        self
+    }
+
+    /// User must drag the element through this horizontal distance in screen
+    /// pixels before the UI responds. Useful to enable horizontal element
+    /// dragging from a vertical scroll view.
+    pub fn horizontal_drag_start_distance(mut self, offset: u32) -> Self {
+        self.draggable.horizontal_drag_start_distance = Some(offset);
         self
     }
 }
@@ -67,19 +74,16 @@ impl HasNodeChildren for Draggable {
 
 impl Component for Draggable {
     fn build(mut self) -> Option<Node> {
-        dbg!("Building draggable");
+        self.draggable.over_target_indicator = if self.enabled {
+            // Only build indicator when a drop action is actually present -- prevents
+            // infinitely deep hierarchies.
+            self.over_target_indicator.and_then(|indicator| indicator()).map(Box::new)
+        } else {
+            None
+        };
+
         self.render_node.node_type = Some(Box::new(NodeType {
-            node_type: Some(node_type::NodeType::DraggableNode(Box::new(DraggableNode {
-                drop_target_identifiers: self.drop_targets,
-                over_target_indicator: if self.on_drop.is_some() {
-                    // Only build indicator when a drop action is actually present -- prevents
-                    // infinitely deep hierarchies.
-                    self.over_target_indicator.and_then(|indicator| indicator()).map(Box::new)
-                } else {
-                    None
-                },
-                on_drop: self.on_drop.map(|d| ClientAction { action: d.as_client_action() }),
-            }))),
+            node_type: Some(node_type::NodeType::DraggableNode(Box::new(self.draggable))),
         }));
 
         flexbox::build_with_children(self.render_node, self.children)

@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::PINK_900;
+use core_ui::design::{FontSize, PINK_900};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
+use core_ui::text::Text;
 use data::card_name::CardName;
-use protos::spelldawn::StandardAction;
+use protos::spelldawn::{FlexAlign, FlexJustify, StandardAction, TextAlign};
 
 use crate::deck_card::DeckCard;
 
@@ -25,11 +26,12 @@ pub struct DeckCardTitle {
     layout: Layout,
     card_name: CardName,
     on_drop: Option<StandardAction>,
+    count: Option<u32>,
 }
 
 impl DeckCardTitle {
     pub fn new(card_name: CardName) -> Self {
-        Self { card_name, layout: Layout::default(), on_drop: None }
+        Self { card_name, layout: Layout::default(), on_drop: None, count: None }
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {
@@ -41,6 +43,11 @@ impl DeckCardTitle {
         self.on_drop = on_drop;
         self
     }
+
+    pub fn count(mut self, count: u32) -> Self {
+        self.count = Some(count);
+        self
+    }
 }
 
 impl Component for DeckCardTitle {
@@ -49,7 +56,20 @@ impl Component for DeckCardTitle {
             .drop_targets(vec!["CollectionBrowser"])
             .over_target_indicator(move || DeckCard::new(self.card_name).build())
             .on_drop(self.on_drop)
-            .style(Style::new().width(20.vw()).height(10.vh()).background_color(PINK_900))
+            .horizontal_drag_start_distance(100)
+            .style(
+                Style::new()
+                    .width(20.vw())
+                    .height(10.vh())
+                    .align_items(FlexAlign::Center)
+                    .justify_content(FlexJustify::Center)
+                    .background_color(PINK_900)
+                    .margin(Edge::All, 1.vh()),
+            )
+            .child(
+                Text::new(self.card_name.displayed_name(), FontSize::CardName)
+                    .text_align(TextAlign::MiddleCenter),
+            )
             .build()
     }
 }

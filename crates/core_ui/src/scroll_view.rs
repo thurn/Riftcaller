@@ -12,50 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{node_type, Node, NodeType, ScrollBarVisibility, ScrollViewNode};
+use protos::spelldawn::{
+    node_type, Node, NodeType, ScrollBarVisibility, ScrollViewNode, TouchScrollBehavior,
+};
 
 use crate::flexbox;
 use crate::flexbox::HasNodeChildren;
 use crate::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct ScrollView {
     render_node: Node,
     children: Vec<Node>,
+    scroll_node: ScrollViewNode,
 }
 
 impl ScrollView {
     pub fn new(name: impl Into<String>) -> Self {
-        Self {
-            render_node: Node {
-                name: name.into(),
-                node_type: Some(Box::new(NodeType {
-                    node_type: Some(node_type::NodeType::ScrollViewNode(ScrollViewNode::default())),
-                })),
-                ..Node::default()
-            },
-            children: vec![],
-        }
+        let mut result = Self::default();
+        result.render_node.name = name.into();
+        result
     }
 
     pub fn horizontal_scrollbar_visibility(mut self, visibility: ScrollBarVisibility) -> Self {
-        self.internal_node().unwrap().horizontal_scroll_bar_visibility = visibility.into();
+        self.scroll_node.set_horizontal_scroll_bar_visibility(visibility);
         self
     }
 
     pub fn vertical_scrollbar_visibility(mut self, visibility: ScrollBarVisibility) -> Self {
-        self.internal_node().unwrap().vertical_scroll_bar_visibility = visibility.into();
+        self.scroll_node.set_vertical_scroll_bar_visibility(visibility);
         self
     }
 
-    fn internal_node(&mut self) -> Option<&mut ScrollViewNode> {
-        if let Some(node_type::NodeType::ScrollViewNode(n)) =
-            self.render_node.node_type.as_mut()?.node_type.as_mut()
-        {
-            Some(n)
-        } else {
-            None
-        }
+    pub fn scroll_deceleration_rate(mut self, rate: f32) -> Self {
+        self.scroll_node.scroll_deceleration_rate = Some(rate);
+        self
+    }
+
+    pub fn touch_scroll_behavior(mut self, behavior: TouchScrollBehavior) -> Self {
+        self.scroll_node.set_touch_scroll_behavior(behavior);
+        self
     }
 }
 
@@ -72,7 +68,10 @@ impl HasNodeChildren for ScrollView {
 }
 
 impl Component for ScrollView {
-    fn build(self) -> Option<Node> {
+    fn build(mut self) -> Option<Node> {
+        self.render_node.node_type = Some(Box::new(NodeType {
+            node_type: Some(node_type::NodeType::ScrollViewNode(self.scroll_node)),
+        }));
         flexbox::build_with_children(self.render_node, self.children)
     }
 }

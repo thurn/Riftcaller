@@ -14,6 +14,7 @@
 
 use core_ui::actions;
 use core_ui::design::BLACK;
+use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
 use data::card_name::CardName;
 use data::player_name::PlayerId;
@@ -22,8 +23,8 @@ use data::user_actions::{DeckEditorAction, UserAction};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    AnimateToChildIndex, EasingMode, FlexAlign, FlexJustify, StandardAction, TimeValue,
-    UpdateInterfaceElementCommand,
+    AnimateToChildIndex, EasingMode, FlexAlign, FlexDirection, FlexJustify, StandardAction,
+    TimeValue, UpdateInterfaceElementCommand,
 };
 
 use crate::deck_card::DeckCard;
@@ -66,10 +67,11 @@ impl Component for CollectionBrowser {
             CardName::TestProject2Cost,
         ];
 
-        Column::new("CollectionBrowser".to_string())
+        DropTarget::new("CollectionBrowser".to_string())
             .style(
                 Style::new()
                     .background_color(BLACK)
+                    .flex_direction(FlexDirection::Column)
                     .flex_grow(1.0)
                     .margin(Edge::Horizontal, 112.px())
                     .align_items(FlexAlign::Center)

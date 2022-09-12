@@ -14,10 +14,10 @@
 
 //! Renders the deck editor window
 
+pub mod card_list;
 pub mod collection_browser;
 pub mod collection_controls;
 pub mod deck_card;
-pub mod deck_card_list;
 pub mod deck_card_title;
 pub mod deck_editor_actions;
 pub mod deck_editor_panel;

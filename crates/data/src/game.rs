@@ -588,6 +588,7 @@ mod tests {
     use super::*;
     use crate::card_name::CardName;
     use crate::player_name::NamedPlayer;
+    use crate::primitives::DeckId;
 
     #[test]
     fn insert_at_index() {
@@ -640,12 +641,14 @@ mod tests {
         GameState::new(
             GameId::new(0),
             Deck {
+                id: DeckId::new(0),
                 side: Side::Overlord,
                 owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
                 identity: CardName::TestOverlordIdentity,
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
             Deck {
+                id: DeckId::new(1),
                 side: Side::Champion,
                 owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
                 identity: CardName::TestOverlordIdentity,

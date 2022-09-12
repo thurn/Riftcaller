@@ -274,7 +274,7 @@ fn raid_position_override(game: &GameState, id: GameObjectId) -> Result<Option<O
         match raid_data.phase().display_state(game)? {
             RaidDisplayState::None => None,
             RaidDisplayState::Defenders(defenders) => {
-                browser_position(id, raid(), raid_browser(game, raid_data, defenders)?)
+                browser_position(id, raid(), raid_browser(game, raid_data, defenders))
             }
             RaidDisplayState::Access => {
                 browser_position(id, browser(), raid_access_browser(game, raid_data))
@@ -312,11 +312,7 @@ fn browser_position(
     })
 }
 
-fn raid_browser(
-    game: &GameState,
-    raid: &RaidData,
-    defenders: Vec<CardId>,
-) -> Result<Vec<GameObjectId>> {
+fn raid_browser(game: &GameState, raid: &RaidData, defenders: Vec<CardId>) -> Vec<GameObjectId> {
     let mut result = Vec::new();
 
     match raid.target {
@@ -335,8 +331,7 @@ fn raid_browser(
     result.extend(game.occupants(raid.target).map(|card| GameObjectId::CardId(card.id)));
     result.extend(defenders.iter().map(|card_id| GameObjectId::CardId(*card_id)));
     result.push(GameObjectId::Identity(Side::Champion));
-
-    Ok(result)
+    result
 }
 
 fn raid_access_browser(game: &GameState, raid: &RaidData) -> Vec<GameObjectId> {

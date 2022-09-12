@@ -53,7 +53,7 @@ pub fn render_panel(
     let node = match address.address_type.as_ref().with_error(|| "missing address_type")? {
         AddressType::Serialized(payload) => {
             let address = de::from_slice(payload).with_error(|| "deserialization failed")?;
-            render_server_panel(player, address)
+            render_server_panel(player, address)?
         }
         AddressType::ClientPanel(client_panel) => render_client_panel(
             ClientPanelAddress::from_i32(*client_panel).with_error(|| "invalid known panel")?,
@@ -63,11 +63,14 @@ pub fn render_panel(
     Ok(UpdatePanelsCommand { panels: vec![InterfacePanel { address: Some(address), node }] })
 }
 
-fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Option<Node> {
-    match address {
+fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Option<Node>> {
+    Ok(match address {
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
-        PanelAddress::DeckEditor(data) => DeckEditorPanel::new(player, data).build(),
-    }
+        PanelAddress::DeckEditor(data) => {
+            let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
+            DeckEditorPanel::new(player, open_deck).build()
+        }
+    })
 }
 
 fn render_client_panel(address: ClientPanelAddress) -> Option<Node> {

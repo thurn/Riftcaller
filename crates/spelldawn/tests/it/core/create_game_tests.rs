@@ -19,7 +19,7 @@ use data::game::MulliganDecision;
 use data::game_actions::{GameAction, PromptAction};
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
-use data::primitives::{GameId, Side};
+use data::primitives::{DeckId, GameId, Side};
 use insta::assert_snapshot;
 use maplit::hashmap;
 use protos::spelldawn::client_action::Action;
@@ -177,12 +177,14 @@ fn make_overlord_test_session(
 ) -> TestSession {
     initialize::run();
     let overlord_deck = Deck {
+        id: DeckId::new(0),
         owner_id: overlord_id,
         side: Side::Overlord,
         identity: CardName::TestOverlordIdentity,
         cards: hashmap! {CardName::TestOverlordSpell => 45},
     };
     let champion_deck = Deck {
+        id: DeckId::new(0),
         owner_id: champion_id,
         side: Side::Champion,
         identity: CardName::TestChampionIdentity,

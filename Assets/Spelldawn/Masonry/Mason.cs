@@ -40,7 +40,7 @@ namespace Spelldawn.Masonry
     /// </summary>
     public static VisualElement Render(Registry registry, Node node)
     {
-      var element = CreateElement(registry, node);
+      var element = CreateElement(node);
       ApplyToElement(registry, element, node);
 
       foreach (var child in node.Children)
@@ -51,16 +51,11 @@ namespace Spelldawn.Masonry
       return element;
     }
 
-    public static VisualElement CreateElement(Registry registry, Node node) => node.NodeType?.NodeTypeCase switch
+    public static VisualElement CreateElement(Node node) => node.NodeType?.NodeTypeCase switch
     {
       NodeType.NodeTypeOneofCase.Text => new NodeLabel(),
       NodeType.NodeTypeOneofCase.ScrollViewNode => new NodeScrollView(),
-      NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(registry, node,
-        node.NodeType.DraggableNode.DropTargetIdentifiers.ToList())
-      {
-        OverTargetIndicator = node.NodeType.DraggableNode.OverTargetIndicator,
-        OnDrop = node.NodeType.DraggableNode.OnDrop
-      },
+      NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(),
       NodeType.NodeTypeOneofCase.DropTargetNode => new DropTarget(),
       _ => new NodeVisualElement()
     };
@@ -77,6 +72,7 @@ namespace Spelldawn.Masonry
           ScrollViews.Apply(registry, (NodeScrollView)element, node.NodeType.ScrollViewNode);
           break;
         case NodeType.NodeTypeOneofCase.DraggableNode:
+          Draggable.Apply(registry, (Draggable)element, node);
           break;
       }
 

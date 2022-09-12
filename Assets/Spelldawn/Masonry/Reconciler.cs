@@ -77,7 +77,7 @@ namespace Spelldawn.Masonry
 
     static VisualElement UpdateWhenNew(Registry registry, Node node)
     {
-      var result = Mason.CreateElement(registry, node);
+      var result = Mason.CreateElement(node);
       foreach (var child in CreateChildren(registry, node))
       {
         result.Add(child);

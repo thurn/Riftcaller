@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{node_type, FontStyle, Node, NodeType, TextAlign, WhiteSpace};
+use protos::spelldawn::{
+    node_type, FlexOverflow, FontStyle, Node, NodeType, TextAlign, TextOverflow, WhiteSpace,
+};
 
 use crate::design::{Font, FontColor, FontSize};
 use crate::prelude::*;
@@ -96,7 +98,9 @@ impl Component for Text {
                     .font_style(self.font_style)
                     .text_align(self.text_align)
                     .white_space(self.white_space)
-                    .flex_grow(if self.width_mode == WidthMode::Constrained { 0.0 } else { 1.0 }),
+                    .flex_grow(if self.width_mode == WidthMode::Constrained { 0.0 } else { 1.0 })
+                    .text_overflow(TextOverflow::Ellipsis)
+                    .overflow(FlexOverflow::Hidden),
             )
             .build()
     }

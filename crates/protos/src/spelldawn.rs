@@ -339,9 +339,14 @@ pub struct DraggableNode {
     /// valid target.
     #[prost(message, optional, boxed, tag = "2")]
     pub over_target_indicator: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
-    //// Action to invoke when the node is dropped over a target.
+    /// Action to invoke when the node is dropped over a target.
     #[prost(message, optional, tag = "3")]
     pub on_drop: ::core::option::Option<ClientAction>,
+    /// User must drag the element through this horizontal distance in screen
+    /// pixels before the UI responds. Useful to enable horizontal element
+    /// dragging from a vertical scroll view.
+    #[prost(message, optional, tag = "4")]
+    pub horizontal_drag_start_distance: ::core::option::Option<u32>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}

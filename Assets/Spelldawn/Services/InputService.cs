@@ -30,6 +30,7 @@ namespace Spelldawn.Services
     Displayable? _lastClicked;
     Draggable? _currentlyDragging;
     VisualElement? _overTargetIndicator;
+    Vector2? _dragStartMousePosition; 
     bool _overTarget;
     [SerializeField] Registry _registry = null!;
 
@@ -40,7 +41,9 @@ namespace Spelldawn.Services
       element.style.position = Position.Absolute;
       _registry.DocumentService.RootVisualElement.Add(element);
       element.BringToFront();
+      element.style.visibility = Visibility.Hidden;
       _currentlyDragging = element;
+      _dragStartMousePosition = _registry.DocumentService.ElementMousePosition();
 
       if (element.OverTargetIndicator != null)
       {
@@ -116,11 +119,22 @@ namespace Spelldawn.Services
 
     void ElementMouseMove(Draggable currentlyDragging)
     {
+      var mousePosition = _registry.DocumentService.ElementMousePosition();
+      var horizontalDistance = Mathf.Abs(mousePosition.x - _dragStartMousePosition!.Value.x);
+      if (_currentlyDragging!.HorizontalDragStartDistance is {} distance && horizontalDistance < distance)
+      {
+        _currentlyDragging!.style.visibility = Visibility.Hidden;
+        if (_overTargetIndicator != null)
+        {
+          _overTargetIndicator.style.visibility = Visibility.Hidden;
+        }
+        return;
+      }
+
       var dropTargets = _registry.DocumentService.RootVisualElement.Query<DropTarget>().Build().ToList();
       var dragger = (_overTarget && _overTargetIndicator != null) ? _overTargetIndicator : currentlyDragging;
-      var mousePosition = _registry.DocumentService.ScreenPositionToElementPosition(Input.mousePosition);
       var target = dropTargets.Where(target =>
-          target.layout.Contains(new Vector2(mousePosition.Left, mousePosition.Top)) &&
+          target.layout.Contains(mousePosition) &&
           currentlyDragging.TargetIdentifiers.Contains(target.name))
         .OrderBy(x =>
           Vector2.Distance(x.worldBound.position,
@@ -135,10 +149,10 @@ namespace Spelldawn.Services
       }
       else
       {
+        currentlyDragging.style.visibility = Visibility.Visible;
         if (_overTargetIndicator != null)
         {
           _overTargetIndicator.style.visibility = Visibility.Hidden;
-          currentlyDragging.style.visibility = Visibility.Visible;
         }
 
         SetPosition(currentlyDragging, GetMousePosition(currentlyDragging));

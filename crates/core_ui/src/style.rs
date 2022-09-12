@@ -393,7 +393,7 @@ impl Style {
     }
 
     pub fn text_overflow(mut self, overflow: TextOverflow) -> Self {
-        self.wrapped_style.overflow = overflow as i32;
+        self.wrapped_style.set_text_overflow(overflow);
         self
     }
 

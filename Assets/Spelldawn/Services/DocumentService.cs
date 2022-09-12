@@ -115,6 +115,12 @@ namespace Spelldawn.Services
         Left = ScreenPxToElementPx(screenPosition.x)
       };
 
+    public Vector2 ElementMousePosition()
+    {
+      var position = ScreenPositionToElementPosition(Input.mousePosition);
+      return new Vector2(position.Left, position.Top);
+    }
+
     /// <summary>
     /// Returns an ElementPosition in interface coordinates corresponding to the position of the
     /// provided transform.

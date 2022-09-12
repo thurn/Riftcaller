@@ -110,6 +110,7 @@ pub enum FontSize {
     PromptContext,
     SupplementalInfo,
     Headline,
+    CardName,
 }
 
 impl From<FontSize> for Dimension {
@@ -122,6 +123,7 @@ impl From<FontSize> for Dimension {
             FontSize::PromptContext => 48,
             FontSize::SupplementalInfo => 28,
             FontSize::Headline => 36,
+            FontSize::CardName => 28,
         })
         .px()
         .into()

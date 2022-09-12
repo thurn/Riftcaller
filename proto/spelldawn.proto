@@ -446,8 +446,13 @@ message DraggableNode {
     // valid target.
     Node over_target_indicator = 2;
 
-    /// Action to invoke when the node is dropped over a target.
+    // Action to invoke when the node is dropped over a target.
     ClientAction on_drop = 3;
+
+    // User must drag the element through this horizontal distance in screen
+    // pixels before the UI responds. Useful to enable horizontal element
+    // dragging from a vertical scroll view.
+    google.protobuf.UInt32Value horizontal_drag_start_distance = 4;
 }
 
 message DropTargetNode {

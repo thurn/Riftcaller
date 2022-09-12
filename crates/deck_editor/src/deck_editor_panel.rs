@@ -16,32 +16,32 @@ use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::BackgroundColor;
 use core_ui::icons;
 use core_ui::prelude::*;
+use data::deck::Deck;
 use data::player_data::PlayerData;
-use data::primitives::DeckId;
-use panel_address::DeckEditorData;
 use protos::spelldawn::FlexPosition;
 
+use crate::card_list::CardList;
 use crate::collection_browser::CollectionBrowser;
 use crate::collection_controls::CollectionControls;
-use crate::deck_card_list::DeckCardList;
 
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct DeckEditorPanel<'a> {
     player: &'a PlayerData,
-    data: DeckEditorData,
+    open_deck: Option<&'a Deck>,
 }
 
 impl<'a> DeckEditorPanel<'a> {
-    pub fn new(player: &'a PlayerData, data: DeckEditorData) -> Self {
-        Self { player, data }
+    pub fn new(player: &'a PlayerData, open_deck: Option<&'a Deck>) -> Self {
+        Self { player, open_deck }
     }
 }
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
-        Row::new(format!("DeckEditorPanel {:?}", self.data.deck))
+        Row::new("DeckEditorPanel")
             .style(
                 Style::new()
                     .background_color(BackgroundColor::DeckEditorPanel)
@@ -54,7 +54,11 @@ impl<'a> Component for DeckEditorPanel<'a> {
                     .child(CollectionControls::new(self.player.id))
                     .child(CollectionBrowser::new(self.player.id)),
             )
-            .child(DeckCardList::new(self.player, DeckId::new(1)))
+            .child(if let Some(deck) = self.open_deck {
+                CardList::new(self.player, deck)
+            } else {
+                todo!("no open deck")
+            })
             .child(
                 IconButton::new(icons::PREVIOUS_PAGE)
                     .button_type(IconButtonType::SecondaryLarge)
