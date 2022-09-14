@@ -14,11 +14,13 @@
 
 #nullable enable
 
+using Spelldawn.Protos;
 using UnityEngine.UIElements;
 
 namespace Spelldawn.Masonry
 {
-  public sealed class DropTarget : VisualElement
+  public sealed class DropTarget : VisualElement, IMasonElement
   {
+    public NodeType.NodeTypeOneofCase NodeType { get; set; }
   }
 }

@@ -23,7 +23,7 @@ using UnityEngine.UIElements;
 
 namespace Spelldawn.Masonry
 {
-  public sealed class Draggable : VisualElement
+  public sealed class Draggable : VisualElement, IMasonElement
   {
     public Registry Registry { get; set; }
     public Node Node { get; set; }
@@ -31,6 +31,7 @@ namespace Spelldawn.Masonry
     public Node? OverTargetIndicator { get; set; }
     public ClientAction? OnDrop { get; set; }
     public uint? HorizontalDragStartDistance { get; set; }
+    public NodeType.NodeTypeOneofCase NodeType { get; set; }
 
     public static void Apply(Registry registry, Draggable view, Node data)
     {

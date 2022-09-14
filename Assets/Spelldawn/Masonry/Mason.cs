@@ -51,14 +51,20 @@ namespace Spelldawn.Masonry
       return element;
     }
 
-    public static VisualElement CreateElement(Node node) => node.NodeType?.NodeTypeCase switch
+    public static VisualElement CreateElement(Node node)
     {
-      NodeType.NodeTypeOneofCase.Text => new NodeLabel(),
-      NodeType.NodeTypeOneofCase.ScrollViewNode => new NodeScrollView(),
-      NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(),
-      NodeType.NodeTypeOneofCase.DropTargetNode => new DropTarget(),
-      _ => new NodeVisualElement()
-    };
+      VisualElement result = node.NodeType?.NodeTypeCase switch
+      {
+        NodeType.NodeTypeOneofCase.Text => new NodeLabel(),
+        NodeType.NodeTypeOneofCase.ScrollViewNode => new NodeScrollView(),
+        NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(),
+        NodeType.NodeTypeOneofCase.DropTargetNode => new DropTarget(),
+        _ => new NodeVisualElement()
+      };
+      ((IMasonElement)result).NodeType = node.NodeType?.NodeTypeCase ?? NodeType.NodeTypeOneofCase.None;
+
+      return result;
+    }
 
     /// <summary>Applies the configuration in a Node to an existing VisualElement, without modifying children.</summary>
     public static void ApplyToElement(Registry registry, VisualElement element, Node node)

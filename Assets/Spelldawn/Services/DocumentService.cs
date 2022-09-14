@@ -45,13 +45,9 @@ namespace Spelldawn.Services
     readonly Dictionary<InterfacePanelAddress, Node> _panelCache = new();
 
     VisualElement _fullScreen = null!;
-    Node _fullScreenNode = null!;
     VisualElement _mainControls = null!;
-    Node _mainControlsNode = null!;
     VisualElement _cardControls = null!;
-    Node _cardControlsNode = null!;
     VisualElement _infoZoom = null!;
-    Node _infoZoomNode = null!;
     VisualElement? _currentlyDragging;
     Coroutine? _autoRefresh;
 
@@ -62,10 +58,10 @@ namespace Spelldawn.Services
     public void Initialize()
     {
       _document.rootVisualElement.Clear();
-      AddRoot("Main Controls", out _mainControls, out _mainControlsNode);
-      AddRoot("Card Controls", out _cardControls, out _cardControlsNode);
-      AddRoot("InfoZoom", out _infoZoom, out _infoZoomNode);
-      AddRoot("Full Screen", out _fullScreen, out _fullScreenNode);
+      AddRoot("Main Controls", out _mainControls);
+      AddRoot("Card Controls", out _cardControls);
+      AddRoot("InfoZoom", out _infoZoom);
+      AddRoot("Full Screen", out _fullScreen);
     }
 
     void Update()
@@ -170,12 +166,10 @@ namespace Spelldawn.Services
     public void RenderMainControls(InterfaceMainControls? mainControls)
     {
       Reconcile(
-        ref _mainControlsNode,
         ref _mainControls,
         MainControls(mainControls?.Node));
 
       Reconcile(
-        ref _cardControlsNode,
         ref _cardControls,
         CardAnchors(mainControls?.CardAnchorNodes ?? Enumerable.Empty<CardAnchorNode>()));
     }
@@ -183,36 +177,33 @@ namespace Spelldawn.Services
     void RenderPanels()
     {
       Reconcile(
-        ref _fullScreenNode,
         ref _fullScreen,
         FullScreen(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));
     }
 
-    void Reconcile(ref Node previousNode, ref VisualElement previousElement, Node newNode)
+    void Reconcile(ref VisualElement previousElement, Node newNode)
     {
-      var result = Reconciler.Update(_registry, newNode, previousElement, previousNode);
+      var result = Reconciler.Update(_registry, newNode, previousElement);
 
       if (result != null)
       {
         previousElement = result;
       }
-
-      previousNode = newNode;
     }
 
     public void ClearInfoZoom()
     {
-      Reconcile(ref _infoZoomNode, ref _infoZoom, new Node());
+      Reconcile(ref _infoZoom, new Node());
     }
 
     public void RenderInfoZoom(Node node)
     {
-      Reconcile(ref _infoZoomNode, ref _infoZoom, node);
+      Reconcile(ref _infoZoom, node);
     }
 
-    void AddRoot(string elementName, out VisualElement element, out Node node)
+    void AddRoot(string elementName, out VisualElement element)
     {
-      node = Row(elementName, new FlexStyle
+      var node = Row(elementName, new FlexStyle
       {
         Position = FlexPosition.Absolute,
         Inset = AllDip(0),

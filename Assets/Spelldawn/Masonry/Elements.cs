@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using Spelldawn.Protos;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -21,7 +22,12 @@ using UnityEngine.UIElements;
 
 namespace Spelldawn.Masonry
 {
-  public interface INodeCallbacks
+  public interface IMasonElement
+  {
+    NodeType.NodeTypeOneofCase NodeType { get; set; }
+  }
+  
+  public interface INodeCallbacks: IMasonElement
   {
     VisualElement Self { get; }
     Lazy<Callbacks> Callbacks { get; }
@@ -122,6 +128,7 @@ namespace Spelldawn.Masonry
     public VisualElement Self => this;
     readonly Lazy<Callbacks> _callbacks = new();
     public Lazy<Callbacks> Callbacks => _callbacks;
+    public NodeType.NodeTypeOneofCase NodeType { get; set; }
   }
 
   public sealed class NodeLabel : Label, INodeCallbacks
@@ -129,6 +136,7 @@ namespace Spelldawn.Masonry
     public VisualElement Self => this;
     readonly Lazy<Callbacks> _callbacks = new();
     public Lazy<Callbacks> Callbacks => _callbacks;
+    public NodeType.NodeTypeOneofCase NodeType { get; set; }
   }
   
   public sealed class NodeScrollView : ScrollView, INodeCallbacks
@@ -136,5 +144,6 @@ namespace Spelldawn.Masonry
     public VisualElement Self => this;
     readonly Lazy<Callbacks> _callbacks = new();
     public Lazy<Callbacks> Callbacks => _callbacks;
+    public NodeType.NodeTypeOneofCase NodeType { get; set; }
   }  
 }

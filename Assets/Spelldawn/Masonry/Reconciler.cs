@@ -15,7 +15,6 @@
 using System.Collections.Generic;
 using Spelldawn.Protos;
 using Spelldawn.Services;
-using Spelldawn.Utils;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -35,21 +34,19 @@ namespace Spelldawn.Masonry
     /// <param name="node">The node to render</param>
     /// <param name="previousElement">Optionally, a previously-rendered VisualElement which should be updated to match
     /// the new Node state</param>
-    /// <param name="previousNode">The Node value corresponding to <paramref name="previousElement"/></param>
     /// <returns>Either a new VisualElement matching the provided node, or null if <paramref name="previousElement"/>
     /// was mutated to match the provided node instead.</returns>
     public static VisualElement? Update(
       Registry registry,
       Node node,
-      VisualElement? previousElement = null,
-      Node? previousNode = null)
+      VisualElement? previousElement = null)
     {
+      var nodeType = node.NodeType?.NodeTypeCase ?? NodeType.NodeTypeOneofCase.None;
       if (previousElement != null &&
-          previousNode != null &&
-          previousNode.NodeType?.NodeTypeCase == node.NodeType?.NodeTypeCase)
+          ((IMasonElement)previousElement).NodeType == nodeType)
       {
         // If node types match, reuse this node
-        return UpdateWhenMatching(registry, node, previousElement, previousNode);
+        return UpdateWhenMatching(registry, node, previousElement);
       }
       else
       {
@@ -61,10 +58,9 @@ namespace Spelldawn.Masonry
     static VisualElement? UpdateWhenMatching(
       Registry registry,
       Node node,
-      VisualElement previousElement,
-      Node previousNode)
+      VisualElement previousElement)
     {
-      var children = CreateChildren(registry, node, previousElement, previousNode);
+      var children = CreateChildren(registry, node, previousElement);
       previousElement.Clear();
       foreach (var child in children)
       {
@@ -89,22 +85,19 @@ namespace Spelldawn.Masonry
 
     static List<VisualElement> CreateChildren(Registry registry,
       Node node,
-      VisualElement? previousElement = null,
-      Node? previousNode = null)
+      VisualElement? previousElement = null)
     {
       var children = new List<VisualElement>();
       for (var i = 0; i < node.Children.Count; ++i)
       {
         var child = node.Children[i];
-        if (previousElement != null && previousNode != null && i < previousNode.Children.Count)
+        if (previousElement != null && i < previousElement.childCount)
         {
-          Errors.CheckState(previousElement.childCount == previousNode.Children.Count, "Child count mismatch");
           // Element exists in previous tree.
           var updated = Update(
             registry,
             child,
-            previousElement[i],
-            i < previousNode.Children.Count ? previousNode.Children[i] : null);
+            previousElement[i]);
           children.Add(updated ?? previousElement[i]);
         }
         else
