@@ -117,6 +117,11 @@ namespace Spelldawn.Services
       return new Vector2(position.Left, position.Top);
     }
 
+    public bool MouseOverFullScreenElement()
+    {
+      return _fullScreen.Children().Any(c => c.ContainsPoint(c.WorldToLocal(ElementMousePosition())));
+    }
+
     /// <summary>
     /// Returns an ElementPosition in interface coordinates corresponding to the position of the
     /// provided transform.

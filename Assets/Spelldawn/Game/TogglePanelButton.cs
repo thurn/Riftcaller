@@ -58,6 +58,11 @@ namespace Spelldawn.Game
 
     void OnMouseUpAsButton()
     {
+      if (_registry.DocumentService.MouseOverFullScreenElement())
+      {
+        return;
+      }
+      
       _registry.StaticAssets.PlayButtonSound();
       _pressTime = null;
 
