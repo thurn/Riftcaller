@@ -60,7 +60,7 @@ namespace Spelldawn.Game
     {
       if (_registry.DocumentService.MouseOverFullScreenElement())
       {
-        return;
+        return; 
       }
       
       _registry.StaticAssets.PlayButtonSound();

@@ -46,24 +46,49 @@ impl<'a> CardList<'a> {
     }
 }
 
+/// Standard sorted display order for a deck.
+pub fn sorted_deck(deck: &Deck) -> Vec<(&CardName, &u32)> {
+    let mut cards = deck.cards.iter().collect::<Vec<_>>();
+    sort_cards(&mut cards);
+    cards
+}
+
+/// Returns the sort position 'card_name' would occupy in 'deck'.
+pub fn position_for_card(deck: &Deck, card_name: CardName) -> usize {
+    let mut cards = deck.cards.iter().collect::<Vec<_>>();
+    if !deck.cards.contains_key(&card_name) {
+        cards.push((&card_name, &1));
+    }
+    sort_cards(&mut cards);
+    cards.iter().position(|(n, _)| **n == card_name).expect("card position")
+}
+
+fn sort_cards(cards: &mut [(&CardName, &u32)]) {
+    cards.sort_by_key(|(name, _)| {
+        let definition = rules::get(**name);
+        let cost = definition.cost.mana.unwrap_or_default();
+        (definition.card_type, cost, **name)
+    });
+}
+
 impl<'a> Component for CardList<'a> {
     fn build(self) -> Option<Node> {
-        DropTarget::new("DeckCardList")
-            .style(
-                Style::new()
-                    .flex_direction(FlexDirection::Column)
-                    .background_color(RED_900)
-                    .width(EDITOR_COLUMN_WIDTH.vw())
-                    .align_items(FlexAlign::Center)
-                    .padding(Edge::All, 1.vw()),
-            )
+        ScrollView::new("DeckCardListScroll")
+            .vertical_scrollbar_visibility(ScrollBarVisibility::Hidden)
+            .horizontal_scrollbar_visibility(ScrollBarVisibility::Hidden)
+            .touch_scroll_behavior(TouchScrollBehavior::Clamped)
+            .scroll_deceleration_rate(0.0)
             .child(
-                ScrollView::new("DeckCardListScroll")
-                    .vertical_scrollbar_visibility(ScrollBarVisibility::Hidden)
-                    .horizontal_scrollbar_visibility(ScrollBarVisibility::Hidden)
-                    .touch_scroll_behavior(TouchScrollBehavior::Clamped)
-                    .scroll_deceleration_rate(0.0)
-                    .children(self.deck.cards.iter().map(|(card_name, count)| {
+                DropTarget::new("DeckCardList")
+                    .style(
+                        Style::new()
+                            .flex_direction(FlexDirection::Column)
+                            .background_color(RED_900)
+                            .width(EDITOR_COLUMN_WIDTH.vw())
+                            .align_items(FlexAlign::Center)
+                            .padding(Edge::All, 1.vw()),
+                    )
+                    .children(sorted_deck(self.deck).into_iter().map(|(card_name, count)| {
                         DeckCardTitle::new(*card_name)
                             .count(*count)
                             .on_drop(Some(drop_action(*card_name, self.deck.id)))

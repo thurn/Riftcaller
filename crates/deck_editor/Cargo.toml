@@ -10,9 +10,10 @@ doctest = false
 test = false
 
 [dependencies]
-panel_address = { path = "../panel_address", version = "0.0.0" }
-data = { path = "../data", version = "0.0.0" }
 core_ui = { path = "../core_ui", version = "0.0.0" }
+data = { path = "../data", version = "0.0.0" }
+panel_address = { path = "../panel_address", version = "0.0.0" }
+rules = { path = "../rules", version = "0.0.0" }
 
 anyhow = "1.0.58"
 enum-iterator = "1.1.3"

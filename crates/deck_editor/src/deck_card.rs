@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::ORANGE_900;
+use core_ui::design::{FontSize, ORANGE_900};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
+use core_ui::text::Text;
 use data::card_name::CardName;
-use protos::spelldawn::StandardAction;
+use protos::spelldawn::{StandardAction, TextAlign};
 
 use crate::deck_card_title::DeckCardTitle;
 
@@ -40,8 +41,8 @@ impl DeckCard {
         self
     }
 
-    pub fn on_drop(mut self, on_drop: StandardAction) -> Self {
-        self.on_drop = Some(on_drop);
+    pub fn on_drop(mut self, on_drop: Option<StandardAction>) -> Self {
+        self.on_drop = on_drop;
         self
     }
 }
@@ -58,6 +59,10 @@ impl Component for DeckCard {
                     .background_color(ORANGE_900)
                     .width((CARD_HEIGHT * CARD_ASPECT_RATIO).vh())
                     .height(CARD_HEIGHT.vh()),
+            )
+            .child(
+                Text::new(self.card_name.displayed_name(), FontSize::CardName)
+                    .text_align(TextAlign::MiddleCenter),
             )
             .build()
     }

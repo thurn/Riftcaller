@@ -321,16 +321,18 @@ pub enum Rarity {
 }
 
 /// Possible types of cards
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum CardType {
+    Identity,
+
     ChampionSpell,
     Weapon,
     Artifact,
-    OverlordSpell,
-    Minion,
-    Project,
+
     Scheme,
-    Identity,
+    OverlordSpell,
+    Project,
+    Minion,
 }
 
 impl CardType {

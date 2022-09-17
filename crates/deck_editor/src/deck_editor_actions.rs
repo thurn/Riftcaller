@@ -20,6 +20,7 @@ use with_error::{fail, WithError};
 pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
     match action {
         DeckEditorAction::AddToDeck(card_name, deck_id) => {
+            println!("Adding to Deck {:?}, {:?}", card_name, deck_id);
             player.deck_mut(deck_id)?.cards.entry(card_name).and_modify(|e| *e += 1).or_insert(1);
         }
         DeckEditorAction::RemoveFromDeck(card_name, deck_id) => {

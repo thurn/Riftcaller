@@ -596,6 +596,7 @@ dependencies = [
  "enum-iterator",
  "panel_address",
  "protos",
+ "rules",
  "serde",
  "serde_json",
  "with_error",

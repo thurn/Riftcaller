@@ -62,7 +62,14 @@ namespace Spelldawn.Services
       var element = FindElement(elementName);
       var parent = FindElement(command.ParentElementName);
       element.RemoveFromHierarchy();
-      parent.Insert((int)command.Index, element);
+      if (parent.childCount >= command.Index)
+      {
+        parent.Add(element);
+      }
+      else
+      {
+        parent.Insert((int)command.Index, element);
+      }
       
       // Remove absolute position, if any
       element.style.position = Position.Relative;

@@ -52,7 +52,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                 Column::new("Collection")
                     .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
                     .child(CollectionControls::new(self.player.id))
-                    .child(CollectionBrowser::new(self.player.id)),
+                    .child(CollectionBrowser::new(self.player.id, self.open_deck)),
             )
             .child(if let Some(deck) = self.open_deck {
                 CardList::new(self.player, deck)
