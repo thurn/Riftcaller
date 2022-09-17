@@ -30,6 +30,7 @@ namespace Spelldawn.Services
   public sealed class UpdateInterfaceService : MonoBehaviour
   {
     [SerializeField] Registry _registry = null!;
+    public HashSet<VisualElement> HiddenForAnimation { get; } = new();
 
     public IEnumerator HandleUpdateInterface(UpdateInterfaceElementCommand command) =>
       command.InterfaceUpdateCase switch
@@ -80,12 +81,13 @@ namespace Spelldawn.Services
       }
 
       var targetHeight = newElement.style.height;
-      newElement.style.opacity = 0.1f;
+      newElement.style.opacity = 0f;
       newElement.style.height = 0f;
       newElement.style.transitionProperty = new StyleList<StylePropertyName>(
         new List<StylePropertyName> { "height" });
       newElement.style.transitionDuration = new StyleList<UnityEngine.UIElements.TimeValue>(
         new List<UnityEngine.UIElements.TimeValue> { new(command.Duration.Milliseconds, TimeUnit.Millisecond) });
+      HiddenForAnimation.Add(newElement);
 
       yield return new WaitForEndOfFrame();
 
@@ -99,7 +101,13 @@ namespace Spelldawn.Services
         .Insert(0,
           DOTween.To(() => element.style.top.value.value,
             y => element.style.top = y,
-            endValue: targetPosition.y, command.Duration.Milliseconds / 1000f));
+            endValue: targetPosition.y, command.Duration.Milliseconds / 1000f))
+        .AppendCallback(() =>
+        {
+          element.RemoveFromHierarchy();
+          newElement.style.opacity = 1.0f;
+          HiddenForAnimation.Remove(newElement);
+        });
     }
 
     T FindElement<T>(string elementName) where T : VisualElement

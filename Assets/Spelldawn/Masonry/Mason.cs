@@ -279,7 +279,13 @@ namespace Spelldawn.Masonry
       e.style.maxWidth = AdaptDimension(registry, input.MaxWidth);
       e.style.minHeight = AdaptDimension(registry, input.MinHeight);
       e.style.minWidth = AdaptDimension(registry, input.MinWidth);
-      e.style.opacity = AdaptFloat(input.Opacity);
+
+      if (!registry.UpdateInterfaceService.HiddenForAnimation.Contains(e))
+      {
+        // UpdateInterfaceService needs the ability to hide elements while it is completing animations
+        e.style.opacity = AdaptFloat(input.Opacity);
+      }
+
       e.style.overflow = input.Overflow switch
       {
         FlexOverflow.Visible => Overflow.Visible,
