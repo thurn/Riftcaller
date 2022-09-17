@@ -116,16 +116,5 @@ namespace Spelldawn.Services
       Errors.CheckState(results.Count() == 1, $"Expected exactly 1 {elementName} but got {results.Count()}");
       return results.First();
     }
-
-    void CreateAtRoot(Node node, Vector2 initialPosition)
-    {
-      var element = Mason.Render(_registry, node);
-      element.name = "<AnimationElement>";
-      element.style.left = initialPosition.x;
-      element.style.top = initialPosition.y;
-      element.style.position = Position.Absolute;
-      _registry.DocumentService.RootVisualElement.Add(element);
-      element.BringToFront();
-    }
   }
 }

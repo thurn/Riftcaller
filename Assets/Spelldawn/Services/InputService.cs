@@ -44,6 +44,7 @@ namespace Spelldawn.Services
       element.style.visibility = Visibility.Hidden;
       _currentlyDragging = element;
       _dragStartMousePosition = _registry.DocumentService.ElementMousePosition();
+      _overTarget = false;
 
       if (element.OverTargetIndicator != null)
       {
@@ -129,6 +130,8 @@ namespace Spelldawn.Services
         {
           _overTargetIndicator.style.visibility = Visibility.Hidden;
         }
+
+        _overTarget = false;
         return;
       }
 
@@ -179,9 +182,15 @@ namespace Spelldawn.Services
       {
         _registry.ActionService.HandleAction(currentlyDragging.OnDrop);
       }
+      else
+      {
+        currentlyDragging.RemoveFromHierarchy();
+        _overTargetIndicator?.RemoveFromHierarchy();
+      }
 
       _currentlyDragging = null;
       _overTargetIndicator = null;
+      _overTarget = false;
     }
 
     Vector2 GetMousePosition(VisualElement element)

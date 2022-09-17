@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Spelldawn.Masonry
