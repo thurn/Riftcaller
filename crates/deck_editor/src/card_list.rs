@@ -106,7 +106,7 @@ fn drop_action(name: CardName, active_deck: DeckId) -> StandardAction {
         ))),
         update: Some(actions::command_list(vec![Command::UpdateInterfaceElement(
             UpdateInterfaceElementCommand {
-                element_name: format!("{}Title", name),
+                element_name: "<OverTargetIndicator>".to_string(),
                 interface_update: Some(InterfaceUpdate::AnimateToElementPosition(
                     AnimateToElementPosition {
                         target_element_name: name.to_string(),

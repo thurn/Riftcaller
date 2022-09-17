@@ -52,6 +52,7 @@ namespace Spelldawn.Services
         _overTargetIndicator.style.visibility = Visibility.Hidden;
         _registry.DocumentService.RootVisualElement.Add(_overTargetIndicator);
         _overTargetIndicator.BringToFront();
+        _overTargetIndicator.name = "<OverTargetIndicator>";
       }
     }
 

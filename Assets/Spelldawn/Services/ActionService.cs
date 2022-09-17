@@ -159,7 +159,14 @@ namespace Spelldawn.Services
       // Introduce simulated server delay
       if (!AutoRefreshPreference.AutomaticallyRefreshPanels)
       {
-        yield return new WaitForSeconds(Random.Range(0f, 0.5f));
+        if (IntroduceNetworkDelay.ShouldIntroduceNetworkDelay)
+        {
+          yield return new WaitForSeconds(5f);
+        }
+        else
+        {
+          yield return new WaitForSeconds(Random.Range(0f, 0.5f));
+        }
       }
 
       // Send to server
