@@ -61,6 +61,7 @@ pub fn as_hex(color: FlexColor) -> String {
 pub enum BackgroundColor {
     CardInfo,
     DeckEditorPanel,
+    CardCount,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -68,6 +69,7 @@ impl From<BackgroundColor> for FlexColor {
         match color {
             BackgroundColor::CardInfo => BLACK_ALPHA_75,
             BackgroundColor::DeckEditorPanel => BLACK,
+            BackgroundColor::CardCount => BLACK,
         }
     }
 }
@@ -83,6 +85,7 @@ pub enum FontColor {
     AbyssalCardTitle,
     PrismaticCardTitle,
     ConstructCardTitle,
+    CardCost,
 }
 
 impl From<FontColor> for FlexColor {
@@ -97,6 +100,7 @@ impl From<FontColor> for FlexColor {
             FontColor::AbyssalCardTitle => GREEN_700,
             FontColor::PrismaticCardTitle => ORANGE_900,
             FontColor::ConstructCardTitle => PINK_700,
+            FontColor::CardCost => WHITE,
         }
     }
 }
@@ -111,6 +115,8 @@ pub enum FontSize {
     SupplementalInfo,
     Headline,
     CardName,
+    CardCount,
+    CardCost,
 }
 
 impl From<FontSize> for Dimension {
@@ -124,6 +130,8 @@ impl From<FontSize> for Dimension {
             FontSize::SupplementalInfo => 28,
             FontSize::Headline => 36,
             FontSize::CardName => 28,
+            FontSize::CardCount => 24,
+            FontSize::CardCost => 36,
         })
         .px()
         .into()
@@ -132,6 +140,10 @@ impl From<FontSize> for Dimension {
 
 fn roboto() -> FontAddress {
     FontAddress { address: "Fonts/Roboto.ttf".to_string() }
+}
+
+fn impact() -> FontAddress {
+    FontAddress { address: "Fonts/Impact.ttf".to_string() }
 }
 
 fn bluu_next() -> FontAddress {
@@ -143,6 +155,7 @@ pub enum Font {
     PrimaryText,
     PanelTitle,
     ButtonLabel,
+    CardIcon,
 }
 
 impl From<Font> for FontAddress {
@@ -151,6 +164,7 @@ impl From<Font> for FontAddress {
             Font::PrimaryText => roboto(),
             Font::PanelTitle => bluu_next(),
             Font::ButtonLabel => roboto(),
+            Font::CardIcon => impact(),
         }
     }
 }

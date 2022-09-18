@@ -13,12 +13,13 @@
 // limitations under the License.
 
 use protos::spelldawn::{
-    node_type, FlexOverflow, FontStyle, Node, NodeType, TextAlign, TextOverflow, WhiteSpace,
+    node_type, FlexColor, FlexOverflow, FontStyle, Node, NodeType, TextAlign, TextOverflow,
+    WhiteSpace,
 };
 
-use crate::design::{Font, FontColor, FontSize};
+use crate::design::{Font, FontColor, FontSize, BLACK};
 use crate::prelude::*;
-use crate::style::WidthMode;
+use crate::style::{Pixels, WidthMode};
 
 /// Standard design-system-aware text-rendering component
 #[derive(Debug)]
@@ -32,6 +33,8 @@ pub struct Text {
     text_align: TextAlign,
     white_space: WhiteSpace,
     width_mode: WidthMode,
+    outline_color: FlexColor,
+    outline_width: Pixels,
 }
 
 impl Text {
@@ -43,9 +46,11 @@ impl Text {
             font: Font::PrimaryText,
             layout: Layout::default(),
             font_style: FontStyle::Unspecified,
-            text_align: TextAlign::Unspecified,
+            text_align: TextAlign::MiddleCenter,
             white_space: WhiteSpace::Unspecified,
             width_mode: WidthMode::Constrained,
+            outline_color: BLACK,
+            outline_width: 0.px(),
         }
     }
 
@@ -83,6 +88,16 @@ impl Text {
         self.width_mode = width_mode;
         self
     }
+
+    pub fn outline_color(mut self, color: impl Into<FlexColor>) -> Self {
+        self.outline_color = color.into();
+        self
+    }
+
+    pub fn outline_width(mut self, width: impl Into<Pixels>) -> Self {
+        self.outline_width = width.into();
+        self
+    }
 }
 
 impl Component for Text {
@@ -100,7 +115,9 @@ impl Component for Text {
                     .white_space(self.white_space)
                     .flex_grow(if self.width_mode == WidthMode::Constrained { 0.0 } else { 1.0 })
                     .text_overflow(TextOverflow::Ellipsis)
-                    .overflow(FlexOverflow::Hidden),
+                    .overflow(FlexOverflow::Hidden)
+                    .text_outline_color(self.outline_color)
+                    .text_outline_width(self.outline_width),
             )
             .build()
     }

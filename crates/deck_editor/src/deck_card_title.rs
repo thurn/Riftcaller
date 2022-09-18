@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::{FontSize, PINK_900};
+use core_ui::design::{BackgroundColor, Font, FontColor, FontSize, PINK_900};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
+use core_ui::style::Corner;
 use core_ui::text::Text;
 use data::card_name::CardName;
-use protos::spelldawn::{FlexAlign, FlexJustify, StandardAction, TextAlign};
+use display::assets;
+use display::assets::CardIconType;
+use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, StandardAction};
 
 use crate::deck_card::DeckCard;
+use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
 #[derive(Debug)]
 pub struct DeckCardTitle {
@@ -52,6 +56,17 @@ impl DeckCardTitle {
 
 impl Component for DeckCardTitle {
     fn build(self) -> Option<Node> {
+        let cost = match (
+            rules::get(self.card_name).cost.mana,
+            rules::get(self.card_name).config.stats.scheme_points,
+        ) {
+            (Some(mana), _) => Some((mana.to_string(), CardIconType::Mana)),
+            (_, Some(scheme_points)) => {
+                Some((scheme_points.level_requirement.to_string(), CardIconType::LevelRequirement))
+            }
+            _ => None,
+        };
+
         Draggable::new(format!("{}Title", self.card_name))
             .drop_targets(vec!["CollectionBrowser"])
             .over_target_indicator(move || DeckCard::new(self.card_name).build())
@@ -60,17 +75,63 @@ impl Component for DeckCardTitle {
             .remove_original(if let Some(v) = self.count { v < 2 } else { false })
             .style(
                 Style::new()
-                    .width(20.vw())
-                    .height(10.vh())
+                    .height(88.px())
+                    .width((EDITOR_COLUMN_WIDTH - 1).vw())
+                    .flex_grow(1.0)
+                    .flex_direction(FlexDirection::Row)
                     .align_items(FlexAlign::Center)
                     .justify_content(FlexJustify::Center)
                     .background_color(PINK_900)
-                    .margin(Edge::All, 1.vh()),
+                    .margin(Edge::Vertical, 8.px()),
             )
+            .child(cost.map(|(text, icon)| {
+                Column::new("CardCost")
+                    .style(
+                        Style::new()
+                            .width(44.px())
+                            .height(44.px())
+                            .margin(Edge::All, 8.px())
+                            .flex_shrink(0.0)
+                            .background_image(assets::card_icon(icon))
+                            .justify_content(FlexJustify::Center)
+                            .align_items(FlexAlign::Center),
+                    )
+                    .child(
+                        Text::new(text, FontSize::CardCost)
+                            .layout(Layout::new().margin(Edge::All, 0.px()))
+                            .font(Font::CardIcon)
+                            .outline_width(1.px())
+                            .color(FontColor::CardCost),
+                    )
+            }))
             .child(
-                Text::new(self.card_name.displayed_name(), FontSize::CardName)
-                    .text_align(TextAlign::MiddleCenter),
+                Column::new("CardTitle")
+                    .style(
+                        Style::new()
+                            .flex_grow(1.0)
+                            .justify_content(FlexJustify::Center)
+                            .align_items(FlexAlign::FlexStart),
+                    )
+                    .child(
+                        Text::new(self.card_name.displayed_name(), FontSize::CardName)
+                            .layout(Layout::new().margin(Edge::All, 0.px())),
+                    ),
             )
+            .child(self.count.map(|c| {
+                Column::new("CardCount")
+                    .style(
+                        Style::new()
+                            .background_color(BackgroundColor::CardCount)
+                            .justify_content(FlexJustify::Center)
+                            .align_items(FlexAlign::Center)
+                            .flex_shrink(0.0)
+                            .margin(Edge::All, 8.px())
+                            .width(32.px())
+                            .height(32.px())
+                            .border_radius(Corner::All, 8.px()),
+                    )
+                    .child(Text::new(c.to_string(), FontSize::CardCount))
+            }))
             .build()
     }
 }
