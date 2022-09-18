@@ -62,7 +62,8 @@ namespace Spelldawn.Services
     IEnumerator HandleAnimateToElementPosition(string elementName, AnimateToElementPositionAndDestroy command)
     {
       var element = FindElement<VisualElement>(elementName);
-      var target = FindElement<VisualElement>(command.TargetElementName);
+      var target = FindElementOptional<VisualElement>(command.TargetElementName) ?? 
+                   FindElement<VisualElement>(command.FallbackTargetElementName);
       yield return AnimateToPositionAndDestroy(element, target.worldBound, command.Duration).WaitForCompletion();
     }
 
@@ -139,5 +140,19 @@ namespace Spelldawn.Services
       Errors.CheckState(results.Count() == 1, $"Expected exactly 1 {elementName} but got {results.Count()}");
       return results.First();
     }
+    
+    T? FindElementOptional<T>(string elementName) where T : VisualElement
+    {
+      var results = _registry.DocumentService.RootVisualElement.Query<T>(elementName).Build();
+      switch (results.Count())
+      {
+        case 0:
+          return null;
+        case 1:
+          return results.First();
+        default:
+          throw new InvalidOperationException($"Found more than one element named {elementName}");
+      }
+    }    
   }
 }

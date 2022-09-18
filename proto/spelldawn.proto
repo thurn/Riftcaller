@@ -1333,6 +1333,9 @@ message AnimateDraggableToChildIndex {
 message AnimateToElementPositionAndDestroy {
     string target_element_name = 1;
     TimeValue duration = 2;
+
+    // Use this target instead if 'target_element_name' is not found
+    string fallback_target_element_name = 3;
 }
 
 // Changes the text content of a node. If multiple text elements are children

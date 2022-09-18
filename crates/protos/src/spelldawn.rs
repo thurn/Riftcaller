@@ -1300,6 +1300,9 @@ pub struct AnimateToElementPositionAndDestroy {
     pub target_element_name: ::prost::alloc::string::String,
     #[prost(message, optional, tag = "2")]
     pub duration: ::core::option::Option<TimeValue>,
+    /// Use this target instead if 'target_element_name' is not found
+    #[prost(string, tag = "3")]
+    pub fallback_target_element_name: ::prost::alloc::string::String,
 }
 /// Changes the text content of a node. If multiple text elements are children
 /// of this node, only the first is updated.

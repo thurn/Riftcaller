@@ -103,6 +103,7 @@ fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
     let update = if open_deck.cards.contains_key(&name) {
         InterfaceUpdate::AnimateToElementPosition(AnimateToElementPositionAndDestroy {
             target_element_name: format!("{}Title", name),
+            fallback_target_element_name: "".to_string(),
             duration: Some(TimeValue { milliseconds: 300 }),
         })
     } else {

@@ -110,6 +110,7 @@ fn drop_action(name: CardName, active_deck: DeckId) -> StandardAction {
                 interface_update: Some(InterfaceUpdate::AnimateToElementPosition(
                     AnimateToElementPositionAndDestroy {
                         target_element_name: name.to_string(),
+                        fallback_target_element_name: "CollectionBrowser".to_string(),
                         duration: Some(TimeValue { milliseconds: 300 }),
                     },
                 )),
