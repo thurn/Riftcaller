@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using DG.Tweening;
 using Spelldawn.Masonry;
 using Spelldawn.Protos;
@@ -64,7 +63,7 @@ namespace Spelldawn.Services
     {
       var element = FindElement<VisualElement>(elementName);
       var target = FindElement<VisualElement>(command.TargetElementName);
-      return AnimateToPositionAndDestroy(command.Duration, element, target.worldBound);
+      yield return AnimateToPositionAndDestroy(element, target.worldBound, command.Duration).WaitForCompletion();
     }
 
     IEnumerator HandleAnimateToChildIndex(string elementName, AnimateDraggableToChildIndex command)
@@ -94,18 +93,22 @@ namespace Spelldawn.Services
       yield return new WaitForEndOfFrame();
 
       newElement.style.height = targetHeight;
-      yield return AnimateToPositionAndDestroy(command.Duration, element, newElement.worldBound, () =>
+      yield return AnimateToPositionAndDestroy(element, newElement.worldBound, command.Duration, () =>
       {
         newElement.style.opacity = 1.0f;
-        HiddenForAnimation.Remove(newElement);        
-      });
+        HiddenForAnimation.Remove(newElement);
+      }).WaitForCompletion();
     }
 
-    IEnumerator AnimateToPositionAndDestroy(TimeValue duration, VisualElement element, Rect worldBound, Action? onComplete = null)
+    public static Sequence AnimateToPositionAndDestroy(
+      VisualElement element,
+      Rect worldBound,
+      TimeValue duration,
+      Action? onComplete = null)
     {
       var targetPosition = worldBound.position -
                            new Vector2(element.style.marginLeft.value.value, element.style.marginTop.value.value);
-      yield return TweenUtils.Sequence("AnimateToPosition").Insert(0,
+      return TweenUtils.Sequence("AnimateToPositionAndDestroy").Insert(0,
           DOTween.To(() => element.style.left.value.value,
             x => element.style.left = x,
             endValue: targetPosition.x, duration.Milliseconds / 1000f))
@@ -117,7 +120,17 @@ namespace Spelldawn.Services
         {
           element.RemoveFromHierarchy();
           onComplete?.Invoke();
-        }).WaitForCompletion();
+        });
+    }
+
+    public static Sequence AnimateToZeroHeightAndDestroy(VisualElement element, TimeValue duration)
+    {
+      return TweenUtils.Sequence("AnimateToZeroHeightAndDestroy").Append(
+        DOTween.To(() => element.style.height.value.value,
+          height => element.style.height = height,
+          endValue: 0,
+          duration.Milliseconds / 1000f))
+        .AppendCallback(element.RemoveFromHierarchy);
     }
 
     T FindElement<T>(string elementName) where T : VisualElement

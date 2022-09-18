@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Spelldawn.Masonry
@@ -32,6 +31,7 @@ namespace Spelldawn.Masonry
     public ClientAction? OnDrop { get; set; }
     public uint? HorizontalDragStartDistance { get; set; }
     public NodeType.NodeTypeOneofCase NodeType { get; set; }
+    public bool RemoveOriginal { get; set; }
 
     public static void Apply(Registry registry, Draggable view, Node data)
     {
@@ -41,6 +41,7 @@ namespace Spelldawn.Masonry
       view.OverTargetIndicator = data.NodeType.DraggableNode.OverTargetIndicator;
       view.OnDrop = data.NodeType.DraggableNode.OnDrop;
       view.HorizontalDragStartDistance = data.NodeType.DraggableNode.HorizontalDragStartDistance;
+      view.RemoveOriginal = data.NodeType.DraggableNode.RemoveOriginal;
     }
 
     public Draggable()
@@ -60,8 +61,7 @@ namespace Spelldawn.Masonry
     {
       if (Registry.CapabilityService.CanDragInterfaceElement())
       {
-        var dragElement = (Draggable)Mason.Render(Registry, Node);
-        Registry.InputService.SetCurrentlyDragging(dragElement, worldBound.position);        
+        Registry.InputService.StartDragging(this);        
       }
     }
   }

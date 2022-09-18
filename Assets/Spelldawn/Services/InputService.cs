@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Game;
 using Spelldawn.Masonry;
+using Spelldawn.Protos;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -28,14 +29,18 @@ namespace Spelldawn.Services
   {
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
     Displayable? _lastClicked;
+    Draggable? _currentDragSource;
     Draggable? _currentlyDragging;
     VisualElement? _overTargetIndicator;
-    Vector2? _dragStartMousePosition; 
+    Vector2? _dragStartMousePosition;
     bool _overTarget;
     [SerializeField] Registry _registry = null!;
 
-    public void SetCurrentlyDragging(Draggable element, Vector2 initialPosition)
+    public void StartDragging(Draggable currentDragSource)
     {
+      _currentDragSource = currentDragSource;
+      var element = (Draggable)Mason.Render(_registry, currentDragSource.Node);
+      var initialPosition = currentDragSource.worldBound.position;
       element.name = "<DragElement>";
       SetPosition(element, initialPosition);
       element.style.position = Position.Absolute;
@@ -123,7 +128,7 @@ namespace Spelldawn.Services
     {
       var mousePosition = _registry.DocumentService.ElementMousePosition();
       var horizontalDistance = Mathf.Abs(mousePosition.x - _dragStartMousePosition!.Value.x);
-      if (_currentlyDragging!.HorizontalDragStartDistance is {} distance && horizontalDistance < distance)
+      if (_currentlyDragging!.HorizontalDragStartDistance is { } distance && horizontalDistance < distance)
       {
         _currentlyDragging!.style.visibility = Visibility.Hidden;
         if (_overTargetIndicator != null)
@@ -132,7 +137,17 @@ namespace Spelldawn.Services
         }
 
         _overTarget = false;
+        if (_currentDragSource?.RemoveOriginal == true)
+        {
+          _currentDragSource.style.visibility = Visibility.Visible;
+        }
+
         return;
+      }
+
+      if (_currentDragSource?.RemoveOriginal == true)
+      {
+        _currentDragSource.style.visibility = Visibility.Hidden;
       }
 
       var dropTargets = _registry.DocumentService.RootVisualElement.Query<DropTarget>().Build().ToList();
@@ -166,8 +181,6 @@ namespace Spelldawn.Services
 
     void ElementMouseUp(Draggable currentlyDragging)
     {
-      // Leave the currently-visible drag object in the hierarchy, the OnDrop action is responsible for removing it.
-      
       if (currentlyDragging.style.visibility == Visibility.Hidden)
       {
         currentlyDragging.RemoveFromHierarchy();
@@ -180,12 +193,28 @@ namespace Spelldawn.Services
 
       if (currentlyDragging.OnDrop != null && _overTarget)
       {
+        // Leave the currently-visible drag object in the hierarchy, the OnDrop action is responsible for removing it.
         _registry.ActionService.HandleAction(currentlyDragging.OnDrop);
+        if (_currentDragSource?.RemoveOriginal == true)
+        {
+          UpdateInterfaceService.AnimateToZeroHeightAndDestroy(_currentDragSource,
+            new Protos.TimeValue { Milliseconds = 100 });
+        }
       }
       else
       {
-        currentlyDragging.RemoveFromHierarchy();
         _overTargetIndicator?.RemoveFromHierarchy();
+        UpdateInterfaceService.AnimateToPositionAndDestroy(
+          currentlyDragging,
+          _currentDragSource!.worldBound,
+          new Protos.TimeValue { Milliseconds = 100 },
+          () =>
+          {
+            if (_currentDragSource?.RemoveOriginal == true)
+            {
+              _currentDragSource.style.visibility = Visibility.Visible;
+            }
+          });
       }
 
       _currentlyDragging = null;

@@ -347,6 +347,11 @@ pub struct DraggableNode {
     /// dragging from a vertical scroll view.
     #[prost(message, optional, tag = "4")]
     pub horizontal_drag_start_distance: ::core::option::Option<u32>,
+    /// If true, the original element is removed as part of this drag operation,
+    /// causing it to visually appear as though the user is moving it instead of
+    /// a placeholder.
+    #[prost(bool, tag = "5")]
+    pub remove_original: bool,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}

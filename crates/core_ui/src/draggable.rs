@@ -58,6 +58,13 @@ impl Draggable {
         self.draggable.horizontal_drag_start_distance = Some(offset);
         self
     }
+
+    /// If true, the original element is hidden on drag, making it appear that
+    /// you are moving it directly instead of a placeholder.
+    pub fn remove_original(mut self, value: bool) -> Self {
+        self.draggable.remove_original = value;
+        self
+    }
 }
 
 impl HasRenderNode for Draggable {

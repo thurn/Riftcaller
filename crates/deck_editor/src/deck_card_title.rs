@@ -57,6 +57,7 @@ impl Component for DeckCardTitle {
             .over_target_indicator(move || DeckCard::new(self.card_name).build())
             .on_drop(self.on_drop)
             .horizontal_drag_start_distance(100)
+            .remove_original(if let Some(v) = self.count { v < 2 } else { false })
             .style(
                 Style::new()
                     .width(20.vw())

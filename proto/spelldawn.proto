@@ -453,6 +453,11 @@ message DraggableNode {
     // pixels before the UI responds. Useful to enable horizontal element
     // dragging from a vertical scroll view.
     google.protobuf.UInt32Value horizontal_drag_start_distance = 4;
+
+    // If true, the original element is removed as part of this drag operation,
+    // causing it to visually appear as though the user is moving it instead of
+    // a placeholder.
+    bool remove_original = 5;
 }
 
 message DropTargetNode {
