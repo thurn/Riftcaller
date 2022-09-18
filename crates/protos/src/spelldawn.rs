@@ -1276,30 +1276,25 @@ pub mod client_debug_command {
         SetBooleanPreference(super::SetBooleanPreference),
     }
 }
-/// Animates an element to appear as a child node of a parent container.
-///
-/// Automatically removes any absolute positioning on the element.
+/// Animates a Draggable element to appear as a child node of a parent
+/// container.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct AnimateToChildIndex {
+pub struct AnimateDraggableToChildIndex {
     #[prost(string, tag = "1")]
     pub parent_element_name: ::prost::alloc::string::String,
     #[prost(uint32, tag = "2")]
     pub index: u32,
     #[prost(message, optional, tag = "3")]
     pub duration: ::core::option::Option<TimeValue>,
-    #[prost(enumeration = "EasingMode", tag = "4")]
-    pub easing: i32,
 }
 /// Animates an element's center point to match the center point of another
-/// element.
+/// element, then destroy it
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct AnimateToElementPosition {
+pub struct AnimateToElementPositionAndDestroy {
     #[prost(string, tag = "1")]
     pub target_element_name: ::prost::alloc::string::String,
     #[prost(message, optional, tag = "2")]
     pub duration: ::core::option::Option<TimeValue>,
-    #[prost(enumeration = "EasingMode", tag = "3")]
-    pub easing: i32,
 }
 /// Changes the text content of a node. If multiple text elements are children
 /// of this node, only the first is updated.
@@ -1320,9 +1315,9 @@ pub mod update_interface_element_command {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum InterfaceUpdate {
         #[prost(message, tag = "2")]
-        AnimateToChildIndex(super::AnimateToChildIndex),
+        AnimateToChildIndex(super::AnimateDraggableToChildIndex),
         #[prost(message, tag = "3")]
-        AnimateToElementPosition(super::AnimateToElementPosition),
+        AnimateToElementPosition(super::AnimateToElementPositionAndDestroy),
         #[prost(message, tag = "4")]
         Destroy(()),
         #[prost(message, tag = "5")]

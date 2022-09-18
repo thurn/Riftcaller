@@ -18,12 +18,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using DG.Tweening;
 using Spelldawn.Masonry;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
+using TimeValue = Spelldawn.Protos.TimeValue;
 
 namespace Spelldawn.Services
 {
@@ -58,14 +60,14 @@ namespace Spelldawn.Services
       yield break;
     }
 
-    IEnumerator HandleAnimateToElementPosition(string elementName, AnimateToElementPosition command)
+    IEnumerator HandleAnimateToElementPosition(string elementName, AnimateToElementPositionAndDestroy command)
     {
       var element = FindElement<VisualElement>(elementName);
-      element.RemoveFromHierarchy();
-      yield break;
+      var target = FindElement<VisualElement>(command.TargetElementName);
+      return AnimateToPositionAndDestroy(command.Duration, element, target.worldBound);
     }
 
-    IEnumerator HandleAnimateToChildIndex(string elementName, AnimateToChildIndex command)
+    IEnumerator HandleAnimateToChildIndex(string elementName, AnimateDraggableToChildIndex command)
     {
       var element = FindElement<Draggable>(elementName);
       var parent = FindElement<VisualElement>(command.ParentElementName);
@@ -92,22 +94,30 @@ namespace Spelldawn.Services
       yield return new WaitForEndOfFrame();
 
       newElement.style.height = targetHeight;
-      var targetPosition = newElement.worldBound.position -
+      yield return AnimateToPositionAndDestroy(command.Duration, element, newElement.worldBound, () =>
+      {
+        newElement.style.opacity = 1.0f;
+        HiddenForAnimation.Remove(newElement);        
+      });
+    }
+
+    IEnumerator AnimateToPositionAndDestroy(TimeValue duration, VisualElement element, Rect worldBound, Action? onComplete = null)
+    {
+      var targetPosition = worldBound.position -
                            new Vector2(element.style.marginLeft.value.value, element.style.marginTop.value.value);
-      TweenUtils.Sequence("AnimateToChildIndex").Insert(0,
+      yield return TweenUtils.Sequence("AnimateToPosition").Insert(0,
           DOTween.To(() => element.style.left.value.value,
             x => element.style.left = x,
-            endValue: targetPosition.x, command.Duration.Milliseconds / 1000f))
+            endValue: targetPosition.x, duration.Milliseconds / 1000f))
         .Insert(0,
           DOTween.To(() => element.style.top.value.value,
             y => element.style.top = y,
-            endValue: targetPosition.y, command.Duration.Milliseconds / 1000f))
+            endValue: targetPosition.y, duration.Milliseconds / 1000f))
         .AppendCallback(() =>
         {
           element.RemoveFromHierarchy();
-          newElement.style.opacity = 1.0f;
-          HiddenForAnimation.Remove(newElement);
-        });
+          onComplete?.Invoke();
+        }).WaitForCompletion();
     }
 
     T FindElement<T>(string elementName) where T : VisualElement

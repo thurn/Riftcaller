@@ -1316,22 +1316,18 @@ message ClientDebugCommand {
     }
 }
 
-// Animates an element to appear as a child node of a parent container.
-//
-// Automatically removes any absolute positioning on the element.
-message AnimateToChildIndex {
+// Animates a Draggable element to appear as a child node of a parent container.
+message AnimateDraggableToChildIndex {
     string parent_element_name = 1;
     uint32 index = 2;
     TimeValue duration = 3;
-    EasingMode easing = 4;
 }
 
 // Animates an element's center point to match the center point of another
-// element.
-message AnimateToElementPosition {
+// element, then destroy it
+message AnimateToElementPositionAndDestroy {
     string target_element_name = 1;
     TimeValue duration = 2;
-    EasingMode easing = 3;
 }
 
 // Changes the text content of a node. If multiple text elements are children
@@ -1344,8 +1340,8 @@ message UpdateInterfaceElementCommand {
     string element_name = 1;
 
     oneof interface_update {
-        AnimateToChildIndex animate_to_child_index = 2;
-        AnimateToElementPosition animate_to_element_position = 3;
+        AnimateDraggableToChildIndex animate_to_child_index = 2;
+        AnimateToElementPositionAndDestroy animate_to_element_position = 3;
         google.protobuf.Empty destroy = 4;
         UpdateText update_text = 5;
     }

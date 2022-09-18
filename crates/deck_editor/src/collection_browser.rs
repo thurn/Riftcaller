@@ -23,7 +23,7 @@ use data::user_actions::{DeckEditorAction, UserAction};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    AnimateToChildIndex, AnimateToElementPosition, EasingMode, FlexAlign, FlexDirection,
+    AnimateDraggableToChildIndex, AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection,
     FlexJustify, StandardAction, TimeValue, UpdateInterfaceElementCommand,
 };
 
@@ -101,17 +101,15 @@ impl<'a> Component for CollectionBrowser<'a> {
 
 fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
     let update = if open_deck.cards.contains_key(&name) {
-        InterfaceUpdate::AnimateToElementPosition(AnimateToElementPosition {
+        InterfaceUpdate::AnimateToElementPosition(AnimateToElementPositionAndDestroy {
             target_element_name: format!("{}Title", name),
             duration: Some(TimeValue { milliseconds: 300 }),
-            easing: EasingMode::Linear.into(),
         })
     } else {
-        InterfaceUpdate::AnimateToChildIndex(AnimateToChildIndex {
+        InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
             parent_element_name: "DeckCardList".to_string(),
             index: card_list::position_for_card(open_deck, name) as u32,
             duration: Some(TimeValue { milliseconds: 300 }),
-            easing: EasingMode::Linear.into(),
         })
     };
     StandardAction {

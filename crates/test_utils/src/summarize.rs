@@ -24,19 +24,19 @@ use protos::spelldawn::object_position::Position;
 use protos::spelldawn::play_effect_position::EffectPosition;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    node_type, ActionTrackerView, AnchorCorner, AnimateToChildIndex, AnimateToElementPosition,
-    ArrowTargetRoom, AudioClipAddress, CardAnchor, CardAnchorNode, CardCreationAnimation, CardIcon,
-    CardIcons, CardIdentifier, CardTargeting, CardTitle, CardView, CommandList,
-    CreateTokenCardCommand, DelayCommand, DisplayGameMessageCommand, DisplayRewardsCommand,
-    EffectAddress, FireProjectileCommand, GameCommand, GameMessageType, GameObjectIdentifier,
-    GameObjectMove, GameObjectPositions, GameView, InterfaceMainControls, InterfacePanel,
-    InterfacePanelAddress, LoadSceneCommand, ManaView, MoveGameObjectsCommand, MusicState,
-    NoTargeting, Node, NodeType, ObjectPosition, PlayEffectCommand, PlayEffectPosition, PlayInRoom,
-    PlaySoundCommand, PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress,
-    RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, RunInParallelCommand,
-    SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress,
-    TimeValue, TogglePanelCommand, UpdateGameViewCommand, UpdateInterfaceElementCommand,
-    UpdatePanelsCommand, UpdateText, VisitRoomCommand,
+    node_type, ActionTrackerView, AnchorCorner, AnimateDraggableToChildIndex,
+    AnimateToElementPositionAndDestroy, ArrowTargetRoom, AudioClipAddress, CardAnchor,
+    CardAnchorNode, CardCreationAnimation, CardIcon, CardIcons, CardIdentifier, CardTargeting,
+    CardTitle, CardView, CommandList, CreateTokenCardCommand, DelayCommand,
+    DisplayGameMessageCommand, DisplayRewardsCommand, EffectAddress, FireProjectileCommand,
+    GameCommand, GameMessageType, GameObjectIdentifier, GameObjectMove, GameObjectPositions,
+    GameView, InterfaceMainControls, InterfacePanel, InterfacePanelAddress, LoadSceneCommand,
+    ManaView, MoveGameObjectsCommand, MusicState, NoTargeting, Node, NodeType, ObjectPosition,
+    PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand, PlayerInfo, PlayerName,
+    PlayerSide, PlayerView, ProjectileAddress, RevealedCardView, RoomIdentifier, RoomVisitType,
+    RulesText, RunInParallelCommand, SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand,
+    SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand, UpdateGameViewCommand,
+    UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText, VisitRoomCommand,
 };
 use server::requests::GameResponse;
 
@@ -686,14 +686,14 @@ impl Summarize for InterfaceUpdate {
     }
 }
 
-impl Summarize for AnimateToChildIndex {
+impl Summarize for AnimateDraggableToChildIndex {
     fn summarize(self, summary: &mut Summary) {
         summary.child_node("parent_element_name", self.parent_element_name);
         summary.child_node("index", self.index);
     }
 }
 
-impl Summarize for AnimateToElementPosition {
+impl Summarize for AnimateToElementPositionAndDestroy {
     fn summarize(self, summary: &mut Summary) {
         summary.child_node("target_element_name", self.target_element_name);
     }

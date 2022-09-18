@@ -25,7 +25,7 @@ use data::user_actions::{DeckEditorAction, UserAction};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    AnimateToElementPosition, EasingMode, FlexAlign, FlexDirection, ScrollBarVisibility,
+    AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection, ScrollBarVisibility,
     StandardAction, TimeValue, TouchScrollBehavior, UpdateInterfaceElementCommand,
 };
 
@@ -108,10 +108,9 @@ fn drop_action(name: CardName, active_deck: DeckId) -> StandardAction {
             UpdateInterfaceElementCommand {
                 element_name: "<OverTargetIndicator>".to_string(),
                 interface_update: Some(InterfaceUpdate::AnimateToElementPosition(
-                    AnimateToElementPosition {
+                    AnimateToElementPositionAndDestroy {
                         target_element_name: name.to_string(),
                         duration: Some(TimeValue { milliseconds: 300 }),
-                        easing: EasingMode::Linear.into(),
                     },
                 )),
             },
