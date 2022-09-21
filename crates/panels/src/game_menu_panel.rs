@@ -22,7 +22,6 @@ use core_ui::panel;
 use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use data::primitives::DeckId;
 use panel_address::{DeckEditorData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientPanelAddress, FlexAlign, FlexJustify, TogglePanelCommand};
@@ -60,10 +59,7 @@ impl Component for GameMenuPanel {
                         "Deck Editor",
                         Command::TogglePanel(TogglePanelCommand {
                             panel_address: Some(
-                                PanelAddress::DeckEditor(DeckEditorData {
-                                    deck: Some(DeckId::new(0)),
-                                })
-                                .into(),
+                                PanelAddress::DeckEditor(DeckEditorData { deck: None }).into(),
                             ),
                             open: true,
                         }),

@@ -16,7 +16,6 @@ use core_ui::actions;
 use core_ui::design::RED_900;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
-use core_ui::scroll_view::ScrollView;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
@@ -25,16 +24,17 @@ use data::user_actions::{DeckEditorAction, UserAction};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection, ScrollBarVisibility,
-    StandardAction, TimeValue, TouchScrollBehavior, UpdateInterfaceElementCommand,
+    AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection, StandardAction, TimeValue,
+    UpdateInterfaceElementCommand,
 };
 
 use crate::deck_card_title::DeckCardTitle;
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
+use crate::editor_column_scroll::EditorColumnScroll;
 
 /// Displays the cards contained within a single deck
-#[allow(dead_code)]
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct CardList<'a> {
     player: &'a PlayerData,
     deck: &'a Deck,
@@ -67,19 +67,15 @@ fn sort_cards(cards: &mut [(&CardName, &u32)]) {
     cards.sort_by_key(|(name, _)| {
         let definition = rules::get(**name);
         let cost = definition.cost.mana.unwrap_or_default();
-        (definition.card_type, cost, **name)
+        (definition.card_type, cost, name.displayed_name())
     });
 }
 
 impl<'a> Component for CardList<'a> {
     fn build(self) -> Option<Node> {
-        ScrollView::new("DeckCardListScroll")
-            .vertical_scrollbar_visibility(ScrollBarVisibility::Hidden)
-            .horizontal_scrollbar_visibility(ScrollBarVisibility::Hidden)
-            .touch_scroll_behavior(TouchScrollBehavior::Clamped)
-            .scroll_deceleration_rate(0.0)
+        EditorColumnScroll::new()
             .child(
-                DropTarget::new("DeckCardList")
+                DropTarget::new("CardList")
                     .style(
                         Style::new()
                             .flex_direction(FlexDirection::Column)

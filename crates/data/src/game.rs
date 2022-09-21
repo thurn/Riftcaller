@@ -642,6 +642,7 @@ mod tests {
             GameId::new(0),
             Deck {
                 id: DeckId::new(0),
+                name: "Overlord".to_string(),
                 side: Side::Overlord,
                 owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
                 identity: CardName::TestOverlordIdentity,
@@ -649,6 +650,7 @@ mod tests {
             },
             Deck {
                 id: DeckId::new(1),
+                name: "Champion".to_string(),
                 side: Side::Champion,
                 owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
                 identity: CardName::TestOverlordIdentity,

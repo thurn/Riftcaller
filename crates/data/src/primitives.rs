@@ -247,12 +247,12 @@ impl Sprite {
 
 /// The schools of magic, which provide restrictions on players during
 /// deckbuilding
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum School {
-    Neutral,
     Law,
     Shadow,
     Primal,
+    Neutral,
 }
 
 /// The possible Rooms in which the Overlord player may play their cards.

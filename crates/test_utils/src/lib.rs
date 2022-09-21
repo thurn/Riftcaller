@@ -80,6 +80,7 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
 
     let overlord_deck = Deck {
         id: DeckId { value: 0 },
+        name: "Overlord".to_string(),
         owner_id: overlord_user,
         side: Side::Overlord,
         identity: CardName::TestOverlordIdentity,
@@ -87,6 +88,7 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     };
     let champion_deck = Deck {
         id: DeckId { value: 1 },
+        name: "Champion".to_string(),
         owner_id: champion_user,
         side: Side::Champion,
         identity: CardName::TestChampionIdentity,

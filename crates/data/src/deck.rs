@@ -30,6 +30,8 @@ use crate::primitives::{DeckId, Side};
 pub struct Deck {
     /// Identifies this deck
     pub id: DeckId,
+    /// User-visible name for this deck
+    pub name: String,
     /// Identifies the user who owns this deck
     pub owner_id: PlayerId,
     /// Identifies which side this deck plays as.
@@ -42,26 +44,6 @@ pub struct Deck {
 }
 
 impl Deck {
-    pub fn single_card_champion(id: DeckId, owner_id: PlayerId, card_name: CardName) -> Deck {
-        Deck {
-            id,
-            owner_id,
-            side: Side::Champion,
-            identity: CardName::TestChampionIdentity,
-            cards: iter::once((card_name, 45)).collect(),
-        }
-    }
-
-    pub fn single_card_overlord(id: DeckId, owner_id: PlayerId, card_name: CardName) -> Deck {
-        Deck {
-            id,
-            owner_id,
-            side: Side::Overlord,
-            identity: CardName::TestOverlordIdentity,
-            cards: iter::once((card_name, 45)).collect(),
-        }
-    }
-
     /// Returns a vector which repeats each [CardName] in [Self::cards] in
     /// alphabetical order a number of times equal to its deck count. Note: The
     /// returned vector does *not* contain [Self::identity].

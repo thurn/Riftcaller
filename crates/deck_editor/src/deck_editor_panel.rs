@@ -23,10 +23,10 @@ use protos::spelldawn::FlexPosition;
 use crate::card_list::CardList;
 use crate::collection_browser::CollectionBrowser;
 use crate::collection_controls::CollectionControls;
+use crate::deck_list::DeckList;
 
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 pub struct DeckEditorPanel<'a> {
     player: &'a PlayerData,
@@ -52,13 +52,10 @@ impl<'a> Component for DeckEditorPanel<'a> {
                 Column::new("Collection")
                     .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
                     .child(CollectionControls::new(self.player.id))
-                    .child(CollectionBrowser::new(self.player.id, self.open_deck)),
+                    .child(CollectionBrowser::new(self.player, self.open_deck)),
             )
-            .child(if let Some(deck) = self.open_deck {
-                CardList::new(self.player, deck)
-            } else {
-                todo!("no open deck")
-            })
+            .child(self.open_deck.map(|d| CardList::new(self.player, d)))
+            .child(if self.open_deck.is_none() { Some(DeckList::new(self.player)) } else { None })
             .child(
                 IconButton::new(icons::PREVIOUS_PAGE)
                     .button_type(IconButtonType::SecondaryLarge)

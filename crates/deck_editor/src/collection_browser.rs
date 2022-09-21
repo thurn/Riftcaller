@@ -18,7 +18,7 @@ use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
 use data::card_name::CardName;
 use data::deck::Deck;
-use data::player_name::PlayerId;
+use data::player_data::PlayerData;
 use data::user_actions::{DeckEditorAction, UserAction};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -30,16 +30,16 @@ use protos::spelldawn::{
 use crate::card_list;
 use crate::deck_card::DeckCard;
 
-#[allow(dead_code)]
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct CollectionBrowser<'a> {
-    player_id: PlayerId,
+    player: &'a PlayerData,
     open_deck: Option<&'a Deck>,
 }
 
 impl<'a> CollectionBrowser<'a> {
-    pub fn new(player_id: PlayerId, open_deck: Option<&'a Deck>) -> Self {
-        Self { player_id, open_deck }
+    pub fn new(player: &'a PlayerData, open_deck: Option<&'a Deck>) -> Self {
+        Self { player, open_deck }
     }
 }
 
@@ -108,7 +108,7 @@ fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
         })
     } else {
         InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
-            parent_element_name: "DeckCardList".to_string(),
+            parent_element_name: "CardList".to_string(),
             index: card_list::position_for_card(open_deck, name) as u32,
             duration: Some(TimeValue { milliseconds: 300 }),
         })

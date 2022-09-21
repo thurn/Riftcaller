@@ -59,7 +59,7 @@ namespace Spelldawn.Masonry
 
     void OnMouseDown(MouseDownEvent evt)
     {
-      if (Registry.CapabilityService.CanDragInterfaceElement())
+      if (OnDrop != null && Registry.CapabilityService.CanDragInterfaceElement())
       {
         Registry.InputService.StartDragging(this);        
       }

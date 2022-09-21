@@ -50,7 +50,7 @@ impl DeckCard {
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
         Draggable::new(self.card_name.to_string())
-            .drop_targets(vec!["DeckCardList"])
+            .drop_targets(vec!["CardList"])
             .over_target_indicator(move || DeckCardTitle::new(self.card_name).build())
             .on_drop(self.on_drop)
             .style(

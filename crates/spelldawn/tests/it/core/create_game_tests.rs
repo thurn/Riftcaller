@@ -178,6 +178,7 @@ fn make_overlord_test_session(
     initialize::run();
     let overlord_deck = Deck {
         id: DeckId::new(0),
+        name: "Overlord".to_string(),
         owner_id: overlord_id,
         side: Side::Overlord,
         identity: CardName::TestOverlordIdentity,
@@ -185,6 +186,7 @@ fn make_overlord_test_session(
     };
     let champion_deck = Deck {
         id: DeckId::new(0),
+        name: "Champion".to_string(),
         owner_id: champion_id,
         side: Side::Champion,
         identity: CardName::TestChampionIdentity,

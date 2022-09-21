@@ -21,3 +21,6 @@ pub mod deck_card;
 pub mod deck_card_title;
 pub mod deck_editor_actions;
 pub mod deck_editor_panel;
+pub mod deck_list;
+pub mod deck_name;
+pub mod editor_column_scroll;
