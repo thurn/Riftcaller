@@ -134,7 +134,10 @@ namespace Spelldawn.Masonry
 
         if (node.EventHandlers?.OnClick is { } onClick)
         {
-          callbacks.SetCallback(Callbacks.Event.Click, () => { registry.ActionService.HandleAction(onClick); });
+          callbacks.SetCallback(Callbacks.Event.Click, () =>
+          {
+            registry.ActionService.HandleAction(onClick);
+          });
         }
         else
         {

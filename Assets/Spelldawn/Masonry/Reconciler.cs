@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using Spelldawn.Protos;
 using Spelldawn.Services;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -61,13 +59,7 @@ namespace Spelldawn.Masonry
       Node node,
       VisualElement previousElement)
     {
-      var children = CreateChildren(registry, node, previousElement);
-      previousElement.Clear();
-      foreach (var child in children)
-      {
-        previousElement.Add(child);
-      }
-
+      UpdateChildren(registry, node, previousElement, previousElement);
       Mason.ApplyToElement(registry, previousElement, node);
       return null;
     }
@@ -75,39 +67,44 @@ namespace Spelldawn.Masonry
     static VisualElement UpdateWhenNew(Registry registry, Node node)
     {
       var result = Mason.CreateElement(node);
-      foreach (var child in CreateChildren(registry, node))
-      {
-        result.Add(child);
-      }
-
+      UpdateChildren(registry, node, result);
       Mason.ApplyToElement(registry, result, node);
       return result;
     }
 
-    static List<VisualElement> CreateChildren(Registry registry,
+    static void UpdateChildren(Registry registry,
       Node node,
+      VisualElement addTo,
       VisualElement? previousElement = null)
     {
-      var children = new List<VisualElement>();
-      for (var i = 0; i < node.Children.Count; ++i)
+      var count = 0;
+      while (count < node.Children.Count)
       {
-        var child = node.Children[i];
-        if (previousElement != null && i < previousElement.childCount)
+        var child = node.Children[count];
+        if (previousElement != null && count < previousElement.childCount)
         {
           // Element exists in previous tree.
-          var updated = Update(
+          Update(
             registry,
             child,
-            previousElement[i]);
-          children.Add(updated ?? previousElement[i]);
+            previousElement[count]);
         }
         else
         {
-          children.Add(UpdateWhenNew(registry, child));
+          addTo.Add(UpdateWhenNew(registry, child));
         }
+
+        count++;
       }
 
-      return children;
+      if (previousElement != null)
+      {
+        while (count < previousElement.childCount)
+        {
+          previousElement.RemoveAt(count);
+          count++;
+        }
+      }
     }
   }
 }
