@@ -45,8 +45,8 @@ impl<'a> Component for DeckEditorPanel<'a> {
             .style(
                 Style::new()
                     .background_color(BackgroundColor::DeckEditorPanel)
-                    .width(100.pct())
-                    .height(100.pct()),
+                    .position_type(FlexPosition::Absolute)
+                    .position(Edge::All, 0.px()),
             )
             .child(
                 Column::new("Collection")

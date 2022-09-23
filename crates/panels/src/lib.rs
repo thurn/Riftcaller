@@ -24,6 +24,7 @@ use core_ui::component::Component;
 use core_ui::panel;
 use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
+use deck_editor::create_deck::CreateDeckSheet;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use panel_address::PanelAddress;
 use protos::spelldawn::game_command::Command;
@@ -70,6 +71,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
             DeckEditorPanel::new(player, open_deck).build()
         }
+        PanelAddress::CreateDeck => CreateDeckSheet::new(address.into()).build(),
     })
 }
 

@@ -44,11 +44,10 @@ namespace Spelldawn.Services
     readonly List<InterfacePanelAddress> _openPanels = new();
     readonly Dictionary<InterfacePanelAddress, Node> _panelCache = new();
 
-    VisualElement _fullScreen = null!;
+    VisualElement _panels = null!;
     VisualElement _mainControls = null!;
     VisualElement _cardControls = null!;
     VisualElement _infoZoom = null!;
-    VisualElement? _currentlyDragging;
     Coroutine? _autoRefresh;
 
     public VisualElement RootVisualElement => _document.rootVisualElement;
@@ -61,7 +60,7 @@ namespace Spelldawn.Services
       AddRoot("Main Controls", out _mainControls);
       AddRoot("Card Controls", out _cardControls);
       AddRoot("InfoZoom", out _infoZoom);
-      AddRoot("Full Screen", out _fullScreen);
+      AddRoot("Panels", out _panels);
     }
 
     void Update()
@@ -119,7 +118,7 @@ namespace Spelldawn.Services
 
     public bool MouseOverFullScreenElement()
     {
-      return _fullScreen.Children().Any(c => c.ContainsPoint(c.WorldToLocal(ElementMousePosition())));
+      return _panels.Children().Any(c => c.ContainsPoint(c.WorldToLocal(ElementMousePosition())));
     }
 
     /// <summary>
@@ -182,8 +181,8 @@ namespace Spelldawn.Services
     void RenderPanels()
     {
       Reconcile(
-        ref _fullScreen,
-        FullScreen(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));
+        ref _panels,
+        Panels(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));
     }
 
     void Reconcile(ref VisualElement previousElement, Node newNode)
@@ -233,8 +232,8 @@ namespace Spelldawn.Services
         left: safeLeftTop.x);
     }
     
-    Node FullScreen(IEnumerable<Node> children) =>
-      Row("FullScreen", new FlexStyle
+    Node Panels(IEnumerable<Node> children) =>
+      Row("Panels", new FlexStyle
       {
         Position = FlexPosition.Absolute,
         Padding = GetSafeArea(RootVisualElement.panel),

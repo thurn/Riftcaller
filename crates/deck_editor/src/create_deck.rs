@@ -12,16 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Renders the deck editor window
+use core_ui::bottom_sheet::BottomSheet;
+use core_ui::prelude::*;
+use protos::spelldawn::InterfacePanelAddress;
 
-pub mod card_list;
-pub mod collection_browser;
-pub mod collection_controls;
-pub mod create_deck;
-pub mod deck_card;
-pub mod deck_card_title;
-pub mod deck_editor_actions;
-pub mod deck_editor_panel;
-pub mod deck_list;
-pub mod deck_name;
-pub mod editor_column_scroll;
+#[derive(Debug)]
+pub struct CreateDeckSheet {
+    address: InterfacePanelAddress,
+}
+
+impl CreateDeckSheet {
+    pub fn new(address: InterfacePanelAddress) -> Self {
+        Self { address }
+    }
+}
+
+impl Component for CreateDeckSheet {
+    fn build(self) -> Option<Node> {
+        BottomSheet::new(self.address).build()
+    }
+}

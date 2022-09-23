@@ -24,6 +24,7 @@ const fn color(red: f32, green: f32, blue: f32, alpha: f32) -> FlexColor {
 
 pub const WHITE: FlexColor = color(1.0, 1.0, 1.0, 1.0);
 pub const BLACK: FlexColor = color(0.0, 0.0, 0.0, 1.0);
+pub const BLACK_ALPHA_25: FlexColor = color(0.0, 0.0, 0.0, 0.25);
 pub const BLACK_ALPHA_75: FlexColor = color(0.0, 0.0, 0.0, 0.75);
 pub const RED_100: FlexColor = color(1.0, 0.8, 0.82, 1.0);
 pub const RED_500: FlexColor = color(0.96, 0.26, 0.21, 1.0);
@@ -62,6 +63,8 @@ pub enum BackgroundColor {
     CardInfo,
     DeckEditorPanel,
     CardCount,
+    BottomSheetOverlay,
+    BottomSheetBackground,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -70,6 +73,8 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::CardInfo => BLACK_ALPHA_75,
             BackgroundColor::DeckEditorPanel => BLACK,
             BackgroundColor::CardCount => BLACK,
+            BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
+            BackgroundColor::BottomSheetBackground => ORANGE_900,
         }
     }
 }

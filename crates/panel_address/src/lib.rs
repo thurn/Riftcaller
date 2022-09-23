@@ -23,6 +23,7 @@ use serde_json::ser;
 pub enum PanelAddress {
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
+    CreateDeck,
 }
 
 impl From<PanelAddress> for InterfacePanelAddress {
