@@ -15,7 +15,7 @@
 use std::fmt::Debug;
 use std::marker::PhantomData;
 
-use protos::spelldawn::{ClientAction, EventHandlers, FlexDirection, Node};
+use protos::spelldawn::{ClientAction, EventHandlers, FlexDirection, FlexStyle, Node};
 
 use crate::actions::InterfaceAction;
 use crate::component::Component;
@@ -92,10 +92,7 @@ pub trait HasRenderNode: Sized {
     }
 
     /// Primary [Style] used when the component is not hovered or pressed.
-    fn style(mut self, mut style: Style) -> Self {
-        if let Some(d) = self.flex_direction() {
-            style = style.flex_direction(d);
-        }
+    fn style(mut self, style: Style) -> Self {
         self.render_node().style = Some(style.wrapped_style());
         self
     }
@@ -200,7 +197,15 @@ pub fn build_with_children(mut render_node: Node, children: Vec<Node>) -> Option
 }
 
 impl<D: FlexboxDirection> Component for Flexbox<D> {
-    fn build(self) -> Option<Node> {
+    fn build(mut self) -> Option<Node> {
+        if let Some(d) = self.flex_direction() {
+            if let Some(style) = &mut self.render_node.style {
+                style.flex_direction = d.into();
+            } else {
+                self.render_node.style =
+                    Some(FlexStyle { flex_direction: d.into(), ..FlexStyle::default() })
+            }
+        }
         build_with_children(self.render_node, self.children)
     }
 }

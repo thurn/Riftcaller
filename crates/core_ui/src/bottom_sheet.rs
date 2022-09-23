@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{FlexPosition, InterfacePanelAddress};
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, InterfacePanelAddress};
 
 use crate::component::EmptyComponent;
 use crate::design::BackgroundColor;
@@ -46,16 +46,20 @@ impl Component for BottomSheet {
                     .position(Edge::All, 0.px()),
             )
             .child(
-                Column::new("BottomSheet").style(
-                    Style::new()
-                        .background_color(BackgroundColor::BottomSheetBackground)
-                        .border_radius(Corner::TopLeft, 24.px())
-                        .border_radius(Corner::TopRight, 24.px())
-                        .position_type(FlexPosition::Absolute)
-                        .position(Edge::Horizontal, 16.px())
-                        .position(Edge::Top, 88.px())
-                        .position(Edge::Bottom, 0.px()),
-                ),
+                Column::new("BottomSheet")
+                    .style(
+                        Style::new()
+                            .background_color(BackgroundColor::BottomSheetBackground)
+                            .border_radius(Corner::TopLeft, 24.px())
+                            .border_radius(Corner::TopRight, 24.px())
+                            .justify_content(FlexJustify::Center)
+                            .align_items(FlexAlign::Center)
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::Horizontal, 16.px())
+                            .position(Edge::Top, 88.px())
+                            .position(Edge::Bottom, 0.px()),
+                    )
+                    .child_boxed(self.content),
             )
             .build()
     }
