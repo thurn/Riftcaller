@@ -120,12 +120,14 @@ namespace Spelldawn.Services
             if (this != null)
             {
               var commands = call.ResponseStream.Current;
+              _registry.DocumentService.Loading = false;
               StartCoroutine(_registry.CommandService.HandleCommands(commands));
             }
           }
         }
         catch (RpcException e)
         {
+          _registry.DocumentService.Loading = true;
           Debug.Log($"RpcException: {e.Message}");
         }
       }
@@ -194,10 +196,12 @@ namespace Spelldawn.Services
         switch (call.GetStatus().StatusCode)
         {
           case StatusCode.OK:
+            _registry.DocumentService.Loading = false;
             yield return _registry.CommandService.HandleCommands(task.GetResult());
             break;
           case StatusCode.Unavailable:
           default:
+            _registry.DocumentService.Loading = true;
             if (!AutoRefreshPreference.AutomaticallyRefreshPanels)
             {
               // Don't show this during auto-refresh because it happens constantly.

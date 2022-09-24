@@ -7,3 +7,8 @@ francisco_goya_lucientes.png
   - Porträt der Francisca Sabasa y Garcia by Francisco de Goya
   - Public Domain
   - https://commons.wikimedia.org/wiki/File:Francisca_Sabasa_y_Garc%C3%ADa_por_Goya.jpg
+  
+- loading_indicator.png
+  - from Vecteezy user 'greenflash'
+  - Vecteezy free license https://www.vecteezy.com/licensing-agreement
+  - https://www.vecteezy.com/vector-art/1330443-loading-icon-set  

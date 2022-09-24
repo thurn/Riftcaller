@@ -41,18 +41,33 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] UIDocument _document = null!;
+    [SerializeField] Sprite _loadingIndicator = null!;
+
     readonly List<InterfacePanelAddress> _openPanels = new();
     readonly Dictionary<InterfacePanelAddress, Node> _panelCache = new();
 
-    VisualElement _panels = null!;
     VisualElement _mainControls = null!;
     VisualElement _cardControls = null!;
     VisualElement _infoZoom = null!;
+    VisualElement _panels = null!;
+    VisualElement? _loading;
     Coroutine? _autoRefresh;
+    float _rotateAngle;
 
     public VisualElement RootVisualElement => _document.rootVisualElement;
 
     public IEnumerable<InterfacePanelAddress> OpenPanels => _openPanels;
+
+    public bool Loading
+    {
+      set
+      {
+        if (_loading != null)
+        {
+          _loading.visible = value;
+        }
+      }
+    }
 
     public void Initialize()
     {
@@ -61,8 +76,9 @@ namespace Spelldawn.Services
       AddRoot("Card Controls", out _cardControls);
       AddRoot("InfoZoom", out _infoZoom);
       AddRoot("Panels", out _panels);
+      CreateLoadingSpinner();
     }
-
+    
     void Update()
     {
       if (_autoRefresh == null && AutoRefreshPreference.AutomaticallyRefreshPanels)
@@ -74,6 +90,30 @@ namespace Spelldawn.Services
         StopCoroutine(_autoRefresh);
         _autoRefresh = null;
       }
+
+      if (_loading is { visible: true })
+      {
+        _rotateAngle = (_rotateAngle + (Time.deltaTime * 600)) % 360;
+        _loading.style.rotate = new Rotate(Angle.Degrees(_rotateAngle));
+      }
+    }
+
+    void CreateLoadingSpinner()
+    {
+      AddRoot("Loading", out var loadingContainer);
+      loadingContainer.style.justifyContent = Justify.Center;
+      loadingContainer.style.alignItems = Align.Center;
+      _loading = new Image
+      {
+        sprite = _loadingIndicator,
+        style =
+        {
+          width = 88,
+          height = 88,
+          opacity = 0.5f
+        }
+      };
+      loadingContainer.Add(_loading);
     }
 
     IEnumerator AutoRefresh()
@@ -231,7 +271,7 @@ namespace Spelldawn.Services
       return GroupDip(top: safeLeftTop.y, right: safeRightBottom.x, bottom: safeRightBottom.y,
         left: safeLeftTop.x);
     }
-    
+
     Node Panels(IEnumerable<Node> children) =>
       Row("Panels", new FlexStyle
       {
