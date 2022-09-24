@@ -18,13 +18,13 @@ using UnityEditor;
 
 namespace Spelldawn.Tools
 {
-  public static class AutoRefreshPreference
+  public static class DoNotLogRpcErrors
   {
-    const string MenuName = "Tools/Automatically Refresh Panels";
-    const string SettingName = "AutomaticallyRefreshPanels";
+    const string MenuName = "Tools/Skip Logging RPC Error";
+    const string SettingName = "SkipRpcErrors";
     
 #if UNITY_EDITOR 
-    public static bool AutomaticallyRefreshPanels
+    public static bool ShouldSkipLoggingRpcErrors
     {
       get => EditorPrefs.GetBool(SettingName, false);
       set => EditorPrefs.SetBool(SettingName, value);
@@ -33,17 +33,17 @@ namespace Spelldawn.Tools
     [MenuItem(MenuName)]
     static void ToggleAction()
     {
-      AutomaticallyRefreshPanels = !AutomaticallyRefreshPanels;
+      ShouldSkipLoggingRpcErrors = !ShouldSkipLoggingRpcErrors;
     }
   
     [MenuItem(MenuName, true)]
     static bool ToggleActionValidate()
     {
-      Menu.SetChecked(MenuName, AutomaticallyRefreshPanels);
+      Menu.SetChecked(MenuName, ShouldSkipLoggingRpcErrors);
       return true;
     }
 #else
-    public static bool AutomaticallyRefreshPanels => false;
+    public static bool ShouldSkipLoggingRpcErrors => false;
 #endif
   }
 }

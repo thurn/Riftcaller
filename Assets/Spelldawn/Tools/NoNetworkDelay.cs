@@ -18,13 +18,13 @@ using UnityEditor;
 
 namespace Spelldawn.Tools
 {
-  public static class IntroduceNetworkDelay
+  public static class NoNetworkDelay
   {
-    const string MenuName = "Tools/Long Network Delay %&n";
-    const string SettingName = "IntroduceNetworkDelay";
+    const string MenuName = "Tools/No Network Delay %&d";
+    const string SettingName = "NoNetworkDelay";
     
 #if UNITY_EDITOR 
-    public static bool ShouldIntroduceNetworkDelay
+    public static bool ShouldRemoveNetworkDelay
     {
       get => EditorPrefs.GetBool(SettingName, false);
       set => EditorPrefs.SetBool(SettingName, value);
@@ -33,17 +33,17 @@ namespace Spelldawn.Tools
     [MenuItem(MenuName)]
     static void ToggleAction()
     {
-      ShouldIntroduceNetworkDelay = !ShouldIntroduceNetworkDelay;
+      ShouldRemoveNetworkDelay = !ShouldRemoveNetworkDelay;
     }
   
     [MenuItem(MenuName, true)]
     static bool ToggleActionValidate()
     {
-      Menu.SetChecked(MenuName, ShouldIntroduceNetworkDelay);
+      Menu.SetChecked(MenuName, ShouldRemoveNetworkDelay);
       return true;
     }
 #else
-    public static bool ShouldIntroduceNetworkDelay => false;
+    public static bool ShouldRemoveNetworkDelay => false;
 #endif
   }
 }

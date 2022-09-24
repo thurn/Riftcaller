@@ -53,16 +53,23 @@ namespace Spelldawn.Services
     [SerializeField] bool _currentlyHandlingAction;
     readonly Queue<ClientAction> _actionQueue = new();
     PlayerIdentifier? _playerIdentifier;
+    bool _attemptReconnect;
     
     public bool OfflineMode { get; private set; }
 
     public bool Active => _currentlyHandlingAction || _actionQueue.Count > 0;
 
+    void Start()
+    {
+      _attemptReconnect = false;
+      StartCoroutine(AutoReconnect());
+    }
+
     public void Connect(PlayerIdentifier playerIdentifier, bool offlineMode)
     {
       _playerIdentifier = playerIdentifier;
       OfflineMode = offlineMode;
-      ConnectToRulesEngine();
+      AttemptConnection();
     }
 
     public void HandleAction(ClientAction action)
@@ -95,7 +102,21 @@ namespace Spelldawn.Services
 #endif
     }
 
-    async void ConnectToRulesEngine()
+    IEnumerator AutoReconnect()
+    {
+      while (true)
+      {
+        yield return new WaitForSeconds(1.0f);
+        if (_attemptReconnect)
+        {
+          AttemptConnection();
+        }
+      }
+      
+      // ReSharper disable once IteratorNeverReturns
+    }
+
+    async void AttemptConnection()
     {
       var request = new ConnectRequest
       {
@@ -110,7 +131,6 @@ namespace Spelldawn.Services
       else
       {
         // TODO: Android in particular seems to hang for multiple minutes when the server can't be reached?
-        Debug.Log($"Connecting to {ServerAddress} with {request}");
         using var call = _client.Connect(request);
 
         try
@@ -121,14 +141,20 @@ namespace Spelldawn.Services
             {
               var commands = call.ResponseStream.Current;
               _registry.DocumentService.Loading = false;
+              _attemptReconnect = false;
               StartCoroutine(_registry.CommandService.HandleCommands(commands));
+              _registry.DocumentService.FetchOpenPanels();
             }
           }
         }
         catch (RpcException e)
         {
           _registry.DocumentService.Loading = true;
-          Debug.Log($"RpcException: {e.Message}");
+          _attemptReconnect = true;
+          if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
+          {
+            Debug.Log($"RpcException: {e.StatusCode} -- {e.Message}");
+          }
         }
       }
     }
@@ -159,16 +185,13 @@ namespace Spelldawn.Services
       }
 
       // Introduce simulated server delay
-      if (!AutoRefreshPreference.AutomaticallyRefreshPanels)
+      if (IntroduceNetworkDelay.ShouldIntroduceNetworkDelay)
       {
-        if (IntroduceNetworkDelay.ShouldIntroduceNetworkDelay)
-        {
-          yield return new WaitForSeconds(5f);
-        }
-        else
-        {
-          yield return new WaitForSeconds(Random.Range(0f, 0.5f));
-        }
+        yield return new WaitForSeconds(5f);
+      }
+      else if (!NoNetworkDelay.ShouldRemoveNetworkDelay)
+      {
+        yield return new WaitForSeconds(Random.Range(0f, 0.5f));
       }
 
       // Send to server
@@ -197,15 +220,15 @@ namespace Spelldawn.Services
         {
           case StatusCode.OK:
             _registry.DocumentService.Loading = false;
+            _attemptReconnect = false;
             yield return _registry.CommandService.HandleCommands(task.GetResult());
             break;
-          case StatusCode.Unavailable:
           default:
             _registry.DocumentService.Loading = true;
-            if (!AutoRefreshPreference.AutomaticallyRefreshPanels)
+            _attemptReconnect = true;
+            if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
             {
-              // Don't show this during auto-refresh because it happens constantly.
-              Debug.LogError($"Error connecting to {ServerAddress}: {call.GetStatus().Detail}");
+              Debug.Log($"Error connecting to {ServerAddress}: {call.GetStatus().Detail}");
             }
 
             break;

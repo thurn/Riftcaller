@@ -13,14 +13,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Game;
 using Spelldawn.Masonry;
 using static Spelldawn.Masonry.MasonUtil;
 using Spelldawn.Protos;
-using Spelldawn.Tools;
 using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -81,16 +79,6 @@ namespace Spelldawn.Services
     
     void Update()
     {
-      if (_autoRefresh == null && AutoRefreshPreference.AutomaticallyRefreshPanels)
-      {
-        _autoRefresh = StartCoroutine(AutoRefresh());
-      }
-      else if (_autoRefresh != null && !AutoRefreshPreference.AutomaticallyRefreshPanels)
-      {
-        StopCoroutine(_autoRefresh);
-        _autoRefresh = null;
-      }
-
       if (_loading is { visible: true })
       {
         _rotateAngle = (_rotateAngle + (Time.deltaTime * 600)) % 360;
@@ -116,24 +104,18 @@ namespace Spelldawn.Services
       loadingContainer.Add(_loading);
     }
 
-    IEnumerator AutoRefresh()
+    public void FetchOpenPanels()
     {
-      while (true)
+      foreach (var address in _openPanels)
       {
-        yield return new WaitForSeconds(1.0f);
-
-        foreach (var address in _openPanels)
+        _registry.ActionService.HandleAction(new ClientAction
         {
-          _registry.ActionService.HandleAction(new ClientAction
+          FetchPanel = new FetchPanelAction
           {
-            FetchPanel = new FetchPanelAction
-            {
-              PanelAddress = address
-            }
-          });
-        }
-      }
-      // ReSharper disable once IteratorNeverReturns
+            PanelAddress = address
+          }
+        });
+      }      
     }
 
     public float ScreenPxToElementPx(float value) => value * _document.panelSettings.referenceDpi / Screen.dpi;
