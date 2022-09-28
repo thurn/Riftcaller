@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::button::Button;
+use core_ui::button::{Button, IconButton};
 use core_ui::design::FontSize;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::text::Text;
-use protos::spelldawn::{FlexAlign, FlexJustify, InterfacePanelAddress};
+use core_ui::{icons, panel};
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, InterfacePanelAddress};
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -34,7 +35,24 @@ impl CreateDeckSheet {
 impl Component for CreateDeckSheet {
     fn build(self) -> Option<Node> {
         Column::new("Side Choice")
-            .style(Style::new().align_items(FlexAlign::Center).justify_content(FlexJustify::Center))
+            .style(
+                Style::new()
+                    .align_items(FlexAlign::Center)
+                    .justify_content(FlexJustify::Center)
+                    .flex_grow(1.0)
+                    .width(100.pct()),
+            )
+            .child(
+                IconButton::new(icons::CLOSE)
+                    .action(panel::close_bottom_sheet())
+                    .show_frame(true)
+                    .layout(
+                        Layout::new()
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::Left, (-20).px())
+                            .position(Edge::Top, (-20).px()),
+                    ),
+            )
             .child(Text::new("Pick Side:", FontSize::Headline))
             .child(
                 Row::new("SideButtons")

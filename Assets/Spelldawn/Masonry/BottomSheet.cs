@@ -14,10 +14,13 @@
 
 #nullable enable
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -25,23 +28,41 @@ namespace Spelldawn.Masonry
 {
   public sealed class BottomSheet : VisualElement
   {
+    const float AnimationDurationSeconds = 0.3f;
+    readonly VisualElement _backgroundOverlay;
     readonly VisualElement _sheet;
     readonly Registry _registry;
     readonly List<InterfacePanelAddress> _stack = new();
+    bool _isOpen;
+    bool _isAnimating;
     VisualElement _content = new NodeVisualElement();
-    List<InterfacePanelAddress>? _stackUpdate;
-    
+
     public BottomSheet(Registry registry)
     {
       _registry = registry;
-      name = "BottomSheetOverlay";
-      style.display = DisplayStyle.None;
-      style.backgroundColor = new Color(0f, 0f, 0f, 0.75f);
+      name = "BottomSheetContainer";
       style.position = Position.Absolute;
       style.top = 0;
       style.right = 0;
       style.bottom = 0;
       style.left = 0;
+      pickingMode = PickingMode.Ignore;
+
+      _backgroundOverlay = new VisualElement
+      {
+        name = "BottomSheetOverlay",
+        style =
+        {
+          opacity = 0,
+          backgroundColor = Color.black,
+          position = Position.Absolute,
+          top = 0,
+          right = 0,
+          bottom = 0,
+          left = 0
+        },
+        pickingMode = PickingMode.Ignore
+      };
 
       var safeArea = registry.DocumentService.GetSafeArea();
       _sheet = new VisualElement
@@ -50,7 +71,7 @@ namespace Spelldawn.Masonry
         style =
         {
           position = Position.Absolute,
-          top = safeArea.Top.Value + 44,
+          top = Length.Percent(100f),
           right = safeArea.Right.Value + 16,
           bottom = safeArea.Bottom.Value + 0,
           left = safeArea.Left.Value + 16,
@@ -58,44 +79,142 @@ namespace Spelldawn.Masonry
           borderTopLeftRadius = 24,
           borderTopRightRadius = 24,
           justifyContent = Justify.Center,
-          alignItems = Align.Center
+          alignItems = Align.Center,
+          height = Length.Percent(95)
         }
       };
-      
+
+      Add(_backgroundOverlay);
       _sheet.Add(_content);
       Add(_sheet);
     }
 
     /// <summary>
-    /// Opens the bottom sheet to display the panel with 'address' or closes it. Clears all other displayed content. 
+    /// Opens the bottom sheet to display the panel with the provided address, closing any existing sheet.
     /// </summary>
-    public void ToggleOpen(bool open, InterfacePanelAddress address)
+    public IEnumerator OpenWithAddress(InterfacePanelAddress address)
     {
-      _stackUpdate = open ? new List<InterfacePanelAddress> { address } : new List<InterfacePanelAddress>();
-      Debug.Log($"ToggleOpen: toggled with update {_stackUpdate.Count}");
-    }
-    
-    public void TogglePush(bool open, InterfacePanelAddress address)
-    {
-
-    }
-
-    public void RefreshPanels(Dictionary<InterfacePanelAddress, Node> panelCache)
-    {
-      if (_stackUpdate != null)
+      if (_isOpen)
       {
-        style.display = DisplayStyle.Flex;
-
-        if (_stackUpdate.Count > 0 && panelCache.ContainsKey(_stackUpdate.Last()))
+        var last = _stack.LastOrDefault();
+        if (last != null && last.Equals(address))
         {
-          var result = Reconciler.Update(_registry, panelCache[_stackUpdate.Last()], _content);
-          if (result != null)
-          {
-            _sheet.Clear();
-            _content = result;
-            _sheet.Add(_content);
-          }
+          // If we're attempting to open an identical sheet, do nothing
+          yield break;
         }
+        else
+        {
+          yield return AnimateClose();
+        }
+      }
+
+      _stack.Clear();
+      _stack.Add(address);
+      yield return AnimateOpen();
+    }
+
+    /// <summary>Closes the bottom sheet.</summary>
+    public IEnumerator Close()
+    {
+      if (_isOpen)
+      {
+        yield return AnimateClose();
+      }
+      _stack.Clear();
+    }
+
+    /// <summary>Pushes a new page onto this bottom sheet</summary>
+    public IEnumerator PushAddress(InterfacePanelAddress address)
+    {
+      yield break;
+    }
+
+    /// <summary>Removes the specified page from this bottom sheet.</summary>
+    public IEnumerator PopAddress(InterfacePanelAddress address)
+    {
+      yield break;
+    }
+
+    public void RefreshPanels()
+    {
+      var address = _stack.LastOrDefault();
+      if (address == null || !_registry.DocumentService.PanelCache.ContainsKey(address))
+      {
+        ClearContent();
+      }
+      else
+      {
+        var result = Reconciler.Update(_registry, _registry.DocumentService.PanelCache[address], _content);
+        if (result != null)
+        {
+          SetContent(result);
+        }         
+      }
+    }
+
+    void SetContent(VisualElement content)
+    {
+      _content = content;
+      _sheet.Clear();
+      _sheet.Add(_content);
+    }
+
+    void ClearContent()
+    {
+      SetContent(new NodeVisualElement());
+    }
+
+    IEnumerator AnimateOpen()
+    {
+      if (!_isOpen && !_isAnimating)
+      {
+        _isAnimating = true;
+        _sheet.style.top = Length.Percent(100f);
+        yield return TweenUtils.Sequence("OpenBottomSheet")
+          .Insert(0,
+            DOTween.To(
+              () => _backgroundOverlay.style.opacity.value,
+              x => _backgroundOverlay.style.opacity = x,
+              0.75f,
+              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+          .Insert(0,
+            DOTween.To(
+              () => _sheet.style.top.value.value,
+              x => _sheet.style.top = Length.Percent(x),
+              5f,
+              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+          .AppendCallback(() =>
+          {
+            _isAnimating = false;
+            _isOpen = true;
+          }).WaitForCompletion();
+      }
+    }
+
+    IEnumerator AnimateClose()
+    {
+      if (_isOpen && !_isAnimating)
+      {
+        _isAnimating = true;
+        _sheet.style.top = Length.Percent(5f);
+        yield return TweenUtils.Sequence("CloseBottomSheet")
+          .Insert(0,
+            DOTween.To(
+              () => _backgroundOverlay.style.opacity.value,
+              x => _backgroundOverlay.style.opacity = x,
+              0f,
+              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+          .Insert(0,
+            DOTween.To(
+              () => _sheet.style.top.value.value,
+              x => _sheet.style.top = Length.Percent(x),
+              100f,
+              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+          .AppendCallback(() =>
+          {
+            _isAnimating = false;
+            _isOpen = false;
+          }).WaitForCompletion();
       }
     }
   }

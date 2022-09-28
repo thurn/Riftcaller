@@ -57,6 +57,8 @@ namespace Spelldawn.Services
 
     public IEnumerable<InterfacePanelAddress> OpenPanels => _openPanels;
 
+    public IReadOnlyDictionary<InterfacePanelAddress, Node> PanelCache => _panelCache;
+
     public bool Loading
     {
       set
@@ -158,10 +160,10 @@ namespace Spelldawn.Services
       switch (mode?.PanelModeCase ?? TogglePanelMode.PanelModeOneofCase.None)
       {
         case TogglePanelMode.PanelModeOneofCase.BottomSheetOpen:
-          _bottomSheet.ToggleOpen(open, address);
+          StartCoroutine(open ? _bottomSheet.OpenWithAddress(address) : _bottomSheet.Close());
           break;
         case TogglePanelMode.PanelModeOneofCase.BottomSheetPush:
-          _bottomSheet.TogglePush(open, address);
+          StartCoroutine(open ? _bottomSheet.PushAddress(address) : _bottomSheet.PopAddress(address));
           break;
         default:
           ToggleOpenPanel(open, address);
@@ -228,7 +230,7 @@ namespace Spelldawn.Services
         ref _panels,
         Panels(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));
       
-      _bottomSheet.RefreshPanels(_panelCache);
+      _bottomSheet.RefreshPanels();
     }
 
     void Reconcile(ref VisualElement previousElement, Node newNode)

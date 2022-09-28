@@ -26,7 +26,7 @@ pub fn client(address: ClientPanelAddress) -> InterfacePanelAddress {
     }
 }
 
-/// InterfaceAction to open a panel
+/// Command to open a panel
 pub fn open(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         panel_address: Some(address.into()),
@@ -35,7 +35,8 @@ pub fn open(address: impl Into<InterfacePanelAddress>) -> Command {
     })
 }
 
-/// Open a new bottom sheet to display the content of a panel
+/// Open a new bottom sheet to display the content of a panel, hiding any
+/// existing bottom sheet
 pub fn open_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         panel_address: Some(address.into()),
@@ -46,12 +47,23 @@ pub fn open_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
     })
 }
 
-/// InterfaceAction to close a panel
+/// Command to close a panel
 pub fn close(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         panel_address: Some(address.into()),
         open: false,
         mode: None,
+    })
+}
+
+/// Close any bottom sheet which is currently open
+pub fn close_bottom_sheet() -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        panel_address: None,
+        open: false,
+        mode: Some(TogglePanelMode {
+            panel_mode: Some(toggle_panel_mode::PanelMode::BottomSheetOpen(())),
+        }),
     })
 }
 

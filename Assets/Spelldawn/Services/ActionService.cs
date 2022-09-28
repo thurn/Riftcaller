@@ -54,7 +54,7 @@ namespace Spelldawn.Services
     readonly Queue<ClientAction> _actionQueue = new();
     PlayerIdentifier? _playerIdentifier;
     bool _attemptReconnect;
-    
+
     public bool OfflineMode { get; private set; }
 
     public bool Active => _currentlyHandlingAction || _actionQueue.Count > 0;
@@ -112,7 +112,7 @@ namespace Spelldawn.Services
           AttemptConnection();
         }
       }
-      
+
       // ReSharper disable once IteratorNeverReturns
     }
 
@@ -255,10 +255,10 @@ namespace Spelldawn.Services
               switch (command.CommandCase)
               {
                 case GameCommand.CommandOneofCase.TogglePanel:
-                  _registry.DocumentService.TogglePanel(
-                    command.TogglePanel.Open,
-                    command.TogglePanel.PanelAddress,
-                    command.TogglePanel.Mode);
+                    _registry.DocumentService.TogglePanel(
+                      command.TogglePanel.Open,
+                      command.TogglePanel.PanelAddress,
+                      command.TogglePanel.Mode);
                   break;
               }
             }
