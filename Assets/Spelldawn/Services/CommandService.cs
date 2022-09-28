@@ -33,7 +33,7 @@ namespace Spelldawn.Services
     readonly Queue<CommandList> _queue = new();
 
     public bool Active => _currentlyHandling;
-    
+
     public IEnumerator HandleCommands(IEnumerable<GameCommand> commands)
     {
       var list = new CommandList();
@@ -68,9 +68,9 @@ namespace Spelldawn.Services
         // Clear UI during animations
         _registry.DocumentService.RenderMainControls(null);
       }
-      
+
       yield return _registry.AssetService.LoadAssets(commandList);
-      
+
       foreach (var command in commandList.Commands)
       {
         switch (command.CommandCase)
@@ -82,7 +82,10 @@ namespace Spelldawn.Services
             _registry.DocumentService.HandleUpdatePanels(command.UpdatePanels);
             break;
           case GameCommand.CommandOneofCase.TogglePanel:
-            _registry.DocumentService.TogglePanel(command.TogglePanel.Open, command.TogglePanel.PanelAddress);
+            _registry.DocumentService.TogglePanel(
+              command.TogglePanel.Open,
+              command.TogglePanel.PanelAddress,
+              command.TogglePanel.Mode);
             break;
           case GameCommand.CommandOneofCase.Delay:
             yield return new WaitForSeconds(DataUtils.ToSeconds(command.Delay.Duration, 0));
@@ -94,7 +97,8 @@ namespace Spelldawn.Services
             yield return _registry.ArenaService.HandleVisitRoom(command.VisitRoom);
             break;
           case GameCommand.CommandOneofCase.PlaySound:
-            AssetUtil.PlayOneShot(_registry.MainAudioSource, _registry.AssetService.GetAudioClip(command.PlaySound.Sound));
+            AssetUtil.PlayOneShot(_registry.MainAudioSource,
+              _registry.AssetService.GetAudioClip(command.PlaySound.Sound));
             break;
           case GameCommand.CommandOneofCase.SetMusic:
             _registry.MusicService.SetMusicState(command.SetMusic.MusicState);
@@ -182,12 +186,12 @@ namespace Spelldawn.Services
       {
         HandleRenderPlayer(PlayerName.Opponent, game.Opponent);
       }
-      
+
       _registry.RaidService.RaidActive = game.RaidActive;
       yield return _registry.CardService.Sync(game.Cards.ToList(), game.GameObjectPositions, animate);
-      
+
       // Must run after move completion, uses card positions for anchoring
-      _registry.DocumentService.RenderMainControls(game.MainControls);      
+      _registry.DocumentService.RenderMainControls(game.MainControls);
     }
 
     void HandleRenderPlayer(PlayerName playerName, PlayerView playerView)

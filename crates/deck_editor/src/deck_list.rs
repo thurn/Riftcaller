@@ -14,12 +14,12 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::design::{FontSize, RED_900};
+use core_ui::panel;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
 use panel_address::PanelAddress;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{FlexAlign, FlexDirection, TogglePanelCommand};
+use protos::spelldawn::{FlexAlign, FlexDirection};
 
 use crate::deck_name::DeckName;
 use crate::editor_column_scroll::EditorColumnScroll;
@@ -49,10 +49,7 @@ impl<'a> Component for DeckList<'a> {
                         Button::new("Create Deck")
                             .button_type(ButtonType::Primary)
                             .layout(Layout::new().margin(Edge::All, 16.px()))
-                            .action(Command::TogglePanel(TogglePanelCommand {
-                                panel_address: Some(PanelAddress::CreateDeck.into()),
-                                open: true,
-                            })),
+                            .action(panel::open_bottom_sheet(PanelAddress::CreateDeck)),
                     )
                     .child(
                         Column::new("Decks")

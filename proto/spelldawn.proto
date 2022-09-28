@@ -1026,15 +1026,13 @@ message DebugLogCommand {
     string message = 1;
 }
 
-/*
- * Run a series of command lists simultaneously. Warning: applying multiple
- * commands to the same game object will have unpredictable results.
- */
+// Run a series of command lists simultaneously. Warning: applying multiple
+// commands to the same game object will have unpredictable results.
 message RunInParallelCommand {
     repeated CommandList commands = 1;
 }
 
-/* Wait before executing the next command in sequence. */
+// Wait before executing the next command in sequence.
 message DelayCommand {
     TimeValue duration = 1;
 }
@@ -1103,6 +1101,24 @@ message UpdatePanelsCommand {
     repeated InterfacePanel panels = 1;
 }
 
+// Parameters to add a page to an existing bottom sheet
+message BottomSheetPush {
+    InterfacePanelAddress parent_address = 1;
+}
+
+message TogglePanelMode {
+    oneof panel_mode {
+        // Display or hide the bottom sheet.
+        //
+        // Only one bottom sheet can ever be open at a time, so this always
+        // replaces all existing content.
+        google.protobuf.Empty bottom_sheet_open = 1;
+
+        // Display the panel contents as a new page of a parent bottom sheet
+        BottomSheetPush bottom_sheet_push = 2;
+    }
+}
+
 // Requests to open or close the given interface panel.
 message TogglePanelCommand {
     // Panel to modify
@@ -1110,6 +1126,10 @@ message TogglePanelCommand {
 
     // Should the panel be opened or closed?
     bool open = 2;
+
+    // Optionally, controls the animations and surrounding container for the
+    // panel contents.
+    TogglePanelMode mode = 3;
 }
 
 // Updates the current GameView state.
@@ -1126,10 +1146,8 @@ enum RoomVisitType {
     ROOM_VISIT_TYPE_LEVEL_UP_ROOM = 2;
 }
 
-/*
- * Animates 'initiator' moving to a room and plays a standard particle effect
- * based on the visit type.
- */
+// Animates 'initiator' moving to a room and plays a standard particle effect
+// based on the visit type.
 message VisitRoomCommand {
     PlayerName initiator = 1;
     RoomIdentifier room_id = 2;
@@ -1139,7 +1157,7 @@ message VisitRoomCommand {
 enum CardCreationAnimation {
     CARD_CREATION_ANIMATION_UNSPECIFIED = 0;
 
-    /* Animates the card moving from the deck to the staging area. */
+    // Animates the card moving from the deck to the staging area.
     CARD_CREATION_ANIMATION_DRAW_CARD = 1;
 
     // Animates the card moving from its parent card (indicated by its card

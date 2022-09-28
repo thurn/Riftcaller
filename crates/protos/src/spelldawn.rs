@@ -1000,7 +1000,6 @@ pub struct DebugLogCommand {
     #[prost(string, tag = "1")]
     pub message: ::prost::alloc::string::String,
 }
-///
 /// Run a series of command lists simultaneously. Warning: applying multiple
 /// commands to the same game object will have unpredictable results.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1078,6 +1077,29 @@ pub struct UpdatePanelsCommand {
     #[prost(message, repeated, tag = "1")]
     pub panels: ::prost::alloc::vec::Vec<InterfacePanel>,
 }
+/// Parameters to add a page to an existing bottom sheet
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BottomSheetPush {
+    #[prost(message, optional, tag = "1")]
+    pub parent_address: ::core::option::Option<InterfacePanelAddress>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TogglePanelMode {
+    #[prost(oneof = "toggle_panel_mode::PanelMode", tags = "1, 2")]
+    pub panel_mode: ::core::option::Option<toggle_panel_mode::PanelMode>,
+}
+/// Nested message and enum types in `TogglePanelMode`.
+pub mod toggle_panel_mode {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum PanelMode {
+        /// Display a new bottom sheet with the panel contents
+        #[prost(message, tag = "1")]
+        BottomSheetOpen(()),
+        /// Display the panel contents as a new page of a parent bottom sheet
+        #[prost(message, tag = "2")]
+        BottomSheetPush(super::BottomSheetPush),
+    }
+}
 /// Requests to open or close the given interface panel.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TogglePanelCommand {
@@ -1087,6 +1109,10 @@ pub struct TogglePanelCommand {
     /// Should the panel be opened or closed?
     #[prost(bool, tag = "2")]
     pub open: bool,
+    /// Optionally, controls the animations and surrounding container for the
+    /// panel contents.
+    #[prost(message, optional, tag = "3")]
+    pub mode: ::core::option::Option<TogglePanelMode>,
 }
 /// Updates the current GameView state.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1097,7 +1123,6 @@ pub struct UpdateGameViewCommand {
     #[prost(bool, tag = "2")]
     pub animate: bool,
 }
-///
 /// Animates 'initiator' moving to a room and plays a standard particle effect
 /// based on the visit type.
 #[derive(Clone, PartialEq, ::prost::Message)]

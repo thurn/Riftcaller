@@ -48,6 +48,7 @@ namespace Spelldawn.Services
     VisualElement _cardControls = null!;
     VisualElement _infoZoom = null!;
     VisualElement _panels = null!;
+    BottomSheet _bottomSheet = null!;
     VisualElement? _loading;
     Coroutine? _autoRefresh;
     float _rotateAngle;
@@ -74,6 +75,8 @@ namespace Spelldawn.Services
       AddRoot("Card Controls", out _cardControls);
       AddRoot("InfoZoom", out _infoZoom);
       AddRoot("Panels", out _panels);
+      _bottomSheet = new BottomSheet(_registry);
+      _document.rootVisualElement.Add(_bottomSheet);
       CreateLoadingSpinner();
     }
     
@@ -150,7 +153,36 @@ namespace Spelldawn.Services
     public ElementPosition TransformPositionToElementPosition(Transform t)
       => ScreenPositionToElementPosition(_registry.MainCamera.WorldToScreenPoint(t.position));
 
-    public void TogglePanel(bool open, InterfacePanelAddress address)
+    public void TogglePanel(bool open, InterfacePanelAddress address, TogglePanelMode? mode)
+    {
+      switch (mode?.PanelModeCase ?? TogglePanelMode.PanelModeOneofCase.None)
+      {
+        case TogglePanelMode.PanelModeOneofCase.BottomSheetOpen:
+          _bottomSheet.ToggleOpen(open, address);
+          break;
+        case TogglePanelMode.PanelModeOneofCase.BottomSheetPush:
+          _bottomSheet.TogglePush(open, address);
+          break;
+        default:
+          ToggleOpenPanel(open, address);
+          break;
+      }
+
+      if (open)
+      {
+        _registry.ActionService.HandleAction(new ClientAction
+        {
+          FetchPanel = new FetchPanelAction
+          {
+            PanelAddress = address
+          }
+        });        
+      }
+
+      RenderPanels();
+    }
+
+    void ToggleOpenPanel(bool open, InterfacePanelAddress address)
     {
       if (open)
       {
@@ -158,21 +190,11 @@ namespace Spelldawn.Services
         {
           _openPanels.Add(address);
         }
-
-        _registry.ActionService.HandleAction(new ClientAction
-        {
-          FetchPanel = new FetchPanelAction
-          {
-            PanelAddress = address
-          }
-        });
       }
       else
       {
         _openPanels.Remove(address);
       }
-
-      RenderPanels();
     }
 
     public bool IsOpen(InterfacePanelAddress address) => _openPanels.Contains(address);
@@ -205,6 +227,8 @@ namespace Spelldawn.Services
       Reconcile(
         ref _panels,
         Panels(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));
+      
+      _bottomSheet.RefreshPanels(_panelCache);
     }
 
     void Reconcile(ref VisualElement previousElement, Node newNode)
@@ -239,8 +263,9 @@ namespace Spelldawn.Services
       _document.rootVisualElement.Add(element);
     }
 
-    DimensionGroup GetSafeArea(IPanel panel)
+    public DimensionGroup GetSafeArea()
     {
+      var panel = RootVisualElement.panel;
       var safeLeftTop = RuntimePanelUtils.ScreenToPanel(
         panel,
         new Vector2(Screen.safeArea.xMin, Screen.height - Screen.safeArea.yMax)
@@ -258,7 +283,7 @@ namespace Spelldawn.Services
       Row("Panels", new FlexStyle
       {
         Position = FlexPosition.Absolute,
-        Padding = GetSafeArea(RootVisualElement.panel),
+        Padding = GetSafeArea(),
         Inset = AllDip(0),
       }, children);
 

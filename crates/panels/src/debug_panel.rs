@@ -26,9 +26,7 @@ use data::user_actions::DebugAction;
 use panel_address::PanelAddress;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{
-    ClientDebugCommand, ClientPanelAddress, FlexAlign, FlexJustify, FlexWrap, TogglePanelCommand,
-};
+use protos::spelldawn::{ClientDebugCommand, ClientPanelAddress, FlexAlign, FlexJustify, FlexWrap};
 
 #[derive(Debug, Default)]
 pub struct DebugPanel {}
@@ -41,10 +39,7 @@ impl DebugPanel {
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {
-        let close = Command::TogglePanel(TogglePanelCommand {
-            panel_address: Some(panel::client(ClientPanelAddress::DebugPanel)),
-            open: false,
-        });
+        let close = panel::close(panel::client(ClientPanelAddress::DebugPanel));
 
         Panel::new(panel::client(ClientPanelAddress::DebugPanel), 1024.px(), 600.px())
             .title("Debug Controls")
@@ -79,17 +74,11 @@ impl Component for DebugPanel {
                     .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadState(3)))
                     .child(debug_button(
                         "Overlord AI",
-                        Command::TogglePanel(TogglePanelCommand {
-                            panel_address: Some(PanelAddress::SetPlayerName(Side::Overlord).into()),
-                            open: true,
-                        }),
+                        panel::open(PanelAddress::SetPlayerName(Side::Overlord)),
                     ))
                     .child(debug_button(
                         "Champion AI",
-                        Command::TogglePanel(TogglePanelCommand {
-                            panel_address: Some(PanelAddress::SetPlayerName(Side::Champion).into()),
-                            open: true,
-                        }),
+                        panel::open(PanelAddress::SetPlayerName(Side::Champion)),
                     )),
             )
             .build()

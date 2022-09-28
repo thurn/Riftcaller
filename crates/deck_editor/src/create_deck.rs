@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::bottom_sheet::BottomSheet;
 use core_ui::button::Button;
 use core_ui::design::FontSize;
 use core_ui::prelude::*;
@@ -21,6 +20,7 @@ use core_ui::text::Text;
 use protos::spelldawn::{FlexAlign, FlexJustify, InterfacePanelAddress};
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct CreateDeckSheet {
     address: InterfacePanelAddress,
 }
@@ -33,27 +33,20 @@ impl CreateDeckSheet {
 
 impl Component for CreateDeckSheet {
     fn build(self) -> Option<Node> {
-        BottomSheet::new(self.address)
-            .content(
-                Column::new("Side Choice")
-                    .style(
-                        Style::new()
-                            .align_items(FlexAlign::Center)
-                            .justify_content(FlexJustify::Center),
-                    )
-                    .child(Text::new("Pick Side:", FontSize::Headline))
+        Column::new("Side Choice")
+            .style(Style::new().align_items(FlexAlign::Center).justify_content(FlexJustify::Center))
+            .child(Text::new("Pick Side:", FontSize::Headline))
+            .child(
+                Row::new("SideButtons")
                     .child(
-                        Row::new("SideButtons")
-                            .child(
-                                Button::new("Overlord")
-                                    .width_mode(WidthMode::Constrained)
-                                    .layout(Layout::new().margin(Edge::All, 16.px())),
-                            )
-                            .child(
-                                Button::new("Champion")
-                                    .width_mode(WidthMode::Constrained)
-                                    .layout(Layout::new().margin(Edge::All, 16.px())),
-                            ),
+                        Button::new("Overlord")
+                            .width_mode(WidthMode::Constrained)
+                            .layout(Layout::new().margin(Edge::All, 16.px())),
+                    )
+                    .child(
+                        Button::new("Champion")
+                            .width_mode(WidthMode::Constrained)
+                            .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )
             .build()

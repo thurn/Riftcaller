@@ -23,8 +23,7 @@ use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use panel_address::{DeckEditorData, PanelAddress};
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientPanelAddress, FlexAlign, FlexJustify, TogglePanelCommand};
+use protos::spelldawn::{ClientPanelAddress, FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
 pub struct GameMenuPanel {}
@@ -37,10 +36,7 @@ impl GameMenuPanel {
 
 impl Component for GameMenuPanel {
     fn build(self) -> Option<Node> {
-        let close = Command::TogglePanel(TogglePanelCommand {
-            panel_address: Some(panel::client(ClientPanelAddress::GameMenu)),
-            open: false,
-        });
+        let close = panel::close(panel::client(ClientPanelAddress::GameMenu));
 
         Panel::new(panel::client(ClientPanelAddress::GameMenu), 512.px(), 600.px())
             .title("Menu")
@@ -57,12 +53,7 @@ impl Component for GameMenuPanel {
                     .child(menu_button("Settings", close))
                     .child(menu_button(
                         "Deck Editor",
-                        Command::TogglePanel(TogglePanelCommand {
-                            panel_address: Some(
-                                PanelAddress::DeckEditor(DeckEditorData { deck: None }).into(),
-                            ),
-                            open: true,
-                        }),
+                        panel::open(PanelAddress::DeckEditor(DeckEditorData { deck: None })),
                     )),
             )
             .build()

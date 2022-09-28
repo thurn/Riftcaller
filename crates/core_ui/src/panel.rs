@@ -14,14 +14,45 @@
 
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
-    interface_panel_address, ClientPanelAddress, FlexAlign, FlexJustify, FlexPosition,
-    ImageScaleMode, InterfacePanelAddress, TextAlign, TogglePanelCommand,
+    interface_panel_address, toggle_panel_mode, ClientPanelAddress, FlexAlign, FlexJustify,
+    FlexPosition, ImageScaleMode, InterfacePanelAddress, TextAlign, TogglePanelCommand,
+    TogglePanelMode,
 };
 
+/// Converts a [ClientPanelAddress] into an [InterfacePanelAddress].
 pub fn client(address: ClientPanelAddress) -> InterfacePanelAddress {
     InterfacePanelAddress {
         address_type: Some(interface_panel_address::AddressType::ClientPanel(address as i32)),
     }
+}
+
+/// InterfaceAction to open a panel
+pub fn open(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        panel_address: Some(address.into()),
+        open: true,
+        mode: None,
+    })
+}
+
+/// Open a new bottom sheet to display the content of a panel
+pub fn open_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        panel_address: Some(address.into()),
+        open: true,
+        mode: Some(TogglePanelMode {
+            panel_mode: Some(toggle_panel_mode::PanelMode::BottomSheetOpen(())),
+        }),
+    })
+}
+
+/// InterfaceAction to close a panel
+pub fn close(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        panel_address: Some(address.into()),
+        open: false,
+        mode: None,
+    })
 }
 
 use crate::button::IconButton;
@@ -105,18 +136,12 @@ impl Component for Panel {
             )
             .child(self.title.map(TitleBar::new))
             .child(self.show_close_button.then(|| {
-                IconButton::new(icons::CLOSE)
-                    .action(Command::TogglePanel(TogglePanelCommand {
-                        panel_address: Some(self.address),
-                        open: false,
-                    }))
-                    .show_frame(true)
-                    .layout(
-                        Layout::new()
-                            .position_type(FlexPosition::Absolute)
-                            .position(Edge::Right, (-20).px())
-                            .position(Edge::Top, (-20).px()),
-                    )
+                IconButton::new(icons::CLOSE).action(close(self.address)).show_frame(true).layout(
+                    Layout::new()
+                        .position_type(FlexPosition::Absolute)
+                        .position(Edge::Right, (-20).px())
+                        .position(Edge::Top, (-20).px()),
+                )
             }))
             .child_boxed(self.content)
             .build()

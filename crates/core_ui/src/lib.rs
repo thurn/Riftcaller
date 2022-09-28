@@ -15,7 +15,6 @@
 //! Library for user interface rendering
 
 pub mod actions;
-pub mod bottom_sheet;
 pub mod button;
 pub mod component;
 pub mod design;
