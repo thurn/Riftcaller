@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use protos::spelldawn::game_command::Command;
+use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    interface_panel_address, toggle_panel_mode, ClientPanelAddress, FlexAlign, FlexJustify,
-    FlexPosition, ImageScaleMode, InterfacePanelAddress, TextAlign, TogglePanelCommand,
-    TogglePanelMode,
+    interface_panel_address, ClientPanelAddress, FlexAlign, FlexJustify, FlexPosition,
+    ImageScaleMode, InterfacePanelAddress, TextAlign, TogglePanelCommand,
 };
 
 /// Converts a [ClientPanelAddress] into an [InterfacePanelAddress].
@@ -26,44 +26,44 @@ pub fn client(address: ClientPanelAddress) -> InterfacePanelAddress {
     }
 }
 
-/// Command to open a panel
+/// Add the indicated panel to the end of the stack of open views if
+/// it is not already present.
 pub fn open(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
-        panel_address: Some(address.into()),
-        open: true,
-        mode: None,
+        toggle_command: Some(ToggleCommand::OpenPanel(address.into())),
     })
 }
 
-/// Open a new bottom sheet to display the content of a panel, hiding any
-/// existing bottom sheet
+/// Opens a new bottom sheet with the indicated panel.
+///
+/// Closes any existing bottom sheet.
 pub fn open_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
-        panel_address: Some(address.into()),
-        open: true,
-        mode: Some(TogglePanelMode {
-            panel_mode: Some(toggle_panel_mode::PanelMode::BottomSheetOpen(())),
-        }),
+        toggle_command: Some(ToggleCommand::OpenBottomSheetAddress(address.into())),
     })
 }
 
-/// Command to close a panel
+/// Pushes the indicated panel as a new bottom sheet page.
+///
+/// If no bottom sheet is currently open, the behavior is identical to
+/// [open_bottom_sheet].
+pub fn push_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::PushBottomSheetAddress(address.into())),
+    })
+}
+
+/// Removes the indicated panel from the stack of open views.
 pub fn close(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
-        panel_address: Some(address.into()),
-        open: false,
-        mode: None,
+        toggle_command: Some(ToggleCommand::ClosePanel(address.into())),
     })
 }
 
-/// Close any bottom sheet which is currently open
+/// Closes the currently-open bottom sheet.
 pub fn close_bottom_sheet() -> Command {
     Command::TogglePanel(TogglePanelCommand {
-        panel_address: None,
-        open: false,
-        mode: Some(TogglePanelMode {
-            panel_mode: Some(toggle_panel_mode::PanelMode::BottomSheetOpen(())),
-        }),
+        toggle_command: Some(ToggleCommand::CloseBottomSheet(())),
     })
 }
 

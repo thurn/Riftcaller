@@ -48,8 +48,8 @@ impl Component for PickDeckSchool {
                     .layout(
                         Layout::new()
                             .position_type(FlexPosition::Absolute)
-                            .position(Edge::Left, (-20).px())
-                            .position(Edge::Top, (-20).px()),
+                            .position(Edge::Left, 20.px())
+                            .position(Edge::Top, 20.px()),
                     ),
             )
             .child(Text::new(format!("Side: {:?}", self.side), FontSize::Headline))

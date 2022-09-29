@@ -48,8 +48,8 @@ impl Component for PickDeckSide {
                     .layout(
                         Layout::new()
                             .position_type(FlexPosition::Absolute)
-                            .position(Edge::Left, (-20).px())
-                            .position(Edge::Top, (-20).px()),
+                            .position(Edge::Left, 20.px())
+                            .position(Edge::Top, 20.px()),
                     ),
             )
             .child(Text::new("Pick Side:", FontSize::Headline))
@@ -58,7 +58,7 @@ impl Component for PickDeckSide {
                     .child(
                         Button::new("Overlord")
                             .width_mode(WidthMode::Constrained)
-                            .action(panel::open_bottom_sheet(PanelAddress::CreateDeck(
+                            .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
                                 CreateDeckState::PickSchool(Side::Overlord),
                             )))
                             .layout(Layout::new().margin(Edge::All, 16.px())),
@@ -66,7 +66,7 @@ impl Component for PickDeckSide {
                     .child(
                         Button::new("Champion")
                             .width_mode(WidthMode::Constrained)
-                            .action(panel::open_bottom_sheet(PanelAddress::CreateDeck(
+                            .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
                                 CreateDeckState::PickSchool(Side::Champion),
                             )))
                             .layout(Layout::new().margin(Edge::All, 16.px())),

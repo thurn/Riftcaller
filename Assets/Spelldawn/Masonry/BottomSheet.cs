@@ -15,8 +15,6 @@
 #nullable enable
 
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
 using Spelldawn.Protos;
 using Spelldawn.Services;
@@ -29,13 +27,14 @@ namespace Spelldawn.Masonry
   public sealed class BottomSheet : VisualElement
   {
     const float AnimationDurationSeconds = 0.3f;
+    readonly Registry _registry;
     readonly VisualElement _backgroundOverlay;
     readonly VisualElement _sheet;
-    readonly Registry _registry;
-    readonly List<InterfacePanelAddress> _stack = new();
-    bool _isOpen;
-    bool _isAnimating;
+    VisualElement _contentContainer;
     VisualElement _content = new NodeVisualElement();
+    InterfacePanelAddress? _currentAddress;
+    bool _isOpen;
+    bool _isAnimating;    
 
     public BottomSheet(Registry registry)
     {
@@ -78,15 +77,35 @@ namespace Spelldawn.Masonry
           backgroundColor = Color.gray,
           borderTopLeftRadius = 24,
           borderTopRightRadius = 24,
-          justifyContent = Justify.Center,
-          alignItems = Align.Center,
-          height = Length.Percent(95)
+          height = Length.Percent(95),
+          overflow = Overflow.Hidden
         }
       };
-
+      
+      _contentContainer = ContentContainer();
       Add(_backgroundOverlay);
-      _sheet.Add(_content);
+      _contentContainer.Add(_content);
+      _sheet.Add(_contentContainer);
       Add(_sheet);
+    }
+
+    static VisualElement ContentContainer()
+    {
+      return new VisualElement
+      {
+        name = "ContentContainer",
+        style =
+        {
+          position = Position.Absolute,
+          top = 0,
+          right = 0,
+          bottom = 0,
+          left = 0,
+          justifyContent = Justify.Center,
+          alignItems = Align.Center,
+          overflow = Overflow.Hidden
+        }
+      };
     }
 
     /// <summary>
@@ -96,8 +115,7 @@ namespace Spelldawn.Masonry
     {
       if (_isOpen)
       {
-        var last = _stack.LastOrDefault();
-        if (last != null && last.Equals(address))
+        if (_currentAddress != null && _currentAddress.Equals(address))
         {
           // If we're attempting to open an identical sheet, do nothing
           yield break;
@@ -107,9 +125,8 @@ namespace Spelldawn.Masonry
           yield return AnimateClose();
         }
       }
-
-      _stack.Clear();
-      _stack.Add(address);
+      
+      _currentAddress = address;
       RefreshPanels();
       yield return AnimateOpen();
     }
@@ -121,34 +138,40 @@ namespace Spelldawn.Masonry
       {
         yield return AnimateClose();
       }
-      
-      _stack.Clear();
+
+      _currentAddress = null;
       RefreshPanels();
     }
 
     /// <summary>Pushes a new page onto this bottom sheet</summary>
     public IEnumerator PushAddress(InterfacePanelAddress address)
     {
-      yield break;
+      if (!_isOpen || _currentAddress == null)
+      {
+        yield return OpenWithAddress(address);
+      }
+      else if (!_currentAddress.Equals(address))
+      {
+        yield return AnimatePush(address);
+      }
     }
 
-    /// <summary>Removes the specified page from this bottom sheet.</summary>
-    public IEnumerator PopAddress(InterfacePanelAddress address)
+    /// <summary>Removes the current page from this bottom sheet and displays 'address' as the *new* content</summary>
+    public IEnumerator PopToAddress(InterfacePanelAddress address)
     {
       yield break;
     }
 
     public void RefreshPanels()
     {
-      var address = _stack.LastOrDefault();
-      if (address == null || !_registry.DocumentService.PanelCache.ContainsKey(address))
+      if (_currentAddress == null || !_registry.DocumentService.PanelCache.ContainsKey(_currentAddress))
       {
         _content.style.display = DisplayStyle.None;
       }
       else
       {
         _content.style.display = DisplayStyle.Flex;
-        var node = _registry.DocumentService.PanelCache[address];
+        var node = _registry.DocumentService.PanelCache[_currentAddress];
         var result = Reconciler.Update(_registry, node, _content);
         if (result != null)
         {
@@ -160,8 +183,8 @@ namespace Spelldawn.Masonry
     void SetContent(VisualElement content)
     {
       _content = content;
-      _sheet.Clear();
-      _sheet.Add(_content);
+      _contentContainer.Clear();
+      _contentContainer.Add(_content);
     }
 
     IEnumerator AnimateOpen()
@@ -217,5 +240,44 @@ namespace Spelldawn.Masonry
           }).WaitForCompletion();
       }
     }
+    
+    IEnumerator AnimatePush(InterfacePanelAddress address)
+    {
+      if (_isOpen && !_isAnimating)
+      {
+        var oldContainer = _contentContainer;
+        oldContainer.name = "OldContentContainer";
+        _content = new NodeVisualElement();
+        _contentContainer = ContentContainer();
+        _contentContainer.Add(_content);
+        _sheet.Add(_contentContainer);
+        _currentAddress = address;
+        
+        _isAnimating = true;
+        oldContainer.style.translate = new Translate(Length.Percent(0), Length.Percent(0), 0);
+        _contentContainer.style.translate = new Translate(Length.Percent(100), Length.Percent(0), 0);
+        RefreshPanels();
+        
+        yield return TweenUtils.Sequence("PushBottomSheet")
+          .Insert(0,
+            DOTween.To(
+              () => _contentContainer.style.translate.value.x.value,
+              x => _contentContainer.style.translate = new Translate(Length.Percent(x), Length.Percent(0), 0),
+              0f,
+              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+          .Insert(0,
+            DOTween.To(
+              () => oldContainer.style.translate.value.x.value,
+              x => oldContainer.style.translate = new Translate(Length.Percent(x), Length.Percent(0), 0),
+              -100f,
+              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+          .AppendCallback(() =>
+          {
+            _isAnimating = false;
+            oldContainer.RemoveFromHierarchy();
+          }).WaitForCompletion();
+      }
+    }
+    
   }
 }

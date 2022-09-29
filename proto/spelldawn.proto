@@ -1112,24 +1112,49 @@ message TogglePanelMode {
         //
         // Only one bottom sheet can ever be open at a time, so this always
         // replaces all existing content.
-        google.protobuf.Empty bottom_sheet_open = 1;
+        google.protobuf.Empty open_or_close_bottom_sheet = 1;
 
-        // Display the panel contents as a new page of a parent bottom sheet
-        BottomSheetPush bottom_sheet_push = 2;
+        // Add or remove a page of content to the currently-displayed bottom
+        // sheet.
+        //
+        // Functions identically to 'open/close' above if no bottom sheet
+        // is currently displayed. Ignored if the 'panel_address' is not
+        // currently the topmost page in the pop case.
+        google.protobuf.Empty push_or_pop_bottom_sheet = 2;
     }
 }
 
 // Requests to open or close the given interface panel.
 message TogglePanelCommand {
-    // Panel to modify
-    InterfacePanelAddress panel_address = 1;
+    oneof toggle_command {
+        // Add the indicated panel to the end of the stack of open views if
+        // it is not already present.
+        InterfacePanelAddress open_panel = 1;
 
-    // Should the panel be opened or closed?
-    bool open = 2;
+        // Removes the indicated panel from the stack of open views.
+        InterfacePanelAddress close_panel = 2;
 
-    // Optionally, controls the animations and surrounding container for the
-    // panel contents.
-    TogglePanelMode mode = 3;
+        // Opens a new bottom sheet with the indicated panel.
+        //
+        // Closes any existing bottom sheet.
+        InterfacePanelAddress open_bottom_sheet_address = 3;
+
+        // Closes the currently-open bottom sheet.
+        google.protobuf.Empty close_bottom_sheet = 4;
+
+        // Pushes the indicated panel as a new bottom sheet page.
+        //
+        // If no bottom sheet is currently open, the behavior is identical to
+        // 'open_bottom_sheet'.
+        InterfacePanelAddress push_bottom_sheet_address = 5;
+
+        // Pops the currently visible bottom sheet page and displays the
+        // indicated panel as the *new* sheet content.
+        //
+        // If no bottom sheet is currently open, the behavior is identical to
+        // 'open_bottom_sheet'.
+        InterfacePanelAddress pop_to_bottom_sheet_address = 6;
+    }
 }
 
 // Updates the current GameView state.

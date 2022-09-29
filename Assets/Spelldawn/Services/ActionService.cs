@@ -255,10 +255,7 @@ namespace Spelldawn.Services
               switch (command.CommandCase)
               {
                 case GameCommand.CommandOneofCase.TogglePanel:
-                    _registry.DocumentService.TogglePanel(
-                      command.TogglePanel.Open,
-                      command.TogglePanel.PanelAddress,
-                      command.TogglePanel.Mode);
+                    _registry.DocumentService.TogglePanel(command.TogglePanel);
                   break;
               }
             }

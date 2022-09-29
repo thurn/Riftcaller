@@ -155,49 +155,54 @@ namespace Spelldawn.Services
     public ElementPosition TransformPositionToElementPosition(Transform t)
       => ScreenPositionToElementPosition(_registry.MainCamera.WorldToScreenPoint(t.position));
 
-    public void TogglePanel(bool open, InterfacePanelAddress address, TogglePanelMode? mode)
+    public void TogglePanel(TogglePanelCommand command)
     {
-      switch (mode?.PanelModeCase ?? TogglePanelMode.PanelModeOneofCase.None)
+      InterfacePanelAddress? fetch = null;
+      switch (command.ToggleCommandCase)
       {
-        case TogglePanelMode.PanelModeOneofCase.BottomSheetOpen:
-          StartCoroutine(open ? _bottomSheet.OpenWithAddress(address) : _bottomSheet.Close());
-          break;
-        case TogglePanelMode.PanelModeOneofCase.BottomSheetPush:
-          StartCoroutine(open ? _bottomSheet.PushAddress(address) : _bottomSheet.PopAddress(address));
-          break;
-        default:
-          ToggleOpenPanel(open, address);
+        case TogglePanelCommand.ToggleCommandOneofCase.OpenPanel:
+          fetch = command.OpenPanel;
+          if (!_openPanels.Contains(command.OpenPanel))
+          {
+            _openPanels.Add(command.OpenPanel);
+          }
           RenderPanels();
           break;
+        case TogglePanelCommand.ToggleCommandOneofCase.ClosePanel:
+          _openPanels.Remove(command.ClosePanel);
+          RenderPanels();
+          break;
+        case TogglePanelCommand.ToggleCommandOneofCase.OpenBottomSheetAddress:
+          fetch = command.OpenBottomSheetAddress;
+          StartCoroutine(_bottomSheet.OpenWithAddress(command.OpenBottomSheetAddress));
+          break;
+        case TogglePanelCommand.ToggleCommandOneofCase.CloseBottomSheet:
+          StartCoroutine(_bottomSheet.Close());
+          break;
+        case TogglePanelCommand.ToggleCommandOneofCase.PushBottomSheetAddress:
+          fetch = command.PushBottomSheetAddress;
+          StartCoroutine(_bottomSheet.PushAddress(command.PushBottomSheetAddress));
+          break;
+        case TogglePanelCommand.ToggleCommandOneofCase.PopToBottomSheetAddress:
+          fetch = command.PopToBottomSheetAddress;
+          StartCoroutine(_bottomSheet.PushAddress(command.PopToBottomSheetAddress));          
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
       }
-
-      if (open)
+      
+      if (fetch != null)
       {
         _registry.ActionService.HandleAction(new ClientAction
         {
           FetchPanel = new FetchPanelAction
           {
-            PanelAddress = address
+            PanelAddress = fetch
           }
         });        
       }
     }
-
-    void ToggleOpenPanel(bool open, InterfacePanelAddress address)
-    {
-      if (open)
-      {
-        if (!_openPanels.Contains(address))
-        {
-          _openPanels.Add(address);
-        }
-      }
-      else
-      {
-        _openPanels.Remove(address);
-      }
-    }
-
+    
     public bool IsOpen(InterfacePanelAddress address) => _openPanels.Contains(address);
 
     public bool IsAnyPanelOpen() => _openPanels.Count > 0;

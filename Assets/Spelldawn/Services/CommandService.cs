@@ -83,9 +83,7 @@ namespace Spelldawn.Services
             break;
           case GameCommand.CommandOneofCase.TogglePanel:
             _registry.DocumentService.TogglePanel(
-              command.TogglePanel.Open,
-              command.TogglePanel.PanelAddress,
-              command.TogglePanel.Mode);
+              command.TogglePanel);
             break;
           case GameCommand.CommandOneofCase.Delay:
             yield return new WaitForSeconds(DataUtils.ToSeconds(command.Delay.Duration, 0));

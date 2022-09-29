@@ -1092,27 +1092,61 @@ pub struct TogglePanelMode {
 pub mod toggle_panel_mode {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PanelMode {
-        /// Display a new bottom sheet with the panel contents
+        /// Display or hide the bottom sheet.
+        ///
+        /// Only one bottom sheet can ever be open at a time, so this always
+        /// replaces all existing content.
         #[prost(message, tag = "1")]
-        BottomSheetOpen(()),
-        /// Display the panel contents as a new page of a parent bottom sheet
+        OpenOrCloseBottomSheet(()),
+        /// Add or remove a page of content to the currently-displayed bottom
+        /// sheet.
+        ///
+        /// Functions identically to 'open/close' above if no bottom sheet
+        /// is currently displayed. Ignored if the 'panel_address' is not
+        /// currently the topmost page in the pop case.
         #[prost(message, tag = "2")]
-        BottomSheetPush(super::BottomSheetPush),
+        PushOrPopBottomSheet(()),
     }
 }
 /// Requests to open or close the given interface panel.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TogglePanelCommand {
-    /// Panel to modify
-    #[prost(message, optional, tag = "1")]
-    pub panel_address: ::core::option::Option<InterfacePanelAddress>,
-    /// Should the panel be opened or closed?
-    #[prost(bool, tag = "2")]
-    pub open: bool,
-    /// Optionally, controls the animations and surrounding container for the
-    /// panel contents.
-    #[prost(message, optional, tag = "3")]
-    pub mode: ::core::option::Option<TogglePanelMode>,
+    #[prost(oneof = "toggle_panel_command::ToggleCommand", tags = "1, 2, 3, 4, 5, 6")]
+    pub toggle_command: ::core::option::Option<toggle_panel_command::ToggleCommand>,
+}
+/// Nested message and enum types in `TogglePanelCommand`.
+pub mod toggle_panel_command {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum ToggleCommand {
+        /// Add the indicated panel to the end of the stack of open views if
+        /// it is not already present.
+        #[prost(message, tag = "1")]
+        OpenPanel(super::InterfacePanelAddress),
+        /// Removes the indicated panel from the stack of open views.
+        #[prost(message, tag = "2")]
+        ClosePanel(super::InterfacePanelAddress),
+        /// Opens a new bottom sheet with the indicated panel.
+        ///
+        /// Closes any existing bottom sheet.
+        #[prost(message, tag = "3")]
+        OpenBottomSheetAddress(super::InterfacePanelAddress),
+        /// Closes the currently-open bottom sheet.
+        #[prost(message, tag = "4")]
+        CloseBottomSheet(()),
+        /// Pushes the indicated panel as a new bottom sheet page.
+        ///
+        /// If no bottom sheet is currently open, the behavior is identical to
+        /// 'open_bottom_sheet'.
+        #[prost(message, tag = "5")]
+        PushBottomSheetAddress(super::InterfacePanelAddress),
+        /// Pops the currently visible bottom sheet page and displays the
+        /// indicated panel as the *new* sheet content.
+        ///
+        /// If no bottom sheet is currently open, the behavior is identical to
+        /// 'open_bottom_sheet'.
+        #[prost(message, tag = "6")]
+        PopToBottomSheetAddress(super::InterfacePanelAddress),
+    }
 }
 /// Updates the current GameView state.
 #[derive(Clone, PartialEq, ::prost::Message)]

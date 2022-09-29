@@ -78,10 +78,15 @@ namespace Spelldawn.Game
           }
         };
       
-        _registry.DocumentService.TogglePanel(
-          !_registry.DocumentService.IsOpen(address),
-          address,
-          new TogglePanelMode());        
+        _registry.DocumentService.TogglePanel(_registry.DocumentService.IsOpen(address) ?
+          new TogglePanelCommand
+          {
+            ClosePanel = address
+          }: 
+          new TogglePanelCommand
+          {
+            OpenPanel = address
+          });        
       }
     }
   }
