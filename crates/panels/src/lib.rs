@@ -24,9 +24,10 @@ use core_ui::component::Component;
 use core_ui::panel;
 use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
-use deck_editor::create_deck::CreateDeckSheet;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
-use panel_address::PanelAddress;
+use deck_editor::pick_deck_school::PickDeckSchool;
+use deck_editor::pick_deck_side::PickDeckSide;
+use panel_address::{CreateDeckState, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_panel_address::AddressType;
 use protos::spelldawn::{
@@ -71,7 +72,11 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
             DeckEditorPanel::new(player, open_deck).build()
         }
-        PanelAddress::CreateDeck => CreateDeckSheet::new(address.into()).build(),
+        PanelAddress::CreateDeck(state) => match state {
+            CreateDeckState::PickSide => PickDeckSide::new().build(),
+            CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).build(),
+            CreateDeckState::PickIdentity(_, _) => todo!("Implement"),
+        },
     })
 }
 

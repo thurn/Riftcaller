@@ -18,23 +18,22 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::text::Text;
 use core_ui::{icons, panel};
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, InterfacePanelAddress};
+use data::primitives::Side;
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
-#[derive(Debug)]
-#[allow(dead_code)]
-pub struct CreateDeckSheet {
-    address: InterfacePanelAddress,
+pub struct PickDeckSchool {
+    side: Side,
 }
 
-impl CreateDeckSheet {
-    pub fn new(address: InterfacePanelAddress) -> Self {
-        Self { address }
+impl PickDeckSchool {
+    pub fn new(side: Side) -> Self {
+        Self { side }
     }
 }
 
-impl Component for CreateDeckSheet {
+impl Component for PickDeckSchool {
     fn build(self) -> Option<Node> {
-        Column::new("Side Choice")
+        Column::new("SchoolChoice")
             .style(
                 Style::new()
                     .align_items(FlexAlign::Center)
@@ -53,16 +52,22 @@ impl Component for CreateDeckSheet {
                             .position(Edge::Top, (-20).px()),
                     ),
             )
-            .child(Text::new("Pick Side:", FontSize::Headline))
+            .child(Text::new(format!("Side: {:?}", self.side), FontSize::Headline))
+            .child(Text::new("Pick School:", FontSize::Headline))
             .child(
-                Row::new("SideButtons")
+                Row::new("SchoolButtons")
                     .child(
-                        Button::new("Overlord")
+                        Button::new("Law")
                             .width_mode(WidthMode::Constrained)
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     )
                     .child(
-                        Button::new("Champion")
+                        Button::new("Primal")
+                            .width_mode(WidthMode::Constrained)
+                            .layout(Layout::new().margin(Edge::All, 16.px())),
+                    )
+                    .child(
+                        Button::new("Shadow")
                             .width_mode(WidthMode::Constrained)
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),

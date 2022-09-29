@@ -18,7 +18,7 @@ use core_ui::panel;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
-use panel_address::PanelAddress;
+use panel_address::{CreateDeckState, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexDirection};
 
 use crate::deck_name::DeckName;
@@ -49,7 +49,9 @@ impl<'a> Component for DeckList<'a> {
                         Button::new("Create Deck")
                             .button_type(ButtonType::Primary)
                             .layout(Layout::new().margin(Edge::All, 16.px()))
-                            .action(panel::open_bottom_sheet(PanelAddress::CreateDeck)),
+                            .action(panel::open_bottom_sheet(PanelAddress::CreateDeck(
+                                CreateDeckState::PickSide,
+                            ))),
                     )
                     .child(
                         Column::new("Decks")

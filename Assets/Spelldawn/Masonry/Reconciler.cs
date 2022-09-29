@@ -14,6 +14,7 @@
 
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -84,10 +85,15 @@ namespace Spelldawn.Masonry
         if (previousElement != null && count < previousElement.childCount)
         {
           // Element exists in previous tree.
-          Update(
+          var result = Update(
             registry,
             child,
             previousElement[count]);
+          if (result != null)
+          {
+            previousElement.RemoveAt(count);
+            previousElement.Insert(count, result);
+          }
         }
         else
         {

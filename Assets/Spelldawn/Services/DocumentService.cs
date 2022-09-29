@@ -167,6 +167,7 @@ namespace Spelldawn.Services
           break;
         default:
           ToggleOpenPanel(open, address);
+          RenderPanels();
           break;
       }
 
@@ -180,8 +181,6 @@ namespace Spelldawn.Services
           }
         });        
       }
-
-      RenderPanels();
     }
 
     void ToggleOpenPanel(bool open, InterfacePanelAddress address)

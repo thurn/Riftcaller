@@ -14,16 +14,16 @@
 
 //! Addresses for user interface panels
 
-use data::primitives::{DeckId, Side};
+use data::primitives::{DeckId, School, Side};
 use protos::spelldawn::{interface_panel_address, InterfacePanelAddress};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PanelAddress {
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
-    CreateDeck,
+    CreateDeck(CreateDeckState),
 }
 
 impl From<PanelAddress> for InterfacePanelAddress {
@@ -36,10 +36,17 @@ impl From<PanelAddress> for InterfacePanelAddress {
     }
 }
 
-#[derive(
-    Clone, Copy, Debug, Default, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize,
-)]
+/// Identifies the current screen within the deck editor
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct DeckEditorData {
     /// Deck currently being viewed
     pub deck: Option<DeckId>,
+}
+
+/// Identifies which screen the user is on in the deck creation flow
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum CreateDeckState {
+    PickSide,
+    PickSchool(Side),
+    PickIdentity(Side, School),
 }

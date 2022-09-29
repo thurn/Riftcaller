@@ -110,6 +110,7 @@ namespace Spelldawn.Masonry
 
       _stack.Clear();
       _stack.Add(address);
+      RefreshPanels();
       yield return AnimateOpen();
     }
 
@@ -120,7 +121,9 @@ namespace Spelldawn.Masonry
       {
         yield return AnimateClose();
       }
+      
       _stack.Clear();
+      RefreshPanels();
     }
 
     /// <summary>Pushes a new page onto this bottom sheet</summary>
@@ -140,11 +143,13 @@ namespace Spelldawn.Masonry
       var address = _stack.LastOrDefault();
       if (address == null || !_registry.DocumentService.PanelCache.ContainsKey(address))
       {
-        ClearContent();
+        _content.style.display = DisplayStyle.None;
       }
       else
       {
-        var result = Reconciler.Update(_registry, _registry.DocumentService.PanelCache[address], _content);
+        _content.style.display = DisplayStyle.Flex;
+        var node = _registry.DocumentService.PanelCache[address];
+        var result = Reconciler.Update(_registry, node, _content);
         if (result != null)
         {
           SetContent(result);
@@ -157,11 +162,6 @@ namespace Spelldawn.Masonry
       _content = content;
       _sheet.Clear();
       _sheet.Add(_content);
-    }
-
-    void ClearContent()
-    {
-      SetContent(new NodeVisualElement());
     }
 
     IEnumerator AnimateOpen()
