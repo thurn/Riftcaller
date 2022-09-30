@@ -185,7 +185,7 @@ namespace Spelldawn.Services
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.PopToBottomSheetAddress:
           fetch = command.PopToBottomSheetAddress;
-          StartCoroutine(_bottomSheet.PushAddress(command.PopToBottomSheetAddress));          
+          StartCoroutine(_bottomSheet.PopToAddress(command.PopToBottomSheetAddress));          
           break;
         default:
           throw new ArgumentOutOfRangeException();

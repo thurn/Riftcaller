@@ -67,6 +67,14 @@ pub fn close_bottom_sheet() -> Command {
     })
 }
 
+/// Pops the currently-open bottom sheet page, displaying 'address' as the *new*
+/// sheet contents.
+pub fn pop_to_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::PopToBottomSheetAddress(address.into())),
+    })
+}
+
 use crate::button::IconButton;
 use crate::component::EmptyComponent;
 use crate::design::{Font, FontColor, FontSize};

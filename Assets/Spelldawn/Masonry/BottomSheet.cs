@@ -152,14 +152,22 @@ namespace Spelldawn.Masonry
       }
       else if (!_currentAddress.Equals(address))
       {
-        yield return AnimatePush(address);
+        yield return AnimateSlide(address, pop: false);
       }
     }
 
     /// <summary>Removes the current page from this bottom sheet and displays 'address' as the *new* content</summary>
     public IEnumerator PopToAddress(InterfacePanelAddress address)
     {
-      yield break;
+      if (!_isOpen || _currentAddress == null)
+      {
+        yield return OpenWithAddress(address);
+      }
+      else if (!_currentAddress.Equals(address))
+      {
+        Debug.Log($"PopToAddress: popping");
+        yield return AnimateSlide(address, pop: true);
+      }
     }
 
     public void RefreshPanels()
@@ -199,13 +207,13 @@ namespace Spelldawn.Masonry
               () => _backgroundOverlay.style.opacity.value,
               x => _backgroundOverlay.style.opacity = x,
               0.75f,
-              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+              AnimationDurationSeconds * TweenUtils.GlobalAnimationMultiplier).SetEase(Ease.OutCirc))
           .Insert(0,
             DOTween.To(
               () => _sheet.style.top.value.value,
               x => _sheet.style.top = Length.Percent(x),
               5f,
-              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+              AnimationDurationSeconds * TweenUtils.GlobalAnimationMultiplier).SetEase(Ease.OutCirc))
           .AppendCallback(() =>
           {
             _isAnimating = false;
@@ -226,13 +234,13 @@ namespace Spelldawn.Masonry
               () => _backgroundOverlay.style.opacity.value,
               x => _backgroundOverlay.style.opacity = x,
               0f,
-              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+              AnimationDurationSeconds * TweenUtils.GlobalAnimationMultiplier).SetEase(Ease.OutCirc))
           .Insert(0,
             DOTween.To(
               () => _sheet.style.top.value.value,
               x => _sheet.style.top = Length.Percent(x),
               100f,
-              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+              AnimationDurationSeconds * TweenUtils.GlobalAnimationMultiplier).SetEase(Ease.OutCirc))
           .AppendCallback(() =>
           {
             _isAnimating = false;
@@ -241,7 +249,7 @@ namespace Spelldawn.Masonry
       }
     }
     
-    IEnumerator AnimatePush(InterfacePanelAddress address)
+    IEnumerator AnimateSlide(InterfacePanelAddress address, bool pop)
     {
       if (_isOpen && !_isAnimating)
       {
@@ -254,8 +262,8 @@ namespace Spelldawn.Masonry
         _currentAddress = address;
         
         _isAnimating = true;
+        _contentContainer.style.translate = new Translate(Length.Percent(pop ? -100 : 100), Length.Percent(0), 0);
         oldContainer.style.translate = new Translate(Length.Percent(0), Length.Percent(0), 0);
-        _contentContainer.style.translate = new Translate(Length.Percent(100), Length.Percent(0), 0);
         RefreshPanels();
         
         yield return TweenUtils.Sequence("PushBottomSheet")
@@ -264,13 +272,13 @@ namespace Spelldawn.Masonry
               () => _contentContainer.style.translate.value.x.value,
               x => _contentContainer.style.translate = new Translate(Length.Percent(x), Length.Percent(0), 0),
               0f,
-              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+              AnimationDurationSeconds * TweenUtils.GlobalAnimationMultiplier).SetEase(Ease.OutCirc))
           .Insert(0,
             DOTween.To(
               () => oldContainer.style.translate.value.x.value,
               x => oldContainer.style.translate = new Translate(Length.Percent(x), Length.Percent(0), 0),
-              -100f,
-              AnimationDurationSeconds).SetEase(Ease.OutCirc))
+              pop ? 100 : -100,
+              AnimationDurationSeconds * TweenUtils.GlobalAnimationMultiplier).SetEase(Ease.OutCirc))
           .AppendCallback(() =>
           {
             _isAnimating = false;
@@ -278,6 +286,5 @@ namespace Spelldawn.Masonry
           }).WaitForCompletion();
       }
     }
-    
   }
 }

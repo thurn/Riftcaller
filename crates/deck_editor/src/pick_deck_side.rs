@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::button::{Button, IconButton};
+use core_ui::button::{Button, IconButton, IconButtonType};
 use core_ui::design::FontSize;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
@@ -44,7 +44,7 @@ impl Component for PickDeckSide {
             .child(
                 IconButton::new(icons::CLOSE)
                     .action(panel::close_bottom_sheet())
-                    .show_frame(true)
+                    .button_type(IconButtonType::SecondaryLarge)
                     .layout(
                         Layout::new()
                             .position_type(FlexPosition::Absolute)

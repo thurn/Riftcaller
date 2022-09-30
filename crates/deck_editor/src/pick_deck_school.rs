@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::button::{Button, IconButton};
+use core_ui::button::{Button, IconButton, IconButtonType};
 use core_ui::design::FontSize;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::text::Text;
 use core_ui::{icons, panel};
 use data::primitives::Side;
+use panel_address::{CreateDeckState, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
 pub struct PickDeckSchool {
@@ -42,9 +43,11 @@ impl Component for PickDeckSchool {
                     .width(100.pct()),
             )
             .child(
-                IconButton::new(icons::CLOSE)
-                    .action(panel::close_bottom_sheet())
-                    .show_frame(true)
+                IconButton::new(icons::BACK)
+                    .action(panel::pop_to_bottom_sheet(PanelAddress::CreateDeck(
+                        CreateDeckState::PickSide,
+                    )))
+                    .button_type(IconButtonType::SecondaryLarge)
                     .layout(
                         Layout::new()
                             .position_type(FlexPosition::Absolute)
