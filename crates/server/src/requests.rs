@@ -400,7 +400,8 @@ pub fn handle_custom_action(
     })
 }
 
-fn handle_player_action(
+/// Allows mutation of a player's data outside of an active game ([PlayerData]).
+pub fn handle_player_action(
     database: &mut impl Database,
     player_id: PlayerId,
     function: impl Fn(&mut PlayerData) -> Result<()>,

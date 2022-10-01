@@ -23,16 +23,17 @@ use crate::primitives::{ActionCount, DeckId, ManaValue, PointsValue, Side};
 /// production.
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum DebugAction {
-    // Creates a new game with ID 0, using the canonical decklist for [Side], playing against an
-    // opponent who will take no actions. Overwrites the current player's player data with the
-    // canonical decklists.
+    /// Creates a new game with ID 0, using the canonical decklist for [Side],
+    /// playing against an opponent who will take no actions. Overwrites the
+    /// current player's player data with the canonical decklists.
     NewGame(Side),
 
-    // Adds the current player to the game with ID 0, overwriting the non-human player in this
-    // game. Overwrites the current player's player data with the canonical decklists.
+    /// Adds the current player to the game with ID 0, overwriting the non-human
+    /// player in this game. Overwrites the current player's player data
+    /// with the canonical decklists.
     JoinGame,
 
-    // Swaps which side the current player is playing as in their current game.
+    /// Swaps which side the current player is playing as in their current game.
     FlipViewpoint,
 
     AddMana(ManaValue),
@@ -41,6 +42,9 @@ pub enum DebugAction {
     SaveState(u64),
     LoadState(u64),
     SetNamedPlayer(Side, NamedPlayer),
+
+    /// Gives the player copies of every card
+    FullCollection,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

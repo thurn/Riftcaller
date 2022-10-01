@@ -19,6 +19,14 @@ use protos::spelldawn::{
     ImageScaleMode, InterfacePanelAddress, TextAlign, TogglePanelCommand,
 };
 
+use crate::button::IconButton;
+use crate::component::EmptyComponent;
+use crate::design::{Font, FontColor, FontSize};
+use crate::prelude::*;
+use crate::style::Pixels;
+use crate::text::Text;
+use crate::{icons, style};
+
 /// Converts a [ClientPanelAddress] into an [InterfacePanelAddress].
 pub fn client(address: ClientPanelAddress) -> InterfacePanelAddress {
     InterfacePanelAddress {
@@ -74,14 +82,6 @@ pub fn pop_to_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command
         toggle_command: Some(ToggleCommand::PopToBottomSheetAddress(address.into())),
     })
 }
-
-use crate::button::IconButton;
-use crate::component::EmptyComponent;
-use crate::design::{Font, FontColor, FontSize};
-use crate::prelude::*;
-use crate::style::Pixels;
-use crate::text::Text;
-use crate::{icons, style};
 
 /// A rectangular interface element that displays content centered on-screen,
 /// optionally including a title or close button.

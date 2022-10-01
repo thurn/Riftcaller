@@ -17,6 +17,7 @@ use std::collections::HashMap;
 use adapters;
 use anyhow::Result;
 use cards::decklists;
+use data::card_name::CardName;
 use data::game::GameState;
 use data::player_data::{CurrentGame, PlayerData};
 use data::player_name::{NamedPlayer, PlayerId};
@@ -128,6 +129,14 @@ pub fn handle_debug_action(
         DebugAction::SetNamedPlayer(side, name) => {
             requests::handle_custom_action(database, player_id, game_id, |game, _| {
                 game.player_mut(side).id = PlayerId::Named(name);
+                Ok(())
+            })
+        }
+        DebugAction::FullCollection => {
+            requests::handle_player_action(database, player_id, |player| {
+                for name in enum_iterator::all::<CardName>() {
+                    player.collection.insert(name, 3);
+                }
                 Ok(())
             })
         }
