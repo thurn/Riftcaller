@@ -62,7 +62,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                     .child(
                         Column::new("Collection")
                             .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
-                            .child(CollectionControls::new(self.player.id))
+                            .child(CollectionControls::new(self.player.id, self.open_deck))
                             .child(CollectionBrowser::new(self.player, self.open_deck)),
                     )
                     .child(self.open_deck.map(|d| CardList::new(self.player, d)))

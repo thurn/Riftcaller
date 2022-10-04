@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::actions::{InterfaceAction, NoAction};
 use core_ui::design::{FontSize, PINK_900};
 use core_ui::prelude::*;
 use core_ui::text::Text;
@@ -20,15 +21,20 @@ use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify};
 
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
-#[derive(Debug)]
-pub struct DeckName<'a> {
+pub struct DeckTile<'a> {
     deck: &'a Deck,
     layout: Layout,
+    action: Box<dyn InterfaceAction>,
 }
 
-impl<'a> DeckName<'a> {
+impl<'a> DeckTile<'a> {
     pub fn new(deck: &'a Deck) -> Self {
-        Self { deck, layout: Layout::default() }
+        Self { deck, layout: Layout::default(), action: Box::new(NoAction {}) }
+    }
+
+    pub fn action(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.action = Box::new(action);
+        self
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {
@@ -37,7 +43,7 @@ impl<'a> DeckName<'a> {
     }
 }
 
-impl<'a> Component for DeckName<'a> {
+impl<'a> Component for DeckTile<'a> {
     fn build(self) -> Option<Node> {
         Row::new(self.deck.name.clone())
             .style(
@@ -51,6 +57,7 @@ impl<'a> Component for DeckName<'a> {
                     .background_color(PINK_900)
                     .margin(Edge::Vertical, 8.px()),
             )
+            .on_click(self.action.as_client_action())
             .child(
                 Column::new("DeckName")
                     .style(

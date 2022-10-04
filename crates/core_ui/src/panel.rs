@@ -36,6 +36,14 @@ pub fn client(address: ClientPanelAddress) -> InterfacePanelAddress {
 
 /// Add the indicated panel to the end of the stack of open views if
 /// it is not already present.
+pub fn set(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::SetPanel(address.into())),
+    })
+}
+
+/// Add the indicated panel to the end of the stack of open views if
+/// it is not already present.
 pub fn open(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         toggle_command: Some(ToggleCommand::OpenPanel(address.into())),
@@ -66,6 +74,11 @@ pub fn close(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         toggle_command: Some(ToggleCommand::ClosePanel(address.into())),
     })
+}
+
+/// Closes all open panels
+pub fn close_all() -> Command {
+    Command::TogglePanel(TogglePanelCommand { toggle_command: Some(ToggleCommand::CloseAll(())) })
 }
 
 /// Closes the currently-open bottom sheet.

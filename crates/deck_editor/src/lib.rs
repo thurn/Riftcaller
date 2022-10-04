@@ -22,7 +22,7 @@ pub mod deck_card_title;
 pub mod deck_editor_actions;
 pub mod deck_editor_panel;
 pub mod deck_list;
-pub mod deck_name;
+pub mod deck_tile;
 pub mod editor_column_scroll;
 pub mod pick_deck_name;
 pub mod pick_deck_school;

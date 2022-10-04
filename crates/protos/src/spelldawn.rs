@@ -9,7 +9,6 @@ pub struct FlexColor {
     /// Blue color component, specified in the range 0.0 to 1.0 inclusive.
     #[prost(float, tag = "3")]
     pub blue: f32,
-    ///
     /// Alpha color component, specified in the range 0.0 (transparent) to 1.0
     /// (opaque) inclusive.
     #[prost(float, tag = "4")]
@@ -1151,40 +1150,46 @@ pub mod toggle_panel_mode {
 /// Requests to open or close the given interface panel.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TogglePanelCommand {
-    #[prost(oneof = "toggle_panel_command::ToggleCommand", tags = "1, 2, 3, 4, 5, 6")]
+    #[prost(oneof = "toggle_panel_command::ToggleCommand", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
     pub toggle_command: ::core::option::Option<toggle_panel_command::ToggleCommand>,
 }
 /// Nested message and enum types in `TogglePanelCommand`.
 pub mod toggle_panel_command {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum ToggleCommand {
+        /// Close all open panels and show the indicated panel.
+        #[prost(message, tag = "1")]
+        SetPanel(super::InterfacePanelAddress),
         /// Add the indicated panel to the end of the stack of open views if
         /// it is not already present.
-        #[prost(message, tag = "1")]
+        #[prost(message, tag = "2")]
         OpenPanel(super::InterfacePanelAddress),
         /// Removes the indicated panel from the stack of open views.
-        #[prost(message, tag = "2")]
+        #[prost(message, tag = "3")]
         ClosePanel(super::InterfacePanelAddress),
+        /// Close all open panels
+        #[prost(message, tag = "4")]
+        CloseAll(()),
         /// Opens a new bottom sheet with the indicated panel.
         ///
         /// Closes any existing bottom sheet.
-        #[prost(message, tag = "3")]
+        #[prost(message, tag = "5")]
         OpenBottomSheetAddress(super::InterfacePanelAddress),
         /// Closes the currently-open bottom sheet.
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "6")]
         CloseBottomSheet(()),
         /// Pushes the indicated panel as a new bottom sheet page.
         ///
         /// If no bottom sheet is currently open, the behavior is identical to
         /// 'open_bottom_sheet'.
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "7")]
         PushBottomSheetAddress(super::InterfacePanelAddress),
         /// Pops the currently visible bottom sheet page and displays the
         /// indicated panel as the *new* sheet content.
         ///
         /// If no bottom sheet is currently open, the behavior is identical to
         /// 'open_bottom_sheet'.
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "8")]
         PopToBottomSheetAddress(super::InterfacePanelAddress),
     }
 }

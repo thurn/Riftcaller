@@ -18,10 +18,10 @@ use core_ui::panel;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
-use panel_address::{CreateDeckState, PanelAddress};
+use panel_address::{CreateDeckState, DeckEditorData, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexDirection};
 
-use crate::deck_name::DeckName;
+use crate::deck_tile::DeckTile;
 use crate::editor_column_scroll::EditorColumnScroll;
 
 /// Displays the decks owned by a player
@@ -61,7 +61,11 @@ impl<'a> Component for DeckList<'a> {
                                     .align_items(FlexAlign::Center)
                                     .padding(Edge::All, 1.vw()),
                             )
-                            .children(decks.into_iter().map(DeckName::new)),
+                            .children(decks.into_iter().map(|deck| {
+                                DeckTile::new(deck).action(panel::set(PanelAddress::DeckEditor(
+                                    DeckEditorData { deck: Some(deck.index) },
+                                )))
+                            })),
                     ),
             )
             .build()

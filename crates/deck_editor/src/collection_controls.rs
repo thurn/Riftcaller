@@ -14,24 +14,27 @@
 
 use core_ui::button::{Button, ButtonType, IconButton, IconButtonType};
 use core_ui::design::BLUE_900;
-use core_ui::icons;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
+use core_ui::{icons, panel};
+use data::deck::Deck;
 use data::player_name::PlayerId;
+use panel_address::{DeckEditorData, PanelAddress};
 use protos::spelldawn::FlexAlign;
 
 #[derive(Debug)]
-pub struct CollectionControls {
+pub struct CollectionControls<'a> {
     player_id: PlayerId,
+    open_deck: Option<&'a Deck>,
 }
 
-impl CollectionControls {
-    pub fn new(player_id: PlayerId) -> Self {
-        Self { player_id }
+impl<'a> CollectionControls<'a> {
+    pub fn new(player_id: PlayerId, open_deck: Option<&'a Deck>) -> Self {
+        Self { player_id, open_deck }
     }
 }
 
-impl Component for CollectionControls {
+impl<'a> Component for CollectionControls<'a> {
     fn build(self) -> Option<Node> {
         Row::new(format!("CollectionControls for {:?}", self.player_id))
             .style(
@@ -41,8 +44,13 @@ impl Component for CollectionControls {
                     .align_items(FlexAlign::Center),
             )
             .child(
-                IconButton::new(icons::CLOSE)
-                    .button_type(IconButtonType::DestructiveLarge)
+                IconButton::new(if self.open_deck.is_some() { icons::BACK } else { icons::CLOSE })
+                    .button_type(IconButtonType::SecondaryLarge)
+                    .action(if self.open_deck.is_some() {
+                        panel::set(PanelAddress::DeckEditor(DeckEditorData::default()))
+                    } else {
+                        panel::close_all()
+                    })
                     .layout(Layout::new().margin(Edge::Left, 16.px()).margin(Edge::Right, 8.px())),
             )
             .child(

@@ -163,19 +163,17 @@ enum WhiteSpace {
 }
 
 message FlexColor {
-    /* Red color component, specified in the range 0.0 to 1.0 inclusive. */
+    // Red color component, specified in the range 0.0 to 1.0 inclusive.
     float red = 1;
 
-    /* Green color component, specified in the range 0.0 to 1.0 inclusive. */
+    // Green color component, specified in the range 0.0 to 1.0 inclusive.
     float green = 2;
 
-    /* Blue color component, specified in the range 0.0 to 1.0 inclusive. */
+    // Blue color component, specified in the range 0.0 to 1.0 inclusive.
     float blue = 3;
 
-    /*
-     * Alpha color component, specified in the range 0.0 (transparent) to 1.0
-     * (opaque) inclusive.
-     */
+    // Alpha color component, specified in the range 0.0 (transparent) to 1.0
+    // (opaque) inclusive.
     float alpha = 4;
 }
 
@@ -1168,33 +1166,39 @@ message TogglePanelMode {
 // Requests to open or close the given interface panel.
 message TogglePanelCommand {
     oneof toggle_command {
+        // Close all open panels and show the indicated panel.
+        InterfacePanelAddress set_panel = 1;
+
         // Add the indicated panel to the end of the stack of open views if
         // it is not already present.
-        InterfacePanelAddress open_panel = 1;
+        InterfacePanelAddress open_panel = 2;
 
         // Removes the indicated panel from the stack of open views.
-        InterfacePanelAddress close_panel = 2;
+        InterfacePanelAddress close_panel = 3;
+
+        // Close all open panels
+        google.protobuf.Empty close_all = 4;
 
         // Opens a new bottom sheet with the indicated panel.
         //
         // Closes any existing bottom sheet.
-        InterfacePanelAddress open_bottom_sheet_address = 3;
+        InterfacePanelAddress open_bottom_sheet_address = 5;
 
         // Closes the currently-open bottom sheet.
-        google.protobuf.Empty close_bottom_sheet = 4;
+        google.protobuf.Empty close_bottom_sheet = 6;
 
         // Pushes the indicated panel as a new bottom sheet page.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress push_bottom_sheet_address = 5;
+        InterfacePanelAddress push_bottom_sheet_address = 7;
 
         // Pops the currently visible bottom sheet page and displays the
         // indicated panel as the *new* sheet content.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress pop_to_bottom_sheet_address = 6;
+        InterfacePanelAddress pop_to_bottom_sheet_address = 8;
     }
 }
 

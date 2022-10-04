@@ -32,6 +32,7 @@ use protos::spelldawn::{
 
 use crate::deck_card_title::DeckCardTitle;
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
+use crate::deck_tile::DeckTile;
 use crate::editor_column_scroll::EditorColumnScroll;
 
 /// Displays the cards contained within a single deck
@@ -86,6 +87,7 @@ impl<'a> Component for CardList<'a> {
                             .align_items(FlexAlign::Center)
                             .padding(Edge::All, 1.vw()),
                     )
+                    .child(DeckTile::new(self.deck))
                     .children(sorted_deck(self.deck).into_iter().map(|(card_name, count)| {
                         DeckCardTitle::new(*card_name)
                             .count(*count)

@@ -43,6 +43,7 @@ namespace Spelldawn.Services
 
     readonly List<InterfacePanelAddress> _openPanels = new();
     readonly Dictionary<InterfacePanelAddress, Node> _panelCache = new();
+    InterfacePanelAddress? _switchTo;
 
     VisualElement _mainControls = null!;
     VisualElement _cardControls = null!;
@@ -160,6 +161,21 @@ namespace Spelldawn.Services
       InterfacePanelAddress? fetch = null;
       switch (command.ToggleCommandCase)
       {
+        case TogglePanelCommand.ToggleCommandOneofCase.SetPanel:
+          fetch = command.SetPanel;
+          if (_panelCache.ContainsKey(command.SetPanel))
+          {
+            // New panel is ready, remove existing
+            _openPanels.Clear();
+            _openPanels.Add(command.SetPanel);
+            RenderPanels();
+          }
+          else
+          {
+            // New panel is not ready, leave existing UI intact until it is fetched
+            _switchTo = command.SetPanel;
+          }
+          break;
         case TogglePanelCommand.ToggleCommandOneofCase.OpenPanel:
           fetch = command.OpenPanel;
           if (!_openPanels.Contains(command.OpenPanel))
@@ -170,6 +186,10 @@ namespace Spelldawn.Services
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.ClosePanel:
           _openPanels.Remove(command.ClosePanel);
+          RenderPanels();
+          break;
+        case TogglePanelCommand.ToggleCommandOneofCase.CloseAll:
+          _openPanels.Clear();
           RenderPanels();
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.OpenBottomSheetAddress:
@@ -211,6 +231,12 @@ namespace Spelldawn.Services
     {
       foreach (var panel in command.Panels)
       {
+        if (_switchTo != null && _switchTo.Equals(panel.Address))
+        {
+          _openPanels.Clear();
+          _openPanels.Add(_switchTo);
+          _switchTo = null;
+        }
         _panelCache[panel.Address] = panel.Node;
       }
 
