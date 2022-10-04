@@ -63,6 +63,7 @@ pub enum BackgroundColor {
     CardInfo,
     DeckEditorPanel,
     CardCount,
+    SafeAreaOverlay,
     BottomSheetOverlay,
     BottomSheetBackground,
 }
@@ -73,6 +74,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::CardInfo => BLACK_ALPHA_75,
             BackgroundColor::DeckEditorPanel => BLACK,
             BackgroundColor::CardCount => BLACK,
+            BackgroundColor::SafeAreaOverlay => BLACK,
             BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
             BackgroundColor::BottomSheetBackground => ORANGE_900,
         }

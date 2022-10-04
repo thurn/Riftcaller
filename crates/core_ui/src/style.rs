@@ -62,6 +62,42 @@ impl From<ViewportHeight> for Dimension {
     }
 }
 
+#[derive(Debug)]
+pub struct SafeTop(f32);
+
+impl From<SafeTop> for Dimension {
+    fn from(x: SafeTop) -> Self {
+        Self { unit: DimensionUnit::SafeAreaTop as i32, value: x.0 }
+    }
+}
+
+#[derive(Debug)]
+pub struct SafeRight(f32);
+
+impl From<SafeRight> for Dimension {
+    fn from(x: SafeRight) -> Self {
+        Self { unit: DimensionUnit::SafeAreaRight as i32, value: x.0 }
+    }
+}
+
+#[derive(Debug)]
+pub struct SafeBottom(f32);
+
+impl From<SafeBottom> for Dimension {
+    fn from(x: SafeBottom) -> Self {
+        Self { unit: DimensionUnit::SafeAreaBottom as i32, value: x.0 }
+    }
+}
+
+#[derive(Debug)]
+pub struct SafeLeft(f32);
+
+impl From<SafeLeft> for Dimension {
+    fn from(x: SafeLeft) -> Self {
+        Self { unit: DimensionUnit::SafeAreaLeft as i32, value: x.0 }
+    }
+}
+
 /// Angular unit, used for rotations
 #[derive(Debug)]
 pub struct Degrees(f32);
@@ -75,6 +111,14 @@ pub trait DimensionExt {
     fn vw(self) -> ViewportWidth;
 
     fn vh(self) -> ViewportHeight;
+
+    fn safe_area_top(self) -> SafeTop;
+
+    fn safe_area_right(self) -> SafeRight;
+
+    fn safe_area_bottom(self) -> SafeBottom;
+
+    fn safe_area_left(self) -> SafeLeft;
 
     fn milliseconds(self) -> TimeValue;
 
@@ -96,6 +140,22 @@ impl DimensionExt for i32 {
 
     fn vh(self) -> ViewportHeight {
         ViewportHeight(self as f32)
+    }
+
+    fn safe_area_top(self) -> SafeTop {
+        SafeTop(self as f32)
+    }
+
+    fn safe_area_right(self) -> SafeRight {
+        SafeRight(self as f32)
+    }
+
+    fn safe_area_bottom(self) -> SafeBottom {
+        SafeBottom(self as f32)
+    }
+
+    fn safe_area_left(self) -> SafeLeft {
+        SafeLeft(self as f32)
     }
 
     fn milliseconds(self) -> TimeValue {
@@ -122,6 +182,22 @@ impl DimensionExt for f32 {
 
     fn vh(self) -> ViewportHeight {
         ViewportHeight(self)
+    }
+
+    fn safe_area_top(self) -> SafeTop {
+        SafeTop(self)
+    }
+
+    fn safe_area_right(self) -> SafeRight {
+        SafeRight(self)
+    }
+
+    fn safe_area_bottom(self) -> SafeBottom {
+        SafeBottom(self)
+    }
+
+    fn safe_area_left(self) -> SafeLeft {
+        SafeLeft(self)
     }
 
     fn milliseconds(self) -> TimeValue {

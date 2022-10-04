@@ -41,39 +41,55 @@ impl<'a> DeckEditorPanel<'a> {
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
-        Row::new("DeckEditorPanel")
+        Row::new("OverlayBackground")
             .style(
                 Style::new()
-                    .background_color(BackgroundColor::DeckEditorPanel)
+                    .background_color(BackgroundColor::SafeAreaOverlay)
                     .position_type(FlexPosition::Absolute)
                     .position(Edge::All, 0.px()),
             )
             .child(
-                Column::new("Collection")
-                    .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
-                    .child(CollectionControls::new(self.player.id))
-                    .child(CollectionBrowser::new(self.player, self.open_deck)),
-            )
-            .child(self.open_deck.map(|d| CardList::new(self.player, d)))
-            .child(if self.open_deck.is_none() { Some(DeckList::new(self.player)) } else { None })
-            .child(
-                IconButton::new(icons::PREVIOUS_PAGE)
-                    .button_type(IconButtonType::SecondaryLarge)
-                    .layout(
-                        Layout::new()
+                Row::new("DeckEditorPanel")
+                    .style(
+                        Style::new()
+                            .background_color(BackgroundColor::DeckEditorPanel)
                             .position_type(FlexPosition::Absolute)
-                            .position(Edge::Left, 1.vw())
-                            .position(Edge::Top, 50.pct()),
-                    ),
-            )
-            .child(
-                IconButton::new(icons::NEXT_PAGE)
-                    .button_type(IconButtonType::SecondaryLarge)
-                    .layout(
-                        Layout::new()
-                            .position_type(FlexPosition::Absolute)
-                            .position(Edge::Right, (EDITOR_COLUMN_WIDTH + 1).vw())
-                            .position(Edge::Top, 50.pct()),
+                            .position(Edge::Top, 1.safe_area_top())
+                            .position(Edge::Right, 1.safe_area_right())
+                            .position(Edge::Bottom, 1.safe_area_bottom())
+                            .position(Edge::Left, 1.safe_area_left()),
+                    )
+                    .child(
+                        Column::new("Collection")
+                            .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
+                            .child(CollectionControls::new(self.player.id))
+                            .child(CollectionBrowser::new(self.player, self.open_deck)),
+                    )
+                    .child(self.open_deck.map(|d| CardList::new(self.player, d)))
+                    .child(if self.open_deck.is_none() {
+                        Some(DeckList::new(self.player))
+                    } else {
+                        None
+                    })
+                    .child(
+                        IconButton::new(icons::PREVIOUS_PAGE)
+                            .button_type(IconButtonType::SecondaryLarge)
+                            .layout(
+                                Layout::new()
+                                    .position_type(FlexPosition::Absolute)
+                                    .position(Edge::Left, 1.vw())
+                                    .position(Edge::Top, 50.pct()),
+                            ),
+                    )
+                    .child(
+                        IconButton::new(icons::NEXT_PAGE)
+                            .button_type(IconButtonType::SecondaryLarge)
+                            .layout(
+                                Layout::new()
+                                    .position_type(FlexPosition::Absolute)
+                                    .position(Edge::Right, (EDITOR_COLUMN_WIDTH + 1).vw())
+                                    .position(Edge::Top, 50.pct()),
+                            ),
                     ),
             )
             .build()
