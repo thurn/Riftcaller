@@ -356,8 +356,44 @@ pub struct DraggableNode {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TextFieldNode {
+    /// Globally unique identifier for this text field, used to avoid
+    /// overwriting user input. Cannot be the empty string.
+    ///
+    /// An initial value will only be set once on the TextField for a given
+    /// identifier.
+    #[prost(string, tag = "1")]
+    pub global_identifier: ::prost::alloc::string::String,
+    /// Text to initially display within the text field.
+    #[prost(string, tag = "2")]
+    pub initial_text: ::prost::alloc::string::String,
+    /// Allow multiple lines of input text
+    #[prost(bool, tag = "3")]
+    pub multiline: bool,
+    /// Whether the text can be edited
+    #[prost(bool, tag = "4")]
+    pub is_read_only: bool,
+    /// Maximum number of characters for the field.
+    #[prost(uint32, tag = "5")]
+    pub max_length: u32,
+    /// Set to true if the field is used to edit a password.
+    #[prost(bool, tag = "6")]
+    pub is_password_field: bool,
+    /// Controls whether double clicking selects the word under the mouse
+    /// pointer or not.
+    #[prost(bool, tag = "7")]
+    pub double_click_selects_word: bool,
+    /// Controls whether triple clicking selects the entire line under the
+    /// mouse pointer or not.
+    #[prost(bool, tag = "8")]
+    pub triple_click_selects_line: bool,
+    /// The character used for masking in a password field.
+    #[prost(string, tag = "9")]
+    pub mask_character: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
-    #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3, 4")]
+    #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3, 4, 5")]
     pub node_type: ::core::option::Option<node_type::NodeType>,
 }
 /// Nested message and enum types in `NodeType`.
@@ -372,6 +408,8 @@ pub mod node_type {
         DraggableNode(::prost::alloc::boxed::Box<super::DraggableNode>),
         #[prost(message, tag = "4")]
         DropTargetNode(super::DropTargetNode),
+        #[prost(message, tag = "5")]
+        TextFieldNode(super::TextFieldNode),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -381,10 +419,6 @@ pub struct EventHandlers {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
-    /// Used to identify this node in the hierarchy, should be unique among
-    /// siblings. If not provided, index will be used instead.
-    #[prost(string, tag = "1")]
-    pub id: ::prost::alloc::string::String,
     /// Used to identify this node in debugging tools
     #[prost(string, tag = "2")]
     pub name: ::prost::alloc::string::String,
@@ -588,7 +622,6 @@ pub struct ObjectPositionDiscardPileContainer {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
-///
 /// Large display of cards *while* the score animation is playing. After the
 /// score animation finishes, scored cards move to 'Identity' position.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -692,19 +725,16 @@ pub struct RevealedCardView {
     pub title: ::core::option::Option<CardTitle>,
     #[prost(message, optional, tag = "6")]
     pub rules_text: ::core::option::Option<RulesText>,
-    ///
     /// Custom targeting behavior for a card. If unspecified, no targeting UI
     /// is shown.
     #[prost(message, optional, tag = "7")]
     pub targeting: ::core::option::Option<CardTargeting>,
-    ///
     /// Where to move a played card. Information from 'targeting' will be
     /// incorporated to fill this in, e.g. if a room is targeted and
     /// ObjectPositionRoom is selected here with no RoomId, the targeted room
     /// is used.
     #[prost(message, optional, tag = "8")]
     pub on_release_position: ::core::option::Option<ObjectPosition>,
-    ///
     /// Additional interface element rendered to the side of the card during an
     /// info zoom.
     #[prost(message, optional, tag = "9")]
@@ -852,6 +882,16 @@ pub struct StandardAction {
     /// Immediate optimistic mutations to state for this action.
     #[prost(message, optional, tag = "2")]
     pub update: ::core::option::Option<CommandList>,
+    /// User interface fields to read values from.
+    ///
+    /// If this map is not empty, the client will look for fields in the UI with
+    /// names matching the keys of this map and set the contents of those fields
+    /// as the values of this map when sending the action payload to the server.
+    /// By convention, field names should be mapped to the empty string when
+    /// initially returned from the server.
+    #[prost(map = "string, string", tag = "3")]
+    pub request_fields:
+        ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
 /// Spend an action to gain 1 mana.
 /// Optimistic: Mana is added immediately.
@@ -1213,7 +1253,6 @@ pub struct SetMusicCommand {
     #[prost(enumeration = "MusicState", tag = "1")]
     pub music_state: i32,
 }
-///
 /// Fire a projectile from one game object at another.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FireProjectileCommand {
@@ -1234,21 +1273,17 @@ pub struct FireProjectileCommand {
     /// Additional effect to display on the target on hit.
     #[prost(message, optional, tag = "7")]
     pub additional_hit: ::core::option::Option<EffectAddress>,
-    ///
     /// Delay before showing the additional hit. If provided, the original
     /// projectile Hit effect will be hidden before showing the new hit effect.
     #[prost(message, optional, tag = "8")]
     pub additional_hit_delay: ::core::option::Option<TimeValue>,
-    ///
     /// During to wait for the project's impact effect before continuing
     #[prost(message, optional, tag = "9")]
     pub wait_duration: ::core::option::Option<TimeValue>,
-    ///
     /// If true, the target will be hidden after being hit during the
     /// 'wait_duration' and before jumping to 'jump_to_position'.
     #[prost(bool, tag = "10")]
     pub hide_on_hit: bool,
-    ///
     /// Position for the target to jump to after being hit.
     #[prost(message, optional, tag = "11")]
     pub jump_to_position: ::core::option::Option<ObjectPosition>,
@@ -1614,6 +1649,14 @@ pub enum DimensionUnit {
     ViewportWidth = 3,
     /// Units relative to 1% of the screen height
     ViewportHeight = 4,
+    /// Units relative to 100% of the size of the safe area top inset
+    SafeAreaTop = 5,
+    /// Units relative to 100% of the size of the safe area right inset
+    SafeAreaRight = 6,
+    /// Units relative to 100% of the size of the safe area bottom inset
+    SafeAreaBottom = 7,
+    /// Units relative to 100% of the size of the safe area left inset
+    SafeAreaLeft = 8,
 }
 /// Controls whether elements respond to interface events.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]

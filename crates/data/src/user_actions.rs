@@ -17,7 +17,7 @@ use serde::{Deserialize, Serialize};
 use crate::card_name::CardName;
 use crate::game_actions::GameAction;
 use crate::player_name::NamedPlayer;
-use crate::primitives::{ActionCount, DeckId, ManaValue, PointsValue, Side};
+use crate::primitives::{ActionCount, DeckIndex, ManaValue, PointsValue, School, Side};
 
 /// Actions that can be taken from the debug panel, should not be exposed in
 /// production.
@@ -49,10 +49,18 @@ pub enum DebugAction {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum DeckEditorAction {
+    /// Create a new deck for the current player
+    CreateDeck(Side, School),
     /// Add one copy of a card to a deck
-    AddToDeck(CardName, DeckId),
+    AddToDeck(CardName, DeckIndex),
     /// Remove one copy of a card from a deck
-    RemoveFromDeck(CardName, DeckId),
+    RemoveFromDeck(CardName, DeckIndex),
+}
+
+impl From<DeckEditorAction> for UserAction {
+    fn from(a: DeckEditorAction) -> Self {
+        UserAction::DeckEditorAction(a)
+    }
 }
 
 /// All possible action payloads that can be sent from a client

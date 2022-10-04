@@ -21,7 +21,7 @@ use data::card_name::CardName;
 use data::game::GameState;
 use data::player_data::{CurrentGame, PlayerData};
 use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{DeckId, GameId, Side};
+use data::primitives::{DeckIndex, GameId, Side};
 use data::user_actions::DebugAction;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::client_debug_command::DebugCommand;
@@ -45,8 +45,8 @@ pub fn handle_debug_action(
 ) -> Result<GameResponse> {
     match action {
         DebugAction::NewGame(side) => {
-            const OVERLORD_DECK_ID: DeckId = DeckId { value: 0 };
-            const CHAMPION_DECK_ID: DeckId = DeckId { value: 1 };
+            const OVERLORD_DECK_ID: DeckIndex = DeckIndex { value: 0 };
+            const CHAMPION_DECK_ID: DeckIndex = DeckIndex { value: 1 };
             write_default_player(database, player_id, None)?;
             Ok(GameResponse {
                 command_list: CommandList {

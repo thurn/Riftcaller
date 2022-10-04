@@ -228,6 +228,16 @@ namespace Spelldawn.Services
         CardAnchors(mainControls?.CardAnchorNodes ?? Enumerable.Empty<CardAnchorNode>()));
     }
 
+    public void AddRequestFields(StandardAction action)
+    {
+      foreach (var key in action.RequestFields.Keys)
+      {
+        var element = RootVisualElement.Q<BaseField<string>>(key);
+        action.RequestFields[key] = element.value;
+        Debug.Log($"AddRequestFields: adding {action.RequestFields[key]} for {key}");
+      }
+    }
+
     void RenderPanels()
     {
       Reconcile(
@@ -289,7 +299,6 @@ namespace Spelldawn.Services
       Row("Panels", new FlexStyle
       {
         Position = FlexPosition.Absolute,
-        Padding = GetSafeArea(),
         Inset = AllDip(0),
       }, children);
 

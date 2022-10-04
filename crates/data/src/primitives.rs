@@ -35,17 +35,17 @@ pub type LevelValue = u32;
 
 /// Identifies a deck owned by a given player
 #[derive(Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
-pub struct DeckId {
-    pub value: u64,
+pub struct DeckIndex {
+    pub value: usize,
 }
 
-impl DeckId {
-    pub fn new(value: u64) -> Self {
+impl DeckIndex {
+    pub fn new(value: usize) -> Self {
         Self { value }
     }
 }
 
-impl fmt::Debug for DeckId {
+impl fmt::Debug for DeckIndex {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "Deck{}", self.value)
     }

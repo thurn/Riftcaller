@@ -14,7 +14,7 @@
 
 //! Addresses for user interface panels
 
-use data::primitives::{DeckId, School, Side};
+use data::primitives::{DeckIndex, School, Side};
 use protos::spelldawn::{interface_panel_address, InterfacePanelAddress};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
@@ -40,7 +40,7 @@ impl From<PanelAddress> for InterfacePanelAddress {
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct DeckEditorData {
     /// Deck currently being viewed
-    pub deck: Option<DeckId>,
+    pub deck: Option<DeckIndex>,
 }
 
 /// Identifies which screen the user is on in the deck creation flow
@@ -48,5 +48,5 @@ pub struct DeckEditorData {
 pub enum CreateDeckState {
     PickSide,
     PickSchool(Side),
-    PickIdentity(Side, School),
+    PickName(Side, School),
 }

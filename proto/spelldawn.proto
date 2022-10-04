@@ -232,6 +232,14 @@ enum DimensionUnit {
     DIMENSION_UNIT_VIEWPORT_WIDTH = 3;
     // Units relative to 1% of the screen height
     DIMENSION_UNIT_VIEWPORT_HEIGHT = 4;
+    // Units relative to 100% of the size of the safe area top inset
+    DIMENSION_UNIT_SAFE_AREA_TOP = 5;
+    // Units relative to 100% of the size of the safe area right inset
+    DIMENSION_UNIT_SAFE_AREA_RIGHT = 6;
+    // Units relative to 100% of the size of the safe area bottom inset
+    DIMENSION_UNIT_SAFE_AREA_BOTTOM = 7;
+    // Units relative to 100% of the size of the safe area left inset
+    DIMENSION_UNIT_SAFE_AREA_LEFT = 8;
 }
 
 message Dimension {
@@ -463,12 +471,48 @@ message DraggableNode {
 message DropTargetNode {
 }
 
+message TextFieldNode {
+    // Globally unique identifier for this text field, used to avoid overwriting
+    // user input. Cannot be the empty string.
+    //
+    // An initial value will only be set once on the TextField for a given
+    // identifier.
+    string global_identifier = 1;
+
+    // Text to initially display within the text field.
+    string initial_text = 2;
+
+    // Allow multiple lines of input text
+    bool multiline = 3;
+
+    // Whether the text can be edited
+    bool is_read_only = 4;
+
+    // Maximum number of characters for the field.
+    uint32 max_length = 5;
+
+    // Set to true if the field is used to edit a password.
+    bool is_password_field = 6;
+
+    // Controls whether double clicking selects the word under the mouse
+    // pointer or not.
+    bool double_click_selects_word = 7;
+
+    // Controls whether triple clicking selects the entire line under the
+    // mouse pointer or not.
+    bool triple_click_selects_line = 8;
+
+    // The character used for masking in a password field.
+    string mask_character = 9;
+}
+
 message NodeType {
     oneof node_type {
         Text text = 1;
         ScrollViewNode scroll_view_node = 2;
         DraggableNode draggable_node = 3;
         DropTargetNode drop_target_node = 4;
+        TextFieldNode text_field_node = 5;
     }
 }
 
@@ -478,10 +522,6 @@ message EventHandlers {
 
 
 message Node {
-    // Used to identify this node in the hierarchy, should be unique among
-    // siblings. If not provided, index will be used instead.
-    string id = 1;
-
     // Used to identify this node in debugging tools
     string name = 2;
 
@@ -569,11 +609,11 @@ enum RoomIdentifier {
 
 
 message CardIcon {
-    /* Background for the icon. */
+    // Background for the icon.
     SpriteAddress background = 1;
-    /* Text to display on the icon. */
+    // Text to display on the icon.
     google.protobuf.StringValue text = 2;
-    /* Scale multiplier for the background image. */
+    // Scale multiplier for the background image.
     google.protobuf.FloatValue background_scale = 3;
 }
 
@@ -678,10 +718,8 @@ message ObjectPositionDiscardPileContainer {
     PlayerName owner = 1;
 }
 
-/*
- * Large display of cards *while* the score animation is playing. After the
- * score animation finishes, scored cards move to 'Identity' position.
- */
+// Large display of cards *while* the score animation is playing. After the
+// score animation finishes, scored cards move to 'Identity' position.
 message ObjectPositionScoreAnimation {
 }
 
@@ -759,24 +797,18 @@ message RevealedCardView {
     CardTitle title = 5;
     RulesText rules_text = 6;
 
-    /*
-    * Custom targeting behavior for a card. If unspecified, no targeting UI
-    * is shown.
-    */
+    // Custom targeting behavior for a card. If unspecified, no targeting UI
+    // is shown.
     CardTargeting targeting = 7;
 
-    /*
-    * Where to move a played card. Information from 'targeting' will be
-    * incorporated to fill this in, e.g. if a room is targeted and
-    * ObjectPositionRoom is selected here with no RoomId, the targeted room
-    * is used.
-    */
+    // Where to move a played card. Information from 'targeting' will be
+    // incorporated to fill this in, e.g. if a room is targeted and
+    // ObjectPositionRoom is selected here with no RoomId, the targeted room
+    // is used.
     ObjectPosition on_release_position = 8;
 
-    /*
-     * Additional interface element rendered to the side of the card during an
-     * info zoom.
-     */
+    // Additional interface element rendered to the side of the card during an
+    // info zoom.
     Node supplemental_info = 9;
 }
 
@@ -906,6 +938,15 @@ message StandardAction {
 
     // Immediate optimistic mutations to state for this action.
     CommandList update = 2;
+
+    // User interface fields to read values from.
+    //
+    // If this map is not empty, the client will look for fields in the UI with
+    // names matching the keys of this map and set the contents of those fields
+    // as the values of this map when sending the action payload to the server.
+    // By convention, field names should be mapped to the empty string when
+    // initially returned from the server.
+    map<string, string> request_fields = 3;
 }
 
 // Spend an action to gain 1 mana.
@@ -1237,46 +1278,36 @@ message SetMusicCommand {
     MusicState music_state = 1;
 }
 
-/*
- * Fire a projectile from one game object at another.
- */
+// Fire a projectile from one game object at another.
 message FireProjectileCommand {
     GameObjectIdentifier source_id = 1;
     GameObjectIdentifier target_id = 2;
 
-    /* Projectile to fire from the 'source_id' card to 'target_id' */
+    // Projectile to fire from the 'source_id' card to 'target_id'
     ProjectileAddress projectile = 3;
 
-    /* How long the projectile should take to hit its target. */
+    // How long the projectile should take to hit its target.
     TimeValue travel_duration = 4;
 
     AudioClipAddress fire_sound = 5;
 
     AudioClipAddress impact_sound = 6;
 
-    /* Additional effect to display on the target on hit. */
+    // Additional effect to display on the target on hit.
     EffectAddress additional_hit = 7;
 
-    /*
-     * Delay before showing the additional hit. If provided, the original
-     * projectile Hit effect will be hidden before showing the new hit effect.
-     */
+    // Delay before showing the additional hit. If provided, the original
+    // projectile Hit effect will be hidden before showing the new hit effect.
     TimeValue additional_hit_delay = 8;
 
-    /*
-     * During to wait for the project's impact effect before continuing
-     */
+    // During to wait for the project's impact effect before continuing
     TimeValue wait_duration = 9;
 
-    /*
-     * If true, the target will be hidden after being hit during the
-     * 'wait_duration' and before jumping to 'jump_to_position'.
-     */
+    // If true, the target will be hidden after being hit during the
+    // 'wait_duration' and before jumping to 'jump_to_position'.
     bool hide_on_hit = 10;
 
-    /*
-     * Position for the target to jump to after being hit.
-     */
+    // Position for the target to jump to after being hit.
     ObjectPosition jump_to_position = 11;
 }
 
@@ -1293,7 +1324,7 @@ message PlayEffectCommand {
 
     google.protobuf.FloatValue scale = 3;
 
-    /* How long to wait before continuing. */
+    // How long to wait before continuing.
     TimeValue duration = 4;
 
     AudioClipAddress sound = 5;
@@ -1425,9 +1456,9 @@ message CommandList {
 }
 
 service Spelldawn {
-    /* Initiate a new server connection. */
+    // Initiate a new server connection.
     rpc Connect(ConnectRequest) returns (stream CommandList);
 
-    /* Perform a game action. */
+    // Perform a game action.
     rpc PerformAction(GameRequest) returns (CommandList);
 }

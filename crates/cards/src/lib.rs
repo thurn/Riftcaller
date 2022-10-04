@@ -14,13 +14,36 @@
 
 //! Contains the definitions for all cards in the game.
 
+use card_helpers::identity_cost;
+use data::card_definition::{CardConfig, CardDefinition};
+use data::card_name::CardName;
+use data::primitives::{CardType, Rarity, School, Side};
+use display::rexard_images;
+use display::rexard_images::RexardPack;
+
 pub mod artifacts;
+pub mod champion_identities;
 pub mod champion_spells;
 pub mod decklists;
 pub mod initialize;
 pub mod minions;
+pub mod overlord_identities;
 pub mod overlord_spells;
 pub mod projects;
 pub mod schemes;
 pub mod test_cards;
 pub mod weapons;
+
+pub fn no_identity(name: CardName, side: Side, school: School) -> CardDefinition {
+    CardDefinition {
+        name,
+        cost: identity_cost(),
+        image: rexard_images::get(RexardPack::MonstersAvatars, "22"),
+        card_type: CardType::Identity,
+        side,
+        school,
+        rarity: Rarity::Common,
+        abilities: vec![],
+        config: CardConfig::default(),
+    }
+}

@@ -54,4 +54,12 @@ namespace Spelldawn.Masonry
         _ => throw new ArgumentOutOfRangeException(nameof(visibility), visibility, null)
       };
   }
+  
+  public sealed class NodeScrollView : ScrollView, INodeCallbacks
+  {
+    public VisualElement Self => this;
+    readonly Lazy<Callbacks> _callbacks = new();
+    public Lazy<Callbacks> Callbacks => _callbacks;
+    public NodeType.NodeTypeOneofCase NodeType { get; set; }
+  }  
 }

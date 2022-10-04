@@ -36,7 +36,6 @@ pub enum ButtonTextSize {
 }
 
 /// Implements a standard clickable button
-#[derive(Debug)]
 pub struct Button {
     label: String,
     layout: Layout,
@@ -108,7 +107,7 @@ impl Component for Button {
                     .background_image(background)
                     .image_slice(Edge::Horizontal, 16.px()),
             )
-            .on_click(self.action)
+            .on_click(self.action.as_client_action())
             .child(
                 Text::new(
                     self.label,
@@ -138,7 +137,6 @@ pub enum IconButtonType {
     DestructiveLarge,
 }
 
-#[derive(Debug)]
 pub struct IconButton {
     icon: String,
     layout: Layout,
@@ -215,7 +213,7 @@ impl Component for IconButton {
                     .align_items(FlexAlign::Center)
                     .flex_shrink(0.0),
             )
-            .on_click(self.action)
+            .on_click(self.action.as_client_action())
             .child(if self.show_frame {
                 Some(
                     Row::new("Frame").style(

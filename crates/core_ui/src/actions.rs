@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
 use std::fmt::Debug;
 
 use data::game_actions::{GameAction, PromptAction};
@@ -24,25 +25,19 @@ use serde_json::ser;
 /// Represents an action that can be performed in the user interface. Initiating
 /// a server request and performing an immediate client update are both
 /// supported forms of action.
-pub trait InterfaceAction: Debug {
-    fn as_client_action(&self) -> Option<Action>;
+pub trait InterfaceAction {
+    fn as_client_action(&self) -> Action;
+}
+
+impl InterfaceAction for Action {
+    fn as_client_action(&self) -> Action {
+        self.clone()
+    }
 }
 
 impl InterfaceAction for StandardAction {
-    fn as_client_action(&self) -> Option<Action> {
-        Some(Action::StandardAction(self.clone()))
-    }
-}
-
-impl<T: InterfaceAction + Clone> InterfaceAction for Option<T> {
-    fn as_client_action(&self) -> Option<Action> {
-        self.as_ref().and_then(|action| action.clone().as_client_action())
-    }
-}
-
-impl<T: ?Sized + InterfaceAction> InterfaceAction for Box<T> {
-    fn as_client_action(&self) -> Option<Action> {
-        self.as_ref().as_client_action()
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(self.clone())
     }
 }
 
@@ -51,53 +46,68 @@ impl<T: ?Sized + InterfaceAction> InterfaceAction for Box<T> {
 pub struct NoAction {}
 
 impl InterfaceAction for NoAction {
-    fn as_client_action(&self) -> Option<Action> {
-        None
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction::default())
+    }
+}
+
+impl InterfaceAction for UserAction {
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction {
+            payload: payload(*self),
+            update: None,
+            request_fields: HashMap::new(),
+        })
     }
 }
 
 impl InterfaceAction for DebugAction {
-    fn as_client_action(&self) -> Option<Action> {
-        Some(Action::StandardAction(StandardAction {
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction {
             payload: payload(UserAction::Debug(*self)),
             update: None,
-        }))
+            request_fields: HashMap::new(),
+        })
     }
 }
 
 impl InterfaceAction for GameAction {
-    fn as_client_action(&self) -> Option<Action> {
-        Some(Action::StandardAction(StandardAction {
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction {
             payload: payload(UserAction::GameAction(*self)),
             update: None,
-        }))
+            request_fields: HashMap::new(),
+        })
     }
 }
 
 impl InterfaceAction for PromptAction {
-    fn as_client_action(&self) -> Option<Action> {
-        Some(Action::StandardAction(StandardAction {
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction {
             payload: payload(UserAction::GameAction(GameAction::PromptAction(*self))),
             update: None,
-        }))
+            request_fields: HashMap::new(),
+        })
     }
 }
 
 impl InterfaceAction for Command {
-    fn as_client_action(&self) -> Option<Action> {
-        Some(Action::StandardAction(StandardAction {
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction {
             payload: vec![],
             update: Some(command_list(vec![self.clone()])),
-        }))
+            request_fields: HashMap::new(),
+        })
     }
 }
 
 impl InterfaceAction for Vec<Command> {
-    fn as_client_action(&self) -> Option<Action> {
-        Some(Action::StandardAction(StandardAction {
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction {
             payload: vec![],
             update: Some(command_list(self.clone())),
-        }))
+            request_fields: HashMap::new(),
+        })
     }
 }
 

@@ -277,7 +277,7 @@ fn handle_new_game(
 ) -> Result<GameResponse> {
     let debug_options = action.debug_options.clone().unwrap_or_default();
     let opponent_id = player_id(database, &action.opponent_id)?;
-    let deck_id = adapters::deck_id(action.deck.with_error(|| "Expected Deck ID")?);
+    let deck_id = adapters::deck_index(action.deck.with_error(|| "Expected Deck ID")?);
     let mut user = database.player(user_id)?.with_error(|| "User not found")?;
     let user_deck = user.deck(deck_id)?.clone();
     let opponent_deck =
@@ -444,7 +444,7 @@ fn handle_standard_action(
         }
         UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
         UserAction::DeckEditorAction(a) => handle_player_action(database, player_id, |player| {
-            deck_editor_actions::handle(player, a)
+            deck_editor_actions::handle(player, a, &standard_action.request_fields)
         }),
     }?;
 

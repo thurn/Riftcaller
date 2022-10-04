@@ -25,6 +25,7 @@ use core_ui::panel;
 use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
+use deck_editor::pick_deck_name::PickDeckName;
 use deck_editor::pick_deck_school::PickDeckSchool;
 use deck_editor::pick_deck_side::PickDeckSide;
 use panel_address::{CreateDeckState, PanelAddress};
@@ -75,7 +76,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         PanelAddress::CreateDeck(state) => match state {
             CreateDeckState::PickSide => PickDeckSide::new().build(),
             CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).build(),
-            CreateDeckState::PickIdentity(_, _) => todo!("Implement"),
+            CreateDeckState::PickName(side, school) => PickDeckName::new(side, school).build(),
         },
     })
 }

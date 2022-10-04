@@ -47,7 +47,8 @@ impl Draggable {
 
     pub fn on_drop(mut self, action: Option<impl InterfaceAction + 'static>) -> Self {
         self.enabled = action.is_some();
-        self.draggable.on_drop = action.map(|d| ClientAction { action: d.as_client_action() });
+        self.draggable.on_drop =
+            action.map(|d| ClientAction { action: Some(d.as_client_action()) });
         self
     }
 

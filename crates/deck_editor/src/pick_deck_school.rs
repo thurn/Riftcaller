@@ -15,10 +15,11 @@
 use core_ui::bottom_sheet_content::{BottomSheetButtonType, BottomSheetContent};
 use core_ui::button::Button;
 use core_ui::design::FontSize;
+use core_ui::panel;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::text::Text;
-use data::primitives::Side;
+use data::primitives::{School, Side};
 use panel_address::{CreateDeckState, PanelAddress};
 
 pub struct PickDeckSchool {
@@ -47,16 +48,25 @@ impl Component for PickDeckSchool {
                             .child(
                                 Button::new("Law")
                                     .width_mode(WidthMode::Constrained)
+                                    .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
+                                        CreateDeckState::PickName(self.side, School::Law),
+                                    )))
                                     .layout(Layout::new().margin(Edge::All, 16.px())),
                             )
                             .child(
                                 Button::new("Primal")
                                     .width_mode(WidthMode::Constrained)
+                                    .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
+                                        CreateDeckState::PickName(self.side, School::Primal),
+                                    )))
                                     .layout(Layout::new().margin(Edge::All, 16.px())),
                             )
                             .child(
                                 Button::new("Shadow")
                                     .width_mode(WidthMode::Constrained)
+                                    .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
+                                        CreateDeckState::PickName(self.side, School::Shadow),
+                                    )))
                                     .layout(Layout::new().margin(Edge::All, 16.px())),
                             ),
                     ),

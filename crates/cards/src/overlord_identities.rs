@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Library for user interface rendering
+use data::card_definition::CardDefinition;
+use data::card_name::CardName;
+use data::primitives::{School, Side};
 
-pub mod action_builder;
-pub mod actions;
-pub mod bottom_sheet_content;
-pub mod button;
-pub mod component;
-pub mod design;
-pub mod draggable;
-pub mod drop_target;
-pub mod flexbox;
-pub mod icons;
-pub mod list_cell;
-pub mod panel;
-pub mod prelude;
-pub mod scroll_view;
-pub mod style;
-pub mod text;
-pub mod text_field;
+pub fn no_identity_law() -> CardDefinition {
+    crate::no_identity(CardName::NoIdentityOverlordLaw, Side::Overlord, School::Law)
+}
+
+pub fn no_identity_shadow() -> CardDefinition {
+    crate::no_identity(CardName::NoIdentityOverlordShadow, Side::Overlord, School::Shadow)
+}
+
+pub fn no_identity_primal() -> CardDefinition {
+    crate::no_identity(CardName::NoIdentityOverlordPrimal, Side::Overlord, School::Primal)
+}

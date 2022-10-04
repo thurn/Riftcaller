@@ -59,6 +59,7 @@ namespace Spelldawn.Masonry
         NodeType.NodeTypeOneofCase.ScrollViewNode => new NodeScrollView(),
         NodeType.NodeTypeOneofCase.DraggableNode => new Draggable(),
         NodeType.NodeTypeOneofCase.DropTargetNode => new DropTarget(),
+        NodeType.NodeTypeOneofCase.TextFieldNode => new NodeTextField(),
         _ => new NodeVisualElement()
       };
       ((IMasonElement)result).NodeType = node.NodeType?.NodeTypeCase ?? NodeType.NodeTypeOneofCase.None;
@@ -79,6 +80,9 @@ namespace Spelldawn.Masonry
           break;
         case NodeType.NodeTypeOneofCase.DraggableNode:
           Draggable.Apply(registry, (Draggable)element, node);
+          break;
+        case NodeType.NodeTypeOneofCase.TextFieldNode:
+          TextFields.Apply(registry, (NodeTextField)element, node.NodeType.TextFieldNode);
           break;
       }
 

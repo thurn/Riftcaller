@@ -165,7 +165,6 @@ namespace Spelldawn.Masonry
       }
       else if (!_currentAddress.Equals(address))
       {
-        Debug.Log($"PopToAddress: popping");
         yield return AnimateSlide(address, pop: true);
       }
     }

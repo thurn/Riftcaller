@@ -177,11 +177,16 @@ namespace Spelldawn.Services
     IEnumerator HandleActionAsync(ClientAction action)
     {
       StartCoroutine(ApplyOptimisticResponse(action));
-      if (action.ActionCase == ClientAction.ActionOneofCase.StandardAction && action.StandardAction.Payload.Length == 0)
+      if (action.ActionCase == ClientAction.ActionOneofCase.StandardAction)
       {
-        // No need to send empty payload to server
-        _currentlyHandlingAction = false;
-        yield break;
+        if (action.StandardAction.Payload.Length == 0)
+        {
+          // No need to send empty payload to server
+          _currentlyHandlingAction = false;
+          yield break;          
+        }
+
+        _registry.DocumentService.AddRequestFields(action.StandardAction);
       }
 
       // Introduce simulated server delay

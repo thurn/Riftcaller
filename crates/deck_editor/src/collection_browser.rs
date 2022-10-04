@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
+
 use core_ui::actions;
 use core_ui::design::BLACK;
 use core_ui::drop_target::DropTarget;
@@ -116,7 +118,7 @@ fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
     StandardAction {
         payload: actions::payload(UserAction::DeckEditorAction(DeckEditorAction::AddToDeck(
             name,
-            open_deck.id,
+            open_deck.index,
         ))),
         update: Some(actions::command_list(vec![Command::UpdateInterfaceElement(
             UpdateInterfaceElementCommand {
@@ -124,5 +126,6 @@ fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
                 interface_update: Some(update),
             },
         )])),
+        request_fields: HashMap::new(),
     }
 }

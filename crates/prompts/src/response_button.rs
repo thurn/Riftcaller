@@ -21,7 +21,6 @@ use data::primitives::CardId;
 use protos::spelldawn::{AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify};
 use with_error::WithError;
 
-#[derive(Debug)]
 pub struct ResponseButton {
     label: String,
     layout: Layout,
@@ -114,7 +113,7 @@ impl Component for ResponseButton {
     fn build(self) -> Option<Node> {
         Button::new(self.label)
             .button_type(if self.primary { ButtonType::Primary } else { ButtonType::Secondary })
-            .action(self.action)
+            .action(self.action.as_client_action())
             .two_lines(self.two_lines)
             .layout(
                 self.layout

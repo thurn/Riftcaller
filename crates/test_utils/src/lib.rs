@@ -38,7 +38,7 @@ use data::game::{GameConfiguration, GamePhase, GameState, InternalRaidPhase, Rai
 use data::player_data::{CurrentGame, PlayerData};
 use data::player_name::PlayerId;
 use data::primitives::{
-    ActionCount, CardId, DeckId, GameId, Lineage, ManaValue, PointsValue, RaidId, RoomId, Side,
+    ActionCount, CardId, DeckIndex, GameId, Lineage, ManaValue, PointsValue, RaidId, RoomId, Side,
 };
 use maplit::hashmap;
 use prost::Message;
@@ -79,7 +79,7 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     };
 
     let overlord_deck = Deck {
-        id: DeckId { value: 0 },
+        index: DeckIndex { value: 0 },
         name: "Overlord".to_string(),
         owner_id: overlord_user,
         side: Side::Overlord,
@@ -87,7 +87,7 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
         cards: hashmap! {CardName::TestOverlordSpell => 45},
     };
     let champion_deck = Deck {
-        id: DeckId { value: 1 },
+        index: DeckIndex { value: 1 },
         name: "Champion".to_string(),
         owner_id: champion_user,
         side: Side::Champion,

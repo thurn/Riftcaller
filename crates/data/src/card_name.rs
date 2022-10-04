@@ -84,6 +84,14 @@ pub enum CardName {
     TestCardStoredMana,
     TestAttackWeapon,
 
+    // No Identity
+    NoIdentityOverlordLaw,
+    NoIdentityOverlordShadow,
+    NoIdentityOverlordPrimal,
+    NoIdentityChampionLaw,
+    NoIdentityChampionShadow,
+    NoIdentityChampionPrimal,
+
     // Playtest 0
     ArcaneRecovery,
     Lodestone,
@@ -125,6 +133,12 @@ impl CardName {
     /// Returns the user-visible name for this card
     pub fn displayed_name(&self) -> String {
         match self {
+            Self::NoIdentityOverlordLaw => "No Identity".to_string(),
+            Self::NoIdentityOverlordShadow => "No Identity".to_string(),
+            Self::NoIdentityOverlordPrimal => "No Identity".to_string(),
+            Self::NoIdentityChampionLaw => "No Identity".to_string(),
+            Self::NoIdentityChampionShadow => "No Identity".to_string(),
+            Self::NoIdentityChampionPrimal => "No Identity".to_string(),
             Self::MaraudersAxe => "Marauder's Axe".to_string(),
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
             Self::SkysReach => "Sky's Reach".to_string(),

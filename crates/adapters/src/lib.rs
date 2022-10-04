@@ -19,7 +19,7 @@ pub mod response_builder;
 use anyhow::Result;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{
-    AbilityId, AbilityIndex, CardId, DeckId, GameId, GameObjectId, RoomId, Side, Sprite,
+    AbilityId, AbilityIndex, CardId, DeckIndex, GameId, GameObjectId, RoomId, Side, Sprite,
 };
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
@@ -89,12 +89,12 @@ pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
     })
 }
 
-pub fn deck_id(identifier: DeckIdentifier) -> DeckId {
-    DeckId { value: identifier.value }
+pub fn deck_index(identifier: DeckIdentifier) -> DeckIndex {
+    DeckIndex { value: identifier.value as usize }
 }
 
-pub fn deck_identifier(id: DeckId) -> DeckIdentifier {
-    DeckIdentifier { value: id.value }
+pub fn deck_identifier(id: DeckIndex) -> DeckIdentifier {
+    DeckIdentifier { value: id.value as u64 }
 }
 
 pub fn named_player_identifier(player_name: NamedPlayer) -> Result<PlayerIdentifier> {

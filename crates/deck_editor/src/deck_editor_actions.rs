@@ -12,13 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
+
 use anyhow::Result;
+use data::card_name::CardName;
+use data::deck::Deck;
 use data::player_data::PlayerData;
+use data::primitives::{DeckIndex, School, Side};
 use data::user_actions::DeckEditorAction;
 use with_error::{fail, WithError};
 
-pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
+use crate::pick_deck_name::DECK_NAME_INPUT;
+
+pub fn handle(
+    player: &mut PlayerData,
+    action: DeckEditorAction,
+    request_fields: &HashMap<String, String>,
+) -> Result<()> {
+    let deck_name = match request_fields.get(DECK_NAME_INPUT) {
+        Some(name) if !name.is_empty() => name,
+        _ => fail!("Deck name not specified"),
+    };
     match action {
+        DeckEditorAction::CreateDeck(side, identity) => {
+            player.decks.push(Deck {
+                index: DeckIndex::new(player.decks.len()),
+                name: deck_name.clone(),
+                owner_id: player.id,
+                side,
+                identity: default_identity(side, identity)?,
+                cards: HashMap::new(),
+            });
+        }
         DeckEditorAction::AddToDeck(card_name, deck_id) => {
             println!("Adding to Deck {:?}, {:?}", card_name, deck_id);
             player.deck_mut(deck_id)?.cards.entry(card_name).and_modify(|e| *e += 1).or_insert(1);
@@ -39,4 +64,16 @@ pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
     }
 
     Ok(())
+}
+
+fn default_identity(side: Side, school: School) -> Result<CardName> {
+    Ok(match (side, school) {
+        (Side::Overlord, School::Law) => CardName::NoIdentityOverlordLaw,
+        (Side::Overlord, School::Shadow) => CardName::NoIdentityOverlordShadow,
+        (Side::Overlord, School::Primal) => CardName::NoIdentityOverlordPrimal,
+        (Side::Champion, School::Law) => CardName::NoIdentityChampionLaw,
+        (Side::Champion, School::Shadow) => CardName::NoIdentityChampionShadow,
+        (Side::Champion, School::Primal) => CardName::NoIdentityChampionPrimal,
+        _ => fail!("Neutral school not supported"),
+    })
 }

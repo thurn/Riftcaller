@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
+
 use core_ui::actions;
 use core_ui::design::RED_900;
 use core_ui::drop_target::DropTarget;
@@ -19,7 +21,7 @@ use core_ui::prelude::*;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use data::primitives::DeckId;
+use data::primitives::DeckIndex;
 use data::user_actions::{DeckEditorAction, UserAction};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -87,14 +89,14 @@ impl<'a> Component for CardList<'a> {
                     .children(sorted_deck(self.deck).into_iter().map(|(card_name, count)| {
                         DeckCardTitle::new(*card_name)
                             .count(*count)
-                            .on_drop(Some(drop_action(*card_name, self.deck.id)))
+                            .on_drop(Some(drop_action(*card_name, self.deck.index)))
                     })),
             )
             .build()
     }
 }
 
-fn drop_action(name: CardName, active_deck: DeckId) -> StandardAction {
+fn drop_action(name: CardName, active_deck: DeckIndex) -> StandardAction {
     StandardAction {
         payload: actions::payload(UserAction::DeckEditorAction(DeckEditorAction::RemoveFromDeck(
             name,
@@ -112,5 +114,6 @@ fn drop_action(name: CardName, active_deck: DeckId) -> StandardAction {
                 )),
             },
         )])),
+        request_fields: HashMap::new(),
     }
 }

@@ -22,12 +22,12 @@ use with_error::WithError;
 use crate::card_name::CardName;
 use crate::deck::Deck;
 use crate::player_name::PlayerId;
-use crate::primitives::{DeckId, GameId};
+use crate::primitives::{DeckIndex, GameId};
 
 /// Data for a player's request to create a new game
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NewGameRequest {
-    pub deck_id: DeckId,
+    pub deck_id: DeckIndex,
 }
 
 /// Represents the state of a game the player is participating in.
@@ -61,20 +61,20 @@ impl PlayerData {
         Self { id, current_game: None, decks: vec![], collection: HashMap::default() }
     }
 
-    /// Returns the [DeckId] this player requested to use for a new game.
-    pub fn requested_deck_id(&self) -> Option<DeckId> {
+    /// Returns the [DeckIndex] this player requested to use for a new game.
+    pub fn requested_deck_id(&self) -> Option<DeckIndex> {
         match &self.current_game {
             Some(CurrentGame::Requested(request)) => Some(request.deck_id),
             _ => None,
         }
     }
 
-    /// Retrieves one of a player's decks based on its [DeckId].
-    pub fn deck(&self, deck_id: DeckId) -> Result<&Deck> {
+    /// Retrieves one of a player's decks based on its [DeckIndex].
+    pub fn deck(&self, deck_id: DeckIndex) -> Result<&Deck> {
         self.decks.get(deck_id.value as usize).with_error(|| "Deck not found")
     }
 
-    pub fn deck_mut(&mut self, deck_id: DeckId) -> Result<&mut Deck> {
+    pub fn deck_mut(&mut self, deck_id: DeckIndex) -> Result<&mut Deck> {
         self.decks.get_mut(deck_id.value as usize).with_error(|| "Deck not found")
     }
 }

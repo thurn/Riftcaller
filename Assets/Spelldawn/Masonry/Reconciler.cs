@@ -14,7 +14,6 @@
 
 using Spelldawn.Protos;
 using Spelldawn.Services;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -73,11 +72,19 @@ namespace Spelldawn.Masonry
       return result;
     }
 
+    static bool HasInternalChildren(VisualElement? element) => element is TextField; 
+
     static void UpdateChildren(Registry registry,
       Node node,
       VisualElement addTo,
       VisualElement? previousElement = null)
     {
+      if (HasInternalChildren(previousElement))
+      {
+        // Some Unity elements have internal child elements which should not be updated.
+        return;
+      }
+      
       var count = 0;
       while (count < node.Children.Count)
       {
@@ -108,8 +115,8 @@ namespace Spelldawn.Masonry
         while (count < previousElement.childCount)
         {
           previousElement.RemoveAt(count);
-          count++;
         }
+        
       }
     }
   }

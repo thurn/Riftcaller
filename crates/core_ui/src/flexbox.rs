@@ -111,10 +111,9 @@ pub trait HasRenderNode: Sized {
 
     /// Action to invoke when this component is clicked/tapped
     fn on_click(mut self, action: impl InterfaceAction + 'static) -> Self {
-        if let Some(action) = action.as_client_action() {
-            self.render_node().event_handlers =
-                Some(EventHandlers { on_click: Some(ClientAction { action: Some(action) }) });
-        }
+        self.render_node().event_handlers = Some(EventHandlers {
+            on_click: Some(ClientAction { action: Some(action.as_client_action()) }),
+        });
         self
     }
 }
