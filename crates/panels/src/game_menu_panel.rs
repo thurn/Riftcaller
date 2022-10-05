@@ -53,7 +53,7 @@ impl Component for GameMenuPanel {
                     .child(menu_button("Settings", close))
                     .child(menu_button(
                         "Deck Editor",
-                        panel::set(PanelAddress::DeckEditor(DeckEditorData { deck: None })),
+                        panel::set(PanelAddress::DeckEditor(DeckEditorData::default())),
                     )),
             )
             .build()

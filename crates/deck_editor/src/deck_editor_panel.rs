@@ -14,29 +14,25 @@
 
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::BackgroundColor;
-use core_ui::icons;
 use core_ui::prelude::*;
+use core_ui::{icons, panel};
 use data::deck::Deck;
 use data::player_data::PlayerData;
+use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
 use protos::spelldawn::FlexPosition;
 
 use crate::card_list::CardList;
+use crate::collection_browser;
 use crate::collection_browser::CollectionBrowser;
 use crate::collection_controls::CollectionControls;
 use crate::deck_list::DeckList;
 
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
-#[derive(Debug)]
 pub struct DeckEditorPanel<'a> {
-    player: &'a PlayerData,
-    open_deck: Option<&'a Deck>,
-}
-
-impl<'a> DeckEditorPanel<'a> {
-    pub fn new(player: &'a PlayerData, open_deck: Option<&'a Deck>) -> Self {
-        Self { player, open_deck }
-    }
+    pub player: &'a PlayerData,
+    pub open_deck: Option<&'a Deck>,
+    pub filters: CollectionBrowserFilters,
 }
 
 impl<'a> Component for DeckEditorPanel<'a> {
@@ -63,33 +59,62 @@ impl<'a> Component for DeckEditorPanel<'a> {
                         Column::new("Collection")
                             .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
                             .child(CollectionControls::new(self.player.id, self.open_deck))
-                            .child(CollectionBrowser::new(self.player, self.open_deck)),
+                            .child(CollectionBrowser {
+                                player: self.player,
+                                open_deck: self.open_deck,
+                                filters: self.filters,
+                            }),
                     )
                     .child(self.open_deck.map(|d| CardList::new(self.player, d)))
                     .child(if self.open_deck.is_none() {
-                        Some(DeckList::new(self.player))
+                        Some(DeckList::new(self.player, self.filters))
                     } else {
                         None
                     })
+                    .child(if self.filters.offset < 8 {
+                        None
+                    } else {
+                        Some(
+                            IconButton::new(icons::PREVIOUS_PAGE)
+                                .button_type(IconButtonType::SecondaryLarge)
+                                .action(panel::set(PanelAddress::DeckEditor(DeckEditorData {
+                                    deck: self.open_deck.map(|d| d.index),
+                                    collection_filters: CollectionBrowserFilters {
+                                        offset: self.filters.offset - 8,
+                                    },
+                                })))
+                                .layout(
+                                    Layout::new()
+                                        .position_type(FlexPosition::Absolute)
+                                        .position(Edge::Left, 1.vw())
+                                        .position(Edge::Top, 50.pct()),
+                                ),
+                        )
+                    })
                     .child(
-                        IconButton::new(icons::PREVIOUS_PAGE)
-                            .button_type(IconButtonType::SecondaryLarge)
-                            .layout(
-                                Layout::new()
-                                    .position_type(FlexPosition::Absolute)
-                                    .position(Edge::Left, 1.vw())
-                                    .position(Edge::Top, 50.pct()),
-                            ),
-                    )
-                    .child(
-                        IconButton::new(icons::NEXT_PAGE)
-                            .button_type(IconButtonType::SecondaryLarge)
-                            .layout(
-                                Layout::new()
-                                    .position_type(FlexPosition::Absolute)
-                                    .position(Edge::Right, (EDITOR_COLUMN_WIDTH + 1).vw())
-                                    .position(Edge::Top, 50.pct()),
-                            ),
+                        if self.filters.offset + 8
+                            >= collection_browser::get_matching_cards(self.player, self.filters)
+                                .count()
+                        {
+                            None
+                        } else {
+                            Some(
+                                IconButton::new(icons::NEXT_PAGE)
+                                    .button_type(IconButtonType::SecondaryLarge)
+                                    .action(panel::set(PanelAddress::DeckEditor(DeckEditorData {
+                                        deck: self.open_deck.map(|d| d.index),
+                                        collection_filters: CollectionBrowserFilters {
+                                            offset: self.filters.offset + 8,
+                                        },
+                                    })))
+                                    .layout(
+                                        Layout::new()
+                                            .position_type(FlexPosition::Absolute)
+                                            .position(Edge::Right, (EDITOR_COLUMN_WIDTH + 1).vw())
+                                            .position(Edge::Top, 50.pct()),
+                                    ),
+                            )
+                        },
                     ),
             )
             .build()

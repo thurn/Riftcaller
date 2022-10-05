@@ -36,11 +36,19 @@ impl From<PanelAddress> for InterfacePanelAddress {
     }
 }
 
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct CollectionBrowserFilters {
+    pub offset: usize,
+}
+
 /// Identifies the current screen within the deck editor
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct DeckEditorData {
     /// Deck currently being viewed
     pub deck: Option<DeckIndex>,
+
+    /// Current collection browser view
+    pub collection_filters: CollectionBrowserFilters,
 }
 
 /// Identifies which screen the user is on in the deck creation flow

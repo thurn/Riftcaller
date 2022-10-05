@@ -18,7 +18,7 @@ use core_ui::panel;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
-use panel_address::{CreateDeckState, DeckEditorData, PanelAddress};
+use panel_address::{CollectionBrowserFilters, CreateDeckState, DeckEditorData, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexDirection};
 
 use crate::deck_tile::DeckTile;
@@ -28,11 +28,12 @@ use crate::editor_column_scroll::EditorColumnScroll;
 #[derive(Debug)]
 pub struct DeckList<'a> {
     player: &'a PlayerData,
+    filters: CollectionBrowserFilters,
 }
 
 impl<'a> DeckList<'a> {
-    pub fn new(player: &'a PlayerData) -> Self {
-        DeckList { player }
+    pub fn new(player: &'a PlayerData, filters: CollectionBrowserFilters) -> Self {
+        DeckList { player, filters }
     }
 }
 
@@ -63,7 +64,10 @@ impl<'a> Component for DeckList<'a> {
                             )
                             .children(decks.into_iter().map(|deck| {
                                 DeckTile::new(deck).action(panel::set(PanelAddress::DeckEditor(
-                                    DeckEditorData { deck: Some(deck.index) },
+                                    DeckEditorData {
+                                        deck: Some(deck.index),
+                                        collection_filters: self.filters,
+                                    },
                                 )))
                             })),
                     ),

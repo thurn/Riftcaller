@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use std::collections::HashMap;
+use std::iter;
 
 use core_ui::actions;
 use core_ui::design::BLACK;
@@ -22,6 +23,7 @@ use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::user_actions::{DeckEditorAction, UserAction};
+use panel_address::CollectionBrowserFilters;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
@@ -31,46 +33,54 @@ use protos::spelldawn::{
 
 use crate::card_list;
 use crate::deck_card::DeckCard;
+use crate::empty_card::EmptyCard;
 
-#[derive(Debug)]
-#[allow(dead_code)]
+/// Returns an iterator over cards owned by 'player' which match a given
+/// [CollectionBrowserFilters]
+pub fn get_matching_cards(
+    player: &PlayerData,
+    _: CollectionBrowserFilters,
+) -> impl Iterator<Item = (CardName, u32)> + '_ {
+    player.collection.iter().map(|(card_name, count)| (*card_name, *count))
+}
+
 pub struct CollectionBrowser<'a> {
-    player: &'a PlayerData,
-    open_deck: Option<&'a Deck>,
+    pub player: &'a PlayerData,
+    pub open_deck: Option<&'a Deck>,
+    pub filters: CollectionBrowserFilters,
 }
 
-impl<'a> CollectionBrowser<'a> {
-    pub fn new(player: &'a PlayerData, open_deck: Option<&'a Deck>) -> Self {
-        Self { player, open_deck }
-    }
-}
-
-fn card_row(number: u32, cards: impl Iterator<Item = DeckCard>) -> impl Component {
-    Row::new(format!("CardRow{number}"))
+fn card_row(open_deck: Option<&Deck>, cards: Vec<&(CardName, u32)>) -> impl Component {
+    let empty_slots = if cards.len() < 4 { 4 - cards.len() } else { 0 };
+    Row::new("CardRow")
         .style(
             Style::new()
                 .flex_grow(1.0)
                 .align_items(FlexAlign::Center)
                 .justify_content(FlexJustify::Center),
         )
-        .children(cards)
+        .children(cards.into_iter().map(|(name, _)| {
+            DeckCard::new(*name)
+                .layout(Layout::new().margin(Edge::All, 16.px()))
+                .on_drop(open_deck.map(|deck| drop_action(*name, deck)))
+        }))
+        .children(iter::repeat(EmptyCard {}).take(empty_slots))
+}
+
+fn sort_cards(cards: &mut [(CardName, u32)]) {
+    cards.sort_by_key(|(name, _)| {
+        let definition = rules::get(*name);
+        let cost = definition.cost.mana.unwrap_or_default();
+        (definition.side, definition.school, definition.card_type, cost, name.displayed_name())
+    });
 }
 
 impl<'a> Component for CollectionBrowser<'a> {
     fn build(self) -> Option<Node> {
-        let row_one = vec![
-            CardName::TestOverlordSpell,
-            CardName::TestOverlordIdentity,
-            CardName::TestScheme31,
-            CardName::TestMinionDealDamage,
-        ];
-        let row_two = vec![
-            CardName::TestMortalMinion,
-            CardName::TestAbyssalMinion,
-            CardName::TestInfernalMinion,
-            CardName::TestProject2Cost,
-        ];
-
+        let mut cards = get_matching_cards(self.player, self.filters).collect::<Vec<_>>();
+        sort_cards(&mut cards);
+        let row_one = cards.iter().skip(self.filters.offset).take(4).collect::<Vec<_>>();
+        let row_two = cards.iter().skip(self.filters.offset + 4).take(4).collect::<Vec<_>>();
         DropTarget::new("CollectionBrowser".to_string())
             .style(
                 Style::new()
@@ -81,22 +91,8 @@ impl<'a> Component for CollectionBrowser<'a> {
                     .align_items(FlexAlign::Center)
                     .justify_content(FlexJustify::Center),
             )
-            .child(card_row(
-                1,
-                row_one.into_iter().map(|card_name| {
-                    DeckCard::new(card_name)
-                        .layout(Layout::new().margin(Edge::All, 16.px()))
-                        .on_drop(self.open_deck.map(|deck| drop_action(card_name, deck)))
-                }),
-            ))
-            .child(card_row(
-                2,
-                row_two.into_iter().map(|card_name| {
-                    DeckCard::new(card_name)
-                        .layout(Layout::new().margin(Edge::All, 16.px()))
-                        .on_drop(self.open_deck.map(|deck| drop_action(card_name, deck)))
-                }),
-            ))
+            .child(card_row(self.open_deck, row_one))
+            .child(card_row(self.open_deck, row_two))
             .build()
     }
 }

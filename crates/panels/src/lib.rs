@@ -71,7 +71,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
-            DeckEditorPanel::new(player, open_deck).build()
+            DeckEditorPanel { player, open_deck, filters: data.collection_filters }.build()
         }
         PanelAddress::CreateDeck(state) => match state {
             CreateDeckState::PickSide => PickDeckSide::new().build(),

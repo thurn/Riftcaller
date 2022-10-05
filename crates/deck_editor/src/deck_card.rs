@@ -21,8 +21,8 @@ use protos::spelldawn::{StandardAction, TextAlign};
 
 use crate::deck_card_title::DeckCardTitle;
 
-const CARD_ASPECT_RATIO: f32 = 0.6348214;
-const CARD_HEIGHT: f32 = 36.0;
+pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
+pub const CARD_HEIGHT: f32 = 36.0;
 
 #[derive(Debug)]
 pub struct DeckCard {

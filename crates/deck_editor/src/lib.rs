@@ -24,6 +24,7 @@ pub mod deck_editor_panel;
 pub mod deck_list;
 pub mod deck_tile;
 pub mod editor_column_scroll;
+pub mod empty_card;
 pub mod pick_deck_name;
 pub mod pick_deck_school;
 pub mod pick_deck_side;

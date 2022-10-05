@@ -119,7 +119,6 @@ pub enum CardName {
     GatheringDark,
     OverwhelmingPower,
     ForcedMarch,
-    RuneWall,
     TimeGolem,
     TemporalStalker,
     ShadowLurker,
@@ -149,6 +148,10 @@ impl CardName {
     /// Returns true if this card is a test blank
     pub fn is_test_card(&self) -> bool {
         self.displayed_name().starts_with("Test")
+    }
+
+    pub fn is_null_identity(&self) -> bool {
+        self.displayed_name().starts_with("No Identity")
     }
 }
 

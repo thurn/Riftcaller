@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
-
 use adapters;
 use anyhow::Result;
 use cards::decklists;
@@ -135,7 +133,9 @@ pub fn handle_debug_action(
         DebugAction::FullCollection => {
             requests::handle_player_action(database, player_id, |player| {
                 for name in enum_iterator::all::<CardName>() {
-                    player.collection.insert(name, 3);
+                    if !name.is_test_card() && !name.is_null_identity() {
+                        player.collection.insert(name, 3);
+                    }
                 }
                 Ok(())
             })
@@ -148,14 +148,13 @@ fn write_default_player(
     player_id: PlayerId,
     current_game: Option<CurrentGame>,
 ) -> Result<()> {
+    let canonical_overlord = decklists::canonical_deck(player_id, Side::Overlord);
+    let canonical_champion = decklists::canonical_deck(player_id, Side::Champion);
     database.write_player(&PlayerData {
         id: player_id,
         current_game,
-        decks: vec![
-            decklists::canonical_deck(player_id, Side::Overlord),
-            decklists::canonical_deck(player_id, Side::Champion),
-        ],
-        collection: HashMap::default(),
+        decks: vec![canonical_overlord.clone(), canonical_champion.clone()],
+        collection: canonical_overlord.cards.into_iter().chain(canonical_champion.cards).collect(),
     })
 }
 
