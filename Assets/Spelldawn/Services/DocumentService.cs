@@ -174,6 +174,7 @@ namespace Spelldawn.Services
           {
             // New panel is not ready, leave existing UI intact until it is fetched
             _switchTo = command.SetPanel;
+            Loading = true;
           }
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.OpenPanel:
@@ -236,6 +237,7 @@ namespace Spelldawn.Services
           _openPanels.Clear();
           _openPanels.Add(_switchTo);
           _switchTo = null;
+          Loading = false;
         }
         _panelCache[panel.Address] = panel.Node;
       }

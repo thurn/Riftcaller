@@ -22,6 +22,7 @@ use data::primitives::{DeckIndex, School, Side};
 use data::user_actions::DeckEditorAction;
 use with_error::{fail, WithError};
 
+use crate::pick_deck_name;
 use crate::pick_deck_name::DECK_NAME_INPUT;
 
 pub fn handle(
@@ -29,23 +30,22 @@ pub fn handle(
     action: DeckEditorAction,
     request_fields: &HashMap<String, String>,
 ) -> Result<()> {
-    let deck_name = match request_fields.get(DECK_NAME_INPUT) {
-        Some(name) if !name.is_empty() => name,
-        _ => fail!("Deck name not specified"),
-    };
     match action {
-        DeckEditorAction::CreateDeck(side, identity) => {
+        DeckEditorAction::CreateDeck(side, school) => {
+            let deck_name = match request_fields.get(DECK_NAME_INPUT) {
+                Some(name) if !name.trim().is_empty() => name.clone(),
+                _ => pick_deck_name::default_deck_name(side, school),
+            };
             player.decks.push(Deck {
                 index: DeckIndex::new(player.decks.len()),
-                name: deck_name.clone(),
+                name: deck_name,
                 owner_id: player.id,
                 side,
-                identity: default_identity(side, identity)?,
+                identity: default_identity(side, school)?,
                 cards: HashMap::new(),
             });
         }
         DeckEditorAction::AddToDeck(card_name, deck_id) => {
-            println!("Adding to Deck {:?}, {:?}", card_name, deck_id);
             player.deck_mut(deck_id)?.cards.entry(card_name).and_modify(|e| *e += 1).or_insert(1);
         }
         DeckEditorAction::RemoveFromDeck(card_name, deck_id) => {

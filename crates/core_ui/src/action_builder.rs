@@ -21,7 +21,7 @@ use crate::actions;
 use crate::actions::InterfaceAction;
 
 /// Helper to construct a [StandardAction], a client-opaque serialized action.
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct ActionBuilder {
     action: Option<UserAction>,
     update: Vec<Command>,
@@ -31,6 +31,18 @@ pub struct ActionBuilder {
 impl ActionBuilder {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn build(self) -> StandardAction {
+        StandardAction {
+            payload: self.action.map_or(vec![], actions::payload),
+            update: Some(actions::command_list(self.update.clone())),
+            request_fields: self
+                .request_fields
+                .iter()
+                .map(|f| (f.clone(), String::new()))
+                .collect(),
+        }
     }
 
     /// Sets a server action to perform
@@ -55,14 +67,6 @@ impl ActionBuilder {
 
 impl InterfaceAction for ActionBuilder {
     fn as_client_action(&self) -> Action {
-        Action::StandardAction(StandardAction {
-            payload: self.action.map_or(vec![], actions::payload),
-            update: Some(actions::command_list(self.update.clone())),
-            request_fields: self
-                .request_fields
-                .iter()
-                .map(|f| (f.clone(), String::new()))
-                .collect(),
-        })
+        Action::StandardAction(self.clone().build())
     }
 }

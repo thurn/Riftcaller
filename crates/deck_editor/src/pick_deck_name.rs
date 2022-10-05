@@ -37,6 +37,10 @@ impl PickDeckName {
     }
 }
 
+pub fn default_deck_name(side: Side, school: School) -> String {
+    format!("{:?} {:?} Deck", side, school)
+}
+
 impl Component for PickDeckName {
     fn build(self) -> Option<Node> {
         BottomSheetContent::new()
@@ -52,9 +56,9 @@ impl Component for PickDeckName {
                             .style(Style::new())
                             .child(Text::new("Deck Name:", FontSize::Body))
                             .child(
-                                TextField::new(DECK_NAME_INPUT).max_characters(1024).initial_text(
-                                    format!("{:?} {:?} Deck", self.side, self.school),
-                                ),
+                                TextField::new(DECK_NAME_INPUT)
+                                    .max_characters(1024)
+                                    .initial_text(default_deck_name(self.side, self.school)),
                             ),
                     )
                     .child(Text::new(format!("Side: {:?}", self.side), FontSize::Headline))

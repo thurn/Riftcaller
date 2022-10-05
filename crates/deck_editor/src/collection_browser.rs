@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
 use std::iter;
 
-use core_ui::actions;
+use core_ui::action_builder::ActionBuilder;
 use core_ui::design::BLACK;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use data::user_actions::{DeckEditorAction, UserAction};
+use data::user_actions::DeckEditorAction;
 use panel_address::CollectionBrowserFilters;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -111,17 +110,12 @@ fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
             duration: Some(TimeValue { milliseconds: 300 }),
         })
     };
-    StandardAction {
-        payload: actions::payload(UserAction::DeckEditorAction(DeckEditorAction::AddToDeck(
-            name,
-            open_deck.index,
-        ))),
-        update: Some(actions::command_list(vec![Command::UpdateInterfaceElement(
-            UpdateInterfaceElementCommand {
-                element_name: "<OverTargetIndicator>".to_string(),
-                interface_update: Some(update),
-            },
-        )])),
-        request_fields: HashMap::new(),
-    }
+
+    ActionBuilder::new()
+        .update(Command::UpdateInterfaceElement(UpdateInterfaceElementCommand {
+            element_name: "<OverTargetIndicator>".to_string(),
+            interface_update: Some(update),
+        }))
+        .action(DeckEditorAction::AddToDeck(name, open_deck.index))
+        .build()
 }
