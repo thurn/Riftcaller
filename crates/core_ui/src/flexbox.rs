@@ -128,6 +128,13 @@ pub trait HasNodeChildren: HasRenderNode {
         self
     }
 
+    fn child_node(mut self, child: Option<Node>) -> Self {
+        if let Some(n) = child {
+            self.get_internal_children().push(n);
+        }
+        self
+    }
+
     fn child_boxed(mut self, child: Box<dyn Component>) -> Self {
         if let Some(n) = child.build_boxed() {
             self.get_internal_children().push(n);

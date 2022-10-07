@@ -67,6 +67,7 @@ impl<'a> Component for DeckList<'a> {
                                     DeckEditorData {
                                         deck: Some(deck.index),
                                         collection_filters: self.filters,
+                                        show_edit_options: false,
                                     },
                                 )))
                             })),

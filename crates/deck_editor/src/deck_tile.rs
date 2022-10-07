@@ -50,7 +50,6 @@ impl<'a> Component for DeckTile<'a> {
                 Style::new()
                     .height(132.px())
                     .width((EDITOR_COLUMN_WIDTH - 1).vw())
-                    .flex_grow(1.0)
                     .flex_direction(FlexDirection::Row)
                     .align_items(FlexAlign::Center)
                     .justify_content(FlexJustify::Center)

@@ -46,7 +46,9 @@ pub struct CollectionBrowserFilters {
 pub struct DeckEditorData {
     /// Deck currently being viewed
     pub deck: Option<DeckIndex>,
-
+    /// True if the detail options for the current deck (e.g. delete, rename)
+    /// should be shown.
+    pub show_edit_options: bool,
     /// Current collection browser view
     pub collection_filters: CollectionBrowserFilters,
 }

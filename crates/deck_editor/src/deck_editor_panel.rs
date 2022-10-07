@@ -25,6 +25,7 @@ use crate::card_list::CardList;
 use crate::collection_browser;
 use crate::collection_browser::CollectionBrowser;
 use crate::collection_controls::CollectionControls;
+use crate::deck_edit_options::DeckEditOptions;
 use crate::deck_list::DeckList;
 
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
@@ -33,6 +34,7 @@ pub struct DeckEditorPanel<'a> {
     pub player: &'a PlayerData,
     pub open_deck: Option<&'a Deck>,
     pub filters: CollectionBrowserFilters,
+    pub show_edit_options: bool,
 }
 
 impl<'a> Component for DeckEditorPanel<'a> {
@@ -65,11 +67,10 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                 filters: self.filters,
                             }),
                     )
-                    .child(self.open_deck.map(|d| CardList::new(self.player, d)))
-                    .child(if self.open_deck.is_none() {
-                        Some(DeckList::new(self.player, self.filters))
-                    } else {
-                        None
+                    .child_node(match self.open_deck {
+                        Some(deck) if self.show_edit_options => DeckEditOptions::new(deck).build(),
+                        Some(deck) => CardList::new(self.player, deck).build(),
+                        _ => DeckList::new(self.player, self.filters).build(),
                     })
                     .child(if self.filters.offset < 8 {
                         None
@@ -82,6 +83,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                     collection_filters: CollectionBrowserFilters {
                                         offset: self.filters.offset - 8,
                                     },
+                                    show_edit_options: false,
                                 })))
                                 .layout(
                                     Layout::new()
@@ -106,6 +108,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                         collection_filters: CollectionBrowserFilters {
                                             offset: self.filters.offset + 8,
                                         },
+                                        show_edit_options: false,
                                     })))
                                     .layout(
                                         Layout::new()

@@ -56,7 +56,8 @@ where
     fn name(&self) -> &'static str;
 
     /// Select an action for the current player to take in the `node` game
-    /// state. Should attempt to return a result before time `deadline`.
+    /// state. Should attempt to return a result before the [AgentConfig]'s
+    /// `deadline`.
     fn pick_action(&self, config: AgentConfig, node: &TNode) -> Result<TNode::Action>;
 }
 

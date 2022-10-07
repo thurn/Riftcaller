@@ -14,15 +14,16 @@
 
 use std::collections::HashMap;
 
-use core_ui::actions;
 use core_ui::design::RED_900;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
+use core_ui::{actions, panel};
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::primitives::DeckIndex;
 use data::user_actions::{DeckEditorAction, UserAction};
+use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
@@ -87,7 +88,13 @@ impl<'a> Component for CardList<'a> {
                             .align_items(FlexAlign::Center)
                             .padding(Edge::All, 1.vw()),
                     )
-                    .child(DeckTile::new(self.deck))
+                    .child(DeckTile::new(self.deck).action(panel::set(PanelAddress::DeckEditor(
+                        DeckEditorData {
+                            deck: Some(self.deck.index),
+                            show_edit_options: true,
+                            collection_filters: CollectionBrowserFilters::default(),
+                        },
+                    ))))
                     .children(sorted_deck(self.deck).into_iter().map(|(card_name, count)| {
                         DeckCardTitle::new(*card_name)
                             .count(*count)
