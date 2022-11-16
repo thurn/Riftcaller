@@ -17,6 +17,12 @@ test:
 disallowed:
     ! grep -r --include '*.rs' 'ERROR_PANIC: bool = true'
 
+docker-build:
+    docker build -t spelldawn .
+
+docker-run:
+    docker run -it --rm -p 50052:50052 --name spelldawn spelldawn
+
 protos:
     cargo run --bin gen_protos
     rm crates/protos/src/google.protobuf.rs

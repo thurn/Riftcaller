@@ -6,7 +6,6 @@ description = "Spelldawn: An asymmetric trading card game"
 license = "Apache-2.0"
 default-run = "spelldawn"
 edition = "2021"
-rust-version = "1.61"
 
 [[bin]]
 name = "spelldawn"
