@@ -49,7 +49,7 @@ namespace Spelldawn.Services
     public IEnumerator HandleCommands(CommandList commandList)
     {
       _queue.Enqueue(commandList);
-      return new WaitUntil(() => _currentlyHandling == false && _queue.Count == 0);
+      yield return new WaitUntil(() => _currentlyHandling == false && _queue.Count == 0);
     }
 
     void Update()
@@ -168,6 +168,7 @@ namespace Spelldawn.Services
 
     IEnumerator HandleUpdateGameView(GameView game, bool animate)
     {
+      _registry.SplashScreen.SetActive(false);
       _registry.CardService.SetCardBacks(game.User?.PlayerInfo?.CardBack, game.Opponent?.PlayerInfo?.CardBack);
 
       if (game.User != null)

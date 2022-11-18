@@ -99,3 +99,6 @@ TagManager:
   - name: InfoZoom
     uniqueID: 3750139825
     locked: 0
+  - name: SplashScreen
+    uniqueID: 750344357
+    locked: 0

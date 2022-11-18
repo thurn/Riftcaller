@@ -191,10 +191,18 @@ namespace Spelldawn.Services
     [SerializeField] GameObject _graphy = null!;
     public GameObject Graphy => _graphy;
 
+    [SerializeField] GameObject _splashScreen = null!;
+    public GameObject SplashScreen => _splashScreen;
+
     [SerializeField] Studio _studio = null!;
     public Studio Studio => _studio;
 
     public ScreenshotTestService? ScreenshotTests { get; private set; }
+
+    void Awake()
+    {
+      _splashScreen.SetActive(true);
+    }
 
     IEnumerator Start()
     {
@@ -214,6 +222,9 @@ namespace Spelldawn.Services
       MusicService.Initialize(GlobalGameMode);
       GameService.Initialize(GlobalGameMode);
       yield return ArenaService.Initialize();
+      
+      // yield return new WaitUntil(() => ActionService.Connected);
+      // _splashScreen.SetActive(false);
 
       if (runTests)
       {

@@ -120,6 +120,8 @@ namespace Spelldawn.Services
 
     async void AttemptConnection()
     {
+      _registry.DocumentService.Loading = true;
+      
       var request = new ConnectRequest
       {
         PlayerId = Errors.CheckNotNull(_playerIdentifier),
@@ -142,8 +144,8 @@ namespace Spelldawn.Services
             if (this != null)
             {
               var commands = call.ResponseStream.Current;
-              _registry.DocumentService.Loading = false;
               _attemptReconnect = false;
+              _registry.DocumentService.Loading = false;
               StartCoroutine(_registry.CommandService.HandleCommands(commands));
               _registry.DocumentService.FetchOpenPanels();
             }

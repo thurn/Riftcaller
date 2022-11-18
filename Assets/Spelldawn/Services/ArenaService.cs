@@ -41,7 +41,7 @@ namespace Spelldawn.Services
     [SerializeField] AssetReference _arenaScene = null!;
 
     public Room? CurrentRoomSelector => _curentRoomSelector;
-
+    
     public ObjectDisplay LeftItems => _leftItems;
     public ObjectDisplay RightIems => _rightItems;
 

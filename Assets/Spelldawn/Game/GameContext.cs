@@ -24,8 +24,9 @@ namespace Spelldawn.Game
   /// </summary>
   public enum GameContext
   {
-    // Note: Enum numbers are serialized by Unity and cannot be changed. Keep
-    // in sync with 'SortOrder' below.
+    // Note: Enum numbers are serialized by Unity and cannot be changed.
+    //
+    // Keep in sync with 'SortOrder' below.
     Unspecified = 0,
     Hidden = 17,
     Arena = 1,
@@ -45,7 +46,8 @@ namespace Spelldawn.Game
     UserMessage = 13,
     LongPressBrowser = 19,
     RewardBrowser = 14,
-    InfoZoom = 15
+    InfoZoom = 15,
+    SplashScreen = 20
   }
 
   public static class GameContextUtil
@@ -72,6 +74,7 @@ namespace Spelldawn.Game
       GameContext.LongPressBrowser => 17,
       GameContext.RewardBrowser => 18,
       GameContext.InfoZoom => 19,
+      GameContext.SplashScreen => 20,
       _ => throw new ArgumentOutOfRangeException(nameof(gameContext), gameContext, null)
     };
 
