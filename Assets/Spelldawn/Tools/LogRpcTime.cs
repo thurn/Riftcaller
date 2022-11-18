@@ -18,13 +18,13 @@ using UnityEditor;
 
 namespace Spelldawn.Tools
 {
-  public static class IntroduceNetworkDelay
+  public static class LogRpcTime
   {
-    const string MenuName = "Tools/Long Network Delay %&n";
-    const string SettingName = "IntroduceNetworkDelay";
+    const string MenuName = "Tools/Log RPC Time";
+    const string SettingName = "LogRpcTime";
     
 #if UNITY_EDITOR 
-    public static bool ShouldIntroduceLongNetworkDelay
+    public static bool ShouldLogRpcTime
     {
       get => EditorPrefs.GetBool(SettingName, false);
       set => EditorPrefs.SetBool(SettingName, value);
@@ -33,17 +33,17 @@ namespace Spelldawn.Tools
     [MenuItem(MenuName)]
     static void ToggleAction()
     {
-      ShouldIntroduceLongNetworkDelay = !ShouldIntroduceLongNetworkDelay;
+      ShouldLogRpcTime = !ShouldLogRpcTime;
     }
   
     [MenuItem(MenuName, true)]
     static bool ToggleActionValidate()
     {
-      Menu.SetChecked(MenuName, ShouldIntroduceLongNetworkDelay);
+      Menu.SetChecked(MenuName, ShouldLogRpcTime);
       return true;
     }
 #else
-    public static bool ShouldIntroduceLongNetworkDelay => false;
+    public static bool ShouldLogRpcTime => false;
 #endif
   }
 }

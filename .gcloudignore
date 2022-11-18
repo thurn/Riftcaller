@@ -1,0 +1,8 @@
+*
+
+!crates
+!Cargo.toml
+!Cargo.lock
+!Dockerfile
+!cloudbuild.yaml
+!justfile

@@ -36,18 +36,20 @@ namespace Spelldawn.Services
 {
   public sealed class ActionService : MonoBehaviour
   {
-    const string ServerAddress = "http://localhost:50052";
+    const string LocalServerAddress = "http://localhost";
+    const string ProductionServerAddress = "http://trunk.spelldawn.com";
 
-    readonly Protos.Spelldawn.SpelldawnClient _client = new(GrpcChannel.ForAddress(
-      ServerAddress, new GrpcChannelOptions
-      {
-        HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
-        Credentials = ChannelCredentials.Insecure,
-        CompressionProviders = new List<ICompressionProvider>
+    readonly Lazy<Protos.Spelldawn.SpelldawnClient> _client = new(() => new Protos.Spelldawn.SpelldawnClient(
+      GrpcChannel.ForAddress(
+        UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress, new GrpcChannelOptions
         {
-          new GzipCompressionProvider(CompressionLevel.Optimal)
-        }
-      }));
+          HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
+          Credentials = ChannelCredentials.Insecure,
+          CompressionProviders = new List<ICompressionProvider>
+          {
+            new GzipCompressionProvider(CompressionLevel.Optimal)
+          }
+        })));
 
     [SerializeField] Registry _registry = null!;
     [SerializeField] bool _currentlyHandlingAction;
@@ -131,7 +133,7 @@ namespace Spelldawn.Services
       else
       {
         // TODO: Android in particular seems to hang for multiple minutes when the server can't be reached?
-        using var call = _client.Connect(request);
+        using var call = _client.Value.Connect(request);
 
         try
         {
@@ -183,14 +185,14 @@ namespace Spelldawn.Services
         {
           // No need to send empty payload to server
           _currentlyHandlingAction = false;
-          yield break;          
+          yield break;
         }
 
         _registry.DocumentService.AddRequestFields(action.StandardAction);
       }
 
       // Introduce simulated server delay
-      if (IntroduceNetworkDelay.ShouldIntroduceNetworkDelay)
+      if (IntroduceNetworkDelay.ShouldIntroduceLongNetworkDelay)
       {
         yield return new WaitForSeconds(5f);
       }
@@ -217,7 +219,8 @@ namespace Spelldawn.Services
       }
       else
       {
-        var call = _client.PerformActionAsync(request);
+        var startTime = Time.time;
+        var call = _client.Value.PerformActionAsync(request);
         var task = call.GetAwaiter();
         yield return new WaitUntil(() => task.IsCompleted);
 
@@ -226,6 +229,11 @@ namespace Spelldawn.Services
           case StatusCode.OK:
             _registry.DocumentService.Loading = false;
             _attemptReconnect = false;
+            if (LogRpcTime.ShouldLogRpcTime)
+            {
+              Debug.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
+            }
+
             yield return _registry.CommandService.HandleCommands(task.GetResult());
             break;
           default:
@@ -233,7 +241,7 @@ namespace Spelldawn.Services
             _attemptReconnect = true;
             if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
             {
-              Debug.Log($"Error connecting to {ServerAddress}: {call.GetStatus().Detail}");
+              Debug.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
             }
 
             break;
@@ -260,7 +268,7 @@ namespace Spelldawn.Services
               switch (command.CommandCase)
               {
                 case GameCommand.CommandOneofCase.TogglePanel:
-                    _registry.DocumentService.TogglePanel(command.TogglePanel);
+                  _registry.DocumentService.TogglePanel(command.TogglePanel);
                   break;
               }
             }

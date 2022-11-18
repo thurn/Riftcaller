@@ -17,11 +17,17 @@ test:
 disallowed:
     ! grep -r --include '*.rs' 'ERROR_PANIC: bool = true'
 
+# Build a local docker image
 docker-build:
     docker build -t spelldawn .
 
+# Run local docker image
 docker-run:
     docker run -it --rm -p 50052:50052 --name spelldawn spelldawn
+
+# Submit docker build to Google Cloud Build
+cloud-build:
+    gcloud builds submit --region=us-central1 --config cloudbuild.yaml
 
 protos:
     cargo run --bin gen_protos
@@ -419,3 +425,39 @@ just paths:
     echo "Asset Bundle Downloads: ~/Library/Caches/com.spelldawn.Spelldawn/"
     echo "Log Files: ~/Library/Logs/Spelldawn/Spelldawn"
     echo "Game Data: ~/Library/Application Support/Spelldawn/Spelldawn"
+
+# GCloud
+#
+# Log into GCloud:
+# gcloud auth login
+# Settting GCloud Project:
+# gcloud config set project spelldawn
+# Creating GCloud Artifact:
+# gcloud artifacts repositories create spelldawn --repository-format=docker
+#     --location=us-central1 --description="Spelldawn repository"
+# Authorizing Docker:
+# gcloud auth configure-docker us-central1-docker.pkg.dev
+# SSH into server:
+# gcloud compute ssh --zone "us-central1-a" "spelldawn-trunk"  --project
+#     "spelldawn"
+# Running GCloud Build:
+# gcloud builds submit --region=us-central1 --tag
+#     us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+
+# Docker
+# List Containers:
+# docker container ls
+# List Images:
+# docker image ls
+# Show Container Logs:
+# docker logs --tail 50 --follow --timestamps ca675fc6b778
+# Attach to container:
+# docker attach 184dfc90b290
+# Adding Docker Tag:
+# docker tag spelldawn:latest
+#     us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+# Pushing Local Docker Image:
+# docker push us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+
+# GRPC CLI
+# grpc_cli ls 35.184.200.62:50052 -l

@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let fmt_layer = fmt::Layer::default().pretty().with_filter(LevelFilter::WARN);
     tracing_subscriber::registry().with(fmt_layer).init();
 
-    let address = "0.0.0.0:50052".parse().expect("valid address");
+    let address = "0.0.0.0:80".parse().expect("valid address");
     let server = SpelldawnServer::new(GameService {
         // To print responses:
         // response_interceptor: Some(|response| eprintln!("{}", Summary::summarize(response)))
