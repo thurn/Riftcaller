@@ -31,13 +31,15 @@ use data::{game_actions, player_data};
 use deck_editor::deck_editor_actions;
 use display::render;
 use once_cell::sync::Lazy;
+use panel_address::PanelAddress;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::spelldawn_server::Spelldawn;
+use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
     card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
     InterfacePanelAddress, LoadSceneCommand, NewGameAction, PlayerIdentifier, SceneLoadMode,
-    StandardAction,
+    StandardAction, TogglePanelCommand,
 };
 use rules::{dispatch, mutations};
 use serde_json::de;
@@ -264,7 +266,12 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
             fail!("Game not found: {:?}", game_id)
         }
     } else {
-        Ok(command_list(vec![]))
+        let mut commands = vec![];
+        panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
+        commands.push(Command::TogglePanel(TogglePanelCommand {
+            toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
+        }));
+        Ok(command_list(commands))
     }
 }
 

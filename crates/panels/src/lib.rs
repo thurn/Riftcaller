@@ -17,11 +17,12 @@
 
 pub mod debug_panel;
 pub mod game_menu_panel;
+pub mod main_menu_panel;
 pub mod set_player_name_panel;
 
 use anyhow::Result;
 use core_ui::component::Component;
-use core_ui::panel;
+use core_ui::panel::{self};
 use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
@@ -38,6 +39,7 @@ use serde_json::de;
 use with_error::WithError;
 
 use crate::game_menu_panel::GameMenuPanel;
+use crate::main_menu_panel::MainMenuPanel;
 use crate::set_player_name_panel::SetPlayerNamePanel;
 
 /// Appends a command to `commands` to render commonly-used panels on connect.
@@ -46,6 +48,7 @@ pub fn append_standard_panels(player: &PlayerData, commands: &mut Vec<Command>) 
         player,
         panel::client(ClientPanelAddress::DebugPanel),
     )?));
+    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::MainMenu.into())?));
     Ok(())
 }
 
@@ -68,6 +71,7 @@ pub fn render_panel(
 
 fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Option<Node>> {
     Ok(match address {
+        PanelAddress::MainMenu => MainMenuPanel::new().build(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };

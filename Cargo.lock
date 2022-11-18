@@ -1698,6 +1698,7 @@ dependencies = [
  "display",
  "enum-iterator",
  "once_cell",
+ "panel_address",
  "panels",
  "prost",
  "protos",

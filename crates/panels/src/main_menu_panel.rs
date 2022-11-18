@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! The game menu panel provides options within a game, e.g. to return to the
-//! main menu or change settings.
+//! The main menu is the first panel seen after startup, providing the
+//! option to start a new game.
 
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{Button, ButtonType};
@@ -21,25 +21,23 @@ use core_ui::panel;
 use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use panel_address::{DeckEditorData, PanelAddress};
 use protos::spelldawn::{ClientPanelAddress, FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
-pub struct GameMenuPanel {}
+pub struct MainMenuPanel {}
 
-impl GameMenuPanel {
+impl MainMenuPanel {
     pub fn new() -> Self {
         Self::default()
     }
 }
 
-impl Component for GameMenuPanel {
+impl Component for MainMenuPanel {
     fn build(self) -> Option<Node> {
         let close = panel::close(panel::client(ClientPanelAddress::GameMenu));
 
         Panel::new(panel::client(ClientPanelAddress::GameMenu), 512.px(), 600.px())
-            .title("Menu")
-            .show_close_button(true)
+            .title("Spelldawn")
             .content(
                 Column::new("MeuButtons")
                     .style(
@@ -48,12 +46,9 @@ impl Component for GameMenuPanel {
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center),
                     )
-                    .child(menu_button("Resign", close.clone()))
-                    .child(menu_button("Settings", close))
-                    .child(menu_button(
-                        "Deck Editor",
-                        panel::set(PanelAddress::DeckEditor(DeckEditorData::default())),
-                    )),
+                    .child(menu_button("New Game", close.clone()))
+                    .child(menu_button("Settings", close.clone()))
+                    .child(menu_button("About", close)),
             )
             .build()
     }
