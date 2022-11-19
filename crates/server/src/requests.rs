@@ -26,7 +26,7 @@ use data::player_data::{CurrentGame, NewGameRequest, PlayerData};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
 use data::updates::{UpdateTracker, Updates};
-use data::user_actions::UserAction;
+use data::user_actions::{NewGameAction, UserAction};
 use data::{game_actions, player_data};
 use deck_editor::deck_editor_actions;
 use display::render;
@@ -38,8 +38,7 @@ use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
     card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
-    InterfacePanelAddress, LoadSceneCommand, NewGameAction, PlayerIdentifier, SceneLoadMode,
-    StandardAction, TogglePanelCommand,
+    InterfacePanelAddress, PlayerIdentifier, StandardAction, TogglePanelCommand,
 };
 use rules::{dispatch, mutations};
 use serde_json::de;
@@ -214,7 +213,6 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
                 fetch_panel.panel_address.clone().with_error(|| "missing address")?,
             )?)]))
         }
-        Action::NewGame(create_game) => handle_new_game(database, player_id, create_game),
         Action::DrawCard(_) => {
             handle_game_action(database, player_id, game_id, GameAction::DrawCard)
         }
@@ -255,6 +253,10 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
 
 /// Sets up the game state for a game connection request.
 pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Result<CommandList> {
+    if database.player(player_id)?.is_none() {
+        create_new_player(database, player_id)?;
+    }
+
     if let Some(game_id) = player_data::current_game_id(database.player(player_id)?) {
         if database.has_game(game_id)? {
             let game = database.game(game_id)?;
@@ -280,11 +282,11 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
 fn handle_new_game(
     database: &mut impl Database,
     user_id: PlayerId,
-    action: &NewGameAction,
+    action: NewGameAction,
 ) -> Result<GameResponse> {
-    let debug_options = action.debug_options.clone().unwrap_or_default();
-    let opponent_id = player_id(database, &action.opponent_id)?;
-    let deck_id = adapters::deck_index(action.deck.with_error(|| "Expected Deck ID")?);
+    let debug_options = action.debug_options.unwrap_or_default();
+    let opponent_id = action.opponent;
+    let deck_id = action.deck_index;
     let mut user = database.player(user_id)?.with_error(|| "User not found")?;
     let user_deck = user.deck(deck_id)?.clone();
     let opponent_deck =
@@ -297,14 +299,18 @@ fn handle_new_game(
             return Ok(GameResponse::from_commands(vec![]));
         };
 
-    let (overlord_deck, champion_deck) = match (user_deck.side, opponent_deck.side) {
+    let (user_side, opponent_side) = (user_deck.side, opponent_deck.side);
+    let (overlord_deck, champion_deck) = match (user_side, opponent_side) {
         (Side::Overlord, Side::Champion) => (user_deck, opponent_deck),
         (Side::Champion, Side::Overlord) => (opponent_deck, user_deck),
         _ => fail!("Deck side mismatch!"),
     };
-    let game_id = debug_options
-        .override_game_identifier
-        .map_or(database.generate_game_id()?, adapters::game_id);
+
+    let game_id = if let Some(id) = debug_options.override_game_id {
+        id
+    } else {
+        database.generate_game_id()?
+    };
     info!(?game_id, "create_new_game");
 
     let mut game = GameState::new(
@@ -330,14 +336,17 @@ fn handle_new_game(
         database.write_player(&opponent)?;
     }
 
-    let commands = command_list(vec![Command::LoadScene(LoadSceneCommand {
-        scene_name: "Game".to_string(),
-        mode: SceneLoadMode::Single as i32,
-    })]);
+    // let commands = command_list(vec![Command::LoadScene(LoadSceneCommand {
+    //     scene_name: "Game".to_string(),
+    //     mode: SceneLoadMode::Single as i32,
+    // })]);
 
     Ok(GameResponse {
-        command_list: commands.clone(),
-        opponent_response: Some((opponent_id, commands)),
+        command_list: command_list(render::connect(&game, user_side)?),
+        opponent_response: Some((
+            opponent_id,
+            command_list(render::connect(&game, opponent_side)?),
+        )),
     })
 }
 
@@ -446,6 +455,9 @@ fn handle_standard_action(
     let action: UserAction = de::from_slice(&standard_action.payload)
         .with_error(|| "Failed to deserialize action payload")?;
     let mut result = match action {
+        UserAction::NewGame(new_game_action) => {
+            handle_new_game(database, player_id, new_game_action)
+        }
         UserAction::Debug(debug_action) => {
             debug::handle_debug_action(database, player_id, game_id, debug_action)
         }
@@ -477,6 +489,18 @@ pub fn find_game(database: &impl Database, game_id: Option<GameId>) -> Result<Ga
     });
 
     Ok(game)
+}
+
+/// Writes the default initial state for a new player to the provided database
+fn create_new_player(database: &mut impl Database, player_id: PlayerId) -> Result<()> {
+    let canonical_overlord = decklists::canonical_deck(player_id, Side::Overlord);
+    let canonical_champion = decklists::canonical_deck(player_id, Side::Champion);
+    database.write_player(&PlayerData {
+        id: player_id,
+        current_game: None,
+        decks: vec![canonical_overlord.clone(), canonical_champion.clone()],
+        collection: canonical_overlord.cards.into_iter().chain(canonical_champion.cards).collect(),
+    })
 }
 
 /// Look up the [PlayerData] for a player, or creates a new instance if none

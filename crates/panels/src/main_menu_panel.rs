@@ -17,11 +17,15 @@
 
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{Button, ButtonType};
-use core_ui::panel;
 use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use protos::spelldawn::{ClientPanelAddress, FlexAlign, FlexJustify};
+use core_ui::{actions, panel};
+use data::player_name::{NamedPlayer, PlayerId};
+use data::primitives::DeckIndex;
+use data::user_actions::{NewGameAction, UserAction};
+use panel_address::PanelAddress;
+use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
 pub struct MainMenuPanel {}
@@ -34,9 +38,9 @@ impl MainMenuPanel {
 
 impl Component for MainMenuPanel {
     fn build(self) -> Option<Node> {
-        let close = panel::close(panel::client(ClientPanelAddress::GameMenu));
+        let close = panel::close(PanelAddress::MainMenu);
 
-        Panel::new(panel::client(ClientPanelAddress::GameMenu), 512.px(), 600.px())
+        Panel::new(PanelAddress::MainMenu, 512.px(), 600.px())
             .title("Spelldawn")
             .content(
                 Column::new("MeuButtons")
@@ -46,7 +50,17 @@ impl Component for MainMenuPanel {
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center),
                     )
-                    .child(menu_button("New Game", close.clone()))
+                    .child(menu_button(
+                        "New Game",
+                        actions::with_optimistic_update(
+                            vec![close.clone()],
+                            UserAction::NewGame(NewGameAction {
+                                opponent: PlayerId::Named(NamedPlayer::TestAlphaBetaHeuristics),
+                                deck_index: DeckIndex { value: 1 },
+                                debug_options: None,
+                            }),
+                        ),
+                    ))
                     .child(menu_button("Settings", close.clone()))
                     .child(menu_button("About", close)),
             )

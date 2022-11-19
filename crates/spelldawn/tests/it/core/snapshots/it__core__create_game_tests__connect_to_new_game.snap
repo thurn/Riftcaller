@@ -1,6 +1,6 @@
 ---
 source: crates/spelldawn/tests/it/core/create_game_tests.rs
-assertion_line: 67
+assertion_line: 70
 expression: "Summary::run(&response)"
 ---
 
@@ -216,5 +216,7 @@ expression: "Summary::run(&response)"
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
+    UpdatePanels: 
+    panels: "<Panel>"
     UpdatePanels: 
     panels: "<Panel>"

@@ -16,8 +16,27 @@ use serde::{Deserialize, Serialize};
 
 use crate::card_name::CardName;
 use crate::game_actions::GameAction;
-use crate::player_name::NamedPlayer;
-use crate::primitives::{ActionCount, DeckIndex, ManaValue, PointsValue, School, Side};
+use crate::player_name::{NamedPlayer, PlayerId};
+use crate::primitives::{ActionCount, DeckIndex, GameId, ManaValue, PointsValue, School, Side};
+
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Default, Serialize, Deserialize)]
+pub struct NewGameDebugOptions {
+    /// If true, all game events will be non-random
+    pub deterministic: bool,
+    /// Explicitly set the ID for this game
+    pub override_game_id: Option<GameId>,
+}
+
+/// Action to initiate a new game
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+pub struct NewGameAction {
+    /// Deck to use for this game
+    pub deck_index: DeckIndex,
+    /// Opponent to play against
+    pub opponent: PlayerId,
+    /// Debug configuration for this game
+    pub debug_options: Option<NewGameDebugOptions>,
+}
 
 /// Actions that can be taken from the debug panel, should not be exposed in
 /// production.
@@ -66,7 +85,8 @@ impl From<DeckEditorAction> for UserAction {
 /// All possible action payloads that can be sent from a client
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
-    GameAction(GameAction),
+    NewGame(NewGameAction),
     Debug(DebugAction),
+    GameAction(GameAction),
     DeckEditorAction(DeckEditorAction),
 }

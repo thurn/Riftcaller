@@ -990,30 +990,6 @@ message FetchPanelAction {
     InterfacePanelAddress panel_address = 1;
 }
 
-// Test/debug options for the new game action
-message NewGameDebugOptions {
-    // If true, all game events will be non-random.
-    bool deterministic = 1;
-
-    // Force the created game to use a specific identifier
-    GameIdentifier override_game_identifier = 2;
-}
-
-// Requests to create or join a new game. If the indicated opponent
-// has already submitted their own matching NewGameAction (or the
-// opponent is e.g. an AI player), the game starts immediately.
-// Otherwise, transitions the caller to a 'waiting' state until the
-// invitation is accepted.
-message NewGameAction {
-    /// Deck you would like to use for this game
-    DeckIdentifier deck = 1;
-
-    /// Opponent to play against.
-    PlayerIdentifier opponent_id = 2;
-
-    NewGameDebugOptions debug_options = 3;
-}
-
 // Spend an action point with no other effect, typically used for
 // tests
 message SpendActionPointAction {}
@@ -1027,13 +1003,12 @@ message ClientAction {
     oneof action {
         StandardAction standard_action = 1;
         FetchPanelAction fetch_panel = 2;
-        NewGameAction new_game = 3;
-        GainManaAction gain_mana = 4;
-        DrawCardAction draw_card = 5;
-        PlayCardAction play_card = 6;
-        LevelUpRoomAction level_up_room = 7;
-        InitiateRaidAction initiate_raid = 8;
-        SpendActionPointAction spend_action_point = 9;
+        GainManaAction gain_mana = 3;
+        DrawCardAction draw_card = 4;
+        PlayCardAction play_card = 5;
+        LevelUpRoomAction level_up_room = 6;
+        InitiateRaidAction initiate_raid = 7;
+        SpendActionPointAction spend_action_point = 8;
     }
 }
 

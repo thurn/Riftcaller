@@ -97,12 +97,12 @@ pub fn deck_identifier(id: DeckIndex) -> DeckIdentifier {
     DeckIdentifier { value: id.value as u64 }
 }
 
-pub fn named_player_identifier(player_name: NamedPlayer) -> Result<PlayerIdentifier> {
-    Ok(PlayerIdentifier {
-        player_identifier_type: Some(PlayerIdentifierType::ServerIdentifier(ser::to_vec(
-            &player_name,
-        )?)),
-    })
+pub fn named_player_identifier(player_name: NamedPlayer) -> PlayerIdentifier {
+    PlayerIdentifier {
+        player_identifier_type: Some(PlayerIdentifierType::ServerIdentifier(
+            ser::to_vec(&player_name).expect("Serialization failed"),
+        )),
+    }
 }
 
 pub fn named_player_id(payload: &[u8]) -> Result<PlayerId> {

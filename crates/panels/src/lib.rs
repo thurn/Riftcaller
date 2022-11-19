@@ -22,7 +22,7 @@ pub mod set_player_name_panel;
 
 use anyhow::Result;
 use core_ui::component::Component;
-use core_ui::panel::{self};
+use core_ui::panel;
 use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
 use deck_editor::deck_editor_panel::DeckEditorPanel;

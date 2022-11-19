@@ -1,6 +1,6 @@
 ---
 source: crates/spelldawn/tests/it/core/action_tests.rs
-assertion_line: 36
+assertion_line: 34
 expression: "Summary::run(&response)"
 ---
 
@@ -86,5 +86,7 @@ expression: "Summary::run(&response)"
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
+    UpdatePanels: 
+    panels: "<Panel>"
     UpdatePanels: 
     panels: "<Panel>"

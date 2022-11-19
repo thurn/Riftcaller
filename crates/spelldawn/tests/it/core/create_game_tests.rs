@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use cards::initialize;
+use core_ui::actions::InterfaceAction;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::game::MulliganDecision;
@@ -20,37 +21,34 @@ use data::game_actions::{GameAction, PromptAction};
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::{DeckIndex, GameId, Side};
+use data::user_actions::{NewGameAction, NewGameDebugOptions, UserAction};
 use insta::assert_snapshot;
 use maplit::hashmap;
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{
-    DeckIdentifier, NewGameAction, NewGameDebugOptions, PlayerIdentifier, PlayerName,
-};
+use protos::spelldawn::PlayerName;
 use test_utils::client::{HasText, TestSession};
 use test_utils::fake_database::FakeDatabase;
 use test_utils::summarize::Summary;
 use test_utils::*;
 
-static OVERLORD_DECK_ID: DeckIdentifier = DeckIdentifier { value: 0 };
-static CHAMPION_DECK_ID: DeckIdentifier = DeckIdentifier { value: 1 };
+static OVERLORD_DECK: DeckIndex = DeckIndex { value: 0 };
+static CHAMPION_DECK: DeckIndex = DeckIndex { value: 1 };
 
 #[test]
 fn create_new_game() {
     let (game_id, overlord_id, champion_id) = generate_ids();
     let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
     let response = session.perform_action(
-        Action::NewGame(NewGameAction {
-            deck: Some(OVERLORD_DECK_ID),
-            opponent_id: opponent_id(&session),
+        UserAction::NewGame(NewGameAction {
+            deck_index: OVERLORD_DECK,
+            opponent: session.opponent_id(),
             debug_options: Some(NewGameDebugOptions {
                 deterministic: true,
                 ..NewGameDebugOptions::default()
             }),
-        }),
+        })
+        .as_client_action(),
         session.user_id(),
     );
-    assert_eq!(session.connect(overlord_id).unwrap().commands.len(), 0);
     assert_snapshot!(Summary::run(&response));
 }
 
@@ -160,14 +158,6 @@ fn both_keep_opening_hands() {
     assert!(session.dusk());
 }
 
-fn user_id(session: &TestSession) -> Option<PlayerIdentifier> {
-    Some(fake_database::to_player_identifier(session.user_id()))
-}
-
-fn opponent_id(session: &TestSession) -> Option<PlayerIdentifier> {
-    Some(fake_database::to_player_identifier(session.opponent_id()))
-}
-
 /// Creates a [TestSession] for the Overlord player. Both players have their
 /// decks populated, but neither has submitted a 'new game' request.
 fn make_overlord_test_session(
@@ -217,34 +207,31 @@ fn make_overlord_test_session(
 
 fn initiate_game(session: &mut TestSession) {
     session.perform(
-        Action::NewGame(NewGameAction {
-            deck: Some(CHAMPION_DECK_ID),
-            opponent_id: user_id(session),
+        UserAction::NewGame(NewGameAction {
+            deck_index: CHAMPION_DECK,
+            opponent: session.user_id(),
             debug_options: Some(NewGameDebugOptions {
                 deterministic: true,
                 ..NewGameDebugOptions::default()
             }),
-        }),
+        })
+        .as_client_action(),
         session.opponent_id(),
     );
-    let action2 = session
+    let _action2 = session
         .perform_action(
-            Action::NewGame(NewGameAction {
-                deck: Some(OVERLORD_DECK_ID),
-                opponent_id: opponent_id(session),
+            UserAction::NewGame(NewGameAction {
+                deck_index: OVERLORD_DECK,
+                opponent: session.opponent_id(),
                 debug_options: Some(NewGameDebugOptions {
                     deterministic: true,
                     ..NewGameDebugOptions::default()
                 }),
-            }),
+            })
+            .as_client_action(),
             session.user_id(),
         )
         .unwrap();
-
-    assert!(matches!(
-        action2.command_list.commands[0].command.as_ref().unwrap(),
-        Command::LoadScene(_)
-    ));
 
     session.connect(session.user_id()).unwrap();
     session.connect(session.opponent_id()).unwrap();

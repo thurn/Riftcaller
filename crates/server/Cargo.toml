@@ -28,6 +28,7 @@ adapters = { path = "../adapters", version = "0.0.0" }
 ai_core = { path = "../ai_core", version = "0.0.0" }
 ai_game_integration = { path = "../ai_game_integration", version = "0.0.0" }
 cards = { path = "../cards", version = "0.0.0" }
+core_ui = { path = "../core_ui", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }
 deck_editor = { path = "../deck_editor", version = "0.0.0" }
 panels = { path = "../panels", version = "0.0.0" }

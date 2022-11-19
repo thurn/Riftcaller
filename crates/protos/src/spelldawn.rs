@@ -944,32 +944,6 @@ pub struct FetchPanelAction {
     #[prost(message, optional, tag = "1")]
     pub panel_address: ::core::option::Option<InterfacePanelAddress>,
 }
-/// Test/debug options for the new game action
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct NewGameDebugOptions {
-    /// If true, all game events will be non-random.
-    #[prost(bool, tag = "1")]
-    pub deterministic: bool,
-    /// Force the created game to use a specific identifier
-    #[prost(message, optional, tag = "2")]
-    pub override_game_identifier: ::core::option::Option<GameIdentifier>,
-}
-/// Requests to create or join a new game. If the indicated opponent
-/// has already submitted their own matching NewGameAction (or the
-/// opponent is e.g. an AI player), the game starts immediately.
-/// Otherwise, transitions the caller to a 'waiting' state until the
-/// invitation is accepted.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct NewGameAction {
-    //// Deck you would like to use for this game
-    #[prost(message, optional, tag = "1")]
-    pub deck: ::core::option::Option<DeckIdentifier>,
-    //// Opponent to play against.
-    #[prost(message, optional, tag = "2")]
-    pub opponent_id: ::core::option::Option<PlayerIdentifier>,
-    #[prost(message, optional, tag = "3")]
-    pub debug_options: ::core::option::Option<NewGameDebugOptions>,
-}
 /// Spend an action point with no other effect, typically used for
 /// tests
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -981,7 +955,7 @@ pub struct SpendActionPointAction {}
 /// same time -- interaction should be disabled while an action is pending.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientAction {
-    #[prost(oneof = "client_action::Action", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9")]
+    #[prost(oneof = "client_action::Action", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
     pub action: ::core::option::Option<client_action::Action>,
 }
 /// Nested message and enum types in `ClientAction`.
@@ -993,18 +967,16 @@ pub mod client_action {
         #[prost(message, tag = "2")]
         FetchPanel(super::FetchPanelAction),
         #[prost(message, tag = "3")]
-        NewGame(super::NewGameAction),
-        #[prost(message, tag = "4")]
         GainMana(super::GainManaAction),
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "4")]
         DrawCard(super::DrawCardAction),
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "5")]
         PlayCard(super::PlayCardAction),
-        #[prost(message, tag = "7")]
+        #[prost(message, tag = "6")]
         LevelUpRoom(super::LevelUpRoomAction),
-        #[prost(message, tag = "8")]
+        #[prost(message, tag = "7")]
         InitiateRaid(super::InitiateRaidAction),
-        #[prost(message, tag = "9")]
+        #[prost(message, tag = "8")]
         SpendActionPoint(super::SpendActionPointAction),
     }
 }

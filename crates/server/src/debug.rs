@@ -12,21 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adapters;
 use anyhow::Result;
-use cards::decklists;
+use core_ui::actions::InterfaceAction;
 use data::card_name::CardName;
 use data::game::GameState;
-use data::player_data::{CurrentGame, PlayerData};
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{DeckIndex, GameId, Side};
-use data::user_actions::DebugAction;
-use protos::spelldawn::client_action::Action;
+use data::user_actions::{DebugAction, NewGameAction, NewGameDebugOptions, UserAction};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
+use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    ClientAction, ClientDebugCommand, CommandList, GameCommand, GameIdentifier, LoadSceneCommand,
-    NewGameAction, NewGameDebugOptions, SceneLoadMode,
+    ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode, TogglePanelCommand,
 };
 use rules::mana;
 use with_error::WithError;
@@ -41,35 +38,34 @@ pub fn handle_debug_action(
     game_id: Option<GameId>,
     action: DebugAction,
 ) -> Result<GameResponse> {
+    let close_all = Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::CloseAll(())),
+    });
     match action {
         DebugAction::NewGame(side) => {
             const OVERLORD_DECK_ID: DeckIndex = DeckIndex { value: 0 };
             const CHAMPION_DECK_ID: DeckIndex = DeckIndex { value: 1 };
-            write_default_player(database, player_id, None)?;
-            Ok(GameResponse {
-                command_list: CommandList {
-                    commands: vec![GameCommand {
-                        command: Some(Command::Debug(ClientDebugCommand {
-                            debug_command: Some(DebugCommand::InvokeAction(ClientAction {
-                                action: Some(Action::NewGame(NewGameAction {
-                                    opponent_id: Some(adapters::named_player_identifier(
-                                        NamedPlayer::TestNoAction,
-                                    )?),
-                                    deck: Some(adapters::deck_identifier(match side {
-                                        Side::Overlord => OVERLORD_DECK_ID,
-                                        Side::Champion => CHAMPION_DECK_ID,
-                                    })),
-                                    debug_options: Some(NewGameDebugOptions {
-                                        deterministic: false,
-                                        override_game_identifier: Some(GameIdentifier { value: 0 }),
-                                    }),
-                                })),
-                            })),
-                        })),
-                    }],
-                },
-                opponent_response: None,
-            })
+            Ok(GameResponse::from_commands(vec![
+                Command::Debug(ClientDebugCommand {
+                    debug_command: Some(DebugCommand::InvokeAction(ClientAction {
+                        action: Some(
+                            UserAction::NewGame(NewGameAction {
+                                opponent: PlayerId::Named(NamedPlayer::TestNoAction),
+                                deck_index: match side {
+                                    Side::Overlord => OVERLORD_DECK_ID,
+                                    Side::Champion => CHAMPION_DECK_ID,
+                                },
+                                debug_options: Some(NewGameDebugOptions {
+                                    deterministic: false,
+                                    override_game_id: Some(GameId::new(0)),
+                                }),
+                            })
+                            .as_client_action(),
+                        ),
+                    })),
+                }),
+                close_all,
+            ]))
         }
         DebugAction::JoinGame => {
             let mut game = requests::find_game(database, Some(GameId::new(0)))?;
@@ -79,7 +75,6 @@ pub fn handle_debug_action(
                 game.champion.id = player_id;
             }
             database.write_game(&game)?;
-            write_default_player(database, player_id, Some(CurrentGame::Playing(GameId::new(0))))?;
             load_scene()
         }
         DebugAction::FlipViewpoint => {
@@ -141,21 +136,6 @@ pub fn handle_debug_action(
             })
         }
     }
-}
-
-fn write_default_player(
-    database: &mut impl Database,
-    player_id: PlayerId,
-    current_game: Option<CurrentGame>,
-) -> Result<()> {
-    let canonical_overlord = decklists::canonical_deck(player_id, Side::Overlord);
-    let canonical_champion = decklists::canonical_deck(player_id, Side::Champion);
-    database.write_player(&PlayerData {
-        id: player_id,
-        current_game,
-        decks: vec![canonical_overlord.clone(), canonical_champion.clone()],
-        collection: canonical_overlord.cards.into_iter().chain(canonical_champion.cards).collect(),
-    })
 }
 
 fn load_scene() -> Result<GameResponse> {

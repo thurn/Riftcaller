@@ -233,14 +233,11 @@ watch:
 fix-amend: git-status fix-lints git-amend1 fmt git-amend2 clippy-fix git-amend3
 
 clippy:
-    # 'Unused Lifetime' incorrectly raised in rust 1.63
-    # https://github.com/rust-lang/rust-clippy/issues/9014
     cargo clippy --workspace --exclude "protos" -- \
         -D warnings \
         -D clippy::all \
         -A clippy::needless_update \
         -A clippy::needless_collect \
-        -A clippy::extra-unused-lifetimes \
         -A clippy::unit-arg \
         -D clippy::cast_lossless \
         -D clippy::cloned_instead_of_copied \

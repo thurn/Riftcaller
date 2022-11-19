@@ -111,6 +111,28 @@ impl InterfaceAction for Vec<Command> {
     }
 }
 
+/// Returns a StandardAction to apply an optimistic UI update via a series on
+/// commands on click, followed by a regular game action specified as an
+/// InterfaceAction.
+///
+/// The provided InterfaceAction must map to a StandardAction, or else this
+/// function will panic.
+pub fn with_optimistic_update(
+    update: Vec<Command>,
+    action: impl InterfaceAction + 'static,
+) -> Action {
+    let payload = match action.as_client_action() {
+        Action::StandardAction(standard_action) => standard_action.payload,
+        _ => panic!("Expected StandardAction"),
+    };
+
+    Action::StandardAction(StandardAction {
+        payload,
+        update: Some(command_list(update)),
+        request_fields: HashMap::new(),
+    })
+}
+
 pub fn payload(action: UserAction) -> Vec<u8> {
     ser::to_vec(&action).expect("Serialization failed")
 }

@@ -72,8 +72,10 @@ pub fn evaluate<'a>(
                         .map(GameAction::LevelUpRoom),
                 )
                 .chain(game.hand(side).flat_map(move |c| legal_card_actions(game, side, c.id)))
-                .chain(flags::can_take_draw_card_action(game, side).then(|| GameAction::DrawCard))
-                .chain(flags::can_take_gain_mana_action(game, side).then(|| GameAction::GainMana)),
+                .chain(flags::can_take_draw_card_action(game, side).then_some(GameAction::DrawCard))
+                .chain(
+                    flags::can_take_gain_mana_action(game, side).then_some(GameAction::GainMana),
+                ),
         ))
     } else {
         fail!("Error: player cannot currently act")
