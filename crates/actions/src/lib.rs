@@ -41,6 +41,7 @@ pub fn handle_game_action(game: &mut GameState, user_side: Side, action: GameAct
         GameAction::PromptAction(prompt_action) => {
             handle_prompt_action(game, user_side, prompt_action)
         }
+        GameAction::Resign => handle_resign_action(game, user_side),
         GameAction::GainMana => gain_mana_action(game, user_side),
         GameAction::DrawCard => draw_card_action(game, user_side),
         GameAction::PlayCard(card_id, target) => play_card_action(game, user_side, card_id, target),
@@ -68,6 +69,14 @@ pub fn can_take_action(game: &GameState, side: Side) -> bool {
         Some(raid) => side == raid.phase().active_side(),
         None => side == game.data.turn.side,
     }
+}
+
+fn handle_resign_action(game: &mut GameState, side: Side) -> Result<()> {
+    info!(?side, "handle_resign_action");
+    if !matches!(game.data.phase, GamePhase::GameOver { .. }) {
+        mutations::game_over(game, side.opponent())?;
+    }
+    Ok(())
 }
 
 /// Handles a choice to keep or mulligan an opening hand

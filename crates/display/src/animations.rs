@@ -22,15 +22,14 @@ use data::special_effects::{
 };
 use data::updates::{GameUpdate, InitiatedBy, TargetedInteraction};
 use data::utils;
-use fallible_iterator::FallibleIterator;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::play_effect_position::EffectPosition;
 use protos::spelldawn::{
-    CreateTokenCardCommand, DelayCommand, DisplayGameMessageCommand, DisplayRewardsCommand,
-    FireProjectileCommand, GameMessageType, GameObjectMove, MoveGameObjectsCommand, MusicState,
-    PlayEffectCommand, PlayEffectPosition, PlaySoundCommand, RoomVisitType,
-    SetGameObjectsEnabledCommand, SetMusicCommand, TimeValue, VisitRoomCommand,
+    CreateTokenCardCommand, DelayCommand, DisplayGameMessageCommand, FireProjectileCommand,
+    GameMessageType, GameObjectMove, MoveGameObjectsCommand, MusicState, PlayEffectCommand,
+    PlayEffectPosition, PlaySoundCommand, RoomVisitType, SetMusicCommand, TimeValue,
+    VisitRoomCommand,
 };
 
 use crate::{assets, card_sync, positions};
@@ -89,7 +88,7 @@ pub fn render(
             targeted_interaction(builder, snapshot, interaction)
         }
         GameUpdate::ScoreCard(_, card_id) => score_card(builder, *card_id),
-        GameUpdate::GameOver(side) => game_over(builder, snapshot, *side)?,
+        GameUpdate::GameOver(_side) => {} //game_over(builder, snapshot, *side)?,
     }
     Ok(())
 }
@@ -226,40 +225,6 @@ fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
     builder.push(delay(1000));
 }
 
-fn game_over(builder: &mut ResponseBuilder, snapshot: &GameState, winner: Side) -> Result<()> {
-    builder.push(delay(1000));
-
-    builder.push(Command::SetGameObjectsEnabled(SetGameObjectsEnabledCommand {
-        game_objects_enabled: false,
-    }));
-
-    builder.push(Command::DisplayGameMessage(DisplayGameMessageCommand {
-        message_type: if winner == builder.user_side {
-            GameMessageType::Victory
-        } else {
-            GameMessageType::Defeat
-        }
-        .into(),
-    }));
-
-    if winner == builder.user_side {
-        // TODO: Show real rewards instead of placeholder values
-        builder.push(Command::DisplayRewards(DisplayRewardsCommand {
-            rewards: utils::fallible(
-                snapshot
-                    .cards(winner)
-                    .iter()
-                    .filter(|card| card.is_revealed_to(winner) && !card.position().is_identity())
-                    .take(5),
-            )
-            .map(|card| card_sync::card_view(builder, snapshot, card))
-            .collect()?,
-        }));
-    }
-
-    Ok(())
-}
-
 #[derive(Debug, Default)]
 struct PlayEffectOptions {
     pub duration: Option<TimeValue>,
@@ -287,7 +252,7 @@ fn play_effect(
     })
 }
 
-fn delay(milliseconds: u32) -> Command {
+pub fn delay(milliseconds: u32) -> Command {
     Command::Delay(DelayCommand { duration: Some(TimeValue { milliseconds }) })
 }
 

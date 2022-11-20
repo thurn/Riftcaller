@@ -123,6 +123,7 @@ impl CardTarget {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum GameAction {
     PromptAction(PromptAction),
+    Resign,
     GainMana,
     DrawCard,
     PlayCard(CardId, CardTarget),

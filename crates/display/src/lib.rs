@@ -18,6 +18,7 @@
 pub mod animations;
 pub mod assets;
 pub mod card_sync;
+pub mod game_over;
 pub mod interface;
 pub mod positions;
 pub mod render;

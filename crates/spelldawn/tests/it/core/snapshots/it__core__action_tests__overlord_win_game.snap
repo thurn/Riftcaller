@@ -1,6 +1,6 @@
 ---
 source: crates/spelldawn/tests/it/core/action_tests.rs
-assertion_line: 257
+assertion_line: 282
 expression: "Summary::run(&response)"
 ---
 
@@ -327,31 +327,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-    Delay: 1000
-    SetGameObjectsEnabled: 
-        game_objects_enabled: false
-    DisplayGameMessage: Victory
-    DisplayRewards: 
-        card_id: O45
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "3"
-            bottom_right_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Scheme 31"
-            rules_text: "<RulesText>"
-            targeting: 
-            valid_rooms: 
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
     UpdateGameView: 
         user: 
             side: Overlord
@@ -454,6 +429,10 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
+    Delay: 1000
+    SetGameObjectsEnabled: 
+        game_objects_enabled: false
+    DisplayGameMessage: Victory
 channel_response: 
     UpdateGameView: 
         user: 
@@ -767,10 +746,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-    Delay: 1000
-    SetGameObjectsEnabled: 
-        game_objects_enabled: false
-    DisplayGameMessage: Defeat
     UpdateGameView: 
         user: 
             side: Champion
@@ -873,3 +848,7 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
+    Delay: 1000
+    SetGameObjectsEnabled: 
+        game_objects_enabled: false
+    DisplayGameMessage: Defeat
