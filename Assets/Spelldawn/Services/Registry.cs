@@ -182,27 +182,19 @@ namespace Spelldawn.Services
     public IdentityCard IdentityCardForPlayer(PlayerName playerName) =>
       playerName == PlayerName.User ? _userIdentityCard : _opponentIdentityCard;
 
-    [SerializeField] GameObject _userActiveLight = null!;
-    [SerializeField] GameObject _opponentActiveLight = null!;
+    [SerializeField] GameObject? _userActiveLight;
+    [SerializeField] GameObject? _opponentActiveLight;
 
-    public GameObject ActiveLightForPlayer(PlayerName playerName) =>
+    public GameObject? ActiveLightForPlayer(PlayerName playerName) =>
       playerName == PlayerName.User ? _userActiveLight : _opponentActiveLight;
 
     [SerializeField] GameObject _graphy = null!;
     public GameObject Graphy => _graphy;
 
-    [SerializeField] GameObject _splashScreen = null!;
-    public GameObject SplashScreen => _splashScreen;
-
     [SerializeField] Studio _studio = null!;
     public Studio Studio => _studio;
 
     public ScreenshotTestService? ScreenshotTests { get; private set; }
-
-    void Awake()
-    {
-      _splashScreen.SetActive(true);
-    }
 
     IEnumerator Start()
     {
@@ -221,10 +213,11 @@ namespace Spelldawn.Services
       DocumentService.Initialize();
       MusicService.Initialize(GlobalGameMode);
       GameService.Initialize(GlobalGameMode);
-      yield return ArenaService.Initialize();
-      
-      // yield return new WaitUntil(() => ActionService.Connected);
-      // _splashScreen.SetActive(false);
+
+      if (ArenaService != null)
+      {
+        yield return ArenaService.Initialize();
+      }
 
       if (runTests)
       {

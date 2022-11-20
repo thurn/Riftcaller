@@ -106,6 +106,11 @@ namespace Spelldawn.Services
       var userLight = _registry.ActiveLightForPlayer(PlayerName.User);
       var opponentLight = _registry.ActiveLightForPlayer(PlayerName.Opponent);
 
+      if (userLight == null || opponentLight == null)
+      {
+        return;
+      }
+
       switch (_registry.CapabilityService.CurrentPriority)
       {
         case PlayerName.User when CanExecuteAction(ClientAction.ActionOneofCase.PlayCard):

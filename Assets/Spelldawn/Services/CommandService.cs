@@ -168,7 +168,6 @@ namespace Spelldawn.Services
 
     IEnumerator HandleUpdateGameView(GameView game, bool animate)
     {
-      _registry.SplashScreen.SetActive(false);
       _registry.CardService.SetCardBacks(game.User?.PlayerInfo?.CardBack, game.Opponent?.PlayerInfo?.CardBack);
 
       if (game.User != null)

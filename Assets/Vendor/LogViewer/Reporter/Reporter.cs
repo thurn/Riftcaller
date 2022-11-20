@@ -360,7 +360,10 @@ public class Reporter : MonoBehaviour
 			scenes = new string[Application.levelCount];
 			currentScene = Application.loadedLevelName;
 #endif
-			DontDestroyOnLoad(gameObject);
+			
+			// NOTE(dthurn): Removed this, seems unneeded
+			// DontDestroyOnLoad(gameObject);
+			
 #if UNITY_CHANGE1
 			Application.RegisterLogCallback (new Application.LogCallback (CaptureLog));
 			Application.RegisterLogCallbackThreaded (new Application.LogCallback (CaptureLogThread));
@@ -438,7 +441,8 @@ public class Reporter : MonoBehaviour
 		Initialized = true;
 
 		if (show) {
-			DoShow();
+			// NOTE(dthurn): Do not show until explicitly requested
+			// DoShow();
 		}
 
 		deviceModel = SystemInfo.deviceModel.ToString();
