@@ -15,6 +15,7 @@
 //! Panel rendering. A 'panel' is a discrete rectangular piece of UI which can
 //! be opened or closed by the user, such as a game menu or window.
 
+pub mod about_panel;
 pub mod debug_panel;
 pub mod game_menu_panel;
 pub mod game_over_panel;
@@ -39,6 +40,7 @@ use protos::spelldawn::{
 use serde_json::de;
 use with_error::WithError;
 
+use crate::about_panel::AboutPanel;
 use crate::game_menu_panel::GameMenuPanel;
 use crate::game_over_panel::GameOverPanel;
 use crate::main_menu_panel::MainMenuPanel;
@@ -74,6 +76,7 @@ pub fn render_panel(
 fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Option<Node>> {
     Ok(match address {
         PanelAddress::MainMenu => MainMenuPanel::new().build(),
+        PanelAddress::About => AboutPanel::new().build(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };

@@ -61,8 +61,8 @@ impl Component for MainMenuPanel {
                             }),
                         ),
                     ))
-                    .child(menu_button("Settings", close.clone()))
-                    .child(menu_button("About", close)),
+                    .child(menu_button("Settings", close))
+                    .child(menu_button("About", panel::set(PanelAddress::About))),
             )
             .build()
     }

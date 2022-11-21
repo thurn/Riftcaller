@@ -23,6 +23,7 @@ use serde_json::ser;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PanelAddress {
     MainMenu,
+    About,
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),

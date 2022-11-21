@@ -34,8 +34,7 @@ pub fn client(address: ClientPanelAddress) -> InterfacePanelAddress {
     }
 }
 
-/// Add the indicated panel to the end of the stack of open views if
-/// it is not already present.
+/// Set the indicated panel as the only open panel
 pub fn set(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         toggle_command: Some(ToggleCommand::SetPanel(address.into())),
@@ -204,9 +203,9 @@ impl Component for TitleBar {
                     .style(
                         Style::new()
                             .position_type(FlexPosition::Absolute)
-                            .position(Edge::Left, 50.pct())
-                            .position(Edge::Top, 0.pct())
-                            .translate((-50).pct(), (-50).pct())
+                            .position(Edge::Left, 64.px())
+                            .position(Edge::Right, 64.px())
+                            .translate(0.px(), (-50).pct())
                             .align_items(FlexAlign::Center)
                             .justify_content(FlexJustify::Center)
                             .padding(Edge::Vertical, 16.px())
