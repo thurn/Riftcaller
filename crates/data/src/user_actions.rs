@@ -86,6 +86,10 @@ impl From<DeckEditorAction> for UserAction {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
     NewGame(NewGameAction),
+    /// Leave the game that the player is currently playing in. Typically
+    /// invoked from the game over screen, the 'resign' action is used to
+    /// end the game itself.
+    LeaveGame,
     Debug(DebugAction),
     GameAction(GameAction),
     DeckEditorAction(DeckEditorAction),

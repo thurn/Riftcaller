@@ -1342,6 +1342,9 @@ enum SceneLoadMode {
 message LoadSceneCommand {
     string scene_name = 1;
     SceneLoadMode mode = 2;
+    // If true, skip loading this scene if it matches the currently-loaded
+    // main scene.
+    bool skip_if_current = 3;
 }
 
 // Sets a client-side boolean player preference

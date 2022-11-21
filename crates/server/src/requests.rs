@@ -38,7 +38,8 @@ use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
     card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
-    InterfacePanelAddress, PlayerIdentifier, StandardAction, TogglePanelCommand,
+    InterfacePanelAddress, LoadSceneCommand, PlayerIdentifier, SceneLoadMode, StandardAction,
+    TogglePanelCommand,
 };
 use rules::{dispatch, mutations};
 use serde_json::de;
@@ -269,6 +270,11 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         }
     } else {
         let mut commands = vec![];
+        commands.push(Command::LoadScene(LoadSceneCommand {
+            scene_name: "Main".to_string(),
+            mode: SceneLoadMode::Single.into(),
+            skip_if_current: true,
+        }));
         panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
         commands.push(Command::TogglePanel(TogglePanelCommand {
             toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
@@ -336,11 +342,6 @@ fn handle_new_game(
         database.write_player(&opponent)?;
     }
 
-    // let commands = command_list(vec![Command::LoadScene(LoadSceneCommand {
-    //     scene_name: "Game".to_string(),
-    //     mode: SceneLoadMode::Single as i32,
-    // })]);
-
     Ok(GameResponse {
         command_list: command_list(render::connect(&game, user_side)?),
         opponent_response: Some((
@@ -348,6 +349,10 @@ fn handle_new_game(
             command_list(render::connect(&game, opponent_side)?),
         )),
     })
+}
+
+fn handle_leave_game(database: &mut impl Database, user_id: PlayerId) -> Result<GameResponse> {
+    Ok(GameResponse::from_commands(vec![]))
 }
 
 /// Looks up the deck the `player_id` player has requested to use for a new game
@@ -458,6 +463,7 @@ fn handle_standard_action(
         UserAction::NewGame(new_game_action) => {
             handle_new_game(database, player_id, new_game_action)
         }
+        UserAction::LeaveGame => handle_leave_game(database, player_id),
         UserAction::Debug(debug_action) => {
             debug::handle_debug_action(database, player_id, game_id, debug_action)
         }

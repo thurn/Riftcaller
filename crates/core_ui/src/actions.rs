@@ -19,8 +19,10 @@ use data::game_actions::{GameAction, PromptAction};
 use data::user_actions::{DebugAction, UserAction};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{CommandList, GameCommand, StandardAction};
+use protos::spelldawn::{CommandList, GameCommand, InterfacePanelAddress, StandardAction};
 use serde_json::ser;
+
+use crate::panel;
 
 /// Represents an action that can be performed in the user interface. Initiating
 /// a server request and performing an immediate client update are both
@@ -131,6 +133,15 @@ pub fn with_optimistic_update(
         update: Some(command_list(update)),
         request_fields: HashMap::new(),
     })
+}
+
+/// Action to optimistically close the panel with the provided address and then
+/// invoke some [InterfaceAction].
+pub fn close_and(
+    address: impl Into<InterfacePanelAddress>,
+    action: impl InterfaceAction + 'static,
+) -> Action {
+    with_optimistic_update(vec![panel::close(address)], action)
 }
 
 pub fn payload(action: UserAction) -> Vec<u8> {

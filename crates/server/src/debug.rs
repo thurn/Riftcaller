@@ -117,6 +117,7 @@ pub fn handle_debug_action(
             Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
                 scene_name: "Game".to_string(),
                 mode: SceneLoadMode::Single.into(),
+                skip_if_current: false,
             })]))
         }
         DebugAction::SetNamedPlayer(side, name) => {
@@ -142,6 +143,7 @@ fn load_scene() -> Result<GameResponse> {
     Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
         scene_name: "Game".to_string(),
         mode: SceneLoadMode::Single as i32,
+        skip_if_current: false,
     })]))
 }
 

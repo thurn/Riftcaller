@@ -17,6 +17,7 @@ use anyhow::Result;
 use data::game::GameState;
 use data::primitives::Side;
 use protos::spelldawn::game_command::Command;
+use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
 
 use crate::game_over::DisplayRenderType;
 use crate::{animations, game_over, sync};
@@ -24,6 +25,11 @@ use crate::{animations, game_over, sync};
 pub fn connect(game: &GameState, user_side: Side) -> Result<Vec<Command>> {
     let mut builder =
         ResponseBuilder::new(user_side, ResponseState { animate: false, is_final_update: true });
+    builder.push(Command::LoadScene(LoadSceneCommand {
+        scene_name: "Game".to_string(),
+        mode: SceneLoadMode::Single.into(),
+        skip_if_current: true,
+    }));
     sync::run(&mut builder, game)?;
     game_over::check_game_over(&mut builder, game, DisplayRenderType::Connect);
     Ok(builder.commands)

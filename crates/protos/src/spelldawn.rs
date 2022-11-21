@@ -1315,6 +1315,10 @@ pub struct LoadSceneCommand {
     pub scene_name: ::prost::alloc::string::String,
     #[prost(enumeration = "SceneLoadMode", tag = "2")]
     pub mode: i32,
+    /// If true, skip loading this scene if it matches the currently-loaded
+    /// main scene.
+    #[prost(bool, tag = "3")]
+    pub skip_if_current: bool,
 }
 /// Sets a client-side boolean player preference
 #[derive(Clone, PartialEq, ::prost::Message)]

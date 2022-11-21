@@ -52,8 +52,8 @@ impl Component for MainMenuPanel {
                     )
                     .child(menu_button(
                         "New Game",
-                        actions::with_optimistic_update(
-                            vec![close.clone()],
+                        actions::close_and(
+                            PanelAddress::MainMenu,
                             UserAction::NewGame(NewGameAction {
                                 opponent: PlayerId::Named(NamedPlayer::TestAlphaBetaHeuristics),
                                 deck_index: DeckIndex { value: 1 },

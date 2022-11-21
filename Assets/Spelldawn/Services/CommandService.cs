@@ -227,6 +227,11 @@ namespace Spelldawn.Services
 
     IEnumerator HandleLoadScene(LoadSceneCommand command)
     {
+      if (command.SkipIfCurrent && command.SceneName.Equals(SceneManager.GetActiveScene().name))
+      {
+        yield break;
+      }
+      
       yield return SceneManager.LoadSceneAsync(command.SceneName, command.Mode switch
       {
         SceneLoadMode.Single => LoadSceneMode.Single,

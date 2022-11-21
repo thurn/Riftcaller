@@ -17,10 +17,12 @@
 
 pub mod debug_panel;
 pub mod game_menu_panel;
+pub mod game_over_panel;
 pub mod main_menu_panel;
 pub mod set_player_name_panel;
 
 use anyhow::Result;
+use core_ui::actions::InterfaceAction;
 use core_ui::component::Component;
 use core_ui::panel;
 use data::player_data::PlayerData;
@@ -30,6 +32,7 @@ use deck_editor::pick_deck_name::PickDeckName;
 use deck_editor::pick_deck_school::PickDeckSchool;
 use deck_editor::pick_deck_side::PickDeckSide;
 use panel_address::{CreateDeckState, PanelAddress};
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_panel_address::AddressType;
 use protos::spelldawn::{
@@ -39,6 +42,7 @@ use serde_json::de;
 use with_error::WithError;
 
 use crate::game_menu_panel::GameMenuPanel;
+use crate::game_over_panel::GameOverPanel;
 use crate::main_menu_panel::MainMenuPanel;
 use crate::set_player_name_panel::SetPlayerNamePanel;
 
@@ -88,6 +92,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
             CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).build(),
             CreateDeckState::PickName(side, school) => PickDeckName::new(side, school).build(),
         },
+        PanelAddress::GameOver(_) => GameOverPanel { address, player }.build(),
     })
 }
 

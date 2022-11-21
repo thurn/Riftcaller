@@ -14,7 +14,8 @@
 
 //! Addresses for user interface panels
 
-use data::primitives::{DeckIndex, School, Side};
+use data::player_name::PlayerId;
+use data::primitives::{DeckIndex, GameId, School, Side};
 use protos::spelldawn::{interface_panel_address, InterfacePanelAddress};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
@@ -25,6 +26,7 @@ pub enum PanelAddress {
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),
+    GameOver(GameOverData),
 }
 
 impl From<PanelAddress> for InterfacePanelAddress {
@@ -60,4 +62,10 @@ pub enum CreateDeckState {
     PickSide,
     PickSchool(Side),
     PickName(Side, School),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct GameOverData {
+    pub game_id: GameId,
+    pub winner: PlayerId,
 }

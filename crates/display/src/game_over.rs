@@ -13,7 +13,9 @@
 // limitations under the License.
 
 use adapters::response_builder::ResponseBuilder;
+use core_ui::panel;
 use data::game::{GamePhase, GameState};
+use panel_address::{GameOverData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};
 
@@ -31,11 +33,6 @@ pub fn check_game_over(
     render_type: DisplayRenderType,
 ) {
     if let GamePhase::GameOver { winner } = game.data.phase {
-        if render_type == DisplayRenderType::Update {
-            // Allow some time to process what happened
-            builder.push(animations::delay(1000));
-        }
-
         builder.push(Command::SetGameObjectsEnabled(SetGameObjectsEnabledCommand {
             game_objects_enabled: false,
         }));
@@ -48,5 +45,10 @@ pub fn check_game_over(
             }
             .into(),
         }));
+
+        builder.push(panel::open(PanelAddress::GameOver(GameOverData {
+            game_id: game.id,
+            winner: game.player(winner).id
+        })))
     }
 }
