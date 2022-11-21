@@ -1,9 +1,12 @@
 ---
 source: crates/spelldawn/tests/it/core/create_game_tests.rs
-assertion_line: 70
+assertion_line: 67
 expression: "Summary::run(&response)"
 ---
 
+    LoadScene: 
+        scene_name: "Game"
+        mode: Single
     UpdateGameView: 
         user: 
             side: Overlord

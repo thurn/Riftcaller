@@ -1251,6 +1251,7 @@ enum MusicState {
     MUSIC_STATE_SILENT = 1;
     MUSIC_STATE_GAMEPLAY = 2;
     MUSIC_STATE_RAID = 3;
+    MUSIC_STATE_MAIN_MENU = 4;
 }
 
 message SetMusicCommand {

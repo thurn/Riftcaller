@@ -4,6 +4,9 @@ assertion_line: 57
 expression: "Summary::run(&r3)"
 ---
 
+    LoadScene: 
+        scene_name: "Game"
+        mode: Single
     UpdateGameView: 
         user: 
             side: Champion

@@ -352,7 +352,14 @@ fn handle_new_game(
 }
 
 fn handle_leave_game(database: &mut impl Database, user_id: PlayerId) -> Result<GameResponse> {
-    Ok(GameResponse::from_commands(vec![]))
+    let mut user = database.player(user_id)?.with_error(|| "User not found")?;
+    user.current_game = None;
+    database.write_player(&user)?;
+    Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
+        scene_name: "Main".to_string(),
+        mode: SceneLoadMode::Single.into(),
+        skip_if_current: true,
+    })]))
 }
 
 /// Looks up the deck the `player_id` player has requested to use for a new game

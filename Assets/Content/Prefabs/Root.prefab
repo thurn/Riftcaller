@@ -411,13 +411,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7004ba115243443b812045d2be796f74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioSourceA: {fileID: 205228965825750778}
+  _audioSourceB: {fileID: 205228965306459081}
   _audioState: 0
+  _mainMenuTracks:
+  - {fileID: 8300000, guid: 01c01c86647024999ae4d0af5760e5d4, type: 3}
   _gameplayTracks:
   - {fileID: 8300000, guid: 9ae613332bae544bb987256cb19e53e9, type: 3}
-  _gameplayAudioSource: {fileID: 205228965825750778}
   _raidTracks:
   - {fileID: 8300000, guid: 44354bbaa0eef554aa861ea1c2dd84ea, type: 3}
-  _raidAudioSource: {fileID: 205228965306459081}
 --- !u!114 &205228965686964223
 MonoBehaviour:
   m_ObjectHideFlags: 0

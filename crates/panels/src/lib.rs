@@ -22,7 +22,6 @@ pub mod main_menu_panel;
 pub mod set_player_name_panel;
 
 use anyhow::Result;
-use core_ui::actions::InterfaceAction;
 use core_ui::component::Component;
 use core_ui::panel;
 use data::player_data::PlayerData;
@@ -32,7 +31,6 @@ use deck_editor::pick_deck_name::PickDeckName;
 use deck_editor::pick_deck_school::PickDeckSchool;
 use deck_editor::pick_deck_side::PickDeckSide;
 use panel_address::{CreateDeckState, PanelAddress};
-use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_panel_address::AddressType;
 use protos::spelldawn::{

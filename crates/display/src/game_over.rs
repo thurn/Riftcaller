@@ -19,19 +19,7 @@ use panel_address::{GameOverData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};
 
-use crate::animations;
-
-#[derive(Eq, PartialEq)]
-pub enum DisplayRenderType {
-    Connect,
-    Update,
-}
-
-pub fn check_game_over(
-    builder: &mut ResponseBuilder,
-    game: &GameState,
-    render_type: DisplayRenderType,
-) {
+pub fn check_game_over(builder: &mut ResponseBuilder, game: &GameState) {
     if let GamePhase::GameOver { winner } = game.data.phase {
         builder.push(Command::SetGameObjectsEnabled(SetGameObjectsEnabledCommand {
             game_objects_enabled: false,
@@ -48,7 +36,7 @@ pub fn check_game_over(
 
         builder.push(panel::open(PanelAddress::GameOver(GameOverData {
             game_id: game.id,
-            winner: game.player(winner).id
+            winner: game.player(winner).id,
         })))
     }
 }

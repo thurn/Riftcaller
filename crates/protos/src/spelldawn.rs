@@ -1779,6 +1779,7 @@ pub enum MusicState {
     Silent = 1,
     Gameplay = 2,
     Raid = 3,
+    MainMenu = 4,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

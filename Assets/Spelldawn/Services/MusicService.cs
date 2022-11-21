@@ -18,6 +18,9 @@ using DG.Tweening;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 #nullable enable
@@ -26,22 +29,24 @@ namespace Spelldawn.Services
 {
   public sealed class MusicService : MonoBehaviour
   {
+    [FormerlySerializedAs("_gameplayAudioSource")] [SerializeField] AudioSource _audioSourceA = null!;
+    [FormerlySerializedAs("_raidAudioSource")] [SerializeField] AudioSource _audioSourceB = null!;
+    
     [SerializeField] MusicState _audioState = MusicState.Unspecified;
+    [SerializeField] List<AudioClip> _mainMenuTracks = null!;
     [SerializeField] List<AudioClip> _gameplayTracks = null!;
-    [SerializeField] AudioSource _gameplayAudioSource = null!;
     [SerializeField] List<AudioClip> _raidTracks = null!;
-    [SerializeField] AudioSource _raidAudioSource = null!;
     AudioSource? _currentAudioSource;
 
     public void Initialize(GlobalGameMode globalGameMode)
     {
       if (globalGameMode == GlobalGameMode.Default)
       {
-        SetMusicState(MusicState.Gameplay);
+        SetMusicState(SceneManager.GetActiveScene().name == "Main" ? MusicState.MainMenu : MusicState.Gameplay);
       }
 
-      _gameplayAudioSource.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
-      _raidAudioSource.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
+      _audioSourceA.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
+      _audioSourceB.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
     }
 
     public void SetMusicState(MusicState state)
@@ -68,16 +73,11 @@ namespace Spelldawn.Services
         {
           MusicState.Gameplay => _gameplayTracks[Random.Range(0, _gameplayTracks.Count)],
           MusicState.Raid => _raidTracks[Random.Range(0, _raidTracks.Count)],
+          MusicState.MainMenu => _mainMenuTracks[Random.Range(0, _raidTracks.Count)],
           _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
         };
 
-        _currentAudioSource = state switch
-        {
-          MusicState.Gameplay => _gameplayAudioSource,
-          MusicState.Raid => _raidAudioSource,
-          _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
-        };
-
+        _currentAudioSource = _currentAudioSource == _audioSourceA ? _audioSourceB : _audioSourceA;
         _currentAudioSource.clip = track;
         _currentAudioSource.volume = 0f;
         _currentAudioSource.DOFade(PlayerPrefs.GetFloat(Preferences.MusicVolume), 1.0f);

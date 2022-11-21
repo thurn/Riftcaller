@@ -19,7 +19,6 @@ use data::primitives::Side;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
 
-use crate::game_over::DisplayRenderType;
 use crate::{animations, game_over, sync};
 
 pub fn connect(game: &GameState, user_side: Side) -> Result<Vec<Command>> {
@@ -31,7 +30,7 @@ pub fn connect(game: &GameState, user_side: Side) -> Result<Vec<Command>> {
         skip_if_current: true,
     }));
     sync::run(&mut builder, game)?;
-    game_over::check_game_over(&mut builder, game, DisplayRenderType::Connect);
+    game_over::check_game_over(&mut builder, game);
     Ok(builder.commands)
 }
 
@@ -46,7 +45,7 @@ pub fn render_updates(game: &GameState, user_side: Side) -> Result<Vec<Command>>
 
     builder.state.is_final_update = true;
     sync::run(&mut builder, game)?;
-    game_over::check_game_over(&mut builder, game, DisplayRenderType::Update);
+    game_over::check_game_over(&mut builder, game);
 
     Ok(builder.commands)
 }
