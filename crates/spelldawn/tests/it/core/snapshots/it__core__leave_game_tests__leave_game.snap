@@ -1,0 +1,10 @@
+---
+source: crates/spelldawn/tests/it/core/leave_game_tests.rs
+assertion_line: 39
+expression: "Summary::run(&response)"
+---
+
+command_list: 
+    LoadScene: 
+        scene_name: "Main"
+        mode: Single

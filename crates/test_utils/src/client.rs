@@ -340,6 +340,8 @@ impl TestSession {
         self.activate_ability_impl(card_id, index, Some(target))
     }
 
+    /// Equivalent to [legal_actions] but returns a [Result] instead of panic on
+    /// error
     pub fn legal_actions_result<'a>(
         &'a self,
         side: Side,
