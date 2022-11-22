@@ -17,6 +17,7 @@
 
 pub mod about_panel;
 pub mod debug_panel;
+pub mod disclaimer_panel;
 pub mod game_menu_panel;
 pub mod game_over_panel;
 pub mod main_menu_panel;
@@ -42,6 +43,7 @@ use serde_json::de;
 use with_error::WithError;
 
 use crate::about_panel::AboutPanel;
+use crate::disclaimer_panel::DisclaimerPanel;
 use crate::game_menu_panel::GameMenuPanel;
 use crate::game_over_panel::GameOverPanel;
 use crate::main_menu_panel::MainMenuPanel;
@@ -57,6 +59,7 @@ pub fn append_standard_panels(player: &PlayerData, commands: &mut Vec<Command>) 
     commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::MainMenu.into())?));
     commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::Settings.into())?));
     commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::About.into())?));
+    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::Disclaimer.into())?));
     Ok(())
 }
 
@@ -82,6 +85,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         PanelAddress::MainMenu => MainMenuPanel::new().build(),
         PanelAddress::About => AboutPanel::new().build(),
         PanelAddress::Settings => SettingsPanel::new().build(),
+        PanelAddress::Disclaimer => DisclaimerPanel::new().build(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };

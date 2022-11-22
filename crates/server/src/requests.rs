@@ -18,6 +18,7 @@ use actions;
 use adapters::ServerCardId;
 use anyhow::Result;
 use cards::decklists;
+use core_ui::panel;
 use dashmap::DashMap;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
@@ -254,9 +255,12 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
 
 /// Sets up the game state for a game connection request.
 pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Result<CommandList> {
-    if database.player(player_id)?.is_none() {
+    let is_new_user = if database.player(player_id)?.is_none() {
         create_new_player(database, player_id)?;
-    }
+        true
+    } else {
+        false
+    };
 
     if let Some(game_id) = player_data::current_game_id(database.player(player_id)?) {
         if database.has_game(game_id)? {
@@ -264,6 +268,9 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
             let side = user_side(player_id, &game)?;
             let mut commands = render::connect(&game, side)?;
             panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
+            if is_new_user {
+                commands.push(panel::open(PanelAddress::Disclaimer));
+            }
             Ok(command_list(commands))
         } else {
             fail!("Game not found: {:?}", game_id)
@@ -279,6 +286,9 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         commands.push(Command::TogglePanel(TogglePanelCommand {
             toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
         }));
+        if is_new_user {
+            commands.push(panel::open(PanelAddress::Disclaimer));
+        }
         Ok(command_list(commands))
     }
 }

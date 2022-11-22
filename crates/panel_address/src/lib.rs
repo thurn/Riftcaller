@@ -25,6 +25,7 @@ pub enum PanelAddress {
     MainMenu,
     About,
     Settings,
+    Disclaimer,
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),
