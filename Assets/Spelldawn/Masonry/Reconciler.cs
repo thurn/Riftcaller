@@ -14,6 +14,7 @@
 
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -72,7 +73,7 @@ namespace Spelldawn.Masonry
       return result;
     }
 
-    static bool HasInternalChildren(VisualElement? element) => element is TextField; 
+    static bool HasInternalChildren(VisualElement? element) => element is TextField or Slider; 
 
     static void UpdateChildren(Registry registry,
       Node node,

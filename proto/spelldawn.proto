@@ -504,6 +504,58 @@ message TextFieldNode {
     string mask_character = 9;
 }
 
+enum SliderDirection {
+    SLIDER_DIRECTION_UNSPECIFIED = 0;
+
+    SLIDER_DIRECTION_HORIZONTAL = 1;
+
+    SLIDER_DIRECTION_VERTICAL = 2;
+}
+
+message SliderNode {
+    // Value to display in the slider when first rendered.
+    float initial_value = 1;
+
+    // Label to display on this slider
+    string label = 2;
+
+    // If provided, the value of this slider will be read from and written
+    // to the float PlayerPreference with the provided key.
+    string preference_key = 3;
+
+    /// Orientation of the slider. Defaults to horizontal.
+    SliderDirection direction = 4;
+
+    // The maximum value that the slider encodes.
+    float high_value = 5;
+
+    // This is the minimum value that the slider encodes.
+    float low_value = 6;
+
+    // This indicates whether or not this slider is inverted. For an inverted
+    // horizontal slider, high value is located to the left, low value is
+    // located to the right For an inverted vertical slider, high value is
+    // located to the bottom, low value is located to the top.
+    bool inverted = 7;
+
+    // Size used to increment or decrement the value when clicking within
+    // the slider.
+    float page_size = 8;
+
+    // The visibility of the optional field inside the slider control.
+    bool show_input_field = 9;
+
+    FlexStyle label_style = 10;
+
+    FlexStyle drag_container_style = 11;
+
+    FlexStyle tracker_style = 12;
+
+    FlexStyle dragger_style = 13;
+
+    FlexStyle dragger_border_style = 14;
+}
+
 message NodeType {
     oneof node_type {
         Text text = 1;
@@ -511,6 +563,11 @@ message NodeType {
         DraggableNode draggable_node = 3;
         DropTargetNode drop_target_node = 4;
         TextFieldNode text_field_node = 5;
+        SliderNode slider_node = 6;
+
+        // When adding new nodes here, update the
+        // Reconciler.cs#HasInternalChildren() method to detect Unity child
+        // views.
     }
 }
 
@@ -520,18 +577,18 @@ message EventHandlers {
 
 
 message Node {
-    // Used to identify this node in debugging tools
-    string name = 2;
+    // Used to identify this node in the view hierarchy
+    string name = 1;
 
-    NodeType node_type = 3;
+    NodeType node_type = 2;
 
-    repeated Node children = 4;
+    repeated Node children = 3;
 
-    EventHandlers event_handlers = 5;
+    EventHandlers event_handlers = 4;
 
-    FlexStyle style = 6;
-    FlexStyle hover_style = 7;
-    FlexStyle pressed_style = 8;
+    FlexStyle style = 5;
+    FlexStyle hover_style = 6;
+    FlexStyle pressed_style = 7;
 }
 
 

@@ -38,9 +38,7 @@ impl MainMenuPanel {
 
 impl Component for MainMenuPanel {
     fn build(self) -> Option<Node> {
-        let close = panel::close(PanelAddress::MainMenu);
-
-        Panel::new(PanelAddress::MainMenu, 512.px(), 600.px())
+        Panel::new(PanelAddress::MainMenu, 600.px(), 600.px())
             .title("Spelldawn")
             .content(
                 Column::new("MeuButtons")
@@ -61,7 +59,7 @@ impl Component for MainMenuPanel {
                             }),
                         ),
                     ))
-                    .child(menu_button("Settings", close))
+                    .child(menu_button("Settings", panel::set(PanelAddress::Settings)))
                     .child(menu_button("About", panel::set(PanelAddress::About))),
             )
             .build()

@@ -391,8 +391,53 @@ pub struct TextFieldNode {
     pub mask_character: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SliderNode {
+    /// Value to display in the slider when first rendered.
+    #[prost(float, tag = "1")]
+    pub initial_value: f32,
+    /// Label to display on this slider
+    #[prost(string, tag = "2")]
+    pub label: ::prost::alloc::string::String,
+    /// If provided, the value of this slider will be read from and written
+    /// to the float PlayerPreference with the provided key.
+    #[prost(string, tag = "3")]
+    pub preference_key: ::prost::alloc::string::String,
+    //// Orientation of the slider. Defaults to horizontal.
+    #[prost(enumeration = "SliderDirection", tag = "4")]
+    pub direction: i32,
+    /// The maximum value that the slider encodes.
+    #[prost(float, tag = "5")]
+    pub high_value: f32,
+    /// This is the minimum value that the slider encodes.
+    #[prost(float, tag = "6")]
+    pub low_value: f32,
+    /// This indicates whether or not this slider is inverted. For an inverted
+    /// horizontal slider, high value is located to the left, low value is
+    /// located to the right For an inverted vertical slider, high value is
+    /// located to the bottom, low value is located to the top.
+    #[prost(bool, tag = "7")]
+    pub inverted: bool,
+    /// Size used to increment or decrement the value when clicking within
+    /// the slider.
+    #[prost(float, tag = "8")]
+    pub page_size: f32,
+    /// The visibility of the optional field inside the slider control.
+    #[prost(bool, tag = "9")]
+    pub show_input_field: bool,
+    #[prost(message, optional, tag = "10")]
+    pub label_style: ::core::option::Option<FlexStyle>,
+    #[prost(message, optional, tag = "11")]
+    pub drag_container_style: ::core::option::Option<FlexStyle>,
+    #[prost(message, optional, tag = "12")]
+    pub tracker_style: ::core::option::Option<FlexStyle>,
+    #[prost(message, optional, tag = "13")]
+    pub dragger_style: ::core::option::Option<FlexStyle>,
+    #[prost(message, optional, tag = "14")]
+    pub dragger_border_style: ::core::option::Option<FlexStyle>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
-    #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3, 4, 5")]
+    #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3, 4, 5, 6")]
     pub node_type: ::core::option::Option<node_type::NodeType>,
 }
 /// Nested message and enum types in `NodeType`.
@@ -409,6 +454,8 @@ pub mod node_type {
         DropTargetNode(super::DropTargetNode),
         #[prost(message, tag = "5")]
         TextFieldNode(super::TextFieldNode),
+        #[prost(message, tag = "6")]
+        SliderNode(super::SliderNode),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -418,20 +465,20 @@ pub struct EventHandlers {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
-    /// Used to identify this node in debugging tools
-    #[prost(string, tag = "2")]
+    /// Used to identify this node in the view hierarchy
+    #[prost(string, tag = "1")]
     pub name: ::prost::alloc::string::String,
-    #[prost(message, optional, boxed, tag = "3")]
+    #[prost(message, optional, boxed, tag = "2")]
     pub node_type: ::core::option::Option<::prost::alloc::boxed::Box<NodeType>>,
-    #[prost(message, repeated, tag = "4")]
+    #[prost(message, repeated, tag = "3")]
     pub children: ::prost::alloc::vec::Vec<Node>,
-    #[prost(message, optional, tag = "5")]
+    #[prost(message, optional, tag = "4")]
     pub event_handlers: ::core::option::Option<EventHandlers>,
-    #[prost(message, optional, tag = "6")]
+    #[prost(message, optional, tag = "5")]
     pub style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "7")]
+    #[prost(message, optional, tag = "6")]
     pub hover_style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "8")]
+    #[prost(message, optional, tag = "7")]
     pub pressed_style: ::core::option::Option<FlexStyle>,
 }
 // ============================================================================
@@ -1673,6 +1720,13 @@ pub enum TouchScrollBehavior {
     Elastic = 2,
     /// The content position is clamped to the ScrollView boundaries.
     Clamped = 3,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum SliderDirection {
+    Unspecified = 0,
+    Horizontal = 1,
+    Vertical = 2,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

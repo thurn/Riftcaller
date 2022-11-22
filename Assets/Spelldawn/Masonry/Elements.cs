@@ -49,7 +49,8 @@ namespace Spelldawn.Masonry
       MouseDown,
       MouseUp,
       MouseEnter,
-      MouseLeave
+      MouseLeave,
+      Change
     }
 
     readonly HashSet<Event> _registered = new();
@@ -88,11 +89,14 @@ namespace Spelldawn.Masonry
         case Event.MouseLeave:
           e.RegisterCallback<MouseLeaveEvent>(OnMouseLeave);
           break;
+        case Event.Change:
+          e.RegisterCallback<ChangeEvent<float>>(OnChange);
+          break;
         default:
           throw new ArgumentOutOfRangeException(nameof(eventType), eventType, "Unknown event type");
       }
     }
-
+    
     public void OnClick(ClickEvent evt)
     {
       if (Mathf.Abs(Time.time - _lastClickTime) > 0.1f)
@@ -120,6 +124,11 @@ namespace Spelldawn.Masonry
     void OnMouseLeave(MouseLeaveEvent evt)
     {
       _actions[Event.MouseLeave]?.Invoke();
+    }
+    
+    void OnChange(ChangeEvent<float> evt)
+    {
+      _actions[Event.Change]?.Invoke();
     }
   }
 

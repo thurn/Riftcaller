@@ -24,6 +24,7 @@ use serde_json::ser;
 pub enum PanelAddress {
     MainMenu,
     About,
+    Settings,
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),

@@ -28,6 +28,7 @@ pub mod list_cell;
 pub mod panel;
 pub mod prelude;
 pub mod scroll_view;
+pub mod slider;
 pub mod style;
 pub mod text;
 pub mod text_field;

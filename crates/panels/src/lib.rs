@@ -21,6 +21,7 @@ pub mod game_menu_panel;
 pub mod game_over_panel;
 pub mod main_menu_panel;
 pub mod set_player_name_panel;
+pub mod settings_panel;
 
 use anyhow::Result;
 use core_ui::component::Component;
@@ -45,6 +46,7 @@ use crate::game_menu_panel::GameMenuPanel;
 use crate::game_over_panel::GameOverPanel;
 use crate::main_menu_panel::MainMenuPanel;
 use crate::set_player_name_panel::SetPlayerNamePanel;
+use crate::settings_panel::SettingsPanel;
 
 /// Appends a command to `commands` to render commonly-used panels on connect.
 pub fn append_standard_panels(player: &PlayerData, commands: &mut Vec<Command>) -> Result<()> {
@@ -53,6 +55,8 @@ pub fn append_standard_panels(player: &PlayerData, commands: &mut Vec<Command>) 
         panel::client(ClientPanelAddress::DebugPanel),
     )?));
     commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::MainMenu.into())?));
+    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::Settings.into())?));
+    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::About.into())?));
     Ok(())
 }
 
@@ -77,6 +81,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
     Ok(match address {
         PanelAddress::MainMenu => MainMenuPanel::new().build(),
         PanelAddress::About => AboutPanel::new().build(),
+        PanelAddress::Settings => SettingsPanel::new().build(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };

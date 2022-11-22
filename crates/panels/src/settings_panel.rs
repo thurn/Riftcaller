@@ -12,43 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! The about panel displays information about the authorship of the game
+//! The settings panel allows configuration of game options
 
 use core_ui::button::Button;
-use core_ui::design::FontSize;
 use core_ui::panel;
 use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
-use core_ui::text::Text;
+use core_ui::slider::Slider;
 use panel_address::PanelAddress;
-use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
-
-pub const TEXT: &str = "Spelldawn is open source and licensed under the Apache License, version 2.0. Source code is available at github.com/thurn/spelldawn
-
-Main game music by Jay Man and used under the terms of the Creative Commons Attribution 4.0 License:
-
-Music by Jay Man | OurMusicBox
-Website: www.our-music-box.com
-YouTube: www.youtube.com/c/ourmusicbox
-
-Spelldawn assets are used under the terms of the Unity Asset Store License: unity3d.com/legal/as_terms";
+use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
-pub struct AboutPanel {}
+pub struct SettingsPanel {}
 
-impl AboutPanel {
+impl SettingsPanel {
     pub fn new() -> Self {
         Self::default()
     }
 }
 
-impl Component for AboutPanel {
+impl Component for SettingsPanel {
     fn build(self) -> Option<Node> {
         Panel::new(PanelAddress::About, 600.px(), 600.px())
-            .title("About")
+            .title("Settings")
             .content(
-                Column::new("AboutContent")
+                Column::new("SettingsContent")
                     .style(
                         Style::new()
                             .width(100.pct())
@@ -56,9 +45,13 @@ impl Component for AboutPanel {
                             .justify_content(FlexJustify::Center),
                     )
                     .child(
-                        ScrollView::new("TextScroll")
-                            .style(Style::new().height(400.px()))
-                            .child(Text::new(TEXT, FontSize::Body).white_space(WhiteSpace::Normal)),
+                        ScrollView::new("TextScroll").style(Style::new().height(400.px())).child(
+                            Slider::new()
+                                .label("Music Volume:")
+                                .preference_key("MusicVolume")
+                                .low_value(0.0)
+                                .high_value(1.0),
+                        ),
                     )
                     .child(
                         Button::new("Back")
