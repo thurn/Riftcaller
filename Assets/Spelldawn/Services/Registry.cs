@@ -194,6 +194,9 @@ namespace Spelldawn.Services
     [SerializeField] Studio _studio = null!;
     public Studio Studio => _studio;
 
+    [SerializeField] SettingsService _settingsService = null!;
+    public SettingsService SettingsService => _settingsService;
+
     public ScreenshotTestService? ScreenshotTests { get; private set; }
 
     IEnumerator Start()

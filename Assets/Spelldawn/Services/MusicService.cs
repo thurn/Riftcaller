@@ -44,9 +44,15 @@ namespace Spelldawn.Services
       {
         SetMusicState(SceneManager.GetActiveScene().name == "Main" ? MusicState.MainMenu : MusicState.Gameplay);
       }
+      
+      SyncVolume();
+    }
 
+    /// <summary>Sets audio source volume by reading the value of the music volume PlayerPref</summary>
+    public void SyncVolume()
+    {
       _audioSourceA.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
-      _audioSourceB.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
+      _audioSourceB.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);      
     }
 
     public void SetMusicState(MusicState state)

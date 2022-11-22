@@ -54,7 +54,11 @@ namespace Spelldawn.Masonry
       else
       {
         ((INodeCallbacks)view).SetCallback(Callbacks.Event.Change,
-          () => { PlayerPrefs.SetFloat(data.PreferenceKey, view.value); });
+          () =>
+          {
+            PlayerPrefs.SetFloat(data.PreferenceKey, view.value);
+            registry.SettingsService.SyncPreferences();
+          });
       }
 
       Mason.ApplyStyle(registry,view.labelElement, data.LabelStyle);      

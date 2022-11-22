@@ -36,11 +36,9 @@ impl GameMenuPanel {
 
 impl Component for GameMenuPanel {
     fn build(self) -> Option<Node> {
-        let close = panel::close(panel::client(ClientPanelAddress::GameMenu));
-
-        Panel::new(panel::client(ClientPanelAddress::GameMenu), 512.px(), 600.px())
+        let address = panel::client(ClientPanelAddress::GameMenu);
+        Panel::new(address.clone(), 512.px(), 600.px())
             .title("Menu")
-            .show_close_button(true)
             .content(
                 Column::new("MeuButtons")
                     .style(
@@ -49,11 +47,8 @@ impl Component for GameMenuPanel {
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center),
                     )
-                    .child(menu_button(
-                        "Resign",
-                        actions::with_optimistic_update(vec![close.clone()], GameAction::Resign),
-                    ))
-                    .child(menu_button("Settings", close))
+                    .child(menu_button("Close", panel::close(address.clone())))
+                    .child(menu_button("Resign", actions::close_and(address, GameAction::Resign)))
                     .child(menu_button(
                         "Deck Editor",
                         panel::set(PanelAddress::DeckEditor(DeckEditorData::default())),
