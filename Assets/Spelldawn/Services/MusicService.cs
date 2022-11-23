@@ -51,8 +51,16 @@ namespace Spelldawn.Services
     /// <summary>Sets audio source volume by reading the value of the music volume PlayerPref</summary>
     public void SyncVolume()
     {
-      _audioSourceA.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
-      _audioSourceB.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);      
+      if (PlayerPrefs.HasKey(Preferences.MusicVolume))
+      {
+        _audioSourceA.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);
+        _audioSourceB.volume = PlayerPrefs.GetFloat(Preferences.MusicVolume);             
+      }
+      else
+      {
+        _audioSourceA.volume = 0.25f;
+        _audioSourceB.volume = 0.25f;
+      }
     }
 
     public void SetMusicState(MusicState state)

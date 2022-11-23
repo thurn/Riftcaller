@@ -41,7 +41,8 @@ namespace Spelldawn.Services
 
     readonly Lazy<Protos.Spelldawn.SpelldawnClient> _client = new(() => new Protos.Spelldawn.SpelldawnClient(
       GrpcChannel.ForAddress(
-        UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress, new GrpcChannelOptions
+        UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress,
+        new GrpcChannelOptions
         {
           HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
           Credentials = ChannelCredentials.Insecure,
@@ -57,8 +58,6 @@ namespace Spelldawn.Services
     PlayerIdentifier? _playerIdentifier;
     bool _attemptReconnect;
 
-    public bool OfflineMode { get; private set; }
-
     public bool Active => _currentlyHandlingAction || _actionQueue.Count > 0;
 
     void Start()
@@ -67,10 +66,9 @@ namespace Spelldawn.Services
       StartCoroutine(AutoReconnect());
     }
 
-    public void Connect(PlayerIdentifier playerIdentifier, bool offlineMode)
+    public void Connect(PlayerIdentifier playerIdentifier)
     {
       _playerIdentifier = playerIdentifier;
-      OfflineMode = offlineMode;
       AttemptConnection();
     }
 
@@ -121,61 +119,38 @@ namespace Spelldawn.Services
     async void AttemptConnection()
     {
       _registry.DocumentService.Loading = true;
-      
+
       var request = new ConnectRequest
       {
         PlayerId = Errors.CheckNotNull(_playerIdentifier),
       };
 
-      if (OfflineMode)
-      {
-        Debug.Log($"Connecting to Offline Game");
-        StartCoroutine(ConnectToOfflineGame(request));
-      }
-      else
-      {
-        // TODO: Android in particular seems to hang for multiple minutes when the server can't be reached?
-        using var call = _client.Value.Connect(request);
+      // TODO: Android in particular seems to hang for multiple minutes when the server can't be reached?
+      using var call = _client.Value.Connect(request);
 
-        try
+      try
+      {
+        while (await call.ResponseStream.MoveNext())
         {
-          while (await call.ResponseStream.MoveNext())
+          if (this != null)
           {
-            if (this != null)
-            {
-              var commands = call.ResponseStream.Current;
-              _attemptReconnect = false;
-              _registry.DocumentService.Loading = false;
-              StartCoroutine(_registry.CommandService.HandleCommands(commands));
-              _registry.DocumentService.FetchOpenPanels();
-            }
-          }
-        }
-        catch (RpcException e)
-        {
-          _registry.DocumentService.Loading = true;
-          _attemptReconnect = true;
-          if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
-          {
-            Debug.Log($"RpcException: {e.StatusCode} -- {e.Message}");
+            var commands = call.ResponseStream.Current;
+            _attemptReconnect = false;
+            _registry.DocumentService.Loading = false;
+            StartCoroutine(_registry.CommandService.HandleCommands(commands));
+            _registry.DocumentService.FetchOpenPanels();
           }
         }
       }
-    }
-
-    /// <summary>Connects to an existing offline game, handling responses.</summary>
-    public IEnumerator ConnectToOfflineGame(ConnectRequest request)
-    {
-#if USE_UNITY_PLUGIN
-      var commands = Plugin.Connect(request);
-      if (commands != null)
+      catch (RpcException e)
       {
-        yield return _registry.CommandService.HandleCommands(commands);
+        _registry.DocumentService.Loading = true;
+        _attemptReconnect = true;
+        if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
+        {
+          Debug.Log($"RpcException: {e.StatusCode} -- {e.Message}");
+        }
       }
-#else
-      Debug.LogError("Plugin not enabled");
-      yield break;
-#endif
     }
 
     IEnumerator HandleActionAsync(ClientAction action)
@@ -211,43 +186,32 @@ namespace Spelldawn.Services
       };
       request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);
 
-      if (OfflineMode)
+      var startTime = Time.time;
+      var call = _client.Value.PerformActionAsync(request);
+      var task = call.GetAwaiter();
+      yield return new WaitUntil(() => task.IsCompleted);
+
+      switch (call.GetStatus().StatusCode)
       {
-#if USE_UNITY_PLUGIN
-        yield return _registry.CommandService.HandleCommands(Plugin.PerformAction(request));
-#else
-        Debug.LogError("Plugin not enabled");
-#endif
-      }
-      else
-      {
-        var startTime = Time.time;
-        var call = _client.Value.PerformActionAsync(request);
-        var task = call.GetAwaiter();
-        yield return new WaitUntil(() => task.IsCompleted);
+        case StatusCode.OK:
+          _registry.DocumentService.Loading = false;
+          _attemptReconnect = false;
+          if (LogRpcTime.ShouldLogRpcTime)
+          {
+            Debug.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
+          }
 
-        switch (call.GetStatus().StatusCode)
-        {
-          case StatusCode.OK:
-            _registry.DocumentService.Loading = false;
-            _attemptReconnect = false;
-            if (LogRpcTime.ShouldLogRpcTime)
-            {
-              Debug.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
-            }
+          yield return _registry.CommandService.HandleCommands(task.GetResult());
+          break;
+        default:
+          _registry.DocumentService.Loading = true;
+          _attemptReconnect = true;
+          if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
+          {
+            Debug.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
+          }
 
-            yield return _registry.CommandService.HandleCommands(task.GetResult());
-            break;
-          default:
-            _registry.DocumentService.Loading = true;
-            _attemptReconnect = true;
-            if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
-            {
-              Debug.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
-            }
-
-            break;
-        }
+          break;
       }
 
       _currentlyHandlingAction = false;

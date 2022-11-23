@@ -25,12 +25,6 @@ namespace Spelldawn.Services
     [SerializeField] Registry _registry = null!;
 
     PlayerIdentifier? _playerIdentifier;
-    
-#if USE_UNITY_PLUGIN
-    const bool OfflineMode = true;
-#else
-    const bool OfflineMode = false;
-#endif
 
     public void Initialize(GlobalGameMode globalGameMode)
     {
@@ -47,7 +41,7 @@ namespace Spelldawn.Services
       {
         DeviceIdentifier = (Application.isEditor ? "Editor/" : "") + SystemInfo.deviceUniqueIdentifier
       };
-      _registry.ActionService.Connect(identifier, offlineMode: OfflineMode);
+      _registry.ActionService.Connect(identifier);
     }
   }
 }

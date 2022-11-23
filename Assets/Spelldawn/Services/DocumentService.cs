@@ -179,7 +179,6 @@ namespace Spelldawn.Services
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.OpenPanel:
           fetch = command.OpenPanel;
-          Debug.Log($"TogglePanel: Opening Panel: {command.OpenPanel}");
           if (!_openPanels.Contains(command.OpenPanel))
           {
             _openPanels.Add(command.OpenPanel);
@@ -233,8 +232,6 @@ namespace Spelldawn.Services
     {
       foreach (var panel in command.Panels)
       {
-        Debug.Log($"Updating: {panel.Address}");
-        
         if (_switchTo != null && _switchTo.Equals(panel.Address))
         {
           _openPanels.Clear();
@@ -265,13 +262,11 @@ namespace Spelldawn.Services
       {
         var element = RootVisualElement.Q<BaseField<string>>(key);
         action.RequestFields[key] = element.value;
-        Debug.Log($"AddRequestFields: adding {action.RequestFields[key]} for {key}");
       }
     }
 
     void RenderPanels()
     {
-      Debug.Log($"RenderPanels: {string.Join(" , ", _openPanels)}");
       Reconcile(
         ref _panels,
         Panels(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));

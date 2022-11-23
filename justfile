@@ -29,6 +29,10 @@ docker-run:
 cloud-build:
     gcloud builds submit --region=us-central1 --config cloudbuild.yaml
 
+# Updates current google cloud image
+cloud-update:
+    gcloud compute instances update-container spelldawn-trunk --zone us-central1-a --container-image us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+
 protos:
     cargo run --bin gen_protos
     rm crates/protos/src/google.protobuf.rs
@@ -441,6 +445,13 @@ just paths:
 # gcloud builds submit --region=us-central1 --tag
 #     us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
 
+# IP Addresses
+# gcloud compute addresses list
+# gcloud compute addresses create trunk-regional --region=us-central1
+# gcloud compute instances describe spelldawn-trunk
+# gcloud compute instances delete-access-config spelldawn-trunk --access-config-name "External NAT"
+# gcloud compute instances add-access-config spelldawn-trunk  --access-config-name='trunk' --address "34.29.1.131"
+
 # Docker
 # List Containers:
 # docker container ls
@@ -458,3 +469,4 @@ just paths:
 
 # GRPC CLI
 # grpc_cli ls 35.184.200.62:50052 -l
+# grpc_cli ls trunk.spelldawn.com:80 -l
