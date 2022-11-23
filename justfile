@@ -470,3 +470,6 @@ just paths:
 # GRPC CLI
 # grpc_cli ls 35.184.200.62:50052 -l
 # grpc_cli ls trunk.spelldawn.com:80 -l
+
+# iOS App Store
+# Uploading: https://help.apple.com/xcode/mac/current/#/dev442d7f2ca
