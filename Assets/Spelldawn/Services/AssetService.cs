@@ -31,8 +31,10 @@ namespace Spelldawn.Services
 {
   public sealed class AssetService : MonoBehaviour
   {
+    [SerializeField] Registry _registry = null!;
     [SerializeField] RenderTexture _studioRenderTexture = null!;
     [SerializeField] DevelopmentAssets _developmentAssets = null!;
+    bool _anyCompleted;
 
     readonly Dictionary<string, Object> _assets = new();
 
@@ -100,8 +102,13 @@ namespace Spelldawn.Services
         yield break;
       }
 
-      var startTime = Time.time;
       var requests = new Dictionary<string, AsyncOperationHandle>();
+      if (AssetBundle.GetAllLoadedAssetBundles().Count() < 5)
+      {
+        // TODO: We want to show the loading indicator only when an asset bundle will actually be fetched as a result
+        // of this operation. This is just a hacky workaround to approximate that behavior for now.
+        _registry.DocumentService.Loading = true;
+      }
 
       foreach (var command in commandList.Commands)
       {
@@ -139,6 +146,7 @@ namespace Spelldawn.Services
       }
 
       yield return WaitForRequests(requests);
+      _registry.DocumentService.Loading = false;
     }
 
     public IEnumerator LoadAssetsForNode(Node node)

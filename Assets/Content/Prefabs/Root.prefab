@@ -329,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fc51058f0b74ece8e210d1e6c56a92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _registry: {fileID: 205228965686964167}
   _studioRenderTexture: {fileID: 8400000, guid: 7bfc4a7c7b8f645e3a6c465eaa238802, type: 2}
   _developmentAssets: {fileID: 205228965686964221}
 --- !u!114 &205228965686964169

@@ -46,10 +46,11 @@ namespace Spelldawn.Services
       return HandleCommands(commands.ToList());
     }
 
-    public IEnumerator HandleCommands(CommandList commandList)
+    public IEnumerator HandleCommands(CommandList commandList, Action? onComplete = null)
     {
       _queue.Enqueue(commandList);
       yield return new WaitUntil(() => _currentlyHandling == false && _queue.Count == 0);
+      onComplete?.Invoke();
     }
 
     void Update()

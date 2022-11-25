@@ -136,8 +136,10 @@ namespace Spelldawn.Services
           {
             var commands = call.ResponseStream.Current;
             _attemptReconnect = false;
-            _registry.DocumentService.Loading = false;
-            StartCoroutine(_registry.CommandService.HandleCommands(commands));
+            StartCoroutine(_registry.CommandService.HandleCommands(commands, () =>
+            {
+              _registry.DocumentService.Loading = false;
+            }));
             _registry.DocumentService.FetchOpenPanels();
           }
         }

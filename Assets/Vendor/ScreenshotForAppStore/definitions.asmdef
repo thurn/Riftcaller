@@ -1,7 +1,10 @@
 {
     "name": "jp.aktsk.screenshot-for-app-store",
+    "rootNamespace": "",
     "references": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
