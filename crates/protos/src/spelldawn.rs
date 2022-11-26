@@ -1454,11 +1454,50 @@ pub mod update_interface_element_command {
         UpdateText(super::UpdateText),
     }
 }
+/// Represents a world map tile at a given position. We use offset hex
+/// coordinates with the "Pointy Top - Odd Rows Shifted Right" convention,
+/// with values increasing moving up and right. The Z index represents sprite
+/// tiles which are drawn on top of each other.
+/// ```
+///       /  \    / \
+///     /     \ /     \
+///    |  0,2  |  1,2  |
+///    |       |       |
+///   / \     / \     / \
+/// /     \ /     \ /     \
+/// |  0,1  |  1,1  |  2,1  |
+/// |       |       |       |
+/// \     / \     / \     /
+///   \ /     \ /     \ /
+///    |  0,0  |  1,0  |
+///    |       |       |
+///     \     / \     /
+///       \ /     \ /
+/// ```
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WorldMapTile {
+    /// Addressable asset path of sprite to display on the hex grid
+    #[prost(message, optional, tag = "1")]
+    pub sprite_address: ::core::option::Option<SpriteAddress>,
+    #[prost(int32, tag = "2")]
+    pub x: i32,
+    #[prost(int32, tag = "3")]
+    pub y: i32,
+    /// Higher Z-index sprites are drawn on top of lower Z-index sprites
+    #[prost(int32, tag = "4")]
+    pub z: i32,
+}
+/// Updates the world map tilemap. Only valid in the 'World' scene.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateWorldMapCommand {
+    #[prost(message, repeated, tag = "1")]
+    pub tiles: ::prost::alloc::vec::Vec<WorldMapTile>,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -1500,6 +1539,8 @@ pub mod game_command {
         CreateTokenCard(super::CreateTokenCardCommand),
         #[prost(message, tag = "17")]
         UpdateInterfaceElement(super::UpdateInterfaceElementCommand),
+        #[prost(message, tag = "18")]
+        UpdateWorldMap(super::UpdateWorldMapCommand),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

@@ -573,6 +573,7 @@ pub fn command_name(command: &GameCommand) -> &'static str {
         Command::LoadScene(_) => "LoadScene",
         Command::CreateTokenCard(_) => "CreateTokenCard",
         Command::UpdateInterfaceElement(_) => "UpdateInterfaceElement",
+        Command::UpdateWorldMap(_) => "UpdateWorldMap",
     })
 }
 

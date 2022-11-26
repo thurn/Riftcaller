@@ -36,7 +36,8 @@ use protos::spelldawn::{
     PlayerSide, PlayerView, ProjectileAddress, RevealedCardView, RoomIdentifier, RoomVisitType,
     RulesText, RunInParallelCommand, SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand,
     SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand, UpdateGameViewCommand,
-    UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText, VisitRoomCommand,
+    UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText, UpdateWorldMapCommand,
+    VisitRoomCommand, WorldMapTile,
 };
 use server::requests::GameResponse;
 
@@ -281,6 +282,7 @@ impl Summarize for Command {
             Self::LoadScene(v) => summary.child_node("LoadScene", v),
             Self::CreateTokenCard(v) => summary.child_node("CreateTokenCard", v),
             Self::UpdateInterfaceElement(v) => summary.child_node("UpdateInterfaceElement", v),
+            Self::UpdateWorldMap(v) => summary.child_node("UpdateWorldMap", v),
         }
     }
 }
@@ -702,5 +704,20 @@ impl Summarize for AnimateToElementPositionAndDestroy {
 impl Summarize for UpdateText {
     fn summarize(self, summary: &mut Summary) {
         summary.child_node("update_text", self.new_text);
+    }
+}
+
+impl Summarize for UpdateWorldMapCommand {
+    fn summarize(self, summary: &mut Summary) {
+        summary.children("tiles", self.tiles);
+    }
+}
+
+impl Summarize for WorldMapTile {
+    fn summarize(self, summary: &mut Summary) {
+        summary.child("sprite_address", self.sprite_address);
+        summary.child_node("x", self.x);
+        summary.child_node("y", self.y);
+        summary.child_node("z", self.z);
     }
 }

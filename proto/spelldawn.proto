@@ -1469,6 +1469,44 @@ message UpdateInterfaceElementCommand {
     }
 }
 
+
+// Represents a world map tile at a given position. We use offset hex
+// coordinates with the "Pointy Top - Odd Rows Shifted Right" convention,
+// with values increasing moving up and right. The Z index represents sprite
+// tiles which are drawn on top of each other.
+// ```
+//       /  \    / \
+//     /     \ /     \
+//    |  0,2  |  1,2  |
+//    |       |       |
+//   / \     / \     / \
+// /     \ /     \ /     \
+//|  0,1  |  1,1  |  2,1  |
+//|       |       |       |
+// \     / \     / \     /
+//   \ /     \ /     \ /
+//    |  0,0  |  1,0  |
+//    |       |       |
+//     \     / \     /
+//       \ /     \ /
+// ```
+message WorldMapTile {
+    // Addressable asset path of sprite to display on the hex grid
+    SpriteAddress sprite_address = 1;
+
+    int32 x = 2;
+
+    int32 y = 3;
+
+    // Higher Z-index sprites are drawn on top of lower Z-index sprites
+    int32 z = 4;
+}
+
+// Updates the world map tilemap. Only valid in the 'World' scene.
+message UpdateWorldMapCommand {
+    repeated WorldMapTile tiles = 1;
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -1488,6 +1526,7 @@ message GameCommand {
         MoveGameObjectsCommand move_game_objects = 15;
         CreateTokenCardCommand create_token_card = 16;
         UpdateInterfaceElementCommand update_interface_element = 17;
+        UpdateWorldMapCommand update_world_map = 18;
     }
 }
 
