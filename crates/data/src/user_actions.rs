@@ -85,6 +85,7 @@ impl From<DeckEditorAction> for UserAction {
 /// All possible action payloads that can be sent from a client
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
+    NewAdventure(Side),
     NewGame(NewGameAction),
     /// Leave the game that the player is currently playing in. Typically
     /// invoked from the game over screen, the 'resign' action is used to

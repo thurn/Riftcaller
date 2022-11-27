@@ -25,6 +25,9 @@ tracing = "0.1.35"
 
 actions = { path = "../actions", version = "0.0.0" }
 adapters = { path = "../adapters", version = "0.0.0" }
+adventure_actions = { path = "../adventure_actions", version = "0.0.0" }
+adventure_display = { path = "../adventure_display", version = "0.0.0" }
+adventure_generator = { path = "../adventure_generator", version = "0.0.0" }
 ai_core = { path = "../ai_core", version = "0.0.0" }
 ai_game_integration = { path = "../ai_game_integration", version = "0.0.0" }
 cards = { path = "../cards", version = "0.0.0" }

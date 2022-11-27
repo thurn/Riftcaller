@@ -19,6 +19,7 @@ using Google.Protobuf.WellKnownTypes;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Tests;
+using Spelldawn.World;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -198,6 +199,9 @@ namespace Spelldawn.Services
     public SettingsService SettingsService => _settingsService;
 
     public ScreenshotTestService? ScreenshotTests { get; private set; }
+
+    [SerializeField] WorldMap _worldMap = null!;
+    public WorldMap WorldMap => _worldMap;
 
     IEnumerator Start()
     {

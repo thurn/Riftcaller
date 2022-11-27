@@ -23,7 +23,7 @@ use dashmap::DashMap;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
-use data::player_data::{CurrentGame, NewGameRequest, PlayerData};
+use data::player_data::{NewGameRequest, PlayerData, PlayerState};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
 use data::updates::{UpdateTracker, Updates};
@@ -255,62 +255,80 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
 
 /// Sets up the game state for a game connection request.
 pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Result<CommandList> {
-    let is_new_user = if database.player(player_id)?.is_none() {
-        create_new_player(database, player_id)?;
-        true
-    } else {
-        false
+    let (player, is_new_player) = match database.player(player_id)? {
+        Some(p) => (p, false),
+        None => (create_new_player(database, player_id)?, true),
     };
 
-    if let Some(game_id) = player_data::current_game_id(database.player(player_id)?) {
-        if database.has_game(game_id)? {
-            let game = database.game(game_id)?;
-            let side = user_side(player_id, &game)?;
-            let mut commands = render::connect(&game, side)?;
+    match player.state {
+        Some(PlayerState::Adventure(state)) => Ok(command_list(adventure_display::render(&state)?)),
+        Some(PlayerState::Playing(game_id)) => {
+            if database.has_game(game_id)? {
+                let game = database.game(game_id)?;
+                let side = user_side(player_id, &game)?;
+                let mut commands = render::connect(&game, side)?;
+                panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
+                if is_new_player {
+                    commands.push(panel::open(PanelAddress::Disclaimer));
+                }
+                Ok(command_list(commands))
+            } else {
+                fail!("Game not found: {:?}", game_id)
+            }
+        }
+        Some(PlayerState::RequestedGame(_)) => todo!("Not implemented"),
+        None => {
+            let mut commands = vec![];
+            commands.push(Command::LoadScene(LoadSceneCommand {
+                scene_name: "Main".to_string(),
+                mode: SceneLoadMode::Single.into(),
+                skip_if_current: true,
+            }));
             panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
-            if is_new_user {
+            commands.push(Command::TogglePanel(TogglePanelCommand {
+                toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
+            }));
+            if is_new_player {
                 commands.push(panel::open(PanelAddress::Disclaimer));
             }
             Ok(command_list(commands))
-        } else {
-            fail!("Game not found: {:?}", game_id)
         }
-    } else {
-        let mut commands = vec![];
-        commands.push(Command::LoadScene(LoadSceneCommand {
-            scene_name: "Main".to_string(),
-            mode: SceneLoadMode::Single.into(),
-            skip_if_current: true,
-        }));
-        panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
-        commands.push(Command::TogglePanel(TogglePanelCommand {
-            toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
-        }));
-        if is_new_user {
-            commands.push(panel::open(PanelAddress::Disclaimer));
-        }
-        Ok(command_list(commands))
     }
+}
+
+fn handle_new_adventure(
+    database: &mut impl Database,
+    player_id: PlayerId,
+    side: Side,
+) -> Result<GameResponse> {
+    let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
+    player.state = Some(PlayerState::Adventure(adventure_generator::new_adventure(side)));
+    database.write_player(&player)?;
+    Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
+        scene_name: "World".to_string(),
+        mode: SceneLoadMode::Single.into(),
+        skip_if_current: true,
+    })]))
 }
 
 /// Creates a new default [GameState], deals opening hands, and writes its value
 /// to the database.
 fn handle_new_game(
     database: &mut impl Database,
-    user_id: PlayerId,
+    player_id: PlayerId,
     action: NewGameAction,
 ) -> Result<GameResponse> {
     let debug_options = action.debug_options.unwrap_or_default();
     let opponent_id = action.opponent;
     let deck_id = action.deck_index;
-    let mut user = database.player(user_id)?.with_error(|| "User not found")?;
-    let user_deck = user.deck(deck_id)?.clone();
+    let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
+    let user_deck = player.deck(deck_id)?.clone();
     let opponent_deck =
         if let Some(deck) = requested_deck(database, opponent_id, user_deck.side.opponent())? {
             deck
         } else {
-            user.current_game = Some(CurrentGame::Requested(NewGameRequest { deck_id }));
-            database.write_player(&user)?;
+            player.state = Some(PlayerState::RequestedGame(NewGameRequest { deck_id }));
+            database.write_player(&player)?;
             // TODO: Implement some kind of waiting UI here
             return Ok(GameResponse::from_commands(vec![]));
         };
@@ -343,12 +361,12 @@ fn handle_new_game(
     mutations::deal_opening_hands(&mut game)?;
     database.write_game(&game)?;
 
-    user.current_game = Some(CurrentGame::Playing(game_id));
-    database.write_player(&user)?;
+    player.state = Some(PlayerState::Playing(game_id));
+    database.write_player(&player)?;
 
     if let PlayerId::Database(_) = opponent_id {
         let mut opponent = database.player(opponent_id)?.with_error(|| "Opponent not found")?;
-        opponent.current_game = Some(CurrentGame::Playing(game_id));
+        opponent.state = Some(PlayerState::Playing(game_id));
         database.write_player(&opponent)?;
     }
 
@@ -361,10 +379,10 @@ fn handle_new_game(
     })
 }
 
-fn handle_leave_game(database: &mut impl Database, user_id: PlayerId) -> Result<GameResponse> {
-    let mut user = database.player(user_id)?.with_error(|| "User not found")?;
-    user.current_game = None;
-    database.write_player(&user)?;
+fn handle_leave_game(database: &mut impl Database, player_id: PlayerId) -> Result<GameResponse> {
+    let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
+    player.state = None;
+    database.write_player(&player)?;
     Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
         scene_name: "Main".to_string(),
         mode: SceneLoadMode::Single.into(),
@@ -477,6 +495,7 @@ fn handle_standard_action(
     let action: UserAction = de::from_slice(&standard_action.payload)
         .with_error(|| "Failed to deserialize action payload")?;
     let mut result = match action {
+        UserAction::NewAdventure(side) => handle_new_adventure(database, player_id, side),
         UserAction::NewGame(new_game_action) => {
             handle_new_game(database, player_id, new_game_action)
         }
@@ -515,15 +534,17 @@ pub fn find_game(database: &impl Database, game_id: Option<GameId>) -> Result<Ga
 }
 
 /// Writes the default initial state for a new player to the provided database
-fn create_new_player(database: &mut impl Database, player_id: PlayerId) -> Result<()> {
+fn create_new_player(database: &mut impl Database, player_id: PlayerId) -> Result<PlayerData> {
     let canonical_overlord = decklists::canonical_deck(player_id, Side::Overlord);
     let canonical_champion = decklists::canonical_deck(player_id, Side::Champion);
-    database.write_player(&PlayerData {
+    let result = PlayerData {
         id: player_id,
-        current_game: None,
+        state: None,
         decks: vec![canonical_overlord.clone(), canonical_champion.clone()],
         collection: canonical_overlord.cards.into_iter().chain(canonical_champion.cards).collect(),
-    })
+    };
+    database.write_player(&result)?;
+    Ok(result)
 }
 
 /// Look up the [PlayerData] for a player, or creates a new instance if none

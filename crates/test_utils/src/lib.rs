@@ -35,7 +35,7 @@ use data::card_name::CardName;
 use data::card_state::{CardPosition, CardPositionKind};
 use data::deck::Deck;
 use data::game::{GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData};
-use data::player_data::{CurrentGame, PlayerData};
+use data::player_data::{PlayerData, PlayerState};
 use data::player_name::PlayerId;
 use data::primitives::{
     ActionCount, CardId, DeckIndex, GameId, Lineage, ManaValue, PointsValue, RaidId, RoomId, Side,
@@ -134,13 +134,13 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
         players: hashmap! {
             overlord_user => PlayerData {
                 id: overlord_user,
-                current_game: Some(CurrentGame::Playing(game_id)),
+                state: Some(PlayerState::Playing(game_id)),
                 decks: vec![],
                 collection: hashmap! {}
             },
             champion_user => PlayerData {
                 id: champion_user,
-                current_game: Some(CurrentGame::Playing(game_id)),
+                state: Some(PlayerState::Playing(game_id)),
                 decks: vec![],
                 collection: hashmap! {}
             }

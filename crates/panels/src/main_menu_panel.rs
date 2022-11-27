@@ -22,7 +22,7 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::{actions, panel};
 use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::DeckIndex;
+use data::primitives::{DeckIndex, Side};
 use data::user_actions::{NewGameAction, UserAction};
 use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify};
@@ -48,6 +48,13 @@ impl Component for MainMenuPanel {
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center),
                     )
+                    .child(menu_button(
+                        "New Adventure",
+                        actions::close_and(
+                            PanelAddress::MainMenu,
+                            UserAction::NewAdventure(Side::Champion),
+                        ),
+                    ))
                     .child(menu_button(
                         "New Game",
                         actions::close_and(

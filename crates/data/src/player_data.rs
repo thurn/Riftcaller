@@ -19,6 +19,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use with_error::WithError;
 
+use crate::adventure::AdventureState;
 use crate::card_name::CardName;
 use crate::deck::Deck;
 use crate::player_name::PlayerId;
@@ -32,9 +33,10 @@ pub struct NewGameRequest {
 
 /// Represents the state of a game the player is participating in.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum CurrentGame {
+pub enum PlayerState {
+    Adventure(AdventureState),
     /// The player has initiated a request to create a game
-    Requested(NewGameRequest),
+    RequestedGame(NewGameRequest),
     /// The player is currently playing in the [GameId] game.
     Playing(GameId),
 }
@@ -48,7 +50,7 @@ pub struct PlayerData {
     /// Unique identifier for this player
     pub id: PlayerId,
     /// Game this player is currently participating in, if any.
-    pub current_game: Option<CurrentGame>,
+    pub state: Option<PlayerState>,
     /// This player's saved decks.
     pub decks: Vec<Deck>,
     /// Cards owned by this player
@@ -58,13 +60,13 @@ pub struct PlayerData {
 
 impl PlayerData {
     pub fn new(id: PlayerId) -> Self {
-        Self { id, current_game: None, decks: vec![], collection: HashMap::default() }
+        Self { id, state: None, decks: vec![], collection: HashMap::default() }
     }
 
     /// Returns the [DeckIndex] this player requested to use for a new game.
     pub fn requested_deck_id(&self) -> Option<DeckIndex> {
-        match &self.current_game {
-            Some(CurrentGame::Requested(request)) => Some(request.deck_id),
+        match &self.state {
+            Some(PlayerState::RequestedGame(request)) => Some(request.deck_id),
             _ => None,
         }
     }
@@ -82,8 +84,8 @@ impl PlayerData {
 /// Returns the [GameId] an optional [PlayerData] is currently playing in, if
 /// any.
 pub fn current_game_id(data: Option<PlayerData>) -> Option<GameId> {
-    match data.as_ref().and_then(|player| player.current_game.as_ref()) {
-        Some(CurrentGame::Playing(id)) => Some(*id),
+    match data.as_ref().and_then(|player| player.state.as_ref()) {
+        Some(PlayerState::Playing(id)) => Some(*id),
         _ => None,
     }
 }

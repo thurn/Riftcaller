@@ -189,13 +189,13 @@ fn make_overlord_test_session(
         players: hashmap! {
             overlord_id => PlayerData {
                 id: overlord_id,
-                current_game: None,
+                state: None,
                 decks: vec![overlord_deck.clone(), champion_deck.clone()],
                 collection: hashmap! {}
             },
             champion_id => PlayerData {
                 id: champion_id,
-                current_game: None,
+                state: None,
                 decks: vec![overlord_deck, champion_deck],
                 collection: hashmap! {}
             }

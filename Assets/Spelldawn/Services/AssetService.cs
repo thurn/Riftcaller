@@ -139,6 +139,9 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.CreateTokenCard:
             LoadCardListAssets(requests, new List<CardView> { command.CreateTokenCard.Card });
             break;
+          case GameCommand.CommandOneofCase.UpdateWorldMap:
+            LoadWorldMapAssets(requests, command.UpdateWorldMap);
+            break;
           case GameCommand.CommandOneofCase.None:
           default:
             break;
@@ -351,6 +354,14 @@ namespace Spelldawn.Services
             // Currently statically assigned
             break;
         }
+      }
+    }
+
+    void LoadWorldMapAssets(IDictionary<string, AsyncOperationHandle> requests, UpdateWorldMapCommand command)
+    {
+      foreach (var tile in command.Tiles)
+      {
+        LoadSprite(requests, tile.SpriteAddress);
       }
     }
 

@@ -15,9 +15,9 @@
 #nullable enable
 
 using System.Collections;
+using Spelldawn.Protos;
 using Spelldawn.Services;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Tilemaps;
 
 namespace Spelldawn.World
@@ -27,20 +27,15 @@ namespace Spelldawn.World
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _worldTilemap = null!;
 
-    IEnumerator Start()
+    public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
     {
-      var operation = Addressables.LoadAssetAsync<Sprite>("DavidBaumgart/WorldTiles.spriteatlas[hexPlainsColdSnowCovered01]");
-      yield return operation;
-      var tile = ScriptableObject.CreateInstance<Tile>();
-      tile.sprite = operation.Result;
-      _worldTilemap.SetTile(new Vector3Int(1, 1, 0), tile);
-      
-      var operation2 = Addressables.LoadAssetAsync<Sprite>("DavidBaumgart/Roads.spriteatlas[hexRoad-101000-00]");
-      yield return operation2;
-      var tile2 = ScriptableObject.CreateInstance<Tile>();
-      tile2.sprite = operation2.Result;
-      Debug.Log($"Start: got sprite: {operation2.Result.name} setting to tile {tile2.name}");
-      _worldTilemap.SetTile(new Vector3Int(1, 1, 1), tile2);      
+      foreach (var tile in command.Tiles)
+      {
+        var instance = ScriptableObject.CreateInstance<Tile>();
+        instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
+        _worldTilemap.SetTile(new Vector3Int(tile.X, tile.Y, tile.Z), instance);
+      }
+      yield break;
     }
   }
 }

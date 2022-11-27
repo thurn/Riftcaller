@@ -131,6 +131,9 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.UpdateInterfaceElement:
             yield return _registry.UpdateInterfaceService.HandleUpdateInterface(command.UpdateInterfaceElement);
             break;
+          case GameCommand.CommandOneofCase.UpdateWorldMap:
+            yield return _registry.WorldMap.HandleUpdateWorldMap(command.UpdateWorldMap);
+            break;
           case GameCommand.CommandOneofCase.None:
             break;
           default:
