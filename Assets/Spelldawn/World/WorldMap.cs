@@ -39,6 +39,7 @@ namespace Spelldawn.World
       yield return operation2;
       var tile2 = ScriptableObject.CreateInstance<Tile>();
       tile2.sprite = operation2.Result;
+      Debug.Log($"Start: got sprite: {operation2.Result.name} setting to tile {tile2.name}");
       _worldTilemap.SetTile(new Vector3Int(1, 1, 1), tile2);      
     }
   }

@@ -134,6 +134,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioSourceB
       objectReference: {fileID: 0}
+    - target: {fileID: 205228965686964167, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
+      propertyPath: _mainCamera
+      value: 
+      objectReference: {fileID: 2037827765}
+    - target: {fileID: 205228965686964167, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
+      propertyPath: _mainAudioSource
+      value: 
+      objectReference: {fileID: 2037827766}
     - target: {fileID: 205228965825750781, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
       propertyPath: m_Name
       value: AudioSourceA
@@ -188,6 +196,73 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
+--- !u!1001 &1132513093
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 53
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7660445
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.6427876
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383787, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577440611126383790, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+      propertyPath: m_Name
+      value: Main Camera
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+--- !u!20 &2037827765 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2577440611126383788, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+  m_PrefabInstance: {fileID: 1132513093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &2037827766 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2577440611126383781, guid: ded8a4d2ba14a449aa8f11991b1c4fc9, type: 3}
+  m_PrefabInstance: {fileID: 1132513093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8882478992546145594
 Transform:
   m_ObjectHideFlags: 0
@@ -207,7 +282,7 @@ Transform:
   - {fileID: 8882478992672068265}
   - {fileID: 8882478993046926906}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8882478992546145597
 GameObject:
