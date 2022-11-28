@@ -1,0 +1,117 @@
+// Copyright © Spelldawn 2021-present
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//    https://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#nullable enable
+
+using System;
+using UnityEngine;
+
+namespace Spelldawn.World
+{
+  public sealed class WorldCharacter : MonoBehaviour
+  {
+    static readonly int SpeedParam = Animator.StringToHash("Speed");
+    static readonly int DirectionParam = Animator.StringToHash("Direction");
+    static readonly float AnimatorUp = 0f;
+    static readonly float AnimatorSide = 1f;
+    static readonly float AnimatorDown = 2f;
+    
+    [SerializeField] Animator _animator = null!;
+    [SerializeField] GameObject _down = null!;
+    [SerializeField] GameObject _side = null!;
+    [SerializeField] GameObject _up = null!;
+
+    enum Direction
+    {
+      Up,
+      Down,
+      Left,
+      Right
+    }
+
+    void Start()
+    {
+      SetDirection(Direction.Right);
+      _animator.SetFloat(SpeedParam, 0f);
+    }
+
+    void Update()
+    {
+      if (Input.GetKeyDown(KeyCode.W))
+      {
+        SetDirection(Direction.Up);
+      }
+      
+      if (Input.GetKeyDown(KeyCode.A))
+      {
+        SetDirection(Direction.Left);
+      }
+      
+      if (Input.GetKeyDown(KeyCode.S))
+      {
+        SetDirection(Direction.Down);
+      }
+      
+      if (Input.GetKeyDown(KeyCode.D))
+      {
+        SetDirection(Direction.Right);
+      }
+
+      if (Input.GetKeyDown(KeyCode.Q))
+      {
+        _animator.SetFloat(SpeedParam, 0.5f);
+      }
+
+      if (Input.GetKeyDown(KeyCode.E))
+      {
+        _animator.SetFloat(SpeedParam, 0f);
+      }
+    }
+
+    void SetDirection(Direction direction)
+    {
+      _down.SetActive(false);
+      _up.SetActive(false);
+      _side.SetActive(false);
+
+      switch (direction)
+      {
+        case Direction.Up:
+          _up.SetActive(true);
+          _animator.SetFloat(DirectionParam, AnimatorUp);
+          break;
+        case Direction.Down:
+          _down.SetActive(true);
+          _animator.SetFloat(DirectionParam, AnimatorDown);          
+          break;
+        case Direction.Left:
+          _side.SetActive(true);
+          _animator.SetFloat(DirectionParam, AnimatorSide);
+          var s1 = _side.transform.localScale;
+          s1.x = Mathf.Abs(s1.x) * -1;
+          _side.transform.localScale = s1;          
+          break;
+        case Direction.Right:
+          _side.SetActive(true);
+          _animator.SetFloat(DirectionParam, AnimatorSide);
+          var s2 = _side.transform.localScale;
+          s2.x = Mathf.Abs(s2.x);
+          _side.transform.localScale = s2;             
+          break;
+        default:
+          throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+      }
+    }
+  }
+}
