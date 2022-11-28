@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb1436996484437ba088e125e09f1ff0, type: 3}
+  m_Name: FemaleKnight
+  m_EditorClassIdentifier: 
+  _bodyColor: {r: 0.7294118, g: 0.5921569, b: 0.46666667, a: 1}
+  _customizations:
+  - _customizationData: {fileID: 11400000, guid: dc5627378d1c82a49bf2d8644012a350, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: b102f0e64b76b9848bbfc8ba69481df9, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 8358d7def38c1d943aa2b3b475609c5c, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 08d565e1bc928cc4ca2d0ddaa4b29d5c, type: 2}
+    _mainColor: {r: 0.5555708, g: 0.7735849, b: 0.53640085, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 5f8adae0ebba9ce42b84324de1cb3002, type: 2}
+    _mainColor: {r: 0.6431373, g: 0.57254905, b: 0.4745098, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: bdbee7467021b474ba672f891baf4fae, type: 2}
+    _mainColor: {r: 0.5568628, g: 0.49019608, b: 0.43137255, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: f1723c068c2306f4c8401e54ac7b2b43, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 452f037c27679464cb9f6b66adeb5062, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: dcbd46b686c5abb4fab472ab410e2181, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 1
+    _detailColor: {r: 1, g: 0.354654, b: 0.33089894, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: d2d579b6e969cd3488c3d5a79f764890, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 2d55f904d5e16484093c40bfaca6723f, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 0.8235295, b: 0.3372549, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 967a16ffb69adac489914cab121abe0e, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 255}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 0.8235294, b: 0.33725488, a: 255}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: f08828dc9bc69444eb8821c54c1b9985, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 255}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 0.8235294, b: 0.33725488, a: 255}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: f05a64345123b46469fac518931b5f2b, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 255}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 0.8235294, b: 0.33725488, a: 255}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 8b1067fdf81783d478c97575fe8da7c1, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 0.87058824, g: 0.2784314, b: 0.2784314, a: 1}
+    _isHidden: 0
+  _scaleGroups:
+  - _groupName: Body
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Head
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Arms
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Hands
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Legs
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Feet
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Weapon
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Shield
+    _scale: 1
+    _width: 1
+    _length: 1
