@@ -23,17 +23,34 @@ use protos::spelldawn::{SpriteAddress, UpdateWorldMapCommand, WorldMapTile};
 /// [AdventureState].
 pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     Ok(vec![Command::UpdateWorldMap(UpdateWorldMapCommand {
-        tiles: state.tiles.iter().map(|(position, state)| render_tile(*position, state)).collect(),
+        tiles: state
+            .tiles
+            .iter()
+            .flat_map(|(position, state)| render_tile(*position, state))
+            .collect(),
     })])
 }
 
-fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
-    WorldMapTile {
+fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
+    let mut result = vec![WorldMapTile {
         sprite_address: Some(SpriteAddress {
             address: format!("DavidBaumgart/WorldTiles.spriteatlas[{}]", tile.sprite),
         }),
         x: position.x,
         y: position.y,
         z: 0,
+    }];
+
+    if let Some(road) = &tile.road {
+        result.push(WorldMapTile {
+            sprite_address: Some(SpriteAddress {
+                address: format!("DavidBaumgart/Roads.spriteatlas[{}]", road),
+            }),
+            x: position.x,
+            y: position.y,
+            z: 1,
+        })
     }
+
+    result
 }

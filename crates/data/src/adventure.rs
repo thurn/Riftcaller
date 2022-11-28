@@ -28,6 +28,8 @@ pub struct TilePosition {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TileState {
     pub sprite: String,
+
+    pub road: Option<String>,
 }
 
 /// Stores the primary state for an ongoing game
