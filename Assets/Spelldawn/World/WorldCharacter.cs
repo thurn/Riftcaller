@@ -15,6 +15,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Spelldawn.World
@@ -34,7 +35,7 @@ namespace Spelldawn.World
     [SerializeField] GameObject _side = null!;
     [SerializeField] GameObject _up = null!;
     
-    Vector2? _targetPosition;
+    readonly Queue<Vector2> _targetPositions = new();
 
     enum Direction
     {
@@ -82,23 +83,33 @@ namespace Spelldawn.World
         _animator.SetFloat(SpeedParam, 0f);
       }
 
-      if (_targetPosition is { } target)
+      if (_targetPositions.Count > 0)
       {
+        var target = _targetPositions.Peek();
         var step =  MoveSpeed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, target, step);
 
         if (Vector3.Distance(transform.position, target) < 0.001f)
         {
-          _targetPosition = null;
-          _animator.SetFloat(SpeedParam, 0f);
+          _targetPositions.Dequeue();
+          if (_targetPositions.Count == 0)
+          {
+            _animator.SetFloat(SpeedParam, 0f);
+          }
         }            
       }
     }
 
-    public void MoveToPosition(Vector2 position)
+    public void MoveOnPath(List<Vector2> positions)
     {
-      _targetPosition = position;
-      _animator.SetFloat(SpeedParam, 0.5f);
+      if (positions.Count > 0)
+      {
+        _animator.SetFloat(SpeedParam, 0.5f);
+        foreach (var p in positions)
+        {
+          _targetPositions.Enqueue(p);
+        }        
+      }
     }
 
     void SetDirection(Direction direction)

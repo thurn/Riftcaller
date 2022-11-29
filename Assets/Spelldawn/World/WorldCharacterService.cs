@@ -14,6 +14,7 @@
 
 #nullable enable
 
+using System.Collections.Generic;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
@@ -39,12 +40,27 @@ namespace Spelldawn.World
     {
       if (Input.GetKeyDown(KeyCode.R))
       {
-        _hero.MoveToPosition(_worldMap.ToCharacterPosition(new WorldPosition
+        var positions = new List<Vector2>
         {
-          X = 1,
-          Y = 0
-        }));
-      }      
+          _worldMap.ToCharacterPosition(new WorldPosition
+          {
+            X = 1,
+            Y = 0
+          }),
+          _worldMap.ToCharacterPosition(new WorldPosition
+          {
+            X = 2,
+            Y = 0
+          }),
+          _worldMap.ToCharacterPosition(new WorldPosition
+          {
+            X = 2,
+            Y = -1
+          })
+        };
+
+        _hero.MoveOnPath(positions);
+      }
     }
   }
 }
