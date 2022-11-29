@@ -352,6 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 1501972795}
+  _worldMap: {fileID: 1890128903}
 --- !u!1001 &1596644386
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -486,6 +487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _registry: {fileID: 468243433}
   _worldTilemap: {fileID: 1391484608}
+  _selectedHex: {fileID: 1935680941517418016, guid: 9b0446e9e9b2244898302c461cc203ec, type: 3}
 --- !u!114 &1890128904
 MonoBehaviour:
   m_ObjectHideFlags: 0

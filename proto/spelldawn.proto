@@ -1473,7 +1473,9 @@ message UpdateInterfaceElementCommand {
 //
 // We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
 // Right" convention, with values increasing moving up and right.
-// ```
+//
+// ```text
+//
 //       /  \    / \
 //     /     \ /     \
 //    |  0,2  |  1,2  |
@@ -1488,6 +1490,7 @@ message UpdateInterfaceElementCommand {
 //    |       |       |
 //     \     / \     /
 //       \ /     \ /
+//
 // ```
 message WorldPosition {
     int32 x = 1;

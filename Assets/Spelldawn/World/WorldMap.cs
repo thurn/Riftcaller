@@ -14,9 +14,12 @@
 
 #nullable enable
 
+using System;
 using System.Collections;
+using DG.Tweening;
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -26,6 +29,7 @@ namespace Spelldawn.World
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _worldTilemap = null!;
+    [SerializeField] GameObject _selectedHex = null!;
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
     {
@@ -35,6 +39,7 @@ namespace Spelldawn.World
         instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
         _worldTilemap.SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, tile.ZIndex), instance);
       }
+
       yield break;
     }
 
@@ -49,6 +54,17 @@ namespace Spelldawn.World
       var result = ToTilePosition(worldPosition);
       result.y -= 2.25f;
       return result;
+    }
+
+    public void OnClick(Vector3 position)
+    {
+      var cellPosition = _worldTilemap.layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
+      var pos = _worldTilemap.CellToWorld(cellPosition);
+      var selected = ComponentUtils.InstantiateGameObject(_selectedHex);
+      selected.transform.position = pos;
+      TweenUtils.Sequence("HexClick")
+        .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+        .AppendCallback(() => Destroy(selected));
     }
   }
 }

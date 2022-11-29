@@ -28,8 +28,8 @@ namespace Spelldawn.Utils
     public static T InstantiateGameObject<T>(GameObject prefab, Transform? parent = null) where T : Component
     {
       Errors.CheckNotNull(prefab);
-      var prefabObject = Object.Instantiate(prefab, parent);
-      var result = prefabObject.GetComponent<T>();
+      var instantiated = Object.Instantiate(prefab, parent);
+      var result = instantiated.GetComponent<T>();
       if (!result)
       {
         throw new NullReferenceException($"Expected a component of type {typeof(T).FullName}");
@@ -38,11 +38,24 @@ namespace Spelldawn.Utils
       if (!parent)
         // Instantiate things safely out of view if there's no parent specified :)
       {
-        prefabObject.transform.position = 1000f * Vector3.one;
+        instantiated.transform.position = 1000f * Vector3.one;
       }
 
       return result;
     }
+    
+    public static GameObject InstantiateGameObject(GameObject prefab, Transform? parent = null)
+    {
+      Errors.CheckNotNull(prefab);
+      var result = Object.Instantiate(prefab, parent);
+
+      if (!parent)
+      {
+        result.transform.position = 1000f * Vector3.one;
+      }
+
+      return result;
+    }    
 
     public static T GetComponent<T>(Component component) where T : Component
     {
