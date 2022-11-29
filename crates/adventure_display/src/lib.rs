@@ -36,9 +36,8 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
         sprite_address: Some(SpriteAddress {
             address: format!("DavidBaumgart/WorldTiles.spriteatlas[{}]", tile.sprite),
         }),
-        x: position.x,
-        y: position.y,
-        z: 0,
+        position: Some(adapters::world_position(position)),
+        z_index: 0,
     }];
 
     if let Some(road) = &tile.road {
@@ -46,9 +45,8 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
             sprite_address: Some(SpriteAddress {
                 address: format!("DavidBaumgart/Roads.spriteatlas[{}]", road),
             }),
-            x: position.x,
-            y: position.y,
-            z: 1,
+            position: Some(adapters::world_position(position)),
+            z_index: 1,
         })
     }
 

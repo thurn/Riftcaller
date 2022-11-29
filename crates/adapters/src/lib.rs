@@ -17,6 +17,7 @@
 pub mod response_builder;
 
 use anyhow::Result;
+use data::adventure::TilePosition;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{
     AbilityId, AbilityIndex, CardId, DeckIndex, GameId, GameObjectId, RoomId, Side, Sprite,
@@ -25,7 +26,7 @@ use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::{
     CardIdentifier, DeckIdentifier, GameIdentifier, GameObjectIdentifier, PlayerIdentifier,
-    PlayerSide, RoomIdentifier, SpriteAddress, TimeValue,
+    PlayerSide, RoomIdentifier, SpriteAddress, TimeValue, WorldPosition,
 };
 use serde_json::{de, ser};
 use with_error::fail;
@@ -158,4 +159,12 @@ pub fn sprite(sprite: &Sprite) -> SpriteAddress {
 
 pub fn milliseconds(milliseconds: u32) -> TimeValue {
     TimeValue { milliseconds }
+}
+
+pub fn world_position(p: TilePosition) -> WorldPosition {
+    WorldPosition { x: p.x, y: p.y }
+}
+
+pub fn tile_position(p: WorldPosition) -> TilePosition {
+    TilePosition { x: p.x, y: p.y }
 }

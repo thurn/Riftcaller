@@ -203,6 +203,9 @@ namespace Spelldawn.Services
     [SerializeField] WorldMap _worldMap = null!;
     public WorldMap WorldMap => _worldMap;
 
+    [SerializeField] WorldCharacterService _characterService = null!;
+    public WorldCharacterService CharacterService => _characterService;
+
     IEnumerator Start()
     {
       Application.targetFrameRate = 60;

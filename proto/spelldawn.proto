@@ -1469,11 +1469,10 @@ message UpdateInterfaceElementCommand {
     }
 }
 
-
-// Represents a world map tile at a given position. We use offset hex
-// coordinates with the "Pointy Top - Odd Rows Shifted Right" convention,
-// with values increasing moving up and right. The Z index represents sprite
-// tiles which are drawn on top of each other.
+// Position of a tile on the world map
+//
+// We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
+// Right" convention, with values increasing moving up and right.
 // ```
 //       /  \    / \
 //     /     \ /     \
@@ -1490,16 +1489,21 @@ message UpdateInterfaceElementCommand {
 //     \     / \     /
 //       \ /     \ /
 // ```
+message WorldPosition {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+// Represents the contents of a world map tile.
 message WorldMapTile {
     // Addressable asset path of sprite to display on the hex grid
     SpriteAddress sprite_address = 1;
 
-    int32 x = 2;
+    // Tile position.
+    WorldPosition position = 2;
 
-    int32 y = 3;
-
-    // Higher Z-index sprites are drawn on top of lower Z-index sprites
-    int32 z = 4;
+    // Higher Z-index sprites are drawn on top of lower Z-index sprites.
+    int32 z_index = 3;
 }
 
 // Updates the world map tilemap. Only valid in the 'World' scene.

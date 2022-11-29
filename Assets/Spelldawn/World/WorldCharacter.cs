@@ -23,14 +23,18 @@ namespace Spelldawn.World
   {
     static readonly int SpeedParam = Animator.StringToHash("Speed");
     static readonly int DirectionParam = Animator.StringToHash("Direction");
-    static readonly float AnimatorUp = 0f;
-    static readonly float AnimatorSide = 1f;
-    static readonly float AnimatorDown = 2f;
     
+    const float AnimatorUp = 0f;
+    const float AnimatorSide = 1f;
+    const float AnimatorDown = 2f;
+    const float MoveSpeed = 2f;
+
     [SerializeField] Animator _animator = null!;
     [SerializeField] GameObject _down = null!;
     [SerializeField] GameObject _side = null!;
     [SerializeField] GameObject _up = null!;
+    
+    Vector2? _targetPosition;
 
     enum Direction
     {
@@ -40,10 +44,10 @@ namespace Spelldawn.World
       Right
     }
 
-    void Start()
+    public void Initialize()
     {
       SetDirection(Direction.Right);
-      _animator.SetFloat(SpeedParam, 0f);
+      _animator.SetFloat(SpeedParam, 0f);      
     }
 
     void Update()
@@ -77,6 +81,24 @@ namespace Spelldawn.World
       {
         _animator.SetFloat(SpeedParam, 0f);
       }
+
+      if (_targetPosition is { } target)
+      {
+        var step =  MoveSpeed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, target, step);
+
+        if (Vector3.Distance(transform.position, target) < 0.001f)
+        {
+          _targetPosition = null;
+          _animator.SetFloat(SpeedParam, 0f);
+        }            
+      }
+    }
+
+    public void MoveToPosition(Vector2 position)
+    {
+      _targetPosition = position;
+      _animator.SetFloat(SpeedParam, 0.5f);
     }
 
     void SetDirection(Direction direction)

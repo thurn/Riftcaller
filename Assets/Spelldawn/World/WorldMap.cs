@@ -33,9 +33,22 @@ namespace Spelldawn.World
       {
         var instance = ScriptableObject.CreateInstance<Tile>();
         instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
-        _worldTilemap.SetTile(new Vector3Int(tile.X, tile.Y, tile.Z), instance);
+        _worldTilemap.SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, tile.ZIndex), instance);
       }
       yield break;
+    }
+
+    public Vector3 ToTilePosition(WorldPosition worldPosition) =>
+      _worldTilemap.layoutGrid.CellToWorld(new Vector3Int(worldPosition.X, worldPosition.Y, 0));
+
+    /// <summary>
+    /// Character positions are offset from actual world positions in order to produce the correct sprite ordering.
+    /// </summary>
+    public Vector3 ToCharacterPosition(WorldPosition worldPosition)
+    {
+      var result = ToTilePosition(worldPosition);
+      result.y -= 2.25f;
+      return result;
     }
   }
 }

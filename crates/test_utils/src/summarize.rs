@@ -37,7 +37,7 @@ use protos::spelldawn::{
     RulesText, RunInParallelCommand, SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand,
     SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand, UpdateGameViewCommand,
     UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText, UpdateWorldMapCommand,
-    VisitRoomCommand, WorldMapTile,
+    VisitRoomCommand, WorldMapTile, WorldPosition,
 };
 use server::requests::GameResponse;
 
@@ -713,11 +713,17 @@ impl Summarize for UpdateWorldMapCommand {
     }
 }
 
+impl Summarize for WorldPosition {
+    fn summarize(self, summary: &mut Summary) {
+        summary.child_node("x", self.x);
+        summary.child_node("y", self.y);
+    }
+}
+
 impl Summarize for WorldMapTile {
     fn summarize(self, summary: &mut Summary) {
         summary.child("sprite_address", self.sprite_address);
-        summary.child_node("x", self.x);
-        summary.child_node("y", self.y);
-        summary.child_node("z", self.z);
+        summary.child("position", self.position);
+        summary.child_node("z_index", self.z_index);
     }
 }

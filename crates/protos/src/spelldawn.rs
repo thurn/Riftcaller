@@ -1454,10 +1454,10 @@ pub mod update_interface_element_command {
         UpdateText(super::UpdateText),
     }
 }
-/// Represents a world map tile at a given position. We use offset hex
-/// coordinates with the "Pointy Top - Odd Rows Shifted Right" convention,
-/// with values increasing moving up and right. The Z index represents sprite
-/// tiles which are drawn on top of each other.
+/// Position of a tile on the world map
+///
+/// We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
+/// Right" convention, with values increasing moving up and right.
 /// ```
 ///       /  \    / \
 ///     /     \ /     \
@@ -1475,17 +1475,24 @@ pub mod update_interface_element_command {
 ///       \ /     \ /
 /// ```
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WorldPosition {
+    #[prost(int32, tag = "1")]
+    pub x: i32,
+    #[prost(int32, tag = "2")]
+    pub y: i32,
+}
+/// Represents the contents of a world map tile.
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WorldMapTile {
     /// Addressable asset path of sprite to display on the hex grid
     #[prost(message, optional, tag = "1")]
     pub sprite_address: ::core::option::Option<SpriteAddress>,
-    #[prost(int32, tag = "2")]
-    pub x: i32,
+    /// Tile position.
+    #[prost(message, optional, tag = "2")]
+    pub position: ::core::option::Option<WorldPosition>,
+    /// Higher Z-index sprites are drawn on top of lower Z-index sprites.
     #[prost(int32, tag = "3")]
-    pub y: i32,
-    /// Higher Z-index sprites are drawn on top of lower Z-index sprites
-    #[prost(int32, tag = "4")]
-    pub z: i32,
+    pub z_index: i32,
 }
 /// Updates the world map tilemap. Only valid in the 'World' scene.
 #[derive(Clone, PartialEq, ::prost::Message)]
