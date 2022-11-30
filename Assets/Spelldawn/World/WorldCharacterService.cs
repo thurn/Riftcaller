@@ -36,6 +36,17 @@ namespace Spelldawn.World
       _hero.Initialize();
     }
 
+    public void MoveHero(List<Vector2> path)
+    {
+      _hero.MoveOnPath(path);
+    }
+
+    public Vector3Int CurrentHeroPosition()
+    {
+      var result = _worldMap.FromCharacterPosition(_hero.transform.position);
+      return new Vector3Int(result.X, result.Y, 0);
+    }
+
     void Update()
     {
       if (Input.GetKeyDown(KeyCode.R))

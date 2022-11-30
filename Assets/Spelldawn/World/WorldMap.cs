@@ -14,7 +14,6 @@
 
 #nullable enable
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,21 +28,16 @@ namespace Spelldawn.World
 {
   public sealed class WorldMap : MonoBehaviour, Dijkstra<Vector3Int>.IGraph
   {
-    static Vector3Int
-      LEFT = new Vector3Int(-1, 0, 0),
-      RIGHT = new Vector3Int(1, 0, 0),
-      DOWN = new Vector3Int(0, -1, 0),
-      DOWNLEFT = new Vector3Int(-1, -1, 0),
-      DOWNRIGHT = new Vector3Int(1, -1, 0),
-      UP = new Vector3Int(0, 1, 0),
-      UPLEFT = new Vector3Int(-1, 1, 0),
-      UPRIGHT = new Vector3Int(1, 1, 0);
-
-    static Vector3Int[] directions_when_y_is_even =
-      { LEFT, RIGHT, DOWN, DOWNLEFT, UP, UPLEFT };
-
-    static Vector3Int[] directions_when_y_is_odd =
-      { LEFT, RIGHT, DOWN, DOWNRIGHT, UP, UPRIGHT };
+    static readonly Vector3Int Left = new(-1, 0, 0);
+    static readonly Vector3Int Right = new(1, 0, 0);
+    static readonly Vector3Int Down = new(0, -1, 0);
+    static readonly Vector3Int Downleft = new(-1, -1, 0);
+    static readonly Vector3Int Downright = new(1, -1, 0);
+    static readonly Vector3Int Up = new(0, 1, 0);
+    static readonly Vector3Int Upleft = new(-1, 1, 0);
+    static readonly Vector3Int Upright = new(1, 1, 0);
+    static readonly Vector3Int[] DirectionsWhenYIsEven = { Left, Right, Down, Downleft, Up, Upleft };
+    static readonly Vector3Int[] DirectionsWhenYIsOdd = { Left, Right, Down, Downright, Up, Upright };
 
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _worldTilemap = null!;
@@ -64,15 +58,32 @@ namespace Spelldawn.World
     public Vector3 ToTilePosition(WorldPosition worldPosition) =>
       _worldTilemap.layoutGrid.CellToWorld(new Vector3Int(worldPosition.X, worldPosition.Y, 0));
 
+    public WorldPosition FromTilePosition(Vector3 tilePosition)
+    {
+      var position = _worldTilemap.layoutGrid.WorldToCell(tilePosition);
+      return new WorldPosition
+      {
+        X = position.x,
+        Y = position.y
+      };
+    }
+
     /// <summary>
     /// Character positions are offset from actual world positions in order to produce the correct sprite ordering.
     /// </summary>
-    public Vector3 ToCharacterPosition(WorldPosition worldPosition)
+    public Vector2 ToCharacterPosition(WorldPosition worldPosition)
     {
       var result = ToTilePosition(worldPosition);
       result.y -= 2.25f;
       return result;
     }
+    
+    public WorldPosition FromCharacterPosition(Vector2 characterPosition)
+    {
+      characterPosition.y += 2.25f;
+      var result = FromTilePosition(characterPosition);
+      return result;
+    }    
 
     public void OnClick(Vector3 position)
     {
@@ -85,18 +96,19 @@ namespace Spelldawn.World
         .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
         .AppendCallback(() => Destroy(selected));
 
-      Debug.Log($"Getting shortest paths for {cellPosition}");
-      var path = Dijkstra<Vector3Int>.ShortestPath(this, new Vector3Int(0, 0, 0), cellPosition);
-      foreach (var vertex in path)
+      var start = _registry.CharacterService.CurrentHeroPosition();
+      var path = Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
+      _registry.CharacterService.MoveHero(path.Select(v => ToCharacterPosition(new WorldPosition
       {
-        Debug.Log($"Shortest path: {vertex}");
-      }
+        X = v.x,
+        Y = v.y
+      })).ToList());
     }
 
     public List<Vector3Int> FindNeighbors(Vector3Int vertex)
     {
       var result = new List<Vector3Int>();
-      Vector3Int[] directions = (vertex.y % 2) == 0 ? directions_when_y_is_even : directions_when_y_is_odd;
+      Vector3Int[] directions = (vertex.y % 2) == 0 ? DirectionsWhenYIsEven : DirectionsWhenYIsOdd;
       foreach (var direction in directions)
       {
         Vector3Int neighborPos = vertex + direction;

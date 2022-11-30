@@ -104,6 +104,7 @@ namespace Spelldawn.World
     {
       if (positions.Count > 0)
       {
+        _targetPositions.Clear();
         _animator.SetFloat(SpeedParam, 0.5f);
         foreach (var p in positions)
         {

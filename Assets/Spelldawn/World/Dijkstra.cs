@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Spelldawn.World
 {
@@ -32,50 +33,45 @@ namespace Spelldawn.World
     
     public static List<TVertex> ShortestPath(IGraph graph, TVertex source, TVertex destination)
     {
-      // Code adapted from https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+      // Code adapted from https://en.wikipedia.org/wiki/Dijkstra's_algorithm#Pseudocode
       
-      var distance = new Dictionary<TVertex, float>();
-      var previous = new Dictionary<TVertex, TVertex>();
-      var remaining = new HashSet<TVertex>();
+      var dist = new Dictionary<TVertex, float>();
+      var prev = new Dictionary<TVertex, TVertex>();
+      var q = new HashSet<TVertex>();
       
       foreach (var vertex in graph.Vertices())
       {
-        distance[vertex] = float.PositiveInfinity;
-        remaining.Add(vertex);
+        dist[vertex] = float.PositiveInfinity;
+        q.Add(vertex);
       }
-      distance[source] = 0f;
+      dist[source] = 0f;
 
-      while (remaining.Count > 0)
+      while (q.Count > 0)
       {
-        var subject = remaining.OrderBy(v => distance[v]).First();
+        var u = q.OrderBy(v => dist[v]).First();
+        q.Remove(u);
 
-        if (subject.Equals(destination))
+        foreach (var vertex in graph.FindNeighbors(u).Where(v => q.Contains(v)))
         {
-          // Read the shortest path back to 'source' and then terminate
-          var path = new List<TVertex>();
-          while (previous.ContainsKey(subject))
+          var alt = dist[u] + graph.GetDistance(u, vertex);
+          if (alt < dist[vertex])
           {
-            path.Insert(0, subject);
-            subject = previous[subject];
-          }
-
-          return path;
-        }
-        
-        remaining.Remove(subject);
-
-        foreach (var vertex in graph.FindNeighbors(subject))
-        {
-          var d = distance[subject] + graph.GetDistance(subject, vertex);
-          if (d < distance[vertex])
-          {
-            distance[vertex] = d;
-            previous[vertex] = subject;
+            dist[vertex] = alt;
+            prev[vertex] = u;
           }
         }
       }
 
-      return new List<TVertex>();
+      // Read the shortest path back to 'source'
+      var position = destination;
+      var path = new List<TVertex>();
+      while (prev.ContainsKey(position))
+      {
+        path.Insert(0, position);
+        position = prev[position];
+      }
+
+      return path;
     }    
   }
 }
