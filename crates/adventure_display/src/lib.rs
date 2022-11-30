@@ -38,6 +38,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
         }),
         position: Some(adapters::world_position(position)),
         z_index: 0,
+        walkable: tile.road.is_some(),
     }];
 
     if let Some(road) = &tile.road {
@@ -47,6 +48,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
             }),
             position: Some(adapters::world_position(position)),
             z_index: 1,
+            walkable: false,
         })
     }
 

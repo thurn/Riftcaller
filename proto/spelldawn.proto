@@ -1507,6 +1507,10 @@ message WorldMapTile {
 
     // Higher Z-index sprites are drawn on top of lower Z-index sprites.
     int32 z_index = 3;
+
+    // Can the player character navigate through this tile? Only applies to
+    // tiles with a z_index of 0.
+    bool walkable = 4;
 }
 
 // Updates the world map tilemap. Only valid in the 'World' scene.

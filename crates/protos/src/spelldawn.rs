@@ -1458,7 +1458,9 @@ pub mod update_interface_element_command {
 ///
 /// We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
 /// Right" convention, with values increasing moving up and right.
-/// ```
+///
+/// ```text
+/// 
 ///       /  \    / \
 ///     /     \ /     \
 ///    |  0,2  |  1,2  |
@@ -1493,6 +1495,9 @@ pub struct WorldMapTile {
     /// Higher Z-index sprites are drawn on top of lower Z-index sprites.
     #[prost(int32, tag = "3")]
     pub z_index: i32,
+    /// Can the player character navigate through this tile?
+    #[prost(bool, tag = "4")]
+    pub walkable: bool,
 }
 /// Updates the world map tilemap. Only valid in the 'World' scene.
 #[derive(Clone, PartialEq, ::prost::Message)]

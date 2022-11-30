@@ -38,18 +38,25 @@ namespace Spelldawn.World
     static readonly Vector3Int Upright = new(1, 1, 0);
     static readonly Vector3Int[] DirectionsWhenYIsEven = { Left, Right, Down, Downleft, Up, Upleft };
     static readonly Vector3Int[] DirectionsWhenYIsOdd = { Left, Right, Down, Downright, Up, Upright };
-
+    
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _worldTilemap = null!;
     [SerializeField] GameObject _selectedHex = null!;
+    readonly HashSet<WorldPosition> _walkableTiles = new();
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
     {
+      _walkableTiles.Clear();
       foreach (var tile in command.Tiles)
       {
         var instance = ScriptableObject.CreateInstance<Tile>();
         instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
         _worldTilemap.SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, tile.ZIndex), instance);
+        
+        if (tile.Walkable && tile.ZIndex == 0)
+        {
+          _walkableTiles.Add(tile.Position);
+        }
       }
 
       yield break;
@@ -88,33 +95,41 @@ namespace Spelldawn.World
     public void OnClick(Vector3 position)
     {
       var cellPosition = _worldTilemap.layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
-      var pos = _worldTilemap.CellToWorld(cellPosition);
-      var selected = ComponentUtils.InstantiateGameObject(_selectedHex);
-      selected.transform.position = pos;
-
-      TweenUtils.Sequence("HexClick")
-        .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-        .AppendCallback(() => Destroy(selected));
-
-      var start = _registry.CharacterService.CurrentHeroPosition();
-      var path = Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
-      _registry.CharacterService.MoveHero(path.Select(v => ToCharacterPosition(new WorldPosition
+      
+      if (_walkableTiles.Contains(ToWorldPosition(cellPosition)))
       {
-        X = v.x,
-        Y = v.y
-      })).ToList());
+        var pos = _worldTilemap.CellToWorld(cellPosition);
+        var selected = ComponentUtils.InstantiateGameObject(_selectedHex);
+        selected.transform.position = pos;
+
+        TweenUtils.Sequence("HexClick")
+          .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+          .AppendCallback(() => Destroy(selected));
+        
+        var start = _registry.CharacterService.CurrentHeroPosition();
+        var path = Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
+        _registry.CharacterService.MoveHero(path.Select(v => ToCharacterPosition(new WorldPosition
+        {
+          X = v.x,
+          Y = v.y
+        })).ToList());        
+      }
     }
 
     public List<Vector3Int> FindNeighbors(Vector3Int vertex)
     {
       var result = new List<Vector3Int>();
-      Vector3Int[] directions = (vertex.y % 2) == 0 ? DirectionsWhenYIsEven : DirectionsWhenYIsOdd;
+      var directions = (vertex.y % 2) == 0 ? DirectionsWhenYIsEven : DirectionsWhenYIsOdd;
+      
       foreach (var direction in directions)
       {
-        Vector3Int neighborPos = vertex + direction;
-
-        if (neighborPos.x >= _worldTilemap.cellBounds.min.x && neighborPos.x < _worldTilemap.cellBounds.max.x &&
-            neighborPos.y >= _worldTilemap.cellBounds.min.y && neighborPos.y < _worldTilemap.cellBounds.max.y)
+        var neighborPos = vertex + direction;
+        
+        if (_walkableTiles.Contains(ToWorldPosition(neighborPos)) && 
+            neighborPos.x >= _worldTilemap.cellBounds.min.x && 
+            neighborPos.x < _worldTilemap.cellBounds.max.x &&
+            neighborPos.y >= _worldTilemap.cellBounds.min.y &&
+            neighborPos.y < _worldTilemap.cellBounds.max.y)
         {
           result.Add(neighborPos);
         }
@@ -122,7 +137,7 @@ namespace Spelldawn.World
 
       return result;
     }
-
+    
     public List<Vector3Int> Vertices()
     {
       var result = new List<Vector3Int>();
@@ -136,5 +151,7 @@ namespace Spelldawn.World
 
       return result;
     }
+
+    WorldPosition ToWorldPosition(Vector3Int vector) => new() { X = vector.x, Y = vector.y };
   }
 }
