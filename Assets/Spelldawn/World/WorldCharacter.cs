@@ -28,12 +28,12 @@ namespace Spelldawn.World
     const float AnimatorUp = 0f;
     const float AnimatorSide = 1f;
     const float AnimatorDown = 2f;
-    const float MoveSpeed = 2f;
 
     [SerializeField] Animator _animator = null!;
     [SerializeField] GameObject _down = null!;
     [SerializeField] GameObject _side = null!;
     [SerializeField] GameObject _up = null!;
+    float _moveSpeed;
     
     readonly Queue<Vector2> _targetPositions = new();
 
@@ -86,7 +86,8 @@ namespace Spelldawn.World
       if (_targetPositions.Count > 0)
       {
         var target = _targetPositions.Peek();
-        var step =  MoveSpeed * Time.deltaTime;
+        
+        var step =  _moveSpeed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, target, step);
 
         if (Vector3.Distance(transform.position, target) < 0.001f)
@@ -95,6 +96,10 @@ namespace Spelldawn.World
           if (_targetPositions.Count == 0)
           {
             _animator.SetFloat(SpeedParam, 0f);
+          }
+          else
+          {
+            SetDirectionForTarget(_targetPositions.Peek());
           }
         }            
       }
@@ -105,11 +110,27 @@ namespace Spelldawn.World
       if (positions.Count > 0)
       {
         _targetPositions.Clear();
-        _animator.SetFloat(SpeedParam, 0.5f);
+        _animator.SetFloat(SpeedParam, positions.Count > 1 ? 1.0f : 0.5f);
+        _moveSpeed = positions.Count > 1 ? 4.0f : 2.0f;
         foreach (var p in positions)
         {
           _targetPositions.Enqueue(p);
-        }        
+        }
+        
+        SetDirectionForTarget(_targetPositions.Peek());
+      }
+    }
+
+    void SetDirectionForTarget(Vector2 target)
+    {
+      var direction = (target - ((Vector2)transform.position)).normalized;
+      if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+      {
+        SetDirection(direction.x < 0 ? Direction.Left : Direction.Right);
+      }
+      else
+      {
+        SetDirection(direction.y < 0 ? Direction.Down : Direction.Up);
       }
     }
 
