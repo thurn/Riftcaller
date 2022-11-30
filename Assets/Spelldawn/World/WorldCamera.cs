@@ -14,6 +14,7 @@
 
 #nullable enable
 
+using Spelldawn.Services;
 using UnityEngine;
 
 namespace Spelldawn.World
@@ -22,6 +23,8 @@ namespace Spelldawn.World
   {
     [SerializeField] Camera _camera = null!;
     [SerializeField] WorldMap _worldMap = null!;
+    [SerializeField] Registry _registry = null!;
+    [SerializeField] float _panSpeed;
     Vector3? _dragStartScreenPosition;
     Vector3 _dragStartPosition;
 
@@ -50,6 +53,13 @@ namespace Spelldawn.World
         }
 
         _dragStartScreenPosition = null;
+      }
+      else if (_registry.CharacterService.Hero.Moving)
+      {
+        var position = _registry.CharacterService.Hero.gameObject.transform.position;
+        var step =  _panSpeed * Time.deltaTime;
+        var target = new Vector3(position.x, position.y + WorldCharacter.CharacterOffset, transform.position.z);
+        transform.position = Vector3.MoveTowards(transform.position, target, step);
       }
     }
 

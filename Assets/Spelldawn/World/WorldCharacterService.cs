@@ -29,6 +29,8 @@ namespace Spelldawn.World
     [SerializeField] WorldMap _worldMap = null!;
     WorldCharacter _hero = null!;
 
+    public WorldCharacter Hero => _hero;
+
     public void Start()
     {
       _hero = ComponentUtils.Instantiate(_characterPrefab);

@@ -353,6 +353,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 1501972795}
   _worldMap: {fileID: 1890128903}
+  _registry: {fileID: 468243433}
+  _panSpeed: 5
 --- !u!1001 &1596644386
 PrefabInstance:
   m_ObjectHideFlags: 0

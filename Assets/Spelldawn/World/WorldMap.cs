@@ -81,13 +81,13 @@ namespace Spelldawn.World
     public Vector2 ToCharacterPosition(WorldPosition worldPosition)
     {
       var result = ToTilePosition(worldPosition);
-      result.y -= 2.25f;
+      result.y -= WorldCharacter.CharacterOffset;
       return result;
     }
     
     public WorldPosition FromCharacterPosition(Vector2 characterPosition)
     {
-      characterPosition.y += 2.25f;
+      characterPosition.y += WorldCharacter.CharacterOffset;
       var result = FromTilePosition(characterPosition);
       return result;
     }    

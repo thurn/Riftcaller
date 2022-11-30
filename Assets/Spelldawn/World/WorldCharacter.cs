@@ -22,6 +22,7 @@ namespace Spelldawn.World
 {
   public sealed class WorldCharacter : MonoBehaviour
   {
+    public const float CharacterOffset = 2.25f;
     static readonly int SpeedParam = Animator.StringToHash("Speed");
     static readonly int DirectionParam = Animator.StringToHash("Direction");
     
@@ -50,6 +51,8 @@ namespace Spelldawn.World
       SetDirection(Direction.Right);
       _animator.SetFloat(SpeedParam, 0f);      
     }
+
+    public bool Moving => _targetPositions.Count > 0;
 
     void Update()
     {
