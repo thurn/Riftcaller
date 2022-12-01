@@ -1492,7 +1492,7 @@ message UpdateInterfaceElementCommand {
 //       \ /     \ /
 //
 // ```
-message WorldPosition {
+message MapPosition {
     int32 x = 1;
     int32 y = 2;
 }
@@ -1503,7 +1503,7 @@ message WorldMapTile {
     SpriteAddress sprite_address = 1;
 
     // Tile position.
-    WorldPosition position = 2;
+    MapPosition position = 2;
 
     // Higher Z-index sprites are drawn on top of lower Z-index sprites.
     int32 z_index = 3;

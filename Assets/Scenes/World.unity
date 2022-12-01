@@ -490,6 +490,7 @@ MonoBehaviour:
   _registry: {fileID: 468243433}
   _worldTilemap: {fileID: 1391484608}
   _selectedHex: {fileID: 1935680941517418016, guid: 9b0446e9e9b2244898302c461cc203ec, type: 3}
+  _tmpIcon: {fileID: 21300000, guid: cc38f9d573368c94ea59ef4a222512bb, type: 3}
 --- !u!114 &1890128904
 MonoBehaviour:
   m_ObjectHideFlags: 0

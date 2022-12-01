@@ -36,7 +36,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
         sprite_address: Some(SpriteAddress {
             address: format!("DavidBaumgart/WorldTiles.spriteatlas[{}]", tile.sprite),
         }),
-        position: Some(adapters::world_position(position)),
+        position: Some(adapters::map_position(position)),
         z_index: 0,
         walkable: tile.road.is_some(),
     }];
@@ -46,7 +46,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
             sprite_address: Some(SpriteAddress {
                 address: format!("DavidBaumgart/Roads.spriteatlas[{}]", road),
             }),
-            position: Some(adapters::world_position(position)),
+            position: Some(adapters::map_position(position)),
             z_index: 1,
             walkable: false,
         })

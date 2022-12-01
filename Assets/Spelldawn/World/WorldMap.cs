@@ -42,7 +42,16 @@ namespace Spelldawn.World
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _worldTilemap = null!;
     [SerializeField] GameObject _selectedHex = null!;
-    readonly HashSet<WorldPosition> _walkableTiles = new();
+    [SerializeField] Sprite _tmpIcon = null!;
+    readonly HashSet<MapPosition> _walkableTiles = new();
+
+    IEnumerator Start()
+    {
+      yield return new WaitForSeconds(3f);
+      var instance = ScriptableObject.CreateInstance<Tile>();
+      instance.sprite = _tmpIcon;
+      _worldTilemap.SetTile(new Vector3Int(0, -1, 1), instance);
+    }
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
     {
@@ -62,13 +71,13 @@ namespace Spelldawn.World
       yield break;
     }
 
-    public Vector3 ToTilePosition(WorldPosition worldPosition) =>
-      _worldTilemap.layoutGrid.CellToWorld(new Vector3Int(worldPosition.X, worldPosition.Y, 0));
+    public Vector3 ToWorldPosition(MapPosition mapPosition) =>
+      _worldTilemap.layoutGrid.CellToWorld(new Vector3Int(mapPosition.X, mapPosition.Y, 0));
 
-    public WorldPosition FromTilePosition(Vector3 tilePosition)
+    public MapPosition FromWorldPosition(Vector3 worldPosition)
     {
-      var position = _worldTilemap.layoutGrid.WorldToCell(tilePosition);
-      return new WorldPosition
+      var position = _worldTilemap.layoutGrid.WorldToCell(worldPosition);
+      return new MapPosition
       {
         X = position.x,
         Y = position.y
@@ -78,17 +87,17 @@ namespace Spelldawn.World
     /// <summary>
     /// Character positions are offset from actual world positions in order to produce the correct sprite ordering.
     /// </summary>
-    public Vector2 ToCharacterPosition(WorldPosition worldPosition)
+    public Vector2 ToCharacterPosition(MapPosition worldPosition)
     {
-      var result = ToTilePosition(worldPosition);
+      var result = ToWorldPosition(worldPosition);
       result.y -= WorldCharacter.CharacterOffset;
       return result;
     }
     
-    public WorldPosition FromCharacterPosition(Vector2 characterPosition)
+    public MapPosition FromCharacterPosition(Vector2 characterPosition)
     {
       characterPosition.y += WorldCharacter.CharacterOffset;
-      var result = FromTilePosition(characterPosition);
+      var result = FromWorldPosition(characterPosition);
       return result;
     }    
 
@@ -96,7 +105,7 @@ namespace Spelldawn.World
     {
       var cellPosition = _worldTilemap.layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
       
-      if (_walkableTiles.Contains(ToWorldPosition(cellPosition)))
+      if (_walkableTiles.Contains(ToMapPosition(cellPosition)))
       {
         var pos = _worldTilemap.CellToWorld(cellPosition);
         var selected = ComponentUtils.InstantiateGameObject(_selectedHex);
@@ -108,7 +117,7 @@ namespace Spelldawn.World
         
         var start = _registry.CharacterService.CurrentHeroPosition();
         var path = Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
-        _registry.CharacterService.MoveHero(path.Select(v => ToCharacterPosition(new WorldPosition
+        _registry.CharacterService.MoveHero(path.Select(v => ToCharacterPosition(new MapPosition
         {
           X = v.x,
           Y = v.y
@@ -125,7 +134,7 @@ namespace Spelldawn.World
       {
         var neighborPos = vertex + direction;
         
-        if (_walkableTiles.Contains(ToWorldPosition(neighborPos)) && 
+        if (_walkableTiles.Contains(ToMapPosition(neighborPos)) && 
             neighborPos.x >= _worldTilemap.cellBounds.min.x && 
             neighborPos.x < _worldTilemap.cellBounds.max.x &&
             neighborPos.y >= _worldTilemap.cellBounds.min.y &&
@@ -152,6 +161,6 @@ namespace Spelldawn.World
       return result;
     }
 
-    WorldPosition ToWorldPosition(Vector3Int vector) => new() { X = vector.x, Y = vector.y };
+    MapPosition ToMapPosition(Vector3Int vector) => new() { X = vector.x, Y = vector.y };
   }
 }

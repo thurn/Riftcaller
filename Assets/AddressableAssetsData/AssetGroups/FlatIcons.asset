@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: FlatIcons
   m_EditorClassIdentifier: 
-  m_GroupName: Packed Assets
+  m_GroupName: FlatIcons
   m_Data:
     m_SerializedData: []
   m_GUID: ceb7cb023cd14464c85565c5173251da
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: f4f5751e18c66462baa44e0b3e917d07
+    m_Address: RainbowArt/CleanFlatIcon/png_128/icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

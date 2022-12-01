@@ -55,17 +55,17 @@ namespace Spelldawn.World
       {
         var positions = new List<Vector2>
         {
-          _worldMap.ToCharacterPosition(new WorldPosition
+          _worldMap.ToCharacterPosition(new MapPosition
           {
             X = 1,
             Y = 0
           }),
-          _worldMap.ToCharacterPosition(new WorldPosition
+          _worldMap.ToCharacterPosition(new MapPosition
           {
             X = 2,
             Y = 0
           }),
-          _worldMap.ToCharacterPosition(new WorldPosition
+          _worldMap.ToCharacterPosition(new MapPosition
           {
             X = 2,
             Y = -1

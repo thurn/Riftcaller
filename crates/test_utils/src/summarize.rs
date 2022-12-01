@@ -31,13 +31,13 @@ use protos::spelldawn::{
     DisplayGameMessageCommand, DisplayRewardsCommand, EffectAddress, FireProjectileCommand,
     GameCommand, GameMessageType, GameObjectIdentifier, GameObjectMove, GameObjectPositions,
     GameView, InterfaceMainControls, InterfacePanel, InterfacePanelAddress, LoadSceneCommand,
-    ManaView, MoveGameObjectsCommand, MusicState, NoTargeting, Node, NodeType, ObjectPosition,
-    PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand, PlayerInfo, PlayerName,
-    PlayerSide, PlayerView, ProjectileAddress, RevealedCardView, RoomIdentifier, RoomVisitType,
-    RulesText, RunInParallelCommand, SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand,
-    SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand, UpdateGameViewCommand,
-    UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText, UpdateWorldMapCommand,
-    VisitRoomCommand, WorldMapTile, WorldPosition,
+    ManaView, MapPosition, MoveGameObjectsCommand, MusicState, NoTargeting, Node, NodeType,
+    ObjectPosition, PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand,
+    PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress, RevealedCardView,
+    RoomIdentifier, RoomVisitType, RulesText, RunInParallelCommand, SceneLoadMode, ScoreView,
+    SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand,
+    UpdateGameViewCommand, UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText,
+    UpdateWorldMapCommand, VisitRoomCommand, WorldMapTile,
 };
 use server::requests::GameResponse;
 
@@ -713,7 +713,7 @@ impl Summarize for UpdateWorldMapCommand {
     }
 }
 
-impl Summarize for WorldPosition {
+impl Summarize for MapPosition {
     fn summarize(self, summary: &mut Summary) {
         summary.child_node("x", self.x);
         summary.child_node("y", self.y);

@@ -113,8 +113,8 @@ namespace Spelldawn.World
       if (positions.Count > 0)
       {
         _targetPositions.Clear();
-        _animator.SetFloat(SpeedParam, positions.Count > 1 ? 1.0f : 0.5f);
-        _moveSpeed = positions.Count > 1 ? 4.0f : 2.0f;
+        _animator.SetFloat(SpeedParam, 0.5f);
+        _moveSpeed = 3.0f;
         foreach (var p in positions)
         {
           _targetPositions.Enqueue(p);

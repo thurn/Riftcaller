@@ -1477,7 +1477,7 @@ pub mod update_interface_element_command {
 ///       \ /     \ /
 /// ```
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct WorldPosition {
+pub struct MapPosition {
     #[prost(int32, tag = "1")]
     pub x: i32,
     #[prost(int32, tag = "2")]
@@ -1491,11 +1491,12 @@ pub struct WorldMapTile {
     pub sprite_address: ::core::option::Option<SpriteAddress>,
     /// Tile position.
     #[prost(message, optional, tag = "2")]
-    pub position: ::core::option::Option<WorldPosition>,
+    pub position: ::core::option::Option<MapPosition>,
     /// Higher Z-index sprites are drawn on top of lower Z-index sprites.
     #[prost(int32, tag = "3")]
     pub z_index: i32,
-    /// Can the player character navigate through this tile?
+    /// Can the player character navigate through this tile? Only applies to
+    /// tiles with a z_index of 0.
     #[prost(bool, tag = "4")]
     pub walkable: bool,
 }

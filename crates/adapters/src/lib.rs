@@ -25,8 +25,8 @@ use data::primitives::{
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::{
-    CardIdentifier, DeckIdentifier, GameIdentifier, GameObjectIdentifier, PlayerIdentifier,
-    PlayerSide, RoomIdentifier, SpriteAddress, TimeValue, WorldPosition,
+    CardIdentifier, DeckIdentifier, GameIdentifier, GameObjectIdentifier, MapPosition,
+    PlayerIdentifier, PlayerSide, RoomIdentifier, SpriteAddress, TimeValue,
 };
 use serde_json::{de, ser};
 use with_error::fail;
@@ -161,10 +161,10 @@ pub fn milliseconds(milliseconds: u32) -> TimeValue {
     TimeValue { milliseconds }
 }
 
-pub fn world_position(p: TilePosition) -> WorldPosition {
-    WorldPosition { x: p.x, y: p.y }
+pub fn map_position(p: TilePosition) -> MapPosition {
+    MapPosition { x: p.x, y: p.y }
 }
 
-pub fn tile_position(p: WorldPosition) -> TilePosition {
+pub fn tile_position(p: MapPosition) -> TilePosition {
     TilePosition { x: p.x, y: p.y }
 }
