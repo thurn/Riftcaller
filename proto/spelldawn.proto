@@ -1510,6 +1510,8 @@ message WorldMapTile {
 
     // Can the player character navigate through this tile? Only applies to
     // tiles with a z_index of 0.
+    // Selection Hex: 5
+    // Hero: 10
     bool walkable = 4;
 }
 

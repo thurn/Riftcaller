@@ -38,19 +38,36 @@ namespace Spelldawn.World
     static readonly Vector3Int Upright = new(1, 1, 0);
     static readonly Vector3Int[] DirectionsWhenYIsEven = { Left, Right, Down, Downleft, Up, Upleft };
     static readonly Vector3Int[] DirectionsWhenYIsOdd = { Left, Right, Down, Downright, Up, Upright };
-    
+
     [SerializeField] Registry _registry = null!;
-    [SerializeField] Tilemap _worldTilemap = null!;
+    [SerializeField] Tilemap _tilemapPrefab = null!;
     [SerializeField] GameObject _selectedHex = null!;
+    [SerializeField] Sprite _tmpBackground = null!;
     [SerializeField] Sprite _tmpIcon = null!;
+    readonly Dictionary<(int, int), Tilemap> _tilemaps = new();
     readonly HashSet<MapPosition> _walkableTiles = new();
 
-    IEnumerator Start()
+    void Start()
     {
-      yield return new WaitForSeconds(3f);
+      // Always create at least one tilemap to use for resolving positions
+      GetTilemap(new MapPosition { X = 0, Y = 0}, 0);
+      
       var instance = ScriptableObject.CreateInstance<Tile>();
-      instance.sprite = _tmpIcon;
-      _worldTilemap.SetTile(new Vector3Int(0, -1, 1), instance);
+      instance.sprite = _tmpBackground;
+      instance.color = Color.black;
+      instance.transform = Matrix4x4.Scale(new Vector3(0.6f, 0.6f, 1));
+      var position = new MapPosition { X = 0, Y = -1 };
+      var tilemap = GetTilemap(position, 2);
+      tilemap.tileAnchor = Vector3.zero;
+      tilemap.SetTile(ToVector3Int(position, 2), instance);      
+      
+      var i2 = ScriptableObject.CreateInstance<Tile>();
+      i2.sprite = _tmpIcon;
+      i2.transform = Matrix4x4.Scale(new Vector3(0.6f, 0.6f, 1));
+      var p2 = new MapPosition { X = 0, Y = -1 };
+      var t2 = GetTilemap(p2, 3);
+      t2.tileAnchor = Vector3.zero;
+      t2.SetTile(ToVector3Int(p2, 3), i2);
     }
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
@@ -58,10 +75,16 @@ namespace Spelldawn.World
       _walkableTiles.Clear();
       foreach (var tile in command.Tiles)
       {
+        // Unity has 3 different ways of managing tile sort order (global sort axis, tilemap z position,
+        // and sprite sorting order). In my experience these layers are generally buggy and unreliable,
+        // especially tilemap z-index. To make sure everything works as expected, we *only* rely on 
+        // sprite sorting order and instantiate numerous different Tilemaps with different sorting
+        // behavior.
+        
         var instance = ScriptableObject.CreateInstance<Tile>();
         instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
-        _worldTilemap.SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, tile.ZIndex), instance);
-        
+        GetTilemap(tile.Position, tile.ZIndex).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
+
         if (tile.Walkable && tile.ZIndex == 0)
         {
           _walkableTiles.Add(tile.Position);
@@ -71,57 +94,29 @@ namespace Spelldawn.World
       yield break;
     }
 
-    public Vector3 ToWorldPosition(MapPosition mapPosition) =>
-      _worldTilemap.layoutGrid.CellToWorld(new Vector3Int(mapPosition.X, mapPosition.Y, 0));
-
-    public MapPosition FromWorldPosition(Vector3 worldPosition)
-    {
-      var position = _worldTilemap.layoutGrid.WorldToCell(worldPosition);
-      return new MapPosition
-      {
-        X = position.x,
-        Y = position.y
-      };
-    }
-
-    /// <summary>
-    /// Character positions are offset from actual world positions in order to produce the correct sprite ordering.
-    /// </summary>
-    public Vector2 ToCharacterPosition(MapPosition worldPosition)
-    {
-      var result = ToWorldPosition(worldPosition);
-      result.y -= WorldCharacter.CharacterOffset;
-      return result;
-    }
-    
-    public MapPosition FromCharacterPosition(Vector2 characterPosition)
-    {
-      characterPosition.y += WorldCharacter.CharacterOffset;
-      var result = FromWorldPosition(characterPosition);
-      return result;
-    }    
-
     public void OnClick(Vector3 position)
     {
-      var cellPosition = _worldTilemap.layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
-      
-      if (_walkableTiles.Contains(ToMapPosition(cellPosition)))
+      var cellPosition = _tilemaps[(0,0)].layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
+
+      if (_walkableTiles.Contains(FromVector3Int(cellPosition)))
       {
-        var pos = _worldTilemap.CellToWorld(cellPosition);
+        var pos = _tilemaps[(0,0)].CellToWorld(cellPosition);
         var selected = ComponentUtils.InstantiateGameObject(_selectedHex);
         selected.transform.position = pos;
-
-        TweenUtils.Sequence("HexClick")
-          .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-          .AppendCallback(() => Destroy(selected));
+        selected.GetComponent<SpriteRenderer>().sortingOrder = 
+          SortOrderForTileAndZIndex(FromVector3Int(cellPosition), 5);
         
+        TweenUtils.Sequence("HexClick")
+          .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InExpo))
+          .AppendCallback(() => Destroy(selected));
+
         var start = _registry.CharacterService.CurrentHeroPosition();
         var path = Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
-        _registry.CharacterService.MoveHero(path.Select(v => ToCharacterPosition(new MapPosition
+        _registry.CharacterService.MoveHero(path.Select(v => ToWorldPosition(new MapPosition
         {
           X = v.x,
           Y = v.y
-        })).ToList());        
+        })).ToList());
       }
     }
 
@@ -129,16 +124,12 @@ namespace Spelldawn.World
     {
       var result = new List<Vector3Int>();
       var directions = (vertex.y % 2) == 0 ? DirectionsWhenYIsEven : DirectionsWhenYIsOdd;
-      
+
       foreach (var direction in directions)
       {
         var neighborPos = vertex + direction;
-        
-        if (_walkableTiles.Contains(ToMapPosition(neighborPos)) && 
-            neighborPos.x >= _worldTilemap.cellBounds.min.x && 
-            neighborPos.x < _worldTilemap.cellBounds.max.x &&
-            neighborPos.y >= _worldTilemap.cellBounds.min.y &&
-            neighborPos.y < _worldTilemap.cellBounds.max.y)
+
+        if (_walkableTiles.Contains(FromVector3Int(neighborPos)))
         {
           result.Add(neighborPos);
         }
@@ -146,21 +137,43 @@ namespace Spelldawn.World
 
       return result;
     }
-    
-    public List<Vector3Int> Vertices()
-    {
-      var result = new List<Vector3Int>();
-      for (var x = _worldTilemap.cellBounds.min.x; x < _worldTilemap.cellBounds.max.x; x++)
-      {
-        for (var y = _worldTilemap.cellBounds.min.y; y < _worldTilemap.cellBounds.max.y; y++)
-        {
-          result.Add(new Vector3Int(x, y, 0));
-        }
-      }
 
-      return result;
+    public List<Vector3Int> Vertices() => _walkableTiles.Select(t => ToVector3Int(t)).ToList();
+
+    MapPosition FromVector3Int(Vector3Int vector) => new() { X = vector.x, Y = vector.y };
+    
+    Vector3Int ToVector3Int(MapPosition position, int z = 0) => new() { x = position.X, y = position.Y, z = z };
+    
+    public Vector3 ToWorldPosition(MapPosition mapPosition) =>
+      GetTilemap(mapPosition, 0).layoutGrid.CellToWorld(new Vector3Int(mapPosition.X, mapPosition.Y, 0));
+
+    public MapPosition FromWorldPosition(Vector3 worldPosition)
+    {
+      var position = _tilemaps[(0, 0)].layoutGrid.WorldToCell(worldPosition);
+      return new MapPosition
+      {
+        X = position.x,
+        Y = position.y
+      };
     }
 
-    MapPosition ToMapPosition(Vector3Int vector) => new() { X = vector.x, Y = vector.y };
+    public int SortOrderForTileAndZIndex(MapPosition position, int zIndex) => (position.Y * -100) + zIndex;
+
+    Tilemap GetTilemap(MapPosition position, int zIndex)
+    {
+      if (!_tilemaps.ContainsKey((position.Y, zIndex)))
+      {
+        var tilemap = ComponentUtils.Instantiate(_tilemapPrefab);
+        tilemap.transform.SetParent(transform);
+        tilemap.transform.position = Vector3.zero;
+        ComponentUtils.GetComponent<TilemapRenderer>(tilemap).sortingOrder = SortOrderForTileAndZIndex(position, zIndex);
+        _tilemaps[(position.Y, zIndex)] = tilemap;
+        return tilemap;
+      }
+      else
+      {
+        return _tilemaps[(position.Y, zIndex)];
+      }
+    }
   }
 }

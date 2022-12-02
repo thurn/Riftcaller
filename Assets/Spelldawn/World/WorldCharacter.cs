@@ -17,12 +17,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Spelldawn.World
 {
   public sealed class WorldCharacter : MonoBehaviour
   {
-    public const float CharacterOffset = 2.25f;
     static readonly int SpeedParam = Animator.StringToHash("Speed");
     static readonly int DirectionParam = Animator.StringToHash("Direction");
     
@@ -31,9 +31,11 @@ namespace Spelldawn.World
     const float AnimatorDown = 2f;
 
     [SerializeField] Animator _animator = null!;
+    [SerializeField] SortingGroup _sortingGroup = null!;
     [SerializeField] GameObject _down = null!;
     [SerializeField] GameObject _side = null!;
     [SerializeField] GameObject _up = null!;
+    WorldMap _worldMap = null!;
     float _moveSpeed;
     
     readonly Queue<Vector2> _targetPositions = new();
@@ -46,46 +48,17 @@ namespace Spelldawn.World
       Right
     }
 
-    public void Initialize()
+    public void Initialize(WorldMap worldMap)
     {
       SetDirection(Direction.Right);
-      _animator.SetFloat(SpeedParam, 0f);      
+      _animator.SetFloat(SpeedParam, 0f);
+      _worldMap = worldMap;
     }
 
     public bool Moving => _targetPositions.Count > 0;
 
     void Update()
     {
-      if (Input.GetKeyDown(KeyCode.W))
-      {
-        SetDirection(Direction.Up);
-      }
-      
-      if (Input.GetKeyDown(KeyCode.A))
-      {
-        SetDirection(Direction.Left);
-      }
-      
-      if (Input.GetKeyDown(KeyCode.S))
-      {
-        SetDirection(Direction.Down);
-      }
-      
-      if (Input.GetKeyDown(KeyCode.D))
-      {
-        SetDirection(Direction.Right);
-      }
-
-      if (Input.GetKeyDown(KeyCode.Q))
-      {
-        _animator.SetFloat(SpeedParam, 0.5f);
-      }
-
-      if (Input.GetKeyDown(KeyCode.E))
-      {
-        _animator.SetFloat(SpeedParam, 0f);
-      }
-
       if (_targetPositions.Count > 0)
       {
         var target = _targetPositions.Peek();
@@ -106,9 +79,12 @@ namespace Spelldawn.World
           }
         }            
       }
+
+      var mapPosition = _worldMap.FromWorldPosition(transform.position);
+      _sortingGroup.sortingOrder = _worldMap.SortOrderForTileAndZIndex(mapPosition, 10);
     }
 
-    public void MoveOnPath(List<Vector2> positions)
+    public void MoveOnPath(List<Vector3> positions)
     {
       if (positions.Count > 0)
       {

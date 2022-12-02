@@ -973,7 +973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1822359782323733045, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1846778893794463378, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
       propertyPath: m_SortingOrder
@@ -1437,7 +1437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3474143524496724757, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3498715748908399045, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
       propertyPath: m_Sprite
@@ -1817,7 +1817,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4717408787119728158, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4718855428267739763, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
       propertyPath: m_Sprite
@@ -2910,6 +2910,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7375163601933854670, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
   m_PrefabInstance: {fileID: 8029604898475864936}
   m_PrefabAsset: {fileID: 0}
+--- !u!210 &1113312396274909837 stripped
+SortingGroup:
+  m_CorrespondingSourceObject: {fileID: 6925872831018480101, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
+  m_PrefabInstance: {fileID: 8029604898475864936}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1589412206156966084 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8746090421077416876, guid: 326a40dc18ddd894ba68f57ef60472f6, type: 3}
@@ -2928,6 +2933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 3832573039218236389}
+  _sortingGroup: {fileID: 1113312396274909837}
   _down: {fileID: 6818909730201785477}
   _side: {fileID: 664064498848208038}
   _up: {fileID: 2107106384909825433}

@@ -31,12 +31,8 @@ namespace Spelldawn.World
     void Update () {
       if (Input.GetMouseButtonDown(0))
       {
-        if (_dragStartScreenPosition == null)
-        {
-          // Unity sends MouseButtonDown again on release for mobile devices
-          _dragStartScreenPosition = Input.mousePosition;
-        }
-        
+        // Unity sends MouseButtonDown again on release for mobile devices?!
+        _dragStartScreenPosition ??= Input.mousePosition;
         _dragStartPosition = MousePosition();
       }
       else if (Input.GetMouseButton(0))
@@ -58,7 +54,7 @@ namespace Spelldawn.World
       {
         var position = _registry.CharacterService.Hero.gameObject.transform.position;
         var step =  _panSpeed * Time.deltaTime;
-        var target = new Vector3(position.x, position.y + WorldCharacter.CharacterOffset, transform.position.z);
+        var target = new Vector3(position.x, position.y, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, target, step);
       }
     }

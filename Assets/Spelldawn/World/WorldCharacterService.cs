@@ -15,8 +15,6 @@
 #nullable enable
 
 using System.Collections.Generic;
-using Spelldawn.Protos;
-using Spelldawn.Services;
 using Spelldawn.Utils;
 using UnityEngine;
 
@@ -24,7 +22,6 @@ namespace Spelldawn.World
 {
   public sealed class WorldCharacterService : MonoBehaviour
   {
-    [SerializeField] Registry _registry = null!;
     [SerializeField] WorldCharacter _characterPrefab = null!;
     [SerializeField] WorldMap _worldMap = null!;
     WorldCharacter _hero = null!;
@@ -34,46 +31,19 @@ namespace Spelldawn.World
     public void Start()
     {
       _hero = ComponentUtils.Instantiate(_characterPrefab);
-      _hero.transform.position = new Vector3(0, -2.25f, 0);
-      _hero.Initialize();
+      _hero.transform.position = new Vector3(0, 0, 0);
+      _hero.Initialize(_worldMap);
     }
 
-    public void MoveHero(List<Vector2> path)
+    public void MoveHero(List<Vector3> path)
     {
       _hero.MoveOnPath(path);
     }
 
     public Vector3Int CurrentHeroPosition()
     {
-      var result = _worldMap.FromCharacterPosition(_hero.transform.position);
+      var result = _worldMap.FromWorldPosition(_hero.transform.position);
       return new Vector3Int(result.X, result.Y, 0);
-    }
-
-    void Update()
-    {
-      if (Input.GetKeyDown(KeyCode.R))
-      {
-        var positions = new List<Vector2>
-        {
-          _worldMap.ToCharacterPosition(new MapPosition
-          {
-            X = 1,
-            Y = 0
-          }),
-          _worldMap.ToCharacterPosition(new MapPosition
-          {
-            X = 2,
-            Y = 0
-          }),
-          _worldMap.ToCharacterPosition(new MapPosition
-          {
-            X = 2,
-            Y = -1
-          })
-        };
-
-        _hero.MoveOnPath(positions);
-      }
     }
   }
 }
