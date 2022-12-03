@@ -1493,12 +1493,25 @@ pub struct WorldMapTile {
     #[prost(message, optional, tag = "2")]
     pub position: ::core::option::Option<MapPosition>,
     /// Higher Z-index sprites are drawn on top of lower Z-index sprites.
+    /// Selection Hex appears at z-index 5
+    /// Hero appears at z-index 10
+    /// Max z-index is 99
     #[prost(int32, tag = "3")]
     pub z_index: i32,
     /// Can the player character navigate through this tile? Only applies to
     /// tiles with a z_index of 0.
     #[prost(bool, tag = "4")]
     pub walkable: bool,
+    /// Color tint for the provided sprite.
+    #[prost(message, optional, tag = "5")]
+    pub color: ::core::option::Option<FlexColor>,
+    /// Controls the position of the tile image. Note that tiles by default are
+    /// anchored at (0,-0.64), meaning they're shifted to screen bottom.
+    #[prost(message, optional, tag = "6")]
+    pub anchor_offset: ::core::option::Option<FlexVector3>,
+    /// Scale transformation to apply to the image.
+    #[prost(message, optional, tag = "7")]
+    pub scale: ::core::option::Option<FlexVector3>,
 }
 /// Updates the world map tilemap. Only valid in the 'World' scene.
 #[derive(Clone, PartialEq, ::prost::Message)]

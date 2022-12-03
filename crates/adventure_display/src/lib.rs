@@ -15,9 +15,10 @@
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
 use anyhow::Result;
-use data::adventure::{AdventureState, TilePosition, TileState};
+use core_ui::design;
+use data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{SpriteAddress, UpdateWorldMapCommand, WorldMapTile};
+use protos::spelldawn::{FlexVector3, SpriteAddress, UpdateWorldMapCommand, WorldMapTile};
 
 /// Returns a sequence of game Commands to display the provided
 /// [AdventureState].
@@ -39,6 +40,9 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
         position: Some(adapters::map_position(position)),
         z_index: 0,
         walkable: tile.road.is_some(),
+        color: None,
+        anchor_offset: None,
+        scale: None,
     }];
 
     if let Some(road) = &tile.road {
@@ -49,8 +53,49 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
             position: Some(adapters::map_position(position)),
             z_index: 1,
             walkable: false,
+            color: None,
+            anchor_offset: None,
+            scale: None,
         })
     }
 
+    if let Some(entity) = &tile.entity {
+        result.push(WorldMapTile {
+            sprite_address: Some(SpriteAddress {
+                address: "Sprites/MapIconBackground.png".to_string(),
+            }),
+            position: Some(adapters::map_position(position)),
+            z_index: 2,
+            walkable: false,
+            color: Some(design::BLACK),
+            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
+            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+        });
+
+        result.push(WorldMapTile {
+            sprite_address: Some(sprite_address_for_entity(*entity)),
+            position: Some(adapters::map_position(position)),
+            z_index: 3,
+            walkable: false,
+            color: Some(design::WHITE),
+            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
+            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+        });
+    }
+
     result
+}
+
+fn sprite_address_for_entity(entity: TileEntity) -> SpriteAddress {
+    SpriteAddress {
+        address: match entity {
+            TileEntity::Draft => {
+                "RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png"
+            }
+            TileEntity::Explore => {
+                "RainbowArt/CleanFlatIcon/png_128/icon/icon_app/icon_app_198.png"
+            }
+        }
+        .to_string(),
+    }
 }

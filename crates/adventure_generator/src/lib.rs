@@ -16,7 +16,7 @@
 
 use std::collections::HashMap;
 
-use data::adventure::{AdventureState, TilePosition, TileState};
+use data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
 use data::primitives::Side;
 
 /// Builds a new random 'adventure' mode world map
@@ -29,7 +29,14 @@ pub fn new_adventure(side: Side) -> AdventureState {
     add_tile(&mut tiles, 0, 2, "hexMarsh00");
     add_tile(&mut tiles, 1, 2, "hexPlainsHalflingVillage00");
     add_tile(&mut tiles, 2, 2, "hexDirtInn00");
-    add_with_road(&mut tiles, 3, 2, "hexPlains00", "hexRoad-010010-01");
+    add_with_road_and_entity(
+        &mut tiles,
+        3,
+        2,
+        "hexPlains00",
+        "hexRoad-010010-01",
+        TileEntity::Explore,
+    );
     add_tile(&mut tiles, 4, 2, "hexPlainsSmithy00");
     add_tile(&mut tiles, -4, 1, "hexGrassySandPalms01");
     add_tile(&mut tiles, -3, 1, "hexPlainsFarm02");
@@ -51,7 +58,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
     add_with_road(&mut tiles, -3, -1, "hexScrublands01", "hexRoad-010010-00");
     add_tile(&mut tiles, -2, -1, "hexTropicalPlains00");
     add_tile(&mut tiles, -1, -1, "hexSwamp01");
-    add_tile(&mut tiles, 0, -1, "hexDirtVillage01");
+    add_with_entity(&mut tiles, 0, -1, "hexDirtVillage01", TileEntity::Draft);
     add_tile(&mut tiles, 1, -1, "hexPlainsFarm00");
     add_with_road(&mut tiles, 2, -1, "hexPlains00", "hexRoad-100100-00");
     add_tile(&mut tiles, 3, -1, "hexJungle03");
@@ -68,7 +75,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
 }
 
 fn add_tile(map: &mut HashMap<TilePosition, TileState>, x: i32, y: i32, sprite: &'static str) {
-    map.insert(TilePosition { x, y }, TileState { sprite: sprite.to_string(), road: None });
+    map.insert(TilePosition { x, y }, TileState::with_sprite(sprite));
 }
 
 fn add_with_road(
@@ -78,9 +85,40 @@ fn add_with_road(
     sprite: &'static str,
     road: &'static str,
 ) {
-    // Hex names are numbered clockwise from top-left
+    // Road hex names are numbered clockwise from top-left
     map.insert(
         TilePosition { x, y },
-        TileState { sprite: sprite.to_string(), road: Some(road.to_string()) },
+        TileState { road: Some(road.to_string()), ..TileState::with_sprite(sprite) },
+    );
+}
+
+fn add_with_entity(
+    map: &mut HashMap<TilePosition, TileState>,
+    x: i32,
+    y: i32,
+    sprite: &'static str,
+    entity: TileEntity,
+) {
+    map.insert(
+        TilePosition { x, y },
+        TileState { entity: Some(entity), ..TileState::with_sprite(sprite) },
+    );
+}
+
+fn add_with_road_and_entity(
+    map: &mut HashMap<TilePosition, TileState>,
+    x: i32,
+    y: i32,
+    sprite: &'static str,
+    road: &'static str,
+    entity: TileEntity,
+) {
+    map.insert(
+        TilePosition { x, y },
+        TileState {
+            road: Some(road.to_string()),
+            entity: Some(entity),
+            ..TileState::with_sprite(sprite)
+        },
     );
 }

@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Spelldawn.Masonry;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
@@ -42,8 +43,6 @@ namespace Spelldawn.World
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _tilemapPrefab = null!;
     [SerializeField] GameObject _selectedHex = null!;
-    [SerializeField] Sprite _tmpBackground = null!;
-    [SerializeField] Sprite _tmpIcon = null!;
     readonly Dictionary<(int, int), Tilemap> _tilemaps = new();
     readonly HashSet<MapPosition> _walkableTiles = new();
 
@@ -51,23 +50,6 @@ namespace Spelldawn.World
     {
       // Always create at least one tilemap to use for resolving positions
       GetTilemap(new MapPosition { X = 0, Y = 0}, 0);
-      
-      var instance = ScriptableObject.CreateInstance<Tile>();
-      instance.sprite = _tmpBackground;
-      instance.color = Color.black;
-      instance.transform = Matrix4x4.Scale(new Vector3(0.6f, 0.6f, 1));
-      var position = new MapPosition { X = 0, Y = -1 };
-      var tilemap = GetTilemap(position, 2);
-      tilemap.tileAnchor = Vector3.zero;
-      tilemap.SetTile(ToVector3Int(position, 2), instance);      
-      
-      var i2 = ScriptableObject.CreateInstance<Tile>();
-      i2.sprite = _tmpIcon;
-      i2.transform = Matrix4x4.Scale(new Vector3(0.6f, 0.6f, 1));
-      var p2 = new MapPosition { X = 0, Y = -1 };
-      var t2 = GetTilemap(p2, 3);
-      t2.tileAnchor = Vector3.zero;
-      t2.SetTile(ToVector3Int(p2, 3), i2);
     }
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
@@ -83,6 +65,24 @@ namespace Spelldawn.World
         
         var instance = ScriptableObject.CreateInstance<Tile>();
         instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
+
+        var matrix = Matrix4x4.identity;
+        if (tile.AnchorOffset != null)
+        {
+          matrix *= Matrix4x4.Translate(new Vector3(tile.AnchorOffset.X, tile.AnchorOffset.Y, tile.AnchorOffset.Z));
+        }
+
+        if (tile.Scale != null)
+        {
+          matrix *= Matrix4x4.Scale(new Vector3(tile.Scale.X, tile.Scale.Y, tile.Scale.Z));
+        }
+
+        if (tile.Color != null)
+        {
+          instance.color = Mason.ToUnityColor(tile.Color);
+        }
+
+        instance.transform = matrix;
         GetTilemap(tile.Position, tile.ZIndex).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
 
         if (tile.Walkable && tile.ZIndex == 0)

@@ -25,11 +25,27 @@ pub struct TilePosition {
     pub y: i32,
 }
 
+/// Possible events/actions which can take place on a tile, represented by map
+/// icons
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum TileEntity {
+    Draft,
+    Explore,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TileState {
     pub sprite: String,
 
     pub road: Option<String>,
+
+    pub entity: Option<TileEntity>,
+}
+
+impl TileState {
+    pub fn with_sprite(address: impl Into<String>) -> Self {
+        TileState { sprite: address.into(), road: None, entity: None }
+    }
 }
 
 /// Stores the primary state for an ongoing game

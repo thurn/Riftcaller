@@ -1506,13 +1506,24 @@ message WorldMapTile {
     MapPosition position = 2;
 
     // Higher Z-index sprites are drawn on top of lower Z-index sprites.
+    // Selection Hex appears at z-index 5
+    // Hero appears at z-index 10
+    // Max z-index is 99
     int32 z_index = 3;
 
     // Can the player character navigate through this tile? Only applies to
     // tiles with a z_index of 0.
-    // Selection Hex: 5
-    // Hero: 10
     bool walkable = 4;
+
+    // Color tint for the provided sprite.
+    FlexColor color = 5;
+
+    // Controls the position of the tile image. Note that tiles by default are
+    // anchored at (0,-0.64), meaning they're shifted to screen bottom.
+    FlexVector3 anchor_offset = 6;
+
+    // Scale transformation to apply to the image.
+    FlexVector3 scale = 7;
 }
 
 // Updates the world map tilemap. Only valid in the 'World' scene.
