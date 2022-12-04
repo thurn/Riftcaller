@@ -58,7 +58,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
     add_with_road(&mut tiles, -3, -1, "hexScrublands01", "hexRoad-010010-00");
     add_tile(&mut tiles, -2, -1, "hexTropicalPlains00");
     add_tile(&mut tiles, -1, -1, "hexSwamp01");
-    add_with_entity(&mut tiles, 0, -1, "hexDirtVillage01", TileEntity::Draft);
+    add_with_entity(&mut tiles, 0, -1, "hexMountain03", TileEntity::Draft);
     add_tile(&mut tiles, 1, -1, "hexPlainsFarm00");
     add_with_road(&mut tiles, 2, -1, "hexPlains00", "hexRoad-100100-00");
     add_tile(&mut tiles, 3, -1, "hexJungle03");

@@ -1497,6 +1497,19 @@ message MapPosition {
     int32 y = 2;
 }
 
+enum MapTileType {
+    MAP_TILE_TYPE_UNSPECIFIED = 0;
+
+    // Player cannot move through this tile
+    MAP_TILE_TYPE_OBSTACLE = 1;
+
+    // Player can walk through this tile
+    MAP_TILE_TYPE_WALKABLE = 2;
+
+    // Player cannot enter this tile but can click to walk adjacent to it
+    MAP_TILE_TYPE_VISITABLE = 3;
+}
+
 // Represents the contents of a world map tile.
 message WorldMapTile {
     // Addressable asset path of sprite to display on the hex grid
@@ -1511,9 +1524,9 @@ message WorldMapTile {
     // Max z-index is 99
     int32 z_index = 3;
 
-    // Can the player character navigate through this tile? Only applies to
+    // How can the player character navigate through this tile? Only applies to
     // tiles with a z_index of 0.
-    bool walkable = 4;
+    MapTileType tile_type = 4;
 
     // Color tint for the provided sprite.
     FlexColor color = 5;

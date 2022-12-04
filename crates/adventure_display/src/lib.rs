@@ -18,7 +18,9 @@ use anyhow::Result;
 use core_ui::design;
 use data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{FlexVector3, SpriteAddress, UpdateWorldMapCommand, WorldMapTile};
+use protos::spelldawn::{
+    FlexVector3, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapTile,
+};
 
 /// Returns a sequence of game Commands to display the provided
 /// [AdventureState].
@@ -39,7 +41,13 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
         }),
         position: Some(adapters::map_position(position)),
         z_index: 0,
-        walkable: tile.road.is_some(),
+        tile_type: if tile.entity.is_some() {
+            MapTileType::Visitable.into()
+        } else if tile.road.is_some() {
+            MapTileType::Walkable.into()
+        } else {
+            MapTileType::Obstacle.into()
+        },
         color: None,
         anchor_offset: None,
         scale: None,
@@ -52,10 +60,10 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
             }),
             position: Some(adapters::map_position(position)),
             z_index: 1,
-            walkable: false,
             color: None,
             anchor_offset: None,
             scale: None,
+            ..WorldMapTile::default()
         })
     }
 
@@ -66,20 +74,20 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
             }),
             position: Some(adapters::map_position(position)),
             z_index: 2,
-            walkable: false,
             color: Some(design::BLACK),
             anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
             scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+            ..WorldMapTile::default()
         });
 
         result.push(WorldMapTile {
             sprite_address: Some(sprite_address_for_entity(*entity)),
             position: Some(adapters::map_position(position)),
             z_index: 3,
-            walkable: false,
             color: Some(design::WHITE),
             anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
             scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+            ..WorldMapTile::default()
         });
     }
 

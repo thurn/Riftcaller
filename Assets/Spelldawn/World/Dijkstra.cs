@@ -31,19 +31,40 @@ namespace Spelldawn.World
       float GetDistance(TVertex source, TVertex destination) => 1.0f;
     }
     
+    /// <summary>Returns the shortest path between 'source' and 'destination'.</summary>
     public static List<TVertex> ShortestPath(IGraph graph, TVertex source, TVertex destination)
     {
+      ShortestPaths(graph, source, out _, out var prev);
+      return PathToSource(destination, prev);
+    }
+    
+    /// <summary>Returns the shortest path to the vertex in 'destinations' which is closest to 'source'.</summary>
+    public static List<TVertex> ShortestPathOfDestinations(IGraph graph, TVertex source, List<TVertex> destinations)
+    {
+      ShortestPaths(graph, source, out var distances, out var prev);
+      var closest = distances.Where(d => destinations.Contains(d.Key)).OrderBy(d => d.Value).First();
+      var path = PathToSource(closest.Key, prev);
+      return path;
+    }
+
+    static void ShortestPaths(
+      IGraph graph, 
+      TVertex source, 
+      out Dictionary<TVertex, float> distances, 
+      out Dictionary<TVertex, TVertex> previous)
+    {
       // Code adapted from https://en.wikipedia.org/wiki/Dijkstra's_algorithm#Pseudocode
-      
+
       var dist = new Dictionary<TVertex, float>();
       var prev = new Dictionary<TVertex, TVertex>();
       var q = new HashSet<TVertex>();
-      
+
       foreach (var vertex in graph.Vertices())
       {
         dist[vertex] = float.PositiveInfinity;
         q.Add(vertex);
       }
+
       dist[source] = 0f;
 
       while (q.Count > 0)
@@ -62,6 +83,12 @@ namespace Spelldawn.World
         }
       }
 
+      distances = dist;
+      previous = prev;
+    }
+    
+    static List<TVertex> PathToSource(TVertex destination, Dictionary<TVertex, TVertex> prev)
+    {
       // Read the shortest path back to 'source'
       var position = destination;
       var path = new List<TVertex>();
@@ -72,6 +99,6 @@ namespace Spelldawn.World
       }
 
       return path;
-    }    
+    }
   }
 }

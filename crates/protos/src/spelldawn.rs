@@ -1498,10 +1498,10 @@ pub struct WorldMapTile {
     /// Max z-index is 99
     #[prost(int32, tag = "3")]
     pub z_index: i32,
-    /// Can the player character navigate through this tile? Only applies to
+    /// How can the player character navigate through this tile? Only applies to
     /// tiles with a z_index of 0.
-    #[prost(bool, tag = "4")]
-    pub walkable: bool,
+    #[prost(enumeration = "MapTileType", tag = "4")]
+    pub tile_type: i32,
     /// Color tint for the provided sprite.
     #[prost(message, optional, tag = "5")]
     pub color: ::core::option::Option<FlexColor>,
@@ -1928,6 +1928,17 @@ pub enum LogMessageLevel {
     Standard = 1,
     Warning = 2,
     Error = 3,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum MapTileType {
+    Unspecified = 0,
+    /// Player cannot move through this tile
+    Obstacle = 1,
+    /// Player can walk through this tile
+    Walkable = 2,
+    /// Player cannot enter this tile but can click to walk adjacent to it
+    Visitable = 3,
 }
 /// Generated server implementations.
 pub mod spelldawn_server {

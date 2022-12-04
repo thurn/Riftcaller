@@ -43,8 +43,10 @@ namespace Spelldawn.World
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _tilemapPrefab = null!;
     [SerializeField] GameObject _selectedHex = null!;
+    // (Y coordinate, Z coordinate) -> Tilemap
     readonly Dictionary<(int, int), Tilemap> _tilemaps = new();
     readonly HashSet<MapPosition> _walkableTiles = new();
+    readonly HashSet<MapPosition> _visitableTiles = new();
 
     void Start()
     {
@@ -84,10 +86,17 @@ namespace Spelldawn.World
 
         instance.transform = matrix;
         GetTilemap(tile.Position, tile.ZIndex).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
-
-        if (tile.Walkable && tile.ZIndex == 0)
+        if (tile.ZIndex == 0)
         {
-          _walkableTiles.Add(tile.Position);
+          switch (tile.TileType)
+          {
+            case MapTileType.Walkable:
+              _walkableTiles.Add(tile.Position);
+              break;
+            case MapTileType.Visitable:
+              _visitableTiles.Add(tile.Position);
+              break;
+          }
         }
       }
 
@@ -97,21 +106,25 @@ namespace Spelldawn.World
     public void OnClick(Vector3 position)
     {
       var cellPosition = _tilemaps[(0,0)].layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
+      var mapPosition = FromVector3Int(cellPosition);
 
-      if (_walkableTiles.Contains(FromVector3Int(cellPosition)))
+      if (_walkableTiles.Contains(mapPosition) || _visitableTiles.Contains(mapPosition))
       {
         var pos = _tilemaps[(0,0)].CellToWorld(cellPosition);
         var selected = ComponentUtils.InstantiateGameObject(_selectedHex);
         selected.transform.position = pos;
-        selected.GetComponent<SpriteRenderer>().sortingOrder = 
-          SortOrderForTileAndZIndex(FromVector3Int(cellPosition), 5);
-        
+        selected.GetComponent<SpriteRenderer>().sortingOrder = SortOrderForTileAndZIndex(mapPosition, 5);
+
         TweenUtils.Sequence("HexClick")
           .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InExpo))
           .AppendCallback(() => Destroy(selected));
 
         var start = _registry.CharacterService.CurrentHeroPosition();
-        var path = Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
+
+        var path = _visitableTiles.Contains(mapPosition) ? 
+          Dijkstra<Vector3Int>.ShortestPathOfDestinations(this, start, FindNeighbors(cellPosition)) : 
+          Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
+        
         _registry.CharacterService.MoveHero(path.Select(v => ToWorldPosition(new MapPosition
         {
           X = v.x,
