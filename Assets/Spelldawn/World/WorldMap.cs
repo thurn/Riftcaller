@@ -43,20 +43,21 @@ namespace Spelldawn.World
     [SerializeField] Registry _registry = null!;
     [SerializeField] Tilemap _tilemapPrefab = null!;
     [SerializeField] GameObject _selectedHex = null!;
-    // (Y coordinate, Z coordinate) -> Tilemap
-    readonly Dictionary<(int, int), Tilemap> _tilemaps = new();
-    readonly HashSet<MapPosition> _walkableTiles = new();
-    readonly HashSet<MapPosition> _visitableTiles = new();
+
+    public sealed record TileId(MapPosition Position, int Z);
+
+    readonly Dictionary<TileId, Tilemap> _tilemaps = new();
+    readonly Dictionary<TileId, WorldMapTile> _tiles = new();
+    static readonly TileId TileZero = new(new MapPosition(), 0);
 
     void Start()
     {
       // Always create at least one tilemap to use for resolving positions
-      GetTilemap(new MapPosition { X = 0, Y = 0}, 0);
+      GetTilemap(TileZero);
     }
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
     {
-      _walkableTiles.Clear();
       foreach (var tile in command.Tiles)
       {
         // Unity has 3 different ways of managing tile sort order (global sort axis, tilemap z position,
@@ -64,7 +65,7 @@ namespace Spelldawn.World
         // especially tilemap z-index. To make sure everything works as expected, we *only* rely on 
         // sprite sorting order and instantiate numerous different Tilemaps with different sorting
         // behavior.
-        
+
         var instance = ScriptableObject.CreateInstance<Tile>();
         instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
 
@@ -85,19 +86,9 @@ namespace Spelldawn.World
         }
 
         instance.transform = matrix;
-        GetTilemap(tile.Position, tile.ZIndex).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
-        if (tile.ZIndex == 0)
-        {
-          switch (tile.TileType)
-          {
-            case MapTileType.Walkable:
-              _walkableTiles.Add(tile.Position);
-              break;
-            case MapTileType.Visitable:
-              _visitableTiles.Add(tile.Position);
-              break;
-          }
-        }
+        var id = new TileId(tile.Position, tile.ZIndex);
+        GetTilemap(id).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
+        _tiles[id] = tile;
       }
 
       yield break;
@@ -105,15 +96,17 @@ namespace Spelldawn.World
 
     public void OnClick(Vector3 position)
     {
-      var cellPosition = _tilemaps[(0,0)].layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
+      var cellPosition = _tilemaps[TileZero].layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
       var mapPosition = FromVector3Int(cellPosition);
+      var id = new TileId(mapPosition, 0);
+      var tileType = _tiles[id].TileType;
 
-      if (_walkableTiles.Contains(mapPosition) || _visitableTiles.Contains(mapPosition))
+      if (tileType is MapTileType.Walkable or MapTileType.Visitable)
       {
-        var pos = _tilemaps[(0,0)].CellToWorld(cellPosition);
+        var pos = _tilemaps[TileZero].CellToWorld(cellPosition);
         var selected = ComponentUtils.InstantiateGameObject(_selectedHex);
         selected.transform.position = pos;
-        selected.GetComponent<SpriteRenderer>().sortingOrder = SortOrderForTileAndZIndex(mapPosition, 5);
+        selected.GetComponent<SpriteRenderer>().sortingOrder = SortOrderForTileId(new TileId(mapPosition, 5));
 
         TweenUtils.Sequence("HexClick")
           .Append(selected.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InExpo))
@@ -121,19 +114,16 @@ namespace Spelldawn.World
 
         var start = _registry.CharacterService.CurrentHeroPosition();
 
-        var path = _visitableTiles.Contains(mapPosition) ? 
-          Dijkstra<Vector3Int>.ShortestPathOfDestinations(this, start, FindNeighbors(cellPosition)) : 
-          Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
+        var path = tileType is MapTileType.Visitable
+          ? Dijkstra<Vector3Int>.ShortestPathOfDestinations(this, start, FindNeighbors(cellPosition))
+          : Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
 
         var worldPath = path.Select(v => ToWorldPosition(new MapPosition
         {
           X = v.x,
           Y = v.y
         })).ToList();
-        _registry.CharacterService.MoveHero(worldPath, () =>
-        {
-          Debug.Log($"On Arrive");
-        });
+        _registry.CharacterService.MoveHero(worldPath, () => { Debug.Log($"On Arrive"); });
       }
     }
 
@@ -145,8 +135,9 @@ namespace Spelldawn.World
       foreach (var direction in directions)
       {
         var neighborPos = vertex + direction;
+        var tileId = new TileId(FromVector3Int(neighborPos), 0);
 
-        if (_walkableTiles.Contains(FromVector3Int(neighborPos)))
+        if (_tiles.GetValueOrDefault(tileId)?.TileType == MapTileType.Walkable)
         {
           result.Add(neighborPos);
         }
@@ -155,18 +146,19 @@ namespace Spelldawn.World
       return result;
     }
 
-    public List<Vector3Int> Vertices() => _walkableTiles.Select(t => ToVector3Int(t)).ToList();
+    public List<Vector3Int> Vertices() => _tiles.Values.Where(t => t.TileType == MapTileType.Walkable)
+      .Select(t => ToVector3Int(t.Position)).ToList();
 
     MapPosition FromVector3Int(Vector3Int vector) => new() { X = vector.x, Y = vector.y };
-    
+
     Vector3Int ToVector3Int(MapPosition position, int z = 0) => new() { x = position.X, y = position.Y, z = z };
-    
+
     public Vector3 ToWorldPosition(MapPosition mapPosition) =>
-      GetTilemap(mapPosition, 0).layoutGrid.CellToWorld(new Vector3Int(mapPosition.X, mapPosition.Y, 0));
+      GetTilemap(new TileId(mapPosition, 0)).layoutGrid.CellToWorld(new Vector3Int(mapPosition.X, mapPosition.Y, 0));
 
     public MapPosition FromWorldPosition(Vector3 worldPosition)
     {
-      var position = _tilemaps[(0, 0)].layoutGrid.WorldToCell(worldPosition);
+      var position = _tilemaps[TileZero].layoutGrid.WorldToCell(worldPosition);
       return new MapPosition
       {
         X = position.x,
@@ -174,22 +166,22 @@ namespace Spelldawn.World
       };
     }
 
-    public int SortOrderForTileAndZIndex(MapPosition position, int zIndex) => (position.Y * -100) + zIndex;
+    public int SortOrderForTileId(TileId tileId) => (tileId.Position.Y * -100) + tileId.Z;
 
-    Tilemap GetTilemap(MapPosition position, int zIndex)
+    Tilemap GetTilemap(TileId tileId)
     {
-      if (!_tilemaps.ContainsKey((position.Y, zIndex)))
+      if (!_tilemaps.ContainsKey(tileId))
       {
         var tilemap = ComponentUtils.Instantiate(_tilemapPrefab);
         tilemap.transform.SetParent(transform);
         tilemap.transform.position = Vector3.zero;
-        ComponentUtils.GetComponent<TilemapRenderer>(tilemap).sortingOrder = SortOrderForTileAndZIndex(position, zIndex);
-        _tilemaps[(position.Y, zIndex)] = tilemap;
+        ComponentUtils.GetComponent<TilemapRenderer>(tilemap).sortingOrder = SortOrderForTileId(tileId);
+        _tilemaps[tileId] = tilemap;
         return tilemap;
       }
       else
       {
-        return _tilemaps[(position.Y, zIndex)];
+        return _tilemaps[tileId];
       }
     }
   }

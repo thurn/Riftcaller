@@ -84,7 +84,7 @@ namespace Spelldawn.World
       }
 
       var mapPosition = _worldMap.FromWorldPosition(transform.position);
-      _sortingGroup.sortingOrder = _worldMap.SortOrderForTileAndZIndex(mapPosition, 10);
+      _sortingGroup.sortingOrder = _worldMap.SortOrderForTileId(new WorldMap.TileId(mapPosition, 10));
     }
 
     public void MoveOnPath(List<Vector3> positions, Action? onArriveAtDestination = null)
