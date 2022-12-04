@@ -34,7 +34,6 @@ pub struct NewGameRequest {
 /// Represents the state of a game the player is participating in.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PlayerState {
-    Adventure(AdventureState),
     /// The player has initiated a request to create a game
     RequestedGame(NewGameRequest),
     /// The player is currently playing in the [GameId] game.
@@ -49,10 +48,12 @@ pub enum PlayerState {
 pub struct PlayerData {
     /// Unique identifier for this player
     pub id: PlayerId,
-    /// Game this player is currently participating in, if any.
+    /// Identifies the game this player is currently participating in, if any.
     pub state: Option<PlayerState>,
     /// This player's saved decks.
     pub decks: Vec<Deck>,
+    /// State for an ongoing adventure, if any
+    pub adventure: Option<AdventureState>,
     /// Cards owned by this player
     #[serde_as(as = "Vec<(_, _)>")]
     pub collection: HashMap<CardName, u32>,
@@ -60,7 +61,7 @@ pub struct PlayerData {
 
 impl PlayerData {
     pub fn new(id: PlayerId) -> Self {
-        Self { id, state: None, decks: vec![], collection: HashMap::default() }
+        Self { id, state: None, decks: vec![], adventure: None, collection: HashMap::default() }
     }
 
     /// Returns the [DeckIndex] this player requested to use for a new game.

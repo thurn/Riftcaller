@@ -75,7 +75,8 @@ namespace Spelldawn.World
           var matrix = Matrix4x4.identity;
           if (sprite.AnchorOffset != null)
           {
-            matrix *= Matrix4x4.Translate(new Vector3(sprite.AnchorOffset.X, sprite.AnchorOffset.Y, sprite.AnchorOffset.Z));
+            matrix *= Matrix4x4.Translate(new Vector3(sprite.AnchorOffset.X, sprite.AnchorOffset.Y,
+              sprite.AnchorOffset.Z));
           }
 
           if (sprite.Scale != null)
@@ -103,7 +104,8 @@ namespace Spelldawn.World
     {
       var cellPosition = _tilemaps[TileZero].layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
       var mapPosition = FromVector3Int(cellPosition);
-      var tileType = _tiles[mapPosition].TileType;
+      var tile = _tiles[mapPosition];
+      var tileType = tile.TileType;
 
       if (tileType is MapTileType.Walkable or MapTileType.Visitable)
       {
@@ -127,7 +129,8 @@ namespace Spelldawn.World
           X = v.x,
           Y = v.y
         })).ToList();
-        _registry.CharacterService.MoveHero(worldPath, () => { Debug.Log($"On Arrive"); });
+        _registry.CharacterService.MoveHero(worldPath,
+          tile.OnVisit == null ? null : () => { _registry.ActionService.HandleAction(tile.OnVisit); });
       }
     }
 

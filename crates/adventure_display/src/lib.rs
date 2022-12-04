@@ -14,9 +14,13 @@
 
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
+pub mod adventure_panels;
+pub mod explore_panel;
+
 use anyhow::Result;
-use core_ui::design;
+use core_ui::{actions, design, panel};
 use data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
+use panel_address::PanelAddress;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     FlexVector3, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite, WorldMapTile,
@@ -70,7 +74,9 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
     WorldMapTile {
         sprites,
         position: Some(adapters::map_position(position)),
-        on_visit: None,
+        on_visit: tile
+            .entity
+            .map(|_| actions::client_action(panel::open(PanelAddress::TileEntity(position)))),
         tile_type: if tile.entity.is_some() {
             MapTileType::Visitable.into()
         } else if tile.road.is_some() {

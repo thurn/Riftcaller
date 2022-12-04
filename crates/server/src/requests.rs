@@ -260,9 +260,8 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         None => (create_new_player(database, player_id)?, true),
     };
 
-    match player.state {
-        Some(PlayerState::Adventure(state)) => Ok(command_list(adventure_display::render(&state)?)),
-        Some(PlayerState::Playing(game_id)) => {
+    match (player.state, player.adventure) {
+        (Some(PlayerState::Playing(game_id)), _) => {
             if database.has_game(game_id)? {
                 let game = database.game(game_id)?;
                 let side = user_side(player_id, &game)?;
@@ -276,8 +275,11 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
                 fail!("Game not found: {:?}", game_id)
             }
         }
-        Some(PlayerState::RequestedGame(_)) => todo!("Not implemented"),
-        None => {
+        (Some(PlayerState::RequestedGame(_)), _) => todo!("Not implemented"),
+        (None, Some(adventure_state)) => {
+            Ok(command_list(adventure_display::render(&adventure_state)?))
+        }
+        (None, None) => {
             let mut commands = vec![];
             commands.push(Command::LoadScene(LoadSceneCommand {
                 scene_name: "Main".to_string(),
@@ -302,7 +304,7 @@ fn handle_new_adventure(
     side: Side,
 ) -> Result<GameResponse> {
     let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
-    player.state = Some(PlayerState::Adventure(adventure_generator::new_adventure(side)));
+    player.adventure = Some(adventure_generator::new_adventure(side));
     database.write_player(&player)?;
     Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
         scene_name: "World".to_string(),
@@ -541,6 +543,7 @@ fn create_new_player(database: &mut impl Database, player_id: PlayerId) -> Resul
         id: player_id,
         state: None,
         decks: vec![canonical_overlord.clone(), canonical_champion.clone()],
+        adventure: None,
         collection: canonical_overlord.cards.into_iter().chain(canonical_champion.cards).collect(),
     };
     database.write_player(&result)?;

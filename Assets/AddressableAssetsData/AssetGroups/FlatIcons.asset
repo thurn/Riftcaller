@@ -17,8 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ceb7cb023cd14464c85565c5173251da
   m_SerializeEntries:
-  - m_GUID: f4f5751e18c66462baa44e0b3e917d07
-    m_Address: RainbowArt/CleanFlatIcon/png_128/icon
+  - m_GUID: 1a4ff2f2aca924e5a8a4a84408f8919b
+    m_Address: RainbowArt
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

@@ -15,7 +15,7 @@
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    interface_panel_address, ClientPanelAddress, FlexAlign, FlexJustify, FlexPosition,
+    interface_panel_address, ClientPanelAddress, Dimension, FlexAlign, FlexJustify, FlexPosition,
     ImageScaleMode, InterfacePanelAddress, TextAlign, TogglePanelCommand,
 };
 
@@ -23,7 +23,6 @@ use crate::button::IconButton;
 use crate::component::EmptyComponent;
 use crate::design::{Font, FontColor, FontSize};
 use crate::prelude::*;
-use crate::style::Pixels;
 use crate::text::Text;
 use crate::{icons, style};
 
@@ -99,8 +98,8 @@ pub fn pop_to_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command
 /// optionally including a title or close button.
 pub struct Panel {
     address: InterfacePanelAddress,
-    width: Pixels,
-    height: Pixels,
+    width: Dimension,
+    height: Dimension,
     layout: Layout,
     content: Box<dyn Component>,
     title: Option<String>,
@@ -110,8 +109,8 @@ pub struct Panel {
 impl Panel {
     pub fn new(
         address: impl Into<InterfacePanelAddress>,
-        width: impl Into<Pixels>,
-        height: impl Into<Pixels>,
+        width: impl Into<Dimension>,
+        height: impl Into<Dimension>,
     ) -> Self {
         Self {
             address: address.into(),

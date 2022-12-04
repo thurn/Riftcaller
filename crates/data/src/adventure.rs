@@ -48,7 +48,7 @@ impl TileState {
     }
 }
 
-/// Stores the primary state for an ongoing game
+/// Stores the primary state for an ongoing adventure
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {

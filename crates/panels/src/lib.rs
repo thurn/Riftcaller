@@ -24,6 +24,7 @@ pub mod main_menu_panel;
 pub mod set_player_name_panel;
 pub mod settings_panel;
 
+use adventure_display::adventure_panels;
 use anyhow::Result;
 use core_ui::component::Component;
 use core_ui::panel;
@@ -103,6 +104,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
             CreateDeckState::PickName(side, school) => PickDeckName::new(side, school).build(),
         },
         PanelAddress::GameOver(_) => GameOverPanel { address, player }.build(),
+        PanelAddress::TileEntity(position) => adventure_panels::render(position, player)?,
     })
 }
 

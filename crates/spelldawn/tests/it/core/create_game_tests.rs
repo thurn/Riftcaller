@@ -191,12 +191,14 @@ fn make_overlord_test_session(
                 id: overlord_id,
                 state: None,
                 decks: vec![overlord_deck.clone(), champion_deck.clone()],
+                adventure: None,
                 collection: hashmap! {}
             },
             champion_id => PlayerData {
                 id: champion_id,
                 state: None,
                 decks: vec![overlord_deck, champion_deck],
+                adventure: None,
                 collection: hashmap! {}
             }
         },

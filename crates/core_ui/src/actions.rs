@@ -19,7 +19,9 @@ use data::game_actions::{GameAction, PromptAction};
 use data::user_actions::{DebugAction, UserAction};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{CommandList, GameCommand, InterfacePanelAddress, StandardAction};
+use protos::spelldawn::{
+    ClientAction, CommandList, GameCommand, InterfacePanelAddress, StandardAction,
+};
 use serde_json::ser;
 
 use crate::panel;
@@ -142,6 +144,11 @@ pub fn close_and(
     action: impl InterfaceAction + 'static,
 ) -> Action {
     with_optimistic_update(vec![panel::close(address)], action)
+}
+
+/// Converts an [InterfaceAction] into a [ClientAction].
+pub fn client_action(action: impl InterfaceAction + 'static) -> ClientAction {
+    ClientAction { action: Some(action.as_client_action()) }
 }
 
 pub fn payload(action: UserAction) -> Vec<u8> {

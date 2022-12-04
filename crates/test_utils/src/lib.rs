@@ -136,12 +136,14 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
                 id: overlord_user,
                 state: Some(PlayerState::Playing(game_id)),
                 decks: vec![],
+                adventure: None,
                 collection: hashmap! {}
             },
             champion_user => PlayerData {
                 id: champion_user,
                 state: Some(PlayerState::Playing(game_id)),
                 decks: vec![],
+                adventure: None,
                 collection: hashmap! {}
             }
         },

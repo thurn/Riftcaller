@@ -49,6 +49,10 @@ MonoBehaviour:
     m_Address: Assets/ThirdParty/RivermillStudios/Loot_Box_FX/Audio/chestOpen.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 0d869698c03924601a5b2f5ceae7bb92
+    m_Address: Sprites/MapIconBackground.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

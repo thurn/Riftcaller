@@ -14,6 +14,7 @@
 
 //! Addresses for user interface panels
 
+use data::adventure::TilePosition;
 use data::player_name::PlayerId;
 use data::primitives::{DeckIndex, GameId, School, Side};
 use protos::spelldawn::{interface_panel_address, InterfacePanelAddress};
@@ -30,6 +31,7 @@ pub enum PanelAddress {
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),
     GameOver(GameOverData),
+    TileEntity(TilePosition),
 }
 
 impl From<PanelAddress> for InterfacePanelAddress {

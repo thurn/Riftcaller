@@ -11,6 +11,7 @@ test = false
 
 [dependencies]
 adapters = { path = "../adapters", version = "0.0.0" }
+adventure_display = { path = "../adventure_display", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }
 deck_editor = { path = "../deck_editor", version = "0.0.0" }
 core_ui = { path = "../core_ui", version = "0.0.0" }
