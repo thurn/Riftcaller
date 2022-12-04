@@ -361,7 +361,10 @@ namespace Spelldawn.Services
     {
       foreach (var tile in command.Tiles)
       {
-        LoadSprite(requests, tile.SpriteAddress);
+        foreach (var sprite in tile.Sprites)
+        {
+          LoadSprite(requests, sprite.SpriteAddress);
+        }
       }
     }
 

@@ -19,28 +19,58 @@ use core_ui::design;
 use data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
-    FlexVector3, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapTile,
+    FlexVector3, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite, WorldMapTile,
 };
 
 /// Returns a sequence of game Commands to display the provided
 /// [AdventureState].
 pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     Ok(vec![Command::UpdateWorldMap(UpdateWorldMapCommand {
-        tiles: state
-            .tiles
-            .iter()
-            .flat_map(|(position, state)| render_tile(*position, state))
-            .collect(),
+        tiles: state.tiles.iter().map(|(position, state)| render_tile(*position, state)).collect(),
     })])
 }
 
-fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
-    let mut result = vec![WorldMapTile {
+fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
+    let mut sprites = vec![WorldMapSprite {
         sprite_address: Some(SpriteAddress {
             address: format!("DavidBaumgart/WorldTiles.spriteatlas[{}]", tile.sprite),
         }),
+        color: None,
+        anchor_offset: None,
+        scale: None,
+    }];
+
+    if let Some(road) = &tile.road {
+        sprites.push(WorldMapSprite {
+            sprite_address: Some(SpriteAddress {
+                address: format!("DavidBaumgart/Roads.spriteatlas[{}]", road),
+            }),
+            ..WorldMapSprite::default()
+        })
+    }
+
+    if let Some(entity) = &tile.entity {
+        sprites.push(WorldMapSprite {
+            sprite_address: Some(SpriteAddress {
+                address: "Sprites/MapIconBackground.png".to_string(),
+            }),
+            color: Some(design::BLACK),
+            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
+            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+        });
+
+        sprites.push(WorldMapSprite {
+            sprite_address: Some(sprite_address_for_entity(*entity)),
+            color: Some(design::WHITE),
+            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
+            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+        });
+    }
+
+    WorldMapTile {
+        sprites,
         position: Some(adapters::map_position(position)),
-        z_index: 0,
+        on_visit: None,
         tile_type: if tile.entity.is_some() {
             MapTileType::Visitable.into()
         } else if tile.road.is_some() {
@@ -48,50 +78,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> Vec<WorldMapTile> {
         } else {
             MapTileType::Obstacle.into()
         },
-        color: None,
-        anchor_offset: None,
-        scale: None,
-    }];
-
-    if let Some(road) = &tile.road {
-        result.push(WorldMapTile {
-            sprite_address: Some(SpriteAddress {
-                address: format!("DavidBaumgart/Roads.spriteatlas[{}]", road),
-            }),
-            position: Some(adapters::map_position(position)),
-            z_index: 1,
-            color: None,
-            anchor_offset: None,
-            scale: None,
-            ..WorldMapTile::default()
-        })
     }
-
-    if let Some(entity) = &tile.entity {
-        result.push(WorldMapTile {
-            sprite_address: Some(SpriteAddress {
-                address: "Sprites/MapIconBackground.png".to_string(),
-            }),
-            position: Some(adapters::map_position(position)),
-            z_index: 2,
-            color: Some(design::BLACK),
-            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
-            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
-            ..WorldMapTile::default()
-        });
-
-        result.push(WorldMapTile {
-            sprite_address: Some(sprite_address_for_entity(*entity)),
-            position: Some(adapters::map_position(position)),
-            z_index: 3,
-            color: Some(design::WHITE),
-            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
-            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
-            ..WorldMapTile::default()
-        });
-    }
-
-    result
 }
 
 fn sprite_address_for_entity(entity: TileEntity) -> SpriteAddress {

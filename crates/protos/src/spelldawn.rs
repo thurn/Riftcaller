@@ -1483,35 +1483,39 @@ pub struct MapPosition {
     #[prost(int32, tag = "2")]
     pub y: i32,
 }
-/// Represents the contents of a world map tile.
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct WorldMapTile {
+pub struct WorldMapSprite {
     /// Addressable asset path of sprite to display on the hex grid
     #[prost(message, optional, tag = "1")]
     pub sprite_address: ::core::option::Option<SpriteAddress>,
-    /// Tile position.
-    #[prost(message, optional, tag = "2")]
-    pub position: ::core::option::Option<MapPosition>,
-    /// Higher Z-index sprites are drawn on top of lower Z-index sprites.
-    /// Selection Hex appears at z-index 5
-    /// Hero appears at z-index 10
-    /// Max z-index is 99
-    #[prost(int32, tag = "3")]
-    pub z_index: i32,
-    /// How can the player character navigate through this tile? Only applies to
-    /// tiles with a z_index of 0.
-    #[prost(enumeration = "MapTileType", tag = "4")]
-    pub tile_type: i32,
     /// Color tint for the provided sprite.
-    #[prost(message, optional, tag = "5")]
+    #[prost(message, optional, tag = "2")]
     pub color: ::core::option::Option<FlexColor>,
     /// Controls the position of the tile image. Note that tiles by default are
     /// anchored at (0,-0.64), meaning they're shifted to screen bottom.
-    #[prost(message, optional, tag = "6")]
+    #[prost(message, optional, tag = "3")]
     pub anchor_offset: ::core::option::Option<FlexVector3>,
     /// Scale transformation to apply to the image.
-    #[prost(message, optional, tag = "7")]
+    #[prost(message, optional, tag = "4")]
     pub scale: ::core::option::Option<FlexVector3>,
+}
+/// Represents the contents of a world map tile.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WorldMapTile {
+    /// Images to display on this tile. Will be rendered in z-index order, with
+    /// later sprites appearing on top of earlier ones. Sprites always display
+    /// below the player character layer.
+    #[prost(message, repeated, tag = "1")]
+    pub sprites: ::prost::alloc::vec::Vec<WorldMapSprite>,
+    /// Tile position.
+    #[prost(message, optional, tag = "2")]
+    pub position: ::core::option::Option<MapPosition>,
+    /// Action to invoke when this tile is visited by the player.
+    #[prost(message, optional, tag = "3")]
+    pub on_visit: ::core::option::Option<ClientAction>,
+    /// How can the player character navigate through this tile?
+    #[prost(enumeration = "MapTileType", tag = "4")]
+    pub tile_type: i32,
 }
 /// Updates the world map tilemap. Only valid in the 'World' scene.
 #[derive(Clone, PartialEq, ::prost::Message)]

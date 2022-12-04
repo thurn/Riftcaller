@@ -47,7 +47,7 @@ namespace Spelldawn.World
     public sealed record TileId(MapPosition Position, int Z);
 
     readonly Dictionary<TileId, Tilemap> _tilemaps = new();
-    readonly Dictionary<TileId, WorldMapTile> _tiles = new();
+    readonly Dictionary<MapPosition, WorldMapTile> _tiles = new();
     static readonly TileId TileZero = new(new MapPosition(), 0);
 
     void Start()
@@ -60,35 +60,40 @@ namespace Spelldawn.World
     {
       foreach (var tile in command.Tiles)
       {
-        // Unity has 3 different ways of managing tile sort order (global sort axis, tilemap z position,
-        // and sprite sorting order). In my experience these layers are generally buggy and unreliable,
-        // especially tilemap z-index. To make sure everything works as expected, we *only* rely on 
-        // sprite sorting order and instantiate numerous different Tilemaps with different sorting
-        // behavior.
-
-        var instance = ScriptableObject.CreateInstance<Tile>();
-        instance.sprite = _registry.AssetService.GetSprite(tile.SpriteAddress);
-
-        var matrix = Matrix4x4.identity;
-        if (tile.AnchorOffset != null)
+        var zIndex = 0;
+        foreach (var sprite in tile.Sprites)
         {
-          matrix *= Matrix4x4.Translate(new Vector3(tile.AnchorOffset.X, tile.AnchorOffset.Y, tile.AnchorOffset.Z));
+          // Unity has 3 different ways of managing tile sort order (global sort axis, tilemap z position,
+          // and sprite sorting order). In my experience these layers are generally buggy and unreliable,
+          // especially tilemap z-index. To make sure everything works as expected, we *only* rely on 
+          // sprite sorting order and instantiate numerous different Tilemaps with different sorting
+          // behavior.
+
+          var instance = ScriptableObject.CreateInstance<Tile>();
+          instance.sprite = _registry.AssetService.GetSprite(sprite.SpriteAddress);
+
+          var matrix = Matrix4x4.identity;
+          if (sprite.AnchorOffset != null)
+          {
+            matrix *= Matrix4x4.Translate(new Vector3(sprite.AnchorOffset.X, sprite.AnchorOffset.Y, sprite.AnchorOffset.Z));
+          }
+
+          if (sprite.Scale != null)
+          {
+            matrix *= Matrix4x4.Scale(new Vector3(sprite.Scale.X, sprite.Scale.Y, sprite.Scale.Z));
+          }
+
+          if (sprite.Color != null)
+          {
+            instance.color = Mason.ToUnityColor(sprite.Color);
+          }
+
+          instance.transform = matrix;
+          var id = new TileId(tile.Position, zIndex++);
+          GetTilemap(id).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
         }
 
-        if (tile.Scale != null)
-        {
-          matrix *= Matrix4x4.Scale(new Vector3(tile.Scale.X, tile.Scale.Y, tile.Scale.Z));
-        }
-
-        if (tile.Color != null)
-        {
-          instance.color = Mason.ToUnityColor(tile.Color);
-        }
-
-        instance.transform = matrix;
-        var id = new TileId(tile.Position, tile.ZIndex);
-        GetTilemap(id).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
-        _tiles[id] = tile;
+        _tiles[tile.Position] = tile;
       }
 
       yield break;
@@ -98,8 +103,7 @@ namespace Spelldawn.World
     {
       var cellPosition = _tilemaps[TileZero].layoutGrid.WorldToCell(new Vector3(position.x, position.y, 0));
       var mapPosition = FromVector3Int(cellPosition);
-      var id = new TileId(mapPosition, 0);
-      var tileType = _tiles[id].TileType;
+      var tileType = _tiles[mapPosition].TileType;
 
       if (tileType is MapTileType.Walkable or MapTileType.Visitable)
       {
@@ -135,9 +139,7 @@ namespace Spelldawn.World
       foreach (var direction in directions)
       {
         var neighborPos = vertex + direction;
-        var tileId = new TileId(FromVector3Int(neighborPos), 0);
-
-        if (_tiles.GetValueOrDefault(tileId)?.TileType == MapTileType.Walkable)
+        if (_tiles.GetValueOrDefault(FromVector3Int(neighborPos))?.TileType == MapTileType.Walkable)
         {
           result.Add(neighborPos);
         }
