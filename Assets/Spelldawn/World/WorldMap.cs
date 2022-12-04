@@ -124,12 +124,16 @@ namespace Spelldawn.World
         var path = _visitableTiles.Contains(mapPosition) ? 
           Dijkstra<Vector3Int>.ShortestPathOfDestinations(this, start, FindNeighbors(cellPosition)) : 
           Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
-        
-        _registry.CharacterService.MoveHero(path.Select(v => ToWorldPosition(new MapPosition
+
+        var worldPath = path.Select(v => ToWorldPosition(new MapPosition
         {
           X = v.x,
           Y = v.y
-        })).ToList());
+        })).ToList();
+        _registry.CharacterService.MoveHero(worldPath, () =>
+        {
+          Debug.Log($"On Arrive");
+        });
       }
     }
 

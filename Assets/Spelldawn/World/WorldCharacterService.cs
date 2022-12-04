@@ -14,6 +14,7 @@
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -35,9 +36,9 @@ namespace Spelldawn.World
       _hero.Initialize(_worldMap);
     }
 
-    public void MoveHero(List<Vector3> path)
+    public void MoveHero(List<Vector3> path, Action? onArrive = null)
     {
-      _hero.MoveOnPath(path);
+      _hero.MoveOnPath(path, onArrive);
     }
 
     public Vector3Int CurrentHeroPosition()

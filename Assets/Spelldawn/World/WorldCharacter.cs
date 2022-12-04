@@ -37,6 +37,7 @@ namespace Spelldawn.World
     [SerializeField] GameObject _up = null!;
     WorldMap _worldMap = null!;
     float _moveSpeed;
+    Action? _onArriveAtDestination;
     
     readonly Queue<Vector2> _targetPositions = new();
 
@@ -72,6 +73,8 @@ namespace Spelldawn.World
           if (_targetPositions.Count == 0)
           {
             _animator.SetFloat(SpeedParam, 0f);
+            _onArriveAtDestination?.Invoke();
+            _onArriveAtDestination = null;
           }
           else
           {
@@ -84,7 +87,7 @@ namespace Spelldawn.World
       _sortingGroup.sortingOrder = _worldMap.SortOrderForTileAndZIndex(mapPosition, 10);
     }
 
-    public void MoveOnPath(List<Vector3> positions)
+    public void MoveOnPath(List<Vector3> positions, Action? onArriveAtDestination = null)
     {
       if (positions.Count > 0)
       {
@@ -98,6 +101,8 @@ namespace Spelldawn.World
         
         SetDirectionForTarget(_targetPositions.Peek());
       }
+
+      _onArriveAtDestination = onArriveAtDestination;
     }
 
     void SetDirectionForTarget(Vector2 target)
