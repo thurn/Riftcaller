@@ -16,6 +16,7 @@ use anyhow::Result;
 use core_ui::prelude::*;
 use data::adventure::{TileEntity, TilePosition};
 use data::player_data::PlayerData;
+use panel_address::PanelAddress;
 use protos::spelldawn::Node;
 use with_error::{fail, WithError};
 
@@ -23,6 +24,7 @@ use crate::explore_panel::ExplorePanel;
 
 /// Renders a panel for the entity at the provided [TilePosition].
 pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node>> {
+    let address = PanelAddress::TileEntity(position);
     let Some(adventure) = &player.adventure else {
         fail!("Expected active adventure");
     };
@@ -31,6 +33,6 @@ pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node
 
     Ok(match tile.entity.with_error(|| "Expected entity")? {
         TileEntity::Draft => None,
-        TileEntity::Explore => ExplorePanel {}.build(),
+        TileEntity::Explore => ExplorePanel::new(address).build(),
     })
 }

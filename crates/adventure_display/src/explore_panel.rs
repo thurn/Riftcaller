@@ -15,11 +15,20 @@
 use core_ui::button::{Button, ButtonType};
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
-use core_ui::style;
 use core_ui::text::Text;
+use core_ui::{panel, style};
+use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
-pub struct ExplorePanel {}
+pub struct ExplorePanel {
+    address: PanelAddress,
+}
+
+impl ExplorePanel {
+    pub fn new(address: PanelAddress) -> Self {
+        Self { address }
+    }
+}
 
 impl Component for ExplorePanel {
     fn build(self) -> Option<Node> {
@@ -70,6 +79,7 @@ impl Component for ExplorePanel {
                                     .child(
                                         Button::new("Close")
                                             .button_type(ButtonType::Secondary)
+                                            .action(panel::close(self.address))
                                             .layout(Layout::new().margin(Edge::All, 8.px())),
                                     ),
                             ),

@@ -100,9 +100,12 @@ namespace Spelldawn.World
         }
         
         SetDirectionForTarget(_targetPositions.Peek());
+        _onArriveAtDestination = onArriveAtDestination;
       }
-
-      _onArriveAtDestination = onArriveAtDestination;
+      else
+      {
+        onArriveAtDestination?.Invoke();
+      }
     }
 
     void SetDirectionForTarget(Vector2 target)
