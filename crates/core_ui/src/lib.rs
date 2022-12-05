@@ -27,6 +27,7 @@ pub mod icons;
 pub mod list_cell;
 pub mod panel;
 pub mod prelude;
+pub mod safe_screen;
 pub mod scroll_view;
 pub mod slider;
 pub mod style;

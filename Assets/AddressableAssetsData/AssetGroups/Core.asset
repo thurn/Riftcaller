@@ -53,6 +53,10 @@ MonoBehaviour:
     m_Address: Sprites/MapIconBackground.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: b6ecb7822a05b484ea8e4be2e364a413
+    m_Address: TPR
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:
