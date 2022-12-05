@@ -31,31 +31,47 @@ impl Component for ExplorePanel {
                     .background_image(style::sprite("TPR/InfiniteEnvironments/meadow")),
             )
             .child(
-                Column::new("Content")
+                Column::new("Container")
                     .style(
                         Style::new()
                             .position_type(FlexPosition::Absolute)
                             .position(Edge::Horizontal, 0.px())
-                            .position(Edge::Bottom, 0.px())
-                            .justify_content(FlexJustify::Center)
-                            .align_items(FlexAlign::Center)
-                            .background_color(BackgroundColor::TilePanelOverlay)
-                            .padding(Edge::All, 32.px()),
+                            .position(Edge::Bottom, 0.px()),
                     )
-                    .child(Text::new(
-                        "To the north lie the flowering fields of the Kingdom of Edennes",
-                        FontSize::Headline,
-                    ))
                     .child(
-                        Row::new("ButtonGroup")
-                            .child(
-                                Button::new("Explore \u{2022} 100 \u{f51e}")
-                                    .layout(Layout::new().margin(Edge::All, 16.px())),
+                        Row::new("Gradient").style(
+                            Style::new()
+                                .height(128.px())
+                                .width(100.pct())
+                                .background_image(style::sprite("Sprites/OverlayGradient")),
+                        ),
+                    )
+                    .child(
+                        Column::new("Content")
+                            .style(
+                                Style::new()
+                                    .justify_content(FlexJustify::Center)
+                                    .align_items(FlexAlign::Center)
+                                    .width(100.pct())
+                                    .background_color(BackgroundColor::TilePanelOverlay)
+                                    .padding(Edge::All, 8.px()),
                             )
+                            .child(Text::new(
+                                "To the north lie the flowering fields of the Kingdom of Edennes",
+                                FontSize::Headline,
+                            ))
                             .child(
-                                Button::new("Close")
-                                    .button_type(ButtonType::Secondary)
-                                    .layout(Layout::new().margin(Edge::All, 16.px())),
+                                Row::new("ButtonGroup")
+                                    .style(Style::new().margin(Edge::All, 8.px()))
+                                    .child(
+                                        Button::new("Explore \u{2022} 100 \u{f51e}")
+                                            .layout(Layout::new().margin(Edge::All, 8.px())),
+                                    )
+                                    .child(
+                                        Button::new("Close")
+                                            .button_type(ButtonType::Secondary)
+                                            .layout(Layout::new().margin(Edge::All, 8.px())),
+                                    ),
                             ),
                     ),
             )
