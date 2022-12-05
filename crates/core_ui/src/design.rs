@@ -66,6 +66,7 @@ pub enum BackgroundColor {
     SafeAreaOverlay,
     BottomSheetOverlay,
     BottomSheetBackground,
+    TilePanelOverlay,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -77,6 +78,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::SafeAreaOverlay => BLACK,
             BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
             BackgroundColor::BottomSheetBackground => ORANGE_900,
+            BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
         }
     }
 }
