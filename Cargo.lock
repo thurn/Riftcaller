@@ -61,6 +61,7 @@ name = "adventure_generator"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "bitflags",
  "data",
  "serde",
  "with_error",

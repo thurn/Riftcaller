@@ -25,6 +25,12 @@ pub struct TilePosition {
     pub y: i32,
 }
 
+impl TilePosition {
+    pub fn new(x: i32, y: i32) -> Self {
+        Self { x, y }
+    }
+}
+
 /// Possible events/actions which can take place on a tile, represented by map
 /// icons
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
