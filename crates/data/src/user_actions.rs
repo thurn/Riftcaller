@@ -14,6 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::adventure::TilePosition;
 use crate::card_name::CardName;
 use crate::game_actions::GameAction;
 use crate::player_name::{NamedPlayer, PlayerId};
@@ -93,5 +94,6 @@ pub enum UserAction {
     LeaveGame,
     Debug(DebugAction),
     GameAction(GameAction),
+    AdventureTileAction(TilePosition),
     DeckEditorAction(DeckEditorAction),
 }

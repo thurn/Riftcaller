@@ -16,17 +16,20 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::text::Text;
-use core_ui::{panel, style};
+use core_ui::{actions, panel, style};
+use data::adventure::TilePosition;
+use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
 pub struct ExplorePanel {
     address: PanelAddress,
+    position: TilePosition,
 }
 
 impl ExplorePanel {
-    pub fn new(address: PanelAddress) -> Self {
-        Self { address }
+    pub fn new(address: PanelAddress, position: TilePosition) -> Self {
+        Self { address, position }
     }
 }
 
@@ -74,6 +77,10 @@ impl Component for ExplorePanel {
                                     .style(Style::new().margin(Edge::All, 8.px()))
                                     .child(
                                         Button::new("Explore \u{2022} 100 \u{f51e}")
+                                            .action(actions::close_and(
+                                                self.address,
+                                                UserAction::AdventureTileAction(self.position),
+                                            ))
                                             .layout(Layout::new().margin(Edge::All, 8.px())),
                                     )
                                     .child(

@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
 use crate::primitives::Side;
+
+/// Identifies a set of tiles which can be revealed via the 'explore' action.
+pub type RegionId = u32;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct TilePosition {
@@ -36,7 +39,7 @@ impl TilePosition {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum TileEntity {
     Draft,
-    Explore,
+    Explore(RegionId),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -46,11 +49,13 @@ pub struct TileState {
     pub road: Option<String>,
 
     pub entity: Option<TileEntity>,
+
+    pub region_id: RegionId,
 }
 
 impl TileState {
     pub fn with_sprite(address: impl Into<String>) -> Self {
-        TileState { sprite: address.into(), road: None, entity: None }
+        TileState { sprite: address.into(), road: None, entity: None, region_id: 1 }
     }
 }
 
@@ -59,6 +64,10 @@ impl TileState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {
     pub side: Side,
+    /// States of world map tiles
     #[serde_as(as = "Vec<(_, _)>")]
     pub tiles: HashMap<TilePosition, TileState>,
+    /// Regions which the player can currently see. By default Region 1 is
+    /// revealed.
+    pub revealed_regions: HashSet<RegionId>,
 }

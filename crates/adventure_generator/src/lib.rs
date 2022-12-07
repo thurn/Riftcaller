@@ -14,9 +14,9 @@
 
 //! Generates world maps for the 'adventure' game mode
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
-use data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
+use data::adventure::{AdventureState, RegionId, TileEntity, TilePosition, TileState};
 use data::primitives::Side;
 
 const TOP_LEFT: u8 = 0b00100000;
@@ -42,7 +42,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
         2,
         "hexPlains00",
         road(TOP_RIGHT | BOTTOM_LEFT, 0),
-        TileEntity::Explore,
+        TileEntity::Explore(2),
     );
     add_tile(&mut tiles, 4, 2, "hexPlainsSmithy00");
     add_tile(&mut tiles, -4, 1, "hexGrassySandPalms01");
@@ -78,12 +78,15 @@ pub fn new_adventure(side: Side) -> AdventureState {
     add_with_road(&mut tiles, 3, -2, "hexPlains00", road(TOP_LEFT | BOTTOM_RIGHT, 1));
     add_tile(&mut tiles, 4, -2, "hexJungle00");
 
-    tiles.extend(hidden_tiles().into_iter());
+    tiles.extend(hidden_tiles(2).into_iter());
 
-    AdventureState { side, tiles }
+    let mut revealed_regions = HashSet::new();
+    revealed_regions.insert(1);
+
+    AdventureState { side, tiles, revealed_regions }
 }
 
-fn hidden_tiles() -> HashMap<TilePosition, TileState> {
+fn hidden_tiles(region_id: RegionId) -> HashMap<TilePosition, TileState> {
     let mut result = HashMap::new();
 
     add_tile(&mut result, -4, 7, "hexHillsColdSnowTransition01");
@@ -126,6 +129,10 @@ fn hidden_tiles() -> HashMap<TilePosition, TileState> {
     add_tile(&mut result, 1, 3, "hexDesertYellowSaltFlat00");
     add_tile(&mut result, 2, 3, "hexHighlands00");
     add_with_road(&mut result, 3, 3, "hexPlains00", road(TOP_LEFT | BOTTOM_LEFT, 0));
+
+    for (_, state) in result.iter_mut() {
+        state.region_id = region_id;
+    }
 
     result
 }

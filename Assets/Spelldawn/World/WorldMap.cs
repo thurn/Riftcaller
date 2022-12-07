@@ -58,6 +58,11 @@ namespace Spelldawn.World
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
     {
+      foreach (var tilemap in _tilemaps.Values)
+      {
+        tilemap.ClearAllTiles();
+      }
+      
       foreach (var tile in command.Tiles)
       {
         var zIndex = 0;

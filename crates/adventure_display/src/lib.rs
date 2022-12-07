@@ -30,7 +30,12 @@ use protos::spelldawn::{
 /// [AdventureState].
 pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     Ok(vec![Command::UpdateWorldMap(UpdateWorldMapCommand {
-        tiles: state.tiles.iter().map(|(position, state)| render_tile(*position, state)).collect(),
+        tiles: state
+            .tiles
+            .iter()
+            .filter(|(_, tile)| state.revealed_regions.contains(&tile.region_id))
+            .map(|(position, state)| render_tile(*position, state))
+            .collect(),
     })])
 }
 
@@ -93,7 +98,7 @@ fn sprite_address_for_entity(entity: TileEntity) -> SpriteAddress {
             TileEntity::Draft => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png"
             }
-            TileEntity::Explore => {
+            TileEntity::Explore(_) => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_app/icon_app_198.png"
             }
         }

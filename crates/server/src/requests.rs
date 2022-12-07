@@ -20,6 +20,7 @@ use anyhow::Result;
 use cards::decklists;
 use core_ui::panel;
 use dashmap::DashMap;
+use data::adventure::TilePosition;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
@@ -470,6 +471,20 @@ pub fn handle_player_action(
     Ok(GameResponse::from_commands(vec![]))
 }
 
+/// Allows mutation of a player's data outside of an active game ([PlayerData]).
+pub fn handle_adventure_action(
+    database: &mut impl Database,
+    player_id: PlayerId,
+    position: TilePosition,
+) -> Result<GameResponse> {
+    let mut player = find_player(database, player_id)?;
+    let adventure_state = player.adventure.as_mut().with_error(|| "Expected active adventure")?;
+    adventure_actions::handle_adventure_action(adventure_state, position)?;
+    let commands = adventure_display::render(adventure_state)?;
+    database.write_player(&player)?;
+    Ok(GameResponse::from_commands(commands))
+}
+
 /// Sends a game response to a given player, if they are connected to the
 /// server.
 pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
@@ -506,6 +521,9 @@ fn handle_standard_action(
             debug::handle_debug_action(database, player_id, game_id, debug_action)
         }
         UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
+        UserAction::AdventureTileAction(position) => {
+            handle_adventure_action(database, player_id, position)
+        }
         UserAction::DeckEditorAction(a) => handle_player_action(database, player_id, |player| {
             deck_editor_actions::handle(player, a, &standard_action.request_fields)
         }),

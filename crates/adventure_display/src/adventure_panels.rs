@@ -33,6 +33,6 @@ pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node
 
     Ok(match tile.entity.with_error(|| "Expected entity")? {
         TileEntity::Draft => None,
-        TileEntity::Explore => ExplorePanel::new(address).build(),
+        TileEntity::Explore(_) => ExplorePanel::new(address, position).build(),
     })
 }
