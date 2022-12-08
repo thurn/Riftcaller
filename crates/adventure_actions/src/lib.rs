@@ -22,7 +22,6 @@ pub fn handle_adventure_action(state: &mut AdventureState, position: TilePositio
     let tile = state.tiles.get_mut(&position).with_error(|| "Tile not found")?;
 
     match tile.entity.with_error(|| "No action for tile")? {
-        TileEntity::Draft => {}
         TileEntity::Explore(region_id) => {
             state.revealed_regions.insert(region_id);
             tile.entity = None;

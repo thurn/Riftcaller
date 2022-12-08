@@ -89,13 +89,3 @@ expression: "Summary::run(&response)"
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-    UpdatePanels: 
-    panels: "<Panel>"
-    UpdatePanels: 
-    panels: "<Panel>"
-    UpdatePanels: 
-    panels: "<Panel>"
-    UpdatePanels: 
-    panels: "<Panel>"
-    UpdatePanels: 
-    panels: "<Panel>"

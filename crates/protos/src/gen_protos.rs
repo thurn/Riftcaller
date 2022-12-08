@@ -32,6 +32,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .type_attribute("spelldawn.DeckIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
         .type_attribute("spelldawn.GameIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
         .type_attribute("spelldawn.CardIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
+        .type_attribute("spelldawn.InterfacePanelAddress", "#[derive(Eq, Hash)]")
+        .type_attribute("spelldawn.InterfacePanelAddress.address_type", "#[derive(Eq, Hash)]")
         .type_attribute(
             "spelldawn.GameObjectIdentifier.id",
             "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]",

@@ -32,7 +32,6 @@ pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node
     let tile = adventure.tiles.get(&position).with_error(|| "Tile not found")?;
 
     Ok(match tile.entity.with_error(|| "Expected entity")? {
-        TileEntity::Draft => None,
         TileEntity::Explore(_) => ExplorePanel::new(address, position).build(),
     })
 }

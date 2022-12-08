@@ -16,7 +16,7 @@ use data::card_name::CardName;
 use data::primitives::{RoomId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{DrawCardAction, PlayerName, RoomIdentifier};
-use test_utils::client::HasText;
+use test_utils::client_interface::HasText;
 use test_utils::*;
 
 #[test]

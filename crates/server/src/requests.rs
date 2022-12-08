@@ -261,24 +261,26 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         None => (create_new_player(database, player_id)?, true),
     };
 
-    match (player.state, player.adventure) {
+    match (&player.state, &player.adventure) {
         (Some(PlayerState::Playing(game_id)), _) => {
-            if database.has_game(game_id)? {
-                let game = database.game(game_id)?;
+            if database.has_game(*game_id)? {
+                let game = database.game(*game_id)?;
                 let side = user_side(player_id, &game)?;
-                let mut commands = render::connect(&game, side)?;
-                panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
-                if is_new_player {
-                    commands.push(panel::open(PanelAddress::Disclaimer));
-                }
-                Ok(command_list(commands))
+                Ok(command_list(render::connect(&game, side)?))
             } else {
                 fail!("Game not found: {:?}", game_id)
             }
         }
         (Some(PlayerState::RequestedGame(_)), _) => todo!("Not implemented"),
         (None, Some(adventure_state)) => {
-            Ok(command_list(adventure_display::render(&adventure_state)?))
+            let mut commands = vec![];
+            commands.extend(adventure_display::render(adventure_state)?);
+            panels::render_panels(
+                &mut commands,
+                &player,
+                panels::adventure_panels(adventure_state),
+            )?;
+            Ok(command_list(commands))
         }
         (None, None) => {
             let mut commands = vec![];
@@ -287,7 +289,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
                 mode: SceneLoadMode::Single.into(),
                 skip_if_current: true,
             }));
-            panels::append_standard_panels(&find_player(database, player_id)?, &mut commands)?;
+            panels::render_panels(&mut commands, &player, panels::main_menu_panels())?;
             commands.push(Command::TogglePanel(TogglePanelCommand {
                 toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
             }));

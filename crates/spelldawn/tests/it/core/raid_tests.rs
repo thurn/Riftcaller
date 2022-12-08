@@ -26,7 +26,7 @@ use protos::spelldawn::{
     ObjectPositionDiscardPile, ObjectPositionIdentity, ObjectPositionIdentityContainer,
     ObjectPositionRaid, ObjectPositionRoom, PlayerName, SpendActionPointAction,
 };
-use test_utils::client::HasText;
+use test_utils::client_interface::HasText;
 use test_utils::summarize::Summary;
 use test_utils::*;
 

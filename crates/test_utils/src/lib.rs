@@ -18,8 +18,10 @@
 #![allow(clippy::unwrap_in_result)]
 
 pub mod client;
+pub mod client_interface;
 pub mod fake_database;
 pub mod summarize;
+pub mod test_adventure;
 pub mod test_games;
 
 use std::collections::HashSet;

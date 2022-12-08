@@ -65,7 +65,8 @@ pub fn new_adventure(side: Side) -> AdventureState {
     add_with_road(&mut tiles, -3, -1, "hexScrublands01", road(TOP_RIGHT | BOTTOM_LEFT, 1));
     add_tile(&mut tiles, -2, -1, "hexTropicalPlains00");
     add_tile(&mut tiles, -1, -1, "hexSwamp01");
-    add_with_entity(&mut tiles, 0, -1, "hexMountain03", TileEntity::Draft);
+    add_tile(&mut tiles, 0, -1, "hexMountain03");
+    //add_with_entity(&mut tiles, 0, -1, "hexMountain03", TileEntity::Draft);
     add_tile(&mut tiles, 1, -1, "hexPlainsFarm00");
     add_with_road(&mut tiles, 2, -1, "hexPlains00", road(TOP_LEFT | BOTTOM_RIGHT, 0));
     add_tile(&mut tiles, 3, -1, "hexJungle03");
@@ -159,18 +160,18 @@ fn add_with_road(
     );
 }
 
-fn add_with_entity(
-    map: &mut HashMap<TilePosition, TileState>,
-    x: i32,
-    y: i32,
-    sprite: &'static str,
-    entity: TileEntity,
-) {
-    map.insert(
-        TilePosition { x, y },
-        TileState { entity: Some(entity), ..TileState::with_sprite(sprite) },
-    );
-}
+// fn add_with_entity(
+//     map: &mut HashMap<TilePosition, TileState>,
+//     x: i32,
+//     y: i32,
+//     sprite: &'static str,
+//     entity: TileEntity,
+// ) {
+//     map.insert(
+//         TilePosition { x, y },
+//         TileState { entity: Some(entity), ..TileState::with_sprite(sprite) },
+//     );
+// }
 
 fn add_with_road_and_entity(
     map: &mut HashMap<TilePosition, TileState>,

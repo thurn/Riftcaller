@@ -35,18 +35,19 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
-    card_target, node_type, ArrowTargetRoom, CardAnchorNode, CardIdentifier, CardTarget, CardView,
-    ClientAction, ClientItemLocation, ClientRoomLocation, CommandList, EventHandlers,
-    GameMessageType, GameObjectIdentifier, GameRequest, InitiateRaidAction, NoTargeting, Node,
-    NodeType, ObjectPosition, ObjectPositionBrowser, ObjectPositionDiscardPile, ObjectPositionHand,
-    ObjectPositionItem, ObjectPositionRevealedCards, ObjectPositionRoom, PlayCardAction,
-    PlayInRoom, PlayerName, PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
+    card_target, ArrowTargetRoom, CardIdentifier, CardTarget, CardView, ClientAction,
+    ClientItemLocation, ClientRoomLocation, CommandList, GameMessageType, GameObjectIdentifier,
+    GameRequest, InitiateRaidAction, NoTargeting, ObjectPosition, ObjectPositionBrowser,
+    ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem, ObjectPositionRevealedCards,
+    ObjectPositionRoom, PlayCardAction, PlayInRoom, PlayerName, PlayerView, RevealedCardView,
+    RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
 use server::requests;
 use server::requests::GameResponse;
 use with_error::WithError;
 
+use crate::client_interface::{ClientInterface, HasText};
 use crate::fake_database::FakeDatabase;
 use crate::{fake_database, ROOM_ID};
 
@@ -622,157 +623,6 @@ impl ClientPlayer {
             self.score = Some(p.score.clone().expect("score").score);
             self.can_take_action = Some(p.can_take_action);
         }
-    }
-}
-
-/// Simulated user interface state
-#[derive(Debug, Clone, Default)]
-pub struct ClientInterface {
-    main_controls: Option<Node>,
-    card_anchors: Vec<CardAnchorNode>,
-}
-
-impl ClientInterface {
-    pub fn main_controls_option(&self) -> Option<Node> {
-        self.main_controls.clone()
-    }
-
-    pub fn main_controls(&self) -> &Node {
-        self.main_controls.as_ref().expect("MainControls Node")
-    }
-
-    pub fn card_anchors(&self) -> &Vec<CardAnchorNode> {
-        &self.card_anchors
-    }
-
-    pub fn controls(&self) -> Vec<&Node> {
-        let mut result =
-            vec![self.main_controls.as_ref()].into_iter().flatten().collect::<Vec<_>>();
-        result.extend(self.card_anchor_nodes());
-        result
-    }
-
-    pub fn card_anchor_nodes(&self) -> Vec<&Node> {
-        self.card_anchors().iter().filter_map(|node| node.node.as_ref()).collect()
-    }
-
-    fn update(&mut self, command: Command) {
-        if let Command::UpdateGameView(update) = command {
-            let controls = update.game.as_ref().expect("game").main_controls.as_ref();
-            self.main_controls = controls.and_then(|c| c.node.clone());
-            self.card_anchors = controls.map_or(vec![], |c| c.card_anchor_nodes.clone());
-        }
-    }
-}
-
-pub trait HasText {
-    /// Returns true if there are any text nodes contained within this tree
-    /// which contain the provided string.    
-    fn has_text(&self, text: impl Into<String>) -> bool;
-
-    /// Populates `path` with the series of nodes leading to the node which
-    /// contains the provided text. Leaves `path` unchanged if no node
-    /// containing this text is found.
-    fn find_text(&self, path: &mut Vec<Node>, text: impl Into<String>);
-
-    /// Finds the path to the provided `text` via [Self::find_text] and then
-    /// searches up the path for registered [EventHandlers].
-    fn find_handlers(&self, text: impl Into<String>) -> Option<EventHandlers>;
-
-    /// Returns all text contained within this tree
-    fn get_text(&self) -> Vec<String>;
-}
-
-impl HasText for Node {
-    fn has_text(&self, text: impl Into<String>) -> bool {
-        let string = text.into();
-        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) =
-            self.node_type.as_deref()
-        {
-            if s.label.contains(string.as_str()) {
-                return true;
-            }
-        }
-
-        for child in &self.children {
-            if child.has_text(string.as_str()) {
-                return true;
-            }
-        }
-
-        false
-    }
-
-    fn find_text(&self, path: &mut Vec<Node>, text: impl Into<String>) {
-        let string = text.into();
-        if self.has_text(string.as_str()) {
-            path.push(self.clone());
-        }
-
-        for child in &self.children {
-            child.find_text(path, string.as_str());
-        }
-    }
-
-    fn find_handlers(&self, text: impl Into<String>) -> Option<EventHandlers> {
-        let mut nodes = vec![];
-        self.find_text(&mut nodes, text);
-        nodes.reverse();
-        nodes.iter().find_map(|node| node.event_handlers.clone())
-    }
-
-    fn get_text(&self) -> Vec<String> {
-        let mut result = vec![];
-        if let Some(NodeType { node_type: Some(node_type::NodeType::Text(s)) }) =
-            self.node_type.as_deref()
-        {
-            result.push(s.label.clone())
-        }
-
-        for child in &self.children {
-            result.extend(child.get_text());
-        }
-
-        result
-    }
-}
-
-impl HasText for Vec<&Node> {
-    fn has_text(&self, text: impl Into<String>) -> bool {
-        let string = text.into();
-        for node in self {
-            if node.has_text(string.as_str()) {
-                return true;
-            }
-        }
-        false
-    }
-
-    fn find_text(&self, path: &mut Vec<Node>, text: impl Into<String>) {
-        let string = text.into();
-        for node in self {
-            if node.has_text(string.as_str()) {
-                return node.find_text(path, string.as_str());
-            }
-        }
-    }
-
-    fn find_handlers(&self, text: impl Into<String>) -> Option<EventHandlers> {
-        let string = text.into();
-        for node in self {
-            if let Some(handlers) = node.find_handlers(string.as_str()) {
-                return Some(handlers);
-            }
-        }
-        None
-    }
-
-    fn get_text(&self) -> Vec<String> {
-        let mut result = vec![];
-        for node in self {
-            result.extend(node.get_text());
-        }
-        result
     }
 }
 

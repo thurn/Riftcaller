@@ -38,7 +38,6 @@ impl TilePosition {
 /// icons
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum TileEntity {
-    Draft,
     Explore(RegionId),
 }
 

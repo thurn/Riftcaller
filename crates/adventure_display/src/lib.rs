@@ -95,9 +95,9 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
 fn sprite_address_for_entity(entity: TileEntity) -> SpriteAddress {
     SpriteAddress {
         address: match entity {
-            TileEntity::Draft => {
-                "RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png"
-            }
+            // TileEntity::Draft => {
+            //     "RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png"
+            // }
             TileEntity::Explore(_) => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_app/icon_app_198.png"
             }

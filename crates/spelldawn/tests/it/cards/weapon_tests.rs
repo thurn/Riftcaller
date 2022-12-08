@@ -15,7 +15,7 @@
 use data::card_name::CardName;
 use data::primitives::{Lineage, RoomId, Side};
 use protos::spelldawn::PlayerName;
-use test_utils::client::HasText;
+use test_utils::client_interface::HasText;
 use test_utils::*;
 
 #[test]

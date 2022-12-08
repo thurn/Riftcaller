@@ -12,5 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod monte_carlo_tests;
-mod tree_search_tests;
+mod explore_tests;

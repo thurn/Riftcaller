@@ -27,7 +27,7 @@ pub mod settings_panel;
 use adventure_display::adventure_panels;
 use anyhow::Result;
 use core_ui::component::Component;
-use core_ui::panel;
+use data::adventure::AdventureState;
 use data::player_data::PlayerData;
 use debug_panel::DebugPanel;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
@@ -51,16 +51,31 @@ use crate::main_menu_panel::MainMenuPanel;
 use crate::set_player_name_panel::SetPlayerNamePanel;
 use crate::settings_panel::SettingsPanel;
 
-/// Appends a command to `commands` to render commonly-used panels on connect.
-pub fn append_standard_panels(player: &PlayerData, commands: &mut Vec<Command>) -> Result<()> {
-    commands.push(Command::UpdatePanels(render_panel(
-        player,
-        panel::client(ClientPanelAddress::DebugPanel),
-    )?));
-    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::MainMenu.into())?));
-    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::Settings.into())?));
-    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::About.into())?));
-    commands.push(Command::UpdatePanels(render_panel(player, PanelAddress::Disclaimer.into())?));
+pub fn main_menu_panels() -> Vec<PanelAddress> {
+    vec![
+        PanelAddress::MainMenu,
+        PanelAddress::Settings,
+        PanelAddress::About,
+        PanelAddress::Disclaimer,
+    ]
+}
+
+pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
+    adventure
+        .tiles
+        .iter()
+        .filter_map(|(position, state)| state.entity.map(|_| PanelAddress::TileEntity(*position)))
+        .collect()
+}
+
+pub fn render_panels(
+    commands: &mut Vec<Command>,
+    player: &PlayerData,
+    addresses: Vec<PanelAddress>,
+) -> Result<()> {
+    for address in addresses {
+        commands.push(Command::UpdatePanels(render_panel(player, address.into())?));
+    }
     Ok(())
 }
 

@@ -1072,14 +1072,14 @@ pub struct DelayCommand {
     pub duration: ::core::option::Option<TimeValue>,
 }
 /// Identifies an InterfacePanel.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Eq, Hash, Clone, PartialEq, ::prost::Message)]
 pub struct InterfacePanelAddress {
     #[prost(oneof = "interface_panel_address::AddressType", tags = "1, 2")]
     pub address_type: ::core::option::Option<interface_panel_address::AddressType>,
 }
 /// Nested message and enum types in `InterfacePanelAddress`.
 pub mod interface_panel_address {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    #[derive(Eq, Hash, Clone, PartialEq, ::prost::Oneof)]
     pub enum AddressType {
         #[prost(bytes, tag = "1")]
         Serialized(::prost::alloc::vec::Vec<u8>),
