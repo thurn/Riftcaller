@@ -1,7 +1,7 @@
 [package]
-name = "navbar"
+name = "screen_overlay"
 version = "0.0.0"
-description = "Implements rendering for the top navigation chrome"
+description = "Implements the 'chrome' UI elements which display on top of everything else and provide navigation"
 license = "Apache-2.0"
 edition = "2021"
 

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Implements rendering for the top navigation chrome
+//! Implements the 'chrome' UI elements which display on top of everything else
+//! and provide navigation
 
-pub mod navbar;
+pub mod screen_overlay;

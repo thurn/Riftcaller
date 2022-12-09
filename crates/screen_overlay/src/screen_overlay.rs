@@ -21,19 +21,19 @@ use data::player_data::PlayerData;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, FontStyle, TextOverflow};
 
 #[allow(dead_code)]
-pub struct Navbar<'a> {
+pub struct ScreenOverlay<'a> {
     player: &'a PlayerData,
 }
 
-impl<'a> Navbar<'a> {
+impl<'a> ScreenOverlay<'a> {
     pub fn new(player: &'a PlayerData) -> Self {
         Self { player }
     }
 }
 
-impl<'a> Component for Navbar<'a> {
+impl<'a> Component for ScreenOverlay<'a> {
     fn build(self) -> Option<Node> {
-        Row::new("Navbar")
+        Row::new("ScreenOverlay")
             .style(
                 Style::new()
                     .position_type(FlexPosition::Absolute)

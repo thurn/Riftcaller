@@ -33,7 +33,6 @@ use data::user_actions::{NewGameAction, UserAction};
 use data::{game_actions, player_data};
 use deck_editor::deck_editor_actions;
 use display::render;
-use navbar::navbar::Navbar;
 use once_cell::sync::Lazy;
 use panel_address::PanelAddress;
 use protos::spelldawn::client_action::Action;
@@ -46,6 +45,7 @@ use protos::spelldawn::{
     SceneLoadMode, StandardAction, TogglePanelCommand,
 };
 use rules::{dispatch, mutations};
+use screen_overlay::screen_overlay::ScreenOverlay;
 use serde_json::de;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::Sender;
@@ -545,7 +545,9 @@ fn handle_standard_action(
 }
 
 fn update_navbar(player: &PlayerData) -> Command {
-    Command::RenderScreenOverlay(RenderScreenOverlayCommand { node: Navbar::new(player).build() })
+    Command::RenderScreenOverlay(RenderScreenOverlayCommand {
+        node: ScreenOverlay::new(player).build(),
+    })
 }
 
 /// Look up the state for a game which is expected to exist and assigns an
