@@ -19,6 +19,7 @@ use adapters::ServerCardId;
 use anyhow::Result;
 use cards::decklists;
 use core_ui::panel;
+use core_ui::prelude::Component;
 use dashmap::DashMap;
 use data::adventure::TilePosition;
 use data::deck::Deck;
@@ -32,6 +33,7 @@ use data::user_actions::{NewGameAction, UserAction};
 use data::{game_actions, player_data};
 use deck_editor::deck_editor_actions;
 use display::render;
+use navbar::navbar::Navbar;
 use once_cell::sync::Lazy;
 use panel_address::PanelAddress;
 use protos::spelldawn::client_action::Action;
@@ -40,8 +42,8 @@ use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
     card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
-    InterfacePanelAddress, LoadSceneCommand, PlayerIdentifier, SceneLoadMode, StandardAction,
-    TogglePanelCommand,
+    InterfacePanelAddress, LoadSceneCommand, PlayerIdentifier, RenderScreenOverlayCommand,
+    SceneLoadMode, StandardAction, TogglePanelCommand,
 };
 use rules::{dispatch, mutations};
 use serde_json::de;
@@ -261,29 +263,27 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         None => (create_new_player(database, player_id)?, true),
     };
 
+    let mut commands = vec![];
     match (&player.state, &player.adventure) {
         (Some(PlayerState::Playing(game_id)), _) => {
             if database.has_game(*game_id)? {
                 let game = database.game(*game_id)?;
                 let side = user_side(player_id, &game)?;
-                Ok(command_list(render::connect(&game, side)?))
+                commands.extend(render::connect(&game, side)?);
             } else {
                 fail!("Game not found: {:?}", game_id)
             }
         }
         (Some(PlayerState::RequestedGame(_)), _) => todo!("Not implemented"),
         (None, Some(adventure_state)) => {
-            let mut commands = vec![];
             commands.extend(adventure_display::render(adventure_state)?);
             panels::render_panels(
                 &mut commands,
                 &player,
                 panels::adventure_panels(adventure_state),
             )?;
-            Ok(command_list(commands))
         }
         (None, None) => {
-            let mut commands = vec![];
             commands.push(Command::LoadScene(LoadSceneCommand {
                 scene_name: "Main".to_string(),
                 mode: SceneLoadMode::Single.into(),
@@ -296,9 +296,11 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
             if is_new_player {
                 commands.push(panel::open(PanelAddress::Disclaimer));
             }
-            Ok(command_list(commands))
         }
     }
+
+    commands.push(update_navbar(&player));
+    Ok(command_list(commands))
 }
 
 fn handle_new_adventure(
@@ -537,8 +539,13 @@ fn handle_standard_action(
             command: Some(Command::UpdatePanels(panels::render_panel(&player, address.clone())?)),
         });
     }
+    result.command_list.commands.push(GameCommand { command: Some(update_navbar(&player)) });
 
     Ok(result)
+}
+
+fn update_navbar(player: &PlayerData) -> Command {
+    Command::RenderScreenOverlay(RenderScreenOverlayCommand { node: Navbar::new(player).build() })
 }
 
 /// Look up the state for a game which is expected to exist and assigns an
@@ -618,6 +625,7 @@ pub fn command_name(command: &GameCommand) -> &'static str {
         Command::CreateTokenCard(_) => "CreateTokenCard",
         Command::UpdateInterfaceElement(_) => "UpdateInterfaceElement",
         Command::UpdateWorldMap(_) => "UpdateWorldMap",
+        Command::RenderScreenOverlay(_) => "RenderScreenOverlay",
     })
 }
 

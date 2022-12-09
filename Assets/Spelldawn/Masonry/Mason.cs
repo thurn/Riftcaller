@@ -332,7 +332,7 @@ namespace Spelldawn.Masonry
         {
           offset = AdaptVector2(ts.Offset),
           blurRadius = ts.BlurRadius,
-          color = ToUnityColor(ts.Color)
+          color = ts.Color == null ? Color.black : ToUnityColor(ts.Color)
         }
         : new StyleTextShadow(StyleKeyword.Null);
       e.style.transformOrigin = input.TransformOrigin is { } to

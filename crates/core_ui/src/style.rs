@@ -473,8 +473,8 @@ impl Style {
         self
     }
 
-    pub fn text_shadow(mut self, shadow: TextShadow) -> Self {
-        self.wrapped_style.text_shadow = Some(shadow);
+    pub fn text_shadow(mut self, shadow: Option<TextShadow>) -> Self {
+        self.wrapped_style.text_shadow = shadow;
         self
     }
 

@@ -67,6 +67,7 @@ pub enum BackgroundColor {
     BottomSheetOverlay,
     BottomSheetBackground,
     TilePanelOverlay,
+    Navbar,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -79,6 +80,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
             BackgroundColor::BottomSheetBackground => ORANGE_900,
             BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
+            BackgroundColor::Navbar => BLACK,
         }
     }
 }
@@ -127,6 +129,8 @@ pub enum FontSize {
     CardName,
     CardCount,
     CardCost,
+    CoinCount,
+    CoinIcon,
 }
 
 impl From<FontSize> for Dimension {
@@ -143,6 +147,8 @@ impl From<FontSize> for Dimension {
             FontSize::CardName => 28,
             FontSize::CardCount => 24,
             FontSize::CardCost => 36,
+            FontSize::CoinCount => 80,
+            FontSize::CoinIcon => 54,
         })
         .px()
         .into()
@@ -167,6 +173,7 @@ pub enum Font {
     PanelTitle,
     ButtonLabel,
     CardIcon,
+    CoinCount,
 }
 
 impl From<Font> for FontAddress {
@@ -176,6 +183,7 @@ impl From<Font> for FontAddress {
             Font::PanelTitle => bluu_next(),
             Font::ButtonLabel => roboto(),
             Font::CardIcon => impact(),
+            Font::CoinCount => bluu_next(),
         }
     }
 }

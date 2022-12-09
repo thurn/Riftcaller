@@ -49,14 +49,7 @@ impl Component for MainMenuPanel {
                             .justify_content(FlexJustify::Center),
                     )
                     .child(menu_button(
-                        "New Adventure",
-                        actions::close_and(
-                            PanelAddress::MainMenu,
-                            UserAction::NewAdventure(Side::Champion),
-                        ),
-                    ))
-                    .child(menu_button(
-                        "New Game",
+                        "Tutorial",
                         actions::close_and(
                             PanelAddress::MainMenu,
                             UserAction::NewGame(NewGameAction {
@@ -64,6 +57,13 @@ impl Component for MainMenuPanel {
                                 deck_index: DeckIndex { value: 1 },
                                 debug_options: None,
                             }),
+                        ),
+                    ))
+                    .child(menu_button(
+                        "New Adventure",
+                        actions::close_and(
+                            PanelAddress::MainMenu,
+                            UserAction::NewAdventure(Side::Champion),
                         ),
                     ))
                     .child(menu_button("Settings", panel::set(PanelAddress::Settings)))

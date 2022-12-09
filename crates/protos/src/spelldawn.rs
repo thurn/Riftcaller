@@ -1523,11 +1523,18 @@ pub struct UpdateWorldMapCommand {
     #[prost(message, repeated, tag = "1")]
     pub tiles: ::prost::alloc::vec::Vec<WorldMapTile>,
 }
+/// Displays a UI element on top of all other elements. This is typically used
+/// to render chrome, e.g. buttons related to global navigation.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RenderScreenOverlayCommand {
+    #[prost(message, optional, tag = "1")]
+    pub node: ::core::option::Option<Node>,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -1571,6 +1578,8 @@ pub mod game_command {
         UpdateInterfaceElement(super::UpdateInterfaceElementCommand),
         #[prost(message, tag = "18")]
         UpdateWorldMap(super::UpdateWorldMapCommand),
+        #[prost(message, tag = "19")]
+        RenderScreenOverlay(super::RenderScreenOverlayCommand),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

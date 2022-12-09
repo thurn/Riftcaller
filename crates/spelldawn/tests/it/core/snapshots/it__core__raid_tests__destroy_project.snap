@@ -1,6 +1,6 @@
 ---
 source: crates/spelldawn/tests/it/core/raid_tests.rs
-assertion_line: 423
+assertion_line: 310
 expression: "Summary::summarize(&response)"
 ---
 
@@ -129,6 +129,7 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
+    RenderScreenOverlay: "<ScreenOverlay>"
 channel_response: 
     UpdateGameView: 
         user: 

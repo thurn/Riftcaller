@@ -14,7 +14,7 @@
 
 use protos::spelldawn::{
     node_type, FlexColor, FlexOverflow, FontStyle, Node, NodeType, TextAlign, TextOverflow,
-    WhiteSpace,
+    TextShadow, WhiteSpace,
 };
 
 use crate::design::{Font, FontColor, FontSize, BLACK};
@@ -35,6 +35,10 @@ pub struct Text {
     width_mode: WidthMode,
     outline_color: FlexColor,
     outline_width: Pixels,
+    letter_spacing: Pixels,
+    preserve_padding: bool,
+    shadow: Option<TextShadow>,
+    overflow: TextOverflow,
 }
 
 impl Text {
@@ -51,6 +55,10 @@ impl Text {
             width_mode: WidthMode::Constrained,
             outline_color: BLACK,
             outline_width: 0.px(),
+            letter_spacing: 0.px(),
+            preserve_padding: false,
+            shadow: None,
+            overflow: TextOverflow::Ellipsis,
         }
     }
 
@@ -98,6 +106,27 @@ impl Text {
         self.outline_width = width.into();
         self
     }
+
+    pub fn letter_spacing(mut self, spacing: impl Into<Pixels>) -> Self {
+        self.letter_spacing = spacing.into();
+        self
+    }
+
+    /// Should Unity's default font padding be applied?
+    pub fn preserve_padding(mut self, preserve_padding: bool) -> Self {
+        self.preserve_padding = preserve_padding;
+        self
+    }
+
+    pub fn shadow(mut self, shadow: TextShadow) -> Self {
+        self.shadow = Some(shadow);
+        self
+    }
+
+    pub fn text_overflow(mut self, overflow: TextOverflow) -> Self {
+        self.overflow = overflow;
+        self
+    }
 }
 
 impl Component for Text {
@@ -106,18 +135,21 @@ impl Component for Text {
             .style(
                 self.layout
                     .to_style()
-                    .padding(Edge::All, 0.px())
+                    .padding(Edge::Horizontal, if self.preserve_padding { 2 } else { 0 }.px())
+                    .padding(Edge::Vertical, if self.preserve_padding { 4 } else { 0 }.px())
                     .font_size(self.size)
                     .color(self.color)
                     .font(self.font)
                     .font_style(self.font_style)
                     .text_align(self.text_align)
+                    .letter_spacing(self.letter_spacing)
                     .white_space(self.white_space)
                     .flex_grow(if self.width_mode == WidthMode::Constrained { 0.0 } else { 1.0 })
-                    .text_overflow(TextOverflow::Ellipsis)
+                    .text_overflow(self.overflow)
                     .overflow(FlexOverflow::Hidden)
                     .text_outline_color(self.outline_color)
-                    .text_outline_width(self.outline_width),
+                    .text_outline_width(self.outline_width)
+                    .text_shadow(self.shadow),
             )
             .build()
     }

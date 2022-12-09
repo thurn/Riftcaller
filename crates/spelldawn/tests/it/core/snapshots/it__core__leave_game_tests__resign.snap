@@ -173,6 +173,7 @@ command_list:
         game_objects_enabled: false
     DisplayGameMessage: Defeat
     TogglePanel: "<TogglePanelCommand>"
+    RenderScreenOverlay: "<ScreenOverlay>"
 channel_response: 
     UpdateGameView: 
         user: 

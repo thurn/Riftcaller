@@ -33,11 +33,12 @@ use protos::spelldawn::{
     GameView, InterfaceMainControls, InterfacePanel, InterfacePanelAddress, LoadSceneCommand,
     ManaView, MapPosition, MoveGameObjectsCommand, MusicState, NoTargeting, Node, NodeType,
     ObjectPosition, PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand,
-    PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress, RevealedCardView,
-    RoomIdentifier, RoomVisitType, RulesText, RunInParallelCommand, SceneLoadMode, ScoreView,
-    SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand,
-    UpdateGameViewCommand, UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText,
-    UpdateWorldMapCommand, VisitRoomCommand, WorldMapSprite, WorldMapTile,
+    PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress, RenderScreenOverlayCommand,
+    RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, RunInParallelCommand,
+    SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress,
+    TimeValue, TogglePanelCommand, UpdateGameViewCommand, UpdateInterfaceElementCommand,
+    UpdatePanelsCommand, UpdateText, UpdateWorldMapCommand, VisitRoomCommand, WorldMapSprite,
+    WorldMapTile,
 };
 use server::requests::GameResponse;
 
@@ -283,6 +284,7 @@ impl Summarize for Command {
             Self::CreateTokenCard(v) => summary.child_node("CreateTokenCard", v),
             Self::UpdateInterfaceElement(v) => summary.child_node("UpdateInterfaceElement", v),
             Self::UpdateWorldMap(v) => summary.child_node("UpdateWorldMap", v),
+            Self::RenderScreenOverlay(v) => summary.child_node("RenderScreenOverlay", v),
         }
     }
 }
@@ -730,5 +732,11 @@ impl Summarize for WorldMapTile {
     fn summarize(self, summary: &mut Summary) {
         summary.children("sprites", self.sprites);
         summary.child("position", self.position);
+    }
+}
+
+impl Summarize for RenderScreenOverlayCommand {
+    fn summarize(self, summary: &mut Summary) {
+        summary.primitive("<ScreenOverlay>");
     }
 }

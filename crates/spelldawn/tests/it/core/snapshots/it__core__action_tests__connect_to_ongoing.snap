@@ -95,3 +95,4 @@ expression: "Summary::run(&r3)"
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
+    RenderScreenOverlay: "<ScreenOverlay>"

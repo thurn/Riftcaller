@@ -51,6 +51,7 @@ namespace Spelldawn.Services
     VisualElement _panels = null!;
     BottomSheet _bottomSheet = null!;
     VisualElement? _loading;
+    VisualElement _screenOverlay = null!;
     Coroutine? _autoRefresh;
     float _rotateAngle;
 
@@ -81,6 +82,7 @@ namespace Spelldawn.Services
       _bottomSheet = new BottomSheet(_registry);
       _document.rootVisualElement.Add(_bottomSheet);
       CreateLoadingSpinner();
+      AddRoot("ScreenOverlay", out _screenOverlay);
     }
     
     void Update()
@@ -263,6 +265,11 @@ namespace Spelldawn.Services
         var element = RootVisualElement.Q<BaseField<string>>(key);
         action.RequestFields[key] = element.value;
       }
+    }
+    
+    public void RenderScreenOverlay(Node screenOverlay)
+    {
+      Reconcile(ref _screenOverlay, screenOverlay);
     }
 
     void RenderPanels()

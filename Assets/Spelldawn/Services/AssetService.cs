@@ -142,6 +142,9 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.UpdateWorldMap:
             LoadWorldMapAssets(requests, command.UpdateWorldMap);
             break;
+          case GameCommand.CommandOneofCase.RenderScreenOverlay:
+            LoadNodeAssets(requests, command.RenderScreenOverlay.Node);
+            break;
           case GameCommand.CommandOneofCase.None:
           default:
             break;

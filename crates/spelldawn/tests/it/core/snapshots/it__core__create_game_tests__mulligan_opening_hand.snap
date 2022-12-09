@@ -1,6 +1,6 @@
 ---
 source: crates/spelldawn/tests/it/core/create_game_tests.rs
-assertion_line: 95
+assertion_line: 128
 expression: "Summary::summarize(&response)"
 ---
 
@@ -552,6 +552,7 @@ command_list:
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
+    RenderScreenOverlay: "<ScreenOverlay>"
 channel_response: 
     UpdateGameView: 
         user: 

@@ -1547,6 +1547,12 @@ message UpdateWorldMapCommand {
     repeated WorldMapTile tiles = 1;
 }
 
+// Displays a UI element on top of all other elements. This is typically used
+// to render chrome, e.g. buttons related to global navigation.
+message RenderScreenOverlayCommand {
+    Node node = 1;
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -1567,6 +1573,7 @@ message GameCommand {
         CreateTokenCardCommand create_token_card = 16;
         UpdateInterfaceElementCommand update_interface_element = 17;
         UpdateWorldMapCommand update_world_map = 18;
+        RenderScreenOverlayCommand render_screen_overlay = 19;
     }
 }
 

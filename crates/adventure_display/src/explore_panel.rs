@@ -16,7 +16,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::text::Text;
-use core_ui::{actions, panel, style};
+use core_ui::{actions, icons, panel, style};
 use data::adventure::TilePosition;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
@@ -76,7 +76,7 @@ impl Component for ExplorePanel {
                                 Row::new("ButtonGroup")
                                     .style(Style::new().margin(Edge::All, 8.px()))
                                     .child(
-                                        Button::new("Explore \u{2022} 100 \u{f51e}")
+                                        Button::new(format!("Explore: 100 {}", icons::COINS))
                                             .action(actions::close_and(
                                                 self.address,
                                                 UserAction::AdventureTileAction(self.position),
