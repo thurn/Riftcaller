@@ -25,6 +25,7 @@ const fn color(red: f32, green: f32, blue: f32, alpha: f32) -> FlexColor {
 pub const WHITE: FlexColor = color(1.0, 1.0, 1.0, 1.0);
 pub const BLACK: FlexColor = color(0.0, 0.0, 0.0, 1.0);
 pub const BLACK_ALPHA_25: FlexColor = color(0.0, 0.0, 0.0, 0.25);
+pub const BLACK_ALPHA_50: FlexColor = color(0.0, 0.0, 0.0, 0.5);
 pub const BLACK_ALPHA_75: FlexColor = color(0.0, 0.0, 0.0, 0.75);
 pub const RED_100: FlexColor = color(1.0, 0.8, 0.82, 1.0);
 pub const RED_500: FlexColor = color(0.96, 0.26, 0.21, 1.0);
@@ -67,7 +68,7 @@ pub enum BackgroundColor {
     BottomSheetOverlay,
     BottomSheetBackground,
     TilePanelOverlay,
-    Navbar,
+    CoinCountOverlay,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -80,7 +81,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
             BackgroundColor::BottomSheetBackground => ORANGE_900,
             BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
-            BackgroundColor::Navbar => BLACK,
+            BackgroundColor::CoinCountOverlay => BLACK_ALPHA_50,
         }
     }
 }
@@ -97,6 +98,7 @@ pub enum FontColor {
     PrismaticCardTitle,
     ConstructCardTitle,
     CardCost,
+    CoinCount,
 }
 
 impl From<FontColor> for FlexColor {
@@ -112,6 +114,7 @@ impl From<FontColor> for FlexColor {
             FontColor::PrismaticCardTitle => ORANGE_900,
             FontColor::ConstructCardTitle => PINK_700,
             FontColor::CardCost => WHITE,
+            FontColor::CoinCount => YELLOW_700,
         }
     }
 }
@@ -130,7 +133,6 @@ pub enum FontSize {
     CardCount,
     CardCost,
     CoinCount,
-    CoinIcon,
 }
 
 impl From<FontSize> for Dimension {
@@ -147,8 +149,7 @@ impl From<FontSize> for Dimension {
             FontSize::CardName => 28,
             FontSize::CardCount => 24,
             FontSize::CardCost => 36,
-            FontSize::CoinCount => 80,
-            FontSize::CoinIcon => 54,
+            FontSize::CoinCount => 54,
         })
         .px()
         .into()
@@ -173,7 +174,6 @@ pub enum Font {
     PanelTitle,
     ButtonLabel,
     CardIcon,
-    CoinCount,
 }
 
 impl From<Font> for FontAddress {
@@ -183,7 +183,6 @@ impl From<Font> for FontAddress {
             Font::PanelTitle => bluu_next(),
             Font::ButtonLabel => roboto(),
             Font::CardIcon => impact(),
-            Font::CoinCount => bluu_next(),
         }
     }
 }

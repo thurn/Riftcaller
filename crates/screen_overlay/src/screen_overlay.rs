@@ -13,12 +13,13 @@
 // limitations under the License.
 
 use core_ui::button::{IconButton, IconButtonType};
-use core_ui::design::{Font, FontColor, FontSize};
+use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::icons;
 use core_ui::prelude::*;
+use core_ui::style::Corner;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, FontStyle, TextOverflow};
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
 #[allow(dead_code)]
 pub struct ScreenOverlay<'a> {
@@ -33,7 +34,7 @@ impl<'a> ScreenOverlay<'a> {
 
 impl<'a> Component for ScreenOverlay<'a> {
     fn build(self) -> Option<Node> {
-        Row::new("ScreenOverlay")
+        Row::new("Navbar")
             .style(
                 Style::new()
                     .position_type(FlexPosition::Absolute)
@@ -45,47 +46,26 @@ impl<'a> Component for ScreenOverlay<'a> {
             )
             .child(
                 Row::new("Left")
+                    .style(Style::new().align_items(FlexAlign::Center))
                     .child(
                         IconButton::new(icons::BUG)
                             .button_type(IconButtonType::NavbarBlue)
-                            .layout(Layout::new().margin(Edge::All, 8.px())),
+                            .layout(Layout::new().margin(Edge::All, 12.px())),
                     )
                     .child(
-                        Text::new("100", FontSize::CoinCount)
-                            .layout(
-                                Layout::new()
-                                    .margin(Edge::Left, 16.px())
-                                    .margin(Edge::Top, (-12).px())
-                                    .margin(Edge::Bottom, (-4).px()),
+                        Row::new("CoinCount")
+                            .style(
+                                Style::new()
+                                    .margin(Edge::Horizontal, 12.px())
+                                    .padding(Edge::Horizontal, 8.px())
+                                    .height(80.px())
+                                    .background_color(BackgroundColor::CoinCountOverlay)
+                                    .border_radius(Corner::All, 12.px()),
                             )
-                            .font_style(FontStyle::Bold)
-                            .font(Font::CoinCount)
-                            .preserve_padding(true)
-                            .letter_spacing((-4).px())
-                            .text_overflow(TextOverflow::Clip)
-                            .outline_width(3.px()),
-                    )
-                    .child(
-                        Column::new("CoinIcon")
-                            .style(Style::new().margin(Edge::Left, 8.px()))
-                            .child(
-                                Text::new(icons::COINS, FontSize::CoinIcon)
-                                    .color(FontColor::NormalCardTitle)
-                                    .layout(
-                                        Layout::new()
-                                            .position_type(FlexPosition::Absolute)
-                                            .position(Edge::Left, (-6).px())
-                                            .position(Edge::Top, 11.px()),
-                                    ),
-                            )
-                            .child(
-                                Text::new(icons::COINS, FontSize::CoinIcon).layout(
-                                    Layout::new()
-                                        .position_type(FlexPosition::Absolute)
-                                        .position(Edge::Top, 14.px())
-                                        .position(Edge::Left, (-4).px()),
-                                ),
-                            ),
+                            .child(Text::new(
+                                format!("100 <color=yellow>{}</color>", icons::COINS),
+                                FontSize::CoinCount,
+                            )),
                     ),
             )
             .child(
@@ -93,12 +73,12 @@ impl<'a> Component for ScreenOverlay<'a> {
                     .child(
                         IconButton::new(icons::DECK)
                             .button_type(IconButtonType::NavbarBrown)
-                            .layout(Layout::new().margin(Edge::All, 8.px())),
+                            .layout(Layout::new().margin(Edge::All, 12.px())),
                     )
                     .child(
                         IconButton::new(icons::BARS)
                             .button_type(IconButtonType::NavbarBrown)
-                            .layout(Layout::new().margin(Edge::All, 8.px())),
+                            .layout(Layout::new().margin(Edge::All, 12.px())),
                     ),
             )
             .build()
