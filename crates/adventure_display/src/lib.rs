@@ -98,7 +98,7 @@ fn sprite_address_for_entity(entity: TileEntity) -> SpriteAddress {
             // TileEntity::Draft => {
             //     "RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png"
             // }
-            TileEntity::Explore(_) => {
+            TileEntity::Explore { .. } => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_app/icon_app_198.png"
             }
         }

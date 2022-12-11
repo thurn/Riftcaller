@@ -16,7 +16,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use data::adventure::{AdventureState, RegionId, TileEntity, TilePosition, TileState};
+use data::adventure::{AdventureState, Coins, RegionId, TileEntity, TilePosition, TileState};
 use data::primitives::Side;
 
 const TOP_LEFT: u8 = 0b00100000;
@@ -42,7 +42,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
         2,
         "hexPlains00",
         road(TOP_RIGHT | BOTTOM_LEFT, 0),
-        TileEntity::Explore(2),
+        TileEntity::Explore { region: 2, cost: Coins(100) },
     );
     add_tile(&mut tiles, 4, 2, "hexPlainsSmithy00");
     add_tile(&mut tiles, -4, 1, "hexGrassySandPalms01");
@@ -84,7 +84,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
     let mut revealed_regions = HashSet::new();
     revealed_regions.insert(1);
 
-    AdventureState { side, tiles, revealed_regions }
+    AdventureState { side, coins: Coins(500), tiles, revealed_regions }
 }
 
 fn hidden_tiles(region_id: RegionId) -> HashMap<TilePosition, TileState> {

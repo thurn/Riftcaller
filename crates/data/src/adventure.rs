@@ -14,6 +14,9 @@
 
 use std::collections::{HashMap, HashSet};
 
+use derive_more::{
+    Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
+};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
@@ -21,6 +24,29 @@ use crate::primitives::Side;
 
 /// Identifies a set of tiles which can be revealed via the 'explore' action.
 pub type RegionId = u32;
+
+#[derive(
+    Debug,
+    Display,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    From,
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Sum,
+    AddAssign,
+    SubAssign,
+    MulAssign,
+    DivAssign,
+    Into,
+    Serialize,
+    Deserialize,
+)]
+pub struct Coins(pub u32);
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct TilePosition {
@@ -38,7 +64,7 @@ impl TilePosition {
 /// icons
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum TileEntity {
-    Explore(RegionId),
+    Explore { region: RegionId, cost: Coins },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -63,6 +89,7 @@ impl TileState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {
     pub side: Side,
+    pub coins: Coins,
     /// States of world map tiles
     #[serde_as(as = "Vec<(_, _)>")]
     pub tiles: HashMap<TilePosition, TileState>,

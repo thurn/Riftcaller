@@ -52,7 +52,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .button_type(IconButtonType::NavbarBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px())),
                     )
-                    .child(
+                    .child(self.player.adventure.as_ref().map(|adventure| {
                         Row::new("CoinCount")
                             .style(
                                 Style::new()
@@ -63,10 +63,14 @@ impl<'a> Component for ScreenOverlay<'a> {
                                     .border_radius(Corner::All, 12.px()),
                             )
                             .child(Text::new(
-                                format!("100 <color=yellow>{}</color>", icons::COINS),
+                                format!(
+                                    "{} <color=yellow>{}</color>",
+                                    adventure.coins,
+                                    icons::COINS
+                                ),
                                 FontSize::CoinCount,
-                            )),
-                    ),
+                            ))
+                    })),
             )
             .child(
                 Row::new("Right")
