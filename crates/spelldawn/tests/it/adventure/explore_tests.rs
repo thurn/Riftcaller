@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::icons;
+use data::adventure::Coins;
 use data::primitives::Side;
 use test_utils::client_interface::HasText;
 use test_utils::test_adventure::{TestAdventure, EXPLORE_ICON};
@@ -36,6 +38,10 @@ fn test_invoke_explore() {
     let mut adventure = TestAdventure::new(Side::Champion);
     adventure.visit_tile_with_icon(EXPLORE_ICON);
     let count = adventure.map.tile_count();
-    adventure.click_on("Explore");
+    adventure.click_on(format!("Explore: 100 {}", icons::COINS));
     assert!(adventure.map.tile_count() > count);
+    assert!(adventure
+        .interface
+        .screen_overlay()
+        .has_text(format!("{}", adventure_generator::STARTING_COINS - Coins(100))));
 }

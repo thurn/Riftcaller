@@ -26,6 +26,8 @@ const BOTTOM_RIGHT: u8 = 0b00000100;
 const BOTTOM_LEFT: u8 = 0b00000010;
 const LEFT: u8 = 0b00000001;
 
+pub const STARTING_COINS: Coins = Coins(500);
+
 /// Builds a new random 'adventure' mode world map
 pub fn new_adventure(side: Side) -> AdventureState {
     let mut tiles = HashMap::new();
@@ -84,7 +86,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
     let mut revealed_regions = HashSet::new();
     revealed_regions.insert(1);
 
-    AdventureState { side, coins: Coins(500), tiles, revealed_regions }
+    AdventureState { side, coins: STARTING_COINS, tiles, revealed_regions }
 }
 
 fn hidden_tiles(region_id: RegionId) -> HashMap<TilePosition, TileState> {

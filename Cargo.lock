@@ -1846,6 +1846,7 @@ name = "spelldawn"
 version = "0.0.0"
 dependencies = [
  "actions",
+ "adventure_generator",
  "ai_core",
  "ai_game_integration",
  "ai_monte_carlo",

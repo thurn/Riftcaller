@@ -27,6 +27,7 @@ pub struct ClientInterface {
     card_anchors: Vec<CardAnchorNode>,
     panels: HashMap<InterfacePanelAddress, Node>,
     open_panels: Vec<InterfacePanelAddress>,
+    screen_overlay: Option<Node>,
 }
 
 impl ClientInterface {
@@ -59,6 +60,10 @@ impl ClientInterface {
         self.panels.get(address).unwrap_or_else(|| panic!("Panel not found: {:?}", address))
     }
 
+    pub fn screen_overlay(&self) -> &Node {
+        self.screen_overlay.as_ref().expect("ScreenOverlayNode")
+    }
+
     pub fn panel_count(&self) -> usize {
         self.open_panels.len()
     }
@@ -77,6 +82,9 @@ impl ClientInterface {
             }
             Command::TogglePanel(toggle) => {
                 self.handle_toggle(toggle.toggle_command.expect("ToggleCommand"))
+            }
+            Command::RenderScreenOverlay(overlay) => {
+                self.screen_overlay = overlay.node;
             }
             _ => {}
         }
