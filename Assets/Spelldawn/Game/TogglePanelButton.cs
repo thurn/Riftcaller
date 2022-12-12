@@ -58,7 +58,7 @@ namespace Spelldawn.Game
 
     void OnMouseUpAsButton()
     {
-      if (_registry.DocumentService.MouseOverFullScreenElement())
+      if (_registry.DocumentService.MouseOverScreenElement())
       {
         return; 
       }

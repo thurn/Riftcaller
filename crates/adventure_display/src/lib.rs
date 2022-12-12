@@ -20,7 +20,7 @@ pub mod tile_image_panel;
 
 use anyhow::Result;
 use core_ui::{actions, design, panel};
-use data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
+use data::adventure::{AdventureState, AdventureStatus, TileEntity, TilePosition, TileState};
 use panel_address::PanelAddress;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
@@ -30,14 +30,20 @@ use protos::spelldawn::{
 /// Returns a sequence of game Commands to display the provided
 /// [AdventureState].
 pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
-    Ok(vec![Command::UpdateWorldMap(UpdateWorldMapCommand {
+    let mut commands = vec![Command::UpdateWorldMap(UpdateWorldMapCommand {
         tiles: state
             .tiles
             .iter()
             .filter(|(_, tile)| state.revealed_regions.contains(&tile.region_id))
             .map(|(position, state)| render_tile(*position, state))
             .collect(),
-    })])
+    })];
+
+    if state.status == AdventureStatus::Completed {
+        commands.push(panel::open(PanelAddress::AdventureOver));
+    }
+
+    Ok(commands)
 }
 
 fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {

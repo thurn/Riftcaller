@@ -48,6 +48,12 @@ pub type RegionId = u32;
 )]
 pub struct Coins(pub u32);
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
+pub enum AdventureStatus {
+    InProgress,
+    Completed,
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct TilePosition {
     pub x: i32,
@@ -89,6 +95,10 @@ impl TileState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {
     pub side: Side,
+
+    /// Tracks whether the adventure has been completed
+    pub status: AdventureStatus,
+
     pub coins: Coins,
     /// States of world map tiles
     #[serde_as(as = "Vec<(_, _)>")]

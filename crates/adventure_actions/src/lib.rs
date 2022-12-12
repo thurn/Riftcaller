@@ -15,10 +15,19 @@
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
 use anyhow::Result;
-use data::adventure::{AdventureState, TileEntity, TilePosition};
+use data::adventure::{AdventureState, AdventureStatus, TileEntity, TilePosition};
 use with_error::WithError;
 
-pub fn handle_adventure_action(state: &mut AdventureState, position: TilePosition) -> Result<()> {
+pub fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
+    state.status = AdventureStatus::Completed;
+    Ok(())
+}
+
+pub fn handle_leave_adventure(_state: &mut AdventureState) -> Result<()> {
+    Ok(())
+}
+
+pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Result<()> {
     let tile = state.tiles.get_mut(&position).with_error(|| "Tile not found")?;
 
     match tile.entity.with_error(|| "No action for tile")? {

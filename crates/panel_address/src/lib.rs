@@ -27,6 +27,8 @@ pub enum PanelAddress {
     About,
     Settings,
     Disclaimer,
+    AdventureMenu,
+    AdventureOver,
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),

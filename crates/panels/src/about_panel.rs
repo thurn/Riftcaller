@@ -62,7 +62,7 @@ impl Component for AboutPanel {
                     )
                     .child(
                         Button::new("Back")
-                            .action(panel::set(PanelAddress::MainMenu))
+                            .action(panel::close(PanelAddress::About))
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

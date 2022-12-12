@@ -14,11 +14,12 @@
 
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::{BackgroundColor, FontSize};
-use core_ui::icons;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
+use core_ui::{icons, panel};
 use data::player_data::PlayerData;
+use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
 #[allow(dead_code)]
@@ -81,8 +82,9 @@ impl<'a> Component for ScreenOverlay<'a> {
                     )
                     .child(
                         IconButton::new(icons::BARS)
+                            .layout(Layout::new().margin(Edge::All, 12.px()))
                             .button_type(IconButtonType::NavbarBrown)
-                            .layout(Layout::new().margin(Edge::All, 12.px())),
+                            .action(panel::open(PanelAddress::AdventureMenu)),
                     ),
             )
             .build()

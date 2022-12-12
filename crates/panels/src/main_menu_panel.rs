@@ -66,8 +66,8 @@ impl Component for MainMenuPanel {
                             UserAction::NewAdventure(Side::Champion),
                         ),
                     ))
-                    .child(menu_button("Settings", panel::set(PanelAddress::Settings)))
-                    .child(menu_button("About", panel::set(PanelAddress::About))),
+                    .child(menu_button("Settings", panel::open(PanelAddress::Settings)))
+                    .child(menu_button("About", panel::open(PanelAddress::About))),
             )
             .build()
     }

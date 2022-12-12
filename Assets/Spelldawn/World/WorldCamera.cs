@@ -29,6 +29,11 @@ namespace Spelldawn.World
     Vector3 _dragStartPosition;
 
     void Update () {
+      if (_registry.DocumentService.MouseOverScreenElement())
+      {
+        return;
+      }
+      
       if (Input.GetMouseButtonDown(0))
       {
         // Unity sends MouseButtonDown again on release for mobile devices?!

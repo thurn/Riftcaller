@@ -84,7 +84,7 @@ namespace Spelldawn.Services
       CreateLoadingSpinner();
       AddRoot("ScreenOverlay", out _screenOverlay);
     }
-    
+
     void Update()
     {
       if (_loading is { visible: true })
@@ -123,7 +123,7 @@ namespace Spelldawn.Services
             PanelAddress = address
           }
         });
-      }      
+      }
     }
 
     public float ScreenPxToElementPx(float value) => value * _document.panelSettings.referenceDpi / Screen.dpi;
@@ -146,9 +146,10 @@ namespace Spelldawn.Services
       return new Vector2(position.Left, position.Top);
     }
 
-    public bool MouseOverFullScreenElement()
+    public bool MouseOverScreenElement()
     {
-      return _panels.Children().Any(c => c.ContainsPoint(c.WorldToLocal(ElementMousePosition())));
+      return _panels.Children().Concat(_screenOverlay.Children())
+        .Any(c => c.ContainsPoint(c.WorldToLocal(ElementMousePosition())));
     }
 
     /// <summary>
@@ -178,6 +179,7 @@ namespace Spelldawn.Services
             _switchTo = command.SetPanel;
             Loading = true;
           }
+
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.OpenPanel:
           fetch = command.OpenPanel;
@@ -185,6 +187,7 @@ namespace Spelldawn.Services
           {
             _openPanels.Add(command.OpenPanel);
           }
+
           RenderPanels();
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.ClosePanel:
@@ -208,12 +211,12 @@ namespace Spelldawn.Services
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.PopToBottomSheetAddress:
           fetch = command.PopToBottomSheetAddress;
-          StartCoroutine(_bottomSheet.PopToAddress(command.PopToBottomSheetAddress));          
+          StartCoroutine(_bottomSheet.PopToAddress(command.PopToBottomSheetAddress));
           break;
         default:
           throw new ArgumentOutOfRangeException();
       }
-      
+
       if (fetch != null)
       {
         _registry.ActionService.HandleAction(new ClientAction
@@ -222,10 +225,10 @@ namespace Spelldawn.Services
           {
             PanelAddress = fetch
           }
-        });        
+        });
       }
     }
-    
+
     public bool IsOpen(InterfacePanelAddress address) => _openPanels.Contains(address);
 
     public bool IsAnyPanelOpen() => _openPanels.Count > 0;
@@ -241,6 +244,7 @@ namespace Spelldawn.Services
           _switchTo = null;
           Loading = false;
         }
+
         _panelCache[panel.Address] = panel.Node;
       }
 
@@ -266,7 +270,7 @@ namespace Spelldawn.Services
         action.RequestFields[key] = element.value;
       }
     }
-    
+
     public void RenderScreenOverlay(Node screenOverlay)
     {
       Reconcile(ref _screenOverlay, screenOverlay);
@@ -277,7 +281,7 @@ namespace Spelldawn.Services
       Reconcile(
         ref _panels,
         Panels(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));
-      
+
       _bottomSheet.RefreshPanels();
     }
 

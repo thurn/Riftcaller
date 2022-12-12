@@ -34,7 +34,7 @@ impl SettingsPanel {
 
 impl Component for SettingsPanel {
     fn build(self) -> Option<Node> {
-        Panel::new(PanelAddress::About, 600.px(), 600.px())
+        Panel::new(PanelAddress::Settings, 600.px(), 600.px())
             .title("Settings")
             .content(
                 Column::new("SettingsContent")
@@ -55,7 +55,7 @@ impl Component for SettingsPanel {
                     )
                     .child(
                         Button::new("Back")
-                            .action(panel::set(PanelAddress::MainMenu))
+                            .action(panel::close(PanelAddress::Settings))
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

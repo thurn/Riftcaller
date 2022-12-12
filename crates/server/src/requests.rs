@@ -21,7 +21,7 @@ use cards::decklists;
 use core_ui::panel;
 use core_ui::prelude::Component;
 use dashmap::DashMap;
-use data::adventure::TilePosition;
+use data::adventure::AdventureState;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
@@ -479,11 +479,11 @@ pub fn handle_player_action(
 pub fn handle_adventure_action(
     database: &mut impl Database,
     player_id: PlayerId,
-    position: TilePosition,
+    function: impl Fn(&mut AdventureState) -> Result<()>,
 ) -> Result<GameResponse> {
     let mut player = find_player(database, player_id)?;
     let adventure_state = player.adventure.as_mut().with_error(|| "Expected active adventure")?;
-    adventure_actions::handle_adventure_action(adventure_state, position)?;
+    function(adventure_state)?;
     let commands = adventure_display::render(adventure_state)?;
     database.write_player(&player)?;
     Ok(GameResponse::from_commands(commands))
@@ -517,6 +517,17 @@ fn handle_standard_action(
         .with_error(|| "Failed to deserialize action payload")?;
     let mut result = match action {
         UserAction::NewAdventure(side) => handle_new_adventure(database, player_id, side),
+        UserAction::AdventureTileAction(position) => {
+            handle_adventure_action(database, player_id, |state| {
+                adventure_actions::handle_tile_action(state, position)
+            })
+        }
+        UserAction::AbandonAdventure => handle_adventure_action(database, player_id, |state| {
+            adventure_actions::handle_abandon_adventure(state)
+        }),
+        UserAction::LeaveAdventure => handle_adventure_action(database, player_id, |state| {
+            adventure_actions::handle_leave_adventure(state)
+        }),
         UserAction::NewGame(new_game_action) => {
             handle_new_game(database, player_id, new_game_action)
         }
@@ -525,9 +536,6 @@ fn handle_standard_action(
             debug::handle_debug_action(database, player_id, game_id, debug_action)
         }
         UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
-        UserAction::AdventureTileAction(position) => {
-            handle_adventure_action(database, player_id, position)
-        }
         UserAction::DeckEditorAction(a) => handle_player_action(database, player_id, |player| {
             deck_editor_actions::handle(player, a, &standard_action.request_fields)
         }),

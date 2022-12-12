@@ -87,6 +87,13 @@ impl From<DeckEditorAction> for UserAction {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
     NewAdventure(Side),
+    AdventureTileAction(TilePosition),
+    /// Transition an adventure to the 'completed' state and display the
+    /// adventure summary screen.
+    AbandonAdventure,
+    /// Remove a player's current adventure, i.e. to stop displaying the
+    /// adventure summary screen.
+    LeaveAdventure,
     NewGame(NewGameAction),
     /// Leave the game that the player is currently playing in. Typically
     /// invoked from the game over screen, the 'resign' action is used to
@@ -94,6 +101,5 @@ pub enum UserAction {
     LeaveGame,
     Debug(DebugAction),
     GameAction(GameAction),
-    AdventureTileAction(TilePosition),
     DeckEditorAction(DeckEditorAction),
 }
