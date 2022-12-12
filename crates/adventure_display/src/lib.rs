@@ -16,6 +16,7 @@
 
 pub mod adventure_panels;
 pub mod explore_panel;
+pub mod tile_image_panel;
 
 use anyhow::Result;
 use core_ui::{actions, design, panel};

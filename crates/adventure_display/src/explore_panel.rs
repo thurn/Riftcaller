@@ -13,14 +13,13 @@
 // limitations under the License.
 
 use core_ui::button::{Button, ButtonType};
-use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
-use core_ui::text::Text;
 use core_ui::{actions, icons, panel, style};
 use data::adventure::TilePosition;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
+
+use crate::tile_image_panel::TileImagePanel;
 
 pub struct ExplorePanel {
     address: PanelAddress,
@@ -35,63 +34,21 @@ impl ExplorePanel {
 
 impl Component for ExplorePanel {
     fn build(self) -> Option<Node> {
-        Row::new("ExplorePanel")
-            .style(
-                Style::new()
-                    .position_type(FlexPosition::Absolute)
-                    .position(Edge::All, 0.px())
-                    .background_image(style::sprite("TPR/InfiniteEnvironments/meadow")),
-            )
-            .child(
-                Column::new("Container")
-                    .style(
-                        Style::new()
-                            .position_type(FlexPosition::Absolute)
-                            .position(Edge::Horizontal, 0.px())
-                            .position(Edge::Bottom, 0.px()),
-                    )
-                    .child(
-                        Row::new("Gradient").style(
-                            Style::new()
-                                .height(128.px())
-                                .width(100.pct())
-                                .background_image(style::sprite("Sprites/OverlayGradient")),
-                        ),
-                    )
-                    .child(
-                        Column::new("Content")
-                            .style(
-                                Style::new()
-                                    .justify_content(FlexJustify::Center)
-                                    .align_items(FlexAlign::Center)
-                                    .width(100.pct())
-                                    .background_color(BackgroundColor::TilePanelOverlay)
-                                    .padding(Edge::All, 8.px()),
-                            )
-                            .child(Text::new(
-                                "To the north lie the flowering fields of the Kingdom of Edennes",
-                                FontSize::Headline,
-                            ))
-                            .child(
-                                Row::new("ButtonGroup")
-                                    .style(Style::new().margin(Edge::All, 8.px()))
-                                    .child(
-                                        Button::new(format!("Explore: 100 {}", icons::COINS))
-                                            .action(actions::close_and(
-                                                self.address,
-                                                UserAction::AdventureTileAction(self.position),
-                                            ))
-                                            .layout(Layout::new().margin(Edge::All, 8.px())),
-                                    )
-                                    .child(
-                                        Button::new("Close")
-                                            .button_type(ButtonType::Secondary)
-                                            .action(panel::close(self.address))
-                                            .layout(Layout::new().margin(Edge::All, 8.px())),
-                                    ),
-                            ),
-                    ),
-            )
+        TileImagePanel::new()
+            .image(style::sprite("TPR/InfiniteEnvironments/meadow"))
+            .prompt("To the north lie the flowering fields of the Kingdom of Edennes")
+            .buttons(vec![
+                Button::new(format!("Explore: 100 {}", icons::COINS))
+                    .action(actions::close_and(
+                        self.address,
+                        UserAction::AdventureTileAction(self.position),
+                    ))
+                    .layout(Layout::new().margin(Edge::All, 8.px())),
+                Button::new("Close")
+                    .button_type(ButtonType::Secondary)
+                    .action(panel::close(self.address))
+                    .layout(Layout::new().margin(Edge::All, 8.px())),
+            ])
             .build()
     }
 }
