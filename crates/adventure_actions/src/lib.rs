@@ -16,6 +16,9 @@
 
 use anyhow::Result;
 use data::adventure::{AdventureState, AdventureStatus, TileEntity, TilePosition};
+use data::player_data::PlayerData;
+use protos::spelldawn::game_command::Command;
+use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
 use with_error::WithError;
 
 pub fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
@@ -23,8 +26,13 @@ pub fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
     Ok(())
 }
 
-pub fn handle_leave_adventure(_state: &mut AdventureState) -> Result<()> {
-    Ok(())
+pub fn handle_leave_adventure(state: &mut PlayerData) -> Result<Vec<Command>> {
+    state.adventure = None;
+    Ok(vec![Command::LoadScene(LoadSceneCommand {
+        scene_name: "Main".to_string(),
+        mode: SceneLoadMode::Single.into(),
+        skip_if_current: true,
+    })])
 }
 
 pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Result<()> {

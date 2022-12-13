@@ -133,7 +133,7 @@ pub fn handle_debug_action(
                         player.collection.insert(name, 3);
                     }
                 }
-                Ok(())
+                Ok(vec![])
             })
         }
     }

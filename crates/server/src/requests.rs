@@ -467,12 +467,12 @@ pub fn handle_custom_action(
 pub fn handle_player_action(
     database: &mut impl Database,
     player_id: PlayerId,
-    function: impl Fn(&mut PlayerData) -> Result<()>,
+    function: impl Fn(&mut PlayerData) -> Result<Vec<Command>>,
 ) -> Result<GameResponse> {
     let mut player = find_player(database, player_id)?;
-    function(&mut player)?;
+    let response = function(&mut player)?;
     database.write_player(&player)?;
-    Ok(GameResponse::from_commands(vec![]))
+    Ok(GameResponse::from_commands(response))
 }
 
 /// Allows mutation of a player's data outside of an active game ([PlayerData]).
@@ -525,7 +525,7 @@ fn handle_standard_action(
         UserAction::AbandonAdventure => handle_adventure_action(database, player_id, |state| {
             adventure_actions::handle_abandon_adventure(state)
         }),
-        UserAction::LeaveAdventure => handle_adventure_action(database, player_id, |state| {
+        UserAction::LeaveAdventure => handle_player_action(database, player_id, |state| {
             adventure_actions::handle_leave_adventure(state)
         }),
         UserAction::NewGame(new_game_action) => {
@@ -537,7 +537,8 @@ fn handle_standard_action(
         }
         UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
         UserAction::DeckEditorAction(a) => handle_player_action(database, player_id, |player| {
-            deck_editor_actions::handle(player, a, &standard_action.request_fields)
+            deck_editor_actions::handle(player, a, &standard_action.request_fields)?;
+            Ok(vec![])
         }),
     }?;
 
