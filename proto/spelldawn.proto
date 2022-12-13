@@ -1466,6 +1466,7 @@ message UpdateInterfaceElementCommand {
         AnimateToElementPositionAndDestroy animate_to_element_position = 3;
         google.protobuf.Empty destroy = 4;
         UpdateText update_text = 5;
+        google.protobuf.Empty clear_children = 6;
     }
 }
 

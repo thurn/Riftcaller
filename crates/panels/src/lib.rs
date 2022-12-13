@@ -28,6 +28,7 @@ pub mod set_player_name_panel;
 pub mod settings_panel;
 
 use adventure_display::adventure_panels;
+use adventure_display::draft_panel::DraftPanel;
 use anyhow::Result;
 use core_ui::component::Component;
 use data::adventure::AdventureState;
@@ -128,6 +129,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         },
         PanelAddress::GameOver(_) => GameOverPanel { address, player }.build(),
         PanelAddress::TileEntity(position) => adventure_panels::render(position, player)?,
+        PanelAddress::Draft => DraftPanel { address }.build(),
     })
 }
 

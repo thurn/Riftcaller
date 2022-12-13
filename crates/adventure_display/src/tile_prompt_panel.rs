@@ -17,20 +17,25 @@ use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::text::Text;
+use core_ui::update_element::ElementName;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, SpriteAddress};
 
 /// Renders a full-screen image containing a text prompt and some arbitrary
 /// content.
 #[derive(Default)]
-pub struct TileImagePanel {
+pub struct TilePromptPanel {
     image: SpriteAddress,
     prompt: String,
     buttons: Vec<Button>,
 }
 
-impl TileImagePanel {
+impl TilePromptPanel {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn content_name() -> ElementName {
+        ElementName::new("TileImageContent")
     }
 
     pub fn image(mut self, image: SpriteAddress) -> Self {
@@ -49,9 +54,9 @@ impl TileImagePanel {
     }
 }
 
-impl Component for TileImagePanel {
+impl Component for TilePromptPanel {
     fn build(self) -> Option<Node> {
-        Row::new("ExplorePanel")
+        Row::new("TilePromptPanel")
             .style(
                 Style::new()
                     .position_type(FlexPosition::Absolute)
@@ -75,7 +80,7 @@ impl Component for TileImagePanel {
                         ),
                     )
                     .child(
-                        Column::new("Content")
+                        Column::new(Self::content_name())
                             .style(
                                 Style::new()
                                     .justify_content(FlexJustify::Center)

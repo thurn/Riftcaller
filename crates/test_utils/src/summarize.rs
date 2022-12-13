@@ -686,6 +686,7 @@ impl Summarize for InterfaceUpdate {
             Self::AnimateToElementPosition(v) => summary.child_node("AnimateToElementPosition", v),
             Self::Destroy(_) => summary.primitive("Destroy"),
             Self::UpdateText(v) => summary.child_node("UpdateText", v),
+            Self::ClearChildren(_) => summary.primitive("ClearChildren"),
         }
     }
 }

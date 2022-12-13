@@ -34,6 +34,7 @@ pub enum PanelAddress {
     CreateDeck(CreateDeckState),
     GameOver(GameOverData),
     TileEntity(TilePosition),
+    Draft,
 }
 
 impl From<PanelAddress> for InterfacePanelAddress {

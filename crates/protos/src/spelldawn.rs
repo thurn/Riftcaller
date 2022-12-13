@@ -1437,7 +1437,7 @@ pub struct UpdateText {
 pub struct UpdateInterfaceElementCommand {
     #[prost(string, tag = "1")]
     pub element_name: ::prost::alloc::string::String,
-    #[prost(oneof = "update_interface_element_command::InterfaceUpdate", tags = "2, 3, 4, 5")]
+    #[prost(oneof = "update_interface_element_command::InterfaceUpdate", tags = "2, 3, 4, 5, 6")]
     pub interface_update: ::core::option::Option<update_interface_element_command::InterfaceUpdate>,
 }
 /// Nested message and enum types in `UpdateInterfaceElementCommand`.
@@ -1452,6 +1452,8 @@ pub mod update_interface_element_command {
         Destroy(()),
         #[prost(message, tag = "5")]
         UpdateText(super::UpdateText),
+        #[prost(message, tag = "6")]
+        ClearChildren(()),
     }
 }
 /// Position of a tile on the world map

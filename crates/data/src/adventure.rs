@@ -20,6 +20,7 @@ use derive_more::{
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
+use crate::card_name::CardName;
 use crate::primitives::Side;
 
 /// Identifies a set of tiles which can be revealed via the 'explore' action.
@@ -91,16 +92,25 @@ impl TileState {
     }
 }
 
+/// Represents an active choice screen within an adventure
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum AdventureScreen {
+    /// Adventure has ended
+    AdventureOver,
+    /// Pick one card of the provided card names
+    Draft(Vec<CardName>),
+}
+
 /// Stores the primary state for an ongoing adventure
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {
+    /// Player type
     pub side: Side,
-
-    /// Tracks whether the adventure has been completed
-    pub status: AdventureStatus,
-
+    /// Coin count, used to purchase more cards for deck
     pub coins: Coins,
+    /// Currently active screen, if any
+    pub screen: Option<AdventureScreen>,
     /// States of world map tiles
     #[serde_as(as = "Vec<(_, _)>")]
     pub tiles: HashMap<TilePosition, TileState>,

@@ -43,7 +43,9 @@ namespace Spelldawn.Services
         UpdateInterfaceElementCommand.InterfaceUpdateOneofCase.Destroy => HandleDestroy(command.ElementName),
         UpdateInterfaceElementCommand.InterfaceUpdateOneofCase.UpdateText => HandleUpdateText(command.ElementName,
           command.UpdateText),
-        _ => throw new ArgumentOutOfRangeException()
+        UpdateInterfaceElementCommand.InterfaceUpdateOneofCase.ClearChildren => 
+          HandleClearChildren(command.ElementName),
+          _ => throw new ArgumentOutOfRangeException()
       };
 
     IEnumerator HandleUpdateText(string elementName, UpdateText command)
@@ -99,6 +101,13 @@ namespace Spelldawn.Services
         newElement.style.opacity = 1.0f;
         HiddenForAnimation.Remove(newElement);
       }).WaitForCompletion();
+    }
+    
+    IEnumerator HandleClearChildren(string elementName)
+    {
+      var element = FindElement<VisualElement>(elementName);
+      element.Clear();
+      yield break;
     }
 
     public static Sequence AnimateToPositionAndDestroy(

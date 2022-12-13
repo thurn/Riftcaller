@@ -15,14 +15,14 @@
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
 use anyhow::Result;
-use data::adventure::{AdventureState, AdventureStatus, TileEntity, TilePosition};
+use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition};
 use data::player_data::PlayerData;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
 use with_error::WithError;
 
 pub fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
-    state.status = AdventureStatus::Completed;
+    state.screen = Some(AdventureScreen::AdventureOver);
     Ok(())
 }
 
@@ -46,6 +46,7 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
         }
         TileEntity::Draft { cost } => {
             state.coins -= cost;
+            state.screen = Some(AdventureScreen::Draft(vec![]));
             tile.entity = None;
         }
     }

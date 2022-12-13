@@ -15,13 +15,15 @@
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
 pub mod adventure_panels;
+pub mod draft_panel;
 pub mod draft_prompt_panel;
 pub mod explore_panel;
-pub mod tile_image_panel;
+pub mod full_screen_image_panel;
+pub mod tile_prompt_panel;
 
 use anyhow::Result;
 use core_ui::{actions, design, panel};
-use data::adventure::{AdventureState, AdventureStatus, TileEntity, TilePosition, TileState};
+use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition, TileState};
 use panel_address::PanelAddress;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
@@ -40,8 +42,11 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
             .collect(),
     })];
 
-    if state.status == AdventureStatus::Completed {
-        commands.push(panel::open(PanelAddress::AdventureOver));
+    if let Some(screen) = &state.screen {
+        commands.push(panel::open(match screen {
+            AdventureScreen::AdventureOver => PanelAddress::AdventureOver,
+            AdventureScreen::Draft(_) => PanelAddress::Draft,
+        }));
     }
 
     Ok(commands)

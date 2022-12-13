@@ -19,7 +19,7 @@ use data::adventure::{Coins, TilePosition};
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 
-use crate::tile_image_panel::TileImagePanel;
+use crate::tile_prompt_panel::TilePromptPanel;
 
 pub struct ExplorePanel {
     pub cost: Coins,
@@ -29,7 +29,7 @@ pub struct ExplorePanel {
 
 impl Component for ExplorePanel {
     fn build(self) -> Option<Node> {
-        TileImagePanel::new()
+        TilePromptPanel::new()
             .image(style::sprite("TPR/InfiniteEnvironments/meadow"))
             .prompt("To the north lie the flowering fields of the Kingdom of Edennes")
             .buttons(vec![

@@ -12,25 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Library for user interface rendering
+use core_ui::prelude::*;
+use core_ui::style;
+use panel_address::PanelAddress;
 
-pub mod action_builder;
-pub mod actions;
-pub mod bottom_sheet_content;
-pub mod button;
-pub mod component;
-pub mod design;
-pub mod draggable;
-pub mod drop_target;
-pub mod flexbox;
-pub mod icons;
-pub mod list_cell;
-pub mod panel;
-pub mod prelude;
-pub mod safe_screen;
-pub mod scroll_view;
-pub mod slider;
-pub mod style;
-pub mod text;
-pub mod text_field;
-pub mod update_element;
+use crate::full_screen_image_panel::FullScreenImagePanel;
+
+pub struct DraftPanel {
+    pub address: PanelAddress,
+}
+
+impl Component for DraftPanel {
+    fn build(self) -> Option<Node> {
+        FullScreenImagePanel::new()
+            .image(style::sprite("TPR/EnvironmentsHQ/mountain"))
+            .content(Column::new("DraftPanel"))
+            .build()
+    }
+}
