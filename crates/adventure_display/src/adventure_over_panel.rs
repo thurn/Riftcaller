@@ -16,8 +16,7 @@ use core_ui::actions;
 use core_ui::prelude::*;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
-
-use crate::button_menu::ButtonMenu;
+use panels::button_menu::ButtonMenu;
 
 #[derive(Default)]
 pub struct AdventureOverPanel {}
@@ -30,11 +29,11 @@ impl AdventureOverPanel {
 
 impl Component for AdventureOverPanel {
     fn build(self) -> Option<Node> {
-        ButtonMenu::new(PanelAddress::AdventureOver)
+        ButtonMenu::new(PanelAddress::AdventureScreen)
             .title("Defeated")
             .button(
                 "Main Menu",
-                actions::close_and(PanelAddress::AdventureOver, UserAction::LeaveAdventure),
+                actions::close_and(PanelAddress::AdventureScreen, UserAction::LeaveAdventure),
             )
             .show_close_button(false)
             .build()

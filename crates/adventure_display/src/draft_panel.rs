@@ -14,15 +14,22 @@
 
 use core_ui::prelude::*;
 use core_ui::style;
-use panel_address::PanelAddress;
+use data::adventure::DraftData;
+use data::player_data::PlayerData;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 
-pub struct DraftPanel {
-    pub address: PanelAddress,
+pub struct DraftPanel<'a> {
+    pub data: &'a DraftData,
 }
 
-impl Component for DraftPanel {
+impl<'a> DraftPanel<'a> {
+    pub fn from_player(_player: &PlayerData) -> Self {
+        todo!("")
+    }
+}
+
+impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
             .image(style::sprite("TPR/EnvironmentsHQ/mountain"))

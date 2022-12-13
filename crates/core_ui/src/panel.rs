@@ -16,7 +16,8 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
     interface_panel_address, ClientPanelAddress, Dimension, FlexAlign, FlexJustify, FlexPosition,
-    ImageScaleMode, InterfacePanelAddress, TextAlign, TogglePanelCommand,
+    ImageScaleMode, InterfacePanel, InterfacePanelAddress, TextAlign, TogglePanelCommand,
+    UpdatePanelsCommand,
 };
 
 use crate::button::IconButton;
@@ -91,6 +92,13 @@ pub fn close_bottom_sheet() -> Command {
 pub fn pop_to_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         toggle_command: Some(ToggleCommand::PopToBottomSheetAddress(address.into())),
+    })
+}
+
+/// Command to update the contents of a panel
+pub fn update(address: impl Into<InterfacePanelAddress>, node: Option<Node>) -> Command {
+    Command::UpdatePanels(UpdatePanelsCommand {
+        panels: vec![InterfacePanel { address: Some(address.into()), node }],
     })
 }
 

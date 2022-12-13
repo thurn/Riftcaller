@@ -92,13 +92,19 @@ impl TileState {
     }
 }
 
+/// Data for rendering the draft screen
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct DraftData {
+    pub cards: Vec<CardName>,
+}
+
 /// Represents an active choice screen within an adventure
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AdventureScreen {
     /// Adventure has ended
     AdventureOver,
     /// Pick one card of the provided card names
-    Draft(Vec<CardName>),
+    Draft(DraftData),
 }
 
 /// Stores the primary state for an ongoing adventure

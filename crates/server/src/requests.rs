@@ -213,7 +213,7 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             standard_action,
         ),
         Action::FetchPanel(fetch_panel) => {
-            Ok(GameResponse::from_commands(vec![Command::UpdatePanels(panels::render_panel(
+            Ok(GameResponse::from_commands(vec![Command::UpdatePanels(routing::render_panel(
                 &find_player(database, player_id)?,
                 fetch_panel.panel_address.clone().with_error(|| "missing address")?,
             )?)]))
@@ -277,10 +277,10 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         (Some(PlayerState::RequestedGame(_)), _) => todo!("Not implemented"),
         (None, Some(adventure_state)) => {
             commands.extend(adventure_display::render(adventure_state)?);
-            panels::render_panels(
+            routing::render_panels(
                 &mut commands,
                 &player,
-                panels::adventure_panels(adventure_state),
+                routing::adventure_panels(adventure_state),
             )?;
         }
         (None, None) => {
@@ -289,7 +289,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
                 mode: SceneLoadMode::Single.into(),
                 skip_if_current: true,
             }));
-            panels::render_panels(&mut commands, &player, panels::main_menu_panels())?;
+            routing::render_panels(&mut commands, &player, routing::main_menu_panels())?;
             commands.push(Command::TogglePanel(TogglePanelCommand {
                 toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
             }));
@@ -545,7 +545,7 @@ fn handle_standard_action(
     let player = find_player(database, player_id)?;
     for address in open_panels {
         result.command_list.commands.push(GameCommand {
-            command: Some(Command::UpdatePanels(panels::render_panel(&player, address.clone())?)),
+            command: Some(Command::UpdatePanels(routing::render_panel(&player, address.clone())?)),
         });
     }
     result.command_list.commands.push(GameCommand { command: Some(update_navbar(&player)) });

@@ -31,8 +31,13 @@ pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node
     };
 
     let tile = adventure.tiles.get(&position).with_error(|| "Tile not found")?;
+    let Some(entity) = tile.entity else {
+        // Entity does not exist, e.g. because it has been cleared after activation. This
+        // is fine, just render nothing.
+        return Ok(None);
+    };
 
-    Ok(match tile.entity.with_error(|| "Expected entity")? {
+    Ok(match entity {
         TileEntity::Explore { cost, .. } => ExplorePanel { cost, address, position }.build(),
         TileEntity::Draft { cost } => DraftPromptPanel { cost, address, position }.build(),
     })

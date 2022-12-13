@@ -28,13 +28,15 @@ pub enum PanelAddress {
     Settings,
     Disclaimer,
     AdventureMenu,
-    AdventureOver,
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),
     GameOver(GameOverData),
     TileEntity(TilePosition),
-    Draft,
+    /// Any screen within an adventure selected based on its 'AdventureScreen'
+    /// state. This is specifically for panels which *cannot* be directly opened
+    /// by the user at any time but are adventure-state-dependent.
+    AdventureScreen,
 }
 
 impl From<PanelAddress> for InterfacePanelAddress {

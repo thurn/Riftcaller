@@ -14,6 +14,7 @@
 
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
+pub mod adventure_over_panel;
 pub mod adventure_panels;
 pub mod draft_panel;
 pub mod draft_prompt_panel;
@@ -22,6 +23,7 @@ pub mod full_screen_image_panel;
 pub mod tile_prompt_panel;
 
 use anyhow::Result;
+use core_ui::prelude::*;
 use core_ui::{actions, design, panel};
 use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition, TileState};
 use panel_address::PanelAddress;
@@ -29,6 +31,9 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     FlexVector3, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite, WorldMapTile,
 };
+
+use crate::adventure_over_panel::AdventureOverPanel;
+use crate::draft_panel::DraftPanel;
 
 /// Returns a sequence of game Commands to display the provided
 /// [AdventureState].
@@ -42,14 +47,23 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
             .collect(),
     })];
 
-    if let Some(screen) = &state.screen {
-        commands.push(panel::open(match screen {
-            AdventureScreen::AdventureOver => PanelAddress::AdventureOver,
-            AdventureScreen::Draft(_) => PanelAddress::Draft,
-        }));
+    if state.screen.is_some() {
+        let screen = render_adventure_screen(state);
+        commands.push(panel::update(PanelAddress::AdventureScreen, screen));
+        commands.push(panel::open(PanelAddress::AdventureScreen));
     }
 
     Ok(commands)
+}
+
+/// Renders a screen based on the [AdventureScreen] contained within the
+/// provided state, if any
+pub fn render_adventure_screen(state: &AdventureState) -> Option<Node> {
+    match &state.screen {
+        Some(AdventureScreen::AdventureOver) => AdventureOverPanel::new().build(),
+        Some(AdventureScreen::Draft(data)) => DraftPanel { data }.build(),
+        _ => None,
+    }
 }
 
 fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {

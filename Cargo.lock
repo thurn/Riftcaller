@@ -52,6 +52,7 @@ dependencies = [
  "core_ui",
  "data",
  "panel_address",
+ "panels",
  "protos",
  "serde",
  "with_error",
@@ -1207,11 +1208,9 @@ name = "panels"
 version = "0.0.0"
 dependencies = [
  "adapters",
- "adventure_display",
  "anyhow",
  "core_ui",
  "data",
- "deck_editor",
  "enum-iterator",
  "panel_address",
  "protos",
@@ -1599,6 +1598,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "routing"
+version = "0.0.0"
+dependencies = [
+ "adapters",
+ "adventure_display",
+ "anyhow",
+ "core_ui",
+ "data",
+ "deck_editor",
+ "enum-iterator",
+ "panel_address",
+ "panels",
+ "protos",
+ "serde",
+ "serde_json",
+ "with_error",
+]
+
+[[package]]
 name = "rules"
 version = "0.0.0"
 dependencies = [
@@ -1778,6 +1796,7 @@ dependencies = [
  "panels",
  "prost",
  "protos",
+ "routing",
  "rules",
  "screen_overlay",
  "serde_json",
