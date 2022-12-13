@@ -44,6 +44,10 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
             state.revealed_regions.insert(region);
             tile.entity = None;
         }
+        TileEntity::Draft { cost } => {
+            state.coins -= cost;
+            tile.entity = None;
+        }
     }
 
     Ok(())

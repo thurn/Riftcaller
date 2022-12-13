@@ -71,6 +71,7 @@ impl TilePosition {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum TileEntity {
     Explore { region: RegionId, cost: Coins },
+    Draft { cost: Coins },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

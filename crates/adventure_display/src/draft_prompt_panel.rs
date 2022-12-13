@@ -21,19 +21,19 @@ use panel_address::PanelAddress;
 
 use crate::tile_image_panel::TileImagePanel;
 
-pub struct ExplorePanel {
+pub struct DraftPromptPanel {
     pub cost: Coins,
     pub address: PanelAddress,
     pub position: TilePosition,
 }
 
-impl Component for ExplorePanel {
+impl Component for DraftPromptPanel {
     fn build(self) -> Option<Node> {
         TileImagePanel::new()
-            .image(style::sprite("TPR/InfiniteEnvironments/meadow"))
-            .prompt("To the north lie the flowering fields of the Kingdom of Edennes")
+            .image(style::sprite("TPR/EnvironmentsHQ/mountain"))
+            .prompt("An expedition into these mountain ruins could provide a valuable treasure")
             .buttons(vec![
-                Button::new(format!("Explore: {} {}", self.cost, icons::COINS))
+                Button::new(format!("Draft: {} {}", self.cost, icons::COINS))
                     .action(actions::close_and(
                         self.address,
                         UserAction::AdventureTileAction(self.position),

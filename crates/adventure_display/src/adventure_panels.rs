@@ -20,6 +20,7 @@ use panel_address::PanelAddress;
 use protos::spelldawn::Node;
 use with_error::{fail, WithError};
 
+use crate::draft_prompt_panel::DraftPromptPanel;
 use crate::explore_panel::ExplorePanel;
 
 /// Renders a panel for the entity at the provided [TilePosition].
@@ -32,6 +33,7 @@ pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node
     let tile = adventure.tiles.get(&position).with_error(|| "Tile not found")?;
 
     Ok(match tile.entity.with_error(|| "Expected entity")? {
-        TileEntity::Explore { .. } => ExplorePanel::new(address, position).build(),
+        TileEntity::Explore { cost, .. } => ExplorePanel { cost, address, position }.build(),
+        TileEntity::Draft { cost } => DraftPromptPanel { cost, address, position }.build(),
     })
 }
