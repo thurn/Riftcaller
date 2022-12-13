@@ -31,6 +31,7 @@ use crate::primitives::{
     HealthValue, LevelValue, Lineage, ManaValue, PointsValue, Rarity, RoomId, School, ShieldValue,
     Side, Sprite,
 };
+use crate::set_name::SetName;
 use crate::special_effects::{Projectile, TimedEffect};
 use crate::text::AbilityText;
 
@@ -186,6 +187,7 @@ pub struct CardConfig {
 #[derive(Debug)]
 pub struct CardDefinition {
     pub name: CardName,
+    pub sets: Vec<SetName>,
     pub cost: Cost<CardId>,
     pub image: Sprite,
     pub card_type: CardType,

@@ -21,6 +21,7 @@ use data::card_definition::{
 use data::card_name::CardName;
 use data::delegates::{Delegate, QueryDelegate};
 use data::primitives::{CardType, Lineage, Rarity, School, Side};
+use data::set_name::SetName;
 use data::special_effects::{Projectile, TimedEffect};
 use data::text::Keyword;
 use data::utils;
@@ -31,6 +32,7 @@ use rules::mutations;
 pub fn marauders_axe() -> CardDefinition {
     CardDefinition {
         name: CardName::MaraudersAxe,
+        sets: vec![SetName::Core2024],
         cost: cost(5),
         image: rexard_images::weapon(RexardWeaponType::Axes, "a_n_b_01"),
         card_type: CardType::Weapon,
@@ -80,6 +82,7 @@ pub fn marauders_axe() -> CardDefinition {
 pub fn keen_halberd() -> CardDefinition {
     CardDefinition {
         name: CardName::KeenHalberd,
+        sets: vec![SetName::Core2024],
         cost: cost(3),
         image: rexard_images::weapon(RexardWeaponType::Polearms, "sp_b_04"),
         card_type: CardType::Weapon,
@@ -104,6 +107,7 @@ pub fn keen_halberd() -> CardDefinition {
 pub fn ethereal_blade() -> CardDefinition {
     CardDefinition {
         name: CardName::EtherealBlade,
+        sets: vec![SetName::Core2024],
         cost: cost(1),
         image: rexard_images::weapon(RexardWeaponType::Swords, "sv_b_01"),
         card_type: CardType::Weapon,
@@ -140,6 +144,7 @@ pub fn ethereal_blade() -> CardDefinition {
 pub fn bow_of_the_alliance() -> CardDefinition {
     CardDefinition {
         name: CardName::BowOfTheAlliance,
+        sets: vec![SetName::Core2024],
         cost: cost(3),
         image: rexard_images::weapon(RexardWeaponType::Bows, "b_b_01"),
         card_type: CardType::Weapon,

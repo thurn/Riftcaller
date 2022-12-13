@@ -37,6 +37,7 @@ pub mod weapons;
 pub fn no_identity(name: CardName, side: Side, school: School) -> CardDefinition {
     CardDefinition {
         name,
+        sets: vec![],
         cost: identity_cost(),
         image: rexard_images::get(RexardPack::MonstersAvatars, "22"),
         card_type: CardType::Identity,

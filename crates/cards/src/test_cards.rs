@@ -19,6 +19,7 @@ use data::card_definition::{
 };
 use data::card_name::CardName;
 use data::primitives::{CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite};
+use data::set_name::SetName;
 use data::special_effects::{Projectile, TimedEffect};
 use data::text::{Keyword, Sentence};
 use rules::mutations;
@@ -36,6 +37,7 @@ pub const TEST_LINEAGE: Lineage = Lineage::Infernal;
 pub fn test_overlord_identity() -> CardDefinition {
     CardDefinition {
         name: CardName::TestOverlordIdentity,
+        sets: vec![SetName::Test],
         cost: identity_cost(),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/3.png"),
         card_type: CardType::Identity,
@@ -50,6 +52,7 @@ pub fn test_overlord_identity() -> CardDefinition {
 pub fn test_champion_identity() -> CardDefinition {
     CardDefinition {
         name: CardName::TestChampionIdentity,
+        sets: vec![SetName::Test],
         cost: identity_cost(),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/2.png"),
         card_type: CardType::Identity,

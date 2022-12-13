@@ -19,6 +19,7 @@ use data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, Sc
 use data::card_name::CardName;
 use data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use data::primitives::{CardType, Rarity, School, Side};
+use data::set_name::SetName;
 use data::text::Keyword;
 use display::rexard_images;
 use display::rexard_images::RexardPack;
@@ -28,6 +29,7 @@ use rules::{mana, mutations, queries};
 pub fn gold_mine() -> CardDefinition {
     CardDefinition {
         name: CardName::GoldMine,
+        sets: vec![SetName::Core2024],
         cost: scheme_cost(),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_08_b"),
         card_type: CardType::Scheme,
@@ -52,6 +54,7 @@ pub fn gold_mine() -> CardDefinition {
 pub fn activate_reinforcements() -> CardDefinition {
     CardDefinition {
         name: CardName::ActivateReinforcements,
+        sets: vec![SetName::Core2024],
         cost: scheme_cost(),
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::Scheme,
@@ -85,6 +88,7 @@ pub fn activate_reinforcements() -> CardDefinition {
 pub fn research_project() -> CardDefinition {
     CardDefinition {
         name: CardName::ResearchProject,
+        sets: vec![SetName::Core2024],
         cost: scheme_cost(),
         image: rexard_images::spell(1, "SpellBook01_03"),
         card_type: CardType::Scheme,
