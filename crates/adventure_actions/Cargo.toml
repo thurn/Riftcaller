@@ -10,7 +10,6 @@ doctest = false
 
 [dependencies]
 anyhow = "1.0.58"
-serde = { version = "1.0.138", features = ["derive"] }
 
 data = { path = "../data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }

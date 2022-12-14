@@ -19,7 +19,6 @@ adapters = { path = "../adapters", version = "0.0.0" }
 cards = { path = "../cards", version = "0.0.0" }
 core_ui = { path = "../core_ui", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }
-panel_address = { path = "../panel_address", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 server = { path = "../server", version = "0.0.0" }
