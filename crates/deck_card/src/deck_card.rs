@@ -20,7 +20,6 @@ pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 /// two rows of cards to be displayed with room for additional UI elements.
 pub const CARD_HEIGHT: f32 = 36.0;
 
-use core_ui::design::ORANGE_900;
 use core_ui::prelude::*;
 use data::card_name::CardName;
 use protos::spelldawn::Dimension;
@@ -52,11 +51,13 @@ impl Component for DeckCard {
     fn build(self) -> Option<Node> {
         let mut width = self.height.clone();
         width.value *= CARD_ASPECT_RATIO;
+        let definition = rules::get(self.name);
+
         Column::new(self.name.to_string())
             .style(
                 self.layout
                     .to_style()
-                    .background_color(ORANGE_900)
+                    .background_image(assets::card_frame(definition.school))
                     .width(width)
                     .height(self.height),
             )

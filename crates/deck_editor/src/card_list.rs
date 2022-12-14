@@ -20,7 +20,6 @@ use core_ui::prelude::*;
 use core_ui::{actions, panel};
 use data::card_name::CardName;
 use data::deck::Deck;
-use data::player_data::PlayerData;
 use data::primitives::DeckIndex;
 use data::user_actions::{DeckEditorAction, UserAction};
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
@@ -38,15 +37,13 @@ use crate::editor_column_scroll::EditorColumnScroll;
 
 /// Displays the cards contained within a single deck
 #[derive(Debug)]
-#[allow(dead_code)]
 pub struct CardList<'a> {
-    player: &'a PlayerData,
     deck: &'a Deck,
 }
 
 impl<'a> CardList<'a> {
-    pub fn new(player: &'a PlayerData, deck: &'a Deck) -> Self {
-        CardList { player, deck }
+    pub fn new(deck: &'a Deck) -> Self {
+        CardList { deck }
     }
 }
 

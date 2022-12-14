@@ -69,7 +69,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                     )
                     .child_node(match self.open_deck {
                         Some(deck) if self.show_edit_options => DeckEditOptions::new(deck).build(),
-                        Some(deck) => CardList::new(self.player, deck).build(),
+                        Some(deck) => CardList::new(deck).build(),
                         _ => DeckList::new(self.player, self.filters).build(),
                     })
                     .child(if self.filters.offset < 8 {

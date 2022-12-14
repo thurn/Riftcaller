@@ -638,9 +638,11 @@ dependencies = [
 name = "deck_card"
 version = "0.0.0"
 dependencies = [
+ "assets",
  "core_ui",
  "data",
  "protos",
+ "rules",
 ]
 
 [[package]]
