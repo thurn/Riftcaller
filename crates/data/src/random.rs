@@ -72,7 +72,7 @@ where
     I: Iterator,
 {
     if game.rng.is_some() {
-        iterator.choose(game.rng.as_mut().expect("rng"))
+        iterator.choose_stable(game.rng.as_mut().expect("rng"))
     } else {
         iterator.choose(&mut rand::thread_rng())
     }

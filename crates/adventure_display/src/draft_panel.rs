@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::button::Button;
+use core_ui::design::FontSize;
 use core_ui::prelude::*;
 use core_ui::style;
+use core_ui::text::Text;
 use data::adventure::DraftData;
-use data::player_data::PlayerData;
+use deck_editor::deck_card::DeckCard;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 
@@ -23,17 +26,22 @@ pub struct DraftPanel<'a> {
     pub data: &'a DraftData,
 }
 
-impl<'a> DraftPanel<'a> {
-    pub fn from_player(_player: &PlayerData) -> Self {
-        todo!("")
-    }
-}
-
 impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
             .image(style::sprite("TPR/EnvironmentsHQ/mountain"))
-            .content(Column::new("DraftPanel"))
+            .content(Row::new("DraftPanel").children(self.data.choices.iter().map(|choice| {
+                Column::new("Choice")
+                    .style(Style::new().margin(Edge::All, 32.px()))
+                    .child(
+                        DeckCard::new(choice.card).layout(Layout::new().margin(Edge::All, 8.px())),
+                    )
+                    .child(
+                        Text::new(format!("{}x", choice.quantity), FontSize::Headline)
+                            .layout(Layout::new().margin(Edge::All, 8.px())),
+                    )
+                    .child(Button::new("Pick").layout(Layout::new().margin(Edge::All, 8.px())))
+            })))
             .build()
     }
 }

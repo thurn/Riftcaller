@@ -14,8 +14,10 @@
 
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
+pub mod card_generator;
+
 use anyhow::Result;
-use data::adventure::{AdventureScreen, AdventureState, DraftData, TileEntity, TilePosition};
+use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition};
 use data::player_data::PlayerData;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
@@ -45,9 +47,9 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
             tile.entity = None;
         }
         TileEntity::Draft { cost } => {
-            state.coins -= cost;
-            state.screen = Some(AdventureScreen::Draft(DraftData::default()));
             tile.entity = None;
+            state.coins -= cost;
+            state.screen = Some(AdventureScreen::Draft(card_generator::draft_choices(state)));
         }
     }
 

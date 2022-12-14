@@ -39,6 +39,7 @@ dependencies = [
  "anyhow",
  "data",
  "protos",
+ "rules",
  "serde",
  "with_error",
 ]
@@ -51,6 +52,7 @@ dependencies = [
  "anyhow",
  "core_ui",
  "data",
+ "deck_editor",
  "panel_address",
  "panels",
  "protos",

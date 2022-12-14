@@ -22,8 +22,12 @@ use protos::spelldawn::{StandardAction, TextAlign};
 use crate::deck_card_title::DeckCardTitle;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
+
+/// Card height as a percentage of the height of the viewport. Intended to allow
+/// two rows of cards to be displayed with room for additional UI elements.
 pub const CARD_HEIGHT: f32 = 36.0;
 
+/// Displays a single named card as it appears in the UI
 #[derive(Debug)]
 pub struct DeckCard {
     layout: Layout,

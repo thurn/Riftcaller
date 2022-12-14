@@ -17,6 +17,8 @@ use std::collections::{HashMap, HashSet};
 use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
+use rand::prelude::IteratorRandom;
+use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
@@ -92,10 +94,16 @@ impl TileState {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DraftChoice {
+    pub quantity: u32,
+    pub card: CardName,
+}
+
 /// Data for rendering the draft screen
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct DraftData {
-    pub cards: Vec<CardName>,
+    pub choices: Vec<DraftChoice>,
 }
 
 /// Represents an active choice screen within an adventure
@@ -123,4 +131,33 @@ pub struct AdventureState {
     /// Regions which the player can currently see. By default Region 1 is
     /// revealed.
     pub revealed_regions: HashSet<RegionId>,
+    /// Optionally, a random number generator for this adventure to use. This
+    /// generator is serializable, so the state will be deterministic even
+    /// across different sessions. If not specified, `rand::thread_rng()` is
+    /// used instead and behavior is not deterministic.
+    pub rng: Option<Xoshiro256StarStar>,
+}
+
+impl AdventureState {
+    pub fn choose<I>(&mut self, iterator: I) -> Option<I::Item>
+    where
+        I: Iterator,
+    {
+        if self.rng.is_some() {
+            iterator.choose_stable(self.rng.as_mut().expect("rng"))
+        } else {
+            iterator.choose(&mut rand::thread_rng())
+        }
+    }
+
+    pub fn choose_multiple<I>(&mut self, amount: usize, iterator: I) -> Vec<I::Item>
+    where
+        I: Iterator,
+    {
+        if self.rng.is_some() {
+            iterator.choose_multiple(self.rng.as_mut().expect("rng"), amount)
+        } else {
+            iterator.choose_multiple(&mut rand::thread_rng(), amount)
+        }
+    }
 }

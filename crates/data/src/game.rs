@@ -240,7 +240,7 @@ pub struct GameState {
     /// Optionally, a random number generator for this game to use. This
     /// generator is serializable, so the state will be deterministic even
     /// across different sessions. If not specified, `rand::thread_rng()` is
-    /// used.
+    /// used instead and behavior is not deterministic.
     pub rng: Option<Xoshiro256StarStar>,
     /// Optional lookup table for delegates present on cards in this game in
     /// order to improve performance

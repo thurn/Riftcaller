@@ -14,4 +14,5 @@ serde = { version = "1.0.138", features = ["derive"] }
 
 data = { path = "../data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
+rules = { path = "../rules", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }

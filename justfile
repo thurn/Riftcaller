@@ -265,7 +265,6 @@ clippy:
         -D clippy::unnecessary_self_imports \
         -D clippy::unnested_or_patterns \
         -D clippy::unused_self \
-        -D clippy::unwrap_in_result \
         -D clippy::used_underscore_binding \
         -D clippy::useless_let_if_seq
 
@@ -301,7 +300,6 @@ clippy-fix:
         -D clippy::unnecessary_self_imports \
         -D clippy::unnested_or_patterns \
         -D clippy::unused_self \
-        -D clippy::unwrap_in_result \
         -D clippy::used_underscore_binding \
         -D clippy::useless_let_if_seq \
         -D clippy::use_self

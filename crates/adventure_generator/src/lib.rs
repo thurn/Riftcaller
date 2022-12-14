@@ -85,7 +85,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
     let mut revealed_regions = HashSet::new();
     revealed_regions.insert(1);
 
-    AdventureState { side, screen: None, coins: STARTING_COINS, tiles, revealed_regions }
+    AdventureState { side, screen: None, coins: STARTING_COINS, tiles, revealed_regions, rng: None }
 }
 
 fn hidden_tiles(region_id: RegionId) -> HashMap<TilePosition, TileState> {
