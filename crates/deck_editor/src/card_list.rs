@@ -23,7 +23,6 @@ use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::primitives::DeckIndex;
 use data::user_actions::{DeckEditorAction, UserAction};
-use deck_card::deck_card_title::DeckCardTitle;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -32,6 +31,7 @@ use protos::spelldawn::{
     UpdateInterfaceElementCommand,
 };
 
+use crate::deck_editor_card_title::DeckEditorCardTitle;
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 use crate::deck_tile::DeckTile;
 use crate::editor_column_scroll::EditorColumnScroll;
@@ -96,7 +96,7 @@ impl<'a> Component for CardList<'a> {
                         },
                     ))))
                     .children(sorted_deck(self.deck).into_iter().map(|(card_name, count)| {
-                        DeckCardTitle::new(*card_name)
+                        DeckEditorCardTitle::new(*card_name)
                             .count(*count)
                             .on_drop(Some(drop_action(*card_name, self.deck.index)))
                     })),

@@ -19,6 +19,8 @@ pub mod collection_browser;
 pub mod collection_controls;
 pub mod deck_edit_options;
 pub mod deck_editor_actions;
+pub mod deck_editor_card;
+pub mod deck_editor_card_title;
 pub mod deck_editor_panel;
 pub mod deck_list;
 pub mod deck_tile;

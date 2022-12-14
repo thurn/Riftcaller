@@ -14,5 +14,28 @@
 
 //! Renders cards as they're seen in the deck editor and adventure UI
 
-pub mod deck_card;
-pub mod deck_card_title;
+use core_ui::prelude::*;
+use data::card_name::CardName;
+
+#[allow(dead_code)]
+pub struct DeckCard {
+    name: CardName,
+    layout: Layout,
+}
+
+impl DeckCard {
+    pub fn new(name: CardName) -> Self {
+        Self { name, layout: Layout::default() }
+    }
+
+    pub fn layout(mut self, layout: Layout) -> Self {
+        self.layout = layout;
+        self
+    }
+}
+
+impl Component for DeckCard {
+    fn build(self) -> Option<Node> {
+        None
+    }
+}

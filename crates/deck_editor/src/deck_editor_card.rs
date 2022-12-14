@@ -19,7 +19,7 @@ use core_ui::text::Text;
 use data::card_name::CardName;
 use protos::spelldawn::{StandardAction, TextAlign};
 
-use crate::deck_card_title::DeckCardTitle;
+use crate::deck_editor_card_title::DeckEditorCardTitle;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
@@ -29,13 +29,13 @@ pub const CARD_HEIGHT: f32 = 36.0;
 
 /// Displays a single named card as it appears in the UI
 #[derive(Debug)]
-pub struct DeckCard {
+pub struct DeckEditorCard {
     layout: Layout,
     card_name: CardName,
     on_drop: Option<StandardAction>,
 }
 
-impl DeckCard {
+impl DeckEditorCard {
     pub fn new(card_name: CardName) -> Self {
         Self { card_name, layout: Layout::default(), on_drop: None }
     }
@@ -51,11 +51,11 @@ impl DeckCard {
     }
 }
 
-impl Component for DeckCard {
+impl Component for DeckEditorCard {
     fn build(self) -> Option<Node> {
         Draggable::new(self.card_name.to_string())
             .drop_targets(vec!["CardList"])
-            .over_target_indicator(move || DeckCardTitle::new(self.card_name).build())
+            .over_target_indicator(move || DeckEditorCardTitle::new(self.card_name).build())
             .on_drop(self.on_drop)
             .style(
                 self.layout

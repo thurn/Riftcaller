@@ -14,7 +14,8 @@
 
 use core_ui::design::ORANGE_900;
 use core_ui::prelude::*;
-use deck_card::deck_card::{CARD_ASPECT_RATIO, CARD_HEIGHT};
+
+use crate::deck_editor_card::{CARD_ASPECT_RATIO, CARD_HEIGHT};
 
 /// Represents an empty slot in the collection browser to fill space.
 #[derive(Clone)]

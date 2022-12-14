@@ -22,20 +22,18 @@ use display::assets;
 use display::assets::CardIconType;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, StandardAction};
 
-use crate::deck_card::DeckCard;
-
-/// Should roughly match EDITOR_COLUMN_WIDTH
-pub const DRAGGABLE_WIDTH: i32 = 24;
+use crate::deck_editor_card::DeckEditorCard;
+use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
 #[derive(Debug)]
-pub struct DeckCardTitle {
+pub struct DeckEditorCardTitle {
     layout: Layout,
     card_name: CardName,
     on_drop: Option<StandardAction>,
     count: Option<u32>,
 }
 
-impl DeckCardTitle {
+impl DeckEditorCardTitle {
     pub fn new(card_name: CardName) -> Self {
         Self { card_name, layout: Layout::default(), on_drop: None, count: None }
     }
@@ -56,7 +54,7 @@ impl DeckCardTitle {
     }
 }
 
-impl Component for DeckCardTitle {
+impl Component for DeckEditorCardTitle {
     fn build(self) -> Option<Node> {
         let cost = match (
             rules::get(self.card_name).cost.mana,
@@ -71,14 +69,14 @@ impl Component for DeckCardTitle {
 
         Draggable::new(format!("{}Title", self.card_name))
             .drop_targets(vec!["CollectionBrowser"])
-            .over_target_indicator(move || DeckCard::new(self.card_name).build())
+            .over_target_indicator(move || DeckEditorCard::new(self.card_name).build())
             .on_drop(self.on_drop)
             .horizontal_drag_start_distance(100)
             .remove_original(if let Some(v) = self.count { v < 2 } else { false })
             .style(
                 Style::new()
                     .height(88.px())
-                    .width(DRAGGABLE_WIDTH.vw())
+                    .width((EDITOR_COLUMN_WIDTH - 1).vw())
                     .flex_grow(1.0)
                     .flex_direction(FlexDirection::Row)
                     .align_items(FlexAlign::Center)
