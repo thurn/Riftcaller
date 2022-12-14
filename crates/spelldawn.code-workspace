@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+    "rust-analyzer.imports.granularity.group": "module",
+    "rust-analyzer.imports.granularity.enforce": true,
+    "rust-analyzer.imports.prefix": "crate",
+    "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+	"rust-analyzer.checkOnSave.command": "clippy",
+
+    "[rust]": {
+      "editor.rulers": [80],
+      "editor.defaultFormatter": "rust-lang.rust-analyzer",
+      "editor.formatOnSave": true
+    }
+  }
+}
