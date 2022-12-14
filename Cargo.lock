@@ -686,6 +686,7 @@ dependencies = [
  "protos",
  "raids",
  "rules",
+ "rules_text",
  "with_error",
 ]
 
@@ -1628,6 +1629,25 @@ dependencies = [
  "enum-iterator",
  "once_cell",
  "tracing",
+ "with_error",
+]
+
+[[package]]
+name = "rules_text"
+version = "0.0.0"
+dependencies = [
+ "actions",
+ "adapters",
+ "anyhow",
+ "assets",
+ "core_ui",
+ "data",
+ "enum-iterator",
+ "panel_address",
+ "prompts",
+ "protos",
+ "raids",
+ "rules",
  "with_error",
 ]
 

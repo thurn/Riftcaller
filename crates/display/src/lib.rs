@@ -21,5 +21,4 @@ pub mod game_over;
 pub mod interface;
 pub mod positions;
 pub mod render;
-pub mod rules_text;
 pub mod sync;

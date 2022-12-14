@@ -1,11 +1,12 @@
 [package]
-name = "display"
+name = "rules_text"
 version = "0.0.0"
-description = "Converts internal game state representation into a format the client can understand"
+description = "Builds the text displayed on cards based on their card definition"
 license = "Apache-2.0"
 edition = "2021"
 
 [lib]
+path = "src/rules_text.rs"
 doctest = false
 test = false
 
@@ -18,7 +19,6 @@ assets = { path = "../assets", version = "0.0.0" }
 adapters = { path = "../adapters", version = "0.0.0" }
 raids = { path = "../raids", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
-rules_text = { path = "../rules_text", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }
 panel_address = { path = "../panel_address", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }

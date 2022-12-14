@@ -26,9 +26,9 @@ use protos::spelldawn::{
     NoTargeting, PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
 };
 use rules::{flags, queries};
-use {adapters, assets};
+use {adapters, assets, rules_text};
 
-use crate::{positions, rules_text};
+use crate::positions;
 
 pub fn card_view(
     builder: &ResponseBuilder,

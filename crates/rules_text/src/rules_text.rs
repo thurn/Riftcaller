@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Tools for rendering the text on a card
+//! Builds the text displayed on cards based on their card definition
 
 use std::fmt::Write as _;
 
