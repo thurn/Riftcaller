@@ -23,7 +23,9 @@ use display::assets::CardIconType;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, StandardAction};
 
 use crate::deck_card::DeckCard;
-use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
+
+/// Should roughly match EDITOR_COLUMN_WIDTH
+pub const DRAGGABLE_WIDTH: i32 = 24;
 
 #[derive(Debug)]
 pub struct DeckCardTitle {
@@ -76,7 +78,7 @@ impl Component for DeckCardTitle {
             .style(
                 Style::new()
                     .height(88.px())
-                    .width((EDITOR_COLUMN_WIDTH - 1).vw())
+                    .width(DRAGGABLE_WIDTH.vw())
                     .flex_grow(1.0)
                     .flex_direction(FlexDirection::Row)
                     .align_items(FlexAlign::Center)

@@ -18,7 +18,7 @@ use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::text::Text;
 use data::adventure::DraftData;
-use deck_editor::deck_card::DeckCard;
+use deck_card::deck_card::DeckCard;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 

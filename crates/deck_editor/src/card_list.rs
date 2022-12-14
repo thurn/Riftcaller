@@ -23,6 +23,7 @@ use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::primitives::DeckIndex;
 use data::user_actions::{DeckEditorAction, UserAction};
+use deck_card::deck_card_title::DeckCardTitle;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -31,7 +32,6 @@ use protos::spelldawn::{
     UpdateInterfaceElementCommand,
 };
 
-use crate::deck_card_title::DeckCardTitle;
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 use crate::deck_tile::DeckTile;
 use crate::editor_column_scroll::EditorColumnScroll;

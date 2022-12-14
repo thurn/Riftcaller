@@ -12,18 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Renders the deck editor window
+//! Renders cards as they're seen in the deck editor and adventure UI
 
-pub mod card_list;
-pub mod collection_browser;
-pub mod collection_controls;
-pub mod deck_edit_options;
-pub mod deck_editor_actions;
-pub mod deck_editor_panel;
-pub mod deck_list;
-pub mod deck_tile;
-pub mod editor_column_scroll;
-pub mod empty_card;
-pub mod pick_deck_name;
-pub mod pick_deck_school;
-pub mod pick_deck_side;
+pub mod deck_card;
+pub mod deck_card_title;

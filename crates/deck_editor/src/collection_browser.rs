@@ -22,6 +22,7 @@ use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::user_actions::DeckEditorAction;
+use deck_card::deck_card::DeckCard;
 use panel_address::CollectionBrowserFilters;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -31,7 +32,6 @@ use protos::spelldawn::{
 };
 
 use crate::card_list;
-use crate::deck_card::DeckCard;
 use crate::empty_card::EmptyCard;
 
 /// Returns an iterator over cards owned by 'player' which match a given

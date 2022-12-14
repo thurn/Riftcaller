@@ -52,7 +52,7 @@ dependencies = [
  "anyhow",
  "core_ui",
  "data",
- "deck_editor",
+ "deck_card",
  "panel_address",
  "panels",
  "protos",
@@ -633,12 +633,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "deck_card"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "core_ui",
+ "data",
+ "display",
+ "enum-iterator",
+ "panel_address",
+ "protos",
+ "rules",
+ "serde",
+ "serde_json",
+ "with_error",
+]
+
+[[package]]
 name = "deck_editor"
 version = "0.0.0"
 dependencies = [
  "anyhow",
  "core_ui",
  "data",
+ "deck_card",
  "display",
  "enum-iterator",
  "panel_address",
