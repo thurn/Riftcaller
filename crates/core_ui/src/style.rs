@@ -14,11 +14,12 @@
 
 use protos::spelldawn::node_background::BackgroundAddress;
 use protos::spelldawn::{
-    Dimension, DimensionGroup, DimensionUnit, EasingMode, FlexAlign, FlexColor, FlexDirection,
-    FlexDisplayStyle, FlexJustify, FlexOverflow, FlexPickingMode, FlexPosition, FlexRotate,
-    FlexScale, FlexStyle, FlexTranslate, FlexVector3, FlexVisibility, FlexWrap, FontAddress,
-    FontStyle, ImageScaleMode, NodeBackground, OverflowClipBox, SpriteAddress, TextAlign,
-    TextOverflow, TextOverflowPosition, TextShadow, TimeValue, WhiteSpace,
+    BackgroundImageAutoSize, Dimension, DimensionGroup, DimensionUnit, EasingMode, FlexAlign,
+    FlexColor, FlexDirection, FlexDisplayStyle, FlexJustify, FlexOverflow, FlexPickingMode,
+    FlexPosition, FlexRotate, FlexScale, FlexStyle, FlexTranslate, FlexVector3, FlexVisibility,
+    FlexWrap, FontAddress, FontStyle, ImageScaleMode, NodeBackground, OverflowClipBox,
+    SpriteAddress, TextAlign, TextOverflow, TextOverflowPosition, TextShadow, TimeValue,
+    WhiteSpace,
 };
 
 /// Pixels unit. Not literally equivalent to screen pixels, Unity resizes these
@@ -610,6 +611,11 @@ impl Style {
 
     pub fn picking_mode(mut self, picking_mode: FlexPickingMode) -> Self {
         self.wrapped_style.picking_mode = picking_mode as i32;
+        self
+    }
+
+    pub fn background_image_auto_size(mut self, auto_size: BackgroundImageAutoSize) -> Self {
+        self.wrapped_style.background_image_auto_size = auto_size.into();
         self
     }
 }

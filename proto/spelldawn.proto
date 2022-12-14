@@ -314,6 +314,18 @@ enum FlexPickingMode {
     FLEX_PICKING_MODE_IGNORE = 2;
 }
 
+// Allows the size of a Node to be determined by the size of its background
+// sprite.
+enum BackgroundImageAutoSize {
+    BACKGROUND_IMAGE_AUTO_SIZE_UNSPECIFIED = 0;
+
+    // Determine the Node height based on its specified width
+    BACKGROUND_IMAGE_AUTO_SIZE_FROM_WIDTH = 1;
+
+    // Determine the Node width based on its specified height
+    BACKGROUND_IMAGE_AUTO_SIZE_FROM_HEIGHT = 2;
+}
+
 message FlexStyle {
     FlexAlign align_content = 1;
     FlexAlign align_items = 2;
@@ -370,6 +382,7 @@ message FlexStyle {
     Dimension width = 53;
     Dimension word_spacing = 54;
     FlexPickingMode picking_mode = 55;
+    BackgroundImageAutoSize background_image_auto_size = 56;
 }
 
 message Flexbox {

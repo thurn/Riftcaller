@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 using EasingMode = Spelldawn.Protos.EasingMode;
@@ -447,6 +448,26 @@ namespace Spelldawn.Masonry
         {
           case NodeBackground.BackgroundAddressOneofCase.Sprite:
             var sprite = registry.AssetService.GetSprite(bi.Sprite);
+            var aspectRatio = sprite == null ? 0 : sprite.bounds.size.x / sprite.bounds.size.y;
+
+            switch (input.BackgroundImageAutoSize)
+            {
+              case BackgroundImageAutoSize.FromWidth:
+                var height = input.Width;
+                Errors.CheckState(height.Unit != DimensionUnit.Percentage, 
+                  "Percentage units not supported for background image auto size");
+                height.Value /= aspectRatio;
+                e.style.height = AdaptDimension(registry, height);
+                break;
+              case BackgroundImageAutoSize.FromHeight:
+                var width = input.Height;
+                Errors.CheckState(width.Unit != DimensionUnit.Percentage, 
+                  "Percentage units not supported for background image auto size");                
+                width.Value *= aspectRatio;
+                e.style.width = AdaptDimension(registry, width);                
+                break;
+            }
+            
             e.style.backgroundImage = new StyleBackground(sprite);
             break;
           case NodeBackground.BackgroundAddressOneofCase.RenderTexture:

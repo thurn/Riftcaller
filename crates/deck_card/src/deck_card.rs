@@ -14,6 +14,8 @@
 
 //! Renders cards as they're seen in the deck editor and adventure UI
 
+pub mod card_nameplate;
+
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
 /// Card height as a percentage of the height of the viewport. Intended to allow
@@ -22,17 +24,36 @@ pub const CARD_HEIGHT: f32 = 36.0;
 
 use core_ui::prelude::*;
 use data::card_name::CardName;
-use protos::spelldawn::Dimension;
+use protos::spelldawn::{BackgroundImageAutoSize, Dimension, FlexAlign};
+
+use crate::card_nameplate::CardNameplate;
+
+/// Abstraction representing the height of a card, allowing other measurments to
+/// be scaled proportionately.
+#[derive(Clone, Copy, Debug)]
+pub struct CardHeight(f32);
+
+impl CardHeight {
+    pub fn vh(value: f32) -> Self {
+        Self(value)
+    }
+
+    /// Returns a [Dimension] scaled as a fraction of the card height as
+    /// percentage out of 100.
+    pub fn dim(&self, p: f32) -> Dimension {
+        (self.0 * (p / 100.0)).vh().into()
+    }
+}
 
 pub struct DeckCard {
     name: CardName,
-    height: Dimension,
+    height: CardHeight,
     layout: Layout,
 }
 
 impl DeckCard {
     pub fn new(name: CardName) -> Self {
-        Self { name, height: 36.vh().into(), layout: Layout::default() }
+        Self { name, height: CardHeight::vh(36.0), layout: Layout::default() }
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {
@@ -40,7 +61,7 @@ impl DeckCard {
         self
     }
 
-    pub fn height(mut self, height: impl Into<Dimension>) -> Self {
+    pub fn height(mut self, height: impl Into<CardHeight>) -> Self {
         self.height = height.into();
         self
     }
@@ -48,18 +69,18 @@ impl DeckCard {
 
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
-        let mut width = self.height.clone();
-        width.value *= CARD_ASPECT_RATIO;
         let definition = rules::get(self.name);
 
         Column::new(self.name.to_string())
             .style(
                 self.layout
                     .to_style()
+                    .align_items(FlexAlign::Center)
                     .background_image(assets::card_frame(definition.school))
-                    .width(width)
-                    .height(self.height),
+                    .height(self.height.dim(100.0))
+                    .background_image_auto_size(BackgroundImageAutoSize::FromHeight),
             )
+            .child(CardNameplate::new(definition, self.height))
             .build()
     }
 }

@@ -282,6 +282,8 @@ pub struct FlexStyle {
     pub word_spacing: ::core::option::Option<Dimension>,
     #[prost(enumeration = "FlexPickingMode", tag = "55")]
     pub picking_mode: i32,
+    #[prost(enumeration = "BackgroundImageAutoSize", tag = "56")]
+    pub background_image_auto_size: i32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Flexbox {}
@@ -1778,6 +1780,17 @@ pub enum FlexPickingMode {
     Position = 1,
     /// Picking disabled, events ignored.
     Ignore = 2,
+}
+/// Allows the size of a Node to be determined by the size of its background
+/// sprite.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum BackgroundImageAutoSize {
+    Unspecified = 0,
+    /// Determine the Node height based on its specified width
+    FromWidth = 1,
+    /// Determine the Node width based on its specified height
+    FromHeight = 2,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

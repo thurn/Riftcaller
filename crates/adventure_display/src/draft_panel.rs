@@ -18,7 +18,7 @@ use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::text::Text;
 use data::adventure::DraftData;
-use deck_card::DeckCard;
+use deck_card::{CardHeight, DeckCard};
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 
@@ -36,7 +36,7 @@ impl<'a> Component for DraftPanel<'a> {
                     .child(
                         DeckCard::new(choice.card)
                             .layout(Layout::new().margin(Edge::All, 8.px()))
-                            .height(50.vh()),
+                            .height(CardHeight::vh(50.0)),
                     )
                     .child(
                         Text::new(format!("{}x", choice.quantity), FontSize::Headline)

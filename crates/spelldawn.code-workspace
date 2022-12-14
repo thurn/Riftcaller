@@ -12,7 +12,7 @@
 	"rust-analyzer.checkOnSave.command": "clippy",
 
     "[rust]": {
-      "editor.rulers": [80],
+      "editor.rulers": [100],
       "editor.defaultFormatter": "rust-lang.rust-analyzer",
       "editor.formatOnSave": true
     }
