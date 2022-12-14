@@ -14,6 +14,8 @@
 
 //! Card definitions for the Scheme card type
 
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
 use card_helpers::{text, *};
 use data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, SchemePoints};
 use data::card_name::CardName;
@@ -21,8 +23,6 @@ use data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use data::primitives::{CardType, Rarity, School, Side};
 use data::set_name::SetName;
 use data::text::Keyword;
-use display::rexard_images;
-use display::rexard_images::RexardPack;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 

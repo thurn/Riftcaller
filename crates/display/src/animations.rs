@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adapters;
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use data::game::GameState;
@@ -31,8 +30,9 @@ use protos::spelldawn::{
     PlayEffectPosition, PlaySoundCommand, RoomVisitType, SetMusicCommand, TimeValue,
     VisitRoomCommand,
 };
+use {adapters, assets};
 
-use crate::{assets, card_sync, positions};
+use crate::{card_sync, positions};
 
 pub fn render(
     builder: &mut ResponseBuilder,

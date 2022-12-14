@@ -14,6 +14,8 @@
 
 //! Card definitions for the Weapon card type
 
+use assets::rexard_images;
+use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::text_macro::text;
 use card_helpers::{abilities, *};
 use data::card_definition::{
@@ -25,8 +27,6 @@ use data::primitives::{CardType, Rarity, School, Side};
 use data::set_name::SetName;
 use data::text::{Keyword, Sentence};
 use data::utils;
-use display::rexard_images;
-use display::rexard_images::{RexardArtifactType, RexardPack};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

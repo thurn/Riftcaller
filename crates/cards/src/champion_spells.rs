@@ -14,13 +14,13 @@
 
 //! Card definitions for the Spell card type & Champion player
 
+use assets::rexard_images;
 use card_helpers::{text, *};
 use data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement};
 use data::card_name::CardName;
 use data::delegates::{Delegate, QueryDelegate};
 use data::primitives::{CardType, Rarity, RoomId, School, Side};
 use data::set_name::SetName;
-use display::rexard_images;
 use rules::{flags, mana, mutations};
 
 pub fn arcane_recovery() -> CardDefinition {

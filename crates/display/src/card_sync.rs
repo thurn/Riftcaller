@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adapters;
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
+use assets::CardIconType;
 use data::card_definition::{AbilityType, CardDefinition, TargetRequirement};
 use data::card_state::CardState;
 use data::game::GameState;
@@ -26,9 +26,9 @@ use protos::spelldawn::{
     NoTargeting, PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
 };
 use rules::{flags, queries};
+use {adapters, assets};
 
-use crate::assets::CardIconType;
-use crate::{assets, positions, rules_text};
+use crate::{positions, rules_text};
 
 pub fn card_view(
     builder: &ResponseBuilder,

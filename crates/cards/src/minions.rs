@@ -14,6 +14,8 @@
 
 //! Card definitions for the Minion card type
 
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
 use data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
 use data::card_name::CardName;
@@ -24,8 +26,6 @@ use data::game_actions::CardPromptAction;
 use data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
 use data::set_name::SetName;
 use data::text::{DamageWord, Keyword};
-use display::rexard_images;
-use display::rexard_images::RexardPack;
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};

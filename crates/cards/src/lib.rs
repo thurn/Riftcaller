@@ -14,12 +14,12 @@
 
 //! Contains the definitions for all cards in the game.
 
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
 use card_helpers::identity_cost;
 use data::card_definition::{CardConfig, CardDefinition};
 use data::card_name::CardName;
 use data::primitives::{CardType, Rarity, School, Side};
-use display::rexard_images;
-use display::rexard_images::RexardPack;
 
 pub mod artifacts;
 pub mod champion_identities;

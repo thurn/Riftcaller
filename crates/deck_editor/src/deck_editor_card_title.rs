@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use assets;
+use assets::CardIconType;
 use core_ui::design::{BackgroundColor, Font, FontColor, FontSize, PINK_900};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
 use data::card_name::CardName;
-use display::assets;
-use display::assets::CardIconType;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, StandardAction};
 
 use crate::deck_editor_card::DeckEditorCard;

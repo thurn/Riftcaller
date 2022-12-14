@@ -14,6 +14,8 @@
 
 //! Helper functions for constructing resource URLs used during a game
 
+pub mod rexard_images;
+
 use core_ui::design::FontColor;
 use data::primitives::{CardType, Lineage, Rarity, School, Side};
 use data::special_effects::{

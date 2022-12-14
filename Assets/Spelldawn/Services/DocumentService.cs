@@ -77,12 +77,12 @@ namespace Spelldawn.Services
       _document.rootVisualElement.Clear();
       AddRoot("Main Controls", out _mainControls);
       AddRoot("Card Controls", out _cardControls);
-      AddRoot("InfoZoom", out _infoZoom);
       AddRoot("Panels", out _panels);
       _bottomSheet = new BottomSheet(_registry);
       _document.rootVisualElement.Add(_bottomSheet);
       CreateLoadingSpinner();
       AddRoot("ScreenOverlay", out _screenOverlay);
+      AddRoot("InfoZoom", out _infoZoom);
     }
 
     void Update()

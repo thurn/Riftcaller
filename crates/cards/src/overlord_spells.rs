@@ -14,12 +14,12 @@
 
 //! Card definitions for the Spell card type & Overlord player
 
+use assets::rexard_images;
 use card_helpers::{text, *};
 use data::card_definition::{CardConfig, CardDefinition, TargetRequirement};
 use data::card_name::CardName;
 use data::primitives::{CardType, Rarity, School, Side};
 use data::set_name::SetName;
-use display::rexard_images;
 use rules::{flags, mana, mutations};
 
 pub fn gathering_dark() -> CardDefinition {

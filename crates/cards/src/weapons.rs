@@ -14,6 +14,8 @@
 
 //! Card definitions for the Weapon card type
 
+use assets::rexard_images;
+use assets::rexard_images::RexardWeaponType;
 use card_helpers::{abilities, text, *};
 use data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
@@ -25,8 +27,6 @@ use data::set_name::SetName;
 use data::special_effects::{Projectile, TimedEffect};
 use data::text::Keyword;
 use data::utils;
-use display::rexard_images;
-use display::rexard_images::RexardWeaponType;
 use rules::mutations;
 
 pub fn marauders_axe() -> CardDefinition {

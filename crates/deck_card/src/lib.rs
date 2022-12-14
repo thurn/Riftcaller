@@ -14,28 +14,52 @@
 
 //! Renders cards as they're seen in the deck editor and adventure UI
 
+pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
+
+/// Card height as a percentage of the height of the viewport. Intended to allow
+/// two rows of cards to be displayed with room for additional UI elements.
+pub const CARD_HEIGHT: f32 = 36.0;
+
+use core_ui::design::ORANGE_900;
 use core_ui::prelude::*;
 use data::card_name::CardName;
+use protos::spelldawn::Dimension;
 
 #[allow(dead_code)]
 pub struct DeckCard {
     name: CardName,
+    height: Dimension,
     layout: Layout,
 }
 
 impl DeckCard {
     pub fn new(name: CardName) -> Self {
-        Self { name, layout: Layout::default() }
+        Self { name, height: 36.vh().into(), layout: Layout::default() }
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {
         self.layout = layout;
         self
     }
+
+    pub fn height(mut self, height: impl Into<Dimension>) -> Self {
+        self.height = height.into();
+        self
+    }
 }
 
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
-        None
+        let mut width = self.height.clone();
+        width.value *= CARD_ASPECT_RATIO;
+        Column::new(self.name.to_string())
+            .style(
+                self.layout
+                    .to_style()
+                    .background_color(ORANGE_900)
+                    .width(width)
+                    .height(self.height),
+            )
+            .build()
     }
 }
