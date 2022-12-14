@@ -6,8 +6,9 @@ license = "Apache-2.0"
 edition = "2021"
 
 [lib]
-doctest = false
+path = "src/card_helpers.rs"
 test = false
+doctest = false
 
 [dependencies]
 anyhow = "1.0.58"

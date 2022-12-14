@@ -45,7 +45,7 @@ use protos::spelldawn::{
     SceneLoadMode, StandardAction, TogglePanelCommand,
 };
 use rules::{dispatch, mutations};
-use screen_overlay::screen_overlay::ScreenOverlay;
+use screen_overlay::ScreenOverlay;
 use serde_json::de;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::Sender;

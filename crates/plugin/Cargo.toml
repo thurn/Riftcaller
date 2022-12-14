@@ -6,8 +6,9 @@ license = "Apache-2.0"
 edition = "2021"
 
 [lib]
-doctest = false
+path = "src/plugin.rs"
 test = false
+doctest = false
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]

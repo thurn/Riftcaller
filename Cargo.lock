@@ -1866,6 +1866,7 @@ dependencies = [
  "actions",
  "adventure_generator",
  "ai_core",
+ "ai_game_integration",
  "ai_monte_carlo",
  "ai_testing",
  "ai_tree_search",

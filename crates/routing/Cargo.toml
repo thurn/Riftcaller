@@ -6,8 +6,9 @@ license = "Apache-2.0"
 edition = "2021"
 
 [lib]
-doctest = false
+path = "src/routing.rs"
 test = false
+doctest = false
 
 [dependencies]
 adventure_display = { path = "../adventure_display", version = "0.0.0" }

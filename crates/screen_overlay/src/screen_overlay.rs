@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Implements the 'chrome' UI elements which display on top of everything else
+//! and provide navigation
+
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;

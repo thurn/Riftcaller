@@ -6,8 +6,9 @@ license = "Apache-2.0"
 edition = "2021"
 
 [lib]
-doctest = false
+path = "src/deck_card.rs"
 test = false
+doctest = false
 
 [dependencies]
 core_ui = { path = "../core_ui", version = "0.0.0" }
