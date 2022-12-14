@@ -21,7 +21,7 @@ use protos::spelldawn::{
 };
 
 use crate::button::IconButton;
-use crate::component::EmptyComponent;
+use crate::component::{ComponentObject, EmptyComponent};
 use crate::design::{Font, FontColor, FontSize};
 use crate::prelude::*;
 use crate::text::Text;
@@ -109,7 +109,7 @@ pub struct Panel {
     width: Dimension,
     height: Dimension,
     layout: Layout,
-    content: Box<dyn Component>,
+    content: Box<dyn ComponentObject>,
     title: Option<String>,
     show_close_button: bool,
 }

@@ -20,7 +20,7 @@ use crate::prelude::*;
 /// Renders children within the safe area of a mobile device. The area outside
 /// of the safe area is left transparent.
 pub struct SafeScreen {
-    content: Box<dyn Component>,
+    content: Box<dyn ComponentObject>,
 }
 
 impl SafeScreen {

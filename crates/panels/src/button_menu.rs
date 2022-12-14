@@ -28,7 +28,7 @@ use protos::spelldawn::{FlexAlign, FlexJustify};
 pub struct ButtonMenu {
     address: PanelAddress,
     title: String,
-    children: Vec<Box<dyn Component>>,
+    children: Vec<Box<dyn ComponentObject>>,
     show_close_button: bool,
 }
 

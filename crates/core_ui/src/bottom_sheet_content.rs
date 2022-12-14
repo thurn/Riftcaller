@@ -30,7 +30,7 @@ pub enum BottomSheetButtonType {
 }
 
 pub struct BottomSheetContent {
-    content: Box<dyn Component>,
+    content: Box<dyn ComponentObject>,
     title: Option<String>,
     button_type: BottomSheetButtonType,
 }

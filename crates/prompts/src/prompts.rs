@@ -14,7 +14,7 @@
 
 use anyhow::Result;
 use core_ui::design::FontSize;
-use core_ui::prelude::Component;
+use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::game::GameState;
 use data::game_actions::{GamePrompt, PromptContext};
@@ -30,7 +30,7 @@ pub fn action_prompt(
     side: Side,
     prompt: &GamePrompt,
 ) -> Result<Option<InterfaceMainControls>> {
-    let mut main_controls: Vec<Box<dyn Component>> = vec![];
+    let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
     let mut card_anchor_nodes = vec![];
 
     if let Some(label) = prompt_context(prompt.context) {

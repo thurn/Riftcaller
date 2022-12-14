@@ -17,7 +17,7 @@ use protos::spelldawn::{FlexAlign, FlexJustify, FlexWrap};
 
 #[derive(Default)]
 pub struct PromptContainer {
-    children: Vec<Box<dyn Component>>,
+    children: Vec<Box<dyn ComponentObject>>,
 }
 
 impl PromptContainer {
@@ -30,7 +30,7 @@ impl PromptContainer {
         self
     }
 
-    pub fn children(mut self, children: Vec<Box<dyn Component>>) -> Self {
+    pub fn children(mut self, children: Vec<Box<dyn ComponentObject>>) -> Self {
         self.children.extend(children);
         self
     }

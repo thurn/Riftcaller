@@ -19,7 +19,7 @@ use protos::spelldawn::{EventHandlers, FlexDirection, FlexStyle, Node};
 
 use crate::actions;
 use crate::actions::InterfaceAction;
-use crate::component::Component;
+use crate::component::{Component, ComponentObject};
 use crate::style::Style;
 
 /// Renders a [Flexbox] which lays out its children horizontally, from left to
@@ -135,7 +135,7 @@ pub trait HasNodeChildren: HasRenderNode {
         self
     }
 
-    fn child_boxed(mut self, child: Box<dyn Component>) -> Self {
+    fn child_boxed(mut self, child: Box<dyn ComponentObject>) -> Self {
         if let Some(n) = child.build_boxed() {
             self.get_internal_children().push(n);
         }
@@ -151,7 +151,7 @@ pub trait HasNodeChildren: HasRenderNode {
         self
     }
 
-    fn children_boxed(mut self, children: Vec<Box<dyn Component>>) -> Self {
+    fn children_boxed(mut self, children: Vec<Box<dyn ComponentObject>>) -> Self {
         for child in children {
             if let Some(n) = child.build_boxed() {
                 self.get_internal_children().push(n);

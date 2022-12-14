@@ -23,7 +23,7 @@ use protos::spelldawn::Node;
 ///
 /// Components can either return another component, typically by invoking its
 /// `build` method, or can create and return UI node directly
-pub trait Component: ComponentExt {
+pub trait Component {
     fn build(self) -> Option<Node>;
 }
 
@@ -39,11 +39,11 @@ impl<T: Component> Component for Option<T> {
 }
 
 /// Helper trait to let components be moved into a `Box`.
-pub trait ComponentExt {
+pub trait ComponentObject: Component {
     fn build_boxed(self: Box<Self>) -> Option<Node>;
 }
 
-impl<T: Component> ComponentExt for T {
+impl<T: Component> ComponentObject for T {
     fn build_boxed(self: Box<Self>) -> Option<Node> {
         self.build()
     }

@@ -24,7 +24,7 @@ use crate::text::Text;
 pub struct ListCell {
     text: String,
     layout: Layout,
-    right_add_on: Option<Box<dyn Component>>,
+    right_add_on: Option<Box<dyn ComponentObject>>,
 }
 
 impl ListCell {

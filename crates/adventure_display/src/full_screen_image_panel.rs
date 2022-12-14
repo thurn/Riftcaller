@@ -21,7 +21,7 @@ use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, SpriteAddress};
 /// content.
 pub struct FullScreenImagePanel {
     image: SpriteAddress,
-    content: Box<dyn Component>,
+    content: Box<dyn ComponentObject>,
 }
 
 impl Default for FullScreenImagePanel {
