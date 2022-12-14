@@ -64,7 +64,8 @@ impl Component for FullScreenImagePanel {
                             .position(Edge::All, 0.px())
                             .justify_content(FlexJustify::Center)
                             .align_items(FlexAlign::Center)
-                            .padding(Edge::All, 8.px()),
+                            .padding(Edge::Top, constants::NAVBAR_HEIGHT.px())
+                            .padding(Edge::Horizontal, 8.px()),
                     )
                     .child_boxed(self.content),
             )

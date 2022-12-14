@@ -49,6 +49,7 @@ version = "0.0.0"
 dependencies = [
  "adapters",
  "anyhow",
+ "constants",
  "core_ui",
  "data",
  "deck_card",
@@ -433,6 +434,10 @@ dependencies = [
  "terminal_size",
  "winapi",
 ]
+
+[[package]]
+name = "constants"
+version = "0.0.0"
 
 [[package]]
 name = "convert_case"
@@ -1705,6 +1710,7 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 name = "screen_overlay"
 version = "0.0.0"
 dependencies = [
+ "constants",
  "core_ui",
  "data",
  "panel_address",

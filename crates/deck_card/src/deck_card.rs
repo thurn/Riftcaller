@@ -24,7 +24,6 @@ use core_ui::prelude::*;
 use data::card_name::CardName;
 use protos::spelldawn::Dimension;
 
-#[allow(dead_code)]
 pub struct DeckCard {
     name: CardName,
     height: Dimension,

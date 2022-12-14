@@ -34,7 +34,9 @@ impl<'a> Component for DraftPanel<'a> {
                 Column::new("Choice")
                     .style(Style::new().margin(Edge::All, 32.px()))
                     .child(
-                        DeckCard::new(choice.card).layout(Layout::new().margin(Edge::All, 8.px())),
+                        DeckCard::new(choice.card)
+                            .layout(Layout::new().margin(Edge::All, 8.px()))
+                            .height(50.vh()),
                     )
                     .child(
                         Text::new(format!("{}x", choice.quantity), FontSize::Headline)

@@ -45,6 +45,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                     .position(Edge::Left, 1.safe_area_left())
                     .position(Edge::Right, 1.safe_area_right())
                     .position(Edge::Top, 1.safe_area_top())
+                    .height(constants::NAVBAR_HEIGHT.px())
                     .align_items(FlexAlign::FlexStart)
                     .justify_content(FlexJustify::SpaceBetween),
             )
