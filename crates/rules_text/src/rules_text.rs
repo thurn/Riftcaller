@@ -20,27 +20,25 @@ use core_ui::component::Component;
 use core_ui::design::FontColor;
 use core_ui::{design, icons};
 use data::card_definition::{Ability, AbilityType, CardDefinition, Cost};
-use data::card_state::CardState;
-use data::delegates::Scope;
-use data::game::GameState;
 use data::primitives::{AbilityId, AbilityIndex, CardSubtype, CardType, Lineage};
 use data::text::{
-    AbilityText, DamageWord, Keyword, KeywordKind, NumericOperator, Sentence, TextToken,
+    AbilityText, DamageWord, Keyword, KeywordKind, NumericOperator, RulesTextContext, Sentence,
+    TextToken,
 };
 use prompts::card_info::SupplementalCardInfo;
 use protos::spelldawn::{Node, RulesText};
 
 /// Primary function which turns the current state of a card into its client
 /// [RulesText] representation
-pub fn build(game: &GameState, card: &CardState, definition: &CardDefinition) -> RulesText {
+pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesText {
     let mut lines = vec![];
-    for (index, ability) in definition.abilities.iter().enumerate() {
+    for (_index, ability) in definition.abilities.iter().enumerate() {
         let mut line = String::new();
         if let AbilityType::Activated(cost, _) = &ability.ability_type {
             line.push_str(&ability_cost_string(cost));
         }
 
-        line.push_str(&ability_text(game, AbilityId::new(card.id, index), ability));
+        line.push_str(&ability_text(context, ability));
 
         lines.push(line);
     }
@@ -54,11 +52,11 @@ pub fn build(game: &GameState, card: &CardState, definition: &CardDefinition) ->
 
 /// Builds the rules text for a single [Ability], not including its cost (if
 /// any).
-pub fn ability_text(game: &GameState, ability_id: AbilityId, ability: &Ability) -> String {
+pub fn ability_text(context: &RulesTextContext, ability: &Ability) -> String {
     match &ability.text {
         AbilityText::Text(text) => process_text_tokens(text),
         AbilityText::TextFn(function) => {
-            let tokens = function(game, Scope::new(ability_id));
+            let tokens = function(context);
             process_text_tokens(&tokens)
         }
     }
@@ -70,11 +68,10 @@ pub fn ability_text(game: &GameState, ability_id: AbilityId, ability: &Ability) 
 /// If an `ability_index` is provided, only supplemental info for that index is
 /// returned. Otherwise, supplemental info for all abilities is returned.
 pub fn build_supplemental_info(
-    game: &GameState,
-    card: &CardState,
+    context: &RulesTextContext,
     ability_index: Option<AbilityIndex>,
 ) -> Option<Node> {
-    let definition = rules::get(card.name);
+    let definition = rules::get(context.card_name());
     let mut result = vec![card_type_line(definition)];
     let mut keywords = vec![];
     for (index, ability) in definition.abilities.iter().enumerate() {
@@ -85,7 +82,7 @@ pub fn build_supplemental_info(
         match &ability.text {
             AbilityText::Text(text) => find_keywords(text, &mut keywords),
             AbilityText::TextFn(function) => {
-                let tokens = function(game, Scope::new(AbilityId::new(card.id, index)));
+                let tokens = function(context);
                 find_keywords(&tokens, &mut keywords)
             }
         };

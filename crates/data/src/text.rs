@@ -20,9 +20,29 @@ use std::fmt::{Debug, Formatter};
 use enum_kinds::EnumKind;
 
 use crate::card_definition::Cost;
-use crate::delegates::Scope;
+use crate::card_name::CardName;
+use crate::card_state::CardState;
 use crate::game::GameState;
 use crate::primitives::{ActionCount, BreachValue, ManaValue};
+
+/// Provides the context in which rules text is being evaluated, i.e. during an
+/// active game or in a deck editor.
+pub enum RulesTextContext<'a> {
+    Default(CardName),
+    Game(&'a GameState, &'a CardState),
+}
+
+impl<'a> RulesTextContext<'a> {
+    pub fn card_name(&self) -> CardName {
+        match self {
+            RulesTextContext::Default(name) => *name,
+            RulesTextContext::Game(_, card) => card.name,
+        }
+    }
+}
+
+/// A function which produces rules text
+pub type TextFn = fn(&RulesTextContext) -> Vec<TextToken>;
 
 /// Text describing what an ability does. Can be a function (if text is dynamic)
 /// or a vector of [TextToken]s.
@@ -52,9 +72,6 @@ pub enum TextToken {
     Reminder(String),
     Cost(Vec<Self>),
 }
-
-/// A function which produces rules text
-pub type TextFn = fn(&GameState, Scope) -> Vec<TextToken>;
 
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
 /// Location of a keyword within a sentence, used to determine capitalization

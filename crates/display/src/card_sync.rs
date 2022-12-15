@@ -20,6 +20,7 @@ use data::card_state::CardState;
 use data::game::GameState;
 use data::game_actions::CardTarget;
 use data::primitives::{AbilityId, CardType, ItemLocation, ManaValue, RoomId, RoomLocation};
+use data::text::RulesTextContext;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIcon, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
@@ -133,7 +134,7 @@ fn revealed_card_view(
             text: definition.name.displayed_name(),
             text_color: Some(assets::title_color(definition.config.lineage)),
         }),
-        rules_text: Some(rules_text::build(game, card, definition)),
+        rules_text: Some(rules_text::build(&RulesTextContext::Game(game, card), definition)),
         targeting: Some(card_targeting(
             definition.config.custom_targeting.as_ref(),
             flags::enters_play_in_room(game, card.id),
@@ -152,7 +153,10 @@ fn revealed_card_view(
                 CardType::Identity => positions::staging(),
             },
         )),
-        supplemental_info: rules_text::build_supplemental_info(game, card, None),
+        supplemental_info: rules_text::build_supplemental_info(
+            &RulesTextContext::Game(game, card),
+            None,
+        ),
     }
 }
 
@@ -174,12 +178,17 @@ fn revealed_ability_card_view(
             text: definition.name.displayed_name(),
             text_color: Some(assets::title_color(None)),
         }),
-        rules_text: Some(RulesText { text: rules_text::ability_text(game, ability_id, ability) }),
+        rules_text: Some(RulesText {
+            text: rules_text::ability_text(&RulesTextContext::Game(game, card), ability),
+        }),
         targeting: Some(card_targeting(target_requirement, false, |target| {
             flags::can_take_activate_ability_action(game, ability_id.side(), ability_id, target)
         })),
         on_release_position: Some(positions::for_ability(game, ability_id, positions::staging())),
-        supplemental_info: rules_text::build_supplemental_info(game, card, Some(ability_id.index)),
+        supplemental_info: rules_text::build_supplemental_info(
+            &RulesTextContext::Game(game, card),
+            Some(ability_id.index),
+        ),
     }
 }
 

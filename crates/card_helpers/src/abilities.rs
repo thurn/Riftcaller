@@ -19,7 +19,7 @@ use data::card_state::CardPosition;
 use data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
 use data::game::GameState;
 use data::primitives::{AbilityId, AttackValue, CardId, ManaValue};
-use data::text::{AbilityText, DamageWord, Keyword, Sentence, TextToken};
+use data::text::{AbilityText, DamageWord, Keyword, RulesTextContext, Sentence, TextToken};
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
 
@@ -30,8 +30,13 @@ use crate::*;
 /// single encounter.
 pub fn encounter_boost() -> Ability {
     Ability {
-        text: AbilityText::TextFn(|g, s| {
-            let boost = queries::attack_boost(g, s.card_id()).unwrap_or_default();
+        text: AbilityText::TextFn(|context| {
+            let boost = match context {
+                RulesTextContext::Default(name) => rules::get(*name).config.stats.attack_boost,
+                RulesTextContext::Game(game, card) => queries::attack_boost(game, card.id),
+            }
+            .unwrap_or_default();
+
             vec![
                 cost(boost.cost).into(),
                 add_number(boost.bonus),
