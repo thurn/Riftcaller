@@ -15,6 +15,7 @@
 //! Renders cards as they're seen in the deck editor and adventure UI
 
 pub mod deck_card_name;
+pub mod deck_card_text;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
@@ -27,6 +28,7 @@ use data::card_name::CardName;
 use protos::spelldawn::{BackgroundImageAutoSize, Dimension, FlexAlign, FlexPosition};
 
 use crate::deck_card_name::DeckCardName;
+use crate::deck_card_text::DeckCardText;
 
 /// Abstraction representing the height of a card, allowing other measurments to
 /// be scaled proportionately.
@@ -92,6 +94,7 @@ impl Component for DeckCard {
                 ),
             )
             .child(DeckCardName::new(definition, self.height))
+            .child(DeckCardText::new(definition, self.height))
             .build()
     }
 }

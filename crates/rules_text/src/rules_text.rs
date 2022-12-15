@@ -126,14 +126,14 @@ fn process_text_tokens(tokens: &[TextToken]) -> String {
             TextToken::Mana(mana) => format!("{}{}", mana, icons::MANA),
             TextToken::Actions(actions) => format!("{}{}", actions, icons::ACTION),
             TextToken::Keyword(keyword) => match keyword {
-                Keyword::Play => "<b>\u{f0e7}Play:</b>".to_string(),
-                Keyword::Dawn => "<b>\u{f0e7}Dawn:</b>".to_string(),
-                Keyword::Dusk => "<b>\u{f0e7}Dusk:</b>".to_string(),
-                Keyword::Score => format!("<b>{}Score:</b>", icons::TRIGGER),
-                Keyword::Combat => format!("<b>{}Combat:</b>", icons::TRIGGER),
-                Keyword::Encounter => format!("<b>{}Encounter:</b>", icons::TRIGGER),
+                Keyword::Play => format!("{}<b>Play:</b>", icons::TRIGGER),
+                Keyword::Dawn => format!("{}<b>Dawn:</b>", icons::TRIGGER),
+                Keyword::Dusk => format!("{}<b>Dusk:</b>", icons::TRIGGER),
+                Keyword::Score => format!("{}<b>Score:</b>", icons::TRIGGER),
+                Keyword::Combat => format!("{}<b>Combat:</b>", icons::TRIGGER),
+                Keyword::Encounter => format!("{}<b>Encounter:</b>", icons::TRIGGER),
                 Keyword::Unveil => "<b>Unveil</b>".to_string(),
-                Keyword::SuccessfulRaid => format!("<b>{}Successful Raid:</b>", icons::TRIGGER),
+                Keyword::SuccessfulRaid => format!("{}<b>Successful Raid:</b>", icons::TRIGGER),
                 Keyword::Store(sentence_position, n) => {
                     format!(
                         "<b>{}</b>{}{}{}",

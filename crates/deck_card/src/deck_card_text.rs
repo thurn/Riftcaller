@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::prelude::*;
+use core_ui::text::Text;
+use data::card_definition::CardDefinition;
+use data::text::RulesTextContext;
+use protos::spelldawn::{FlexPosition, WhiteSpace};
+
+use crate::CardHeight;
+
 pub struct DeckCardText<'a> {
     definition: &'a CardDefinition,
     card_height: CardHeight,
@@ -25,6 +33,18 @@ impl<'a> DeckCardText<'a> {
 
 impl<'a> Component for DeckCardText<'a> {
     fn build(self) -> Option<Node> {
-        None
+        let text =
+            rules_text::build(&RulesTextContext::Default(self.definition.name), self.definition);
+        Text::new(text.text)
+            .layout(
+                Layout::new()
+                    .position_type(FlexPosition::Absolute)
+                    .position(Edge::Top, self.card_height.dim(72.0))
+                    .position(Edge::Horizontal, self.card_height.dim(10.0))
+                    .position(Edge::Bottom, self.card_height.dim(4.0)),
+            )
+            .raw_font_size(self.card_height.dim(4.0))
+            .white_space(WhiteSpace::Normal)
+            .build()
     }
 }
