@@ -80,7 +80,8 @@ impl Component for InfoNode {
                     .align_items(FlexAlign::Center),
             )
             .child(
-                Text::new(self.text, FontSize::SupplementalInfo)
+                Text::new(self.text)
+                    .font_size(FontSize::SupplementalInfo)
                     .white_space(WhiteSpace::Normal)
                     .text_align(TextAlign::MiddleLeft)
                     .layout(Layout::new().margin(Edge::All, 16.px())),

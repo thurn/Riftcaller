@@ -89,7 +89,7 @@ impl Component for TilePromptPanel {
                                     .background_color(BackgroundColor::TilePanelOverlay)
                                     .padding(Edge::All, 8.px()),
                             )
-                            .child(Text::new(self.prompt, FontSize::Headline))
+                            .child(Text::new(self.prompt).font_size(FontSize::Headline))
                             .child(
                                 Row::new("ButtonGroup")
                                     .style(Style::new().margin(Edge::All, 8.px()))

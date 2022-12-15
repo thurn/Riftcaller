@@ -15,7 +15,6 @@
 //! The about panel displays information about the authorship of the game
 
 use core_ui::button::Button;
-use core_ui::design::FontSize;
 use core_ui::panel;
 use core_ui::panel::Panel;
 use core_ui::prelude::*;
@@ -58,7 +57,7 @@ impl Component for AboutPanel {
                     .child(
                         ScrollView::new("TextScroll")
                             .style(Style::new().height(400.px()))
-                            .child(Text::new(TEXT, FontSize::Body).white_space(WhiteSpace::Normal)),
+                            .child(Text::new(TEXT).white_space(WhiteSpace::Normal)),
                     )
                     .child(
                         Button::new("Back")

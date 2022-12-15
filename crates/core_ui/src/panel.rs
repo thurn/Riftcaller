@@ -222,7 +222,8 @@ impl Component for TitleBar {
                             .image_slice(Edge::All, 64.px()),
                     )
                     .child(
-                        Text::new(self.title, FontSize::PanelTitle)
+                        Text::new(self.title)
+                            .font_size(FontSize::PanelTitle)
                             .color(FontColor::PanelTitle)
                             .font(Font::PanelTitle)
                             .text_align(TextAlign::MiddleCenter),

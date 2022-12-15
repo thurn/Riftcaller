@@ -97,7 +97,8 @@ impl Component for DeckEditorCardTitle {
                             .align_items(FlexAlign::Center),
                     )
                     .child(
-                        Text::new(text, FontSize::CardCost)
+                        Text::new(text)
+                            .font_size(FontSize::CardCost)
                             .layout(Layout::new().margin(Edge::All, 0.px()))
                             .font(Font::CardIcon)
                             .outline_width(1.px())
@@ -113,7 +114,8 @@ impl Component for DeckEditorCardTitle {
                             .align_items(FlexAlign::FlexStart),
                     )
                     .child(
-                        Text::new(self.card_name.displayed_name(), FontSize::CardName)
+                        Text::new(self.card_name.displayed_name())
+                            .font_size(FontSize::CardName)
                             .layout(Layout::new().margin(Edge::All, 0.px())),
                     ),
             )
@@ -130,7 +132,7 @@ impl Component for DeckEditorCardTitle {
                             .height(32.px())
                             .border_radius(Corner::All, 8.px()),
                     )
-                    .child(Text::new(c.to_string(), FontSize::CardCount))
+                    .child(Text::new(c.to_string()).font_size(FontSize::CardCount))
             }))
             .build()
     }

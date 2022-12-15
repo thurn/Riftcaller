@@ -57,7 +57,8 @@ impl Component for ListCell {
                     .padding(Edge::All, 32.px()),
             )
             .child(
-                Text::new(self.text, FontSize::Headline)
+                Text::new(self.text)
+                    .font_size(FontSize::Headline)
                     .color(FontColor::PrimaryText)
                     .font(Font::PrimaryText)
                     .text_align(TextAlign::MiddleLeft)

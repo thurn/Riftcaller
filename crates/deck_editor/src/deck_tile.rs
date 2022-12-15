@@ -67,7 +67,8 @@ impl<'a> Component for DeckTile<'a> {
                             .align_items(FlexAlign::FlexStart),
                     )
                     .child(
-                        Text::new(self.deck.name.clone(), FontSize::CardName)
+                        Text::new(self.deck.name.clone())
+                            .font_size(FontSize::CardName)
                             .layout(Layout::new().margin(Edge::All, 0.px())),
                     ),
             )

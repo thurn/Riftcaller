@@ -37,25 +37,27 @@ impl Component for PickDeckSide {
             .title("Create Deck")
             .button_type(BottomSheetButtonType::Close)
             .content(
-                Column::new("PickSide").child(Text::new("Pick Side:", FontSize::Headline)).child(
-                    Row::new("SideButtons")
-                        .child(
-                            Button::new("Overlord")
-                                .width_mode(WidthMode::Constrained)
-                                .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
-                                    CreateDeckState::PickSchool(Side::Overlord),
-                                )))
-                                .layout(Layout::new().margin(Edge::All, 16.px())),
-                        )
-                        .child(
-                            Button::new("Champion")
-                                .width_mode(WidthMode::Constrained)
-                                .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
-                                    CreateDeckState::PickSchool(Side::Champion),
-                                )))
-                                .layout(Layout::new().margin(Edge::All, 16.px())),
-                        ),
-                ),
+                Column::new("PickSide")
+                    .child(Text::new("Pick Side:").font_size(FontSize::Headline))
+                    .child(
+                        Row::new("SideButtons")
+                            .child(
+                                Button::new("Overlord")
+                                    .width_mode(WidthMode::Constrained)
+                                    .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
+                                        CreateDeckState::PickSchool(Side::Overlord),
+                                    )))
+                                    .layout(Layout::new().margin(Edge::All, 16.px())),
+                            )
+                            .child(
+                                Button::new("Champion")
+                                    .width_mode(WidthMode::Constrained)
+                                    .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
+                                        CreateDeckState::PickSchool(Side::Champion),
+                                    )))
+                                    .layout(Layout::new().margin(Edge::All, 16.px())),
+                            ),
+                    ),
             )
             .build()
     }

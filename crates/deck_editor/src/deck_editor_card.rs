@@ -65,7 +65,8 @@ impl Component for DeckEditorCard {
                     .height(CARD_HEIGHT.vh()),
             )
             .child(
-                Text::new(self.card_name.displayed_name(), FontSize::CardName)
+                Text::new(self.card_name.displayed_name())
+                    .font_size(FontSize::CardName)
                     .text_align(TextAlign::MiddleCenter),
             )
             .build()

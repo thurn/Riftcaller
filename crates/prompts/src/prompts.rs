@@ -34,7 +34,7 @@ pub fn action_prompt(
     let mut card_anchor_nodes = vec![];
 
     if let Some(label) = prompt_context(prompt.context) {
-        main_controls.push(Box::new(Text::new(label, FontSize::PromptContext)));
+        main_controls.push(Box::new(Text::new(label).font_size(FontSize::PromptContext)));
     }
 
     for response in &prompt.responses {

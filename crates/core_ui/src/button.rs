@@ -109,21 +109,21 @@ impl Component for Button {
             )
             .on_click(self.action.as_client_action())
             .child(
-                Text::new(
-                    self.label,
-                    if self.two_lines {
+                Text::new(self.label)
+                    .font_size(if self.two_lines {
                         FontSize::ButtonLabelTwoLines
                     } else {
                         FontSize::ButtonLabel
-                    },
-                )
-                .color(FontColor::ButtonLabel)
-                .font(Font::ButtonLabel)
-                .text_align(TextAlign::MiddleCenter)
-                .layout(
-                    Layout::new()
-                        .margin(Edge::Horizontal, if self.two_lines { 32.px() } else { 16.px() }),
-                ),
+                    })
+                    .color(FontColor::ButtonLabel)
+                    .font(Font::ButtonLabel)
+                    .text_align(TextAlign::MiddleCenter)
+                    .layout(
+                        Layout::new().margin(
+                            Edge::Horizontal,
+                            if self.two_lines { 32.px() } else { 16.px() },
+                        ),
+                    ),
             )
             .build()
     }
@@ -246,7 +246,8 @@ impl Component for IconButton {
                 ),
             )
             .child(
-                Text::new(self.icon, FontSize::ButtonIcon)
+                Text::new(self.icon)
+                    .font_size(FontSize::ButtonIcon)
                     .color(FontColor::ButtonLabel)
                     .font(Font::ButtonLabel)
                     .text_align(TextAlign::MiddleCenter),

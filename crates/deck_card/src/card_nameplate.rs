@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::design::FontSize;
 use core_ui::prelude::*;
+use core_ui::text::Text;
 use data::card_definition::CardDefinition;
-use protos::spelldawn::BackgroundImageAutoSize;
+use protos::spelldawn::{BackgroundImageAutoSize, FlexAlign, FlexJustify};
 
 use crate::CardHeight;
 
@@ -36,9 +38,12 @@ impl<'a> Component for CardNameplate<'a> {
                 Style::new()
                     .background_image(assets::title_background(self.definition.config.lineage))
                     .background_image_auto_size(BackgroundImageAutoSize::FromHeight)
-                    .position(Edge::Top, self.card_height.dim(-4.0))
-                    .height(self.card_height.dim(22.0)),
+                    .position(Edge::Top, self.card_height.dim(-5.0))
+                    .height(self.card_height.dim(22.0))
+                    .justify_content(FlexJustify::Center)
+                    .align_items(FlexAlign::Center),
             )
+            .child(Text::new(self.definition.name.displayed_name()).font_size(FontSize::CardName))
             .build()
     }
 }

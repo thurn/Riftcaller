@@ -39,7 +39,8 @@ impl<'a> Component for DraftPanel<'a> {
                             .height(CardHeight::vh(50.0)),
                     )
                     .child(
-                        Text::new(format!("{}x", choice.quantity), FontSize::Headline)
+                        Text::new(format!("{}x", choice.quantity))
+                            .font_size(FontSize::Headline)
                             .layout(Layout::new().margin(Edge::All, 8.px())),
                     )
                     .child(Button::new("Pick").layout(Layout::new().margin(Edge::All, 8.px())))

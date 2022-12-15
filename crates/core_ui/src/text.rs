@@ -42,11 +42,11 @@ pub struct Text {
 }
 
 impl Text {
-    pub fn new(text: impl Into<String>, size: FontSize) -> Self {
+    pub fn new(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
             color: FontColor::PrimaryText,
-            size,
+            size: FontSize::Body,
             font: Font::PrimaryText,
             layout: Layout::default(),
             font_style: FontStyle::Unspecified,
@@ -60,6 +60,11 @@ impl Text {
             shadow: None,
             overflow: TextOverflow::Ellipsis,
         }
+    }
+
+    pub fn font_size(mut self, font_size: FontSize) -> Self {
+        self.size = font_size;
+        self
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {

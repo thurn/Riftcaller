@@ -54,15 +54,20 @@ impl Component for PickDeckName {
                     .child(
                         Row::new("NameInput")
                             .style(Style::new())
-                            .child(Text::new("Deck Name:", FontSize::Body))
+                            .child(Text::new("Deck Name:").font_size(FontSize::Body))
                             .child(
                                 TextField::new(DECK_NAME_INPUT)
                                     .max_characters(1024)
                                     .initial_text(default_deck_name(self.side, self.school)),
                             ),
                     )
-                    .child(Text::new(format!("Side: {:?}", self.side), FontSize::Headline))
-                    .child(Text::new(format!("School: {:?}", self.school), FontSize::Headline))
+                    .child(
+                        Text::new(format!("Side: {:?}", self.side)).font_size(FontSize::Headline),
+                    )
+                    .child(
+                        Text::new(format!("School: {:?}", self.school))
+                            .font_size(FontSize::Headline),
+                    )
                     .child(
                         Button::new("Create Deck").action(
                             ActionBuilder::new()

@@ -67,14 +67,14 @@ impl<'a> Component for ScreenOverlay<'a> {
                                     .background_color(BackgroundColor::CoinCountOverlay)
                                     .border_radius(Corner::All, 12.px()),
                             )
-                            .child(Text::new(
-                                format!(
+                            .child(
+                                Text::new(format!(
                                     "{} <color=yellow>{}</color>",
                                     adventure.coins,
                                     icons::COINS
-                                ),
-                                FontSize::CoinCount,
-                            ))
+                                ))
+                                .font_size(FontSize::CoinCount),
+                            )
                     })),
             )
             .child(

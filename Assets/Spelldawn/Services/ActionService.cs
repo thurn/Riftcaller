@@ -37,7 +37,7 @@ namespace Spelldawn.Services
   public sealed class ActionService : MonoBehaviour
   {
     const string LocalServerAddress = "http://localhost";
-    const string ProductionServerAddress = "http://trunk.spelldawn.com";
+    const string ProductionServerAddress = "http://localhost";
 
     readonly Lazy<Protos.Spelldawn.SpelldawnClient> _client = new(() => new Protos.Spelldawn.SpelldawnClient(
       GrpcChannel.ForAddress(

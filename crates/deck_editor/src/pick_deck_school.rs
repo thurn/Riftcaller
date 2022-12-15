@@ -41,8 +41,10 @@ impl Component for PickDeckSchool {
             ))
             .content(
                 Column::new("SchoolChoice")
-                    .child(Text::new(format!("Side: {:?}", self.side), FontSize::Headline))
-                    .child(Text::new("Pick School:", FontSize::Headline))
+                    .child(
+                        Text::new(format!("Side: {:?}", self.side)).font_size(FontSize::Headline),
+                    )
+                    .child(Text::new("Pick School:").font_size(FontSize::Headline))
                     .child(
                         Row::new("SchoolButtons")
                             .child(

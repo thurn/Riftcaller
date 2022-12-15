@@ -99,7 +99,8 @@ impl Component for BottomSheetContent {
                         ),
                     )
                     .child(
-                        Text::new(self.title.unwrap_or_default(), FontSize::PanelTitle)
+                        Text::new(self.title.unwrap_or_default())
+                            .font_size(FontSize::PanelTitle)
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

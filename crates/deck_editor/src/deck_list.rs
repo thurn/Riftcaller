@@ -43,7 +43,7 @@ impl<'a> Component for DeckList<'a> {
         decks.sort_by_key(|d| (d.side, rules::get(d.identity).school, d.identity.displayed_name()));
         Column::new("DeckList")
             .style(Style::new().background_color(RED_900))
-            .child(Text::new("Decks", FontSize::PanelTitle))
+            .child(Text::new("Decks").font_size(FontSize::PanelTitle))
             .child(
                 EditorColumnScroll::new()
                     .child(
