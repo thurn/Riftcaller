@@ -12,38 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::FontSize;
+use core_ui::design::Font;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::card_definition::CardDefinition;
-use protos::spelldawn::{BackgroundImageAutoSize, FlexAlign, FlexJustify};
+use protos::spelldawn::{BackgroundImageAutoSize, FlexAlign, FlexJustify, FlexPosition};
 
 use crate::CardHeight;
 
-pub struct CardNameplate<'a> {
+pub struct DeckCardName<'a> {
     definition: &'a CardDefinition,
     card_height: CardHeight,
 }
 
-impl<'a> CardNameplate<'a> {
+impl<'a> DeckCardName<'a> {
     pub fn new(definition: &'a CardDefinition, card_height: CardHeight) -> Self {
         Self { definition, card_height }
     }
 }
 
-impl<'a> Component for CardNameplate<'a> {
+impl<'a> Component for DeckCardName<'a> {
     fn build(self) -> Option<Node> {
         Row::new("CardNameplate")
             .style(
                 Style::new()
                     .background_image(assets::title_background(self.definition.config.lineage))
                     .background_image_auto_size(BackgroundImageAutoSize::FromHeight)
+                    .position_type(FlexPosition::Absolute)
                     .position(Edge::Top, self.card_height.dim(-5.0))
                     .height(self.card_height.dim(22.0))
                     .justify_content(FlexJustify::Center)
                     .align_items(FlexAlign::Center),
             )
-            .child(Text::new(self.definition.name.displayed_name()).font_size(FontSize::CardName))
+            .child(
+                Text::new(self.definition.name.displayed_name())
+                    .layout(Layout::new().position(Edge::Top, self.card_height.dim(-5.0)))
+                    .font(Font::CardName)
+                    .raw_color(assets::title_color(self.definition.config.lineage))
+                    .raw_font_size(self.card_height.dim(5.0)),
+            )
             .build()
     }
 }

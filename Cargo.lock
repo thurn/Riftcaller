@@ -643,6 +643,7 @@ dependencies = [
 name = "deck_card"
 version = "0.0.0"
 dependencies = [
+ "adapters",
  "assets",
  "core_ui",
  "data",

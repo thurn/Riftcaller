@@ -168,12 +168,17 @@ fn bluu_next() -> FontAddress {
     FontAddress { address: "Fonts/BluuNext-Bold.otf".to_string() }
 }
 
+fn bona_nova() -> FontAddress {
+    FontAddress { address: "Fonts/BonaNova.ttf".to_string() }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub enum Font {
     PrimaryText,
     PanelTitle,
     ButtonLabel,
     CardIcon,
+    CardName,
 }
 
 impl From<Font> for FontAddress {
@@ -183,6 +188,7 @@ impl From<Font> for FontAddress {
             Font::PanelTitle => bluu_next(),
             Font::ButtonLabel => roboto(),
             Font::CardIcon => impact(),
+            Font::CardName => bona_nova(),
         }
     }
 }

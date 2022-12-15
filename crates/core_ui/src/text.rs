@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use protos::spelldawn::{
-    node_type, FlexColor, FlexOverflow, FontStyle, Node, NodeType, TextAlign, TextOverflow,
-    TextShadow, WhiteSpace,
+    node_type, Dimension, FlexColor, FlexOverflow, FontStyle, Node, NodeType, TextAlign,
+    TextOverflow, TextShadow, WhiteSpace,
 };
 
 use crate::design::{Font, FontColor, FontSize, BLACK};
@@ -25,8 +25,8 @@ use crate::style::{Pixels, WidthMode};
 #[derive(Debug)]
 pub struct Text {
     text: String,
-    size: FontSize,
-    color: FontColor,
+    size: Dimension,
+    color: FlexColor,
     font: Font,
     layout: Layout,
     font_style: FontStyle,
@@ -45,8 +45,8 @@ impl Text {
     pub fn new(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
-            color: FontColor::PrimaryText,
-            size: FontSize::Body,
+            color: FontColor::PrimaryText.into(),
+            size: FontSize::Body.into(),
             font: Font::PrimaryText,
             layout: Layout::default(),
             font_style: FontStyle::Unspecified,
@@ -63,6 +63,11 @@ impl Text {
     }
 
     pub fn font_size(mut self, font_size: FontSize) -> Self {
+        self.size = font_size.into();
+        self
+    }
+
+    pub fn raw_font_size(mut self, font_size: Dimension) -> Self {
         self.size = font_size;
         self
     }
@@ -73,6 +78,11 @@ impl Text {
     }
 
     pub fn color(mut self, color: FontColor) -> Self {
+        self.color = color.into();
+        self
+    }
+
+    pub fn raw_color(mut self, color: FlexColor) -> Self {
         self.color = color;
         self
     }

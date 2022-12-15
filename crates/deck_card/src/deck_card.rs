@@ -14,7 +14,7 @@
 
 //! Renders cards as they're seen in the deck editor and adventure UI
 
-pub mod card_nameplate;
+pub mod deck_card_name;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
@@ -24,9 +24,9 @@ pub const CARD_HEIGHT: f32 = 36.0;
 
 use core_ui::prelude::*;
 use data::card_name::CardName;
-use protos::spelldawn::{BackgroundImageAutoSize, Dimension, FlexAlign};
+use protos::spelldawn::{BackgroundImageAutoSize, Dimension, FlexAlign, FlexPosition};
 
-use crate::card_nameplate::CardNameplate;
+use crate::deck_card_name::DeckCardName;
 
 /// Abstraction representing the height of a card, allowing other measurments to
 /// be scaled proportionately.
@@ -72,15 +72,26 @@ impl Component for DeckCard {
         let definition = rules::get(self.name);
 
         Column::new(self.name.to_string())
-            .style(
-                self.layout
-                    .to_style()
-                    .align_items(FlexAlign::Center)
-                    .background_image(assets::card_frame(definition.school))
-                    .height(self.height.dim(100.0))
-                    .background_image_auto_size(BackgroundImageAutoSize::FromHeight),
+            .style(self.layout.to_style().align_items(FlexAlign::Center))
+            .child(
+                Row::new("CardImage").style(
+                    Style::new()
+                        .position_type(FlexPosition::Absolute)
+                        .background_image(adapters::sprite(&definition.image))
+                        .position(Edge::Top, self.height.dim(7.0))
+                        .height(self.height.dim(56.0))
+                        .width(self.height.dim(56.0)),
+                ),
             )
-            .child(CardNameplate::new(definition, self.height))
+            .child(
+                Row::new("CardFrame").style(
+                    Style::new()
+                        .height(self.height.dim(100.0))
+                        .background_image_auto_size(BackgroundImageAutoSize::FromHeight)
+                        .background_image(assets::card_frame(definition.school)),
+                ),
+            )
+            .child(DeckCardName::new(definition, self.height))
             .build()
     }
 }
