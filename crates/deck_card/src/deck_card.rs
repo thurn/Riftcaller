@@ -14,6 +14,7 @@
 
 //! Renders cards as they're seen in the deck editor and adventure UI
 
+pub mod deck_card_icon;
 pub mod deck_card_name;
 pub mod deck_card_text;
 
@@ -25,8 +26,11 @@ pub const CARD_HEIGHT: f32 = 36.0;
 
 use core_ui::prelude::*;
 use data::card_name::CardName;
+use data::text::RulesTextContext;
 use protos::spelldawn::{BackgroundImageAutoSize, Dimension, FlexAlign, FlexPosition};
+use rules_text::card_icons;
 
+use crate::deck_card_icon::DeckCardIcon;
 use crate::deck_card_name::DeckCardName;
 use crate::deck_card_text::DeckCardText;
 
@@ -72,6 +76,7 @@ impl DeckCard {
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
         let definition = rules::get(self.name);
+        let icons = card_icons::build(&RulesTextContext::Default(definition), definition, true);
 
         Column::new(self.name.to_string())
             .style(self.layout.to_style().align_items(FlexAlign::Center))
@@ -95,6 +100,20 @@ impl Component for DeckCard {
             )
             .child(DeckCardName::new(definition, self.height))
             .child(DeckCardText::new(definition, self.height))
+            .child(icons.top_left_icon.map(|icon| {
+                DeckCardIcon::new(icon, self.height).name("TopLeftIcon").layout(
+                    Layout::new()
+                        .position(Edge::Left, self.height.dim(-2.0))
+                        .position(Edge::Top, self.height.dim(6.0)),
+                )
+            }))
+            .child(icons.bottom_right_icon.map(|icon| {
+                DeckCardIcon::new(icon, self.height).name("BottomRightIcon").layout(
+                    Layout::new()
+                        .position(Edge::Right, self.height.dim(-4.0))
+                        .position(Edge::Bottom, self.height.dim(-6.0)),
+                )
+            }))
             .build()
     }
 }

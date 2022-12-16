@@ -49,6 +49,8 @@ pub const ORANGE_500: FlexColor = color(1.0, 0.6, 0.0, 1.0);
 pub const ORANGE_700: FlexColor = color(0.96, 0.49, 0.0, 1.0);
 pub const ORANGE_900: FlexColor = color(0.9, 0.32, 0.0, 1.0);
 
+pub const TEXT_OUTLINE: FlexColor = BLACK;
+
 /// Converts a [FlexColor] into a hex code representation.
 pub fn as_hex(color: FlexColor) -> String {
     format!(

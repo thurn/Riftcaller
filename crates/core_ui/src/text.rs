@@ -152,6 +152,7 @@ impl Component for Text {
                     .to_style()
                     .padding(Edge::Horizontal, if self.preserve_padding { 2 } else { 0 }.px())
                     .padding(Edge::Vertical, if self.preserve_padding { 4 } else { 0 }.px())
+                    .margin(Edge::All, 0.px())
                     .font_size(self.size)
                     .color(self.color)
                     .font(self.font)
