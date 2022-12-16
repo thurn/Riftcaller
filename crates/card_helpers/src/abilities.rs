@@ -32,7 +32,7 @@ pub fn encounter_boost() -> Ability {
     Ability {
         text: AbilityText::TextFn(|context| {
             let boost = match context {
-                RulesTextContext::Default(name) => rules::get(*name).config.stats.attack_boost,
+                RulesTextContext::Default(definition) => definition.config.stats.attack_boost,
                 RulesTextContext::Game(game, card) => queries::attack_boost(game, card.id),
             }
             .unwrap_or_default();

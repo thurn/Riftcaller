@@ -14,19 +14,19 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
-use assets::CardIconType;
-use data::card_definition::{AbilityType, CardDefinition, TargetRequirement};
+use data::card_definition::{AbilityType, TargetRequirement};
 use data::card_state::CardState;
 use data::game::GameState;
 use data::game_actions::CardTarget;
-use data::primitives::{AbilityId, CardType, ItemLocation, ManaValue, RoomId, RoomLocation};
+use data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation};
 use data::text::RulesTextContext;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
-    ArrowTargetRoom, CardIcon, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
-    NoTargeting, PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
+    ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,
+    PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
 };
 use rules::{flags, queries};
+use rules_text::card_icons;
 use {adapters, assets, rules_text};
 
 use crate::positions;
@@ -44,7 +44,11 @@ pub fn card_view(
         prefab: CardPrefab::Standard.into(),
         revealed_to_viewer: card.is_revealed_to(builder.user_side),
         is_face_up: card.is_face_up(),
-        card_icons: Some(card_icons(game, card, definition, revealed)),
+        card_icons: Some(card_icons::build(
+            &RulesTextContext::Game(game, card),
+            definition,
+            revealed,
+        )),
         arena_frame: Some(assets::arena_frame(
             definition.side,
             definition.card_type,
@@ -94,7 +98,8 @@ pub fn ability_card_view(
         revealed_to_viewer: true,
         is_face_up: false,
         card_icons: Some(CardIcons {
-            top_left_icon: queries::ability_mana_cost(game, ability_id).map(mana_card_icon),
+            top_left_icon: queries::ability_mana_cost(game, ability_id)
+                .map(card_icons::mana_card_icon),
             ..CardIcons::default()
         }),
         arena_frame: None,
@@ -218,81 +223,5 @@ fn card_targeting<T>(
                 }
             }
         }),
-    }
-}
-
-fn card_icons(
-    game: &GameState,
-    card: &CardState,
-    definition: &CardDefinition,
-    revealed: bool,
-) -> CardIcons {
-    let mut icons = CardIcons::default();
-
-    if card.data.card_level > 0 {
-        icons.arena_icon = Some(CardIcon {
-            background: Some(assets::card_icon(CardIconType::LevelCounter)),
-            text: Some(card.data.card_level.to_string()),
-            background_scale: assets::background_scale(CardIconType::LevelCounter),
-        });
-    }
-
-    if card.data.stored_mana > 0 {
-        icons.arena_icon = Some(CardIcon {
-            background: Some(assets::card_icon(CardIconType::Mana)),
-            text: Some(card.data.stored_mana.to_string()),
-            background_scale: assets::background_scale(CardIconType::Mana),
-        });
-    }
-
-    if revealed {
-        icons.top_left_icon = queries::mana_cost(game, card.id).map(mana_card_icon).or_else(|| {
-            definition.config.stats.scheme_points.map(|points| CardIcon {
-                background: Some(assets::card_icon(CardIconType::LevelRequirement)),
-                text: Some(points.level_requirement.to_string()),
-                background_scale: assets::background_scale(CardIconType::LevelRequirement),
-            })
-        });
-        icons.bottom_right_icon = definition
-            .config
-            .stats
-            .base_attack
-            .map(|_| CardIcon {
-                background: Some(assets::card_icon(CardIconType::Attack)),
-                text: Some(queries::attack(game, card.id).to_string()),
-                background_scale: assets::background_scale(CardIconType::Attack),
-            })
-            .or_else(|| {
-                definition.config.stats.health.map(|_| CardIcon {
-                    background: Some(assets::card_icon(CardIconType::Health)),
-                    text: Some(queries::health(game, card.id).to_string()),
-                    background_scale: assets::background_scale(CardIconType::Health),
-                })
-            })
-            .or_else(|| {
-                definition.config.stats.scheme_points.map(|points| CardIcon {
-                    background: Some(assets::card_icon(CardIconType::Points)),
-                    text: Some(points.points.to_string()),
-                    background_scale: assets::background_scale(CardIconType::Points),
-                })
-            });
-        let shield = queries::shield(game, card.id);
-        if shield > 0 {
-            icons.bottom_left_icon = Some(CardIcon {
-                background: Some(assets::card_icon(CardIconType::Shield)),
-                text: Some(shield.to_string()),
-                background_scale: assets::background_scale(CardIconType::Shield),
-            });
-        }
-    }
-
-    icons
-}
-
-fn mana_card_icon(value: ManaValue) -> CardIcon {
-    CardIcon {
-        background: Some(assets::card_icon(CardIconType::Mana)),
-        text: Some(value.to_string()),
-        background_scale: assets::background_scale(CardIconType::Mana),
     }
 }

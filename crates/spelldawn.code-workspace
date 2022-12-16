@@ -9,7 +9,6 @@
     "rust-analyzer.imports.granularity.enforce": true,
     "rust-analyzer.imports.prefix": "crate",
     "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
-	"rust-analyzer.checkOnSave.command": "clippy",
 
     "[rust]": {
       "editor.rulers": [100],

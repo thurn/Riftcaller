@@ -14,6 +14,8 @@
 
 //! Builds the text displayed on cards based on their card definition
 
+pub mod card_icons;
+
 use std::fmt::Write as _;
 
 use core_ui::component::Component;

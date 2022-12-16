@@ -33,8 +33,7 @@ impl<'a> DeckCardText<'a> {
 
 impl<'a> Component for DeckCardText<'a> {
     fn build(self) -> Option<Node> {
-        let text =
-            rules_text::build(&RulesTextContext::Default(self.definition.name), self.definition);
+        let text = rules_text::build(&RulesTextContext::Default(self.definition), self.definition);
         Text::new(text.text)
             .layout(
                 Layout::new()
