@@ -16,6 +16,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
 use core_ui::{actions, icons, panel, style};
 use data::adventure::{Coins, TilePosition};
+use data::adventure_actions::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 
@@ -36,7 +37,7 @@ impl Component for ExplorePanel {
                 Button::new(format!("Explore: {} {}", self.cost, icons::COINS))
                     .action(actions::close_and(
                         self.address,
-                        UserAction::AdventureTileAction(self.position),
+                        UserAction::AdventureAction(AdventureAction::TileAction(self.position)),
                     ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")

@@ -16,6 +16,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
 use core_ui::{actions, icons, panel, style, update_element};
 use data::adventure::{Coins, TilePosition};
+use data::adventure_actions::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 
@@ -36,7 +37,7 @@ impl Component for DraftPromptPanel {
                 Button::new(format!("Draft: {} {}", self.cost, icons::COINS))
                     .action(actions::with_optimistic_update(
                         vec![update_element::clear(TilePromptPanel::content_name())],
-                        UserAction::AdventureTileAction(self.position),
+                        UserAction::AdventureAction(AdventureAction::TileAction(self.position)),
                     ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")

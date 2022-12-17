@@ -14,7 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::adventure::TilePosition;
+use crate::adventure_actions::AdventureAction;
 use crate::card_name::CardName;
 use crate::game_actions::GameAction;
 use crate::player_name::{NamedPlayer, PlayerId};
@@ -86,14 +86,7 @@ impl From<DeckEditorAction> for UserAction {
 /// All possible action payloads that can be sent from a client
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
-    NewAdventure(Side),
-    AdventureTileAction(TilePosition),
-    /// Transition an adventure to the 'completed' state and display the
-    /// adventure summary screen.
-    AbandonAdventure,
-    /// Remove a player's current adventure, i.e. to stop displaying the
-    /// adventure summary screen.
-    LeaveAdventure,
+    AdventureAction(AdventureAction),
     NewGame(NewGameAction),
     /// Leave the game that the player is currently playing in. Typically
     /// invoked from the game over screen, the 'resign' action is used to

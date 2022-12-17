@@ -21,6 +21,7 @@ use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::{actions, panel};
+use data::adventure_actions::AdventureAction;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{DeckIndex, Side};
 use data::user_actions::{NewGameAction, UserAction};
@@ -63,7 +64,9 @@ impl Component for MainMenuPanel {
                         "New Adventure",
                         actions::close_and(
                             PanelAddress::MainMenu,
-                            UserAction::NewAdventure(Side::Champion),
+                            UserAction::AdventureAction(AdventureAction::NewAdventure(
+                                Side::Champion,
+                            )),
                         ),
                     ))
                     .child(menu_button("Settings", panel::open(PanelAddress::Settings)))

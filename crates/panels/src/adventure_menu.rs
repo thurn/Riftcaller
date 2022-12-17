@@ -14,6 +14,7 @@
 
 use core_ui::prelude::*;
 use core_ui::{actions, panel};
+use data::adventure_actions::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 
@@ -33,7 +34,10 @@ impl Component for AdventureMenu {
         ButtonMenu::new(PanelAddress::AdventureMenu)
             .button(
                 "Abandon Adventure",
-                actions::close_and(PanelAddress::AdventureMenu, UserAction::AbandonAdventure),
+                actions::close_and(
+                    PanelAddress::AdventureMenu,
+                    UserAction::AdventureAction(AdventureAction::AbandonAdventure),
+                ),
             )
             .button("Settings", panel::open(PanelAddress::Settings))
             .build()
