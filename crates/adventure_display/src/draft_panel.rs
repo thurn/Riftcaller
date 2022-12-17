@@ -41,9 +41,11 @@ impl<'a> Component for DraftPanel<'a> {
                     .child(
                         Text::new(format!("{}x", choice.quantity))
                             .font_size(FontSize::Headline)
-                            .layout(Layout::new().margin(Edge::All, 8.px())),
+                            .layout(Layout::new().position(Edge::Top, (-8).px())),
                     )
-                    .child(Button::new("Pick").layout(Layout::new().margin(Edge::All, 8.px())))
+                    .child(Button::new("Pick").layout(
+                        Layout::new().margin(Edge::Horizontal, 8.px()).margin(Edge::Top, 16.px()),
+                    ))
             })))
             .build()
     }

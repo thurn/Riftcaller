@@ -16,6 +16,7 @@
 
 pub mod deck_card_icon;
 pub mod deck_card_name;
+pub mod deck_card_rarity;
 pub mod deck_card_text;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
@@ -32,6 +33,7 @@ use rules_text::card_icons;
 
 use crate::deck_card_icon::DeckCardIcon;
 use crate::deck_card_name::DeckCardName;
+use crate::deck_card_rarity::DeckCardRarity;
 use crate::deck_card_text::DeckCardText;
 
 /// Abstraction representing the height of a card, allowing other measurments to
@@ -107,6 +109,20 @@ impl Component for DeckCard {
                         .position(Edge::Top, self.height.dim(6.0)),
                 )
             }))
+            .child(icons.top_right_icon.map(|icon| {
+                DeckCardIcon::new(icon, self.height).name("TopRightIcon").layout(
+                    Layout::new()
+                        .position(Edge::Right, self.height.dim(-2.0))
+                        .position(Edge::Top, self.height.dim(6.0)),
+                )
+            }))
+            .child(icons.bottom_left_icon.map(|icon| {
+                DeckCardIcon::new(icon, self.height).name("BottomLeftIcon").layout(
+                    Layout::new()
+                        .position(Edge::Left, self.height.dim(-4.0))
+                        .position(Edge::Bottom, self.height.dim(-6.0)),
+                )
+            }))
             .child(icons.bottom_right_icon.map(|icon| {
                 DeckCardIcon::new(icon, self.height).name("BottomRightIcon").layout(
                     Layout::new()
@@ -114,6 +130,7 @@ impl Component for DeckCard {
                         .position(Edge::Bottom, self.height.dim(-6.0)),
                 )
             }))
+            .child(DeckCardRarity::new(definition, self.height))
             .build()
     }
 }

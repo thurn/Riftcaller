@@ -13,41 +13,35 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use core_ui::text::Text;
 use data::card_definition::CardDefinition;
-use data::text::RulesTextContext;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, WhiteSpace};
+use protos::spelldawn::{BackgroundImageAutoSize, FlexAlign, FlexJustify, FlexPosition};
 
 use crate::CardHeight;
 
-pub struct DeckCardText<'a> {
+pub struct DeckCardRarity<'a> {
     definition: &'a CardDefinition,
     card_height: CardHeight,
 }
 
-impl<'a> DeckCardText<'a> {
+impl<'a> DeckCardRarity<'a> {
     pub fn new(definition: &'a CardDefinition, card_height: CardHeight) -> Self {
         Self { definition, card_height }
     }
 }
 
-impl<'a> Component for DeckCardText<'a> {
+impl<'a> Component for DeckCardRarity<'a> {
     fn build(self) -> Option<Node> {
-        let text = rules_text::build(&RulesTextContext::Default(self.definition), self.definition);
-        Column::new("RulesText")
+        Row::new("CardRarity")
             .style(
                 Style::new()
-                    .justify_content(FlexJustify::Center)
-                    .align_items(FlexAlign::Center)
+                    .background_image(assets::jewel(self.definition.rarity))
+                    .background_image_auto_size(BackgroundImageAutoSize::FromHeight)
                     .position_type(FlexPosition::Absolute)
-                    .position(Edge::Top, self.card_height.dim(72.0))
-                    .position(Edge::Horizontal, self.card_height.dim(10.0))
-                    .position(Edge::Bottom, self.card_height.dim(4.0)),
-            )
-            .child(
-                Text::new(text.text)
-                    .raw_font_size(self.card_height.dim(3.6))
-                    .white_space(WhiteSpace::Normal),
+                    .position(Edge::Top, self.card_height.dim(64.0))
+                    .position(Edge::Left, self.card_height.dim(30.5))
+                    .height(self.card_height.dim(6.0))
+                    .justify_content(FlexJustify::Center)
+                    .align_items(FlexAlign::Center),
             )
             .build()
     }
