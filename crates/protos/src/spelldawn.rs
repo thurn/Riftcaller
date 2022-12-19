@@ -1137,80 +1137,63 @@ pub struct UpdatePanelsCommand {
     #[prost(message, repeated, tag = "1")]
     pub panels: ::prost::alloc::vec::Vec<InterfacePanel>,
 }
-/// Parameters to add a page to an existing bottom sheet
+/// Open a panel and display the provided loading state while it is
+/// being fetched
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct BottomSheetPush {
+pub struct LoadPanel {
     #[prost(message, optional, tag = "1")]
-    pub parent_address: ::core::option::Option<InterfacePanelAddress>,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TogglePanelMode {
-    #[prost(oneof = "toggle_panel_mode::PanelMode", tags = "1, 2")]
-    pub panel_mode: ::core::option::Option<toggle_panel_mode::PanelMode>,
-}
-/// Nested message and enum types in `TogglePanelMode`.
-pub mod toggle_panel_mode {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum PanelMode {
-        /// Display or hide the bottom sheet.
-        ///
-        /// Only one bottom sheet can ever be open at a time, so this always
-        /// replaces all existing content.
-        #[prost(message, tag = "1")]
-        OpenOrCloseBottomSheet(()),
-        /// Add or remove a page of content to the currently-displayed bottom
-        /// sheet.
-        ///
-        /// Functions identically to 'open/close' above if no bottom sheet
-        /// is currently displayed. Ignored if the 'panel_address' is not
-        /// currently the topmost page in the pop case.
-        #[prost(message, tag = "2")]
-        PushOrPopBottomSheet(()),
-    }
+    pub open_panel: ::core::option::Option<InterfacePanelAddress>,
+    /// Content to display if this panel is not already cached
+    #[prost(message, optional, tag = "2")]
+    pub loading_state: ::core::option::Option<Node>,
 }
 /// Requests to open or close the given interface panel.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TogglePanelCommand {
-    #[prost(oneof = "toggle_panel_command::ToggleCommand", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
+    #[prost(oneof = "toggle_panel_command::ToggleCommand", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9")]
     pub toggle_command: ::core::option::Option<toggle_panel_command::ToggleCommand>,
 }
 /// Nested message and enum types in `TogglePanelCommand`.
 pub mod toggle_panel_command {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum ToggleCommand {
-        /// Close all open panels and show the indicated panel.
+        /// Add a panel to the end of the stack of open views, and display a
+        /// loading screen while it is being fetched.
         #[prost(message, tag = "1")]
+        LoadPanel(super::LoadPanel),
+        /// Close all open panels and show the indicated panel.
+        #[prost(message, tag = "2")]
         SetPanel(super::InterfacePanelAddress),
         /// Add the indicated panel to the end of the stack of open views if
-        /// it is not already present.
-        #[prost(message, tag = "2")]
+        /// it is not already present. Does not display a loading state.
+        #[prost(message, tag = "3")]
         OpenPanel(super::InterfacePanelAddress),
         /// Removes the indicated panel from the stack of open views.
-        #[prost(message, tag = "3")]
+        #[prost(message, tag = "4")]
         ClosePanel(super::InterfacePanelAddress),
         /// Close all open panels
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "5")]
         CloseAll(()),
         /// Opens a new bottom sheet with the indicated panel.
         ///
         /// Closes any existing bottom sheet.
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "6")]
         OpenBottomSheetAddress(super::InterfacePanelAddress),
         /// Closes the currently-open bottom sheet.
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "7")]
         CloseBottomSheet(()),
         /// Pushes the indicated panel as a new bottom sheet page.
         ///
         /// If no bottom sheet is currently open, the behavior is identical to
         /// 'open_bottom_sheet'.
-        #[prost(message, tag = "7")]
+        #[prost(message, tag = "8")]
         PushBottomSheetAddress(super::InterfacePanelAddress),
         /// Pops the currently visible bottom sheet page and displays the
         /// indicated panel as the *new* sheet content.
         ///
         /// If no bottom sheet is currently open, the behavior is identical to
         /// 'open_bottom_sheet'.
-        #[prost(message, tag = "8")]
+        #[prost(message, tag = "9")]
         PopToBottomSheetAddress(super::InterfacePanelAddress),
     }
 }

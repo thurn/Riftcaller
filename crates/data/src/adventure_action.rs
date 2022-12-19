@@ -32,6 +32,8 @@ pub enum AdventureAction {
     /// Remove a player's current adventure, i.e. to stop displaying the
     /// adventure summary screen.
     LeaveAdventure,
+    /// Draft the card at the indicated index on the draft screen
+    DraftCard(usize),
 }
 
 impl From<AdventureAction> for UserAction {

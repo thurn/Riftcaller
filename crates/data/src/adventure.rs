@@ -115,7 +115,7 @@ pub enum AdventureScreen {
     Draft(DraftData),
 }
 
-/// Stores the primary state for an ongoing adventure
+/// Stores the primary state for one player during an ongoing adventure
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {
@@ -136,6 +136,9 @@ pub struct AdventureState {
     /// across different sessions. If not specified, `rand::thread_rng()` is
     /// used instead and behavior is not deterministic.
     pub rng: Option<Xoshiro256StarStar>,
+    /// Cards collected by this player during this adventure
+    #[serde_as(as = "Vec<(_, _)>")]
+    pub collection: HashMap<CardName, u32>,
 }
 
 impl AdventureState {

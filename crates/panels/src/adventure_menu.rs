@@ -14,7 +14,7 @@
 
 use core_ui::prelude::*;
 use core_ui::{actions, panel};
-use data::adventure_actions::AdventureAction;
+use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 

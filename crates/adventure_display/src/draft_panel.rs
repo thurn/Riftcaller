@@ -15,10 +15,12 @@
 use core_ui::button::Button;
 use core_ui::design::FontSize;
 use core_ui::prelude::*;
-use core_ui::style;
 use core_ui::text::Text;
+use core_ui::{actions, style};
 use data::adventure::DraftData;
+use data::adventure_action::AdventureAction;
 use deck_card::{CardHeight, DeckCard};
+use panel_address::PanelAddress;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 
@@ -30,23 +32,34 @@ impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
             .image(style::sprite("TPR/EnvironmentsHQ/mountain"))
-            .content(Row::new("DraftPanel").children(self.data.choices.iter().map(|choice| {
-                Column::new("Choice")
-                    .style(Style::new().margin(Edge::All, 32.px()))
-                    .child(
-                        DeckCard::new(choice.card)
-                            .layout(Layout::new().margin(Edge::All, 8.px()))
-                            .height(CardHeight::vh(50.0)),
-                    )
-                    .child(
-                        Text::new(format!("{}x", choice.quantity))
-                            .font_size(FontSize::Headline)
-                            .layout(Layout::new().position(Edge::Top, (-8).px())),
-                    )
-                    .child(Button::new("Pick").layout(
-                        Layout::new().margin(Edge::Horizontal, 8.px()).margin(Edge::Top, 16.px()),
-                    ))
-            })))
+            .content(Row::new("DraftPanel").children(self.data.choices.iter().enumerate().map(
+                |(i, choice)| {
+                    Column::new("Choice")
+                        .style(Style::new().margin(Edge::All, 32.px()))
+                        .child(
+                            DeckCard::new(choice.card)
+                                .layout(Layout::new().margin(Edge::All, 8.px()))
+                                .height(CardHeight::vh(50.0)),
+                        )
+                        .child(
+                            Text::new(format!("{}x", choice.quantity))
+                                .font_size(FontSize::Headline)
+                                .layout(Layout::new().position(Edge::Top, (-8).px())),
+                        )
+                        .child(
+                            Button::new("Pick")
+                                .layout(
+                                    Layout::new()
+                                        .margin(Edge::Horizontal, 8.px())
+                                        .margin(Edge::Top, 16.px()),
+                                )
+                                .action(actions::close_and(
+                                    PanelAddress::AdventureScreen,
+                                    AdventureAction::DraftCard(i),
+                                )),
+                        )
+                },
+            )))
             .build()
     }
 }

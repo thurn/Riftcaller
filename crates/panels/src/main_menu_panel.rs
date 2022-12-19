@@ -21,7 +21,7 @@ use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::{actions, panel};
-use data::adventure_actions::AdventureAction;
+use data::adventure_action::AdventureAction;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{DeckIndex, Side};
 use data::user_actions::{NewGameAction, UserAction};

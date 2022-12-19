@@ -21,7 +21,7 @@ use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition}
 use data::player_data::PlayerData;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
-use with_error::WithError;
+use with_error::{fail, WithError};
 
 pub fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
     state.screen = Some(AdventureScreen::AdventureOver);
@@ -54,4 +54,22 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
     }
 
     Ok(())
+}
+
+pub fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
+    match &state.screen {
+        Some(AdventureScreen::Draft(data)) => {
+            let choice = data.choices.get(index).with_error(|| "Choice index out of bounds")?;
+            state
+                .collection
+                .entry(choice.card)
+                .and_modify(|i| *i += choice.quantity)
+                .or_insert(choice.quantity);
+            state.screen = None;
+            Ok(())
+        }
+        _ => {
+            fail!("No active draft!")
+        }
+    }
 }

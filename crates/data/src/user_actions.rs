@@ -14,7 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::adventure_actions::AdventureAction;
+use crate::adventure_action::AdventureAction;
 use crate::card_name::CardName;
 use crate::game_actions::GameAction;
 use crate::player_name::{NamedPlayer, PlayerId};

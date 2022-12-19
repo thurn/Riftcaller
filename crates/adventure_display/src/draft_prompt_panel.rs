@@ -16,7 +16,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
 use core_ui::{actions, icons, panel, style, update_element};
 use data::adventure::{Coins, TilePosition};
-use data::adventure_actions::AdventureAction;
+use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 

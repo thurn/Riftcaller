@@ -22,7 +22,7 @@ use core_ui::panel;
 use core_ui::prelude::Component;
 use dashmap::DashMap;
 use data::adventure::AdventureState;
-use data::adventure_actions::AdventureAction;
+use data::adventure_action::AdventureAction;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
@@ -561,6 +561,9 @@ fn handle_adventure_action(
         }),
         AdventureAction::LeaveAdventure => handle_player_action(database, player_id, |state| {
             adventure_actions::handle_leave_adventure(state)
+        }),
+        AdventureAction::DraftCard(index) => with_adventure(database, player_id, |state| {
+            adventure_actions::handle_draft(state, *index)
         }),
     }
 }

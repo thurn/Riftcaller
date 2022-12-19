@@ -1185,65 +1185,55 @@ message UpdatePanelsCommand {
     repeated InterfacePanel panels = 1;
 }
 
-// Parameters to add a page to an existing bottom sheet
-message BottomSheetPush {
-    InterfacePanelAddress parent_address = 1;
-}
+// Open a panel and display the provided loading state while it is
+// being fetched
+message LoadPanel {
+    InterfacePanelAddress open_panel = 1;
 
-message TogglePanelMode {
-    oneof panel_mode {
-        // Display or hide the bottom sheet.
-        //
-        // Only one bottom sheet can ever be open at a time, so this always
-        // replaces all existing content.
-        google.protobuf.Empty open_or_close_bottom_sheet = 1;
-
-        // Add or remove a page of content to the currently-displayed bottom
-        // sheet.
-        //
-        // Functions identically to 'open/close' above if no bottom sheet
-        // is currently displayed. Ignored if the 'panel_address' is not
-        // currently the topmost page in the pop case.
-        google.protobuf.Empty push_or_pop_bottom_sheet = 2;
-    }
+    // Content to display if this panel is not already cached
+    Node loading_state = 2;
 }
 
 // Requests to open or close the given interface panel.
 message TogglePanelCommand {
     oneof toggle_command {
+        // Add a panel to the end of the stack of open views, and display a
+        // loading screen while it is being fetched.
+        LoadPanel load_panel = 1;
+
         // Close all open panels and show the indicated panel.
-        InterfacePanelAddress set_panel = 1;
+        InterfacePanelAddress set_panel = 2;
 
         // Add the indicated panel to the end of the stack of open views if
-        // it is not already present.
-        InterfacePanelAddress open_panel = 2;
+        // it is not already present. Does not display a loading state.
+        InterfacePanelAddress open_panel = 3;
 
         // Removes the indicated panel from the stack of open views.
-        InterfacePanelAddress close_panel = 3;
+        InterfacePanelAddress close_panel = 4;
 
         // Close all open panels
-        google.protobuf.Empty close_all = 4;
+        google.protobuf.Empty close_all = 5;
 
         // Opens a new bottom sheet with the indicated panel.
         //
         // Closes any existing bottom sheet.
-        InterfacePanelAddress open_bottom_sheet_address = 5;
+        InterfacePanelAddress open_bottom_sheet_address = 6;
 
         // Closes the currently-open bottom sheet.
-        google.protobuf.Empty close_bottom_sheet = 6;
+        google.protobuf.Empty close_bottom_sheet = 7;
 
         // Pushes the indicated panel as a new bottom sheet page.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress push_bottom_sheet_address = 7;
+        InterfacePanelAddress push_bottom_sheet_address = 8;
 
         // Pops the currently visible bottom sheet page and displays the
         // indicated panel as the *new* sheet content.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress pop_to_bottom_sheet_address = 8;
+        InterfacePanelAddress pop_to_bottom_sheet_address = 9;
     }
 }
 
