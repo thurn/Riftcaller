@@ -57,6 +57,8 @@ impl Component for DeckCardIcon {
             )
             .child(
                 Text::new(self.icon.text.unwrap_or_default())
+                    .layout(Layout::new().margin(Edge::All, 0.px()))
+                    .remove_padding(true)
                     .raw_font_size(self.card_height.dim(13.0))
                     .font(Font::CardIcon)
                     .outline_color(design::TEXT_OUTLINE)

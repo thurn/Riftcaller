@@ -108,7 +108,7 @@ pub struct DraftData {
 
 /// Represents an active choice screen within an adventure
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum AdventureScreen {
+pub enum AdventureChoiceScreen {
     /// Adventure has ended
     AdventureOver,
     /// Pick one card of the provided card names
@@ -124,7 +124,7 @@ pub struct AdventureState {
     /// Coin count, used to purchase more cards for deck
     pub coins: Coins,
     /// Currently active mandatory choice screen, if any.
-    pub choice_screen: Option<AdventureScreen>,
+    pub choice_screen: Option<AdventureChoiceScreen>,
     /// States of world map tiles
     #[serde_as(as = "Vec<(_, _)>")]
     pub tiles: HashMap<TilePosition, TileState>,

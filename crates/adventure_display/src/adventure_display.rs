@@ -26,7 +26,7 @@ pub mod tile_prompt_panel;
 use anyhow::Result;
 use core_ui::prelude::*;
 use core_ui::{actions, design, panel};
-use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition, TileState};
+use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState};
 use panel_address::PanelAddress;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
@@ -49,7 +49,7 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     })];
 
     if state.choice_screen.is_some() {
-        let screen = render_adventure_screen(state);
+        let screen = render_adventure_choice_screen(state);
         commands.push(panel::update(PanelAddress::AdventureChoice, screen));
         commands.push(panel::open_existing(PanelAddress::AdventureChoice));
     }
@@ -57,12 +57,12 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     Ok(commands)
 }
 
-/// Renders a choice screen based on the [AdventureScreen] contained within the
-/// provided state, if any
-pub fn render_adventure_screen(state: &AdventureState) -> Option<Node> {
+/// Renders a choice screen based on the [AdventureChoiceScreen] contained
+/// within the provided state, if any
+pub fn render_adventure_choice_screen(state: &AdventureState) -> Option<Node> {
     match &state.choice_screen {
-        Some(AdventureScreen::AdventureOver) => AdventureOverPanel::new().build(),
-        Some(AdventureScreen::Draft(data)) => DraftPanel { data }.build(),
+        Some(AdventureChoiceScreen::AdventureOver) => AdventureOverPanel::new().build(),
+        Some(AdventureChoiceScreen::Draft(data)) => DraftPanel { data }.build(),
         _ => None,
     }
 }

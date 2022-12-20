@@ -114,7 +114,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         PanelAddress::GameOver(_) => GameOverPanel { address, player }.build(),
         PanelAddress::TileEntity(position) => adventure_panels::render(position, player)?,
         PanelAddress::AdventureChoice => {
-            player.adventure.as_ref().and_then(adventure_display::render_adventure_screen)
+            player.adventure.as_ref().and_then(adventure_display::render_adventure_choice_screen)
         }
     })
 }

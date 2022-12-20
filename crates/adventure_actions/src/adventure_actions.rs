@@ -17,14 +17,14 @@
 pub mod card_generator;
 
 use anyhow::Result;
-use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition};
+use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition};
 use data::player_data::PlayerData;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
 use with_error::{fail, verify, WithError};
 
 pub fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
-    state.choice_screen = Some(AdventureScreen::AdventureOver);
+    state.choice_screen = Some(AdventureChoiceScreen::AdventureOver);
     Ok(())
 }
 
@@ -51,7 +51,7 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
             tile.entity = None;
             state.coins -= cost;
             state.choice_screen =
-                Some(AdventureScreen::Draft(card_generator::draft_choices(state)));
+                Some(AdventureChoiceScreen::Draft(card_generator::draft_choices(state)));
         }
     }
 
@@ -59,7 +59,7 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
 }
 
 pub fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
-    let Some(AdventureScreen::Draft(data)) = &state.choice_screen else {
+    let Some(AdventureChoiceScreen::Draft(data)) = &state.choice_screen else {
         fail!("No active draft!")
     };
 

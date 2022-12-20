@@ -36,7 +36,7 @@ pub struct Text {
     outline_color: FlexColor,
     outline_width: Pixels,
     letter_spacing: Pixels,
-    preserve_padding: bool,
+    remove_padding: bool,
     shadow: Option<TextShadow>,
     overflow: TextOverflow,
 }
@@ -56,7 +56,7 @@ impl Text {
             outline_color: BLACK,
             outline_width: 0.px(),
             letter_spacing: 0.px(),
-            preserve_padding: false,
+            remove_padding: false,
             shadow: None,
             overflow: TextOverflow::Ellipsis,
         }
@@ -127,9 +127,9 @@ impl Text {
         self
     }
 
-    /// Should Unity's default font padding be applied?
-    pub fn preserve_padding(mut self, preserve_padding: bool) -> Self {
-        self.preserve_padding = preserve_padding;
+    /// Should Unity's default font padding be removed?
+    pub fn remove_padding(mut self, remove_padding: bool) -> Self {
+        self.remove_padding = remove_padding;
         self
     }
 
@@ -146,13 +146,14 @@ impl Text {
 
 impl Component for Text {
     fn build(self) -> Option<Node> {
+        let mut style = self.layout.to_style();
+        if self.remove_padding {
+            style = style.padding(Edge::All, 0.px());
+        }
+
         TextNode::new(self.text)
             .style(
-                self.layout
-                    .to_style()
-                    .padding(Edge::Horizontal, if self.preserve_padding { 2 } else { 0 }.px())
-                    .padding(Edge::Vertical, if self.preserve_padding { 4 } else { 0 }.px())
-                    .margin(Edge::All, 0.px())
+                style
                     .font_size(self.size)
                     .color(self.color)
                     .font(self.font)
