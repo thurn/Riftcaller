@@ -51,7 +51,7 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     if state.choice_screen.is_some() {
         let screen = render_adventure_screen(state);
         commands.push(panel::update(PanelAddress::AdventureChoice, screen));
-        commands.push(panel::open(PanelAddress::AdventureChoice));
+        commands.push(panel::open_existing(PanelAddress::AdventureChoice));
     }
 
     Ok(commands)

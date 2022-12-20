@@ -448,19 +448,19 @@ namespace Spelldawn.Masonry
         {
           case NodeBackground.BackgroundAddressOneofCase.Sprite:
             var sprite = registry.AssetService.GetSprite(bi.Sprite);
-            var aspectRatio = sprite == null ? 0 : sprite.bounds.size.x / sprite.bounds.size.y;
+            var aspectRatio = sprite == null ? 0 : ((float)sprite.texture.width) / sprite.texture.height;
 
             switch (input.BackgroundImageAutoSize)
             {
               case BackgroundImageAutoSize.FromWidth:
-                var height = input.Width;
+                var height = input.Width.Clone();
                 Errors.CheckState(height.Unit != DimensionUnit.Percentage, 
                   "Percentage units not supported for background image auto size");
                 height.Value /= aspectRatio;
                 e.style.height = AdaptDimension(registry, height);
                 break;
               case BackgroundImageAutoSize.FromHeight:
-                var width = input.Height;
+                var width = input.Height.Clone();
                 Errors.CheckState(width.Unit != DimensionUnit.Percentage, 
                   "Percentage units not supported for background image auto size");                
                 width.Value *= aspectRatio;

@@ -46,7 +46,7 @@ impl<'a> Component for DeckCardName<'a> {
             )
             .child(
                 Text::new(self.definition.name.displayed_name())
-                    .layout(Layout::new().position(Edge::Top, self.card_height.dim(-5.0)))
+                    .layout(Layout::new().position(Edge::Top, self.card_height.dim(-4.0)))
                     .font(Font::CardName)
                     .raw_color(assets::title_color(self.definition.config.lineage))
                     .raw_font_size(self.card_height.dim(5.0)),
