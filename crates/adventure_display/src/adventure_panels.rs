@@ -40,6 +40,6 @@ pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node
     Ok(match entity {
         TileEntity::Explore { cost, .. } => ExplorePanel { cost: *cost, address, position }.build(),
         TileEntity::Draft { cost } => DraftPromptPanel { cost: *cost, address, position }.build(),
-        TileEntity::Shop => None,
+        TileEntity::Shop => Row::new("ShopPanel").build(),
     })
 }
