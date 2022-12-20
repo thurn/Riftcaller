@@ -73,19 +73,25 @@ pub fn load(
     })
 }
 
-/// Wait until the indicated panel address is refreshed, displaying 'loading'
-/// content while waiting. Does *not* request the address from the server, it is
-/// assumed that some state mutation will cause the panel to be refreshed.
-pub fn wait_for(
-    address: impl Into<InterfacePanelAddress>,
+/// Close the 'from' panel and display 'loading' 'while waiting for the 'to'
+/// panel contents.
+///
+/// Does *not* request the address from the server, it is assumed that some
+/// state mutation will cause the panel to be refreshed.
+pub fn close_and_wait_for(
+    from_address: impl Into<InterfacePanelAddress>,
+    to_address: impl Into<InterfacePanelAddress>,
     loading: impl Component + 'static,
-) -> Command {
-    Command::TogglePanel(TogglePanelCommand {
-        toggle_command: Some(ToggleCommand::WaitFor(AddressWithLoadingState {
-            open_panel: Some(address.into()),
-            loading_state: loading.build(),
-        })),
-    })
+) -> Vec<Command> {
+    vec![
+        close(from_address),
+        Command::TogglePanel(TogglePanelCommand {
+            toggle_command: Some(ToggleCommand::WaitFor(AddressWithLoadingState {
+                open_panel: Some(to_address.into()),
+                loading_state: loading.build(),
+            })),
+        }),
+    ]
 }
 
 /// Opens a new bottom sheet with the indicated panel.

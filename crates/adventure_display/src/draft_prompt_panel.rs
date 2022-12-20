@@ -14,12 +14,13 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use core_ui::{actions, icons, panel, style, update_element};
+use core_ui::{actions, icons, panel, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 
+use crate::adventure_loading::AdventureLoading;
 use crate::tile_prompt_panel::TilePromptPanel;
 
 pub struct DraftPromptPanel {
@@ -36,7 +37,11 @@ impl Component for DraftPromptPanel {
             .buttons(vec![
                 Button::new(format!("Draft: {} {}", self.cost, icons::COINS))
                     .action(actions::with_optimistic_update(
-                        vec![update_element::clear(TilePromptPanel::content_name())],
+                        panel::close_and_wait_for(
+                            self.address,
+                            PanelAddress::AdventureChoice,
+                            AdventureLoading::new("TPR/EnvironmentsHQ/mountain"),
+                        ),
                         UserAction::AdventureAction(AdventureAction::TileAction(self.position)),
                     ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
