@@ -32,6 +32,7 @@ use data::primitives::{GameId, Side};
 use data::updates::{UpdateTracker, Updates};
 use data::user_actions::{NewGameAction, UserAction};
 use data::{game_actions, player_data};
+use database::{Database, SledDatabase};
 use deck_editor::deck_editor_actions;
 use display::render;
 use once_cell::sync::Lazy;
@@ -56,7 +57,6 @@ use tracing::{error, info, warn, warn_span};
 use with_error::{fail, verify, WithError};
 
 use crate::agent_response::HandleRequest;
-use crate::database::{Database, SledDatabase};
 use crate::{agent_response, debug};
 
 /// Stores active channels for each user.

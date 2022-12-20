@@ -19,9 +19,9 @@ use data::game::GameState;
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::GameId;
+use database::Database;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::PlayerIdentifier;
-use server::database::Database;
 
 #[derive(Clone, Debug, Default)]
 pub struct FakeDatabase {

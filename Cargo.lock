@@ -640,6 +640,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "database"
+version = "0.0.0"
+dependencies = [
+ "adapters",
+ "anyhow",
+ "data",
+ "once_cell",
+ "prost",
+ "protos",
+ "rules",
+ "serde_json",
+ "sled",
+ "with_error",
+]
+
+[[package]]
 name = "deck_card"
 version = "0.0.0"
 dependencies = [
@@ -1817,6 +1833,7 @@ dependencies = [
  "core_ui",
  "dashmap",
  "data",
+ "database",
  "deck_editor",
  "display",
  "enum-iterator",
@@ -1996,6 +2013,7 @@ dependencies = [
  "cards",
  "core_ui",
  "data",
+ "database",
  "maplit",
  "prost",
  "protos",

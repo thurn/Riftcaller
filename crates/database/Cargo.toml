@@ -1,27 +1,24 @@
 [package]
-name = "test_utils"
+name = "database"
 version = "0.0.0"
-description = "Tools to facilitate testing"
+description = "Core database implementation, handles querying and storing game state"
 license = "Apache-2.0"
 edition = "2021"
 
 [lib]
-path = "src/test_utils.rs"
-test = false
+path = "src/database.rs"
 doctest = false
+test = false
 
 [dependencies]
 anyhow = "1.0.58"
-maplit = "1.0.2"
+once_cell = "1.13.0"
 prost = "0.10.4"
+serde_json = "1.0.82"
+sled = "0.34.7"
 
-actions = { path = "../actions", version = "0.0.0" }
 adapters = { path = "../adapters", version = "0.0.0" }
-cards = { path = "../cards", version = "0.0.0" }
-core_ui = { path = "../core_ui", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }
-database = { path = "../database", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
-server = { path = "../server", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }

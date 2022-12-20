@@ -24,7 +24,7 @@ use crate::draft_prompt_panel::DraftPromptPanel;
 use crate::explore_panel::ExplorePanel;
 
 /// Renders a panel for the entity at the provided [TilePosition].
-pub fn render(position: TilePosition, player: &PlayerData) -> Result<Option<Node>> {
+pub fn render_tile_panel(position: TilePosition, player: &PlayerData) -> Result<Option<Node>> {
     let address = PanelAddress::TileEntity(position);
     let Some(adventure) = &player.adventure else {
         fail!("Expected active adventure");

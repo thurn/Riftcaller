@@ -19,6 +19,7 @@ use data::game::GameState;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{DeckIndex, GameId, Side};
 use data::user_actions::{DebugAction, NewGameAction, NewGameDebugOptions, UserAction};
+use database::Database;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
@@ -28,7 +29,6 @@ use protos::spelldawn::{
 use rules::mana;
 use with_error::WithError;
 
-use crate::database::Database;
 use crate::requests;
 use crate::requests::GameResponse;
 

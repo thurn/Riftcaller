@@ -25,11 +25,11 @@ use data::game::GameState;
 use data::player_data;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{GameId, Side};
+use database::Database;
 use once_cell::sync::Lazy;
 use protos::spelldawn::{CommandList, GameRequest};
 use with_error::fail;
 
-use crate::database::Database;
 use crate::requests;
 
 // This feels safe-ish?
