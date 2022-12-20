@@ -28,7 +28,7 @@ use protos::spelldawn::{
     ClientDebugCommand, CommandList, ConnectRequest, GameCommand, GameRequest, LogMessage,
     LogMessageLevel,
 };
-use server::{agent_response, database, requests};
+use server::{agent_response, requests};
 
 /// Initialize the plugin. Must be called immediately at application start.
 ///
