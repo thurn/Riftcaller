@@ -123,8 +123,8 @@ pub struct AdventureState {
     pub side: Side,
     /// Coin count, used to purchase more cards for deck
     pub coins: Coins,
-    /// Currently active screen, if any
-    pub screen: Option<AdventureScreen>,
+    /// Currently active mandatory choice screen, if any.
+    pub choice_screen: Option<AdventureScreen>,
     /// States of world map tiles
     #[serde_as(as = "Vec<(_, _)>")]
     pub tiles: HashMap<TilePosition, TileState>,

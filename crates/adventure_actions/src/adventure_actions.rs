@@ -21,10 +21,10 @@ use data::adventure::{AdventureScreen, AdventureState, TileEntity, TilePosition}
 use data::player_data::PlayerData;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
-use with_error::{fail, WithError};
+use with_error::{fail, verify, WithError};
 
 pub fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
-    state.screen = Some(AdventureScreen::AdventureOver);
+    state.choice_screen = Some(AdventureScreen::AdventureOver);
     Ok(())
 }
 
@@ -38,6 +38,7 @@ pub fn handle_leave_adventure(state: &mut PlayerData) -> Result<Vec<Command>> {
 }
 
 pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Result<()> {
+    verify_no_mandatory_choice(state)?;
     let tile = state.tiles.get_mut(&position).with_error(|| "Tile not found")?;
 
     match tile.entity.with_error(|| "No action for tile")? {
@@ -49,7 +50,8 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
         TileEntity::Draft { cost } => {
             tile.entity = None;
             state.coins -= cost;
-            state.screen = Some(AdventureScreen::Draft(card_generator::draft_choices(state)));
+            state.choice_screen =
+                Some(AdventureScreen::Draft(card_generator::draft_choices(state)));
         }
     }
 
@@ -57,19 +59,23 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
 }
 
 pub fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
-    match &state.screen {
-        Some(AdventureScreen::Draft(data)) => {
-            let choice = data.choices.get(index).with_error(|| "Choice index out of bounds")?;
-            state
-                .collection
-                .entry(choice.card)
-                .and_modify(|i| *i += choice.quantity)
-                .or_insert(choice.quantity);
-            state.screen = None;
-            Ok(())
-        }
-        _ => {
-            fail!("No active draft!")
-        }
-    }
+    let Some(AdventureScreen::Draft(data)) = &state.choice_screen else {
+        fail!("No active draft!")
+    };
+
+    let choice = data.choices.get(index).with_error(|| "Choice index out of bounds")?;
+    state
+        .collection
+        .entry(choice.card)
+        .and_modify(|i| *i += choice.quantity)
+        .or_insert(choice.quantity);
+    state.choice_screen = None;
+    Ok(())
+}
+
+/// Other adventure actions cannot be take while a choice screen like 'draft a
+/// card' is being displayed.
+fn verify_no_mandatory_choice(state: &AdventureState) -> Result<()> {
+    verify!(state.choice_screen.is_none(), "Mandatory choice screen is active!");
+    Ok(())
 }

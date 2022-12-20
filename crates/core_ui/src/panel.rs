@@ -15,9 +15,9 @@
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    interface_panel_address, ClientPanelAddress, Dimension, FlexAlign, FlexJustify, FlexPosition,
-    ImageScaleMode, InterfacePanel, InterfacePanelAddress, TextAlign, TogglePanelCommand,
-    UpdatePanelsCommand,
+    interface_panel_address, AddressWithLoadingState, ClientPanelAddress, Dimension, FlexAlign,
+    FlexJustify, FlexPosition, ImageScaleMode, InterfacePanel, InterfacePanelAddress, TextAlign,
+    TogglePanelCommand, UpdatePanelsCommand,
 };
 
 use crate::button::IconButton;
@@ -46,6 +46,45 @@ pub fn set(address: impl Into<InterfacePanelAddress>) -> Command {
 pub fn open(address: impl Into<InterfacePanelAddress>) -> Command {
     Command::TogglePanel(TogglePanelCommand {
         toggle_command: Some(ToggleCommand::OpenPanel(address.into())),
+    })
+}
+
+/// Add the indicated panel to the end of the stack of open views if
+/// it is not already present, throwing an exception if this panel is not
+/// cached. Does not attempt to fetch the panel from the server.
+pub fn open_existing(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::OpenExistingPanel(address.into())),
+    })
+}
+
+/// Add the indicated panel to the end of the stack of open views if
+/// it is not already present, displaying the provided component as
+/// a loading state if the panel in question is not already cached.
+pub fn load(
+    address: impl Into<InterfacePanelAddress>,
+    loading: impl Component + 'static,
+) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::LoadPanel(AddressWithLoadingState {
+            open_panel: Some(address.into()),
+            loading_state: loading.build(),
+        })),
+    })
+}
+
+/// Wait until the indicated panel address is refreshed, displaying 'loading'
+/// content while waiting. Does *not* request the address from the server, it is
+/// assumed that some state mutation will cause the panel to be refreshed.
+pub fn wait_for(
+    address: impl Into<InterfacePanelAddress>,
+    loading: impl Component + 'static,
+) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::WaitFor(AddressWithLoadingState {
+            open_panel: Some(address.into()),
+            loading_state: loading.build(),
+        })),
     })
 }
 

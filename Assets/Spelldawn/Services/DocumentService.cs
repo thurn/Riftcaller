@@ -43,6 +43,7 @@ namespace Spelldawn.Services
 
     readonly List<InterfacePanelAddress> _openPanels = new();
     readonly Dictionary<InterfacePanelAddress, Node> _panelCache = new();
+    readonly HashSet<InterfacePanelAddress> _waitingFor = new();
     InterfacePanelAddress? _switchTo;
 
     VisualElement _mainControls = null!;
@@ -164,6 +165,22 @@ namespace Spelldawn.Services
       InterfacePanelAddress? fetch = null;
       switch (command.ToggleCommandCase)
       {
+        case TogglePanelCommand.ToggleCommandOneofCase.LoadPanel:
+          fetch = command.LoadPanel.OpenPanel;
+          if (!_openPanels.Contains(command.LoadPanel.OpenPanel))
+          {
+            _openPanels.Add(command.LoadPanel.OpenPanel);
+          }
+
+          if (!_panelCache.ContainsKey(command.LoadPanel.OpenPanel))
+          {
+            _panelCache[command.LoadPanel.OpenPanel] = command.LoadPanel.LoadingState;
+            _waitingFor.Add(command.LoadPanel.OpenPanel);
+            Loading = true;
+          }
+          RenderPanels();
+
+          break;
         case TogglePanelCommand.ToggleCommandOneofCase.SetPanel:
           fetch = command.SetPanel;
           if (_panelCache.ContainsKey(command.SetPanel))
@@ -190,12 +207,36 @@ namespace Spelldawn.Services
 
           RenderPanels();
           break;
+        case TogglePanelCommand.ToggleCommandOneofCase.OpenExistingPanel:
+          if (!_panelCache.ContainsKey(command.OpenExistingPanel))
+          {
+            throw new InvalidOperationException($"Panel not found: {command.OpenExistingPanel}");
+          }
+          
+          if (!_openPanels.Contains(command.OpenExistingPanel))
+          {
+            _openPanels.Add(command.OpenExistingPanel);
+          }
+
+          RenderPanels();
+          break;        
         case TogglePanelCommand.ToggleCommandOneofCase.ClosePanel:
           _openPanels.Remove(command.ClosePanel);
           RenderPanels();
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.CloseAll:
           _openPanels.Clear();
+          RenderPanels();
+          break;
+        case TogglePanelCommand.ToggleCommandOneofCase.WaitFor:
+          if (!_openPanels.Contains(command.WaitFor.OpenPanel))
+          {
+            _openPanels.Add(command.WaitFor.OpenPanel);
+          }
+
+          _panelCache[command.WaitFor.OpenPanel] = command.WaitFor.LoadingState;
+          _waitingFor.Add(command.WaitFor.OpenPanel);
+          Loading = true;
           RenderPanels();
           break;
         case TogglePanelCommand.ToggleCommandOneofCase.OpenBottomSheetAddress:
@@ -237,6 +278,8 @@ namespace Spelldawn.Services
     {
       foreach (var panel in command.Panels)
       {
+        _waitingFor.Remove(panel.Address);
+        
         if (_switchTo != null && _switchTo.Equals(panel.Address))
         {
           _openPanels.Clear();
@@ -246,6 +289,11 @@ namespace Spelldawn.Services
         }
 
         _panelCache[panel.Address] = panel.Node;
+      }
+
+      if (_waitingFor.Count == 0)
+      {
+        Loading = false;
       }
 
       RenderPanels();

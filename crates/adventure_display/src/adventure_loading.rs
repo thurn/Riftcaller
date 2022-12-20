@@ -12,34 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::actions;
 use core_ui::prelude::*;
-use data::adventure_action::AdventureAction;
-use data::user_actions::UserAction;
-use panel_address::PanelAddress;
-use panels::button_menu::ButtonMenu;
+use core_ui::style;
+use protos::spelldawn::{FlexPosition, SpriteAddress};
 
-#[derive(Default)]
-pub struct AdventureOverPanel {}
+pub struct AdventureLoading {
+    image: SpriteAddress,
+}
 
-impl AdventureOverPanel {
-    pub fn new() -> Self {
-        Self::default()
+impl AdventureLoading {
+    pub fn new(image: impl Into<String>) -> Self {
+        Self { image: style::sprite(image.into()) }
     }
 }
 
-impl Component for AdventureOverPanel {
+impl Component for AdventureLoading {
     fn build(self) -> Option<Node> {
-        ButtonMenu::new(PanelAddress::AdventureChoice)
-            .title("Defeated")
-            .button(
-                "Main Menu",
-                actions::close_and(
-                    PanelAddress::AdventureChoice,
-                    UserAction::AdventureAction(AdventureAction::LeaveAdventure),
-                ),
+        Row::new("AdventureLoading")
+            .style(
+                Style::new()
+                    .position_type(FlexPosition::Absolute)
+                    .position(Edge::All, 0.px())
+                    .background_image(self.image),
             )
-            .show_close_button(false)
             .build()
     }
 }

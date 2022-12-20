@@ -87,7 +87,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
 
     AdventureState {
         side,
-        screen: None,
+        choice_screen: None,
         coins: STARTING_COINS,
         tiles,
         revealed_regions,

@@ -14,6 +14,7 @@
 
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
+pub mod adventure_loading;
 pub mod adventure_over_panel;
 pub mod adventure_panels;
 pub mod draft_panel;
@@ -47,19 +48,19 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
             .collect(),
     })];
 
-    if state.screen.is_some() {
+    if state.choice_screen.is_some() {
         let screen = render_adventure_screen(state);
-        commands.push(panel::update(PanelAddress::AdventureScreen, screen));
-        commands.push(panel::open(PanelAddress::AdventureScreen));
+        commands.push(panel::update(PanelAddress::AdventureChoice, screen));
+        commands.push(panel::open(PanelAddress::AdventureChoice));
     }
 
     Ok(commands)
 }
 
-/// Renders a screen based on the [AdventureScreen] contained within the
+/// Renders a choice screen based on the [AdventureScreen] contained within the
 /// provided state, if any
 pub fn render_adventure_screen(state: &AdventureState) -> Option<Node> {
-    match &state.screen {
+    match &state.choice_screen {
         Some(AdventureScreen::AdventureOver) => AdventureOverPanel::new().build(),
         Some(AdventureScreen::Draft(data)) => DraftPanel { data }.build(),
         _ => None,

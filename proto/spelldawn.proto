@@ -1187,7 +1187,7 @@ message UpdatePanelsCommand {
 
 // Open a panel and display the provided loading state while it is
 // being fetched
-message LoadPanel {
+message AddressWithLoadingState {
     InterfacePanelAddress open_panel = 1;
 
     // Content to display if this panel is not already cached
@@ -1199,7 +1199,7 @@ message TogglePanelCommand {
     oneof toggle_command {
         // Add a panel to the end of the stack of open views, and display a
         // loading screen while it is being fetched.
-        LoadPanel load_panel = 1;
+        AddressWithLoadingState load_panel = 1;
 
         // Close all open panels and show the indicated panel.
         InterfacePanelAddress set_panel = 2;
@@ -1208,32 +1208,41 @@ message TogglePanelCommand {
         // it is not already present. Does not display a loading state.
         InterfacePanelAddress open_panel = 3;
 
+        // Add the indicated panel to the end of the stack of open views if
+        // it is not already present. Throws an exception if no cached version
+        // of this panel is available. Does not attempt to fetch the panel.
+        InterfacePanelAddress open_existing_panel = 4;
+
         // Removes the indicated panel from the stack of open views.
-        InterfacePanelAddress close_panel = 4;
+        InterfacePanelAddress close_panel = 5;
 
         // Close all open panels
-        google.protobuf.Empty close_all = 5;
+        google.protobuf.Empty close_all = 6;
+
+        // Overrwrite the cached value of the identified panel with 'loading
+        // state' and then open it. Does *not* attempt to fetch the panel.
+        AddressWithLoadingState wait_for = 7;
 
         // Opens a new bottom sheet with the indicated panel.
         //
         // Closes any existing bottom sheet.
-        InterfacePanelAddress open_bottom_sheet_address = 6;
+        InterfacePanelAddress open_bottom_sheet_address = 8;
 
         // Closes the currently-open bottom sheet.
-        google.protobuf.Empty close_bottom_sheet = 7;
+        google.protobuf.Empty close_bottom_sheet = 9;
 
         // Pushes the indicated panel as a new bottom sheet page.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress push_bottom_sheet_address = 8;
+        InterfacePanelAddress push_bottom_sheet_address = 10;
 
         // Pops the currently visible bottom sheet page and displays the
         // indicated panel as the *new* sheet content.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress pop_to_bottom_sheet_address = 9;
+        InterfacePanelAddress pop_to_bottom_sheet_address = 11;
     }
 }
 
