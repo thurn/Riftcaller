@@ -71,10 +71,11 @@ impl TilePosition {
 
 /// Possible events/actions which can take place on a tile, represented by map
 /// icons
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TileEntity {
     Explore { region: RegionId, cost: Coins },
     Draft { cost: Coins },
+    Shop,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

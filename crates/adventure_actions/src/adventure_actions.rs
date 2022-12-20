@@ -41,18 +41,19 @@ pub fn handle_tile_action(state: &mut AdventureState, position: TilePosition) ->
     verify_no_mandatory_choice(state)?;
     let tile = state.tiles.get_mut(&position).with_error(|| "Tile not found")?;
 
-    match tile.entity.with_error(|| "No action for tile")? {
+    match tile.entity.as_ref().with_error(|| "No action for tile")? {
         TileEntity::Explore { region, cost } => {
-            state.coins -= cost;
-            state.revealed_regions.insert(region);
+            state.coins -= *cost;
+            state.revealed_regions.insert(*region);
             tile.entity = None;
         }
         TileEntity::Draft { cost } => {
+            state.coins -= *cost;
             tile.entity = None;
-            state.coins -= cost;
-            state.choice_screen =
-                Some(AdventureChoiceScreen::Draft(card_generator::draft_choices(state)));
+            let draft_data = card_generator::draft_choices(state);
+            state.choice_screen = Some(AdventureChoiceScreen::Draft(draft_data));
         }
+        TileEntity::Shop => {}
     }
 
     Ok(())

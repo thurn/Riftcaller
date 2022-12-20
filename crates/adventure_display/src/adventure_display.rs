@@ -97,7 +97,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
         });
 
         sprites.push(WorldMapSprite {
-            sprite_address: Some(sprite_address_for_entity(*entity)),
+            sprite_address: Some(sprite_address_for_entity(entity)),
             color: Some(design::WHITE),
             anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
             scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
@@ -109,6 +109,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
         position: Some(adapters::map_position(position)),
         on_visit: tile
             .entity
+            .as_ref()
             .map(|_| actions::client_action(panel::open(PanelAddress::TileEntity(position)))),
         tile_type: if tile.entity.is_some() {
             MapTileType::Visitable.into()
@@ -120,7 +121,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
     }
 }
 
-fn sprite_address_for_entity(entity: TileEntity) -> SpriteAddress {
+fn sprite_address_for_entity(entity: &TileEntity) -> SpriteAddress {
     SpriteAddress {
         address: match entity {
             TileEntity::Draft { .. } => {
@@ -128,6 +129,9 @@ fn sprite_address_for_entity(entity: TileEntity) -> SpriteAddress {
             }
             TileEntity::Explore { .. } => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_app/icon_app_198.png"
+            }
+            TileEntity::Shop => {
+                "RainbowArt/CleanFlatIcon/png_128/icon/icon_architecture/icon_architecture_6.png"
             }
         }
         .to_string(),

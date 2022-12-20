@@ -55,7 +55,9 @@ pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
     adventure
         .tiles
         .iter()
-        .filter_map(|(position, state)| state.entity.map(|_| PanelAddress::TileEntity(*position)))
+        .filter_map(|(position, state)| {
+            state.entity.as_ref().map(|_| PanelAddress::TileEntity(*position))
+        })
         .chain(vec![PanelAddress::AdventureMenu, PanelAddress::Settings])
         .collect()
 }
