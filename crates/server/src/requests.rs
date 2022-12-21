@@ -22,7 +22,6 @@ use core_ui::panel;
 use core_ui::prelude::Component;
 use dashmap::DashMap;
 use data::adventure::AdventureState;
-use data::adventure_action::AdventureAction;
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
@@ -398,6 +397,15 @@ fn handle_leave_game(database: &mut impl Database, player_id: PlayerId) -> Resul
     })]))
 }
 
+fn handle_leave_adventure(state: &mut PlayerData) -> Result<Vec<Command>> {
+    state.adventure = None;
+    Ok(vec![Command::LoadScene(LoadSceneCommand {
+        scene_name: "Main".to_string(),
+        mode: SceneLoadMode::Single.into(),
+        skip_if_current: true,
+    })])
+}
+
 /// Looks up the deck the `player_id` player has requested to use for a new game
 fn requested_deck(
     database: &impl Database,
@@ -517,8 +525,12 @@ fn handle_standard_action(
     let action: UserAction = de::from_slice(&standard_action.payload)
         .with_error(|| "Failed to deserialize action payload")?;
     let mut result = match action {
-        UserAction::AdventureAction(action) => {
-            handle_adventure_action(database, player_id, &action)
+        UserAction::NewAdventure(side) => handle_new_adventure(database, player_id, side),
+        UserAction::AdventureAction(action) => with_adventure(database, player_id, |state| {
+            adventure_actions::handle_adventure_action(state, &action)
+        }),
+        UserAction::LeaveAdventure => {
+            handle_player_action(database, player_id, handle_leave_adventure)
         }
         UserAction::NewGame(new_game_action) => {
             handle_new_game(database, player_id, new_game_action)
@@ -543,29 +555,6 @@ fn handle_standard_action(
     result.command_list.commands.push(GameCommand { command: Some(update_navbar(&player)) });
 
     Ok(result)
-}
-
-/// Handles an incoming [AdventureAction] and produces a client response.
-fn handle_adventure_action(
-    database: &mut impl Database,
-    player_id: PlayerId,
-    action: &AdventureAction,
-) -> Result<GameResponse> {
-    match action {
-        AdventureAction::NewAdventure(side) => handle_new_adventure(database, player_id, *side),
-        AdventureAction::TileAction(position) => with_adventure(database, player_id, |state| {
-            adventure_actions::handle_tile_action(state, *position)
-        }),
-        AdventureAction::AbandonAdventure => with_adventure(database, player_id, |state| {
-            adventure_actions::handle_abandon_adventure(state)
-        }),
-        AdventureAction::LeaveAdventure => handle_player_action(database, player_id, |state| {
-            adventure_actions::handle_leave_adventure(state)
-        }),
-        AdventureAction::DraftCard(index) => with_adventure(database, player_id, |state| {
-            adventure_actions::handle_draft(state, *index)
-        }),
-    }
 }
 
 fn update_navbar(player: &PlayerData) -> Command {

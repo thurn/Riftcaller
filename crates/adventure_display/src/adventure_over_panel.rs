@@ -14,7 +14,6 @@
 
 use core_ui::actions;
 use core_ui::prelude::*;
-use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 use panels::button_menu::ButtonMenu;
@@ -34,10 +33,7 @@ impl Component for AdventureOverPanel {
             .title("Defeated")
             .button(
                 "Main Menu",
-                actions::close_and(
-                    PanelAddress::AdventureChoice,
-                    UserAction::AdventureAction(AdventureAction::LeaveAdventure),
-                ),
+                actions::close_and(PanelAddress::AdventureChoice, UserAction::LeaveAdventure),
             )
             .show_close_button(false)
             .build()

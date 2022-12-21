@@ -15,7 +15,6 @@
 use std::collections::HashMap;
 
 use core_ui::actions::InterfaceAction;
-use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::Side;
@@ -65,7 +64,7 @@ impl TestAdventure {
             },
         };
 
-        result.perform(UserAction::AdventureAction(AdventureAction::NewAdventure(side)));
+        result.perform(UserAction::NewAdventure(side));
         result.connect();
 
         result

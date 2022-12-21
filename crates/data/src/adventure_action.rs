@@ -15,23 +15,17 @@
 use serde::{Deserialize, Serialize};
 
 use crate::adventure::TilePosition;
-use crate::primitives::Side;
 use crate::user_actions::UserAction;
 
 /// Actions which can be taken for the 'adventure' game mode.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum AdventureAction {
-    /// Initiate a new adventure, generating a new map and replacing any
-    /// existing adventure.
-    NewAdventure(Side),
+    /// Transition an adventure to the 'completed' state and display the
+    /// adventure summary screen. Can be followed by
+    /// `UserAction::LeaveAdventure` to completely exit the adventure.
+    AbandonAdventure,
     /// Take the associated action on the indicated map tile
     TileAction(TilePosition),
-    /// Transition an adventure to the 'completed' state and display the
-    /// adventure summary screen.
-    AbandonAdventure,
-    /// Remove a player's current adventure, i.e. to stop displaying the
-    /// adventure summary screen.
-    LeaveAdventure,
     /// Draft the card at the indicated index on the draft screen
     DraftCard(usize),
 }

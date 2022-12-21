@@ -86,13 +86,28 @@ impl From<DeckEditorAction> for UserAction {
 /// All possible action payloads that can be sent from a client
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
+    /// Developer actions for debugging
+    Debug(DebugAction),
+
+    /// Initiate a new adventure, generating a new map and replacing any
+    /// existing adventure.
+    NewAdventure(Side),
+    /// Perform an action within an ongoing adventure
     AdventureAction(AdventureAction),
+    /// Remove a player's current adventure, i.e. to stop displaying the
+    /// adventure summary screen. Typically happens *after* the 'abandon
+    /// adventure' action transitions it to its summary state.
+    LeaveAdventure,
+
+    /// Create a new game (match between two players)
     NewGame(NewGameAction),
+    /// Perform an action within a game.
+    GameAction(GameAction),
     /// Leave the game that the player is currently playing in. Typically
     /// invoked from the game over screen, the 'resign' action is used to
     /// end the game itself.
     LeaveGame,
-    Debug(DebugAction),
-    GameAction(GameAction),
+
+    /// Perform an action in the deck editor
     DeckEditorAction(DeckEditorAction),
 }
