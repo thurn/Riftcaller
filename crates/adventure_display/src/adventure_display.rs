@@ -48,22 +48,27 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
             .collect(),
     })];
 
-    if state.choice_screen.is_some() {
-        let screen = render_adventure_choice_screen(state);
-        commands.push(panel::update(PanelAddress::AdventureChoice, screen));
-        commands.push(panel::open_existing(PanelAddress::AdventureChoice));
+    if let Some(screen) = &state.choice_screen {
+        let (screen, address) = render_adventure_choice_screen(screen);
+        commands.push(panel::update(address, screen));
+        commands.push(panel::open_existing(address));
     }
 
     Ok(commands)
 }
 
-/// Renders a choice screen based on the [AdventureChoiceScreen] contained
-/// within the provided state, if any
-pub fn render_adventure_choice_screen(state: &AdventureState) -> Option<Node> {
-    match &state.choice_screen {
-        Some(AdventureChoiceScreen::AdventureOver) => AdventureOverPanel::new().build(),
-        Some(AdventureChoiceScreen::Draft(data)) => DraftPanel { data }.build(),
-        _ => None,
+/// Renders a mandatory choice screen based on the [AdventureChoiceScreen]
+/// contained within the provided state, if any
+pub fn render_adventure_choice_screen(
+    screen: &AdventureChoiceScreen,
+) -> (Option<Node>, PanelAddress) {
+    match screen {
+        AdventureChoiceScreen::AdventureOver => {
+            (AdventureOverPanel::new().build(), PanelAddress::AdventureOver)
+        }
+        AdventureChoiceScreen::Draft(data) => {
+            (DraftPanel { data }.build(), PanelAddress::DraftCard)
+        }
     }
 }
 

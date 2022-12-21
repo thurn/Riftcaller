@@ -54,7 +54,7 @@ impl<'a> Component for DraftPanel<'a> {
                                         .margin(Edge::Top, 16.px()),
                                 )
                                 .action(actions::close_and(
-                                    PanelAddress::AdventureChoice,
+                                    PanelAddress::DraftCard,
                                     AdventureAction::DraftCard(i),
                                 )),
                         )

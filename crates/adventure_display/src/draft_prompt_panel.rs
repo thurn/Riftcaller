@@ -39,7 +39,7 @@ impl Component for DraftPromptPanel {
                     .action(actions::with_optimistic_update(
                         panel::close_and_wait_for(
                             self.address,
-                            PanelAddress::AdventureChoice,
+                            PanelAddress::DraftCard,
                             AdventureLoading::new("TPR/EnvironmentsHQ/mountain"),
                         ),
                         UserAction::AdventureAction(AdventureAction::TileAction(self.position)),

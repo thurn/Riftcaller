@@ -29,11 +29,11 @@ impl AdventureOverPanel {
 
 impl Component for AdventureOverPanel {
     fn build(self) -> Option<Node> {
-        ButtonMenu::new(PanelAddress::AdventureChoice)
+        ButtonMenu::new(PanelAddress::AdventureOver)
             .title("Defeated")
             .button(
                 "Main Menu",
-                actions::close_and(PanelAddress::AdventureChoice, UserAction::LeaveAdventure),
+                actions::close_and(PanelAddress::AdventureOver, UserAction::LeaveAdventure),
             )
             .show_close_button(false)
             .build()
