@@ -32,7 +32,7 @@ pub struct DraftPromptPanel {
 impl Component for DraftPromptPanel {
     fn build(self) -> Option<Node> {
         TilePromptPanel::new()
-            .image(style::sprite("TPR/EnvironmentsHQ/mountain"))
+            .image(style::sprite("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"))
             .prompt("An expedition into these mountain ruins could provide a valuable treasure")
             .buttons(vec![
                 Button::new(format!("Draft: {} {}", self.cost, icons::COINS))
@@ -40,7 +40,7 @@ impl Component for DraftPromptPanel {
                         panel::close_and_wait_for(
                             self.address,
                             PanelAddress::DraftCard,
-                            AdventureLoading::new("TPR/EnvironmentsHQ/mountain"),
+                            AdventureLoading::new("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"),
                         ),
                         UserAction::AdventureAction(AdventureAction::TileAction(self.position)),
                     ))

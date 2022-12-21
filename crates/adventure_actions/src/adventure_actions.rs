@@ -46,6 +46,7 @@ fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Res
         TileEntity::Draft { cost, .. } => {
             state.coins -= *cost;
             state.choice_screen = Some(AdventureChoiceScreen::Draft(position));
+            tile.entity = None;
         }
         TileEntity::Shop => {}
     }

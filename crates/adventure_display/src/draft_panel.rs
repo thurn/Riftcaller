@@ -31,7 +31,7 @@ pub struct DraftPanel<'a> {
 impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
-            .image(style::sprite("TPR/EnvironmentsHQ/mountain"))
+            .image(style::sprite("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"))
             .content(Row::new("DraftPanel").children(self.data.choices.iter().enumerate().map(
                 |(i, choice)| {
                     Column::new("Choice")
