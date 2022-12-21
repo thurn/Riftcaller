@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use data::adventure::{AdventureState, DraftChoice, DraftData};
+use data::adventure::{AdventureConfiguration, DraftChoice, DraftData};
 use data::card_name::CardName;
 use data::primitives::Rarity;
 use data::set_name::SetName;
 
 /// Generates options for drafting a card during an adventure
-pub fn draft_choices(state: &mut AdventureState) -> DraftData {
+pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
     DraftData {
-        choices: state
+        choices: config
             .choose_multiple(3, common_cards())
             .into_iter()
             .map(|name| DraftChoice { quantity: 1, card: name })
@@ -29,10 +29,9 @@ pub fn draft_choices(state: &mut AdventureState) -> DraftData {
 }
 
 fn common_cards() -> impl Iterator<Item = CardName> {
-    rules::CARDS
-        .iter()
-        .filter(|(_, definition)| {
+    rules::all_cards()
+        .filter(|definition| {
             definition.sets.contains(&SetName::Core2024) && definition.rarity == Rarity::Common
         })
-        .map(|(name, _)| *name)
+        .map(|definition| definition.name)
 }

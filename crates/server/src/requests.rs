@@ -21,7 +21,7 @@ use cards::decklists;
 use core_ui::panel;
 use core_ui::prelude::Component;
 use dashmap::DashMap;
-use data::adventure::AdventureState;
+use data::adventure::{AdventureConfiguration, AdventureState};
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
@@ -309,7 +309,8 @@ fn handle_new_adventure(
     side: Side,
 ) -> Result<GameResponse> {
     let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
-    player.adventure = Some(adventure_generator::new_adventure(side));
+    player.adventure =
+        Some(adventure_generator::new_adventure(side, AdventureConfiguration::new()));
     database.write_player(&player)?;
     Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
         scene_name: "World".to_string(),

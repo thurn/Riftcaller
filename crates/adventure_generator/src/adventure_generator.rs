@@ -14,9 +14,13 @@
 
 //! Generates world maps for the 'adventure' game mode
 
+pub mod card_generator;
+
 use std::collections::{HashMap, HashSet};
 
-use data::adventure::{AdventureState, Coins, RegionId, TileEntity, TilePosition, TileState};
+use data::adventure::{
+    AdventureConfiguration, AdventureState, Coins, RegionId, TileEntity, TilePosition, TileState,
+};
 use data::primitives::Side;
 
 const TOP_LEFT: u8 = 0b00100000;
@@ -29,7 +33,7 @@ const LEFT: u8 = 0b00000001;
 pub const STARTING_COINS: Coins = Coins(500);
 
 /// Builds a new random 'adventure' mode world map
-pub fn new_adventure(side: Side) -> AdventureState {
+pub fn new_adventure(side: Side, mut config: AdventureConfiguration) -> AdventureState {
     let mut tiles = HashMap::new();
 
     add_tile(&mut tiles, -3, 2, "hexGrassySandPalms02");
@@ -67,7 +71,13 @@ pub fn new_adventure(side: Side) -> AdventureState {
     add_with_road(&mut tiles, -3, -1, "hexScrublands01", road(TOP_RIGHT | BOTTOM_LEFT, 1));
     add_tile(&mut tiles, -2, -1, "hexTropicalPlains00");
     add_tile(&mut tiles, -1, -1, "hexSwamp01");
-    add_with_entity(&mut tiles, 0, -1, "hexMountain03", TileEntity::Draft { cost: Coins(25) });
+    add_with_entity(
+        &mut tiles,
+        0,
+        -1,
+        "hexMountain03",
+        TileEntity::Draft { cost: Coins(25), data: card_generator::draft_choices(&mut config) },
+    );
     add_tile(&mut tiles, 1, -1, "hexPlainsFarm00");
     add_with_road(&mut tiles, 2, -1, "hexPlains00", road(TOP_LEFT | BOTTOM_RIGHT, 0));
     add_tile(&mut tiles, 3, -1, "hexJungle03");
@@ -91,7 +101,7 @@ pub fn new_adventure(side: Side) -> AdventureState {
         coins: STARTING_COINS,
         tiles,
         revealed_regions,
-        rng: None,
+        config,
         collection: HashMap::new(),
     }
 }

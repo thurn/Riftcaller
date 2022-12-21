@@ -39,7 +39,9 @@ pub fn render_tile_panel(position: TilePosition, player: &PlayerData) -> Result<
 
     Ok(match entity {
         TileEntity::Explore { cost, .. } => ExplorePanel { cost: *cost, address, position }.build(),
-        TileEntity::Draft { cost } => DraftPromptPanel { cost: *cost, address, position }.build(),
+        TileEntity::Draft { cost, .. } => {
+            DraftPromptPanel { cost: *cost, address, position }.build()
+        }
         TileEntity::Shop => Row::new("ShopPanel").build(),
     })
 }

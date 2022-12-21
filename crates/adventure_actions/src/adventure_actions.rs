@@ -14,8 +14,6 @@
 
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
-pub mod card_generator;
-
 use anyhow::Result;
 use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition};
 use data::adventure_action::AdventureAction;
@@ -45,11 +43,9 @@ fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Res
             state.revealed_regions.insert(*region);
             tile.entity = None;
         }
-        TileEntity::Draft { cost } => {
+        TileEntity::Draft { cost, .. } => {
             state.coins -= *cost;
-            tile.entity = None;
-            let draft_data = card_generator::draft_choices(state);
-            state.choice_screen = Some(AdventureChoiceScreen::Draft(draft_data));
+            state.choice_screen = Some(AdventureChoiceScreen::Draft(position));
         }
         TileEntity::Shop => {}
     }
@@ -58,16 +54,17 @@ fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Res
 }
 
 fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
-    let Some(AdventureChoiceScreen::Draft(data)) = &state.choice_screen else {
-        fail!("No active draft!")
+    let Some(AdventureChoiceScreen::Draft(position)) = &state.choice_screen else {
+        fail!("No active draft!");
+    };
+
+    let TileEntity::Draft { data, ..} = state.tile_entity(*position)? else {
+        fail!("Invalid draft position");
     };
 
     let choice = data.choices.get(index).with_error(|| "Choice index out of bounds")?;
-    state
-        .collection
-        .entry(choice.card)
-        .and_modify(|i| *i += choice.quantity)
-        .or_insert(choice.quantity);
+    let quantity = choice.quantity;
+    state.collection.entry(choice.card).and_modify(|i| *i += quantity).or_insert(quantity);
     state.choice_screen = None;
     Ok(())
 }

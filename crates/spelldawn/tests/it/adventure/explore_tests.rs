@@ -43,5 +43,5 @@ fn test_invoke_explore() {
     assert!(adventure
         .interface
         .screen_overlay()
-        .has_text(format!("{}", adventure_generator::STARTING_COINS - Coins(100))));
+        .has_text(format!("{}", /* adventure_generator::STARTING_COINS - */ Coins(400))));
 }

@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 
+use cards::initialize;
 use core_ui::actions::InterfaceAction;
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
@@ -42,6 +43,7 @@ pub struct TestAdventure {
 
 impl TestAdventure {
     pub fn new(side: Side) -> Self {
+        initialize::run();
         let (game_id, player_id, _) = crate::generate_ids();
 
         let mut result = Self {

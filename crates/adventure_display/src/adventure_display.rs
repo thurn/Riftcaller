@@ -32,6 +32,7 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     FlexVector3, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite, WorldMapTile,
 };
+use with_error::fail;
 
 use crate::adventure_over_panel::AdventureOverPanel;
 use crate::draft_panel::DraftPanel;
@@ -49,27 +50,41 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     })];
 
     if let Some(screen) = &state.choice_screen {
-        let (screen, address) = render_adventure_choice_screen(screen);
-        commands.push(panel::update(address, screen));
-        commands.push(panel::open_existing(address));
+        let rendered = render_adventure_choice_screen(state, screen)?;
+        commands.push(panel::update(rendered.address, rendered.node));
+        commands.push(panel::open_existing(rendered.address));
     }
 
     Ok(commands)
 }
 
+pub struct RenderedChoiceScreen {
+    pub node: Option<Node>,
+    pub address: PanelAddress,
+}
+
 /// Renders a mandatory choice screen based on the [AdventureChoiceScreen]
 /// contained within the provided state, if any
 pub fn render_adventure_choice_screen(
+    state: &AdventureState,
     screen: &AdventureChoiceScreen,
-) -> (Option<Node>, PanelAddress) {
-    match screen {
-        AdventureChoiceScreen::AdventureOver => {
-            (AdventureOverPanel::new().build(), PanelAddress::AdventureOver)
+) -> Result<RenderedChoiceScreen> {
+    Ok(match screen {
+        AdventureChoiceScreen::AdventureOver => RenderedChoiceScreen {
+            node: AdventureOverPanel::new().build(),
+            address: PanelAddress::AdventureOver,
+        },
+        AdventureChoiceScreen::Draft(position) => {
+            let TileEntity::Draft { data, .. } = state.tile_entity(*position)? else {
+                fail!("Expected draft at indicated position")
+            };
+
+            RenderedChoiceScreen {
+                node: DraftPanel { data }.build(),
+                address: PanelAddress::DraftCard,
+            }
         }
-        AdventureChoiceScreen::Draft(data) => {
-            (DraftPanel { data }.build(), PanelAddress::DraftCard)
-        }
-    }
+    })
 }
 
 fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {

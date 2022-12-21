@@ -14,6 +14,7 @@
 
 use std::collections::{HashMap, HashSet};
 
+use anyhow::Result;
 use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
@@ -21,6 +22,7 @@ use rand::prelude::IteratorRandom;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
+use with_error::WithError;
 
 use crate::card_name::CardName;
 use crate::primitives::Side;
@@ -69,12 +71,24 @@ impl TilePosition {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DraftChoice {
+    pub quantity: u32,
+    pub card: CardName,
+}
+
+/// Data for rendering the draft screen
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct DraftData {
+    pub choices: Vec<DraftChoice>,
+}
+
 /// Possible events/actions which can take place on a tile, represented by map
 /// icons
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TileEntity {
     Explore { region: RegionId, cost: Coins },
-    Draft { cost: Coins },
+    Draft { cost: Coins, data: DraftData },
     Shop,
 }
 
@@ -95,54 +109,29 @@ impl TileState {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DraftChoice {
-    pub quantity: u32,
-    pub card: CardName,
-}
-
-/// Data for rendering the draft screen
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct DraftData {
-    pub choices: Vec<DraftChoice>,
-}
-
 /// Represents an active choice screen within an adventure
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AdventureChoiceScreen {
     /// Adventure has ended
     AdventureOver,
-    /// Pick one card of the provided card names
-    Draft(DraftData),
+    /// Pick one card of a set of draft options
+    Draft(TilePosition),
 }
 
-/// Stores the primary state for one player during an ongoing adventure
-#[serde_as]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AdventureState {
-    /// Player type
-    pub side: Side,
-    /// Coin count, used to purchase more cards for deck
-    pub coins: Coins,
-    /// Currently active mandatory choice screen, if any.
-    pub choice_screen: Option<AdventureChoiceScreen>,
-    /// States of world map tiles
-    #[serde_as(as = "Vec<(_, _)>")]
-    pub tiles: HashMap<TilePosition, TileState>,
-    /// Regions which the player can currently see. By default Region 1 is
-    /// revealed.
-    pub revealed_regions: HashSet<RegionId>,
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct AdventureConfiguration {
     /// Optionally, a random number generator for this adventure to use. This
     /// generator is serializable, so the state will be deterministic even
     /// across different sessions. If not specified, `rand::thread_rng()` is
     /// used instead and behavior is not deterministic.
     pub rng: Option<Xoshiro256StarStar>,
-    /// Cards collected by this player during this adventure
-    #[serde_as(as = "Vec<(_, _)>")]
-    pub collection: HashMap<CardName, u32>,
 }
 
-impl AdventureState {
+impl AdventureConfiguration {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn choose<I>(&mut self, iterator: I) -> Option<I::Item>
     where
         I: Iterator,
@@ -163,5 +152,42 @@ impl AdventureState {
         } else {
             iterator.choose_multiple(&mut rand::thread_rng(), amount)
         }
+    }
+}
+
+/// Stores the primary state for one player during an ongoing adventure
+#[serde_as]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdventureState {
+    /// Player type
+    pub side: Side,
+    /// Coin count, used to purchase more cards for deck
+    pub coins: Coins,
+    /// Currently active mandatory choice screen, if any.
+    pub choice_screen: Option<AdventureChoiceScreen>,
+    /// States of world map tiles
+    #[serde_as(as = "Vec<(_, _)>")]
+    pub tiles: HashMap<TilePosition, TileState>,
+    /// Regions which the player can currently see. By default Region 1 is
+    /// revealed.
+    pub revealed_regions: HashSet<RegionId>,
+    /// Cards collected by this player during this adventure
+    #[serde_as(as = "Vec<(_, _)>")]
+    pub collection: HashMap<CardName, u32>,
+    /// Customization options for this adventure
+    pub config: AdventureConfiguration,
+}
+
+impl AdventureState {
+    /// Returns the [TileState] for a given tile position, or an error if no
+    /// such tile position exists.
+    pub fn tile(&self, position: TilePosition) -> Result<&TileState> {
+        self.tiles.get(&position).with_error(|| "Tile not found")
+    }
+
+    /// Returns the [TileEntity] for a given tile position, or an error if no
+    /// such tile entity exists.
+    pub fn tile_entity(&self, position: TilePosition) -> Result<&TileEntity> {
+        self.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")
     }
 }

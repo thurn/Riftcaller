@@ -117,16 +117,19 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         PanelAddress::TileEntity(position) => {
             adventure_panels::render_tile_panel(position, player)?
         }
-        PanelAddress::DraftCard => render_adventure_choice(player),
-        PanelAddress::AdventureOver => render_adventure_choice(player),
+        PanelAddress::DraftCard => render_adventure_choice(player)?,
+        PanelAddress::AdventureOver => render_adventure_choice(player)?,
     })
 }
 
-fn render_adventure_choice(player: &PlayerData) -> Option<Node> {
-    let (node, _) = adventure_display::render_adventure_choice_screen(
-        player.adventure.as_ref()?.choice_screen.as_ref()?,
-    );
-    node
+fn render_adventure_choice(player: &PlayerData) -> Result<Option<Node>> {
+    let adventure = player.adventure.as_ref().with_error(|| "Expected adventure")?;
+    let rendered = adventure_display::render_adventure_choice_screen(
+        adventure,
+        adventure.choice_screen.as_ref().with_error(|| "Expected choice screen")?,
+    )?;
+
+    Ok(rendered.node)
 }
 
 fn render_client_panel(address: ClientPanelAddress) -> Option<Node> {

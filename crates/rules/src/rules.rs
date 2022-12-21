@@ -34,7 +34,7 @@ pub mod queries;
 pub static DEFINITIONS: Lazy<DashSet<fn() -> CardDefinition>> = Lazy::new(DashSet::new);
 
 /// Contains [CardDefinition]s for all known cards, keyed by [CardName]
-pub static CARDS: Lazy<HashMap<CardName, CardDefinition>> = Lazy::new(|| {
+static CARDS: Lazy<HashMap<CardName, CardDefinition>> = Lazy::new(|| {
     let mut map = HashMap::new();
     for card_fn in DEFINITIONS.iter() {
         let card = card_fn();
@@ -43,10 +43,16 @@ pub static CARDS: Lazy<HashMap<CardName, CardDefinition>> = Lazy::new(|| {
     map
 });
 
+/// Returns an iterator over all known card definitions in an undefined order
+pub fn all_cards() -> impl Iterator<Item = &'static CardDefinition> {
+    assert!(CARDS.len() > 0, "Must call initialize() first!");
+    CARDS.values()
+}
+
 /// Looks up the definition for a [CardName]. Panics if no such card is defined.
 /// If this panics, you are probably not calling initialize::run();
 pub fn get(name: CardName) -> &'static CardDefinition {
-    CARDS.get(&name).unwrap_or_else(|| panic!("Card not found: {:?}", name))
+    CARDS.get(&name).unwrap_or_else(|| panic!("Must call initialize() first!"))
 }
 
 pub fn card_definition(game: &GameState, card_id: CardId) -> &'static CardDefinition {
