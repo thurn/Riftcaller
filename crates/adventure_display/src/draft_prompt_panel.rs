@@ -42,7 +42,7 @@ impl Component for DraftPromptPanel {
                             PanelAddress::DraftCard,
                             AdventureLoading::new("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"),
                         ),
-                        UserAction::AdventureAction(AdventureAction::TileAction(self.position)),
+                        UserAction::AdventureAction(AdventureAction::InitiateDraft(self.position)),
                     ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")

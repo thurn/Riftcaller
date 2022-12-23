@@ -192,6 +192,11 @@ impl AdventureState {
         self.tiles.get(&position).with_error(|| "Tile not found")
     }
 
+    /// Mutable version of [Self::tile].
+    pub fn tile_mut(&mut self, position: TilePosition) -> Result<&mut TileState> {
+        self.tiles.get_mut(&position).with_error(|| "Tile not found")
+    }
+
     /// Returns the [TileEntity] for a given tile position, or an error if no
     /// such tile entity exists.
     pub fn tile_entity(&self, position: TilePosition) -> Result<&TileEntity> {

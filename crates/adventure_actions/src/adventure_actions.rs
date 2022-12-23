@@ -23,7 +23,8 @@ use with_error::{fail, verify, WithError};
 pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAction) -> Result<()> {
     match action {
         AdventureAction::AbandonAdventure => handle_abandon_adventure(state),
-        AdventureAction::TileAction(position) => handle_tile_action(state, *position),
+        AdventureAction::Explore(position) => handle_explore(state, *position),
+        AdventureAction::InitiateDraft(position) => handle_initiate_draft(state, *position),
         AdventureAction::DraftCard(index) => handle_draft(state, *index),
     }
 }
@@ -33,23 +34,30 @@ fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
     Ok(())
 }
 
-fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Result<()> {
+fn handle_explore(state: &mut AdventureState, position: TilePosition) -> Result<()> {
     verify_no_mandatory_choice(state)?;
-    let tile = state.tiles.get_mut(&position).with_error(|| "Tile not found")?;
+    let (region, cost) = match state.tile_entity(position)? {
+        TileEntity::Explore { region, cost } => (*region, *cost),
+        _ => fail!("Expected explore entity"),
+    };
 
-    match tile.entity.as_ref().with_error(|| "No action for tile")? {
-        TileEntity::Explore { region, cost } => {
-            state.coins -= *cost;
-            state.revealed_regions.insert(*region);
-            tile.entity = None;
-        }
-        TileEntity::Draft { cost, .. } => {
-            state.coins -= *cost;
-            state.choice_screen = Some(AdventureChoiceScreen::Draft(position));
-            tile.entity = None;
-        }
-        TileEntity::Shop { .. } => {}
-    }
+    state.revealed_regions.insert(region);
+    state.coins -= cost;
+    state.tile_mut(position)?.entity = None;
+
+    Ok(())
+}
+
+fn handle_initiate_draft(state: &mut AdventureState, position: TilePosition) -> Result<()> {
+    verify_no_mandatory_choice(state)?;
+    let cost = match state.tile_entity(position)? {
+        TileEntity::Draft { cost, .. } => *cost,
+        _ => fail!("Expected explore entity"),
+    };
+
+    state.coins -= cost;
+    state.choice_screen = Some(AdventureChoiceScreen::Draft(position));
+    state.tile_mut(position)?.entity = None;
 
     Ok(())
 }

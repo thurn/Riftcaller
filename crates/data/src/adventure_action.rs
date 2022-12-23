@@ -24,8 +24,10 @@ pub enum AdventureAction {
     /// adventure summary screen. Can be followed by
     /// `UserAction::LeaveAdventure` to completely exit the adventure.
     AbandonAdventure,
-    /// Take the associated action on the indicated map tile
-    TileAction(TilePosition),
+    /// Pay costs & explore more map tiles from the given position
+    Explore(TilePosition),
+    /// Start a new draft & pay costs for the given position
+    InitiateDraft(TilePosition),
     /// Draft the card at the indicated index on the draft screen
     DraftCard(usize),
 }

@@ -41,7 +41,7 @@ impl Component for ShopPromptPanel {
                             PanelAddress::Shop(self.position),
                             AdventureLoading::new("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"),
                         ),
-                        UserAction::AdventureAction(AdventureAction::TileAction(self.position)),
+                        UserAction::AdventureAction(AdventureAction::Explore(self.position)),
                     ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")

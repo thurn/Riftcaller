@@ -37,7 +37,7 @@ impl Component for ExplorePanel {
                 Button::new(format!("Explore: {} {}", self.cost, icons::COINS))
                     .action(actions::close_and(
                         self.address,
-                        UserAction::AdventureAction(AdventureAction::TileAction(self.position)),
+                        UserAction::AdventureAction(AdventureAction::Explore(self.position)),
                     ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
