@@ -21,6 +21,8 @@ pub mod draft_panel;
 pub mod draft_prompt_panel;
 pub mod explore_panel;
 pub mod full_screen_image_panel;
+pub mod shop_panel;
+pub mod shop_prompt_panel;
 pub mod tile_prompt_panel;
 
 use anyhow::Result;
@@ -150,7 +152,7 @@ fn sprite_address_for_entity(entity: &TileEntity) -> SpriteAddress {
             TileEntity::Explore { .. } => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_app/icon_app_198.png"
             }
-            TileEntity::Shop => {
+            TileEntity::Shop { .. } => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_architecture/icon_architecture_6.png"
             }
         }

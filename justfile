@@ -251,7 +251,7 @@ check-format:
     cargo +nightly fmt -- --check
 
 fix-lints:
-    cargo fix --allow-dirty --all-features
+    cargo fix --allow-dirty --all-targets
 
 snapshots:
     cargo insta review

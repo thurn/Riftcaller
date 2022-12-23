@@ -16,6 +16,7 @@
 //! be opened or closed by the user, such as a game menu or window.
 
 use adventure_display::adventure_panels;
+use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
 use core_ui::component::Component;
 use data::adventure::AdventureState;
@@ -119,6 +120,7 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         }
         PanelAddress::DraftCard => render_adventure_choice(player)?,
         PanelAddress::AdventureOver => render_adventure_choice(player)?,
+        PanelAddress::Shop(position) => ShopPanel::new_from_player(player, position)?.build(),
     })
 }
 

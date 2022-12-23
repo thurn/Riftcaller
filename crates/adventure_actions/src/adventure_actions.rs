@@ -48,7 +48,7 @@ fn handle_tile_action(state: &mut AdventureState, position: TilePosition) -> Res
             state.choice_screen = Some(AdventureChoiceScreen::Draft(position));
             tile.entity = None;
         }
-        TileEntity::Shop => {}
+        TileEntity::Shop { .. } => {}
     }
 
     Ok(())

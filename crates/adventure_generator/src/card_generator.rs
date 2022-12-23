@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use data::adventure::{AdventureConfiguration, DraftChoice, DraftData};
+use data::adventure::{AdventureConfiguration, CardChoice, Coins, DraftData, ShopData};
 use data::card_name::CardName;
 use data::primitives::Rarity;
 use data::set_name::SetName;
@@ -23,7 +23,18 @@ pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
         choices: config
             .choose_multiple(3, common_cards())
             .into_iter()
-            .map(|name| DraftChoice { quantity: 1, card: name })
+            .map(|name| CardChoice { quantity: 1, card: name, cost: Coins(0) })
+            .collect(),
+    }
+}
+
+/// Generates options for buying from a shop during an adventure
+pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
+    ShopData {
+        choices: config
+            .choose_multiple(8, common_cards())
+            .into_iter()
+            .map(|name| CardChoice { quantity: 1, card: name, cost: Coins(0) })
             .collect(),
     }
 }

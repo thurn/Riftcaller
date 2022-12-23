@@ -72,15 +72,22 @@ impl TilePosition {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DraftChoice {
+pub struct CardChoice {
     pub quantity: u32,
     pub card: CardName,
+    pub cost: Coins,
 }
 
 /// Data for rendering the draft screen
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct DraftData {
-    pub choices: Vec<DraftChoice>,
+    pub choices: Vec<CardChoice>,
+}
+
+/// Data for rendering the shop screen
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct ShopData {
+    pub choices: Vec<CardChoice>,
 }
 
 /// Possible events/actions which can take place on a tile, represented by map
@@ -89,7 +96,7 @@ pub struct DraftData {
 pub enum TileEntity {
     Explore { region: RegionId, cost: Coins },
     Draft { cost: Coins, data: DraftData },
-    Shop,
+    Shop { data: ShopData },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

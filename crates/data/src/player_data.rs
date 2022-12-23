@@ -64,6 +64,11 @@ impl PlayerData {
         Self { id, state: None, decks: vec![], adventure: None, collection: HashMap::default() }
     }
 
+    /// Returns the active [AdventureState] when one is expected to exist
+    pub fn adventure(&self) -> Result<&AdventureState> {
+        self.adventure.as_ref().with_error(|| "Expected active adventure")
+    }
+
     /// Returns the [DeckIndex] this player requested to use for a new game.
     pub fn requested_deck_id(&self) -> Option<DeckIndex> {
         match &self.state {

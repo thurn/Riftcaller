@@ -18,7 +18,9 @@ use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::text::Text;
 use core_ui::update_element::ElementName;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, SpriteAddress};
+use protos::spelldawn::{
+    FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress, WhiteSpace,
+};
 
 /// Renders a full-screen image containing a text prompt and some arbitrary
 /// content.
@@ -61,6 +63,7 @@ impl Component for TilePromptPanel {
                 Style::new()
                     .position_type(FlexPosition::Absolute)
                     .position(Edge::All, 0.px())
+                    .background_image_scale_mode(ImageScaleMode::ScaleAndCrop)
                     .background_image(self.image),
             )
             .child(
@@ -89,7 +92,12 @@ impl Component for TilePromptPanel {
                                     .background_color(BackgroundColor::TilePanelOverlay)
                                     .padding(Edge::All, 8.px()),
                             )
-                            .child(Text::new(self.prompt).font_size(FontSize::Headline))
+                            .child(
+                                Text::new(self.prompt)
+                                    .layout(Layout::new().margin(Edge::Horizontal, 64.px()))
+                                    .font_size(FontSize::Headline)
+                                    .white_space(WhiteSpace::Normal),
+                            )
                             .child(
                                 Row::new("ButtonGroup")
                                     .style(Style::new().margin(Edge::All, 8.px()))

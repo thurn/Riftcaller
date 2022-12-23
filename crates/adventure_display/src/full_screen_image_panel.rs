@@ -15,7 +15,7 @@
 use core_ui::component::EmptyComponent;
 use core_ui::design::BackgroundColor;
 use core_ui::prelude::*;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, SpriteAddress};
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress};
 
 /// Renders a full-screen image containing a text prompt and some arbitrary
 /// content.
@@ -53,6 +53,7 @@ impl Component for FullScreenImagePanel {
                 Style::new()
                     .position_type(FlexPosition::Absolute)
                     .position(Edge::All, 0.px())
+                    .background_image_scale_mode(ImageScaleMode::ScaleAndCrop)
                     .background_image(self.image),
             )
             .child(

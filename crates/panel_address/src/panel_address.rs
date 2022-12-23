@@ -34,6 +34,7 @@ pub enum PanelAddress {
     GameOver(GameOverData),
     TileEntity(TilePosition),
     DraftCard,
+    Shop(TilePosition),
     AdventureOver,
 }
 

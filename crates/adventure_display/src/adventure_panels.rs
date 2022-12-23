@@ -22,6 +22,7 @@ use with_error::{fail, WithError};
 
 use crate::draft_prompt_panel::DraftPromptPanel;
 use crate::explore_panel::ExplorePanel;
+use crate::shop_prompt_panel::ShopPromptPanel;
 
 /// Renders a panel for the entity at the provided [TilePosition].
 pub fn render_tile_panel(position: TilePosition, player: &PlayerData) -> Result<Option<Node>> {
@@ -42,6 +43,6 @@ pub fn render_tile_panel(position: TilePosition, player: &PlayerData) -> Result<
         TileEntity::Draft { cost, .. } => {
             DraftPromptPanel { cost: *cost, address, position }.build()
         }
-        TileEntity::Shop => Row::new("ShopPanel").build(),
+        TileEntity::Shop { .. } => ShopPromptPanel { address, position }.build(),
     })
 }

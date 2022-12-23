@@ -58,19 +58,24 @@ pub fn open_existing(address: impl Into<InterfacePanelAddress>) -> Command {
     })
 }
 
-/// Add the indicated panel to the end of the stack of open views if
-/// it is not already present, displaying the provided component as
-/// a loading state if the panel in question is not already cached.
-pub fn load(
-    address: impl Into<InterfacePanelAddress>,
+/// Close the 'from_address' panel and add the 'to_address' panel to the end of
+/// the stack of open views if it is not already present, displaying the
+/// provided component as a loading state if the panel in question is not
+/// already cached.
+pub fn transition(
+    from_address: impl Into<InterfacePanelAddress>,
+    to_address: impl Into<InterfacePanelAddress>,
     loading: impl Component + 'static,
-) -> Command {
-    Command::TogglePanel(TogglePanelCommand {
-        toggle_command: Some(ToggleCommand::LoadPanel(AddressWithLoadingState {
-            open_panel: Some(address.into()),
-            loading_state: loading.build(),
-        })),
-    })
+) -> Vec<Command> {
+    vec![
+        close(from_address),
+        Command::TogglePanel(TogglePanelCommand {
+            toggle_command: Some(ToggleCommand::LoadPanel(AddressWithLoadingState {
+                open_panel: Some(to_address.into()),
+                loading_state: loading.build(),
+            })),
+        }),
+    ]
 }
 
 /// Close the 'from' panel and display 'loading' 'while waiting for the 'to'
