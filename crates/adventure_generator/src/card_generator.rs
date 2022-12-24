@@ -14,14 +14,14 @@
 
 use data::adventure::{AdventureConfiguration, CardChoice, Coins, DraftData, ShopData};
 use data::card_name::CardName;
-use data::primitives::Rarity;
+use data::primitives::{Rarity, Side};
 use data::set_name::SetName;
 
 /// Generates options for drafting a card during an adventure
 pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
     DraftData {
         choices: config
-            .choose_multiple(3, common_cards())
+            .choose_multiple(3, common_cards(config.side))
             .into_iter()
             .map(|name| CardChoice { quantity: 1, card: name, cost: Coins(0) })
             .collect(),
@@ -32,17 +32,20 @@ pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
 pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
     ShopData {
         choices: config
-            .choose_multiple(8, common_cards())
+            .choose_multiple(5, common_cards(config.side))
             .into_iter()
-            .map(|name| CardChoice { quantity: 1, card: name, cost: Coins(0) })
+            .zip((0..5).map(|_| config.gen_range(1..=4)))
+            .map(|(name, mult)| CardChoice { quantity: 1, card: name, cost: Coins(mult * 25) })
             .collect(),
     }
 }
 
-fn common_cards() -> impl Iterator<Item = CardName> {
+fn common_cards(side: Side) -> impl Iterator<Item = CardName> {
     rules::all_cards()
-        .filter(|definition| {
-            definition.sets.contains(&SetName::Core2024) && definition.rarity == Rarity::Common
+        .filter(move |definition| {
+            definition.sets.contains(&SetName::Core2024)
+                && definition.rarity == Rarity::Common
+                && definition.side == side
         })
         .map(|definition| definition.name)
 }

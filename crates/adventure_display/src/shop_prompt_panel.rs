@@ -14,10 +14,8 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use core_ui::{actions, panel, style};
+use core_ui::{panel, style};
 use data::adventure::TilePosition;
-use data::adventure_action::AdventureAction;
-use data::user_actions::UserAction;
 use panel_address::PanelAddress;
 
 use crate::adventure_loading::AdventureLoading;
@@ -35,14 +33,11 @@ impl Component for ShopPromptPanel {
             .prompt("Walking through town, you come upon the illuminated windows of a shop stocked with magical wares")
             .buttons(vec![
                 Button::new("Continue")
-                    .action(actions::with_optimistic_update(
-                        panel::transition(
+                    .action(panel::transition(
                             self.address,
                             PanelAddress::Shop(self.position),
                             AdventureLoading::new("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"),
-                        ),
-                        UserAction::AdventureAction(AdventureAction::Explore(self.position)),
-                    ))
+                        ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)

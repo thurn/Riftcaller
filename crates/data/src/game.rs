@@ -249,8 +249,8 @@ pub struct GameState {
 }
 
 impl GameState {
-    /// Creates a new game with the provided [GameId] and decks for both players
-    /// in the [GamePhase::ResolveMulligans] phase.
+    /// Creates a new game with the provided [GameId] and decks for both
+    /// players in the [GamePhase::ResolveMulligans] phase.
     ///
     /// Does *not* handle dealing opening hands, prompting for mulligan
     /// decisions, assigning starting mana, etc.

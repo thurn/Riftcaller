@@ -14,15 +14,14 @@
 
 use anyhow::Result;
 use core_ui::button::Button;
-use core_ui::design::FontSize;
 use core_ui::prelude::*;
-use core_ui::text::Text;
-use core_ui::{actions, style};
-use data::adventure::{ShopData, TileEntity, TilePosition};
+use core_ui::{actions, icons, style};
+use data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::PanelAddress;
+use protos::spelldawn::{FlexAlign, FlexJustify};
 use with_error::fail;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
@@ -41,38 +40,43 @@ impl<'a> ShopPanel<'a> {
     }
 }
 
+fn shop_row<'a>(choices: impl Iterator<Item = &'a CardChoice>) -> impl Component {
+    Row::new("ShopRow")
+        .style(
+            Style::new()
+                .flex_grow(1.0)
+                .align_items(FlexAlign::Center)
+                .justify_content(FlexJustify::Center),
+        )
+        .children(choices.enumerate().map(|(i, choice)| {
+            Column::new("ShopChoice")
+                .style(Style::new().margin(Edge::All, 8.px()))
+                .child(
+                    DeckCard::new(choice.card)
+                        .quantity(choice.quantity)
+                        .layout(Layout::new().margin(Edge::All, 8.px()))
+                        .height(CardHeight::vh(40.0)),
+                )
+                .child(
+                    Button::new(format!("{} {}", choice.cost, icons::COINS))
+                        .layout(
+                            Layout::new()
+                                .margin(Edge::Horizontal, 8.px())
+                                .margin(Edge::Top, 24.px()),
+                        )
+                        .action(actions::close_and(
+                            PanelAddress::DraftCard,
+                            AdventureAction::DraftCard(i),
+                        )),
+                )
+        }))
+}
+
 impl<'a> Component for ShopPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
             .image(style::sprite("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"))
-            .content(Row::new("DraftPanel").children(self.data.choices.iter().enumerate().map(
-                |(i, choice)| {
-                    Column::new("Choice")
-                        .style(Style::new().margin(Edge::All, 32.px()))
-                        .child(
-                            DeckCard::new(choice.card)
-                                .layout(Layout::new().margin(Edge::All, 8.px()))
-                                .height(CardHeight::vh(50.0)),
-                        )
-                        .child(
-                            Text::new(format!("{}x", choice.quantity))
-                                .font_size(FontSize::Headline)
-                                .layout(Layout::new().position(Edge::Top, (-8).px())),
-                        )
-                        .child(
-                            Button::new("Pick")
-                                .layout(
-                                    Layout::new()
-                                        .margin(Edge::Horizontal, 8.px())
-                                        .margin(Edge::Top, 16.px()),
-                                )
-                                .action(actions::close_and(
-                                    PanelAddress::DraftCard,
-                                    AdventureAction::DraftCard(i),
-                                )),
-                        )
-                },
-            )))
+            .content(Column::new("ShopPanel").child(shop_row(self.data.choices.iter())))
             .build()
     }
 }

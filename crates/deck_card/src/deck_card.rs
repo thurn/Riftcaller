@@ -26,9 +26,10 @@ pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 pub const CARD_HEIGHT: f32 = 36.0;
 
 use core_ui::prelude::*;
+use core_ui::style;
 use data::card_name::CardName;
 use data::text::RulesTextContext;
-use protos::spelldawn::{BackgroundImageAutoSize, Dimension, FlexAlign, FlexPosition};
+use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
 use rules_text::card_icons;
 
 use crate::deck_card_icon::DeckCardIcon;
@@ -56,21 +57,27 @@ impl CardHeight {
 pub struct DeckCard {
     name: CardName,
     height: CardHeight,
+    quantity: u32,
     layout: Layout,
 }
 
 impl DeckCard {
     pub fn new(name: CardName) -> Self {
-        Self { name, height: CardHeight::vh(36.0), layout: Layout::default() }
-    }
-
-    pub fn layout(mut self, layout: Layout) -> Self {
-        self.layout = layout;
-        self
+        Self { name, height: CardHeight::vh(36.0), quantity: 1, layout: Layout::default() }
     }
 
     pub fn height(mut self, height: impl Into<CardHeight>) -> Self {
         self.height = height.into();
+        self
+    }
+
+    pub fn quantity(mut self, quantity: u32) -> Self {
+        self.quantity = quantity;
+        self
+    }
+
+    pub fn layout(mut self, layout: Layout) -> Self {
+        self.layout = layout;
         self
     }
 }
@@ -109,13 +116,22 @@ impl Component for DeckCard {
                         .position(Edge::Top, self.height.dim(6.0)),
                 )
             }))
-            .child(icons.top_right_icon.map(|icon| {
-                DeckCardIcon::new(icon, self.height).name("TopRightIcon").layout(
+            .child(
+                DeckCardIcon::new(
+                    CardIcon {
+                        background: Some(style::sprite("Sprites/QuantityBackground")),
+                        text: Some(format!("{}x", self.quantity)),
+                        background_scale: None,
+                    },
+                    self.height,
+                )
+                .name("TopRightIcon")
+                .layout(
                     Layout::new()
                         .position(Edge::Right, self.height.dim(-2.0))
                         .position(Edge::Top, self.height.dim(6.0)),
-                )
-            }))
+                ),
+            )
             .child(icons.bottom_left_icon.map(|icon| {
                 DeckCardIcon::new(icon, self.height).name("BottomLeftIcon").layout(
                     Layout::new()

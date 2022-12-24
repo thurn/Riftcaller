@@ -18,7 +18,9 @@ use anyhow::Result;
 use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
+use rand::distributions::uniform::{SampleRange, SampleUniform};
 use rand::prelude::IteratorRandom;
+use rand::Rng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
@@ -125,8 +127,10 @@ pub enum AdventureChoiceScreen {
     Draft(TilePosition),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureConfiguration {
+    /// Side the user is playing as in this adventure
+    pub side: Side,
     /// Optionally, a random number generator for this adventure to use. This
     /// generator is serializable, so the state will be deterministic even
     /// across different sessions. If not specified, `rand::thread_rng()` is
@@ -135,8 +139,8 @@ pub struct AdventureConfiguration {
 }
 
 impl AdventureConfiguration {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(side: Side) -> Self {
+        Self { side, rng: None }
     }
 
     pub fn choose<I>(&mut self, iterator: I) -> Option<I::Item>
@@ -158,6 +162,18 @@ impl AdventureConfiguration {
             iterator.choose_multiple(self.rng.as_mut().expect("rng"), amount)
         } else {
             iterator.choose_multiple(&mut rand::thread_rng(), amount)
+        }
+    }
+
+    pub fn gen_range<T, R>(&mut self, range: R) -> T
+    where
+        T: SampleUniform,
+        R: SampleRange<T>,
+    {
+        if self.rng.is_some() {
+            self.rng.as_mut().expect("rng").gen_range(range)
+        } else {
+            rand::thread_rng().gen_range(range)
         }
     }
 }

@@ -14,7 +14,7 @@
 
 use core_ui::prelude::*;
 use core_ui::style;
-use protos::spelldawn::{FlexPosition, SpriteAddress};
+use protos::spelldawn::{FlexPosition, ImageScaleMode, SpriteAddress};
 
 pub struct AdventureLoading {
     image: SpriteAddress,
@@ -33,7 +33,8 @@ impl Component for AdventureLoading {
                 Style::new()
                     .position_type(FlexPosition::Absolute)
                     .position(Edge::All, 0.px())
-                    .background_image(self.image),
+                    .background_image(self.image)
+                    .background_image_scale_mode(ImageScaleMode::ScaleAndCrop),
             )
             .build()
     }

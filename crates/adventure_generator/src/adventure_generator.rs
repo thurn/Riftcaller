@@ -21,7 +21,6 @@ use std::collections::{HashMap, HashSet};
 use data::adventure::{
     AdventureConfiguration, AdventureState, Coins, RegionId, TileEntity, TilePosition, TileState,
 };
-use data::primitives::Side;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;
@@ -33,7 +32,7 @@ const LEFT: u8 = 0b00000001;
 pub const STARTING_COINS: Coins = Coins(500);
 
 /// Builds a new random 'adventure' mode world map
-pub fn new_adventure(side: Side, mut config: AdventureConfiguration) -> AdventureState {
+pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
     let mut tiles = HashMap::new();
 
     add_tile(&mut tiles, -3, 2, "hexGrassySandPalms02");
@@ -102,7 +101,7 @@ pub fn new_adventure(side: Side, mut config: AdventureConfiguration) -> Adventur
     revealed_regions.insert(1);
 
     AdventureState {
-        side,
+        side: config.side,
         choice_screen: None,
         coins: STARTING_COINS,
         tiles,

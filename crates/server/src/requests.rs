@@ -309,8 +309,7 @@ fn handle_new_adventure(
     side: Side,
 ) -> Result<GameResponse> {
     let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
-    player.adventure =
-        Some(adventure_generator::new_adventure(side, AdventureConfiguration::new()));
+    player.adventure = Some(adventure_generator::new_adventure(AdventureConfiguration::new(side)));
     database.write_player(&player)?;
     Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
         scene_name: "World".to_string(),
