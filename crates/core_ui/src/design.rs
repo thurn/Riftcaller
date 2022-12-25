@@ -22,6 +22,7 @@ const fn color(red: f32, green: f32, blue: f32, alpha: f32) -> FlexColor {
     FlexColor { red, green, blue, alpha }
 }
 
+// Converted from hex using https://www.tydac.ch/color/
 pub const WHITE: FlexColor = color(1.0, 1.0, 1.0, 1.0);
 pub const BLACK: FlexColor = color(0.0, 0.0, 0.0, 1.0);
 pub const BLACK_ALPHA_25: FlexColor = color(0.0, 0.0, 0.0, 0.25);
@@ -48,6 +49,9 @@ pub const PINK_900: FlexColor = color(0.53, 0.05, 0.31, 1.0);
 pub const ORANGE_500: FlexColor = color(1.0, 0.6, 0.0, 1.0);
 pub const ORANGE_700: FlexColor = color(0.96, 0.49, 0.0, 1.0);
 pub const ORANGE_900: FlexColor = color(0.9, 0.32, 0.0, 1.0);
+pub const GRAY_500: FlexColor = color(0.62, 0.62, 0.62, 1.0);
+pub const GRAY_700: FlexColor = color(0.38, 0.38, 0.38, 1.0);
+pub const GRAY_900: FlexColor = color(0.13, 0.13, 0.13, 1.0);
 
 pub const TEXT_OUTLINE: FlexColor = BLACK;
 

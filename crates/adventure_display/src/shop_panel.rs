@@ -19,6 +19,7 @@ use core_ui::{actions, icons, style};
 use data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
+use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify};
@@ -52,10 +53,11 @@ fn shop_row<'a>(choices: impl Iterator<Item = &'a CardChoice>) -> impl Component
             Column::new("ShopChoice")
                 .style(Style::new().margin(Edge::All, 8.px()))
                 .child(
-                    DeckCard::new(choice.card)
-                        .quantity(choice.quantity)
-                        .layout(Layout::new().margin(Edge::All, 8.px()))
-                        .height(CardHeight::vh(40.0)),
+                    DeckCardSlot::new().layout(Layout::new().margin(Edge::All, 4.px())).card(
+                        DeckCard::new(choice.card)
+                            .quantity(choice.quantity)
+                            .height(CardHeight::vh(40.0)),
+                    ),
                 )
                 .child(
                     Button::new(format!("{} {}", choice.cost, icons::COINS))

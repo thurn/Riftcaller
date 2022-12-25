@@ -39,6 +39,8 @@ pub type RegionId = u32;
     Clone,
     PartialEq,
     Eq,
+    Ord,
+    PartialOrd,
     From,
     Add,
     Sub,
@@ -73,11 +75,12 @@ impl TilePosition {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardChoice {
     pub quantity: u32,
     pub card: CardName,
     pub cost: Coins,
+    pub sold: bool,
 }
 
 /// Data for rendering the draft screen
@@ -217,5 +220,9 @@ impl AdventureState {
     /// such tile entity exists.
     pub fn tile_entity(&self, position: TilePosition) -> Result<&TileEntity> {
         self.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")
+    }
+
+    pub fn tile_entity_mut(&mut self, position: TilePosition) -> Result<&mut TileEntity> {
+        self.tile_mut(position)?.entity.as_mut().with_error(|| "Expected tile entity")
     }
 }

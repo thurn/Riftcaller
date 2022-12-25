@@ -43,6 +43,7 @@ pub struct Button {
     action: Box<dyn InterfaceAction>,
     two_lines: bool,
     width_mode: WidthMode,
+    disabled: bool,
 }
 
 impl Button {
@@ -54,6 +55,7 @@ impl Button {
             action: Box::new(NoAction {}),
             two_lines: false,
             width_mode: WidthMode::Constrained,
+            disabled: false,
         }
     }
 
@@ -79,6 +81,11 @@ impl Button {
 
     pub fn width_mode(mut self, width_mode: WidthMode) -> Self {
         self.width_mode = width_mode;
+        self
+    }
+
+    pub fn disabled(mut self, disabled: bool) -> Self {
+        self.disabled = disabled;
         self
     }
 }

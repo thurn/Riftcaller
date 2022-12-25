@@ -23,7 +23,7 @@ pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
         choices: config
             .choose_multiple(3, common_cards(config.side))
             .into_iter()
-            .map(|name| CardChoice { quantity: 1, card: name, cost: Coins(0) })
+            .map(|name| CardChoice { quantity: 1, card: name, cost: Coins(0), sold: false })
             .collect(),
     }
 }
@@ -34,8 +34,12 @@ pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
         choices: config
             .choose_multiple(5, common_cards(config.side))
             .into_iter()
-            .zip((0..5).map(|_| config.gen_range(1..=4)))
-            .map(|(name, mult)| CardChoice { quantity: 1, card: name, cost: Coins(mult * 25) })
+            .map(|name| CardChoice {
+                quantity: config.gen_range(1..=3),
+                card: name,
+                cost: Coins(config.gen_range(1..=4) * 25),
+                sold: false,
+            })
             .collect(),
     }
 }

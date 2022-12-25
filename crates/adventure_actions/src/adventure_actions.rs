@@ -15,9 +15,9 @@
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
 use anyhow::Result;
-use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition};
+use data::adventure::{AdventureChoiceScreen, AdventureState, Coins, TileEntity, TilePosition};
 use data::adventure_action::AdventureAction;
-use with_error::{fail, verify, WithError};
+use with_error::{fail, verify};
 
 /// Handles an incoming [AdventureAction] and produces a client response.
 pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAction) -> Result<()> {
@@ -26,6 +26,7 @@ pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAct
         AdventureAction::Explore(position) => handle_explore(state, *position),
         AdventureAction::InitiateDraft(position) => handle_initiate_draft(state, *position),
         AdventureAction::DraftCard(index) => handle_draft(state, *index),
+        AdventureAction::BuyCard(position, index) => handle_buy_card(state, *position, *index),
     }
 }
 
@@ -36,13 +37,15 @@ fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
 
 fn handle_explore(state: &mut AdventureState, position: TilePosition) -> Result<()> {
     verify_no_mandatory_choice(state)?;
+    verify_revealed(state, position)?;
+
     let (region, cost) = match state.tile_entity(position)? {
         TileEntity::Explore { region, cost } => (*region, *cost),
         _ => fail!("Expected explore entity"),
     };
 
+    spend_coins(state, cost)?;
     state.revealed_regions.insert(region);
-    state.coins -= cost;
     state.tile_mut(position)?.entity = None;
 
     Ok(())
@@ -50,12 +53,14 @@ fn handle_explore(state: &mut AdventureState, position: TilePosition) -> Result<
 
 fn handle_initiate_draft(state: &mut AdventureState, position: TilePosition) -> Result<()> {
     verify_no_mandatory_choice(state)?;
+    verify_revealed(state, position)?;
+
     let cost = match state.tile_entity(position)? {
         TileEntity::Draft { cost, .. } => *cost,
         _ => fail!("Expected explore entity"),
     };
 
-    state.coins -= cost;
+    spend_coins(state, cost)?;
     state.choice_screen = Some(AdventureChoiceScreen::Draft(position));
     state.tile_mut(position)?.entity = None;
 
@@ -71,10 +76,50 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
         fail!("Invalid draft position");
     };
 
-    let choice = data.choices.get(index).with_error(|| "Choice index out of bounds")?;
-    let quantity = choice.quantity;
-    state.collection.entry(choice.card).and_modify(|i| *i += quantity).or_insert(quantity);
+    verify!(index < data.choices.len(), "Index out of bounds!");
+    let choice = data.choices[index];
+
+    state
+        .collection
+        .entry(choice.card)
+        .and_modify(|i| *i += choice.quantity)
+        .or_insert(choice.quantity);
     state.choice_screen = None;
+    Ok(())
+}
+
+fn handle_buy_card(state: &mut AdventureState, position: TilePosition, index: usize) -> Result<()> {
+    let TileEntity::Shop { data } = state.tile_entity_mut(position)? else {
+        fail!("Expected shop entity")
+    };
+
+    verify!(index < data.choices.len(), "Index out of bounds!");
+    let choice = data.choices[index];
+    verify!(!choice.sold, "Item already sold!");
+    data.choices[index].sold = true;
+
+    state
+        .collection
+        .entry(choice.card)
+        .and_modify(|i| *i += choice.quantity)
+        .or_insert(choice.quantity);
+    spend_coins(state, choice.cost)?;
+
+    Ok(())
+}
+
+fn spend_coins(state: &mut AdventureState, coins: Coins) -> Result<()> {
+    verify!(state.coins >= coins, "Insufficient coins available");
+    state.coins -= coins;
+    Ok(())
+}
+
+/// Raise an error if the given [TilePosition] has not yet been explored
+fn verify_revealed(state: &AdventureState, position: TilePosition) -> Result<()> {
+    verify!(
+        state.revealed_regions.contains(&state.tile(position)?.region_id),
+        "Given tile position has not been revealed"
+    );
     Ok(())
 }
 

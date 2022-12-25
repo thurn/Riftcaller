@@ -17,6 +17,7 @@
 pub mod deck_card_icon;
 pub mod deck_card_name;
 pub mod deck_card_rarity;
+pub mod deck_card_slot;
 pub mod deck_card_text;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
