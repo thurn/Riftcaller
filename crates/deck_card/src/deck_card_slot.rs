@@ -17,21 +17,21 @@ use core_ui::prelude::*;
 use core_ui::style::Corner;
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
-use crate::DeckCard;
+use crate::{CardHeight, DeckCard};
 
-#[derive(Default)]
 pub struct DeckCardSlot {
+    height: CardHeight,
     card: Option<DeckCard>,
     layout: Layout,
 }
 
 impl DeckCardSlot {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(height: CardHeight) -> Self {
+        Self { height, card: None, layout: Layout::default() }
     }
 
-    pub fn card(mut self, card: DeckCard) -> Self {
-        self.card = Some(card);
+    pub fn card(mut self, card: Option<DeckCard>) -> Self {
+        self.card = card;
         self
     }
 
@@ -54,7 +54,17 @@ impl Component for DeckCardSlot {
                     .border_width(Edge::All, 2.px())
                     .border_radius(Corner::All, 8.px()),
             )
-            .child(self.card)
+            .child_node(if let Some(card) = self.card {
+                card.height(self.height).build()
+            } else {
+                Row::new("SlotSpacer")
+                    .style(
+                        Style::new()
+                            .height(self.height.dim(100.0))
+                            .width(self.height.dim(100.0 * crate::CARD_ASPECT_RATIO)),
+                    )
+                    .build()
+            })
             .build()
     }
 }

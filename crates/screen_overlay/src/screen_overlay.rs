@@ -54,6 +54,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                     .style(Style::new().align_items(FlexAlign::Center))
                     .child(
                         IconButton::new(icons::BUG)
+                            .name(&element_names::FEEDBACK_BUTTON)
                             .button_type(IconButtonType::NavbarBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px())),
                     )
@@ -81,11 +82,13 @@ impl<'a> Component for ScreenOverlay<'a> {
                 Row::new("Right")
                     .child(
                         IconButton::new(icons::DECK)
+                            .name(&element_names::DECK_BUTTON)
                             .button_type(IconButtonType::NavbarBrown)
                             .layout(Layout::new().margin(Edge::All, 12.px())),
                     )
                     .child(
                         IconButton::new(icons::BARS)
+                            .name(&element_names::MENU_BUTTON)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .button_type(IconButtonType::NavbarBrown)
                             .action(panel::open(PanelAddress::AdventureMenu)),

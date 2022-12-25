@@ -53,6 +53,7 @@ dependencies = [
  "core_ui",
  "data",
  "deck_card",
+ "element_names",
  "panel_address",
  "panels",
  "protos",
@@ -721,6 +722,14 @@ name = "either"
 version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
+
+[[package]]
+name = "element_names"
+version = "0.0.0"
+dependencies = [
+ "core_ui",
+ "once_cell",
+]
 
 [[package]]
 name = "encode_unicode"
@@ -1733,6 +1742,7 @@ dependencies = [
  "constants",
  "core_ui",
  "data",
+ "element_names",
  "panel_address",
  "protos",
 ]

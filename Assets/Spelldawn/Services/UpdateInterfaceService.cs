@@ -43,9 +43,9 @@ namespace Spelldawn.Services
         UpdateInterfaceElementCommand.InterfaceUpdateOneofCase.Destroy => HandleDestroy(command.ElementName),
         UpdateInterfaceElementCommand.InterfaceUpdateOneofCase.UpdateText => HandleUpdateText(command.ElementName,
           command.UpdateText),
-        UpdateInterfaceElementCommand.InterfaceUpdateOneofCase.ClearChildren => 
+        UpdateInterfaceElementCommand.InterfaceUpdateOneofCase.ClearChildren =>
           HandleClearChildren(command.ElementName),
-          _ => throw new ArgumentOutOfRangeException()
+        _ => throw new ArgumentOutOfRangeException()
       };
 
     IEnumerator HandleUpdateText(string elementName, UpdateText command)
@@ -63,10 +63,21 @@ namespace Spelldawn.Services
 
     IEnumerator HandleAnimateToElementPosition(string elementName, AnimateToElementPositionAndDestroy command)
     {
-      var element = FindElement<VisualElement>(elementName);
-      var target = FindElementOptional<VisualElement>(command.TargetElementName) ?? 
-                   FindElement<VisualElement>(command.FallbackTargetElementName);
-      yield return AnimateToPositionAndDestroy(element, target.worldBound, command.Duration).WaitForCompletion();
+      var sourceElement = FindElement<VisualElement>(elementName);
+
+      VisualElement target;
+      if (string.IsNullOrEmpty(command.FallbackTargetElementName))
+      {
+        target = FindElement<VisualElement>(command.TargetElementName);
+      }
+      else
+      {
+        target = FindElementOptional<VisualElement>(command.TargetElementName) ??
+                 FindElement<VisualElement>(command.FallbackTargetElementName);
+      }
+
+      Debug.Log($"HandleAnimateToElementPosition: Found target {target.name} at bound {target.worldBound}");
+      yield return AnimateToPositionAndDestroy(sourceElement, target.worldBound, command.Duration).WaitForCompletion();
     }
 
     IEnumerator HandleAnimateToChildIndex(string elementName, AnimateDraggableToChildIndex command)
@@ -102,7 +113,7 @@ namespace Spelldawn.Services
         HiddenForAnimation.Remove(newElement);
       }).WaitForCompletion();
     }
-    
+
     IEnumerator HandleClearChildren(string elementName)
     {
       var element = FindElement<VisualElement>(elementName);
@@ -111,24 +122,25 @@ namespace Spelldawn.Services
     }
 
     public static Sequence AnimateToPositionAndDestroy(
-      VisualElement element,
-      Rect worldBound,
+      VisualElement sourceElement,
+      Rect targetBound,
       TimeValue duration,
       Action? onComplete = null)
     {
-      var targetPosition = worldBound.position -
-                           new Vector2(element.style.marginLeft.value.value, element.style.marginTop.value.value);
+      var targetPosition = targetBound.position - new Vector2(
+        sourceElement.style.marginLeft.value.value,
+        sourceElement.style.marginTop.value.value);
       return TweenUtils.Sequence("AnimateToPositionAndDestroy").Insert(0,
-          DOTween.To(() => element.style.left.value.value,
-            x => element.style.left = x,
+          DOTween.To(() => sourceElement.style.left.value.value,
+            x => sourceElement.style.left = x,
             endValue: targetPosition.x, duration.Milliseconds / 1000f))
         .Insert(0,
-          DOTween.To(() => element.style.top.value.value,
-            y => element.style.top = y,
+          DOTween.To(() => sourceElement.style.top.value.value,
+            y => sourceElement.style.top = y,
             endValue: targetPosition.y, duration.Milliseconds / 1000f))
         .AppendCallback(() =>
         {
-          element.RemoveFromHierarchy();
+          sourceElement.RemoveFromHierarchy();
           onComplete?.Invoke();
         });
     }
@@ -136,10 +148,10 @@ namespace Spelldawn.Services
     public static Sequence AnimateToZeroHeightAndDestroy(VisualElement element, TimeValue duration)
     {
       return TweenUtils.Sequence("AnimateToZeroHeightAndDestroy").Append(
-        DOTween.To(() => element.style.height.value.value,
-          height => element.style.height = height,
-          endValue: 0,
-          duration.Milliseconds / 1000f))
+          DOTween.To(() => element.style.height.value.value,
+            height => element.style.height = height,
+            endValue: 0,
+            duration.Milliseconds / 1000f))
         .AppendCallback(element.RemoveFromHierarchy);
     }
 
@@ -149,7 +161,7 @@ namespace Spelldawn.Services
       Errors.CheckState(results.Count() == 1, $"Expected exactly 1 {elementName} but got {results.Count()}");
       return results.First();
     }
-    
+
     T? FindElementOptional<T>(string elementName) where T : VisualElement
     {
       var results = _registry.DocumentService.RootVisualElement.Query<T>(elementName).Build();
@@ -162,6 +174,6 @@ namespace Spelldawn.Services
         default:
           throw new InvalidOperationException($"Found more than one element named {elementName}");
       }
-    }    
+    }
   }
 }

@@ -20,6 +20,7 @@ use crate::prelude::*;
 use crate::style;
 use crate::style::WidthMode;
 use crate::text::Text;
+use crate::update_element::ElementName;
 
 #[derive(Debug, Clone, Copy)]
 pub enum ButtonType {
@@ -38,6 +39,7 @@ pub enum ButtonTextSize {
 /// Implements a standard clickable button
 pub struct Button {
     label: String,
+    name: Option<String>,
     layout: Layout,
     button_type: ButtonType,
     action: Box<dyn InterfaceAction>,
@@ -50,6 +52,7 @@ impl Button {
     pub fn new(label: impl Into<String>) -> Self {
         Self {
             label: label.into(),
+            name: None,
             layout: Layout::default(),
             button_type: ButtonType::Primary,
             action: Box::new(NoAction {}),
@@ -57,6 +60,11 @@ impl Button {
             width_mode: WidthMode::Constrained,
             disabled: false,
         }
+    }
+
+    pub fn name(mut self, name: &ElementName) -> Self {
+        self.name = Some(name.clone().into());
+        self
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {
@@ -101,7 +109,7 @@ impl Component for Button {
             }
         });
 
-        Row::new(format!("{} Button", self.label))
+        Row::new(self.name.unwrap_or_else(|| format!("{} Button", self.label)))
             .style(
                 self.layout
                     .to_style()
@@ -148,6 +156,7 @@ pub enum IconButtonType {
 
 pub struct IconButton {
     icon: String,
+    name: String,
     layout: Layout,
     button_type: IconButtonType,
     action: Box<dyn InterfaceAction>,
@@ -158,11 +167,17 @@ impl IconButton {
     pub fn new(icon: impl Into<String>) -> Self {
         Self {
             icon: icon.into(),
+            name: "IconButton".to_string(),
             layout: Layout::default(),
             button_type: IconButtonType::Secondary,
             action: Box::new(NoAction {}),
             show_frame: false,
         }
+    }
+
+    pub fn name(mut self, name: &ElementName) -> Self {
+        self.name = name.clone().into();
+        self
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {
@@ -217,7 +232,7 @@ impl Component for IconButton {
             | IconButtonType::NavbarBrown => (88, 0),
         };
 
-        Row::new("IconButton")
+        Row::new(self.name)
             .style(
                 self.layout
                     .to_style()

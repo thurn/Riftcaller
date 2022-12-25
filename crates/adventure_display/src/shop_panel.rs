@@ -15,19 +15,20 @@
 use anyhow::Result;
 use core_ui::button::Button;
 use core_ui::prelude::*;
-use core_ui::{actions, icons, style};
+use core_ui::update_element::ElementName;
+use core_ui::{actions, icons, style, update_element};
 use data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
-use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify};
 use with_error::fail;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 
 pub struct ShopPanel<'a> {
+    position: TilePosition,
     data: &'a ShopData,
 }
 
@@ -37,40 +38,54 @@ impl<'a> ShopPanel<'a> {
             fail!("Expected shop entity")
         };
 
-        Ok(Self { data })
+        Ok(Self { position, data })
     }
 }
 
-fn shop_row<'a>(choices: impl Iterator<Item = &'a CardChoice>) -> impl Component {
+fn shop_row<'a>(
+    position: TilePosition,
+    choices: impl Iterator<Item = &'a CardChoice>,
+) -> impl Component {
     Row::new("ShopRow")
         .style(
             Style::new()
                 .flex_grow(1.0)
-                .align_items(FlexAlign::Center)
+                .align_items(FlexAlign::FlexStart)
                 .justify_content(FlexJustify::Center),
         )
         .children(choices.enumerate().map(|(i, choice)| {
+            let card_element = ElementName::new("Choice");
             Column::new("ShopChoice")
                 .style(Style::new().margin(Edge::All, 8.px()))
                 .child(
-                    DeckCardSlot::new().layout(Layout::new().margin(Edge::All, 4.px())).card(
-                        DeckCard::new(choice.card)
-                            .quantity(choice.quantity)
-                            .height(CardHeight::vh(40.0)),
-                    ),
+                    DeckCardSlot::new(CardHeight::vh(40.0))
+                        .layout(Layout::new().margin(Edge::All, 4.px()))
+                        .card((!choice.sold).then(|| {
+                            DeckCard::new(choice.card)
+                                .element_name(&card_element)
+                                .quantity(choice.quantity)
+                        })),
                 )
-                .child(
+                .child((!choice.sold).then(|| {
+                    let name = ElementName::new("Buy");
                     Button::new(format!("{} {}", choice.cost, icons::COINS))
+                        .name(&name)
                         .layout(
                             Layout::new()
                                 .margin(Edge::Horizontal, 8.px())
                                 .margin(Edge::Top, 24.px()),
                         )
-                        .action(actions::close_and(
-                            PanelAddress::DraftCard,
-                            AdventureAction::DraftCard(i),
-                        )),
-                )
+                        .action(actions::with_optimistic_update(
+                            vec![
+                                update_element::destroy(&name),
+                                update_element::animate_to_position_and_destroy(
+                                    &card_element,
+                                    &element_names::DECK_BUTTON,
+                                ),
+                            ],
+                            AdventureAction::BuyCard(position, i),
+                        ))
+                }))
         }))
 }
 
@@ -78,7 +93,9 @@ impl<'a> Component for ShopPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
             .image(style::sprite("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"))
-            .content(Column::new("ShopPanel").child(shop_row(self.data.choices.iter())))
+            .content(
+                Column::new("ShopPanel").child(shop_row(self.position, self.data.choices.iter())),
+            )
             .build()
     }
 }

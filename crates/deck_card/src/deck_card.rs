@@ -28,6 +28,7 @@ pub const CARD_HEIGHT: f32 = 36.0;
 
 use core_ui::prelude::*;
 use core_ui::style;
+use core_ui::update_element::ElementName;
 use data::card_name::CardName;
 use data::text::RulesTextContext;
 use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
@@ -57,6 +58,7 @@ impl CardHeight {
 
 pub struct DeckCard {
     name: CardName,
+    element_name: ElementName,
     height: CardHeight,
     quantity: u32,
     layout: Layout,
@@ -64,11 +66,22 @@ pub struct DeckCard {
 
 impl DeckCard {
     pub fn new(name: CardName) -> Self {
-        Self { name, height: CardHeight::vh(36.0), quantity: 1, layout: Layout::default() }
+        Self {
+            name,
+            element_name: ElementName::constant(name.to_string()),
+            height: CardHeight::vh(36.0),
+            quantity: 1,
+            layout: Layout::default(),
+        }
     }
 
     pub fn height(mut self, height: impl Into<CardHeight>) -> Self {
         self.height = height.into();
+        self
+    }
+
+    pub fn element_name(mut self, name: &ElementName) -> Self {
+        self.element_name = name.clone();
         self
     }
 
@@ -88,7 +101,7 @@ impl Component for DeckCard {
         let definition = rules::get(self.name);
         let icons = card_icons::build(&RulesTextContext::Default(definition), definition, true);
 
-        Column::new(self.name.to_string())
+        Column::new(self.element_name)
             .style(self.layout.to_style().align_items(FlexAlign::Center))
             .child(
                 Row::new("CardImage").style(
