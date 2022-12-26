@@ -1121,19 +1121,9 @@ message DelayCommand {
     TimeValue duration = 1;
 }
 
-// Panels that are directly fetched by client code.
-enum ClientPanelAddress {
-    CLIENT_PANEL_ADDRESS_UNSPECIFIED = 0;
-    CLIENT_PANEL_ADDRESS_DEBUG_PANEL = 1;
-    CLIENT_PANEL_ADDRESS_GAME_MENU = 2;
-}
-
 // Identifies an InterfacePanel.
 message InterfacePanelAddress {
-    oneof address_type {
-        bytes serialized = 1;
-        ClientPanelAddress client_panel = 2;
-    }
+    bytes serialized = 1;
 }
 
 // A 'panel' is an independently addressable block of UI. The contents

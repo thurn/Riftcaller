@@ -26,7 +26,7 @@ use data::user_actions::DebugAction;
 use panel_address::PanelAddress;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientDebugCommand, ClientPanelAddress, FlexAlign, FlexJustify, FlexWrap};
+use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
 
 #[derive(Debug, Default)]
 pub struct DebugPanel {}
@@ -39,9 +39,9 @@ impl DebugPanel {
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {
-        let close = panel::close(panel::client(ClientPanelAddress::DebugPanel));
+        let close = panel::close(PanelAddress::DebugPanel);
 
-        Panel::new(panel::client(ClientPanelAddress::DebugPanel), 1024.px(), 600.px())
+        Panel::new(PanelAddress::DebugPanel, 1024.px(), 600.px())
             .title("Debug Controls")
             .show_close_button(true)
             .content(

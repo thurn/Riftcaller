@@ -36,10 +36,7 @@ use panels::main_menu_panel::MainMenuPanel;
 use panels::set_player_name_panel::SetPlayerNamePanel;
 use panels::settings_panel::SettingsPanel;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::interface_panel_address::AddressType;
-use protos::spelldawn::{
-    ClientPanelAddress, InterfacePanel, InterfacePanelAddress, Node, UpdatePanelsCommand,
-};
+use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node, UpdatePanelsCommand};
 use serde_json::de;
 use with_error::WithError;
 
@@ -76,19 +73,13 @@ pub fn render_panels(
 
 pub fn render_panel(
     player: &PlayerData,
-    address: InterfacePanelAddress,
+    client_address: InterfacePanelAddress,
 ) -> Result<UpdatePanelsCommand> {
-    let node = match address.address_type.as_ref().with_error(|| "missing address_type")? {
-        AddressType::Serialized(payload) => {
-            let address = de::from_slice(payload).with_error(|| "deserialization failed")?;
-            render_server_panel(player, address)?
-        }
-        AddressType::ClientPanel(client_panel) => render_client_panel(
-            ClientPanelAddress::from_i32(*client_panel).with_error(|| "invalid known panel")?,
-        ),
-    };
+    let address =
+        de::from_slice(&client_address.serialized).with_error(|| "deserialization failed")?;
+    let node = render_server_panel(player, address)?;
 
-    Ok(UpdatePanelsCommand { panels: vec![InterfacePanel { address: Some(address), node }] })
+    Ok(UpdatePanelsCommand { panels: vec![InterfacePanel { address: Some(client_address), node }] })
 }
 
 fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Option<Node>> {
@@ -97,6 +88,8 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
         PanelAddress::About => AboutPanel::new().build(),
         PanelAddress::Settings => SettingsPanel::new().build(),
         PanelAddress::Disclaimer => DisclaimerPanel::new().build(),
+        PanelAddress::DebugPanel => DebugPanel::new().build(),
+        PanelAddress::GameMenu => GameMenuPanel::new().build(),
         PanelAddress::AdventureMenu => AdventureMenu::new().build(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
         PanelAddress::DeckEditor(data) => {
@@ -132,12 +125,4 @@ fn render_adventure_choice(player: &PlayerData) -> Result<Option<Node>> {
     )?;
 
     Ok(rendered.node)
-}
-
-fn render_client_panel(address: ClientPanelAddress) -> Option<Node> {
-    match address {
-        ClientPanelAddress::Unspecified => None,
-        ClientPanelAddress::DebugPanel => DebugPanel::new().build(),
-        ClientPanelAddress::GameMenu => GameMenuPanel::new().build(),
-    }
 }

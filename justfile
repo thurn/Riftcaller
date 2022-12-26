@@ -270,17 +270,7 @@ benchmark *args='':
 
 # Checks documentation lints, haven't figured out how to do this with a single command
 check-docs:
-    #!/usr/bin/env sh
-    set -euxo pipefail
-    # Cargo rustdoc fails if there are no library targets, should figure out how to skip them properly
-    for file in `ls crates | grep -v 'spelldawn'` ; do
-        echo "Checking rustdoc for $file";
-        cargo rustdoc --lib -p $file -- \
-            -D rustdoc::broken-intra-doc-links \
-            -D rustdoc::private-intra-doc-links \
-            -D rustdoc::missing-crate-level-docs \
-            -D rustdoc::bare-urls;
-    done
+    RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links -D rustdoc::private-intra-doc-links -D rustdoc::bare-urls" cargo doc --all
 
 # Need to run
 # rustup target add x86_64-unknown-linux-gnu

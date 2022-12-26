@@ -15,9 +15,8 @@
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    interface_panel_address, AddressWithLoadingState, ClientPanelAddress, Dimension, FlexAlign,
-    FlexJustify, FlexPosition, ImageScaleMode, InterfacePanel, InterfacePanelAddress, TextAlign,
-    TogglePanelCommand, UpdatePanelsCommand,
+    AddressWithLoadingState, Dimension, FlexAlign, FlexJustify, FlexPosition, ImageScaleMode,
+    InterfacePanel, InterfacePanelAddress, TextAlign, TogglePanelCommand, UpdatePanelsCommand,
 };
 
 use crate::button::IconButton;
@@ -26,13 +25,6 @@ use crate::design::{Font, FontColor, FontSize};
 use crate::prelude::*;
 use crate::text::Text;
 use crate::{icons, style};
-
-/// Converts a [ClientPanelAddress] into an [InterfacePanelAddress].
-pub fn client(address: ClientPanelAddress) -> InterfacePanelAddress {
-    InterfacePanelAddress {
-        address_type: Some(interface_panel_address::AddressType::ClientPanel(address as i32)),
-    }
-}
 
 /// Set the indicated panel as the only open panel
 pub fn set(address: impl Into<InterfacePanelAddress>) -> Command {

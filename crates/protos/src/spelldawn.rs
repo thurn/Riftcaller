@@ -1076,18 +1076,8 @@ pub struct DelayCommand {
 /// Identifies an InterfacePanel.
 #[derive(Eq, Hash, Clone, PartialEq, ::prost::Message)]
 pub struct InterfacePanelAddress {
-    #[prost(oneof = "interface_panel_address::AddressType", tags = "1, 2")]
-    pub address_type: ::core::option::Option<interface_panel_address::AddressType>,
-}
-/// Nested message and enum types in `InterfacePanelAddress`.
-pub mod interface_panel_address {
-    #[derive(Eq, Hash, Clone, PartialEq, ::prost::Oneof)]
-    pub enum AddressType {
-        #[prost(bytes, tag = "1")]
-        Serialized(::prost::alloc::vec::Vec<u8>),
-        #[prost(enumeration = "super::ClientPanelAddress", tag = "2")]
-        ClientPanel(i32),
-    }
+    #[prost(bytes = "vec", tag = "1")]
+    pub serialized: ::prost::alloc::vec::Vec<u8>,
 }
 /// A 'panel' is an independently addressable block of UI. The contents
 /// of each known panel are cached and can then be opened immediately
@@ -1888,14 +1878,6 @@ pub enum CardPrefab {
     Unspecified = 0,
     Standard = 1,
     TokenCard = 2,
-}
-/// Panels that are directly fetched by client code.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum ClientPanelAddress {
-    Unspecified = 0,
-    DebugPanel = 1,
-    GameMenu = 2,
 }
 /// Possible corners which can be anchored.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]

@@ -17,7 +17,7 @@
 use data::adventure::TilePosition;
 use data::player_name::PlayerId;
 use data::primitives::{DeckIndex, GameId, School, Side};
-use protos::spelldawn::{interface_panel_address, InterfacePanelAddress};
+use protos::spelldawn::InterfacePanelAddress;
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
 
@@ -27,6 +27,8 @@ pub enum PanelAddress {
     About,
     Settings,
     Disclaimer,
+    DebugPanel,
+    GameMenu,
     AdventureMenu,
     SetPlayerName(Side),
     DeckEditor(DeckEditorData),
@@ -40,11 +42,7 @@ pub enum PanelAddress {
 
 impl From<PanelAddress> for InterfacePanelAddress {
     fn from(address: PanelAddress) -> Self {
-        Self {
-            address_type: Some(interface_panel_address::AddressType::Serialized(
-                ser::to_vec(&address).expect("Serialization failed"),
-            )),
-        }
+        Self { serialized: ser::to_vec(&address).expect("Serialization failed") }
     }
 }
 
