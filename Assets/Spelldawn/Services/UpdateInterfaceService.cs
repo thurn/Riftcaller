@@ -128,11 +128,12 @@ namespace Spelldawn.Services
       Action? onComplete = null)
     {
       var source = DetachCopy(input);
-      var targetPosition = targetBound.position - new Vector2(
-        source.style.marginLeft.value.value,
-        source.style.marginTop.value.value);
-      // Note: this will be offset if the element has a scale applied to it due to how unity
-      // computes positions. I haven't yet figured out how to solve this problem.
+      // For shrink animations, we need to offset the target position based on the source element
+      // size. This is because Unity calculates positions *before* applying scale transformations.
+      var targetPosition = targetBound.position -
+                           new Vector2(input.worldBound.width / 2.0f, input.worldBound.height / 2.0f) -
+                           new Vector2(input.style.marginLeft.value.value, input.style.marginTop.value.value) +
+                           new Vector2(targetBound.width / 2.0f, targetBound.height / 2.0f);
 
       var sequence = TweenUtils.Sequence("AnimateToPositionAndDestroy").Insert(0,
           DOTween.To(() => source.style.left.value.value,
