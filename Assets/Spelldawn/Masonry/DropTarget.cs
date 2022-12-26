@@ -21,6 +21,6 @@ namespace Spelldawn.Masonry
 {
   public sealed class DropTarget : VisualElement, IMasonElement
   {
-    public NodeType.NodeTypeOneofCase NodeType { get; set; }
+    public Node? Node { get; set; }
   }
 }

@@ -15,6 +15,8 @@
 using System;
 using System.Collections.Generic;
 using Spelldawn.Protos;
+using Spelldawn.Services;
+using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -24,10 +26,14 @@ namespace Spelldawn.Masonry
 {
   public interface IMasonElement
   {
-    NodeType.NodeTypeOneofCase NodeType { get; set; }
+    Node? Node { get; set; }
+
+    NodeType.NodeTypeOneofCase NodeType() => Node?.NodeType?.NodeTypeCase ?? Protos.NodeType.NodeTypeOneofCase.None;
+
+    VisualElement Clone(Registry registry) => Mason.Render(registry, Errors.CheckNotNull(Node, "Node is null"));
   }
-  
-  public interface INodeCallbacks: IMasonElement
+
+  public interface INodeCallbacks : IMasonElement
   {
     VisualElement Self { get; }
     Lazy<Callbacks> Callbacks { get; }
@@ -96,7 +102,7 @@ namespace Spelldawn.Masonry
           throw new ArgumentOutOfRangeException(nameof(eventType), eventType, "Unknown event type");
       }
     }
-    
+
     public void OnClick(ClickEvent evt)
     {
       if (Mathf.Abs(Time.time - _lastClickTime) > 0.1f)
@@ -125,7 +131,7 @@ namespace Spelldawn.Masonry
     {
       _actions[Event.MouseLeave]?.Invoke();
     }
-    
+
     void OnChange(ChangeEvent<float> evt)
     {
       _actions[Event.Change]?.Invoke();
@@ -137,7 +143,7 @@ namespace Spelldawn.Masonry
     public VisualElement Self => this;
     readonly Lazy<Callbacks> _callbacks = new();
     public Lazy<Callbacks> Callbacks => _callbacks;
-    public NodeType.NodeTypeOneofCase NodeType { get; set; }
+    public Node? Node { get; set; }
   }
 
   public sealed class NodeLabel : Label, INodeCallbacks
@@ -145,6 +151,6 @@ namespace Spelldawn.Masonry
     public VisualElement Self => this;
     readonly Lazy<Callbacks> _callbacks = new();
     public Lazy<Callbacks> Callbacks => _callbacks;
-    public NodeType.NodeTypeOneofCase NodeType { get; set; }
+    public Node? Node { get; set; }
   }
 }

@@ -76,8 +76,7 @@ namespace Spelldawn.Services
                  FindElement<VisualElement>(command.FallbackTargetElementName);
       }
 
-      Debug.Log($"HandleAnimateToElementPosition: Found target {target.name} at bound {target.worldBound}");
-      yield return AnimateToPositionAndDestroy(sourceElement, target.worldBound, command.Duration).WaitForCompletion();
+      yield return AnimateToPositionAndDestroy(sourceElement, target.worldBound, command.Animation).WaitForCompletion();
     }
 
     IEnumerator HandleAnimateToChildIndex(string elementName, AnimateDraggableToChildIndex command)
@@ -107,11 +106,12 @@ namespace Spelldawn.Services
       yield return new WaitForEndOfFrame();
 
       newElement.style.height = targetHeight;
-      yield return AnimateToPositionAndDestroy(element, newElement.worldBound, command.Duration, () =>
-      {
-        newElement.style.opacity = 1.0f;
-        HiddenForAnimation.Remove(newElement);
-      }).WaitForCompletion();
+      yield return AnimateToPositionAndDestroy(element, newElement.worldBound,
+        new DestroyElementAnimation { Duration = command.Duration }, () =>
+        {
+          newElement.style.opacity = 1.0f;
+          HiddenForAnimation.Remove(newElement);
+        }).WaitForCompletion();
     }
 
     IEnumerator HandleClearChildren(string elementName)
@@ -121,28 +121,33 @@ namespace Spelldawn.Services
       yield break;
     }
 
-    public static Sequence AnimateToPositionAndDestroy(
-      VisualElement sourceElement,
+    public Sequence AnimateToPositionAndDestroy(
+      VisualElement input,
       Rect targetBound,
-      TimeValue duration,
+      DestroyElementAnimation destroyAnimation,
       Action? onComplete = null)
     {
+      var source = DetachCopy(input);
       var targetPosition = targetBound.position - new Vector2(
-        sourceElement.style.marginLeft.value.value,
-        sourceElement.style.marginTop.value.value);
-      return TweenUtils.Sequence("AnimateToPositionAndDestroy").Insert(0,
-          DOTween.To(() => sourceElement.style.left.value.value,
-            x => sourceElement.style.left = x,
-            endValue: targetPosition.x, duration.Milliseconds / 1000f))
+        source.style.marginLeft.value.value,
+        source.style.marginTop.value.value);
+      // Note: this will be offset if the element has a scale applied to it due to how unity
+      // computes positions. I haven't yet figured out how to solve this problem.
+
+      var sequence = TweenUtils.Sequence("AnimateToPositionAndDestroy").Insert(0,
+          DOTween.To(() => source.style.left.value.value,
+            x => source.style.left = x,
+            endValue: targetPosition.x, destroyAnimation.Duration.Milliseconds / 1000f))
         .Insert(0,
-          DOTween.To(() => sourceElement.style.top.value.value,
-            y => sourceElement.style.top = y,
-            endValue: targetPosition.y, duration.Milliseconds / 1000f))
-        .AppendCallback(() =>
-        {
-          sourceElement.RemoveFromHierarchy();
-          onComplete?.Invoke();
-        });
+          DOTween.To(() => source.style.top.value.value,
+            y => source.style.top = y,
+            endValue: targetPosition.y, destroyAnimation.Duration.Milliseconds / 1000f));
+      ApplyDestroyAnimation(sequence, destroyAnimation, source);
+      return sequence.AppendCallback(() =>
+      {
+        source.RemoveFromHierarchy();
+        onComplete?.Invoke();
+      });
     }
 
     public static Sequence AnimateToZeroHeightAndDestroy(VisualElement element, TimeValue duration)
@@ -174,6 +179,47 @@ namespace Spelldawn.Services
         default:
           throw new InvalidOperationException($"Found more than one element named {elementName}");
       }
+    }
+
+    void ApplyDestroyAnimation(Sequence sequence, DestroyElementAnimation destroyAnimation, VisualElement element)
+    {
+      foreach (var effect in destroyAnimation.Effects)
+      {
+        switch (effect)
+        {
+          case DestroyAnimationEffect.ShrinkHeight:
+            sequence.Insert(0, DOTween.To(() => element.style.height.value.value,
+              height => element.style.height = height,
+              endValue: 0,
+              destroyAnimation.Duration.Milliseconds / 1000f));
+            break;
+          case DestroyAnimationEffect.Shrink:
+            sequence.Insert(0, DOTween.To(() => 1.0f,
+              x => element.style.scale = new Scale(new Vector3(x, x, 1)),
+              endValue: 0f,
+              destroyAnimation.Duration.Milliseconds / 1000f));
+            break;
+          case DestroyAnimationEffect.FadeOut:
+            sequence.Insert(0, DOTween.To(() => element.style.opacity.value,
+              opacity => element.style.opacity = opacity,
+              endValue: 0,
+              destroyAnimation.Duration.Milliseconds / 1000f));
+            break;
+        }
+      }
+    }
+
+    VisualElement DetachCopy(VisualElement input)
+    {
+      var element = ((IMasonElement)input).Clone(_registry);
+      input.style.visibility = Visibility.Hidden;
+      var initialPosition = input.worldBound.position;
+      element.name = "<Animating>";
+      element.style.left = initialPosition.x;
+      element.style.top = initialPosition.y;
+      element.style.position = Position.Absolute;
+      _registry.DocumentService.RootVisualElement.Add(element);
+      return element;
     }
   }
 }

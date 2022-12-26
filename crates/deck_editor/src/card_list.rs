@@ -26,7 +26,7 @@ use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection, StandardAction, TimeValue,
+    AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection, StandardAction,
     UpdateInterfaceElementCommand,
 };
 
@@ -115,7 +115,7 @@ fn drop_action(name: CardName, active_deck: DeckIndex) -> StandardAction {
                     AnimateToElementPositionAndDestroy {
                         target_element_name: name.to_string(),
                         fallback_target_element_name: "CollectionBrowser".to_string(),
-                        duration: Some(TimeValue { milliseconds: 300 }),
+                        animation: None,
                     },
                 )),
             },

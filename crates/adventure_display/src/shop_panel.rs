@@ -22,7 +22,7 @@ use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
-use protos::spelldawn::{FlexAlign, FlexJustify};
+use protos::spelldawn::{DestroyAnimationEffect, FlexAlign, FlexJustify};
 use with_error::fail;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
@@ -77,10 +77,11 @@ fn shop_row<'a>(
                         )
                         .action(actions::with_optimistic_update(
                             vec![
-                                update_element::destroy(&name),
+                                update_element::destroy(&name, DestroyAnimationEffect::FadeOut),
                                 update_element::animate_to_position_and_destroy(
                                     &card_element,
                                     &element_names::DECK_BUTTON,
+                                    DestroyAnimationEffect::Shrink,
                                 ),
                             ],
                             AdventureAction::BuyCard(position, i),

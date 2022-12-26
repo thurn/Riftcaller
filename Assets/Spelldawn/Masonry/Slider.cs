@@ -78,6 +78,6 @@ namespace Spelldawn.Masonry
     public VisualElement Self => this;
     readonly Lazy<Callbacks> _callbacks = new();
     public Lazy<Callbacks> Callbacks => _callbacks;
-    public NodeType.NodeTypeOneofCase NodeType { get; set; }
+    public Node? Node { get; set; }
   }
 }

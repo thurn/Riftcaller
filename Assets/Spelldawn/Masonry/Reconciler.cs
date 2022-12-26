@@ -14,7 +14,6 @@
 
 using Spelldawn.Protos;
 using Spelldawn.Services;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -43,7 +42,7 @@ namespace Spelldawn.Masonry
     {
       var nodeType = node.NodeType?.NodeTypeCase ?? NodeType.NodeTypeOneofCase.None;
       if (previousElement != null &&
-          ((IMasonElement)previousElement).NodeType == nodeType)
+          ((IMasonElement)previousElement).NodeType() == nodeType)
       {
         // If node types match, reuse this node
         return UpdateWhenMatching(registry, node, previousElement);

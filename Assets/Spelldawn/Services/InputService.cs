@@ -204,10 +204,10 @@ namespace Spelldawn.Services
       else
       {
         _overTargetIndicator?.RemoveFromHierarchy();
-        UpdateInterfaceService.AnimateToPositionAndDestroy(
+        _registry.UpdateInterfaceService.AnimateToPositionAndDestroy(
           currentlyDragging,
           _currentDragSource!.worldBound,
-          new Protos.TimeValue { Milliseconds = 100 },
+          new DestroyElementAnimation { Duration = new Protos.TimeValue { Milliseconds = 100 }},
           () =>
           {
             if (_currentDragSource?.RemoveOriginal == true)

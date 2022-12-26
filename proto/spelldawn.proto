@@ -1447,6 +1447,21 @@ message ClientDebugCommand {
     }
 }
 
+// Possible interface animation effects to remove an element
+enum DestroyAnimationEffect {
+    DESTROY_ANIMATION_EFFECT_UNSPECIFIED = 0;
+    DESTROY_ANIMATION_EFFECT_SHRINK = 1;
+    DESTROY_ANIMATION_EFFECT_SHRINK_HEIGHT = 2;
+    DESTROY_ANIMATION_EFFECT_FADE_OUT = 3;
+}
+
+// Animation sequence to play before an interface element is destroyed
+message DestroyElementAnimation {
+    repeated DestroyAnimationEffect effects = 1;
+
+    TimeValue duration = 2;
+}
+
 // Animates a Draggable element to appear as a child node of a parent container.
 message AnimateDraggableToChildIndex {
     string parent_element_name = 1;
@@ -1458,7 +1473,8 @@ message AnimateDraggableToChildIndex {
 // element, then destroy it
 message AnimateToElementPositionAndDestroy {
     string target_element_name = 1;
-    TimeValue duration = 2;
+
+    DestroyElementAnimation animation = 2;
 
     // Use this target instead if 'target_element_name' is not found
     string fallback_target_element_name = 3;
@@ -1476,7 +1492,7 @@ message UpdateInterfaceElementCommand {
     oneof interface_update {
         AnimateDraggableToChildIndex animate_to_child_index = 2;
         AnimateToElementPositionAndDestroy animate_to_element_position = 3;
-        google.protobuf.Empty destroy = 4;
+        DestroyElementAnimation destroy = 4;
         UpdateText update_text = 5;
         google.protobuf.Empty clear_children = 6;
     }

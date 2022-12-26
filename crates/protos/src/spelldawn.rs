@@ -1400,6 +1400,14 @@ pub mod client_debug_command {
         SetBooleanPreference(super::SetBooleanPreference),
     }
 }
+/// Animation sequence to play before an interface element is destroyed
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DestroyElementAnimation {
+    #[prost(enumeration = "DestroyAnimationEffect", repeated, tag = "1")]
+    pub effects: ::prost::alloc::vec::Vec<i32>,
+    #[prost(message, optional, tag = "2")]
+    pub duration: ::core::option::Option<TimeValue>,
+}
 /// Animates a Draggable element to appear as a child node of a parent
 /// container.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1418,7 +1426,7 @@ pub struct AnimateToElementPositionAndDestroy {
     #[prost(string, tag = "1")]
     pub target_element_name: ::prost::alloc::string::String,
     #[prost(message, optional, tag = "2")]
-    pub duration: ::core::option::Option<TimeValue>,
+    pub animation: ::core::option::Option<DestroyElementAnimation>,
     /// Use this target instead if 'target_element_name' is not found
     #[prost(string, tag = "3")]
     pub fallback_target_element_name: ::prost::alloc::string::String,
@@ -1446,7 +1454,7 @@ pub mod update_interface_element_command {
         #[prost(message, tag = "3")]
         AnimateToElementPosition(super::AnimateToElementPositionAndDestroy),
         #[prost(message, tag = "4")]
-        Destroy(()),
+        Destroy(super::DestroyElementAnimation),
         #[prost(message, tag = "5")]
         UpdateText(super::UpdateText),
         #[prost(message, tag = "6")]
@@ -1951,6 +1959,15 @@ pub enum LogMessageLevel {
     Standard = 1,
     Warning = 2,
     Error = 3,
+}
+/// Possible interface animation effects to remove an element
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum DestroyAnimationEffect {
+    Unspecified = 0,
+    Shrink = 1,
+    ShrinkHeight = 2,
+    FadeOut = 3,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

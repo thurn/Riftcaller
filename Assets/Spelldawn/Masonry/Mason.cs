@@ -64,7 +64,7 @@ namespace Spelldawn.Masonry
         NodeType.NodeTypeOneofCase.SliderNode => new NodeSlider(),
         _ => new NodeVisualElement()
       };
-      ((IMasonElement)result).NodeType = node.NodeType?.NodeTypeCase ?? NodeType.NodeTypeOneofCase.None;
+      ((IMasonElement)result).Node = node;
 
       return result;
     }

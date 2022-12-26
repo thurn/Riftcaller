@@ -16,7 +16,10 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
-use protos::spelldawn::{AnimateToElementPositionAndDestroy, UpdateInterfaceElementCommand};
+use protos::spelldawn::{
+    AnimateToElementPositionAndDestroy, DestroyAnimationEffect, DestroyElementAnimation,
+    UpdateInterfaceElementCommand,
+};
 
 use crate::style::DimensionExt;
 
@@ -47,21 +50,31 @@ impl ElementName {
 }
 
 /// Command to remove all children of an element
-pub fn destroy(name: &ElementName) -> Command {
+pub fn destroy(name: &ElementName, effect: DestroyAnimationEffect) -> Command {
     Command::UpdateInterfaceElement(UpdateInterfaceElementCommand {
         element_name: name.0.clone(),
-        interface_update: Some(InterfaceUpdate::Destroy(())),
+        interface_update: Some(InterfaceUpdate::Destroy(DestroyElementAnimation {
+            effects: vec![effect.into()],
+            duration: Some(300.milliseconds()),
+        })),
     })
 }
 
 /// Move the 'source' element to the 'destination' element and then destroy it
-pub fn animate_to_position_and_destroy(source: &ElementName, destination: &ElementName) -> Command {
+pub fn animate_to_position_and_destroy(
+    source: &ElementName,
+    destination: &ElementName,
+    effect: DestroyAnimationEffect,
+) -> Command {
     Command::UpdateInterfaceElement(UpdateInterfaceElementCommand {
         element_name: source.0.clone(),
         interface_update: Some(InterfaceUpdate::AnimateToElementPosition(
             AnimateToElementPositionAndDestroy {
                 target_element_name: destination.0.clone(),
-                duration: Some(300.milliseconds()),
+                animation: Some(DestroyElementAnimation {
+                    effects: vec![effect.into()],
+                    duration: Some(300.milliseconds()),
+                }),
                 fallback_target_element_name: String::new(),
             },
         )),
