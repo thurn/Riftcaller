@@ -13,11 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
-use core_ui::prelude::*;
 use data::adventure::{TileEntity, TilePosition};
 use data::player_data::PlayerData;
-use panel_address::PanelAddress;
-use protos::spelldawn::Node;
+use panel_address::{PanelAddress, PanelType};
+use protos::spelldawn::{InterfacePanel, InterfacePanelAddress};
 use with_error::{fail, WithError};
 
 use crate::draft_prompt_panel::DraftPromptPanel;
@@ -25,7 +24,11 @@ use crate::explore_panel::ExplorePanel;
 use crate::shop_prompt_panel::ShopPromptPanel;
 
 /// Renders a panel for the entity at the provided [TilePosition].
-pub fn render_tile_panel(position: TilePosition, player: &PlayerData) -> Result<Option<Node>> {
+pub fn render_tile_panel(
+    position: TilePosition,
+    player: &PlayerData,
+    client_address: InterfacePanelAddress,
+) -> Result<InterfacePanel> {
     let address = PanelAddress::TileEntity(position);
     let Some(adventure) = &player.adventure else {
         fail!("Expected active adventure");
@@ -35,14 +38,16 @@ pub fn render_tile_panel(position: TilePosition, player: &PlayerData) -> Result<
     let Some(entity) = &tile.entity else {
         // Entity does not exist, e.g. because it has been cleared after activation. This
         // is fine, just render nothing.
-        return Ok(None);
+        return Ok(InterfacePanel { address: Some(client_address), node: None });
     };
 
     Ok(match entity {
-        TileEntity::Explore { cost, .. } => ExplorePanel { cost: *cost, address, position }.build(),
-        TileEntity::Draft { cost, .. } => {
-            DraftPromptPanel { cost: *cost, address, position }.build()
+        TileEntity::Explore { cost, .. } => {
+            ExplorePanel { cost: *cost, address, position }.panel(client_address)
         }
-        TileEntity::Shop { .. } => ShopPromptPanel { address, position }.build(),
+        TileEntity::Draft { cost, .. } => {
+            DraftPromptPanel { cost: *cost, address, position }.panel(client_address)
+        }
+        TileEntity::Shop { .. } => ShopPromptPanel { address, position }.panel(client_address),
     })
 }

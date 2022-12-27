@@ -18,14 +18,13 @@
 use adventure_display::adventure_panels;
 use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
-use core_ui::component::Component;
 use data::adventure::AdventureState;
 use data::player_data::PlayerData;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::pick_deck_name::PickDeckName;
 use deck_editor::pick_deck_school::PickDeckSchool;
 use deck_editor::pick_deck_side::PickDeckSide;
-use panel_address::{CreateDeckState, PanelAddress};
+use panel_address::{CreateDeckState, PanelAddress, PanelType};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;
 use panels::debug_panel::DebugPanel;
@@ -36,7 +35,7 @@ use panels::main_menu_panel::MainMenuPanel;
 use panels::set_player_name_panel::SetPlayerNamePanel;
 use panels::settings_panel::SettingsPanel;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node, UpdatePanelsCommand};
+use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, UpdatePanelsCommand};
 use serde_json::de;
 use with_error::WithError;
 
@@ -75,23 +74,26 @@ pub fn render_panel(
     player: &PlayerData,
     client_address: InterfacePanelAddress,
 ) -> Result<UpdatePanelsCommand> {
-    let address =
+    let server_address =
         de::from_slice(&client_address.serialized).with_error(|| "deserialization failed")?;
-    let node = render_server_panel(player, address)?;
-
-    Ok(UpdatePanelsCommand { panels: vec![InterfacePanel { address: Some(client_address), node }] })
+    let node = render_server_panel(player, server_address, client_address)?;
+    Ok(UpdatePanelsCommand { panels: vec![node] })
 }
 
-fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Option<Node>> {
-    Ok(match address {
-        PanelAddress::MainMenu => MainMenuPanel::new().build(),
-        PanelAddress::About => AboutPanel::new().build(),
-        PanelAddress::Settings => SettingsPanel::new().build(),
-        PanelAddress::Disclaimer => DisclaimerPanel::new().build(),
-        PanelAddress::DebugPanel => DebugPanel::new().build(),
-        PanelAddress::GameMenu => GameMenuPanel::new().build(),
-        PanelAddress::AdventureMenu => AdventureMenu::new().build(),
-        PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build(),
+fn render_server_panel(
+    player: &PlayerData,
+    server_address: PanelAddress,
+    client_address: InterfacePanelAddress,
+) -> Result<InterfacePanel> {
+    Ok(match server_address {
+        PanelAddress::MainMenu => MainMenuPanel::new().panel(client_address),
+        PanelAddress::About => AboutPanel::new().panel(client_address),
+        PanelAddress::Settings => SettingsPanel::new().panel(client_address),
+        PanelAddress::Disclaimer => DisclaimerPanel::new().panel(client_address),
+        PanelAddress::DebugPanel => DebugPanel::new().panel(client_address),
+        PanelAddress::GameMenu => GameMenuPanel::new().panel(client_address),
+        PanelAddress::AdventureMenu => AdventureMenu::new().panel(client_address),
+        PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).panel(client_address),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
             DeckEditorPanel {
@@ -100,29 +102,35 @@ fn render_server_panel(player: &PlayerData, address: PanelAddress) -> Result<Opt
                 filters: data.collection_filters,
                 show_edit_options: data.show_edit_options,
             }
-            .build()
+            .panel(client_address)
         }
         PanelAddress::CreateDeck(state) => match state {
-            CreateDeckState::PickSide => PickDeckSide::new().build(),
-            CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).build(),
-            CreateDeckState::PickName(side, school) => PickDeckName::new(side, school).build(),
+            CreateDeckState::PickSide => PickDeckSide::new().panel(client_address),
+            CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).panel(client_address),
+            CreateDeckState::PickName(side, school) => {
+                PickDeckName::new(side, school).panel(client_address)
+            }
         },
-        PanelAddress::GameOver(_) => GameOverPanel { address, player }.build(),
+        PanelAddress::GameOver(_) => {
+            GameOverPanel { address: server_address, player }.panel(client_address)
+        }
         PanelAddress::TileEntity(position) => {
-            adventure_panels::render_tile_panel(position, player)?
+            adventure_panels::render_tile_panel(position, player, client_address)?
         }
         PanelAddress::DraftCard => render_adventure_choice(player)?,
         PanelAddress::AdventureOver => render_adventure_choice(player)?,
-        PanelAddress::Shop(position) => ShopPanel::new_from_player(player, position)?.build(),
+        PanelAddress::Shop(position) => {
+            ShopPanel::new_from_player(player, position)?.panel(client_address)
+        }
     })
 }
 
-fn render_adventure_choice(player: &PlayerData) -> Result<Option<Node>> {
+fn render_adventure_choice(player: &PlayerData) -> Result<InterfacePanel> {
     let adventure = player.adventure.as_ref().with_error(|| "Expected adventure")?;
     let rendered = adventure_display::render_adventure_choice_screen(
         adventure,
         adventure.choice_screen.as_ref().with_error(|| "Expected choice screen")?,
     )?;
 
-    Ok(rendered.node)
+    Ok(rendered.panel)
 }

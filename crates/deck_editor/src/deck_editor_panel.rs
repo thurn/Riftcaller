@@ -18,7 +18,7 @@ use core_ui::prelude::*;
 use core_ui::{icons, panel};
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
+use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress, PanelType};
 use protos::spelldawn::FlexPosition;
 
 use crate::card_list::CardList;
@@ -36,6 +36,8 @@ pub struct DeckEditorPanel<'a> {
     pub filters: CollectionBrowserFilters,
     pub show_edit_options: bool,
 }
+
+impl<'a> PanelType for DeckEditorPanel<'a> {}
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {

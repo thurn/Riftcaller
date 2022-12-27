@@ -16,7 +16,7 @@ use core_ui::prelude::*;
 use core_ui::{actions, panel};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 
 use crate::button_menu::ButtonMenu;
 
@@ -28,6 +28,8 @@ impl AdventureMenu {
         Self::default()
     }
 }
+
+impl PanelType for AdventureMenu {}
 
 impl Component for AdventureMenu {
     fn build(self) -> Option<Node> {

@@ -22,7 +22,7 @@ use core_ui::text::Text;
 use core_ui::text_field::TextField;
 use data::primitives::{School, Side};
 use data::user_actions::DeckEditorAction;
-use panel_address::{CreateDeckState, PanelAddress};
+use panel_address::{CreateDeckState, PanelAddress, PanelType};
 
 pub const DECK_NAME_INPUT: &str = "DeckNameInput";
 
@@ -40,6 +40,8 @@ impl PickDeckName {
 pub fn default_deck_name(side: Side, school: School) -> String {
     format!("{:?} {:?} Deck", side, school)
 }
+
+impl PanelType for PickDeckName {}
 
 impl Component for PickDeckName {
     fn build(self) -> Option<Node> {

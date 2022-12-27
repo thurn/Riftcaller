@@ -22,7 +22,7 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::{actions, panel};
 use data::game_actions::GameAction;
-use panel_address::{DeckEditorData, PanelAddress};
+use panel_address::{DeckEditorData, PanelAddress, PanelType};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
@@ -33,6 +33,8 @@ impl GameMenuPanel {
         Self::default()
     }
 }
+
+impl PanelType for GameMenuPanel {}
 
 impl Component for GameMenuPanel {
     fn build(self) -> Option<Node> {

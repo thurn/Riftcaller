@@ -18,7 +18,7 @@ use core_ui::{actions, icons, panel, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 
 use crate::adventure_loading::AdventureLoading;
 use crate::tile_prompt_panel::TilePromptPanel;
@@ -28,6 +28,8 @@ pub struct DraftPromptPanel {
     pub address: PanelAddress,
     pub position: TilePosition,
 }
+
+impl PanelType for DraftPromptPanel {}
 
 impl Component for DraftPromptPanel {
     fn build(self) -> Option<Node> {

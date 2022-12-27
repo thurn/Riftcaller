@@ -20,7 +20,7 @@ use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
 
 pub const TEXT: &str = "Spelldawn is open source and licensed under the Apache License, version 2.0. Source code is available at github.com/thurn/spelldawn
@@ -41,6 +41,8 @@ impl AboutPanel {
         Self::default()
     }
 }
+
+impl PanelType for AboutPanel {}
 
 impl Component for AboutPanel {
     fn build(self) -> Option<Node> {

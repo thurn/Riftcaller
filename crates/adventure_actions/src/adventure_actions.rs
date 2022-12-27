@@ -62,7 +62,6 @@ fn handle_initiate_draft(state: &mut AdventureState, position: TilePosition) -> 
 
     spend_coins(state, cost)?;
     state.choice_screen = Some(AdventureChoiceScreen::Draft(position));
-    state.tile_mut(position)?.entity = None;
 
     Ok(())
 }
@@ -84,6 +83,7 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
         .entry(choice.card)
         .and_modify(|i| *i += choice.quantity)
         .or_insert(choice.quantity);
+    state.tile_mut(*position)?.entity = None;
     state.choice_screen = None;
     Ok(())
 }

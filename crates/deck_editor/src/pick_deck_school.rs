@@ -20,7 +20,7 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::text::Text;
 use data::primitives::{School, Side};
-use panel_address::{CreateDeckState, PanelAddress};
+use panel_address::{CreateDeckState, PanelAddress, PanelType};
 
 pub struct PickDeckSchool {
     side: Side,
@@ -31,6 +31,8 @@ impl PickDeckSchool {
         Self { side }
     }
 }
+
+impl PanelType for PickDeckSchool {}
 
 impl Component for PickDeckSchool {
     fn build(self) -> Option<Node> {

@@ -20,7 +20,7 @@ use core_ui::panel::Panel;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
 
 pub const TEXT: &str = "Welcome to the developer early access build of Spelldawn.
@@ -35,6 +35,8 @@ impl DisclaimerPanel {
         Self::default()
     }
 }
+
+impl PanelType for DisclaimerPanel {}
 
 impl Component for DisclaimerPanel {
     fn build(self) -> Option<Node> {

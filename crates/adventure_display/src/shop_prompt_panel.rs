@@ -16,7 +16,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
 use core_ui::{panel, style};
 use data::adventure::TilePosition;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 
 use crate::adventure_loading::AdventureLoading;
 use crate::tile_prompt_panel::TilePromptPanel;
@@ -25,6 +25,8 @@ pub struct ShopPromptPanel {
     pub address: PanelAddress,
     pub position: TilePosition,
 }
+
+impl PanelType for ShopPromptPanel {}
 
 impl Component for ShopPromptPanel {
     fn build(self) -> Option<Node> {

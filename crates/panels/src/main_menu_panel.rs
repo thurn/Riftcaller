@@ -24,11 +24,13 @@ use core_ui::{actions, panel};
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{DeckIndex, Side};
 use data::user_actions::{NewGameAction, UserAction};
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
 pub struct MainMenuPanel {}
+
+impl PanelType for MainMenuPanel {}
 
 impl MainMenuPanel {
     pub fn new() -> Self {

@@ -138,10 +138,8 @@ pub fn pop_to_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command
 }
 
 /// Command to update the contents of a panel
-pub fn update(address: impl Into<InterfacePanelAddress>, node: Option<Node>) -> Command {
-    Command::UpdatePanels(UpdatePanelsCommand {
-        panels: vec![InterfacePanel { address: Some(address.into()), node }],
-    })
+pub fn update(panel: InterfacePanel) -> Command {
+    Command::UpdatePanels(UpdatePanelsCommand { panels: vec![panel] })
 }
 
 /// A rectangular interface element that displays content centered on-screen,

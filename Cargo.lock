@@ -1243,6 +1243,7 @@ checksum = "648001efe5d5c0102d8cea768e348da85d90af8ba91f0bea908f157951493cd4"
 name = "panel_address"
 version = "0.0.0"
 dependencies = [
+ "core_ui",
  "data",
  "protos",
  "serde",

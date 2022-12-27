@@ -14,12 +14,22 @@
 
 //! Addresses for user interface panels
 
+use core_ui::prelude::Component;
 use data::adventure::TilePosition;
 use data::player_name::PlayerId;
 use data::primitives::{DeckIndex, GameId, School, Side};
-use protos::spelldawn::InterfacePanelAddress;
+use protos::spelldawn::{InterfacePanel, InterfacePanelAddress};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
+
+pub trait PanelType: Component {
+    fn panel(self, address: InterfacePanelAddress) -> InterfacePanel
+    where
+        Self: Sized,
+    {
+        InterfacePanel { address: Some(address), node: self.build() }
+    }
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PanelAddress {

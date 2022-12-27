@@ -19,7 +19,7 @@ use core_ui::prelude::*;
 use data::player_name::NamedPlayer;
 use data::primitives::Side;
 use data::user_actions::DebugAction;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 
 #[derive(Debug)]
 pub struct SetPlayerNamePanel {
@@ -31,6 +31,8 @@ impl SetPlayerNamePanel {
         Self { side }
     }
 }
+
+impl PanelType for SetPlayerNamePanel {}
 
 impl Component for SetPlayerNamePanel {
     fn build(self) -> Option<Node> {

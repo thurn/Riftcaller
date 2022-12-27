@@ -23,7 +23,7 @@ use core_ui::prelude::*;
 use core_ui::{icons, panel};
 use data::primitives::Side;
 use data::user_actions::DebugAction;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
@@ -36,6 +36,8 @@ impl DebugPanel {
         Self::default()
     }
 }
+
+impl PanelType for DebugPanel {}
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {

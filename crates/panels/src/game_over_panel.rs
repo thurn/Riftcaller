@@ -21,7 +21,7 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use data::player_data::PlayerData;
 use data::user_actions::UserAction;
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug)]
@@ -29,6 +29,8 @@ pub struct GameOverPanel<'a> {
     pub address: PanelAddress,
     pub player: &'a PlayerData,
 }
+
+impl<'a> PanelType for GameOverPanel<'a> {}
 
 impl<'a> Component for GameOverPanel<'a> {
     fn build(self) -> Option<Node> {

@@ -26,13 +26,13 @@ pub mod shop_prompt_panel;
 pub mod tile_prompt_panel;
 
 use anyhow::Result;
-use core_ui::prelude::*;
 use core_ui::{actions, design, panel};
 use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState};
-use panel_address::PanelAddress;
+use panel_address::{PanelAddress, PanelType};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
-    FlexVector3, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite, WorldMapTile,
+    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
+    WorldMapTile,
 };
 use with_error::fail;
 
@@ -53,7 +53,7 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
 
     if let Some(screen) = &state.choice_screen {
         let rendered = render_adventure_choice_screen(state, screen)?;
-        commands.push(panel::update(rendered.address, rendered.node));
+        commands.push(panel::update(rendered.panel));
         commands.push(panel::open_existing(rendered.address));
     }
 
@@ -61,7 +61,7 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
 }
 
 pub struct RenderedChoiceScreen {
-    pub node: Option<Node>,
+    pub panel: InterfacePanel,
     pub address: PanelAddress,
 }
 
@@ -73,7 +73,7 @@ pub fn render_adventure_choice_screen(
 ) -> Result<RenderedChoiceScreen> {
     Ok(match screen {
         AdventureChoiceScreen::AdventureOver => RenderedChoiceScreen {
-            node: AdventureOverPanel::new().build(),
+            panel: AdventureOverPanel::new().panel(PanelAddress::AdventureOver.into()),
             address: PanelAddress::AdventureOver,
         },
         AdventureChoiceScreen::Draft(position) => {
@@ -82,7 +82,7 @@ pub fn render_adventure_choice_screen(
             };
 
             RenderedChoiceScreen {
-                node: DraftPanel { data }.build(),
+                panel: DraftPanel { data }.panel(PanelAddress::DraftCard.into()),
                 address: PanelAddress::DraftCard,
             }
         }
