@@ -86,34 +86,32 @@ fn render_server_panel(
     client_address: InterfacePanelAddress,
 ) -> Result<InterfacePanel> {
     Ok(match server_address {
-        PanelAddress::MainMenu => MainMenuPanel::new().panel(client_address),
-        PanelAddress::About => AboutPanel::new().panel(client_address),
-        PanelAddress::Settings => SettingsPanel::new().panel(client_address),
-        PanelAddress::Disclaimer => DisclaimerPanel::new().panel(client_address),
-        PanelAddress::DebugPanel => DebugPanel::new().panel(client_address),
-        PanelAddress::GameMenu => GameMenuPanel::new().panel(client_address),
-        PanelAddress::AdventureMenu => AdventureMenu::new().panel(client_address),
-        PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).panel(client_address),
+        PanelAddress::MainMenu => MainMenuPanel::new().build_panel(),
+        PanelAddress::About => AboutPanel::new().build_panel(),
+        PanelAddress::Settings => SettingsPanel::new().build_panel(),
+        PanelAddress::Disclaimer => DisclaimerPanel::new().build_panel(),
+        PanelAddress::DebugPanel => DebugPanel::new().build_panel(),
+        PanelAddress::GameMenu => GameMenuPanel::new().build_panel(),
+        PanelAddress::AdventureMenu => AdventureMenu::new().build_panel(),
+        PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
-            DeckEditorPanel { player, open_deck, data }.panel(client_address)
+            DeckEditorPanel { player, open_deck, data }.build_panel()
         }
         PanelAddress::CreateDeck(state) => match state {
-            CreateDeckState::PickSide => PickDeckSide::new().panel(client_address),
-            CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).panel(client_address),
+            CreateDeckState::PickSide => PickDeckSide::new().build_panel(),
+            CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).build_panel(),
             CreateDeckState::PickName(side, school) => {
-                PickDeckName::new(side, school).panel(client_address)
+                PickDeckName::new(side, school).build_panel()
             }
         },
-        PanelAddress::GameOver(data) => GameOverPanel { data, player }.panel(client_address),
+        PanelAddress::GameOver(data) => GameOverPanel { data, player }.build_panel(),
         PanelAddress::TileEntity(position) => {
             adventure_panels::render_tile_panel(position, player, client_address)?
         }
         PanelAddress::DraftCard => render_adventure_choice(player)?,
         PanelAddress::AdventureOver => render_adventure_choice(player)?,
-        PanelAddress::Shop(position) => {
-            ShopPanel::new_from_player(player, position)?.panel(client_address)
-        }
+        PanelAddress::Shop(position) => ShopPanel::new_from_player(player, position)?.build_panel(),
     })
 }
 

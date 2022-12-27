@@ -73,7 +73,7 @@ pub fn render_adventure_choice_screen(
 ) -> Result<RenderedChoiceScreen> {
     Ok(match screen {
         AdventureChoiceScreen::AdventureOver => RenderedChoiceScreen {
-            panel: AdventureOverPanel::new().panel(PanelAddress::AdventureOver.into()),
+            panel: AdventureOverPanel::new().build_panel(),
             address: PanelAddress::AdventureOver,
         },
         AdventureChoiceScreen::Draft(position) => {
@@ -82,7 +82,7 @@ pub fn render_adventure_choice_screen(
             };
 
             RenderedChoiceScreen {
-                panel: DraftPanel { data }.panel(PanelAddress::DraftCard.into()),
+                panel: DraftPanel { data }.build_panel(),
                 address: PanelAddress::DraftCard,
             }
         }

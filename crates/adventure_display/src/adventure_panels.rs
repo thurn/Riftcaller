@@ -43,11 +43,11 @@ pub fn render_tile_panel(
 
     Ok(match entity {
         TileEntity::Explore { cost, .. } => {
-            ExplorePanel { cost: *cost, address, position }.panel(client_address)
+            ExplorePanel { cost: *cost, address, position }.build_panel()
         }
         TileEntity::Draft { cost, .. } => {
-            DraftPromptPanel { cost: *cost, address, position }.panel(client_address)
+            DraftPromptPanel { cost: *cost, address, position }.build_panel()
         }
-        TileEntity::Shop { .. } => ShopPromptPanel { address, position }.panel(client_address),
+        TileEntity::Shop { .. } => ShopPromptPanel { address, position }.build_panel(),
     })
 }

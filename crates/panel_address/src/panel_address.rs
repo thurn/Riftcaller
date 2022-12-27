@@ -25,11 +25,11 @@ use serde_json::ser;
 pub trait Panel: Component {
     fn address(&self) -> PanelAddress;
 
-    fn panel(self, address: InterfacePanelAddress) -> InterfacePanel
+    fn build_panel(self) -> InterfacePanel
     where
         Self: Sized,
     {
-        InterfacePanel { address: Some(address), node: self.build() }
+        InterfacePanel { address: Some(self.address().into()), node: self.build() }
     }
 }
 
