@@ -15,10 +15,10 @@
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::BackgroundColor;
 use core_ui::prelude::*;
-use core_ui::{icons, panel};
+use core_ui::{icons, panels};
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress, PanelType};
+use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
 use protos::spelldawn::FlexPosition;
 
 use crate::card_list::CardList;
@@ -37,7 +37,7 @@ pub struct DeckEditorPanel<'a> {
     pub show_edit_options: bool,
 }
 
-impl<'a> PanelType for DeckEditorPanel<'a> {}
+impl<'a> Panel for DeckEditorPanel<'a> {}
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
@@ -80,7 +80,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                         Some(
                             IconButton::new(icons::PREVIOUS_PAGE)
                                 .button_type(IconButtonType::SecondaryLarge)
-                                .action(panel::set(PanelAddress::DeckEditor(DeckEditorData {
+                                .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
                                     deck: self.open_deck.map(|d| d.index),
                                     collection_filters: CollectionBrowserFilters {
                                         offset: self.filters.offset - 8,
@@ -105,7 +105,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                             Some(
                                 IconButton::new(icons::NEXT_PAGE)
                                     .button_type(IconButtonType::SecondaryLarge)
-                                    .action(panel::set(PanelAddress::DeckEditor(DeckEditorData {
+                                    .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
                                         deck: self.open_deck.map(|d| d.index),
                                         collection_filters: CollectionBrowserFilters {
                                             offset: self.filters.offset + 8,

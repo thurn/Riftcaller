@@ -20,7 +20,7 @@ use core_ui::{actions, style};
 use data::adventure::DraftData;
 use data::adventure_action::AdventureAction;
 use deck_card::{CardHeight, DeckCard};
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 
@@ -28,7 +28,7 @@ pub struct DraftPanel<'a> {
     pub data: &'a DraftData,
 }
 
-impl<'a> PanelType for DraftPanel<'a> {}
+impl<'a> Panel for DraftPanel<'a> {}
 
 impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {

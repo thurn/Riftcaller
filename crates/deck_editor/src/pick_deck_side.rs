@@ -15,12 +15,12 @@
 use core_ui::bottom_sheet_content::{BottomSheetButtonType, BottomSheetContent};
 use core_ui::button::Button;
 use core_ui::design::FontSize;
-use core_ui::panel;
+use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::text::Text;
 use data::primitives::Side;
-use panel_address::{CreateDeckState, PanelAddress, PanelType};
+use panel_address::{CreateDeckState, Panel, PanelAddress};
 
 #[derive(Default)]
 pub struct PickDeckSide {}
@@ -31,7 +31,7 @@ impl PickDeckSide {
     }
 }
 
-impl PanelType for PickDeckSide {}
+impl Panel for PickDeckSide {}
 
 impl Component for PickDeckSide {
     fn build(self) -> Option<Node> {
@@ -46,7 +46,7 @@ impl Component for PickDeckSide {
                             .child(
                                 Button::new("Overlord")
                                     .width_mode(WidthMode::Constrained)
-                                    .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
+                                    .action(panels::push_bottom_sheet(PanelAddress::CreateDeck(
                                         CreateDeckState::PickSchool(Side::Overlord),
                                     )))
                                     .layout(Layout::new().margin(Edge::All, 16.px())),
@@ -54,7 +54,7 @@ impl Component for PickDeckSide {
                             .child(
                                 Button::new("Champion")
                                     .width_mode(WidthMode::Constrained)
-                                    .action(panel::push_bottom_sheet(PanelAddress::CreateDeck(
+                                    .action(panels::push_bottom_sheet(PanelAddress::CreateDeck(
                                         CreateDeckState::PickSchool(Side::Champion),
                                     )))
                                     .layout(Layout::new().margin(Edge::All, 16.px())),

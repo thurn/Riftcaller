@@ -17,12 +17,12 @@
 
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{Button, ButtonType};
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use core_ui::{actions, panel};
+use core_ui::{actions, panels};
 use data::game_actions::GameAction;
-use panel_address::{DeckEditorData, PanelAddress, PanelType};
+use panel_address::{DeckEditorData, Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
@@ -34,12 +34,12 @@ impl GameMenuPanel {
     }
 }
 
-impl PanelType for GameMenuPanel {}
+impl Panel for GameMenuPanel {}
 
 impl Component for GameMenuPanel {
     fn build(self) -> Option<Node> {
         let address = PanelAddress::GameMenu;
-        Panel::new(address, 512.px(), 600.px())
+        PanelWindow::new(address, 512.px(), 600.px())
             .title("Menu")
             .content(
                 Column::new("MeuButtons")
@@ -49,11 +49,11 @@ impl Component for GameMenuPanel {
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center),
                     )
-                    .child(menu_button("Close", panel::close(address)))
+                    .child(menu_button("Close", panels::close(address)))
                     .child(menu_button("Resign", actions::close_and(address, GameAction::Resign)))
                     .child(menu_button(
                         "Deck Editor",
-                        panel::set(PanelAddress::DeckEditor(DeckEditorData::default())),
+                        panels::set(PanelAddress::DeckEditor(DeckEditorData::default())),
                     )),
             )
             .build()

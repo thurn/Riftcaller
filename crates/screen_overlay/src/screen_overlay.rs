@@ -20,7 +20,7 @@ use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use core_ui::{icons, panel};
+use core_ui::{icons, panels};
 use data::player_data::PlayerData;
 use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
@@ -91,7 +91,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .name(&element_names::MENU_BUTTON)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .button_type(IconButtonType::NavbarBrown)
-                            .action(panel::open(PanelAddress::AdventureMenu)),
+                            .action(panels::open(PanelAddress::AdventureMenu)),
                     ),
             )
             .build()

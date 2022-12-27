@@ -15,12 +15,12 @@
 //! The about panel displays information about the authorship of the game
 
 use core_ui::button::Button;
-use core_ui::panel;
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
+use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
 
 pub const TEXT: &str = "Spelldawn is open source and licensed under the Apache License, version 2.0. Source code is available at github.com/thurn/spelldawn
@@ -42,11 +42,11 @@ impl AboutPanel {
     }
 }
 
-impl PanelType for AboutPanel {}
+impl Panel for AboutPanel {}
 
 impl Component for AboutPanel {
     fn build(self) -> Option<Node> {
-        Panel::new(PanelAddress::About, 600.px(), 600.px())
+        PanelWindow::new(PanelAddress::About, 600.px(), 600.px())
             .title("About")
             .content(
                 Column::new("AboutContent")
@@ -63,7 +63,7 @@ impl Component for AboutPanel {
                     )
                     .child(
                         Button::new("Back")
-                            .action(panel::close(PanelAddress::About))
+                            .action(panels::close(PanelAddress::About))
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

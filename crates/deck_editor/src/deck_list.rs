@@ -14,7 +14,7 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::design::{FontSize, RED_900};
-use core_ui::panel;
+use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
@@ -50,7 +50,7 @@ impl<'a> Component for DeckList<'a> {
                         Button::new("Create Deck")
                             .button_type(ButtonType::Primary)
                             .layout(Layout::new().margin(Edge::All, 16.px()))
-                            .action(panel::open_bottom_sheet(PanelAddress::CreateDeck(
+                            .action(panels::open_bottom_sheet(PanelAddress::CreateDeck(
                                 CreateDeckState::PickSide,
                             ))),
                     )
@@ -63,7 +63,7 @@ impl<'a> Component for DeckList<'a> {
                                     .padding(Edge::All, 1.vw()),
                             )
                             .children(decks.into_iter().map(|deck| {
-                                DeckTile::new(deck).action(panel::set(PanelAddress::DeckEditor(
+                                DeckTile::new(deck).action(panels::set(PanelAddress::DeckEditor(
                                     DeckEditorData {
                                         deck: Some(deck.index),
                                         collection_filters: self.filters,

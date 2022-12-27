@@ -16,12 +16,12 @@
 
 use core_ui::actions;
 use core_ui::button::{Button, ButtonType};
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use data::player_data::PlayerData;
 use data::user_actions::UserAction;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug)]
@@ -30,11 +30,11 @@ pub struct GameOverPanel<'a> {
     pub player: &'a PlayerData,
 }
 
-impl<'a> PanelType for GameOverPanel<'a> {}
+impl<'a> Panel for GameOverPanel<'a> {}
 
 impl<'a> Component for GameOverPanel<'a> {
     fn build(self) -> Option<Node> {
-        Panel::new(self.address, 512.px(), 350.px())
+        PanelWindow::new(self.address, 512.px(), 350.px())
             .content(
                 Column::new("Buttons")
                     .style(

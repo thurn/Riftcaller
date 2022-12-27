@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use core_ui::{actions, panel};
+use core_ui::{actions, panels};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 
 use crate::button_menu::ButtonMenu;
 
@@ -29,7 +29,7 @@ impl AdventureMenu {
     }
 }
 
-impl PanelType for AdventureMenu {}
+impl Panel for AdventureMenu {}
 
 impl Component for AdventureMenu {
     fn build(self) -> Option<Node> {
@@ -41,7 +41,7 @@ impl Component for AdventureMenu {
                     UserAction::AdventureAction(AdventureAction::AbandonAdventure),
                 ),
             )
-            .button("Settings", panel::open(PanelAddress::Settings))
+            .button("Settings", panels::open(PanelAddress::Settings))
             .build()
     }
 }

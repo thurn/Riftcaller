@@ -14,11 +14,11 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use core_ui::{actions, icons, panel, style};
+use core_ui::{actions, icons, panels, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 
 use crate::tile_prompt_panel::TilePromptPanel;
 
@@ -28,7 +28,7 @@ pub struct ExplorePanel {
     pub position: TilePosition,
 }
 
-impl PanelType for ExplorePanel {}
+impl Panel for ExplorePanel {}
 
 impl Component for ExplorePanel {
     fn build(self) -> Option<Node> {
@@ -44,7 +44,7 @@ impl Component for ExplorePanel {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(panel::close(self.address))
+                    .action(panels::close(self.address))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

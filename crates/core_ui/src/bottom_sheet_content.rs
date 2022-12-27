@@ -19,7 +19,7 @@ use crate::component::EmptyComponent;
 use crate::design::FontSize;
 use crate::prelude::*;
 use crate::text::Text;
-use crate::{icons, panel};
+use crate::{icons, panels};
 
 pub enum BottomSheetButtonType {
     /// Close the bottom sheet
@@ -85,9 +85,9 @@ impl Component for BottomSheetContent {
                             BottomSheetButtonType::Back(_) => icons::BACK,
                         })
                         .action(match self.button_type {
-                            BottomSheetButtonType::Close => panel::close_bottom_sheet(),
+                            BottomSheetButtonType::Close => panels::close_bottom_sheet(),
                             BottomSheetButtonType::Back(address) => {
-                                panel::pop_to_bottom_sheet(address)
+                                panels::pop_to_bottom_sheet(address)
                             }
                         })
                         .button_type(IconButtonType::SecondaryLarge)

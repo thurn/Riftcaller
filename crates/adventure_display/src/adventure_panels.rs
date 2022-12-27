@@ -15,7 +15,7 @@
 use anyhow::Result;
 use data::adventure::{TileEntity, TilePosition};
 use data::player_data::PlayerData;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress};
 use with_error::{fail, WithError};
 

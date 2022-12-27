@@ -16,7 +16,7 @@ use core_ui::button::{Button, ButtonType, IconButton, IconButtonType};
 use core_ui::design::BLUE_900;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use core_ui::{icons, panel};
+use core_ui::{icons, panels};
 use data::deck::Deck;
 use data::player_name::PlayerId;
 use panel_address::{DeckEditorData, PanelAddress};
@@ -47,9 +47,9 @@ impl<'a> Component for CollectionControls<'a> {
                 IconButton::new(if self.open_deck.is_some() { icons::BACK } else { icons::CLOSE })
                     .button_type(IconButtonType::SecondaryLarge)
                     .action(if self.open_deck.is_some() {
-                        panel::set(PanelAddress::DeckEditor(DeckEditorData::default()))
+                        panels::set(PanelAddress::DeckEditor(DeckEditorData::default()))
                     } else {
-                        panel::close_all()
+                        panels::close_all()
                     })
                     .layout(Layout::new().margin(Edge::Left, 16.px()).margin(Edge::Right, 8.px())),
             )

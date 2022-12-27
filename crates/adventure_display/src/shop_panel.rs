@@ -22,7 +22,7 @@ use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
-use panel_address::PanelType;
+use panel_address::Panel;
 use protos::spelldawn::{DestroyAnimationEffect, FlexAlign, FlexJustify};
 use with_error::fail;
 
@@ -43,7 +43,7 @@ impl<'a> ShopPanel<'a> {
     }
 }
 
-impl<'a> PanelType for ShopPanel<'a> {}
+impl<'a> Panel for ShopPanel<'a> {}
 
 fn shop_row<'a>(
     position: TilePosition,

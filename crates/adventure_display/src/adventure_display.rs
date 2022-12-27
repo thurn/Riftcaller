@@ -26,9 +26,9 @@ pub mod shop_prompt_panel;
 pub mod tile_prompt_panel;
 
 use anyhow::Result;
-use core_ui::{actions, design, panel};
+use core_ui::{actions, design, panels};
 use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState};
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
@@ -53,8 +53,8 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
 
     if let Some(screen) = &state.choice_screen {
         let rendered = render_adventure_choice_screen(state, screen)?;
-        commands.push(panel::update(rendered.panel));
-        commands.push(panel::open_existing(rendered.address));
+        commands.push(panels::update(rendered.panel));
+        commands.push(panels::open_existing(rendered.address));
     }
 
     Ok(commands)
@@ -132,7 +132,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
         on_visit: tile
             .entity
             .as_ref()
-            .map(|_| actions::client_action(panel::open(PanelAddress::TileEntity(position)))),
+            .map(|_| actions::client_action(panels::open(PanelAddress::TileEntity(position)))),
         tile_type: if tile.entity.is_some() {
             MapTileType::Visitable.into()
         } else if tile.road.is_some() {

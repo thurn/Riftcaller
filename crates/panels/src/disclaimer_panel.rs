@@ -15,12 +15,12 @@
 //! The about panel displays information about the authorship of the game
 
 use core_ui::button::Button;
-use core_ui::panel;
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
+use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
 
 pub const TEXT: &str = "Welcome to the developer early access build of Spelldawn.
@@ -36,11 +36,11 @@ impl DisclaimerPanel {
     }
 }
 
-impl PanelType for DisclaimerPanel {}
+impl Panel for DisclaimerPanel {}
 
 impl Component for DisclaimerPanel {
     fn build(self) -> Option<Node> {
-        Panel::new(PanelAddress::About, 600.px(), 600.px())
+        PanelWindow::new(PanelAddress::About, 600.px(), 600.px())
             .title("Welcome!")
             .content(
                 Column::new("DisclaimerContent")
@@ -57,7 +57,7 @@ impl Component for DisclaimerPanel {
                     )
                     .child(
                         Button::new("Understood")
-                            .action(panel::set(PanelAddress::MainMenu))
+                            .action(panels::set(PanelAddress::MainMenu))
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

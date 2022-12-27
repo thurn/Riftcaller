@@ -17,20 +17,20 @@
 
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{Button, ButtonType};
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use core_ui::{actions, panel};
+use core_ui::{actions, panels};
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{DeckIndex, Side};
 use data::user_actions::{NewGameAction, UserAction};
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
 pub struct MainMenuPanel {}
 
-impl PanelType for MainMenuPanel {}
+impl Panel for MainMenuPanel {}
 
 impl MainMenuPanel {
     pub fn new() -> Self {
@@ -40,7 +40,7 @@ impl MainMenuPanel {
 
 impl Component for MainMenuPanel {
     fn build(self) -> Option<Node> {
-        Panel::new(PanelAddress::MainMenu, 600.px(), 600.px())
+        PanelWindow::new(PanelAddress::MainMenu, 600.px(), 600.px())
             .title("Spelldawn")
             .content(
                 Column::new("MeuButtons")
@@ -68,8 +68,8 @@ impl Component for MainMenuPanel {
                             UserAction::NewAdventure(Side::Champion),
                         ),
                     ))
-                    .child(menu_button("Settings", panel::open(PanelAddress::Settings)))
-                    .child(menu_button("About", panel::open(PanelAddress::About))),
+                    .child(menu_button("Settings", panels::open(PanelAddress::Settings)))
+                    .child(menu_button("About", panels::open(PanelAddress::About))),
             )
             .build()
     }

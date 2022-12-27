@@ -16,13 +16,13 @@ use core_ui::action_builder::ActionBuilder;
 use core_ui::bottom_sheet_content::{BottomSheetButtonType, BottomSheetContent};
 use core_ui::button::Button;
 use core_ui::design::FontSize;
-use core_ui::panel;
+use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use core_ui::text_field::TextField;
 use data::primitives::{School, Side};
 use data::user_actions::DeckEditorAction;
-use panel_address::{CreateDeckState, PanelAddress, PanelType};
+use panel_address::{CreateDeckState, Panel, PanelAddress};
 
 pub const DECK_NAME_INPUT: &str = "DeckNameInput";
 
@@ -41,7 +41,7 @@ pub fn default_deck_name(side: Side, school: School) -> String {
     format!("{:?} {:?} Deck", side, school)
 }
 
-impl PanelType for PickDeckName {}
+impl Panel for PickDeckName {}
 
 impl Component for PickDeckName {
     fn build(self) -> Option<Node> {
@@ -74,7 +74,7 @@ impl Component for PickDeckName {
                         Button::new("Create Deck").action(
                             ActionBuilder::new()
                                 .action(DeckEditorAction::CreateDeck(self.side, self.school))
-                                .update(panel::close_bottom_sheet())
+                                .update(panels::close_bottom_sheet())
                                 .request_field(DECK_NAME_INPUT),
                         ),
                     ),

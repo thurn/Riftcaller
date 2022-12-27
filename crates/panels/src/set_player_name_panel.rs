@@ -14,12 +14,12 @@
 
 use core_ui::button::Button;
 use core_ui::list_cell::ListCell;
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use data::player_name::NamedPlayer;
 use data::primitives::Side;
 use data::user_actions::DebugAction;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 
 #[derive(Debug)]
 pub struct SetPlayerNamePanel {
@@ -32,11 +32,11 @@ impl SetPlayerNamePanel {
     }
 }
 
-impl PanelType for SetPlayerNamePanel {}
+impl Panel for SetPlayerNamePanel {}
 
 impl Component for SetPlayerNamePanel {
     fn build(self) -> Option<Node> {
-        Panel::new(PanelAddress::SetPlayerName(self.side), 1024.px(), 600.px())
+        PanelWindow::new(PanelAddress::SetPlayerName(self.side), 1024.px(), 600.px())
             .title("Set Opponent")
             .show_close_button(true)
             .content(

@@ -14,7 +14,7 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::design::RED_900;
-use core_ui::panel;
+use core_ui::panels;
 use core_ui::prelude::*;
 use data::deck::Deck;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
@@ -48,7 +48,7 @@ impl<'a> Component for DeckEditOptions<'a> {
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
                     .layout(Layout::new().margin(Edge::All, 16.px()))
-                    .action(panel::set(PanelAddress::DeckEditor(DeckEditorData {
+                    .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
                         deck: Some(self.deck.index),
                         show_edit_options: false,
                         collection_filters: CollectionBrowserFilters::default(),

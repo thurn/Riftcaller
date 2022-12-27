@@ -22,7 +22,7 @@ use protos::spelldawn::{InterfacePanel, InterfacePanelAddress};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
 
-pub trait PanelType: Component {
+pub trait Panel: Component {
     fn panel(self, address: InterfacePanelAddress) -> InterfacePanel
     where
         Self: Sized,

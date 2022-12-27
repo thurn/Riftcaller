@@ -18,7 +18,7 @@ use actions;
 use adapters::ServerCardId;
 use anyhow::Result;
 use cards::decklists;
-use core_ui::panel;
+use core_ui::panels;
 use core_ui::prelude::Component;
 use dashmap::DashMap;
 use data::adventure::{AdventureConfiguration, AdventureState};
@@ -294,7 +294,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
                 toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
             }));
             if is_new_player {
-                commands.push(panel::open(PanelAddress::Disclaimer));
+                commands.push(panels::open(PanelAddress::Disclaimer));
             }
         }
     }

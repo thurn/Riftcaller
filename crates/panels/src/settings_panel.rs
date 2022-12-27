@@ -15,12 +15,12 @@
 //! The settings panel allows configuration of game options
 
 use core_ui::button::Button;
-use core_ui::panel;
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
+use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::slider::Slider;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
@@ -32,11 +32,11 @@ impl SettingsPanel {
     }
 }
 
-impl PanelType for SettingsPanel {}
+impl Panel for SettingsPanel {}
 
 impl Component for SettingsPanel {
     fn build(self) -> Option<Node> {
-        Panel::new(PanelAddress::Settings, 600.px(), 600.px())
+        PanelWindow::new(PanelAddress::Settings, 600.px(), 600.px())
             .title("Settings")
             .content(
                 Column::new("SettingsContent")
@@ -57,7 +57,7 @@ impl Component for SettingsPanel {
                     )
                     .child(
                         Button::new("Back")
-                            .action(panel::close(PanelAddress::Settings))
+                            .action(panels::close(PanelAddress::Settings))
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

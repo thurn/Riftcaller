@@ -14,11 +14,11 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use core_ui::{actions, icons, panel, style};
+use core_ui::{actions, icons, panels, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 
 use crate::adventure_loading::AdventureLoading;
 use crate::tile_prompt_panel::TilePromptPanel;
@@ -29,7 +29,7 @@ pub struct DraftPromptPanel {
     pub position: TilePosition,
 }
 
-impl PanelType for DraftPromptPanel {}
+impl Panel for DraftPromptPanel {}
 
 impl Component for DraftPromptPanel {
     fn build(self) -> Option<Node> {
@@ -39,7 +39,7 @@ impl Component for DraftPromptPanel {
             .buttons(vec![
                 Button::new(format!("Draft: {} {}", self.cost, icons::COINS))
                     .action(actions::with_optimistic_update(
-                        panel::close_and_wait_for(
+                        panels::close_and_wait_for(
                             self.address,
                             PanelAddress::DraftCard,
                             AdventureLoading::new("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"),
@@ -49,7 +49,7 @@ impl Component for DraftPromptPanel {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(panel::close(self.address))
+                    .action(panels::close(self.address))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

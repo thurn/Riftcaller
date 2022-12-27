@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use core_ui::design::RED_900;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
-use core_ui::{actions, panel};
+use core_ui::{actions, panels};
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::primitives::DeckIndex;
@@ -85,7 +85,7 @@ impl<'a> Component for CardList<'a> {
                             .align_items(FlexAlign::Center)
                             .padding(Edge::All, 1.vw()),
                     )
-                    .child(DeckTile::new(self.deck).action(panel::set(PanelAddress::DeckEditor(
+                    .child(DeckTile::new(self.deck).action(panels::set(PanelAddress::DeckEditor(
                         DeckEditorData {
                             deck: Some(self.deck.index),
                             show_edit_options: true,

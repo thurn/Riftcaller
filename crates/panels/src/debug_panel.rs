@@ -18,12 +18,12 @@
 
 use core_ui::actions::InterfaceAction;
 use core_ui::button::Button;
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
-use core_ui::{icons, panel};
+use core_ui::{icons, panels};
 use data::primitives::Side;
 use data::user_actions::DebugAction;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
@@ -37,13 +37,13 @@ impl DebugPanel {
     }
 }
 
-impl PanelType for DebugPanel {}
+impl Panel for DebugPanel {}
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {
-        let close = panel::close(PanelAddress::DebugPanel);
+        let close = panels::close(PanelAddress::DebugPanel);
 
-        Panel::new(PanelAddress::DebugPanel, 1024.px(), 600.px())
+        PanelWindow::new(PanelAddress::DebugPanel, 1024.px(), 600.px())
             .title("Debug Controls")
             .show_close_button(true)
             .content(
@@ -76,11 +76,11 @@ impl Component for DebugPanel {
                     .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadState(3)))
                     .child(debug_button(
                         "Overlord AI",
-                        panel::open(PanelAddress::SetPlayerName(Side::Overlord)),
+                        panels::open(PanelAddress::SetPlayerName(Side::Overlord)),
                     ))
                     .child(debug_button(
                         "Champion AI",
-                        panel::open(PanelAddress::SetPlayerName(Side::Champion)),
+                        panels::open(PanelAddress::SetPlayerName(Side::Champion)),
                     ))
                     .child(debug_button("Full Collection", DebugAction::FullCollection)),
             )

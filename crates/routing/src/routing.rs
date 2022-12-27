@@ -24,7 +24,7 @@ use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::pick_deck_name::PickDeckName;
 use deck_editor::pick_deck_school::PickDeckSchool;
 use deck_editor::pick_deck_side::PickDeckSide;
-use panel_address::{CreateDeckState, PanelAddress, PanelType};
+use panel_address::{CreateDeckState, Panel, PanelAddress};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;
 use panels::debug_panel::DebugPanel;

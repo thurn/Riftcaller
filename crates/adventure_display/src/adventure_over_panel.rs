@@ -15,7 +15,7 @@
 use core_ui::actions;
 use core_ui::prelude::*;
 use data::user_actions::UserAction;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 use panels::button_menu::ButtonMenu;
 
 #[derive(Default)]
@@ -27,7 +27,7 @@ impl AdventureOverPanel {
     }
 }
 
-impl PanelType for AdventureOverPanel {}
+impl Panel for AdventureOverPanel {}
 
 impl Component for AdventureOverPanel {
     fn build(self) -> Option<Node> {

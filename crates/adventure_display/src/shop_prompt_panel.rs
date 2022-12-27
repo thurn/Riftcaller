@@ -14,9 +14,9 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use core_ui::{panel, style};
+use core_ui::{panels, style};
 use data::adventure::TilePosition;
-use panel_address::{PanelAddress, PanelType};
+use panel_address::{Panel, PanelAddress};
 
 use crate::adventure_loading::AdventureLoading;
 use crate::tile_prompt_panel::TilePromptPanel;
@@ -26,7 +26,7 @@ pub struct ShopPromptPanel {
     pub position: TilePosition,
 }
 
-impl PanelType for ShopPromptPanel {}
+impl Panel for ShopPromptPanel {}
 
 impl Component for ShopPromptPanel {
     fn build(self) -> Option<Node> {
@@ -35,7 +35,7 @@ impl Component for ShopPromptPanel {
             .prompt("Walking through town, you come upon the illuminated windows of a shop stocked with magical wares")
             .buttons(vec![
                 Button::new("Continue")
-                    .action(panel::transition(
+                    .action(panels::transition(
                             self.address,
                             PanelAddress::Shop(self.position),
                             AdventureLoading::new("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"),
@@ -43,7 +43,7 @@ impl Component for ShopPromptPanel {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(panel::close(self.address))
+                    .action(panels::close(self.address))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

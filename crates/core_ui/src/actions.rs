@@ -25,7 +25,7 @@ use protos::spelldawn::{
 };
 use serde_json::ser;
 
-use crate::panel;
+use crate::panels;
 
 /// Represents an action that can be performed in the user interface. Initiating
 /// a server request and performing an immediate client update are both
@@ -154,7 +154,7 @@ pub fn close_and(
     address: impl Into<InterfacePanelAddress>,
     action: impl InterfaceAction + 'static,
 ) -> Action {
-    with_optimistic_update(vec![panel::close(address)], action)
+    with_optimistic_update(vec![panels::close(address)], action)
 }
 
 /// Converts an [InterfaceAction] into a [ClientAction].

@@ -17,8 +17,8 @@
 
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{Button, ButtonType};
-use core_ui::panel;
-use core_ui::panel::Panel;
+use core_ui::panel_window::PanelWindow;
+use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use panel_address::PanelAddress;
@@ -60,10 +60,10 @@ impl ButtonMenu {
 impl Component for ButtonMenu {
     fn build(mut self) -> Option<Node> {
         if self.show_close_button {
-            self.children.push(Box::new(menu_button("Close", panel::close(self.address))));
+            self.children.push(Box::new(menu_button("Close", panels::close(self.address))));
         }
 
-        Panel::new(self.address, 512.px(), 600.px())
+        PanelWindow::new(self.address, 512.px(), 600.px())
             .title(self.title)
             .content(
                 Column::new("MeuButtons")
