@@ -23,6 +23,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::ser;
 
 pub trait Panel: Component {
+    fn address(&self) -> PanelAddress;
+
     fn panel(self, address: InterfacePanelAddress) -> InterfacePanel
     where
         Self: Sized,

@@ -30,7 +30,11 @@ use protos::spelldawn::{FlexAlign, FlexJustify};
 #[derive(Debug, Default)]
 pub struct MainMenuPanel {}
 
-impl Panel for MainMenuPanel {}
+impl Panel for MainMenuPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::MainMenu
+    }
+}
 
 impl MainMenuPanel {
     pub fn new() -> Self {

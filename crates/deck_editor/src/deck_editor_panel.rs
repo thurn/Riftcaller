@@ -33,11 +33,14 @@ pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 pub struct DeckEditorPanel<'a> {
     pub player: &'a PlayerData,
     pub open_deck: Option<&'a Deck>,
-    pub filters: CollectionBrowserFilters,
-    pub show_edit_options: bool,
+    pub data: DeckEditorData,
 }
 
-impl<'a> Panel for DeckEditorPanel<'a> {}
+impl<'a> Panel for DeckEditorPanel<'a> {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::DeckEditor(self.data)
+    }
+}
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
@@ -66,15 +69,17 @@ impl<'a> Component for DeckEditorPanel<'a> {
                             .child(CollectionBrowser {
                                 player: self.player,
                                 open_deck: self.open_deck,
-                                filters: self.filters,
+                                filters: self.data.collection_filters,
                             }),
                     )
                     .child_node(match self.open_deck {
-                        Some(deck) if self.show_edit_options => DeckEditOptions::new(deck).build(),
+                        Some(deck) if self.data.show_edit_options => {
+                            DeckEditOptions::new(deck).build()
+                        }
                         Some(deck) => CardList::new(deck).build(),
-                        _ => DeckList::new(self.player, self.filters).build(),
+                        _ => DeckList::new(self.player, self.data.collection_filters).build(),
                     })
-                    .child(if self.filters.offset < 8 {
+                    .child(if self.data.collection_filters.offset < 8 {
                         None
                     } else {
                         Some(
@@ -83,7 +88,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                 .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
                                     deck: self.open_deck.map(|d| d.index),
                                     collection_filters: CollectionBrowserFilters {
-                                        offset: self.filters.offset - 8,
+                                        offset: self.data.collection_filters.offset - 8,
                                     },
                                     show_edit_options: false,
                                 })))
@@ -96,9 +101,12 @@ impl<'a> Component for DeckEditorPanel<'a> {
                         )
                     })
                     .child(
-                        if self.filters.offset + 8
-                            >= collection_browser::get_matching_cards(self.player, self.filters)
-                                .count()
+                        if self.data.collection_filters.offset + 8
+                            >= collection_browser::get_matching_cards(
+                                self.player,
+                                self.data.collection_filters,
+                            )
+                            .count()
                         {
                             None
                         } else {
@@ -108,7 +116,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                     .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
                                         deck: self.open_deck.map(|d| d.index),
                                         collection_filters: CollectionBrowserFilters {
-                                            offset: self.filters.offset + 8,
+                                            offset: self.data.collection_filters.offset + 8,
                                         },
                                         show_edit_options: false,
                                     })))

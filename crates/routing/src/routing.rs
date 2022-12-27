@@ -96,13 +96,7 @@ fn render_server_panel(
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).panel(client_address),
         PanelAddress::DeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
-            DeckEditorPanel {
-                player,
-                open_deck,
-                filters: data.collection_filters,
-                show_edit_options: data.show_edit_options,
-            }
-            .panel(client_address)
+            DeckEditorPanel { player, open_deck, data }.panel(client_address)
         }
         PanelAddress::CreateDeck(state) => match state {
             CreateDeckState::PickSide => PickDeckSide::new().panel(client_address),
@@ -111,9 +105,7 @@ fn render_server_panel(
                 PickDeckName::new(side, school).panel(client_address)
             }
         },
-        PanelAddress::GameOver(_) => {
-            GameOverPanel { address: server_address, player }.panel(client_address)
-        }
+        PanelAddress::GameOver(data) => GameOverPanel { data, player }.panel(client_address),
         PanelAddress::TileEntity(position) => {
             adventure_panels::render_tile_panel(position, player, client_address)?
         }

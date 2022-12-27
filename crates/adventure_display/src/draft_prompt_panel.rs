@@ -29,7 +29,11 @@ pub struct DraftPromptPanel {
     pub position: TilePosition,
 }
 
-impl Panel for DraftPromptPanel {}
+impl Panel for DraftPromptPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::TileEntity(self.position)
+    }
+}
 
 impl Component for DraftPromptPanel {
     fn build(self) -> Option<Node> {

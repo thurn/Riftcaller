@@ -28,7 +28,11 @@ pub struct DraftPanel<'a> {
     pub data: &'a DraftData,
 }
 
-impl<'a> Panel for DraftPanel<'a> {}
+impl<'a> Panel for DraftPanel<'a> {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::DraftCard
+    }
+}
 
 impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {

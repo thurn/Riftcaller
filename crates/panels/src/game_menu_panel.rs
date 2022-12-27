@@ -34,7 +34,11 @@ impl GameMenuPanel {
     }
 }
 
-impl Panel for GameMenuPanel {}
+impl Panel for GameMenuPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::GameMenu
+    }
+}
 
 impl Component for GameMenuPanel {
     fn build(self) -> Option<Node> {

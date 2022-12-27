@@ -29,15 +29,19 @@ impl AdventureMenu {
     }
 }
 
-impl Panel for AdventureMenu {}
+impl Panel for AdventureMenu {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::AdventureMenu
+    }
+}
 
 impl Component for AdventureMenu {
     fn build(self) -> Option<Node> {
-        ButtonMenu::new(PanelAddress::AdventureMenu)
+        ButtonMenu::new(self.address())
             .button(
                 "Abandon Adventure",
                 actions::close_and(
-                    PanelAddress::AdventureMenu,
+                    self.address(),
                     UserAction::AdventureAction(AdventureAction::AbandonAdventure),
                 ),
             )

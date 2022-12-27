@@ -42,11 +42,15 @@ impl AboutPanel {
     }
 }
 
-impl Panel for AboutPanel {}
+impl Panel for AboutPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::About
+    }
+}
 
 impl Component for AboutPanel {
     fn build(self) -> Option<Node> {
-        PanelWindow::new(PanelAddress::About, 600.px(), 600.px())
+        PanelWindow::new(self.address(), 600.px(), 600.px())
             .title("About")
             .content(
                 Column::new("AboutContent")

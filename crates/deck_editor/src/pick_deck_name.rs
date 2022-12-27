@@ -41,7 +41,11 @@ pub fn default_deck_name(side: Side, school: School) -> String {
     format!("{:?} {:?} Deck", side, school)
 }
 
-impl Panel for PickDeckName {}
+impl Panel for PickDeckName {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::CreateDeck(CreateDeckState::PickName(self.side, self.school))
+    }
+}
 
 impl Component for PickDeckName {
     fn build(self) -> Option<Node> {

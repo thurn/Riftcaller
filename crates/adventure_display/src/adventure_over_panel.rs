@@ -27,11 +27,15 @@ impl AdventureOverPanel {
     }
 }
 
-impl Panel for AdventureOverPanel {}
+impl Panel for AdventureOverPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::AdventureOver
+    }
+}
 
 impl Component for AdventureOverPanel {
     fn build(self) -> Option<Node> {
-        ButtonMenu::new(PanelAddress::AdventureOver)
+        ButtonMenu::new(self.address())
             .title("Defeated")
             .button(
                 "Main Menu",

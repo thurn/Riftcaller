@@ -32,7 +32,11 @@ impl SettingsPanel {
     }
 }
 
-impl Panel for SettingsPanel {}
+impl Panel for SettingsPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::Settings
+    }
+}
 
 impl Component for SettingsPanel {
     fn build(self) -> Option<Node> {

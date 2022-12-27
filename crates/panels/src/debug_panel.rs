@@ -37,7 +37,11 @@ impl DebugPanel {
     }
 }
 
-impl Panel for DebugPanel {}
+impl Panel for DebugPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::DebugPanel
+    }
+}
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {

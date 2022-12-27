@@ -21,20 +21,24 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use data::player_data::PlayerData;
 use data::user_actions::UserAction;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{GameOverData, Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug)]
 pub struct GameOverPanel<'a> {
-    pub address: PanelAddress,
+    pub data: GameOverData,
     pub player: &'a PlayerData,
 }
 
-impl<'a> Panel for GameOverPanel<'a> {}
+impl<'a> Panel for GameOverPanel<'a> {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::GameOver(self.data)
+    }
+}
 
 impl<'a> Component for GameOverPanel<'a> {
     fn build(self) -> Option<Node> {
-        PanelWindow::new(self.address, 512.px(), 350.px())
+        PanelWindow::new(self.address(), 512.px(), 350.px())
             .content(
                 Column::new("Buttons")
                     .style(
@@ -45,7 +49,7 @@ impl<'a> Component for GameOverPanel<'a> {
                     )
                     .child(
                         Button::new("Main Menu")
-                            .action(actions::close_and(self.address, UserAction::LeaveGame))
+                            .action(actions::close_and(self.address(), UserAction::LeaveGame))
                             .button_type(ButtonType::Primary)
                             .width_mode(WidthMode::Flexible)
                             .layout(Layout::new().margin(Edge::All, 16.px())),

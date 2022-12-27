@@ -32,7 +32,11 @@ impl PickDeckSchool {
     }
 }
 
-impl Panel for PickDeckSchool {}
+impl Panel for PickDeckSchool {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::CreateDeck(CreateDeckState::PickSchool(self.side))
+    }
+}
 
 impl Component for PickDeckSchool {
     fn build(self) -> Option<Node> {

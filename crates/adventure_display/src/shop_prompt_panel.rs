@@ -26,7 +26,11 @@ pub struct ShopPromptPanel {
     pub position: TilePosition,
 }
 
-impl Panel for ShopPromptPanel {}
+impl Panel for ShopPromptPanel {
+    fn address(&self) -> PanelAddress {
+        self.address
+    }
+}
 
 impl Component for ShopPromptPanel {
     fn build(self) -> Option<Node> {

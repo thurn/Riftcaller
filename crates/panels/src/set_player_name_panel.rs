@@ -32,11 +32,15 @@ impl SetPlayerNamePanel {
     }
 }
 
-impl Panel for SetPlayerNamePanel {}
+impl Panel for SetPlayerNamePanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::SetPlayerName(self.side)
+    }
+}
 
 impl Component for SetPlayerNamePanel {
     fn build(self) -> Option<Node> {
-        PanelWindow::new(PanelAddress::SetPlayerName(self.side), 1024.px(), 600.px())
+        PanelWindow::new(self.address(), 1024.px(), 600.px())
             .title("Set Opponent")
             .show_close_button(true)
             .content(

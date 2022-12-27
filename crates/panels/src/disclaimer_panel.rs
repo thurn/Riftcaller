@@ -36,7 +36,11 @@ impl DisclaimerPanel {
     }
 }
 
-impl Panel for DisclaimerPanel {}
+impl Panel for DisclaimerPanel {
+    fn address(&self) -> PanelAddress {
+        PanelAddress::Disclaimer
+    }
+}
 
 impl Component for DisclaimerPanel {
     fn build(self) -> Option<Node> {
