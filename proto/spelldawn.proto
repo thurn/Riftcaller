@@ -1132,6 +1132,11 @@ message InterfacePanelAddress {
 message InterfacePanel {
     InterfacePanelAddress address = 1;
     Node node = 2;
+
+    // Optionally, a global screen overlay which should be displayed while
+    // this panel is open, replacing the global overlay provided via
+    // RenderScreenOverlayCommand.
+    Node screen_overlay = 3;
 }
 
 // Possible corners which can be anchored.

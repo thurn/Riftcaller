@@ -25,14 +25,19 @@ use data::player_data::PlayerData;
 use panel_address::PanelAddress;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
-#[allow(dead_code)]
 pub struct ScreenOverlay<'a> {
     player: &'a PlayerData,
+    show_close_button: Option<PanelAddress>,
 }
 
 impl<'a> ScreenOverlay<'a> {
     pub fn new(player: &'a PlayerData) -> Self {
-        Self { player }
+        Self { player, show_close_button: None }
+    }
+
+    pub fn show_close_button(mut self, show_close_button: PanelAddress) -> Self {
+        self.show_close_button = Some(show_close_button);
+        self
     }
 }
 
@@ -52,6 +57,12 @@ impl<'a> Component for ScreenOverlay<'a> {
             .child(
                 Row::new("Left")
                     .style(Style::new().align_items(FlexAlign::Center))
+                    .child(self.show_close_button.map(|address| {
+                        IconButton::new(icons::CLOSE)
+                            .button_type(IconButtonType::DestructiveLarge)
+                            .action(panels::close(address))
+                            .layout(Layout::new().margin(Edge::Left, 16.px()))
+                    }))
                     .child(
                         IconButton::new(icons::BUG)
                             .name(&element_names::FEEDBACK_BUTTON)

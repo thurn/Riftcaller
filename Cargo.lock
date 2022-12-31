@@ -57,6 +57,7 @@ dependencies = [
  "panel_address",
  "panels",
  "protos",
+ "screen_overlay",
  "with_error",
 ]
 

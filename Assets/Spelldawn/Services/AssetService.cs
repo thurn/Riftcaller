@@ -214,6 +214,7 @@ namespace Spelldawn.Services
       foreach (var panel in command.Panels)
       {
         LoadNodeAssets(requests, panel.Node);
+        LoadNodeAssets(requests, panel.ScreenOverlay);
       }
     }
 

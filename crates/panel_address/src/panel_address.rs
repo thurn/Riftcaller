@@ -18,18 +18,25 @@ use core_ui::prelude::Component;
 use data::adventure::TilePosition;
 use data::player_name::PlayerId;
 use data::primitives::{DeckIndex, GameId, School, Side};
-use protos::spelldawn::{InterfacePanel, InterfacePanelAddress};
+use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
 
 pub trait Panel: Component {
     fn address(&self) -> PanelAddress;
 
+    /// Allows a custom screen overlay to be displayed while this panel is
+    /// visible.
+    fn screen_overlay(&self) -> Option<Node> {
+        None
+    }
+
     fn build_panel(self) -> InterfacePanel
     where
         Self: Sized,
     {
-        InterfacePanel { address: Some(self.address().into()), node: self.build() }
+        let screen_overlay = self.screen_overlay();
+        InterfacePanel { address: Some(self.address().into()), node: self.build(), screen_overlay }
     }
 }
 

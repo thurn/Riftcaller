@@ -38,7 +38,11 @@ pub fn render_tile_panel(
     let Some(entity) = &tile.entity else {
         // Entity does not exist, e.g. because it has been cleared after activation. This
         // is fine, just render nothing.
-        return Ok(InterfacePanel { address: Some(client_address), node: None });
+        return Ok(InterfacePanel {
+            address: Some(client_address),
+            node: None,
+            screen_overlay: None
+        });
     };
 
     Ok(match entity {

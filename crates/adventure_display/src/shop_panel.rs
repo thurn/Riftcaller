@@ -24,28 +24,34 @@ use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{DestroyAnimationEffect, FlexAlign, FlexJustify};
+use screen_overlay::ScreenOverlay;
 use with_error::fail;
 
 use crate::full_screen_image_panel::FullScreenImagePanel;
 
 pub struct ShopPanel<'a> {
     position: TilePosition,
+    player: &'a PlayerData,
     data: &'a ShopData,
 }
 
 impl<'a> ShopPanel<'a> {
-    pub fn new_from_player(player: &'a PlayerData, position: TilePosition) -> Result<Self> {
+    pub fn new(player: &'a PlayerData, position: TilePosition) -> Result<Self> {
         let TileEntity::Shop { data } = player.adventure()?.tile_entity(position)? else {
             fail!("Expected shop entity")
         };
 
-        Ok(Self { position, data })
+        Ok(Self { position, player, data })
     }
 }
 
 impl<'a> Panel for ShopPanel<'a> {
     fn address(&self) -> PanelAddress {
         PanelAddress::Shop(self.position)
+    }
+
+    fn screen_overlay(&self) -> Option<Node> {
+        ScreenOverlay::new(self.player).show_close_button(self.address()).build()
     }
 }
 

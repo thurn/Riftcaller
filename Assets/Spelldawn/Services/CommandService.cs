@@ -135,7 +135,7 @@ namespace Spelldawn.Services
             yield return _registry.WorldMap.HandleUpdateWorldMap(command.UpdateWorldMap);
             break;
           case GameCommand.CommandOneofCase.RenderScreenOverlay:
-            _registry.DocumentService.RenderScreenOverlay(command.RenderScreenOverlay.Node);
+            _registry.DocumentService.SetScreenOverlay(command.RenderScreenOverlay.Node);
             break;
           case GameCommand.CommandOneofCase.None:
             break;

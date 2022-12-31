@@ -42,10 +42,9 @@ namespace Spelldawn.Services
     [SerializeField] Sprite _loadingIndicator = null!;
 
     readonly List<InterfacePanelAddress> _openPanels = new();
-    readonly Dictionary<InterfacePanelAddress, Node> _panelCache = new();
+    readonly Dictionary<InterfacePanelAddress, InterfacePanel> _panelCache = new();
     readonly HashSet<InterfacePanelAddress> _waitingFor = new();
     InterfacePanelAddress? _switchTo;
-
     VisualElement _mainControls = null!;
     VisualElement _cardControls = null!;
     VisualElement _infoZoom = null!;
@@ -53,6 +52,7 @@ namespace Spelldawn.Services
     BottomSheet _bottomSheet = null!;
     VisualElement? _loading;
     VisualElement _screenOverlay = null!;
+    Node? _screenOverlayNode;
     Coroutine? _autoRefresh;
     float _rotateAngle;
 
@@ -60,7 +60,7 @@ namespace Spelldawn.Services
 
     public IEnumerable<InterfacePanelAddress> OpenPanels => _openPanels;
 
-    public IReadOnlyDictionary<InterfacePanelAddress, Node> PanelCache => _panelCache;
+    public IReadOnlyDictionary<InterfacePanelAddress, InterfacePanel> PanelCache => _panelCache;
 
     public bool Loading
     {
@@ -174,10 +174,11 @@ namespace Spelldawn.Services
 
           if (!_panelCache.ContainsKey(command.LoadPanel.OpenPanel))
           {
-            _panelCache[command.LoadPanel.OpenPanel] = command.LoadPanel.LoadingState;
+            _panelCache[command.LoadPanel.OpenPanel] = new InterfacePanel { Node = command.LoadPanel.LoadingState };
             _waitingFor.Add(command.LoadPanel.OpenPanel);
             Loading = true;
           }
+
           RenderPanels();
 
           break;
@@ -212,14 +213,14 @@ namespace Spelldawn.Services
           {
             throw new InvalidOperationException($"Panel not found: {command.OpenExistingPanel}");
           }
-          
+
           if (!_openPanels.Contains(command.OpenExistingPanel))
           {
             _openPanels.Add(command.OpenExistingPanel);
           }
 
           RenderPanels();
-          break;        
+          break;
         case TogglePanelCommand.ToggleCommandOneofCase.ClosePanel:
           _openPanels.Remove(command.ClosePanel);
           RenderPanels();
@@ -234,7 +235,7 @@ namespace Spelldawn.Services
             _openPanels.Add(command.WaitFor.OpenPanel);
           }
 
-          _panelCache[command.WaitFor.OpenPanel] = command.WaitFor.LoadingState;
+          _panelCache[command.WaitFor.OpenPanel] = new InterfacePanel { Node = command.WaitFor.LoadingState };
           _waitingFor.Add(command.WaitFor.OpenPanel);
           Loading = true;
           RenderPanels();
@@ -279,7 +280,7 @@ namespace Spelldawn.Services
       foreach (var panel in command.Panels)
       {
         _waitingFor.Remove(panel.Address);
-        
+
         if (_switchTo != null && _switchTo.Equals(panel.Address))
         {
           _openPanels.Clear();
@@ -288,7 +289,7 @@ namespace Spelldawn.Services
           Loading = false;
         }
 
-        _panelCache[panel.Address] = panel.Node;
+        _panelCache[panel.Address] = panel;
       }
 
       if (_waitingFor.Count == 0)
@@ -319,18 +320,28 @@ namespace Spelldawn.Services
       }
     }
 
-    public void RenderScreenOverlay(Node screenOverlay)
+    public void SetScreenOverlay(Node? screenOverlay)
     {
-      Reconcile(ref _screenOverlay, screenOverlay);
+      _screenOverlayNode = screenOverlay;
+      UpdateScreenOverlay();
     }
 
     void RenderPanels()
     {
       Reconcile(
         ref _panels,
-        Panels(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)).WhereNotNull()));
+        Panels(_openPanels.Select(p => _panelCache.GetValueOrDefault(p)?.Node).WhereNotNull()));
 
       _bottomSheet.RefreshPanels();
+      UpdateScreenOverlay();
+    }
+
+    void UpdateScreenOverlay()
+    {
+      var overlay = _openPanels
+        .Select(p => _panelCache.GetValueOrDefault(p)?.ScreenOverlay).WhereNotNull()
+        .LastOrDefault();      
+      Reconcile(ref _screenOverlay, overlay ?? _screenOverlayNode ?? new Node());      
     }
 
     void Reconcile(ref VisualElement previousElement, Node newNode)

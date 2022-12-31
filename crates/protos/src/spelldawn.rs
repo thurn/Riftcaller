@@ -1088,6 +1088,11 @@ pub struct InterfacePanel {
     pub address: ::core::option::Option<InterfacePanelAddress>,
     #[prost(message, optional, tag = "2")]
     pub node: ::core::option::Option<Node>,
+    /// Optionally, a global screen overlay which should be displayed while
+    /// this panel is open, replacing the global overlay provided via
+    /// RenderScreenOverlayCommand.
+    #[prost(message, optional, tag = "3")]
+    pub screen_overlay: ::core::option::Option<Node>,
 }
 /// Requests that a specific corner of a Node be anchored to a specific
 /// corner of a card.

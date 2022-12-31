@@ -111,7 +111,7 @@ fn render_server_panel(
         }
         PanelAddress::DraftCard => render_adventure_choice(player)?,
         PanelAddress::AdventureOver => render_adventure_choice(player)?,
-        PanelAddress::Shop(position) => ShopPanel::new_from_player(player, position)?.build_panel(),
+        PanelAddress::Shop(position) => ShopPanel::new(player, position)?.build_panel(),
     })
 }
 

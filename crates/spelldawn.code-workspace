@@ -15,5 +15,23 @@
       "editor.defaultFormatter": "rust-lang.rust-analyzer",
       "editor.formatOnSave": true
     }
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "lldb",
+        "request": "launch",
+        "name": "Debug executable 'spelldawn'",
+        "cargo": {
+          "args": ["build", "--bin=spelldawn"],
+          "filter": {
+            "name": "spelldawn",
+            "kind": "bin"
+          }
+        },
+        "cwd": "${workspaceFolder}"
+      }
+    ]
   }
 }

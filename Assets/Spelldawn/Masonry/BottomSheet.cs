@@ -178,7 +178,7 @@ namespace Spelldawn.Masonry
       else
       {
         _content.style.display = DisplayStyle.Flex;
-        var node = _registry.DocumentService.PanelCache[_currentAddress];
+        var node = _registry.DocumentService.PanelCache[_currentAddress].Node;
         var result = Reconciler.Update(_registry, node, _content);
         if (result != null)
         {
