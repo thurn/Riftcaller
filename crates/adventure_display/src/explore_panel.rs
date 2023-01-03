@@ -30,7 +30,7 @@ pub struct ExplorePanel {
 
 impl Panel for ExplorePanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::TileEntity(self.position)
+        PanelAddress::TilePrompt(self.position)
     }
 }
 

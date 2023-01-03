@@ -53,7 +53,7 @@ pub enum PanelAddress {
     DeckEditor(DeckEditorData),
     CreateDeck(CreateDeckState),
     GameOver(GameOverData),
-    TileEntity(TilePosition),
+    TilePrompt(TilePosition),
     DraftCard,
     Shop(TilePosition),
     AdventureOver,

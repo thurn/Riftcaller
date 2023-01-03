@@ -17,7 +17,6 @@ use std::marker::PhantomData;
 
 use protos::spelldawn::{EventHandlers, FlexDirection, FlexStyle, Node};
 
-use crate::actions;
 use crate::actions::InterfaceAction;
 use crate::component::{Component, ComponentObject};
 use crate::style::Style;
@@ -112,8 +111,7 @@ pub trait HasRenderNode: Sized {
 
     /// Action to invoke when this component is clicked/tapped
     fn on_click(mut self, action: impl InterfaceAction + 'static) -> Self {
-        self.render_node().event_handlers =
-            Some(EventHandlers { on_click: Some(actions::client_action(action)) });
+        self.render_node().event_handlers = Some(EventHandlers { on_click: Some(action.build()) });
         self
     }
 }

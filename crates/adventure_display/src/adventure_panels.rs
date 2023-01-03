@@ -23,13 +23,14 @@ use crate::draft_prompt_panel::DraftPromptPanel;
 use crate::explore_panel::ExplorePanel;
 use crate::shop_prompt_panel::ShopPromptPanel;
 
-/// Renders a panel for the entity at the provided [TilePosition].
-pub fn render_tile_panel(
+/// Renders an action prompt panel for the entity at the provided
+/// [TilePosition].
+pub fn render_tile_prompt_panel(
     position: TilePosition,
     player: &PlayerData,
     client_address: InterfacePanelAddress,
 ) -> Result<InterfacePanel> {
-    let address = PanelAddress::TileEntity(position);
+    let address = PanelAddress::TilePrompt(position);
     let Some(adventure) = &player.adventure else {
         fail!("Expected active adventure");
     };

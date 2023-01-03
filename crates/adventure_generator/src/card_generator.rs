@@ -31,6 +31,7 @@ pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
 /// Generates options for buying from a shop during an adventure
 pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
     ShopData {
+        visited: false,
         choices: config
             .choose_multiple(5, common_cards(config.side))
             .into_iter()

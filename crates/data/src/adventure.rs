@@ -92,6 +92,7 @@ pub struct DraftData {
 /// Data for rendering the shop screen
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct ShopData {
+    pub visited: bool,
     pub choices: Vec<CardChoice>,
 }
 

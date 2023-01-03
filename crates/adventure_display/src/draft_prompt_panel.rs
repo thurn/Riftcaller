@@ -31,7 +31,7 @@ pub struct DraftPromptPanel {
 
 impl Panel for DraftPromptPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::TileEntity(self.position)
+        PanelAddress::TilePrompt(self.position)
     }
 }
 

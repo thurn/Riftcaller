@@ -26,13 +26,15 @@ pub mod shop_prompt_panel;
 pub mod tile_prompt_panel;
 
 use anyhow::Result;
+use core_ui::actions::InterfaceAction;
 use core_ui::{actions, design, panels};
 use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState};
+use data::adventure_action::AdventureAction;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
-    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
-    WorldMapTile,
+    ClientAction, FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
+    WorldMapSprite, WorldMapTile,
 };
 use with_error::fail;
 
@@ -129,10 +131,7 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
     WorldMapTile {
         sprites,
         position: Some(adapters::map_position(position)),
-        on_visit: tile
-            .entity
-            .as_ref()
-            .map(|_| actions::client_action(panels::open(PanelAddress::TileEntity(position)))),
+        on_visit: tile.entity.as_ref().map(|entity| visit_action_for_entity(entity, position)),
         tile_type: if tile.entity.is_some() {
             MapTileType::Visitable.into()
         } else if tile.road.is_some() {
@@ -140,6 +139,20 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
         } else {
             MapTileType::Obstacle.into()
         },
+    }
+}
+
+fn visit_action_for_entity(entity: &TileEntity, position: TilePosition) -> ClientAction {
+    match entity {
+        TileEntity::Shop { data } if data.visited => {
+            panels::open(PanelAddress::Shop(position)).build()
+        }
+        TileEntity::Shop { .. } => actions::with_optimistic_update(
+            vec![panels::open(PanelAddress::TilePrompt(position))],
+            AdventureAction::VisitShop(position),
+        )
+        .build(),
+        _ => panels::open(PanelAddress::TilePrompt(position)).build(),
     }
 }
 

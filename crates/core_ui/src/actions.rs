@@ -32,6 +32,11 @@ use crate::panels;
 /// supported forms of action.
 pub trait InterfaceAction {
     fn as_client_action(&self) -> Action;
+
+    /// Converts an [InterfaceAction] into a [ClientAction].
+    fn build(&self) -> ClientAction {
+        ClientAction { action: Some(self.as_client_action()) }
+    }
 }
 
 impl InterfaceAction for Action {
@@ -155,11 +160,6 @@ pub fn close_and(
     action: impl InterfaceAction + 'static,
 ) -> Action {
     with_optimistic_update(vec![panels::close(address)], action)
-}
-
-/// Converts an [InterfaceAction] into a [ClientAction].
-pub fn client_action(action: impl InterfaceAction + 'static) -> ClientAction {
-    ClientAction { action: Some(action.as_client_action()) }
 }
 
 pub fn payload(action: UserAction) -> Vec<u8> {

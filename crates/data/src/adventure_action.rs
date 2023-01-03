@@ -30,6 +30,8 @@ pub enum AdventureAction {
     InitiateDraft(TilePosition),
     /// Draft the card at the indicated index on the draft screen
     DraftCard(usize),
+    /// Visit the shop at the indicated position
+    VisitShop(TilePosition),
     /// Draft the purchase at the indicated index on a shop screen
     BuyCard(TilePosition, usize),
 }

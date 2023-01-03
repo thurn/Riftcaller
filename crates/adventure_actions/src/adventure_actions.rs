@@ -26,6 +26,7 @@ pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAct
         AdventureAction::Explore(position) => handle_explore(state, *position),
         AdventureAction::InitiateDraft(position) => handle_initiate_draft(state, *position),
         AdventureAction::DraftCard(index) => handle_draft(state, *index),
+        AdventureAction::VisitShop(position) => handle_visit_shop(state, *position),
         AdventureAction::BuyCard(position, index) => handle_buy_card(state, *position, *index),
     }
 }
@@ -85,6 +86,15 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
         .or_insert(choice.quantity);
     state.tile_mut(*position)?.entity = None;
     state.choice_screen = None;
+    Ok(())
+}
+
+fn handle_visit_shop(state: &mut AdventureState, position: TilePosition) -> Result<()> {
+    let TileEntity::Shop { data } = state.tile_entity_mut(position)? else {
+        fail!("Expected shop entity")
+    };
+
+    data.visited = true;
     Ok(())
 }
 
