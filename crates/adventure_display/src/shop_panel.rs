@@ -55,10 +55,7 @@ impl<'a> Panel for ShopPanel<'a> {
     }
 }
 
-fn shop_row<'a>(
-    position: TilePosition,
-    choices: impl Iterator<Item = &'a CardChoice>,
-) -> impl Component {
+fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
     Row::new("ShopRow")
         .style(
             Style::new()
@@ -66,7 +63,7 @@ fn shop_row<'a>(
                 .align_items(FlexAlign::FlexStart)
                 .justify_content(FlexJustify::Center),
         )
-        .children(choices.enumerate().map(|(i, choice)| {
+        .children(choices.iter().enumerate().map(|(i, choice)| {
             let card_element = ElementName::new("Choice");
             Column::new("ShopChoice")
                 .style(Style::new().margin(Edge::All, 8.px()))
@@ -79,7 +76,13 @@ fn shop_row<'a>(
                                 .quantity(choice.quantity)
                         })),
                 )
-                .child((!choice.sold).then(|| {
+                .child_node(if choice.sold {
+                    Row::new("EmptyButton")
+                        .style(
+                            Style::new().height(88.px()).width(88.px()).margin(Edge::Top, 24.px()),
+                        )
+                        .build()
+                } else {
                     let name = ElementName::new("Buy");
                     Button::new(format!("{} {}", choice.cost, icons::COINS))
                         .name(&name)
@@ -99,7 +102,8 @@ fn shop_row<'a>(
                             ],
                             AdventureAction::BuyCard(position, i),
                         ))
-                }))
+                        .build()
+                })
         }))
 }
 
@@ -107,9 +111,7 @@ impl<'a> Component for ShopPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
             .image(style::sprite("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"))
-            .content(
-                Column::new("ShopPanel").child(shop_row(self.position, self.data.choices.iter())),
-            )
+            .content(Column::new("ShopPanel").child(shop_row(self.position, &self.data.choices)))
             .build()
     }
 }

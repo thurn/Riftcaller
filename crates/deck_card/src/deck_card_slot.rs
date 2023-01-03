@@ -52,19 +52,11 @@ impl Component for DeckCardSlot {
                     .align_items(FlexAlign::Center)
                     .border_color(Edge::All, GRAY_500)
                     .border_width(Edge::All, 2.px())
+                    .height(self.height.dim(100.0))
+                    .width(self.height.dim(100.0 * crate::CARD_ASPECT_RATIO))
                     .border_radius(Corner::All, 8.px()),
             )
-            .child_node(if let Some(card) = self.card {
-                card.height(self.height).build()
-            } else {
-                Row::new("SlotSpacer")
-                    .style(
-                        Style::new()
-                            .height(self.height.dim(100.0))
-                            .width(self.height.dim(100.0 * crate::CARD_ASPECT_RATIO)),
-                    )
-                    .build()
-            })
+            .child(self.card.map(|c| c.height(self.height)))
             .build()
     }
 }
