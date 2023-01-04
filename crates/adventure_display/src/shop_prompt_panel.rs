@@ -35,14 +35,16 @@ impl Panel for ShopPromptPanel {
 impl Component for ShopPromptPanel {
     fn build(self) -> Option<Node> {
         TilePromptPanel::new()
-            .image(style::sprite("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"))
+            .image(style::sprite(
+                "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1",
+            ))
             .prompt("Walking through town, you come upon the illuminated windows of a shop stocked with magical wares")
             .buttons(vec![
                 Button::new("Continue")
                     .action(panels::transition(
                             self.address,
                             PanelAddress::Shop(self.position),
-                            AdventureLoading::new("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"),
+                            AdventureLoading::new("TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1"),
                         ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")

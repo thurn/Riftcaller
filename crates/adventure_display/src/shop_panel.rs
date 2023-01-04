@@ -110,7 +110,9 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
 impl<'a> Component for ShopPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImagePanel::new()
-            .image(style::sprite("TPR/EnvironmentsHQ/EnvironmentsHQ2/shop"))
+            .image(style::sprite(
+                "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1",
+            ))
             .content(Column::new("ShopPanel").child(shop_row(self.position, &self.data.choices)))
             .build()
     }
