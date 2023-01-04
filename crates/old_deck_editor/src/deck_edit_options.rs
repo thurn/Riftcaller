@@ -17,7 +17,7 @@ use core_ui::design::RED_900;
 use core_ui::panels;
 use core_ui::prelude::*;
 use data::deck::Deck;
-use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
+use panel_address::{CollectionBrowserFilters, OldDeckEditorData, PanelAddress};
 use protos::spelldawn::FlexAlign;
 
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
@@ -48,7 +48,7 @@ impl<'a> Component for DeckEditOptions<'a> {
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
                     .layout(Layout::new().margin(Edge::All, 16.px()))
-                    .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
+                    .action(panels::set(PanelAddress::OldDeckEditor(OldDeckEditorData {
                         deck: Some(self.deck.index),
                         show_edit_options: false,
                         collection_filters: CollectionBrowserFilters::default(),

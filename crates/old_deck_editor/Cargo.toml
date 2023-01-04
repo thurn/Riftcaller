@@ -1,5 +1,5 @@
 [package]
-name = "deck_editor"
+name = "old_deck_editor"
 version = "0.0.0"
 description = "Renders the deck editor window"
 license = "Apache-2.0"

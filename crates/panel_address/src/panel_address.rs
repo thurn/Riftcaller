@@ -50,7 +50,7 @@ pub enum PanelAddress {
     GameMenu,
     AdventureMenu,
     SetPlayerName(Side),
-    DeckEditor(DeckEditorData),
+    OldDeckEditor(OldDeckEditorData),
     CreateDeck(CreateDeckState),
     GameOver(GameOverData),
     TilePrompt(TilePosition),
@@ -72,7 +72,7 @@ pub struct CollectionBrowserFilters {
 
 /// Identifies the current screen within the deck editor
 #[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct DeckEditorData {
+pub struct OldDeckEditorData {
     /// Deck currently being viewed
     pub deck: Option<DeckIndex>,
     /// True if the detail options for the current deck (e.g. delete, rename)

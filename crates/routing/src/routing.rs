@@ -20,10 +20,10 @@ use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
 use data::adventure::AdventureState;
 use data::player_data::PlayerData;
-use deck_editor::deck_editor_panel::DeckEditorPanel;
-use deck_editor::pick_deck_name::PickDeckName;
-use deck_editor::pick_deck_school::PickDeckSchool;
-use deck_editor::pick_deck_side::PickDeckSide;
+use old_deck_editor::deck_editor_panel::DeckEditorPanel;
+use old_deck_editor::pick_deck_name::PickDeckName;
+use old_deck_editor::pick_deck_school::PickDeckSchool;
+use old_deck_editor::pick_deck_side::PickDeckSide;
 use panel_address::{CreateDeckState, Panel, PanelAddress};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;
@@ -94,7 +94,7 @@ fn render_server_panel(
         PanelAddress::GameMenu => GameMenuPanel::new().build_panel(),
         PanelAddress::AdventureMenu => AdventureMenu::new().build_panel(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
-        PanelAddress::DeckEditor(data) => {
+        PanelAddress::OldDeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
             DeckEditorPanel { player, open_deck, data }.build_panel()
         }

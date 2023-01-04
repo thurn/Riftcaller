@@ -18,7 +18,7 @@ use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
-use panel_address::{CollectionBrowserFilters, CreateDeckState, DeckEditorData, PanelAddress};
+use panel_address::{CollectionBrowserFilters, CreateDeckState, OldDeckEditorData, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexDirection};
 
 use crate::deck_tile::DeckTile;
@@ -63,13 +63,13 @@ impl<'a> Component for DeckList<'a> {
                                     .padding(Edge::All, 1.vw()),
                             )
                             .children(decks.into_iter().map(|deck| {
-                                DeckTile::new(deck).action(panels::set(PanelAddress::DeckEditor(
-                                    DeckEditorData {
+                                DeckTile::new(deck).action(panels::set(
+                                    PanelAddress::OldDeckEditor(OldDeckEditorData {
                                         deck: Some(deck.index),
                                         collection_filters: self.filters,
                                         show_edit_options: false,
-                                    },
-                                )))
+                                    }),
+                                ))
                             })),
                     ),
             )

@@ -19,7 +19,7 @@ use core_ui::style::WidthMode;
 use core_ui::{icons, panels};
 use data::deck::Deck;
 use data::player_name::PlayerId;
-use panel_address::{DeckEditorData, PanelAddress};
+use panel_address::{OldDeckEditorData, PanelAddress};
 use protos::spelldawn::FlexAlign;
 
 #[derive(Debug)]
@@ -47,7 +47,7 @@ impl<'a> Component for CollectionControls<'a> {
                 IconButton::new(if self.open_deck.is_some() { icons::BACK } else { icons::CLOSE })
                     .button_type(IconButtonType::SecondaryLarge)
                     .action(if self.open_deck.is_some() {
-                        panels::set(PanelAddress::DeckEditor(DeckEditorData::default()))
+                        panels::set(PanelAddress::OldDeckEditor(OldDeckEditorData::default()))
                     } else {
                         panels::close_all()
                     })

@@ -18,7 +18,7 @@ use core_ui::prelude::*;
 use core_ui::{icons, panels};
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
+use panel_address::{CollectionBrowserFilters, OldDeckEditorData, Panel, PanelAddress};
 use protos::spelldawn::FlexPosition;
 
 use crate::card_list::CardList;
@@ -33,12 +33,12 @@ pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 pub struct DeckEditorPanel<'a> {
     pub player: &'a PlayerData,
     pub open_deck: Option<&'a Deck>,
-    pub data: DeckEditorData,
+    pub data: OldDeckEditorData,
 }
 
 impl<'a> Panel for DeckEditorPanel<'a> {
     fn address(&self) -> PanelAddress {
-        PanelAddress::DeckEditor(self.data)
+        PanelAddress::OldDeckEditor(self.data)
     }
 }
 
@@ -85,13 +85,15 @@ impl<'a> Component for DeckEditorPanel<'a> {
                         Some(
                             IconButton::new(icons::PREVIOUS_PAGE)
                                 .button_type(IconButtonType::SecondaryLarge)
-                                .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
-                                    deck: self.open_deck.map(|d| d.index),
-                                    collection_filters: CollectionBrowserFilters {
-                                        offset: self.data.collection_filters.offset - 8,
+                                .action(panels::set(PanelAddress::OldDeckEditor(
+                                    OldDeckEditorData {
+                                        deck: self.open_deck.map(|d| d.index),
+                                        collection_filters: CollectionBrowserFilters {
+                                            offset: self.data.collection_filters.offset - 8,
+                                        },
+                                        show_edit_options: false,
                                     },
-                                    show_edit_options: false,
-                                })))
+                                )))
                                 .layout(
                                     Layout::new()
                                         .position_type(FlexPosition::Absolute)
@@ -113,13 +115,15 @@ impl<'a> Component for DeckEditorPanel<'a> {
                             Some(
                                 IconButton::new(icons::NEXT_PAGE)
                                     .button_type(IconButtonType::SecondaryLarge)
-                                    .action(panels::set(PanelAddress::DeckEditor(DeckEditorData {
-                                        deck: self.open_deck.map(|d| d.index),
-                                        collection_filters: CollectionBrowserFilters {
-                                            offset: self.data.collection_filters.offset + 8,
+                                    .action(panels::set(PanelAddress::OldDeckEditor(
+                                        OldDeckEditorData {
+                                            deck: self.open_deck.map(|d| d.index),
+                                            collection_filters: CollectionBrowserFilters {
+                                                offset: self.data.collection_filters.offset + 8,
+                                            },
+                                            show_edit_options: false,
                                         },
-                                        show_edit_options: false,
-                                    })))
+                                    )))
                                     .layout(
                                         Layout::new()
                                             .position_type(FlexPosition::Absolute)
