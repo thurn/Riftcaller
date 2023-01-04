@@ -12,43 +12,55 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Shows an initial introduction screen to the deck editor window
+
 use core_ui::button::{Button, ButtonType};
 use core_ui::full_screen_loading::FullScreenLoading;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::{panels, style};
-use data::adventure::TilePosition;
-use panel_address::{Panel, PanelAddress};
+use data::player_data::PlayerData;
+use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
+use screen_overlay::ScreenOverlay;
 
-pub struct ShopPromptPanel {
-    pub address: PanelAddress,
-    pub position: TilePosition,
+pub struct DeckEditorPromptPanel<'a> {
+    pub player: &'a PlayerData,
 }
 
-impl Panel for ShopPromptPanel {
+impl<'a> Panel for DeckEditorPromptPanel<'a> {
     fn address(&self) -> PanelAddress {
-        self.address
+        PanelAddress::DeckEditorPrompt
+    }
+
+    fn screen_overlay(&self) -> Option<Node> {
+        ScreenOverlay::new(self.player).show_deck_button(false).build()
     }
 }
 
-impl Component for ShopPromptPanel {
+impl<'a> Component for DeckEditorPromptPanel<'a> {
     fn build(self) -> Option<Node> {
         PromptPanel::new()
             .image(style::sprite(
-                "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1",
+                "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
             ))
-            .prompt("Walking through town, you come upon the illuminated windows of a shop stocked with magical wares")
+            .prompt(
+                "Retiring to the library lets you freely reconfigure the cards in your deck",
+            )
             .buttons(vec![
                 Button::new("Continue")
                     .action(panels::transition(
-                            self.address,
-                            PanelAddress::Shop(self.position),
-                            FullScreenLoading::new("TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1"),
-                        ))
+                        self.address(),
+                        PanelAddress::DeckEditor(DeckEditorData {
+                            collection_filters: CollectionBrowserFilters { offset: 0 },
+                        }),
+                        FullScreenLoading::new(
+                            "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
+                        ),
+                    ))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(panels::close(self.address))
+                    .action(panels::close(self.address()))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

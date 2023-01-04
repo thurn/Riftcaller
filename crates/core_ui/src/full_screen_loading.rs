@@ -12,21 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::prelude::*;
-use core_ui::style;
-use protos::spelldawn::{FlexPosition, ImageScaleMode, SpriteAddress};
+use protos::spelldawn::{FlexPosition, ImageScaleMode, Node, SpriteAddress};
 
-pub struct AdventureLoading {
+use crate::component::Component;
+use crate::flexbox::Row;
+use crate::prelude::*;
+use crate::style;
+
+pub struct FullScreenLoading {
     image: SpriteAddress,
 }
 
-impl AdventureLoading {
+impl FullScreenLoading {
     pub fn new(image: impl Into<String>) -> Self {
         Self { image: style::sprite(image.into()) }
     }
 }
 
-impl Component for AdventureLoading {
+impl Component for FullScreenLoading {
     fn build(self) -> Option<Node> {
         Row::new("AdventureLoading")
             .style(

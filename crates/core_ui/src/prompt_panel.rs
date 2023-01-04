@@ -12,32 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::button::Button;
-use core_ui::design::{BackgroundColor, FontSize};
-use core_ui::prelude::*;
-use core_ui::style;
-use core_ui::text::Text;
-use core_ui::update_element::ElementName;
 use protos::spelldawn::{
     FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress, WhiteSpace,
 };
 
+use crate::button::Button;
+use crate::design::{BackgroundColor, FontSize};
+use crate::prelude::*;
+use crate::style;
+use crate::text::Text;
+use crate::update_element::ElementName;
+
 /// Renders a full-screen image containing a text prompt and some arbitrary
 /// content.
 #[derive(Default)]
-pub struct TilePromptPanel {
+pub struct PromptPanel {
     image: SpriteAddress,
     prompt: String,
     buttons: Vec<Button>,
 }
 
-impl TilePromptPanel {
+impl PromptPanel {
     pub fn new() -> Self {
         Self::default()
     }
 
     pub fn content_name() -> ElementName {
-        ElementName::new("TileImageContent")
+        ElementName::new("ImageContent")
     }
 
     pub fn image(mut self, image: SpriteAddress) -> Self {
@@ -56,9 +57,9 @@ impl TilePromptPanel {
     }
 }
 
-impl Component for TilePromptPanel {
+impl Component for PromptPanel {
     fn build(self) -> Option<Node> {
-        Row::new("TilePromptPanel")
+        Row::new("PromptPanel")
             .style(
                 Style::new()
                     .position_type(FlexPosition::Absolute)

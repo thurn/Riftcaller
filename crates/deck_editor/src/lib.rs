@@ -12,29 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Library for user interface rendering
-
-pub mod action_builder;
-pub mod actions;
-pub mod bottom_sheet_content;
-pub mod button;
-pub mod component;
-pub mod design;
-pub mod draggable;
-pub mod drop_target;
-pub mod flexbox;
-pub mod full_screen_image_panel;
-pub mod full_screen_loading;
-pub mod icons;
-pub mod list_cell;
-pub mod panel_window;
-pub mod panels;
-pub mod prelude;
-pub mod prompt_panel;
-pub mod safe_screen;
-pub mod scroll_view;
-pub mod slider;
-pub mod style;
-pub mod text;
-pub mod text_field;
-pub mod update_element;
+//! Renders the deck editor window
+pub mod deck_editor_panel;
+pub mod deck_editor_prompt;

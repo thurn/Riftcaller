@@ -13,15 +13,14 @@
 // limitations under the License.
 
 use core_ui::button::{Button, ButtonType};
+use core_ui::full_screen_loading::FullScreenLoading;
 use core_ui::prelude::*;
+use core_ui::prompt_panel::PromptPanel;
 use core_ui::{actions, icons, panels, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
-
-use crate::adventure_loading::AdventureLoading;
-use crate::tile_prompt_panel::TilePromptPanel;
 
 pub struct DraftPromptPanel {
     pub cost: Coins,
@@ -37,7 +36,7 @@ impl Panel for DraftPromptPanel {
 
 impl Component for DraftPromptPanel {
     fn build(self) -> Option<Node> {
-        TilePromptPanel::new()
+        PromptPanel::new()
             .image(style::sprite("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"))
             .prompt("An expedition into these mountain ruins could provide a valuable treasure")
             .buttons(vec![
@@ -46,7 +45,7 @@ impl Component for DraftPromptPanel {
                         panels::close_and_wait_for(
                             self.address,
                             PanelAddress::DraftCard,
-                            AdventureLoading::new("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"),
+                            FullScreenLoading::new("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"),
                         ),
                         UserAction::AdventureAction(AdventureAction::InitiateDraft(self.position)),
                     ))

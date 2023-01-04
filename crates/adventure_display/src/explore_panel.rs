@@ -14,13 +14,12 @@
 
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
+use core_ui::prompt_panel::PromptPanel;
 use core_ui::{actions, icons, panels, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
-
-use crate::tile_prompt_panel::TilePromptPanel;
 
 pub struct ExplorePanel {
     pub cost: Coins,
@@ -36,7 +35,7 @@ impl Panel for ExplorePanel {
 
 impl Component for ExplorePanel {
     fn build(self) -> Option<Node> {
-        TilePromptPanel::new()
+        PromptPanel::new()
             .image(style::sprite("TPR/InfiniteEnvironments/meadow"))
             .prompt("To the north lie the flowering fields of the Kingdom of Edennes")
             .buttons(vec![

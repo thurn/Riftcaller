@@ -30,19 +30,19 @@ use crate::deck_list::DeckList;
 
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
-pub struct DeckEditorPanel<'a> {
+pub struct OldDeckEditorPanel<'a> {
     pub player: &'a PlayerData,
     pub open_deck: Option<&'a Deck>,
     pub data: OldDeckEditorData,
 }
 
-impl<'a> Panel for DeckEditorPanel<'a> {
+impl<'a> Panel for OldDeckEditorPanel<'a> {
     fn address(&self) -> PanelAddress {
         PanelAddress::OldDeckEditor(self.data)
     }
 }
 
-impl<'a> Component for DeckEditorPanel<'a> {
+impl<'a> Component for OldDeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
         Row::new("OverlayBackground")
             .style(

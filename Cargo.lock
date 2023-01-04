@@ -458,6 +458,7 @@ checksum = "fb4a24b1aaf0fd0ce8b45161144d6f42cd91677fd5940fd431183eb023b3a2b8"
 name = "core_ui"
 version = "0.0.0"
 dependencies = [
+ "constants",
  "data",
  "protos",
  "serde_json",
@@ -669,6 +670,21 @@ dependencies = [
  "protos",
  "rules",
  "rules_text",
+]
+
+[[package]]
+name = "deck_editor"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "assets",
+ "core_ui",
+ "data",
+ "panel_address",
+ "protos",
+ "rules",
+ "screen_overlay",
+ "with_error",
 ]
 
 [[package]]
@@ -1649,6 +1665,7 @@ dependencies = [
  "anyhow",
  "core_ui",
  "data",
+ "deck_editor",
  "old_deck_editor",
  "panel_address",
  "panels",

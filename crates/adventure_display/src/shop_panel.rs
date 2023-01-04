@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use core_ui::button::Button;
+use core_ui::full_screen_image_panel::FullScreenImagePanel;
 use core_ui::prelude::*;
 use core_ui::update_element::ElementName;
 use core_ui::{actions, icons, style, update_element};
@@ -26,8 +27,6 @@ use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{DestroyAnimationEffect, FlexAlign, FlexJustify};
 use screen_overlay::ScreenOverlay;
 use with_error::fail;
-
-use crate::full_screen_image_panel::FullScreenImagePanel;
 
 pub struct ShopPanel<'a> {
     position: TilePosition,

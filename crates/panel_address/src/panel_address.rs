@@ -50,6 +50,8 @@ pub enum PanelAddress {
     GameMenu,
     AdventureMenu,
     SetPlayerName(Side),
+    DeckEditorPrompt,
+    DeckEditor(DeckEditorData),
     OldDeckEditor(OldDeckEditorData),
     CreateDeck(CreateDeckState),
     GameOver(GameOverData),
@@ -68,6 +70,12 @@ impl From<PanelAddress> for InterfacePanelAddress {
 #[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct CollectionBrowserFilters {
     pub offset: usize,
+}
+
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct DeckEditorData {
+    /// Current collection browser view
+    pub collection_filters: CollectionBrowserFilters,
 }
 
 /// Identifies the current screen within the deck editor

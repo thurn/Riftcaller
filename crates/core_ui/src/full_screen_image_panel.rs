@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::component::EmptyComponent;
-use core_ui::design::BackgroundColor;
-use core_ui::prelude::*;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress};
+
+use crate::component::EmptyComponent;
+use crate::design::BackgroundColor;
+use crate::prelude::*;
 
 /// Renders a full-screen image containing a text prompt and some arbitrary
 /// content.

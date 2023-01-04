@@ -28,15 +28,21 @@ use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 pub struct ScreenOverlay<'a> {
     player: &'a PlayerData,
     show_close_button: Option<PanelAddress>,
+    show_deck_button: bool,
 }
 
 impl<'a> ScreenOverlay<'a> {
     pub fn new(player: &'a PlayerData) -> Self {
-        Self { player, show_close_button: None }
+        Self { player, show_close_button: None, show_deck_button: true }
     }
 
     pub fn show_close_button(mut self, show_close_button: PanelAddress) -> Self {
         self.show_close_button = Some(show_close_button);
+        self
+    }
+
+    pub fn show_deck_button(mut self, show_deck_button: bool) -> Self {
+        self.show_deck_button = show_deck_button;
         self
     }
 }
@@ -91,12 +97,13 @@ impl<'a> Component for ScreenOverlay<'a> {
             )
             .child(
                 Row::new("Right")
-                    .child(
+                    .child(self.show_deck_button.then(|| {
                         IconButton::new(icons::DECK)
                             .name(&element_names::DECK_BUTTON)
                             .button_type(IconButtonType::NavbarBrown)
-                            .layout(Layout::new().margin(Edge::All, 12.px())),
-                    )
+                            .action(panels::open_existing(PanelAddress::DeckEditorPrompt))
+                            .layout(Layout::new().margin(Edge::All, 12.px()))
+                    }))
                     .child(
                         IconButton::new(icons::BARS)
                             .name(&element_names::MENU_BUTTON)

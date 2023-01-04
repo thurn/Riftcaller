@@ -20,7 +20,9 @@ use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
 use data::adventure::AdventureState;
 use data::player_data::PlayerData;
-use old_deck_editor::deck_editor_panel::DeckEditorPanel;
+use deck_editor::deck_editor_panel::DeckEditorPanel;
+use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
+use old_deck_editor::deck_editor_panel::OldDeckEditorPanel;
 use old_deck_editor::pick_deck_name::PickDeckName;
 use old_deck_editor::pick_deck_school::PickDeckSchool;
 use old_deck_editor::pick_deck_side::PickDeckSide;
@@ -55,7 +57,11 @@ pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
         .filter_map(|(position, state)| {
             state.entity.as_ref().map(|_| PanelAddress::TilePrompt(*position))
         })
-        .chain(vec![PanelAddress::AdventureMenu, PanelAddress::Settings])
+        .chain(vec![
+            PanelAddress::AdventureMenu,
+            PanelAddress::Settings,
+            PanelAddress::DeckEditorPrompt,
+        ])
         .collect()
 }
 
@@ -94,9 +100,11 @@ fn render_server_panel(
         PanelAddress::GameMenu => GameMenuPanel::new().build_panel(),
         PanelAddress::AdventureMenu => AdventureMenu::new().build_panel(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
+        PanelAddress::DeckEditorPrompt => DeckEditorPromptPanel { player }.build_panel(),
+        PanelAddress::DeckEditor(data) => DeckEditorPanel { player, data }.build_panel(),
         PanelAddress::OldDeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
-            DeckEditorPanel { player, open_deck, data }.build_panel()
+            OldDeckEditorPanel { player, open_deck, data }.build_panel()
         }
         PanelAddress::CreateDeck(state) => match state {
             CreateDeckState::PickSide => PickDeckSide::new().build_panel(),

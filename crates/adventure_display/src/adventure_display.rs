@@ -14,16 +14,13 @@
 
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
-pub mod adventure_loading;
 pub mod adventure_over_panel;
 pub mod adventure_panels;
 pub mod draft_panel;
 pub mod draft_prompt_panel;
 pub mod explore_panel;
-pub mod full_screen_image_panel;
 pub mod shop_panel;
 pub mod shop_prompt_panel;
-pub mod tile_prompt_panel;
 
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
