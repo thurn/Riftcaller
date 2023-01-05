@@ -18,7 +18,7 @@ use core_ui::prelude::*;
 use data::adventure::{TileEntity, TilePosition};
 use data::player_data::PlayerData;
 use panel_address::{Panel, PanelAddress};
-use protos::spelldawn::{InterfacePanel, InterfacePanelAddress};
+use protos::spelldawn::InterfacePanel;
 use with_error::{fail, WithError};
 
 use crate::draft_prompt_panel::DraftPromptPanel;
@@ -30,8 +30,7 @@ use crate::shop_prompt_panel::ShopPromptPanel;
 pub fn render_tile_prompt_panel(
     position: TilePosition,
     player: &PlayerData,
-    client_address: InterfacePanelAddress,
-) -> Result<InterfacePanel> {
+) -> Result<Option<InterfacePanel>> {
     let address = PanelAddress::TilePrompt(position);
     let Some(adventure) = &player.adventure else {
         fail!("Expected active adventure");
@@ -41,11 +40,7 @@ pub fn render_tile_prompt_panel(
     let Some(entity) = &tile.entity else {
         // Entity does not exist, e.g. because it has been cleared after activation. This
         // is fine, just render nothing.
-        return Ok(InterfacePanel {
-            address: Some(client_address),
-            node: None,
-            screen_overlay: None
-        });
+        return Ok(None)
     };
 
     Ok(match entity {
@@ -64,7 +59,7 @@ pub fn render_tile_prompt_panel(
 pub fn render_tile_loading_panel(
     position: TilePosition,
     player: &PlayerData,
-) -> Result<InterfacePanel> {
+) -> Result<Option<InterfacePanel>> {
     let node = match player.adventure()?.tile_entity(position)? {
         TileEntity::Explore { .. } => {
             FullScreenLoading::new("TPR/InfiniteEnvironments/meadow").build()
@@ -79,9 +74,9 @@ pub fn render_tile_loading_panel(
         .build(),
     };
 
-    Ok(InterfacePanel {
+    Ok(Some(InterfacePanel {
         address: Some(PanelAddress::TileLoading(position).into()),
         node,
         screen_overlay: None,
-    })
+    }))
 }

@@ -31,12 +31,17 @@ pub trait Panel: Component {
         None
     }
 
-    fn build_panel(self) -> InterfacePanel
+    fn build_panel(self) -> Option<InterfacePanel>
     where
         Self: Sized,
     {
         let screen_overlay = self.screen_overlay();
-        InterfacePanel { address: Some(self.address().into()), node: self.build(), screen_overlay }
+        let address = self.address().into();
+        self.build().map(|node| InterfacePanel {
+            address: Some(address),
+            node: Some(node),
+            screen_overlay,
+        })
     }
 }
 

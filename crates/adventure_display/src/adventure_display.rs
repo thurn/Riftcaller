@@ -53,15 +53,17 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
 
     if let Some(screen) = &state.choice_screen {
         let rendered = render_adventure_choice_screen(state, screen)?;
-        commands.push(panels::update(rendered.panel));
-        commands.push(panels::open_existing(rendered.address));
+        if let Some(panel) = rendered.panel {
+            commands.push(panels::update(panel));
+        }
+        commands.push(Panels::open(rendered.address).as_command());
     }
 
     Ok(commands)
 }
 
 pub struct RenderedChoiceScreen {
-    pub panel: InterfacePanel,
+    pub panel: Option<InterfacePanel>,
     pub address: PanelAddress,
 }
 

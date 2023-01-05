@@ -13,13 +13,12 @@
 // limitations under the License.
 
 use core_ui::button::{Button, ButtonType};
-use core_ui::full_screen_loading::FullScreenLoading;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
-use core_ui::{actions, icons, panels, style};
+use core_ui::{icons, panels, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
-use data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
 
 pub struct DraftPromptPanel {
@@ -41,14 +40,12 @@ impl Component for DraftPromptPanel {
             .prompt("An expedition into these mountain ruins could provide a valuable treasure")
             .buttons(vec![
                 Button::new(format!("Draft: {} {}", self.cost, icons::COINS))
-                    .action(actions::with_optimistic_update(
-                        panels::close_and_wait_for(
-                            self.address,
-                            PanelAddress::DraftCard,
-                            FullScreenLoading::new("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"),
-                        ),
-                        UserAction::AdventureAction(AdventureAction::InitiateDraft(self.position)),
-                    ))
+                    .action(
+                        Panels::open(PanelAddress::DraftCard)
+                            .and_close(self.address())
+                            .loading(PanelAddress::TileLoading(self.position))
+                            .do_not_fetch(true)
+                            .action(AdventureAction::InitiateDraft(self.position)))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)

@@ -85,15 +85,14 @@ pub fn render_panel(
 ) -> Result<UpdatePanelsCommand> {
     let server_address =
         de::from_slice(&client_address.serialized).with_error(|| "deserialization failed")?;
-    let node = render_server_panel(player, server_address, client_address)?;
-    Ok(UpdatePanelsCommand { panels: vec![node] })
+    let panel = render_server_panel(player, server_address)?;
+    Ok(UpdatePanelsCommand { panels: panel.map_or_else(Vec::new, |p| vec![p]) })
 }
 
 fn render_server_panel(
     player: &PlayerData,
     server_address: PanelAddress,
-    client_address: InterfacePanelAddress,
-) -> Result<InterfacePanel> {
+) -> Result<Option<InterfacePanel>> {
     Ok(match server_address {
         PanelAddress::MainMenu => MainMenuPanel::new().build_panel(),
         PanelAddress::About => AboutPanel::new().build_panel(),
@@ -121,7 +120,7 @@ fn render_server_panel(
             adventure_panels::render_tile_loading_panel(position, player)?
         }
         PanelAddress::TilePrompt(position) => {
-            adventure_panels::render_tile_prompt_panel(position, player, client_address)?
+            adventure_panels::render_tile_prompt_panel(position, player)?
         }
         PanelAddress::DraftCard => render_adventure_choice(player)?,
         PanelAddress::AdventureOver => render_adventure_choice(player)?,
@@ -129,12 +128,19 @@ fn render_server_panel(
     })
 }
 
-fn render_adventure_choice(player: &PlayerData) -> Result<InterfacePanel> {
-    let adventure = player.adventure.as_ref().with_error(|| "Expected adventure")?;
-    let rendered = adventure_display::render_adventure_choice_screen(
-        adventure,
-        adventure.choice_screen.as_ref().with_error(|| "Expected choice screen")?,
-    )?;
+fn render_adventure_choice(player: &PlayerData) -> Result<Option<InterfacePanel>> {
+    // It's normal for the client to request screens which aren't always valid,
+    // e.g. refreshing the cached choice screen after it's been removed.
+
+    let Some(adventure) = &player.adventure else {
+        return Ok(None)
+    };
+
+    let Some(choice_screen) = &adventure.choice_screen else {
+        return Ok(None)
+    };
+
+    let rendered = adventure_display::render_adventure_choice_screen(adventure, choice_screen)?;
 
     Ok(rendered.panel)
 }

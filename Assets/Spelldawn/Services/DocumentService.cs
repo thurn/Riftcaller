@@ -169,13 +169,20 @@ namespace Spelldawn.Services
           var transition = command.Transition;
           if (transition.Open != null)
           {
-            _openPanels.Add(transition.Open);
+            if (!_openPanels.Contains(transition.Open))
+            {
+              _openPanels.Add(transition.Open);
+            }
+            
             if (!_panelCache.ContainsKey(transition.Open))
             {
               if (transition.Loading != null && _panelCache.ContainsKey(transition.Loading))
               {
                 _panelCache[transition.Open] = new InterfacePanel { Node = _panelCache[transition.Loading].Node };
-                _waitingFor.Add(transition.Open);
+                if (!_waitingFor.Contains(transition.Open))
+                {
+                  _waitingFor.Add(transition.Open);
+                }
                 Loading = true;
               }
               else

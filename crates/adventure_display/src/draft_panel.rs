@@ -15,9 +15,10 @@
 use core_ui::button::Button;
 use core_ui::design::FontSize;
 use core_ui::full_screen_image_panel::FullScreenImagePanel;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
+use core_ui::style;
 use core_ui::text::Text;
-use core_ui::{actions, style};
 use data::adventure::DraftData;
 use data::adventure_action::AdventureAction;
 use deck_card::{CardHeight, DeckCard};
@@ -58,10 +59,8 @@ impl<'a> Component for DraftPanel<'a> {
                                         .margin(Edge::Horizontal, 8.px())
                                         .margin(Edge::Top, 16.px()),
                                 )
-                                .action(actions::close_and(
-                                    PanelAddress::DraftCard,
-                                    AdventureAction::DraftCard(i),
-                                )),
+                                .action(Panels::close(self.address())
+                                    .action(AdventureAction::DraftCard(i))),
                         )
                 },
             )))

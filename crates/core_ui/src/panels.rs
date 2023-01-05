@@ -87,20 +87,27 @@ impl Panels {
         self.do_not_fetch = do_not_fetch;
         self
     }
+
+    /// Converts this builder to a [Command].
+    ///
+    /// Note that any action provided is ignored.
+    pub fn as_command(&self) -> Command {
+        Command::TogglePanel(TogglePanelCommand {
+            toggle_command: Some(ToggleCommand::Transition(PanelTransitionOptions {
+                open: self.open.clone(),
+                close: self.close.clone(),
+                loading: self.loading.clone(),
+                do_not_fetch: self.do_not_fetch,
+            })),
+        })
+    }
 }
 
 impl InterfaceAction for Panels {
     fn as_client_action(&self) -> Action {
         Action::StandardAction(StandardAction {
             payload: self.action.map_or_else(Vec::new, actions::payload),
-            update: Some(actions::command_list(vec![Command::TogglePanel(TogglePanelCommand {
-                toggle_command: Some(ToggleCommand::Transition(PanelTransitionOptions {
-                    open: self.open.clone(),
-                    close: self.close.clone(),
-                    loading: self.loading.clone(),
-                    do_not_fetch: self.do_not_fetch,
-                })),
-            })])),
+            update: Some(actions::command_list(vec![self.as_command()])),
             request_fields: HashMap::new(),
         })
     }

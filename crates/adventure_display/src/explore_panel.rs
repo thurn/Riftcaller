@@ -13,9 +13,10 @@
 // limitations under the License.
 
 use core_ui::button::{Button, ButtonType};
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
-use core_ui::{actions, icons, panels, style};
+use core_ui::{actions, icons, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
@@ -47,7 +48,7 @@ impl Component for ExplorePanel {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(panels::close(self.address))
+                    .action(Panels::close(self.address))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()
