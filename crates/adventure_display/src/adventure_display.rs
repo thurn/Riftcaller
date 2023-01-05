@@ -24,14 +24,15 @@ pub mod shop_prompt_panel;
 
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
-use core_ui::{actions, design, panels};
+use core_ui::panels::Panels;
+use core_ui::{design, panels};
 use data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState};
 use data::adventure_action::AdventureAction;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
-    ClientAction, FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
-    WorldMapSprite, WorldMapTile,
+    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
+    WorldMapTile,
 };
 use with_error::fail;
 
@@ -128,7 +129,10 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
     WorldMapTile {
         sprites,
         position: Some(adapters::map_position(position)),
-        on_visit: tile.entity.as_ref().map(|entity| visit_action_for_entity(entity, position)),
+        on_visit: tile
+            .entity
+            .as_ref()
+            .map(|entity| visit_action_for_entity(entity, position).build()),
         tile_type: if tile.entity.is_some() {
             MapTileType::Visitable.into()
         } else if tile.road.is_some() {
@@ -139,18 +143,15 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
     }
 }
 
-fn visit_action_for_entity(entity: &TileEntity, position: TilePosition) -> ClientAction {
-    match entity {
-        TileEntity::Shop { data } if data.visited => {
-            panels::open(PanelAddress::Shop(position)).build()
-        }
-        TileEntity::Shop { .. } => actions::with_optimistic_update(
-            vec![panels::open(PanelAddress::TilePrompt(position))],
-            AdventureAction::VisitShop(position),
-        )
-        .build(),
-        _ => panels::open(PanelAddress::TilePrompt(position)).build(),
-    }
+fn visit_action_for_entity(entity: &TileEntity, position: TilePosition) -> Panels {
+    let result = match entity {
+        TileEntity::Shop { data } if data.visited => Panels::open(PanelAddress::Shop(position)),
+        TileEntity::Shop { .. } => Panels::open(PanelAddress::TilePrompt(position))
+            .action(AdventureAction::VisitShop(position)),
+        _ => Panels::open(PanelAddress::TilePrompt(position)),
+    };
+
+    result.loading(PanelAddress::TileLoading(position))
 }
 
 fn sprite_address_for_entity(entity: &TileEntity) -> SpriteAddress {

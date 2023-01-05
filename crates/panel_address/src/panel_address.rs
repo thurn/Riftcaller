@@ -55,6 +55,7 @@ pub enum PanelAddress {
     OldDeckEditor(OldDeckEditorData),
     CreateDeck(CreateDeckState),
     GameOver(GameOverData),
+    TileLoading(TilePosition),
     TilePrompt(TilePosition),
     DraftCard,
     Shop(TilePosition),

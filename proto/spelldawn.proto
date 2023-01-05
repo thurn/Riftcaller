@@ -1189,55 +1189,77 @@ message AddressWithLoadingState {
     Node loading_state = 2;
 }
 
+// Options for transitioning to a new panel.
+//
+// Will log an error if 'open' is not available and no loading state is
+// provided, or if the loading state is not available.
+message PanelTransitionOptions {
+    // New panel to open
+    InterfacePanelAddress open = 1;
+
+    // Previous panel to close, if any
+    InterfacePanelAddress close = 2;
+
+    // Panel to display if 'open' has not yet been fetched
+    InterfacePanelAddress loading = 3;
+
+    // If true, do not attempt to fetch the 'open' panel, just wait for
+    // it to be returned
+    bool do_not_fetch = 4;
+}
+
 // Requests to open or close the given interface panel.
 message TogglePanelCommand {
     oneof toggle_command {
+        // Open a new panel with transition options.
+        PanelTransitionOptions transition = 1;
+
         // Add a panel to the end of the stack of open views, and display a
         // loading screen while it is being fetched.
-        AddressWithLoadingState load_panel = 1;
+        AddressWithLoadingState load_panel = 2;
 
         // Close all open panels and show the indicated panel.
-        InterfacePanelAddress set_panel = 2;
+        InterfacePanelAddress set_panel = 3;
 
         // Add the indicated panel to the end of the stack of open views if
         // it is not already present. Does not display a loading state.
-        InterfacePanelAddress open_panel = 3;
+        InterfacePanelAddress open_panel = 4;
 
         // Add the indicated panel to the end of the stack of open views if
         // it is not already present. Throws an exception if no cached version
         // of this panel is available. Does not attempt to fetch the panel.
-        InterfacePanelAddress open_existing_panel = 4;
+        InterfacePanelAddress open_existing_panel = 5;
 
         // Removes the indicated panel from the stack of open views.
-        InterfacePanelAddress close_panel = 5;
+        InterfacePanelAddress close_panel = 6;
 
         // Close all open panels
-        google.protobuf.Empty close_all = 6;
+        google.protobuf.Empty close_all = 7;
 
         // Overrwrite the cached value of the identified panel with 'loading
         // state' and then open it. Does *not* attempt to fetch the panel.
-        AddressWithLoadingState wait_for = 7;
+        AddressWithLoadingState wait_for = 8;
 
         // Opens a new bottom sheet with the indicated panel.
         //
         // Closes any existing bottom sheet.
-        InterfacePanelAddress open_bottom_sheet_address = 8;
+        InterfacePanelAddress open_bottom_sheet_address = 9;
 
         // Closes the currently-open bottom sheet.
-        google.protobuf.Empty close_bottom_sheet = 9;
+        google.protobuf.Empty close_bottom_sheet = 10;
 
         // Pushes the indicated panel as a new bottom sheet page.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress push_bottom_sheet_address = 10;
+        InterfacePanelAddress push_bottom_sheet_address = 11;
 
         // Pops the currently visible bottom sheet page and displays the
         // indicated panel as the *new* sheet content.
         //
         // If no bottom sheet is currently open, the behavior is identical to
         // 'open_bottom_sheet'.
-        InterfacePanelAddress pop_to_bottom_sheet_address = 11;
+        InterfacePanelAddress pop_to_bottom_sheet_address = 12;
     }
 }
 

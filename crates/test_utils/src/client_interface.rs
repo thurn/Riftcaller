@@ -92,6 +92,15 @@ impl ClientInterface {
 
     fn handle_toggle(&mut self, command: ToggleCommand) {
         match command {
+            ToggleCommand::Transition(transition) => {
+                if let Some(open) = transition.open {
+                    self.open_panels.push(open);
+                }
+
+                if let Some(close) = transition.close {
+                    self.open_panels.retain(|a| *a != close);
+                }
+            }
             ToggleCommand::LoadPanel(load) => {
                 let address = load.open_panel.expect("address");
                 if !self.open_panels.contains(&address) {

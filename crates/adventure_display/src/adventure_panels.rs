@@ -13,6 +13,8 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_ui::full_screen_loading::FullScreenLoading;
+use core_ui::prelude::*;
 use data::adventure::{TileEntity, TilePosition};
 use data::player_data::PlayerData;
 use panel_address::{Panel, PanelAddress};
@@ -54,5 +56,32 @@ pub fn render_tile_prompt_panel(
             DraftPromptPanel { cost: *cost, address, position }.build_panel()
         }
         TileEntity::Shop { .. } => ShopPromptPanel { address, position }.build_panel(),
+    })
+}
+
+/// Renders the loading screen panel for the entity at the provided
+/// [TilePosition], if any.
+pub fn render_tile_loading_panel(
+    position: TilePosition,
+    player: &PlayerData,
+) -> Result<InterfacePanel> {
+    let node = match player.adventure()?.tile_entity(position)? {
+        TileEntity::Explore { .. } => {
+            FullScreenLoading::new("TPR/InfiniteEnvironments/meadow").build()
+        }
+        TileEntity::Draft { .. } => FullScreenLoading::new(
+            "TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1",
+        )
+        .build(),
+        TileEntity::Shop { .. } => FullScreenLoading::new(
+            "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1",
+        )
+        .build(),
+    };
+
+    Ok(InterfacePanel {
+        address: Some(PanelAddress::TileLoading(position).into()),
+        node,
+        screen_overlay: None,
     })
 }

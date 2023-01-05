@@ -12,26 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Data types used to represent game state
+use std::collections::HashSet;
 
-pub mod adventure;
-pub mod adventure_action;
-pub mod agent_definition;
-pub mod card_definition;
-pub mod card_name;
-pub mod card_state;
-pub mod deck;
-pub mod delegates;
-pub mod game;
-pub mod game_actions;
-pub mod player_data;
-pub mod player_name;
-pub mod primitives;
-pub mod random;
-pub mod set_name;
-pub mod special_effects;
-pub mod text;
-pub mod tutorial;
-pub mod updates;
-pub mod user_actions;
-pub mod utils;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub enum TutorialMessageKey {
+    DeckEditor,
+}
+
+/// Data model for the player's progress through the game's tutorial
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct TutorialData {
+    /// Which tutorial messages has the user seen?
+    pub seen: HashSet<TutorialMessageKey>,
+}
+
+impl TutorialData {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}

@@ -165,6 +165,38 @@ namespace Spelldawn.Services
       InterfacePanelAddress? fetch = null;
       switch (command.ToggleCommandCase)
       {
+        case TogglePanelCommand.ToggleCommandOneofCase.Transition:
+          var transition = command.Transition;
+          if (transition.Open != null)
+          {
+            _openPanels.Add(transition.Open);
+            if (!_panelCache.ContainsKey(transition.Open))
+            {
+              if (transition.Loading != null && _panelCache.ContainsKey(transition.Loading))
+              {
+                _panelCache[transition.Open] = new InterfacePanel { Node = _panelCache[transition.Loading].Node };
+                _waitingFor.Add(transition.Open);
+                Loading = true;
+              }
+              else
+              {
+                throw new InvalidOperationException($"Attempted to open {transition.Open} with no loading state");
+              }
+            }
+
+            if (!transition.DoNotFetch)
+            {
+              fetch = transition.Open;
+            }
+          }
+
+          if (transition.Close != null)
+          {
+            _openPanels.Remove(transition.Close);
+          }
+
+          RenderPanels();
+          break;
         case TogglePanelCommand.ToggleCommandOneofCase.LoadPanel:
           fetch = command.LoadPanel.OpenPanel;
           if (!_openPanels.Contains(command.LoadPanel.OpenPanel))

@@ -57,6 +57,9 @@ pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
         .filter_map(|(position, state)| {
             state.entity.as_ref().map(|_| PanelAddress::TilePrompt(*position))
         })
+        .chain(adventure.tiles.iter().filter_map(|(position, state)| {
+            state.entity.as_ref().map(|_| PanelAddress::TileLoading(*position))
+        }))
         .chain(vec![
             PanelAddress::AdventureMenu,
             PanelAddress::Settings,
@@ -114,6 +117,9 @@ fn render_server_panel(
             }
         },
         PanelAddress::GameOver(data) => GameOverPanel { data, player }.build_panel(),
+        PanelAddress::TileLoading(position) => {
+            adventure_panels::render_tile_loading_panel(position, player)?
+        }
         PanelAddress::TilePrompt(position) => {
             adventure_panels::render_tile_prompt_panel(position, player, client_address)?
         }
