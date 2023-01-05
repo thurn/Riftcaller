@@ -21,7 +21,7 @@ use core_ui::prelude::*;
 use core_ui::text::Text;
 use core_ui::text_field::TextField;
 use data::primitives::{School, Side};
-use data::user_actions::DeckEditorAction;
+use data::user_actions::OldDeckEditorAction;
 use panel_address::{CreateDeckState, Panel, PanelAddress};
 
 pub const DECK_NAME_INPUT: &str = "DeckNameInput";
@@ -77,7 +77,7 @@ impl Component for PickDeckName {
                     .child(
                         Button::new("Create Deck").action(
                             ActionBuilder::new()
-                                .action(DeckEditorAction::CreateDeck(self.side, self.school))
+                                .action(OldDeckEditorAction::CreateDeck(self.side, self.school))
                                 .update(panels::close_bottom_sheet())
                                 .request_field(DECK_NAME_INPUT),
                         ),

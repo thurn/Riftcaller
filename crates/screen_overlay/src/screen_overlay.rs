@@ -17,12 +17,14 @@
 
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::{BackgroundColor, FontSize};
+use core_ui::icons;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use core_ui::{icons, panels};
 use data::player_data::PlayerData;
-use panel_address::PanelAddress;
+use data::tutorial::TutorialMessageKey;
+use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
 pub struct ScreenOverlay<'a> {
@@ -66,7 +68,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                     .child(self.show_close_button.map(|address| {
                         IconButton::new(icons::CLOSE)
                             .button_type(IconButtonType::DestructiveLarge)
-                            .action(panels::close(address))
+                            .action(Panels::close(address))
                             .layout(Layout::new().margin(Edge::Left, 16.px()))
                     }))
                     .child(
@@ -101,7 +103,22 @@ impl<'a> Component for ScreenOverlay<'a> {
                         IconButton::new(icons::DECK)
                             .name(&element_names::DECK_BUTTON)
                             .button_type(IconButtonType::NavbarBrown)
-                            .action(panels::open_existing(PanelAddress::DeckEditorPrompt))
+                            .action(
+                                if self
+                                    .player
+                                    .tutorial
+                                    .seen
+                                    .contains(&TutorialMessageKey::DeckEditor)
+                                {
+                                    Panels::open(PanelAddress::DeckEditor(DeckEditorData {
+                                        collection_filters: CollectionBrowserFilters::default(),
+                                    }))
+                                    .loading(PanelAddress::DeckEditorLoading)
+                                } else {
+                                    Panels::open(PanelAddress::DeckEditorPrompt)
+                                        .loading(PanelAddress::DeckEditorLoading)
+                                },
+                            )
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                     }))
                     .child(
@@ -109,7 +126,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .name(&element_names::MENU_BUTTON)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .button_type(IconButtonType::NavbarBrown)
-                            .action(panels::open(PanelAddress::AdventureMenu)),
+                            .action(Panels::open(PanelAddress::AdventureMenu)),
                     ),
             )
             .build()

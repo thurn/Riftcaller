@@ -42,6 +42,7 @@ use data::player_name::PlayerId;
 use data::primitives::{
     ActionCount, CardId, DeckIndex, GameId, Lineage, ManaValue, PointsValue, RaidId, RoomId, Side,
 };
+use data::tutorial::TutorialData;
 use maplit::hashmap;
 use prost::Message;
 use protos::spelldawn::client_action::Action;
@@ -139,14 +140,16 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
                 state: Some(PlayerState::Playing(game_id)),
                 decks: vec![],
                 adventure: None,
-                collection: hashmap! {}
+                collection: hashmap! {},
+                tutorial: TutorialData::default()
             },
             champion_user => PlayerData {
                 id: champion_user,
                 state: Some(PlayerState::Playing(game_id)),
                 decks: vec![],
                 adventure: None,
-                collection: hashmap! {}
+                collection: hashmap! {},
+                tutorial: TutorialData::default()
             }
         },
     };
@@ -215,7 +218,7 @@ pub struct Args {
     /// Card to be inserted into the opponent player's discard pile.
     pub opponent_discard: Option<CardName>,
     /// Set up an active raid within the created game using [ROOM_ID] as the
-    /// target and [RAID_ID] as the ID.    
+    /// target and [RAID_ID] as the ID.
     pub add_raid: bool,
     /// If false, will not attempt to automatically connect to this game.
     /// Defaults to true.

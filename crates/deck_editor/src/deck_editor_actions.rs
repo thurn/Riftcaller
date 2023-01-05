@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Panel rendering. A 'panel' is a discrete rectangular piece of UI which can
-//! be opened or closed by the user, such as a game menu or window.
+use anyhow::Result;
+use data::player_data::PlayerData;
+use data::tutorial::TutorialMessageKey;
+use data::user_actions::DeckEditorAction;
 
-pub mod about_panel;
-pub mod adventure_menu;
-pub mod button_menu;
-pub mod debug_panel;
-pub mod disclaimer_panel;
-pub mod game_menu_panel;
-pub mod game_over_panel;
-pub mod loading_panel;
-pub mod main_menu_panel;
-pub mod set_player_name_panel;
-pub mod settings_panel;
+pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
+    match action {
+        DeckEditorAction::ViewedPrompt => {
+            player.tutorial.seen.insert(TutorialMessageKey::DeckEditor);
+        }
+        DeckEditorAction::AddToDeck(_) => todo!(),
+        DeckEditorAction::RemoveFromDeck(_) => todo!(),
+    }
+    Ok(())
+}

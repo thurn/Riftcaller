@@ -21,7 +21,7 @@ use core_ui::{actions, panels};
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::primitives::DeckIndex;
-use data::user_actions::{DeckEditorAction, UserAction};
+use data::user_actions::{OldDeckEditorAction, UserAction};
 use panel_address::{CollectionBrowserFilters, OldDeckEditorData, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -104,10 +104,9 @@ impl<'a> Component for CardList<'a> {
 
 fn drop_action(name: CardName, active_deck: DeckIndex) -> StandardAction {
     StandardAction {
-        payload: actions::payload(UserAction::DeckEditorAction(DeckEditorAction::RemoveFromDeck(
-            name,
-            active_deck,
-        ))),
+        payload: actions::payload(UserAction::OldDeckEditorAction(
+            OldDeckEditorAction::RemoveFromDeck(name, active_deck),
+        )),
         update: Some(actions::command_list(vec![Command::UpdateInterfaceElement(
             UpdateInterfaceElementCommand {
                 element_name: "<OverTargetIndicator>".to_string(),

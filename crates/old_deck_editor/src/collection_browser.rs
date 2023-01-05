@@ -21,7 +21,7 @@ use core_ui::prelude::*;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use data::user_actions::DeckEditorAction;
+use data::user_actions::OldDeckEditorAction;
 use panel_address::CollectionBrowserFilters;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -116,6 +116,6 @@ fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
             element_name: "<OverTargetIndicator>".to_string(),
             interface_update: Some(update),
         }))
-        .action(DeckEditorAction::AddToDeck(name, open_deck.index))
+        .action(OldDeckEditorAction::AddToDeck(name, open_deck.index))
         .build()
 }

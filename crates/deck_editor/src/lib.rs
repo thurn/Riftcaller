@@ -13,5 +13,6 @@
 // limitations under the License.
 
 //! Renders the deck editor window
+pub mod deck_editor_actions;
 pub mod deck_editor_panel;
 pub mod deck_editor_prompt;

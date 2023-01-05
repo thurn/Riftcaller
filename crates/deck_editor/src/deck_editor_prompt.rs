@@ -15,11 +15,12 @@
 //! Shows an initial introduction screen to the deck editor window
 
 use core_ui::button::{Button, ButtonType};
-use core_ui::full_screen_loading::FullScreenLoading;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::{panels, style};
 use data::player_data::PlayerData;
+use data::user_actions::DeckEditorAction;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
 use screen_overlay::ScreenOverlay;
 
@@ -43,20 +44,17 @@ impl<'a> Component for DeckEditorPromptPanel<'a> {
             .image(style::sprite(
                 "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
             ))
-            .prompt(
-                "Retiring to the library lets you freely reconfigure the cards in your deck",
-            )
+            .prompt("Retiring to the library, you may freely reconfigure the cards in your deck")
             .buttons(vec![
                 Button::new("Continue")
-                    .action(panels::transition(
-                        self.address(),
-                        PanelAddress::DeckEditor(DeckEditorData {
+                    .action(
+                        Panels::open(PanelAddress::DeckEditor(DeckEditorData {
                             collection_filters: CollectionBrowserFilters { offset: 0 },
-                        }),
-                        FullScreenLoading::new(
-                            "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
-                        ),
-                    ))
+                        }))
+                        .and_close(self.address())
+                        .loading(PanelAddress::DeckEditorLoading)
+                        .action(DeckEditorAction::ViewedPrompt),
+                    )
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)

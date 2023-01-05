@@ -69,6 +69,22 @@ pub enum DebugAction {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum DeckEditorAction {
+    /// Mark the user as having seen the prompt screen
+    ViewedPrompt,
+    /// Add one copy of a card to a deck
+    AddToDeck(CardName),
+    /// Remove one copy of a card from a deck
+    RemoveFromDeck(CardName),
+}
+
+impl From<DeckEditorAction> for UserAction {
+    fn from(a: DeckEditorAction) -> Self {
+        UserAction::DeckEditorAction(a)
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub enum OldDeckEditorAction {
     /// Create a new deck for the current player
     CreateDeck(Side, School),
     /// Add one copy of a card to a deck
@@ -77,9 +93,9 @@ pub enum DeckEditorAction {
     RemoveFromDeck(CardName, DeckIndex),
 }
 
-impl From<DeckEditorAction> for UserAction {
-    fn from(a: DeckEditorAction) -> Self {
-        UserAction::DeckEditorAction(a)
+impl From<OldDeckEditorAction> for UserAction {
+    fn from(a: OldDeckEditorAction) -> Self {
+        UserAction::OldDeckEditorAction(a)
     }
 }
 
@@ -110,4 +126,6 @@ pub enum UserAction {
 
     /// Perform an action in the deck editor
     DeckEditorAction(DeckEditorAction),
+    /// Perform an action in the deck editor
+    OldDeckEditorAction(OldDeckEditorAction),
 }

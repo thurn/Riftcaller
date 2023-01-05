@@ -24,6 +24,7 @@ use crate::card_name::CardName;
 use crate::deck::Deck;
 use crate::player_name::PlayerId;
 use crate::primitives::{DeckIndex, GameId};
+use crate::tutorial::TutorialData;
 
 /// Data for a player's request to create a new game
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -57,11 +58,20 @@ pub struct PlayerData {
     /// Cards owned by this player
     #[serde_as(as = "Vec<(_, _)>")]
     pub collection: HashMap<CardName, u32>,
+    /// Data related to this player's tutorial progress
+    pub tutorial: TutorialData,
 }
 
 impl PlayerData {
     pub fn new(id: PlayerId) -> Self {
-        Self { id, state: None, decks: vec![], adventure: None, collection: HashMap::default() }
+        Self {
+            id,
+            state: None,
+            decks: vec![],
+            adventure: None,
+            collection: HashMap::default(),
+            tutorial: TutorialData::default(),
+        }
     }
 
     /// Returns the active [AdventureState] when one is expected to exist

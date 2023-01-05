@@ -28,12 +28,13 @@ use data::game_actions::GameAction;
 use data::player_data::{NewGameRequest, PlayerData, PlayerState};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
+use data::tutorial::TutorialData;
 use data::updates::{UpdateTracker, Updates};
 use data::user_actions::{NewGameAction, UserAction};
 use data::{game_actions, player_data};
 use database::{Database, SledDatabase};
+use deck_editor::deck_editor_actions;
 use display::render;
-use old_deck_editor::deck_editor_actions;
 use once_cell::sync::Lazy;
 use panel_address::PanelAddress;
 use protos::spelldawn::client_action::Action;
@@ -541,7 +542,15 @@ fn handle_standard_action(
         }
         UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
         UserAction::DeckEditorAction(a) => handle_player_action(database, player_id, |player| {
-            deck_editor_actions::handle(player, a, &standard_action.request_fields)?;
+            deck_editor_actions::handle(player, a)?;
+            Ok(vec![])
+        }),
+        UserAction::OldDeckEditorAction(a) => handle_player_action(database, player_id, |player| {
+            old_deck_editor::deck_editor_actions::handle(
+                player,
+                a,
+                &standard_action.request_fields,
+            )?;
             Ok(vec![])
         }),
     }?;
@@ -587,6 +596,7 @@ fn create_new_player(database: &mut impl Database, player_id: PlayerId) -> Resul
         decks: vec![canonical_overlord.clone(), canonical_champion.clone()],
         adventure: None,
         collection: canonical_overlord.cards.into_iter().chain(canonical_champion.cards).collect(),
+        tutorial: TutorialData::default(),
     };
     database.write_player(&result)?;
     Ok(result)

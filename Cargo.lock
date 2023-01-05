@@ -1865,6 +1865,7 @@ dependencies = [
  "dashmap",
  "data",
  "database",
+ "deck_editor",
  "display",
  "enum-iterator",
  "old_deck_editor",

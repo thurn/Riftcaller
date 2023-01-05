@@ -21,6 +21,7 @@ use data::game_actions::{GameAction, PromptAction};
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::{DeckIndex, GameId, Side};
+use data::tutorial::TutorialData;
 use data::user_actions::{NewGameAction, NewGameDebugOptions, UserAction};
 use insta::assert_snapshot;
 use maplit::hashmap;
@@ -193,14 +194,16 @@ fn make_overlord_test_session(
                 state: None,
                 decks: vec![overlord_deck.clone(), champion_deck.clone()],
                 adventure: None,
-                collection: hashmap! {}
+                collection: hashmap! {},
+                tutorial: TutorialData::default()
             },
             champion_id => PlayerData {
                 id: champion_id,
                 state: None,
                 decks: vec![overlord_deck, champion_deck],
                 adventure: None,
-                collection: hashmap! {}
+                collection: hashmap! {},
+                tutorial: TutorialData::default()
             }
         },
     };

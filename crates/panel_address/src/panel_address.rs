@@ -56,6 +56,7 @@ pub enum PanelAddress {
     AdventureMenu,
     SetPlayerName(Side),
     DeckEditorPrompt,
+    DeckEditorLoading,
     DeckEditor(DeckEditorData),
     OldDeckEditor(OldDeckEditorData),
     CreateDeck(CreateDeckState),

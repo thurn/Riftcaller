@@ -19,7 +19,7 @@ use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::primitives::{DeckIndex, School, Side};
-use data::user_actions::DeckEditorAction;
+use data::user_actions::OldDeckEditorAction;
 use with_error::{fail, WithError};
 
 use crate::pick_deck_name;
@@ -27,11 +27,11 @@ use crate::pick_deck_name::DECK_NAME_INPUT;
 
 pub fn handle(
     player: &mut PlayerData,
-    action: DeckEditorAction,
+    action: OldDeckEditorAction,
     request_fields: &HashMap<String, String>,
 ) -> Result<()> {
     match action {
-        DeckEditorAction::CreateDeck(side, school) => {
+        OldDeckEditorAction::CreateDeck(side, school) => {
             let deck_name = match request_fields.get(DECK_NAME_INPUT) {
                 Some(name) if !name.trim().is_empty() => name.clone(),
                 _ => pick_deck_name::default_deck_name(side, school),
@@ -45,10 +45,10 @@ pub fn handle(
                 cards: HashMap::new(),
             });
         }
-        DeckEditorAction::AddToDeck(card_name, deck_id) => {
+        OldDeckEditorAction::AddToDeck(card_name, deck_id) => {
             player.deck_mut(deck_id)?.cards.entry(card_name).and_modify(|e| *e += 1).or_insert(1);
         }
-        DeckEditorAction::RemoveFromDeck(card_name, deck_id) => {
+        OldDeckEditorAction::RemoveFromDeck(card_name, deck_id) => {
             let deck = player.deck_mut(deck_id)?;
             let count = *deck.cards.get(&card_name).with_error(|| "Card not present")?;
             match count {

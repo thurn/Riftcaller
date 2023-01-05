@@ -33,6 +33,7 @@ use panels::debug_panel::DebugPanel;
 use panels::disclaimer_panel::DisclaimerPanel;
 use panels::game_menu_panel::GameMenuPanel;
 use panels::game_over_panel::GameOverPanel;
+use panels::loading_panel::LoadingPanel;
 use panels::main_menu_panel::MainMenuPanel;
 use panels::set_player_name_panel::SetPlayerNamePanel;
 use panels::settings_panel::SettingsPanel;
@@ -64,6 +65,7 @@ pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
             PanelAddress::AdventureMenu,
             PanelAddress::Settings,
             PanelAddress::DeckEditorPrompt,
+            PanelAddress::DeckEditorLoading,
         ])
         .collect()
 }
@@ -102,6 +104,11 @@ fn render_server_panel(
         PanelAddress::GameMenu => GameMenuPanel::new().build_panel(),
         PanelAddress::AdventureMenu => AdventureMenu::new().build_panel(),
         PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
+        PanelAddress::DeckEditorLoading => LoadingPanel::new(
+            server_address,
+            "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
+        )
+        .build_panel(),
         PanelAddress::DeckEditorPrompt => DeckEditorPromptPanel { player }.build_panel(),
         PanelAddress::DeckEditor(data) => DeckEditorPanel { player, data }.build_panel(),
         PanelAddress::OldDeckEditor(data) => {
