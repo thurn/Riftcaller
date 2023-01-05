@@ -27,6 +27,8 @@ use serde_with::serde_as;
 use with_error::WithError;
 
 use crate::card_name::CardName;
+use crate::deck::Deck;
+use crate::player_name::PlayerId;
 use crate::primitives::Side;
 
 /// Identifies a set of tiles which can be revealed via the 'explore' action.
@@ -133,6 +135,7 @@ pub enum AdventureChoiceScreen {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureConfiguration {
+    pub player_id: PlayerId,
     /// Side the user is playing as in this adventure
     pub side: Side,
     /// Optionally, a random number generator for this adventure to use. This
@@ -143,8 +146,8 @@ pub struct AdventureConfiguration {
 }
 
 impl AdventureConfiguration {
-    pub fn new(side: Side) -> Self {
-        Self { side, rng: None }
+    pub fn new(player_id: PlayerId, side: Side) -> Self {
+        Self { player_id, side, rng: None }
     }
 
     pub fn choose<I>(&mut self, iterator: I) -> Option<I::Item>
@@ -198,6 +201,8 @@ pub struct AdventureState {
     /// Regions which the player can currently see. By default Region 1 is
     /// revealed.
     pub revealed_regions: HashSet<RegionId>,
+    /// Deck being used for this adventure
+    pub deck: Deck,
     /// Cards collected by this player during this adventure
     #[serde_as(as = "Vec<(_, _)>")]
     pub collection: HashMap<CardName, u32>,

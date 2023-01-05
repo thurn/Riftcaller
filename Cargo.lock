@@ -680,6 +680,7 @@ dependencies = [
  "assets",
  "core_ui",
  "data",
+ "deck_card",
  "panel_address",
  "protos",
  "rules",

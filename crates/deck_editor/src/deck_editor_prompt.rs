@@ -20,8 +20,9 @@ use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::{panels, style};
 use data::player_data::PlayerData;
+use data::primitives::DeckId;
 use data::user_actions::DeckEditorAction;
-use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
+use panel_address::{DeckEditorData, Panel, PanelAddress};
 use screen_overlay::ScreenOverlay;
 
 pub struct DeckEditorPromptPanel<'a> {
@@ -48,9 +49,9 @@ impl<'a> Component for DeckEditorPromptPanel<'a> {
             .buttons(vec![
                 Button::new("Continue")
                     .action(
-                        Panels::open(PanelAddress::DeckEditor(DeckEditorData {
-                            collection_filters: CollectionBrowserFilters { offset: 0 },
-                        }))
+                        Panels::open(PanelAddress::DeckEditor(DeckEditorData::new(
+                            DeckId::Adventure,
+                        )))
                         .and_close(self.address())
                         .loading(PanelAddress::DeckEditorLoading)
                         .action(DeckEditorAction::ViewedPrompt),

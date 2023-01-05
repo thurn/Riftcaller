@@ -21,6 +21,9 @@ use std::collections::{HashMap, HashSet};
 use data::adventure::{
     AdventureConfiguration, AdventureState, Coins, RegionId, TileEntity, TilePosition, TileState,
 };
+use data::card_name::CardName;
+use data::deck::Deck;
+use data::primitives::DeckIndex;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;
@@ -99,14 +102,24 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
 
     let mut revealed_regions = HashSet::new();
     revealed_regions.insert(1);
+    let side = config.side;
+    let player_id = config.player_id;
 
     AdventureState {
-        side: config.side,
+        side,
         choice_screen: None,
         coins: STARTING_COINS,
         tiles,
         revealed_regions,
         config,
+        deck: Deck {
+            index: DeckIndex::new(0),
+            name: "Adventure".to_string(),
+            owner_id: player_id,
+            side,
+            identity: CardName::TestChampionIdentity,
+            cards: HashMap::new(),
+        },
         collection: HashMap::new(),
     }
 }

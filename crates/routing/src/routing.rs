@@ -110,7 +110,9 @@ fn render_server_panel(
         )
         .build_panel(),
         PanelAddress::DeckEditorPrompt => DeckEditorPromptPanel { player }.build_panel(),
-        PanelAddress::DeckEditor(data) => DeckEditorPanel { player, data }.build_panel(),
+        PanelAddress::DeckEditor(data) => {
+            DeckEditorPanel { player, data, deck: player.find_deck(data.deck_id)? }.build_panel()
+        }
         PanelAddress::OldDeckEditor(data) => {
             let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
             OldDeckEditorPanel { player, open_deck, data }.build_panel()

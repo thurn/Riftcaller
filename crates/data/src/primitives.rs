@@ -51,6 +51,13 @@ impl fmt::Debug for DeckIndex {
     }
 }
 
+/// Identifies one of a player's decks
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+pub enum DeckId {
+    /// The deck being used in adventure mode
+    Adventure,
+}
+
 /// Identifies an ongoing game
 #[derive(Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub struct GameId {

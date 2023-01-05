@@ -13,6 +13,10 @@
 // limitations under the License.
 
 //! Renders the deck editor window
+pub mod card_list;
+pub mod collection_browser;
 pub mod deck_editor_actions;
+pub mod deck_editor_card_title;
 pub mod deck_editor_panel;
 pub mod deck_editor_prompt;
+pub mod editor_column_scroll;

@@ -229,12 +229,12 @@ plugin: mac-plugin windows-plugin ios-plugin android-plugin
 doc:
     cargo doc
 
-fix: git-status fix-lints fmt clippy-fix
+fix: git-status fmt clippy-fix fix-lints
 
 watch:
     cargo watch -c -w crates -x run
 
-fix-amend: git-status fix-lints git-amend1 fmt git-amend2 clippy-fix git-amend3
+fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 
 clippy:
     cargo clippy --workspace --exclude "protos" -- -D warnings -D clippy::all

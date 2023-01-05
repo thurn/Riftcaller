@@ -23,8 +23,9 @@ use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
 use data::player_data::PlayerData;
+use data::primitives::DeckId;
 use data::tutorial::TutorialMessageKey;
-use panel_address::{CollectionBrowserFilters, DeckEditorData, PanelAddress};
+use panel_address::{DeckEditorData, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
 pub struct ScreenOverlay<'a> {
@@ -110,9 +111,9 @@ impl<'a> Component for ScreenOverlay<'a> {
                                     .seen
                                     .contains(&TutorialMessageKey::DeckEditor)
                                 {
-                                    Panels::open(PanelAddress::DeckEditor(DeckEditorData {
-                                        collection_filters: CollectionBrowserFilters::default(),
-                                    }))
+                                    Panels::open(PanelAddress::DeckEditor(DeckEditorData::new(
+                                        DeckId::Adventure,
+                                    )))
                                     .loading(PanelAddress::DeckEditorLoading)
                                 } else {
                                     Panels::open(PanelAddress::DeckEditorPrompt)

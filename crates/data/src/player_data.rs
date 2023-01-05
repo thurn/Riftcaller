@@ -23,7 +23,7 @@ use crate::adventure::AdventureState;
 use crate::card_name::CardName;
 use crate::deck::Deck;
 use crate::player_name::PlayerId;
-use crate::primitives::{DeckIndex, GameId};
+use crate::primitives::{DeckId, DeckIndex, GameId};
 use crate::tutorial::TutorialData;
 
 /// Data for a player's request to create a new game
@@ -90,6 +90,13 @@ impl PlayerData {
     /// Retrieves one of a player's decks based on its [DeckIndex].
     pub fn deck(&self, deck_id: DeckIndex) -> Result<&Deck> {
         self.decks.get(deck_id.value as usize).with_error(|| "Deck not found")
+    }
+
+    /// Retrieves one of a player's decks based on its [DeckIndex].
+    pub fn find_deck(&self, deck_id: DeckId) -> Result<&Deck> {
+        Ok(match deck_id {
+            DeckId::Adventure => &self.adventure()?.deck,
+        })
     }
 
     pub fn deck_mut(&mut self, deck_id: DeckIndex) -> Result<&mut Deck> {

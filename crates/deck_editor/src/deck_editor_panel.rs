@@ -12,15 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::button::{IconButton, IconButtonType};
+use core_ui::full_screen_image_panel::FullScreenImagePanel;
 use core_ui::prelude::*;
+use core_ui::{icons, style};
+use data::deck::Deck;
 use data::player_data::PlayerData;
 use panel_address::{DeckEditorData, Panel, PanelAddress};
+use protos::spelldawn::FlexPosition;
+
+use crate::card_list::CardList;
+use crate::collection_browser::{self, CollectionBrowser};
 
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
 pub struct DeckEditorPanel<'a> {
     pub player: &'a PlayerData,
     pub data: DeckEditorData,
+    pub deck: &'a Deck,
 }
 
 impl<'a> Panel for DeckEditorPanel<'a> {
@@ -31,100 +40,81 @@ impl<'a> Panel for DeckEditorPanel<'a> {
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
-        None
-        //     Row::new("OverlayBackground")
-        //         .style(
-        //             Style::new()
-        //                 .background_color(BackgroundColor::SafeAreaOverlay)
-        //                 .position_type(FlexPosition::Absolute)
-        //                 .position(Edge::All, 0.px()),
-        //         )
-        //         .child(
-        //             Row::new("DeckEditorPanel")
-        //                 .style(
-        //                     Style::new()
-        //
-        // .background_color(BackgroundColor::DeckEditorPanel)
-        //                         .position_type(FlexPosition::Absolute)
-        //                         .position(Edge::Top, 1.safe_area_top())
-        //                         .position(Edge::Right, 1.safe_area_right())
-        //                         .position(Edge::Bottom, 1.safe_area_bottom())
-        //                         .position(Edge::Left, 1.safe_area_left()),
-        //                 )
-        //                 .child(
-        //                     Column::new("Collection")
-        //                         .style(Style::new().width((100 -
-        // EDITOR_COLUMN_WIDTH).vw()))
-        // .child(CollectionControls::new(self.player.id, self.open_deck))
-        //                         .child(CollectionBrowser {
-        //                             player: self.player,
-        //                             open_deck: self.open_deck,
-        //                             filters: self.data.collection_filters,
-        //                         }),
-        //                 )
-        //                 .child_node(match self.open_deck {
-        //                     Some(deck) if self.data.show_edit_options => {
-        //                         DeckEditOptions::new(deck).build()
-        //                     }
-        //                     Some(deck) => CardList::new(deck).build(),
-        //                     _ => DeckList::new(self.player,
-        // self.data.collection_filters).build(),                 })
-        //                 .child(if self.data.collection_filters.offset < 8 {
-        //                     None
-        //                 } else {
-        //                     Some(
-        //                         IconButton::new(icons::PREVIOUS_PAGE)
-        //
-        // .button_type(IconButtonType::SecondaryLarge)
-        // .action(panels::set(PanelAddress::OldDeckEditor(
-        // OldDeckEditorData {                                     deck:
-        // self.open_deck.map(|d| d.index),
-        // collection_filters: CollectionBrowserFilters {
-        // offset: self.data.collection_filters.offset - 8,
-        // },                                     show_edit_options:
-        // false,                                 },
-        //                             )))
-        //                             .layout(
-        //                                 Layout::new()
-        //
-        // .position_type(FlexPosition::Absolute)
-        // .position(Edge::Left, 1.vw())
-        // .position(Edge::Top, 50.pct()),
-        // ),                     )
-        //                 })
-        //                 .child(
-        //                     if self.data.collection_filters.offset + 8
-        //                         >= collection_browser::get_matching_cards(
-        //                             self.player,
-        //                             self.data.collection_filters,
-        //                         )
-        //                         .count()
-        //                     {
-        //                         None
-        //                     } else {
-        //                         Some(
-        //                             IconButton::new(icons::NEXT_PAGE)
-        //
-        // .button_type(IconButtonType::SecondaryLarge)
-        // .action(panels::set(PanelAddress::OldDeckEditor(
-        // OldDeckEditorData {
-        // deck: self.open_deck.map(|d| d.index),
-        // collection_filters: CollectionBrowserFilters {
-        // offset: self.data.collection_filters.offset + 8,
-        // },                                         show_edit_options:
-        // false,                                     },
-        //                                 )))
-        //                                 .layout(
-        //                                     Layout::new()
-        //
-        // .position_type(FlexPosition::Absolute)
-        // .position(Edge::Right, (EDITOR_COLUMN_WIDTH + 1).vw())
-        //                                         .position(Edge::Top,
-        // 50.pct()),                                 ),
-        //                         )
-        //                     },
-        //                 ),
-        //         )
-        //         .build()
+        FullScreenImagePanel::new()
+            .image(style::sprite(
+                "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
+            ))
+            .content(
+                Row::new("DeckEditorPanel")
+                    .style(Style::new().width(100.pct()).height(100.pct()))
+                    .child(
+                        Column::new("Collection")
+                            .style(Style::new().width((100 - EDITOR_COLUMN_WIDTH).vw()))
+                            // .child(CollectionControls::new(self.player.id, self.open_deck))
+                            .child(CollectionBrowser {
+                                player: self.player,
+                                deck: self.deck,
+                                filters: self.data.collection_filters,
+                            }),
+                    )
+                    .child(CardList::new(self.deck))
+                    .child(if self.data.collection_filters.offset < 8 {
+                        None
+                    } else {
+                        Some(
+                            IconButton::new(icons::PREVIOUS_PAGE)
+                                .button_type(IconButtonType::SecondaryLarge)
+                                // .action(panels::set(PanelAddress::DeckEditor(
+                                //     OldDeckEditorData {
+                                //         deck: self.open_deck.map(|d| d.index),
+                                //         collection_filters: CollectionBrowserFilters {
+                                //             offset: self.data.collection_filters.offset - 8,
+                                //         },
+                                //         show_edit_options: false,
+                                //     },
+                                // )))
+                                .layout(
+                                    Layout::new()
+                                        .position_type(FlexPosition::Absolute)
+                                        .position(Edge::Left, 1.vw())
+                                        .translate(0.pct(), (-50).pct())
+                                        .position(Edge::Top, 50.pct()),
+                                ),
+                        )
+                    })
+                    .child(
+                        if self.data.collection_filters.offset + 8
+                            >= collection_browser::get_matching_cards(
+                                self.player,
+                                self.data.collection_filters,
+                            )
+                            .count()
+                        {
+                            None
+                        } else {
+                            Some(
+                                IconButton::new(icons::NEXT_PAGE)
+                                    .button_type(IconButtonType::SecondaryLarge)
+                                    // .action(panels::set(PanelAddress::OldDeckEditor(
+                                    //     OldDeckEditorData {
+                                    //         deck: self.open_deck.map(|d| d.index),
+                                    //         collection_filters: CollectionBrowserFilters {
+                                    //             offset: self.data.collection_filters.offset + 8,
+                                    //         },
+                                    //         show_edit_options: false,
+                                    //     },
+                                    // )))
+                                    .layout(
+                                        Layout::new()
+                                            .position_type(FlexPosition::Absolute)
+                                            .position(Edge::Right, (EDITOR_COLUMN_WIDTH + 1).vw())
+                                            .translate(0.pct(), (-50).pct())
+                                            .position(Edge::Top, 50.pct()),
+                                    ),
+                            )
+                        },
+                    ),
+            )
+            .build()
     }
 }

@@ -17,7 +17,7 @@
 use core_ui::prelude::Component;
 use data::adventure::TilePosition;
 use data::player_name::PlayerId;
-use data::primitives::{DeckIndex, GameId, School, Side};
+use data::primitives::{DeckId, DeckIndex, GameId, School, Side};
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
@@ -79,10 +79,18 @@ pub struct CollectionBrowserFilters {
     pub offset: usize,
 }
 
-#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct DeckEditorData {
+    /// Identifes the deck being edited
+    pub deck_id: DeckId,
     /// Current collection browser view
     pub collection_filters: CollectionBrowserFilters,
+}
+
+impl DeckEditorData {
+    pub fn new(deck_id: DeckId) -> Self {
+        Self { deck_id, collection_filters: CollectionBrowserFilters::default() }
+    }
 }
 
 /// Identifies the current screen within the deck editor
