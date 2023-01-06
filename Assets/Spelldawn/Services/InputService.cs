@@ -47,6 +47,7 @@ namespace Spelldawn.Services
       _registry.DocumentService.RootVisualElement.Add(element);
       element.BringToFront();
       element.style.visibility = Visibility.Hidden;
+      element.OnStartDrag();
       _currentlyDragging = element;
       _dragStartMousePosition = _registry.DocumentService.ElementMousePosition();
       _overTarget = false;

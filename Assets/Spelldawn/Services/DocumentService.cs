@@ -179,10 +179,7 @@ namespace Spelldawn.Services
               if (transition.Loading != null && _panelCache.ContainsKey(transition.Loading))
               {
                 _panelCache[transition.Open] = new InterfacePanel { Node = _panelCache[transition.Loading].Node };
-                if (!_waitingFor.Contains(transition.Open))
-                {
-                  _waitingFor.Add(transition.Open);
-                }
+                _waitingFor.Add(transition.Open);
                 Loading = true;
               }
               else

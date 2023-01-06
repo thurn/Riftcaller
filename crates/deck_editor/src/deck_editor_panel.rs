@@ -15,6 +15,7 @@
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::prelude::*;
+use core_ui::update_element::ElementName;
 use core_ui::{icons, style};
 use data::deck::Deck;
 use data::player_data::PlayerData;
@@ -48,6 +49,7 @@ impl<'a> Panel for DeckEditorPanel<'a> {
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
+        let list_name = ElementName::new("CardList");
         FullScreenImage::new()
             .image(style::sprite(
                 "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
@@ -78,6 +80,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                         player: self.player,
                         deck: self.deck,
                         filters: self.data.collection_filters,
+                        drop_target: &list_name,
                     }))
                     .child(
                         Column::new("RightControls")
@@ -87,8 +90,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                     .height(100.pct())
                                     .flex_shrink(0.0)
                                     .flex_grow(1.0)
-                                    .justify_content(FlexJustify::Center)
-                                    .align_items(FlexAlign::Center),
+                                    .justify_content(FlexJustify::Center),
                             )
                             .child(
                                 if self.data.collection_filters.offset + 8
@@ -107,7 +109,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                 },
                             ),
                     )
-                    .child(CardList::new(self.deck)),
+                    .child(CardList { deck: self.deck, element_name: &list_name }),
             )
             .build()
     }

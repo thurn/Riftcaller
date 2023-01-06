@@ -12,15 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::action_builder::ActionBuilder;
+use core_ui::draggable::Draggable;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
+use core_ui::update_element::ElementName;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
+use data::user_actions::DeckEditorAction;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::CollectionBrowserFilters;
-use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify};
+use protos::spelldawn::game_command::Command;
+use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
+use protos::spelldawn::{
+    AnimateDraggableToChildIndex, AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection,
+    FlexJustify, UpdateInterfaceElementCommand,
+};
+
+use crate::card_list;
+use crate::deck_editor_card_title::DeckEditorCardTitle;
 
 // use crate::card_list;
 // use crate::deck_editor_card::DeckEditorCard;
@@ -39,25 +51,67 @@ pub struct CollectionBrowser<'a> {
     pub player: &'a PlayerData,
     pub deck: &'a Deck,
     pub filters: CollectionBrowserFilters,
+    pub drop_target: &'a ElementName,
 }
 
-fn card_row(_open_deck: &Deck, cards: Vec<&(CardName, u32)>) -> impl Component {
-    let empty_slots = if cards.len() < 4 { 4 - cards.len() } else { 0 };
-    Row::new("CardRow")
-        .style(
-            Style::new()
-                .flex_grow(1.0)
-                .align_items(FlexAlign::Center)
-                .justify_content(FlexJustify::Center),
-        )
-        .children(cards.into_iter().map(|(name, quantity)| {
-            DeckCardSlot::new(CardHeight::vh(36.0))
-                .layout(Layout::new().margin(Edge::All, 16.px()))
-                .card(Some(DeckCard::new(*name).quantity(*quantity)))
-        }))
-        .children((0..empty_slots).map(|_| {
-            DeckCardSlot::new(CardHeight::vh(36.0)).layout(Layout::new().margin(Edge::All, 4.px()))
-        }))
+impl<'a> CollectionBrowser<'a> {
+    fn card_row(&self, cards: Vec<&(CardName, u32)>) -> impl Component {
+        let empty_slots = if cards.len() < 4 { 4 - cards.len() } else { 0 };
+        Row::new("CardRow")
+            .style(
+                Style::new()
+                    .flex_grow(1.0)
+                    .align_items(FlexAlign::Center)
+                    .justify_content(FlexJustify::Center),
+            )
+            .children(cards.into_iter().map(|(n, quantity)| {
+                let card_name = *n;
+                let quantity_element = ElementName::new("Quantity");
+                DeckCardSlot::new(CardHeight::vh(36.0))
+                    .layout(Layout::new().margin(Edge::All, 16.px()))
+                    .card(Some(
+                        DeckCard::new(card_name)
+                            .quantity(*quantity)
+                            .quantity_element_name(&quantity_element)
+                            .draggable(
+                                Draggable::new(card_name.to_string())
+                                    .drop_targets(vec![self.drop_target.clone()])
+                                    .over_target_indicator(move || {
+                                        DeckEditorCardTitle::new(card_name).build()
+                                    })
+                                    .on_drop(Some(self.drop_action(card_name)))
+                                    .hide_indicator_children(vec![quantity_element.clone()]),
+                            ),
+                    ))
+            }))
+            .children((0..empty_slots).map(|_| {
+                DeckCardSlot::new(CardHeight::vh(36.0))
+                    .layout(Layout::new().margin(Edge::All, 4.px()))
+            }))
+    }
+
+    fn drop_action(&self, name: CardName) -> ActionBuilder {
+        let update = if self.deck.cards.contains_key(&name) {
+            InterfaceUpdate::AnimateToElementPosition(AnimateToElementPositionAndDestroy {
+                target_element_name: format!("{}Title", name),
+                fallback_target_element_name: "".to_string(),
+                animation: None,
+            })
+        } else {
+            InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
+                parent_element_name: "CardList".to_string(),
+                index: card_list::position_for_card(self.deck, name) as u32,
+                duration: Some(300.milliseconds()),
+            })
+        };
+
+        ActionBuilder::new()
+            .update(Command::UpdateInterfaceElement(UpdateInterfaceElementCommand {
+                element_name: "<OverTargetIndicator>".to_string(),
+                interface_update: Some(update),
+            }))
+            .action(DeckEditorAction::AddToDeck(name))
+    }
 }
 
 fn sort_cards(cards: &mut [(CardName, u32)]) {
@@ -82,32 +136,8 @@ impl<'a> Component for CollectionBrowser<'a> {
                     .align_items(FlexAlign::Center)
                     .justify_content(FlexJustify::Center),
             )
-            .child(card_row(self.deck, row_one))
-            .child(card_row(self.deck, row_two))
+            .child(self.card_row(row_one))
+            .child(self.card_row(row_two))
             .build()
     }
 }
-
-// fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
-//     let update = if open_deck.cards.contains_key(&name) {
-//         InterfaceUpdate::AnimateToElementPosition(AnimateToElementPositionAndDestroy {
-//             target_element_name: format!("{}Title", name),
-//             fallback_target_element_name: "".to_string(),
-//             animation: None,
-//         })
-//     } else {
-//         InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
-//             parent_element_name: "CardList".to_string(),
-//             index: card_list::position_for_card(open_deck, name) as u32,
-//             duration: Some(TimeValue { milliseconds: 300 }),
-//         })
-//     };
-
-//     ActionBuilder::new()
-//         .update(Command::UpdateInterfaceElement(UpdateInterfaceElementCommand
-// {             element_name: "<OverTargetIndicator>".to_string(),
-//             interface_update: Some(update),
-//         }))
-//         .action(OldDeckEditorAction::AddToDeck(name, open_deck.index))
-//         .build()
-// }

@@ -353,6 +353,10 @@ pub struct DraggableNode {
     /// a placeholder.
     #[prost(bool, tag = "5")]
     pub remove_original: bool,
+    /// Identifiers of children of this Draggable which should be hidden in the
+    /// drag indicator element.
+    #[prost(string, repeated, tag = "6")]
+    pub hide_indicator_children: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}

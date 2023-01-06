@@ -18,20 +18,23 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using UnityEditor.Search;
+using UnityEngine;
 using UnityEngine.UIElements;
+using Quaternion = System.Numerics.Quaternion;
 
 namespace Spelldawn.Masonry
 {
   public sealed class Draggable : VisualElement, IMasonElement
   {
     public Registry Registry { get; set; }
-    public Node Node { get; set; }
+    public Node? Node { get; set; }
     public List<string> TargetIdentifiers { get; set; }
     public Node? OverTargetIndicator { get; set; }
     public ClientAction? OnDrop { get; set; }
     public uint? HorizontalDragStartDistance { get; set; }
-    public NodeType.NodeTypeOneofCase NodeType { get; set; }
     public bool RemoveOriginal { get; set; }
+    public List<string> HideIndicatorChildren { get; set; }
 
     public static void Apply(Registry registry, Draggable view, Node data)
     {
@@ -42,6 +45,7 @@ namespace Spelldawn.Masonry
       view.OnDrop = data.NodeType.DraggableNode.OnDrop;
       view.HorizontalDragStartDistance = data.NodeType.DraggableNode.HorizontalDragStartDistance;
       view.RemoveOriginal = data.NodeType.DraggableNode.RemoveOriginal;
+      view.HideIndicatorChildren = data.NodeType.DraggableNode.HideIndicatorChildren.ToList();
     }
 
     public Draggable()
@@ -50,6 +54,7 @@ namespace Spelldawn.Masonry
       Node = null!;
       TargetIdentifiers = new List<string>();
       RegisterCallback<MouseDownEvent>(OnMouseDown);
+      HideIndicatorChildren = new List<string>();
     }
 
     ~Draggable()
@@ -62,6 +67,17 @@ namespace Spelldawn.Masonry
       if (OnDrop != null && Registry.CapabilityService.CanDragInterfaceElement())
       {
         Registry.InputService.StartDragging(this);        
+      }
+    }
+
+    public void OnStartDrag()
+    {
+      foreach (var child in HideIndicatorChildren)
+      {
+        if (this.Q<VisualElement>(child) is { } element)
+        {
+          element.style.visibility = Visibility.Hidden;
+        }
       }
     }
   }

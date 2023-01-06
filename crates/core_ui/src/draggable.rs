@@ -66,6 +66,13 @@ impl Draggable {
         self.draggable.remove_original = value;
         self
     }
+
+    /// Identifiers of children of this Draggable which should be hidden in the
+    /// drag indicator element.
+    pub fn hide_indicator_children(mut self, children: Vec<impl Into<String>>) -> Self {
+        self.draggable.hide_indicator_children = children.into_iter().map(Into::into).collect();
+        self
+    }
 }
 
 impl HasRenderNode for Draggable {

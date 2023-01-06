@@ -477,6 +477,10 @@ message DraggableNode {
     // causing it to visually appear as though the user is moving it instead of
     // a placeholder.
     bool remove_original = 5;
+
+    // Identifiers of children of this Draggable which should be hidden in the
+    // drag indicator element.
+    repeated string hide_indicator_children = 6;
 }
 
 message DropTargetNode {

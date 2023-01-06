@@ -26,6 +26,7 @@ pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 /// two rows of cards to be displayed with room for additional UI elements.
 pub const CARD_HEIGHT: f32 = 36.0;
 
+use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::update_element::ElementName;
@@ -62,6 +63,8 @@ pub struct DeckCard {
     height: CardHeight,
     quantity: u32,
     layout: Layout,
+    draggable: Option<Draggable>,
+    quantity_element_name: ElementName,
 }
 
 impl DeckCard {
@@ -72,6 +75,8 @@ impl DeckCard {
             height: CardHeight::vh(36.0),
             quantity: 1,
             layout: Layout::default(),
+            draggable: None,
+            quantity_element_name: ElementName::constant("CardQuantity"),
         }
     }
 
@@ -94,6 +99,16 @@ impl DeckCard {
         self.layout = layout;
         self
     }
+
+    pub fn draggable(mut self, draggable: Draggable) -> Self {
+        self.draggable = Some(draggable);
+        self
+    }
+
+    pub fn quantity_element_name(mut self, quantity_element_name: &ElementName) -> Self {
+        self.quantity_element_name = quantity_element_name.clone();
+        self
+    }
 }
 
 impl Component for DeckCard {
@@ -101,7 +116,7 @@ impl Component for DeckCard {
         let definition = rules::get(self.name);
         let icons = card_icons::build(&RulesTextContext::Default(definition), definition, true);
 
-        Column::new(self.element_name)
+        let result = Column::new(self.element_name)
             .style(self.layout.to_style().align_items(FlexAlign::Center))
             .child(
                 Row::new("CardImage").style(
@@ -139,7 +154,7 @@ impl Component for DeckCard {
                     },
                     self.height,
                 )
-                .name("TopRightIcon")
+                .name(self.quantity_element_name)
                 .layout(
                     Layout::new()
                         .position(Edge::Right, self.height.dim(-2.0))
@@ -160,7 +175,12 @@ impl Component for DeckCard {
                         .position(Edge::Bottom, self.height.dim(-6.0)),
                 )
             }))
-            .child(DeckCardRarity::new(definition, self.height))
-            .build()
+            .child(DeckCardRarity::new(definition, self.height));
+
+        if let Some(draggable) = self.draggable {
+            draggable.child(result).build()
+        } else {
+            result.build()
+        }
     }
 }
