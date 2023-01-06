@@ -14,7 +14,7 @@
 
 use core_ui::button::Button;
 use core_ui::design::FontSize;
-use core_ui::full_screen_image_panel::FullScreenImagePanel;
+use core_ui::full_screen_image::FullScreenImage;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style;
@@ -36,7 +36,7 @@ impl<'a> Panel for DraftPanel<'a> {
 
 impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {
-        FullScreenImagePanel::new()
+        FullScreenImage::new()
             .image(style::sprite("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"))
             .content(Row::new("DraftPanel").children(self.data.choices.iter().enumerate().map(
                 |(i, choice)| {

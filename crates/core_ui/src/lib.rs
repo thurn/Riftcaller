@@ -23,7 +23,7 @@ pub mod design;
 pub mod draggable;
 pub mod drop_target;
 pub mod flexbox;
-pub mod full_screen_image_panel;
+pub mod full_screen_image;
 pub mod full_screen_loading;
 pub mod icons;
 pub mod list_cell;

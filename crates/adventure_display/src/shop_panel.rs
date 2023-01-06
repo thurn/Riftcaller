@@ -14,7 +14,7 @@
 
 use anyhow::Result;
 use core_ui::button::Button;
-use core_ui::full_screen_image_panel::FullScreenImagePanel;
+use core_ui::full_screen_image::FullScreenImage;
 use core_ui::prelude::*;
 use core_ui::update_element::ElementName;
 use core_ui::{actions, icons, style, update_element};
@@ -108,7 +108,7 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
 
 impl<'a> Component for ShopPanel<'a> {
     fn build(self) -> Option<Node> {
-        FullScreenImagePanel::new()
+        FullScreenImage::new()
             .image(style::sprite(
                 "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1",
             ))

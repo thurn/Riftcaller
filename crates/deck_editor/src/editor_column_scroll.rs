@@ -55,7 +55,7 @@ impl Component for EditorColumnScroll {
             .horizontal_scrollbar_visibility(ScrollBarVisibility::Hidden)
             .touch_scroll_behavior(TouchScrollBehavior::Clamped)
             .scroll_deceleration_rate(0.0)
-            .style(Style::new().width(EDITOR_COLUMN_WIDTH.vw()).flex_grow(1.0))
+            .style(Style::new().width(EDITOR_COLUMN_WIDTH.vw()).flex_grow(0.0).flex_shrink(0.0))
             .build()
     }
 }

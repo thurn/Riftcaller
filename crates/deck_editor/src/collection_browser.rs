@@ -79,7 +79,6 @@ impl<'a> Component for CollectionBrowser<'a> {
                 Style::new()
                     .flex_direction(FlexDirection::Column)
                     .flex_grow(1.0)
-                    .margin(Edge::Horizontal, 112.px())
                     .align_items(FlexAlign::Center)
                     .justify_content(FlexJustify::Center),
             )

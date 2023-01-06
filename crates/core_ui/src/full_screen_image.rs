@@ -20,18 +20,18 @@ use crate::prelude::*;
 
 /// Renders a full-screen image containing a text prompt and some arbitrary
 /// content.
-pub struct FullScreenImagePanel {
+pub struct FullScreenImage {
     image: SpriteAddress,
     content: Box<dyn ComponentObject>,
 }
 
-impl Default for FullScreenImagePanel {
+impl Default for FullScreenImage {
     fn default() -> Self {
         Self { image: SpriteAddress::default(), content: Box::new(EmptyComponent {}) }
     }
 }
 
-impl FullScreenImagePanel {
+impl FullScreenImage {
     pub fn new() -> Self {
         Self::default()
     }
@@ -47,7 +47,7 @@ impl FullScreenImagePanel {
     }
 }
 
-impl Component for FullScreenImagePanel {
+impl Component for FullScreenImage {
     fn build(self) -> Option<Node> {
         Row::new("ImagePanel")
             .style(
@@ -64,10 +64,12 @@ impl Component for FullScreenImagePanel {
                             .position_type(FlexPosition::Absolute)
                             .background_color(BackgroundColor::TilePanelOverlay)
                             .position(Edge::All, 0.px())
+                            .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center)
-                            .align_items(FlexAlign::Center)
                             .padding(Edge::Top, constants::NAVBAR_HEIGHT.px())
-                            .padding(Edge::Horizontal, 8.px()),
+                            .padding(Edge::Left, 1.safe_area_left())
+                            .padding(Edge::Right, 1.safe_area_right())
+                            .padding(Edge::Bottom, 1.safe_area_bottom()),
                     )
                     .child_boxed(self.content),
             )
