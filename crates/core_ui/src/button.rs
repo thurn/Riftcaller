@@ -150,8 +150,8 @@ pub enum IconButtonType {
     SecondaryLarge,
     Destructive,
     DestructiveLarge,
-    NavbarBlue,
-    NavbarBrown,
+    NavBlue,
+    NavBrown,
 }
 
 pub struct IconButton {
@@ -220,16 +220,16 @@ impl Component for IconButton {
             IconButtonType::DestructiveLarge => {
                 "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Rescaled/Button_Red"
             }
-            IconButtonType::NavbarBlue => "Sprites/Circle1",
-            IconButtonType::NavbarBrown => "Sprites/Circle2",
+            IconButtonType::NavBlue => "Sprites/Circle1",
+            IconButtonType::NavBrown => "Sprites/Circle2",
         });
 
         let (background_size, position_offset) = match self.button_type {
             IconButtonType::Secondary | IconButtonType::Destructive => (56, 16),
             IconButtonType::SecondaryLarge
             | IconButtonType::DestructiveLarge
-            | IconButtonType::NavbarBlue
-            | IconButtonType::NavbarBrown => (88, 0),
+            | IconButtonType::NavBlue
+            | IconButtonType::NavBrown => (88, 0),
         };
 
         Row::new(self.name)

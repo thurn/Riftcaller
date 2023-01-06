@@ -65,6 +65,7 @@ dependencies = [
 name = "adventure_generator"
 version = "0.0.0"
 dependencies = [
+ "cards",
  "data",
  "rules",
 ]
@@ -676,6 +677,7 @@ dependencies = [
 name = "deck_editor"
 version = "0.0.0"
 dependencies = [
+ "adapters",
  "anyhow",
  "assets",
  "core_ui",

@@ -18,12 +18,10 @@ pub mod card_generator;
 
 use std::collections::{HashMap, HashSet};
 
+use cards::decklists;
 use data::adventure::{
     AdventureConfiguration, AdventureState, Coins, RegionId, TileEntity, TilePosition, TileState,
 };
-use data::card_name::CardName;
-use data::deck::Deck;
-use data::primitives::DeckIndex;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;
@@ -112,14 +110,7 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
         tiles,
         revealed_regions,
         config,
-        deck: Deck {
-            index: DeckIndex::new(0),
-            name: "Adventure".to_string(),
-            owner_id: player_id,
-            side,
-            identity: CardName::TestChampionIdentity,
-            cards: HashMap::new(),
-        },
+        deck: decklists::canonical_deck(player_id, side),
         collection: HashMap::new(),
     }
 }

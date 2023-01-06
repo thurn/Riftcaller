@@ -10,6 +10,7 @@ doctest = false
 test = false
 
 [dependencies]
+adapters = { path = "../adapters", version = "0.0.0" }
 assets = { path = "../assets", version = "0.0.0" }
 core_ui = { path = "../core_ui", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }

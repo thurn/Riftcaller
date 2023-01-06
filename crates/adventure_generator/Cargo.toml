@@ -12,5 +12,6 @@ doctest = false
 
 [dependencies]
 
+cards = { path = "../cards", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }

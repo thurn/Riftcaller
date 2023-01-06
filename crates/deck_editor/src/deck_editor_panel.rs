@@ -70,7 +70,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                             } else {
                                 Some(
                                     IconButton::new(icons::PREVIOUS_PAGE)
-                                        .button_type(IconButtonType::SecondaryLarge),
+                                        .button_type(IconButtonType::NavBrown),
                                 )
                             }),
                     )
@@ -102,7 +102,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                 } else {
                                     Some(
                                         IconButton::new(icons::NEXT_PAGE)
-                                            .button_type(IconButtonType::SecondaryLarge),
+                                            .button_type(IconButtonType::NavBrown),
                                     )
                                 },
                             ),

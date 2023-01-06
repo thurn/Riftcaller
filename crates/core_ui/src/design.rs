@@ -54,6 +54,8 @@ pub const GRAY_700: FlexColor = color(0.38, 0.38, 0.38, 1.0);
 pub const GRAY_900: FlexColor = color(0.13, 0.13, 0.13, 1.0);
 
 pub const TEXT_OUTLINE: FlexColor = BLACK;
+pub const OVERLAY_BORDER: FlexColor = BLACK;
+pub const COIN_COUNT_BORDER: FlexColor = GRAY_500;
 
 /// Converts a [FlexColor] into a hex code representation.
 pub fn as_hex(color: FlexColor) -> String {
@@ -73,6 +75,7 @@ pub enum BackgroundColor {
     SafeAreaOverlay,
     BottomSheetOverlay,
     BottomSheetBackground,
+    DeckCardNameOverlay,
     TilePanelOverlay,
     CoinCountOverlay,
 }
@@ -86,6 +89,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::SafeAreaOverlay => BLACK,
             BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
             BackgroundColor::BottomSheetBackground => ORANGE_900,
+            BackgroundColor::DeckCardNameOverlay => BLACK_ALPHA_50,
             BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
             BackgroundColor::CoinCountOverlay => BLACK_ALPHA_50,
         }

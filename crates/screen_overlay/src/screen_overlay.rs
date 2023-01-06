@@ -16,7 +16,7 @@
 //! and provide navigation
 
 use core_ui::button::{IconButton, IconButtonType};
-use core_ui::design::{BackgroundColor, FontSize};
+use core_ui::design::{BackgroundColor, FontSize, COIN_COUNT_BORDER};
 use core_ui::icons;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
@@ -75,7 +75,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                     .child(
                         IconButton::new(icons::BUG)
                             .name(&element_names::FEEDBACK_BUTTON)
-                            .button_type(IconButtonType::NavbarBlue)
+                            .button_type(IconButtonType::NavBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px())),
                     )
                     .child(self.player.adventure.as_ref().map(|adventure| {
@@ -86,7 +86,9 @@ impl<'a> Component for ScreenOverlay<'a> {
                                     .padding(Edge::Horizontal, 8.px())
                                     .height(80.px())
                                     .background_color(BackgroundColor::CoinCountOverlay)
-                                    .border_radius(Corner::All, 12.px()),
+                                    .border_radius(Corner::All, 12.px())
+                                    .border_color(Edge::All, COIN_COUNT_BORDER)
+                                    .border_width(Edge::All, 1.px()),
                             )
                             .child(
                                 Text::new(format!(
@@ -103,7 +105,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                     .child(self.show_deck_button.then(|| {
                         IconButton::new(icons::DECK)
                             .name(&element_names::DECK_BUTTON)
-                            .button_type(IconButtonType::NavbarBrown)
+                            .button_type(IconButtonType::NavBrown)
                             .action(
                                 if self
                                     .player
@@ -126,7 +128,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                         IconButton::new(icons::BARS)
                             .name(&element_names::MENU_BUTTON)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
-                            .button_type(IconButtonType::NavbarBrown)
+                            .button_type(IconButtonType::NavBrown)
                             .action(Panels::open(PanelAddress::AdventureMenu)),
                     ),
             )

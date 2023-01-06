@@ -14,13 +14,16 @@
 
 use assets;
 use assets::CardIconType;
-use core_ui::design::{BackgroundColor, Font, FontColor, FontSize, PINK_900};
+use core_ui::design::{BackgroundColor, Font, FontColor, FontSize, OVERLAY_BORDER};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
 use data::card_name::CardName;
-use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, StandardAction};
+use protos::spelldawn::{
+    BackgroundImageAutoSize, FlexAlign, FlexDirection, FlexJustify, FlexPosition, ImageScaleMode,
+    StandardAction,
+};
 
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
@@ -55,10 +58,8 @@ impl DeckEditorCardTitle {
 
 impl Component for DeckEditorCardTitle {
     fn build(self) -> Option<Node> {
-        let cost = match (
-            rules::get(self.card_name).cost.mana,
-            rules::get(self.card_name).config.stats.scheme_points,
-        ) {
+        let definition = rules::get(self.card_name);
+        let cost = match (definition.cost.mana, definition.config.stats.scheme_points) {
             (Some(mana), _) => Some((mana.to_string(), CardIconType::Mana)),
             (_, Some(scheme_points)) => {
                 Some((scheme_points.level_requirement.to_string(), CardIconType::LevelRequirement))
@@ -74,24 +75,46 @@ impl Component for DeckEditorCardTitle {
             .remove_original(if let Some(v) = self.count { v < 2 } else { false })
             .style(
                 Style::new()
-                    .height(88.px())
+                    .height(72.px())
                     .width((EDITOR_COLUMN_WIDTH - 1).vw())
                     .flex_grow(1.0)
                     .flex_direction(FlexDirection::Row)
                     .align_items(FlexAlign::Center)
-                    .justify_content(FlexJustify::Center)
-                    .background_color(PINK_900)
-                    .margin(Edge::Vertical, 8.px()),
+                    .justify_content(FlexJustify::Center),
+            )
+            .child(
+                // Image is offset from parent in order to expand touch target
+                Column::new("Image").style(
+                    Style::new()
+                        .position_type(FlexPosition::Absolute)
+                        .position(Edge::All, 4.px())
+                        .background_image(adapters::sprite(&definition.image))
+                        .background_image_scale_mode(ImageScaleMode::ScaleAndCrop)
+                        .border_radius(Corner::All, 8.px()),
+                ),
+            )
+            .child(
+                Column::new("ImageOverlay").style(
+                    Style::new()
+                        .position_type(FlexPosition::Absolute)
+                        .position(Edge::All, 4.px())
+                        .background_color(BackgroundColor::DeckCardNameOverlay)
+                        .border_radius(Corner::All, 8.px())
+                        .border_color(Edge::All, OVERLAY_BORDER)
+                        .border_width(Edge::All, 2.px()),
+                ),
             )
             .child(cost.map(|(text, icon)| {
                 Column::new("CardCost")
                     .style(
                         Style::new()
-                            .width(44.px())
                             .height(44.px())
-                            .margin(Edge::All, 8.px())
+                            .margin(Edge::Vertical, 8.px())
+                            .margin(Edge::Left, 12.px())
+                            .margin(Edge::Right, 4.px())
                             .flex_shrink(0.0)
                             .background_image(assets::card_icon(icon))
+                            .background_image_auto_size(BackgroundImageAutoSize::FromHeight)
                             .justify_content(FlexJustify::Center)
                             .align_items(FlexAlign::Center),
                     )
@@ -126,12 +149,13 @@ impl Component for DeckEditorCardTitle {
                             .justify_content(FlexJustify::Center)
                             .align_items(FlexAlign::Center)
                             .flex_shrink(0.0)
-                            .margin(Edge::All, 8.px())
-                            .width(32.px())
+                            .margin(Edge::Left, 4.px())
+                            .margin(Edge::Right, 12.px())
+                            .width(40.px())
                             .height(32.px())
                             .border_radius(Corner::All, 8.px()),
                     )
-                    .child(Text::new(c.to_string()).font_size(FontSize::CardCount))
+                    .child(Text::new(format!("{}x", c)).font_size(FontSize::CardCount))
             }))
             .build()
     }

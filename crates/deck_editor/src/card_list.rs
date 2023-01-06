@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::design::RED_900;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
 use data::card_name::CardName;
@@ -68,7 +67,6 @@ impl<'a> Component for CardList<'a> {
                     .style(
                         Style::new()
                             .flex_direction(FlexDirection::Column)
-                            .background_color(RED_900)
                             .width(EDITOR_COLUMN_WIDTH.vw())
                             .align_items(FlexAlign::Center)
                             .padding(Edge::All, 1.vw()),
