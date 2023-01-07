@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use element_names::ElementName;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, TextAlign};
 
 use crate::actions::{InterfaceAction, NoAction};
@@ -20,7 +21,6 @@ use crate::prelude::*;
 use crate::style;
 use crate::style::WidthMode;
 use crate::text::Text;
-use crate::update_element::ElementName;
 
 #[derive(Debug, Clone, Copy)]
 pub enum ButtonType {
@@ -62,8 +62,8 @@ impl Button {
         }
     }
 
-    pub fn name(mut self, name: &ElementName) -> Self {
-        self.name = Some(name.clone().into());
+    pub fn name(mut self, name: ElementName) -> Self {
+        self.name = Some(name.into());
         self
     }
 
@@ -176,7 +176,7 @@ impl IconButton {
     }
 
     pub fn name(mut self, name: &ElementName) -> Self {
-        self.name = name.clone().into();
+        self.name = (*name).into();
         self
     }
 

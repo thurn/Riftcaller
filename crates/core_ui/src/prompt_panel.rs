@@ -21,7 +21,6 @@ use crate::design::{BackgroundColor, FontSize};
 use crate::prelude::*;
 use crate::style;
 use crate::text::Text;
-use crate::update_element::ElementName;
 
 /// Renders a full-screen image containing a text prompt and some arbitrary
 /// content.
@@ -35,10 +34,6 @@ pub struct PromptPanel {
 impl PromptPanel {
     pub fn new() -> Self {
         Self::default()
-    }
-
-    pub fn content_name() -> ElementName {
-        ElementName::new("ImageContent")
     }
 
     pub fn image(mut self, image: SpriteAddress) -> Self {
@@ -84,7 +79,7 @@ impl Component for PromptPanel {
                         ),
                     )
                     .child(
-                        Column::new(Self::content_name())
+                        Column::new("ImageContent")
                             .style(
                                 Style::new()
                                     .justify_content(FlexJustify::Center)

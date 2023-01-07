@@ -29,9 +29,9 @@ pub const CARD_HEIGHT: f32 = 36.0;
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
-use core_ui::update_element::ElementName;
 use data::card_name::CardName;
 use data::text::RulesTextContext;
+use element_names::ElementName;
 use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
 use rules_text::card_icons;
 
@@ -71,12 +71,12 @@ impl DeckCard {
     pub fn new(name: CardName) -> Self {
         Self {
             name,
-            element_name: ElementName::constant(name.to_string()),
+            element_name: ElementName::new("Card"),
             height: CardHeight::vh(36.0),
             quantity: 1,
             layout: Layout::default(),
             draggable: None,
-            quantity_element_name: ElementName::constant("CardQuantity"),
+            quantity_element_name: ElementName::new("Quantity"),
         }
     }
 
@@ -85,8 +85,8 @@ impl DeckCard {
         self
     }
 
-    pub fn element_name(mut self, name: &ElementName) -> Self {
-        self.element_name = name.clone();
+    pub fn element_name(mut self, name: ElementName) -> Self {
+        self.element_name = name;
         self
     }
 
@@ -105,8 +105,8 @@ impl DeckCard {
         self
     }
 
-    pub fn quantity_element_name(mut self, quantity_element_name: &ElementName) -> Self {
-        self.quantity_element_name = quantity_element_name.clone();
+    pub fn quantity_element_name(mut self, quantity_element_name: ElementName) -> Self {
+        self.quantity_element_name = quantity_element_name;
         self
     }
 }

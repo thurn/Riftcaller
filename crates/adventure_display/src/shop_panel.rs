@@ -16,13 +16,13 @@ use anyhow::Result;
 use core_ui::button::Button;
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::prelude::*;
-use core_ui::update_element::ElementName;
 use core_ui::{actions, icons, style, update_element};
 use data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
+use element_names::ElementName;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{DestroyAnimationEffect, FlexAlign, FlexJustify};
 use screen_overlay::ScreenOverlay;
@@ -71,7 +71,7 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                         .layout(Layout::new().margin(Edge::All, 4.px()))
                         .card((!choice.sold).then(|| {
                             DeckCard::new(choice.card)
-                                .element_name(&card_element)
+                                .element_name(card_element)
                                 .quantity(choice.quantity)
                         })),
                 )
@@ -84,7 +84,7 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                 } else {
                     let name = ElementName::new("Buy");
                     Button::new(format!("{} {}", choice.cost, icons::COINS))
-                        .name(&name)
+                        .name(name)
                         .layout(
                             Layout::new()
                                 .margin(Edge::Horizontal, 8.px())
@@ -92,10 +92,10 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                         )
                         .action(actions::with_optimistic_update(
                             vec![
-                                update_element::destroy(&name, DestroyAnimationEffect::FadeOut),
+                                update_element::destroy(name, DestroyAnimationEffect::FadeOut),
                                 update_element::animate_to_position_and_destroy(
-                                    &card_element,
-                                    &element_names::DECK_BUTTON,
+                                    card_element,
+                                    element_names::DECK_BUTTON,
                                     DestroyAnimationEffect::Shrink,
                                 ),
                             ],

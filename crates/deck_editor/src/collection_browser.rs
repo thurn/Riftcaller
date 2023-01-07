@@ -16,7 +16,6 @@ use core_ui::action_builder::ActionBuilder;
 use core_ui::draggable::Draggable;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
-use core_ui::update_element::ElementName;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
@@ -24,6 +23,7 @@ use data::primitives::Side;
 use data::user_actions::DeckEditorAction;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
+use element_names::ElementName;
 use panel_address::CollectionBrowserFilters;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
@@ -57,7 +57,7 @@ pub struct CollectionBrowser<'a> {
     pub player: &'a PlayerData,
     pub deck: &'a Deck,
     pub filters: CollectionBrowserFilters,
-    pub drop_target: &'a ElementName,
+    pub drop_target: ElementName,
 }
 
 impl<'a> CollectionBrowser<'a> {
@@ -78,15 +78,15 @@ impl<'a> CollectionBrowser<'a> {
                     .card(Some(
                         DeckCard::new(card_name)
                             .quantity(*quantity)
-                            .quantity_element_name(&quantity_element)
+                            .quantity_element_name(quantity_element)
                             .draggable(
                                 Draggable::new(card_name.to_string())
-                                    .drop_targets(vec![self.drop_target.clone()])
+                                    .drop_targets(vec![self.drop_target])
                                     .over_target_indicator(move || {
                                         DeckEditorCardTitle::new(card_name).build()
                                     })
                                     .on_drop(Some(self.drop_action(card_name)))
-                                    .hide_indicator_children(vec![quantity_element.clone()]),
+                                    .hide_indicator_children(vec![quantity_element]),
                             ),
                     ))
             }))
@@ -109,7 +109,7 @@ impl<'a> CollectionBrowser<'a> {
             })
         } else {
             InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
-                parent_element_name: self.drop_target.clone().into(),
+                parent_element_name: self.drop_target.into(),
                 index: card_list::position_for_card(self.deck, name) as u32,
                 duration: Some(300.milliseconds()),
             })

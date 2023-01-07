@@ -23,6 +23,7 @@ use data::adventure::DraftData;
 use data::adventure_action::AdventureAction;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::{Panel, PanelAddress};
+use protos::spelldawn::FlexJustify;
 
 pub struct DraftPanel<'a> {
     pub data: &'a DraftData,
@@ -38,7 +39,7 @@ impl<'a> Component for DraftPanel<'a> {
     fn build(self) -> Option<Node> {
         FullScreenImage::new()
             .image(style::sprite("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"))
-            .content(Row::new("DraftPanel").children(self.data.choices.iter().enumerate().map(
+            .content(Row::new("DraftPanel").style(Style::new().justify_content(FlexJustify::Center)).children(self.data.choices.iter().enumerate().map(
                 |(i, choice)| {
                     Column::new("Choice")
                         .style(Style::new().margin(Edge::All, 32.px()))

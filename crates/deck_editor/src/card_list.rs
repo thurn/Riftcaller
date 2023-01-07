@@ -14,9 +14,9 @@
 
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
-use core_ui::update_element::ElementName;
 use data::card_name::CardName;
 use data::deck::Deck;
+use element_names::ElementName;
 use protos::spelldawn::{FlexAlign, FlexDirection};
 
 use crate::deck_editor_card_title::DeckEditorCardTitle;
@@ -27,7 +27,7 @@ use crate::editor_column_scroll::EditorColumnScroll;
 #[derive(Debug)]
 pub struct CardList<'a> {
     pub deck: &'a Deck,
-    pub element_name: &'a ElementName,
+    pub element_name: ElementName,
 }
 
 /// Standard sorted display order for a deck.
@@ -59,7 +59,7 @@ impl<'a> Component for CardList<'a> {
     fn build(self) -> Option<Node> {
         EditorColumnScroll::new()
             .child(
-                DropTarget::new(self.element_name.clone())
+                DropTarget::new(self.element_name)
                     .style(
                         Style::new()
                             .flex_direction(FlexDirection::Column)

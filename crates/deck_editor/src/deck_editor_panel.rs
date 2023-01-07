@@ -15,10 +15,10 @@
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::prelude::*;
-use core_ui::update_element::ElementName;
 use core_ui::{icons, style};
 use data::deck::Deck;
 use data::player_data::PlayerData;
+use element_names::ElementName;
 use panel_address::{DeckEditorData, Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 use screen_overlay::ScreenOverlay;
@@ -80,7 +80,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                         player: self.player,
                         deck: self.deck,
                         filters: self.data.collection_filters,
-                        drop_target: &list_name,
+                        drop_target: list_name,
                     }))
                     .child(
                         Column::new("RightControls")
@@ -109,7 +109,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                 },
                             ),
                     )
-                    .child(CardList { deck: self.deck, element_name: &list_name }),
+                    .child(CardList { deck: self.deck, element_name: list_name }),
             )
             .build()
     }
