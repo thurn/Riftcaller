@@ -20,6 +20,7 @@ use core_ui::update_element::ElementName;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
+use data::primitives::Side;
 use data::user_actions::DeckEditorAction;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
@@ -27,8 +28,8 @@ use panel_address::CollectionBrowserFilters;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    AnimateDraggableToChildIndex, AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection,
-    FlexJustify, UpdateInterfaceElementCommand,
+    AnimateDraggableToChildIndex, AnimateToElementPositionAndDestroy, DestroyElementAnimation,
+    FlexAlign, FlexDirection, FlexJustify, UpdateInterfaceElementCommand,
 };
 
 use crate::card_list;
@@ -44,7 +45,12 @@ pub fn get_matching_cards(
     player: &PlayerData,
     _: CollectionBrowserFilters,
 ) -> impl Iterator<Item = (CardName, u32)> + '_ {
-    player.collection.iter().map(|(card_name, count)| (*card_name, *count))
+    // TODO: Use adventure collection
+    player
+        .collection
+        .iter()
+        .map(|(card_name, count)| (*card_name, *count))
+        .filter(|(name, _)| rules::get(*name).side == Side::Champion)
 }
 
 pub struct CollectionBrowser<'a> {
@@ -95,11 +101,15 @@ impl<'a> CollectionBrowser<'a> {
             InterfaceUpdate::AnimateToElementPosition(AnimateToElementPositionAndDestroy {
                 target_element_name: format!("{}Title", name),
                 fallback_target_element_name: "".to_string(),
-                animation: None,
+                animation: Some(DestroyElementAnimation {
+                    effects: vec![],
+                    duration: Some(300.milliseconds()),
+                }),
+                do_not_clone: true,
             })
         } else {
             InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
-                parent_element_name: "CardList".to_string(),
+                parent_element_name: self.drop_target.clone().into(),
                 index: card_list::position_for_card(self.deck, name) as u32,
                 duration: Some(300.milliseconds()),
             })

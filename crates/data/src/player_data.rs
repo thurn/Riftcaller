@@ -79,6 +79,11 @@ impl PlayerData {
         self.adventure.as_ref().with_error(|| "Expected active adventure")
     }
 
+    /// Mutable equivalent of [Self::adventure]
+    pub fn adventure_mut(&mut self) -> Result<&mut AdventureState> {
+        self.adventure.as_mut().with_error(|| "Expected active adventure")
+    }
+
     /// Returns the [DeckIndex] this player requested to use for a new game.
     pub fn requested_deck_id(&self) -> Option<DeckIndex> {
         match &self.state {

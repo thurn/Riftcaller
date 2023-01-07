@@ -1499,6 +1499,9 @@ message AnimateToElementPositionAndDestroy {
 
     // Use this target instead if 'target_element_name' is not found
     string fallback_target_element_name = 3;
+
+    // Disable the effect of making a copy of the source elemenet first
+    bool do_not_clone = 4;
 }
 
 // Changes the text content of a node. If multiple text elements are children

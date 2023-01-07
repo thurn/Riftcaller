@@ -102,6 +102,7 @@ fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
             target_element_name: format!("{}Title", name),
             fallback_target_element_name: "".to_string(),
             animation: None,
+            do_not_clone: true,
         })
     } else {
         InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {

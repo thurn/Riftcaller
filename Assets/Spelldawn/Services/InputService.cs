@@ -209,6 +209,7 @@ namespace Spelldawn.Services
           currentlyDragging,
           _currentDragSource!.worldBound,
           new DestroyElementAnimation { Duration = new Protos.TimeValue { Milliseconds = 100 }},
+          doNotClone: true,
           () =>
           {
             if (_currentDragSource?.RemoveOriginal == true)

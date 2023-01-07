@@ -115,6 +115,7 @@ fn drop_action(name: CardName, active_deck: DeckIndex) -> StandardAction {
                         target_element_name: name.to_string(),
                         fallback_target_element_name: "CollectionBrowser".to_string(),
                         animation: None,
+                        do_not_clone: true,
                     },
                 )),
             },

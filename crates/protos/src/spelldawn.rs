@@ -1452,6 +1452,9 @@ pub struct AnimateToElementPositionAndDestroy {
     /// Use this target instead if 'target_element_name' is not found
     #[prost(string, tag = "3")]
     pub fallback_target_element_name: ::prost::alloc::string::String,
+    /// Disable the effect of making a copy of the source elemenet first
+    #[prost(bool, tag = "4")]
+    pub do_not_clone: bool,
 }
 /// Changes the text content of a node. If multiple text elements are children
 /// of this node, only the first is updated.

@@ -76,7 +76,7 @@ namespace Spelldawn.Services
                  FindElement<VisualElement>(command.FallbackTargetElementName);
       }
 
-      yield return AnimateToPositionAndDestroy(sourceElement, target.worldBound, command.Animation).WaitForCompletion();
+      yield return AnimateToPositionAndDestroy(sourceElement, target.worldBound, command.Animation, doNotClone: command.DoNotClone).WaitForCompletion();
     }
 
     IEnumerator HandleAnimateToChildIndex(string elementName, AnimateDraggableToChildIndex command)
@@ -107,7 +107,7 @@ namespace Spelldawn.Services
 
       newElement.style.height = targetHeight;
       yield return AnimateToPositionAndDestroy(element, newElement.worldBound,
-        new DestroyElementAnimation { Duration = command.Duration }, () =>
+        new DestroyElementAnimation { Duration = command.Duration }, doNotClone: false, () =>
         {
           newElement.style.opacity = 1.0f;
           HiddenForAnimation.Remove(newElement);
@@ -125,9 +125,13 @@ namespace Spelldawn.Services
       VisualElement input,
       Rect targetBound,
       DestroyElementAnimation destroyAnimation,
+      bool doNotClone = false,
       Action? onComplete = null)
     {
-      var source = DetachCopy(input);
+      Errors.CheckNotNull(input);
+      Errors.CheckNotNull(destroyAnimation);
+      
+      var copy = doNotClone ? input : DetachCopy(input);
       // For shrink animations, we need to offset the target position based on the source element
       // size. This is because Unity calculates positions *before* applying scale transformations.
       var targetPosition = targetBound.position -
@@ -136,17 +140,17 @@ namespace Spelldawn.Services
                            new Vector2(targetBound.width / 2.0f, targetBound.height / 2.0f);
 
       var sequence = TweenUtils.Sequence("AnimateToPositionAndDestroy").Insert(0,
-          DOTween.To(() => source.style.left.value.value,
-            x => source.style.left = x,
+          DOTween.To(() => copy.style.left.value.value,
+            x => copy.style.left = x,
             endValue: targetPosition.x, destroyAnimation.Duration.Milliseconds / 1000f))
         .Insert(0,
-          DOTween.To(() => source.style.top.value.value,
-            y => source.style.top = y,
+          DOTween.To(() => copy.style.top.value.value,
+            y => copy.style.top = y,
             endValue: targetPosition.y, destroyAnimation.Duration.Milliseconds / 1000f));
-      ApplyDestroyAnimation(sequence, destroyAnimation, source);
+      ApplyDestroyAnimation(sequence, destroyAnimation, copy);
       return sequence.AppendCallback(() =>
       {
-        source.RemoveFromHierarchy();
+        copy.RemoveFromHierarchy();
         onComplete?.Invoke();
       });
     }

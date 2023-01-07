@@ -76,6 +76,7 @@ pub fn animate_to_position_and_destroy(
                     duration: Some(300.milliseconds()),
                 }),
                 fallback_target_element_name: String::new(),
+                do_not_clone: false,
             },
         )),
     })
