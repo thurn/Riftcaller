@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Grpc.Core;
@@ -81,8 +82,26 @@ namespace Spelldawn.Services
         throw new InvalidOperationException(message.ToString());
       }
 
-      ApplyImmediateResponse(action);
-      _actionQueue.Enqueue(action);
+      if (action.ActionCase == ClientAction.ActionOneofCase.StandardAction)
+      {
+        if (_currentlyHandlingAction)
+        {
+          // I would like to eventually handle multiple concurrent StandardActions, but it requires
+          // more robust testing, for example to ensure that multiple optimistic interface updates
+          // work with any sequence of mutations & responses. For now we simply ignore button clicks
+          // while an RPC is pending.
+          Debug.Log($"Silently dropping StandardAction");
+        }
+        else
+        {
+          ApplyImmediateResponse(action.StandardAction);
+          _actionQueue.Enqueue(action);          
+        }
+      }
+      else
+      {
+        _actionQueue.Enqueue(action);
+      }
     }
 
     void Update()
@@ -136,11 +155,9 @@ namespace Spelldawn.Services
           {
             var commands = call.ResponseStream.Current;
             _attemptReconnect = false;
-            StartCoroutine(_registry.CommandService.HandleCommands(commands, () =>
-            {
-              _registry.DocumentService.Loading = false;
-            }));
-            _registry.DocumentService.FetchOpenPanelsIfStale();
+            StartCoroutine(_registry.CommandService.HandleCommands(commands,
+              () => { _registry.DocumentService.Loading = false; }));
+            _registry.DocumentService.FetchOpenPanelsOnConnect();
           }
         }
       }
@@ -176,12 +193,12 @@ namespace Spelldawn.Services
         Action = action,
         PlayerId = Errors.CheckNotNull(_playerIdentifier),
       };
-      request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);      
-      
+      request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);
+
       float startTime = 0;
       if (LogRpcTime.ShouldLogRpcTime)
       {
-        Debug.Log($"HandleActionAsync: Sending request {request}");
+        Debug.Log($"Sending {request.Action.ActionCase}");
         startTime = Time.time;
       }
 
@@ -229,26 +246,20 @@ namespace Spelldawn.Services
     /// Immediate action handling, without waiting for the queue. This is needed to avoid things that feel
     /// broken, like waiting for animations before closing a panel.
     /// </summary>
-    void ApplyImmediateResponse(ClientAction action)
+    void ApplyImmediateResponse(StandardAction action)
     {
-      switch (action.ActionCase)
+      _registry.StaticAssets.PlayButtonSound();
+      if (action.Update is { } update)
       {
-        case ClientAction.ActionOneofCase.StandardAction:
-          _registry.StaticAssets.PlayButtonSound();
-          if (action.StandardAction.Update is { } update)
+        foreach (var command in update.Commands)
+        {
+          switch (command.CommandCase)
           {
-            foreach (var command in update.Commands)
-            {
-              switch (command.CommandCase)
-              {
-                case GameCommand.CommandOneofCase.TogglePanel:
-                  _registry.DocumentService.TogglePanel(command.TogglePanel);
-                  break;
-              }
-            }
+            case GameCommand.CommandOneofCase.TogglePanel:
+              _registry.DocumentService.TogglePanel(command.TogglePanel);
+              break;
           }
-
-          break;
+        }
       }
     }
 
@@ -259,7 +270,12 @@ namespace Spelldawn.Services
         case ClientAction.ActionOneofCase.StandardAction:
           if (action.StandardAction.Update is { } update)
           {
-            yield return _registry.CommandService.HandleCommands(update);
+            // Immediate commands skip the queue and are processed by ApplyImmediateResponse() above 
+            var list = new CommandList();
+            list.Commands.AddRange(
+              update.Commands.Where(c =>
+                c.CommandCase != GameCommand.CommandOneofCase.TogglePanel));
+            yield return _registry.CommandService.HandleCommands(list);
           }
 
           break;
