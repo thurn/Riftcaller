@@ -18,7 +18,6 @@ use core_ui::prelude::*;
 use core_ui::{icons, style};
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use element_names::ElementName;
 use panel_address::{DeckEditorData, Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 use screen_overlay::ScreenOverlay;
@@ -49,7 +48,6 @@ impl<'a> Panel for DeckEditorPanel<'a> {
 
 impl<'a> Component for DeckEditorPanel<'a> {
     fn build(self) -> Option<Node> {
-        let list_name = ElementName::new("CardList");
         FullScreenImage::new()
             .image(style::sprite(
                 "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
@@ -80,7 +78,6 @@ impl<'a> Component for DeckEditorPanel<'a> {
                         player: self.player,
                         deck: self.deck,
                         filters: self.data.collection_filters,
-                        drop_target: list_name,
                     }))
                     .child(
                         Column::new("RightControls")
@@ -109,7 +106,7 @@ impl<'a> Component for DeckEditorPanel<'a> {
                                 },
                             ),
                     )
-                    .child(CardList { deck: self.deck, element_name: list_name }),
+                    .child(CardList { deck: self.deck }),
             )
             .build()
     }

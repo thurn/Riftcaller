@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use core_ui::action_builder::ActionBuilder;
+use core_ui::animations::{self, AnimateToElement, DestroyElement, InterfaceAnimation};
 use core_ui::draggable::Draggable;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
@@ -23,17 +24,11 @@ use data::primitives::Side;
 use data::user_actions::DeckEditorAction;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
-use element_names::ElementName;
+use element_names::{CurrentDraggable, ElementName};
 use panel_address::CollectionBrowserFilters;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
-use protos::spelldawn::{
-    AnimateDraggableToChildIndex, AnimateToElementPositionAndDestroy, DestroyElementAnimation,
-    FlexAlign, FlexDirection, FlexJustify, UpdateInterfaceElementCommand,
-};
+use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify};
 
-use crate::card_list;
-use crate::deck_editor_card_title::DeckEditorCardTitle;
+use crate::card_list_card_name::CardListCardName;
 
 // use crate::card_list;
 // use crate::deck_editor_card::DeckEditorCard;
@@ -57,7 +52,6 @@ pub struct CollectionBrowser<'a> {
     pub player: &'a PlayerData,
     pub deck: &'a Deck,
     pub filters: CollectionBrowserFilters,
-    pub drop_target: ElementName,
 }
 
 impl<'a> CollectionBrowser<'a> {
@@ -81,11 +75,11 @@ impl<'a> CollectionBrowser<'a> {
                             .quantity_element_name(quantity_element)
                             .draggable(
                                 Draggable::new(card_name.to_string())
-                                    .drop_targets(vec![self.drop_target])
+                                    .drop_targets(vec![element_names::CARD_LIST])
                                     .over_target_indicator(move || {
-                                        DeckEditorCardTitle::new(card_name).build()
+                                        CardListCardName::new(card_name).build()
                                     })
-                                    .on_drop(Some(self.drop_action(card_name)))
+                                    .on_drop(Some(drop_action(card_name)))
                                     .hide_indicator_children(vec![quantity_element]),
                             ),
                     ))
@@ -94,33 +88,6 @@ impl<'a> CollectionBrowser<'a> {
                 DeckCardSlot::new(CardHeight::vh(36.0))
                     .layout(Layout::new().margin(Edge::All, 4.px()))
             }))
-    }
-
-    fn drop_action(&self, name: CardName) -> ActionBuilder {
-        let update = if self.deck.cards.contains_key(&name) {
-            InterfaceUpdate::AnimateToElementPosition(AnimateToElementPositionAndDestroy {
-                target_element_name: format!("{}Title", name),
-                fallback_target_element_name: "".to_string(),
-                animation: Some(DestroyElementAnimation {
-                    effects: vec![],
-                    duration: Some(300.milliseconds()),
-                }),
-                do_not_clone: true,
-            })
-        } else {
-            InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
-                parent_element_name: self.drop_target.into(),
-                index: card_list::position_for_card(self.deck, name) as u32,
-                duration: Some(300.milliseconds()),
-            })
-        };
-
-        ActionBuilder::new()
-            .update(Command::UpdateInterfaceElement(UpdateInterfaceElementCommand {
-                element_name: "<OverTargetIndicator>".to_string(),
-                interface_update: Some(update),
-            }))
-            .action(DeckEditorAction::AddToDeck(name))
     }
 }
 
@@ -132,13 +99,24 @@ fn sort_cards(cards: &mut [(CardName, u32)]) {
     });
 }
 
+fn drop_action(name: CardName) -> ActionBuilder {
+    ActionBuilder::new().action(DeckEditorAction::AddToDeck(name)).update(
+        InterfaceAnimation::new()
+            .start(
+                CurrentDraggable,
+                AnimateToElement::new(element_names::card_list_card_name(name)),
+            )
+            .insert(animations::default_duration(), CurrentDraggable, DestroyElement::new()),
+    )
+}
+
 impl<'a> Component for CollectionBrowser<'a> {
     fn build(self) -> Option<Node> {
         let mut cards = get_matching_cards(self.player, self.filters).collect::<Vec<_>>();
         sort_cards(&mut cards);
         let row_one = cards.iter().skip(self.filters.offset).take(4).collect::<Vec<_>>();
         let row_two = cards.iter().skip(self.filters.offset + 4).take(4).collect::<Vec<_>>();
-        DropTarget::new("CollectionBrowser".to_string())
+        DropTarget::new(element_names::COLLECTION_BROWSER)
             .style(
                 Style::new()
                     .flex_direction(FlexDirection::Column)

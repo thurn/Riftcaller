@@ -71,11 +71,10 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                 .child(
                     DeckCardSlot::new(CardHeight::vh(40.0))
                         .layout(Layout::new().margin(Edge::All, 4.px()))
-                        .card((!choice.sold).then(|| {
-                            DeckCard::new(choice.card)
-                                .element_name(card_element)
-                                .quantity(choice.quantity)
-                        })),
+                        .card(
+                            (!choice.sold)
+                                .then(|| DeckCard::new(choice.card).quantity(choice.quantity)),
+                        ),
                 )
                 .child_node(if choice.sold {
                     Row::new("EmptyButton")
@@ -97,23 +96,12 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                                 .action(AdventureAction::BuyCard(position, i))
                                 .update(animations::combine(vec![
                                     animations::fade_out(button),
-                                    animations::move_to_target_and_destroy(
+                                    animations::clone_move_shrink_destroy(
                                         card_element,
                                         element_names::DECK_BUTTON,
                                     ),
                                 ])),
                         )
-                        // .action(actions::with_optimistic_update(
-                        //     vec![
-                        //         update_element::destroy(name, DestroyAnimationEffect::FadeOut),
-                        //         update_element::animate_to_position_and_destroy(
-                        //             card_element,
-                        //             element_names::DECK_BUTTON,
-                        //             DestroyAnimationEffect::Shrink,
-                        //         ),
-                        //     ],
-                        //     AdventureAction::BuyCard(position, i),
-                        // ))
                         .build()
                 })
         }))

@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use element_names::ElementName;
+use element_names::ElementNameSelector;
 use protos::spelldawn::animate_element_style::Property;
-use protos::spelldawn::element_selector::Selector;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_update::Update;
 use protos::spelldawn::{
@@ -34,15 +33,18 @@ pub fn combine(animations: Vec<InterfaceAnimation>) -> InterfaceAnimation {
 }
 
 /// Animates an element fading to 0 opacity and then removes it
-pub fn fade_out(element: ElementName) -> InterfaceAnimation {
+pub fn fade_out(element: impl ElementNameSelector) -> InterfaceAnimation {
     InterfaceAnimation::new()
         .insert(0.milliseconds(), element, AnimateStyle::new(Property::Opacity(0.0)))
         .insert(default_duration(), element, DestroyElement::new())
 }
 
-/// Animates an element moving to the position of another target element while
-/// shrinking, and then removes that element.
-pub fn move_to_target_and_destroy(source: ElementName, target: ElementName) -> InterfaceAnimation {
+/// Clones an element, animates it moving to the position of another target
+/// element while shrinking, and then removes that element.
+pub fn clone_move_shrink_destroy(
+    source: impl ElementNameSelector,
+    target: impl ElementNameSelector,
+) -> InterfaceAnimation {
     InterfaceAnimation::new()
         .start(source, CloneElement::new())
         .start(source, AnimateStyle::new(Property::Scale(FlexVector2 { x: 0.1, y: 0.1 })))
@@ -69,7 +71,7 @@ impl InterfaceAnimation {
 
     /// Adds an [ElementUpdate] which will run immediately in the animation (at
     /// time zero).
-    pub fn start(self, element: ElementName, update: impl ElementUpdate) -> Self {
+    pub fn start(self, element: impl ElementNameSelector, update: impl ElementUpdate) -> Self {
         self.insert(0.milliseconds(), element, update)
     }
 
@@ -78,11 +80,11 @@ impl InterfaceAnimation {
     pub fn insert(
         mut self,
         time: TimeValue,
-        element: ElementName,
+        element: impl ElementNameSelector,
         update: impl ElementUpdate,
     ) -> Self {
         self.command.steps.push(UpdateInterfaceStep {
-            element: Some(name_selector(element)),
+            element: Some(element.selector()),
             update: Some(update.build_update()),
             start_time: Some(time),
         });
@@ -149,13 +151,13 @@ impl ElementUpdate for DestroyElement {
 }
 
 pub struct AnimateToElement {
-    target: ElementName,
+    target: ElementSelector,
     animation: ElementAnimation,
 }
 
 impl AnimateToElement {
-    pub fn new(target: ElementName) -> Self {
-        Self { target, animation: default_animation() }
+    pub fn new(target: impl ElementNameSelector) -> Self {
+        Self { target: target.selector(), animation: default_animation() }
     }
 }
 
@@ -168,7 +170,7 @@ impl HasAnimation for AnimateToElement {
 impl ElementUpdate for AnimateToElement {
     fn build(self) -> Update {
         Update::AnimateToPosition(AnimateToPosition {
-            destination: Some(name_selector(self.target)),
+            destination: Some(self.target),
             animation: Some(self.animation),
         })
     }
@@ -206,8 +208,4 @@ pub fn default_duration() -> TimeValue {
 
 fn default_animation() -> ElementAnimation {
     ElementAnimation { duration: Some(default_duration()), ease: EasingMode::Linear.into() }
-}
-
-fn name_selector(element: ElementName) -> ElementSelector {
-    ElementSelector { selector: Some(Selector::ElementName(element.into())) }
 }

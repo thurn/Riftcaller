@@ -16,6 +16,10 @@
 
 use std::sync::atomic::{AtomicU64, Ordering};
 
+use data::card_name::CardName;
+use protos::spelldawn::element_selector::Selector;
+use protos::spelldawn::ElementSelector;
+
 static NEXT: AtomicU64 = AtomicU64::new(1);
 
 /// Represents a globally unique identifier for a UI element.
@@ -24,6 +28,10 @@ pub struct ElementName {
     tag: &'static str,
     count: u64,
 }
+
+/// Represents the element currently being dragged
+#[derive(Clone, Copy, Debug)]
+pub struct CurrentDraggable;
 
 impl ElementName {
     /// Creates a new element name. The 'tag' is used to facilitate debugging
@@ -39,6 +47,22 @@ impl From<ElementName> for String {
     }
 }
 
+pub trait ElementNameSelector: Copy + Sized {
+    fn selector(self) -> ElementSelector;
+}
+
+impl ElementNameSelector for ElementName {
+    fn selector(self) -> ElementSelector {
+        ElementSelector { selector: Some(Selector::ElementName(self.into())) }
+    }
+}
+
+impl ElementNameSelector for CurrentDraggable {
+    fn selector(self) -> ElementSelector {
+        ElementSelector { selector: Some(Selector::DragIndicator(())) }
+    }
+}
+
 const fn global(tag: &'static str) -> ElementName {
     ElementName { tag, count: 0 }
 }
@@ -48,3 +72,15 @@ pub static DECK_BUTTON: ElementName = global("DeckButton");
 pub static MENU_BUTTON: ElementName = global("MenuButton");
 
 pub static FEEDBACK_BUTTON: ElementName = global("FeedbackButton");
+
+pub static CARD_LIST: ElementName = global("CardList");
+
+pub static COLLECTION_BROWSER: ElementName = global("CollectionBrowser");
+
+pub fn deck_card(name: CardName) -> ElementName {
+    ElementName { tag: "DeckCard", count: name as u64 }
+}
+
+pub fn card_list_card_name(name: CardName) -> ElementName {
+    ElementName { tag: "CardListCardName", count: name as u64 }
+}

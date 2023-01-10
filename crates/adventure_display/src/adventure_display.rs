@@ -56,7 +56,7 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
         if let Some(panel) = rendered.panel {
             commands.push(panels::update(panel));
         }
-        commands.push(Panels::open(rendered.address).as_command());
+        commands.push(Panels::open(rendered.address).into());
     }
 
     Ok(commands)

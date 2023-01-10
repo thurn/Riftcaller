@@ -59,7 +59,6 @@ impl CardHeight {
 
 pub struct DeckCard {
     name: CardName,
-    element_name: ElementName,
     height: CardHeight,
     quantity: u32,
     layout: Layout,
@@ -71,7 +70,6 @@ impl DeckCard {
     pub fn new(name: CardName) -> Self {
         Self {
             name,
-            element_name: ElementName::new("Card"),
             height: CardHeight::vh(36.0),
             quantity: 1,
             layout: Layout::default(),
@@ -82,11 +80,6 @@ impl DeckCard {
 
     pub fn height(mut self, height: impl Into<CardHeight>) -> Self {
         self.height = height.into();
-        self
-    }
-
-    pub fn element_name(mut self, name: ElementName) -> Self {
-        self.element_name = name;
         self
     }
 
@@ -116,7 +109,7 @@ impl Component for DeckCard {
         let definition = rules::get(self.name);
         let icons = card_icons::build(&RulesTextContext::Default(definition), definition, true);
 
-        let result = Column::new(self.element_name)
+        let result = Column::new(element_names::deck_card(self.name))
             .style(self.layout.to_style().align_items(FlexAlign::Center))
             .child(
                 Row::new("CardImage").style(

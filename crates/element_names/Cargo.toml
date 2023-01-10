@@ -9,3 +9,7 @@ edition = "2021"
 path = "src/element_names.rs"
 doctest = false
 test = false
+
+[dependencies]
+data = { path = "../data", version = "0.0.0" }
+protos = { path = "../protos", version = "0.0.0" }

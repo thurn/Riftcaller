@@ -36,12 +36,15 @@ namespace Spelldawn.Services
     bool _overTarget;
     [SerializeField] Registry _registry = null!;
 
+    const string DragElementName = "<DragElement>";
+    const string OverTargetIndicatorElementName = "<OverTargetIndicator>";
+
     public void StartDragging(Draggable currentDragSource)
     {
       _currentDragSource = currentDragSource;
       var element = (Draggable)Mason.Render(_registry, currentDragSource.Node);
       var initialPosition = currentDragSource.worldBound.position;
-      element.name = "<DragElement>";
+      element.name = DragElementName;
       SetPosition(element, initialPosition);
       element.style.position = Position.Absolute;
       _registry.DocumentService.RootVisualElement.Add(element);
@@ -59,13 +62,26 @@ namespace Spelldawn.Services
         _overTargetIndicator.style.visibility = Visibility.Hidden;
         _registry.DocumentService.RootVisualElement.Add(_overTargetIndicator);
         _overTargetIndicator.BringToFront();
-        _overTargetIndicator.name = "<OverTargetIndicator>";
+        _overTargetIndicator.name = OverTargetIndicatorElementName;
       }
     }
 
+    /// <summary>Returns the interface element currently being dragged.</summary>
     public VisualElement CurrentDragIndicator()
     {
-      throw new NotImplementedException();
+      var overTargetElement = _registry.DocumentService.RootVisualElement.Q(OverTargetIndicatorElementName);
+      if (overTargetElement != null)
+      {
+        return overTargetElement;
+      }
+      
+      var dragElement = _registry.DocumentService.RootVisualElement.Q(DragElementName);
+      if (dragElement != null)
+      {
+        return dragElement;
+      }
+      
+      throw new InvalidOperationException("No current drag indicator");
     }
 
     void Update()

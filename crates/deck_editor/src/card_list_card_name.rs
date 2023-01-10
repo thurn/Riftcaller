@@ -28,14 +28,14 @@ use protos::spelldawn::{
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
 #[derive(Debug)]
-pub struct DeckEditorCardTitle {
+pub struct CardListCardName {
     layout: Layout,
     card_name: CardName,
     on_drop: Option<StandardAction>,
     count: Option<u32>,
 }
 
-impl DeckEditorCardTitle {
+impl CardListCardName {
     pub fn new(card_name: CardName) -> Self {
         Self { card_name, layout: Layout::default(), on_drop: None, count: None }
     }
@@ -56,7 +56,7 @@ impl DeckEditorCardTitle {
     }
 }
 
-impl Component for DeckEditorCardTitle {
+impl Component for CardListCardName {
     fn build(self) -> Option<Node> {
         let definition = rules::get(self.card_name);
         let cost = match (definition.cost.mana, definition.config.stats.scheme_points) {
@@ -67,7 +67,7 @@ impl Component for DeckEditorCardTitle {
             _ => None,
         };
 
-        Draggable::new(format!("{}Title", self.card_name))
+        Draggable::new(element_names::card_list_card_name(self.card_name))
             .drop_targets(vec!["CollectionBrowser"])
             // .over_target_indicator(move || DeckEditorCard::new(self.card_name).build())
             .on_drop(self.on_drop)
