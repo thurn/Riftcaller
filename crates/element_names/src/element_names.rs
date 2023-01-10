@@ -33,6 +33,10 @@ pub struct ElementName {
 #[derive(Clone, Copy, Debug)]
 pub struct CurrentDraggable;
 
+/// Represents the name of a temporary target element
+#[derive(Clone, Copy, Debug)]
+pub struct TargetName(pub ElementName);
+
 impl ElementName {
     /// Creates a new element name. The 'tag' is used to facilitate debugging
     /// and does *not* need to be globally unique.
@@ -60,6 +64,12 @@ impl ElementNameSelector for ElementName {
 impl ElementNameSelector for CurrentDraggable {
     fn selector(self) -> ElementSelector {
         ElementSelector { selector: Some(Selector::DragIndicator(())) }
+    }
+}
+
+impl ElementNameSelector for TargetName {
+    fn selector(self) -> ElementSelector {
+        ElementSelector { selector: Some(Selector::TargetElement(self.0.into())) }
     }
 }
 

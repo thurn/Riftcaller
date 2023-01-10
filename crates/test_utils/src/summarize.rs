@@ -27,7 +27,7 @@ use protos::spelldawn::{
     node_type, ActionTrackerView, AnchorCorner, AnimateDraggableToChildIndex,
     AnimateToElementPositionAndDestroy, ArrowTargetRoom, AudioClipAddress, CardAnchor,
     CardAnchorNode, CardCreationAnimation, CardIcon, CardIcons, CardIdentifier, CardTargeting,
-    CardTitle, CardView, CommandList, CreateTokenCardCommand, DelayCommand,
+    CardTitle, CardView, CommandList, ConditionalCommand, CreateTokenCardCommand, DelayCommand,
     DisplayGameMessageCommand, DisplayRewardsCommand, EffectAddress, FireProjectileCommand,
     GameCommand, GameMessageType, GameObjectIdentifier, GameObjectMove, GameObjectPositions,
     GameView, InterfaceMainControls, InterfacePanel, InterfacePanelAddress, LoadSceneCommand,
@@ -286,6 +286,7 @@ impl Summarize for Command {
             Self::UpdateWorldMap(v) => summary.child_node("UpdateWorldMap", v),
             Self::RenderScreenOverlay(v) => summary.child_node("RenderScreenOverlay", v),
             Self::UpdateInterface(v) => summary.child_node("UpdateInterface", v),
+            Self::Conditional(v) => summary.child_node("Conditional", v),
         }
     }
 }
@@ -746,5 +747,11 @@ impl Summarize for RenderScreenOverlayCommand {
 impl Summarize for UpdateInterfaceCommand {
     fn summarize(self, summary: &mut Summary) {
         summary.primitive("<UpdateInterfaceCommand>");
+    }
+}
+
+impl Summarize for ConditionalCommand {
+    fn summarize(self, summary: &mut Summary) {
+        summary.primitive("<ConditionalCommand>");
     }
 }

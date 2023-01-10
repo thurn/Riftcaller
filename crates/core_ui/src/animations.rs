@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use element_names::ElementNameSelector;
+use element_names::{ElementNameSelector, TargetName};
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_update::Update;
 use protos::spelldawn::{
-    AnimateElementStyle, AnimateToPosition, EasingMode, ElementAnimation, ElementSelector,
-    FlexVector2, InterfaceUpdate, TimeValue, UpdateInterfaceCommand, UpdateInterfaceStep,
+    AnimateElementStyle, AnimateToPosition, CreateTargetAtChildIndex, EasingMode, ElementAnimation,
+    ElementSelector, FlexVector2, InterfaceUpdate, TimeValue, UpdateInterfaceCommand,
+    UpdateInterfaceStep,
 };
 
 use crate::prelude::*;
@@ -36,7 +37,7 @@ pub fn combine(animations: Vec<InterfaceAnimation>) -> InterfaceAnimation {
 pub fn fade_out(element: impl ElementNameSelector) -> InterfaceAnimation {
     InterfaceAnimation::new()
         .insert(0.milliseconds(), element, AnimateStyle::new(Property::Opacity(0.0)))
-        .insert(default_duration(), element, DestroyElement::new())
+        .insert(default_duration(), element, DestroyElement)
 }
 
 /// Clones an element, animates it moving to the position of another target
@@ -46,10 +47,10 @@ pub fn clone_move_shrink_destroy(
     target: impl ElementNameSelector,
 ) -> InterfaceAnimation {
     InterfaceAnimation::new()
-        .start(source, CloneElement::new())
+        .start(source, CloneElement)
         .start(source, AnimateStyle::new(Property::Scale(FlexVector2 { x: 0.1, y: 0.1 })))
         .start(source, AnimateToElement::new(target))
-        .insert(default_duration(), source, DestroyElement::new())
+        .insert(default_duration(), source, DestroyElement)
 }
 
 /// Builder to construct animated updates to user interface elements
@@ -120,13 +121,7 @@ pub trait HasAnimation: Sized + ElementUpdate {
 /// 'visiblity: hidden'. Subsequent selectors in this sequence will
 /// apply to the cloned element if they search for an element by name.
 #[derive(Default)]
-pub struct CloneElement {}
-
-impl CloneElement {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
+pub struct CloneElement;
 
 impl ElementUpdate for CloneElement {
     fn build(self) -> Update {
@@ -136,13 +131,7 @@ impl ElementUpdate for CloneElement {
 
 /// Removes the element from the UI hierarchy entirely
 #[derive(Default)]
-pub struct DestroyElement {}
-
-impl DestroyElement {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
+pub struct DestroyElement;
 
 impl ElementUpdate for DestroyElement {
     fn build(self) -> Update {
@@ -153,11 +142,32 @@ impl ElementUpdate for DestroyElement {
 pub struct AnimateToElement {
     target: ElementSelector,
     animation: ElementAnimation,
+    disable_height_half_offset: bool,
+    disable_width_half_offset: bool,
 }
 
 impl AnimateToElement {
     pub fn new(target: impl ElementNameSelector) -> Self {
-        Self { target: target.selector(), animation: default_animation() }
+        Self {
+            target: target.selector(),
+            animation: default_animation(),
+            disable_height_half_offset: false,
+            disable_width_half_offset: false,
+        }
+    }
+
+    /// If false, the Y coordinate of the target positon is offset by 1/2
+    /// the source element's height.
+    pub fn disable_height_half_offset(mut self, disable_height_half_offset: bool) -> Self {
+        self.disable_height_half_offset = disable_height_half_offset;
+        self
+    }
+
+    /// If false, the X coordinate of the target positon is offset by 1/2
+    /// the source element's width
+    pub fn disable_width_half_offset(mut self, disable_width_half_offset: bool) -> Self {
+        self.disable_width_half_offset = disable_width_half_offset;
+        self
     }
 }
 
@@ -172,6 +182,8 @@ impl ElementUpdate for AnimateToElement {
         Update::AnimateToPosition(AnimateToPosition {
             destination: Some(self.target),
             animation: Some(self.animation),
+            disable_height_half_offset: self.disable_height_half_offset,
+            disable_width_half_offset: self.disable_width_half_offset,
         })
     }
 }
@@ -198,6 +210,51 @@ impl ElementUpdate for AnimateStyle {
         Update::AnimateStyle(AnimateElementStyle {
             animation: Some(self.animation),
             property: Some(self.property),
+        })
+    }
+}
+
+pub struct CreateTargetAtIndex {
+    parent: ElementSelector,
+    name: String,
+    index: u32,
+    animation: ElementAnimation,
+}
+
+impl CreateTargetAtIndex {
+    pub fn parent(parent: impl ElementNameSelector) -> Self {
+        Self {
+            parent: parent.selector(),
+            name: "<Target>".to_string(),
+            index: 0,
+            animation: default_animation(),
+        }
+    }
+
+    pub fn name(mut self, name: TargetName) -> Self {
+        self.name = name.0.into();
+        self
+    }
+
+    pub fn index(mut self, index: u32) -> Self {
+        self.index = index;
+        self
+    }
+}
+
+impl HasAnimation for CreateTargetAtIndex {
+    fn animation(&mut self) -> &mut ElementAnimation {
+        &mut self.animation
+    }
+}
+
+impl ElementUpdate for CreateTargetAtIndex {
+    fn build(self) -> Update {
+        Update::CreateTargetAtChildIndex(CreateTargetAtChildIndex {
+            parent: Some(self.parent),
+            index: self.index,
+            target_name: self.name,
+            animation: Some(self.animation),
         })
     }
 }

@@ -1522,90 +1522,6 @@ message UpdateInterfaceElementCommand {
     }
 }
 
-// A method for unqiuely identifying a single user interface element
-message ElementSelector {
-    oneof selector {
-        // Identify an element by name
-        string element_name = 1;
-
-        // The element currently being dragged
-        google.protobuf.Empty drag_indicator = 2;
-    }
-}
-
-// Describes how to animate an element change
-message ElementAnimation {
-    // Duration over which to animate the change.
-    TimeValue duration = 1;
-
-    // Easing curve to use for the element animation.
-    EasingMode ease = 2;
-}
-
-// Animates the element to match the position of another element
-message AnimateToPosition {
-    ElementSelector destination = 1;
-    ElementAnimation animation = 2;
-}
-
-// Animate an interface element to be at the indicated child index position of
-// the 'parent' element.
-message AnimateToChildIndex {
-    ElementSelector destination = 1;
-    uint32 index = 2;
-    ElementAnimation animation = 3;
-}
-
-// Animates a style property of an element to a new value
-message AnimateElementStyle {
-    ElementAnimation animation = 1;
-
-    oneof property {
-        float opacity = 2;
-        float width = 3;
-        float height = 4;
-        FlexVector2 scale = 5;
-    }
-}
-
-// Possible updates to a single interface element
-message InterfaceUpdate {
-    oneof update {
-        // Make a copy of this element and set the original to
-        // 'visiblity: hidden'. Subsequent selectors in this sequence will
-        // apply to the cloned element if they search for an element by name.
-        google.protobuf.Empty clone_element = 1;
-
-        // Destroys the element
-        google.protobuf.Empty destroy_element = 2;
-
-        // Animates the element to match the position of another element
-        AnimateToPosition animate_to_position = 3;
-
-        // Animates the element to be a child of another element
-        AnimateToChildIndex animate_to_child_index = 4;
-
-        // Animates a change to this element's style
-        AnimateElementStyle animate_style = 5;
-    }
-}
-
-// A single, optionally animated, tranformation to an interface element.
-message UpdateInterfaceStep {
-    // Identifies the element to update
-    ElementSelector element = 1;
-
-    // How to mutate the selected element
-    InterfaceUpdate update = 2;
-
-    // Delay to introduce before performing this mutation
-    TimeValue start_time = 3;
-}
-
-// Applies a sequence of user interface element mutations
-message UpdateInterfaceCommand {
-    repeated UpdateInterfaceStep steps = 1;
-}
 
 // Position of a tile on the world map
 //
@@ -1691,6 +1607,134 @@ message RenderScreenOverlayCommand {
     Node node = 1;
 }
 
+// A method for unqiuely identifying a single user interface element
+message ElementSelector {
+    oneof selector {
+        // Identify an element by name
+        string element_name = 1;
+
+        // The element currently being dragged
+        google.protobuf.Empty drag_indicator = 2;
+
+        // A synthetic element created via an operation such as
+        // 'CreateTargetAtChildIndex'.
+        string target_element = 3;
+    }
+}
+
+// Describes how to animate an element change
+message ElementAnimation {
+    // Duration over which to animate the change.
+    TimeValue duration = 1;
+
+    // Easing curve to use for the element animation.
+    EasingMode ease = 2;
+}
+
+// Animates the element to match the position of another element
+message AnimateToPosition {
+    ElementSelector destination = 1;
+    ElementAnimation animation = 2;
+
+    // If false, the Y coordinate of the target positon is offset by 1/2
+    // the source element's height.
+    bool disable_height_half_offset = 3;
+
+    // If false, the X coordinate of the target positon is offset by 1/2
+    // the source element's width
+    bool disable_width_half_offset = 4;
+}
+
+// Creates a cloned invisible 'target' element at a given child index position
+// of a parent element. The target starts at 1x1 size and animates its width and
+// height to match the size of the source element. After reaching full size, it
+// becomes visible.
+//
+// The target can be retrieved via the 'target' element selector using the
+// provided target_name. These element names only need to be unique among
+// other targets, it is idiomatic to use the same name as the source element.
+message CreateTargetAtChildIndex {
+    ElementSelector parent = 1;
+    uint32 index = 2;
+    string target_name = 3;
+    ElementAnimation animation = 4;
+}
+
+// Animates a style property of an element to a new value
+message AnimateElementStyle {
+    ElementAnimation animation = 1;
+
+    oneof property {
+        float opacity = 2;
+        float width = 3;
+        float height = 4;
+        FlexVector2 scale = 5;
+    }
+}
+
+// Possible updates to a single interface element
+message InterfaceUpdate {
+    oneof update {
+        // Make a copy of this element and set the original to
+        // 'visiblity: hidden'. Subsequent selectors in this sequence will
+        // apply to the cloned element if they search for an element by name.
+        google.protobuf.Empty clone_element = 1;
+
+        // Destroys the element
+        google.protobuf.Empty destroy_element = 2;
+
+        // Animates the element to match the position of another element
+        AnimateToPosition animate_to_position = 3;
+
+        // Immediately apply a style to this element
+        FlexStyle apply_style = 4;
+
+        // Animates a change to this element's style
+        AnimateElementStyle animate_style = 5;
+
+        // Creates a 'target' child element to use for position animations
+        // when adding something to a list
+        CreateTargetAtChildIndex create_target_at_child_index = 6;
+    }
+}
+
+// A single, optionally animated, tranformation to an interface element.
+message UpdateInterfaceStep {
+    // Identifies the element to update
+    ElementSelector element = 1;
+
+    // How to mutate the selected element
+    InterfaceUpdate update = 2;
+
+    // Delay to introduce before performing this mutation
+    TimeValue start_time = 3;
+}
+
+// Applies a sequence of user interface element mutations
+message UpdateInterfaceCommand {
+    repeated UpdateInterfaceStep steps = 1;
+}
+
+// Boolean-valued expression
+message ConditionalQuery {
+    oneof query {
+        // Does a given user interface element exist?
+        ElementSelector element_exists = 1;
+    }
+}
+
+// Conditionally executes one of two command lists based on a boolean query
+message ConditionalCommand {
+    // Boolean value to evaluate on the client
+    ConditionalQuery query = 1;
+
+    // Commands to run if 'query' is true
+    CommandList if_true = 2;
+
+    // Commands to run if 'query' is false
+    CommandList if_false = 3;
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -1713,6 +1757,7 @@ message GameCommand {
         UpdateWorldMapCommand update_world_map = 18;
         RenderScreenOverlayCommand render_screen_overlay = 19;
         UpdateInterfaceCommand update_interface = 20;
+        ConditionalCommand conditional = 21;
     }
 }
 

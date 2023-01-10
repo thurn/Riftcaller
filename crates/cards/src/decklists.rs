@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
+
 use actions;
 use anyhow::Result;
 use data::card_name::CardName;
@@ -23,6 +25,16 @@ use data::primitives::{DeckIndex, GameId, Side};
 use maplit::hashmap;
 use once_cell::sync::Lazy;
 use rules::{dispatch, mutations};
+
+/// Empty Overlord deck for use in tests
+pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
+    index: DeckIndex { value: 0 },
+    name: "Overlord Empty".to_string(),
+    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
+    side: Side::Overlord,
+    identity: CardName::TestOverlordIdentity,
+    cards: HashMap::new(),
+});
 
 /// Standard Overlord deck for use in tests
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
@@ -49,6 +61,16 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
         CardName::Stormcaller => 2,
         CardName::FireGoblin => 2
     },
+});
+
+/// Empty Champion deck for use in tests
+pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
+    index: DeckIndex { value: 0 },
+    name: "Champion Empty".to_string(),
+    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
+    side: Side::Champion,
+    identity: CardName::TestChampionIdentity,
+    cards: HashMap::new(),
 });
 
 /// Standard Champion deck for use in tests

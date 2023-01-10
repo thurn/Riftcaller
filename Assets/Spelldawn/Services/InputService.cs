@@ -67,21 +67,10 @@ namespace Spelldawn.Services
     }
 
     /// <summary>Returns the interface element currently being dragged.</summary>
-    public VisualElement CurrentDragIndicator()
+    public VisualElement? CurrentDragIndicator()
     {
       var overTargetElement = _registry.DocumentService.RootVisualElement.Q(OverTargetIndicatorElementName);
-      if (overTargetElement != null)
-      {
-        return overTargetElement;
-      }
-      
-      var dragElement = _registry.DocumentService.RootVisualElement.Q(DragElementName);
-      if (dragElement != null)
-      {
-        return dragElement;
-      }
-      
-      throw new InvalidOperationException("No current drag indicator");
+      return overTargetElement ?? _registry.DocumentService.RootVisualElement.Q(DragElementName);
     }
 
     void Update()

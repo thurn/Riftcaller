@@ -25,6 +25,7 @@ using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 using EasingMode = Spelldawn.Protos.EasingMode;
+using TimeValue = Spelldawn.Protos.TimeValue;
 
 namespace Spelldawn.Services
 {
@@ -32,59 +33,52 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
     readonly Dictionary<string, VisualElement> _clones = new();
+    readonly Dictionary<string, VisualElement> _targets = new();
     readonly Dictionary<string, Rect> _cloneWorldBounds = new();
 
     public IEnumerator HandleUpdate(UpdateInterfaceCommand command)
     {
-      var sequence = TweenUtils.Sequence("UpdateInterface");
+      var sequence = TweenUtils.Sequence("UpdateInterface").Pause();
       foreach (var step in command.Steps)
       {
-        HandleStep(sequence, step);
+        yield return ApplyUpdate(
+          sequence, step, Errors.CheckNotNull(step.Update), FindElement(Errors.CheckNotNull(step.Element)));
       }
 
       _clones.Clear();
       _cloneWorldBounds.Clear();
+
+      sequence.TogglePause();
       yield return sequence.WaitForCompletion();
     }
 
-    void HandleStep(Sequence sequence, UpdateInterfaceStep step)
+    IEnumerator ApplyUpdate(Sequence sequence, UpdateInterfaceStep step, InterfaceUpdate update, VisualElement element)
     {
-      var element = FindElement(Errors.CheckNotNull(step.Element));
-
-      switch (Errors.CheckNotNull(step.Update).UpdateCase)
+      switch (update.UpdateCase)
       {
         case InterfaceUpdate.UpdateOneofCase.CloneElement:
-          // We check this so that clones happen sequentially before other operations.
-          if (step.StartTime.Milliseconds == 0)
-          {
-            CreateClone(element);
-          }
-          else
-          {
-            sequence.InsertCallback(Seconds(step.StartTime), () => { CreateClone(element); });
-          }
-
+          AddCallbackOrInvoke(sequence, step.StartTime, () => { CreateClone(element); });
           break;
         case InterfaceUpdate.UpdateOneofCase.DestroyElement:
-          if (step.StartTime.Milliseconds == 0)
-          {
-            element.RemoveFromHierarchy();
-          }
-          else
-          {
-            sequence.InsertCallback(Seconds(step.StartTime), () => { element.RemoveFromHierarchy(); });
-          }
-
+          AddCallbackOrInvoke(sequence, step.StartTime, element.RemoveFromHierarchy);
           break;
         case InterfaceUpdate.UpdateOneofCase.AnimateToPosition:
-          var (t1, t2) = AnimateToPosition(element, step.Element.ElementName, step.Update.AnimateToPosition);
+          var (t1, t2) = AnimateToPosition(element, step.Element.ElementName, update.AnimateToPosition);
           sequence.Insert(Seconds(step.StartTime), t1);
           sequence.Insert(Seconds(step.StartTime), t2);
           break;
-        case InterfaceUpdate.UpdateOneofCase.AnimateToChildIndex:
+        case InterfaceUpdate.UpdateOneofCase.ApplyStyle:
+          AddCallbackOrInvoke(sequence, step.StartTime,
+            () => { Mason.ApplyStyle(_registry, element, update.ApplyStyle); });
           break;
         case InterfaceUpdate.UpdateOneofCase.AnimateStyle:
-          sequence.Insert(Seconds(step.StartTime), AnimateStyle(element, step.Update.AnimateStyle));
+          sequence.Insert(Seconds(step.StartTime), AnimateStyle(element, update.AnimateStyle));
+          break;
+        case InterfaceUpdate.UpdateOneofCase.CreateTargetAtChildIndex:
+          AddCallbackOrInvoke(sequence, step.StartTime,
+            () => { CreateTargetAtChildIndex(element, update.CreateTargetAtChildIndex); });
+          // Wait for the target to be added to the hierarchy.
+          yield return new WaitForEndOfFrame();
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -103,22 +97,28 @@ namespace Spelldawn.Services
       element.style.left = worldBound.x;
       element.style.top = worldBound.y;
 
-      // For shrink animations, we need to offset the target position based on the source element
-      // size. This is because Unity calculates positions *before* applying scale transformations.      
+      Errors.CheckState(float.IsNormal(worldBound.width) && float.IsNormal(worldBound.height),
+        "Element does not have a defined size");
+      Errors.CheckState(float.IsNormal(target.worldBound.width) && float.IsNormal(target.worldBound.height),
+        "Target does not have a defined size");
+
+      // Animate to align the center of the source element with the center of the target element        
       var targetPosition = target.worldBound.position -
-                           new Vector2(worldBound.width / 2.0f, worldBound.height / 2.0f) -
+                           new Vector2(
+                             animateToPosition.DisableWidthHalfOffset ? 0 : worldBound.width / 2.0f,
+                             animateToPosition.DisableHeightHalfOffset ? 0 : worldBound.height / 2.0f) -
                            new Vector2(element.style.marginLeft.value.value, element.style.marginTop.value.value) +
                            new Vector2(target.worldBound.width / 2.0f, target.worldBound.height / 2.0f);
 
-      
       return (DOTween.To(() => element.style.left.value.value,
-          x => element.style.left = x,
-          targetPosition.x,
-          Seconds(animateToPosition.Animation.Duration)),
-        DOTween.To(() => element.style.top.value.value,
-          y => element.style.top = y,
-          targetPosition.y,
-          Seconds(animateToPosition.Animation.Duration)));
+            x => element.style.left = x,
+            targetPosition.x,
+            Seconds(animateToPosition.Animation.Duration)).SetEase(AdaptEase(animateToPosition.Animation.Ease)),
+          DOTween.To(() => element.style.top.value.value,
+            y => element.style.top = y,
+            targetPosition.y,
+            Seconds(animateToPosition.Animation.Duration)).SetEase(AdaptEase(animateToPosition.Animation.Ease))
+        );
     }
 
     Tween AnimateStyle(VisualElement element, AnimateElementStyle style)
@@ -131,6 +131,7 @@ namespace Spelldawn.Services
           {
             element.style.opacity = 1.0f;
           }
+
           tween = DOTween.To(() => element.style.opacity.value,
             x => element.style.opacity = x,
             style.Opacity,
@@ -141,6 +142,7 @@ namespace Spelldawn.Services
           {
             throw new InvalidOperationException("Element does not have a width");
           }
+
           var widthUnit = element.style.width.value.unit;
           tween = DOTween.To(() => element.style.width.value.value,
             x => element.style.width = new Length(x, widthUnit),
@@ -151,7 +153,8 @@ namespace Spelldawn.Services
           if (element.style.height.keyword == StyleKeyword.Null)
           {
             throw new InvalidOperationException("Element does not have a height");
-          }          
+          }
+
           var heightUnit = element.style.height.value.unit;
           tween = DOTween.To(() => element.style.height.value.value,
             x => element.style.height = new Length(x, heightUnit),
@@ -163,6 +166,7 @@ namespace Spelldawn.Services
           {
             element.style.scale = new Scale(Vector3.one);
           }
+
           tween = DOTween.To(() => element.style.scale.value.value,
             x => element.style.scale = new Scale(x),
             new Vector3(style.Scale.X, style.Scale.Y, 1),
@@ -175,6 +179,46 @@ namespace Spelldawn.Services
       return tween.SetEase(AdaptEase(style.Animation.Ease));
     }
 
+    void CreateTargetAtChildIndex(
+      VisualElement element,
+      CreateTargetAtChildIndex createTarget)
+    {
+      Errors.CheckState(float.IsNormal(element.worldBound.width) && float.IsNormal(element.worldBound.height),
+        "Element does not have a defined size");
+
+      var parent = FindElement(createTarget.Parent);
+      var newElement = ((IMasonElement)element).Clone(_registry);
+      newElement.name = "<Target>";
+      newElement.style.visibility = Visibility.Hidden;
+      newElement.style.width = 1;
+      newElement.style.height = 1;
+
+      if (parent.childCount <= createTarget.Index)
+      {
+        parent.Add(newElement);
+      }
+      else
+      {
+        parent.Insert((int)createTarget.Index, newElement);
+      }
+      
+      _targets[createTarget.TargetName] = newElement;
+
+      TweenUtils.Sequence("ShowTarget")
+        .Insert(0, DOTween.To(() => newElement.style.height.value.value,
+          x => newElement.style.height = x,
+          element.worldBound.height,
+          Seconds(createTarget.Animation.Duration)))
+        .Insert(0, DOTween.To(() => newElement.style.width.value.value,
+          x => newElement.style.width = x,
+          element.worldBound.width,
+          Seconds(createTarget.Animation.Duration)))
+        .InsertCallback(Seconds(createTarget.Animation.Duration), () =>
+        {
+          newElement.style.visibility = Visibility.Visible;
+        });
+    }
+    
     Ease AdaptEase(EasingMode ease) => ease switch
     {
       EasingMode.EaseIn => Ease.InQuad,
@@ -234,12 +278,47 @@ namespace Spelldawn.Services
             return results.First();
           }
         case ElementSelector.SelectorOneofCase.DragIndicator:
-          return _registry.InputService.CurrentDragIndicator();
+          return Errors.CheckNotNull(_registry.InputService.CurrentDragIndicator(), "Drag indicator not found");
+        case ElementSelector.SelectorOneofCase.TargetElement:
+          Errors.CheckState(_targets.ContainsKey(elementSelector.TargetElement),
+            $"Target not found {elementSelector.TargetElement}");
+          return _targets[elementSelector.TargetElement];
         default:
           throw new ArgumentOutOfRangeException();
       }
     }
 
-    static float Seconds(Protos.TimeValue value) => value.Milliseconds / 1000f;
+    public bool ElementExists(ElementSelector elementSelector)
+    {
+      switch (elementSelector.SelectorCase)
+      {
+        case ElementSelector.SelectorOneofCase.ElementName:
+          var elementName = Errors.CheckNotNull(elementSelector.ElementName);
+          return _clones.ContainsKey(elementName) ||
+                 _registry.DocumentService.RootVisualElement.Q(elementName) != null;
+        case ElementSelector.SelectorOneofCase.DragIndicator:
+          return _registry.InputService.CurrentDragIndicator() != null;
+        default:
+          return false;
+      }
+    }
+
+    /// <summary>
+    /// Invokes a callback immediately at time 0, or schedules it to run in the provided Sequence. We check this
+    /// so that things like clones happen sequentially before other operations.
+    /// </summary>
+    void AddCallbackOrInvoke(Sequence sequence, TimeValue timeValue, TweenCallback action)
+    {
+      if (timeValue.Milliseconds == 0)
+      {
+        action();
+      }
+      else
+      {
+        sequence.InsertCallback(Seconds(timeValue), action);
+      }
+    }
+
+    static float Seconds(TimeValue value) => value.Milliseconds / 1000f;
   }
 }

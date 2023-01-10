@@ -140,6 +140,9 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.UpdateInterface:
             yield return _registry.UpdateInterfaceService.HandleUpdate(command.UpdateInterface);
             break;
+          case GameCommand.CommandOneofCase.Conditional:
+            yield return HandleConditionalCommand(command.Conditional);
+            break;
           case GameCommand.CommandOneofCase.None:
             break;
           default:
@@ -149,6 +152,25 @@ namespace Spelldawn.Services
       }
 
       onComplete?.Invoke();
+    }
+
+    IEnumerator HandleConditionalCommand(ConditionalCommand command)
+    {
+      var query = command.Query.QueryCase switch
+      {
+        ConditionalQuery.QueryOneofCase.ElementExists => 
+          _registry.UpdateInterfaceService.ElementExists(command.Query.ElementExists),
+        _ => false
+      };
+
+      if (query)
+      {
+        yield return HandleCommandsAsync(command.IfTrue);
+      }
+      else
+      {
+        yield return HandleCommandsAsync(command.IfFalse);
+      }
     }
 
     IEnumerator HandlePlayEffect(PlayEffectCommand command)

@@ -62,6 +62,7 @@ impl<'a> Component for CardList<'a> {
                         Style::new()
                             .flex_direction(FlexDirection::Column)
                             .width(EDITOR_COLUMN_WIDTH.vw())
+                            .min_height(70.vh())
                             .align_items(FlexAlign::Center)
                             .padding(Edge::All, 1.vw()),
                     )

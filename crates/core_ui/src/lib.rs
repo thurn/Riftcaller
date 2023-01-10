@@ -20,6 +20,7 @@ pub mod animations;
 pub mod bottom_sheet_content;
 pub mod button;
 pub mod component;
+pub mod conditional;
 pub mod design;
 pub mod draggable;
 pub mod drop_target;

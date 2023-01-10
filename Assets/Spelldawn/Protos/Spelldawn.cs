@@ -430,219 +430,229 @@ namespace Spelldawn.Protos {
             "NQoHZGVzdHJveRgEIAEoCzIiLnNwZWxsZGF3bi5EZXN0cm95RWxlbWVudEFu",
             "aW1hdGlvbkgAEiwKC3VwZGF0ZV90ZXh0GAUgASgLMhUuc3BlbGxkYXduLlVw",
             "ZGF0ZVRleHRIABIwCg5jbGVhcl9jaGlsZHJlbhgGIAEoCzIWLmdvb2dsZS5w",
-            "cm90b2J1Zi5FbXB0eUgAQhIKEGludGVyZmFjZV91cGRhdGUiZwoPRWxlbWVu",
-            "dFNlbGVjdG9yEhYKDGVsZW1lbnRfbmFtZRgBIAEoCUgAEjAKDmRyYWdfaW5k",
-            "aWNhdG9yGAIgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SABCCgoIc2Vs",
-            "ZWN0b3IiXwoQRWxlbWVudEFuaW1hdGlvbhImCghkdXJhdGlvbhgBIAEoCzIU",
-            "LnNwZWxsZGF3bi5UaW1lVmFsdWUSIwoEZWFzZRgCIAEoDjIVLnNwZWxsZGF3",
-            "bi5FYXNpbmdNb2RlInQKEUFuaW1hdGVUb1Bvc2l0aW9uEi8KC2Rlc3RpbmF0",
-            "aW9uGAEgASgLMhouc3BlbGxkYXduLkVsZW1lbnRTZWxlY3RvchIuCglhbmlt",
-            "YXRpb24YAiABKAsyGy5zcGVsbGRhd24uRWxlbWVudEFuaW1hdGlvbiKFAQoT",
-            "QW5pbWF0ZVRvQ2hpbGRJbmRleBIvCgtkZXN0aW5hdGlvbhgBIAEoCzIaLnNw",
-            "ZWxsZGF3bi5FbGVtZW50U2VsZWN0b3ISDQoFaW5kZXgYAiABKA0SLgoJYW5p",
-            "bWF0aW9uGAMgASgLMhsuc3BlbGxkYXduLkVsZW1lbnRBbmltYXRpb24isAEK",
-            "E0FuaW1hdGVFbGVtZW50U3R5bGUSLgoJYW5pbWF0aW9uGAEgASgLMhsuc3Bl",
-            "bGxkYXduLkVsZW1lbnRBbmltYXRpb24SEQoHb3BhY2l0eRgCIAEoAkgAEg8K",
-            "BXdpZHRoGAMgASgCSAASEAoGaGVpZ2h0GAQgASgCSAASJwoFc2NhbGUYBSAB",
-            "KAsyFi5zcGVsbGRhd24uRmxleFZlY3RvcjJIAEIKCghwcm9wZXJ0eSK3AgoP",
-            "SW50ZXJmYWNlVXBkYXRlEi8KDWNsb25lX2VsZW1lbnQYASABKAsyFi5nb29n",
-            "bGUucHJvdG9idWYuRW1wdHlIABIxCg9kZXN0cm95X2VsZW1lbnQYAiABKAsy",
-            "Fi5nb29nbGUucHJvdG9idWYuRW1wdHlIABI7ChNhbmltYXRlX3RvX3Bvc2l0",
-            "aW9uGAMgASgLMhwuc3BlbGxkYXduLkFuaW1hdGVUb1Bvc2l0aW9uSAASQAoW",
-            "YW5pbWF0ZV90b19jaGlsZF9pbmRleBgEIAEoCzIeLnNwZWxsZGF3bi5Bbmlt",
-            "YXRlVG9DaGlsZEluZGV4SAASNwoNYW5pbWF0ZV9zdHlsZRgFIAEoCzIeLnNw",
-            "ZWxsZGF3bi5BbmltYXRlRWxlbWVudFN0eWxlSABCCAoGdXBkYXRlIpgBChNV",
+            "cm90b2J1Zi5FbXB0eUgAQhIKEGludGVyZmFjZV91cGRhdGUiIwoLTWFwUG9z",
+            "aXRpb24SCQoBeBgBIAEoBRIJCgF5GAIgASgFIr0BCg5Xb3JsZE1hcFNwcml0",
+            "ZRIwCg5zcHJpdGVfYWRkcmVzcxgBIAEoCzIYLnNwZWxsZGF3bi5TcHJpdGVB",
+            "ZGRyZXNzEiMKBWNvbG9yGAIgASgLMhQuc3BlbGxkYXduLkZsZXhDb2xvchIt",
+            "Cg1hbmNob3Jfb2Zmc2V0GAMgASgLMhYuc3BlbGxkYXduLkZsZXhWZWN0b3Iz",
+            "EiUKBXNjYWxlGAQgASgLMhYuc3BlbGxkYXduLkZsZXhWZWN0b3IzIroBCgxX",
+            "b3JsZE1hcFRpbGUSKgoHc3ByaXRlcxgBIAMoCzIZLnNwZWxsZGF3bi5Xb3Js",
+            "ZE1hcFNwcml0ZRIoCghwb3NpdGlvbhgCIAEoCzIWLnNwZWxsZGF3bi5NYXBQ",
+            "b3NpdGlvbhIpCghvbl92aXNpdBgDIAEoCzIXLnNwZWxsZGF3bi5DbGllbnRB",
+            "Y3Rpb24SKQoJdGlsZV90eXBlGAQgASgOMhYuc3BlbGxkYXduLk1hcFRpbGVU",
+            "eXBlIj8KFVVwZGF0ZVdvcmxkTWFwQ29tbWFuZBImCgV0aWxlcxgBIAMoCzIX",
+            "LnNwZWxsZGF3bi5Xb3JsZE1hcFRpbGUiOwoaUmVuZGVyU2NyZWVuT3Zlcmxh",
+            "eUNvbW1hbmQSHQoEbm9kZRgBIAEoCzIPLnNwZWxsZGF3bi5Ob2RlIoEBCg9F",
+            "bGVtZW50U2VsZWN0b3ISFgoMZWxlbWVudF9uYW1lGAEgASgJSAASMAoOZHJh",
+            "Z19pbmRpY2F0b3IYAiABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABIY",
+            "Cg50YXJnZXRfZWxlbWVudBgDIAEoCUgAQgoKCHNlbGVjdG9yIl8KEEVsZW1l",
+            "bnRBbmltYXRpb24SJgoIZHVyYXRpb24YASABKAsyFC5zcGVsbGRhd24uVGlt",
+            "ZVZhbHVlEiMKBGVhc2UYAiABKA4yFS5zcGVsbGRhd24uRWFzaW5nTW9kZSK7",
+            "AQoRQW5pbWF0ZVRvUG9zaXRpb24SLwoLZGVzdGluYXRpb24YASABKAsyGi5z",
+            "cGVsbGRhd24uRWxlbWVudFNlbGVjdG9yEi4KCWFuaW1hdGlvbhgCIAEoCzIb",
+            "LnNwZWxsZGF3bi5FbGVtZW50QW5pbWF0aW9uEiIKGmRpc2FibGVfaGVpZ2h0",
+            "X2hhbGZfb2Zmc2V0GAMgASgIEiEKGWRpc2FibGVfd2lkdGhfaGFsZl9vZmZz",
+            "ZXQYBCABKAgimgEKGENyZWF0ZVRhcmdldEF0Q2hpbGRJbmRleBIqCgZwYXJl",
+            "bnQYASABKAsyGi5zcGVsbGRhd24uRWxlbWVudFNlbGVjdG9yEg0KBWluZGV4",
+            "GAIgASgNEhMKC3RhcmdldF9uYW1lGAMgASgJEi4KCWFuaW1hdGlvbhgEIAEo",
+            "CzIbLnNwZWxsZGF3bi5FbGVtZW50QW5pbWF0aW9uIrABChNBbmltYXRlRWxl",
+            "bWVudFN0eWxlEi4KCWFuaW1hdGlvbhgBIAEoCzIbLnNwZWxsZGF3bi5FbGVt",
+            "ZW50QW5pbWF0aW9uEhEKB29wYWNpdHkYAiABKAJIABIPCgV3aWR0aBgDIAEo",
+            "AkgAEhAKBmhlaWdodBgEIAEoAkgAEicKBXNjYWxlGAUgASgLMhYuc3BlbGxk",
+            "YXduLkZsZXhWZWN0b3IySABCCgoIcHJvcGVydHki7wIKD0ludGVyZmFjZVVw",
+            "ZGF0ZRIvCg1jbG9uZV9lbGVtZW50GAEgASgLMhYuZ29vZ2xlLnByb3RvYnVm",
+            "LkVtcHR5SAASMQoPZGVzdHJveV9lbGVtZW50GAIgASgLMhYuZ29vZ2xlLnBy",
+            "b3RvYnVmLkVtcHR5SAASOwoTYW5pbWF0ZV90b19wb3NpdGlvbhgDIAEoCzIc",
+            "LnNwZWxsZGF3bi5BbmltYXRlVG9Qb3NpdGlvbkgAEisKC2FwcGx5X3N0eWxl",
+            "GAQgASgLMhQuc3BlbGxkYXduLkZsZXhTdHlsZUgAEjcKDWFuaW1hdGVfc3R5",
+            "bGUYBSABKAsyHi5zcGVsbGRhd24uQW5pbWF0ZUVsZW1lbnRTdHlsZUgAEksK",
+            "HGNyZWF0ZV90YXJnZXRfYXRfY2hpbGRfaW5kZXgYBiABKAsyIy5zcGVsbGRh",
+            "d24uQ3JlYXRlVGFyZ2V0QXRDaGlsZEluZGV4SABCCAoGdXBkYXRlIpgBChNV",
             "cGRhdGVJbnRlcmZhY2VTdGVwEisKB2VsZW1lbnQYASABKAsyGi5zcGVsbGRh",
             "d24uRWxlbWVudFNlbGVjdG9yEioKBnVwZGF0ZRgCIAEoCzIaLnNwZWxsZGF3",
             "bi5JbnRlcmZhY2VVcGRhdGUSKAoKc3RhcnRfdGltZRgDIAEoCzIULnNwZWxs",
             "ZGF3bi5UaW1lVmFsdWUiRwoWVXBkYXRlSW50ZXJmYWNlQ29tbWFuZBItCgVz",
-            "dGVwcxgBIAMoCzIeLnNwZWxsZGF3bi5VcGRhdGVJbnRlcmZhY2VTdGVwIiMK",
-            "C01hcFBvc2l0aW9uEgkKAXgYASABKAUSCQoBeRgCIAEoBSK9AQoOV29ybGRN",
-            "YXBTcHJpdGUSMAoOc3ByaXRlX2FkZHJlc3MYASABKAsyGC5zcGVsbGRhd24u",
-            "U3ByaXRlQWRkcmVzcxIjCgVjb2xvchgCIAEoCzIULnNwZWxsZGF3bi5GbGV4",
-            "Q29sb3ISLQoNYW5jaG9yX29mZnNldBgDIAEoCzIWLnNwZWxsZGF3bi5GbGV4",
-            "VmVjdG9yMxIlCgVzY2FsZRgEIAEoCzIWLnNwZWxsZGF3bi5GbGV4VmVjdG9y",
-            "MyK6AQoMV29ybGRNYXBUaWxlEioKB3Nwcml0ZXMYASADKAsyGS5zcGVsbGRh",
-            "d24uV29ybGRNYXBTcHJpdGUSKAoIcG9zaXRpb24YAiABKAsyFi5zcGVsbGRh",
-            "d24uTWFwUG9zaXRpb24SKQoIb25fdmlzaXQYAyABKAsyFy5zcGVsbGRhd24u",
-            "Q2xpZW50QWN0aW9uEikKCXRpbGVfdHlwZRgEIAEoDjIWLnNwZWxsZGF3bi5N",
-            "YXBUaWxlVHlwZSI/ChVVcGRhdGVXb3JsZE1hcENvbW1hbmQSJgoFdGlsZXMY",
-            "ASADKAsyFy5zcGVsbGRhd24uV29ybGRNYXBUaWxlIjsKGlJlbmRlclNjcmVl",
-            "bk92ZXJsYXlDb21tYW5kEh0KBG5vZGUYASABKAsyDy5zcGVsbGRhd24uTm9k",
-            "ZSK/CQoLR2FtZUNvbW1hbmQSLgoFZGVidWcYASABKAsyHS5zcGVsbGRhd24u",
-            "Q2xpZW50RGVidWdDb21tYW5kSAASKAoFZGVsYXkYAiABKAsyFy5zcGVsbGRh",
-            "d24uRGVsYXlDb21tYW5kSAASNwoNdXBkYXRlX3BhbmVscxgDIAEoCzIeLnNw",
-            "ZWxsZGF3bi5VcGRhdGVQYW5lbHNDb21tYW5kSAASNQoMdG9nZ2xlX3BhbmVs",
-            "GAQgASgLMh0uc3BlbGxkYXduLlRvZ2dsZVBhbmVsQ29tbWFuZEgAEjwKEHVw",
-            "ZGF0ZV9nYW1lX3ZpZXcYBSABKAsyIC5zcGVsbGRhd24uVXBkYXRlR2FtZVZp",
-            "ZXdDb21tYW5kSAASMQoKdmlzaXRfcm9vbRgGIAEoCzIbLnNwZWxsZGF3bi5W",
-            "aXNpdFJvb21Db21tYW5kSAASMQoKcGxheV9zb3VuZBgHIAEoCzIbLnNwZWxs",
-            "ZGF3bi5QbGF5U291bmRDb21tYW5kSAASLwoJc2V0X211c2ljGAggASgLMhou",
-            "c3BlbGxkYXduLlNldE11c2ljQ29tbWFuZEgAEjsKD2ZpcmVfcHJvamVjdGls",
-            "ZRgJIAEoCzIgLnNwZWxsZGF3bi5GaXJlUHJvamVjdGlsZUNvbW1hbmRIABIz",
-            "CgtwbGF5X2VmZmVjdBgKIAEoCzIcLnNwZWxsZGF3bi5QbGF5RWZmZWN0Q29t",
-            "bWFuZEgAEkQKFGRpc3BsYXlfZ2FtZV9tZXNzYWdlGAsgASgLMiQuc3BlbGxk",
-            "YXduLkRpc3BsYXlHYW1lTWVzc2FnZUNvbW1hbmRIABJLChhzZXRfZ2FtZV9v",
-            "YmplY3RzX2VuYWJsZWQYDCABKAsyJy5zcGVsbGRhd24uU2V0R2FtZU9iamVj",
-            "dHNFbmFibGVkQ29tbWFuZEgAEjsKD2Rpc3BsYXlfcmV3YXJkcxgNIAEoCzIg",
-            "LnNwZWxsZGF3bi5EaXNwbGF5UmV3YXJkc0NvbW1hbmRIABIxCgpsb2FkX3Nj",
-            "ZW5lGA4gASgLMhsuc3BlbGxkYXduLkxvYWRTY2VuZUNvbW1hbmRIABI+ChFt",
-            "b3ZlX2dhbWVfb2JqZWN0cxgPIAEoCzIhLnNwZWxsZGF3bi5Nb3ZlR2FtZU9i",
-            "amVjdHNDb21tYW5kSAASPgoRY3JlYXRlX3Rva2VuX2NhcmQYECABKAsyIS5z",
-            "cGVsbGRhd24uQ3JlYXRlVG9rZW5DYXJkQ29tbWFuZEgAEkwKGHVwZGF0ZV9p",
-            "bnRlcmZhY2VfZWxlbWVudBgRIAEoCzIoLnNwZWxsZGF3bi5VcGRhdGVJbnRl",
-            "cmZhY2VFbGVtZW50Q29tbWFuZEgAEjwKEHVwZGF0ZV93b3JsZF9tYXAYEiAB",
-            "KAsyIC5zcGVsbGRhd24uVXBkYXRlV29ybGRNYXBDb21tYW5kSAASRgoVcmVu",
-            "ZGVyX3NjcmVlbl9vdmVybGF5GBMgASgLMiUuc3BlbGxkYXduLlJlbmRlclNj",
-            "cmVlbk92ZXJsYXlDb21tYW5kSAASPQoQdXBkYXRlX2ludGVyZmFjZRgUIAEo",
-            "CzIhLnNwZWxsZGF3bi5VcGRhdGVJbnRlcmZhY2VDb21tYW5kSABCCQoHY29t",
-            "bWFuZCI3CgtDb21tYW5kTGlzdBIoCghjb21tYW5kcxgBIAMoCzIWLnNwZWxs",
-            "ZGF3bi5HYW1lQ29tbWFuZCqfAQoJRmxleEFsaWduEhoKFkZMRVhfQUxJR05f",
-            "VU5TUEVDSUZJRUQQABITCg9GTEVYX0FMSUdOX0FVVE8QARIZChVGTEVYX0FM",
-            "SUdOX0ZMRVhfU1RBUlQQAhIVChFGTEVYX0FMSUdOX0NFTlRFUhADEhcKE0ZM",
-            "RVhfQUxJR05fRkxFWF9FTkQQBBIWChJGTEVYX0FMSUdOX1NUUkVUQ0gQBSpw",
-            "ChBGbGV4RGlzcGxheVN0eWxlEiIKHkZMRVhfRElTUExBWV9TVFlMRV9VTlNQ",
-            "RUNJRklFRBAAEhsKF0ZMRVhfRElTUExBWV9TVFlMRV9GTEVYEAESGwoXRkxF",
-            "WF9ESVNQTEFZX1NUWUxFX05PTkUQAiqlAQoNRmxleERpcmVjdGlvbhIeChpG",
-            "TEVYX0RJUkVDVElPTl9VTlNQRUNJRklFRBAAEhkKFUZMRVhfRElSRUNUSU9O",
-            "X0NPTFVNThABEiEKHUZMRVhfRElSRUNUSU9OX0NPTFVNTl9SRVZFUlNFEAIS",
-            "FgoSRkxFWF9ESVJFQ1RJT05fUk9XEAMSHgoaRkxFWF9ESVJFQ1RJT05fUk9X",
-            "X1JFVkVSU0UQBCpsCghGbGV4V3JhcBIZChVGTEVYX1dSQVBfVU5TUEVDSUZJ",
-            "RUQQABIVChFGTEVYX1dSQVBfTk9fV1JBUBABEhIKDkZMRVhfV1JBUF9XUkFQ",
-            "EAISGgoWRkxFWF9XUkFQX1dSQVBfUkVWRVJTRRADKrsBCgtGbGV4SnVzdGlm",
-            "eRIcChhGTEVYX0pVU1RJRllfVU5TUEVDSUZJRUQQABIbChdGTEVYX0pVU1RJ",
-            "RllfRkxFWF9TVEFSVBABEhcKE0ZMRVhfSlVTVElGWV9DRU5URVIQAhIZChVG",
-            "TEVYX0pVU1RJRllfRkxFWF9FTkQQAxIeChpGTEVYX0pVU1RJRllfU1BBQ0Vf",
-            "QkVUV0VFThAEEh0KGUZMRVhfSlVTVElGWV9TUEFDRV9BUk9VTkQQBSpiCgxG",
-            "bGV4T3ZlcmZsb3cSHQoZRkxFWF9PVkVSRkxPV19VTlNQRUNJRklFRBAAEhkK",
-            "FUZMRVhfT1ZFUkZMT1dfVklTSUJMRRABEhgKFEZMRVhfT1ZFUkZMT1dfSElE",
-            "REVOEAIqZQoMRmxleFBvc2l0aW9uEh0KGUZMRVhfUE9TSVRJT05fVU5TUEVD",
-            "SUZJRUQQABIaChZGTEVYX1BPU0lUSU9OX1JFTEFUSVZFEAESGgoWRkxFWF9Q",
-            "T1NJVElPTl9BQlNPTFVURRACKmEKDFRleHRPdmVyZmxvdxIdChlURVhUX09W",
-            "RVJGTE9XX1VOU1BFQ0lGSUVEEAASFgoSVEVYVF9PVkVSRkxPV19DTElQEAES",
-            "GgoWVEVYVF9PVkVSRkxPV19FTExJUFNJUxACKvMFCgpFYXNpbmdNb2RlEhsK",
-            "F0VBU0lOR19NT0RFX1VOU1BFQ0lGSUVEEAASFAoQRUFTSU5HX01PREVfRUFT",
-            "RRABEhcKE0VBU0lOR19NT0RFX0VBU0VfSU4QAhIYChRFQVNJTkdfTU9ERV9F",
-            "QVNFX09VVBADEhsKF0VBU0lOR19NT0RFX0VBU0VfSU5fT1VUEAQSFgoSRUFT",
-            "SU5HX01PREVfTElORUFSEAUSHAoYRUFTSU5HX01PREVfRUFTRV9JTl9TSU5F",
-            "EAYSHQoZRUFTSU5HX01PREVfRUFTRV9PVVRfU0lORRAHEiAKHEVBU0lOR19N",
-            "T0RFX0VBU0VfSU5fT1VUX1NJTkUQCBIdChlFQVNJTkdfTU9ERV9FQVNFX0lO",
-            "X0NVQklDEAkSHgoaRUFTSU5HX01PREVfRUFTRV9PVVRfQ1VCSUMQChIhCh1F",
-            "QVNJTkdfTU9ERV9FQVNFX0lOX09VVF9DVUJJQxALEhwKGEVBU0lOR19NT0RF",
-            "X0VBU0VfSU5fQ0lSQxAMEh0KGUVBU0lOR19NT0RFX0VBU0VfT1VUX0NJUkMQ",
-            "DRIgChxFQVNJTkdfTU9ERV9FQVNFX0lOX09VVF9DSVJDEA4SHwobRUFTSU5H",
-            "X01PREVfRUFTRV9JTl9FTEFTVElDEA8SIAocRUFTSU5HX01PREVfRUFTRV9P",
-            "VVRfRUxBU1RJQxAQEiMKH0VBU0lOR19NT0RFX0VBU0VfSU5fT1VUX0VMQVNU",
-            "SUMQERIcChhFQVNJTkdfTU9ERV9FQVNFX0lOX0JBQ0sQEhIdChlFQVNJTkdf",
-            "TU9ERV9FQVNFX09VVF9CQUNLEBMSIAocRUFTSU5HX01PREVfRUFTRV9JTl9P",
-            "VVRfQkFDSxAUEh4KGkVBU0lOR19NT0RFX0VBU0VfSU5fQk9VTkNFEBUSHwob",
-            "RUFTSU5HX01PREVfRUFTRV9PVVRfQk9VTkNFEBYSIgoeRUFTSU5HX01PREVf",
-            "RUFTRV9JTl9PVVRfQk9VTkNFEBcqoAEKDkltYWdlU2NhbGVNb2RlEiAKHElN",
-            "QUdFX1NDQUxFX01PREVfVU5TUEVDSUZJRUQQABIkCiBJTUFHRV9TQ0FMRV9N",
-            "T0RFX1NUUkVUQ0hfVE9fRklMTBABEiMKH0lNQUdFX1NDQUxFX01PREVfU0NB",
-            "TEVfQU5EX0NST1AQAhIhCh1JTUFHRV9TQ0FMRV9NT0RFX1NDQUxFX1RPX0ZJ",
-            "VBADKooBCglGb250U3R5bGUSGgoWRk9OVF9TVFlMRV9VTlNQRUNJRklFRBAA",
-            "EhUKEUZPTlRfU1RZTEVfTk9STUFMEAESEwoPRk9OVF9TVFlMRV9CT0xEEAIS",
-            "FQoRRk9OVF9TVFlMRV9JVEFMSUMQAxIeChpGT05UX1NUWUxFX0JPTERfQU5E",
-            "X0lUQUxJQxAEKnoKD092ZXJmbG93Q2xpcEJveBIhCh1PVkVSRkxPV19DTElQ",
-            "X0JPWF9VTlNQRUNJRklFRBAAEiEKHU9WRVJGTE9XX0NMSVBfQk9YX1BBRERJ",
-            "TkdfQk9YEAESIQodT1ZFUkZMT1dfQ0xJUF9CT1hfQ09OVEVOVF9CT1gQAiqm",
-            "AgoJVGV4dEFsaWduEhoKFlRFWFRfQUxJR05fVU5TUEVDSUZJRUQQABIZChVU",
-            "RVhUX0FMSUdOX1VQUEVSX0xFRlQQARIbChdURVhUX0FMSUdOX1VQUEVSX0NF",
-            "TlRFUhACEhoKFlRFWFRfQUxJR05fVVBQRVJfUklHSFQQAxIaChZURVhUX0FM",
-            "SUdOX01JRERMRV9MRUZUEAQSHAoYVEVYVF9BTElHTl9NSURETEVfQ0VOVEVS",
-            "EAUSGwoXVEVYVF9BTElHTl9NSURETEVfUklHSFQQBhIZChVURVhUX0FMSUdO",
-            "X0xPV0VSX0xFRlQQBxIbChdURVhUX0FMSUdOX0xPV0VSX0NFTlRFUhAIEhoK",
-            "FlRFWFRfQUxJR05fTE9XRVJfUklHSFQQCSqjAQoUVGV4dE92ZXJmbG93UG9z",
-            "aXRpb24SJgoiVEVYVF9PVkVSRkxPV19QT1NJVElPTl9VTlNQRUNJRklFRBAA",
-            "Eh4KGlRFWFRfT1ZFUkZMT1dfUE9TSVRJT05fRU5EEAESIAocVEVYVF9PVkVS",
-            "RkxPV19QT1NJVElPTl9TVEFSVBACEiEKHVRFWFRfT1ZFUkZMT1dfUE9TSVRJ",
-            "T05fTUlERExFEAMqagoORmxleFZpc2liaWxpdHkSHwobRkxFWF9WSVNJQklM",
-            "SVRZX1VOU1BFQ0lGSUVEEAASGwoXRkxFWF9WSVNJQklMSVRZX1ZJU0lCTEUQ",
-            "ARIaChZGTEVYX1ZJU0lCSUxJVFlfSElEREVOEAIqWgoKV2hpdGVTcGFjZRIb",
-            "ChdXSElURV9TUEFDRV9VTlNQRUNJRklFRBAAEhYKEldISVRFX1NQQUNFX05P",
-            "Uk1BTBABEhcKE1dISVRFX1NQQUNFX05PX1dSQVAQAiq+AgoNRGltZW5zaW9u",
-            "VW5pdBIeChpESU1FTlNJT05fVU5JVF9VTlNQRUNJRklFRBAAEhkKFURJTUVO",
-            "U0lPTl9VTklUX1BJWEVMUxABEh0KGURJTUVOU0lPTl9VTklUX1BFUkNFTlRB",
-            "R0UQAhIhCh1ESU1FTlNJT05fVU5JVF9WSUVXUE9SVF9XSURUSBADEiIKHkRJ",
-            "TUVOU0lPTl9VTklUX1ZJRVdQT1JUX0hFSUdIVBAEEiAKHERJTUVOU0lPTl9V",
-            "TklUX1NBRkVfQVJFQV9UT1AQBRIiCh5ESU1FTlNJT05fVU5JVF9TQUZFX0FS",
-            "RUFfUklHSFQQBhIjCh9ESU1FTlNJT05fVU5JVF9TQUZFX0FSRUFfQk9UVE9N",
-            "EAcSIQodRElNRU5TSU9OX1VOSVRfU0FGRV9BUkVBX0xFRlQQCCpyCg9GbGV4",
-            "UGlja2luZ01vZGUSIQodRkxFWF9QSUNLSU5HX01PREVfVU5TUEVDSUZJRUQQ",
-            "ABIeChpGTEVYX1BJQ0tJTkdfTU9ERV9QT1NJVElPThABEhwKGEZMRVhfUElD",
-            "S0lOR19NT0RFX0lHTk9SRRACKpwBChdCYWNrZ3JvdW5kSW1hZ2VBdXRvU2l6",
-            "ZRIqCiZCQUNLR1JPVU5EX0lNQUdFX0FVVE9fU0laRV9VTlNQRUNJRklFRBAA",
-            "EikKJUJBQ0tHUk9VTkRfSU1BR0VfQVVUT19TSVpFX0ZST01fV0lEVEgQARIq",
-            "CiZCQUNLR1JPVU5EX0lNQUdFX0FVVE9fU0laRV9GUk9NX0hFSUdIVBACKqgB",
-            "ChNTY3JvbGxCYXJWaXNpYmlsaXR5EiUKIVNDUk9MTF9CQVJfVklTSUJJTElU",
-            "WV9VTlNQRUNJRklFRBAAEh4KGlNDUk9MTF9CQVJfVklTSUJJTElUWV9BVVRP",
-            "EAESKAokU0NST0xMX0JBUl9WSVNJQklMSVRZX0FMV0FZU19WSVNJQkxFEAIS",
-            "IAocU0NST0xMX0JBUl9WSVNJQklMSVRZX0hJRERFThADKqoBChNUb3VjaFNj",
-            "cm9sbEJlaGF2aW9yEiUKIVRPVUNIX1NDUk9MTF9CRUhBVklPUl9VTlNQRUNJ",
-            "RklFRBAAEiYKIlRPVUNIX1NDUk9MTF9CRUhBVklPUl9VTlJFU1RSSUNURUQQ",
-            "ARIhCh1UT1VDSF9TQ1JPTExfQkVIQVZJT1JfRUxBU1RJQxACEiEKHVRPVUNI",
-            "X1NDUk9MTF9CRUhBVklPUl9DTEFNUEVEEAMqcwoPU2xpZGVyRGlyZWN0aW9u",
-            "EiAKHFNMSURFUl9ESVJFQ1RJT05fVU5TUEVDSUZJRUQQABIfChtTTElERVJf",
-            "RElSRUNUSU9OX0hPUklaT05UQUwQARIdChlTTElERVJfRElSRUNUSU9OX1ZF",
-            "UlRJQ0FMEAIqXQoKUGxheWVyU2lkZRIbChdQTEFZRVJfU0lERV9VTlNQRUNJ",
-            "RklFRBAAEhgKFFBMQVlFUl9TSURFX09WRVJMT1JEEAESGAoUUExBWUVSX1NJ",
-            "REVfQ0hBTVBJT04QAipZCgpQbGF5ZXJOYW1lEhsKF1BMQVlFUl9OQU1FX1VO",
-            "U1BFQ0lGSUVEEAASFAoQUExBWUVSX05BTUVfVVNFUhABEhgKFFBMQVlFUl9O",
-            "QU1FX09QUE9ORU5UEAIqkQIKDlJvb21JZGVudGlmaWVyEh8KG1JPT01fSURF",
-            "TlRJRklFUl9VTlNQRUNJRklFRBAAEhkKFVJPT01fSURFTlRJRklFUl9WQVVM",
-            "VBABEhsKF1JPT01fSURFTlRJRklFUl9TQU5DVFVNEAISGgoWUk9PTV9JREVO",
-            "VElGSUVSX0NSWVBUUxADEhoKFlJPT01fSURFTlRJRklFUl9ST09NX0EQBBIa",
-            "ChZST09NX0lERU5USUZJRVJfUk9PTV9CEAUSGgoWUk9PTV9JREVOVElGSUVS",
-            "X1JPT01fQxAGEhoKFlJPT01fSURFTlRJRklFUl9ST09NX0QQBxIaChZST09N",
-            "X0lERU5USUZJRVJfUk9PTV9FEAgqfwoOVGFyZ2V0aW5nQXJyb3cSHwobVEFS",
-            "R0VUSU5HX0FSUk9XX1VOU1BFQ0lGSUVEEAASFwoTVEFSR0VUSU5HX0FSUk9X",
-            "X1JFRBABEhgKFFRBUkdFVElOR19BUlJPV19CTFVFEAISGQoVVEFSR0VUSU5H",
-            "X0FSUk9XX0dSRUVOEAMqeQoSQ2xpZW50Um9vbUxvY2F0aW9uEiQKIENMSUVO",
-            "VF9ST09NX0xPQ0FUSU9OX1VOU1BFQ0lGSUVEEAASHQoZQ0xJRU5UX1JPT01f",
-            "TE9DQVRJT05fQkFDSxABEh4KGkNMSUVOVF9ST09NX0xPQ0FUSU9OX0ZST05U",
-            "EAIqeQoSQ2xpZW50SXRlbUxvY2F0aW9uEiQKIENMSUVOVF9JVEVNX0xPQ0FU",
-            "SU9OX1VOU1BFQ0lGSUVEEAASHQoZQ0xJRU5UX0lURU1fTE9DQVRJT05fTEVG",
-            "VBABEh4KGkNMSUVOVF9JVEVNX0xPQ0FUSU9OX1JJR0hUEAIqlQEKGFJldmVh",
-            "bGVkQ2FyZHNCcm93c2VyU2l6ZRIrCidSRVZFQUxFRF9DQVJEU19CUk9XU0VS",
-            "X1NJWkVfVU5TUEVDSUZJRUQQABIlCiFSRVZFQUxFRF9DQVJEU19CUk9XU0VS",
-            "X1NJWkVfU01BTEwQARIlCiFSRVZFQUxFRF9DQVJEU19CUk9XU0VSX1NJWkVf",
-            "TEFSR0UQAipfCgpDYXJkUHJlZmFiEhsKF0NBUkRfUFJFRkFCX1VOU1BFQ0lG",
-            "SUVEEAASGAoUQ0FSRF9QUkVGQUJfU1RBTkRBUkQQARIaChZDQVJEX1BSRUZB",
-            "Ql9UT0tFTl9DQVJEEAIqpQEKDEFuY2hvckNvcm5lchIdChlBTkNIT1JfQ09S",
-            "TkVSX1VOU1BFQ0lGSUVEEAASGgoWQU5DSE9SX0NPUk5FUl9UT1BfTEVGVBAB",
-            "EhsKF0FOQ0hPUl9DT1JORVJfVE9QX1JJR0hUEAISHQoZQU5DSE9SX0NPUk5F",
-            "Ul9CT1RUT01fTEVGVBADEh4KGkFOQ0hPUl9DT1JORVJfQk9UVE9NX1JJR0hU",
-            "EAQqdgoNUm9vbVZpc2l0VHlwZRIfChtST09NX1ZJU0lUX1RZUEVfVU5TUEVD",
-            "SUZJRUQQABIhCh1ST09NX1ZJU0lUX1RZUEVfSU5JVElBVEVfUkFJRBABEiEK",
-            "HVJPT01fVklTSVRfVFlQRV9MRVZFTF9VUF9ST09NEAIqlQEKFUNhcmRDcmVh",
-            "dGlvbkFuaW1hdGlvbhInCiNDQVJEX0NSRUFUSU9OX0FOSU1BVElPTl9VTlNQ",
-            "RUNJRklFRBAAEiUKIUNBUkRfQ1JFQVRJT05fQU5JTUFUSU9OX0RSQVdfQ0FS",
-            "RBABEiwKKENBUkRfQ1JFQVRJT05fQU5JTUFUSU9OX0ZST01fUEFSRU5UX0NB",
-            "UkQQAiqMAQoKTXVzaWNTdGF0ZRIbChdNVVNJQ19TVEFURV9VTlNQRUNJRklF",
-            "RBAAEhYKEk1VU0lDX1NUQVRFX1NJTEVOVBABEhgKFE1VU0lDX1NUQVRFX0dB",
-            "TUVQTEFZEAISFAoQTVVTSUNfU1RBVEVfUkFJRBADEhkKFU1VU0lDX1NUQVRF",
-            "X01BSU5fTUVOVRAEKqkBCg9HYW1lTWVzc2FnZVR5cGUSIQodR0FNRV9NRVNT",
-            "QUdFX1RZUEVfVU5TUEVDSUZJRUQQABIaChZHQU1FX01FU1NBR0VfVFlQRV9E",
-            "QVdOEAESGgoWR0FNRV9NRVNTQUdFX1RZUEVfRFVTSxACEh0KGUdBTUVfTUVT",
-            "U0FHRV9UWVBFX1ZJQ1RPUlkQAxIcChhHQU1FX01FU1NBR0VfVFlQRV9ERUZF",
-            "QVQQBCpqCg1TY2VuZUxvYWRNb2RlEh8KG1NDRU5FX0xPQURfTU9ERV9VTlNQ",
-            "RUNJRklFRBAAEhoKFlNDRU5FX0xPQURfTU9ERV9TSU5HTEUQARIcChhTQ0VO",
-            "RV9MT0FEX01PREVfQURESVRJVkUQAiqQAQoPTG9nTWVzc2FnZUxldmVsEiEK",
-            "HUxPR19NRVNTQUdFX0xFVkVMX1VOU1BFQ0lGSUVEEAASHgoaTE9HX01FU1NB",
-            "R0VfTEVWRUxfU1RBTkRBUkQQARIdChlMT0dfTUVTU0FHRV9MRVZFTF9XQVJO",
-            "SU5HEAISGwoXTE9HX01FU1NBR0VfTEVWRUxfRVJST1IQAyq6AQoWRGVzdHJv",
-            "eUFuaW1hdGlvbkVmZmVjdBIoCiRERVNUUk9ZX0FOSU1BVElPTl9FRkZFQ1Rf",
-            "VU5TUEVDSUZJRUQQABIjCh9ERVNUUk9ZX0FOSU1BVElPTl9FRkZFQ1RfU0hS",
-            "SU5LEAESKgomREVTVFJPWV9BTklNQVRJT05fRUZGRUNUX1NIUklOS19IRUlH",
-            "SFQQAhIlCiFERVNUUk9ZX0FOSU1BVElPTl9FRkZFQ1RfRkFERV9PVVQQAyqB",
-            "AQoLTWFwVGlsZVR5cGUSHQoZTUFQX1RJTEVfVFlQRV9VTlNQRUNJRklFRBAA",
-            "EhoKFk1BUF9USUxFX1RZUEVfT0JTVEFDTEUQARIaChZNQVBfVElMRV9UWVBF",
-            "X1dBTEtBQkxFEAISGwoXTUFQX1RJTEVfVFlQRV9WSVNJVEFCTEUQAzKMAQoJ",
-            "U3BlbGxkYXduEj4KB0Nvbm5lY3QSGS5zcGVsbGRhd24uQ29ubmVjdFJlcXVl",
-            "c3QaFi5zcGVsbGRhd24uQ29tbWFuZExpc3QwARI/Cg1QZXJmb3JtQWN0aW9u",
-            "EhYuc3BlbGxkYXduLkdhbWVSZXF1ZXN0GhYuc3BlbGxkYXduLkNvbW1hbmRM",
-            "aXN0QhOqAhBTcGVsbGRhd24uUHJvdG9zYgZwcm90bzM="));
+            "dGVwcxgBIAMoCzIeLnNwZWxsZGF3bi5VcGRhdGVJbnRlcmZhY2VTdGVwIlEK",
+            "EENvbmRpdGlvbmFsUXVlcnkSNAoOZWxlbWVudF9leGlzdHMYASABKAsyGi5z",
+            "cGVsbGRhd24uRWxlbWVudFNlbGVjdG9ySABCBwoFcXVlcnkikwEKEkNvbmRp",
+            "dGlvbmFsQ29tbWFuZBIqCgVxdWVyeRgBIAEoCzIbLnNwZWxsZGF3bi5Db25k",
+            "aXRpb25hbFF1ZXJ5EicKB2lmX3RydWUYAiABKAsyFi5zcGVsbGRhd24uQ29t",
+            "bWFuZExpc3QSKAoIaWZfZmFsc2UYAyABKAsyFi5zcGVsbGRhd24uQ29tbWFu",
+            "ZExpc3Qi9QkKC0dhbWVDb21tYW5kEi4KBWRlYnVnGAEgASgLMh0uc3BlbGxk",
+            "YXduLkNsaWVudERlYnVnQ29tbWFuZEgAEigKBWRlbGF5GAIgASgLMhcuc3Bl",
+            "bGxkYXduLkRlbGF5Q29tbWFuZEgAEjcKDXVwZGF0ZV9wYW5lbHMYAyABKAsy",
+            "Hi5zcGVsbGRhd24uVXBkYXRlUGFuZWxzQ29tbWFuZEgAEjUKDHRvZ2dsZV9w",
+            "YW5lbBgEIAEoCzIdLnNwZWxsZGF3bi5Ub2dnbGVQYW5lbENvbW1hbmRIABI8",
+            "ChB1cGRhdGVfZ2FtZV92aWV3GAUgASgLMiAuc3BlbGxkYXduLlVwZGF0ZUdh",
+            "bWVWaWV3Q29tbWFuZEgAEjEKCnZpc2l0X3Jvb20YBiABKAsyGy5zcGVsbGRh",
+            "d24uVmlzaXRSb29tQ29tbWFuZEgAEjEKCnBsYXlfc291bmQYByABKAsyGy5z",
+            "cGVsbGRhd24uUGxheVNvdW5kQ29tbWFuZEgAEi8KCXNldF9tdXNpYxgIIAEo",
+            "CzIaLnNwZWxsZGF3bi5TZXRNdXNpY0NvbW1hbmRIABI7Cg9maXJlX3Byb2pl",
+            "Y3RpbGUYCSABKAsyIC5zcGVsbGRhd24uRmlyZVByb2plY3RpbGVDb21tYW5k",
+            "SAASMwoLcGxheV9lZmZlY3QYCiABKAsyHC5zcGVsbGRhd24uUGxheUVmZmVj",
+            "dENvbW1hbmRIABJEChRkaXNwbGF5X2dhbWVfbWVzc2FnZRgLIAEoCzIkLnNw",
+            "ZWxsZGF3bi5EaXNwbGF5R2FtZU1lc3NhZ2VDb21tYW5kSAASSwoYc2V0X2dh",
+            "bWVfb2JqZWN0c19lbmFibGVkGAwgASgLMicuc3BlbGxkYXduLlNldEdhbWVP",
+            "YmplY3RzRW5hYmxlZENvbW1hbmRIABI7Cg9kaXNwbGF5X3Jld2FyZHMYDSAB",
+            "KAsyIC5zcGVsbGRhd24uRGlzcGxheVJld2FyZHNDb21tYW5kSAASMQoKbG9h",
+            "ZF9zY2VuZRgOIAEoCzIbLnNwZWxsZGF3bi5Mb2FkU2NlbmVDb21tYW5kSAAS",
+            "PgoRbW92ZV9nYW1lX29iamVjdHMYDyABKAsyIS5zcGVsbGRhd24uTW92ZUdh",
+            "bWVPYmplY3RzQ29tbWFuZEgAEj4KEWNyZWF0ZV90b2tlbl9jYXJkGBAgASgL",
+            "MiEuc3BlbGxkYXduLkNyZWF0ZVRva2VuQ2FyZENvbW1hbmRIABJMChh1cGRh",
+            "dGVfaW50ZXJmYWNlX2VsZW1lbnQYESABKAsyKC5zcGVsbGRhd24uVXBkYXRl",
+            "SW50ZXJmYWNlRWxlbWVudENvbW1hbmRIABI8ChB1cGRhdGVfd29ybGRfbWFw",
+            "GBIgASgLMiAuc3BlbGxkYXduLlVwZGF0ZVdvcmxkTWFwQ29tbWFuZEgAEkYK",
+            "FXJlbmRlcl9zY3JlZW5fb3ZlcmxheRgTIAEoCzIlLnNwZWxsZGF3bi5SZW5k",
+            "ZXJTY3JlZW5PdmVybGF5Q29tbWFuZEgAEj0KEHVwZGF0ZV9pbnRlcmZhY2UY",
+            "FCABKAsyIS5zcGVsbGRhd24uVXBkYXRlSW50ZXJmYWNlQ29tbWFuZEgAEjQK",
+            "C2NvbmRpdGlvbmFsGBUgASgLMh0uc3BlbGxkYXduLkNvbmRpdGlvbmFsQ29t",
+            "bWFuZEgAQgkKB2NvbW1hbmQiNwoLQ29tbWFuZExpc3QSKAoIY29tbWFuZHMY",
+            "ASADKAsyFi5zcGVsbGRhd24uR2FtZUNvbW1hbmQqnwEKCUZsZXhBbGlnbhIa",
+            "ChZGTEVYX0FMSUdOX1VOU1BFQ0lGSUVEEAASEwoPRkxFWF9BTElHTl9BVVRP",
+            "EAESGQoVRkxFWF9BTElHTl9GTEVYX1NUQVJUEAISFQoRRkxFWF9BTElHTl9D",
+            "RU5URVIQAxIXChNGTEVYX0FMSUdOX0ZMRVhfRU5EEAQSFgoSRkxFWF9BTElH",
+            "Tl9TVFJFVENIEAUqcAoQRmxleERpc3BsYXlTdHlsZRIiCh5GTEVYX0RJU1BM",
+            "QVlfU1RZTEVfVU5TUEVDSUZJRUQQABIbChdGTEVYX0RJU1BMQVlfU1RZTEVf",
+            "RkxFWBABEhsKF0ZMRVhfRElTUExBWV9TVFlMRV9OT05FEAIqpQEKDUZsZXhE",
+            "aXJlY3Rpb24SHgoaRkxFWF9ESVJFQ1RJT05fVU5TUEVDSUZJRUQQABIZChVG",
+            "TEVYX0RJUkVDVElPTl9DT0xVTU4QARIhCh1GTEVYX0RJUkVDVElPTl9DT0xV",
+            "TU5fUkVWRVJTRRACEhYKEkZMRVhfRElSRUNUSU9OX1JPVxADEh4KGkZMRVhf",
+            "RElSRUNUSU9OX1JPV19SRVZFUlNFEAQqbAoIRmxleFdyYXASGQoVRkxFWF9X",
+            "UkFQX1VOU1BFQ0lGSUVEEAASFQoRRkxFWF9XUkFQX05PX1dSQVAQARISCg5G",
+            "TEVYX1dSQVBfV1JBUBACEhoKFkZMRVhfV1JBUF9XUkFQX1JFVkVSU0UQAyq7",
+            "AQoLRmxleEp1c3RpZnkSHAoYRkxFWF9KVVNUSUZZX1VOU1BFQ0lGSUVEEAAS",
+            "GwoXRkxFWF9KVVNUSUZZX0ZMRVhfU1RBUlQQARIXChNGTEVYX0pVU1RJRllf",
+            "Q0VOVEVSEAISGQoVRkxFWF9KVVNUSUZZX0ZMRVhfRU5EEAMSHgoaRkxFWF9K",
+            "VVNUSUZZX1NQQUNFX0JFVFdFRU4QBBIdChlGTEVYX0pVU1RJRllfU1BBQ0Vf",
+            "QVJPVU5EEAUqYgoMRmxleE92ZXJmbG93Eh0KGUZMRVhfT1ZFUkZMT1dfVU5T",
+            "UEVDSUZJRUQQABIZChVGTEVYX09WRVJGTE9XX1ZJU0lCTEUQARIYChRGTEVY",
+            "X09WRVJGTE9XX0hJRERFThACKmUKDEZsZXhQb3NpdGlvbhIdChlGTEVYX1BP",
+            "U0lUSU9OX1VOU1BFQ0lGSUVEEAASGgoWRkxFWF9QT1NJVElPTl9SRUxBVElW",
+            "RRABEhoKFkZMRVhfUE9TSVRJT05fQUJTT0xVVEUQAiphCgxUZXh0T3ZlcmZs",
+            "b3cSHQoZVEVYVF9PVkVSRkxPV19VTlNQRUNJRklFRBAAEhYKElRFWFRfT1ZF",
+            "UkZMT1dfQ0xJUBABEhoKFlRFWFRfT1ZFUkZMT1dfRUxMSVBTSVMQAirzBQoK",
+            "RWFzaW5nTW9kZRIbChdFQVNJTkdfTU9ERV9VTlNQRUNJRklFRBAAEhQKEEVB",
+            "U0lOR19NT0RFX0VBU0UQARIXChNFQVNJTkdfTU9ERV9FQVNFX0lOEAISGAoU",
+            "RUFTSU5HX01PREVfRUFTRV9PVVQQAxIbChdFQVNJTkdfTU9ERV9FQVNFX0lO",
+            "X09VVBAEEhYKEkVBU0lOR19NT0RFX0xJTkVBUhAFEhwKGEVBU0lOR19NT0RF",
+            "X0VBU0VfSU5fU0lORRAGEh0KGUVBU0lOR19NT0RFX0VBU0VfT1VUX1NJTkUQ",
+            "BxIgChxFQVNJTkdfTU9ERV9FQVNFX0lOX09VVF9TSU5FEAgSHQoZRUFTSU5H",
+            "X01PREVfRUFTRV9JTl9DVUJJQxAJEh4KGkVBU0lOR19NT0RFX0VBU0VfT1VU",
+            "X0NVQklDEAoSIQodRUFTSU5HX01PREVfRUFTRV9JTl9PVVRfQ1VCSUMQCxIc",
+            "ChhFQVNJTkdfTU9ERV9FQVNFX0lOX0NJUkMQDBIdChlFQVNJTkdfTU9ERV9F",
+            "QVNFX09VVF9DSVJDEA0SIAocRUFTSU5HX01PREVfRUFTRV9JTl9PVVRfQ0lS",
+            "QxAOEh8KG0VBU0lOR19NT0RFX0VBU0VfSU5fRUxBU1RJQxAPEiAKHEVBU0lO",
+            "R19NT0RFX0VBU0VfT1VUX0VMQVNUSUMQEBIjCh9FQVNJTkdfTU9ERV9FQVNF",
+            "X0lOX09VVF9FTEFTVElDEBESHAoYRUFTSU5HX01PREVfRUFTRV9JTl9CQUNL",
+            "EBISHQoZRUFTSU5HX01PREVfRUFTRV9PVVRfQkFDSxATEiAKHEVBU0lOR19N",
+            "T0RFX0VBU0VfSU5fT1VUX0JBQ0sQFBIeChpFQVNJTkdfTU9ERV9FQVNFX0lO",
+            "X0JPVU5DRRAVEh8KG0VBU0lOR19NT0RFX0VBU0VfT1VUX0JPVU5DRRAWEiIK",
+            "HkVBU0lOR19NT0RFX0VBU0VfSU5fT1VUX0JPVU5DRRAXKqABCg5JbWFnZVNj",
+            "YWxlTW9kZRIgChxJTUFHRV9TQ0FMRV9NT0RFX1VOU1BFQ0lGSUVEEAASJAog",
+            "SU1BR0VfU0NBTEVfTU9ERV9TVFJFVENIX1RPX0ZJTEwQARIjCh9JTUFHRV9T",
+            "Q0FMRV9NT0RFX1NDQUxFX0FORF9DUk9QEAISIQodSU1BR0VfU0NBTEVfTU9E",
+            "RV9TQ0FMRV9UT19GSVQQAyqKAQoJRm9udFN0eWxlEhoKFkZPTlRfU1RZTEVf",
+            "VU5TUEVDSUZJRUQQABIVChFGT05UX1NUWUxFX05PUk1BTBABEhMKD0ZPTlRf",
+            "U1RZTEVfQk9MRBACEhUKEUZPTlRfU1RZTEVfSVRBTElDEAMSHgoaRk9OVF9T",
+            "VFlMRV9CT0xEX0FORF9JVEFMSUMQBCp6Cg9PdmVyZmxvd0NsaXBCb3gSIQod",
+            "T1ZFUkZMT1dfQ0xJUF9CT1hfVU5TUEVDSUZJRUQQABIhCh1PVkVSRkxPV19D",
+            "TElQX0JPWF9QQURESU5HX0JPWBABEiEKHU9WRVJGTE9XX0NMSVBfQk9YX0NP",
+            "TlRFTlRfQk9YEAIqpgIKCVRleHRBbGlnbhIaChZURVhUX0FMSUdOX1VOU1BF",
+            "Q0lGSUVEEAASGQoVVEVYVF9BTElHTl9VUFBFUl9MRUZUEAESGwoXVEVYVF9B",
+            "TElHTl9VUFBFUl9DRU5URVIQAhIaChZURVhUX0FMSUdOX1VQUEVSX1JJR0hU",
+            "EAMSGgoWVEVYVF9BTElHTl9NSURETEVfTEVGVBAEEhwKGFRFWFRfQUxJR05f",
+            "TUlERExFX0NFTlRFUhAFEhsKF1RFWFRfQUxJR05fTUlERExFX1JJR0hUEAYS",
+            "GQoVVEVYVF9BTElHTl9MT1dFUl9MRUZUEAcSGwoXVEVYVF9BTElHTl9MT1dF",
+            "Ul9DRU5URVIQCBIaChZURVhUX0FMSUdOX0xPV0VSX1JJR0hUEAkqowEKFFRl",
+            "eHRPdmVyZmxvd1Bvc2l0aW9uEiYKIlRFWFRfT1ZFUkZMT1dfUE9TSVRJT05f",
+            "VU5TUEVDSUZJRUQQABIeChpURVhUX09WRVJGTE9XX1BPU0lUSU9OX0VORBAB",
+            "EiAKHFRFWFRfT1ZFUkZMT1dfUE9TSVRJT05fU1RBUlQQAhIhCh1URVhUX09W",
+            "RVJGTE9XX1BPU0lUSU9OX01JRERMRRADKmoKDkZsZXhWaXNpYmlsaXR5Eh8K",
+            "G0ZMRVhfVklTSUJJTElUWV9VTlNQRUNJRklFRBAAEhsKF0ZMRVhfVklTSUJJ",
+            "TElUWV9WSVNJQkxFEAESGgoWRkxFWF9WSVNJQklMSVRZX0hJRERFThACKloK",
+            "CldoaXRlU3BhY2USGwoXV0hJVEVfU1BBQ0VfVU5TUEVDSUZJRUQQABIWChJX",
+            "SElURV9TUEFDRV9OT1JNQUwQARIXChNXSElURV9TUEFDRV9OT19XUkFQEAIq",
+            "vgIKDURpbWVuc2lvblVuaXQSHgoaRElNRU5TSU9OX1VOSVRfVU5TUEVDSUZJ",
+            "RUQQABIZChVESU1FTlNJT05fVU5JVF9QSVhFTFMQARIdChlESU1FTlNJT05f",
+            "VU5JVF9QRVJDRU5UQUdFEAISIQodRElNRU5TSU9OX1VOSVRfVklFV1BPUlRf",
+            "V0lEVEgQAxIiCh5ESU1FTlNJT05fVU5JVF9WSUVXUE9SVF9IRUlHSFQQBBIg",
+            "ChxESU1FTlNJT05fVU5JVF9TQUZFX0FSRUFfVE9QEAUSIgoeRElNRU5TSU9O",
+            "X1VOSVRfU0FGRV9BUkVBX1JJR0hUEAYSIwofRElNRU5TSU9OX1VOSVRfU0FG",
+            "RV9BUkVBX0JPVFRPTRAHEiEKHURJTUVOU0lPTl9VTklUX1NBRkVfQVJFQV9M",
+            "RUZUEAgqcgoPRmxleFBpY2tpbmdNb2RlEiEKHUZMRVhfUElDS0lOR19NT0RF",
+            "X1VOU1BFQ0lGSUVEEAASHgoaRkxFWF9QSUNLSU5HX01PREVfUE9TSVRJT04Q",
+            "ARIcChhGTEVYX1BJQ0tJTkdfTU9ERV9JR05PUkUQAiqcAQoXQmFja2dyb3Vu",
+            "ZEltYWdlQXV0b1NpemUSKgomQkFDS0dST1VORF9JTUFHRV9BVVRPX1NJWkVf",
+            "VU5TUEVDSUZJRUQQABIpCiVCQUNLR1JPVU5EX0lNQUdFX0FVVE9fU0laRV9G",
+            "Uk9NX1dJRFRIEAESKgomQkFDS0dST1VORF9JTUFHRV9BVVRPX1NJWkVfRlJP",
+            "TV9IRUlHSFQQAiqoAQoTU2Nyb2xsQmFyVmlzaWJpbGl0eRIlCiFTQ1JPTExf",
+            "QkFSX1ZJU0lCSUxJVFlfVU5TUEVDSUZJRUQQABIeChpTQ1JPTExfQkFSX1ZJ",
+            "U0lCSUxJVFlfQVVUTxABEigKJFNDUk9MTF9CQVJfVklTSUJJTElUWV9BTFdB",
+            "WVNfVklTSUJMRRACEiAKHFNDUk9MTF9CQVJfVklTSUJJTElUWV9ISURERU4Q",
+            "AyqqAQoTVG91Y2hTY3JvbGxCZWhhdmlvchIlCiFUT1VDSF9TQ1JPTExfQkVI",
+            "QVZJT1JfVU5TUEVDSUZJRUQQABImCiJUT1VDSF9TQ1JPTExfQkVIQVZJT1Jf",
+            "VU5SRVNUUklDVEVEEAESIQodVE9VQ0hfU0NST0xMX0JFSEFWSU9SX0VMQVNU",
+            "SUMQAhIhCh1UT1VDSF9TQ1JPTExfQkVIQVZJT1JfQ0xBTVBFRBADKnMKD1Ns",
+            "aWRlckRpcmVjdGlvbhIgChxTTElERVJfRElSRUNUSU9OX1VOU1BFQ0lGSUVE",
+            "EAASHwobU0xJREVSX0RJUkVDVElPTl9IT1JJWk9OVEFMEAESHQoZU0xJREVS",
+            "X0RJUkVDVElPTl9WRVJUSUNBTBACKl0KClBsYXllclNpZGUSGwoXUExBWUVS",
+            "X1NJREVfVU5TUEVDSUZJRUQQABIYChRQTEFZRVJfU0lERV9PVkVSTE9SRBAB",
+            "EhgKFFBMQVlFUl9TSURFX0NIQU1QSU9OEAIqWQoKUGxheWVyTmFtZRIbChdQ",
+            "TEFZRVJfTkFNRV9VTlNQRUNJRklFRBAAEhQKEFBMQVlFUl9OQU1FX1VTRVIQ",
+            "ARIYChRQTEFZRVJfTkFNRV9PUFBPTkVOVBACKpECCg5Sb29tSWRlbnRpZmll",
+            "chIfChtST09NX0lERU5USUZJRVJfVU5TUEVDSUZJRUQQABIZChVST09NX0lE",
+            "RU5USUZJRVJfVkFVTFQQARIbChdST09NX0lERU5USUZJRVJfU0FOQ1RVTRAC",
+            "EhoKFlJPT01fSURFTlRJRklFUl9DUllQVFMQAxIaChZST09NX0lERU5USUZJ",
+            "RVJfUk9PTV9BEAQSGgoWUk9PTV9JREVOVElGSUVSX1JPT01fQhAFEhoKFlJP",
+            "T01fSURFTlRJRklFUl9ST09NX0MQBhIaChZST09NX0lERU5USUZJRVJfUk9P",
+            "TV9EEAcSGgoWUk9PTV9JREVOVElGSUVSX1JPT01fRRAIKn8KDlRhcmdldGlu",
+            "Z0Fycm93Eh8KG1RBUkdFVElOR19BUlJPV19VTlNQRUNJRklFRBAAEhcKE1RB",
+            "UkdFVElOR19BUlJPV19SRUQQARIYChRUQVJHRVRJTkdfQVJST1dfQkxVRRAC",
+            "EhkKFVRBUkdFVElOR19BUlJPV19HUkVFThADKnkKEkNsaWVudFJvb21Mb2Nh",
+            "dGlvbhIkCiBDTElFTlRfUk9PTV9MT0NBVElPTl9VTlNQRUNJRklFRBAAEh0K",
+            "GUNMSUVOVF9ST09NX0xPQ0FUSU9OX0JBQ0sQARIeChpDTElFTlRfUk9PTV9M",
+            "T0NBVElPTl9GUk9OVBACKnkKEkNsaWVudEl0ZW1Mb2NhdGlvbhIkCiBDTElF",
+            "TlRfSVRFTV9MT0NBVElPTl9VTlNQRUNJRklFRBAAEh0KGUNMSUVOVF9JVEVN",
+            "X0xPQ0FUSU9OX0xFRlQQARIeChpDTElFTlRfSVRFTV9MT0NBVElPTl9SSUdI",
+            "VBACKpUBChhSZXZlYWxlZENhcmRzQnJvd3NlclNpemUSKwonUkVWRUFMRURf",
+            "Q0FSRFNfQlJPV1NFUl9TSVpFX1VOU1BFQ0lGSUVEEAASJQohUkVWRUFMRURf",
+            "Q0FSRFNfQlJPV1NFUl9TSVpFX1NNQUxMEAESJQohUkVWRUFMRURfQ0FSRFNf",
+            "QlJPV1NFUl9TSVpFX0xBUkdFEAIqXwoKQ2FyZFByZWZhYhIbChdDQVJEX1BS",
+            "RUZBQl9VTlNQRUNJRklFRBAAEhgKFENBUkRfUFJFRkFCX1NUQU5EQVJEEAES",
+            "GgoWQ0FSRF9QUkVGQUJfVE9LRU5fQ0FSRBACKqUBCgxBbmNob3JDb3JuZXIS",
+            "HQoZQU5DSE9SX0NPUk5FUl9VTlNQRUNJRklFRBAAEhoKFkFOQ0hPUl9DT1JO",
+            "RVJfVE9QX0xFRlQQARIbChdBTkNIT1JfQ09STkVSX1RPUF9SSUdIVBACEh0K",
+            "GUFOQ0hPUl9DT1JORVJfQk9UVE9NX0xFRlQQAxIeChpBTkNIT1JfQ09STkVS",
+            "X0JPVFRPTV9SSUdIVBAEKnYKDVJvb21WaXNpdFR5cGUSHwobUk9PTV9WSVNJ",
+            "VF9UWVBFX1VOU1BFQ0lGSUVEEAASIQodUk9PTV9WSVNJVF9UWVBFX0lOSVRJ",
+            "QVRFX1JBSUQQARIhCh1ST09NX1ZJU0lUX1RZUEVfTEVWRUxfVVBfUk9PTRAC",
+            "KpUBChVDYXJkQ3JlYXRpb25BbmltYXRpb24SJwojQ0FSRF9DUkVBVElPTl9B",
+            "TklNQVRJT05fVU5TUEVDSUZJRUQQABIlCiFDQVJEX0NSRUFUSU9OX0FOSU1B",
+            "VElPTl9EUkFXX0NBUkQQARIsCihDQVJEX0NSRUFUSU9OX0FOSU1BVElPTl9G",
+            "Uk9NX1BBUkVOVF9DQVJEEAIqjAEKCk11c2ljU3RhdGUSGwoXTVVTSUNfU1RB",
+            "VEVfVU5TUEVDSUZJRUQQABIWChJNVVNJQ19TVEFURV9TSUxFTlQQARIYChRN",
+            "VVNJQ19TVEFURV9HQU1FUExBWRACEhQKEE1VU0lDX1NUQVRFX1JBSUQQAxIZ",
+            "ChVNVVNJQ19TVEFURV9NQUlOX01FTlUQBCqpAQoPR2FtZU1lc3NhZ2VUeXBl",
+            "EiEKHUdBTUVfTUVTU0FHRV9UWVBFX1VOU1BFQ0lGSUVEEAASGgoWR0FNRV9N",
+            "RVNTQUdFX1RZUEVfREFXThABEhoKFkdBTUVfTUVTU0FHRV9UWVBFX0RVU0sQ",
+            "AhIdChlHQU1FX01FU1NBR0VfVFlQRV9WSUNUT1JZEAMSHAoYR0FNRV9NRVNT",
+            "QUdFX1RZUEVfREVGRUFUEAQqagoNU2NlbmVMb2FkTW9kZRIfChtTQ0VORV9M",
+            "T0FEX01PREVfVU5TUEVDSUZJRUQQABIaChZTQ0VORV9MT0FEX01PREVfU0lO",
+            "R0xFEAESHAoYU0NFTkVfTE9BRF9NT0RFX0FERElUSVZFEAIqkAEKD0xvZ01l",
+            "c3NhZ2VMZXZlbBIhCh1MT0dfTUVTU0FHRV9MRVZFTF9VTlNQRUNJRklFRBAA",
+            "Eh4KGkxPR19NRVNTQUdFX0xFVkVMX1NUQU5EQVJEEAESHQoZTE9HX01FU1NB",
+            "R0VfTEVWRUxfV0FSTklORxACEhsKF0xPR19NRVNTQUdFX0xFVkVMX0VSUk9S",
+            "EAMqugEKFkRlc3Ryb3lBbmltYXRpb25FZmZlY3QSKAokREVTVFJPWV9BTklN",
+            "QVRJT05fRUZGRUNUX1VOU1BFQ0lGSUVEEAASIwofREVTVFJPWV9BTklNQVRJ",
+            "T05fRUZGRUNUX1NIUklOSxABEioKJkRFU1RST1lfQU5JTUFUSU9OX0VGRkVD",
+            "VF9TSFJJTktfSEVJR0hUEAISJQohREVTVFJPWV9BTklNQVRJT05fRUZGRUNU",
+            "X0ZBREVfT1VUEAMqgQEKC01hcFRpbGVUeXBlEh0KGU1BUF9USUxFX1RZUEVf",
+            "VU5TUEVDSUZJRUQQABIaChZNQVBfVElMRV9UWVBFX09CU1RBQ0xFEAESGgoW",
+            "TUFQX1RJTEVfVFlQRV9XQUxLQUJMRRACEhsKF01BUF9USUxFX1RZUEVfVklT",
+            "SVRBQkxFEAMyjAEKCVNwZWxsZGF3bhI+CgdDb25uZWN0Ehkuc3BlbGxkYXdu",
+            "LkNvbm5lY3RSZXF1ZXN0GhYuc3BlbGxkYXduLkNvbW1hbmRMaXN0MAESPwoN",
+            "UGVyZm9ybUFjdGlvbhIWLnNwZWxsZGF3bi5HYW1lUmVxdWVzdBoWLnNwZWxs",
+            "ZGF3bi5Db21tYW5kTGlzdEITqgIQU3BlbGxkYXduLlByb3Rvc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Spelldawn.Protos.FlexAlign), typeof(global::Spelldawn.Protos.FlexDisplayStyle), typeof(global::Spelldawn.Protos.FlexDirection), typeof(global::Spelldawn.Protos.FlexWrap), typeof(global::Spelldawn.Protos.FlexJustify), typeof(global::Spelldawn.Protos.FlexOverflow), typeof(global::Spelldawn.Protos.FlexPosition), typeof(global::Spelldawn.Protos.TextOverflow), typeof(global::Spelldawn.Protos.EasingMode), typeof(global::Spelldawn.Protos.ImageScaleMode), typeof(global::Spelldawn.Protos.FontStyle), typeof(global::Spelldawn.Protos.OverflowClipBox), typeof(global::Spelldawn.Protos.TextAlign), typeof(global::Spelldawn.Protos.TextOverflowPosition), typeof(global::Spelldawn.Protos.FlexVisibility), typeof(global::Spelldawn.Protos.WhiteSpace), typeof(global::Spelldawn.Protos.DimensionUnit), typeof(global::Spelldawn.Protos.FlexPickingMode), typeof(global::Spelldawn.Protos.BackgroundImageAutoSize), typeof(global::Spelldawn.Protos.ScrollBarVisibility), typeof(global::Spelldawn.Protos.TouchScrollBehavior), typeof(global::Spelldawn.Protos.SliderDirection), typeof(global::Spelldawn.Protos.PlayerSide), typeof(global::Spelldawn.Protos.PlayerName), typeof(global::Spelldawn.Protos.RoomIdentifier), typeof(global::Spelldawn.Protos.TargetingArrow), typeof(global::Spelldawn.Protos.ClientRoomLocation), typeof(global::Spelldawn.Protos.ClientItemLocation), typeof(global::Spelldawn.Protos.RevealedCardsBrowserSize), typeof(global::Spelldawn.Protos.CardPrefab), typeof(global::Spelldawn.Protos.AnchorCorner), typeof(global::Spelldawn.Protos.RoomVisitType), typeof(global::Spelldawn.Protos.CardCreationAnimation), typeof(global::Spelldawn.Protos.MusicState), typeof(global::Spelldawn.Protos.GameMessageType), typeof(global::Spelldawn.Protos.SceneLoadMode), typeof(global::Spelldawn.Protos.LogMessageLevel), typeof(global::Spelldawn.Protos.DestroyAnimationEffect), typeof(global::Spelldawn.Protos.MapTileType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -765,20 +775,22 @@ namespace Spelldawn.Protos {
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.AnimateToElementPositionAndDestroy), global::Spelldawn.Protos.AnimateToElementPositionAndDestroy.Parser, new[]{ "TargetElementName", "Animation", "FallbackTargetElementName", "DoNotClone" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.UpdateText), global::Spelldawn.Protos.UpdateText.Parser, new[]{ "NewText" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.UpdateInterfaceElementCommand), global::Spelldawn.Protos.UpdateInterfaceElementCommand.Parser, new[]{ "ElementName", "AnimateToChildIndex", "AnimateToElementPosition", "Destroy", "UpdateText", "ClearChildren" }, new[]{ "InterfaceUpdate" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ElementSelector), global::Spelldawn.Protos.ElementSelector.Parser, new[]{ "ElementName", "DragIndicator" }, new[]{ "Selector" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ElementAnimation), global::Spelldawn.Protos.ElementAnimation.Parser, new[]{ "Duration", "Ease" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.AnimateToPosition), global::Spelldawn.Protos.AnimateToPosition.Parser, new[]{ "Destination", "Animation" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.AnimateToChildIndex), global::Spelldawn.Protos.AnimateToChildIndex.Parser, new[]{ "Destination", "Index", "Animation" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.AnimateElementStyle), global::Spelldawn.Protos.AnimateElementStyle.Parser, new[]{ "Animation", "Opacity", "Width", "Height", "Scale" }, new[]{ "Property" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.InterfaceUpdate), global::Spelldawn.Protos.InterfaceUpdate.Parser, new[]{ "CloneElement", "DestroyElement", "AnimateToPosition", "AnimateToChildIndex", "AnimateStyle" }, new[]{ "Update" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.UpdateInterfaceStep), global::Spelldawn.Protos.UpdateInterfaceStep.Parser, new[]{ "Element", "Update", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.UpdateInterfaceCommand), global::Spelldawn.Protos.UpdateInterfaceCommand.Parser, new[]{ "Steps" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.MapPosition), global::Spelldawn.Protos.MapPosition.Parser, new[]{ "X", "Y" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.WorldMapSprite), global::Spelldawn.Protos.WorldMapSprite.Parser, new[]{ "SpriteAddress", "Color", "AnchorOffset", "Scale" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.WorldMapTile), global::Spelldawn.Protos.WorldMapTile.Parser, new[]{ "Sprites", "Position", "OnVisit", "TileType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.UpdateWorldMapCommand), global::Spelldawn.Protos.UpdateWorldMapCommand.Parser, new[]{ "Tiles" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.RenderScreenOverlayCommand), global::Spelldawn.Protos.RenderScreenOverlayCommand.Parser, new[]{ "Node" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.GameCommand), global::Spelldawn.Protos.GameCommand.Parser, new[]{ "Debug", "Delay", "UpdatePanels", "TogglePanel", "UpdateGameView", "VisitRoom", "PlaySound", "SetMusic", "FireProjectile", "PlayEffect", "DisplayGameMessage", "SetGameObjectsEnabled", "DisplayRewards", "LoadScene", "MoveGameObjects", "CreateTokenCard", "UpdateInterfaceElement", "UpdateWorldMap", "RenderScreenOverlay", "UpdateInterface" }, new[]{ "Command" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ElementSelector), global::Spelldawn.Protos.ElementSelector.Parser, new[]{ "ElementName", "DragIndicator", "TargetElement" }, new[]{ "Selector" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ElementAnimation), global::Spelldawn.Protos.ElementAnimation.Parser, new[]{ "Duration", "Ease" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.AnimateToPosition), global::Spelldawn.Protos.AnimateToPosition.Parser, new[]{ "Destination", "Animation", "DisableHeightHalfOffset", "DisableWidthHalfOffset" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.CreateTargetAtChildIndex), global::Spelldawn.Protos.CreateTargetAtChildIndex.Parser, new[]{ "Parent", "Index", "TargetName", "Animation" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.AnimateElementStyle), global::Spelldawn.Protos.AnimateElementStyle.Parser, new[]{ "Animation", "Opacity", "Width", "Height", "Scale" }, new[]{ "Property" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.InterfaceUpdate), global::Spelldawn.Protos.InterfaceUpdate.Parser, new[]{ "CloneElement", "DestroyElement", "AnimateToPosition", "ApplyStyle", "AnimateStyle", "CreateTargetAtChildIndex" }, new[]{ "Update" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.UpdateInterfaceStep), global::Spelldawn.Protos.UpdateInterfaceStep.Parser, new[]{ "Element", "Update", "StartTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.UpdateInterfaceCommand), global::Spelldawn.Protos.UpdateInterfaceCommand.Parser, new[]{ "Steps" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ConditionalQuery), global::Spelldawn.Protos.ConditionalQuery.Parser, new[]{ "ElementExists" }, new[]{ "Query" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ConditionalCommand), global::Spelldawn.Protos.ConditionalCommand.Parser, new[]{ "Query", "IfTrue", "IfFalse" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.GameCommand), global::Spelldawn.Protos.GameCommand.Parser, new[]{ "Debug", "Delay", "UpdatePanels", "TogglePanel", "UpdateGameView", "VisitRoom", "PlaySound", "SetMusic", "FireProjectile", "PlayEffect", "DisplayGameMessage", "SetGameObjectsEnabled", "DisplayRewards", "LoadScene", "MoveGameObjects", "CreateTokenCard", "UpdateInterfaceElement", "UpdateWorldMap", "RenderScreenOverlay", "UpdateInterface", "Conditional" }, new[]{ "Command" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.CommandList), global::Spelldawn.Protos.CommandList.Parser, new[]{ "Commands" }, null, null, null, null)
           }));
     }
@@ -34075,6 +34087,1221 @@ namespace Spelldawn.Protos {
   }
 
   /// <summary>
+  /// Position of a tile on the world map
+  ///
+  /// We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
+  /// Right" convention, with values increasing moving up and right.
+  ///
+  /// ```text
+  ///
+  ///       /  \    / \
+  ///     /     \ /     \
+  ///    |  0,2  |  1,2  |
+  ///    |       |       |
+  ///   / \     / \     / \
+  /// /     \ /     \ /     \
+  ///|  0,1  |  1,1  |  2,1  |
+  ///|       |       |       |
+  /// \     / \     / \     /
+  ///   \ /     \ /     \ /
+  ///    |  0,0  |  1,0  |
+  ///    |       |       |
+  ///     \     / \     /
+  ///       \ /     \ /
+  ///
+  /// ```
+  /// </summary>
+  public sealed partial class MapPosition : pb::IMessage<MapPosition>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<MapPosition> _parser = new pb::MessageParser<MapPosition>(() => new MapPosition());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<MapPosition> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[119]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MapPosition() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MapPosition(MapPosition other) : this() {
+      x_ = other.x_;
+      y_ = other.y_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public MapPosition Clone() {
+      return new MapPosition(this);
+    }
+
+    /// <summary>Field number for the "x" field.</summary>
+    public const int XFieldNumber = 1;
+    private int x_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int X {
+      get { return x_; }
+      set {
+        x_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "y" field.</summary>
+    public const int YFieldNumber = 2;
+    private int y_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Y {
+      get { return y_; }
+      set {
+        y_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as MapPosition);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(MapPosition other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (X != other.X) return false;
+      if (Y != other.Y) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (X != 0) hash ^= X.GetHashCode();
+      if (Y != 0) hash ^= Y.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (X != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(X);
+      }
+      if (Y != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Y);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (X != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(X);
+      }
+      if (Y != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Y);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (X != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(X);
+      }
+      if (Y != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Y);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(MapPosition other) {
+      if (other == null) {
+        return;
+      }
+      if (other.X != 0) {
+        X = other.X;
+      }
+      if (other.Y != 0) {
+        Y = other.Y;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            X = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Y = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            X = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Y = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class WorldMapSprite : pb::IMessage<WorldMapSprite>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorldMapSprite> _parser = new pb::MessageParser<WorldMapSprite>(() => new WorldMapSprite());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<WorldMapSprite> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[120]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WorldMapSprite() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WorldMapSprite(WorldMapSprite other) : this() {
+      spriteAddress_ = other.spriteAddress_ != null ? other.spriteAddress_.Clone() : null;
+      color_ = other.color_ != null ? other.color_.Clone() : null;
+      anchorOffset_ = other.anchorOffset_ != null ? other.anchorOffset_.Clone() : null;
+      scale_ = other.scale_ != null ? other.scale_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WorldMapSprite Clone() {
+      return new WorldMapSprite(this);
+    }
+
+    /// <summary>Field number for the "sprite_address" field.</summary>
+    public const int SpriteAddressFieldNumber = 1;
+    private global::Spelldawn.Protos.SpriteAddress spriteAddress_;
+    /// <summary>
+    /// Addressable asset path of sprite to display on the hex grid
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.SpriteAddress SpriteAddress {
+      get { return spriteAddress_; }
+      set {
+        spriteAddress_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "color" field.</summary>
+    public const int ColorFieldNumber = 2;
+    private global::Spelldawn.Protos.FlexColor color_;
+    /// <summary>
+    /// Color tint for the provided sprite.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.FlexColor Color {
+      get { return color_; }
+      set {
+        color_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "anchor_offset" field.</summary>
+    public const int AnchorOffsetFieldNumber = 3;
+    private global::Spelldawn.Protos.FlexVector3 anchorOffset_;
+    /// <summary>
+    /// Controls the position of the tile image. Note that tiles by default are
+    /// anchored at (0,-0.64), meaning they're shifted to screen bottom.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.FlexVector3 AnchorOffset {
+      get { return anchorOffset_; }
+      set {
+        anchorOffset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "scale" field.</summary>
+    public const int ScaleFieldNumber = 4;
+    private global::Spelldawn.Protos.FlexVector3 scale_;
+    /// <summary>
+    /// Scale transformation to apply to the image.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.FlexVector3 Scale {
+      get { return scale_; }
+      set {
+        scale_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as WorldMapSprite);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(WorldMapSprite other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(SpriteAddress, other.SpriteAddress)) return false;
+      if (!object.Equals(Color, other.Color)) return false;
+      if (!object.Equals(AnchorOffset, other.AnchorOffset)) return false;
+      if (!object.Equals(Scale, other.Scale)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (spriteAddress_ != null) hash ^= SpriteAddress.GetHashCode();
+      if (color_ != null) hash ^= Color.GetHashCode();
+      if (anchorOffset_ != null) hash ^= AnchorOffset.GetHashCode();
+      if (scale_ != null) hash ^= Scale.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (spriteAddress_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(SpriteAddress);
+      }
+      if (color_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Color);
+      }
+      if (anchorOffset_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(AnchorOffset);
+      }
+      if (scale_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Scale);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (spriteAddress_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(SpriteAddress);
+      }
+      if (color_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Color);
+      }
+      if (anchorOffset_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(AnchorOffset);
+      }
+      if (scale_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Scale);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (spriteAddress_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SpriteAddress);
+      }
+      if (color_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Color);
+      }
+      if (anchorOffset_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AnchorOffset);
+      }
+      if (scale_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Scale);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(WorldMapSprite other) {
+      if (other == null) {
+        return;
+      }
+      if (other.spriteAddress_ != null) {
+        if (spriteAddress_ == null) {
+          SpriteAddress = new global::Spelldawn.Protos.SpriteAddress();
+        }
+        SpriteAddress.MergeFrom(other.SpriteAddress);
+      }
+      if (other.color_ != null) {
+        if (color_ == null) {
+          Color = new global::Spelldawn.Protos.FlexColor();
+        }
+        Color.MergeFrom(other.Color);
+      }
+      if (other.anchorOffset_ != null) {
+        if (anchorOffset_ == null) {
+          AnchorOffset = new global::Spelldawn.Protos.FlexVector3();
+        }
+        AnchorOffset.MergeFrom(other.AnchorOffset);
+      }
+      if (other.scale_ != null) {
+        if (scale_ == null) {
+          Scale = new global::Spelldawn.Protos.FlexVector3();
+        }
+        Scale.MergeFrom(other.Scale);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (spriteAddress_ == null) {
+              SpriteAddress = new global::Spelldawn.Protos.SpriteAddress();
+            }
+            input.ReadMessage(SpriteAddress);
+            break;
+          }
+          case 18: {
+            if (color_ == null) {
+              Color = new global::Spelldawn.Protos.FlexColor();
+            }
+            input.ReadMessage(Color);
+            break;
+          }
+          case 26: {
+            if (anchorOffset_ == null) {
+              AnchorOffset = new global::Spelldawn.Protos.FlexVector3();
+            }
+            input.ReadMessage(AnchorOffset);
+            break;
+          }
+          case 34: {
+            if (scale_ == null) {
+              Scale = new global::Spelldawn.Protos.FlexVector3();
+            }
+            input.ReadMessage(Scale);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (spriteAddress_ == null) {
+              SpriteAddress = new global::Spelldawn.Protos.SpriteAddress();
+            }
+            input.ReadMessage(SpriteAddress);
+            break;
+          }
+          case 18: {
+            if (color_ == null) {
+              Color = new global::Spelldawn.Protos.FlexColor();
+            }
+            input.ReadMessage(Color);
+            break;
+          }
+          case 26: {
+            if (anchorOffset_ == null) {
+              AnchorOffset = new global::Spelldawn.Protos.FlexVector3();
+            }
+            input.ReadMessage(AnchorOffset);
+            break;
+          }
+          case 34: {
+            if (scale_ == null) {
+              Scale = new global::Spelldawn.Protos.FlexVector3();
+            }
+            input.ReadMessage(Scale);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Represents the contents of a world map tile.
+  /// </summary>
+  public sealed partial class WorldMapTile : pb::IMessage<WorldMapTile>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorldMapTile> _parser = new pb::MessageParser<WorldMapTile>(() => new WorldMapTile());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<WorldMapTile> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[121]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WorldMapTile() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WorldMapTile(WorldMapTile other) : this() {
+      sprites_ = other.sprites_.Clone();
+      position_ = other.position_ != null ? other.position_.Clone() : null;
+      onVisit_ = other.onVisit_ != null ? other.onVisit_.Clone() : null;
+      tileType_ = other.tileType_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WorldMapTile Clone() {
+      return new WorldMapTile(this);
+    }
+
+    /// <summary>Field number for the "sprites" field.</summary>
+    public const int SpritesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Spelldawn.Protos.WorldMapSprite> _repeated_sprites_codec
+        = pb::FieldCodec.ForMessage(10, global::Spelldawn.Protos.WorldMapSprite.Parser);
+    private readonly pbc::RepeatedField<global::Spelldawn.Protos.WorldMapSprite> sprites_ = new pbc::RepeatedField<global::Spelldawn.Protos.WorldMapSprite>();
+    /// <summary>
+    /// Images to display on this tile. Will be rendered in z-index order, with
+    /// later sprites appearing on top of earlier ones. Sprites always display
+    /// below the player character layer.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Spelldawn.Protos.WorldMapSprite> Sprites {
+      get { return sprites_; }
+    }
+
+    /// <summary>Field number for the "position" field.</summary>
+    public const int PositionFieldNumber = 2;
+    private global::Spelldawn.Protos.MapPosition position_;
+    /// <summary>
+    /// Tile position.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.MapPosition Position {
+      get { return position_; }
+      set {
+        position_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "on_visit" field.</summary>
+    public const int OnVisitFieldNumber = 3;
+    private global::Spelldawn.Protos.ClientAction onVisit_;
+    /// <summary>
+    /// Action to invoke when this tile is visited by the player.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.ClientAction OnVisit {
+      get { return onVisit_; }
+      set {
+        onVisit_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "tile_type" field.</summary>
+    public const int TileTypeFieldNumber = 4;
+    private global::Spelldawn.Protos.MapTileType tileType_ = global::Spelldawn.Protos.MapTileType.Unspecified;
+    /// <summary>
+    /// How can the player character navigate through this tile?
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.MapTileType TileType {
+      get { return tileType_; }
+      set {
+        tileType_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as WorldMapTile);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(WorldMapTile other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!sprites_.Equals(other.sprites_)) return false;
+      if (!object.Equals(Position, other.Position)) return false;
+      if (!object.Equals(OnVisit, other.OnVisit)) return false;
+      if (TileType != other.TileType) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= sprites_.GetHashCode();
+      if (position_ != null) hash ^= Position.GetHashCode();
+      if (onVisit_ != null) hash ^= OnVisit.GetHashCode();
+      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) hash ^= TileType.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      sprites_.WriteTo(output, _repeated_sprites_codec);
+      if (position_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Position);
+      }
+      if (onVisit_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(OnVisit);
+      }
+      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) TileType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      sprites_.WriteTo(ref output, _repeated_sprites_codec);
+      if (position_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Position);
+      }
+      if (onVisit_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(OnVisit);
+      }
+      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) TileType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += sprites_.CalculateSize(_repeated_sprites_codec);
+      if (position_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
+      }
+      if (onVisit_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(OnVisit);
+      }
+      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TileType);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(WorldMapTile other) {
+      if (other == null) {
+        return;
+      }
+      sprites_.Add(other.sprites_);
+      if (other.position_ != null) {
+        if (position_ == null) {
+          Position = new global::Spelldawn.Protos.MapPosition();
+        }
+        Position.MergeFrom(other.Position);
+      }
+      if (other.onVisit_ != null) {
+        if (onVisit_ == null) {
+          OnVisit = new global::Spelldawn.Protos.ClientAction();
+        }
+        OnVisit.MergeFrom(other.OnVisit);
+      }
+      if (other.TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
+        TileType = other.TileType;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            sprites_.AddEntriesFrom(input, _repeated_sprites_codec);
+            break;
+          }
+          case 18: {
+            if (position_ == null) {
+              Position = new global::Spelldawn.Protos.MapPosition();
+            }
+            input.ReadMessage(Position);
+            break;
+          }
+          case 26: {
+            if (onVisit_ == null) {
+              OnVisit = new global::Spelldawn.Protos.ClientAction();
+            }
+            input.ReadMessage(OnVisit);
+            break;
+          }
+          case 32: {
+            TileType = (global::Spelldawn.Protos.MapTileType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            sprites_.AddEntriesFrom(ref input, _repeated_sprites_codec);
+            break;
+          }
+          case 18: {
+            if (position_ == null) {
+              Position = new global::Spelldawn.Protos.MapPosition();
+            }
+            input.ReadMessage(Position);
+            break;
+          }
+          case 26: {
+            if (onVisit_ == null) {
+              OnVisit = new global::Spelldawn.Protos.ClientAction();
+            }
+            input.ReadMessage(OnVisit);
+            break;
+          }
+          case 32: {
+            TileType = (global::Spelldawn.Protos.MapTileType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Updates the world map tilemap. Only valid in the 'World' scene.
+  /// </summary>
+  public sealed partial class UpdateWorldMapCommand : pb::IMessage<UpdateWorldMapCommand>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<UpdateWorldMapCommand> _parser = new pb::MessageParser<UpdateWorldMapCommand>(() => new UpdateWorldMapCommand());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<UpdateWorldMapCommand> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[122]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UpdateWorldMapCommand() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UpdateWorldMapCommand(UpdateWorldMapCommand other) : this() {
+      tiles_ = other.tiles_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UpdateWorldMapCommand Clone() {
+      return new UpdateWorldMapCommand(this);
+    }
+
+    /// <summary>Field number for the "tiles" field.</summary>
+    public const int TilesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Spelldawn.Protos.WorldMapTile> _repeated_tiles_codec
+        = pb::FieldCodec.ForMessage(10, global::Spelldawn.Protos.WorldMapTile.Parser);
+    private readonly pbc::RepeatedField<global::Spelldawn.Protos.WorldMapTile> tiles_ = new pbc::RepeatedField<global::Spelldawn.Protos.WorldMapTile>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::Spelldawn.Protos.WorldMapTile> Tiles {
+      get { return tiles_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as UpdateWorldMapCommand);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(UpdateWorldMapCommand other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!tiles_.Equals(other.tiles_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= tiles_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      tiles_.WriteTo(output, _repeated_tiles_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      tiles_.WriteTo(ref output, _repeated_tiles_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += tiles_.CalculateSize(_repeated_tiles_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(UpdateWorldMapCommand other) {
+      if (other == null) {
+        return;
+      }
+      tiles_.Add(other.tiles_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            tiles_.AddEntriesFrom(input, _repeated_tiles_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            tiles_.AddEntriesFrom(ref input, _repeated_tiles_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Displays a UI element on top of all other elements. This is typically used
+  /// to render chrome, e.g. buttons related to global navigation.
+  /// </summary>
+  public sealed partial class RenderScreenOverlayCommand : pb::IMessage<RenderScreenOverlayCommand>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RenderScreenOverlayCommand> _parser = new pb::MessageParser<RenderScreenOverlayCommand>(() => new RenderScreenOverlayCommand());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RenderScreenOverlayCommand> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[123]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RenderScreenOverlayCommand() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RenderScreenOverlayCommand(RenderScreenOverlayCommand other) : this() {
+      node_ = other.node_ != null ? other.node_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RenderScreenOverlayCommand Clone() {
+      return new RenderScreenOverlayCommand(this);
+    }
+
+    /// <summary>Field number for the "node" field.</summary>
+    public const int NodeFieldNumber = 1;
+    private global::Spelldawn.Protos.Node node_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.Node Node {
+      get { return node_; }
+      set {
+        node_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RenderScreenOverlayCommand);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RenderScreenOverlayCommand other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Node, other.Node)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (node_ != null) hash ^= Node.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (node_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Node);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (node_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Node);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (node_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Node);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RenderScreenOverlayCommand other) {
+      if (other == null) {
+        return;
+      }
+      if (other.node_ != null) {
+        if (node_ == null) {
+          Node = new global::Spelldawn.Protos.Node();
+        }
+        Node.MergeFrom(other.Node);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (node_ == null) {
+              Node = new global::Spelldawn.Protos.Node();
+            }
+            input.ReadMessage(Node);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (node_ == null) {
+              Node = new global::Spelldawn.Protos.Node();
+            }
+            input.ReadMessage(Node);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// A method for unqiuely identifying a single user interface element
   /// </summary>
   public sealed partial class ElementSelector : pb::IMessage<ElementSelector>
@@ -34089,7 +35316,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[119]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[124]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -34112,6 +35339,9 @@ namespace Spelldawn.Protos {
           break;
         case SelectorOneofCase.DragIndicator:
           DragIndicator = other.DragIndicator.Clone();
+          break;
+        case SelectorOneofCase.TargetElement:
+          TargetElement = other.TargetElement;
           break;
       }
 
@@ -34151,12 +35381,28 @@ namespace Spelldawn.Protos {
       }
     }
 
+    /// <summary>Field number for the "target_element" field.</summary>
+    public const int TargetElementFieldNumber = 3;
+    /// <summary>
+    /// A synthetic element created via an operation such as
+    /// 'CreateTargetAtChildIndex'.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string TargetElement {
+      get { return selectorCase_ == SelectorOneofCase.TargetElement ? (string) selector_ : ""; }
+      set {
+        selector_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        selectorCase_ = SelectorOneofCase.TargetElement;
+      }
+    }
+
     private object selector_;
     /// <summary>Enum of possible cases for the "selector" oneof.</summary>
     public enum SelectorOneofCase {
       None = 0,
       ElementName = 1,
       DragIndicator = 2,
+      TargetElement = 3,
     }
     private SelectorOneofCase selectorCase_ = SelectorOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -34185,6 +35431,7 @@ namespace Spelldawn.Protos {
       }
       if (ElementName != other.ElementName) return false;
       if (!object.Equals(DragIndicator, other.DragIndicator)) return false;
+      if (TargetElement != other.TargetElement) return false;
       if (SelectorCase != other.SelectorCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -34194,6 +35441,7 @@ namespace Spelldawn.Protos {
       int hash = 1;
       if (selectorCase_ == SelectorOneofCase.ElementName) hash ^= ElementName.GetHashCode();
       if (selectorCase_ == SelectorOneofCase.DragIndicator) hash ^= DragIndicator.GetHashCode();
+      if (selectorCase_ == SelectorOneofCase.TargetElement) hash ^= TargetElement.GetHashCode();
       hash ^= (int) selectorCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -34219,6 +35467,10 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(18);
         output.WriteMessage(DragIndicator);
       }
+      if (selectorCase_ == SelectorOneofCase.TargetElement) {
+        output.WriteRawTag(26);
+        output.WriteString(TargetElement);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -34236,6 +35488,10 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(18);
         output.WriteMessage(DragIndicator);
       }
+      if (selectorCase_ == SelectorOneofCase.TargetElement) {
+        output.WriteRawTag(26);
+        output.WriteString(TargetElement);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -34250,6 +35506,9 @@ namespace Spelldawn.Protos {
       }
       if (selectorCase_ == SelectorOneofCase.DragIndicator) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(DragIndicator);
+      }
+      if (selectorCase_ == SelectorOneofCase.TargetElement) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TargetElement);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -34271,6 +35530,9 @@ namespace Spelldawn.Protos {
             DragIndicator = new global::Google.Protobuf.WellKnownTypes.Empty();
           }
           DragIndicator.MergeFrom(other.DragIndicator);
+          break;
+        case SelectorOneofCase.TargetElement:
+          TargetElement = other.TargetElement;
           break;
       }
 
@@ -34301,6 +35563,10 @@ namespace Spelldawn.Protos {
             DragIndicator = subBuilder;
             break;
           }
+          case 26: {
+            TargetElement = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -34328,6 +35594,10 @@ namespace Spelldawn.Protos {
             DragIndicator = subBuilder;
             break;
           }
+          case 26: {
+            TargetElement = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -34350,7 +35620,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[120]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[125]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -34576,7 +35846,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[121]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[126]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -34595,6 +35865,8 @@ namespace Spelldawn.Protos {
     public AnimateToPosition(AnimateToPosition other) : this() {
       destination_ = other.destination_ != null ? other.destination_.Clone() : null;
       animation_ = other.animation_ != null ? other.animation_.Clone() : null;
+      disableHeightHalfOffset_ = other.disableHeightHalfOffset_;
+      disableWidthHalfOffset_ = other.disableWidthHalfOffset_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -34625,6 +35897,36 @@ namespace Spelldawn.Protos {
       }
     }
 
+    /// <summary>Field number for the "disable_height_half_offset" field.</summary>
+    public const int DisableHeightHalfOffsetFieldNumber = 3;
+    private bool disableHeightHalfOffset_;
+    /// <summary>
+    /// If false, the Y coordinate of the target positon is offset by 1/2
+    /// the source element's height.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool DisableHeightHalfOffset {
+      get { return disableHeightHalfOffset_; }
+      set {
+        disableHeightHalfOffset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "disable_width_half_offset" field.</summary>
+    public const int DisableWidthHalfOffsetFieldNumber = 4;
+    private bool disableWidthHalfOffset_;
+    /// <summary>
+    /// If false, the X coordinate of the target positon is offset by 1/2
+    /// the source element's width
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool DisableWidthHalfOffset {
+      get { return disableWidthHalfOffset_; }
+      set {
+        disableWidthHalfOffset_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as AnimateToPosition);
@@ -34640,6 +35942,8 @@ namespace Spelldawn.Protos {
       }
       if (!object.Equals(Destination, other.Destination)) return false;
       if (!object.Equals(Animation, other.Animation)) return false;
+      if (DisableHeightHalfOffset != other.DisableHeightHalfOffset) return false;
+      if (DisableWidthHalfOffset != other.DisableWidthHalfOffset) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -34648,6 +35952,8 @@ namespace Spelldawn.Protos {
       int hash = 1;
       if (destination_ != null) hash ^= Destination.GetHashCode();
       if (animation_ != null) hash ^= Animation.GetHashCode();
+      if (DisableHeightHalfOffset != false) hash ^= DisableHeightHalfOffset.GetHashCode();
+      if (DisableWidthHalfOffset != false) hash ^= DisableWidthHalfOffset.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -34672,6 +35978,14 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(18);
         output.WriteMessage(Animation);
       }
+      if (DisableHeightHalfOffset != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(DisableHeightHalfOffset);
+      }
+      if (DisableWidthHalfOffset != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(DisableWidthHalfOffset);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -34689,6 +36003,14 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(18);
         output.WriteMessage(Animation);
       }
+      if (DisableHeightHalfOffset != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(DisableHeightHalfOffset);
+      }
+      if (DisableWidthHalfOffset != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(DisableWidthHalfOffset);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -34703,6 +36025,12 @@ namespace Spelldawn.Protos {
       }
       if (animation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Animation);
+      }
+      if (DisableHeightHalfOffset != false) {
+        size += 1 + 1;
+      }
+      if (DisableWidthHalfOffset != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -34727,6 +36055,12 @@ namespace Spelldawn.Protos {
         }
         Animation.MergeFrom(other.Animation);
       }
+      if (other.DisableHeightHalfOffset != false) {
+        DisableHeightHalfOffset = other.DisableHeightHalfOffset;
+      }
+      if (other.DisableWidthHalfOffset != false) {
+        DisableWidthHalfOffset = other.DisableWidthHalfOffset;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -34753,6 +36087,14 @@ namespace Spelldawn.Protos {
               Animation = new global::Spelldawn.Protos.ElementAnimation();
             }
             input.ReadMessage(Animation);
+            break;
+          }
+          case 24: {
+            DisableHeightHalfOffset = input.ReadBool();
+            break;
+          }
+          case 32: {
+            DisableWidthHalfOffset = input.ReadBool();
             break;
           }
         }
@@ -34783,6 +36125,14 @@ namespace Spelldawn.Protos {
             input.ReadMessage(Animation);
             break;
           }
+          case 24: {
+            DisableHeightHalfOffset = input.ReadBool();
+            break;
+          }
+          case 32: {
+            DisableWidthHalfOffset = input.ReadBool();
+            break;
+          }
         }
       }
     }
@@ -34791,22 +36141,27 @@ namespace Spelldawn.Protos {
   }
 
   /// <summary>
-  /// Animate an interface element to be at the indicated child index position of
-  /// the 'parent' element.
+  /// Creates a transparent 'target' element at a given child index position of a
+  /// parent element. The target starts at 1x1 size and animates its width and
+  /// height to match the size of the source element.
+  ///
+  /// The target can be retrieved via the 'target' element selector using the
+  /// provided target_name. These element names only need to be unique among
+  /// other targets, it is idiomatic to use the same name as the source element.
   /// </summary>
-  public sealed partial class AnimateToChildIndex : pb::IMessage<AnimateToChildIndex>
+  public sealed partial class CreateTargetAtChildIndex : pb::IMessage<CreateTargetAtChildIndex>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<AnimateToChildIndex> _parser = new pb::MessageParser<AnimateToChildIndex>(() => new AnimateToChildIndex());
+    private static readonly pb::MessageParser<CreateTargetAtChildIndex> _parser = new pb::MessageParser<CreateTargetAtChildIndex>(() => new CreateTargetAtChildIndex());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<AnimateToChildIndex> Parser { get { return _parser; } }
+    public static pb::MessageParser<CreateTargetAtChildIndex> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[122]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[127]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -34815,33 +36170,34 @@ namespace Spelldawn.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AnimateToChildIndex() {
+    public CreateTargetAtChildIndex() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AnimateToChildIndex(AnimateToChildIndex other) : this() {
-      destination_ = other.destination_ != null ? other.destination_.Clone() : null;
+    public CreateTargetAtChildIndex(CreateTargetAtChildIndex other) : this() {
+      parent_ = other.parent_ != null ? other.parent_.Clone() : null;
       index_ = other.index_;
+      targetName_ = other.targetName_;
       animation_ = other.animation_ != null ? other.animation_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AnimateToChildIndex Clone() {
-      return new AnimateToChildIndex(this);
+    public CreateTargetAtChildIndex Clone() {
+      return new CreateTargetAtChildIndex(this);
     }
 
-    /// <summary>Field number for the "destination" field.</summary>
-    public const int DestinationFieldNumber = 1;
-    private global::Spelldawn.Protos.ElementSelector destination_;
+    /// <summary>Field number for the "parent" field.</summary>
+    public const int ParentFieldNumber = 1;
+    private global::Spelldawn.Protos.ElementSelector parent_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.ElementSelector Destination {
-      get { return destination_; }
+    public global::Spelldawn.Protos.ElementSelector Parent {
+      get { return parent_; }
       set {
-        destination_ = value;
+        parent_ = value;
       }
     }
 
@@ -34856,8 +36212,19 @@ namespace Spelldawn.Protos {
       }
     }
 
+    /// <summary>Field number for the "target_name" field.</summary>
+    public const int TargetNameFieldNumber = 3;
+    private string targetName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string TargetName {
+      get { return targetName_; }
+      set {
+        targetName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "animation" field.</summary>
-    public const int AnimationFieldNumber = 3;
+    public const int AnimationFieldNumber = 4;
     private global::Spelldawn.Protos.ElementAnimation animation_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Spelldawn.Protos.ElementAnimation Animation {
@@ -34869,19 +36236,20 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as AnimateToChildIndex);
+      return Equals(other as CreateTargetAtChildIndex);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(AnimateToChildIndex other) {
+    public bool Equals(CreateTargetAtChildIndex other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(Destination, other.Destination)) return false;
+      if (!object.Equals(Parent, other.Parent)) return false;
       if (Index != other.Index) return false;
+      if (TargetName != other.TargetName) return false;
       if (!object.Equals(Animation, other.Animation)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -34889,8 +36257,9 @@ namespace Spelldawn.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (destination_ != null) hash ^= Destination.GetHashCode();
+      if (parent_ != null) hash ^= Parent.GetHashCode();
       if (Index != 0) hash ^= Index.GetHashCode();
+      if (TargetName.Length != 0) hash ^= TargetName.GetHashCode();
       if (animation_ != null) hash ^= Animation.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -34908,16 +36277,20 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (destination_ != null) {
+      if (parent_ != null) {
         output.WriteRawTag(10);
-        output.WriteMessage(Destination);
+        output.WriteMessage(Parent);
       }
       if (Index != 0) {
         output.WriteRawTag(16);
         output.WriteUInt32(Index);
       }
-      if (animation_ != null) {
+      if (TargetName.Length != 0) {
         output.WriteRawTag(26);
+        output.WriteString(TargetName);
+      }
+      if (animation_ != null) {
+        output.WriteRawTag(34);
         output.WriteMessage(Animation);
       }
       if (_unknownFields != null) {
@@ -34929,16 +36302,20 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (destination_ != null) {
+      if (parent_ != null) {
         output.WriteRawTag(10);
-        output.WriteMessage(Destination);
+        output.WriteMessage(Parent);
       }
       if (Index != 0) {
         output.WriteRawTag(16);
         output.WriteUInt32(Index);
       }
-      if (animation_ != null) {
+      if (TargetName.Length != 0) {
         output.WriteRawTag(26);
+        output.WriteString(TargetName);
+      }
+      if (animation_ != null) {
+        output.WriteRawTag(34);
         output.WriteMessage(Animation);
       }
       if (_unknownFields != null) {
@@ -34950,11 +36327,14 @@ namespace Spelldawn.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (destination_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Destination);
+      if (parent_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Parent);
       }
       if (Index != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Index);
+      }
+      if (TargetName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TargetName);
       }
       if (animation_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Animation);
@@ -34966,18 +36346,21 @@ namespace Spelldawn.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(AnimateToChildIndex other) {
+    public void MergeFrom(CreateTargetAtChildIndex other) {
       if (other == null) {
         return;
       }
-      if (other.destination_ != null) {
-        if (destination_ == null) {
-          Destination = new global::Spelldawn.Protos.ElementSelector();
+      if (other.parent_ != null) {
+        if (parent_ == null) {
+          Parent = new global::Spelldawn.Protos.ElementSelector();
         }
-        Destination.MergeFrom(other.Destination);
+        Parent.MergeFrom(other.Parent);
       }
       if (other.Index != 0) {
         Index = other.Index;
+      }
+      if (other.TargetName.Length != 0) {
+        TargetName = other.TargetName;
       }
       if (other.animation_ != null) {
         if (animation_ == null) {
@@ -35000,10 +36383,10 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            if (destination_ == null) {
-              Destination = new global::Spelldawn.Protos.ElementSelector();
+            if (parent_ == null) {
+              Parent = new global::Spelldawn.Protos.ElementSelector();
             }
-            input.ReadMessage(Destination);
+            input.ReadMessage(Parent);
             break;
           }
           case 16: {
@@ -35011,6 +36394,10 @@ namespace Spelldawn.Protos {
             break;
           }
           case 26: {
+            TargetName = input.ReadString();
+            break;
+          }
+          case 34: {
             if (animation_ == null) {
               Animation = new global::Spelldawn.Protos.ElementAnimation();
             }
@@ -35032,10 +36419,10 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            if (destination_ == null) {
-              Destination = new global::Spelldawn.Protos.ElementSelector();
+            if (parent_ == null) {
+              Parent = new global::Spelldawn.Protos.ElementSelector();
             }
-            input.ReadMessage(Destination);
+            input.ReadMessage(Parent);
             break;
           }
           case 16: {
@@ -35043,6 +36430,10 @@ namespace Spelldawn.Protos {
             break;
           }
           case 26: {
+            TargetName = input.ReadString();
+            break;
+          }
+          case 34: {
             if (animation_ == null) {
               Animation = new global::Spelldawn.Protos.ElementAnimation();
             }
@@ -35071,7 +36462,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[123]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[128]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -35449,7 +36840,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[124]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[129]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -35476,11 +36867,14 @@ namespace Spelldawn.Protos {
         case UpdateOneofCase.AnimateToPosition:
           AnimateToPosition = other.AnimateToPosition.Clone();
           break;
-        case UpdateOneofCase.AnimateToChildIndex:
-          AnimateToChildIndex = other.AnimateToChildIndex.Clone();
+        case UpdateOneofCase.ApplyStyle:
+          ApplyStyle = other.ApplyStyle.Clone();
           break;
         case UpdateOneofCase.AnimateStyle:
           AnimateStyle = other.AnimateStyle.Clone();
+          break;
+        case UpdateOneofCase.CreateTargetAtChildIndex:
+          CreateTargetAtChildIndex = other.CreateTargetAtChildIndex.Clone();
           break;
       }
 
@@ -35536,17 +36930,17 @@ namespace Spelldawn.Protos {
       }
     }
 
-    /// <summary>Field number for the "animate_to_child_index" field.</summary>
-    public const int AnimateToChildIndexFieldNumber = 4;
+    /// <summary>Field number for the "apply_style" field.</summary>
+    public const int ApplyStyleFieldNumber = 4;
     /// <summary>
-    /// Animates the element to be a child of another element
+    /// Immediately apply a style to this element
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.AnimateToChildIndex AnimateToChildIndex {
-      get { return updateCase_ == UpdateOneofCase.AnimateToChildIndex ? (global::Spelldawn.Protos.AnimateToChildIndex) update_ : null; }
+    public global::Spelldawn.Protos.FlexStyle ApplyStyle {
+      get { return updateCase_ == UpdateOneofCase.ApplyStyle ? (global::Spelldawn.Protos.FlexStyle) update_ : null; }
       set {
         update_ = value;
-        updateCase_ = value == null ? UpdateOneofCase.None : UpdateOneofCase.AnimateToChildIndex;
+        updateCase_ = value == null ? UpdateOneofCase.None : UpdateOneofCase.ApplyStyle;
       }
     }
 
@@ -35564,6 +36958,21 @@ namespace Spelldawn.Protos {
       }
     }
 
+    /// <summary>Field number for the "create_target_at_child_index" field.</summary>
+    public const int CreateTargetAtChildIndexFieldNumber = 6;
+    /// <summary>
+    /// Creates a 'target' child element to use for position animations
+    /// when adding something to a list
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.CreateTargetAtChildIndex CreateTargetAtChildIndex {
+      get { return updateCase_ == UpdateOneofCase.CreateTargetAtChildIndex ? (global::Spelldawn.Protos.CreateTargetAtChildIndex) update_ : null; }
+      set {
+        update_ = value;
+        updateCase_ = value == null ? UpdateOneofCase.None : UpdateOneofCase.CreateTargetAtChildIndex;
+      }
+    }
+
     private object update_;
     /// <summary>Enum of possible cases for the "update" oneof.</summary>
     public enum UpdateOneofCase {
@@ -35571,8 +36980,9 @@ namespace Spelldawn.Protos {
       CloneElement = 1,
       DestroyElement = 2,
       AnimateToPosition = 3,
-      AnimateToChildIndex = 4,
+      ApplyStyle = 4,
       AnimateStyle = 5,
+      CreateTargetAtChildIndex = 6,
     }
     private UpdateOneofCase updateCase_ = UpdateOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -35602,8 +37012,9 @@ namespace Spelldawn.Protos {
       if (!object.Equals(CloneElement, other.CloneElement)) return false;
       if (!object.Equals(DestroyElement, other.DestroyElement)) return false;
       if (!object.Equals(AnimateToPosition, other.AnimateToPosition)) return false;
-      if (!object.Equals(AnimateToChildIndex, other.AnimateToChildIndex)) return false;
+      if (!object.Equals(ApplyStyle, other.ApplyStyle)) return false;
       if (!object.Equals(AnimateStyle, other.AnimateStyle)) return false;
+      if (!object.Equals(CreateTargetAtChildIndex, other.CreateTargetAtChildIndex)) return false;
       if (UpdateCase != other.UpdateCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -35614,8 +37025,9 @@ namespace Spelldawn.Protos {
       if (updateCase_ == UpdateOneofCase.CloneElement) hash ^= CloneElement.GetHashCode();
       if (updateCase_ == UpdateOneofCase.DestroyElement) hash ^= DestroyElement.GetHashCode();
       if (updateCase_ == UpdateOneofCase.AnimateToPosition) hash ^= AnimateToPosition.GetHashCode();
-      if (updateCase_ == UpdateOneofCase.AnimateToChildIndex) hash ^= AnimateToChildIndex.GetHashCode();
+      if (updateCase_ == UpdateOneofCase.ApplyStyle) hash ^= ApplyStyle.GetHashCode();
       if (updateCase_ == UpdateOneofCase.AnimateStyle) hash ^= AnimateStyle.GetHashCode();
+      if (updateCase_ == UpdateOneofCase.CreateTargetAtChildIndex) hash ^= CreateTargetAtChildIndex.GetHashCode();
       hash ^= (int) updateCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -35645,13 +37057,17 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(26);
         output.WriteMessage(AnimateToPosition);
       }
-      if (updateCase_ == UpdateOneofCase.AnimateToChildIndex) {
+      if (updateCase_ == UpdateOneofCase.ApplyStyle) {
         output.WriteRawTag(34);
-        output.WriteMessage(AnimateToChildIndex);
+        output.WriteMessage(ApplyStyle);
       }
       if (updateCase_ == UpdateOneofCase.AnimateStyle) {
         output.WriteRawTag(42);
         output.WriteMessage(AnimateStyle);
+      }
+      if (updateCase_ == UpdateOneofCase.CreateTargetAtChildIndex) {
+        output.WriteRawTag(50);
+        output.WriteMessage(CreateTargetAtChildIndex);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -35674,13 +37090,17 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(26);
         output.WriteMessage(AnimateToPosition);
       }
-      if (updateCase_ == UpdateOneofCase.AnimateToChildIndex) {
+      if (updateCase_ == UpdateOneofCase.ApplyStyle) {
         output.WriteRawTag(34);
-        output.WriteMessage(AnimateToChildIndex);
+        output.WriteMessage(ApplyStyle);
       }
       if (updateCase_ == UpdateOneofCase.AnimateStyle) {
         output.WriteRawTag(42);
         output.WriteMessage(AnimateStyle);
+      }
+      if (updateCase_ == UpdateOneofCase.CreateTargetAtChildIndex) {
+        output.WriteRawTag(50);
+        output.WriteMessage(CreateTargetAtChildIndex);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -35700,11 +37120,14 @@ namespace Spelldawn.Protos {
       if (updateCase_ == UpdateOneofCase.AnimateToPosition) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(AnimateToPosition);
       }
-      if (updateCase_ == UpdateOneofCase.AnimateToChildIndex) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AnimateToChildIndex);
+      if (updateCase_ == UpdateOneofCase.ApplyStyle) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ApplyStyle);
       }
       if (updateCase_ == UpdateOneofCase.AnimateStyle) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(AnimateStyle);
+      }
+      if (updateCase_ == UpdateOneofCase.CreateTargetAtChildIndex) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTargetAtChildIndex);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -35736,17 +37159,23 @@ namespace Spelldawn.Protos {
           }
           AnimateToPosition.MergeFrom(other.AnimateToPosition);
           break;
-        case UpdateOneofCase.AnimateToChildIndex:
-          if (AnimateToChildIndex == null) {
-            AnimateToChildIndex = new global::Spelldawn.Protos.AnimateToChildIndex();
+        case UpdateOneofCase.ApplyStyle:
+          if (ApplyStyle == null) {
+            ApplyStyle = new global::Spelldawn.Protos.FlexStyle();
           }
-          AnimateToChildIndex.MergeFrom(other.AnimateToChildIndex);
+          ApplyStyle.MergeFrom(other.ApplyStyle);
           break;
         case UpdateOneofCase.AnimateStyle:
           if (AnimateStyle == null) {
             AnimateStyle = new global::Spelldawn.Protos.AnimateElementStyle();
           }
           AnimateStyle.MergeFrom(other.AnimateStyle);
+          break;
+        case UpdateOneofCase.CreateTargetAtChildIndex:
+          if (CreateTargetAtChildIndex == null) {
+            CreateTargetAtChildIndex = new global::Spelldawn.Protos.CreateTargetAtChildIndex();
+          }
+          CreateTargetAtChildIndex.MergeFrom(other.CreateTargetAtChildIndex);
           break;
       }
 
@@ -35792,12 +37221,12 @@ namespace Spelldawn.Protos {
             break;
           }
           case 34: {
-            global::Spelldawn.Protos.AnimateToChildIndex subBuilder = new global::Spelldawn.Protos.AnimateToChildIndex();
-            if (updateCase_ == UpdateOneofCase.AnimateToChildIndex) {
-              subBuilder.MergeFrom(AnimateToChildIndex);
+            global::Spelldawn.Protos.FlexStyle subBuilder = new global::Spelldawn.Protos.FlexStyle();
+            if (updateCase_ == UpdateOneofCase.ApplyStyle) {
+              subBuilder.MergeFrom(ApplyStyle);
             }
             input.ReadMessage(subBuilder);
-            AnimateToChildIndex = subBuilder;
+            ApplyStyle = subBuilder;
             break;
           }
           case 42: {
@@ -35807,6 +37236,15 @@ namespace Spelldawn.Protos {
             }
             input.ReadMessage(subBuilder);
             AnimateStyle = subBuilder;
+            break;
+          }
+          case 50: {
+            global::Spelldawn.Protos.CreateTargetAtChildIndex subBuilder = new global::Spelldawn.Protos.CreateTargetAtChildIndex();
+            if (updateCase_ == UpdateOneofCase.CreateTargetAtChildIndex) {
+              subBuilder.MergeFrom(CreateTargetAtChildIndex);
+            }
+            input.ReadMessage(subBuilder);
+            CreateTargetAtChildIndex = subBuilder;
             break;
           }
         }
@@ -35851,12 +37289,12 @@ namespace Spelldawn.Protos {
             break;
           }
           case 34: {
-            global::Spelldawn.Protos.AnimateToChildIndex subBuilder = new global::Spelldawn.Protos.AnimateToChildIndex();
-            if (updateCase_ == UpdateOneofCase.AnimateToChildIndex) {
-              subBuilder.MergeFrom(AnimateToChildIndex);
+            global::Spelldawn.Protos.FlexStyle subBuilder = new global::Spelldawn.Protos.FlexStyle();
+            if (updateCase_ == UpdateOneofCase.ApplyStyle) {
+              subBuilder.MergeFrom(ApplyStyle);
             }
             input.ReadMessage(subBuilder);
-            AnimateToChildIndex = subBuilder;
+            ApplyStyle = subBuilder;
             break;
           }
           case 42: {
@@ -35866,6 +37304,15 @@ namespace Spelldawn.Protos {
             }
             input.ReadMessage(subBuilder);
             AnimateStyle = subBuilder;
+            break;
+          }
+          case 50: {
+            global::Spelldawn.Protos.CreateTargetAtChildIndex subBuilder = new global::Spelldawn.Protos.CreateTargetAtChildIndex();
+            if (updateCase_ == UpdateOneofCase.CreateTargetAtChildIndex) {
+              subBuilder.MergeFrom(CreateTargetAtChildIndex);
+            }
+            input.ReadMessage(subBuilder);
+            CreateTargetAtChildIndex = subBuilder;
             break;
           }
         }
@@ -35890,7 +37337,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[125]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[130]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -36173,7 +37620,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[126]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[131]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -36323,43 +37770,21 @@ namespace Spelldawn.Protos {
   }
 
   /// <summary>
-  /// Position of a tile on the world map
-  ///
-  /// We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
-  /// Right" convention, with values increasing moving up and right.
-  ///
-  /// ```text
-  ///
-  ///       /  \    / \
-  ///     /     \ /     \
-  ///    |  0,2  |  1,2  |
-  ///    |       |       |
-  ///   / \     / \     / \
-  /// /     \ /     \ /     \
-  ///|  0,1  |  1,1  |  2,1  |
-  ///|       |       |       |
-  /// \     / \     / \     /
-  ///   \ /     \ /     \ /
-  ///    |  0,0  |  1,0  |
-  ///    |       |       |
-  ///     \     / \     /
-  ///       \ /     \ /
-  ///
-  /// ```
+  /// Boolean-valued expression
   /// </summary>
-  public sealed partial class MapPosition : pb::IMessage<MapPosition>
+  public sealed partial class ConditionalQuery : pb::IMessage<ConditionalQuery>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<MapPosition> _parser = new pb::MessageParser<MapPosition>(() => new MapPosition());
+    private static readonly pb::MessageParser<ConditionalQuery> _parser = new pb::MessageParser<ConditionalQuery>(() => new ConditionalQuery());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<MapPosition> Parser { get { return _parser; } }
+    public static pb::MessageParser<ConditionalQuery> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[127]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[132]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -36368,69 +37793,83 @@ namespace Spelldawn.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public MapPosition() {
+    public ConditionalQuery() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public MapPosition(MapPosition other) : this() {
-      x_ = other.x_;
-      y_ = other.y_;
+    public ConditionalQuery(ConditionalQuery other) : this() {
+      switch (other.QueryCase) {
+        case QueryOneofCase.ElementExists:
+          ElementExists = other.ElementExists.Clone();
+          break;
+      }
+
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public MapPosition Clone() {
-      return new MapPosition(this);
+    public ConditionalQuery Clone() {
+      return new ConditionalQuery(this);
     }
 
-    /// <summary>Field number for the "x" field.</summary>
-    public const int XFieldNumber = 1;
-    private int x_;
+    /// <summary>Field number for the "element_exists" field.</summary>
+    public const int ElementExistsFieldNumber = 1;
+    /// <summary>
+    /// Does a given user interface element exist?
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int X {
-      get { return x_; }
+    public global::Spelldawn.Protos.ElementSelector ElementExists {
+      get { return queryCase_ == QueryOneofCase.ElementExists ? (global::Spelldawn.Protos.ElementSelector) query_ : null; }
       set {
-        x_ = value;
+        query_ = value;
+        queryCase_ = value == null ? QueryOneofCase.None : QueryOneofCase.ElementExists;
       }
     }
 
-    /// <summary>Field number for the "y" field.</summary>
-    public const int YFieldNumber = 2;
-    private int y_;
+    private object query_;
+    /// <summary>Enum of possible cases for the "query" oneof.</summary>
+    public enum QueryOneofCase {
+      None = 0,
+      ElementExists = 1,
+    }
+    private QueryOneofCase queryCase_ = QueryOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Y {
-      get { return y_; }
-      set {
-        y_ = value;
-      }
+    public QueryOneofCase QueryCase {
+      get { return queryCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void ClearQuery() {
+      queryCase_ = QueryOneofCase.None;
+      query_ = null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as MapPosition);
+      return Equals(other as ConditionalQuery);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(MapPosition other) {
+    public bool Equals(ConditionalQuery other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (X != other.X) return false;
-      if (Y != other.Y) return false;
+      if (!object.Equals(ElementExists, other.ElementExists)) return false;
+      if (QueryCase != other.QueryCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (X != 0) hash ^= X.GetHashCode();
-      if (Y != 0) hash ^= Y.GetHashCode();
+      if (queryCase_ == QueryOneofCase.ElementExists) hash ^= ElementExists.GetHashCode();
+      hash ^= (int) queryCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -36447,13 +37886,9 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (X != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(X);
-      }
-      if (Y != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(Y);
+      if (queryCase_ == QueryOneofCase.ElementExists) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ElementExists);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -36464,13 +37899,9 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (X != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(X);
-      }
-      if (Y != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(Y);
+      if (queryCase_ == QueryOneofCase.ElementExists) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ElementExists);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -36481,11 +37912,8 @@ namespace Spelldawn.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (X != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(X);
-      }
-      if (Y != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Y);
+      if (queryCase_ == QueryOneofCase.ElementExists) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ElementExists);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -36494,305 +37922,19 @@ namespace Spelldawn.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(MapPosition other) {
+    public void MergeFrom(ConditionalQuery other) {
       if (other == null) {
         return;
       }
-      if (other.X != 0) {
-        X = other.X;
-      }
-      if (other.Y != 0) {
-        Y = other.Y;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            X = input.ReadInt32();
-            break;
+      switch (other.QueryCase) {
+        case QueryOneofCase.ElementExists:
+          if (ElementExists == null) {
+            ElementExists = new global::Spelldawn.Protos.ElementSelector();
           }
-          case 16: {
-            Y = input.ReadInt32();
-            break;
-          }
-        }
+          ElementExists.MergeFrom(other.ElementExists);
+          break;
       }
-    #endif
-    }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 8: {
-            X = input.ReadInt32();
-            break;
-          }
-          case 16: {
-            Y = input.ReadInt32();
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
-  public sealed partial class WorldMapSprite : pb::IMessage<WorldMapSprite>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<WorldMapSprite> _parser = new pb::MessageParser<WorldMapSprite>(() => new WorldMapSprite());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<WorldMapSprite> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[128]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WorldMapSprite() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WorldMapSprite(WorldMapSprite other) : this() {
-      spriteAddress_ = other.spriteAddress_ != null ? other.spriteAddress_.Clone() : null;
-      color_ = other.color_ != null ? other.color_.Clone() : null;
-      anchorOffset_ = other.anchorOffset_ != null ? other.anchorOffset_.Clone() : null;
-      scale_ = other.scale_ != null ? other.scale_.Clone() : null;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WorldMapSprite Clone() {
-      return new WorldMapSprite(this);
-    }
-
-    /// <summary>Field number for the "sprite_address" field.</summary>
-    public const int SpriteAddressFieldNumber = 1;
-    private global::Spelldawn.Protos.SpriteAddress spriteAddress_;
-    /// <summary>
-    /// Addressable asset path of sprite to display on the hex grid
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.SpriteAddress SpriteAddress {
-      get { return spriteAddress_; }
-      set {
-        spriteAddress_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "color" field.</summary>
-    public const int ColorFieldNumber = 2;
-    private global::Spelldawn.Protos.FlexColor color_;
-    /// <summary>
-    /// Color tint for the provided sprite.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.FlexColor Color {
-      get { return color_; }
-      set {
-        color_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "anchor_offset" field.</summary>
-    public const int AnchorOffsetFieldNumber = 3;
-    private global::Spelldawn.Protos.FlexVector3 anchorOffset_;
-    /// <summary>
-    /// Controls the position of the tile image. Note that tiles by default are
-    /// anchored at (0,-0.64), meaning they're shifted to screen bottom.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.FlexVector3 AnchorOffset {
-      get { return anchorOffset_; }
-      set {
-        anchorOffset_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "scale" field.</summary>
-    public const int ScaleFieldNumber = 4;
-    private global::Spelldawn.Protos.FlexVector3 scale_;
-    /// <summary>
-    /// Scale transformation to apply to the image.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.FlexVector3 Scale {
-      get { return scale_; }
-      set {
-        scale_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as WorldMapSprite);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(WorldMapSprite other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(SpriteAddress, other.SpriteAddress)) return false;
-      if (!object.Equals(Color, other.Color)) return false;
-      if (!object.Equals(AnchorOffset, other.AnchorOffset)) return false;
-      if (!object.Equals(Scale, other.Scale)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (spriteAddress_ != null) hash ^= SpriteAddress.GetHashCode();
-      if (color_ != null) hash ^= Color.GetHashCode();
-      if (anchorOffset_ != null) hash ^= AnchorOffset.GetHashCode();
-      if (scale_ != null) hash ^= Scale.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (spriteAddress_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(SpriteAddress);
-      }
-      if (color_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Color);
-      }
-      if (anchorOffset_ != null) {
-        output.WriteRawTag(26);
-        output.WriteMessage(AnchorOffset);
-      }
-      if (scale_ != null) {
-        output.WriteRawTag(34);
-        output.WriteMessage(Scale);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (spriteAddress_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(SpriteAddress);
-      }
-      if (color_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Color);
-      }
-      if (anchorOffset_ != null) {
-        output.WriteRawTag(26);
-        output.WriteMessage(AnchorOffset);
-      }
-      if (scale_ != null) {
-        output.WriteRawTag(34);
-        output.WriteMessage(Scale);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (spriteAddress_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SpriteAddress);
-      }
-      if (color_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Color);
-      }
-      if (anchorOffset_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AnchorOffset);
-      }
-      if (scale_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Scale);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(WorldMapSprite other) {
-      if (other == null) {
-        return;
-      }
-      if (other.spriteAddress_ != null) {
-        if (spriteAddress_ == null) {
-          SpriteAddress = new global::Spelldawn.Protos.SpriteAddress();
-        }
-        SpriteAddress.MergeFrom(other.SpriteAddress);
-      }
-      if (other.color_ != null) {
-        if (color_ == null) {
-          Color = new global::Spelldawn.Protos.FlexColor();
-        }
-        Color.MergeFrom(other.Color);
-      }
-      if (other.anchorOffset_ != null) {
-        if (anchorOffset_ == null) {
-          AnchorOffset = new global::Spelldawn.Protos.FlexVector3();
-        }
-        AnchorOffset.MergeFrom(other.AnchorOffset);
-      }
-      if (other.scale_ != null) {
-        if (scale_ == null) {
-          Scale = new global::Spelldawn.Protos.FlexVector3();
-        }
-        Scale.MergeFrom(other.Scale);
-      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -36808,31 +37950,12 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            if (spriteAddress_ == null) {
-              SpriteAddress = new global::Spelldawn.Protos.SpriteAddress();
+            global::Spelldawn.Protos.ElementSelector subBuilder = new global::Spelldawn.Protos.ElementSelector();
+            if (queryCase_ == QueryOneofCase.ElementExists) {
+              subBuilder.MergeFrom(ElementExists);
             }
-            input.ReadMessage(SpriteAddress);
-            break;
-          }
-          case 18: {
-            if (color_ == null) {
-              Color = new global::Spelldawn.Protos.FlexColor();
-            }
-            input.ReadMessage(Color);
-            break;
-          }
-          case 26: {
-            if (anchorOffset_ == null) {
-              AnchorOffset = new global::Spelldawn.Protos.FlexVector3();
-            }
-            input.ReadMessage(AnchorOffset);
-            break;
-          }
-          case 34: {
-            if (scale_ == null) {
-              Scale = new global::Spelldawn.Protos.FlexVector3();
-            }
-            input.ReadMessage(Scale);
+            input.ReadMessage(subBuilder);
+            ElementExists = subBuilder;
             break;
           }
         }
@@ -36850,31 +37973,12 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            if (spriteAddress_ == null) {
-              SpriteAddress = new global::Spelldawn.Protos.SpriteAddress();
+            global::Spelldawn.Protos.ElementSelector subBuilder = new global::Spelldawn.Protos.ElementSelector();
+            if (queryCase_ == QueryOneofCase.ElementExists) {
+              subBuilder.MergeFrom(ElementExists);
             }
-            input.ReadMessage(SpriteAddress);
-            break;
-          }
-          case 18: {
-            if (color_ == null) {
-              Color = new global::Spelldawn.Protos.FlexColor();
-            }
-            input.ReadMessage(Color);
-            break;
-          }
-          case 26: {
-            if (anchorOffset_ == null) {
-              AnchorOffset = new global::Spelldawn.Protos.FlexVector3();
-            }
-            input.ReadMessage(AnchorOffset);
-            break;
-          }
-          case 34: {
-            if (scale_ == null) {
-              Scale = new global::Spelldawn.Protos.FlexVector3();
-            }
-            input.ReadMessage(Scale);
+            input.ReadMessage(subBuilder);
+            ElementExists = subBuilder;
             break;
           }
         }
@@ -36885,21 +37989,21 @@ namespace Spelldawn.Protos {
   }
 
   /// <summary>
-  /// Represents the contents of a world map tile.
+  /// Conditionally executes one of two command lists based on a boolean query
   /// </summary>
-  public sealed partial class WorldMapTile : pb::IMessage<WorldMapTile>
+  public sealed partial class ConditionalCommand : pb::IMessage<ConditionalCommand>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<WorldMapTile> _parser = new pb::MessageParser<WorldMapTile>(() => new WorldMapTile());
+    private static readonly pb::MessageParser<ConditionalCommand> _parser = new pb::MessageParser<ConditionalCommand>(() => new ConditionalCommand());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<WorldMapTile> Parser { get { return _parser; } }
+    public static pb::MessageParser<ConditionalCommand> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[129]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[133]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -36908,110 +38012,92 @@ namespace Spelldawn.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WorldMapTile() {
+    public ConditionalCommand() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WorldMapTile(WorldMapTile other) : this() {
-      sprites_ = other.sprites_.Clone();
-      position_ = other.position_ != null ? other.position_.Clone() : null;
-      onVisit_ = other.onVisit_ != null ? other.onVisit_.Clone() : null;
-      tileType_ = other.tileType_;
+    public ConditionalCommand(ConditionalCommand other) : this() {
+      query_ = other.query_ != null ? other.query_.Clone() : null;
+      ifTrue_ = other.ifTrue_ != null ? other.ifTrue_.Clone() : null;
+      ifFalse_ = other.ifFalse_ != null ? other.ifFalse_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public WorldMapTile Clone() {
-      return new WorldMapTile(this);
+    public ConditionalCommand Clone() {
+      return new ConditionalCommand(this);
     }
 
-    /// <summary>Field number for the "sprites" field.</summary>
-    public const int SpritesFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::Spelldawn.Protos.WorldMapSprite> _repeated_sprites_codec
-        = pb::FieldCodec.ForMessage(10, global::Spelldawn.Protos.WorldMapSprite.Parser);
-    private readonly pbc::RepeatedField<global::Spelldawn.Protos.WorldMapSprite> sprites_ = new pbc::RepeatedField<global::Spelldawn.Protos.WorldMapSprite>();
+    /// <summary>Field number for the "query" field.</summary>
+    public const int QueryFieldNumber = 1;
+    private global::Spelldawn.Protos.ConditionalQuery query_;
     /// <summary>
-    /// Images to display on this tile. Will be rendered in z-index order, with
-    /// later sprites appearing on top of earlier ones. Sprites always display
-    /// below the player character layer.
+    /// Boolean value to evaluate on the client
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Spelldawn.Protos.WorldMapSprite> Sprites {
-      get { return sprites_; }
-    }
-
-    /// <summary>Field number for the "position" field.</summary>
-    public const int PositionFieldNumber = 2;
-    private global::Spelldawn.Protos.MapPosition position_;
-    /// <summary>
-    /// Tile position.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.MapPosition Position {
-      get { return position_; }
+    public global::Spelldawn.Protos.ConditionalQuery Query {
+      get { return query_; }
       set {
-        position_ = value;
+        query_ = value;
       }
     }
 
-    /// <summary>Field number for the "on_visit" field.</summary>
-    public const int OnVisitFieldNumber = 3;
-    private global::Spelldawn.Protos.ClientAction onVisit_;
+    /// <summary>Field number for the "if_true" field.</summary>
+    public const int IfTrueFieldNumber = 2;
+    private global::Spelldawn.Protos.CommandList ifTrue_;
     /// <summary>
-    /// Action to invoke when this tile is visited by the player.
+    /// Commands to run if 'query' is true
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.ClientAction OnVisit {
-      get { return onVisit_; }
+    public global::Spelldawn.Protos.CommandList IfTrue {
+      get { return ifTrue_; }
       set {
-        onVisit_ = value;
+        ifTrue_ = value;
       }
     }
 
-    /// <summary>Field number for the "tile_type" field.</summary>
-    public const int TileTypeFieldNumber = 4;
-    private global::Spelldawn.Protos.MapTileType tileType_ = global::Spelldawn.Protos.MapTileType.Unspecified;
+    /// <summary>Field number for the "if_false" field.</summary>
+    public const int IfFalseFieldNumber = 3;
+    private global::Spelldawn.Protos.CommandList ifFalse_;
     /// <summary>
-    /// How can the player character navigate through this tile?
+    /// Commands to run if 'query' is false
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.MapTileType TileType {
-      get { return tileType_; }
+    public global::Spelldawn.Protos.CommandList IfFalse {
+      get { return ifFalse_; }
       set {
-        tileType_ = value;
+        ifFalse_ = value;
       }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as WorldMapTile);
+      return Equals(other as ConditionalCommand);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(WorldMapTile other) {
+    public bool Equals(ConditionalCommand other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if(!sprites_.Equals(other.sprites_)) return false;
-      if (!object.Equals(Position, other.Position)) return false;
-      if (!object.Equals(OnVisit, other.OnVisit)) return false;
-      if (TileType != other.TileType) return false;
+      if (!object.Equals(Query, other.Query)) return false;
+      if (!object.Equals(IfTrue, other.IfTrue)) return false;
+      if (!object.Equals(IfFalse, other.IfFalse)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      hash ^= sprites_.GetHashCode();
-      if (position_ != null) hash ^= Position.GetHashCode();
-      if (onVisit_ != null) hash ^= OnVisit.GetHashCode();
-      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) hash ^= TileType.GetHashCode();
+      if (query_ != null) hash ^= Query.GetHashCode();
+      if (ifTrue_ != null) hash ^= IfTrue.GetHashCode();
+      if (ifFalse_ != null) hash ^= IfFalse.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -37028,18 +38114,17 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      sprites_.WriteTo(output, _repeated_sprites_codec);
-      if (position_ != null) {
+      if (query_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Query);
+      }
+      if (ifTrue_ != null) {
         output.WriteRawTag(18);
-        output.WriteMessage(Position);
+        output.WriteMessage(IfTrue);
       }
-      if (onVisit_ != null) {
+      if (ifFalse_ != null) {
         output.WriteRawTag(26);
-        output.WriteMessage(OnVisit);
-      }
-      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
-        output.WriteRawTag(32);
-        output.WriteEnum((int) TileType);
+        output.WriteMessage(IfFalse);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -37050,18 +38135,17 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      sprites_.WriteTo(ref output, _repeated_sprites_codec);
-      if (position_ != null) {
+      if (query_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Query);
+      }
+      if (ifTrue_ != null) {
         output.WriteRawTag(18);
-        output.WriteMessage(Position);
+        output.WriteMessage(IfTrue);
       }
-      if (onVisit_ != null) {
+      if (ifFalse_ != null) {
         output.WriteRawTag(26);
-        output.WriteMessage(OnVisit);
-      }
-      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
-        output.WriteRawTag(32);
-        output.WriteEnum((int) TileType);
+        output.WriteMessage(IfFalse);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -37072,15 +38156,14 @@ namespace Spelldawn.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      size += sprites_.CalculateSize(_repeated_sprites_codec);
-      if (position_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
+      if (query_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Query);
       }
-      if (onVisit_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(OnVisit);
+      if (ifTrue_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(IfTrue);
       }
-      if (TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TileType);
+      if (ifFalse_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(IfFalse);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -37089,25 +38172,27 @@ namespace Spelldawn.Protos {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(WorldMapTile other) {
+    public void MergeFrom(ConditionalCommand other) {
       if (other == null) {
         return;
       }
-      sprites_.Add(other.sprites_);
-      if (other.position_ != null) {
-        if (position_ == null) {
-          Position = new global::Spelldawn.Protos.MapPosition();
+      if (other.query_ != null) {
+        if (query_ == null) {
+          Query = new global::Spelldawn.Protos.ConditionalQuery();
         }
-        Position.MergeFrom(other.Position);
+        Query.MergeFrom(other.Query);
       }
-      if (other.onVisit_ != null) {
-        if (onVisit_ == null) {
-          OnVisit = new global::Spelldawn.Protos.ClientAction();
+      if (other.ifTrue_ != null) {
+        if (ifTrue_ == null) {
+          IfTrue = new global::Spelldawn.Protos.CommandList();
         }
-        OnVisit.MergeFrom(other.OnVisit);
+        IfTrue.MergeFrom(other.IfTrue);
       }
-      if (other.TileType != global::Spelldawn.Protos.MapTileType.Unspecified) {
-        TileType = other.TileType;
+      if (other.ifFalse_ != null) {
+        if (ifFalse_ == null) {
+          IfFalse = new global::Spelldawn.Protos.CommandList();
+        }
+        IfFalse.MergeFrom(other.IfFalse);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -37124,25 +38209,24 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            sprites_.AddEntriesFrom(input, _repeated_sprites_codec);
+            if (query_ == null) {
+              Query = new global::Spelldawn.Protos.ConditionalQuery();
+            }
+            input.ReadMessage(Query);
             break;
           }
           case 18: {
-            if (position_ == null) {
-              Position = new global::Spelldawn.Protos.MapPosition();
+            if (ifTrue_ == null) {
+              IfTrue = new global::Spelldawn.Protos.CommandList();
             }
-            input.ReadMessage(Position);
+            input.ReadMessage(IfTrue);
             break;
           }
           case 26: {
-            if (onVisit_ == null) {
-              OnVisit = new global::Spelldawn.Protos.ClientAction();
+            if (ifFalse_ == null) {
+              IfFalse = new global::Spelldawn.Protos.CommandList();
             }
-            input.ReadMessage(OnVisit);
-            break;
-          }
-          case 32: {
-            TileType = (global::Spelldawn.Protos.MapTileType) input.ReadEnum();
+            input.ReadMessage(IfFalse);
             break;
           }
         }
@@ -37160,374 +38244,24 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            sprites_.AddEntriesFrom(ref input, _repeated_sprites_codec);
+            if (query_ == null) {
+              Query = new global::Spelldawn.Protos.ConditionalQuery();
+            }
+            input.ReadMessage(Query);
             break;
           }
           case 18: {
-            if (position_ == null) {
-              Position = new global::Spelldawn.Protos.MapPosition();
+            if (ifTrue_ == null) {
+              IfTrue = new global::Spelldawn.Protos.CommandList();
             }
-            input.ReadMessage(Position);
+            input.ReadMessage(IfTrue);
             break;
           }
           case 26: {
-            if (onVisit_ == null) {
-              OnVisit = new global::Spelldawn.Protos.ClientAction();
+            if (ifFalse_ == null) {
+              IfFalse = new global::Spelldawn.Protos.CommandList();
             }
-            input.ReadMessage(OnVisit);
-            break;
-          }
-          case 32: {
-            TileType = (global::Spelldawn.Protos.MapTileType) input.ReadEnum();
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
-  /// <summary>
-  /// Updates the world map tilemap. Only valid in the 'World' scene.
-  /// </summary>
-  public sealed partial class UpdateWorldMapCommand : pb::IMessage<UpdateWorldMapCommand>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<UpdateWorldMapCommand> _parser = new pb::MessageParser<UpdateWorldMapCommand>(() => new UpdateWorldMapCommand());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<UpdateWorldMapCommand> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[130]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UpdateWorldMapCommand() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UpdateWorldMapCommand(UpdateWorldMapCommand other) : this() {
-      tiles_ = other.tiles_.Clone();
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UpdateWorldMapCommand Clone() {
-      return new UpdateWorldMapCommand(this);
-    }
-
-    /// <summary>Field number for the "tiles" field.</summary>
-    public const int TilesFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::Spelldawn.Protos.WorldMapTile> _repeated_tiles_codec
-        = pb::FieldCodec.ForMessage(10, global::Spelldawn.Protos.WorldMapTile.Parser);
-    private readonly pbc::RepeatedField<global::Spelldawn.Protos.WorldMapTile> tiles_ = new pbc::RepeatedField<global::Spelldawn.Protos.WorldMapTile>();
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Spelldawn.Protos.WorldMapTile> Tiles {
-      get { return tiles_; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as UpdateWorldMapCommand);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(UpdateWorldMapCommand other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if(!tiles_.Equals(other.tiles_)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      hash ^= tiles_.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      tiles_.WriteTo(output, _repeated_tiles_codec);
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      tiles_.WriteTo(ref output, _repeated_tiles_codec);
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      size += tiles_.CalculateSize(_repeated_tiles_codec);
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(UpdateWorldMapCommand other) {
-      if (other == null) {
-        return;
-      }
-      tiles_.Add(other.tiles_);
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            tiles_.AddEntriesFrom(input, _repeated_tiles_codec);
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            tiles_.AddEntriesFrom(ref input, _repeated_tiles_codec);
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
-  /// <summary>
-  /// Displays a UI element on top of all other elements. This is typically used
-  /// to render chrome, e.g. buttons related to global navigation.
-  /// </summary>
-  public sealed partial class RenderScreenOverlayCommand : pb::IMessage<RenderScreenOverlayCommand>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<RenderScreenOverlayCommand> _parser = new pb::MessageParser<RenderScreenOverlayCommand>(() => new RenderScreenOverlayCommand());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RenderScreenOverlayCommand> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[131]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RenderScreenOverlayCommand() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RenderScreenOverlayCommand(RenderScreenOverlayCommand other) : this() {
-      node_ = other.node_ != null ? other.node_.Clone() : null;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RenderScreenOverlayCommand Clone() {
-      return new RenderScreenOverlayCommand(this);
-    }
-
-    /// <summary>Field number for the "node" field.</summary>
-    public const int NodeFieldNumber = 1;
-    private global::Spelldawn.Protos.Node node_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Spelldawn.Protos.Node Node {
-      get { return node_; }
-      set {
-        node_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as RenderScreenOverlayCommand);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RenderScreenOverlayCommand other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(Node, other.Node)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (node_ != null) hash ^= Node.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (node_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Node);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (node_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Node);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (node_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Node);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RenderScreenOverlayCommand other) {
-      if (other == null) {
-        return;
-      }
-      if (other.node_ != null) {
-        if (node_ == null) {
-          Node = new global::Spelldawn.Protos.Node();
-        }
-        Node.MergeFrom(other.Node);
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            if (node_ == null) {
-              Node = new global::Spelldawn.Protos.Node();
-            }
-            input.ReadMessage(Node);
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            if (node_ == null) {
-              Node = new global::Spelldawn.Protos.Node();
-            }
-            input.ReadMessage(Node);
+            input.ReadMessage(IfFalse);
             break;
           }
         }
@@ -37549,7 +38283,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[132]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[134]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -37626,6 +38360,9 @@ namespace Spelldawn.Protos {
           break;
         case CommandOneofCase.UpdateInterface:
           UpdateInterface = other.UpdateInterface.Clone();
+          break;
+        case CommandOneofCase.Conditional:
+          Conditional = other.Conditional.Clone();
           break;
       }
 
@@ -37857,6 +38594,17 @@ namespace Spelldawn.Protos {
       }
     }
 
+    /// <summary>Field number for the "conditional" field.</summary>
+    public const int ConditionalFieldNumber = 21;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.ConditionalCommand Conditional {
+      get { return commandCase_ == CommandOneofCase.Conditional ? (global::Spelldawn.Protos.ConditionalCommand) command_ : null; }
+      set {
+        command_ = value;
+        commandCase_ = value == null ? CommandOneofCase.None : CommandOneofCase.Conditional;
+      }
+    }
+
     private object command_;
     /// <summary>Enum of possible cases for the "command" oneof.</summary>
     public enum CommandOneofCase {
@@ -37881,6 +38629,7 @@ namespace Spelldawn.Protos {
       UpdateWorldMap = 18,
       RenderScreenOverlay = 19,
       UpdateInterface = 20,
+      Conditional = 21,
     }
     private CommandOneofCase commandCase_ = CommandOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -37927,6 +38676,7 @@ namespace Spelldawn.Protos {
       if (!object.Equals(UpdateWorldMap, other.UpdateWorldMap)) return false;
       if (!object.Equals(RenderScreenOverlay, other.RenderScreenOverlay)) return false;
       if (!object.Equals(UpdateInterface, other.UpdateInterface)) return false;
+      if (!object.Equals(Conditional, other.Conditional)) return false;
       if (CommandCase != other.CommandCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -37954,6 +38704,7 @@ namespace Spelldawn.Protos {
       if (commandCase_ == CommandOneofCase.UpdateWorldMap) hash ^= UpdateWorldMap.GetHashCode();
       if (commandCase_ == CommandOneofCase.RenderScreenOverlay) hash ^= RenderScreenOverlay.GetHashCode();
       if (commandCase_ == CommandOneofCase.UpdateInterface) hash ^= UpdateInterface.GetHashCode();
+      if (commandCase_ == CommandOneofCase.Conditional) hash ^= Conditional.GetHashCode();
       hash ^= (int) commandCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -38051,6 +38802,10 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(162, 1);
         output.WriteMessage(UpdateInterface);
       }
+      if (commandCase_ == CommandOneofCase.Conditional) {
+        output.WriteRawTag(170, 1);
+        output.WriteMessage(Conditional);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -38140,6 +38895,10 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(162, 1);
         output.WriteMessage(UpdateInterface);
       }
+      if (commandCase_ == CommandOneofCase.Conditional) {
+        output.WriteRawTag(170, 1);
+        output.WriteMessage(Conditional);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -38208,6 +38967,9 @@ namespace Spelldawn.Protos {
       }
       if (commandCase_ == CommandOneofCase.UpdateInterface) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(UpdateInterface);
+      }
+      if (commandCase_ == CommandOneofCase.Conditional) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Conditional);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -38340,6 +39102,12 @@ namespace Spelldawn.Protos {
             UpdateInterface = new global::Spelldawn.Protos.UpdateInterfaceCommand();
           }
           UpdateInterface.MergeFrom(other.UpdateInterface);
+          break;
+        case CommandOneofCase.Conditional:
+          if (Conditional == null) {
+            Conditional = new global::Spelldawn.Protos.ConditionalCommand();
+          }
+          Conditional.MergeFrom(other.Conditional);
           break;
       }
 
@@ -38537,6 +39305,15 @@ namespace Spelldawn.Protos {
             UpdateInterface = subBuilder;
             break;
           }
+          case 170: {
+            global::Spelldawn.Protos.ConditionalCommand subBuilder = new global::Spelldawn.Protos.ConditionalCommand();
+            if (commandCase_ == CommandOneofCase.Conditional) {
+              subBuilder.MergeFrom(Conditional);
+            }
+            input.ReadMessage(subBuilder);
+            Conditional = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -38731,6 +39508,15 @@ namespace Spelldawn.Protos {
             UpdateInterface = subBuilder;
             break;
           }
+          case 170: {
+            global::Spelldawn.Protos.ConditionalCommand subBuilder = new global::Spelldawn.Protos.ConditionalCommand();
+            if (commandCase_ == CommandOneofCase.Conditional) {
+              subBuilder.MergeFrom(Conditional);
+            }
+            input.ReadMessage(subBuilder);
+            Conditional = subBuilder;
+            break;
+          }
         }
       }
     }
@@ -38750,7 +39536,7 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[133]; }
+      get { return global::Spelldawn.Protos.SpelldawnReflection.Descriptor.MessageTypes[135]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
