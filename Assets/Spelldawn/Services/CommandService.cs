@@ -129,13 +129,16 @@ namespace Spelldawn.Services
             yield return HandleCreateTokenCard(command.CreateTokenCard);
             break;
           case GameCommand.CommandOneofCase.UpdateInterfaceElement:
-            yield return _registry.UpdateInterfaceService.HandleUpdateInterface(command.UpdateInterfaceElement);
+            yield return _registry.OldUpdateInterfaceService.HandleUpdateInterface(command.UpdateInterfaceElement);
             break;
           case GameCommand.CommandOneofCase.UpdateWorldMap:
             yield return _registry.WorldMap.HandleUpdateWorldMap(command.UpdateWorldMap);
             break;
           case GameCommand.CommandOneofCase.RenderScreenOverlay:
             _registry.DocumentService.SetScreenOverlay(command.RenderScreenOverlay.Node);
+            break;
+          case GameCommand.CommandOneofCase.UpdateInterface:
+            yield return _registry.UpdateInterfaceService.HandleUpdate(command.UpdateInterface);
             break;
           case GameCommand.CommandOneofCase.None:
             break;

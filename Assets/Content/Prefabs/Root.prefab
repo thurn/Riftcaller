@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 205228965686964221}
   - component: {fileID: 205228965686964220}
   - component: {fileID: 3790007980437034109}
+  - component: {fileID: 3210582071691945273}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -204,7 +205,7 @@ MonoBehaviour:
   _arrowService: {fileID: 0}
   _arenaService: {fileID: 0}
   _raidService: {fileID: 0}
-  _updateInterfaceService: {fileID: 205228965686964220}
+  _oldUpdateInterfaceService: {fileID: 205228965686964220}
   _offscreenCards: {fileID: 0}
   _cardStaging: {fileID: 0}
   _revealedCardsBrowserSmall: {fileID: 0}
@@ -241,6 +242,9 @@ MonoBehaviour:
   _graphy: {fileID: 205228966181399124}
   _studio: {fileID: 0}
   _settingsService: {fileID: 3790007980437034109}
+  _worldMap: {fileID: 0}
+  _characterService: {fileID: 0}
+  _updateInterfaceService: {fileID: 3210582071691945273}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -512,6 +516,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4105045fbc14a619ecac17f58e8dcf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _registry: {fileID: 205228965686964167}
+--- !u!114 &3210582071691945273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205228965686964173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be1e32bcbdcb4e34a6f4a2aad0a0ba9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}

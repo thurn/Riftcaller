@@ -1486,6 +1486,123 @@ pub mod update_interface_element_command {
         ClearChildren(()),
     }
 }
+/// A method for unqiuely identifying a single user interface element
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ElementSelector {
+    #[prost(oneof = "element_selector::Selector", tags = "1, 2")]
+    pub selector: ::core::option::Option<element_selector::Selector>,
+}
+/// Nested message and enum types in `ElementSelector`.
+pub mod element_selector {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Selector {
+        /// Identify an element by name
+        #[prost(string, tag = "1")]
+        ElementName(::prost::alloc::string::String),
+        /// The element currently being dragged
+        #[prost(message, tag = "2")]
+        DragIndicator(()),
+    }
+}
+/// Describes how to animate an element change
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ElementAnimation {
+    /// Duration over which to animate the change.
+    #[prost(message, optional, tag = "1")]
+    pub duration: ::core::option::Option<TimeValue>,
+    /// Easing curve to use for the element animation.
+    #[prost(enumeration = "EasingMode", tag = "2")]
+    pub ease: i32,
+}
+/// Animates the element to match the position of another element
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AnimateToPosition {
+    #[prost(message, optional, tag = "1")]
+    pub destination: ::core::option::Option<ElementSelector>,
+    #[prost(message, optional, tag = "2")]
+    pub animation: ::core::option::Option<ElementAnimation>,
+}
+/// Animate an interface element to be at the indicated child index position of
+/// the 'parent' element.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AnimateToChildIndex {
+    #[prost(message, optional, tag = "1")]
+    pub destination: ::core::option::Option<ElementSelector>,
+    #[prost(uint32, tag = "2")]
+    pub index: u32,
+    #[prost(message, optional, tag = "3")]
+    pub animation: ::core::option::Option<ElementAnimation>,
+}
+/// Animates a style property of an element to a new value
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AnimateElementStyle {
+    #[prost(message, optional, tag = "1")]
+    pub animation: ::core::option::Option<ElementAnimation>,
+    #[prost(oneof = "animate_element_style::Property", tags = "2, 3, 4, 5")]
+    pub property: ::core::option::Option<animate_element_style::Property>,
+}
+/// Nested message and enum types in `AnimateElementStyle`.
+pub mod animate_element_style {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Property {
+        #[prost(float, tag = "2")]
+        Opacity(f32),
+        #[prost(float, tag = "3")]
+        Width(f32),
+        #[prost(float, tag = "4")]
+        Height(f32),
+        #[prost(message, tag = "5")]
+        Scale(super::FlexVector2),
+    }
+}
+/// Possible updates to a single interface element
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct InterfaceUpdate {
+    #[prost(oneof = "interface_update::Update", tags = "1, 2, 3, 4, 5")]
+    pub update: ::core::option::Option<interface_update::Update>,
+}
+/// Nested message and enum types in `InterfaceUpdate`.
+pub mod interface_update {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Update {
+        /// Make a copy of this element and set the original to
+        /// 'visiblity: hidden'. Subsequent selectors in this sequence will
+        /// apply to the cloned element if they search for an element by name.
+        #[prost(message, tag = "1")]
+        CloneElement(()),
+        /// Destroys the element
+        #[prost(message, tag = "2")]
+        DestroyElement(()),
+        /// Animates the element to match the position of another element
+        #[prost(message, tag = "3")]
+        AnimateToPosition(super::AnimateToPosition),
+        /// Animates the element to be a child of another element
+        #[prost(message, tag = "4")]
+        AnimateToChildIndex(super::AnimateToChildIndex),
+        /// Animates a change to this element's style
+        #[prost(message, tag = "5")]
+        AnimateStyle(super::AnimateElementStyle),
+    }
+}
+/// A single, optionally animated, tranformation to an interface element.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateInterfaceStep {
+    /// Identifies the element to update
+    #[prost(message, optional, tag = "1")]
+    pub element: ::core::option::Option<ElementSelector>,
+    /// How to mutate the selected element
+    #[prost(message, optional, tag = "2")]
+    pub update: ::core::option::Option<InterfaceUpdate>,
+    /// Delay to introduce before performing this mutation
+    #[prost(message, optional, tag = "3")]
+    pub start_time: ::core::option::Option<TimeValue>,
+}
+/// Applies a sequence of user interface element mutations
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateInterfaceCommand {
+    #[prost(message, repeated, tag = "1")]
+    pub steps: ::prost::alloc::vec::Vec<UpdateInterfaceStep>,
+}
 /// Position of a tile on the world map
 ///
 /// We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
@@ -1566,7 +1683,7 @@ pub struct RenderScreenOverlayCommand {
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -1612,6 +1729,8 @@ pub mod game_command {
         UpdateWorldMap(super::UpdateWorldMapCommand),
         #[prost(message, tag = "19")]
         RenderScreenOverlay(super::RenderScreenOverlayCommand),
+        #[prost(message, tag = "20")]
+        UpdateInterface(super::UpdateInterfaceCommand),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

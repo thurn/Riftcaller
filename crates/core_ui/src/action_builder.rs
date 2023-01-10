@@ -52,8 +52,8 @@ impl ActionBuilder {
     }
 
     /// Adds a client update to perform immediately
-    pub fn update(mut self, command: Command) -> Self {
-        self.update.push(command);
+    pub fn update(mut self, command: impl Into<Command>) -> Self {
+        self.update.push(command.into());
         self
     }
 

@@ -36,9 +36,9 @@ use protos::spelldawn::{
     PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress, RenderScreenOverlayCommand,
     RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, RunInParallelCommand,
     SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress,
-    TimeValue, TogglePanelCommand, UpdateGameViewCommand, UpdateInterfaceElementCommand,
-    UpdatePanelsCommand, UpdateText, UpdateWorldMapCommand, VisitRoomCommand, WorldMapSprite,
-    WorldMapTile,
+    TimeValue, TogglePanelCommand, UpdateGameViewCommand, UpdateInterfaceCommand,
+    UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText, UpdateWorldMapCommand,
+    VisitRoomCommand, WorldMapSprite, WorldMapTile,
 };
 use server::requests::GameResponse;
 
@@ -285,6 +285,7 @@ impl Summarize for Command {
             Self::UpdateInterfaceElement(v) => summary.child_node("UpdateInterfaceElement", v),
             Self::UpdateWorldMap(v) => summary.child_node("UpdateWorldMap", v),
             Self::RenderScreenOverlay(v) => summary.child_node("RenderScreenOverlay", v),
+            Self::UpdateInterface(v) => summary.child_node("UpdateInterface", v),
         }
     }
 }
@@ -739,5 +740,11 @@ impl Summarize for WorldMapTile {
 impl Summarize for RenderScreenOverlayCommand {
     fn summarize(self, summary: &mut Summary) {
         summary.primitive("<ScreenOverlay>");
+    }
+}
+
+impl Summarize for UpdateInterfaceCommand {
+    fn summarize(self, summary: &mut Summary) {
+        summary.primitive("<UpdateInterfaceCommand>");
     }
 }

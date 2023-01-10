@@ -13,10 +13,12 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_ui::action_builder::ActionBuilder;
+use core_ui::animations::{self};
 use core_ui::button::Button;
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::prelude::*;
-use core_ui::{actions, icons, style, update_element};
+use core_ui::{icons, style};
 use data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::player_data::PlayerData;
@@ -24,7 +26,7 @@ use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use element_names::ElementName;
 use panel_address::{Panel, PanelAddress};
-use protos::spelldawn::{DestroyAnimationEffect, FlexAlign, FlexJustify};
+use protos::spelldawn::{FlexAlign, FlexJustify};
 use screen_overlay::ScreenOverlay;
 use with_error::fail;
 
@@ -82,25 +84,36 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                         )
                         .build()
                 } else {
-                    let name = ElementName::new("Buy");
+                    let button = ElementName::new("Buy");
                     Button::new(format!("{} {}", choice.cost, icons::COINS))
-                        .name(name)
+                        .name(button)
                         .layout(
                             Layout::new()
                                 .margin(Edge::Horizontal, 8.px())
                                 .margin(Edge::Top, 24.px()),
                         )
-                        .action(actions::with_optimistic_update(
-                            vec![
-                                update_element::destroy(name, DestroyAnimationEffect::FadeOut),
-                                update_element::animate_to_position_and_destroy(
-                                    card_element,
-                                    element_names::DECK_BUTTON,
-                                    DestroyAnimationEffect::Shrink,
-                                ),
-                            ],
-                            AdventureAction::BuyCard(position, i),
-                        ))
+                        .action(
+                            ActionBuilder::new()
+                                .action(AdventureAction::BuyCard(position, i))
+                                .update(animations::combine(vec![
+                                    animations::fade_out(button),
+                                    animations::move_to_target_and_destroy(
+                                        card_element,
+                                        element_names::DECK_BUTTON,
+                                    ),
+                                ])),
+                        )
+                        // .action(actions::with_optimistic_update(
+                        //     vec![
+                        //         update_element::destroy(name, DestroyAnimationEffect::FadeOut),
+                        //         update_element::animate_to_position_and_destroy(
+                        //             card_element,
+                        //             element_names::DECK_BUTTON,
+                        //             DestroyAnimationEffect::Shrink,
+                        //         ),
+                        //     ],
+                        //     AdventureAction::BuyCard(position, i),
+                        // ))
                         .build()
                 })
         }))

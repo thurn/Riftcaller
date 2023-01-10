@@ -113,7 +113,7 @@ namespace Spelldawn.Services
       loadingContainer.Add(_loading);
     }
 
-    public void FetchOpenPanels()
+    public void FetchOpenPanelsIfStale()
     {
       foreach (var address in _openPanels)
       {

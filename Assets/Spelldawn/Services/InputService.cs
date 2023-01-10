@@ -63,6 +63,11 @@ namespace Spelldawn.Services
       }
     }
 
+    public VisualElement CurrentDragIndicator()
+    {
+      throw new NotImplementedException();
+    }
+
     void Update()
     {
       // I don't trust any of Unity's event handling code. They couldn't event-handle their way
@@ -198,14 +203,14 @@ namespace Spelldawn.Services
         _registry.ActionService.HandleAction(currentlyDragging.OnDrop);
         if (_currentDragSource?.RemoveOriginal == true)
         {
-          UpdateInterfaceService.AnimateToZeroHeightAndDestroy(_currentDragSource,
+          OldUpdateInterfaceService.AnimateToZeroHeightAndDestroy(_currentDragSource,
             new Protos.TimeValue { Milliseconds = 100 });
         }
       }
       else
       {
         _overTargetIndicator?.RemoveFromHierarchy();
-        _registry.UpdateInterfaceService.AnimateToPositionAndDestroy(
+        _registry.OldUpdateInterfaceService.AnimateToPositionAndDestroy(
           currentlyDragging,
           _currentDragSource!.worldBound,
           new DestroyElementAnimation { Duration = new Protos.TimeValue { Milliseconds = 100 }},

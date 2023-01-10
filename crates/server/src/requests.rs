@@ -652,6 +652,7 @@ pub fn command_name(command: &GameCommand) -> &'static str {
         Command::UpdateInterfaceElement(_) => "UpdateInterfaceElement",
         Command::UpdateWorldMap(_) => "UpdateWorldMap",
         Command::RenderScreenOverlay(_) => "RenderScreenOverlay",
+        Command::UpdateInterface(_) => "UpdateInterface",
     })
 }
 

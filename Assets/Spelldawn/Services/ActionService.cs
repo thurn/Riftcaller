@@ -140,7 +140,7 @@ namespace Spelldawn.Services
             {
               _registry.DocumentService.Loading = false;
             }));
-            _registry.DocumentService.FetchOpenPanels();
+            _registry.DocumentService.FetchOpenPanelsIfStale();
           }
         }
       }
@@ -170,6 +170,21 @@ namespace Spelldawn.Services
         _registry.DocumentService.AddRequestFields(action.StandardAction);
       }
 
+      // Send to server
+      var request = new GameRequest
+      {
+        Action = action,
+        PlayerId = Errors.CheckNotNull(_playerIdentifier),
+      };
+      request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);      
+      
+      float startTime = 0;
+      if (LogRpcTime.ShouldLogRpcTime)
+      {
+        Debug.Log($"HandleActionAsync: Sending request {request}");
+        startTime = Time.time;
+      }
+
       // Introduce simulated server delay
       if (IntroduceNetworkDelay.ShouldIntroduceLongNetworkDelay)
       {
@@ -180,15 +195,6 @@ namespace Spelldawn.Services
         yield return new WaitForSeconds(Random.Range(0f, 0.5f));
       }
 
-      // Send to server
-      var request = new GameRequest
-      {
-        Action = action,
-        PlayerId = Errors.CheckNotNull(_playerIdentifier),
-      };
-      request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);
-
-      var startTime = Time.time;
       var call = _client.Value.PerformActionAsync(request);
       var task = call.GetAwaiter();
       yield return new WaitUntil(() => task.IsCompleted);

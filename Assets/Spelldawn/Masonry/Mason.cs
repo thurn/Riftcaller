@@ -186,9 +186,9 @@ namespace Spelldawn.Masonry
 
     static StyleInt AdaptInt(uint? input) => (int?)input ?? new StyleInt(StyleKeyword.Null);
 
-    static Vector2 AdaptVector2(FlexVector2? input) => input is { } v ? new Vector2(v.X, v.Y) : Vector2.zero;
+    public static Vector2 AdaptVector2(FlexVector2? input) => input is { } v ? new Vector2(v.X, v.Y) : Vector2.zero;
 
-    static Vector3 AdaptVector3(FlexVector3? input) => input is { } v ? new Vector3(v.X, v.Y, v.Z) : Vector2.zero;
+    public static Vector3 AdaptVector3(FlexVector3? input) => input is { } v ? new Vector3(v.X, v.Y, v.Z) : Vector2.zero;
 
     static Length AdaptDimensionNonNull(Registry registry, Dimension dimension) => dimension.Unit switch
     {
@@ -296,7 +296,7 @@ namespace Spelldawn.Masonry
       e.style.minHeight = AdaptDimension(registry, input.MinHeight);
       e.style.minWidth = AdaptDimension(registry, input.MinWidth);
 
-      if (!registry.UpdateInterfaceService.HiddenForAnimation.Contains(e))
+      if (!registry.OldUpdateInterfaceService.HiddenForAnimation.Contains(e))
       {
         // UpdateInterfaceService needs the ability to hide elements while it is completing animations
         e.style.opacity = AdaptFloat(input.Opacity);

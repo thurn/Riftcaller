@@ -16,6 +16,7 @@
 
 pub mod action_builder;
 pub mod actions;
+pub mod animations;
 pub mod bottom_sheet_content;
 pub mod button;
 pub mod component;
