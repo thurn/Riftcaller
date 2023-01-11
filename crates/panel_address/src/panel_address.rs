@@ -17,7 +17,7 @@
 use core_ui::prelude::Component;
 use data::adventure::TilePosition;
 use data::player_name::PlayerId;
-use data::primitives::{DeckId, DeckIndex, GameId, School, Side};
+use data::primitives::{DeckId, GameId, Side};
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
@@ -58,8 +58,6 @@ pub enum PanelAddress {
     DeckEditorPrompt,
     DeckEditorLoading,
     DeckEditor(DeckEditorData),
-    OldDeckEditor(OldDeckEditorData),
-    CreateDeck(CreateDeckState),
     GameOver(GameOverData),
     TileLoading(TilePosition),
     TilePrompt(TilePosition),
@@ -91,26 +89,6 @@ impl DeckEditorData {
     pub fn new(deck_id: DeckId) -> Self {
         Self { deck_id, collection_filters: CollectionBrowserFilters::default() }
     }
-}
-
-/// Identifies the current screen within the deck editor
-#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct OldDeckEditorData {
-    /// Deck currently being viewed
-    pub deck: Option<DeckIndex>,
-    /// True if the detail options for the current deck (e.g. delete, rename)
-    /// should be shown.
-    pub show_edit_options: bool,
-    /// Current collection browser view
-    pub collection_filters: CollectionBrowserFilters,
-}
-
-/// Identifies which screen the user is on in the deck creation flow
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CreateDeckState {
-    PickSide,
-    PickSchool(Side),
-    PickName(Side, School),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]

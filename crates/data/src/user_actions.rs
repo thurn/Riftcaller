@@ -18,7 +18,7 @@ use crate::adventure_action::AdventureAction;
 use crate::card_name::CardName;
 use crate::game_actions::GameAction;
 use crate::player_name::{NamedPlayer, PlayerId};
-use crate::primitives::{ActionCount, DeckIndex, GameId, ManaValue, PointsValue, School, Side};
+use crate::primitives::{ActionCount, DeckIndex, GameId, ManaValue, PointsValue, Side};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Default, Serialize, Deserialize)]
 pub struct NewGameDebugOptions {
@@ -83,22 +83,6 @@ impl From<DeckEditorAction> for UserAction {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub enum OldDeckEditorAction {
-    /// Create a new deck for the current player
-    CreateDeck(Side, School),
-    /// Add one copy of a card to a deck
-    AddToDeck(CardName, DeckIndex),
-    /// Remove one copy of a card from a deck
-    RemoveFromDeck(CardName, DeckIndex),
-}
-
-impl From<OldDeckEditorAction> for UserAction {
-    fn from(a: OldDeckEditorAction) -> Self {
-        UserAction::OldDeckEditorAction(a)
-    }
-}
-
 /// All possible action payloads that can be sent from a client
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
@@ -126,6 +110,4 @@ pub enum UserAction {
 
     /// Perform an action in the deck editor
     DeckEditorAction(DeckEditorAction),
-    /// Perform an action in the deck editor
-    OldDeckEditorAction(OldDeckEditorAction),
 }

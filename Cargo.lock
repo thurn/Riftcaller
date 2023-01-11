@@ -1231,20 +1231,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "old_deck_editor"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "assets",
- "core_ui",
- "data",
- "panel_address",
- "protos",
- "rules",
- "with_error",
-]
-
-[[package]]
 name = "once_cell"
 version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1672,7 +1658,6 @@ dependencies = [
  "core_ui",
  "data",
  "deck_editor",
- "old_deck_editor",
  "panel_address",
  "panels",
  "protos",
@@ -1874,7 +1859,6 @@ dependencies = [
  "deck_editor",
  "display",
  "enum-iterator",
- "old_deck_editor",
  "once_cell",
  "panel_address",
  "prost",

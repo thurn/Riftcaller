@@ -22,11 +22,7 @@ use data::adventure::AdventureState;
 use data::player_data::PlayerData;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
-use old_deck_editor::deck_editor_panel::OldDeckEditorPanel;
-use old_deck_editor::pick_deck_name::PickDeckName;
-use old_deck_editor::pick_deck_school::PickDeckSchool;
-use old_deck_editor::pick_deck_side::PickDeckSide;
-use panel_address::{CreateDeckState, Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;
 use panels::debug_panel::DebugPanel;
@@ -113,17 +109,6 @@ fn render_server_panel(
         PanelAddress::DeckEditor(data) => {
             DeckEditorPanel { player, data, deck: player.find_deck(data.deck_id)? }.build_panel()
         }
-        PanelAddress::OldDeckEditor(data) => {
-            let open_deck = if let Some(id) = data.deck { Some(player.deck(id)?) } else { None };
-            OldDeckEditorPanel { player, open_deck, data }.build_panel()
-        }
-        PanelAddress::CreateDeck(state) => match state {
-            CreateDeckState::PickSide => PickDeckSide::new().build_panel(),
-            CreateDeckState::PickSchool(side) => PickDeckSchool::new(side).build_panel(),
-            CreateDeckState::PickName(side, school) => {
-                PickDeckName::new(side, school).build_panel()
-            }
-        },
         PanelAddress::GameOver(data) => GameOverPanel { data, player }.build_panel(),
         PanelAddress::TileLoading(position) => {
             adventure_panels::render_tile_loading_panel(position, player)?

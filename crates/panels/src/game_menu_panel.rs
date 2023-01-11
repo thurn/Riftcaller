@@ -22,7 +22,7 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::{actions, panels};
 use data::game_actions::GameAction;
-use panel_address::{OldDeckEditorData, Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
@@ -54,11 +54,7 @@ impl Component for GameMenuPanel {
                             .justify_content(FlexJustify::Center),
                     )
                     .child(menu_button("Close", panels::close(address)))
-                    .child(menu_button("Resign", actions::close_and(address, GameAction::Resign)))
-                    .child(menu_button(
-                        "Deck Editor",
-                        panels::set(PanelAddress::OldDeckEditor(OldDeckEditorData::default())),
-                    )),
+                    .child(menu_button("Resign", actions::close_and(address, GameAction::Resign))),
             )
             .build()
     }

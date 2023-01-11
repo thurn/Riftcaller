@@ -546,14 +546,6 @@ fn handle_standard_action(
             deck_editor_actions::handle(player, a)?;
             Ok(vec![])
         }),
-        UserAction::OldDeckEditorAction(a) => handle_player_action(database, player_id, |player| {
-            old_deck_editor::deck_editor_actions::handle(
-                player,
-                a,
-                &standard_action.request_fields,
-            )?;
-            Ok(vec![])
-        }),
     }?;
 
     let player = find_player(database, player_id)?;

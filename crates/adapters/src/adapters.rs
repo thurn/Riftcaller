@@ -44,7 +44,7 @@ pub fn game_id(game_id: GameIdentifier) -> GameId {
 pub fn card_identifier(card_id: CardId) -> CardIdentifier {
     // Maybe need to obfuscate this somehow?
     CardIdentifier {
-        side: player_side(card_id.side) as i32,
+        side: player_side(card_id.side),
         index: card_id.index as u32,
         ability_id: None,
     }

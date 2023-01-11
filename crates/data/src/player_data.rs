@@ -94,7 +94,7 @@ impl PlayerData {
 
     /// Retrieves one of a player's decks based on its [DeckIndex].
     pub fn deck(&self, deck_id: DeckIndex) -> Result<&Deck> {
-        self.decks.get(deck_id.value as usize).with_error(|| "Deck not found")
+        self.decks.get(deck_id.value).with_error(|| "Deck not found")
     }
 
     /// Retrieves one of a player's decks based on its [DeckIndex].
@@ -105,7 +105,7 @@ impl PlayerData {
     }
 
     pub fn deck_mut(&mut self, deck_id: DeckIndex) -> Result<&mut Deck> {
-        self.decks.get_mut(deck_id.value as usize).with_error(|| "Deck not found")
+        self.decks.get_mut(deck_id.value).with_error(|| "Deck not found")
     }
 }
 

@@ -184,7 +184,7 @@ namespace Spelldawn.Services
               }
               else if (transition.WaitToLoad && transition.Close != null && _panelCache.ContainsKey(transition.Close))
               {
-                _panelCache[transition.Open] = new InterfacePanel { Node = _panelCache[transition.Close].Node };
+                _panelCache[transition.Open] = _panelCache[transition.Close];
                 _waitingFor.Add(transition.Open);
                 Loading = true;
               }
