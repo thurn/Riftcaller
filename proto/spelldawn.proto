@@ -1210,6 +1210,10 @@ message PanelTransitionOptions {
     // If true, do not attempt to fetch the 'open' panel, just wait for
     // it to be returned
     bool do_not_fetch = 4;
+
+    // If true, displays a loading animation on the 'close' screen while
+    // fetching the 'open' screen, then transitions once it is loaded.
+    bool wait_to_load = 5;
 }
 
 // Requests to open or close the given interface panel.

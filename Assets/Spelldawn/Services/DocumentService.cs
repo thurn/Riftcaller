@@ -182,6 +182,12 @@ namespace Spelldawn.Services
                 _waitingFor.Add(transition.Open);
                 Loading = true;
               }
+              else if (transition.WaitToLoad && transition.Close != null && _panelCache.ContainsKey(transition.Close))
+              {
+                _panelCache[transition.Open] = new InterfacePanel { Node = _panelCache[transition.Close].Node };
+                _waitingFor.Add(transition.Open);
+                Loading = true;
+              }
               else
               {
                 throw new InvalidOperationException($"Attempted to open {transition.Open} with no loading state");

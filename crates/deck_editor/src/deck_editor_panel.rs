@@ -14,12 +14,14 @@
 
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::full_screen_image::FullScreenImage;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::{icons, style};
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use panel_address::{DeckEditorData, Panel, PanelAddress};
-use protos::spelldawn::{FlexAlign, FlexJustify};
+use data::primitives::DeckId;
+use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
+use protos::spelldawn::FlexJustify;
 use screen_overlay::ScreenOverlay;
 
 use crate::card_list::CardList;
@@ -31,6 +33,36 @@ pub struct DeckEditorPanel<'a> {
     pub player: &'a PlayerData,
     pub data: DeckEditorData,
     pub deck: &'a Deck,
+}
+
+impl<'a> DeckEditorPanel<'a> {
+    fn page_control(&self, show: bool, icon: impl Into<String>, subtract: bool) -> impl Component {
+        Column::new("PageControls")
+            .style(
+                Style::new()
+                    .min_width(96.px())
+                    .height(100.pct())
+                    .flex_shrink(0.0)
+                    .flex_grow(1.0)
+                    .justify_content(FlexJustify::Center),
+            )
+            .child(show.then(|| {
+                IconButton::new(icon).button_type(IconButtonType::NavBrown).action(
+                    Panels::open(PanelAddress::DeckEditor(DeckEditorData {
+                        deck_id: DeckId::Adventure,
+                        collection_filters: CollectionBrowserFilters {
+                            offset: if subtract {
+                                self.data.collection_filters.offset - 8
+                            } else {
+                                self.data.collection_filters.offset + 8
+                            },
+                        },
+                    }))
+                    .and_close(self.address())
+                    .wait_to_load(true),
+                )
+            }))
+    }
 }
 
 impl<'a> Panel for DeckEditorPanel<'a> {
@@ -54,57 +86,27 @@ impl<'a> Component for DeckEditorPanel<'a> {
             ))
             .content(
                 Row::new("DeckEditorPanel")
-                    .child(
-                        Column::new("LeftControls")
-                            .style(
-                                Style::new()
-                                    .min_width(96.px())
-                                    .height(100.pct())
-                                    .flex_shrink(0.0)
-                                    .flex_grow(1.0)
-                                    .justify_content(FlexJustify::Center)
-                                    .align_items(FlexAlign::Center),
-                            )
-                            .child(if self.data.collection_filters.offset < 8 {
-                                None
-                            } else {
-                                Some(
-                                    IconButton::new(icons::PREVIOUS_PAGE)
-                                        .button_type(IconButtonType::NavBrown),
-                                )
-                            }),
-                    )
+                    .child(self.page_control(
+                        self.data.collection_filters.offset >= 8,
+                        icons::PREVIOUS_PAGE,
+                        true,
+                    ))
                     .child(Column::new("Collection").child(CollectionBrowser {
                         player: self.player,
                         deck: self.deck,
                         filters: self.data.collection_filters,
                     }))
                     .child(
-                        Column::new("RightControls")
-                            .style(
-                                Style::new()
-                                    .min_width(96.px())
-                                    .height(100.pct())
-                                    .flex_shrink(0.0)
-                                    .flex_grow(1.0)
-                                    .justify_content(FlexJustify::Center),
-                            )
-                            .child(
-                                if self.data.collection_filters.offset + 8
-                                    >= collection_browser::get_matching_cards(
-                                        self.player,
-                                        self.data.collection_filters,
-                                    )
-                                    .count()
-                                {
-                                    None
-                                } else {
-                                    Some(
-                                        IconButton::new(icons::NEXT_PAGE)
-                                            .button_type(IconButtonType::NavBrown),
-                                    )
-                                },
-                            ),
+                        self.page_control(
+                            self.data.collection_filters.offset + 8
+                                < collection_browser::get_matching_cards(
+                                    self.player,
+                                    self.data.collection_filters,
+                                )
+                                .count(),
+                            icons::NEXT_PAGE,
+                            false,
+                        ),
                     )
                     .child(CardList { deck: self.deck }),
             )

@@ -1165,6 +1165,10 @@ pub struct PanelTransitionOptions {
     /// it to be returned
     #[prost(bool, tag = "4")]
     pub do_not_fetch: bool,
+    /// If true, displays a loading animation on the 'close' screen while
+    /// fetching the 'open' screen, then transitions once it is loaded.
+    #[prost(bool, tag = "5")]
+    pub wait_to_load: bool,
 }
 /// Requests to open or close the given interface panel.
 #[derive(Clone, PartialEq, ::prost::Message)]
