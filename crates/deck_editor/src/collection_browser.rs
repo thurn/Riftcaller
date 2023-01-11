@@ -80,7 +80,7 @@ impl<'a> CollectionBrowser<'a> {
                             .quantity_element_name(quantity_element)
                             .draggable(
                                 Draggable::new(card_name.to_string())
-                                    .drop_targets(vec![element_names::CARD_LIST])
+                                    .drop_target(element_names::CARD_LIST)
                                     .over_target_indicator(move || {
                                         CardListCardName::new(card_name).build()
                                     })

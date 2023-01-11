@@ -29,7 +29,7 @@ namespace Spelldawn.Services
   {
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
     Displayable? _lastClicked;
-    Draggable? _currentDragSource;
+    Draggable? _originalDragSource;
     Draggable? _currentlyDragging;
     VisualElement? _overTargetIndicator;
     Vector2? _dragStartMousePosition;
@@ -41,7 +41,7 @@ namespace Spelldawn.Services
 
     public void StartDragging(Draggable currentDragSource)
     {
-      _currentDragSource = currentDragSource;
+      _originalDragSource = currentDragSource;
       var element = (Draggable)Mason.Render(_registry, currentDragSource.Node);
       var initialPosition = currentDragSource.worldBound.position;
       element.name = DragElementName;
@@ -148,17 +148,17 @@ namespace Spelldawn.Services
         }
 
         _overTarget = false;
-        if (_currentDragSource?.RemoveOriginal == true)
+        if (_originalDragSource?.RemoveOriginal == true)
         {
-          _currentDragSource.style.visibility = Visibility.Visible;
+          _originalDragSource.style.visibility = Visibility.Visible;
         }
 
         return;
       }
 
-      if (_currentDragSource?.RemoveOriginal == true)
+      if (_originalDragSource?.RemoveOriginal == true)
       {
-        _currentDragSource.style.visibility = Visibility.Hidden;
+        _originalDragSource.style.visibility = Visibility.Hidden;
       }
 
       var dropTargets = _registry.DocumentService.RootVisualElement.Query<DropTarget>().Build().ToList();
@@ -206,9 +206,9 @@ namespace Spelldawn.Services
       {
         // Leave the currently-visible drag object in the hierarchy, the OnDrop action is responsible for removing it.
         _registry.ActionService.HandleAction(currentlyDragging.OnDrop);
-        if (_currentDragSource?.RemoveOriginal == true)
+        if (_originalDragSource?.RemoveOriginal == true)
         {
-          OldUpdateInterfaceService.AnimateToZeroHeightAndDestroy(_currentDragSource,
+          OldUpdateInterfaceService.AnimateToZeroHeightAndDestroy(_originalDragSource,
             new Protos.TimeValue { Milliseconds = 100 });
         }
       }
@@ -217,14 +217,14 @@ namespace Spelldawn.Services
         _overTargetIndicator?.RemoveFromHierarchy();
         _registry.OldUpdateInterfaceService.AnimateToPositionAndDestroy(
           currentlyDragging,
-          _currentDragSource!.worldBound,
+          _originalDragSource!.worldBound,
           new DestroyElementAnimation { Duration = new Protos.TimeValue { Milliseconds = 100 }},
           doNotClone: true,
           () =>
           {
-            if (_currentDragSource?.RemoveOriginal == true)
+            if (_originalDragSource?.RemoveOriginal == true)
             {
-              _currentDragSource.style.visibility = Visibility.Visible;
+              _originalDragSource.style.visibility = Visibility.Visible;
             }
           });
       }

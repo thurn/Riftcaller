@@ -14,24 +14,24 @@
 
 use assets;
 use assets::CardIconType;
+use core_ui::action_builder::ActionBuilder;
 use core_ui::design::{BackgroundColor, Font, FontColor, FontSize, OVERLAY_BORDER};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
 use data::card_name::CardName;
+use deck_card::DeckCard;
 use protos::spelldawn::{
     BackgroundImageAutoSize, FlexAlign, FlexDirection, FlexJustify, FlexPosition, ImageScaleMode,
-    StandardAction,
 };
 
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
-#[derive(Debug)]
 pub struct CardListCardName {
     layout: Layout,
     card_name: CardName,
-    on_drop: Option<StandardAction>,
+    on_drop: Option<ActionBuilder>,
     count: Option<u32>,
 }
 
@@ -45,7 +45,7 @@ impl CardListCardName {
         self
     }
 
-    pub fn on_drop(mut self, on_drop: Option<StandardAction>) -> Self {
+    pub fn on_drop(mut self, on_drop: Option<ActionBuilder>) -> Self {
         self.on_drop = on_drop;
         self
     }
@@ -68,11 +68,11 @@ impl Component for CardListCardName {
         };
 
         Draggable::new(element_names::card_list_card_name(self.card_name))
-            .drop_targets(vec!["CollectionBrowser"])
-            // .over_target_indicator(move || DeckEditorCard::new(self.card_name).build())
+            .drop_target(element_names::COLLECTION_BROWSER)
+            .over_target_indicator(move || DeckCard::new(self.card_name).build())
             .on_drop(self.on_drop)
             .horizontal_drag_start_distance(100)
-            .remove_original(if let Some(v) = self.count { v < 2 } else { false })
+            .remove_original(if let Some(v) = self.count { v <= 1 } else { false })
             .style(
                 Style::new()
                     .height(72.px())

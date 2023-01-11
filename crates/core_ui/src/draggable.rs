@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use element_names::ElementName;
 use protos::spelldawn::{node_type, ClientAction, DraggableNode, Node, NodeType};
 
 use crate::actions::InterfaceAction;
@@ -35,8 +36,8 @@ impl Draggable {
         result
     }
 
-    pub fn drop_targets(mut self, identifiers: Vec<impl Into<String>>) -> Self {
-        self.draggable.drop_target_identifiers = identifiers.into_iter().map(Into::into).collect();
+    pub fn drop_target(mut self, identifier: ElementName) -> Self {
+        self.draggable.drop_target_identifiers = vec![identifier.into()];
         self
     }
 

@@ -68,7 +68,7 @@ impl Component for DeckEditorCardTitle {
         };
 
         Draggable::new(format!("{}Title", self.card_name))
-            .drop_targets(vec!["CollectionBrowser"])
+            //.drop_targets(vec!["CollectionBrowser"])
             .over_target_indicator(move || DeckEditorCard::new(self.card_name).build())
             .on_drop(self.on_drop)
             .horizontal_drag_start_distance(100)

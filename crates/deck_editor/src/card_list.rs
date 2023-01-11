@@ -12,11 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::action_builder::ActionBuilder;
+use core_ui::animations::{
+    self, AnimateStyle, AnimateToElement, DestroyElement, InterfaceAnimation,
+};
+use core_ui::conditional::Conditional;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
 use data::card_name::CardName;
 use data::deck::Deck;
-use protos::spelldawn::{FlexAlign, FlexDirection};
+use data::user_actions::DeckEditorAction;
+use element_names::CurrentDraggable;
+use protos::spelldawn::animate_element_style::Property;
+use protos::spelldawn::{FlexAlign, FlexDirection, FlexVector2};
 
 use crate::card_list_card_name::CardListCardName;
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
@@ -66,40 +74,35 @@ impl<'a> Component for CardList<'a> {
                             .align_items(FlexAlign::Center)
                             .padding(Edge::All, 1.vw()),
                     )
-                    // .child(DeckTile::new(self.deck).action(panels::set(
-                    //     PanelAddress::OldDeckEditor(OldDeckEditorData {
-                    //         deck: Some(self.deck.index),
-                    //         show_edit_options: true,
-                    //         collection_filters: CollectionBrowserFilters::default(),
-                    //     }),
-                    // )))
                     .children(sorted_deck(self.deck).into_iter().map(|(card_name, count)| {
-                        CardListCardName::new(*card_name).count(*count)
-                        // .on_drop(Some(drop_action(*card_name,
-                        // self.deck.index)))
+                        CardListCardName::new(*card_name)
+                            .count(*count)
+                            .on_drop(Some(drop_action(*card_name)))
                     })),
             )
             .build()
     }
 }
 
-// fn drop_action(name: CardName, active_deck: DeckIndex) -> StandardAction {
-//     StandardAction {
-//         payload: actions::payload(UserAction::OldDeckEditorAction(
-//             OldDeckEditorAction::RemoveFromDeck(name, active_deck),
-//         )),
-//         update:
-// Some(actions::command_list(vec![Command::UpdateInterfaceElement(
-// UpdateInterfaceElementCommand {                 element_name:
-// "<OverTargetIndicator>".to_string(),                 interface_update:
-// Some(InterfaceUpdate::AnimateToElementPosition(
-// AnimateToElementPositionAndDestroy {
-// target_element_name: name.to_string(),
-// fallback_target_element_name: "CollectionBrowser".to_string(),
-// animation: None,                     },
-//                 )),
-//             },
-//         )])),
-//         request_fields: HashMap::new(),
-//     }
-// }
+fn drop_action(name: CardName) -> ActionBuilder {
+    ActionBuilder::new().action(DeckEditorAction::RemoveFromDeck(name)).update(
+        Conditional::if_exists(element_names::deck_card(name))
+            .then(
+                InterfaceAnimation::new()
+                    .start(CurrentDraggable, AnimateToElement::new(element_names::deck_card(name)))
+                    .insert(animations::default_duration(), CurrentDraggable, DestroyElement),
+            )
+            .or_else(
+                InterfaceAnimation::new()
+                    .start(
+                        CurrentDraggable,
+                        AnimateStyle::new(Property::Scale(FlexVector2 { x: 0.1, y: 0.1 })),
+                    )
+                    .start(
+                        CurrentDraggable,
+                        AnimateToElement::new(element_names::COLLECTION_BROWSER),
+                    )
+                    .insert(animations::default_duration(), CurrentDraggable, DestroyElement),
+            ),
+    )
+}

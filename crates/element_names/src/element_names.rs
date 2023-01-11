@@ -91,6 +91,10 @@ pub fn deck_card(name: CardName) -> ElementName {
     ElementName { tag: "DeckCard", count: name as u64 }
 }
 
+pub fn deck_card_slot(name: CardName) -> ElementName {
+    ElementName { tag: "DeckCardSlot", count: name as u64 }
+}
+
 pub fn card_list_card_name(name: CardName) -> ElementName {
     ElementName { tag: "CardListCardName", count: name as u64 }
 }

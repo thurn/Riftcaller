@@ -54,7 +54,7 @@ impl DeckEditorCard {
 impl Component for DeckEditorCard {
     fn build(self) -> Option<Node> {
         Draggable::new(self.card_name.to_string())
-            .drop_targets(vec!["CardList"])
+            //.drop_targets(vec!["CardList"])
             .over_target_indicator(move || DeckEditorCardTitle::new(self.card_name).build())
             .on_drop(self.on_drop)
             .style(
