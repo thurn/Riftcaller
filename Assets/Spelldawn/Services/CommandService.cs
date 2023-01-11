@@ -128,9 +128,6 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.CreateTokenCard:
             yield return HandleCreateTokenCard(command.CreateTokenCard);
             break;
-          case GameCommand.CommandOneofCase.UpdateInterfaceElement:
-            yield return _registry.OldUpdateInterfaceService.HandleUpdateInterface(command.UpdateInterfaceElement);
-            break;
           case GameCommand.CommandOneofCase.UpdateWorldMap:
             yield return _registry.WorldMap.HandleUpdateWorldMap(command.UpdateWorldMap);
             break;

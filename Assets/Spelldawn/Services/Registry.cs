@@ -87,10 +87,7 @@ namespace Spelldawn.Services
 
     [SerializeField] RaidService _raidService = null!;
     public RaidService RaidService => _raidService;
-
-    [FormerlySerializedAs("_updateInterfaceService")] [SerializeField] OldUpdateInterfaceService _oldUpdateInterfaceService = null!;
-    public OldUpdateInterfaceService OldUpdateInterfaceService => _oldUpdateInterfaceService;
-
+    
     [SerializeField] StackObjectDisplay _offscreenCards = null!;
     public StackObjectDisplay OffscreenCards => _offscreenCards;
 
