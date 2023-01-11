@@ -14,23 +14,15 @@
 
 use std::iter;
 
-use core_ui::action_builder::ActionBuilder;
 use core_ui::design::BLACK;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
-use data::user_actions::OldDeckEditorAction;
 use panel_address::CollectionBrowserFilters;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
-use protos::spelldawn::{
-    AnimateDraggableToChildIndex, AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection,
-    FlexJustify, StandardAction, TimeValue, UpdateInterfaceElementCommand,
-};
+use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, StandardAction};
 
-use crate::card_list;
 use crate::deck_editor_card::DeckEditorCard;
 use crate::empty_card::EmptyCard;
 
@@ -96,27 +88,6 @@ impl<'a> Component for CollectionBrowser<'a> {
     }
 }
 
-fn drop_action(name: CardName, open_deck: &Deck) -> StandardAction {
-    let update = if open_deck.cards.contains_key(&name) {
-        InterfaceUpdate::AnimateToElementPosition(AnimateToElementPositionAndDestroy {
-            target_element_name: format!("{}Title", name),
-            fallback_target_element_name: "".to_string(),
-            animation: None,
-            do_not_clone: true,
-        })
-    } else {
-        InterfaceUpdate::AnimateToChildIndex(AnimateDraggableToChildIndex {
-            parent_element_name: "CardList".to_string(),
-            index: card_list::position_for_card(open_deck, name) as u32,
-            duration: Some(TimeValue { milliseconds: 300 }),
-        })
-    };
-
-    ActionBuilder::new()
-        .update(Command::UpdateInterfaceElement(UpdateInterfaceElementCommand {
-            element_name: "<OverTargetIndicator>".to_string(),
-            interface_update: Some(update),
-        }))
-        .action(OldDeckEditorAction::AddToDeck(name, open_deck.index))
-        .build()
+fn drop_action(_name: CardName, _open_deck: &Deck) -> StandardAction {
+    StandardAction::default()
 }

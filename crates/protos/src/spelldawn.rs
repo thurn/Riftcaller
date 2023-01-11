@@ -1422,70 +1422,6 @@ pub mod client_debug_command {
         SetBooleanPreference(super::SetBooleanPreference),
     }
 }
-/// Animation sequence to play before an interface element is destroyed
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct DestroyElementAnimation {
-    #[prost(enumeration = "DestroyAnimationEffect", repeated, tag = "1")]
-    pub effects: ::prost::alloc::vec::Vec<i32>,
-    #[prost(message, optional, tag = "2")]
-    pub duration: ::core::option::Option<TimeValue>,
-}
-/// Animates a Draggable element to appear as a child node of a parent
-/// container.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct AnimateDraggableToChildIndex {
-    #[prost(string, tag = "1")]
-    pub parent_element_name: ::prost::alloc::string::String,
-    #[prost(uint32, tag = "2")]
-    pub index: u32,
-    #[prost(message, optional, tag = "3")]
-    pub duration: ::core::option::Option<TimeValue>,
-}
-/// Animates an element's center point to match the center point of another
-/// element, then destroy it
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct AnimateToElementPositionAndDestroy {
-    #[prost(string, tag = "1")]
-    pub target_element_name: ::prost::alloc::string::String,
-    #[prost(message, optional, tag = "2")]
-    pub animation: ::core::option::Option<DestroyElementAnimation>,
-    /// Use this target instead if 'target_element_name' is not found
-    #[prost(string, tag = "3")]
-    pub fallback_target_element_name: ::prost::alloc::string::String,
-    /// Disable the effect of making a copy of the source elemenet first
-    #[prost(bool, tag = "4")]
-    pub do_not_clone: bool,
-}
-/// Changes the text content of a node. If multiple text elements are children
-/// of this node, only the first is updated.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateText {
-    #[prost(string, tag = "1")]
-    pub new_text: ::prost::alloc::string::String,
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateInterfaceElementCommand {
-    #[prost(string, tag = "1")]
-    pub element_name: ::prost::alloc::string::String,
-    #[prost(oneof = "update_interface_element_command::InterfaceUpdate", tags = "2, 3, 4, 5, 6")]
-    pub interface_update: ::core::option::Option<update_interface_element_command::InterfaceUpdate>,
-}
-/// Nested message and enum types in `UpdateInterfaceElementCommand`.
-pub mod update_interface_element_command {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum InterfaceUpdate {
-        #[prost(message, tag = "2")]
-        AnimateToChildIndex(super::AnimateDraggableToChildIndex),
-        #[prost(message, tag = "3")]
-        AnimateToElementPosition(super::AnimateToElementPositionAndDestroy),
-        #[prost(message, tag = "4")]
-        Destroy(super::DestroyElementAnimation),
-        #[prost(message, tag = "5")]
-        UpdateText(super::UpdateText),
-        #[prost(message, tag = "6")]
-        ClearChildren(()),
-    }
-}
 /// Position of a tile on the world map
 ///
 /// We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
@@ -1610,9 +1546,10 @@ pub struct AnimateToPosition {
     #[prost(bool, tag = "4")]
     pub disable_width_half_offset: bool,
 }
-/// Creates a transparent 'target' element at a given child index position of a
-/// parent element. The target starts at 1x1 size and animates its width and
-/// height to match the size of the source element.
+/// Creates a cloned invisible 'target' element at a given child index position
+/// of a parent element. The target starts at 1x1 size and animates its width
+/// and height to match the size of the source element. After reaching full
+/// size, it becomes visible.
 ///
 /// The target can be retrieved via the 'target' element selector using the
 /// provided target_name. These element names only need to be unique among
@@ -1734,7 +1671,7 @@ pub struct ConditionalCommand {
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -1774,8 +1711,6 @@ pub mod game_command {
         MoveGameObjects(super::MoveGameObjectsCommand),
         #[prost(message, tag = "16")]
         CreateTokenCard(super::CreateTokenCardCommand),
-        #[prost(message, tag = "17")]
-        UpdateInterfaceElement(super::UpdateInterfaceElementCommand),
         #[prost(message, tag = "18")]
         UpdateWorldMap(super::UpdateWorldMapCommand),
         #[prost(message, tag = "19")]
@@ -2148,15 +2083,6 @@ pub enum LogMessageLevel {
     Standard = 1,
     Warning = 2,
     Error = 3,
-}
-/// Possible interface animation effects to remove an element
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum DestroyAnimationEffect {
-    Unspecified = 0,
-    Shrink = 1,
-    ShrinkHeight = 2,
-    FadeOut = 3,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

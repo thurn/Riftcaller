@@ -22,10 +22,8 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::play_effect_position::EffectPosition;
-use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
 use protos::spelldawn::{
-    node_type, ActionTrackerView, AnchorCorner, AnimateDraggableToChildIndex,
-    AnimateToElementPositionAndDestroy, ArrowTargetRoom, AudioClipAddress, CardAnchor,
+    node_type, ActionTrackerView, AnchorCorner, ArrowTargetRoom, AudioClipAddress, CardAnchor,
     CardAnchorNode, CardCreationAnimation, CardIcon, CardIcons, CardIdentifier, CardTargeting,
     CardTitle, CardView, CommandList, ConditionalCommand, CreateTokenCardCommand, DelayCommand,
     DisplayGameMessageCommand, DisplayRewardsCommand, EffectAddress, FireProjectileCommand,
@@ -37,8 +35,7 @@ use protos::spelldawn::{
     RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, RunInParallelCommand,
     SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress,
     TimeValue, TogglePanelCommand, UpdateGameViewCommand, UpdateInterfaceCommand,
-    UpdateInterfaceElementCommand, UpdatePanelsCommand, UpdateText, UpdateWorldMapCommand,
-    VisitRoomCommand, WorldMapSprite, WorldMapTile,
+    UpdatePanelsCommand, UpdateWorldMapCommand, VisitRoomCommand, WorldMapSprite, WorldMapTile,
 };
 use server::requests::GameResponse;
 
@@ -282,7 +279,6 @@ impl Summarize for Command {
             Self::DisplayRewards(v) => summary.child_node("DisplayRewards", v),
             Self::LoadScene(v) => summary.child_node("LoadScene", v),
             Self::CreateTokenCard(v) => summary.child_node("CreateTokenCard", v),
-            Self::UpdateInterfaceElement(v) => summary.child_node("UpdateInterfaceElement", v),
             Self::UpdateWorldMap(v) => summary.child_node("UpdateWorldMap", v),
             Self::RenderScreenOverlay(v) => summary.child_node("RenderScreenOverlay", v),
             Self::UpdateInterface(v) => summary.child_node("UpdateInterface", v),
@@ -672,43 +668,6 @@ impl Summarize for MoveGameObjectsCommand {
 impl Summarize for CreateTokenCardCommand {
     fn summarize(self, summary: &mut Summary) {
         summary.child("card", self.card);
-    }
-}
-
-impl Summarize for UpdateInterfaceElementCommand {
-    fn summarize(self, summary: &mut Summary) {
-        summary.child_node("element_name", self.element_name);
-    }
-}
-
-impl Summarize for InterfaceUpdate {
-    fn summarize(self, summary: &mut Summary) {
-        match self {
-            Self::AnimateToChildIndex(v) => summary.child_node("AnimateToChildIndex", v),
-            Self::AnimateToElementPosition(v) => summary.child_node("AnimateToElementPosition", v),
-            Self::Destroy(_) => summary.primitive("Destroy"),
-            Self::UpdateText(v) => summary.child_node("UpdateText", v),
-            Self::ClearChildren(_) => summary.primitive("ClearChildren"),
-        }
-    }
-}
-
-impl Summarize for AnimateDraggableToChildIndex {
-    fn summarize(self, summary: &mut Summary) {
-        summary.child_node("parent_element_name", self.parent_element_name);
-        summary.child_node("index", self.index);
-    }
-}
-
-impl Summarize for AnimateToElementPositionAndDestroy {
-    fn summarize(self, summary: &mut Summary) {
-        summary.child_node("target_element_name", self.target_element_name);
-    }
-}
-
-impl Summarize for UpdateText {
-    fn summarize(self, summary: &mut Summary) {
-        summary.child_node("update_text", self.new_text);
     }
 }
 

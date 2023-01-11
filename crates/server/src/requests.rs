@@ -649,7 +649,6 @@ pub fn command_name(command: &GameCommand) -> &'static str {
         Command::DisplayRewards(_) => "DisplayRewards",
         Command::LoadScene(_) => "LoadScene",
         Command::CreateTokenCard(_) => "CreateTokenCard",
-        Command::UpdateInterfaceElement(_) => "UpdateInterfaceElement",
         Command::UpdateWorldMap(_) => "UpdateWorldMap",
         Command::RenderScreenOverlay(_) => "RenderScreenOverlay",
         Command::UpdateInterface(_) => "UpdateInterface",

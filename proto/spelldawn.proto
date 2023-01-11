@@ -1468,61 +1468,6 @@ message ClientDebugCommand {
     }
 }
 
-// Possible interface animation effects to remove an element
-enum DestroyAnimationEffect {
-    DESTROY_ANIMATION_EFFECT_UNSPECIFIED = 0;
-    DESTROY_ANIMATION_EFFECT_SHRINK = 1;
-    DESTROY_ANIMATION_EFFECT_SHRINK_HEIGHT = 2;
-    DESTROY_ANIMATION_EFFECT_FADE_OUT = 3;
-}
-
-// Animation sequence to play before an interface element is destroyed
-message DestroyElementAnimation {
-    repeated DestroyAnimationEffect effects = 1;
-
-    TimeValue duration = 2;
-}
-
-// Animates a Draggable element to appear as a child node of a parent container.
-message AnimateDraggableToChildIndex {
-    string parent_element_name = 1;
-    uint32 index = 2;
-    TimeValue duration = 3;
-}
-
-// Animates an element's center point to match the center point of another
-// element, then destroy it
-message AnimateToElementPositionAndDestroy {
-    string target_element_name = 1;
-
-    DestroyElementAnimation animation = 2;
-
-    // Use this target instead if 'target_element_name' is not found
-    string fallback_target_element_name = 3;
-
-    // Disable the effect of making a copy of the source elemenet first
-    bool do_not_clone = 4;
-}
-
-// Changes the text content of a node. If multiple text elements are children
-// of this node, only the first is updated.
-message UpdateText {
-    string new_text = 1;
-}
-
-message UpdateInterfaceElementCommand {
-    string element_name = 1;
-
-    oneof interface_update {
-        AnimateDraggableToChildIndex animate_to_child_index = 2;
-        AnimateToElementPositionAndDestroy animate_to_element_position = 3;
-        DestroyElementAnimation destroy = 4;
-        UpdateText update_text = 5;
-        google.protobuf.Empty clear_children = 6;
-    }
-}
-
-
 // Position of a tile on the world map
 //
 // We use offset hex coordinates with the "Pointy Top - Odd Rows Shifted
@@ -1753,7 +1698,6 @@ message GameCommand {
         LoadSceneCommand load_scene = 14;
         MoveGameObjectsCommand move_game_objects = 15;
         CreateTokenCardCommand create_token_card = 16;
-        UpdateInterfaceElementCommand update_interface_element = 17;
         UpdateWorldMapCommand update_world_map = 18;
         RenderScreenOverlayCommand render_screen_overlay = 19;
         UpdateInterfaceCommand update_interface = 20;

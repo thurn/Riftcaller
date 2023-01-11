@@ -12,23 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashMap;
-
 use core_ui::design::RED_900;
 use core_ui::drop_target::DropTarget;
+use core_ui::panels;
 use core_ui::prelude::*;
-use core_ui::{actions, panels};
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::primitives::DeckIndex;
-use data::user_actions::{OldDeckEditorAction, UserAction};
 use panel_address::{CollectionBrowserFilters, OldDeckEditorData, PanelAddress};
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::update_interface_element_command::InterfaceUpdate;
-use protos::spelldawn::{
-    AnimateToElementPositionAndDestroy, FlexAlign, FlexDirection, StandardAction,
-    UpdateInterfaceElementCommand,
-};
+use protos::spelldawn::{FlexAlign, FlexDirection, StandardAction};
 
 use crate::deck_editor_card_title::DeckEditorCardTitle;
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
@@ -102,24 +94,6 @@ impl<'a> Component for CardList<'a> {
     }
 }
 
-fn drop_action(name: CardName, active_deck: DeckIndex) -> StandardAction {
-    StandardAction {
-        payload: actions::payload(UserAction::OldDeckEditorAction(
-            OldDeckEditorAction::RemoveFromDeck(name, active_deck),
-        )),
-        update: Some(actions::command_list(vec![Command::UpdateInterfaceElement(
-            UpdateInterfaceElementCommand {
-                element_name: "<OverTargetIndicator>".to_string(),
-                interface_update: Some(InterfaceUpdate::AnimateToElementPosition(
-                    AnimateToElementPositionAndDestroy {
-                        target_element_name: name.to_string(),
-                        fallback_target_element_name: "CollectionBrowser".to_string(),
-                        animation: None,
-                        do_not_clone: true,
-                    },
-                )),
-            },
-        )])),
-        request_fields: HashMap::new(),
-    }
+fn drop_action(_name: CardName, _active_deck: DeckIndex) -> StandardAction {
+    StandardAction::default()
 }

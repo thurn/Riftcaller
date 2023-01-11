@@ -18,8 +18,7 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_update::Update;
 use protos::spelldawn::{
     AnimateElementStyle, AnimateToPosition, CreateTargetAtChildIndex, EasingMode, ElementAnimation,
-    ElementSelector, InterfaceUpdate, TimeValue, UpdateInterfaceCommand,
-    UpdateInterfaceStep,
+    ElementSelector, InterfaceUpdate, TimeValue, UpdateInterfaceCommand, UpdateInterfaceStep,
 };
 
 use crate::prelude::*;
