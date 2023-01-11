@@ -17,9 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Spelldawn.Game;
 using Spelldawn.Masonry;
-using Spelldawn.Protos;
+using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -42,7 +43,7 @@ namespace Spelldawn.Services
     public void StartDragging(Draggable currentDragSource)
     {
       _originalDragSource = currentDragSource;
-      var element = (Draggable)Mason.Render(_registry, currentDragSource.Node);
+      var element = (Draggable)((IMasonElement)currentDragSource).Clone(_registry);
       var initialPosition = currentDragSource.worldBound.position;
       element.name = DragElementName;
       SetPosition(element, initialPosition);
@@ -208,19 +209,21 @@ namespace Spelldawn.Services
         _registry.ActionService.HandleAction(currentlyDragging.OnDrop);
         if (_originalDragSource?.RemoveOriginal == true)
         {
-          OldUpdateInterfaceService.AnimateToZeroHeightAndDestroy(_originalDragSource,
-            new Protos.TimeValue { Milliseconds = 100 });
+          TweenUtils.Sequence("RemoveDragOriginal").Append(
+              DOTween.To(() => _originalDragSource.style.height.value.value,
+                height => _originalDragSource.style.height = height,
+                endValue: 0,
+                0.3f))
+            .AppendCallback(_originalDragSource.RemoveFromHierarchy);
         }
       }
       else
       {
         _overTargetIndicator?.RemoveFromHierarchy();
-        _registry.OldUpdateInterfaceService.AnimateToPositionAndDestroy(
+        _registry.UpdateInterfaceService.MoveElementToPosition(
           currentlyDragging,
-          _originalDragSource!.worldBound,
-          new DestroyElementAnimation { Duration = new Protos.TimeValue { Milliseconds = 100 }},
-          doNotClone: true,
-          () =>
+          Errors.CheckNotNull(_originalDragSource),
+          new Protos.TimeValue { Milliseconds = 100 }, () =>
           {
             if (_originalDragSource?.RemoveOriginal == true)
             {

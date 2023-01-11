@@ -34,7 +34,6 @@ namespace Spelldawn.Services
     [SerializeField] Registry _registry = null!;
     readonly Dictionary<string, VisualElement> _clones = new();
     readonly Dictionary<string, VisualElement> _targets = new();
-    readonly Dictionary<string, Rect> _cloneWorldBounds = new();
 
     public IEnumerator HandleUpdate(UpdateInterfaceCommand command)
     {
@@ -46,7 +45,6 @@ namespace Spelldawn.Services
       }
 
       _clones.Clear();
-      _cloneWorldBounds.Clear();
 
       sequence.TogglePause();
       yield return sequence.WaitForCompletion();
@@ -58,12 +56,14 @@ namespace Spelldawn.Services
       {
         case InterfaceUpdate.UpdateOneofCase.CloneElement:
           AddCallbackOrInvoke(sequence, step.StartTime, () => { CreateClone(element); });
+          // Wait for clone to be added to the hierarchy.
+          yield return new WaitForEndOfFrame();          
           break;
         case InterfaceUpdate.UpdateOneofCase.DestroyElement:
           AddCallbackOrInvoke(sequence, step.StartTime, element.RemoveFromHierarchy);
           break;
         case InterfaceUpdate.UpdateOneofCase.AnimateToPosition:
-          var (t1, t2) = AnimateToPosition(element, step.Element.ElementName, update.AnimateToPosition);
+          var (t1, t2) = AnimateToPosition(element, update.AnimateToPosition);
           sequence.Insert(Seconds(step.StartTime), t1);
           sequence.Insert(Seconds(step.StartTime), t2);
           break;
@@ -85,22 +85,42 @@ namespace Spelldawn.Services
       }
     }
 
-    (Tween, Tween) AnimateToPosition(VisualElement element, string? elementName, AnimateToPosition animateToPosition)
+    (Tween, Tween) AnimateToPosition(VisualElement element, AnimateToPosition animateToPosition)
     {
-      // When elements are cloned, they may not yet have a valid worldBound. In this situation we need to pull
-      // the worldBound from the original element, so we store that information in _cloneWorldBounds.
-      var worldBound = elementName != null && _cloneWorldBounds.ContainsKey(elementName)
-        ? _cloneWorldBounds[elementName]
-        : element.worldBound;
       var target = FindElement(animateToPosition.Destination);
+      return RunAnimateToPosition(element, target, animateToPosition);
+    }
+
+    /// <summary>Moves the 'source' element to the position of the 'target' element.</summary>
+    public void MoveElementToPosition(VisualElement source, VisualElement target, TimeValue duration, Action onComplete)
+    {
+      var (t1, t2) = RunAnimateToPosition(source, target, new AnimateToPosition
+      {
+        Animation = new ElementAnimation
+        {
+          Ease = EasingMode.Linear,
+          Duration = duration
+        }
+      });
+
+      TweenUtils.Sequence("MoveElementToPosition").Insert(0, t1).Insert(0, t2).AppendCallback(() => onComplete());
+    }
+
+    (Tween, Tween) RunAnimateToPosition(
+      VisualElement element,
+      VisualElement target,
+      AnimateToPosition animateToPosition)
+    {
+      var worldBound = element.worldBound;
+      Errors.CheckState(float.IsNormal(worldBound.width) && float.IsNormal(worldBound.height),
+        "Element does not have a defined size");
+
+      Errors.CheckState(float.IsNormal(target.worldBound.width) && float.IsNormal(target.worldBound.height),
+        "Target does not have a defined size");
+
       element.style.position = Position.Absolute;
       element.style.left = worldBound.x;
       element.style.top = worldBound.y;
-
-      Errors.CheckState(float.IsNormal(worldBound.width) && float.IsNormal(worldBound.height),
-        "Element does not have a defined size");
-      Errors.CheckState(float.IsNormal(target.worldBound.width) && float.IsNormal(target.worldBound.height),
-        "Target does not have a defined size");
 
       // Animate to align the center of the source element with the center of the target element        
       var targetPosition = target.worldBound.position -
@@ -258,7 +278,6 @@ namespace Spelldawn.Services
       _registry.DocumentService.RootVisualElement.Add(element);
 
       _clones[input.name] = element;
-      _cloneWorldBounds[input.name] = input.worldBound;
     }
 
     VisualElement FindElement(ElementSelector elementSelector)

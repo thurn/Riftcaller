@@ -18,7 +18,7 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::interface_update::Update;
 use protos::spelldawn::{
     AnimateElementStyle, AnimateToPosition, CreateTargetAtChildIndex, EasingMode, ElementAnimation,
-    ElementSelector, FlexVector2, InterfaceUpdate, TimeValue, UpdateInterfaceCommand,
+    ElementSelector, InterfaceUpdate, TimeValue, UpdateInterfaceCommand,
     UpdateInterfaceStep,
 };
 
@@ -38,19 +38,6 @@ pub fn fade_out(element: impl ElementNameSelector) -> InterfaceAnimation {
     InterfaceAnimation::new()
         .insert(0.milliseconds(), element, AnimateStyle::new(Property::Opacity(0.0)))
         .insert(default_duration(), element, DestroyElement)
-}
-
-/// Clones an element, animates it moving to the position of another target
-/// element while shrinking, and then removes that element.
-pub fn clone_move_shrink_destroy(
-    source: impl ElementNameSelector,
-    target: impl ElementNameSelector,
-) -> InterfaceAnimation {
-    InterfaceAnimation::new()
-        .start(source, CloneElement)
-        .start(source, AnimateStyle::new(Property::Scale(FlexVector2 { x: 0.1, y: 0.1 })))
-        .start(source, AnimateToElement::new(target))
-        .insert(default_duration(), source, DestroyElement)
 }
 
 /// Builder to construct animated updates to user interface elements
