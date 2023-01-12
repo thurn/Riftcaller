@@ -106,9 +106,13 @@ fn render_server_panel(
         )
         .build_panel(),
         PanelAddress::DeckEditorPrompt => DeckEditorPromptPanel { player }.build_panel(),
-        PanelAddress::DeckEditor(data) => {
-            DeckEditorPanel { player, data, deck: player.find_deck(data.deck_id)? }.build_panel()
+        PanelAddress::DeckEditor(data) => DeckEditorPanel {
+            player,
+            data,
+            deck: player.deck(data.deck_id)?,
+            collection: &player.adventure()?.collection,
         }
+        .build_panel(),
         PanelAddress::GameOver(data) => GameOverPanel { data, player }.build_panel(),
         PanelAddress::TileLoading(position) => {
             adventure_panels::render_tile_loading_panel(position, player)?

@@ -40,7 +40,7 @@ use data::game::{GameConfiguration, GamePhase, GameState, InternalRaidPhase, Rai
 use data::player_data::{PlayerData, PlayerState};
 use data::player_name::PlayerId;
 use data::primitives::{
-    ActionCount, CardId, DeckIndex, GameId, Lineage, ManaValue, PointsValue, RaidId, RoomId, Side,
+    ActionCount, CardId, GameId, Lineage, ManaValue, PointsValue, RaidId, RoomId, Side,
 };
 use data::tutorial::TutorialData;
 use maplit::hashmap;
@@ -82,16 +82,12 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     };
 
     let overlord_deck = Deck {
-        index: DeckIndex { value: 0 },
-        name: "Overlord".to_string(),
         owner_id: overlord_user,
         side: Side::Overlord,
         identity: CardName::TestOverlordIdentity,
         cards: hashmap! {CardName::TestOverlordSpell => 45},
     };
     let champion_deck = Deck {
-        index: DeckIndex { value: 1 },
-        name: "Champion".to_string(),
         owner_id: champion_user,
         side: Side::Champion,
         identity: CardName::TestChampionIdentity,
@@ -138,17 +134,13 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
             overlord_user => PlayerData {
                 id: overlord_user,
                 state: Some(PlayerState::Playing(game_id)),
-                decks: vec![],
                 adventure: None,
-                collection: hashmap! {},
                 tutorial: TutorialData::default()
             },
             champion_user => PlayerData {
                 id: champion_user,
                 state: Some(PlayerState::Playing(game_id)),
-                decks: vec![],
                 adventure: None,
-                collection: hashmap! {},
                 tutorial: TutorialData::default()
             }
         },

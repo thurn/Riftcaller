@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
+
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::{icons, style};
+use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::primitives::DeckId;
@@ -33,6 +36,7 @@ pub struct DeckEditorPanel<'a> {
     pub player: &'a PlayerData,
     pub data: DeckEditorData,
     pub deck: &'a Deck,
+    pub collection: &'a HashMap<CardName, u32>,
 }
 
 impl<'a> DeckEditorPanel<'a> {
@@ -94,13 +98,14 @@ impl<'a> Component for DeckEditorPanel<'a> {
                     .child(Column::new("Collection").child(CollectionBrowser {
                         player: self.player,
                         deck: self.deck,
+                        collection: self.collection,
                         filters: self.data.collection_filters,
                     }))
                     .child(
                         self.page_control(
                             self.data.collection_filters.offset + 8
                                 < collection_browser::get_matching_cards(
-                                    self.player,
+                                    self.collection,
                                     self.data.collection_filters,
                                 )
                                 .count(),

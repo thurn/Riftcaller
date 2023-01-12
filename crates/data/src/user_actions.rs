@@ -18,7 +18,7 @@ use crate::adventure_action::AdventureAction;
 use crate::card_name::CardName;
 use crate::game_actions::GameAction;
 use crate::player_name::{NamedPlayer, PlayerId};
-use crate::primitives::{ActionCount, DeckIndex, GameId, ManaValue, PointsValue, Side};
+use crate::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Default, Serialize, Deserialize)]
 pub struct NewGameDebugOptions {
@@ -28,11 +28,29 @@ pub struct NewGameDebugOptions {
     pub override_game_id: Option<GameId>,
 }
 
+/// Canonical decklists which canb e used in new games
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+pub enum NamedDeck {
+    EmptyChampion,
+    EmptyOverlord,
+    ChampionTestSpells,
+    OverlordTestSpells,
+    CanonicalChampion,
+    CanonicalOverlord,
+}
+
+/// Identifies deck to be used in a new game
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+pub enum NewGameDeck {
+    DeckId(DeckId),
+    NamedDeck(NamedDeck),
+}
+
 /// Action to initiate a new game
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct NewGameAction {
     /// Deck to use for this game
-    pub deck_index: DeckIndex,
+    pub deck: NewGameDeck,
     /// Opponent to play against
     pub opponent: PlayerId,
     /// Debug configuration for this game

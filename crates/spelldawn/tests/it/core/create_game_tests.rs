@@ -14,15 +14,13 @@
 
 use cards::initialize;
 use core_ui::actions::InterfaceAction;
-use data::card_name::CardName;
-use data::deck::Deck;
 use data::game::MulliganDecision;
 use data::game_actions::{GameAction, PromptAction};
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
-use data::primitives::{DeckIndex, GameId, Side};
+use data::primitives::{GameId, Side};
 use data::tutorial::TutorialData;
-use data::user_actions::{NewGameAction, NewGameDebugOptions, UserAction};
+use data::user_actions::{NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction};
 use insta::assert_snapshot;
 use maplit::hashmap;
 use protos::spelldawn::PlayerName;
@@ -32,8 +30,8 @@ use test_utils::fake_database::FakeDatabase;
 use test_utils::summarize::Summary;
 use test_utils::*;
 
-static OVERLORD_DECK: DeckIndex = DeckIndex { value: 0 };
-static CHAMPION_DECK: DeckIndex = DeckIndex { value: 1 };
+static OVERLORD_DECK: NewGameDeck = NewGameDeck::NamedDeck(NamedDeck::OverlordTestSpells);
+static CHAMPION_DECK: NewGameDeck = NewGameDeck::NamedDeck(NamedDeck::ChampionTestSpells);
 
 #[test]
 fn create_new_game() {
@@ -41,7 +39,7 @@ fn create_new_game() {
     let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
     let response = session.perform_action(
         UserAction::NewGame(NewGameAction {
-            deck_index: OVERLORD_DECK,
+            deck: OVERLORD_DECK,
             opponent: session.opponent_id(),
             debug_options: Some(NewGameDebugOptions {
                 deterministic: true,
@@ -168,22 +166,6 @@ fn make_overlord_test_session(
     champion_id: PlayerId,
 ) -> TestSession {
     initialize::run();
-    let overlord_deck = Deck {
-        index: DeckIndex::new(0),
-        name: "Overlord".to_string(),
-        owner_id: overlord_id,
-        side: Side::Overlord,
-        identity: CardName::TestOverlordIdentity,
-        cards: hashmap! {CardName::TestOverlordSpell => 45},
-    };
-    let champion_deck = Deck {
-        index: DeckIndex::new(0),
-        name: "Champion".to_string(),
-        owner_id: champion_id,
-        side: Side::Champion,
-        identity: CardName::TestChampionIdentity,
-        cards: hashmap! {CardName::TestChampionSpell => 45},
-    };
 
     let database = FakeDatabase {
         generated_game_id: Some(game_id),
@@ -192,17 +174,13 @@ fn make_overlord_test_session(
             overlord_id => PlayerData {
                 id: overlord_id,
                 state: None,
-                decks: vec![overlord_deck.clone(), champion_deck.clone()],
                 adventure: None,
-                collection: hashmap! {},
                 tutorial: TutorialData::default()
             },
             champion_id => PlayerData {
                 id: champion_id,
                 state: None,
-                decks: vec![overlord_deck, champion_deck],
                 adventure: None,
-                collection: hashmap! {},
                 tutorial: TutorialData::default()
             }
         },
@@ -214,7 +192,7 @@ fn make_overlord_test_session(
 fn initiate_game(session: &mut TestSession) {
     session.perform(
         UserAction::NewGame(NewGameAction {
-            deck_index: CHAMPION_DECK,
+            deck: CHAMPION_DECK,
             opponent: session.user_id(),
             debug_options: Some(NewGameDebugOptions {
                 deterministic: true,
@@ -224,20 +202,18 @@ fn initiate_game(session: &mut TestSession) {
         .as_client_action(),
         session.opponent_id(),
     );
-    let _action2 = session
-        .perform_action(
-            UserAction::NewGame(NewGameAction {
-                deck_index: OVERLORD_DECK,
-                opponent: session.opponent_id(),
-                debug_options: Some(NewGameDebugOptions {
-                    deterministic: true,
-                    ..NewGameDebugOptions::default()
-                }),
-            })
-            .as_client_action(),
-            session.user_id(),
-        )
-        .unwrap();
+    session.perform(
+        UserAction::NewGame(NewGameAction {
+            deck: OVERLORD_DECK,
+            opponent: session.opponent_id(),
+            debug_options: Some(NewGameDebugOptions {
+                deterministic: true,
+                ..NewGameDebugOptions::default()
+            }),
+        })
+        .as_client_action(),
+        session.user_id(),
+    );
 
     session.connect(session.user_id()).unwrap();
     session.connect(session.opponent_id()).unwrap();

@@ -20,13 +20,13 @@ use anyhow::Result;
 use data::adventure::TilePosition;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{
-    AbilityId, AbilityIndex, CardId, DeckIndex, GameId, GameObjectId, RoomId, Side, Sprite,
+    AbilityId, AbilityIndex, CardId, GameId, GameObjectId, RoomId, Side, Sprite,
 };
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::{
-    CardIdentifier, DeckIdentifier, GameIdentifier, GameObjectIdentifier, MapPosition,
-    PlayerIdentifier, PlayerSide, RoomIdentifier, SpriteAddress, TimeValue,
+    CardIdentifier, GameIdentifier, GameObjectIdentifier, MapPosition, PlayerIdentifier,
+    PlayerSide, RoomIdentifier, SpriteAddress, TimeValue,
 };
 use serde_json::{de, ser};
 use with_error::fail;
@@ -88,14 +88,6 @@ pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
             index: AbilityIndex(index as usize),
         }))
     })
-}
-
-pub fn deck_index(identifier: DeckIdentifier) -> DeckIndex {
-    DeckIndex { value: identifier.value as usize }
-}
-
-pub fn deck_identifier(id: DeckIndex) -> DeckIdentifier {
-    DeckIdentifier { value: id.value as u64 }
 }
 
 pub fn named_player_identifier(player_name: NamedPlayer) -> PlayerIdentifier {

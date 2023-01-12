@@ -21,25 +21,30 @@ use data::deck::Deck;
 use data::game::{GameConfiguration, GameState, MulliganDecision};
 use data::game_actions::{GameAction, PromptAction};
 use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{DeckIndex, GameId, Side};
+use data::primitives::{GameId, Side};
+use data::user_actions::NamedDeck;
 use maplit::hashmap;
 use once_cell::sync::Lazy;
 use rules::{dispatch, mutations};
 
 /// Empty Overlord deck for use in tests
 pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
-    index: DeckIndex { value: 0 },
-    name: "Overlord Empty".to_string(),
     owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Overlord,
     identity: CardName::TestOverlordIdentity,
     cards: HashMap::new(),
 });
 
+/// Spell Overlord deck for use in tests
+pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
+    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
+    side: Side::Overlord,
+    identity: CardName::TestOverlordIdentity,
+    cards: hashmap! {CardName::TestOverlordSpell => 45},
+});
+
 /// Standard Overlord deck for use in tests
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
-    index: DeckIndex { value: 0 },
-    name: "Overlord Starter".to_string(),
     owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Overlord,
     identity: CardName::TestOverlordIdentity,
@@ -65,18 +70,22 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Empty Champion deck for use in tests
 pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
-    index: DeckIndex { value: 0 },
-    name: "Champion Empty".to_string(),
     owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Champion,
     identity: CardName::TestChampionIdentity,
     cards: HashMap::new(),
 });
 
+/// Spell Overlord deck for use in tests
+pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
+    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
+    side: Side::Champion,
+    identity: CardName::TestChampionIdentity,
+    cards: hashmap! {CardName::TestChampionSpell => 45},
+});
+
 /// Standard Champion deck for use in tests
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
-    index: DeckIndex { value: 1 },
-    name: "Champion Starter".to_string(),
     owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Champion,
     identity: CardName::TestChampionIdentity,
@@ -140,4 +149,18 @@ pub fn deck_for_player(player: NamedPlayer, side: Side) -> Deck {
     // (Eventually different named players will have different decks)
     let id = PlayerId::Named(player);
     canonical_deck(id, side)
+}
+
+/// Returns a canonical deck associated with the given [PlayerId].
+pub fn named_deck(player_id: PlayerId, name: NamedDeck) -> Deck {
+    let mut deck = match name {
+        NamedDeck::EmptyChampion => EMPTY_CHAMPION.clone(),
+        NamedDeck::ChampionTestSpells => CHAMPION_TEST_SPELLS.clone(),
+        NamedDeck::CanonicalChampion => CANONICAL_CHAMPION.clone(),
+        NamedDeck::EmptyOverlord => EMPTY_OVERLORD.clone(),
+        NamedDeck::OverlordTestSpells => OVERLORD_TEST_SPELLS.clone(),
+        NamedDeck::CanonicalOverlord => CANONICAL_OVERLORD.clone(),
+    };
+    deck.owner_id = player_id;
+    deck
 }

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
+
 use core_ui::action_builder::ActionBuilder;
 use core_ui::animations::{
     self, default_duration, AnimateToElement, CreateTargetAtIndex, DestroyElement,
@@ -35,19 +37,13 @@ use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify};
 use crate::card_list;
 use crate::card_list_card_name::CardListCardName;
 
-// use crate::card_list;
-// use crate::deck_editor_card::DeckEditorCard;
-// use crate::empty_card::EmptyCard;
-
 /// Returns an iterator over cards owned by 'player' which match a given
 /// [CollectionBrowserFilters]
 pub fn get_matching_cards(
-    player: &PlayerData,
+    collection: &HashMap<CardName, u32>,
     _: CollectionBrowserFilters,
 ) -> impl Iterator<Item = (CardName, u32)> + '_ {
-    // TODO: Use adventure collection
-    player
-        .collection
+    collection
         .iter()
         .map(|(card_name, count)| (*card_name, *count))
         .filter(|(name, _)| rules::get(*name).side == Side::Champion)
@@ -56,6 +52,7 @@ pub fn get_matching_cards(
 pub struct CollectionBrowser<'a> {
     pub player: &'a PlayerData,
     pub deck: &'a Deck,
+    pub collection: &'a HashMap<CardName, u32>,
     pub filters: CollectionBrowserFilters,
 }
 
@@ -136,7 +133,7 @@ fn sort_cards(cards: &mut [(CardName, u32)]) {
 
 impl<'a> Component for CollectionBrowser<'a> {
     fn build(self) -> Option<Node> {
-        let mut cards = get_matching_cards(self.player, self.filters).collect::<Vec<_>>();
+        let mut cards = get_matching_cards(self.collection, self.filters).collect::<Vec<_>>();
         sort_cards(&mut cards);
         let row_one = cards.iter().skip(self.filters.offset).take(4).collect::<Vec<_>>();
         let row_two = cards.iter().skip(self.filters.offset + 4).take(4).collect::<Vec<_>>();

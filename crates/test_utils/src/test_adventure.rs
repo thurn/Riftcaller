@@ -59,9 +59,7 @@ impl TestAdventure {
                     player_id => PlayerData {
                         id: player_id,
                         state: None,
-                        decks: vec![],
                         adventure: None,
-                        collection: hashmap! {},
                         tutorial: TutorialData::default()
                     }
                 },

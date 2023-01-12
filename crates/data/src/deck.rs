@@ -22,16 +22,12 @@ use serde_with::serde_as;
 
 use crate::card_name::CardName;
 use crate::player_name::PlayerId;
-use crate::primitives::{DeckIndex, Side};
+use crate::primitives::Side;
 
 /// Represents a player deck outside of an active game
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Deck {
-    /// Identifies this deck within the owner's deck collection
-    pub index: DeckIndex,
-    /// User-visible name for this deck
-    pub name: String,
     /// Identifies the user who owns this deck
     pub owner_id: PlayerId,
     /// Identifies which side this deck plays as.

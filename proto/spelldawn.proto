@@ -624,10 +624,6 @@ message PlayerIdentifier {
     }
 }
 
-message DeckIdentifier {
-    uint64 value = 1;
-}
-
 message GameIdentifier {
     uint64 value = 1;
 }

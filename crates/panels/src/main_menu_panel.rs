@@ -22,8 +22,8 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use core_ui::{actions, panels};
 use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{DeckIndex, Side};
-use data::user_actions::{NewGameAction, UserAction};
+use data::primitives::Side;
+use data::user_actions::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
@@ -60,7 +60,7 @@ impl Component for MainMenuPanel {
                             PanelAddress::MainMenu,
                             UserAction::NewGame(NewGameAction {
                                 opponent: PlayerId::Named(NamedPlayer::TestAlphaBetaHeuristics),
-                                deck_index: DeckIndex { value: 1 },
+                                deck: NewGameDeck::NamedDeck(NamedDeck::CanonicalChampion),
                                 debug_options: None,
                             }),
                         ),

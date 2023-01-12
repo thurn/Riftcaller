@@ -17,8 +17,10 @@ use core_ui::actions::InterfaceAction;
 use data::card_name::CardName;
 use data::game::GameState;
 use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{DeckIndex, GameId, Side};
-use data::user_actions::{DebugAction, NewGameAction, NewGameDebugOptions, UserAction};
+use data::primitives::{GameId, Side};
+use data::user_actions::{
+    DebugAction, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
+};
 use database::Database;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
@@ -42,31 +44,31 @@ pub fn handle_debug_action(
         toggle_command: Some(ToggleCommand::CloseAll(())),
     });
     match action {
-        DebugAction::NewGame(side) => {
-            const OVERLORD_DECK_ID: DeckIndex = DeckIndex { value: 0 };
-            const CHAMPION_DECK_ID: DeckIndex = DeckIndex { value: 1 };
-            Ok(GameResponse::from_commands(vec![
-                Command::Debug(ClientDebugCommand {
-                    debug_command: Some(DebugCommand::InvokeAction(ClientAction {
-                        action: Some(
-                            UserAction::NewGame(NewGameAction {
-                                opponent: PlayerId::Named(NamedPlayer::TestNoAction),
-                                deck_index: match side {
-                                    Side::Overlord => OVERLORD_DECK_ID,
-                                    Side::Champion => CHAMPION_DECK_ID,
-                                },
-                                debug_options: Some(NewGameDebugOptions {
-                                    deterministic: false,
-                                    override_game_id: Some(GameId::new(0)),
-                                }),
-                            })
-                            .as_client_action(),
-                        ),
-                    })),
-                }),
-                close_all,
-            ]))
-        }
+        DebugAction::NewGame(side) => Ok(GameResponse::from_commands(vec![
+            Command::Debug(ClientDebugCommand {
+                debug_command: Some(DebugCommand::InvokeAction(ClientAction {
+                    action: Some(
+                        UserAction::NewGame(NewGameAction {
+                            opponent: PlayerId::Named(NamedPlayer::TestNoAction),
+                            deck: match side {
+                                Side::Overlord => {
+                                    NewGameDeck::NamedDeck(NamedDeck::CanonicalOverlord)
+                                }
+                                Side::Champion => {
+                                    NewGameDeck::NamedDeck(NamedDeck::CanonicalChampion)
+                                }
+                            },
+                            debug_options: Some(NewGameDebugOptions {
+                                deterministic: false,
+                                override_game_id: Some(GameId::new(0)),
+                            }),
+                        })
+                        .as_client_action(),
+                    ),
+                })),
+            }),
+            close_all,
+        ])),
         DebugAction::JoinGame => {
             let mut game = requests::find_game(database, Some(GameId::new(0)))?;
             if matches!(game.overlord.id, PlayerId::Named(_)) {
@@ -130,7 +132,7 @@ pub fn handle_debug_action(
             requests::handle_player_action(database, player_id, |player| {
                 for name in enum_iterator::all::<CardName>() {
                     if !name.is_test_card() && !name.is_null_identity() {
-                        player.collection.insert(name, 3);
+                        player.adventure_mut()?.collection.insert(name, 3);
                     }
                 }
                 Ok(vec![])

@@ -33,28 +33,10 @@ pub type BreachValue = u32;
 pub type BoostCount = u32;
 pub type LevelValue = u32;
 
-/// Identifies a deck owned by a given player
-#[derive(Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
-pub struct DeckIndex {
-    pub value: usize,
-}
-
-impl DeckIndex {
-    pub fn new(value: usize) -> Self {
-        Self { value }
-    }
-}
-
-impl fmt::Debug for DeckIndex {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "Deck{}", self.value)
-    }
-}
-
 /// Identifies one of a player's decks
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub enum DeckId {
-    /// The deck being used in adventure mode
+    /// The current deck being used in adventure mode
     Adventure,
 }
 

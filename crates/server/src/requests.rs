@@ -25,12 +25,12 @@ use data::adventure::{AdventureConfiguration, AdventureState};
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
-use data::player_data::{NewGameRequest, PlayerData, PlayerState};
+use data::player_data::{PlayerData, PlayerState};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
 use data::tutorial::TutorialData;
 use data::updates::{UpdateTracker, Updates};
-use data::user_actions::{NewGameAction, UserAction};
+use data::user_actions::{NewGameAction, NewGameDeck, UserAction};
 use data::{game_actions, player_data};
 use database::{Database, SledDatabase};
 use deck_editor::deck_editor_actions;
@@ -329,14 +329,13 @@ fn handle_new_game(
 ) -> Result<GameResponse> {
     let debug_options = action.debug_options.unwrap_or_default();
     let opponent_id = action.opponent;
-    let deck_id = action.deck_index;
     let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
-    let user_deck = player.deck(deck_id)?.clone();
+    let user_deck = find_deck(&player, action.deck)?;
     let opponent_deck =
         if let Some(deck) = requested_deck(database, opponent_id, user_deck.side.opponent())? {
             deck
         } else {
-            player.state = Some(PlayerState::RequestedGame(NewGameRequest { deck_id }));
+            player.state = Some(PlayerState::RequestedGame(action));
             database.write_player(&player)?;
             // TODO: Implement some kind of waiting UI here
             return Ok(GameResponse::from_commands(vec![]));
@@ -388,6 +387,13 @@ fn handle_new_game(
     })
 }
 
+fn find_deck(player: &PlayerData, deck: NewGameDeck) -> Result<Deck> {
+    Ok(match deck {
+        NewGameDeck::DeckId(id) => player.deck(id)?.clone(),
+        NewGameDeck::NamedDeck(name) => decklists::named_deck(player.id, name),
+    })
+}
+
 fn handle_leave_game(database: &mut impl Database, player_id: PlayerId) -> Result<GameResponse> {
     let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
     player.state = None;
@@ -416,11 +422,10 @@ fn requested_deck(
 ) -> Result<Option<Deck>> {
     Ok(match player_id {
         PlayerId::Database(_) => {
-            let player = database.player(player_id)?.with_error(|| "Player not found")?;
-            if let Some(deck_id) = player.requested_deck_id() {
-                Some(player.deck(deck_id)?.clone())
-            } else {
-                None
+            let player = find_player(database, player_id)?;
+            match player.state {
+                Some(PlayerState::RequestedGame(action)) => Some(find_deck(&player, action.deck)?),
+                _ => None,
             }
         }
         // TODO: Each named player should have their own decklist
@@ -581,14 +586,10 @@ pub fn find_game(database: &impl Database, game_id: Option<GameId>) -> Result<Ga
 
 /// Writes the default initial state for a new player to the provided database
 fn create_new_player(database: &mut impl Database, player_id: PlayerId) -> Result<PlayerData> {
-    let canonical_overlord = decklists::canonical_deck(player_id, Side::Overlord);
-    let canonical_champion = decklists::canonical_deck(player_id, Side::Champion);
     let result = PlayerData {
         id: player_id,
         state: None,
-        decks: vec![canonical_overlord.clone(), canonical_champion.clone()],
         adventure: None,
-        collection: canonical_overlord.cards.into_iter().chain(canonical_champion.cards).collect(),
         tutorial: TutorialData::default(),
     };
     database.write_player(&result)?;
