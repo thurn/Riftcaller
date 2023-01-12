@@ -32,6 +32,16 @@ fn test_visit_shop() {
 }
 
 #[test]
+fn test_visit_shop_twice() {
+    let mut adventure = TestAdventure::new(Side::Champion, config());
+    adventure.visit_tile_with_icon(SHOP_ICON);
+    adventure.click_on("Continue");
+    adventure.click_on_navbar(icons::CLOSE);
+    adventure.visit_tile_with_icon(SHOP_ICON);
+    assert!(adventure.interface.top_panel().has_text(BUY_COST.to_string()));
+}
+
+#[test]
 fn test_buy_card() {
     let mut adventure = TestAdventure::new(Side::Champion, config());
     adventure.visit_tile_with_icon(SHOP_ICON);
@@ -47,7 +57,9 @@ fn test_buy_card() {
         .screen_overlay()
         .has_text(format!("{}", adventure_generator::STARTING_COINS - BUY_COST)));
 
+    adventure.click_on_navbar(icons::CLOSE);
     adventure.click_on_navbar(icons::DECK);
+
     client_interface::assert_has_element_name(
         adventure.interface.top_panel(),
         element_names::deck_card(EXAMPLE_CARD),

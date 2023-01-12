@@ -19,7 +19,7 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
     node_type, CardAnchorNode, ClientAction, DraggableNode, EventHandlers, FetchPanelAction,
-    InterfacePanelAddress, Node, NodeType,
+    InterfacePanel, InterfacePanelAddress, Node, NodeType,
 };
 
 /// Simulated user interface state
@@ -27,7 +27,7 @@ use protos::spelldawn::{
 pub struct ClientInterface {
     main_controls: Option<Node>,
     card_anchors: Vec<CardAnchorNode>,
-    panels: HashMap<InterfacePanelAddress, Node>,
+    panels: HashMap<InterfacePanelAddress, InterfacePanel>,
     open_panels: Vec<InterfacePanelAddress>,
     screen_overlay: Option<Node>,
 }
@@ -59,11 +59,25 @@ impl ClientInterface {
     /// Returns the contents of the topmost currently-open panel
     pub fn top_panel(&self) -> &Node {
         let address = self.open_panels.last().expect("No open panel");
-        self.panels.get(address).unwrap_or_else(|| panic!("Panel not found: {:?}", address))
+        self.panels
+            .get(address)
+            .unwrap_or_else(|| panic!("Panel not found: {:?}", address))
+            .node
+            .as_ref()
+            .expect("Node")
     }
 
     pub fn screen_overlay(&self) -> &Node {
-        self.screen_overlay.as_ref().expect("ScreenOverlayNode")
+        if let Some(overlay) = self
+            .open_panels
+            .iter()
+            .rev()
+            .find_map(|address| self.panels.get(address)?.screen_overlay.as_ref())
+        {
+            overlay
+        } else {
+            self.screen_overlay.as_ref().expect("ScreenOverlayNode")
+        }
     }
 
     pub fn panel_count(&self) -> usize {
@@ -84,7 +98,8 @@ impl ClientInterface {
             }
             Command::UpdatePanels(panels) => {
                 for panel in panels.panels {
-                    self.panels.insert(panel.address.expect("address"), panel.node.expect("node"));
+                    let address = panel.address.clone().expect("address");
+                    self.panels.insert(address, panel);
                 }
             }
             Command::TogglePanel(toggle) => {
