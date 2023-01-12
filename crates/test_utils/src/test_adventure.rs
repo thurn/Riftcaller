@@ -19,6 +19,7 @@ use cards::initialize;
 use core_ui::actions::InterfaceAction;
 use data::adventure::{AdventureConfiguration, TileEntity};
 use data::card_name::CardName;
+use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::Side;
@@ -38,6 +39,8 @@ use crate::fake_database;
 use crate::fake_database::FakeDatabase;
 
 pub const EXPLORE_ICON: &str = "icon_app_198";
+pub const DRAFT_ICON: &str = "icon_store_167";
+pub const SHOP_ICON: &str = "icon_architecture_6.png";
 
 pub struct TestAdventure {
     pub side: Side,
@@ -53,7 +56,7 @@ pub struct TestConfig {
     pub show_tutorial: bool,
 
     /// Sets the user's deck to include these cards
-    pub deck: HashMap<CardName, u32>,
+    pub deck: Option<Deck>,
 
     /// Sets the user's card collection to include these cards
     pub collection: HashMap<CardName, u32>,
@@ -73,6 +76,16 @@ impl TestAdventure {
                 side,
                 rng: Some(Xoshiro256StarStar::seed_from_u64(314159265358979323)),
             },
+            config.deck.unwrap_or(Deck {
+                side,
+                identity: if side == Side::Overlord {
+                    CardName::TestOverlordIdentity
+                } else {
+                    CardName::TestChampionIdentity
+                },
+                cards: HashMap::new(),
+            }),
+            config.collection,
             config.explore,
             config.draft,
             config.shop,
@@ -97,19 +110,7 @@ impl TestAdventure {
             },
         };
 
-        // result.perform(UserAction::NewAdventure(side));
         result.connect();
-
-        result
-            .database
-            .players
-            .entry(player_id)
-            .and_modify(|p| p.adventure_mut().unwrap().collection = config.collection);
-        result
-            .database
-            .players
-            .entry(player_id)
-            .and_modify(|p| p.adventure_mut().unwrap().deck.cards = config.deck);
 
         result
     }

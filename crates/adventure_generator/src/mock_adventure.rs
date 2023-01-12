@@ -19,6 +19,8 @@ use std::collections::{HashMap, HashSet};
 use data::adventure::{
     AdventureConfiguration, AdventureState, RegionId, TileEntity, TilePosition, TileState,
 };
+use data::card_name::CardName;
+use data::deck::Deck;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;
@@ -30,6 +32,8 @@ const LEFT: u8 = 0b00000001;
 /// Builds an 'adventure' mode world map for use in tests
 pub fn create(
     config: AdventureConfiguration,
+    deck: Deck,
+    collection: HashMap<CardName, u32>,
     explore: Option<TileEntity>,
     draft: Option<TileEntity>,
     shop: Option<TileEntity>,
@@ -101,8 +105,6 @@ pub fn create(
     let mut revealed_regions = HashSet::new();
     revealed_regions.insert(1);
     let side = config.side;
-    let deck = decklists::canonical_deck(side);
-    let collection = deck.cards.clone();
 
     AdventureState {
         side,

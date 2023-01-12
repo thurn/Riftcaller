@@ -15,13 +15,14 @@
 use core_ui::icons;
 use core_ui::prelude::Node;
 use data::card_name::CardName;
+use data::deck::Deck;
 use data::primitives::Side;
 use element_names::ElementName;
 use maplit::hashmap;
 use test_utils::client_interface::{self, HasText};
 use test_utils::test_adventure::{TestAdventure, TestConfig};
 
-pub static EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
+const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
 
 #[test]
 fn test_deck_editor_tutorial_prompt() {
@@ -91,7 +92,11 @@ fn test_add_to_deck() {
 
 fn config() -> TestConfig {
     TestConfig {
-        deck: hashmap! { EXAMPLE_CARD => 2 },
+        deck: Some(Deck {
+            side: Side::Champion,
+            identity: CardName::TestChampionIdentity,
+            cards: hashmap! { EXAMPLE_CARD => 2 },
+        }),
         collection: hashmap! { EXAMPLE_CARD => 3},
         ..TestConfig::default()
     }
