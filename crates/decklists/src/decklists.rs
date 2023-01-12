@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Contains preconfigured card lists
+
 use std::collections::HashMap;
 
-use actions;
-use anyhow::Result;
 use data::card_name::CardName;
 use data::deck::Deck;
-use data::game::{GameConfiguration, GameState, MulliganDecision};
-use data::game_actions::{GameAction, PromptAction};
-use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{GameId, Side};
+use data::player_name::NamedPlayer;
+use data::primitives::Side;
 use data::user_actions::NamedDeck;
 use maplit::hashmap;
 use once_cell::sync::Lazy;
-use rules::{dispatch, mutations};
 
 /// Empty Overlord deck for use in tests
 pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
@@ -103,7 +100,7 @@ pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     },
 });
 
-/// Returns a canonical deck associated with the given [PlayerId].
+/// Returns a canonical deck associated with the given [Side].
 pub fn canonical_deck(side: Side) -> Deck {
     if side == Side::Champion {
         CANONICAL_CHAMPION.clone()
@@ -112,41 +109,13 @@ pub fn canonical_deck(side: Side) -> Deck {
     }
 }
 
-/// Creates a new deterministic game using the canonical decklists, deals
-/// opening hands and resolves mulligans.
-pub fn canonical_game() -> Result<GameState> {
-    let mut game = GameState::new(
-        GameId::new(0),
-        PlayerId::Named(NamedPlayer::TestNoAction),
-        CANONICAL_OVERLORD.clone(),
-        PlayerId::Named(NamedPlayer::TestNoAction),
-        CANONICAL_CHAMPION.clone(),
-        GameConfiguration { deterministic: true, simulation: true },
-    );
-
-    dispatch::populate_delegate_cache(&mut game);
-    mutations::deal_opening_hands(&mut game)?;
-    actions::handle_game_action(
-        &mut game,
-        Side::Overlord,
-        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
-    )?;
-    actions::handle_game_action(
-        &mut game,
-        Side::Champion,
-        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
-    )?;
-
-    Ok(game)
-}
-
 /// Looks up the [Deck] for a named player.
 pub fn deck_for_player(_: NamedPlayer, side: Side) -> Deck {
     // (Eventually different named players will have different decks)
     canonical_deck(side)
 }
 
-/// Returns a canonical deck associated with the given [PlayerId].
+/// Returns a canonical deck associated with the given [NamedDeck].
 pub fn named_deck(name: NamedDeck) -> Deck {
     match name {
         NamedDeck::EmptyChampion => EMPTY_CHAMPION.clone(),

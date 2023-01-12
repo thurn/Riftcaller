@@ -1,0 +1,18 @@
+[package]
+name = "decklists"
+version = "0.0.0"
+description = "Contains preconfigured card lists"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+doctest = false
+test = false
+path = "src/decklists.rs"
+
+[dependencies]
+data = { path = "../data", version = "0.0.0" }
+
+anyhow = "1.0.58"
+maplit = "1.0.2"
+once_cell = "1.13.0"

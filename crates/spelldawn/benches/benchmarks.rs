@@ -23,7 +23,7 @@ use ai_monte_carlo::uct1::Uct1;
 use ai_testing::nim::{NimState, NimWinLossEvaluator};
 use ai_tree_search::alpha_beta::AlphaBetaAlgorithm;
 use ai_tree_search::minimax::MinimaxAlgorithm;
-use cards::{decklists, initialize};
+use cards::{canonical_game, initialize};
 use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
 use data::primitives::Side;
@@ -47,7 +47,7 @@ fn configure(group: &mut BenchmarkGroup<WallTime>) {
 pub fn legal_actions(c: &mut Criterion) {
     let mut group = c.benchmark_group("legal_actions");
     configure(&mut group);
-    let game = decklists::canonical_game().unwrap();
+    let game = canonical_game::create().unwrap();
     group.bench_function("legal_actions", |b| {
         b.iter(|| {
             let _actions =
@@ -114,7 +114,7 @@ pub fn uct1_nim(c: &mut Criterion) {
 pub fn uct1_search(c: &mut Criterion) {
     let mut group = c.benchmark_group("uct1_search");
     configure(&mut group);
-    let game = SpelldawnState(decklists::canonical_game().unwrap());
+    let game = SpelldawnState(canonical_game::create().unwrap());
     let evaluator = RandomPlayoutEvaluator {};
     let monte_carlo = MonteCarloAlgorithm { child_score_algorithm: Uct1 {} };
 
@@ -130,7 +130,7 @@ pub fn uct1_search(c: &mut Criterion) {
 pub fn alpha_beta_search(c: &mut Criterion) {
     let mut group = c.benchmark_group("alpha_beta_search");
     configure(&mut group);
-    let game = SpelldawnState(decklists::canonical_game().unwrap());
+    let game = SpelldawnState(canonical_game::create().unwrap());
     let agent = AgentData::omniscient(
         "ALPHA_BETA",
         AlphaBetaAlgorithm { search_depth: 3 },

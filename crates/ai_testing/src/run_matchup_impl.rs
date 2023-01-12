@@ -19,7 +19,7 @@ use ai_core::game_state_node::{GameStateNode, GameStatus};
 use ai_game_integration::agents;
 use ai_game_integration::state_node::SpelldawnState;
 use anyhow::Result;
-use cards::{decklists, initialize};
+use cards::initialize;
 use clap::{ArgEnum, Parser};
 use data::game::{GameConfiguration, GameState};
 use data::player_name::{NamedPlayer, PlayerId};

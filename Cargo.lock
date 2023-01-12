@@ -67,6 +67,7 @@ version = "0.0.0"
 dependencies = [
  "cards",
  "data",
+ "decklists",
  "rules",
 ]
 
@@ -124,6 +125,7 @@ dependencies = [
  "cards",
  "clap 3.2.16",
  "data",
+ "decklists",
  "rules",
  "with_error",
 ]
@@ -320,6 +322,7 @@ dependencies = [
  "assets",
  "card_helpers",
  "data",
+ "decklists",
  "maplit",
  "once_cell",
  "regex",
@@ -691,6 +694,16 @@ dependencies = [
  "rules",
  "screen_overlay",
  "with_error",
+]
+
+[[package]]
+name = "decklists"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "data",
+ "maplit",
+ "once_cell",
 ]
 
 [[package]]
@@ -1857,6 +1870,7 @@ dependencies = [
  "data",
  "database",
  "deck_editor",
+ "decklists",
  "display",
  "enum-iterator",
  "once_cell",

@@ -18,7 +18,6 @@ pub mod card_generator;
 
 use std::collections::{HashMap, HashSet};
 
-use cards::decklists;
 use data::adventure::{
     AdventureConfiguration, AdventureState, Coins, RegionId, TileEntity, TilePosition, TileState,
 };

@@ -17,7 +17,6 @@
 use actions;
 use adapters::ServerCardId;
 use anyhow::Result;
-use cards::decklists;
 use core_ui::panels;
 use core_ui::prelude::Component;
 use dashmap::DashMap;

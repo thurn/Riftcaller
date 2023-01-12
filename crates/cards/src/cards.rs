@@ -22,9 +22,9 @@ use data::card_name::CardName;
 use data::primitives::{CardType, Rarity, School, Side};
 
 pub mod artifacts;
+pub mod canonical_game;
 pub mod champion_identities;
 pub mod champion_spells;
-pub mod decklists;
 pub mod initialize;
 pub mod minions;
 pub mod overlord_identities;
