@@ -33,7 +33,7 @@ use data::primitives::Side;
 use data::user_actions::DeckEditorAction;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
-use element_names::{CurrentDraggable, ElementName, TargetName};
+use element_names::{CurrentDraggable, TargetName};
 use panel_address::CollectionBrowserFilters;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition};
 
@@ -77,26 +77,22 @@ impl<'a> CollectionBrowser<'a> {
     }
 
     fn collection_card(&self, card_name: CardName, quantity: u32) -> Option<Node> {
-        let quantity_element = ElementName::new("Quantity");
         let in_deck = quantity == *self.deck.cards.get(&card_name).unwrap_or(&0);
 
         let slot = DeckCardSlot::new(CardHeight::vh(36.0))
             .layout(Layout::new().margin(Edge::All, 16.px()))
-            .card(Some(
-                DeckCard::new(card_name)
-                    .quantity(quantity)
-                    .quantity_element_name(quantity_element)
-                    .draggable((!in_deck).then(|| {
-                        Draggable::new(card_name.to_string())
-                            .drop_target(element_names::CARD_LIST)
-                            .over_target_indicator(move || CardListCardName::new(card_name).build())
-                            .on_drop(Some(self.drop_action(card_name)))
-                            .hide_indicator_children(vec![quantity_element])
-                    })),
-            ));
+            .card(Some(DeckCard::new(card_name).quantity(quantity).draggable((!in_deck).then(
+                || {
+                    Draggable::new(card_name.to_string())
+                        .drop_target(element_names::CARD_LIST)
+                        .over_target_indicator(move || CardListCardName::new(card_name).build())
+                        .on_drop(Some(self.drop_action(card_name)))
+                        .hide_indicator_children(vec![element_names::deck_card_quantity(card_name)])
+                },
+            ))));
 
         if in_deck {
-            Column::new("SlotOverlay")
+            Column::new(element_names::deck_card_slot_overlay(card_name))
                 .style(
                     Style::new()
                         .justify_content(FlexJustify::Center)

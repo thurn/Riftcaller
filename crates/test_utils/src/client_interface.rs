@@ -227,6 +227,11 @@ pub trait HasText {
 
     /// Returns all text contained within this tree
     fn get_text(&self) -> Vec<String>;
+
+    /// Returns all text elements within this node concatenated together
+    fn all_text(&self) -> String {
+        self.get_text().join("")
+    }
 }
 
 impl HasText for Node {

@@ -91,8 +91,16 @@ pub fn deck_card(name: CardName) -> ElementName {
     ElementName { tag: "DeckCard", count: name as u64 }
 }
 
+pub fn deck_card_quantity(name: CardName) -> ElementName {
+    ElementName { tag: "DeckCardQuantity", count: name as u64 }
+}
+
 pub fn deck_card_slot(name: CardName) -> ElementName {
     ElementName { tag: "DeckCardSlot", count: name as u64 }
+}
+
+pub fn deck_card_slot_overlay(name: CardName) -> ElementName {
+    ElementName { tag: "DeckCardSlotOverlay", count: name as u64 }
 }
 
 pub fn card_list_card_name(name: CardName) -> ElementName {

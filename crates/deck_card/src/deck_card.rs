@@ -31,7 +31,6 @@ use core_ui::prelude::*;
 use core_ui::style;
 use data::card_name::CardName;
 use data::text::RulesTextContext;
-use element_names::ElementName;
 use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
 use rules_text::card_icons;
 
@@ -63,7 +62,6 @@ pub struct DeckCard {
     quantity: u32,
     layout: Layout,
     draggable: Option<Draggable>,
-    quantity_element_name: ElementName,
 }
 
 impl DeckCard {
@@ -74,7 +72,6 @@ impl DeckCard {
             quantity: 1,
             layout: Layout::default(),
             draggable: None,
-            quantity_element_name: ElementName::new("Quantity"),
         }
     }
 
@@ -95,11 +92,6 @@ impl DeckCard {
 
     pub fn draggable(mut self, draggable: Option<Draggable>) -> Self {
         self.draggable = draggable;
-        self
-    }
-
-    pub fn quantity_element_name(mut self, quantity_element_name: ElementName) -> Self {
-        self.quantity_element_name = quantity_element_name;
         self
     }
 }
@@ -147,7 +139,7 @@ impl Component for DeckCard {
                     },
                     self.height,
                 )
-                .name(self.quantity_element_name)
+                .name(element_names::deck_card_quantity(self.name))
                 .layout(
                     Layout::new()
                         .position(Edge::Right, self.height.dim(-2.0))

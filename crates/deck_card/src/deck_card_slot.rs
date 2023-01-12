@@ -43,20 +43,25 @@ impl DeckCardSlot {
 
 impl Component for DeckCardSlot {
     fn build(self) -> Option<Node> {
-        Column::new("DeckCardSlot")
-            .style(
-                self.layout
-                    .to_style()
-                    .padding(Edge::All, 4.px())
-                    .justify_content(FlexJustify::Center)
-                    .align_items(FlexAlign::Center)
-                    .border_color(Edge::All, GRAY_500)
-                    .border_width(Edge::All, 2.px())
-                    .height(self.height.dim(100.0))
-                    .width(self.height.dim(100.0 * crate::CARD_ASPECT_RATIO))
-                    .border_radius(Corner::All, 8.px()),
-            )
-            .child(self.card.map(|c| c.height(self.height)))
-            .build()
+        Column::new(
+            self.card
+                .as_ref()
+                .map(|c| element_names::deck_card_slot(c.name).into())
+                .unwrap_or_else(|| "DeckCardSlot".to_string()),
+        )
+        .style(
+            self.layout
+                .to_style()
+                .padding(Edge::All, 4.px())
+                .justify_content(FlexJustify::Center)
+                .align_items(FlexAlign::Center)
+                .border_color(Edge::All, GRAY_500)
+                .border_width(Edge::All, 2.px())
+                .height(self.height.dim(100.0))
+                .width(self.height.dim(100.0 * crate::CARD_ASPECT_RATIO))
+                .border_radius(Corner::All, 8.px()),
+        )
+        .child(self.card.map(|c| c.height(self.height)))
+        .build()
     }
 }

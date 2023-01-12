@@ -16,6 +16,7 @@ use std::collections::HashMap;
 
 use cards::initialize;
 use core_ui::actions::InterfaceAction;
+use data::card_name::CardName;
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::Side;
@@ -46,6 +47,12 @@ pub struct TestAdventure {
 pub struct TestConfig {
     /// Should tutorial messages be displayed to the user?
     pub show_tutorial: bool,
+
+    /// Sets the user's deck to include these cards
+    pub deck: HashMap<CardName, u32>,
+
+    /// Sets the user's card collection to include these cards
+    pub collection: HashMap<CardName, u32>,
 }
 
 impl TestAdventure {
@@ -74,6 +81,17 @@ impl TestAdventure {
 
         result.perform(UserAction::NewAdventure(side));
         result.connect();
+
+        result
+            .database
+            .players
+            .entry(player_id)
+            .and_modify(|p| p.adventure_mut().unwrap().collection = config.collection);
+        result
+            .database
+            .players
+            .entry(player_id)
+            .and_modify(|p| p.adventure_mut().unwrap().deck.cards = config.deck);
 
         result
     }
