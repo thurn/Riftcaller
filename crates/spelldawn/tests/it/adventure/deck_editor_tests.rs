@@ -91,9 +91,9 @@ fn test_add_to_deck() {
 
 fn config() -> TestConfig {
     TestConfig {
-        show_tutorial: false,
         deck: hashmap! { EXAMPLE_CARD => 2 },
         collection: hashmap! { EXAMPLE_CARD => 3},
+        ..TestConfig::default()
     }
 }
 

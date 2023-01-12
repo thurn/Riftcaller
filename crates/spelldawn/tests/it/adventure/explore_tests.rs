@@ -13,21 +13,21 @@
 // limitations under the License.
 
 use core_ui::icons;
-use data::adventure::Coins;
+use data::adventure::{Coins, TileEntity};
 use data::primitives::Side;
 use test_utils::client_interface::HasText;
 use test_utils::test_adventure::{TestAdventure, TestConfig, EXPLORE_ICON};
 
 #[test]
 fn test_open_explore_panel() {
-    let mut adventure = TestAdventure::new(Side::Champion, TestConfig::default());
+    let mut adventure = TestAdventure::new(Side::Champion, config());
     adventure.visit_tile_with_icon(EXPLORE_ICON);
     assert!(adventure.interface.top_panel().has_text("Explore"));
 }
 
 #[test]
 fn test_close_explore_panel() {
-    let mut adventure = TestAdventure::new(Side::Champion, TestConfig::default());
+    let mut adventure = TestAdventure::new(Side::Champion, config());
     adventure.visit_tile_with_icon(EXPLORE_ICON);
     adventure.click_on("Close");
     assert_eq!(adventure.interface.panel_count(), 0);
@@ -35,7 +35,7 @@ fn test_close_explore_panel() {
 
 #[test]
 fn test_invoke_explore() {
-    let mut adventure = TestAdventure::new(Side::Champion, TestConfig::default());
+    let mut adventure = TestAdventure::new(Side::Champion, config());
     adventure.visit_tile_with_icon(EXPLORE_ICON);
     let count = adventure.map.tile_count();
     adventure.click_on(format!("Explore: 100 {}", icons::COINS));
@@ -43,5 +43,12 @@ fn test_invoke_explore() {
     assert!(adventure
         .interface
         .screen_overlay()
-        .has_text(format!("{}", /* adventure_generator::STARTING_COINS - */ Coins(400))));
+        .has_text(format!("{}", adventure_generator::STARTING_COINS - Coins(100))));
+}
+
+fn config() -> TestConfig {
+    TestConfig {
+        explore: Some(TileEntity::Explore { region: 2, cost: Coins(100) }),
+        ..TestConfig::default()
+    }
 }

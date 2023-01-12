@@ -14,8 +14,10 @@
 
 use std::collections::HashMap;
 
+use adventure_generator::mock_adventure;
 use cards::initialize;
 use core_ui::actions::InterfaceAction;
+use data::adventure::{AdventureConfiguration, TileEntity};
 use data::card_name::CardName;
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
@@ -26,6 +28,8 @@ use maplit::hashmap;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, CommandList, GameRequest, WorldMapTile};
+use rand_xoshiro::rand_core::SeedableRng;
+use rand_xoshiro::Xoshiro256StarStar;
 use server::requests;
 use server::requests::GameResponse;
 
@@ -53,12 +57,26 @@ pub struct TestConfig {
 
     /// Sets the user's card collection to include these cards
     pub collection: HashMap<CardName, u32>,
+
+    pub explore: Option<TileEntity>,
+    pub draft: Option<TileEntity>,
+    pub shop: Option<TileEntity>,
 }
 
 impl TestAdventure {
     pub fn new(side: Side, config: TestConfig) -> Self {
         initialize::run();
         let (game_id, player_id, _) = crate::generate_ids();
+        let adventure = mock_adventure::create(
+            AdventureConfiguration {
+                player_id,
+                side,
+                rng: Some(Xoshiro256StarStar::seed_from_u64(314159265358979323)),
+            },
+            config.explore,
+            config.draft,
+            config.shop,
+        );
 
         let mut result = Self {
             side,
@@ -72,14 +90,14 @@ impl TestAdventure {
                     player_id => PlayerData {
                         id: player_id,
                         state: None,
-                        adventure: None,
+                        adventure: Some(adventure),
                         tutorial: TutorialData::new().skip_all(!config.show_tutorial)
                     }
                 },
             },
         };
 
-        result.perform(UserAction::NewAdventure(side));
+        // result.perform(UserAction::NewAdventure(side));
         result.connect();
 
         result
