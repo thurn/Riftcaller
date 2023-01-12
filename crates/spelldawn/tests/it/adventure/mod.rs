@@ -15,3 +15,4 @@
 mod deck_editor_tests;
 mod draft_tests;
 mod explore_tests;
+mod shop_tests;
