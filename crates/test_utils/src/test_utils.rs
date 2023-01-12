@@ -82,13 +82,11 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     };
 
     let overlord_deck = Deck {
-        owner_id: overlord_user,
         side: Side::Overlord,
         identity: CardName::TestOverlordIdentity,
         cards: hashmap! {CardName::TestOverlordSpell => 45},
     };
     let champion_deck = Deck {
-        owner_id: champion_user,
         side: Side::Champion,
         identity: CardName::TestChampionIdentity,
         cards: hashmap! {CardName::TestChampionSpell => 45},
@@ -96,7 +94,9 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
 
     let mut game = GameState::new(
         game_id,
+        overlord_user,
         overlord_deck,
+        champion_user,
         champion_deck,
         GameConfiguration { deterministic: true, ..GameConfiguration::default() },
     );

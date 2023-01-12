@@ -342,9 +342,10 @@ fn handle_new_game(
         };
 
     let (user_side, opponent_side) = (user_deck.side, opponent_deck.side);
-    let (overlord_deck, champion_deck) = match (user_side, opponent_side) {
-        (Side::Overlord, Side::Champion) => (user_deck, opponent_deck),
-        (Side::Champion, Side::Overlord) => (opponent_deck, user_deck),
+    let (overlord_deck, champion_deck, overlord_id, champion_id) = match (user_side, opponent_side)
+    {
+        (Side::Overlord, Side::Champion) => (user_deck, opponent_deck, player_id, opponent_id),
+        (Side::Champion, Side::Overlord) => (opponent_deck, user_deck, opponent_id, player_id),
         _ => fail!("Deck side mismatch!"),
     };
 
@@ -357,7 +358,9 @@ fn handle_new_game(
 
     let mut game = GameState::new(
         game_id,
+        overlord_id,
         overlord_deck,
+        champion_id,
         champion_deck,
         GameConfiguration {
             deterministic: debug_options.deterministic,
@@ -390,7 +393,7 @@ fn handle_new_game(
 fn find_deck(player: &PlayerData, deck: NewGameDeck) -> Result<Deck> {
     Ok(match deck {
         NewGameDeck::DeckId(id) => player.deck(id)?.clone(),
-        NewGameDeck::NamedDeck(name) => decklists::named_deck(player.id, name),
+        NewGameDeck::NamedDeck(name) => decklists::named_deck(name),
     })
 }
 
@@ -429,7 +432,7 @@ fn requested_deck(
             }
         }
         // TODO: Each named player should have their own decklist
-        PlayerId::Named(_) => Some(decklists::canonical_deck(player_id, side)),
+        PlayerId::Named(_) => Some(decklists::canonical_deck(side)),
     })
 }
 

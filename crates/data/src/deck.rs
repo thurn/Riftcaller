@@ -21,15 +21,12 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
 use crate::card_name::CardName;
-use crate::player_name::PlayerId;
 use crate::primitives::Side;
 
 /// Represents a player deck outside of an active game
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Deck {
-    /// Identifies the user who owns this deck
-    pub owner_id: PlayerId,
     /// Identifies which side this deck plays as.
     pub side: Side,
     /// Identity card for this deck

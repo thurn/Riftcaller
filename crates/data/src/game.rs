@@ -256,7 +256,9 @@ impl GameState {
     /// decisions, assigning starting mana, etc.
     pub fn new(
         id: GameId,
+        overlord: PlayerId,
         overlord_deck: Deck,
+        champion: PlayerId,
         champion_deck: Deck,
         config: GameConfiguration,
     ) -> Self {
@@ -271,8 +273,8 @@ impl GameState {
             },
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
-            overlord: PlayerState::new(overlord_deck.owner_id),
-            champion: PlayerState::new(champion_deck.owner_id),
+            overlord: PlayerState::new(overlord),
+            champion: PlayerState::new(champion),
             ability_state: HashMap::new(),
             room_state: HashMap::new(),
             updates: UpdateTracker::new(if config.simulation {
@@ -639,15 +641,15 @@ mod tests {
     fn test_game(overlord: Vec<CardName>, champion: Vec<CardName>) -> GameState {
         GameState::new(
             GameId::new(0),
+            PlayerId::Named(NamedPlayer::TestNoAction),
             Deck {
                 side: Side::Overlord,
-                owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
                 identity: CardName::TestOverlordIdentity,
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
+            PlayerId::Named(NamedPlayer::TestNoAction),
             Deck {
                 side: Side::Champion,
-                owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
                 identity: CardName::TestOverlordIdentity,
                 cards: champion.into_iter().map(|name| (name, 1)).collect(),
             },

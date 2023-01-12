@@ -29,7 +29,6 @@ use rules::{dispatch, mutations};
 
 /// Empty Overlord deck for use in tests
 pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
-    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Overlord,
     identity: CardName::TestOverlordIdentity,
     cards: HashMap::new(),
@@ -37,7 +36,6 @@ pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Spell Overlord deck for use in tests
 pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
-    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Overlord,
     identity: CardName::TestOverlordIdentity,
     cards: hashmap! {CardName::TestOverlordSpell => 45},
@@ -45,7 +43,6 @@ pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Standard Overlord deck for use in tests
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
-    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Overlord,
     identity: CardName::TestOverlordIdentity,
     cards: hashmap! {
@@ -70,7 +67,6 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Empty Champion deck for use in tests
 pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
-    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Champion,
     identity: CardName::TestChampionIdentity,
     cards: HashMap::new(),
@@ -78,7 +74,6 @@ pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Spell Overlord deck for use in tests
 pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
-    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Champion,
     identity: CardName::TestChampionIdentity,
     cards: hashmap! {CardName::TestChampionSpell => 45},
@@ -86,7 +81,6 @@ pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Standard Champion deck for use in tests
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
-    owner_id: PlayerId::Named(NamedPlayer::TestNoAction),
     side: Side::Champion,
     identity: CardName::TestChampionIdentity,
     cards: hashmap! {
@@ -110,11 +104,11 @@ pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 });
 
 /// Returns a canonical deck associated with the given [PlayerId].
-pub fn canonical_deck(player_id: PlayerId, side: Side) -> Deck {
+pub fn canonical_deck(side: Side) -> Deck {
     if side == Side::Champion {
-        Deck { owner_id: player_id, ..CANONICAL_CHAMPION.clone() }
+        CANONICAL_CHAMPION.clone()
     } else {
-        Deck { owner_id: player_id, ..CANONICAL_OVERLORD.clone() }
+        CANONICAL_OVERLORD.clone()
     }
 }
 
@@ -123,7 +117,9 @@ pub fn canonical_deck(player_id: PlayerId, side: Side) -> Deck {
 pub fn canonical_game() -> Result<GameState> {
     let mut game = GameState::new(
         GameId::new(0),
+        PlayerId::Named(NamedPlayer::TestNoAction),
         CANONICAL_OVERLORD.clone(),
+        PlayerId::Named(NamedPlayer::TestNoAction),
         CANONICAL_CHAMPION.clone(),
         GameConfiguration { deterministic: true, simulation: true },
     );
@@ -145,22 +141,19 @@ pub fn canonical_game() -> Result<GameState> {
 }
 
 /// Looks up the [Deck] for a named player.
-pub fn deck_for_player(player: NamedPlayer, side: Side) -> Deck {
+pub fn deck_for_player(_: NamedPlayer, side: Side) -> Deck {
     // (Eventually different named players will have different decks)
-    let id = PlayerId::Named(player);
-    canonical_deck(id, side)
+    canonical_deck(side)
 }
 
 /// Returns a canonical deck associated with the given [PlayerId].
-pub fn named_deck(player_id: PlayerId, name: NamedDeck) -> Deck {
-    let mut deck = match name {
+pub fn named_deck(name: NamedDeck) -> Deck {
+    match name {
         NamedDeck::EmptyChampion => EMPTY_CHAMPION.clone(),
         NamedDeck::ChampionTestSpells => CHAMPION_TEST_SPELLS.clone(),
         NamedDeck::CanonicalChampion => CANONICAL_CHAMPION.clone(),
         NamedDeck::EmptyOverlord => EMPTY_OVERLORD.clone(),
         NamedDeck::OverlordTestSpells => OVERLORD_TEST_SPELLS.clone(),
         NamedDeck::CanonicalOverlord => CANONICAL_OVERLORD.clone(),
-    };
-    deck.owner_id = player_id;
-    deck
+    }
 }

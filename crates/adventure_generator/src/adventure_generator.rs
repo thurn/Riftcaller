@@ -101,7 +101,6 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
     let mut revealed_regions = HashSet::new();
     revealed_regions.insert(1);
     let side = config.side;
-    let player_id = config.player_id;
 
     AdventureState {
         side,
@@ -110,7 +109,7 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
         tiles,
         revealed_regions,
         config,
-        deck: decklists::canonical_deck(player_id, side),
+        deck: decklists::canonical_deck(side),
         collection: HashMap::new(),
     }
 }

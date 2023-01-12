@@ -22,7 +22,7 @@ use anyhow::Result;
 use cards::{decklists, initialize};
 use clap::{ArgEnum, Parser};
 use data::game::{GameConfiguration, GameState};
-use data::player_name::NamedPlayer;
+use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};
 
@@ -69,7 +69,9 @@ pub fn main() -> Result<()> {
         }
         let mut game = GameState::new(
             GameId::new(0),
+            PlayerId::Named(args.overlord),
             decklists::deck_for_player(args.overlord, Side::Overlord),
+            PlayerId::Named(args.champion),
             decklists::deck_for_player(args.champion, Side::Champion),
             GameConfiguration { deterministic: args.deterministic, simulation: true },
         );
