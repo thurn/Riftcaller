@@ -107,12 +107,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .name(&element_names::DECK_BUTTON)
                             .button_type(IconButtonType::NavBrown)
                             .action(
-                                if self
-                                    .player
-                                    .tutorial
-                                    .seen
-                                    .contains(&TutorialMessageKey::DeckEditor)
-                                {
+                                if self.player.tutorial.has_seen(TutorialMessageKey::DeckEditor) {
                                     Panels::open(PanelAddress::DeckEditor(DeckEditorData::new(
                                         DeckId::Adventure,
                                     )))

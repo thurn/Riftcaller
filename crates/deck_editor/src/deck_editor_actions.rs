@@ -21,7 +21,7 @@ use with_error::{fail, verify, WithError};
 pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
     match action {
         DeckEditorAction::ViewedPrompt => {
-            player.tutorial.seen.insert(TutorialMessageKey::DeckEditor);
+            player.tutorial.mark_seen(TutorialMessageKey::DeckEditor);
         }
         DeckEditorAction::AddToDeck(card_name) => {
             verify!(

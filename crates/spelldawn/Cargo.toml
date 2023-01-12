@@ -30,6 +30,7 @@ ai_testing = { path = "../ai_testing", version = "0.0.0" }
 ai_tree_search = { path = "../ai_tree_search", version = "0.0.0" }
 cards = { path = "../cards", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }
+element_names = { path = "../element_names", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 server = { path = "../server", version = "0.0.0" }
 test_utils = { path = "../test_utils", version = "0.0.0" }

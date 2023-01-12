@@ -14,10 +14,12 @@
 
 use std::collections::HashMap;
 
+use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    node_type, CardAnchorNode, EventHandlers, InterfacePanelAddress, Node, NodeType,
+    node_type, CardAnchorNode, ClientAction, EventHandlers, FetchPanelAction,
+    InterfacePanelAddress, Node, NodeType,
 };
 
 /// Simulated user interface state
@@ -68,7 +70,8 @@ impl ClientInterface {
         self.open_panels.len()
     }
 
-    pub fn update(&mut self, command: Command) {
+    pub fn update(&mut self, command: Command) -> Vec<ClientAction> {
+        let mut actions = vec![];
         match command {
             Command::UpdateGameView(update) => {
                 let controls = update.game.as_ref().expect("game").main_controls.as_ref();
@@ -81,16 +84,18 @@ impl ClientInterface {
                 }
             }
             Command::TogglePanel(toggle) => {
-                self.handle_toggle(toggle.toggle_command.expect("ToggleCommand"))
+                actions.extend(self.handle_toggle(toggle.toggle_command.expect("ToggleCommand")));
             }
             Command::RenderScreenOverlay(overlay) => {
                 self.screen_overlay = overlay.node;
             }
             _ => {}
         }
+
+        actions
     }
 
-    fn handle_toggle(&mut self, command: ToggleCommand) {
+    fn handle_toggle(&mut self, command: ToggleCommand) -> Vec<ClientAction> {
         match command {
             ToggleCommand::Transition(transition) => {
                 if let Some(open) = transition.open {
@@ -146,6 +151,42 @@ impl ClientInterface {
                 todo!("Implement")
             }
         }
+
+        self.open_panels
+            .iter()
+            .filter(|p| !self.panels.contains_key(p))
+            .map(|p| ClientAction {
+                action: Some(Action::FetchPanel(FetchPanelAction {
+                    panel_address: Some(p.clone()),
+                })),
+            })
+            .collect()
+    }
+}
+
+/// Searches for a child element of `node` which contains 'name' in its element
+/// name.
+pub fn find_element_name(node: &Node, name: impl Into<String>) -> Option<&Node> {
+    let n = name.into();
+    if node.name.contains(&n) {
+        Some(node)
+    } else {
+        for child in &node.children {
+            if let Some(c) = find_element_name(child, n.clone()) {
+                return Some(c);
+            }
+        }
+
+        None
+    }
+}
+
+/// Panics if no child element of `node` contains the substring `name` in its
+/// element name.
+pub fn assert_has_element_name(node: &Node, name: impl Into<String>) {
+    let n = name.into();
+    if find_element_name(node, n.clone()).is_none() {
+        panic!("Element '{}' not found!", n);
     }
 }
 

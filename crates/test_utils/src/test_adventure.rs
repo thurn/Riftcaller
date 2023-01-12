@@ -42,8 +42,14 @@ pub struct TestAdventure {
     pub database: FakeDatabase,
 }
 
+#[derive(Default)]
+pub struct TestConfig {
+    /// Should tutorial messages be displayed to the user?
+    pub show_tutorial: bool,
+}
+
 impl TestAdventure {
-    pub fn new(side: Side) -> Self {
+    pub fn new(side: Side, config: TestConfig) -> Self {
         initialize::run();
         let (game_id, player_id, _) = crate::generate_ids();
 
@@ -60,7 +66,7 @@ impl TestAdventure {
                         id: player_id,
                         state: None,
                         adventure: None,
-                        tutorial: TutorialData::default()
+                        tutorial: TutorialData::new().skip_all(!config.show_tutorial)
                     }
                 },
             },
@@ -119,17 +125,32 @@ impl TestAdventure {
         self.perform_client_action(action.clone())
     }
 
+    /// Invokes the event handlers for a node with the provided text on the top
+    /// currently-open interface panel.
     pub fn click_on(&mut self, text: impl Into<String>) -> GameResponse {
         let handlers = self.interface.top_panel().find_handlers(text);
         let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
         self.perform_client_action(action)
     }
 
+    /// Invokes the event handlers for a node with the provided text on the
+    /// navbar.
+    pub fn click_on_navbar(&mut self, text: impl Into<String>) -> GameResponse {
+        let handlers = self.interface.screen_overlay().find_handlers(text);
+        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
+        self.perform_client_action(action)
+    }
+
     fn handle_commands(&mut self, list: CommandList) {
+        let mut actions = vec![];
         for c in list.commands {
             let command = c.command.expect("Command");
-            self.interface.update(command.clone());
+            actions.extend(self.interface.update(command.clone()));
             self.map.update(command);
+        }
+
+        for action in actions {
+            self.perform_client_action(action);
         }
     }
 }
