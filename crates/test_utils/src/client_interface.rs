@@ -18,7 +18,7 @@ use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    node_type, CardAnchorNode, ClientAction, EventHandlers, FetchPanelAction,
+    node_type, CardAnchorNode, ClientAction, DraggableNode, EventHandlers, FetchPanelAction,
     InterfacePanelAddress, Node, NodeType,
 };
 
@@ -68,6 +68,10 @@ impl ClientInterface {
 
     pub fn panel_count(&self) -> usize {
         self.open_panels.len()
+    }
+
+    pub fn open_panels(&self) -> Vec<InterfacePanelAddress> {
+        self.open_panels.clone()
     }
 
     pub fn update(&mut self, command: Command) -> Vec<ClientAction> {
@@ -188,6 +192,23 @@ pub fn assert_has_element_name(node: &Node, name: impl Into<String>) {
     if find_element_name(node, n.clone()).is_none() {
         panic!("Element '{}' not found!", n);
     }
+}
+
+/// Finds a [DraggableNode] which is a child of this Node, if any
+pub fn find_draggable(node: &Node) -> Option<&DraggableNode> {
+    if let Some(t) = &node.node_type {
+        if let node_type::NodeType::DraggableNode(d) = t.node_type.as_ref().expect("node_type") {
+            return Some(d);
+        }
+    }
+
+    for child in &node.children {
+        if let Some(c) = find_draggable(child) {
+            return Some(c);
+        }
+    }
+
+    None
 }
 
 pub trait HasText {

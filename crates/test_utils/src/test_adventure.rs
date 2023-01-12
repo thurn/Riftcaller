@@ -107,7 +107,7 @@ impl TestAdventure {
             &GameRequest {
                 action: Some(action),
                 player_id: Some(fake_database::to_player_identifier(self.player_id)),
-                open_panels: vec![],
+                open_panels: self.interface.open_panels(),
             },
         )
         .expect("Error handling game request");

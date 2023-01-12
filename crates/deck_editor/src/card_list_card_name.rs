@@ -143,7 +143,7 @@ impl Component for CardListCardName {
                     ),
             )
             .child(self.count.map(|c| {
-                Column::new("CardCount")
+                Column::new(element_names::card_list_card_quantity(self.card_name))
                     .style(
                         Style::new()
                             .background_color(BackgroundColor::CardCount)
