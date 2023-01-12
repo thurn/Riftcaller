@@ -14,13 +14,9 @@
 
 //! Unique identifiers for UI elements
 
-use std::sync::atomic::{AtomicU64, Ordering};
-
 use data::card_name::CardName;
 use protos::spelldawn::element_selector::Selector;
 use protos::spelldawn::ElementSelector;
-
-static NEXT: AtomicU64 = AtomicU64::new(1);
 
 /// Represents a globally unique identifier for a UI element.
 #[derive(Clone, Copy, Debug)]
@@ -36,14 +32,6 @@ pub struct CurrentDraggable;
 /// Represents the name of a temporary target element
 #[derive(Clone, Copy, Debug)]
 pub struct TargetName(pub ElementName);
-
-impl ElementName {
-    /// Creates a new element name. The 'tag' is used to facilitate debugging
-    /// and does *not* need to be globally unique.
-    pub fn new(tag: &'static str) -> Self {
-        Self { tag, count: NEXT.fetch_add(1, Ordering::SeqCst) }
-    }
-}
 
 impl From<ElementName> for String {
     fn from(name: ElementName) -> Self {
