@@ -16,7 +16,7 @@ use anyhow::Result;
 use data::player_data::PlayerData;
 use data::tutorial::TutorialMessageKey;
 use data::user_actions::DeckEditorAction;
-use with_error::{fail, WithError};
+use with_error::{fail, verify, WithError};
 
 pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
     match action {
@@ -24,6 +24,12 @@ pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {
             player.tutorial.seen.insert(TutorialMessageKey::DeckEditor);
         }
         DeckEditorAction::AddToDeck(card_name) => {
+            verify!(
+                player.adventure()?.collection.get(&card_name).unwrap_or(&0)
+                    > player.adventure()?.deck.cards.get(&card_name).unwrap_or(&0),
+                "Insufficient copies available"
+            );
+
             player
                 .adventure_mut()?
                 .deck

@@ -149,6 +149,11 @@ pub trait HasNodeChildren: HasRenderNode {
         self
     }
 
+    fn child_nodes(mut self, children: impl Iterator<Item = Option<Node>>) -> Self {
+        self.get_internal_children().extend(children.flatten());
+        self
+    }
+
     fn children_boxed(mut self, children: Vec<Box<dyn ComponentObject>>) -> Self {
         for child in children {
             if let Some(n) = child.build_boxed() {

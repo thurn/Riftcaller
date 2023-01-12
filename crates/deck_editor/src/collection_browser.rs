@@ -20,9 +20,12 @@ use core_ui::animations::{
     InterfaceAnimation,
 };
 use core_ui::conditional::Conditional;
+use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::draggable::Draggable;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
+use core_ui::style::Corner;
+use core_ui::text::Text;
 use data::card_name::CardName;
 use data::deck::Deck;
 use data::player_data::PlayerData;
@@ -32,12 +35,12 @@ use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use element_names::{CurrentDraggable, ElementName, TargetName};
 use panel_address::CollectionBrowserFilters;
-use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify};
+use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition};
 
 use crate::card_list;
 use crate::card_list_card_name::CardListCardName;
 
-/// Returns an iterator over cards owned by 'player' which match a given
+/// Returns an iterator over cards in 'collection' which match a given
 /// [CollectionBrowserFilters]
 pub fn get_matching_cards(
     collection: &HashMap<CardName, u32>,
@@ -66,30 +69,60 @@ impl<'a> CollectionBrowser<'a> {
                     .align_items(FlexAlign::Center)
                     .justify_content(FlexJustify::Center),
             )
-            .children(cards.into_iter().map(|(n, quantity)| {
-                let card_name = *n;
-                let quantity_element = ElementName::new("Quantity");
-                DeckCardSlot::new(CardHeight::vh(36.0))
-                    .layout(Layout::new().margin(Edge::All, 16.px()))
-                    .card(Some(
-                        DeckCard::new(card_name)
-                            .quantity(*quantity)
-                            .quantity_element_name(quantity_element)
-                            .draggable(
-                                Draggable::new(card_name.to_string())
-                                    .drop_target(element_names::CARD_LIST)
-                                    .over_target_indicator(move || {
-                                        CardListCardName::new(card_name).build()
-                                    })
-                                    .on_drop(Some(self.drop_action(card_name)))
-                                    .hide_indicator_children(vec![quantity_element]),
-                            ),
-                    ))
-            }))
+            .child_nodes(cards.into_iter().map(|(n, quantity)| self.collection_card(*n, *quantity)))
             .children((0..empty_slots).map(|_| {
                 DeckCardSlot::new(CardHeight::vh(36.0))
                     .layout(Layout::new().margin(Edge::All, 4.px()))
             }))
+    }
+
+    fn collection_card(&self, card_name: CardName, quantity: u32) -> Option<Node> {
+        let quantity_element = ElementName::new("Quantity");
+        let in_deck = quantity == *self.deck.cards.get(&card_name).unwrap_or(&0);
+
+        let slot = DeckCardSlot::new(CardHeight::vh(36.0))
+            .layout(Layout::new().margin(Edge::All, 16.px()))
+            .card(Some(
+                DeckCard::new(card_name)
+                    .quantity(quantity)
+                    .quantity_element_name(quantity_element)
+                    .draggable((!in_deck).then(|| {
+                        Draggable::new(card_name.to_string())
+                            .drop_target(element_names::CARD_LIST)
+                            .over_target_indicator(move || CardListCardName::new(card_name).build())
+                            .on_drop(Some(self.drop_action(card_name)))
+                            .hide_indicator_children(vec![quantity_element])
+                    })),
+            ));
+
+        if in_deck {
+            Column::new("SlotOverlay")
+                .style(
+                    Style::new()
+                        .justify_content(FlexJustify::Center)
+                        .align_items(FlexAlign::Center),
+                )
+                .child(slot)
+                .child(
+                    Row::new("InDeck")
+                        .style(
+                            Style::new()
+                                .position_type(FlexPosition::Absolute)
+                                .position(Edge::Left, 50.pct())
+                                .position(Edge::Bottom, 0.pct())
+                                .translate((-50).pct(), (-50).pct())
+                                .background_color(BackgroundColor::TilePanelOverlay)
+                                .padding(Edge::All, 8.px())
+                                .border_radius(Corner::All, 8.px())
+                                .justify_content(FlexJustify::Center)
+                                .align_items(FlexAlign::Center),
+                        )
+                        .child(Text::new("In Deck").font_size(FontSize::Body)),
+                )
+                .build()
+        } else {
+            slot.build()
+        }
     }
 
     fn drop_action(&self, name: CardName) -> ActionBuilder {
@@ -121,20 +154,20 @@ impl<'a> CollectionBrowser<'a> {
                 ),
         )
     }
-}
 
-fn sort_cards(cards: &mut [(CardName, u32)]) {
-    cards.sort_by_key(|(name, _)| {
-        let definition = rules::get(*name);
-        let cost = definition.cost.mana.unwrap_or_default();
-        (definition.side, definition.school, definition.card_type, cost, name.displayed_name())
-    });
+    fn sort_cards(&self, cards: &mut [(CardName, u32)]) {
+        cards.sort_by_key(|(name, _)| {
+            let definition = rules::get(*name);
+            let cost = definition.cost.mana.unwrap_or_default();
+            (definition.side, definition.school, definition.card_type, cost, name.displayed_name())
+        });
+    }
 }
 
 impl<'a> Component for CollectionBrowser<'a> {
     fn build(self) -> Option<Node> {
         let mut cards = get_matching_cards(self.collection, self.filters).collect::<Vec<_>>();
-        sort_cards(&mut cards);
+        self.sort_cards(&mut cards);
         let row_one = cards.iter().skip(self.filters.offset).take(4).collect::<Vec<_>>();
         let row_two = cards.iter().skip(self.filters.offset + 4).take(4).collect::<Vec<_>>();
         DropTarget::new(element_names::COLLECTION_BROWSER)

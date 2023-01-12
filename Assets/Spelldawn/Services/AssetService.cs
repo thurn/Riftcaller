@@ -103,6 +103,17 @@ namespace Spelldawn.Services
       }
 
       var requests = new Dictionary<string, AsyncOperationHandle>();
+      LoadCommandListAssets(requests, commandList);
+
+      yield return WaitForRequests(requests);
+    }
+
+    void LoadCommandListAssets(IDictionary<string, AsyncOperationHandle> requests, CommandList? commandList)
+    {
+      if (commandList == null)
+      {
+        return;
+      }
       
       foreach (var command in commandList.Commands)
       {
@@ -144,8 +155,6 @@ namespace Spelldawn.Services
             break;
         }
       }
-
-      yield return WaitForRequests(requests);
     }
 
     public IEnumerator LoadAssetsForNode(Node node)
@@ -239,6 +248,29 @@ namespace Spelldawn.Services
         LoadStyleAssets(requests, node.Style);
         LoadStyleAssets(requests, node.HoverStyle);
         LoadStyleAssets(requests, node.PressedStyle);
+        LoadActionAssets(requests, node.EventHandlers?.OnClick);
+
+        if (node.NodeType != null)
+        {
+          switch (node.NodeType.NodeTypeCase)
+          {
+            case NodeType.NodeTypeOneofCase.ScrollViewNode:
+              LoadStyleAssets(requests, node.NodeType.ScrollViewNode?.HorizontalScrollBar?.Style);
+              LoadStyleAssets(requests, node.NodeType.ScrollViewNode?.VerticalScrollBar?.Style);
+              break;
+            case NodeType.NodeTypeOneofCase.DraggableNode:
+              LoadNodeAssets(requests, node.NodeType.DraggableNode.OverTargetIndicator);
+              LoadActionAssets(requests, node.NodeType.DraggableNode.OnDrop);
+              break;
+            case NodeType.NodeTypeOneofCase.SliderNode:
+              LoadStyleAssets(requests, node.NodeType.SliderNode.LabelStyle);
+              LoadStyleAssets(requests, node.NodeType.SliderNode.DragContainerStyle);
+              LoadStyleAssets(requests, node.NodeType.SliderNode.TrackerStyle);
+              LoadStyleAssets(requests, node.NodeType.SliderNode.DraggerStyle);
+              LoadStyleAssets(requests, node.NodeType.SliderNode.DraggerBorderStyle);
+              break;
+          }
+        }
 
         foreach (var child in node.Children)
         {
@@ -253,6 +285,14 @@ namespace Spelldawn.Services
       {
         LoadBackground(requests, style.BackgroundImage);
         LoadFont(requests, style.Font);
+      }
+    }
+
+    void LoadActionAssets(IDictionary<string, AsyncOperationHandle> requests, ClientAction? action)
+    {
+      if (action is { ActionCase: ClientAction.ActionOneofCase.StandardAction })
+      {
+        LoadCommandListAssets(requests, action.StandardAction.Update);
       }
     }
 
@@ -364,15 +404,7 @@ namespace Spelldawn.Services
         }
       }
     }
-
-    void Load<T>(IDictionary<string, AsyncOperationHandle> requests, string? address) where T : Object
-    {
-      if (!string.IsNullOrWhiteSpace(address) && !_assets.ContainsKey(address))
-      {
-        requests[address] = Addressables.LoadAssetAsync<T>(address);
-      }
-    }
-
+    
     void LoadSprite(IDictionary<string, AsyncOperationHandle> requests, SpriteAddress? address)
     {
       if (!string.IsNullOrWhiteSpace(address?.Address) && !_assets.ContainsKey(address.Address))

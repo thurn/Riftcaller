@@ -93,8 +93,8 @@ impl DeckCard {
         self
     }
 
-    pub fn draggable(mut self, draggable: Draggable) -> Self {
-        self.draggable = Some(draggable);
+    pub fn draggable(mut self, draggable: Option<Draggable>) -> Self {
+        self.draggable = draggable;
         self
     }
 
