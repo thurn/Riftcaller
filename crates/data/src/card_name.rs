@@ -92,9 +92,7 @@ pub enum CardName {
     NoIdentityChampionShadow,
     NoIdentityChampionPrimal,
 
-    // Playtest 0
-    ArcaneRecovery,
-    Lodestone,
+    // Proof of Concept
     GoldMine,
     Meditation,
     CoupDeGrace,
@@ -104,12 +102,10 @@ pub enum CardName {
     InvisibilityRing,
     Accumulator,
     MageGloves,
-    SkysReach,
     MagicalResonator,
     DarkGrimoire,
     MaraudersAxe,
     KeenHalberd,
-    EtherealBlade,
     BowOfTheAlliance,
     ActivateReinforcements,
     ResearchProject,
@@ -126,6 +122,23 @@ pub enum CardName {
     BridgeTroll,
     Stormcaller,
     FireGoblin,
+
+    // Basic
+    BasicChampionIdentity,
+    ArcaneRecovery,
+    EldritchSurge,
+    Lodestone,
+    ManaBattery,
+    Contemplate,
+    AncestralKnowledge,
+    SimpleBlade,
+    SimpleAxe,
+    SimpleBow,
+    SimpleClub,
+    SimpleHammer,
+    SimpleSpear,
+    SimpleStaff,
+    EtherealBlade,
 }
 
 impl CardName {
@@ -140,7 +153,6 @@ impl CardName {
             Self::NoIdentityChampionPrimal => "No Identity".to_string(),
             Self::MaraudersAxe => "Marauder's Axe".to_string(),
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
-            Self::SkysReach => "Sky's Reach".to_string(),
             _ => format!("{}", self).from_case(Case::Pascal).to_case(Case::Title),
         }
     }

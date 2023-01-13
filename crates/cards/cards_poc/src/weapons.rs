@@ -104,43 +104,6 @@ pub fn keen_halberd() -> CardDefinition {
     }
 }
 
-pub fn ethereal_blade() -> CardDefinition {
-    CardDefinition {
-        name: CardName::EtherealBlade,
-        sets: vec![SetName::ProofOfConcept],
-        cost: cost(1),
-        image: rexard_images::weapon(RexardWeaponType::Swords, "sv_b_01"),
-        card_type: CardType::Weapon,
-        side: Side::Champion,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            abilities::encounter_boost(),
-            Ability {
-                text: text!["When you use this weapon, sacrifice it at the end of the raid."],
-                ability_type: AbilityType::Standard,
-                delegates: vec![
-                    on_weapon_used(
-                        |_g, s, used_weapon| used_weapon.weapon_id == s.card_id(),
-                        |g, s, used_weapon| save_raid_id(g, s, &used_weapon.raid_id),
-                    ),
-                    on_raid_ended(matching_raid, |g, s, _| {
-                        mutations::sacrifice_card(g, s.card_id())?;
-                        alert(g, s);
-                        Ok(())
-                    }),
-                ],
-            },
-        ],
-        config: CardConfig {
-            stats: attack(1, AttackBoost { cost: 1, bonus: 1 }),
-            lineage: Some(Lineage::Prismatic),
-            special_effects: projectile(Projectile::Hovl(3)),
-            ..CardConfig::default()
-        },
-    }
-}
-
 pub fn bow_of_the_alliance() -> CardDefinition {
     CardDefinition {
         name: CardName::BowOfTheAlliance,

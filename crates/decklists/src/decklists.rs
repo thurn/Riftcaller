@@ -76,6 +76,27 @@ pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     cards: hashmap! {CardName::TestChampionSpell => 45},
 });
 
+/// Basic Champion starter deck in adventure mode
+pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Champion,
+    identity: CardName::BasicChampionIdentity,
+    cards: hashmap! {
+        CardName::ArcaneRecovery => 3,
+        CardName::EldritchSurge => 3,
+        CardName::Lodestone => 3,
+        CardName::ManaBattery => 3,
+        CardName::Contemplate => 3,
+        CardName::AncestralKnowledge => 3,
+        CardName::SimpleBlade => 3,
+        CardName::SimpleAxe => 3,
+        CardName::SimpleBow => 3,
+        CardName::SimpleClub => 3,
+        CardName::SimpleHammer => 3,
+        CardName::SimpleSpear => 3,
+        CardName::EtherealBlade => 3,
+    },
+});
+
 /// Standard Champion deck for use in tests
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
@@ -90,7 +111,7 @@ pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
         CardName::InvisibilityRing => 1,
         CardName::Accumulator => 1,
         CardName::MageGloves => 1,
-        CardName::SkysReach => 2,
+        CardName::ManaBattery => 2,
         CardName::MagicalResonator => 2,
         CardName::DarkGrimoire => 1,
         CardName::MaraudersAxe => 2,

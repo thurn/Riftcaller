@@ -30,24 +30,6 @@ use data::utils;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
-pub fn lodestone() -> CardDefinition {
-    CardDefinition {
-        name: CardName::Lodestone,
-        sets: vec![SetName::ProofOfConcept],
-        cost: cost(1),
-        image: rexard_images::get(RexardPack::MagicItems, "orb_04_b"),
-        card_type: CardType::Artifact,
-        side: Side::Champion,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            abilities::store_mana_on_play::<12>(),
-            abilities::activated_take_mana::<2>(actions(1)),
-        ],
-        config: CardConfig::default(),
-    }
-}
-
 pub fn invisibility_ring() -> CardDefinition {
     CardDefinition {
         name: CardName::InvisibilityRing,
@@ -143,39 +125,6 @@ pub fn mage_gloves() -> CardDefinition {
                             .map(|_| ())
                     }),
                 ],
-            },
-        ],
-        config: CardConfig::default(),
-    }
-}
-
-pub fn skys_reach() -> CardDefinition {
-    CardDefinition {
-        name: CardName::SkysReach,
-        sets: vec![SetName::ProofOfConcept],
-        cost: cost(0),
-        image: rexard_images::artifact(RexardArtifactType::Belts, "belts_11"),
-        card_type: CardType::Artifact,
-        side: Side::Champion,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            simple_ability(
-                text![Keyword::Dawn, Keyword::Take(Sentence::Start, 1)],
-                at_dawn(|g, s, _| {
-                    let taken =
-                        mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;
-                    alert_if_nonzero(g, s, taken);
-                    Ok(())
-                }),
-            ),
-            Ability {
-                text: text![Keyword::Store(Sentence::Start, 3)],
-                ability_type: AbilityType::Activated(actions(1), TargetRequirement::None),
-                delegates: vec![on_activated(|g, s, _| {
-                    add_stored_mana(g, s.card_id(), 3);
-                    Ok(())
-                })],
             },
         ],
         config: CardConfig::default(),

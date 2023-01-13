@@ -23,14 +23,14 @@ pub const STARTING_COINS: Coins = Coins(500);
 
 /// Builds a new random 'adventure' mode world map
 pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
-    let collection = decklists::EMPTY_CHAMPION.clone().cards;
+    let collection = decklists::BASIC_CHAMPION.clone().cards;
     let explore = TileEntity::Explore { region: 2, cost: Coins(100) };
     let draft =
         TileEntity::Draft { cost: Coins(25), data: card_generator::draft_choices(&mut config) };
     let shop = TileEntity::Shop { data: card_generator::shop_options(&mut config) };
     mock_adventure::create(
         config,
-        decklists::EMPTY_CHAMPION.clone(),
+        decklists::BASIC_CHAMPION.clone(),
         collection,
         Some(explore),
         Some(draft),

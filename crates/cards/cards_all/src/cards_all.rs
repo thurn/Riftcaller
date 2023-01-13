@@ -2,19 +2,29 @@
 
 use rules::DEFINITIONS;
 
-
 pub fn initialize() {
-    DEFINITIONS.insert(cards_poc::artifacts::lodestone);
+    DEFINITIONS.insert(cards_basic::champion_basics::basic_champion_identity);
+    DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
+    DEFINITIONS.insert(cards_basic::champion_basics::eldritch_surge);
+    DEFINITIONS.insert(cards_basic::champion_basics::lodestone);
+    DEFINITIONS.insert(cards_basic::champion_basics::mana_battery);
+    DEFINITIONS.insert(cards_basic::champion_basics::contemplate);
+    DEFINITIONS.insert(cards_basic::champion_basics::ancestral_knowledge);
+    DEFINITIONS.insert(cards_basic::champion_basics::simple_blade);
+    DEFINITIONS.insert(cards_basic::champion_basics::simple_axe);
+    DEFINITIONS.insert(cards_basic::champion_basics::simple_bow);
+    DEFINITIONS.insert(cards_basic::champion_basics::simple_club);
+    DEFINITIONS.insert(cards_basic::champion_basics::simple_hammer);
+    DEFINITIONS.insert(cards_basic::champion_basics::simple_spear);
+    DEFINITIONS.insert(cards_basic::champion_basics::ethereal_blade);
     DEFINITIONS.insert(cards_poc::artifacts::invisibility_ring);
     DEFINITIONS.insert(cards_poc::artifacts::accumulator);
     DEFINITIONS.insert(cards_poc::artifacts::mage_gloves);
-    DEFINITIONS.insert(cards_poc::artifacts::skys_reach);
     DEFINITIONS.insert(cards_poc::artifacts::magical_resonator);
     DEFINITIONS.insert(cards_poc::artifacts::dark_grimoire);
     DEFINITIONS.insert(cards_poc::champion_identities::no_identity_law);
     DEFINITIONS.insert(cards_poc::champion_identities::no_identity_shadow);
     DEFINITIONS.insert(cards_poc::champion_identities::no_identity_primal);
-    DEFINITIONS.insert(cards_poc::champion_spells::arcane_recovery);
     DEFINITIONS.insert(cards_poc::champion_spells::meditation);
     DEFINITIONS.insert(cards_poc::champion_spells::coup_de_grace);
     DEFINITIONS.insert(cards_poc::champion_spells::charged_strike);
@@ -41,7 +51,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::schemes::research_project);
     DEFINITIONS.insert(cards_poc::weapons::marauders_axe);
     DEFINITIONS.insert(cards_poc::weapons::keen_halberd);
-    DEFINITIONS.insert(cards_poc::weapons::ethereal_blade);
     DEFINITIONS.insert(cards_poc::weapons::bow_of_the_alliance);
     DEFINITIONS.insert(cards_test::test_cards::test_overlord_identity);
     DEFINITIONS.insert(cards_test::test_cards::test_champion_identity);

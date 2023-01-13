@@ -23,27 +23,6 @@ use data::primitives::{CardType, Rarity, RoomId, School, Side};
 use data::set_name::SetName;
 use rules::{flags, mana, mutations};
 
-pub fn arcane_recovery() -> CardDefinition {
-    CardDefinition {
-        name: CardName::ArcaneRecovery,
-        sets: vec![SetName::ProofOfConcept],
-        cost: cost(5),
-        image: rexard_images::spell(1, "SpellBook01_24"),
-        card_type: CardType::ChampionSpell,
-        side: Side::Champion,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![simple_ability(
-            text!("Gain", mana_text(9)),
-            on_cast(|g, s, _| {
-                mana::gain(g, s.side(), 9);
-                Ok(())
-            }),
-        )],
-        config: CardConfig::default(),
-    }
-}
-
 pub fn meditation() -> CardDefinition {
     CardDefinition {
         name: CardName::Meditation,

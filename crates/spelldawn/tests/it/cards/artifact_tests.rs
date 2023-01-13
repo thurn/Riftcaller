@@ -104,10 +104,10 @@ fn mage_gloves_repeat_panic() {
 }
 
 #[test]
-fn skys_reach() {
+fn mana_battery() {
     let card_cost = 0;
     let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::SkysReach);
+    let id = g.play_from_hand(CardName::ManaBattery);
     g.activate_ability(id, 1);
     spend_actions_until_turn_over(&mut g, Side::Champion);
     spend_actions_until_turn_over(&mut g, Side::Overlord);

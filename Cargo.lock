@@ -316,9 +316,21 @@ dependencies = [
 name = "cards_all"
 version = "0.0.0"
 dependencies = [
+ "cards_basic",
  "cards_poc",
  "cards_test",
  "rules",
+]
+
+[[package]]
+name = "cards_basic"
+version = "0.0.0"
+dependencies = [
+ "assets",
+ "card_helpers",
+ "data",
+ "rules",
+ "with_error",
 ]
 
 [[package]]

@@ -12,14 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use enum_iterator::Sequence;
-use serde::{Deserialize, Serialize};
-use strum_macros::Display;
+//! Standard cards for tutorials and the adventure-mode starting decks
 
-/// Names for sets of cards. Each card may belong to any number of sets.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize, Sequence)]
-pub enum SetName {
-    Test,
-    ProofOfConcept,
-    Basics,
-}
+pub mod champion_basics;
