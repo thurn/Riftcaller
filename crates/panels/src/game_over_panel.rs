@@ -14,9 +14,9 @@
 
 //! Panel shown at the end of a game summarizing the result
 
-use core_ui::actions;
 use core_ui::button::{Button, ButtonType};
 use core_ui::panel_window::PanelWindow;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use data::player_data::PlayerData;
@@ -49,7 +49,7 @@ impl<'a> Component for GameOverPanel<'a> {
                     )
                     .child(
                         Button::new("Main Menu")
-                            .action(actions::close_and(self.address(), UserAction::LeaveGame))
+                            .action(Panels::close(self.address()).action(UserAction::LeaveGame))
                             .button_type(ButtonType::Primary)
                             .width_mode(WidthMode::Flexible)
                             .layout(Layout::new().margin(Edge::All, 16.px())),

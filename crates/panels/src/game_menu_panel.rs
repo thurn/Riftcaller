@@ -18,9 +18,9 @@
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{Button, ButtonType};
 use core_ui::panel_window::PanelWindow;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use core_ui::{actions, panels};
 use data::game_actions::GameAction;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
@@ -53,8 +53,11 @@ impl Component for GameMenuPanel {
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center),
                     )
-                    .child(menu_button("Close", panels::close(address)))
-                    .child(menu_button("Resign", actions::close_and(address, GameAction::Resign))),
+                    .child(menu_button("Close", self.close()))
+                    .child(menu_button(
+                        "Resign",
+                        Panels::close(self.address()).action(GameAction::Resign),
+                    )),
             )
             .build()
     }

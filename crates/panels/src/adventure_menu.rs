@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use core_ui::{actions, panels};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
@@ -40,12 +40,10 @@ impl Component for AdventureMenu {
         ButtonMenu::new(self.address())
             .button(
                 "Abandon Adventure",
-                actions::close_and(
-                    self.address(),
-                    UserAction::AdventureAction(AdventureAction::AbandonAdventure),
-                ),
+                Panels::close(self.address())
+                    .action(UserAction::AdventureAction(AdventureAction::AbandonAdventure)),
             )
-            .button("Settings", panels::open(PanelAddress::Settings))
+            .button("Settings", Panels::open(PanelAddress::Settings))
             .build()
     }
 }

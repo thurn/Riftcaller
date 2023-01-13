@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, InterfacePanelAddress};
+use protos::spelldawn::game_command::Command;
+use protos::spelldawn::toggle_panel_command::ToggleCommand;
+use protos::spelldawn::{
+    FlexAlign, FlexJustify, FlexPosition, InterfacePanelAddress, TogglePanelCommand,
+};
 
 use crate::button::{IconButton, IconButtonType};
 use crate::component::EmptyComponent;
 use crate::design::FontSize;
+use crate::icons;
 use crate::prelude::*;
 use crate::text::Text;
-use crate::{icons, panels};
 
 pub enum BottomSheetButtonType {
     /// Close the bottom sheet
@@ -66,6 +70,21 @@ impl BottomSheetContent {
     }
 }
 
+/// Pops the currently-open bottom sheet page, displaying 'address' as the *new*
+/// sheet contents.
+pub fn pop_to_bottom_sheet(address: impl Into<InterfacePanelAddress>) -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::PopToBottomSheetAddress(address.into())),
+    })
+}
+
+/// Closes the currently-open bottom sheet.
+pub fn close_bottom_sheet() -> Command {
+    Command::TogglePanel(TogglePanelCommand {
+        toggle_command: Some(ToggleCommand::CloseBottomSheet(())),
+    })
+}
+
 impl Component for BottomSheetContent {
     fn build(self) -> Option<Node> {
         Column::new(format!("{}Sheet", self.title.clone().unwrap_or_default()))
@@ -85,10 +104,8 @@ impl Component for BottomSheetContent {
                             BottomSheetButtonType::Back(_) => icons::BACK,
                         })
                         .action(match self.button_type {
-                            BottomSheetButtonType::Close => panels::close_bottom_sheet(),
-                            BottomSheetButtonType::Back(address) => {
-                                panels::pop_to_bottom_sheet(address)
-                            }
+                            BottomSheetButtonType::Close => close_bottom_sheet(),
+                            BottomSheetButtonType::Back(address) => pop_to_bottom_sheet(address),
                         })
                         .button_type(IconButtonType::SecondaryLarge)
                         .layout(

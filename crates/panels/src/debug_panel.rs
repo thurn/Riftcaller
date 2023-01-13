@@ -18,9 +18,10 @@
 
 use core_ui::actions::InterfaceAction;
 use core_ui::button::Button;
+use core_ui::icons;
 use core_ui::panel_window::PanelWindow;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use core_ui::{icons, panels};
 use data::primitives::Side;
 use data::user_actions::DebugAction;
 use panel_address::{Panel, PanelAddress};
@@ -45,7 +46,7 @@ impl Panel for DebugPanel {
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {
-        let close = panels::close(PanelAddress::DebugPanel);
+        let close = Panels::close(PanelAddress::DebugPanel);
 
         PanelWindow::new(PanelAddress::DebugPanel, 1024.px(), 600.px())
             .title("Debug Controls")
@@ -63,7 +64,7 @@ impl Component for DebugPanel {
                     .child(debug_button("Join Game", DebugAction::JoinGame))
                     .child(debug_button(
                         "Show Logs",
-                        vec![close, debug_command(DebugCommand::ShowLogs(()))],
+                        vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
                     ))
                     .child(debug_button(format!("+10{}", icons::MANA), DebugAction::AddMana(10)))
                     .child(debug_button(
@@ -80,11 +81,11 @@ impl Component for DebugPanel {
                     .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadState(3)))
                     .child(debug_button(
                         "Overlord AI",
-                        panels::open(PanelAddress::SetPlayerName(Side::Overlord)),
+                        Panels::open(PanelAddress::SetPlayerName(Side::Overlord)),
                     ))
                     .child(debug_button(
                         "Champion AI",
-                        panels::open(PanelAddress::SetPlayerName(Side::Champion)),
+                        Panels::open(PanelAddress::SetPlayerName(Side::Champion)),
                     ))
                     .child(debug_button("Full Collection", DebugAction::FullCollection)),
             )

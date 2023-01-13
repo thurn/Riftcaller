@@ -14,6 +14,7 @@
 
 //! Addresses for user interface panels
 
+use core_ui::panels::Panels;
 use core_ui::prelude::Component;
 use data::adventure::TilePosition;
 use data::player_name::PlayerId;
@@ -24,6 +25,10 @@ use serde_json::ser;
 
 pub trait Panel: Component {
     fn address(&self) -> PanelAddress;
+
+    fn close(&self) -> Panels {
+        Panels::close(self.address())
+    }
 
     /// Allows a custom screen overlay to be displayed while this panel is
     /// visible.

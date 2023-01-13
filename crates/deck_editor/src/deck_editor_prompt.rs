@@ -18,7 +18,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
-use core_ui::{panels, style};
+use core_ui::style;
 use data::player_data::PlayerData;
 use data::primitives::DeckId;
 use data::user_actions::DeckEditorAction;
@@ -59,7 +59,7 @@ impl<'a> Component for DeckEditorPromptPanel<'a> {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(panels::close(self.address()))
+                    .action(self.close())
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

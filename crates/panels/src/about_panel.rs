@@ -16,7 +16,6 @@
 
 use core_ui::button::Button;
 use core_ui::panel_window::PanelWindow;
-use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
@@ -67,7 +66,7 @@ impl Component for AboutPanel {
                     )
                     .child(
                         Button::new("Back")
-                            .action(panels::close(PanelAddress::About))
+                            .action(self.close())
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

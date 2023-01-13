@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use adapters::response_builder::ResponseBuilder;
-use core_ui::panels;
+use core_ui::panels::Panels;
 use data::game::{GamePhase, GameState};
 use panel_address::{GameOverData, PanelAddress};
 use protos::spelldawn::game_command::Command;
@@ -34,9 +34,12 @@ pub fn check_game_over(builder: &mut ResponseBuilder, game: &GameState) {
             .into(),
         }));
 
-        builder.push(panels::open(PanelAddress::GameOver(GameOverData {
-            game_id: game.id,
-            winner: game.player(winner).id,
-        })))
+        builder.push(
+            Panels::open(PanelAddress::GameOver(GameOverData {
+                game_id: game.id,
+                winner: game.player(winner).id,
+            }))
+            .into(),
+        )
     }
 }

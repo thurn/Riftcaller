@@ -16,7 +16,6 @@
 
 use core_ui::button::Button;
 use core_ui::panel_window::PanelWindow;
-use core_ui::panels;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
@@ -61,7 +60,7 @@ impl Component for DisclaimerPanel {
                     )
                     .child(
                         Button::new("Understood")
-                            .action(panels::set(PanelAddress::MainMenu))
+                            .action(self.close().and_open(PanelAddress::MainMenu))
                             .layout(Layout::new().margin(Edge::All, 16.px())),
                     ),
             )

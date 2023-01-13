@@ -16,7 +16,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
-use core_ui::{icons, panels, style};
+use core_ui::{icons, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use panel_address::{Panel, PanelAddress};
@@ -49,7 +49,7 @@ impl Component for DraftPromptPanel {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(panels::close(self.address))
+                    .action(self.close())
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

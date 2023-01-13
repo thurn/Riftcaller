@@ -16,7 +16,7 @@ use core_ui::button::{Button, ButtonType};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
-use core_ui::{actions, icons, style};
+use core_ui::{icons, style};
 use data::adventure::{Coins, TilePosition};
 use data::adventure_action::AdventureAction;
 use data::user_actions::UserAction;
@@ -41,10 +41,9 @@ impl Component for ExplorePanel {
             .prompt("To the north lie the flowering fields of the Kingdom of Edennes")
             .buttons(vec![
                 Button::new(format!("Explore: {} {}", self.cost, icons::COINS))
-                    .action(actions::close_and(
-                        self.address,
-                        UserAction::AdventureAction(AdventureAction::Explore(self.position)),
-                    ))
+                    .action(self.close().action(UserAction::AdventureAction(
+                        AdventureAction::Explore(self.position),
+                    )))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)

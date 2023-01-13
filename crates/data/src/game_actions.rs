@@ -22,6 +22,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::game::MulliganDecision;
 use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, RoomId, Side};
+use crate::user_actions::UserAction;
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum EncounterAction {
@@ -131,4 +132,10 @@ pub enum GameAction {
     InitiateRaid(RoomId),
     LevelUpRoom(RoomId),
     SpendActionPoint,
+}
+
+impl From<GameAction> for UserAction {
+    fn from(a: GameAction) -> Self {
+        UserAction::GameAction(a)
+    }
 }

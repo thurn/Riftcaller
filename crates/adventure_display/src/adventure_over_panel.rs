@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::actions;
 use core_ui::prelude::*;
 use data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
@@ -37,10 +36,7 @@ impl Component for AdventureOverPanel {
     fn build(self) -> Option<Node> {
         ButtonMenu::new(self.address())
             .title("Defeated")
-            .button(
-                "Main Menu",
-                actions::close_and(PanelAddress::AdventureOver, UserAction::LeaveAdventure),
-            )
+            .button("Main Menu", self.close().action(UserAction::LeaveAdventure))
             .show_close_button(false)
             .build()
     }

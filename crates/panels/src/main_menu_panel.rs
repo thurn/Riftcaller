@@ -18,9 +18,9 @@
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{Button, ButtonType};
 use core_ui::panel_window::PanelWindow;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use core_ui::{actions, panels};
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::Side;
 use data::user_actions::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
@@ -56,24 +56,18 @@ impl Component for MainMenuPanel {
                     )
                     .child(menu_button(
                         "Tutorial",
-                        actions::close_and(
-                            PanelAddress::MainMenu,
-                            UserAction::NewGame(NewGameAction {
-                                opponent: PlayerId::Named(NamedPlayer::TestAlphaBetaHeuristics),
-                                deck: NewGameDeck::NamedDeck(NamedDeck::CanonicalChampion),
-                                debug_options: None,
-                            }),
-                        ),
+                        self.close().action(UserAction::NewGame(NewGameAction {
+                            opponent: PlayerId::Named(NamedPlayer::TestAlphaBetaHeuristics),
+                            deck: NewGameDeck::NamedDeck(NamedDeck::CanonicalChampion),
+                            debug_options: None,
+                        })),
                     ))
                     .child(menu_button(
                         "New Adventure",
-                        actions::close_and(
-                            PanelAddress::MainMenu,
-                            UserAction::NewAdventure(Side::Champion),
-                        ),
+                        self.close().action(UserAction::NewAdventure(Side::Champion)),
                     ))
-                    .child(menu_button("Settings", panels::open(PanelAddress::Settings)))
-                    .child(menu_button("About", panels::open(PanelAddress::About))),
+                    .child(menu_button("Settings", Panels::open(PanelAddress::Settings)))
+                    .child(menu_button("About", Panels::open(PanelAddress::About))),
             )
             .build()
     }

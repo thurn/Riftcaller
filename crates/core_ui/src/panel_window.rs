@@ -21,9 +21,10 @@ use crate::button::IconButton;
 use crate::component::{Component, ComponentObject, EmptyComponent};
 use crate::design::{Font, FontColor, FontSize};
 use crate::flexbox::{HasNodeChildren, HasRenderNode, Row};
+use crate::panels::Panels;
 use crate::prelude::{DimensionExt, Edge, Layout, Style};
 use crate::text::Text;
-use crate::{icons, panels, style};
+use crate::{icons, style};
 
 /// A rectangular interface element that displays content centered on-screen,
 /// optionally including a title or close button.
@@ -99,7 +100,7 @@ impl Component for PanelWindow {
             .child(self.title.map(TitleBar::new))
             .child(self.show_close_button.then(|| {
                 IconButton::new(icons::CLOSE)
-                    .action(panels::close(self.address))
+                    .action(Panels::close(self.address))
                     .show_frame(true)
                     .layout(
                         Layout::new()
