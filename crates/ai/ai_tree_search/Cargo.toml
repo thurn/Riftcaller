@@ -1,7 +1,7 @@
 [package]
-name = "ai_monte_carlo"
+name = "ai_tree_search"
 version = "0.0.0"
-description = "Random search AI algorithms"
+description = "Algorithms for tree-search AI, e.g. minimax"
 license = "Apache-2.0"
 edition = "2021"
 
@@ -11,8 +11,5 @@ test = false
 
 [dependencies]
 anyhow = "1.0.58"
-rand = "0.8.5"
-petgraph = "0.6.2"
-
 ai_core = { path = "../ai_core", version = "0.0.0" }
-with_error = { path = "../with_error", version = "0.0.0" }
+with_error = { path = "../../with_error", version = "0.0.0" }
