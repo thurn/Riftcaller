@@ -123,6 +123,7 @@ dependencies = [
  "ai_tree_search",
  "anyhow",
  "cards",
+ "cards_all",
  "clap 3.2.16",
  "data",
  "decklists",
@@ -321,6 +322,7 @@ dependencies = [
  "anyhow",
  "assets",
  "card_helpers",
+ "cards_test",
  "data",
  "decklists",
  "maplit",
@@ -329,6 +331,25 @@ dependencies = [
  "rules",
  "walkdir",
  "with_error",
+]
+
+[[package]]
+name = "cards_all"
+version = "0.0.0"
+dependencies = [
+ "cards",
+ "cards_test",
+ "rules",
+]
+
+[[package]]
+name = "cards_test"
+version = "0.0.0"
+dependencies = [
+ "assets",
+ "card_helpers",
+ "data",
+ "rules",
 ]
 
 [[package]]
@@ -1403,6 +1424,7 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "cards",
+ "cards_all",
  "database",
  "prost",
  "protos",
@@ -1954,6 +1976,8 @@ dependencies = [
  "ai_testing",
  "ai_tree_search",
  "cards",
+ "cards_all",
+ "cards_test",
  "core_ui",
  "criterion",
  "data",
@@ -2049,6 +2073,7 @@ dependencies = [
  "adventure_generator",
  "anyhow",
  "cards",
+ "cards_all",
  "core_ui",
  "data",
  "database",

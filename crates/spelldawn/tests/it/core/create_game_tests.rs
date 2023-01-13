@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards::initialize;
 use core_ui::actions::InterfaceAction;
 use data::game::MulliganDecision;
 use data::game_actions::{GameAction, PromptAction};
@@ -165,7 +164,7 @@ fn make_overlord_test_session(
     overlord_id: PlayerId,
     champion_id: PlayerId,
 ) -> TestSession {
-    initialize::run();
+    cards_all::initialize();
 
     let database = FakeDatabase {
         generated_game_id: Some(game_id),

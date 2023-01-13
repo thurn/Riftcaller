@@ -1,0 +1,16 @@
+[package]
+name = "cards_all"
+version = "0.0.0"
+description = "All known cards & associated helpers"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+path = "src/cards_all.rs"
+test = false
+doctest = false
+
+[dependencies]
+cards_test = { path = "../cards_test", version = "0.0.0" }
+cards = { path = "..", version = "0.0.0" }
+rules = { path = "../../rules", version = "0.0.0" }

@@ -29,7 +29,7 @@ use rules::{mana, mutations, queries};
 pub fn gold_mine() -> CardDefinition {
     CardDefinition {
         name: CardName::GoldMine,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: scheme_cost(),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_08_b"),
         card_type: CardType::Scheme,
@@ -54,7 +54,7 @@ pub fn gold_mine() -> CardDefinition {
 pub fn activate_reinforcements() -> CardDefinition {
     CardDefinition {
         name: CardName::ActivateReinforcements,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: scheme_cost(),
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::Scheme,
@@ -88,7 +88,7 @@ pub fn activate_reinforcements() -> CardDefinition {
 pub fn research_project() -> CardDefinition {
     CardDefinition {
         name: CardName::ResearchProject,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: scheme_cost(),
         image: rexard_images::spell(1, "SpellBook01_03"),
         card_type: CardType::Scheme,

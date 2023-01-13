@@ -1,14 +1,12 @@
 //! GENERATED CODE - DO NOT MODIFY
 
-use cards_test;
-use rules::DEFINITIONS;
-
-use crate::{
+use cards::{
     artifacts, champion_identities, champion_spells, minions, overlord_identities, overlord_spells,
     projects, schemes, weapons,
 };
+use rules::DEFINITIONS;
 
-pub fn run() {
+pub fn initialize() {
     DEFINITIONS.insert(artifacts::lodestone);
     DEFINITIONS.insert(artifacts::invisibility_ring);
     DEFINITIONS.insert(artifacts::accumulator);

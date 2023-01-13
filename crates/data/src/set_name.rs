@@ -20,5 +20,5 @@ use strum_macros::Display;
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize, Sequence)]
 pub enum SetName {
     Test,
-    Core2024,
+    ProofOfConcept,
 }

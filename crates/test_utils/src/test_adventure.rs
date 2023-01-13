@@ -15,7 +15,6 @@
 use std::collections::HashMap;
 
 use adventure_generator::mock_adventure;
-use cards::initialize;
 use core_ui::actions::InterfaceAction;
 use data::adventure::{AdventureConfiguration, TileEntity};
 use data::card_name::CardName;
@@ -68,7 +67,7 @@ pub struct TestConfig {
 
 impl TestAdventure {
     pub fn new(side: Side, config: TestConfig) -> Self {
-        initialize::run();
+        cards_all::initialize();
         let (game_id, player_id, _) = crate::generate_ids();
         let adventure = mock_adventure::create(
             AdventureConfiguration {

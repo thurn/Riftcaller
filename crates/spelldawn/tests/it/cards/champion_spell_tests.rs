@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards::test_cards::{MINION_COST, TEST_LINEAGE};
+use cards_test::{MINION_COST, TEST_LINEAGE};
 use data::card_name::CardName;
 use data::primitives::{RoomId, Side};
 use protos::spelldawn::object_position::Position;

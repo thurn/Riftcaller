@@ -14,7 +14,6 @@
 
 //! Spelldawn: An asymmetric trading card game
 
-use cards::initialize;
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
 use server::requests::GameService;
 use tonic::transport::Server;
@@ -26,7 +25,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    initialize::run();
+    cards_all::initialize();
     let fmt_layer = fmt::Layer::default().pretty().with_filter(LevelFilter::WARN);
     tracing_subscriber::registry().with(fmt_layer).init();
 

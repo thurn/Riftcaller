@@ -19,7 +19,6 @@ use ai_core::game_state_node::{GameStateNode, GameStatus};
 use ai_game_integration::agents;
 use ai_game_integration::state_node::SpelldawnState;
 use anyhow::Result;
-use cards::initialize;
 use clap::{ArgEnum, Parser};
 use data::game::{GameConfiguration, GameState};
 use data::player_name::{NamedPlayer, PlayerId};
@@ -59,7 +58,7 @@ pub struct Args {
 
 pub fn main() -> Result<()> {
     let args: Args = Args::parse();
-    initialize::run();
+    cards_all::initialize();
     let overlord = agents::get(args.overlord);
     let champion = agents::get(args.champion);
 

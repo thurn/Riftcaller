@@ -1,0 +1,17 @@
+[package]
+name = "cards_test"
+version = "0.0.0"
+description = "Test cards"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+path = "src/test_cards.rs"
+test = false
+doctest = false
+
+[dependencies]
+assets = { path = "../../assets", version = "0.0.0" }
+card_helpers = { path = "../../card_helpers", version = "0.0.0" }
+data = { path = "../../data", version = "0.0.0" }
+rules = { path = "../../rules", version = "0.0.0" }

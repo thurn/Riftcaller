@@ -20,7 +20,6 @@ use std::panic::UnwindSafe;
 use std::{panic, str};
 
 use anyhow::Result;
-use cards::initialize;
 use prost::Message;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
@@ -42,7 +41,7 @@ pub unsafe extern "C" fn spelldawn_initialize(path: *const u8, path_length: i32)
 }
 
 unsafe fn initialize_impl(path: *const u8, path_length: i32) -> Result<i32> {
-    initialize::run();
+    cards_all::initialize();
     let slice = std::slice::from_raw_parts(path, path_length as usize);
     let db_path = str::from_utf8(slice)?;
     database::override_path(db_path.to_string());

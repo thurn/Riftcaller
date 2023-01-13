@@ -34,7 +34,7 @@ use with_error::WithError;
 pub fn time_golem() -> CardDefinition {
     CardDefinition {
         name: CardName::TimeGolem,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MonstersAvatars, "10"),
         card_type: CardType::Minion,
@@ -75,7 +75,7 @@ pub fn time_golem() -> CardDefinition {
 pub fn temporal_stalker() -> CardDefinition {
     CardDefinition {
         name: CardName::TemporalStalker,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: cost(6),
         image: rexard_images::get(RexardPack::MonstersAvatars, "87"),
         card_type: CardType::Minion,
@@ -125,7 +125,7 @@ pub fn temporal_stalker() -> CardDefinition {
 pub fn shadow_lurker() -> CardDefinition {
     CardDefinition {
         name: CardName::ShadowLurker,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: cost(3),
         image: rexard_images::get(RexardPack::MonstersAvatars, "80"),
         card_type: CardType::Minion,
@@ -153,7 +153,7 @@ pub fn shadow_lurker() -> CardDefinition {
 pub fn sphinx_of_winters_breath() -> CardDefinition {
     CardDefinition {
         name: CardName::SphinxOfWintersBreath,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MonstersAvatars, "17"),
         card_type: CardType::Minion,
@@ -192,7 +192,7 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
 pub fn bridge_troll() -> CardDefinition {
     CardDefinition {
         name: CardName::BridgeTroll,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MonstersAvatars, "29"),
         card_type: CardType::Minion,
@@ -228,7 +228,7 @@ pub fn bridge_troll() -> CardDefinition {
 pub fn stormcaller() -> CardDefinition {
     CardDefinition {
         name: CardName::Stormcaller,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: cost(4),
         image: rexard_images::get(RexardPack::MonstersAvatars, "53"),
         card_type: CardType::Minion,
@@ -263,7 +263,7 @@ pub fn stormcaller() -> CardDefinition {
 pub fn fire_goblin() -> CardDefinition {
     CardDefinition {
         name: CardName::FireGoblin,
-        sets: vec![SetName::Core2024],
+        sets: vec![SetName::ProofOfConcept],
         cost: cost(1),
         image: rexard_images::get(RexardPack::MonstersAvatars, "70"),
         card_type: CardType::Minion,

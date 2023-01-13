@@ -1,7 +1,7 @@
 cargo-features = ["named-profiles"]
 
 [workspace]
-members = ["crates/*"]
+members = ["crates/*", "crates/cards/cards_test", "crates/cards/cards_all"]
 
 [profile.dev]
 split-debuginfo = "unpacked"

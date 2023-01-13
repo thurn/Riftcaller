@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Test cards
+
 use card_helpers::{abilities, text, *};
 use data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SchemePoints,

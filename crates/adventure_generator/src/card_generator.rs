@@ -48,7 +48,7 @@ pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
 fn common_cards(side: Side) -> impl Iterator<Item = CardName> {
     rules::all_cards()
         .filter(move |definition| {
-            definition.sets.contains(&SetName::Core2024)
+            definition.sets.contains(&SetName::ProofOfConcept)
                 && definition.rarity == Rarity::Common
                 && definition.side == side
         })

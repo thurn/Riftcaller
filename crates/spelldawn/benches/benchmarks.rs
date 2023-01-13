@@ -23,7 +23,7 @@ use ai_monte_carlo::uct1::Uct1;
 use ai_testing::nim::{NimState, NimWinLossEvaluator};
 use ai_tree_search::alpha_beta::AlphaBetaAlgorithm;
 use ai_tree_search::minimax::MinimaxAlgorithm;
-use cards::{canonical_game, initialize};
+use cards::canonical_game;
 use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
 use data::primitives::Side;
@@ -40,7 +40,7 @@ criterion_group!(
 criterion_main!(benches);
 
 fn configure(group: &mut BenchmarkGroup<WallTime>) {
-    initialize::run();
+    cards_all::initialize();
     group.confidence_level(0.99).noise_threshold(0.025).measurement_time(Duration::from_secs(60));
 }
 

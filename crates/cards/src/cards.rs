@@ -25,13 +25,11 @@ pub mod artifacts;
 pub mod canonical_game;
 pub mod champion_identities;
 pub mod champion_spells;
-pub mod initialize;
 pub mod minions;
 pub mod overlord_identities;
 pub mod overlord_spells;
 pub mod projects;
 pub mod schemes;
-pub mod test_cards;
 pub mod weapons;
 
 pub fn no_identity(name: CardName, side: Side, school: School) -> CardDefinition {
