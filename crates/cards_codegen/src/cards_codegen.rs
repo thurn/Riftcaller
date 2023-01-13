@@ -28,17 +28,17 @@ use walkdir::WalkDir;
 fn main() -> Result<()> {
     println!("Generating cards_all.rs");
 
-    // File name -> Vec of function names
+    // crate name -> vec of function names
     let mut functions = HashMap::new();
     for e in WalkDir::new("crates/cards") {
         let entry = e?;
-        let file_name = match entry.file_name().to_str() {
-            Some(n) => n.to_string(),
-            _ => continue,
-        };
+        let re = Regex::new(r"crates/cards/(?P<module>\w+)/src/(?P<file>\w+).rs")?;
 
-        if file_name.contains(".rs") && entry.file_type().is_file() {
-            functions.insert(file_name.replace(".rs", ""), find_functions(entry.path())?);
+        if let Some(captures) = re.captures(entry.path().to_str().expect("str")) {
+            let found = find_functions(entry.path())?;
+            if !found.is_empty() {
+                functions.insert(format!("{}::{}", &captures["module"], &captures["file"]), found);
+            }
         }
     }
 
@@ -50,15 +50,13 @@ fn main() -> Result<()> {
     writeln!(file, "//! GENERATED CODE - DO NOT MODIFY\n")?;
 
     writeln!(file, "use rules::DEFINITIONS;\n")?;
-    writeln!(file, "use crate::{{")?;
+
     let mut modules = functions
         .iter()
         .filter(|(_, list)| !list.is_empty())
         .map(|(module, _)| module.clone())
         .collect::<Vec<_>>();
     modules.sort();
-    writeln!(file, "    {},", modules.join(", "))?;
-    writeln!(file, "}};")?;
 
     writeln!(file, "\npub fn initialize() {{")?;
     for module in &modules {
