@@ -72,9 +72,9 @@ dependencies = [
 
 [[package]]
 name = "aho-corasick"
-version = "0.7.18"
+version = "0.7.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e37cfd5e7657ada45f742d6e99ca5788580b5c529dc78faf11ece6dc702656f"
+checksum = "cc936419f96fa211c1b9166887b38e5e40b19958e5b895be7c1f93adec7071ac"
 dependencies = [
  "memchr",
 ]
@@ -313,31 +313,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "cards"
-version = "0.0.0"
-dependencies = [
- "actions",
- "anyhow",
- "assets",
- "card_helpers",
- "cards_test",
- "data",
- "decklists",
- "maplit",
- "once_cell",
- "regex",
- "rules",
- "walkdir",
- "with_error",
-]
-
-[[package]]
 name = "cards_all"
 version = "0.0.0"
 dependencies = [
  "cards_poc",
  "cards_test",
  "rules",
+]
+
+[[package]]
+name = "cards_codegen"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "maplit",
+ "once_cell",
+ "regex",
+ "walkdir",
 ]
 
 [[package]]

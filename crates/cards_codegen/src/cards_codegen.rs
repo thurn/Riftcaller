@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Generates initialize.rs. This used to be automatic via the 'linkme' crate,
+//! Generates cards_all.rs. This used to be automatic via the 'linkme' crate,
 //! but new versions of Rust have caused a bunch of crazy problems with it.
 
 use std::collections::HashMap;
@@ -26,9 +26,11 @@ use regex::Regex;
 use walkdir::WalkDir;
 
 fn main() -> Result<()> {
-    println!("Generating initialize.rs");
+    println!("Generating cards_all.rs");
+
+    // File name -> Vec of function names
     let mut functions = HashMap::new();
-    for e in WalkDir::new("crates/cards/src") {
+    for e in WalkDir::new("crates/cards") {
         let entry = e?;
         let file_name = match entry.file_name().to_str() {
             Some(n) => n.to_string(),
@@ -40,7 +42,7 @@ fn main() -> Result<()> {
         }
     }
 
-    let out_path = Path::new("crates/cards/src/initialize.rs");
+    let out_path = Path::new("crates/cards/cards_all/src/cards_all.rs");
     if out_path.exists() {
         fs::remove_file(out_path)?;
     }
@@ -58,7 +60,7 @@ fn main() -> Result<()> {
     writeln!(file, "    {},", modules.join(", "))?;
     writeln!(file, "}};")?;
 
-    writeln!(file, "\npub fn run() {{")?;
+    writeln!(file, "\npub fn initialize() {{")?;
     for module in &modules {
         if let Some(list) = functions.get(module) {
             for function in list {

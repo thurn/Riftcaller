@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::WEAPON_COST;
+use cards_test::test_cards::WEAPON_COST;
 use core_ui::icons;
 use data::card_name::CardName;
 use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};

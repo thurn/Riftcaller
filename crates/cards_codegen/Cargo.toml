@@ -1,0 +1,18 @@
+[package]
+name = "cards_codegen"
+version = "0.0.0"
+description = "Finds card definitions and generates initialization code for them"
+license = "Apache-2.0"
+edition = "2021"
+
+[[bin]]
+name = "update_cards"
+path = "src/cards_codegen.rs"
+test = false
+
+[dependencies]
+anyhow = "1.0.58"
+maplit = "1.0.2"
+once_cell = "1.13.0"
+regex = "1.6.0"
+walkdir = "2.3.2"

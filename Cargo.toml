@@ -1,7 +1,8 @@
 cargo-features = ["named-profiles"]
 
 [workspace]
-members = ["crates/*", "crates/cards/cards_test", "crates/cards/cards_all", "crates/cards/cards_poc"]
+members = ["crates/*", "crates/cards/*"]
+exclude = ["crates/cards"]
 
 [profile.dev]
 split-debuginfo = "unpacked"

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::{ARTIFACT_COST, MANA_STORED, MANA_TAKEN, UNVEIL_COST};
+use cards_test::test_cards::{ARTIFACT_COST, MANA_STORED, MANA_TAKEN, UNVEIL_COST};
 use data::card_name::CardName;
 use data::game_actions;
 use data::game_actions::GameAction;
