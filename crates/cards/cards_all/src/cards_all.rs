@@ -1,6 +1,6 @@
 //! GENERATED CODE - DO NOT MODIFY
 
-use cards::{
+use cards_poc::{
     artifacts, champion_identities, champion_spells, minions, overlord_identities, overlord_spells,
     projects, schemes, weapons,
 };

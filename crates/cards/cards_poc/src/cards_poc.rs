@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Contains the definitions for all cards in the game.
+//! Contains the definitions for proof-of-concept cards
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
@@ -20,9 +20,9 @@ use card_helpers::identity_cost;
 use data::card_definition::{CardConfig, CardDefinition};
 use data::card_name::CardName;
 use data::primitives::{CardType, Rarity, School, Side};
+use data::set_name::SetName;
 
 pub mod artifacts;
-pub mod canonical_game;
 pub mod champion_identities;
 pub mod champion_spells;
 pub mod minions;
@@ -35,7 +35,7 @@ pub mod weapons;
 pub fn no_identity(name: CardName, side: Side, school: School) -> CardDefinition {
     CardDefinition {
         name,
-        sets: vec![],
+        sets: vec![SetName::ProofOfConcept],
         cost: identity_cost(),
         image: rexard_images::get(RexardPack::MonstersAvatars, "22"),
         card_type: CardType::Identity,

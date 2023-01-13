@@ -15,7 +15,6 @@ crate-type = ["cdylib", "staticlib"]
 anyhow = "1.0.58"
 prost = "0.10.4"
 
-cards = { path = "../cards", version = "0.0.0" }
 cards_all = { path = "../cards/cards_all", version = "0.0.0" }
 database = { path = "../database", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }

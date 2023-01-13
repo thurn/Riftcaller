@@ -23,10 +23,14 @@ use ai_monte_carlo::uct1::Uct1;
 use ai_testing::nim::{NimState, NimWinLossEvaluator};
 use ai_tree_search::alpha_beta::AlphaBetaAlgorithm;
 use ai_tree_search::minimax::MinimaxAlgorithm;
-use cards::canonical_game;
+use anyhow::Result;
 use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
-use data::primitives::Side;
+use data::game::{GameConfiguration, GameState, MulliganDecision};
+use data::game_actions::{GameAction, PromptAction};
+use data::player_name::{NamedPlayer, PlayerId};
+use data::primitives::{GameId, Side};
+use rules::{dispatch, mutations};
 
 criterion_group!(
     benches,
@@ -47,7 +51,7 @@ fn configure(group: &mut BenchmarkGroup<WallTime>) {
 pub fn legal_actions(c: &mut Criterion) {
     let mut group = c.benchmark_group("legal_actions");
     configure(&mut group);
-    let game = canonical_game::create().unwrap();
+    let game = create_canonical_game().unwrap();
     group.bench_function("legal_actions", |b| {
         b.iter(|| {
             let _actions =
@@ -114,7 +118,7 @@ pub fn uct1_nim(c: &mut Criterion) {
 pub fn uct1_search(c: &mut Criterion) {
     let mut group = c.benchmark_group("uct1_search");
     configure(&mut group);
-    let game = SpelldawnState(canonical_game::create().unwrap());
+    let game = SpelldawnState(create_canonical_game().unwrap());
     let evaluator = RandomPlayoutEvaluator {};
     let monte_carlo = MonteCarloAlgorithm { child_score_algorithm: Uct1 {} };
 
@@ -130,7 +134,7 @@ pub fn uct1_search(c: &mut Criterion) {
 pub fn alpha_beta_search(c: &mut Criterion) {
     let mut group = c.benchmark_group("alpha_beta_search");
     configure(&mut group);
-    let game = SpelldawnState(canonical_game::create().unwrap());
+    let game = SpelldawnState(create_canonical_game().unwrap());
     let agent = AgentData::omniscient(
         "ALPHA_BETA",
         AlphaBetaAlgorithm { search_depth: 3 },
@@ -143,4 +147,32 @@ pub fn alpha_beta_search(c: &mut Criterion) {
         })
     });
     group.finish();
+}
+
+/// Creates a new deterministic game using the canonical decklists, deals
+/// opening hands and resolves mulligans.
+pub fn create_canonical_game() -> Result<GameState> {
+    let mut game = GameState::new(
+        GameId::new(0),
+        PlayerId::Named(NamedPlayer::TestNoAction),
+        decklists::CANONICAL_OVERLORD.clone(),
+        PlayerId::Named(NamedPlayer::TestNoAction),
+        decklists::CANONICAL_CHAMPION.clone(),
+        GameConfiguration { deterministic: true, simulation: true },
+    );
+
+    dispatch::populate_delegate_cache(&mut game);
+    mutations::deal_opening_hands(&mut game)?;
+    actions::handle_game_action(
+        &mut game,
+        Side::Overlord,
+        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+    )?;
+    actions::handle_game_action(
+        &mut game,
+        Side::Champion,
+        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+    )?;
+
+    Ok(game)
 }

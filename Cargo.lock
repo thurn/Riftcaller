@@ -65,7 +65,6 @@ dependencies = [
 name = "adventure_generator"
 version = "0.0.0"
 dependencies = [
- "cards",
  "data",
  "decklists",
  "rules",
@@ -122,7 +121,6 @@ dependencies = [
  "ai_monte_carlo",
  "ai_tree_search",
  "anyhow",
- "cards",
  "cards_all",
  "clap 3.2.16",
  "data",
@@ -337,9 +335,20 @@ dependencies = [
 name = "cards_all"
 version = "0.0.0"
 dependencies = [
- "cards",
+ "cards_poc",
  "cards_test",
  "rules",
+]
+
+[[package]]
+name = "cards_poc"
+version = "0.0.0"
+dependencies = [
+ "assets",
+ "card_helpers",
+ "data",
+ "rules",
+ "with_error",
 ]
 
 [[package]]
@@ -1423,7 +1432,6 @@ name = "plugin"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "cards",
  "cards_all",
  "database",
  "prost",
@@ -1885,7 +1893,6 @@ dependencies = [
  "ai_core",
  "ai_game_integration",
  "anyhow",
- "cards",
  "concurrent-queue",
  "core_ui",
  "dashmap",
@@ -1975,16 +1982,18 @@ dependencies = [
  "ai_monte_carlo",
  "ai_testing",
  "ai_tree_search",
- "cards",
+ "anyhow",
  "cards_all",
  "cards_test",
  "core_ui",
  "criterion",
  "data",
+ "decklists",
  "element_names",
  "insta",
  "maplit",
  "protos",
+ "rules",
  "rusty-hook",
  "server",
  "test_utils",
@@ -2072,7 +2081,6 @@ dependencies = [
  "adapters",
  "adventure_generator",
  "anyhow",
- "cards",
  "cards_all",
  "core_ui",
  "data",
