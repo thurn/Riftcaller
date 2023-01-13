@@ -125,48 +125,7 @@ impl ClientInterface {
                     self.open_panels.retain(|a| *a != close);
                 }
             }
-            ToggleCommand::LoadPanel(load) => {
-                let address = load.open_panel.expect("address");
-                if !self.open_panels.contains(&address) {
-                    self.open_panels.push(address);
-                }
-            }
-            ToggleCommand::SetPanel(address) => {
-                self.open_panels.clear();
-                self.open_panels.push(address);
-            }
-            ToggleCommand::OpenPanel(address) => {
-                if !self.open_panels.contains(&address) {
-                    self.open_panels.push(address);
-                }
-            }
-            ToggleCommand::OpenExistingPanel(address) => {
-                if !self.open_panels.contains(&address) {
-                    self.open_panels.push(address);
-                }
-            }
-            ToggleCommand::ClosePanel(address) => {
-                self.open_panels.retain(|a| *a != address);
-            }
-            ToggleCommand::CloseAll(_) => {
-                self.open_panels.clear();
-            }
-            ToggleCommand::WaitFor(wait_for) => {
-                let address = wait_for.open_panel.expect("address");
-                if !self.open_panels.contains(&address) {
-                    self.open_panels.push(address);
-                }
-            }
-            ToggleCommand::OpenBottomSheetAddress(_) => {
-                todo!("Implement")
-            }
-            ToggleCommand::CloseBottomSheet(_) => {
-                todo!("Implement")
-            }
-            ToggleCommand::PushBottomSheetAddress(_) => {
-                todo!("Implement")
-            }
-            ToggleCommand::PopToBottomSheetAddress(_) => {
+            _ => {
                 todo!("Implement")
             }
         }

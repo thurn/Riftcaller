@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
+use core_ui::panels::Panels;
 use data::card_name::CardName;
 use data::game::GameState;
 use data::player_name::{NamedPlayer, PlayerId};
@@ -22,12 +23,10 @@ use data::user_actions::{
     DebugAction, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
 };
 use database::Database;
+use panel_address::PanelAddress;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::toggle_panel_command::ToggleCommand;
-use protos::spelldawn::{
-    ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode, TogglePanelCommand,
-};
+use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mana;
 use with_error::WithError;
 
@@ -40,9 +39,7 @@ pub fn handle_debug_action(
     game_id: Option<GameId>,
     action: DebugAction,
 ) -> Result<GameResponse> {
-    let close_all = Command::TogglePanel(TogglePanelCommand {
-        toggle_command: Some(ToggleCommand::CloseAll(())),
-    });
+    let close = Panels::close(PanelAddress::DebugPanel);
     match action {
         DebugAction::NewGame(side) => Ok(GameResponse::from_commands(vec![
             Command::Debug(ClientDebugCommand {
@@ -67,7 +64,7 @@ pub fn handle_debug_action(
                     ),
                 })),
             }),
-            close_all,
+            close.into(),
         ])),
         DebugAction::JoinGame => {
             let mut game = requests::find_game(database, Some(GameId::new(0)))?;

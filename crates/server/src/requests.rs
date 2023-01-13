@@ -39,11 +39,10 @@ use panel_address::PanelAddress;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::spelldawn_server::Spelldawn;
-use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
     card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
     InterfacePanelAddress, LoadSceneCommand, PlayerIdentifier, RenderScreenOverlayCommand,
-    SceneLoadMode, StandardAction, TogglePanelCommand,
+    SceneLoadMode, StandardAction,
 };
 use rules::{dispatch, mutations};
 use screen_overlay::ScreenOverlay;
@@ -290,9 +289,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
                 skip_if_current: true,
             }));
             routing::render_panels(&mut commands, &player, routing::main_menu_panels())?;
-            commands.push(Command::TogglePanel(TogglePanelCommand {
-                toggle_command: Some(ToggleCommand::SetPanel(PanelAddress::MainMenu.into())),
-            }));
+            commands.push(Panels::open(PanelAddress::MainMenu).into());
             if is_new_player {
                 commands.push(Panels::open(PanelAddress::Disclaimer).into());
             }
