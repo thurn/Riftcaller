@@ -260,12 +260,12 @@ update-cards:
     cargo run --bin update_cards
 
 benchmark *args='':
-    cargo criterion --no-run -p spelldawn
+    cargo criterion --no-run -p tests
     if [[ "$OSTYPE" == "darwin"* ]]; then \
       echo "Signing benchmark binary"; \
       codesign -f -s - `find target/release/deps -name '*benchmarks*'`; \
     fi
-    cargo criterion -p spelldawn -- "$@"
+    cargo criterion -p tests -- "$@"
     /bin/rm -r \~
 
 # Checks documentation lints, haven't figured out how to do this with a single command

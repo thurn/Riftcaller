@@ -1979,28 +1979,10 @@ dependencies = [
 name = "spelldawn"
 version = "0.0.0"
 dependencies = [
- "actions",
- "adventure_generator",
- "ai_core",
- "ai_game_integration",
- "ai_monte_carlo",
- "ai_testing",
- "ai_tree_search",
  "anyhow",
  "cards_all",
- "cards_test",
- "core_ui",
- "criterion",
- "data",
- "decklists",
- "element_names",
- "insta",
- "maplit",
  "protos",
- "rules",
- "rusty-hook",
  "server",
- "test_utils",
  "tokio",
  "tonic",
  "tonic-web",
@@ -2096,6 +2078,39 @@ dependencies = [
  "rules",
  "server",
  "with_error",
+]
+
+[[package]]
+name = "tests"
+version = "0.0.0"
+dependencies = [
+ "actions",
+ "adventure_generator",
+ "ai_core",
+ "ai_game_integration",
+ "ai_monte_carlo",
+ "ai_testing",
+ "ai_tree_search",
+ "anyhow",
+ "cards_all",
+ "cards_test",
+ "core_ui",
+ "criterion",
+ "data",
+ "decklists",
+ "element_names",
+ "insta",
+ "maplit",
+ "protos",
+ "rules",
+ "rusty-hook",
+ "server",
+ "test_utils",
+ "tokio",
+ "tonic",
+ "tonic-web",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]

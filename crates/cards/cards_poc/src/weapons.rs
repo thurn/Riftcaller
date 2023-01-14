@@ -27,7 +27,6 @@ use data::set_name::SetName;
 use data::special_effects::{Projectile, TimedEffect};
 use data::text::Keyword;
 use data::utils;
-use rules::mutations;
 
 pub fn marauders_axe() -> CardDefinition {
     CardDefinition {
