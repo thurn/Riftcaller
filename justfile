@@ -35,7 +35,7 @@ cloud-update:
 
 protos:
     cargo run --bin gen_protos
-    rm crates/protos/src/google.protobuf.rs
+    rm src/protos/src/google.protobuf.rs
 
     - rm proto/*.cs
     - rm -r proto/bin
@@ -232,7 +232,7 @@ doc:
 fix: git-status fmt clippy-fix fix-lints
 
 watch:
-    cargo watch -c -w crates -x run
+    cargo watch -c -w src -x run
 
 fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 

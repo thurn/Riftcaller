@@ -2,6 +2,7 @@
 
 use rules::DEFINITIONS;
 
+
 pub fn initialize() {
     DEFINITIONS.insert(cards_basic::champion_basics::basic_champion_identity);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);

@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "spelldawn.GameObjectIdentifier.id",
             "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]",
         )
-        .out_dir("crates/protos/src")
+        .out_dir("src/protos/src")
         .compile(&["proto/spelldawn.proto"], &["proto/"])?;
     Ok(())
 }

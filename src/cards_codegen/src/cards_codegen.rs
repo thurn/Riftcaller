@@ -30,9 +30,9 @@ fn main() -> Result<()> {
 
     // crate name -> vec of function names
     let mut functions = HashMap::new();
-    for e in WalkDir::new("crates/cards") {
+    for e in WalkDir::new("src/cards") {
         let entry = e?;
-        let re = Regex::new(r"crates/cards/(?P<module>\w+)/src/(?P<file>\w+).rs")?;
+        let re = Regex::new(r"src/cards/(?P<module>\w+)/src/(?P<file>\w+).rs")?;
 
         if let Some(captures) = re.captures(entry.path().to_str().expect("str")) {
             let found = find_functions(entry.path())?;
@@ -42,7 +42,7 @@ fn main() -> Result<()> {
         }
     }
 
-    let out_path = Path::new("crates/cards/cards_all/src/cards_all.rs");
+    let out_path = Path::new("src/cards/cards_all/src/cards_all.rs");
     if out_path.exists() {
         fs::remove_file(out_path)?;
     }
