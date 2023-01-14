@@ -20,17 +20,6 @@ use test_utils::client_interface::HasText;
 use test_utils::*;
 
 #[test]
-fn lodestone() {
-    let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::Lodestone);
-    assert_eq!("12", g.user.get_card(id).arena_icon());
-    g.activate_ability(id, 1);
-    assert_eq!(STARTING_MANA - 1 + 2, g.me().mana());
-    assert_eq!(1, g.me().actions());
-    assert_eq!("10", g.user.get_card(id).arena_icon());
-}
-
-#[test]
 fn invisibility_ring() {
     let mut g = new_game(Side::Champion, Args::default());
     g.add_to_hand(CardName::TestScheme31);
@@ -101,27 +90,6 @@ fn mage_gloves_repeat_panic() {
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
     click_on_end_raid(&mut g);
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
-}
-
-#[test]
-fn mana_battery() {
-    let card_cost = 0;
-    let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::ManaBattery);
-    g.activate_ability(id, 1);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    assert!(g.dawn());
-    assert_eq!(STARTING_MANA - card_cost + 1, g.me().mana());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    assert_eq!(STARTING_MANA - card_cost + 2, g.me().mana());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    assert_eq!(STARTING_MANA - card_cost + 3, g.me().mana());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    assert_eq!(STARTING_MANA - card_cost + 3, g.me().mana());
 }
 
 #[test]

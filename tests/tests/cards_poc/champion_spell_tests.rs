@@ -20,14 +20,6 @@ use protos::spelldawn::{ObjectPositionBrowser, PlayerName};
 use test_utils::*;
 
 #[test]
-fn arcane_recovery() {
-    let mut g = new_game(Side::Champion, Args { mana: 5, ..Args::default() });
-    g.play_from_hand(CardName::ArcaneRecovery);
-    assert_eq!(9, g.me().mana());
-    assert_eq!(9, g.opponent.other_player.mana())
-}
-
-#[test]
 fn meditation() {
     let mut g = new_game(Side::Champion, Args { mana: 5, ..Args::default() });
     assert_eq!(3, g.me().actions());

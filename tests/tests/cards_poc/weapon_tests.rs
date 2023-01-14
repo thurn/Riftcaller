@@ -14,7 +14,6 @@
 
 use data::card_name::CardName;
 use data::primitives::{Lineage, RoomId, Side};
-use protos::spelldawn::PlayerName;
 use test_utils::client_interface::HasText;
 use test_utils::*;
 
@@ -24,7 +23,7 @@ fn test_attack_weapon() {
     let ability_cost = 1;
     let mut g = new_game(Side::Champion, Args::default());
     g.play_from_hand(CardName::TestAttackWeapon);
-    fire_weapon_combat_abilities(&mut g, Lineage::Infernal, "Test Attack Weapon");
+    fire_weapon_combat_abilities(&mut g, Lineage::Infernal, CardName::TestAttackWeapon);
     assert_eq!(STARTING_MANA - card_cost - ability_cost, g.me().mana());
     assert!(g.user.data.raid_active());
     assert!(g.user.interface.controls().has_text("End Raid"));
@@ -58,26 +57,11 @@ fn keen_halberd() {
 }
 
 #[test]
-fn ethereal_blade() {
-    let (card_cost, activation_cost) = (1, 1);
-    let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::EtherealBlade);
-    fire_weapon_combat_abilities(&mut g, Lineage::Mortal, "Ethereal Blade");
-    assert_eq!(STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
-    click_on_score(&mut g);
-    assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
-    assert_eq!(1, g.user.cards.left_items().len());
-    click_on_end_raid(&mut g);
-    assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
-    assert_eq!(0, g.user.cards.left_items().len());
-}
-
-#[test]
 fn bow_of_the_alliance() {
     let (card_cost, activation_cost) = (3, 1);
     let mut g = new_game(Side::Champion, Args::default());
     g.play_from_hand(CardName::BowOfTheAlliance);
     g.play_from_hand(CardName::BowOfTheAlliance);
-    fire_weapon_combat_abilities(&mut g, Lineage::Mortal, "Bow Of The Alliance");
+    fire_weapon_combat_abilities(&mut g, Lineage::Mortal, CardName::BowOfTheAlliance);
     assert_eq!(STARTING_MANA - (2 * card_cost) - (2 * activation_cost), g.me().mana());
 }

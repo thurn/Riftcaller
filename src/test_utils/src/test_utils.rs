@@ -39,7 +39,8 @@ use data::game::{GameConfiguration, GamePhase, GameState, InternalRaidPhase, Rai
 use data::player_data::{PlayerData, PlayerState};
 use data::player_name::PlayerId;
 use data::primitives::{
-    ActionCount, CardId, GameId, Lineage, ManaValue, PointsValue, RaidId, RoomId, Side,
+    ActionCount, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue, PointsValue, RaidId,
+    RoomId, Side,
 };
 use data::tutorial::TutorialData;
 use maplit::hashmap;
@@ -369,21 +370,32 @@ pub fn click_on_end_raid(session: &mut TestSession) {
 
 /// Must be invoked during the Champion turn. Performs the following actions:
 ///
-/// - Performs all actions described in [setup_raid_target].
+/// - Performs all actions described in [setup_raid_target], creating a minion
+///   of the indicated [Lineage] with `MINION_HEALTH` health.
 /// - Initiates a raid on the [ROOM_ID] room.
 /// - Activates the room
 /// - Clicks on the button with text matching `name` in order to fire weapon
 ///   abilities.
 ///
 /// WARNING: This causes both players to draw cards for their turns!
-pub fn fire_weapon_combat_abilities(
-    session: &mut TestSession,
-    lineage: Lineage,
-    name: &'static str,
-) {
+pub fn fire_weapon_combat_abilities(session: &mut TestSession, lineage: Lineage, name: CardName) {
     setup_raid_target(session, minion_for_lineage(lineage));
     session.initiate_raid(ROOM_ID);
-    session.click_on(session.player_id_for_side(Side::Champion), name);
+    session.click_on(session.player_id_for_side(Side::Champion), name.displayed_name());
+}
+
+/// Numbers which determine the boost requirement for a weapon
+pub struct WeaponStats {
+    pub cost: ManaValue,
+    pub attack: AttackValue,
+    pub boost_cost: ManaValue,
+    pub boost: AttackValue,
+}
+
+/// Returns the basic mana cost to play a card with the stats in [WeaponStats]
+/// and defeat a minion with `minion_health` health
+pub fn cost_to_play_and_defeat(stats: WeaponStats, minion_health: HealthValue) -> ManaValue {
+    (((minion_health - stats.attack) / stats.boost) * stats.boost_cost) + stats.cost
 }
 
 /// Asserts that the display names of the provided vector of [CardName]s are
