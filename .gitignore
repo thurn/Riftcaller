@@ -53,7 +53,6 @@ sysinfo.txt
 *.unitypackage
 *.app
 
-.vscode
 **/.DS_Store
 .criterion/
 

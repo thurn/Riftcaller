@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      ".idea": true,
+      "Assets": true,
+      "db": true,
+      "Library": true,
+      "Logs": true,
+      "obj": true,
+      "out": true,
+      "Packages": true,
+      "ProjectSettings": true,
+      "ScreenshotTests": true,
+      "ServerData": true,
+      "target": true,
+      "Temp": true,
+      "UserSettings": true,
+      "*.csproj": true,
+      "*.sln": true,
+      "*.keystore": true,
+      "*.DotSettings.user": true
+    },
+
+    "rust-analyzer.imports.granularity.group": "module",
+    "rust-analyzer.imports.granularity.enforce": true,
+    "rust-analyzer.imports.prefix": "crate",
+    "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+
+    "[rust]": {
+      "editor.rulers": [100],
+      "editor.defaultFormatter": "rust-lang.rust-analyzer",
+      "editor.formatOnSave": true
+    }
+  }
+}

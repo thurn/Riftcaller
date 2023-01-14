@@ -1,0 +1,78 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'gen_protos'",
+      "cargo": {
+        "args": ["build", "--bin=gen_protos", "--package=protos"],
+        "filter": {
+          "name": "gen_protos",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'update_cards'",
+      "cargo": {
+        "args": ["build", "--bin=update_cards", "--package=cards_codegen"],
+        "filter": {
+          "name": "update_cards",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'spelldawn'",
+      "cargo": {
+        "args": ["build", "--bin=spelldawn", "--package=spelldawn"],
+        "filter": {
+          "name": "spelldawn",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'main'",
+      "cargo": {
+        "args": ["test", "--no-run", "--test=main", "--package=tests"],
+        "filter": {
+          "name": "main",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug benchmark 'benchmarks'",
+      "cargo": {
+        "args": ["test", "--no-run", "--bench=benchmarks", "--package=tests"],
+        "filter": {
+          "name": "benchmarks",
+          "kind": "bench"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
