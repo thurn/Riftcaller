@@ -1963,6 +1963,7 @@ dependencies = [
  "anyhow",
  "cards_all",
  "protos",
+ "rusty-hook",
  "server",
  "tokio",
  "tonic",

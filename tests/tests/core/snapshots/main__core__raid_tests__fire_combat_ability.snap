@@ -1,5 +1,5 @@
 ---
-source: crates/tests/tests/core/raid_tests.rs
+source: tests/tests/core/raid_tests.rs
 assertion_line: 182
 expression: "Summary::summarize(&response)"
 ---

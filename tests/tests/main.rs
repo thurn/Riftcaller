@@ -14,5 +14,5 @@
 
 mod adventure;
 mod ai;
-mod cards;
+mod cards_poc;
 mod core;
