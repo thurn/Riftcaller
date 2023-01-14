@@ -443,7 +443,7 @@ pub fn record_output_for_side(session: &TestSession, name: String, side: Side) -
             .collect(),
     };
     let encoded = commands.encode_length_delimited_to_vec();
-    fs::write(format!("../../Assets/Resources/TestRecordings/test_{}.bytes", name), encoded)?;
+    fs::write(format!("../Assets/Resources/TestRecordings/test_{}.bytes", name), encoded)?;
 
     Ok(())
 }

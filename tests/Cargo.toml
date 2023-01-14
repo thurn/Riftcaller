@@ -1,0 +1,43 @@
+[package]
+name = "tests"
+version = "0.0.0"
+homepage = "https://github.com/thurn/spelldawn"
+description = "Tests for spelldawn"
+license = "Apache-2.0"
+edition = "2021"
+
+[[bench]]
+name = "benchmarks"
+harness = false
+
+[dependencies]
+actions = { path = "../crates/actions", version = "0.0.0" }
+ai_core = { path = "../crates/ai/ai_core", version = "0.0.0" }
+ai_monte_carlo = { path = "../crates/ai/ai_monte_carlo", version = "0.0.0" }
+ai_game_integration = { path = "../crates/ai/ai_game_integration", version = "0.0.0" }
+ai_testing = { path = "../crates/ai/ai_testing", version = "0.0.0" }
+ai_tree_search = { path = "../crates/ai/ai_tree_search", version = "0.0.0" }
+adventure_generator = { path = "../crates/adventure/adventure_generator", version = "0.0.0" }
+cards_test = { path = "../crates/cards/cards_test", version = "0.0.0" }
+cards_all = { path = "../crates/cards/cards_all", version = "0.0.0" }
+data = { path = "../crates/data", version = "0.0.0" }
+decklists = { path = "../crates/decklists", version = "0.0.0" }
+element_names = { path = "../crates/element_names", version = "0.0.0" }
+protos = { path = "../crates/protos", version = "0.0.0" }
+rules = { path = "../crates/rules", version = "0.0.0" }
+server = { path = "../crates/server", version = "0.0.0" }
+test_utils = { path = "../crates/test_utils", version = "0.0.0" }
+core_ui = { path = "../crates/core_ui", version = "0.0.0" }
+
+anyhow = "1.0.58"
+tokio = { version = "1.19.2", features = ["macros", "rt-multi-thread", "sync", "time"] }
+tonic = { version = "0.7.2", features = ["compression"] }
+tonic-web = "0.3.0"
+tracing = "0.1.35"
+tracing-subscriber = "0.3.14"
+
+[dev-dependencies]
+insta = "1.15.0"
+rusty-hook = "0.11.2"
+maplit = "1.0.2"
+criterion = "0.3.5"

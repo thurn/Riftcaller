@@ -7,6 +7,20 @@
     {
       "type": "lldb",
       "request": "launch",
+      "name": "Debug executable 'spelldawn'",
+      "cargo": {
+        "args": ["build", "--bin=spelldawn", "--package=spelldawn"],
+        "filter": {
+          "name": "spelldawn",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
       "name": "Debug executable 'gen_protos'",
       "cargo": {
         "args": ["build", "--bin=gen_protos", "--package=protos"],
@@ -26,20 +40,6 @@
         "args": ["build", "--bin=update_cards", "--package=cards_codegen"],
         "filter": {
           "name": "update_cards",
-          "kind": "bin"
-        }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug executable 'spelldawn'",
-      "cargo": {
-        "args": ["build", "--bin=spelldawn", "--package=spelldawn"],
-        "filter": {
-          "name": "spelldawn",
           "kind": "bin"
         }
       },

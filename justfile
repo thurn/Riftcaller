@@ -207,7 +207,7 @@ android-plugin:
     @ echo "Using linker $CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER"
     cargo build --release --target={{target_android}}
     mkdir -p {{plugin_out}}/Android/ARM64
-    # You see, standalone osx builds *don't* want the lib prefix but android fails *without* it...
+    # You see, standalone osx builds *do not* want the lib prefix but android fails *without* it...
     cp target/{{target_android}}/release/libplugin.so {{plugin_out}}/Android/ARM64/
 
 target_x86_sim := "x86_64-apple-ios"

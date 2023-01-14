@@ -1,7 +1,7 @@
 cargo-features = ["named-profiles"]
 
 [workspace]
-members = ["crates/*", "crates/cards/*", "crates/ai/*", "crates/adventure/*"]
+members = ["crates/*", "crates/cards/*", "crates/ai/*", "crates/adventure/*", "tests"]
 exclude = ["crates/cards", "crates/ai", "crates/adventure"]
 
 [profile.dev]
