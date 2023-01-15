@@ -14,14 +14,6 @@
 
 //! Contains the definitions for proof-of-concept cards
 
-use assets::rexard_images;
-use assets::rexard_images::RexardPack;
-use card_helpers::identity_cost;
-use data::card_definition::{CardConfig, CardDefinition};
-use data::card_name::CardName;
-use data::primitives::{CardType, Rarity, School, Side};
-use data::set_name::SetName;
-
 pub mod artifacts;
 pub mod champion_spells;
 pub mod minions;

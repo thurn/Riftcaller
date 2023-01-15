@@ -17,14 +17,6 @@ use data::primitives::Side;
 use test_utils::*;
 
 #[test]
-fn gathering_dark() {
-    let (cost, gained) = (5, 9);
-    let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::GatheringDark);
-    assert_eq!(STARTING_MANA - cost + gained, g.me().mana());
-}
-
-#[test]
 fn overwhelming_power() {
     let (cost, gained) = (10, 15);
     let mut g = new_game(Side::Overlord, Args::default());

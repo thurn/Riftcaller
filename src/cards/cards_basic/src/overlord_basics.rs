@@ -19,12 +19,11 @@ use data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints, TargetRequirement,
 };
 use data::card_name::CardName;
-use data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use data::primitives::{CardType, Lineage, Rarity, School, Side};
 use data::set_name::SetName;
 use data::text::{DamageWord, Keyword, Sentence, TextToken};
-use rules::mutations::{OnZeroStored, SummonMinion};
-use rules::{mana, mutations, queries};
+use rules::mutations::OnZeroStored;
+use rules::{mana, mutations};
 
 pub fn basic_overlord_identity() -> CardDefinition {
     CardDefinition {
@@ -53,7 +52,7 @@ pub fn conspire() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 1, points: 15 }),
+            stats: scheme_points(SchemePoints { level_requirement: 3, points: 15 }),
             ..CardConfig::default()
         },
     }
@@ -71,7 +70,7 @@ pub fn devise() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 2, points: 30 }),
+            stats: scheme_points(SchemePoints { level_requirement: 4, points: 30 }),
             ..CardConfig::default()
         },
     }
@@ -89,7 +88,7 @@ pub fn machinate() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 3, points: 45 }),
+            stats: scheme_points(SchemePoints { level_requirement: 5, points: 45 }),
             ..CardConfig::default()
         },
     }

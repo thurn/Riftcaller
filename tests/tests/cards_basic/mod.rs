@@ -13,3 +13,4 @@
 // limitations under the License.
 
 mod champion_basics_tests;
+mod overlord_basics_tests;
