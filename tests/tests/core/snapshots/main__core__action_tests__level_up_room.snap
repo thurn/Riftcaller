@@ -74,7 +74,7 @@ command_list:
         is_face_up: false
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -176,7 +176,7 @@ command_list:
         is_face_up: false
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
             arena_icon: "1"
         arena_frame: "<SpriteAddress>"
         owning_player: User

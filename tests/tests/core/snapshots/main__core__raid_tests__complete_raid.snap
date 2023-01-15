@@ -16,7 +16,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
-            score: 1
+            score: 15
             can_take_action: false
         opponent: 
             side: Overlord
@@ -100,7 +100,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -184,7 +184,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
-            score: 1
+            score: 15
             can_take_action: false
         opponent: 
             side: Overlord
@@ -274,7 +274,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -357,7 +357,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
-            score: 1
+            score: 15
             can_take_action: false
         opponent: 
             side: Overlord
@@ -447,7 +447,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -544,7 +544,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
-            score: 1
+            score: 15
             can_take_action: false
         raid_active: false
         game_object_positions: 
@@ -629,7 +629,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -712,7 +712,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
-            score: 1
+            score: 15
             can_take_action: false
         raid_active: false
         game_object_positions: 
@@ -816,7 +816,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -903,7 +903,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
-            score: 1
+            score: 15
             can_take_action: false
         raid_active: false
         game_object_positions: 
@@ -1007,7 +1007,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 

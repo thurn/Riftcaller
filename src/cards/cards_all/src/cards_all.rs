@@ -2,7 +2,6 @@
 
 use rules::DEFINITIONS;
 
-
 pub fn initialize() {
     DEFINITIONS.insert(cards_basic::champion_basics::basic_champion_identity);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
@@ -57,7 +56,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_champion_identity);
     DEFINITIONS.insert(cards_test::test_cards::test_overlord_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_champion_spell);
-    DEFINITIONS.insert(cards_test::test_cards::test_scheme_31);
+    DEFINITIONS.insert(cards_test::test_cards::test_scheme_315);
     DEFINITIONS.insert(cards_test::test_cards::test_project_2_cost);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_1);

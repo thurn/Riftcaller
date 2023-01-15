@@ -84,13 +84,13 @@ pub fn test_champion_spell() -> CardDefinition {
     }
 }
 
-pub fn test_scheme_31() -> CardDefinition {
+pub fn test_scheme_315() -> CardDefinition {
     CardDefinition {
         name: CardName::TestScheme31,
         cost: scheme_cost(),
         card_type: CardType::Scheme,
         config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 3, points: 1 }),
+            stats: scheme_points(SchemePoints { level_requirement: 3, points: 15 }),
             ..CardConfig::default()
         },
         ..test_overlord_spell()

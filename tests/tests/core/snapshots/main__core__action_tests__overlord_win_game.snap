@@ -16,7 +16,7 @@ command_list:
             valid_rooms_to_visit: RoomA
             mana: 7
             action_tracker: 1
-            score: 6
+            score: 90
             can_take_action: true
         opponent: 
             side: Champion
@@ -74,7 +74,7 @@ command_list:
         is_face_up: false
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
             arena_icon: "2"
         arena_frame: "<SpriteAddress>"
         owning_player: User
@@ -119,7 +119,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 7
             action_tracker: 1
-            score: 6
+            score: 90
             can_take_action: true
         opponent: 
             side: Champion
@@ -177,7 +177,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -236,7 +236,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 7
             action_tracker: 1
-            score: 7
+            score: 105
             can_take_action: false
         opponent: 
             side: Champion
@@ -294,7 +294,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -338,7 +338,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 7
             action_tracker: 1
-            score: 7
+            score: 105
             can_take_action: false
         opponent: 
             side: Champion
@@ -396,7 +396,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -457,7 +457,7 @@ channel_response:
             valid_rooms_to_visit: RoomA
             mana: 7
             action_tracker: 1
-            score: 6
+            score: 90
             can_take_action: true
         raid_active: false
         game_object_positions: 
@@ -550,7 +550,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 7
             action_tracker: 1
-            score: 6
+            score: 90
             can_take_action: true
         raid_active: false
         game_object_positions: 
@@ -596,7 +596,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -667,7 +667,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 7
             action_tracker: 1
-            score: 7
+            score: 105
             can_take_action: false
         raid_active: false
         game_object_positions: 
@@ -713,7 +713,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -769,7 +769,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 7
             action_tracker: 1
-            score: 7
+            score: 105
             can_take_action: false
         raid_active: false
         game_object_positions: 
@@ -815,7 +815,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "1"
+            bottom_right_icon: "15"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 

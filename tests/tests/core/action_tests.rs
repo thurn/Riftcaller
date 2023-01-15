@@ -265,14 +265,14 @@ fn score_overlord_card() {
     assert!(g.opponent.cards.get(scheme_id).revealed_to_me());
     assert_eq!(g.user.this_player.mana(), 7);
     assert_eq!(g.opponent.other_player.mana(), 7);
-    assert_eq!(g.user.this_player.score(), 1);
-    assert_eq!(g.opponent.other_player.score(), 1);
+    assert_eq!(g.user.this_player.score(), 15);
+    assert_eq!(g.opponent.other_player.score(), 15);
 }
 
 #[test]
 fn overlord_win_game() {
     let mut g =
-        new_game(Side::Overlord, Args { mana: 10, score: 6, actions: 5, ..Args::default() });
+        new_game(Side::Overlord, Args { mana: 10, score: 90, actions: 5, ..Args::default() });
     g.play_from_hand(CardName::TestScheme31);
     let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());

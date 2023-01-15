@@ -203,8 +203,8 @@ fn score_scheme_card() {
 
     let response = g.click_on(g.user_id(), "Score");
 
-    assert_eq!(g.user.this_player.score(), 1);
-    assert_eq!(g.opponent.other_player.score(), 1);
+    assert_eq!(g.user.this_player.score(), 15);
+    assert_eq!(g.opponent.other_player.score(), 15);
     assert!(g.user.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
     assert!(g.user.data.raid_active()); // Raid still active
@@ -244,8 +244,8 @@ fn complete_raid() {
     g.click_on(g.user_id(), "Score");
     let response = g.click_on(g.user_id(), "End Raid");
 
-    assert_eq!(g.user.this_player.score(), 1);
-    assert_eq!(g.opponent.other_player.score(), 1);
+    assert_eq!(g.user.this_player.score(), 15);
+    assert_eq!(g.opponent.other_player.score(), 15);
     assert!(g.user.other_player.can_take_action());
     assert!(g.opponent.this_player.can_take_action());
     assert_eq!(g.opponent.interface.main_controls_option(), None);

@@ -20,4 +20,4 @@ pub const STARTING_MAXIMUM_HAND_SIZE: u32 = 7;
 
 pub const MAXIMUM_MINIONS_IN_ROOM: usize = 4;
 
-pub const POINTS_TO_WIN_GAME: u32 = 7;
+pub const POINTS_TO_WIN_GAME: u32 = 100;
