@@ -761,6 +761,7 @@ dependencies = [
  "data",
  "enum-iterator",
  "panel_address",
+ "panels",
  "prompts",
  "protos",
  "raids",

@@ -23,7 +23,7 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use data::player_data::PlayerData;
+use data::player_data::{PlayerData, PlayerStatus};
 use data::primitives::DeckId;
 use data::tutorial::TutorialMessageKey;
 use panel_address::{DeckEditorData, PanelAddress};
@@ -77,7 +77,8 @@ impl<'a> Component for ScreenOverlay<'a> {
                         IconButton::new(icons::BUG)
                             .name(&element_names::FEEDBACK_BUTTON)
                             .button_type(IconButtonType::NavBlue)
-                            .layout(Layout::new().margin(Edge::All, 12.px())),
+                            .layout(Layout::new().margin(Edge::All, 12.px()))
+                            .action(Panels::open(PanelAddress::DebugPanel)),
                     )
                     .child(self.player.adventure.as_ref().map(|adventure| {
                         Row::new("CoinCount")
@@ -125,7 +126,13 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .name(&element_names::MENU_BUTTON)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .button_type(IconButtonType::NavBrown)
-                            .action(Panels::open(PanelAddress::AdventureMenu)),
+                            .action(Panels::open(
+                                if matches!(self.player.status, Some(PlayerStatus::Playing(_))) {
+                                    PanelAddress::GameMenu
+                                } else {
+                                    PanelAddress::AdventureMenu
+                                },
+                            )),
                     ),
             )
             .build()

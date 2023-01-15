@@ -47,6 +47,10 @@ pub fn main_menu_panels() -> Vec<PanelAddress> {
     ]
 }
 
+pub fn game_panels() -> Vec<PanelAddress> {
+    vec![PanelAddress::GameMenu, PanelAddress::DebugPanel]
+}
+
 pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
     adventure
         .tiles
@@ -113,7 +117,7 @@ fn render_server_panel(
             collection: &player.adventure()?.collection,
         }
         .build_panel(),
-        PanelAddress::GameOver(data) => GameOverPanel { data, player }.build_panel(),
+        PanelAddress::GameOver(data) => GameOverPanel { data }.build_panel(),
         PanelAddress::TileLoading(position) => {
             adventure_panels::render_tile_loading_panel(position, player)?
         }

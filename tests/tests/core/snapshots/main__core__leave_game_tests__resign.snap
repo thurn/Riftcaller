@@ -172,6 +172,8 @@ command_list:
     SetGameObjectsEnabled: 
         game_objects_enabled: false
     DisplayGameMessage: Defeat
+    UpdatePanels: 
+    panels: "<Panel>"
     TogglePanel: "<TogglePanelCommand>"
     RenderScreenOverlay: "<ScreenOverlay>"
 channel_response: 
@@ -342,4 +344,6 @@ channel_response:
     SetGameObjectsEnabled: 
         game_objects_enabled: false
     DisplayGameMessage: Victory
+    UpdatePanels: 
+    panels: "<Panel>"
     TogglePanel: "<TogglePanelCommand>"

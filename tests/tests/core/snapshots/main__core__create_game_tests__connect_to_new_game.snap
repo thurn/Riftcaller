@@ -219,4 +219,8 @@ expression: "Summary::run(&response)"
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
+    UpdatePanels: 
+    panels: "<Panel>"
+    UpdatePanels: 
+    panels: "<Panel>"
     RenderScreenOverlay: "<ScreenOverlay>"

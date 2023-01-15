@@ -277,7 +277,7 @@ namespace Spelldawn.Services
           _registry.LogViewer.DoShow();
           break;
         case ClientDebugCommand.DebugCommandOneofCase.InvokeAction:
-          _registry.ActionService.HandleAction(command.InvokeAction);
+          StartCoroutine(InvokeActionDelayed(command.InvokeAction));
           break;
         case ClientDebugCommand.DebugCommandOneofCase.LogMessage:
           switch (command.LogMessage.Level)
@@ -298,6 +298,12 @@ namespace Spelldawn.Services
           PlayerPrefs.SetInt(command.SetBooleanPreference.Key, command.SetBooleanPreference.Value ? 1 : 0);
           break;
       }
+    }
+
+    IEnumerator InvokeActionDelayed(ClientAction action)
+    {
+      yield return new WaitForSeconds(0.1f);
+      _registry.ActionService.HandleAction(action);
     }
 
     IEnumerator HandleCreateTokenCard(CreateTokenCardCommand command)

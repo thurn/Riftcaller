@@ -26,7 +26,7 @@ use crate::user_actions::NewGameAction;
 
 /// Represents the state of a game the player is participating in.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum PlayerState {
+pub enum PlayerStatus {
     /// The player has initiated a request to create a game
     RequestedGame(NewGameAction),
     /// The player is currently playing in the [GameId] game.
@@ -35,14 +35,14 @@ pub enum PlayerState {
 
 /// Represents a player's stored data.
 ///
-/// For a player's state *within a given game* see [PlayerState].
+/// For a player's state *within a given game* see `PlayerState`.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlayerData {
     /// Unique identifier for this player
     pub id: PlayerId,
     /// Identifies the game this player is currently participating in, if any.
-    pub state: Option<PlayerState>,
+    pub status: Option<PlayerStatus>,
     /// State for an ongoing adventure, if any
     pub adventure: Option<AdventureState>,
     /// Data related to this player's tutorial progress
@@ -51,7 +51,7 @@ pub struct PlayerData {
 
 impl PlayerData {
     pub fn new(id: PlayerId) -> Self {
-        Self { id, state: None, adventure: None, tutorial: TutorialData::default() }
+        Self { id, status: None, adventure: None, tutorial: TutorialData::default() }
     }
 
     /// Returns the active [AdventureState] when one is expected to exist
@@ -82,8 +82,8 @@ impl PlayerData {
 /// Returns the [GameId] an optional [PlayerData] is currently playing in, if
 /// any.
 pub fn current_game_id(data: Option<PlayerData>) -> Option<GameId> {
-    match data.as_ref().and_then(|player| player.state.as_ref()) {
-        Some(PlayerState::Playing(id)) => Some(*id),
+    match data.as_ref().and_then(|player| player.status.as_ref()) {
+        Some(PlayerStatus::Playing(id)) => Some(*id),
         _ => None,
     }
 }

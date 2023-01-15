@@ -24,7 +24,7 @@ use data::adventure::{AdventureConfiguration, AdventureState};
 use data::deck::Deck;
 use data::game::{GameConfiguration, GameState};
 use data::game_actions::GameAction;
-use data::player_data::{PlayerData, PlayerState};
+use data::player_data::{PlayerData, PlayerStatus};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
 use data::tutorial::TutorialData;
@@ -263,17 +263,18 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
     };
 
     let mut commands = vec![];
-    match (&player.state, &player.adventure) {
-        (Some(PlayerState::Playing(game_id)), _) => {
+    match (&player.status, &player.adventure) {
+        (Some(PlayerStatus::Playing(game_id)), _) => {
             if database.has_game(*game_id)? {
                 let game = database.game(*game_id)?;
                 let side = user_side(player_id, &game)?;
                 commands.extend(render::connect(&game, side)?);
+                routing::render_panels(&mut commands, &player, routing::game_panels())?;
             } else {
                 fail!("Game not found: {:?}", game_id)
             }
         }
-        (Some(PlayerState::RequestedGame(_)), _) => todo!("Not implemented"),
+        (Some(PlayerStatus::RequestedGame(_)), _) => todo!("Not implemented"),
         (None, Some(adventure_state)) => {
             commands.extend(adventure_display::render(adventure_state)?);
             routing::render_panels(
@@ -331,7 +332,7 @@ fn handle_new_game(
         if let Some(deck) = requested_deck(database, opponent_id, user_deck.side.opponent())? {
             deck
         } else {
-            player.state = Some(PlayerState::RequestedGame(action));
+            player.status = Some(PlayerStatus::RequestedGame(action));
             database.write_player(&player)?;
             // TODO: Implement some kind of waiting UI here
             return Ok(GameResponse::from_commands(vec![]));
@@ -368,12 +369,12 @@ fn handle_new_game(
     mutations::deal_opening_hands(&mut game)?;
     database.write_game(&game)?;
 
-    player.state = Some(PlayerState::Playing(game_id));
+    player.status = Some(PlayerStatus::Playing(game_id));
     database.write_player(&player)?;
 
     if let PlayerId::Database(_) = opponent_id {
         let mut opponent = database.player(opponent_id)?.with_error(|| "Opponent not found")?;
-        opponent.state = Some(PlayerState::Playing(game_id));
+        opponent.status = Some(PlayerStatus::Playing(game_id));
         database.write_player(&opponent)?;
     }
 
@@ -395,7 +396,7 @@ fn find_deck(player: &PlayerData, deck: NewGameDeck) -> Result<Deck> {
 
 fn handle_leave_game(database: &mut impl Database, player_id: PlayerId) -> Result<GameResponse> {
     let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
-    player.state = None;
+    player.status = None;
     database.write_player(&player)?;
     Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
         scene_name: "Main".to_string(),
@@ -422,8 +423,8 @@ fn requested_deck(
     Ok(match player_id {
         PlayerId::Database(_) => {
             let player = find_player(database, player_id)?;
-            match player.state {
-                Some(PlayerState::RequestedGame(action)) => Some(find_deck(&player, action.deck)?),
+            match player.status {
+                Some(PlayerStatus::RequestedGame(action)) => Some(find_deck(&player, action.deck)?),
                 _ => None,
             }
         }
@@ -587,7 +588,7 @@ pub fn find_game(database: &impl Database, game_id: Option<GameId>) -> Result<Ga
 fn create_new_player(database: &mut impl Database, player_id: PlayerId) -> Result<PlayerData> {
     let result = PlayerData {
         id: player_id,
-        state: None,
+        status: None,
         adventure: None,
         tutorial: TutorialData::default(),
     };

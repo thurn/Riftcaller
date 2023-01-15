@@ -101,7 +101,7 @@ impl TestAdventure {
                 players: hashmap! {
                     player_id => PlayerData {
                         id: player_id,
-                        state: None,
+                        status: None,
                         adventure: Some(adventure),
                         tutorial: TutorialData::new().skip_all(!config.show_tutorial)
                     }

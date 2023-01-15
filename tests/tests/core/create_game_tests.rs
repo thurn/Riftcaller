@@ -172,13 +172,13 @@ fn make_overlord_test_session(
         players: hashmap! {
             overlord_id => PlayerData {
                 id: overlord_id,
-                state: None,
+                status: None,
                 adventure: None,
                 tutorial: TutorialData::default()
             },
             champion_id => PlayerData {
                 id: champion_id,
-                state: None,
+                status: None,
                 adventure: None,
                 tutorial: TutorialData::default()
             }

@@ -90,7 +90,7 @@ namespace Spelldawn.Services
           // more robust testing, for example to ensure that multiple optimistic interface updates
           // work with any sequence of mutations & responses. For now we simply ignore button clicks
           // while an RPC is pending.
-          Debug.Log($"Silently dropping StandardAction");
+          Debug.Log($"Silently dropping StandardAction while handling '{_actionQueue.Count} actions'");
         }
         else
         {
