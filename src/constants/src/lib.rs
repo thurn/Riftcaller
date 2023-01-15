@@ -12,6 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub static STARTING_HAND_SIZE: u32 = 5;
-pub static STARTING_MAXIMUM_HAND_SIZE: u32 = 7;
-pub static MAXIMUM_MINIONS_IN_ROOM: usize = 4;
+pub mod game_constants;
+pub mod ui_constants;

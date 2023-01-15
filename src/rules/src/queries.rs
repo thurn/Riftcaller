@@ -15,6 +15,7 @@
 //! Core functions for querying the current state of a game
 
 use anyhow::Result;
+use constants::game_constants;
 use data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequirement};
 use data::card_state::{CardPosition, CardState};
 use data::delegates::{
@@ -29,7 +30,7 @@ use data::primitives::{
     ItemLocation, ManaValue, RoomId, RoomLocation, ShieldValue, Side,
 };
 
-use crate::{constants, dispatch};
+use crate::dispatch;
 
 /// Obtain the [CardStats] for a given card
 pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
@@ -208,7 +209,11 @@ pub fn highest_cost<'a>(card_iterator: impl Iterator<Item = &'a CardState>) -> O
 
 /// Queries the maximum hand size for a player.
 pub fn maximum_hand_size(game: &GameState, side: Side) -> u32 {
-    dispatch::perform_query(game, MaximumHandSizeQuery(side), constants::STARTING_MAXIMUM_HAND_SIZE)
+    dispatch::perform_query(
+        game,
+        MaximumHandSizeQuery(side),
+        game_constants::STARTING_MAXIMUM_HAND_SIZE,
+    )
 }
 
 /// Locates a minion in play, returning its current room and index position

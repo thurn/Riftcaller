@@ -22,6 +22,7 @@
 use std::cmp;
 
 use anyhow::Result;
+use constants::game_constants;
 #[allow(unused)] // Used in rustdocs
 use data::card_state::{CardData, CardPosition, CardPositionKind};
 use data::delegates::{
@@ -42,7 +43,7 @@ use tracing::{info, instrument};
 use with_error::verify;
 
 use crate::mana::ManaPurpose;
-use crate::{constants, dispatch, flags, mana, queries};
+use crate::{dispatch, flags, mana, queries};
 
 /// Move a card to a new position. Detects cases like drawing cards, playing
 /// cards, and shuffling cards back into the deck and fires events
@@ -170,7 +171,7 @@ pub fn spend_action_points(game: &mut GameState, side: Side, amount: ActionCount
 /// Adds points to a player's score and checks for the Game Over condition.
 pub fn score_points(game: &mut GameState, side: Side, amount: PointsValue) -> Result<()> {
     game.player_mut(side).score += amount;
-    if game.player(side).score >= 7 {
+    if game.player(side).score >= game_constants::POINTS_TO_WIN_GAME {
         game_over(game, side)?;
     }
     Ok(())
@@ -267,8 +268,8 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
 #[instrument(skip(game))]
 pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
     info!("deal_opening_hands");
-    draw_cards(game, Side::Overlord, constants::STARTING_HAND_SIZE)?;
-    draw_cards(game, Side::Champion, constants::STARTING_HAND_SIZE)?;
+    draw_cards(game, Side::Overlord, game_constants::STARTING_HAND_SIZE)?;
+    draw_cards(game, Side::Champion, game_constants::STARTING_HAND_SIZE)?;
     Ok(())
 }
 
@@ -282,8 +283,8 @@ pub fn check_start_game(game: &mut GameState) -> Result<()> {
         GamePhase::ResolveMulligans(mulligans)
             if mulligans.overlord.is_some() && mulligans.champion.is_some() =>
         {
-            mana::set(game, Side::Overlord, 5);
-            mana::set(game, Side::Champion, 5);
+            mana::set(game, Side::Overlord, game_constants::STARTING_MANA);
+            mana::set(game, Side::Champion, game_constants::STARTING_MANA);
             start_turn(game, Side::Overlord, 1)?;
         }
         _ => {}
@@ -323,7 +324,7 @@ pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Resu
 
 /// Checks if the maximum number of minions in a room has been exceeded
 fn check_minion_limit(game: &mut GameState, room_id: RoomId) -> Result<()> {
-    if game.defenders_unordered(room_id).count() > constants::MAXIMUM_MINIONS_IN_ROOM {
+    if game.defenders_unordered(room_id).count() > game_constants::MAXIMUM_MINIONS_IN_ROOM {
         let first = game.defender_list(room_id)[0];
         move_card(game, first, CardPosition::DiscardPile(Side::Overlord))?;
     }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use constants::ui_constants;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress};
 
 use crate::component::EmptyComponent;
@@ -66,7 +67,7 @@ impl Component for FullScreenImage {
                             .position(Edge::All, 0.px())
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center)
-                            .padding(Edge::Top, constants::NAVBAR_HEIGHT.px())
+                            .padding(Edge::Top, ui_constants::NAVBAR_HEIGHT.px())
                             .padding(Edge::Left, 1.safe_area_left())
                             .padding(Edge::Right, 1.safe_area_right())
                             .padding(Edge::Bottom, 1.safe_area_bottom()),

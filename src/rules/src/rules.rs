@@ -24,7 +24,6 @@ use data::primitives::{AbilityId, CardId};
 use once_cell::sync::Lazy;
 
 pub mod card_prompt;
-pub mod constants;
 pub mod dispatch;
 pub mod flags;
 pub mod mana;

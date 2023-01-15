@@ -15,6 +15,7 @@
 //! Implements the 'chrome' UI elements which display on top of everything else
 //! and provide navigation
 
+use constants::ui_constants;
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::{BackgroundColor, FontSize, COIN_COUNT_BORDER};
 use core_ui::icons;
@@ -59,7 +60,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                     .position(Edge::Left, 1.safe_area_left())
                     .position(Edge::Right, 1.safe_area_right())
                     .position(Edge::Top, 1.safe_area_top())
-                    .height(constants::NAVBAR_HEIGHT.px())
+                    .height(ui_constants::NAVBAR_HEIGHT.px())
                     .align_items(FlexAlign::FlexStart)
                     .justify_content(FlexJustify::SpaceBetween),
             )
