@@ -34,7 +34,7 @@ use data::primitives::{
     RaidId, RoomId, Side, TurnNumber,
 };
 use data::special_effects::Projectile;
-use data::text::{AbilityText, NumericOperator, TextToken};
+use data::text::{AbilityText, Keyword, NumericOperator, TextToken};
 use data::updates::{GameUpdate, InitiatedBy};
 use data::utils;
 use rules::mana::ManaPurpose;
@@ -373,6 +373,11 @@ pub fn unveil_at_dusk() -> Delegate {
         requirement: face_down_in_play,
         mutation: |g, s, _| mutations::try_unveil_project(g, s.card_id()).map(|_| ()),
     })
+}
+
+/// Ability to attempt to unveil a project each turn at Dusk.
+pub fn unveil_at_dusk_ability() -> Ability {
+    simple_ability(text![Keyword::Unveil, "at Dusk"], unveil_at_dusk())
 }
 
 /// Delegate to store mana in a card when it is unveiled

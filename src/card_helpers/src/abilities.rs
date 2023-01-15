@@ -106,6 +106,18 @@ pub fn end_raid() -> Ability {
     }
 }
 
+/// Minion combat ability which causes the Champion player to lose action
+/// points.
+pub fn lose_actions_if_able<const N: ActionCount>() -> Ability {
+    Ability {
+        text: text!["Lose", TextToken::Actions(1)],
+        ability_type: AbilityType::Standard,
+        delegates: vec![combat(|g, _s, _| {
+            mutations::lose_action_points_if_able(g, Side::Champion, N)
+        })],
+    }
+}
+
 /// Applies this card's `attack_boost` stat a number of times equal to its
 /// [CardState::boost_count]. Returns default if this card has no attack boost
 /// defined.

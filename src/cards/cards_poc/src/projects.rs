@@ -64,42 +64,6 @@ pub fn gemcarver() -> CardDefinition {
     }
 }
 
-pub fn coinery() -> CardDefinition {
-    CardDefinition {
-        name: CardName::Coinery,
-        sets: vec![SetName::ProofOfConcept],
-        cost: cost(2),
-        image: rexard_images::get(RexardPack::LootIcons, "coins_b_03"),
-        card_type: CardType::Project,
-        side: Side::Overlord,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            text_only_ability(text![
-                Keyword::Unveil,
-                "when activated, then",
-                Keyword::Store(Sentence::Start, 15)
-            ]),
-            Ability {
-                text: text![Keyword::Take(Sentence::Start, 3)],
-                ability_type: AbilityType::Activated(actions(1), TargetRequirement::None),
-                delegates: vec![
-                    activate_while_face_down(),
-                    face_down_ability_cost(),
-                    on_activated(|g, s, _| {
-                        if mutations::unveil_project_for_free(g, s.card_id())? {
-                            add_stored_mana(g, s.card_id(), 15);
-                        }
-                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)
-                            .map(|_| ())
-                    }),
-                ],
-            },
-        ],
-        config: CardConfig::default(),
-    }
-}
-
 pub fn spike_trap() -> CardDefinition {
     CardDefinition {
         name: CardName::SpikeTrap,

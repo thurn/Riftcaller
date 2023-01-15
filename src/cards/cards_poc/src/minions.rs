@@ -259,36 +259,3 @@ pub fn stormcaller() -> CardDefinition {
         },
     }
 }
-
-pub fn fire_goblin() -> CardDefinition {
-    CardDefinition {
-        name: CardName::FireGoblin,
-        sets: vec![SetName::ProofOfConcept],
-        cost: cost(1),
-        image: rexard_images::get(RexardPack::MonstersAvatars, "70"),
-        card_type: CardType::Minion,
-        side: Side::Overlord,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![simple_ability(
-            text![
-                Keyword::Combat,
-                Keyword::DealDamage(DamageWord::DealStart, 1),
-                ".",
-                "Gain",
-                mana_text(1),
-                "."
-            ],
-            combat(|g, s, _| {
-                mutations::deal_damage(g, s, 1)?;
-                mana::gain(g, Side::Overlord, 1);
-                Ok(())
-            }),
-        )],
-        config: CardConfig {
-            stats: CardStats { health: Some(1), shield: Some(2), ..CardStats::default() },
-            lineage: Some(Lineage::Infernal),
-            ..CardConfig::default()
-        },
-    }
-}

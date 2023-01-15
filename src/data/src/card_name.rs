@@ -84,14 +84,6 @@ pub enum CardName {
     TestCardStoredMana,
     TestAttackWeapon,
 
-    // No Identity
-    NoIdentityOverlordLaw,
-    NoIdentityOverlordShadow,
-    NoIdentityOverlordPrimal,
-    NoIdentityChampionLaw,
-    NoIdentityChampionShadow,
-    NoIdentityChampionPrimal,
-
     // Proof of Concept
     GoldMine,
     Meditation,
@@ -110,9 +102,7 @@ pub enum CardName {
     ActivateReinforcements,
     ResearchProject,
     Gemcarver,
-    Coinery,
     SpikeTrap,
-    GatheringDark,
     OverwhelmingPower,
     ForcedMarch,
     TimeGolem,
@@ -121,7 +111,6 @@ pub enum CardName {
     SphinxOfWintersBreath,
     BridgeTroll,
     Stormcaller,
-    FireGoblin,
 
     // Basic
     BasicChampionIdentity,
@@ -139,20 +128,30 @@ pub enum CardName {
     SimpleSpear,
     SimpleStaff,
     EtherealBlade,
+    BasicOverlordIdentity,
+    Conspire,
+    Devise,
+    Machinate,
+    GatheringDark,
+    Coinery,
+    Leyline,
+    OreRefinery,
+    Crab,
+    FireGoblin,
+    Toucan,
+    Frog,
+    Scout,
+    Captain,
 }
 
 impl CardName {
     /// Returns the user-visible name for this card
     pub fn displayed_name(&self) -> String {
         match self {
-            Self::NoIdentityOverlordLaw => "No Identity".to_string(),
-            Self::NoIdentityOverlordShadow => "No Identity".to_string(),
-            Self::NoIdentityOverlordPrimal => "No Identity".to_string(),
-            Self::NoIdentityChampionLaw => "No Identity".to_string(),
-            Self::NoIdentityChampionShadow => "No Identity".to_string(),
-            Self::NoIdentityChampionPrimal => "No Identity".to_string(),
             Self::MaraudersAxe => "Marauder's Axe".to_string(),
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
+            Self::BasicChampionIdentity => "Identity".to_string(),
+            Self::BasicOverlordIdentity => "Identity".to_string(),
             _ => format!("{}", self).from_case(Case::Pascal).to_case(Case::Title),
         }
     }

@@ -15,3 +15,4 @@
 //! Standard cards for tutorials and the adventure-mode starting decks
 
 pub mod champion_basics;
+pub mod overlord_basics;

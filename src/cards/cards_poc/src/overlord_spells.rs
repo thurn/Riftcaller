@@ -22,27 +22,6 @@ use data::primitives::{CardType, Rarity, School, Side};
 use data::set_name::SetName;
 use rules::{flags, mana, mutations};
 
-pub fn gathering_dark() -> CardDefinition {
-    CardDefinition {
-        name: CardName::GatheringDark,
-        sets: vec![SetName::ProofOfConcept],
-        cost: cost(5),
-        image: rexard_images::spell(1, "SpellBook01_88"),
-        card_type: CardType::OverlordSpell,
-        side: Side::Overlord,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![simple_ability(
-            text!("Gain", mana_text(9)),
-            on_cast(|g, s, _| {
-                mana::gain(g, s.side(), 9);
-                Ok(())
-            }),
-        )],
-        config: CardConfig::default(),
-    }
-}
-
 pub fn overwhelming_power() -> CardDefinition {
     CardDefinition {
         name: CardName::OverwhelmingPower,

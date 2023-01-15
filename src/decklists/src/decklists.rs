@@ -38,6 +38,27 @@ pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     cards: hashmap! {CardName::TestOverlordSpell => 45},
 });
 
+/// Basic Overlord starter deck in adventure mode
+pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Overlord,
+    identity: CardName::BasicOverlordIdentity,
+    cards: hashmap! {
+        CardName::Conspire => 3,
+        CardName::Devise => 3,
+        CardName::Machinate => 3,
+        CardName::GatheringDark => 3,
+        CardName::Coinery => 3,
+        CardName::Leyline => 3,
+        CardName::OreRefinery => 3,
+        CardName::Crab => 3,
+        CardName::FireGoblin => 3,
+        CardName::Toucan => 3,
+        CardName::Frog => 3,
+        CardName::Scout => 3,
+        CardName::Captain => 3
+    },
+});
+
 /// Standard Overlord deck for use in tests
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
@@ -120,6 +141,15 @@ pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
         CardName::BowOfTheAlliance => 2
     },
 });
+
+/// Returns the basic deck associated with the given [Side].
+pub fn basic_deck(side: Side) -> Deck {
+    if side == Side::Champion {
+        BASIC_CHAMPION.clone()
+    } else {
+        BASIC_OVERLORD.clone()
+    }
+}
 
 /// Returns a canonical deck associated with the given [Side].
 pub fn canonical_deck(side: Side) -> Deck {

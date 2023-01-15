@@ -2,6 +2,7 @@
 
 use rules::DEFINITIONS;
 
+
 pub fn initialize() {
     DEFINITIONS.insert(cards_basic::champion_basics::basic_champion_identity);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
@@ -17,14 +18,25 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_basic::champion_basics::simple_hammer);
     DEFINITIONS.insert(cards_basic::champion_basics::simple_spear);
     DEFINITIONS.insert(cards_basic::champion_basics::ethereal_blade);
+    DEFINITIONS.insert(cards_basic::overlord_basics::basic_overlord_identity);
+    DEFINITIONS.insert(cards_basic::overlord_basics::conspire);
+    DEFINITIONS.insert(cards_basic::overlord_basics::devise);
+    DEFINITIONS.insert(cards_basic::overlord_basics::machinate);
+    DEFINITIONS.insert(cards_basic::overlord_basics::gathering_dark);
+    DEFINITIONS.insert(cards_basic::overlord_basics::coinery);
+    DEFINITIONS.insert(cards_basic::overlord_basics::leyline);
+    DEFINITIONS.insert(cards_basic::overlord_basics::ore_refinery);
+    DEFINITIONS.insert(cards_basic::overlord_basics::crab);
+    DEFINITIONS.insert(cards_basic::overlord_basics::fire_goblin);
+    DEFINITIONS.insert(cards_basic::overlord_basics::toucan);
+    DEFINITIONS.insert(cards_basic::overlord_basics::frog);
+    DEFINITIONS.insert(cards_basic::overlord_basics::scout);
+    DEFINITIONS.insert(cards_basic::overlord_basics::captain);
     DEFINITIONS.insert(cards_poc::artifacts::invisibility_ring);
     DEFINITIONS.insert(cards_poc::artifacts::accumulator);
     DEFINITIONS.insert(cards_poc::artifacts::mage_gloves);
     DEFINITIONS.insert(cards_poc::artifacts::magical_resonator);
     DEFINITIONS.insert(cards_poc::artifacts::dark_grimoire);
-    DEFINITIONS.insert(cards_poc::champion_identities::no_identity_law);
-    DEFINITIONS.insert(cards_poc::champion_identities::no_identity_shadow);
-    DEFINITIONS.insert(cards_poc::champion_identities::no_identity_primal);
     DEFINITIONS.insert(cards_poc::champion_spells::meditation);
     DEFINITIONS.insert(cards_poc::champion_spells::coup_de_grace);
     DEFINITIONS.insert(cards_poc::champion_spells::charged_strike);
@@ -36,15 +48,9 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::minions::sphinx_of_winters_breath);
     DEFINITIONS.insert(cards_poc::minions::bridge_troll);
     DEFINITIONS.insert(cards_poc::minions::stormcaller);
-    DEFINITIONS.insert(cards_poc::minions::fire_goblin);
-    DEFINITIONS.insert(cards_poc::overlord_identities::no_identity_law);
-    DEFINITIONS.insert(cards_poc::overlord_identities::no_identity_shadow);
-    DEFINITIONS.insert(cards_poc::overlord_identities::no_identity_primal);
-    DEFINITIONS.insert(cards_poc::overlord_spells::gathering_dark);
     DEFINITIONS.insert(cards_poc::overlord_spells::overwhelming_power);
     DEFINITIONS.insert(cards_poc::overlord_spells::forced_march);
     DEFINITIONS.insert(cards_poc::projects::gemcarver);
-    DEFINITIONS.insert(cards_poc::projects::coinery);
     DEFINITIONS.insert(cards_poc::projects::spike_trap);
     DEFINITIONS.insert(cards_poc::schemes::gold_mine);
     DEFINITIONS.insert(cards_poc::schemes::activate_reinforcements);

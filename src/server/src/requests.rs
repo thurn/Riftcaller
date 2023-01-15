@@ -429,7 +429,7 @@ fn requested_deck(
             }
         }
         // TODO: Each named player should have their own decklist
-        PlayerId::Named(_) => Some(decklists::canonical_deck(side)),
+        PlayerId::Named(_) => Some(decklists::basic_deck(side)),
     })
 }
 

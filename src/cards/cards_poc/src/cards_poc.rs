@@ -23,26 +23,9 @@ use data::primitives::{CardType, Rarity, School, Side};
 use data::set_name::SetName;
 
 pub mod artifacts;
-pub mod champion_identities;
 pub mod champion_spells;
 pub mod minions;
-pub mod overlord_identities;
 pub mod overlord_spells;
 pub mod projects;
 pub mod schemes;
 pub mod weapons;
-
-pub fn no_identity(name: CardName, side: Side, school: School) -> CardDefinition {
-    CardDefinition {
-        name,
-        sets: vec![SetName::ProofOfConcept],
-        cost: identity_cost(),
-        image: rexard_images::get(RexardPack::MonstersAvatars, "22"),
-        card_type: CardType::Identity,
-        side,
-        school,
-        rarity: Rarity::Common,
-        abilities: vec![],
-        config: CardConfig::default(),
-    }
-}
