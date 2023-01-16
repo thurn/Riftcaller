@@ -453,7 +453,7 @@ pub fn try_unveil_project(game: &mut GameState, card_id: CardId) -> Result<bool>
 }
 
 /// Equivalent function to [try_unveil_project] which ignores costs.
-pub fn unveil_project_for_free(game: &mut GameState, card_id: CardId) -> Result<bool> {
+pub fn unveil_project_ignoring_costs(game: &mut GameState, card_id: CardId) -> Result<bool> {
     let result = if game.card(card_id).is_face_down() && game.card(card_id).position().in_play() {
         game.card_mut(card_id).turn_face_up();
         true

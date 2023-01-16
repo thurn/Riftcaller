@@ -138,7 +138,7 @@ pub fn coinery() -> CardDefinition {
                     activate_while_face_down(),
                     face_down_ability_cost(),
                     on_activated(|g, s, _| {
-                        if mutations::unveil_project_for_free(g, s.card_id())? {
+                        if mutations::unveil_project_ignoring_costs(g, s.card_id())? {
                             add_stored_mana(g, s.card_id(), 15);
                         }
                         mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)
