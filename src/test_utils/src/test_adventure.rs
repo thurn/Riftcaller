@@ -22,7 +22,7 @@ use data::deck::Deck;
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::Side;
-use data::tutorial::TutorialData;
+use data::tutorial_data::TutorialData;
 use data::user_actions::UserAction;
 use maplit::hashmap;
 use protos::spelldawn::client_action::Action;

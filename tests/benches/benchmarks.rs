@@ -154,11 +154,11 @@ pub fn alpha_beta_search(c: &mut Criterion) {
 fn create_canonical_game() -> Result<GameState> {
     let mut game = GameState::new(
         GameId::new(0),
-        PlayerId::Named(NamedPlayer::TestNoAction),
+        PlayerId::Named(NamedPlayer::NoAction),
         decklists::CANONICAL_OVERLORD.clone(),
-        PlayerId::Named(NamedPlayer::TestNoAction),
+        PlayerId::Named(NamedPlayer::NoAction),
         decklists::CANONICAL_CHAMPION.clone(),
-        GameConfiguration { deterministic: true, simulation: true },
+        GameConfiguration { deterministic: true, simulation: true, tutorial: false },
     );
 
     dispatch::populate_delegate_cache(&mut game);

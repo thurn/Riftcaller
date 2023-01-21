@@ -119,7 +119,7 @@ pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
 
 /// Helper function to draw `count` cards from the top of a player's deck and
 /// place them into their hand. If there are insufficient cards available, the
-/// `side` player loses the game.
+/// `side` player loses the game and no cards are returned.
 ///
 /// Cards are set as revealed to the `side` player. Returns a vector of the
 /// newly-drawn [CardId]s.
@@ -322,7 +322,8 @@ pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Resu
     Ok(result)
 }
 
-/// Checks if the maximum number of minions in a room has been exceeded
+/// Checks if the maximum number of minions in a room has been exceeded and
+/// discards excess minions if needed.
 fn check_minion_limit(game: &mut GameState, room_id: RoomId) -> Result<()> {
     if game.defenders_unordered(room_id).count() > game_constants::MAXIMUM_MINIONS_IN_ROOM {
         let first = game.defender_list(room_id)[0];

@@ -47,7 +47,7 @@ impl PlayerId {
     PartialEq, Eq, Hash, Debug, Display, Copy, Clone, Serialize, Deserialize, ArgEnum, Sequence,
 )]
 pub enum NamedPlayer {
-    TestNoAction,
+    NoAction,
     TestMinimax,
     TestAlphaBetaScores,
     TestAlphaBetaHeuristics,

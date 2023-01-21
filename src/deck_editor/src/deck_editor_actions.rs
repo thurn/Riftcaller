@@ -14,7 +14,7 @@
 
 use anyhow::Result;
 use data::player_data::PlayerData;
-use data::tutorial::TutorialMessageKey;
+use data::tutorial_data::TutorialMessageKey;
 use data::user_actions::DeckEditorAction;
 use with_error::{fail, verify, WithError};
 

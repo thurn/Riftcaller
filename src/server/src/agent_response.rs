@@ -48,7 +48,9 @@ pub enum HandleRequest {
     PushQueue,
 }
 
-pub fn handle_request(
+/// Respond to a player's [GameRequest] by producing an AI response, if any AI
+/// agents are connected.
+pub fn handle_request_if_active(
     mut database: impl Database + 'static,
     request: &GameRequest,
     handle_request: HandleRequest,
@@ -76,7 +78,7 @@ pub fn handle_request(
 fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>>)> {
     for side in enum_iterator::all::<Side>() {
         if let PlayerId::Named(name) = game.player(side).id {
-            if name != NamedPlayer::TestNoAction && actions::can_take_action(game, side) {
+            if name != NamedPlayer::NoAction && actions::can_take_action(game, side) {
                 return Some((side, agents::get(name)));
             }
         }

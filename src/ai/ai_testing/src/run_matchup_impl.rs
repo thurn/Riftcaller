@@ -72,7 +72,11 @@ pub fn main() -> Result<()> {
             decklists::deck_for_player(args.overlord, Side::Overlord),
             PlayerId::Named(args.champion),
             decklists::deck_for_player(args.champion, Side::Champion),
-            GameConfiguration { deterministic: args.deterministic, simulation: true },
+            GameConfiguration {
+                deterministic: args.deterministic,
+                simulation: true,
+                ..GameConfiguration::default()
+            },
         );
         dispatch::populate_delegate_cache(&mut game);
         mutations::deal_opening_hands(&mut game)?;

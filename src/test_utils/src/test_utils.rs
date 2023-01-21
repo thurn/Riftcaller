@@ -42,7 +42,7 @@ use data::primitives::{
     ActionCount, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue, PointsValue, RaidId,
     RoomId, Side,
 };
-use data::tutorial::TutorialData;
+use data::tutorial_data::TutorialData;
 use maplit::hashmap;
 use prost::Message;
 use protos::spelldawn::client_action::Action;

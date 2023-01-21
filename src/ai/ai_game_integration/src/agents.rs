@@ -31,7 +31,7 @@ use crate::state_node::SpelldawnState;
 
 pub fn get(name: NamedPlayer) -> Box<dyn Agent<SpelldawnState>> {
     match name {
-        NamedPlayer::TestNoAction => Box::new(NoActionAgent {}),
+        NamedPlayer::NoAction => Box::new(NoActionAgent {}),
         NamedPlayer::TestMinimax => Box::new(AgentData::omniscient(
             "MINIMAX",
             MinimaxAlgorithm { search_depth: 4 },

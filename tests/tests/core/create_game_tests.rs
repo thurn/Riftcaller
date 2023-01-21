@@ -18,7 +18,7 @@ use data::game_actions::{GameAction, PromptAction};
 use data::player_data::PlayerData;
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
-use data::tutorial::TutorialData;
+use data::tutorial_data::TutorialData;
 use data::user_actions::{NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction};
 use insta::assert_snapshot;
 use maplit::hashmap;
@@ -44,6 +44,7 @@ fn create_new_game() {
                 deterministic: true,
                 ..NewGameDebugOptions::default()
             }),
+            tutorial: false,
         })
         .as_client_action(),
         session.user_id(),
@@ -197,6 +198,7 @@ fn initiate_game(session: &mut TestSession) {
                 deterministic: true,
                 ..NewGameDebugOptions::default()
             }),
+            tutorial: false,
         })
         .as_client_action(),
         session.opponent_id(),
@@ -209,6 +211,7 @@ fn initiate_game(session: &mut TestSession) {
                 deterministic: true,
                 ..NewGameDebugOptions::default()
             }),
+            tutorial: false,
         })
         .as_client_action(),
         session.user_id(),

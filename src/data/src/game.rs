@@ -17,6 +17,7 @@
 #![allow(clippy::use_self)] // Required to use EnumKind
 
 use std::collections::HashMap;
+use std::fmt;
 
 use anyhow::Result;
 use rand_xoshiro::rand_core::SeedableRng;
@@ -34,6 +35,7 @@ use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
     RaidId, RoomId, RoomLocation, Side, TurnNumber,
 };
+use crate::tutorial_data::GameTutorialState;
 use crate::updates::{GameUpdate, UpdateStep, UpdateTracker, Updates};
 
 /// Mana to be spent only during the `raid_id` raid
@@ -133,6 +135,9 @@ pub struct GameConfiguration {
     pub deterministic: bool,
     /// Whether to run in simulation mode and thus disable update tracking
     pub simulation: bool,
+    /// Whether to overwrite the normal game behavior with the standard new
+    /// player experience.
+    pub tutorial: bool,
 }
 
 /// Mulligan decision a player made for their opening hand
@@ -194,7 +199,9 @@ pub struct GameData {
     pub raid: Option<RaidData>,
     /// Counter to create unique IDs for raids within this game
     pub next_raid_id: u32,
-    /// Game options
+    /// Position within the game tutorial, if any
+    pub tutorial_step: GameTutorialState,
+    /// Game options at creation
     pub config: GameConfiguration,
 }
 
@@ -207,7 +214,7 @@ pub struct RoomState {
 
 /// Stores the primary state for an ongoing game
 #[serde_as]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct GameState {
     /// Unique identifier for this game
     pub id: GameId,
@@ -269,6 +276,7 @@ impl GameState {
                 turn: TurnData { side: Side::Overlord, turn_number: 0 },
                 raid: None,
                 next_raid_id: 1,
+                tutorial_step: GameTutorialState::default(),
                 config,
             },
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
@@ -583,6 +591,28 @@ impl GameState {
     }
 }
 
+impl fmt::Debug for GameState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("<<Hello, debug>>")
+
+        // f.debug_struct("GameState")
+        //     .field("id", &self.id)
+        //     .field("derek", &"Derek was here")
+        //     .field("data", &self.data)
+        //     .field("updates", &self.updates)
+        //     .field("overlord_cards", &self.overlord_cards)
+        //     .field("champion_cards", &self.champion_cards)
+        //     .field("overlord", &self.overlord)
+        //     .field("champion", &self.champion)
+        //     .field("ability_state", &self.ability_state)
+        //     .field("room_state", &self.room_state)
+        //     .field("next_sorting_key", &self.next_sorting_key)
+        //     .field("rng", &self.rng)
+        //     .field("delegate_cache", &self.delegate_cache)
+        //     .finish()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashSet;
@@ -641,13 +671,13 @@ mod tests {
     fn test_game(overlord: Vec<CardName>, champion: Vec<CardName>) -> GameState {
         GameState::new(
             GameId::new(0),
-            PlayerId::Named(NamedPlayer::TestNoAction),
+            PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Overlord,
                 identity: CardName::TestOverlordIdentity,
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
-            PlayerId::Named(NamedPlayer::TestNoAction),
+            PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Champion,
                 identity: CardName::TestOverlordIdentity,

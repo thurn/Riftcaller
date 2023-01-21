@@ -31,7 +31,7 @@ pub mod random;
 pub mod set_name;
 pub mod special_effects;
 pub mod text;
-pub mod tutorial;
+pub mod tutorial_data;
 pub mod updates;
 pub mod user_actions;
 pub mod utils;

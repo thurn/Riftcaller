@@ -35,6 +35,8 @@ pub enum NamedDeck {
     EmptyOverlord,
     ChampionTestSpells,
     OverlordTestSpells,
+    BasicChampion,
+    BasicOverlord,
     CanonicalChampion,
     CanonicalOverlord,
 }
@@ -53,6 +55,8 @@ pub struct NewGameAction {
     pub deck: NewGameDeck,
     /// Opponent to play against
     pub opponent: PlayerId,
+    /// Whether to display the new player tutorial
+    pub tutorial: bool,
     /// Debug configuration for this game
     pub debug_options: Option<NewGameDebugOptions>,
 }

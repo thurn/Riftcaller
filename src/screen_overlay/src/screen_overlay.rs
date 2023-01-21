@@ -25,7 +25,7 @@ use core_ui::style::Corner;
 use core_ui::text::Text;
 use data::player_data::{PlayerData, PlayerStatus};
 use data::primitives::DeckId;
-use data::tutorial::TutorialMessageKey;
+use data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 

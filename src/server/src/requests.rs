@@ -27,7 +27,7 @@ use data::game_actions::GameAction;
 use data::player_data::{PlayerData, PlayerStatus};
 use data::player_name::PlayerId;
 use data::primitives::{GameId, Side};
-use data::tutorial::TutorialData;
+use data::tutorial_data::TutorialData;
 use data::updates::{UpdateTracker, Updates};
 use data::user_actions::{NewGameAction, NewGameDeck, UserAction};
 use data::{game_actions, player_data};
@@ -52,6 +52,7 @@ use tokio::sync::mpsc::Sender;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
 use tracing::{error, info, warn, warn_span};
+use tutorial::tutorial_actions;
 use with_error::{fail, verify, WithError};
 
 use crate::agent_response::HandleRequest;
@@ -125,7 +126,7 @@ impl Spelldawn for GameService {
                 }
 
                 send_player_response(response.opponent_response).await;
-                let result = agent_response::handle_request(
+                let result = agent_response::handle_request_if_active(
                     db,
                     request.get_ref(),
                     HandleRequest::SendToPlayer,
@@ -154,7 +155,7 @@ pub fn connect(message: ConnectRequest) -> Result<CommandList> {
 pub fn perform_action(request: GameRequest) -> Result<CommandList> {
     let mut db = SledDatabase { flush_on_write: true };
     let response = handle_request(&mut db, &request)?;
-    agent_response::handle_request(db, &request, HandleRequest::PushQueue)?;
+    agent_response::handle_request_if_active(db, &request, HandleRequest::PushQueue)?;
     Ok(response.command_list)
 }
 
@@ -266,8 +267,15 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
     match (&player.status, &player.adventure) {
         (Some(PlayerStatus::Playing(game_id)), _) => {
             if database.has_game(*game_id)? {
-                let game = database.game(*game_id)?;
+                let mut game = database.game(*game_id)?;
                 let side = user_side(player_id, &game)?;
+
+                if game.data.config.tutorial && game.data.tutorial_step.index == 0 {
+                    // Start tutorial if needed
+                    tutorial_actions::handle_tutorial_action(&mut game, None)?;
+                    database.write_game(&game)?;
+                }
+
                 commands.extend(render::connect(&game, side)?);
                 routing::render_panels(&mut commands, &player, routing::game_panels())?;
             } else {
@@ -334,7 +342,7 @@ fn handle_new_game(
         } else {
             player.status = Some(PlayerStatus::RequestedGame(action));
             database.write_player(&player)?;
-            // TODO: Implement some kind of waiting UI here
+            // TODO: Implement this
             return Ok(GameResponse::from_commands(vec![]));
         };
 
@@ -361,6 +369,7 @@ fn handle_new_game(
         champion_deck,
         GameConfiguration {
             deterministic: debug_options.deterministic,
+            tutorial: action.tutorial,
             ..GameConfiguration::default()
         },
     );
@@ -449,6 +458,10 @@ pub fn handle_game_action(
     action: GameAction,
 ) -> Result<GameResponse> {
     handle_custom_action(database, player_id, game_id, |game, user_side| {
+        if game.data.config.tutorial {
+            tutorial_actions::handle_tutorial_action(game, Some(action))?;
+        }
+
         actions::handle_game_action(game, user_side, action)
     })
 }

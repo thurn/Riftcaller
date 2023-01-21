@@ -41,4 +41,5 @@ protos = { path = "../protos", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 routing = { path = "../routing", version = "0.0.0" }
 screen_overlay = { path = "../screen_overlay", version = "0.0.0" }
+tutorial = { path = "../tutorial", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }

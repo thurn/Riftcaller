@@ -46,7 +46,7 @@ pub fn handle_debug_action(
                 debug_command: Some(DebugCommand::InvokeAction(ClientAction {
                     action: Some(
                         UserAction::NewGame(NewGameAction {
-                            opponent: PlayerId::Named(NamedPlayer::TestNoAction),
+                            opponent: PlayerId::Named(NamedPlayer::NoAction),
                             deck: match side {
                                 Side::Overlord => {
                                     NewGameDeck::NamedDeck(NamedDeck::CanonicalOverlord)
@@ -59,6 +59,7 @@ pub fn handle_debug_action(
                                 deterministic: false,
                                 override_game_id: Some(GameId::new(0)),
                             }),
+                            tutorial: false,
                         })
                         .as_client_action(),
                     ),

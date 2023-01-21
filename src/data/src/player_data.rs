@@ -21,7 +21,7 @@ use crate::adventure::AdventureState;
 use crate::deck::Deck;
 use crate::player_name::PlayerId;
 use crate::primitives::{DeckId, GameId};
-use crate::tutorial::TutorialData;
+use crate::tutorial_data::TutorialData;
 use crate::user_actions::NewGameAction;
 
 /// Represents the state of a game the player is participating in.

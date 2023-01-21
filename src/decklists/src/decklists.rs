@@ -171,9 +171,11 @@ pub fn named_deck(name: NamedDeck) -> Deck {
     match name {
         NamedDeck::EmptyChampion => EMPTY_CHAMPION.clone(),
         NamedDeck::ChampionTestSpells => CHAMPION_TEST_SPELLS.clone(),
+        NamedDeck::BasicChampion => BASIC_CHAMPION.clone(),
         NamedDeck::CanonicalChampion => CANONICAL_CHAMPION.clone(),
         NamedDeck::EmptyOverlord => EMPTY_OVERLORD.clone(),
         NamedDeck::OverlordTestSpells => OVERLORD_TEST_SPELLS.clone(),
         NamedDeck::CanonicalOverlord => CANONICAL_OVERLORD.clone(),
+        NamedDeck::BasicOverlord => BASIC_OVERLORD.clone(),
     }
 }

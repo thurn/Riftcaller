@@ -101,7 +101,7 @@ fn handle_mulligan_decision(
         Side::Champion => mulligans.champion = Some(decision),
     }
 
-    let hand = game.hand(user_side).map(|c| c.id).collect::<Vec<_>>();
+    let hand = game.card_list_for_position(user_side, CardPosition::Hand(user_side));
     match decision {
         MulliganDecision::Keep => {}
         MulliganDecision::Mulligan => {
