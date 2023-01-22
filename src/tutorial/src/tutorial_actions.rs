@@ -24,14 +24,23 @@ use with_error::WithError;
 
 /// Handle applying tutorial actions
 pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameAction>) -> Result<()> {
-    println!("handling tutorial actions from state {:?}", game.data.tutorial_step);
+    println!(
+        "handling tutorial actions for action {:?} from state {:?}",
+        user_action, game.data.tutorial_step
+    );
     let mut i = game.data.tutorial_step.index;
     while i < crate::STEPS.len() {
         match &crate::STEPS[i] {
             TutorialStep::KeepOpeningHand(side) => keep_opening_hand(game, *side),
             TutorialStep::SetHand(side, cards) => set_hand(game, *side, cards),
             TutorialStep::SetTopOfDeck(side, cards) => set_top_of_deck(game, *side, cards),
-            TutorialStep::OpponentAction(a) => opponent_action(game, a),
+            TutorialStep::OpponentAction(action) => {
+                if !match_opponent_action(game, user_action, action)? {
+                    println!("Stopping due to awaiting opponent action");
+                    break;
+                }
+                Ok(())
+            }
             TutorialStep::AwaitPlayerActions(actions) => {
                 if !await_player_actions(game, user_action, actions)? {
                     println!("Stopping due to awaited actions");
@@ -53,6 +62,17 @@ pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameActi
     println!("tutorial state advanced to {:?}", game.data.tutorial_step);
 
     Ok(())
+}
+
+/// Returns the next tutorial action the AI opponent player should take in the
+/// current game state, if any.
+pub fn current_opponent_action(game: &GameState) -> Result<Option<GameAction>> {
+    let Some(TutorialStep::OpponentAction(tutorial_action)) = crate::STEPS.get(game.data.tutorial_step.index) else {
+        return Ok(None)
+    };
+
+    println!("Current opponent action is {:?}", tutorial_action);
+    Ok(Some(to_game_action(game, tutorial_action)?))
 }
 
 fn keep_opening_hand(game: &mut GameState, side: Side) -> Result<()> {
@@ -87,10 +107,8 @@ fn set_top_of_deck(game: &mut GameState, side: Side, cards: &[CardName]) -> Resu
     Ok(())
 }
 
-fn opponent_action(game: &mut GameState, action: &TutorialAction) -> Result<()> {
-    println!("Applying opponent action {:?}", action);
-
-    let game_action = match action {
+fn to_game_action(game: &GameState, action: &TutorialAction) -> Result<GameAction> {
+    Ok(match action {
         TutorialAction::DrawCard => GameAction::DrawCard,
         TutorialAction::PlayCard(name, target) => {
             let card_id = game
@@ -128,9 +146,25 @@ fn opponent_action(game: &mut GameState, action: &TutorialAction) -> Result<()> 
         TutorialAction::EndRaid => {
             GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))
         }
+    })
+}
+
+/// Wait for an opponent action. Returns true if the provided [GameAction]
+/// matches the expected opponent [TutorialAction].
+fn match_opponent_action(
+    game: &mut GameState,
+    game_action: Option<GameAction>,
+    tutorial_action: &TutorialAction,
+) -> Result<bool> {
+    let Some(user_action) = game_action else {
+        return Ok(false);
     };
 
-    actions::handle_game_action(game, crate::OPPONENT_SIDE, game_action)
+    println!(
+        "Matching opponent tutorial action {:?} against user action {:?}",
+        tutorial_action, user_action
+    );
+    actions_match(game, tutorial_action, &user_action)
 }
 
 /// Wait for the player to take specific game actions. Returns true if all
@@ -152,35 +186,7 @@ fn await_player_actions(
             continue;
         }
 
-        let matched = match (tutorial_action, user_action) {
-            (TutorialAction::DrawCard, GameAction::DrawCard) => true,
-            (TutorialAction::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
-                game.card(id).name == *name && *t1 == t2
-            }
-            (TutorialAction::GainMana, GameAction::GainMana) => true,
-            (TutorialAction::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => *r1 == r2,
-            (TutorialAction::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => *r1 == r2,
-            (
-                TutorialAction::UseWeapon { weapon, target },
-                GameAction::PromptAction(PromptAction::EncounterAction(
-                    EncounterAction::UseWeaponAbility(source_id, target_id),
-                )),
-            ) => game.card(source_id).name == *weapon && game.card(target_id).name == *target,
-            (
-                TutorialAction::ScoreAccessedCard(name),
-                GameAction::PromptAction(PromptAction::AccessPhaseAction(
-                    AccessPhaseAction::ScoreCard(card_id),
-                )),
-            ) => game.card(card_id).name == *name,
-            (
-                TutorialAction::EndRaid,
-                GameAction::PromptAction(PromptAction::AccessPhaseAction(
-                    AccessPhaseAction::EndRaid,
-                )),
-            ) => true,
-            _ => false,
-        };
-
+        let matched = actions_match(game, tutorial_action, &user_action)?;
         if matched {
             println!("Matched action {:?}", to_match[i]);
             game.data.tutorial_step.seen.insert(i);
@@ -195,6 +201,39 @@ fn await_player_actions(
     } else {
         Ok(false)
     }
+}
+
+fn actions_match(
+    game: &GameState,
+    tutorial_action: &TutorialAction,
+    user_action: &GameAction,
+) -> Result<bool> {
+    Ok(match (tutorial_action, user_action) {
+        (TutorialAction::DrawCard, GameAction::DrawCard) => true,
+        (TutorialAction::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
+            game.card(*id).name == *name && t1 == t2
+        }
+        (TutorialAction::GainMana, GameAction::GainMana) => true,
+        (TutorialAction::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
+        (TutorialAction::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
+        (
+            TutorialAction::UseWeapon { weapon, target },
+            GameAction::PromptAction(PromptAction::EncounterAction(
+                EncounterAction::UseWeaponAbility(source_id, target_id),
+            )),
+        ) => game.card(*source_id).name == *weapon && game.card(*target_id).name == *target,
+        (
+            TutorialAction::ScoreAccessedCard(name),
+            GameAction::PromptAction(PromptAction::AccessPhaseAction(
+                AccessPhaseAction::ScoreCard(card_id),
+            )),
+        ) => game.card(*card_id).name == *name,
+        (
+            TutorialAction::EndRaid,
+            GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid)),
+        ) => true,
+        _ => false,
+    })
 }
 
 fn display_until_matched(game: &mut GameState, mut displays: Vec<TutorialDisplay>) -> Result<()> {

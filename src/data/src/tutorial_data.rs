@@ -31,8 +31,13 @@ pub enum TutorialArrow {
 /// Content which can be displayed to the user during the game tutorial
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum TutorialDisplay {
+    // Attach an arrow to an interface element after a short delay
     Arrow(TutorialArrow),
+
+    // Display tutorial text to the player. 8 words at most please!
     Text(String),
+
+    // Display text spoken by a specific player
     SpeechBubble(Side, String),
 }
 

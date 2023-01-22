@@ -27,7 +27,8 @@ use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{GameId, Side};
 use database::Database;
 use once_cell::sync::Lazy;
-use protos::spelldawn::{CommandList, GameRequest};
+use protos::spelldawn::{CommandList, PlayerIdentifier};
+use tutorial::tutorial_actions;
 use with_error::fail;
 
 use crate::requests;
@@ -48,14 +49,14 @@ pub enum HandleRequest {
     PushQueue,
 }
 
-/// Respond to a player's [GameRequest] by producing an AI response, if any AI
-/// agents are connected.
+/// Respond to a player by producing an AI response, if any AI agents are
+/// connected.
 pub fn handle_request_if_active(
     mut database: impl Database + 'static,
-    request: &GameRequest,
+    player_id: Option<&PlayerIdentifier>,
     handle_request: HandleRequest,
 ) -> Result<()> {
-    let respond_to = requests::player_id(&mut database, &request.player_id)?;
+    let respond_to = requests::player_id(&mut database, player_id)?;
     let game_id = match player_data::current_game_id(database.player(respond_to)?) {
         Some(game_id) => game_id,
         _ => return Ok(()),
@@ -63,6 +64,7 @@ pub fn handle_request_if_active(
     let game = database.game(game_id)?;
 
     if active_agent(&game).is_some() && !AGENT_RUNNING.swap(true, Ordering::Relaxed) {
+        println!("Sending agent response");
         tokio::spawn(async move {
             run_agent_loop(database, game_id, respond_to, handle_request)
                 .await
@@ -95,7 +97,16 @@ async fn run_agent_loop(
     loop {
         let game = SpelldawnState(database.game(game_id)?);
         let commands = if let Some((side, agent)) = active_agent(&game) {
-            let action = agent.pick_action(AgentConfig::with_deadline(3), &game)?;
+            let action = if game.data.config.tutorial {
+                if let Some(tutorial_action) = tutorial_actions::current_opponent_action(&game)? {
+                    tutorial_action
+                } else {
+                    agent.pick_action(AgentConfig::with_deadline(3), &game)?
+                }
+            } else {
+                agent.pick_action(AgentConfig::with_deadline(3), &game)?
+            };
+
             let response = requests::handle_game_action(
                 &mut database,
                 game.player(side).id,

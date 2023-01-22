@@ -40,7 +40,7 @@ use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::{
-    card_target, CardTarget, ClientAction, CommandList, ConnectRequest, GameCommand, GameRequest,
+    card_target, CardTarget, CommandList, ConnectRequest, GameCommand, GameRequest,
     InterfacePanelAddress, LoadSceneCommand, PlayerIdentifier, RenderScreenOverlayCommand,
     SceneLoadMode, StandardAction,
 };
@@ -84,7 +84,7 @@ impl Spelldawn for GameService {
     ) -> Result<Response<Self::ConnectStream>, Status> {
         let mut db = SledDatabase { flush_on_write: false };
         let message = request.get_ref();
-        let player_id = match player_id(&mut db, &message.player_id) {
+        let player_id = match player_id(&mut db, message.player_id.as_ref()) {
             Ok(player_id) => player_id,
             _ => return Err(Status::unauthenticated("PlayerId is required")),
         };
@@ -101,6 +101,15 @@ impl Spelldawn for GameService {
                 if let Err(error) = tx.send(Ok(commands)).await {
                     error!(?player_id, ?error, "Send Error!");
                     return Err(Status::internal(format!("Send Error: {:#}", error)));
+                }
+
+                let result = agent_response::handle_request_if_active(
+                    db,
+                    request.get_ref().player_id.as_ref(),
+                    HandleRequest::SendToPlayer,
+                );
+                if let Err(error) = result {
+                    return Err(Status::internal(format!("Agent Error: {:#}", error)));
                 }
             }
             Err(error) => {
@@ -126,14 +135,18 @@ impl Spelldawn for GameService {
                 }
 
                 send_player_response(response.opponent_response).await;
-                let result = agent_response::handle_request_if_active(
-                    db,
-                    request.get_ref(),
-                    HandleRequest::SendToPlayer,
-                );
-                if let Err(error) = result {
-                    return Err(Status::internal(format!("Agent Error: {:#}", error)));
+
+                if response.run_agent {
+                    let result = agent_response::handle_request_if_active(
+                        db,
+                        request.get_ref().player_id.as_ref(),
+                        HandleRequest::SendToPlayer,
+                    );
+                    if let Err(error) = result {
+                        return Err(Status::internal(format!("Agent Error: {:#}", error)));
+                    }
                 }
+
                 Ok(Response::new(response.command_list))
             }
             Err(error) => {
@@ -147,7 +160,7 @@ impl Spelldawn for GameService {
 /// Helper to perform the connect action from the unity plugin
 pub fn connect(message: ConnectRequest) -> Result<CommandList> {
     let mut db = SledDatabase { flush_on_write: true };
-    let player_id = player_id(&mut db, &message.player_id)?;
+    let player_id = player_id(&mut db, message.player_id.as_ref())?;
     handle_connect(&mut db, player_id)
 }
 
@@ -155,7 +168,11 @@ pub fn connect(message: ConnectRequest) -> Result<CommandList> {
 pub fn perform_action(request: GameRequest) -> Result<CommandList> {
     let mut db = SledDatabase { flush_on_write: true };
     let response = handle_request(&mut db, &request)?;
-    agent_response::handle_request_if_active(db, &request, HandleRequest::PushQueue)?;
+    agent_response::handle_request_if_active(
+        db,
+        request.player_id.as_ref(),
+        HandleRequest::PushQueue,
+    )?;
     Ok(response.command_list)
 }
 
@@ -169,6 +186,8 @@ pub struct GameResponse {
     pub command_list: CommandList,
     /// Response to send to update opponent state.
     pub opponent_response: Option<(PlayerId, CommandList)>,
+    /// True if this response should invoke AI Agent responses
+    pub run_agent: bool,
 }
 
 impl GameResponse {
@@ -181,6 +200,7 @@ impl GameResponse {
                     .collect(),
             },
             opponent_response: None,
+            run_agent: false,
         }
     }
 }
@@ -188,7 +208,7 @@ impl GameResponse {
 /// Processes an incoming client request and returns a [GameResponse] describing
 /// required updates to send to connected users.
 pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Result<GameResponse> {
-    let player_id = player_id(database, &request.player_id)?;
+    let player_id = player_id(database, request.player_id.as_ref())?;
     let game_id = player_data::current_game_id(database.player(player_id)?);
     let client_action = request
         .action
@@ -198,11 +218,7 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
         .as_ref()
         .with_error(|| "ClientAction is required")?;
 
-    let _span = warn_span!("handle_request", ?player_id, ?game_id, ?client_action).entered();
-    if !matches!(request.action, Some(ClientAction { action: Some(Action::FetchPanel(_)) })) {
-        // Don't log FetchPanel because we send it every 1 second in autorefresh mode
-        warn!(?player_id, ?game_id, ?client_action, "received_request");
-    }
+    let _span = warn_span!("handle_request", ?player_id, ?game_id).entered();
 
     let response = match client_action {
         Action::StandardAction(standard_action) => handle_standard_action(
@@ -219,9 +235,11 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             )?)]))
         }
         Action::DrawCard(_) => {
+            warn!(?player_id, ?game_id, "handle_draw_card");
             handle_game_action(database, player_id, game_id, GameAction::DrawCard)
         }
         Action::PlayCard(action) => {
+            warn!(?player_id, ?game_id, ?action, "handle_play_card");
             let action =
                 match adapters::server_card_id(action.card_id.with_error(|| "CardID expected")?)? {
                     ServerCardId::CardId(card_id) => {
@@ -234,13 +252,16 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             handle_game_action(database, player_id, game_id, action)
         }
         Action::GainMana(_) => {
+            warn!(?player_id, ?game_id, "handle_gain_mana");
             handle_game_action(database, player_id, game_id, GameAction::GainMana)
         }
         Action::InitiateRaid(action) => {
+            warn!(?player_id, ?game_id, ?action, "handle_initiate_raid");
             let room_id = adapters::room_id(action.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::InitiateRaid(room_id))
         }
         Action::LevelUpRoom(level_up) => {
+            warn!(?player_id, ?game_id, ?level_up, "handle_level_up_room");
             let room_id = adapters::room_id(level_up.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::LevelUpRoom(room_id))
         }
@@ -263,19 +284,16 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         None => (create_new_player(database, player_id)?, true),
     };
 
+    println!("Connecting...");
+
     let mut commands = vec![];
     match (&player.status, &player.adventure) {
         (Some(PlayerStatus::Playing(game_id)), _) => {
+            println!("Playing...");
             if database.has_game(*game_id)? {
-                let mut game = database.game(*game_id)?;
+                println!("Found game...");
+                let game = database.game(*game_id)?;
                 let side = user_side(player_id, &game)?;
-
-                if game.data.config.tutorial && game.data.tutorial_step.index == 0 {
-                    // Start tutorial if needed
-                    tutorial_actions::handle_tutorial_action(&mut game, None)?;
-                    database.write_game(&game)?;
-                }
-
                 commands.extend(render::connect(&game, side)?);
                 routing::render_panels(&mut commands, &player, routing::game_panels())?;
             } else {
@@ -292,6 +310,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
             )?;
         }
         (None, None) => {
+            println!("Loading main scene...");
             commands.push(Command::LoadScene(LoadSceneCommand {
                 scene_name: "Main".to_string(),
                 mode: SceneLoadMode::Single.into(),
@@ -376,6 +395,14 @@ fn handle_new_game(
 
     dispatch::populate_delegate_cache(&mut game);
     mutations::deal_opening_hands(&mut game)?;
+
+    if game.data.config.tutorial {
+        // Start tutorial if needed
+        tutorial_actions::handle_tutorial_action(&mut game, None)?;
+    } else {
+        println!("No tutorial...");
+    }
+
     database.write_game(&game)?;
 
     player.status = Some(PlayerStatus::Playing(game_id));
@@ -393,6 +420,7 @@ fn handle_new_game(
             opponent_id,
             command_list(render::connect(&game, opponent_side)?),
         )),
+        run_agent: false,
     })
 }
 
@@ -448,9 +476,6 @@ fn requested_deck(
 /// Converts the resulting [GameState] into a series of client updates for both
 /// players in the form of a [GameResponse] and then writes the new game state
 /// back to the database
-///
-/// Schedules an AI Agent response if one is required for the current game
-/// state.
 pub fn handle_game_action(
     database: &mut impl Database,
     player_id: PlayerId,
@@ -489,6 +514,7 @@ pub fn handle_custom_action(
     Ok(GameResponse {
         command_list: command_list(user_result),
         opponent_response: channel_response,
+        run_agent: true,
     })
 }
 
@@ -544,6 +570,8 @@ fn handle_standard_action(
     verify!(!standard_action.payload.is_empty(), "Empty action payload received");
     let action: UserAction = de::from_slice(&standard_action.payload)
         .with_error(|| "Failed to deserialize action payload")?;
+    warn!(?player_id, ?game_id, ?action, "handle_standard_action");
+
     let mut result = match action {
         UserAction::NewAdventure(side) => handle_new_adventure(database, player_id, side),
         UserAction::AdventureAction(action) => with_adventure(database, player_id, |state| {
@@ -619,7 +647,7 @@ pub fn find_player(database: &impl Database, player_id: PlayerId) -> Result<Play
 /// if the input is `None`.
 pub fn player_id(
     database: &mut impl Database,
-    identifier: &Option<PlayerIdentifier>,
+    identifier: Option<&PlayerIdentifier>,
 ) -> Result<PlayerId> {
     database
         .adapt_player_identifier(identifier.as_ref().with_error(|| "Expected player identifier")?)
