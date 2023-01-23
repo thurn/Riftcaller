@@ -72,7 +72,7 @@ pub fn can_take_action(game: &GameState, side: Side) -> bool {
 }
 
 fn handle_resign_action(game: &mut GameState, side: Side) -> Result<()> {
-    info!(?side, "handle_resign_action");
+    info!(?side, "Applying resign action");
     if !matches!(game.data.phase, GamePhase::GameOver { .. }) {
         mutations::game_over(game, side.opponent())?;
     }
@@ -85,12 +85,13 @@ fn handle_mulligan_decision(
     user_side: Side,
     decision: MulliganDecision,
 ) -> Result<()> {
-    info!(?user_side, ?decision, "handle_mulligan_decision");
     verify!(
         flags::can_make_mulligan_decision(game, user_side),
         "Cannot make mulligan decision for {:?}",
         user_side
     );
+
+    info!(?user_side, ?decision, "Applying mulligan action");
     let mut mulligans = match &mut game.data.phase {
         GamePhase::ResolveMulligans(mulligans) => mulligans,
         _ => fail!("Incorrect game phase"),
@@ -119,12 +120,13 @@ fn handle_mulligan_decision(
 /// action.
 #[instrument(skip(game))]
 fn draw_card_action(game: &mut GameState, user_side: Side) -> Result<()> {
-    info!(?user_side, "draw_card_action");
     verify!(
         flags::can_take_draw_card_action(game, user_side),
         "Cannot draw card for {:?}",
         user_side
     );
+
+    info!(?user_side, "Applying draw card action");
     mutations::spend_action_points(game, user_side, 1)?;
     let cards = mutations::draw_cards(game, user_side, 1)?;
     if let Some(card_id) = cards.get(0) {
@@ -146,7 +148,6 @@ fn play_card_action(
     card_id: CardId,
     target: CardTarget,
 ) -> Result<()> {
-    info!(?user_side, ?card_id, ?target, "play_card_action");
     verify!(
         flags::can_take_play_card_action(game, user_side, card_id, target),
         "Cannot play card {:?}",
@@ -154,6 +155,8 @@ fn play_card_action(
     );
 
     let card = game.card(card_id);
+    info!(?card.name, ?user_side, ?card_id, ?target, "Applying play card action");
+
     let definition = rules::get(card.name);
     mutations::move_card(game, card_id, CardPosition::Played(user_side, target))?;
 
@@ -188,7 +191,6 @@ fn activate_ability_action(
     ability_id: AbilityId,
     target: CardTarget,
 ) -> Result<()> {
-    info!(?user_side, ?ability_id, "activate_ability_action");
     verify!(
         flags::can_take_activate_ability_action(game, user_side, ability_id, target),
         "Cannot activate ability {:?}",
@@ -197,6 +199,9 @@ fn activate_ability_action(
 
     game.ability_state.entry(ability_id).or_default().currently_resolving = true;
     let card = game.card(ability_id.card_id);
+
+    info!(?card.name, ?user_side, ?ability_id, "Applying activate ability action");
+
     let cost = match &rules::get(card.name).ability(ability_id.index).ability_type {
         AbilityType::Activated(cost, _) => cost,
         _ => fail!("Ability is not an activated ability"),
@@ -222,12 +227,13 @@ fn activate_ability_action(
 /// action.
 #[instrument(skip(game))]
 fn gain_mana_action(game: &mut GameState, user_side: Side) -> Result<()> {
-    info!(?user_side, "gain_mana_action");
     verify!(
         flags::can_take_gain_mana_action(game, user_side),
         "Cannot gain mana for {:?}",
         user_side
     );
+
+    info!(?user_side, "Applying gain mana action");
     mutations::spend_action_points(game, user_side, 1)?;
     mana::gain(game, user_side, 1);
     mutations::check_end_turn(game)?;
@@ -235,12 +241,12 @@ fn gain_mana_action(game: &mut GameState, user_side: Side) -> Result<()> {
 }
 
 fn level_up_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) -> Result<()> {
-    info!(?user_side, "level_up_room_action");
     verify!(
         flags::can_take_level_up_room_action(game, user_side, room_id),
         "Cannot level up room for {:?}",
         user_side
     );
+    info!(?user_side, "Applying level up room action");
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, ManaPurpose::LevelUpRoom(room_id), 1)?;
     game.record_update(|| GameUpdate::LevelUpRoom(room_id, InitiatedBy::GameAction));

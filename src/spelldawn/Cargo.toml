@@ -23,6 +23,9 @@ tokio = { version = "1.19.2", features = ["macros", "rt-multi-thread", "sync", "
 tonic = { version = "0.7.2", features = ["compression"] }
 tonic-web = "0.3.0"
 tracing = "0.1.35"
+tracing-appender = "0.2.2"
+tracing-bunyan-formatter = "0.3.6"
+tracing-forest = { version = "0.1.5", features = ["ansi", "env-filter", "tokio"] }
 tracing-subscriber = "0.3.14"
 
 [dev-dependencies]

@@ -39,7 +39,7 @@ use data::primitives::{
 };
 use data::random;
 use data::updates::GameUpdate;
-use tracing::{info, instrument};
+use tracing::{debug, instrument};
 use with_error::verify;
 
 use crate::mana::ManaPurpose;
@@ -53,9 +53,9 @@ use crate::{dispatch, flags, mana, queries};
 /// This function does *not* handle changing the 'revealed' or 'face down' state
 /// of the card, the caller is responsible for updating that when the card moves
 /// to a new game zone.
-#[instrument(skip(game))]
 pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPosition) -> Result<()> {
-    info!(?card_id, ?new_position, "move_card");
+    let name = game.card(card_id).name;
+    debug!(?name, ?card_id, ?new_position, "Moving card");
     let old_position = game.card(card_id).position();
     game.move_card_internal(card_id, new_position);
 
@@ -145,7 +145,6 @@ pub fn draw_cards(game: &mut GameState, side: Side, count: u32) -> Result<Vec<Ca
 }
 
 /// Lose action points if a player has more than 0.
-#[instrument(skip(game))]
 pub fn lose_action_points_if_able(
     game: &mut GameState,
     side: Side,
@@ -160,9 +159,8 @@ pub fn lose_action_points_if_able(
 /// Spends a player's action points.
 ///
 /// Returns an error if sufficient action points are not available.
-#[instrument(skip(game))]
 pub fn spend_action_points(game: &mut GameState, side: Side, amount: ActionCount) -> Result<()> {
-    info!(?side, ?amount, "spend_action_points");
+    debug!(?side, ?amount, "Spending action points");
     verify!(game.player(side).actions >= amount, "Insufficient action points available");
     game.player_mut(side).actions -= amount;
     Ok(())
@@ -196,14 +194,13 @@ pub enum OnZeroStored {
 ///
 /// If no mana remains, the card is moved to its owner's discard pile if
 /// `OnEmpty::MoveToDiscard` is specified.
-#[instrument(skip(game))]
 pub fn take_stored_mana(
     game: &mut GameState,
     card_id: CardId,
     maximum: ManaValue,
     on_zero_stored: OnZeroStored,
 ) -> Result<ManaValue> {
-    info!(?card_id, ?maximum, "take_stored_mana");
+    debug!(?card_id, ?maximum, "Taking stored mana");
     let available = game.card(card_id).data.stored_mana;
     let taken = cmp::min(available, maximum);
     game.card_mut(card_id).data.stored_mana -= taken;
@@ -219,17 +216,15 @@ pub fn take_stored_mana(
 
 /// Overwrites the value of [CardData::boost_count] to match the provided
 /// [BoostData].
-#[instrument(skip(game))]
 pub fn write_boost(game: &mut GameState, scope: Scope, data: &BoostData) -> Result<()> {
-    info!(?scope, ?data, "write_boost");
+    debug!(?scope, ?data, "Writing boost");
     game.card_mut(data.card_id).data.boost_count = data.count;
     Ok(())
 }
 
 /// Set the boost count to zero for the card in `scope`.
-#[instrument(skip(game))]
 pub fn clear_boost<T>(game: &mut GameState, scope: Scope, _: &T) -> Result<()> {
-    info!(?scope, "clear_boost");
+    debug!(?scope, "Clearing boost");
     game.card_mut(scope.card_id()).data.boost_count = 0;
     Ok(())
 }
@@ -250,9 +245,8 @@ pub fn set_prompt(
 }
 
 /// Ends the current raid. Returns an error if no raid is currently active.
-#[instrument(skip(game))]
 pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
-    info!("end_raid");
+    debug!("Ending raid");
     let raid_id = game.raid()?.raid_id;
     match outcome {
         RaidOutcome::Success => dispatch::invoke_event(game, RaidSuccessEvent(raid_id))?,
@@ -267,7 +261,7 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
 /// Deals initial hands to both players and prompts for mulligan decisions.
 #[instrument(skip(game))]
 pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
-    info!("deal_opening_hands");
+    debug!("Dealing opening hands");
     draw_cards(game, Side::Overlord, game_constants::STARTING_HAND_SIZE)?;
     draw_cards(game, Side::Champion, game_constants::STARTING_HAND_SIZE)?;
     Ok(())
@@ -475,7 +469,7 @@ fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber) ->
     game.data.phase = GamePhase::Play;
     game.data.turn = TurnData { side: next_side, turn_number };
 
-    info!(?next_side, "start_player_turn");
+    debug!(?next_side, "Starting player turn");
     game.record_update(|| GameUpdate::StartTurn(next_side));
 
     if next_side == Side::Overlord {

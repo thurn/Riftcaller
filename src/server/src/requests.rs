@@ -51,7 +51,7 @@ use tokio::sync::mpsc;
 use tokio::sync::mpsc::Sender;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
-use tracing::{error, info, warn, warn_span};
+use tracing::{error, info, info_span, instrument, warn};
 use tutorial::tutorial_actions;
 use with_error::{fail, verify, WithError};
 
@@ -88,7 +88,6 @@ impl Spelldawn for GameService {
             Ok(player_id) => player_id,
             _ => return Err(Status::unauthenticated("PlayerId is required")),
         };
-        warn!(?player_id, "received_connection");
 
         let (tx, rx) = mpsc::channel(4);
 
@@ -96,7 +95,7 @@ impl Spelldawn for GameService {
         match result {
             Ok(commands) => {
                 let names = commands.commands.iter().map(command_name).collect::<Vec<_>>();
-                info!(?player_id, ?names, "sending_connection_response");
+                info!(?player_id, ?names, "Sending connection response");
 
                 if let Err(error) = tx.send(Ok(commands)).await {
                     error!(?player_id, ?error, "Send Error!");
@@ -218,8 +217,6 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
         .as_ref()
         .with_error(|| "ClientAction is required")?;
 
-    let _span = warn_span!("handle_request", ?player_id, ?game_id).entered();
-
     let response = match client_action {
         Action::StandardAction(standard_action) => handle_standard_action(
             database,
@@ -235,11 +232,11 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             )?)]))
         }
         Action::DrawCard(_) => {
-            warn!(?player_id, ?game_id, "handle_draw_card");
+            warn!(?player_id, ?game_id, "Handling draw card action");
             handle_game_action(database, player_id, game_id, GameAction::DrawCard)
         }
         Action::PlayCard(action) => {
-            warn!(?player_id, ?game_id, ?action, "handle_play_card");
+            warn!(?player_id, ?game_id, ?action, "Handling play card action");
             let action =
                 match adapters::server_card_id(action.card_id.with_error(|| "CardID expected")?)? {
                     ServerCardId::CardId(card_id) => {
@@ -252,16 +249,16 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             handle_game_action(database, player_id, game_id, action)
         }
         Action::GainMana(_) => {
-            warn!(?player_id, ?game_id, "handle_gain_mana");
+            warn!(?player_id, ?game_id, "Handling gain mana action");
             handle_game_action(database, player_id, game_id, GameAction::GainMana)
         }
         Action::InitiateRaid(action) => {
-            warn!(?player_id, ?game_id, ?action, "handle_initiate_raid");
+            warn!(?player_id, ?game_id, ?action, "Handling initiate raid action");
             let room_id = adapters::room_id(action.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::InitiateRaid(room_id))
         }
         Action::LevelUpRoom(level_up) => {
-            warn!(?player_id, ?game_id, ?level_up, "handle_level_up_room");
+            warn!(?player_id, ?game_id, ?level_up, "Handling level up room action");
             let room_id = adapters::room_id(level_up.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::LevelUpRoom(room_id))
         }
@@ -272,26 +269,24 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
 
     let commands = response.command_list.commands.iter().map(command_name).collect::<Vec<_>>();
 
-    info!(?player_id, ?commands, "sending_response");
+    info!(?player_id, ?commands, "Sending action response");
 
     Ok(response)
 }
 
 /// Sets up the game state for a game connection request.
+#[instrument(skip(database))]
 pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Result<CommandList> {
     let (player, is_new_player) = match database.player(player_id)? {
         Some(p) => (p, false),
         None => (create_new_player(database, player_id)?, true),
     };
-
-    println!("Connecting...");
+    warn!(?player_id, "handle_connect");
 
     let mut commands = vec![];
     match (&player.status, &player.adventure) {
         (Some(PlayerStatus::Playing(game_id)), _) => {
-            println!("Playing...");
             if database.has_game(*game_id)? {
-                println!("Found game...");
                 let game = database.game(*game_id)?;
                 let side = user_side(player_id, &game)?;
                 commands.extend(render::connect(&game, side)?);
@@ -310,7 +305,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
             )?;
         }
         (None, None) => {
-            println!("Loading main scene...");
+            info!("Loading Main scene");
             commands.push(Command::LoadScene(LoadSceneCommand {
                 scene_name: "Main".to_string(),
                 mode: SceneLoadMode::Single.into(),
@@ -378,7 +373,7 @@ fn handle_new_game(
     } else {
         database.generate_game_id()?
     };
-    info!(?game_id, "create_new_game");
+    info!(?game_id, "Creating new game");
 
     let mut game = GameState::new(
         game_id,
@@ -399,8 +394,6 @@ fn handle_new_game(
     if game.data.config.tutorial {
         // Start tutorial if needed
         tutorial_actions::handle_tutorial_action(&mut game, None)?;
-    } else {
-        println!("No tutorial...");
     }
 
     database.write_game(&game)?;
@@ -552,7 +545,7 @@ pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
             if channel.send(Ok(commands)).await.is_err() {
                 // This returns SendError if the client is disconnected, which isn't a
                 // huge problem. Hopefully they will reconnect again in the future.
-                info!(?player_id, "client_is_disconnected");
+                info!(?player_id, "Client is disconnected");
             }
         }
     }
@@ -570,7 +563,8 @@ fn handle_standard_action(
     verify!(!standard_action.payload.is_empty(), "Empty action payload received");
     let action: UserAction = de::from_slice(&standard_action.payload)
         .with_error(|| "Failed to deserialize action payload")?;
-    warn!(?player_id, ?game_id, ?action, "handle_standard_action");
+    let _span = info_span!("handle_standard_action", ?player_id, ?game_id, ?action).entered();
+    warn!(?player_id, ?game_id, ?action, "Handling standard action");
 
     let mut result = match action {
         UserAction::NewAdventure(side) => handle_new_adventure(database, player_id, side),

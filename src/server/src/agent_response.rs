@@ -28,6 +28,7 @@ use data::primitives::{GameId, Side};
 use database::Database;
 use once_cell::sync::Lazy;
 use protos::spelldawn::{CommandList, PlayerIdentifier};
+use tracing::info;
 use tutorial::tutorial_actions;
 use with_error::fail;
 
@@ -64,7 +65,7 @@ pub fn handle_request_if_active(
     let game = database.game(game_id)?;
 
     if active_agent(&game).is_some() && !AGENT_RUNNING.swap(true, Ordering::Relaxed) {
-        println!("Sending agent response");
+        info!(?player_id, ?game_id, "Sending agent response");
         tokio::spawn(async move {
             run_agent_loop(database, game_id, respond_to, handle_request)
                 .await

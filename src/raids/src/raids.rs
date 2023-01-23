@@ -27,6 +27,7 @@ use data::game_actions::{GamePrompt, PromptAction};
 use data::primitives::{RaidId, RoomId, Side};
 use data::updates::{GameUpdate, InitiatedBy};
 use rules::{flags, mutations, queries};
+use tracing::info;
 use with_error::{verify, WithError};
 
 use crate::access::AccessPhase;
@@ -105,6 +106,8 @@ pub fn handle_action(game: &mut GameState, user_side: Side, action: PromptAction
     let phase = game.raid()?.phase();
     verify!(phase.active_side() == user_side, "Unexpected side");
     verify!(phase.prompts(game)?.iter().any(|c| c == &action), "Unexpected action");
+
+    info!(?user_side, ?action, "Handling raid action");
     let mut new_state = phase.handle_prompt(game, action)?;
     new_state = apply_jump(game)?.or(new_state);
 

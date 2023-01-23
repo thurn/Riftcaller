@@ -22,7 +22,6 @@ use anyhow::Result;
 use data::delegates::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
 use data::game::GameState;
 use data::primitives::AbilityId;
-use tracing::instrument;
 
 /// Adds a [DelegateCache] for this game in order to improve lookup performance.
 pub fn populate_delegate_cache(game: &mut GameState) {
@@ -47,7 +46,6 @@ pub fn populate_delegate_cache(game: &mut GameState) {
 /// Called when a game event occurs, invokes each registered
 /// [data::delegates::Delegate] for this event to mutate the [GameState]
 /// appropriately.
-#[instrument(skip(game))]
 pub fn invoke_event<D: Debug, E: EventData<D>>(game: &mut GameState, event: E) -> Result<()> {
     let count = game.delegate_cache.delegate_count(event.kind());
     for i in 0..count {
@@ -66,7 +64,6 @@ pub fn invoke_event<D: Debug, E: EventData<D>>(game: &mut GameState, event: E) -
 /// Called when game state information is needed. Invokes each registered
 /// [data::delegates::Delegate] for this query and allows them to intercept &
 /// transform the final result.
-#[instrument(skip(game))]
 pub fn perform_query<D: Debug, R: Debug, E: QueryData<D, R>>(
     game: &GameState,
     query: E,

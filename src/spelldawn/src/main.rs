@@ -14,20 +14,34 @@
 
 //! Spelldawn: An asymmetric trading card game
 
+use std::env;
+
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
 use server::requests::GameService;
 use tonic::transport::Server;
-use tracing::warn;
-use tracing_subscriber::filter::LevelFilter;
-use tracing_subscriber::fmt;
+use tracing::{warn, Event, Level};
+use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
+use tracing_forest::{ForestLayer, PrettyPrinter, Tag};
+use tracing_subscriber::filter::EnvFilter;
 use tracing_subscriber::prelude::*;
-use tracing_subscriber::util::SubscriberInitExt;
-
+use tracing_subscriber::Registry;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     cards_all::initialize();
-    let fmt_layer = fmt::Layer::default().pretty().with_filter(LevelFilter::WARN);
-    tracing_subscriber::registry().with(fmt_layer).init();
+
+    let file_appender = tracing_appender::rolling::hourly("log", "spelldawn.log");
+    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
+    let bunyan = BunyanFormattingLayer::new("spelldawn".to_string(), non_blocking);
+    let filter = if let Ok(v) = env::var("RUST_LOG") {
+        EnvFilter::new(v)
+    } else {
+        EnvFilter::new("debug,hyper=warn")
+    };
+    let forest_layer = ForestLayer::new(PrettyPrinter::new(), tag_parser);
+
+    let subscriber =
+        Registry::default().with(JsonStorageLayer).with(bunyan).with(forest_layer).with(filter);
+    tracing::subscriber::set_global_default(subscriber).unwrap();
 
     let address = "0.0.0.0:80".parse().expect("valid address");
     let server = SpelldawnServer::new(GameService {
@@ -43,4 +57,31 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Server::builder().accept_http1(true).add_service(service).serve(address).await?;
 
     Ok(())
+}
+
+fn tag_parser(event: &Event) -> Option<Tag> {
+    let target = event.metadata().target();
+    let level = *event.metadata().level();
+    let icon = match target {
+        _ if level == Level::ERROR => '🚨',
+        _ if level == Level::WARN => '🚧',
+        _ if target.contains("rules") => '🎴',
+        _ if target.contains("tutorial") => '🎓',
+        _ if target.contains("server") => '💻',
+        _ if target.contains("actions") => '🎬',
+        _ => match level {
+            Level::TRACE => '📍',
+            Level::DEBUG => '📝',
+            Level::INFO => '💡',
+            Level::WARN => '🚧',
+            Level::ERROR => '🚨',
+        },
+    };
+
+    let mut builder = Tag::builder().level(level).icon(icon);
+    if icon == '📝' || icon == '💡' {
+        builder = builder.prefix(target);
+    }
+
+    Some(builder.build())
 }

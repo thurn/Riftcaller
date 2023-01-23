@@ -20,33 +20,31 @@ use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptA
 use data::primitives::{CardId, RoomLocation, Side};
 use data::tutorial_data::{TutorialAction, TutorialDisplay, TutorialStep};
 use rules::mutations;
+use tracing::{debug, debug_span};
 use with_error::WithError;
 
 /// Handle applying tutorial actions
 pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameAction>) -> Result<()> {
-    println!(
-        "handling tutorial actions for action {:?} from state {:?}",
-        user_action, game.data.tutorial_step
-    );
     let mut i = game.data.tutorial_step.index;
     while i < crate::STEPS.len() {
-        match &crate::STEPS[i] {
+        let action = &crate::STEPS[i];
+        let _span = debug_span!("handle_tutorial_action", ?action).entered();
+        debug!(?action, "Handling tutorial action");
+        match action {
             TutorialStep::KeepOpeningHand(side) => keep_opening_hand(game, *side),
             TutorialStep::SetHand(side, cards) => set_hand(game, *side, cards),
             TutorialStep::SetTopOfDeck(side, cards) => set_top_of_deck(game, *side, cards),
             TutorialStep::OpponentAction(action) => {
                 if !match_opponent_action(game, user_action, action)? {
-                    println!("Stopping due to awaiting opponent action");
+                    debug!(?action, "Awaiting oppponent action");
                     break;
                 }
                 Ok(())
             }
             TutorialStep::AwaitPlayerActions(actions) => {
                 if !await_player_actions(game, user_action, actions)? {
-                    println!("Stopping due to awaited actions");
+                    debug!(?actions, "Awaiting user action");
                     break;
-                } else {
-                    println!("Continuing due to all actions matched")
                 }
                 Ok(())
             }
@@ -59,7 +57,7 @@ pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameActi
     }
 
     game.data.tutorial_step.index = i;
-    println!("tutorial state advanced to {:?}", game.data.tutorial_step);
+    debug!("Tutorial advanced to step {}", i);
 
     Ok(())
 }
@@ -71,7 +69,6 @@ pub fn current_opponent_action(game: &GameState) -> Result<Option<GameAction>> {
         return Ok(None)
     };
 
-    println!("Current opponent action is {:?}", tutorial_action);
     Ok(Some(to_game_action(game, tutorial_action)?))
 }
 
@@ -160,10 +157,7 @@ fn match_opponent_action(
         return Ok(false);
     };
 
-    println!(
-        "Matching opponent tutorial action {:?} against user action {:?}",
-        tutorial_action, user_action
-    );
+    debug!(?tutorial_action, ?user_action, "Matched expected opponent action");
     actions_match(game, tutorial_action, &user_action)
 }
 
@@ -175,7 +169,7 @@ fn await_player_actions(
     to_match: &[TutorialAction],
 ) -> Result<bool> {
     let seen = &game.data.tutorial_step.seen;
-    eprintln!("Awaiting user actions, with input {:?} have seen indices {:?}", game_action, seen);
+    debug!(?seen, ?game_action, "Checking action against expected tutorial actions");
 
     let Some(user_action) = game_action else {
         return Ok(false);
@@ -188,14 +182,13 @@ fn await_player_actions(
 
         let matched = actions_match(game, tutorial_action, &user_action)?;
         if matched {
-            println!("Matched action {:?}", to_match[i]);
             game.data.tutorial_step.seen.insert(i);
             break;
         }
     }
 
     if game.data.tutorial_step.seen.len() == to_match.len() {
-        println!("All actions matched!");
+        debug!("Matched all expected tutorial user actions");
         game.data.tutorial_step.seen.clear();
         Ok(true)
     } else {

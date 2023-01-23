@@ -51,14 +51,17 @@ protos:
     find . -name '*conflicted*' -delete
     mkdir -p Library
     mkdir -p Logs
+    mkdir -p log
     mkdir -p obj
     mkdir -p UserSettings
     mkdir -p Temp
     mkdir -p out
     mkdir -p out_BurstDebugInformation_DoNotShip/
     mkdir -p ServerData
+    mkdir -p target
     xattr -w com.dropbox.ignored 1 Library/
     xattr -w com.dropbox.ignored 1 Logs/
+    xattr -w com.dropbox.ignored 1 log/
     xattr -w com.dropbox.ignored 1 obj/
     xattr -w com.dropbox.ignored 1 UserSettings/
     xattr -w com.dropbox.ignored 1 Temp/

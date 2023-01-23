@@ -21,6 +21,7 @@ Assets/EntityCache
 Assets/Plugins/
 UserSettings/
 db/
+log/
 
 # Visual Studio cache directory
 .vs/jj

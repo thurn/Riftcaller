@@ -73,6 +73,7 @@ pub enum TutorialAction {
 /// tutorial system hooks into games based on the `GameConfiguration::tutorial`
 /// flag and mutates their `GameState` before user or AI `GameAction`s get
 /// processed.
+#[derive(Debug)]
 pub enum TutorialStep {
     /// Causes a player to keep their opening hand
     KeepOpeningHand(Side),
