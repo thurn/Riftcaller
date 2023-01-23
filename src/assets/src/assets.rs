@@ -125,7 +125,7 @@ pub fn card_frame(school: School) -> SpriteAddress {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Cards/Card_Steampunk_Style_Color_1"
                 }
                 School::Neutral => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Cards/Card_Lovecraft_Style_Color_1"
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame"
                 }
                 School::Shadow => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Cards/Card_Daemon_Style_Color_1"

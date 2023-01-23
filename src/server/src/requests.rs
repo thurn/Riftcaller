@@ -232,10 +232,12 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             )?)]))
         }
         Action::DrawCard(_) => {
+            let _span = info_span!("handle_draw_card").entered();
             warn!(?player_id, ?game_id, "Handling draw card action");
             handle_game_action(database, player_id, game_id, GameAction::DrawCard)
         }
         Action::PlayCard(action) => {
+            let _span = info_span!("handle_play_card").entered();
             warn!(?player_id, ?game_id, ?action, "Handling play card action");
             let action =
                 match adapters::server_card_id(action.card_id.with_error(|| "CardID expected")?)? {
@@ -249,15 +251,18 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             handle_game_action(database, player_id, game_id, action)
         }
         Action::GainMana(_) => {
+            let _span = info_span!("handle_gain_mana").entered();
             warn!(?player_id, ?game_id, "Handling gain mana action");
             handle_game_action(database, player_id, game_id, GameAction::GainMana)
         }
         Action::InitiateRaid(action) => {
+            let _span = info_span!("handle_initiate_raid").entered();
             warn!(?player_id, ?game_id, ?action, "Handling initiate raid action");
             let room_id = adapters::room_id(action.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::InitiateRaid(room_id))
         }
         Action::LevelUpRoom(level_up) => {
+            let _span = info_span!("handle_level_up_room").entered();
             warn!(?player_id, ?game_id, ?level_up, "Handling level up room action");
             let room_id = adapters::room_id(level_up.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::LevelUpRoom(room_id))

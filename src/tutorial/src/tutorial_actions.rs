@@ -25,6 +25,7 @@ use with_error::WithError;
 
 /// Handle applying tutorial actions
 pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameAction>) -> Result<()> {
+    let _span = debug_span!("handle_tutorial_actions").entered();
     let mut i = game.data.tutorial_step.index;
     while i < crate::STEPS.len() {
         let action = &crate::STEPS[i];
@@ -57,7 +58,7 @@ pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameActi
     }
 
     game.data.tutorial_step.index = i;
-    debug!("Tutorial advanced to step {}", i);
+    debug!("Tutorial at step {}", i);
 
     Ok(())
 }
@@ -169,7 +170,6 @@ fn await_player_actions(
     to_match: &[TutorialAction],
 ) -> Result<bool> {
     let seen = &game.data.tutorial_step.seen;
-    debug!(?seen, ?game_action, "Checking action against expected tutorial actions");
 
     let Some(user_action) = game_action else {
         return Ok(false);
@@ -182,6 +182,7 @@ fn await_player_actions(
 
         let matched = actions_match(game, tutorial_action, &user_action)?;
         if matched {
+            debug!(?seen, ?tutorial_action, ?user_action, "Matched expected player action");
             game.data.tutorial_step.seen.insert(i);
             break;
         }
