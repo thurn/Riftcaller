@@ -85,6 +85,8 @@ pub enum TutorialStep {
 
     /// Sets the top card of a player's deck to contain specific cards. The
     /// cards must exist already in the player's deck.
+    ///
+    /// Earlier items in the vector are closer to the top of the deck.
     SetTopOfDeck(Side, Vec<CardName>),
 
     /// Cause the opponent to perform the indicated game actions, bypassing the

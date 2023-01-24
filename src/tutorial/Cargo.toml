@@ -11,7 +11,6 @@ path = "src/tutorial.rs"
 test = false
 doctest = false
 
-
 [dependencies]
 actions = { path = "../actions", version = "0.0.0" }
 data = { path = "../data", version = "0.0.0" }

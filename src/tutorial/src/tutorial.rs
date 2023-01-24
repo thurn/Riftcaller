@@ -71,10 +71,10 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
         TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
         TutorialStep::OpponentAction(TutorialAction::PlayCard(
             CardName::GatheringDark,
-            CardTarget::Room(RoomId::RoomA),
+            CardTarget::None,
         )),
         TutorialStep::OpponentAction(TutorialAction::PlayCard(
-            CardName::Machinate,
+            CardName::Devise,
             CardTarget::Room(RoomId::RoomA),
         )),
         TutorialStep::OpponentAction(TutorialAction::PlayCard(
