@@ -71,7 +71,8 @@ namespace Spelldawn.Game
       0 => _singleElementY,
       1 => _singleElementY,
       2 => new[] { 0.4f, 0.6f }[index],
-      3 => new[] { 0.3f, 0.5f, 0.7f }[index],
+      3 => new[] { 0.4f, 0.5f, 0.6f }[index],
+      4 => new[] { 0.40f, 0.45f, 0.50f, 0.55f }[index],
       _ => index / ((float)count - 1)
     };
   }

@@ -99,16 +99,22 @@ pub fn card_back(school: School) -> SpriteAddress {
             "{}.png",
             match school {
                 School::Law => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Backs/Back_Steampunk_Style_Color_1"
-                }
-                School::Neutral => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Backs/Back_Lovecraft_Style_Color_1"
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardBack"
                 }
                 School::Shadow => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Backs/Back_Daemon_Style_Color_1"
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardBack"
                 }
                 School::Primal => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Backs/Back_Elf_Style_Color_1"
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardBack"
+                }
+                School::Beyond => {
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardBack"
+                }
+                School::Blood => {
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardBack"
+                }
+                School::Neutral => {
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardBack"
                 }
             }
         ),
@@ -122,16 +128,22 @@ pub fn card_frame(school: School) -> SpriteAddress {
             "{}.png",
             match school {
                 School::Law => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Cards/Card_Steampunk_Style_Color_1"
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardFrame"
+                }
+                School::Shadow => {
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame"
+                }
+                School::Primal => {
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame"
+                }
+                School::Beyond => {
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame"
+                }
+                School::Blood => {
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame"
                 }
                 School::Neutral => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame"
-                }
-                School::Shadow => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Cards/Card_Daemon_Style_Color_1"
-                }
-                School::Primal => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Cards/Card_Elf_Style_Color_1"
                 }
             }
         ),
