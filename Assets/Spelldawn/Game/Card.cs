@@ -37,6 +37,7 @@ namespace Spelldawn.Game
     [SerializeField] Transform _cardFront = null!;
     [SerializeField] GameObject _cardShadow = null!;
     [SerializeField] Transform _arenaCard = null!;
+    [SerializeField] SpriteRenderer _imageBackground = null!;    
     [SerializeField] SpriteRenderer _image = null!;
     [SerializeField] SpriteRenderer _frame = null!;
     [SerializeField] SpriteRenderer _titleBackground = null!;
@@ -472,6 +473,7 @@ namespace Spelldawn.Game
 
       _cardBack.gameObject.SetActive(value: false);
       _cardFront.gameObject.SetActive(value: true);
+      Registry.AssetService.AssignSprite(_imageBackground, revealed.ImageBackground);
       Registry.AssetService.AssignSprite(_image, revealed.Image, referenceWidth: _referenceImageWidth);
       _image.gameObject.SetActive(true);
       Registry.AssetService.AssignSprite(_frame, revealed.CardFrame);

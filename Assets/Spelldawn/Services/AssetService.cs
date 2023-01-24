@@ -345,6 +345,7 @@ namespace Spelldawn.Services
         LoadSprite(requests, card.TitleBackground);
         LoadSprite(requests, card.Jewel);
         LoadSprite(requests, card.Image);
+        LoadSprite(requests, card.ImageBackground);
         LoadNodeAssets(requests, card.SupplementalInfo);
       }
     }
@@ -374,7 +375,7 @@ namespace Spelldawn.Services
       if (playerInfo != null)
       {
         LoadSprite(requests, playerInfo.CardBack);
-        LoadSprite(requests, playerInfo.Portrait);
+        LoadSprite(requests, playerInfo.ArenaPortrait);
       }
     }
 

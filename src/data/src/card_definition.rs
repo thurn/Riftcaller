@@ -178,6 +178,12 @@ pub struct CardConfig {
     pub subtypes: Vec<CardSubtype>,
     pub custom_targeting: Option<TargetRequirement<CardId>>,
     pub special_effects: SpecialEffects,
+
+    // Alternate image to display to identify players in the arena
+    pub player_portrait: Option<Sprite>,
+
+    // Content to display behind the main image
+    pub image_background: Option<Sprite>,
 }
 
 /// The fundamental object defining the behavior of a given card in Spelldawn

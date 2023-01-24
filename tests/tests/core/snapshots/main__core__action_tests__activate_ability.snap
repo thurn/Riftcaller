@@ -10,8 +10,7 @@ command_list:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 998
@@ -22,8 +21,7 @@ command_list:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 999
@@ -128,8 +126,7 @@ command_list:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 1000
@@ -140,8 +137,7 @@ command_list:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 999
@@ -247,8 +243,7 @@ channel_response:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 999
@@ -259,8 +254,7 @@ channel_response:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 998
@@ -368,8 +362,7 @@ channel_response:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 999
@@ -380,8 +373,7 @@ channel_response:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 1000

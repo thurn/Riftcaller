@@ -388,8 +388,7 @@ impl Summarize for PlayerView {
 impl Summarize for PlayerInfo {
     fn summarize(self, summary: &mut Summary) {
         summary.child("name", self.name);
-        summary.child("portrait", self.portrait);
-        summary.child("portrait_frame", self.portrait_frame);
+        summary.child("arena_portrait", self.arena_portrait);
         summary.child("card_back", self.card_back);
         summary.children(
             "valid_rooms_to_visit",

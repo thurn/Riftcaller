@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
@@ -29,7 +28,6 @@ namespace Spelldawn.Game
   {
     [Header("Identity")] [SerializeField] Registry _registry = null!;
     [SerializeField] SpriteRenderer _image = null!;
-    [SerializeField] SpriteRenderer _frame = null!;
     [SerializeField] TextMeshPro _scoreText = null!;
     [SerializeField] GameObject _raidSymbol = null!;
     [SerializeField] PlayerName _owner;
@@ -65,8 +63,7 @@ namespace Spelldawn.Game
     public void RenderPlayerInfo(PlayerInfo playerInfo)
     {
       _validRoomsToVisit = playerInfo.ValidRoomsToVisit.ToHashSet();
-      _registry.AssetService.AssignSprite(_image, playerInfo.Portrait);
-      _registry.AssetService.AssignSprite(_frame, playerInfo.PortraitFrame);
+      _registry.AssetService.AssignSprite(_image, playerInfo.ArenaPortrait);
     }
 
     public void RenderScore(ScoreView scoreView)

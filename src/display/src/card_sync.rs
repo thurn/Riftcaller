@@ -41,7 +41,12 @@ pub fn card_view(
     Ok(CardView {
         card_id: Some(adapters::card_identifier(card.id)),
         card_position: Some(positions::convert(builder, game, card)?),
-        prefab: CardPrefab::Standard.into(),
+        prefab: if definition.card_type == CardType::Identity {
+            CardPrefab::FullHeight
+        } else {
+            CardPrefab::Standard
+        }
+        .into(),
         revealed_to_viewer: card.is_revealed_to(builder.user_side),
         is_face_up: card.is_face_up(),
         card_icons: Some(card_icons::build(
@@ -131,10 +136,11 @@ fn revealed_card_view(
 ) -> RevealedCardView {
     let definition = rules::get(card.name);
     RevealedCardView {
-        card_frame: Some(assets::card_frame(definition.school)),
+        card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
         title_background: Some(assets::title_background(definition.config.lineage)),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),
+        image_background: definition.config.image_background.as_ref().map(adapters::sprite),
         title: Some(CardTitle {
             text: definition.name.displayed_name(),
             text_color: Some(assets::title_color(definition.config.lineage)),
@@ -179,6 +185,7 @@ fn revealed_ability_card_view(
         title_background: Some(assets::title_background(None)),
         jewel: None,
         image: Some(adapters::sprite(&definition.image)),
+        image_background: definition.config.image_background.as_ref().map(adapters::sprite),
         title: Some(CardTitle {
             text: definition.name.displayed_name(),
             text_color: Some(assets::title_color(None)),

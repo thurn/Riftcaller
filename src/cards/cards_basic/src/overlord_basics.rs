@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use assets::{rexard_images, EnvironmentType};
 use card_helpers::{text, *};
 use data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints, TargetRequirement,
@@ -30,13 +30,20 @@ pub fn basic_overlord_identity() -> CardDefinition {
         name: CardName::BasicOverlordIdentity,
         sets: vec![SetName::Basics],
         cost: identity_cost(),
-        image: rexard_images::get(RexardPack::MonstersAvatars, "22"),
+        image: assets::fantasy_class_image("Warlock", "Male"),
         card_type: CardType::Identity,
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![],
-        config: CardConfig::default(),
+        abilities: vec![text_only_ability(text!["Your leader starts the game in play"])],
+        config: CardConfig {
+            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Warlock_M")),
+            image_background: Some(assets::environments(
+                EnvironmentType::CastlesTowersKeeps,
+                "BoneKeep/SceneryBKeep_outside_2",
+            )),
+            ..CardConfig::default()
+        },
     }
 }
 

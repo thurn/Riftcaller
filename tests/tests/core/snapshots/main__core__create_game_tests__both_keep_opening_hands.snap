@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/create_game_tests.rs
-assertion_line: 145
+assertion_line: 146
 expression: "Summary::summarize(&response)"
 ---
 
@@ -10,8 +10,7 @@ command_list:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -22,8 +21,7 @@ command_list:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -218,8 +216,7 @@ command_list:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -230,8 +227,7 @@ command_list:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -431,8 +427,7 @@ command_list:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -443,8 +438,7 @@ command_list:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -646,8 +640,7 @@ channel_response:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -658,8 +651,7 @@ channel_response:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -854,8 +846,7 @@ channel_response:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -866,8 +857,7 @@ channel_response:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -1085,8 +1075,7 @@ channel_response:
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5
@@ -1097,8 +1086,7 @@ channel_response:
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 5

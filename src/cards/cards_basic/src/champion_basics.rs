@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
+use assets::EnvironmentType;
 use card_helpers::{text, *};
 use data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, TargetRequirement,
@@ -30,13 +31,20 @@ pub fn basic_champion_identity() -> CardDefinition {
         name: CardName::BasicChampionIdentity,
         sets: vec![SetName::Basics],
         cost: identity_cost(),
-        image: rexard_images::get(RexardPack::MonstersAvatars, "22"),
+        image: assets::fantasy_class_image("Priest", "Female"),
         card_type: CardType::Identity,
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![],
-        config: CardConfig::default(),
+        abilities: vec![text_only_ability(text!["Your leader starts the game in play"])],
+        config: CardConfig {
+            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Priest_F")),
+            image_background: Some(assets::environments(
+                EnvironmentType::CastlesTowersKeeps,
+                "Enchanted/SceneryEForest_outside_1",
+            )),
+            ..CardConfig::default()
+        },
     }
 }
 

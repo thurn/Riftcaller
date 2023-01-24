@@ -37,7 +37,7 @@ pub struct ScreenOverlay<'a> {
 
 impl<'a> ScreenOverlay<'a> {
     pub fn new(player: &'a PlayerData) -> Self {
-        Self { player, show_close_button: None, show_deck_button: true }
+        Self { player, show_close_button: None, show_deck_button: player.status.is_none() }
     }
 
     pub fn show_close_button(mut self, show_close_button: PanelAddress) -> Self {

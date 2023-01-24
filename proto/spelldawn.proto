@@ -878,12 +878,16 @@ message RevealedCardView {
     // Additional interface element rendered to the side of the card during an
     // info zoom.
     Node supplemental_info = 9;
+
+    // Content to display behind the main image
+    SpriteAddress image_background = 10;
 }
 
 enum CardPrefab {
     CARD_PREFAB_UNSPECIFIED = 0;
     CARD_PREFAB_STANDARD = 1;
     CARD_PREFAB_TOKEN_CARD = 2;
+    CARD_PREFAB_FULL_HEIGHT = 3;
 }
 
 message CardView {
@@ -930,12 +934,11 @@ message CardView {
 
 message PlayerInfo {
     google.protobuf.StringValue name = 1;
-    SpriteAddress portrait = 2;
-    SpriteAddress portrait_frame = 3;
-    repeated RoomIdentifier valid_rooms_to_visit = 4;
+    SpriteAddress arena_portrait = 2;
+    repeated RoomIdentifier valid_rooms_to_visit = 3;
 
     // Card back asset to use for this player's cards.
-    SpriteAddress card_back = 5;
+    SpriteAddress card_back = 4;
 }
 
 message ManaView {

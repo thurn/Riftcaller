@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ForrestIml
+  m_EditorClassIdentifier: 
+  m_GroupName: ForrestIml
+  m_Data:
+    m_SerializedData: []
+  m_GUID: de8846f76ceea44e6bd465fcb0176022
+  m_SerializeEntries:
+  - m_GUID: 485a04193bd3e4a699138a7388f603ce
+    m_Address: ForrestIml/FantasyClasses1/Characters
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 55131526561ec4d359aa6cef28a3ca50
+    m_Address: ForrestIml/FantasyClasses1/UI_Portraits/Silver_Square
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 57438e7af07164049b6f07cc51dbe306
+    m_Address: ForrestIml/FantasyClasses1/UI_Portraits/Gold_Square
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: e265d031f09744fe1a4c689188a56557, type: 2}
+    - {fileID: 11400000, guid: 5dea1cf94ed064ccb86a541f057005f5, type: 2}

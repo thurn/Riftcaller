@@ -17,7 +17,7 @@
 pub mod rexard_images;
 
 use core_ui::design::FontColor;
-use data::primitives::{CardType, Lineage, Rarity, School, Side};
+use data::primitives::{CardType, Lineage, Rarity, School, Side, Sprite};
 use data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
@@ -122,32 +122,36 @@ pub fn card_back(school: School) -> SpriteAddress {
 }
 
 /// Address for the frame of a card of a given [School]
-pub fn card_frame(school: School) -> SpriteAddress {
-    SpriteAddress {
-        address: format!(
-            "{}.png",
-            match school {
-                School::Law => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardFrame"
-                }
-                School::Shadow => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame"
-                }
-                School::Primal => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame"
-                }
-                School::Beyond => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame"
-                }
-                School::Blood => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame"
-                }
-                School::Neutral => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame"
-                }
+pub fn card_frame(school: School, card_type: CardType) -> SpriteAddress {
+    let string = if card_type == CardType::Identity {
+        match school {
+            School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardLawFullHeight",
+            School::Shadow => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardShadowFullHeight"
             }
-        ),
-    }
+            School::Primal => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardPrimalFullHeight"
+            }
+            School::Beyond => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBeyondFullHeight"
+            }
+            School::Blood => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBloodFullHeight",
+            School::Neutral => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardNeutralFullHeight"
+            }
+        }
+    } else {
+        match school {
+            School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardFrame",
+            School::Shadow => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame",
+            School::Primal => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame",
+            School::Beyond => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame",
+            School::Blood => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame",
+            School::Neutral => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame",
+        }
+    };
+
+    SpriteAddress { address: format!("{}.png", string) }
 }
 
 pub fn ability_card_frame(side: Side) -> SpriteAddress {
@@ -277,6 +281,50 @@ pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
                     }
                 },
             }
+        ),
+    }
+}
+
+pub fn fantasy_class_image(name: &'static str, sex: &'static str) -> Sprite {
+    Sprite {
+        address: format!(
+            "ForrestIml/FantasyClasses1/Characters/{}/{}_{}_Stock Art.png",
+            name, name, sex
+        ),
+    }
+}
+
+pub fn fantasy_class_portrait(side: Side, name: impl Into<String>) -> Sprite {
+    Sprite {
+        address: format!(
+            "ForrestIml/FantasyClasses1/UI_Portraits/{}_Square/UI_Portrait_{}_Square_{}.png",
+            match side {
+                Side::Overlord => "Silver",
+                Side::Champion => "Gold",
+            },
+            match side {
+                Side::Overlord => "Silver",
+                Side::Champion => "Gold",
+            },
+            name.into()
+        ),
+    }
+}
+
+pub enum EnvironmentType {
+    CastlesTowersKeeps,
+    DungeonsShrinesAltars,
+}
+
+pub fn environments(environment_type: EnvironmentType, path: &'static str) -> Sprite {
+    Sprite {
+        address: format!(
+            "TPR/EnvironmentsHQ/{}/Images/{}.png",
+            match environment_type {
+                EnvironmentType::CastlesTowersKeeps => "Castles, Towers & Keeps",
+                EnvironmentType::DungeonsShrinesAltars => "Dungeons, Shrines & Altars",
+            },
+            path
         ),
     }
 }

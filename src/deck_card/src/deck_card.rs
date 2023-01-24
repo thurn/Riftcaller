@@ -118,7 +118,10 @@ impl Component for DeckCard {
                     Style::new()
                         .height(self.height.dim(100.0))
                         .background_image_auto_size(BackgroundImageAutoSize::FromHeight)
-                        .background_image(assets::card_frame(definition.school)),
+                        .background_image(assets::card_frame(
+                            definition.school,
+                            definition.card_type,
+                        )),
                 ),
             )
             .child(DeckCardName::new(definition, self.height))

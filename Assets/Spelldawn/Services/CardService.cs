@@ -33,6 +33,7 @@ namespace Spelldawn.Services
     [SerializeField] BoxCollider _playCardArea = null!;
     [SerializeField] Card _cardPrefab = null!;
     [SerializeField] Card _tokenCardPrefab = null!;
+    [SerializeField] Card _fullHeightCardPrefab = null!;    
 
     Card? _optimisticCard;
     SpriteAddress _userCardBack = null!;
@@ -315,10 +316,15 @@ namespace Spelldawn.Services
 
     Card InstantiateCardPrefab(CardPrefab prefab)
     {
+      if (prefab == CardPrefab.FullHeight)
+      {
+        Debug.Log($"InstantiateCardPrefab Full Height"); 
+      }
       var result = ComponentUtils.Instantiate(prefab switch
       {
         CardPrefab.Standard => _cardPrefab,
         CardPrefab.TokenCard => _tokenCardPrefab,
+        CardPrefab.FullHeight => _fullHeightCardPrefab,
         _ => throw new ArgumentOutOfRangeException()
       });
       result.Registry = _registry;

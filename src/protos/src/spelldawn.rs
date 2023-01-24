@@ -786,6 +786,9 @@ pub struct RevealedCardView {
     /// info zoom.
     #[prost(message, optional, tag = "9")]
     pub supplemental_info: ::core::option::Option<Node>,
+    /// Content to display behind the main image
+    #[prost(message, optional, tag = "10")]
+    pub image_background: ::core::option::Option<SpriteAddress>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardView {
@@ -836,13 +839,11 @@ pub struct PlayerInfo {
     #[prost(message, optional, tag = "1")]
     pub name: ::core::option::Option<::prost::alloc::string::String>,
     #[prost(message, optional, tag = "2")]
-    pub portrait: ::core::option::Option<SpriteAddress>,
-    #[prost(message, optional, tag = "3")]
-    pub portrait_frame: ::core::option::Option<SpriteAddress>,
-    #[prost(enumeration = "RoomIdentifier", repeated, tag = "4")]
+    pub arena_portrait: ::core::option::Option<SpriteAddress>,
+    #[prost(enumeration = "RoomIdentifier", repeated, tag = "3")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
     /// Card back asset to use for this player's cards.
-    #[prost(message, optional, tag = "5")]
+    #[prost(message, optional, tag = "4")]
     pub card_back: ::core::option::Option<SpriteAddress>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1990,6 +1991,7 @@ pub enum CardPrefab {
     Unspecified = 0,
     Standard = 1,
     TokenCard = 2,
+    FullHeight = 3,
 }
 /// Possible corners which can be anchored.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]

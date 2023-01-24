@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/create_game_tests.rs
-assertion_line: 66
+assertion_line: 67
 expression: "Summary::run(&response)"
 ---
 
@@ -12,8 +12,7 @@ expression: "Summary::run(&response)"
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 0
@@ -24,8 +23,7 @@ expression: "Summary::run(&response)"
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 0

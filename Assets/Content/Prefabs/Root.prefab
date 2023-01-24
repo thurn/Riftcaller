@@ -151,7 +151,6 @@ GameObject:
   - component: {fileID: 205228965686964223}
   - component: {fileID: 205228965686964222}
   - component: {fileID: 205228965686964221}
-  - component: {fileID: 205228965686964220}
   - component: {fileID: 3790007980437034109}
   - component: {fileID: 3210582071691945273}
   m_Layer: 0
@@ -205,7 +204,6 @@ MonoBehaviour:
   _arrowService: {fileID: 0}
   _arenaService: {fileID: 0}
   _raidService: {fileID: 0}
-  _oldUpdateInterfaceService: {fileID: 205228965686964220}
   _offscreenCards: {fileID: 0}
   _cardStaging: {fileID: 0}
   _revealedCardsBrowserSmall: {fileID: 0}
@@ -380,6 +378,7 @@ MonoBehaviour:
   _playCardArea: {fileID: 0}
   _cardPrefab: {fileID: 3573626451624847171, guid: 94ee6780efb164566b7977f07977d072, type: 3}
   _tokenCardPrefab: {fileID: 3573626451624847171, guid: b493701223066439bb1e45ca83211d54, type: 3}
+  _fullHeightCardPrefab: {fileID: 273438924950617825, guid: aedc5381427064f94929ac604a4af54a, type: 3}
 --- !u!114 &205228965686964172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,19 +492,6 @@ MonoBehaviour:
     _sprite: {fileID: 21300000, guid: d20948b5f901d4724afe09c764dec545, type: 3}
   - _substring: Number_Icons_Color_3
     _sprite: {fileID: 21300000, guid: 37d0489200587493ca23d349f475881f, type: 3}
---- !u!114 &205228965686964220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 205228965686964173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28a92195b9844c17adc273bf56a7152c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _registry: {fileID: 205228965686964167}
 --- !u!114 &3790007980437034109
 MonoBehaviour:
   m_ObjectHideFlags: 0

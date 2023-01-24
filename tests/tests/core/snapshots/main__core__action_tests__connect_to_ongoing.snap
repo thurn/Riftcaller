@@ -12,8 +12,7 @@ expression: "Summary::run(&r3)"
             side: Champion
             player_info: 
                 name: "Test Champion Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 999
@@ -24,8 +23,7 @@ expression: "Summary::run(&r3)"
             side: Overlord
             player_info: 
                 name: "Test Overlord Identity"
-                portrait: "<SpriteAddress>"
-                portrait_frame: "<SpriteAddress>"
+                arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 999
