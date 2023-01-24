@@ -197,7 +197,7 @@ pub enum GameObjectId {
     AbilityId(AbilityId),
     Deck(Side),
     DiscardPile(Side),
-    Identity(Side),
+    Leader(Side),
 }
 
 impl From<CardId> for GameObjectId {
@@ -314,7 +314,7 @@ pub enum Rarity {
 /// Possible types of cards
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum CardType {
-    Identity,
+    Leader,
 
     ChampionSpell,
     Weapon,

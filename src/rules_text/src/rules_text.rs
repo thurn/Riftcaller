@@ -200,7 +200,7 @@ fn card_type_line(definition: &CardDefinition) -> String {
         CardType::Minion => "Minion",
         CardType::Project => "Project",
         CardType::Scheme => "Scheme",
-        CardType::Identity => "Identity",
+        CardType::Leader => "Leader",
     });
 
     if let Some(lineage) = definition.config.lineage {

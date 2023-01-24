@@ -36,13 +36,13 @@ pub const MANA_TAKEN: ManaValue = 2;
 pub const MINION_HEALTH: HealthValue = 5;
 pub const TEST_LINEAGE: Lineage = Lineage::Infernal;
 
-pub fn test_overlord_identity() -> CardDefinition {
+pub fn test_overlord_leader() -> CardDefinition {
     CardDefinition {
-        name: CardName::TestOverlordIdentity,
+        name: CardName::TestOverlordLeader,
         sets: vec![SetName::Test],
-        cost: identity_cost(),
+        cost: leader_cost(),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/3.png"),
-        card_type: CardType::Identity,
+        card_type: CardType::Leader,
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::None,
@@ -51,13 +51,13 @@ pub fn test_overlord_identity() -> CardDefinition {
     }
 }
 
-pub fn test_champion_identity() -> CardDefinition {
+pub fn test_champion_leader() -> CardDefinition {
     CardDefinition {
-        name: CardName::TestChampionIdentity,
+        name: CardName::TestChampionLeader,
         sets: vec![SetName::Test],
-        cost: identity_cost(),
+        cost: leader_cost(),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/2.png"),
-        card_type: CardType::Identity,
+        card_type: CardType::Leader,
         side: Side::Champion,
         school: School::Primal,
         rarity: Rarity::None,
@@ -71,7 +71,7 @@ pub fn test_overlord_spell() -> CardDefinition {
         name: CardName::TestOverlordSpell,
         cost: cost(1),
         card_type: CardType::OverlordSpell,
-        ..test_overlord_identity()
+        ..test_overlord_leader()
     }
 }
 
@@ -80,7 +80,7 @@ pub fn test_champion_spell() -> CardDefinition {
         name: CardName::TestChampionSpell,
         cost: cost(1),
         card_type: CardType::ChampionSpell,
-        ..test_champion_identity()
+        ..test_champion_leader()
     }
 }
 

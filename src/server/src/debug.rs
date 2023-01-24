@@ -129,7 +129,7 @@ pub fn handle_debug_action(
         DebugAction::FullCollection => {
             requests::handle_player_action(database, player_id, |player| {
                 for name in enum_iterator::all::<CardName>() {
-                    if !name.is_test_card() && !name.is_null_identity() {
+                    if !name.is_test_card() && !name.is_null_leader() {
                         player.adventure_mut()?.collection.insert(name, 3);
                     }
                 }

@@ -513,11 +513,8 @@ impl ClientGameData {
                 let non_card = game.game_object_positions.as_ref().unwrap();
                 self.insert_position(deck_id(PlayerName::User), &non_card.user_deck);
                 self.insert_position(deck_id(PlayerName::Opponent), &non_card.opponent_deck);
-                self.insert_position(identity_id(PlayerName::User), &non_card.user_identity);
-                self.insert_position(
-                    identity_id(PlayerName::Opponent),
-                    &non_card.opponent_identity,
-                );
+                self.insert_position(leader_id(PlayerName::User), &non_card.user_leader);
+                self.insert_position(leader_id(PlayerName::Opponent), &non_card.opponent_leader);
                 self.insert_position(discard_id(PlayerName::User), &non_card.user_discard);
                 self.insert_position(discard_id(PlayerName::Opponent), &non_card.opponent_deck);
             }
@@ -554,8 +551,8 @@ fn deck_id(name: PlayerName) -> GameObjectIdentifier {
     GameObjectIdentifier { id: Some(Id::Deck(name as i32)) }
 }
 
-fn identity_id(name: PlayerName) -> GameObjectIdentifier {
-    GameObjectIdentifier { id: Some(Id::Identity(name as i32)) }
+fn leader_id(name: PlayerName) -> GameObjectIdentifier {
+    GameObjectIdentifier { id: Some(Id::Leader(name as i32)) }
 }
 
 fn discard_id(name: PlayerName) -> GameObjectIdentifier {

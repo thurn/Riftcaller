@@ -96,9 +96,9 @@ namespace Spelldawn.Services
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
           IdUtil.DeckObjectId(PlayerName.Opponent), positions.OpponentDeck, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
-          IdUtil.IdentityCardId(PlayerName.User), positions.UserIdentity, animate)));
+          IdUtil.LeaderCardId(PlayerName.User), positions.UserLeader, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
-          IdUtil.IdentityCardId(PlayerName.Opponent), positions.OpponentIdentity, animate)));
+          IdUtil.LeaderCardId(PlayerName.Opponent), positions.OpponentLeader, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
           IdUtil.DiscardPileObjectId(PlayerName.User), positions.UserDiscard, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
@@ -316,10 +316,6 @@ namespace Spelldawn.Services
 
     Card InstantiateCardPrefab(CardPrefab prefab)
     {
-      if (prefab == CardPrefab.FullHeight)
-      {
-        Debug.Log($"InstantiateCardPrefab Full Height"); 
-      }
       var result = ComponentUtils.Instantiate(prefab switch
       {
         CardPrefab.Standard => _cardPrefab,

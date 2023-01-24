@@ -27,21 +27,21 @@ use once_cell::sync::Lazy;
 /// Empty Overlord deck for use in tests
 pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
-    identity: CardName::TestOverlordIdentity,
+    leader: CardName::TestOverlordLeader,
     cards: HashMap::new(),
 });
 
 /// Spell Overlord deck for use in tests
 pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
-    identity: CardName::TestOverlordIdentity,
+    leader: CardName::TestOverlordLeader,
     cards: hashmap! {CardName::TestOverlordSpell => 45},
 });
 
 /// Basic Overlord starter deck in adventure mode
 pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
-    identity: CardName::BasicOverlordIdentity,
+    leader: CardName::BasicOverlordLeader,
     cards: hashmap! {
         CardName::Conspire => 3,
         CardName::Devise => 3,
@@ -62,7 +62,7 @@ pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 /// Standard Overlord deck for use in tests
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
-    identity: CardName::TestOverlordIdentity,
+    leader: CardName::TestOverlordLeader,
     cards: hashmap! {
         CardName::GoldMine => 3,
         CardName::ActivateReinforcements => 2,
@@ -86,21 +86,21 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 /// Empty Champion deck for use in tests
 pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
-    identity: CardName::TestChampionIdentity,
+    leader: CardName::TestChampionLeader,
     cards: HashMap::new(),
 });
 
 /// Spell Overlord deck for use in tests
 pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
-    identity: CardName::TestChampionIdentity,
+    leader: CardName::TestChampionLeader,
     cards: hashmap! {CardName::TestChampionSpell => 45},
 });
 
 /// Basic Champion starter deck in adventure mode
 pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
-    identity: CardName::BasicChampionIdentity,
+    leader: CardName::BasicChampionLeader,
     cards: hashmap! {
         CardName::ArcaneRecovery => 3,
         CardName::EldritchSurge => 3,
@@ -121,7 +121,7 @@ pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 /// Standard Champion deck for use in tests
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
-    identity: CardName::TestChampionIdentity,
+    leader: CardName::TestChampionLeader,
     cards: hashmap! {
         CardName::Meditation => 2,
         CardName::CoupDeGrace => 3,

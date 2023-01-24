@@ -150,8 +150,8 @@ namespace Spelldawn.Services
       {
         case GameObjectIdentifier.IdOneofCase.CardId:
           return _registry.CardService.FindCard(gameObjectId.CardId);
-        case GameObjectIdentifier.IdOneofCase.Identity:
-          return _registry.IdentityCardForPlayer(gameObjectId.Identity);
+        case GameObjectIdentifier.IdOneofCase.Leader:
+          return _registry.LeaderCardForPlayer(gameObjectId.Leader);
         case GameObjectIdentifier.IdOneofCase.Deck:
           return _registry.DeckForPlayer(gameObjectId.Deck);
         case GameObjectIdentifier.IdOneofCase.DiscardPile:
@@ -188,10 +188,10 @@ namespace Spelldawn.Services
           _registry.RaidService.RaidParticipants,
         ObjectPosition.PositionOneofCase.Browser =>
           _registry.CardBrowser,
-        ObjectPosition.PositionOneofCase.Identity =>
-          _registry.IdentityCardForPlayer(position.Identity.Owner),
-        ObjectPosition.PositionOneofCase.IdentityContainer =>
-          _registry.IdentityCardPositionForPlayer(position.IdentityContainer.Owner),
+        ObjectPosition.PositionOneofCase.Leader =>
+          _registry.LeaderCardForPlayer(position.Leader.Owner),
+        ObjectPosition.PositionOneofCase.LeaderContainer =>
+          _registry.LeaderCardPositionForPlayer(position.LeaderContainer.Owner),
         ObjectPosition.PositionOneofCase.IntoCard =>
           _registry.CardService.FindCard(position.IntoCard.CardId).ContainedObjects,
         ObjectPosition.PositionOneofCase.Revealed => position.Revealed.Size switch

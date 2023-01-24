@@ -72,8 +72,8 @@ pub fn cost(mana: ManaValue) -> Cost<CardId> {
     Cost { mana: Some(mana), actions: 1, custom_cost: None }
 }
 
-/// [Cost] for an identity card
-pub fn identity_cost() -> Cost<CardId> {
+/// [Cost] for an leader card
+pub fn leader_cost() -> Cost<CardId> {
     Cost::default()
 }
 

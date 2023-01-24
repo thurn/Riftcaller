@@ -652,7 +652,7 @@ message CardIdentifier {
 message GameObjectIdentifier {
     oneof id {
         CardIdentifier card_id = 1;
-        PlayerName identity = 2;
+        PlayerName leader = 2;
         PlayerName deck = 3;
         PlayerName discard_pile = 4;
     }
@@ -787,7 +787,7 @@ message ObjectPositionDiscardPileContainer {
 }
 
 // Large display of cards *while* the score animation is playing. After the
-// score animation finishes, scored cards move to 'Identity' position.
+// score animation finishes, scored cards move to 'Leader' position.
 message ObjectPositionScoreAnimation {
 }
 
@@ -797,11 +797,11 @@ message ObjectPositionRaid {
 message ObjectPositionBrowser {
 }
 
-message ObjectPositionIdentity {
+message ObjectPositionLeader {
     PlayerName owner = 1;
 }
 
-message ObjectPositionIdentityContainer {
+message ObjectPositionLeaderContainer {
     PlayerName owner = 1;
 }
 
@@ -850,8 +850,8 @@ message ObjectPosition {
         ObjectPositionDiscardPileContainer discard_pile_container = 11;
         ObjectPositionRaid raid = 13;
         ObjectPositionBrowser browser = 14;
-        ObjectPositionIdentity identity = 15;
-        ObjectPositionIdentityContainer identity_container = 16;
+        ObjectPositionLeader leader = 15;
+        ObjectPositionLeaderContainer leader_container = 16;
         ObjectPositionIntoCard into_card = 17;
         ObjectPositionRevealedCards revealed = 18;
     }
@@ -971,8 +971,8 @@ message PlayerView {
 message GameObjectPositions {
     ObjectPosition user_deck = 1;
     ObjectPosition opponent_deck = 2;
-    ObjectPosition user_identity = 3;
-    ObjectPosition opponent_identity = 4;
+    ObjectPosition user_leader = 3;
+    ObjectPosition opponent_leader = 4;
     ObjectPosition user_discard = 5;
     ObjectPosition opponent_discard = 6;
 }

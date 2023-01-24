@@ -41,7 +41,7 @@ pub fn card_view(
     Ok(CardView {
         card_id: Some(adapters::card_identifier(card.id)),
         card_position: Some(positions::convert(builder, game, card)?),
-        prefab: if definition.card_type == CardType::Identity {
+        prefab: if definition.card_type == CardType::Leader {
             CardPrefab::FullHeight
         } else {
             CardPrefab::Standard
@@ -161,7 +161,7 @@ fn revealed_card_view(
                 CardType::Minion => positions::unspecified_room(RoomLocation::Defender),
                 CardType::Project => positions::unspecified_room(RoomLocation::Occupant),
                 CardType::Scheme => positions::unspecified_room(RoomLocation::Occupant),
-                CardType::Identity => positions::staging(),
+                CardType::Leader => positions::staging(),
             },
         )),
         supplemental_info: rules_text::build_supplemental_info(

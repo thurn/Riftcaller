@@ -26,13 +26,13 @@ use data::text::{Keyword, Sentence};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
-pub fn basic_champion_identity() -> CardDefinition {
+pub fn basic_champion_leader() -> CardDefinition {
     CardDefinition {
-        name: CardName::BasicChampionIdentity,
+        name: CardName::BasicChampionLeader,
         sets: vec![SetName::Basics],
-        cost: identity_cost(),
+        cost: leader_cost(),
         image: assets::fantasy_class_image("Priest", "Female"),
-        card_type: CardType::Identity,
+        card_type: CardType::Leader,
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,

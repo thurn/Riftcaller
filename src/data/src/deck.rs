@@ -29,9 +29,9 @@ use crate::primitives::Side;
 pub struct Deck {
     /// Identifies which side this deck plays as.
     pub side: Side,
-    /// Identity card for this deck
-    pub identity: CardName,
-    /// How many (non-identity) cards with each name are present in this deck?
+    /// Leader card for this deck
+    pub leader: CardName,
+    /// How many (non-leader) cards with each name are present in this deck?
     #[serde_as(as = "Vec<(_, _)>")]
     pub cards: HashMap<CardName, u32>,
 }
@@ -39,7 +39,7 @@ pub struct Deck {
 impl Deck {
     /// Returns a vector which repeats each [CardName] in [Self::cards] in
     /// alphabetical order a number of times equal to its deck count. Note: The
-    /// returned vector does *not* contain [Self::identity].
+    /// returned vector does *not* contain [Self::leader].
     pub fn card_names(&self) -> Vec<CardName> {
         let mut result = self
             .cards

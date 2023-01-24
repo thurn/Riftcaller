@@ -62,9 +62,9 @@ pub enum CardPosition {
     /// A card has been played by the [Side] player and is in the process of
     /// resolving with the provided target
     Played(Side, CardTarget),
-    /// Marks the identity card for a side. The first identity (by sorting key)
-    /// is the primary identity for a player.
-    Identity(Side),
+    /// Marks the leader card for a side. The first leader (by sorting key)
+    /// is the primary leader for a player.
+    Leader(Side),
 }
 
 impl CardPosition {
@@ -117,9 +117,9 @@ impl CardPosition {
         self.kind() == CardPositionKind::Scored
     }
 
-    /// True if this card is an identity card
-    pub fn is_identity(&self) -> bool {
-        self.kind() == CardPositionKind::Identity
+    /// True if this card is an leader card
+    pub fn is_leader(&self) -> bool {
+        self.kind() == CardPositionKind::Leader
     }
 }
 
@@ -162,21 +162,21 @@ pub struct CardState {
 
 impl CardState {
     /// Creates a new card state, placing the card into the `side` player's
-    /// deck. If `is_identity` is true, the card is instead marked as revealed
-    /// and placed into the player's identity zone.
-    pub fn new(id: CardId, name: CardName, is_identity: bool) -> Self {
+    /// deck. If `is_leader` is true, the card is instead marked as revealed
+    /// and placed into the player's leader zone.
+    pub fn new(id: CardId, name: CardName, is_leader: bool) -> Self {
         Self {
             id,
             name,
-            position: if is_identity {
-                CardPosition::Identity(id.side)
+            position: if is_leader {
+                CardPosition::Leader(id.side)
             } else {
                 CardPosition::DeckUnknown(id.side)
             },
             sorting_key: 0,
             data: CardData {
-                revealed_to_owner: is_identity,
-                revealed_to_opponent: is_identity,
+                revealed_to_owner: is_leader,
+                revealed_to_opponent: is_leader,
                 ..CardData::default()
             },
         }

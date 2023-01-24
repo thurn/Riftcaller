@@ -55,8 +55,8 @@ namespace Spelldawn.Services
             break;
         }
 
-        _registry.IdentityCardForPlayer(PlayerName.User).OnRaidStateChanged(value);
-        _registry.IdentityCardForPlayer(PlayerName.Opponent).OnRaidStateChanged(value);
+        _registry.LeaderCardForPlayer(PlayerName.User).OnRaidStateChanged(value);
+        _registry.LeaderCardForPlayer(PlayerName.Opponent).OnRaidStateChanged(value);
         _raidActive = value;
       }
     }

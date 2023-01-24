@@ -106,7 +106,7 @@ impl RaidPhaseImpl for EncounterPhase {
                 game.record_update(|| {
                     GameUpdate::TargetedInteraction(TargetedInteraction {
                         source: GameObjectId::CardId(defender_id),
-                        target: GameObjectId::Identity(Side::Champion),
+                        target: GameObjectId::Leader(Side::Champion),
                     })
                 });
                 dispatch::invoke_event(game, MinionCombatAbilityEvent(defender_id))?;

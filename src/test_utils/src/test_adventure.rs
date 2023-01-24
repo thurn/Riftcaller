@@ -77,10 +77,10 @@ impl TestAdventure {
             },
             config.deck.unwrap_or(Deck {
                 side,
-                identity: if side == Side::Overlord {
-                    CardName::TestOverlordIdentity
+                leader: if side == Side::Overlord {
+                    CardName::TestOverlordLeader
                 } else {
-                    CardName::TestChampionIdentity
+                    CardName::TestChampionLeader
                 },
                 cards: HashMap::new(),
             }),

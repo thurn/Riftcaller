@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 1320847832900120617}
   - component: {fileID: 3814907993535626011}
   m_Layer: 0
-  m_Name: ArenaIdentityCard
+  m_Name: ArenaLeaderCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

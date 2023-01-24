@@ -225,17 +225,17 @@ namespace Spelldawn.Services
     {
       if (playerView.Side != PlayerSide.Unspecified)
       {
-        _registry.IdentityCardForPlayer(playerName).Side = playerView.Side;
+        _registry.LeaderCardForPlayer(playerName).Side = playerView.Side;
       }
 
       if (playerView.PlayerInfo != null)
       {
-        _registry.IdentityCardForPlayer(playerName).RenderPlayerInfo(playerView.PlayerInfo);
+        _registry.LeaderCardForPlayer(playerName).RenderPlayerInfo(playerView.PlayerInfo);
       }
 
       if (playerView.Score != null)
       {
-        _registry.IdentityCardForPlayer(playerName).RenderScore(playerView.Score);
+        _registry.LeaderCardForPlayer(playerName).RenderScore(playerView.Score);
       }
 
       if (playerView.Mana != null)

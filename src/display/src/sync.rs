@@ -57,12 +57,12 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
 }
 
 fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
-    let identity = game.card(game.first_identity(side)?);
-    let definition = rules::get(identity.name);
+    let leader = game.card(game.first_leader(side)?);
+    let definition = rules::get(leader.name);
     Ok(PlayerView {
         side: adapters::player_side(side),
         player_info: Some(PlayerInfo {
-            name: Some(identity.name.displayed_name()),
+            name: Some(leader.name.displayed_name()),
             arena_portrait: Some(adapters::sprite(
                 definition.config.player_portrait.as_ref().unwrap_or(&definition.image),
             )),
@@ -76,7 +76,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
                     .map(adapters::room_identifier)
                     .collect(),
             },
-            card_back: Some(assets::card_back(rules::get(identity.name).school)),
+            card_back: Some(assets::card_back(rules::get(leader.name).school)),
         }),
         score: Some(ScoreView { score: game.player(side).score }),
         mana: Some(ManaView {

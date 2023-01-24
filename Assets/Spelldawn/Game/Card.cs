@@ -305,7 +305,7 @@ namespace Spelldawn.Game
         if (_arrowOnDrag is { } arrow)
         {
           gameObject.SetActive(false);
-          Registry.ArrowService.ShowArrow(arrow, Registry.IdentityCardForPlayer(PlayerName.User).transform, this);
+          Registry.ArrowService.ShowArrow(arrow, Registry.LeaderCardForPlayer(PlayerName.User).transform, this);
         }
       }
       else

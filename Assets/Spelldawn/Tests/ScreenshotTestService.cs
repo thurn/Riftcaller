@@ -149,8 +149,8 @@ namespace Spelldawn.Tests
       Registry.ManaDisplayForPlayer(PlayerName.Opponent).DisableAnimation();
       Registry.ActionDisplayForPlayer(PlayerName.User).DisableAnimation();
       Registry.ActionDisplayForPlayer(PlayerName.Opponent).DisableAnimation();
-      Registry.IdentityCardForPlayer(PlayerName.User).DisableAnimation();
-      Registry.IdentityCardForPlayer(PlayerName.Opponent).DisableAnimation();
+      Registry.LeaderCardForPlayer(PlayerName.User).DisableAnimation();
+      Registry.LeaderCardForPlayer(PlayerName.Opponent).DisableAnimation();
       Registry.Graphy.SetActive(false);
       TweenUtils.EndToEndTests = this;
       _sceneLoaded = true;

@@ -9,7 +9,7 @@ command_list:
         user: 
             side: Champion
             player_info: 
-                name: "Test Champion Identity"
+                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -20,7 +20,7 @@ command_list:
         opponent: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Identity"
+                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -36,12 +36,12 @@ command_list:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_identity: 
+            user_leader: 
                 sorting_key: 2
                 position: ObjectPositionRaid
-            opponent_identity: 
+            opponent_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: Opponent }
+                position: ObjectPositionLeaderContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -60,7 +60,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Identity"
+            title: "Test Overlord Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -110,7 +110,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Identity"
+            title: "Test Champion Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -166,7 +166,7 @@ command_list:
         user: 
             side: Champion
             player_info: 
-                name: "Test Champion Identity"
+                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -177,7 +177,7 @@ command_list:
         opponent: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Identity"
+                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -205,12 +205,12 @@ command_list:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_identity: 
+            user_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: User }
-            opponent_identity: 
+                position: ObjectPositionLeaderContainer { owner: User }
+            opponent_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: Opponent }
+                position: ObjectPositionLeaderContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -229,7 +229,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Identity"
+            title: "Test Overlord Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -293,7 +293,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Identity"
+            title: "Test Champion Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -345,7 +345,7 @@ channel_response:
         user: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Identity"
+                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -356,7 +356,7 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-                name: "Test Champion Identity"
+                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -372,10 +372,10 @@ channel_response:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_identity: 
+            user_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: User }
-            opponent_identity: 
+                position: ObjectPositionLeaderContainer { owner: User }
+            opponent_leader: 
                 sorting_key: 2
                 position: ObjectPositionRaid
             user_discard: 
@@ -396,7 +396,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Identity"
+            title: "Test Overlord Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -460,7 +460,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Identity"
+            title: "Test Champion Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -503,7 +503,7 @@ channel_response:
         user: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Identity"
+                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -514,7 +514,7 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-                name: "Test Champion Identity"
+                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -530,12 +530,12 @@ channel_response:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_identity: 
+            user_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: User }
-            opponent_identity: 
+                position: ObjectPositionLeaderContainer { owner: User }
+            opponent_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: Opponent }
+                position: ObjectPositionLeaderContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -554,7 +554,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Identity"
+            title: "Test Overlord Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -618,7 +618,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Identity"
+            title: "Test Champion Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false

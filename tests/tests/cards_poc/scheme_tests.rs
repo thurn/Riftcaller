@@ -16,7 +16,7 @@ use data::card_name::CardName;
 use data::primitives::Side;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::object_position::Position;
-use protos::spelldawn::{DrawCardAction, ObjectPositionIdentity, PlayerName};
+use protos::spelldawn::{DrawCardAction, ObjectPositionLeader, PlayerName};
 use test_utils::*;
 
 #[test]
@@ -28,7 +28,7 @@ fn gold_mine() {
     assert_eq!(STARTING_MANA - 4 /* level cost */ + 7 /* gained */, g.me().mana());
     assert_eq!(
         g.user.get_card(id).position(),
-        Position::Identity(ObjectPositionIdentity { owner: PlayerName::User.into() })
+        Position::Leader(ObjectPositionLeader { owner: PlayerName::User.into() })
     );
 }
 
@@ -44,7 +44,7 @@ fn activate_reinforcements() {
     assert_eq!(STARTING_MANA - 5, g.me().mana());
     assert_eq!(
         g.user.get_card(id).position(),
-        Position::Identity(ObjectPositionIdentity { owner: PlayerName::User.into() })
+        Position::Leader(ObjectPositionLeader { owner: PlayerName::User.into() })
     );
 }
 

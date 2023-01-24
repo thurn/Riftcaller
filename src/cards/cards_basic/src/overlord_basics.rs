@@ -25,13 +25,13 @@ use data::text::{DamageWord, Keyword, Sentence, TextToken};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
-pub fn basic_overlord_identity() -> CardDefinition {
+pub fn basic_overlord_leader() -> CardDefinition {
     CardDefinition {
-        name: CardName::BasicOverlordIdentity,
+        name: CardName::BasicOverlordLeader,
         sets: vec![SetName::Basics],
-        cost: identity_cost(),
+        cost: leader_cost(),
         image: assets::fantasy_class_image("Warlock", "Male"),
-        card_type: CardType::Identity,
+        card_type: CardType::Leader,
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,

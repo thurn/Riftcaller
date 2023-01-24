@@ -80,12 +80,12 @@ pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
     }
 }
 
-/// Address for the frame of a player's identity card image
-pub fn identity_card_frame(side: Side) -> SpriteAddress {
-    SpriteAddress { address: format!("{}.png", identity_card_frame_string(side)) }
+/// Address for the frame of a player's leader card image
+pub fn leader_card_frame(side: Side) -> SpriteAddress {
+    SpriteAddress { address: format!("{}.png", leader_card_frame_string(side)) }
 }
 
-fn identity_card_frame_string(side: Side) -> &'static str {
+fn leader_card_frame_string(side: Side) -> &'static str {
     match side {
         Side::Overlord => "SpriteWay/Icons/Fantasy Player Frames/50002",
         Side::Champion => "SpriteWay/Icons/Fantasy Player Frames/50003",
@@ -123,7 +123,7 @@ pub fn card_back(school: School) -> SpriteAddress {
 
 /// Address for the frame of a card of a given [School]
 pub fn card_frame(school: School, card_type: CardType) -> SpriteAddress {
-    let string = if card_type == CardType::Identity {
+    let string = if card_type == CardType::Leader {
         match school {
             School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardLawFullHeight",
             School::Shadow => {
@@ -200,7 +200,7 @@ pub fn arena_frame(side: Side, card_type: CardType, lineage: Option<Lineage>) ->
                 Some(Lineage::Prismatic) => "SpriteWay/Icons/Clean Frames/9047",
                 Some(Lineage::Construct) => "SpriteWay/Icons/Clean Frames/9003",
                 None => match card_type {
-                    CardType::Identity => identity_card_frame_string(side),
+                    CardType::Leader => leader_card_frame_string(side),
                     CardType::Artifact => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",

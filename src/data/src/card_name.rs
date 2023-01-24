@@ -29,8 +29,8 @@ pub enum CardName {
     // When renaming a card, add  #[serde(alias = "OldName")] to preserve serialization
 
     // Cards for use in tests
-    TestChampionIdentity,
-    TestOverlordIdentity,
+    TestChampionLeader,
+    TestOverlordLeader,
     TestChampionSpell,
     TestOverlordSpell,
     /// Scheme requiring 3 levels to score 1 point
@@ -113,7 +113,7 @@ pub enum CardName {
     Stormcaller,
 
     // Basic
-    BasicChampionIdentity,
+    BasicChampionLeader,
     ArcaneRecovery,
     EldritchSurge,
     Lodestone,
@@ -128,7 +128,7 @@ pub enum CardName {
     SimpleSpear,
     SimpleStaff,
     EtherealBlade,
-    BasicOverlordIdentity,
+    BasicOverlordLeader,
     Conspire,
     Devise,
     Machinate,
@@ -150,8 +150,8 @@ impl CardName {
         match self {
             Self::MaraudersAxe => "Marauder's Axe".to_string(),
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
-            Self::BasicChampionIdentity => "Identity".to_string(),
-            Self::BasicOverlordIdentity => "Identity".to_string(),
+            Self::BasicChampionLeader => "Leader".to_string(),
+            Self::BasicOverlordLeader => "Leader".to_string(),
             _ => format!("{}", self).from_case(Case::Pascal).to_case(Case::Title),
         }
     }
@@ -161,8 +161,8 @@ impl CardName {
         self.displayed_name().starts_with("Test")
     }
 
-    pub fn is_null_identity(&self) -> bool {
-        self.displayed_name().starts_with("No Identity")
+    pub fn is_null_leader(&self) -> bool {
+        self.displayed_name().starts_with("No Leader")
     }
 }
 

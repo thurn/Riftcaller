@@ -11,7 +11,7 @@ expression: "Summary::run(&r3)"
         user: 
             side: Champion
             player_info: 
-                name: "Test Champion Identity"
+                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -22,7 +22,7 @@ expression: "Summary::run(&r3)"
         opponent: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Identity"
+                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
                 card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
@@ -38,12 +38,12 @@ expression: "Summary::run(&r3)"
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_identity: 
+            user_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: User }
-            opponent_identity: 
+                position: ObjectPositionLeaderContainer { owner: User }
+            opponent_leader: 
                 sorting_key: 1
-                position: ObjectPositionIdentityContainer { owner: Opponent }
+                position: ObjectPositionLeaderContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -62,7 +62,7 @@ expression: "Summary::run(&r3)"
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Identity"
+            title: "Test Overlord Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -86,7 +86,7 @@ expression: "Summary::run(&r3)"
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Identity"
+            title: "Test Champion Leader"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false

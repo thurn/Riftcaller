@@ -342,20 +342,20 @@ impl GameState {
         }
     }
 
-    /// Returns identity cards for the provided Side
-    pub fn identities(&self, side: Side) -> impl Iterator<Item = &CardState> {
-        self.cards(side).iter().filter(|c| c.position().kind() == CardPositionKind::Identity)
+    /// Returns leader cards for the provided Side
+    pub fn leaders(&self, side: Side) -> impl Iterator<Item = &CardState> {
+        self.cards(side).iter().filter(|c| c.position().kind() == CardPositionKind::Leader)
     }
 
-    /// Returns the first identity for the `side` player.
-    pub fn first_identity(&self, side: Side) -> Result<CardId> {
-        let identities = self.card_list_for_position(side, CardPosition::Identity(side));
-        Ok(*identities.first().with_error(|| "No identity found")?)
+    /// Returns the first leader for the `side` player.
+    pub fn first_leader(&self, side: Side) -> Result<CardId> {
+        let leaders = self.card_list_for_position(side, CardPosition::Leader(side));
+        Ok(*leaders.first().with_error(|| "No leader found")?)
     }
 
-    /// Returns an arbitrary identity card for the provided `side`, if any.
-    pub fn some_identity(&self, side: Side) -> Result<&CardState> {
-        self.identities(side).next().with_error(|| format!("No identity card for {:?}", side))
+    /// Returns an arbitrary leader card for the provided `side`, if any.
+    pub fn some_leader(&self, side: Side) -> Result<&CardState> {
+        self.leaders(side).next().with_error(|| format!("No leader card for {:?}", side))
     }
 
     /// Look up [CardState] for a card. Panics if this card is not present in
@@ -581,10 +581,10 @@ impl GameState {
     /// Create card states for a deck
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
         let mut result =
-            vec![CardState::new(CardId::new(side, 0), deck.identity, true /* is_identity */)];
+            vec![CardState::new(CardId::new(side, 0), deck.leader, true /* is_leader */)];
 
         result.extend(deck.card_names().iter().enumerate().map(move |(index, name)| {
-            CardState::new(CardId::new(side, index + 1), *name, false /* is_identity */)
+            CardState::new(CardId::new(side, index + 1), *name, false /* is_leader */)
         }));
 
         result
@@ -674,13 +674,13 @@ mod tests {
             PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Overlord,
-                identity: CardName::TestOverlordIdentity,
+                leader: CardName::TestOverlordLeader,
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
             PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Champion,
-                identity: CardName::TestOverlordIdentity,
+                leader: CardName::TestOverlordLeader,
                 cards: champion.into_iter().map(|name| (name, 1)).collect(),
             },
             GameConfiguration { deterministic: true, ..GameConfiguration::default() },

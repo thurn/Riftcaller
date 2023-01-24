@@ -168,17 +168,17 @@ namespace Spelldawn.Services
     public ActionDisplay ActionDisplayForPlayer(PlayerName playerName) =>
       playerName == PlayerName.User ? _userActionDisplay : _opponentActionDisplay;
 
-    [SerializeField] ObjectDisplay _userIdentityCardPosition = null!;
-    [SerializeField] ObjectDisplay _opponentIdentityCardPosition = null!;
+    [SerializeField] ObjectDisplay _userLeaderCardPosition = null!;
+    [SerializeField] ObjectDisplay _opponentLeaderCardPosition = null!;
 
-    public ObjectDisplay IdentityCardPositionForPlayer(PlayerName playerName) =>
-      playerName == PlayerName.User ? _userIdentityCardPosition : _opponentIdentityCardPosition;
+    public ObjectDisplay LeaderCardPositionForPlayer(PlayerName playerName) =>
+      playerName == PlayerName.User ? _userLeaderCardPosition : _opponentLeaderCardPosition;
 
-    [SerializeField] IdentityCard _userIdentityCard = null!;
-    [SerializeField] IdentityCard _opponentIdentityCard = null!;
+    [SerializeField] LeaderCard _userLeaderCard = null!;
+    [SerializeField] LeaderCard _opponentLeaderCard = null!;
 
-    public IdentityCard IdentityCardForPlayer(PlayerName playerName) =>
-      playerName == PlayerName.User ? _userIdentityCard : _opponentIdentityCard;
+    public LeaderCard LeaderCardForPlayer(PlayerName playerName) =>
+      playerName == PlayerName.User ? _userLeaderCard : _opponentLeaderCard;
 
     [SerializeField] GameObject? _userActiveLight;
     [SerializeField] GameObject? _opponentActiveLight;

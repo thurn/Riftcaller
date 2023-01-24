@@ -539,7 +539,7 @@ pub mod game_object_identifier {
         #[prost(message, tag = "1")]
         CardId(super::CardIdentifier),
         #[prost(enumeration = "super::PlayerName", tag = "2")]
-        Identity(i32),
+        Leader(i32),
         #[prost(enumeration = "super::PlayerName", tag = "3")]
         Deck(i32),
         #[prost(enumeration = "super::PlayerName", tag = "4")]
@@ -670,7 +670,7 @@ pub struct ObjectPositionDiscardPileContainer {
     pub owner: i32,
 }
 /// Large display of cards *while* the score animation is playing. After the
-/// score animation finishes, scored cards move to 'Identity' position.
+/// score animation finishes, scored cards move to 'Leader' position.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionScoreAnimation {}
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -678,12 +678,12 @@ pub struct ObjectPositionRaid {}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionBrowser {}
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ObjectPositionIdentity {
+pub struct ObjectPositionLeader {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ObjectPositionIdentityContainer {
+pub struct ObjectPositionLeaderContainer {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
@@ -749,9 +749,9 @@ pub mod object_position {
         #[prost(message, tag = "14")]
         Browser(super::ObjectPositionBrowser),
         #[prost(message, tag = "15")]
-        Identity(super::ObjectPositionIdentity),
+        Leader(super::ObjectPositionLeader),
         #[prost(message, tag = "16")]
-        IdentityContainer(super::ObjectPositionIdentityContainer),
+        LeaderContainer(super::ObjectPositionLeaderContainer),
         #[prost(message, tag = "17")]
         IntoCard(super::ObjectPositionIntoCard),
         #[prost(message, tag = "18")]
@@ -888,9 +888,9 @@ pub struct GameObjectPositions {
     #[prost(message, optional, tag = "2")]
     pub opponent_deck: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "3")]
-    pub user_identity: ::core::option::Option<ObjectPosition>,
+    pub user_leader: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "4")]
-    pub opponent_identity: ::core::option::Option<ObjectPosition>,
+    pub opponent_leader: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "5")]
     pub user_discard: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "6")]
