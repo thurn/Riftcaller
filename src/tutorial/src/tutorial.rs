@@ -58,6 +58,32 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
         TutorialStep::OpponentAction(TutorialAction::GainMana),
         TutorialStep::OpponentAction(TutorialAction::GainMana),
         TutorialStep::OpponentAction(TutorialAction::GainMana),
-        TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::ArcaneRecovery]),
+        TutorialStep::SetTopOfDeck(
+            Side::Champion,
+            vec![CardName::ArcaneRecovery, CardName::Lodestone],
+        ),
+        TutorialStep::AwaitPlayerActions(vec![TutorialAction::GainMana]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayCard(
+            CardName::ArcaneRecovery,
+            CardTarget::None,
+        )]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialAction::DrawCard]),
+        TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
+        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+            CardName::GatheringDark,
+            CardTarget::Room(RoomId::RoomA),
+        )),
+        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+            CardName::Machinate,
+            CardTarget::Room(RoomId::RoomA),
+        )),
+        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+            CardName::Frog,
+            CardTarget::Room(RoomId::RoomA),
+        )),
+        TutorialStep::SetTopOfDeck(
+            Side::Champion,
+            vec![CardName::SimpleHammer, CardName::Contemplate, CardName::SimpleClub],
+        ),
     ]
 });

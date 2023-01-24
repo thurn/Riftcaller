@@ -24,7 +24,10 @@ use tracing::{debug, debug_span};
 use with_error::WithError;
 
 /// Handle applying tutorial actions
-pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameAction>) -> Result<()> {
+pub fn handle_tutorial_action(
+    game: &mut GameState,
+    mut user_action: Option<GameAction>,
+) -> Result<()> {
     let _span = debug_span!("handle_tutorial_actions").entered();
     let mut i = game.data.tutorial_step.index;
     while i < crate::STEPS.len() {
@@ -36,14 +39,18 @@ pub fn handle_tutorial_action(game: &mut GameState, user_action: Option<GameActi
             TutorialStep::SetHand(side, cards) => set_hand(game, *side, cards),
             TutorialStep::SetTopOfDeck(side, cards) => set_top_of_deck(game, *side, cards),
             TutorialStep::OpponentAction(action) => {
-                if !match_opponent_action(game, user_action, action)? {
+                if match_opponent_action(game, user_action, action)? {
+                    user_action = None; // Consume action, avoid matching again
+                } else {
                     debug!(?action, "Awaiting oppponent action");
                     break;
                 }
                 Ok(())
             }
             TutorialStep::AwaitPlayerActions(actions) => {
-                if !await_player_actions(game, user_action, actions)? {
+                if await_player_actions(game, user_action, actions)? {
+                    user_action = None; // Consume action, avoid matching again
+                } else {
                     debug!(?actions, "Awaiting user action");
                     break;
                 }

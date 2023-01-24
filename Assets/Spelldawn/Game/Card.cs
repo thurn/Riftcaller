@@ -95,6 +95,8 @@ namespace Spelldawn.Game
 
     public Registry Registry { get; set; } = null!;
 
+    public CardIdentifier CardId => Errors.CheckNotNull(_cardId);
+
     public bool IsRevealed => _isRevealed;
 
     bool InHand() => HasGameContext && GameContext == GameContext.Hand;
@@ -565,7 +567,7 @@ namespace Spelldawn.Game
     {
       var side = _cardId?.Side switch
       {
-        PlayerSide.Overlord => "O", PlayerSide.Champion => "O", _ => "??"
+        PlayerSide.Overlord => "O", PlayerSide.Champion => "C", _ => "??"
       };
 
       if (_cardId?.AbilityId != null)

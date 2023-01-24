@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using UnityEngine;
@@ -43,19 +45,30 @@ namespace Spelldawn.Game
       }
     }
 
+    public IEnumerable<Card> Cards() => AllObjects.OfType<Card>();
+
     protected override void LongPress()
     {
       StartCoroutine(_registry.LongPressCardBrowser.BrowseCards(this));
     }
-
-    void OnMouseUpAsButton()
+    
+    public override bool CanHandleMouseDown() => true;
+    
+    public override void MouseDown()
     {
-      if (_clickable && _registry.CapabilityService.CanExecuteAction(ClientAction.ActionOneofCase.DrawCard))
+      if (_clickable)
       {
-        _registry.ActionService.HandleAction(new ClientAction
+        if (_registry.CapabilityService.CanExecuteAction(ClientAction.ActionOneofCase.DrawCard))
         {
-          DrawCard = new DrawCardAction()
-        });
+          _registry.ActionService.HandleAction(new ClientAction
+          {
+            DrawCard = new DrawCardAction()
+          });
+        }
+        else
+        {
+          Debug.Log("Ignoring click on deck, cannot currently draw a card");
+        }
       }
     }
   }

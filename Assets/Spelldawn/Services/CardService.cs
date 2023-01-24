@@ -35,7 +35,7 @@ namespace Spelldawn.Services
     [SerializeField] Card _tokenCardPrefab = null!;
     [SerializeField] Card _fullHeightCardPrefab = null!;    
 
-    Card? _optimisticCard;
+    [SerializeField] Card? _optimisticCard;
     SpriteAddress _userCardBack = null!;
     SpriteAddress _opponentCardBack = null!;
 
@@ -156,8 +156,16 @@ namespace Spelldawn.Services
       {
         Destroy(_optimisticCard);
       }
+      
+      if (_registry.DeckForPlayer(PlayerName.User).Cards().Any())
+      {
+        // If there are known cards on top of the user's deck, we can't an optimistic
+        // animation because they are already being managed by CardService.
+        return;
+      }
 
       _optimisticCard = InstantiateCardPrefab(CardPrefab.Standard);
+      
       _optimisticCard.Render(new CardView { OwningPlayer = PlayerName.User }, GameContext.Staging);
       _optimisticCard.transform.localScale = new Vector3(Card.CardScale, Card.CardScale, 1f);
       PlayDrawCardAnimation(_optimisticCard);
