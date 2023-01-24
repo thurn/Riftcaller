@@ -14,6 +14,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
+use core_ui::icons;
 use data::card_definition::{AbilityType, TargetRequirement};
 use data::card_state::CardState;
 use data::game::GameState;
@@ -23,7 +24,7 @@ use data::text::RulesTextContext;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,
-    PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
+    PlayInRoom, RevealedCardView, RulesText, SpriteAddress, TargetingArrow,
 };
 use rules::{flags, queries};
 use rules_text::card_icons;
@@ -181,13 +182,21 @@ fn revealed_ability_card_view(
     let definition = rules::get(card.name);
     let ability = definition.ability(ability_id.index);
     RevealedCardView {
-        card_frame: Some(assets::ability_card_frame(ability_id.side())),
-        title_background: Some(assets::title_background(None)),
-        jewel: None,
+        card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
+        title_background: Some(SpriteAddress {
+            address: "LittleSweetDaemon/TCG_Card_Design/Custom/Title/TokenTitleBackground.png"
+                .to_string(),
+        }),
+        jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),
         image_background: definition.config.image_background.as_ref().map(adapters::sprite),
         title: Some(CardTitle {
-            text: definition.name.displayed_name(),
+            text: format!(
+                "{} {} {}",
+                icons::BULLET,
+                definition.name.displayed_name(),
+                icons::BULLET
+            ),
             text_color: Some(assets::title_color(None)),
         }),
         rules_text: Some(RulesText {

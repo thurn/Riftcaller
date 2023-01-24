@@ -93,8 +93,9 @@ command_list:
         revealed_card: 
             card_frame: "<SpriteAddress>"
             title_background: "<SpriteAddress>"
+            jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Activated Ability Take Mana"
+            title: "• Test Activated Ability Take Mana •"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -209,8 +210,9 @@ command_list:
         revealed_card: 
             card_frame: "<SpriteAddress>"
             title_background: "<SpriteAddress>"
+            jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Activated Ability Take Mana"
+            title: "• Test Activated Ability Take Mana •"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -348,8 +350,9 @@ channel_response:
             revealed_card: 
                 card_frame: "<SpriteAddress>"
                 title_background: "<SpriteAddress>"
+                jewel: "<SpriteAddress>"
                 image: "<SpriteAddress>"
-                title: "Test Activated Ability Take Mana"
+                title: "• Test Activated Ability Take Mana •"
                 rules_text: "<RulesText>"
                 targeting: 
                     can_play: true

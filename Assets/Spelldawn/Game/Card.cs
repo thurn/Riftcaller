@@ -43,7 +43,7 @@ namespace Spelldawn.Game
     [SerializeField] SpriteRenderer _titleBackground = null!;
     [SerializeField] MeshRenderer _outline = null!;
     [SerializeField] TextMeshPro _title = null!;
-    [SerializeField] WarpText _warpText = null!;
+    [SerializeField] WarpText? _warpText;
     [SerializeField] TextMeshPro _rulesText = null!;
     [SerializeField] SpriteRenderer? _jewel;
     [SerializeField] SpriteRenderer _arenaFrame = null!;
@@ -497,7 +497,10 @@ namespace Spelldawn.Game
       if (_title.text != title)
       {
         _title.text = title;
-        StartCoroutine(_warpText.Warp());            
+        if (_warpText && _warpText != null)
+        {
+          StartCoroutine(_warpText.Warp());
+        }
       }
     }
 

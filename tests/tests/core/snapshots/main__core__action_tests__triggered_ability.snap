@@ -363,8 +363,9 @@ command_list:
             revealed_card: 
                 card_frame: "<SpriteAddress>"
                 title_background: "<SpriteAddress>"
+                jewel: "<SpriteAddress>"
                 image: "<SpriteAddress>"
-                title: "Test Triggered Ability Take Mana At Dusk"
+                title: "• Test Triggered Ability Take Mana At Dusk •"
                 rules_text: "<RulesText>"
                 targeting: 
                     can_play: false
@@ -950,8 +951,9 @@ channel_response:
             revealed_card: 
                 card_frame: "<SpriteAddress>"
                 title_background: "<SpriteAddress>"
+                jewel: "<SpriteAddress>"
                 image: "<SpriteAddress>"
-                title: "Test Triggered Ability Take Mana At Dusk"
+                title: "• Test Triggered Ability Take Mana At Dusk •"
                 rules_text: "<RulesText>"
                 targeting: 
                     can_play: false

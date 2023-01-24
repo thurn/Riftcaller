@@ -231,10 +231,10 @@ MonoBehaviour:
   _opponentManaDisplay: {fileID: 0}
   _userActionDisplay: {fileID: 0}
   _opponentActionDisplay: {fileID: 0}
-  _userIdentityCardPosition: {fileID: 0}
-  _opponentIdentityCardPosition: {fileID: 0}
-  _userIdentityCard: {fileID: 0}
-  _opponentIdentityCard: {fileID: 0}
+  _userLeaderCardPosition: {fileID: 0}
+  _opponentLeaderCardPosition: {fileID: 0}
+  _userLeaderCard: {fileID: 0}
+  _opponentLeaderCard: {fileID: 0}
   _userActiveLight: {fileID: 0}
   _opponentActiveLight: {fileID: 0}
   _graphy: {fileID: 205228966181399124}
@@ -377,7 +377,7 @@ MonoBehaviour:
   _registry: {fileID: 205228965686964167}
   _playCardArea: {fileID: 0}
   _cardPrefab: {fileID: 3573626451624847171, guid: 94ee6780efb164566b7977f07977d072, type: 3}
-  _tokenCardPrefab: {fileID: 3573626451624847171, guid: b493701223066439bb1e45ca83211d54, type: 3}
+  _tokenCardPrefab: {fileID: 8205451300665919485, guid: 417cf2c9967ba4ce4af88afcb0180754, type: 3}
   _fullHeightCardPrefab: {fileID: 273438924950617825, guid: aedc5381427064f94929ac604a4af54a, type: 3}
 --- !u!114 &205228965686964172
 MonoBehaviour:
