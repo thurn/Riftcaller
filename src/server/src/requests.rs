@@ -238,7 +238,7 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
         }
         Action::PlayCard(action) => {
             let _span = info_span!("handle_play_card").entered();
-            warn!(?player_id, ?game_id, ?action, "Handling play card action");
+            warn!(?action, ?player_id, ?game_id, "Handling play card action");
             let action =
                 match adapters::server_card_id(action.card_id.with_error(|| "CardID expected")?)? {
                     ServerCardId::CardId(card_id) => {
@@ -257,13 +257,13 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
         }
         Action::InitiateRaid(action) => {
             let _span = info_span!("handle_initiate_raid").entered();
-            warn!(?player_id, ?game_id, ?action, "Handling initiate raid action");
+            warn!(?action, ?player_id, ?game_id, "Handling initiate raid action");
             let room_id = adapters::room_id(action.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::InitiateRaid(room_id))
         }
         Action::LevelUpRoom(level_up) => {
             let _span = info_span!("handle_level_up_room").entered();
-            warn!(?player_id, ?game_id, ?level_up, "Handling level up room action");
+            warn!(?level_up, ?player_id, ?game_id, "Handling level up room action");
             let room_id = adapters::room_id(level_up.room_id)?;
             handle_game_action(database, player_id, game_id, GameAction::LevelUpRoom(room_id))
         }
@@ -569,7 +569,7 @@ fn handle_standard_action(
     let action: UserAction = de::from_slice(&standard_action.payload)
         .with_error(|| "Failed to deserialize action payload")?;
     let _span = info_span!("handle_standard_action", ?player_id, ?game_id, ?action).entered();
-    warn!(?player_id, ?game_id, ?action, "Handling standard action");
+    warn!(?action, ?player_id, ?game_id, "Action");
 
     let mut result = match action {
         UserAction::NewAdventure(side) => handle_new_adventure(database, player_id, side),

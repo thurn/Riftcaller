@@ -163,7 +163,7 @@ pub fn leyline() -> CardDefinition {
         name: CardName::Leyline,
         sets: vec![SetName::Basics],
         cost: cost(2),
-        image: rexard_images::spell(1, "SpellBook02_78"),
+        image: rexard_images::spell(2, "SpellBook02_78"),
         card_type: CardType::Project,
         side: Side::Overlord,
         school: School::Neutral,

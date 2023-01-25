@@ -22,6 +22,7 @@ tokio = { version = "1.19.2", features = ["macros", "rt-multi-thread", "sync", "
 tokio-stream = "0.1.9"
 tonic = "0.7.2"
 tracing = "0.1.35"
+tracing-subscriber = "0.3.14"
 
 actions = { path = "../actions", version = "0.0.0" }
 adapters = { path = "../adapters", version = "0.0.0" }

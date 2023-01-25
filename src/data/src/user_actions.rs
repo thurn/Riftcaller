@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt;
+
 use serde::{Deserialize, Serialize};
 
 use crate::adventure_action::AdventureAction;
@@ -106,7 +108,7 @@ impl From<DeckEditorAction> for UserAction {
 }
 
 /// All possible action payloads that can be sent from a client
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
     /// Developer actions for debugging
     Debug(DebugAction),
@@ -132,4 +134,19 @@ pub enum UserAction {
 
     /// Perform an action in the deck editor
     DeckEditorAction(DeckEditorAction),
+}
+
+impl fmt::Debug for UserAction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Debug(a) => f.debug_tuple("Debug").field(a).finish(),
+            Self::NewAdventure(a) => f.debug_tuple("NewAdventure").field(a).finish(),
+            Self::AdventureAction(a) => write!(f, "{:?}", a),
+            Self::LeaveAdventure => write!(f, "LeaveAdventure"),
+            Self::NewGame(a) => f.debug_tuple("NewGame").field(a).finish(),
+            Self::GameAction(a) => write!(f, "{:?}", a),
+            Self::LeaveGame => write!(f, "LeaveGame"),
+            Self::DeckEditorAction(a) => write!(f, "{:?}", a),
+        }
+    }
 }

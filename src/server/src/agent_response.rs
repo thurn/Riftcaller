@@ -29,7 +29,7 @@ use data::primitives::{GameId, Side};
 use database::Database;
 use once_cell::sync::Lazy;
 use protos::spelldawn::{CommandList, PlayerIdentifier};
-use tracing::{error, info};
+use tracing::{info, info_span, subscriber, warn, Level};
 use tutorial::tutorial_actions;
 use with_error::fail;
 
@@ -99,7 +99,11 @@ async fn run_agent_loop(
     loop {
         let game = SpelldawnState(database.game(game_id)?);
         let commands = if let Some((side, agent)) = active_agent(&game) {
+            let _span = info_span!("pick_agent_action", ?respond_to, ?game_id).entered();
+            info!(?game_id, ?respond_to, "Picking agent action");
             let action = pick_action(&game, agent)?;
+
+            warn!(?action, ?respond_to, ?game_id, "Agent Action");
             let response = requests::handle_game_action(
                 &mut database,
                 game.player(side).id,
@@ -130,15 +134,16 @@ async fn run_agent_loop(
 }
 
 fn pick_action(game: &SpelldawnState, agent: Box<dyn Agent<SpelldawnState>>) -> Result<GameAction> {
-    let action = if game.data.config.tutorial {
-        if let Some(tutorial_action) = tutorial_actions::current_opponent_action(game)? {
-            tutorial_action
+    let error_subscriber = tracing_subscriber::fmt().with_max_level(Level::WARN).finish();
+    subscriber::with_default(error_subscriber, || {
+        Ok(if game.data.config.tutorial {
+            if let Some(tutorial_action) = tutorial_actions::current_opponent_action(game)? {
+                tutorial_action
+            } else {
+                agent.pick_action(AgentConfig::with_deadline(3), game)?
+            }
         } else {
-            error!("No tutorial action returned");
             agent.pick_action(AgentConfig::with_deadline(3), game)?
-        }
-    } else {
-        agent.pick_action(AgentConfig::with_deadline(3), game)?
-    };
-    Ok(action)
+        })
+    })
 }

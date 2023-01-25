@@ -269,7 +269,6 @@ benchmark *args='':
       codesign -f -s - `find target/release/deps -name '*benchmarks*'`; \
     fi
     cargo criterion -p tests -- "$@"
-    /bin/rm -r \~
 
 # Checks documentation lints, haven't figured out how to do this with a single command
 check-docs:

@@ -16,6 +16,8 @@
 
 #![allow(clippy::use_self)] // Required to use EnumKind
 
+use std::fmt;
+
 use anyhow::{anyhow, Result};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
@@ -66,7 +68,7 @@ pub enum CardPromptAction {
 /// An action which can be taken in the user interface, typically embedded
 /// inside the `GameAction::StandardAction` protobuf message type when sent to
 /// the client.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum PromptAction {
     /// Action to keep or mulligan opening hand
     MulliganDecision(MulliganDecision),
@@ -76,6 +78,17 @@ pub enum PromptAction {
     AccessPhaseAction(AccessPhaseAction),
     /// Action to take as part of a card ability
     CardAction(CardPromptAction),
+}
+
+impl fmt::Debug for PromptAction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::MulliganDecision(d) => write!(f, "{:?}", d),
+            Self::EncounterAction(a) => write!(f, "{:?}", a),
+            Self::AccessPhaseAction(a) => write!(f, "{:?}", a),
+            Self::CardAction(a) => write!(f, "{:?}", a),
+        }
+    }
 }
 
 /// Presents a choice to a user, typically communicated via a series of buttons
@@ -121,7 +134,7 @@ impl CardTarget {
 }
 
 /// Possible actions a player can take to mutate a GameState
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum GameAction {
     PromptAction(PromptAction),
     Resign,
@@ -132,6 +145,26 @@ pub enum GameAction {
     InitiateRaid(RoomId),
     LevelUpRoom(RoomId),
     SpendActionPoint,
+}
+
+impl fmt::Debug for GameAction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::PromptAction(prompt) => write!(f, "@{:?}", prompt),
+            Self::Resign => write!(f, "@Resign"),
+            Self::GainMana => write!(f, "@GainMana"),
+            Self::DrawCard => write!(f, "@DrawCard"),
+            Self::PlayCard(id, target) => {
+                f.debug_tuple("@PlayCard").field(id).field(target).finish()
+            }
+            Self::ActivateAbility(id, target) => {
+                f.debug_tuple("@ActivateAbility").field(id).field(target).finish()
+            }
+            Self::InitiateRaid(arg0) => f.debug_tuple("@InitiateRaid").field(arg0).finish(),
+            Self::LevelUpRoom(arg0) => f.debug_tuple("@LevelUpRoom").field(arg0).finish(),
+            Self::SpendActionPoint => write!(f, "@SpendActionPoint"),
+        }
+    }
 }
 
 impl From<GameAction> for UserAction {
