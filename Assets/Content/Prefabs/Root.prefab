@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 205228965686964221}
   - component: {fileID: 3790007980437034109}
   - component: {fileID: 3210582071691945273}
+  - component: {fileID: 9218228602600786081}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -243,6 +244,7 @@ MonoBehaviour:
   _worldMap: {fileID: 0}
   _characterService: {fileID: 0}
   _updateInterfaceService: {fileID: 3210582071691945273}
+  _tutorialService: {fileID: 9218228602600786081}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,6 +381,7 @@ MonoBehaviour:
   _cardPrefab: {fileID: 3573626451624847171, guid: 94ee6780efb164566b7977f07977d072, type: 3}
   _tokenCardPrefab: {fileID: 8205451300665919485, guid: 417cf2c9967ba4ce4af88afcb0180754, type: 3}
   _fullHeightCardPrefab: {fileID: 273438924950617825, guid: aedc5381427064f94929ac604a4af54a, type: 3}
+  _optimisticCard: {fileID: 0}
 --- !u!114 &205228965686964172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,6 +518,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be1e32bcbdcb4e34a6f4a2aad0a0ba9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _registry: {fileID: 205228965686964167}
+--- !u!114 &9218228602600786081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205228965686964173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a477b8a92d6d48a2873251ab813aceda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}

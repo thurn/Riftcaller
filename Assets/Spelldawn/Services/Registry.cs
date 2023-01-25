@@ -206,6 +206,9 @@ namespace Spelldawn.Services
     [SerializeField] UpdateInterfaceService _updateInterfaceService = null!;
     public UpdateInterfaceService UpdateInterfaceService => _updateInterfaceService;
 
+    [SerializeField] TutorialService _tutorialService = null!;
+    public TutorialService TutorialService => _tutorialService;
+
     IEnumerator Start()
     {
       Application.targetFrameRate = 60;

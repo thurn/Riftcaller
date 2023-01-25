@@ -31,6 +31,8 @@ namespace Spelldawn.Game
     [SerializeField] TextMeshPro _scoreText = null!;
     [SerializeField] GameObject _raidSymbol = null!;
     [SerializeField] PlayerName _owner;
+    [SerializeField] GameObject _speechBubble = null!;
+    [SerializeField] TextMeshPro _speechBubbleText = null!;
     ISet<RoomIdentifier>? _validRoomsToVisit;
 
     public PlayerSide Side { get; set; }
@@ -69,6 +71,18 @@ namespace Spelldawn.Game
     public void RenderScore(ScoreView scoreView)
     {
       _scoreText.text = scoreView.Score.ToString();
+    }
+
+    public void DisplaySpeechBubble(string text)
+    {
+      _speechBubble.SetActive(true);
+      _speechBubbleText.text = text;
+    }
+
+    public void HideSpeechBubble()
+    {
+      _speechBubble.SetActive(false);
+      _speechBubbleText.text = "";      
     }
 
     public override bool CanHandleMouseDown() => true;

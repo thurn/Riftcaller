@@ -22,6 +22,7 @@ use ai_game_integration::state_node::SpelldawnState;
 use anyhow::Result;
 use concurrent_queue::ConcurrentQueue;
 use data::game::GameState;
+use data::game_actions::GameAction;
 use data::player_data;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{GameId, Side};
@@ -98,17 +99,7 @@ async fn run_agent_loop(
     loop {
         let game = SpelldawnState(database.game(game_id)?);
         let commands = if let Some((side, agent)) = active_agent(&game) {
-            let action = if game.data.config.tutorial {
-                if let Some(tutorial_action) = tutorial_actions::current_opponent_action(&game)? {
-                    tutorial_action
-                } else {
-                    error!("No tutorial action returned");
-                    agent.pick_action(AgentConfig::with_deadline(3), &game)?
-                }
-            } else {
-                agent.pick_action(AgentConfig::with_deadline(3), &game)?
-            };
-
+            let action = pick_action(&game, agent)?;
             let response = requests::handle_game_action(
                 &mut database,
                 game.player(side).id,
@@ -136,4 +127,18 @@ async fn run_agent_loop(
             }
         }
     }
+}
+
+fn pick_action(game: &SpelldawnState, agent: Box<dyn Agent<SpelldawnState>>) -> Result<GameAction> {
+    let action = if game.data.config.tutorial {
+        if let Some(tutorial_action) = tutorial_actions::current_opponent_action(game)? {
+            tutorial_action
+        } else {
+            error!("No tutorial action returned");
+            agent.pick_action(AgentConfig::with_deadline(3), game)?
+        }
+    } else {
+        agent.pick_action(AgentConfig::with_deadline(3), game)?
+    };
+    Ok(action)
 }

@@ -977,6 +977,59 @@ message GameObjectPositions {
     ObjectPosition opponent_discard = 6;
 }
 
+message ShowSpeechBubble {
+    // Text to show.
+    string text = 1;
+
+    // Which player is speaking the message
+    PlayerIdentifier player = 2;
+
+    // Time before the text should be hidden automatically. If not specified,
+    // will remain permanently.
+    TimeValue fade_out_time = 3;
+}
+
+message ShowTutorialTooltip {
+    // Optionally, text to show with the tooltip
+    string text = 1;
+
+    // Time before the tooltip should be hidden automatically. If not specified,
+    // will remain permanently.
+    TimeValue fade_out_time = 2;
+
+    oneof tooltip_anchor {
+        // Arrow pointing to a room
+        RoomIdentifier room = 3;
+
+        // Arrow pointing to a player's deck
+        PlayerIdentifier player_deck = 4;
+
+        // Arrow pointing to a player's mana
+        PlayerIdentifier player_mana = 5;
+    }
+}
+
+// Displays a tutorial UI element to the user when the user is idle for a fixed
+// time period.
+//
+// Taking any game action resets the timer, and the timer doesn't start while
+// network requests are pending.
+message TutorialEffect {
+    // How long the user needs to be idle for before displaying this effect
+    TimeValue idle_timer = 1;
+
+    oneof tutorial_effect {
+        // Text spoken by a player in the game
+        ShowSpeechBubble speech_bubble = 2;
+
+        // Global tutorial message
+        string tutorial_message = 3;
+
+        // Show an arrow
+        ShowTutorialTooltip tutorial_tooltip = 4;
+    }
+}
+
 message GameView {
     PlayerView user = 1;
     PlayerView opponent = 2;
@@ -995,6 +1048,9 @@ message GameView {
 
     // Controls for game actions such as interface prompts
     InterfaceMainControls main_controls = 6;
+
+    // Tutorial UI elements
+    repeated TutorialEffect tutorial_effects = 7;
 }
 
 
