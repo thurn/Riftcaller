@@ -14,6 +14,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use core_ui::design::{BackgroundColor, FontColor};
+use data::primitives::Milliseconds;
 use data::tutorial_data::{GameTutorialState, TooltipAnchor, TutorialDisplay};
 use protos::spelldawn::show_arrow_bubble::ArrowBubbleAnchor;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
@@ -31,29 +32,30 @@ pub fn render(builder: &ResponseBuilder, state: &GameTutorialState) -> Vec<Tutor
 
 fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> TutorialEffectType {
     match display {
-        TutorialDisplay::Tooltip(text, anchor) => {
+        TutorialDisplay::Tooltip(tooltip) => TutorialEffectType::ArrowBubble(ShowArrowBubble {
+            text: tooltip.text.clone(),
+            color: Some(BackgroundColor::Tooltip.into()),
+            font_color: Some(FontColor::Tooltip.into()),
+            arrow_bubble_anchor: Some(match tooltip.anchor {
+                TooltipAnchor::RaidRoom(room) => {
+                    ArrowBubbleAnchor::Room(adapters::room_identifier(room))
+                }
+                TooltipAnchor::GainMana => ArrowBubbleAnchor::PlayerMana(PlayerName::User.into()),
+                TooltipAnchor::DrawCard => ArrowBubbleAnchor::PlayerDeck(PlayerName::User.into()),
+            }),
+            idle_timer: Some(adapters::time_value(tooltip.delay)),
+            ..ShowArrowBubble::default()
+        }),
+        TutorialDisplay::SpeechBubble(speech_bubble) => {
             TutorialEffectType::ArrowBubble(ShowArrowBubble {
-                text: text.clone(),
-                color: Some(BackgroundColor::TooltipBackground.into()),
-                font_color: Some(FontColor::TooltipText.into()),
-                arrow_bubble_anchor: Some(match anchor {
-                    TooltipAnchor::RaidRoom(room) => {
-                        ArrowBubbleAnchor::Room(adapters::room_identifier(*room))
-                    }
-                    TooltipAnchor::GainMana => {
-                        ArrowBubbleAnchor::PlayerMana(PlayerName::User.into())
-                    }
-                    TooltipAnchor::DrawCard => {
-                        ArrowBubbleAnchor::PlayerDeck(PlayerName::User.into())
-                    }
-                }),
-                ..ShowArrowBubble::default()
-            })
-        }
-        TutorialDisplay::SpeechBubble(text, side) => {
-            TutorialEffectType::ArrowBubble(ShowArrowBubble {
-                text: text.clone(),
-                arrow_bubble_anchor: Some(ArrowBubbleAnchor::Player(builder.to_player_name(*side))),
+                text: speech_bubble.text.clone(),
+                color: Some(BackgroundColor::SpeechBubble.into()),
+                font_color: Some(FontColor::SpeechBubble.into()),
+                arrow_bubble_anchor: Some(ArrowBubbleAnchor::Player(
+                    builder.to_player_name(speech_bubble.side),
+                )),
+                idle_timer: Some(adapters::time_value(speech_bubble.delay)),
+                fade_out_time: Some(adapters::time_value(Milliseconds(5000))),
                 ..ShowArrowBubble::default()
             })
         }

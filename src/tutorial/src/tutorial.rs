@@ -16,8 +16,10 @@ pub mod tutorial_actions;
 
 use data::card_name::CardName;
 use data::game_actions::CardTarget;
-use data::primitives::{RoomId, Side};
-use data::tutorial_data::{TooltipAnchor, TutorialAction, TutorialDisplay, TutorialStep};
+use data::primitives::{Milliseconds, RoomId, Side};
+use data::tutorial_data::{
+    SpeechBubble, Tooltip, TooltipAnchor, TutorialAction, TutorialDisplay, TutorialStep,
+};
 use once_cell::sync::Lazy;
 
 pub const PLAYER_SIDE: Side = Side::Champion;
@@ -41,19 +43,25 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             CardName::Scout,
             CardTarget::Room(RoomId::RoomA),
         )),
-        TutorialStep::Display(vec![TutorialDisplay::SpeechBubble(
-            "I should play a card...".to_string(),
-            Side::Champion,
-        )]),
+        TutorialStep::Display(vec![
+            opponent_say("Surrender to the night!", Milliseconds(2000)),
+            user_say("I should play a card...", Milliseconds(10_000)),
+        ]),
         TutorialStep::AwaitPlayerActions(vec![
             TutorialAction::PlayCard(CardName::EldritchSurge, CardTarget::None),
             TutorialAction::PlayCard(CardName::SimpleAxe, CardTarget::None),
         ]),
-        TutorialStep::Display(vec![TutorialDisplay::Tooltip(
-            "Drag portrait here".to_string(),
-            TooltipAnchor::RaidRoom(RoomId::RoomA),
-        )]),
+        TutorialStep::Display(vec![
+            user_say("No evil shall stand against my valor!", Milliseconds(0)),
+            user_say("I should investigate that room...", Milliseconds(5000)),
+            tooltip(
+                "Drag portrait here",
+                TooltipAnchor::RaidRoom(RoomId::RoomA),
+                Milliseconds(5000),
+            ),
+        ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::InitiateRaid(RoomId::RoomA)]),
+        TutorialStep::Display(vec![user_say("For honor!", Milliseconds(0))]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::UseWeapon {
             weapon: CardName::SimpleAxe,
             target: CardName::Scout,
@@ -95,3 +103,15 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
         ),
     ]
 });
+
+fn user_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
+    TutorialDisplay::SpeechBubble(SpeechBubble { text: text.into(), side: Side::Champion, delay })
+}
+
+fn opponent_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
+    TutorialDisplay::SpeechBubble(SpeechBubble { text: text.into(), side: Side::Overlord, delay })
+}
+
+fn tooltip(text: impl Into<String>, anchor: TooltipAnchor, delay: Milliseconds) -> TutorialDisplay {
+    TutorialDisplay::Tooltip(Tooltip { text: text.into(), anchor, delay })
+}

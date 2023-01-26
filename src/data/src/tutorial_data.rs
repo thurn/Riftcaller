@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card_name::CardName;
 use crate::game_actions::CardTarget;
-use crate::primitives::{RoomId, Side};
+use crate::primitives::{Milliseconds, RoomId, Side};
 
 /// Displays an arrow pointing to a specific piece of the user interface
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
@@ -28,14 +28,28 @@ pub enum TooltipAnchor {
     DrawCard,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SpeechBubble {
+    pub text: String,
+    pub side: Side,
+    pub delay: Milliseconds,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Tooltip {
+    pub text: String,
+    pub anchor: TooltipAnchor,
+    pub delay: Milliseconds,
+}
+
 /// Content which can be displayed to the user during the game tutorial
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum TutorialDisplay {
     // Show text and an arrow pointing to a specific UI element
-    Tooltip(String, TooltipAnchor),
+    Tooltip(Tooltip),
 
     // Display text spoken by a specific player
-    SpeechBubble(String, Side),
+    SpeechBubble(SpeechBubble),
 }
 
 /// State of the in-game tutorial

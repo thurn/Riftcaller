@@ -20,7 +20,7 @@ use anyhow::Result;
 use data::adventure::TilePosition;
 use data::player_name::{NamedPlayer, PlayerId};
 use data::primitives::{
-    AbilityId, AbilityIndex, CardId, GameId, GameObjectId, RoomId, Side, Sprite,
+    AbilityId, AbilityIndex, CardId, GameId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
 };
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
@@ -159,4 +159,8 @@ pub fn map_position(p: TilePosition) -> MapPosition {
 
 pub fn tile_position(p: MapPosition) -> TilePosition {
     TilePosition { x: p.x, y: p.y }
+}
+
+pub fn time_value(milliseconds: Milliseconds) -> TimeValue {
+    TimeValue { milliseconds: milliseconds.0 }
 }

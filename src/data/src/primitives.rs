@@ -352,3 +352,7 @@ impl HasCardId for BoostData {
         self.card_id
     }
 }
+
+/// An interval of time in milliseconds
+#[derive(PartialEq, Eq, Hash, Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct Milliseconds(pub u32);
