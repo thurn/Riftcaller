@@ -16,12 +16,13 @@ use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use assets::EnvironmentType;
 use card_helpers::{text, *};
 use data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, TargetRequirement,
+    Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
+    TargetRequirement,
 };
 use data::card_name::CardName;
 use data::primitives::{CardType, Lineage, Rarity, School, Side};
 use data::set_name::SetName;
-use data::special_effects::Projectile;
+use data::special_effects::{Projectile, TimedEffect};
 use data::text::{Keyword, Sentence};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
@@ -226,7 +227,10 @@ pub fn simple_axe() -> CardDefinition {
                 ..CardStats::default()
             },
             lineage: Some(Lineage::Mortal),
-            special_effects: projectile(Projectile::Hovl(2)),
+            special_effects: SpecialEffects {
+                projectile: Some(Projectile::Hovl(8)),
+                additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
+            },
             ..CardConfig::default()
         },
     }

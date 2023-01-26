@@ -18,7 +18,7 @@ use data::primitives::Milliseconds;
 use data::tutorial_data::{GameTutorialState, TooltipAnchor, TutorialDisplay};
 use protos::spelldawn::show_arrow_bubble::ArrowBubbleAnchor;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
-use protos::spelldawn::{PlayerName, ShowArrowBubble, TutorialEffect};
+use protos::spelldawn::{ArrowBubbleCorner, PlayerName, ShowArrowBubble, TutorialEffect};
 
 pub fn render(builder: &ResponseBuilder, state: &GameTutorialState) -> Vec<TutorialEffect> {
     state
@@ -44,6 +44,12 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
                 TooltipAnchor::DrawCard => ArrowBubbleAnchor::PlayerDeck(PlayerName::User.into()),
             }),
             idle_timer: Some(adapters::time_value(tooltip.delay)),
+            arrow_corner: if tooltip.anchor == TooltipAnchor::GainMana {
+                ArrowBubbleCorner::BottomRight
+            } else {
+                ArrowBubbleCorner::BottomLeft
+            }
+            .into(),
             ..ShowArrowBubble::default()
         }),
         TutorialDisplay::SpeechBubble(speech_bubble) => {
@@ -55,7 +61,7 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
                     builder.to_player_name(speech_bubble.side),
                 )),
                 idle_timer: Some(adapters::time_value(speech_bubble.delay)),
-                fade_out_time: Some(adapters::time_value(Milliseconds(5000))),
+                hide_time: Some(adapters::time_value(Milliseconds(4000))),
                 ..ShowArrowBubble::default()
             })
         }

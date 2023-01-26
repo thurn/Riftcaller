@@ -51,7 +51,12 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
         } else {
             None
         },
-        tutorial_effects: tutorial_display::render(builder, &game.data.tutorial_state),
+        tutorial_effects: if builder.state.is_final_update {
+            // Likewise hide tutorial updates while animating
+            tutorial_display::render(builder, &game.data.tutorial_state)
+        } else {
+            vec![]
+        },
     });
 
     Ok(())

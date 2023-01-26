@@ -39,6 +39,7 @@ namespace Spelldawn.Game
       _text.color = arrowBubble.FontColor != null ? Mason.ToUnityColor(arrowBubble.FontColor) : Color.black;
       var scale = (arrowBubble.Scale ?? 1.0f);
       _background.transform.localScale = scale * Vector3.one;
+      _background.flipX = arrowBubble.ArrowCorner == ArrowBubbleCorner.BottomRight;
       _text.rectTransform.sizeDelta = scale * DefaultDeltaSize;
     }
   }

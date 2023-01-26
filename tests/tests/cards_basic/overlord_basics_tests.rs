@@ -128,9 +128,9 @@ fn frog() {
 }
 
 #[test]
-fn scout() {
+fn captain() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Scout);
+    g.play_from_hand(CardName::Captain);
     set_up_minion_combat(&mut g);
     click_on_continue(&mut g);
     assert!(!g.user.data.raid_active());
@@ -138,9 +138,9 @@ fn scout() {
 }
 
 #[test]
-fn captain() {
+fn scout() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Captain);
+    g.play_from_hand(CardName::Scout);
     set_up_minion_combat(&mut g);
     click_on_continue(&mut g);
     assert!(!g.user.data.raid_active());

@@ -21,7 +21,7 @@ use crate::game_actions::CardTarget;
 use crate::primitives::{Milliseconds, RoomId, Side};
 
 /// Displays an arrow pointing to a specific piece of the user interface
-#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub enum TooltipAnchor {
     RaidRoom(RoomId),
     GainMana,
@@ -71,6 +71,7 @@ pub struct GameTutorialState {
 #[derive(Debug)]
 pub enum TutorialAction {
     DrawCard,
+    PlayAnyCard,
     PlayCard(CardName, CardTarget),
     GainMana,
     InitiateRaid(RoomId),

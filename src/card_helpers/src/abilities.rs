@@ -108,9 +108,9 @@ pub fn end_raid() -> Ability {
 
 /// Minion combat ability which causes the Champion player to lose action
 /// points.
-pub fn lose_actions_if_able<const N: ActionCount>() -> Ability {
+pub fn remove_actions_if_able<const N: ActionCount>() -> Ability {
     Ability {
-        text: text!["Lose", TextToken::Actions(1)],
+        text: text![Keyword::Combat, "Remove", TextToken::Actions(1)],
         ability_type: AbilityType::Standard,
         delegates: vec![combat(|g, _s, _| {
             mutations::lose_action_points_if_able(g, Side::Champion, N)

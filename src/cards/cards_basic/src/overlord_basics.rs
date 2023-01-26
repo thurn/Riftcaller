@@ -304,17 +304,17 @@ pub fn frog() -> CardDefinition {
     }
 }
 
-pub fn scout() -> CardDefinition {
+pub fn captain() -> CardDefinition {
     CardDefinition {
-        name: CardName::Scout,
+        name: CardName::Captain,
         sets: vec![SetName::Basics],
         cost: cost(3),
-        image: rexard_images::get(RexardPack::MonstersAvatars, "19"),
+        image: rexard_images::get(RexardPack::MonstersAvatars, "103"),
         card_type: CardType::Minion,
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![abilities::end_raid(), abilities::lose_actions_if_able::<1>()],
+        abilities: vec![abilities::end_raid(), abilities::remove_actions_if_able::<1>()],
         config: CardConfig {
             stats: CardStats { health: Some(2), ..CardStats::default() },
             lineage: Some(Lineage::Mortal),
@@ -323,12 +323,12 @@ pub fn scout() -> CardDefinition {
     }
 }
 
-pub fn captain() -> CardDefinition {
+pub fn scout() -> CardDefinition {
     CardDefinition {
-        name: CardName::Captain,
+        name: CardName::Scout,
         sets: vec![SetName::Basics],
         cost: cost(5),
-        image: rexard_images::get(RexardPack::MonstersAvatars, "103"),
+        image: rexard_images::get(RexardPack::MonstersAvatars, "19"),
         card_type: CardType::Minion,
         side: Side::Overlord,
         school: School::Neutral,

@@ -977,6 +977,14 @@ message GameObjectPositions {
     ObjectPosition opponent_discard = 6;
 }
 
+enum ArrowBubbleCorner {
+    ARROW_BUBBLE_CORNER_UNSPECIFIED = 0;
+
+    ARROW_BUBBLE_CORNER_BOTTOM_LEFT = 1;
+
+    ARROW_BUBBLE_CORNER_BOTTOM_RIGHT = 2;
+}
+
 message ShowArrowBubble {
     // Text to show.
     string text = 1;
@@ -987,7 +995,7 @@ message ShowArrowBubble {
 
     // Time before the popup should be hidden automatically. If not specified,
     // will remain permanently.
-    TimeValue fade_out_time = 3;
+    TimeValue hide_time = 3;
 
     // Background color. Defaults to white.
     FlexColor color = 4;
@@ -1001,19 +1009,21 @@ message ShowArrowBubble {
     // Multiplier for size of arrow buble. Defaults to 1.0.
     google.protobuf.FloatValue scale = 7;
 
+    ArrowBubbleCorner arrow_corner = 8;
+
     // Where to display the arrow bubble
     oneof arrow_bubble_anchor {
         // Arrow pointing to a player
-        PlayerName player = 8;
+        PlayerName player = 9;
 
         // Arrow pointing to a room
-        RoomIdentifier room = 9;
+        RoomIdentifier room = 10;
 
         // Arrow pointing to a player's deck
-        PlayerName player_deck = 10;
+        PlayerName player_deck = 11;
 
         // Arrow pointing to a player's mana
-        PlayerName player_mana = 11;
+        PlayerName player_mana = 12;
     }
 }
 

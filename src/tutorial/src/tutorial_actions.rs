@@ -16,7 +16,9 @@ use anyhow::Result;
 use data::card_name::CardName;
 use data::card_state::CardPosition;
 use data::game::{GameState, MulliganDecision};
-use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
+use data::game_actions::{
+    AccessPhaseAction, CardTarget, EncounterAction, GameAction, PromptAction,
+};
 use data::primitives::{CardId, RoomLocation, Side};
 use data::tutorial_data::{TutorialAction, TutorialDisplay, TutorialStep};
 use rules::mutations;
@@ -30,10 +32,13 @@ pub fn handle_tutorial_action(
 ) -> Result<()> {
     let _span = debug_span!("handle_tutorial_actions").entered();
     let mut i = game.data.tutorial_state.index;
+    game.data.tutorial_state.display.clear();
+
     while i < crate::STEPS.len() {
         let action = &crate::STEPS[i];
         let _span = debug_span!("handle_tutorial_action", ?action).entered();
         debug!(?action, "Handling tutorial action");
+
         match action {
             TutorialStep::KeepOpeningHand(side) => keep_opening_hand(game, *side),
             TutorialStep::SetHand(side, cards) => set_hand(game, *side, cards),
@@ -113,6 +118,11 @@ fn set_top_of_deck(game: &mut GameState, side: Side, cards: &[CardName]) -> Resu
 fn to_game_action(game: &GameState, action: &TutorialAction) -> Result<GameAction> {
     Ok(match action {
         TutorialAction::DrawCard => GameAction::DrawCard,
+        TutorialAction::PlayAnyCard => {
+            let card_id =
+                game.hand(crate::OPPONENT_SIDE).next().with_error(|| "Card not found")?.id;
+            GameAction::PlayCard(card_id, CardTarget::None)
+        }
         TutorialAction::PlayCard(name, target) => {
             let card_id = game
                 .hand(crate::OPPONENT_SIDE)
@@ -209,6 +219,7 @@ fn actions_match(
 ) -> Result<bool> {
     Ok(match (tutorial_action, user_action) {
         (TutorialAction::DrawCard, GameAction::DrawCard) => true,
+        (TutorialAction::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
         (TutorialAction::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
             game.card(*id).name == *name && t1 == t2
         }

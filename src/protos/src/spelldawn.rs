@@ -908,7 +908,7 @@ pub struct ShowArrowBubble {
     /// Time before the popup should be hidden automatically. If not specified,
     /// will remain permanently.
     #[prost(message, optional, tag = "3")]
-    pub fade_out_time: ::core::option::Option<TimeValue>,
+    pub hide_time: ::core::option::Option<TimeValue>,
     /// Background color. Defaults to white.
     #[prost(message, optional, tag = "4")]
     pub color: ::core::option::Option<FlexColor>,
@@ -921,8 +921,10 @@ pub struct ShowArrowBubble {
     /// Multiplier for size of arrow buble. Defaults to 1.0.
     #[prost(message, optional, tag = "7")]
     pub scale: ::core::option::Option<f32>,
+    #[prost(enumeration = "ArrowBubbleCorner", tag = "8")]
+    pub arrow_corner: i32,
     /// Where to display the arrow bubble
-    #[prost(oneof = "show_arrow_bubble::ArrowBubbleAnchor", tags = "8, 9, 10, 11")]
+    #[prost(oneof = "show_arrow_bubble::ArrowBubbleAnchor", tags = "9, 10, 11, 12")]
     pub arrow_bubble_anchor: ::core::option::Option<show_arrow_bubble::ArrowBubbleAnchor>,
 }
 /// Nested message and enum types in `ShowArrowBubble`.
@@ -931,16 +933,16 @@ pub mod show_arrow_bubble {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum ArrowBubbleAnchor {
         /// Arrow pointing to a player
-        #[prost(enumeration = "super::PlayerName", tag = "8")]
+        #[prost(enumeration = "super::PlayerName", tag = "9")]
         Player(i32),
         /// Arrow pointing to a room
-        #[prost(enumeration = "super::RoomIdentifier", tag = "9")]
+        #[prost(enumeration = "super::RoomIdentifier", tag = "10")]
         Room(i32),
         /// Arrow pointing to a player's deck
-        #[prost(enumeration = "super::PlayerName", tag = "10")]
+        #[prost(enumeration = "super::PlayerName", tag = "11")]
         PlayerDeck(i32),
         /// Arrow pointing to a player's mana
-        #[prost(enumeration = "super::PlayerName", tag = "11")]
+        #[prost(enumeration = "super::PlayerName", tag = "12")]
         PlayerMana(i32),
     }
 }
@@ -2063,6 +2065,13 @@ pub enum CardPrefab {
     Standard = 1,
     TokenCard = 2,
     FullHeight = 3,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum ArrowBubbleCorner {
+    Unspecified = 0,
+    BottomLeft = 1,
+    BottomRight = 2,
 }
 /// Possible corners which can be anchored.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]

@@ -30,7 +30,7 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
     vec![
         TutorialStep::SetHand(Side::Overlord, vec![CardName::Frog]),
         TutorialStep::SetHand(Side::Champion, vec![CardName::EldritchSurge]),
-        TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Scout, CardName::Machinate]),
+        TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Captain, CardName::Machinate]),
         TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleAxe]),
         TutorialStep::KeepOpeningHand(Side::Champion),
         TutorialStep::KeepOpeningHand(Side::Overlord),
@@ -40,49 +40,67 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             CardTarget::Room(RoomId::RoomA),
         )),
         TutorialStep::OpponentAction(TutorialAction::PlayCard(
-            CardName::Scout,
+            CardName::Captain,
             CardTarget::Room(RoomId::RoomA),
         )),
         TutorialStep::Display(vec![
-            opponent_say("Surrender to the night!", Milliseconds(2000)),
-            user_say("I should play a card...", Milliseconds(10_000)),
+            opponent_say("Surrender to the night!", Milliseconds(0)),
+            user_say("Your tyranny ends here, Vaughn!", Milliseconds(4000)),
+            user_say("I should play a card...", Milliseconds(20_000)),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![
-            TutorialAction::PlayCard(CardName::EldritchSurge, CardTarget::None),
-            TutorialAction::PlayCard(CardName::SimpleAxe, CardTarget::None),
-        ]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayAnyCard]),
         TutorialStep::Display(vec![
-            user_say("No evil shall stand against my valor!", Milliseconds(0)),
+            user_say("No evil shall stand against my valor.", Milliseconds(0)),
+            user_say("I should play a card...", Milliseconds(20_000)),
+        ]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayAnyCard]),
+        // User -> 4 mana
+        TutorialStep::Display(vec![
+            user_say("My weapon is ready.", Milliseconds(0)),
             user_say("I should investigate that room...", Milliseconds(5000)),
             tooltip(
                 "Drag portrait here",
                 TooltipAnchor::RaidRoom(RoomId::RoomA),
-                Milliseconds(5000),
+                Milliseconds(7000),
             ),
         ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::InitiateRaid(RoomId::RoomA)]),
-        TutorialStep::Display(vec![user_say("For honor!", Milliseconds(0))]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::UseWeapon {
             weapon: CardName::SimpleAxe,
-            target: CardName::Scout,
+            target: CardName::Captain,
         }]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::ScoreAccessedCard(
             CardName::Machinate,
         )]),
+        TutorialStep::Display(vec![opponent_say("Curse you!", Milliseconds(0))]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::EndRaid]),
+        // User -> 4 mana
         TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
         TutorialStep::OpponentAction(TutorialAction::GainMana),
         TutorialStep::OpponentAction(TutorialAction::GainMana),
         TutorialStep::OpponentAction(TutorialAction::GainMana),
+        // Opponent -> 5 mana
         TutorialStep::SetTopOfDeck(
             Side::Champion,
             vec![CardName::ArcaneRecovery, CardName::Lodestone],
         ),
+        TutorialStep::Display(vec![
+            user_say("You'll pay for what you did.", Milliseconds(0)),
+            user_say("I need more mana...", Milliseconds(5000)),
+            tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(7000)),
+        ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::GainMana]),
+        // User -> 5 mana
+        TutorialStep::Display(vec![user_say("I should play a card...", Milliseconds(20_000))]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayCard(
             CardName::ArcaneRecovery,
             CardTarget::None,
         )]),
+        // User -> 9 mana
+        TutorialStep::Display(vec![
+            user_say("I should draw another card...", Milliseconds(1000)),
+            tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(7000)),
+        ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::DrawCard]),
         TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
         TutorialStep::OpponentAction(TutorialAction::PlayCard(
