@@ -977,35 +977,43 @@ message GameObjectPositions {
     ObjectPosition opponent_discard = 6;
 }
 
-message ShowSpeechBubble {
+message ShowArrowBubble {
     // Text to show.
     string text = 1;
 
-    // Which player is speaking the message
-    PlayerIdentifier player = 2;
+    // How long the user needs to be idle for before displaying this effect. If
+    // not specified, will show immediately.
+    TimeValue idle_timer = 2;
 
-    // Time before the text should be hidden automatically. If not specified,
+    // Time before the popup should be hidden automatically. If not specified,
     // will remain permanently.
     TimeValue fade_out_time = 3;
-}
 
-message ShowTutorialTooltip {
-    // Optionally, text to show with the tooltip
-    string text = 1;
+    // Background color. Defaults to white.
+    FlexColor color = 4;
 
-    // Time before the tooltip should be hidden automatically. If not specified,
-    // will remain permanently.
-    TimeValue fade_out_time = 2;
+    // Size of displayed text in Unity font units. Defaults to 3.0.
+    google.protobuf.FloatValue font_size = 5;
 
-    oneof tooltip_anchor {
+    // Color of text. Defaults to black.
+    FlexColor font_color = 6;
+
+    // Multiplier for size of arrow buble. Defaults to 1.0.
+    google.protobuf.FloatValue scale = 7;
+
+    // Where to display the arrow bubble
+    oneof arrow_bubble_anchor {
+        // Arrow pointing to a player
+        PlayerName player = 8;
+
         // Arrow pointing to a room
-        RoomIdentifier room = 3;
+        RoomIdentifier room = 9;
 
         // Arrow pointing to a player's deck
-        PlayerIdentifier player_deck = 4;
+        PlayerName player_deck = 10;
 
         // Arrow pointing to a player's mana
-        PlayerIdentifier player_mana = 5;
+        PlayerName player_mana = 11;
     }
 }
 
@@ -1015,18 +1023,10 @@ message ShowTutorialTooltip {
 // Taking any game action resets the timer, and the timer doesn't start while
 // network requests are pending.
 message TutorialEffect {
-    // How long the user needs to be idle for before displaying this effect
-    TimeValue idle_timer = 1;
-
-    oneof tutorial_effect {
-        // Text spoken by a player in the game
-        ShowSpeechBubble speech_bubble = 2;
-
-        // Global tutorial message
-        string tutorial_message = 3;
-
-        // Show an arrow
-        ShowTutorialTooltip tutorial_tooltip = 4;
+    oneof tutorial_effect_type {
+        // Arrow bubble representing a tooltip or text spoken by a player
+        // in the game
+        ShowArrowBubble arrow_bubble = 1;
     }
 }
 

@@ -897,6 +897,74 @@ pub struct GameObjectPositions {
     pub opponent_discard: ::core::option::Option<ObjectPosition>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ShowArrowBubble {
+    /// Text to show.
+    #[prost(string, tag = "1")]
+    pub text: ::prost::alloc::string::String,
+    /// How long the user needs to be idle for before displaying this effect. If
+    /// not specified, will show immediately.
+    #[prost(message, optional, tag = "2")]
+    pub idle_timer: ::core::option::Option<TimeValue>,
+    /// Time before the popup should be hidden automatically. If not specified,
+    /// will remain permanently.
+    #[prost(message, optional, tag = "3")]
+    pub fade_out_time: ::core::option::Option<TimeValue>,
+    /// Background color. Defaults to white.
+    #[prost(message, optional, tag = "4")]
+    pub color: ::core::option::Option<FlexColor>,
+    /// Size of displayed text in Unity font units. Defaults to 3.0.
+    #[prost(message, optional, tag = "5")]
+    pub font_size: ::core::option::Option<f32>,
+    /// Color of text. Defaults to black.
+    #[prost(message, optional, tag = "6")]
+    pub font_color: ::core::option::Option<FlexColor>,
+    /// Multiplier for size of arrow buble. Defaults to 1.0.
+    #[prost(message, optional, tag = "7")]
+    pub scale: ::core::option::Option<f32>,
+    /// Where to display the arrow bubble
+    #[prost(oneof = "show_arrow_bubble::ArrowBubbleAnchor", tags = "8, 9, 10, 11")]
+    pub arrow_bubble_anchor: ::core::option::Option<show_arrow_bubble::ArrowBubbleAnchor>,
+}
+/// Nested message and enum types in `ShowArrowBubble`.
+pub mod show_arrow_bubble {
+    /// Where to display the arrow bubble
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum ArrowBubbleAnchor {
+        /// Arrow pointing to a player
+        #[prost(enumeration = "super::PlayerName", tag = "8")]
+        Player(i32),
+        /// Arrow pointing to a room
+        #[prost(enumeration = "super::RoomIdentifier", tag = "9")]
+        Room(i32),
+        /// Arrow pointing to a player's deck
+        #[prost(enumeration = "super::PlayerName", tag = "10")]
+        PlayerDeck(i32),
+        /// Arrow pointing to a player's mana
+        #[prost(enumeration = "super::PlayerName", tag = "11")]
+        PlayerMana(i32),
+    }
+}
+/// Displays a tutorial UI element to the user when the user is idle for a fixed
+/// time period.
+///
+/// Taking any game action resets the timer, and the timer doesn't start while
+/// network requests are pending.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TutorialEffect {
+    #[prost(oneof = "tutorial_effect::TutorialEffectType", tags = "1")]
+    pub tutorial_effect_type: ::core::option::Option<tutorial_effect::TutorialEffectType>,
+}
+/// Nested message and enum types in `TutorialEffect`.
+pub mod tutorial_effect {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum TutorialEffectType {
+        /// Arrow bubble representing a tooltip or text spoken by a player
+        /// in the game
+        #[prost(message, tag = "1")]
+        ArrowBubble(super::ShowArrowBubble),
+    }
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameView {
     #[prost(message, optional, tag = "1")]
     pub user: ::core::option::Option<PlayerView>,
@@ -917,6 +985,9 @@ pub struct GameView {
     /// Controls for game actions such as interface prompts
     #[prost(message, optional, tag = "6")]
     pub main_controls: ::core::option::Option<InterfaceMainControls>,
+    /// Tutorial UI elements
+    #[prost(message, repeated, tag = "7")]
+    pub tutorial_effects: ::prost::alloc::vec::Vec<TutorialEffect>,
 }
 // ============================================================================
 // Actions

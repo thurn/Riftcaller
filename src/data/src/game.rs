@@ -200,7 +200,7 @@ pub struct GameData {
     /// Counter to create unique IDs for raids within this game
     pub next_raid_id: u32,
     /// Position within the game tutorial, if any
-    pub tutorial_step: GameTutorialState,
+    pub tutorial_state: GameTutorialState,
     /// Game options at creation
     pub config: GameConfiguration,
 }
@@ -276,7 +276,7 @@ impl GameState {
                 turn: TurnData { side: Side::Overlord, turn_number: 0 },
                 raid: None,
                 next_raid_id: 1,
-                tutorial_step: GameTutorialState::default(),
+                tutorial_state: GameTutorialState::default(),
                 config,
             },
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),

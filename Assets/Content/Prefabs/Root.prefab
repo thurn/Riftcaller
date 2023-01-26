@@ -534,6 +534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
+  _arrowBubblePrefab: {fileID: 8392308209551879796, guid: c9639fe46e9d64cc884327b1b1d0389b, type: 3}
 --- !u!1 &205228965825750781
 GameObject:
   m_ObjectHideFlags: 0

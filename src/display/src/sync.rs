@@ -25,7 +25,7 @@ use rules::mana::ManaPurpose;
 use rules::{flags, mana};
 use {adapters, assets};
 
-use crate::{card_sync, interface, positions};
+use crate::{card_sync, interface, positions, tutorial_display};
 
 pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
     let cards: Result<Vec<CardView>> = game
@@ -51,6 +51,7 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
         } else {
             None
         },
+        tutorial_effects: tutorial_display::render(builder, &game.data.tutorial_state),
     });
 
     Ok(())

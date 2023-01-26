@@ -219,6 +219,8 @@ namespace Spelldawn.Services
 
       // Must run after move completion, uses card positions for anchoring
       _registry.DocumentService.RenderMainControls(game.MainControls);
+      
+      _registry.TutorialService.SetTutorialEffects(game.TutorialEffects);
     }
 
     void HandleRenderPlayer(PlayerName playerName, PlayerView playerView)

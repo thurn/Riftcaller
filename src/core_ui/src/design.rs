@@ -78,6 +78,7 @@ pub enum BackgroundColor {
     DeckCardNameOverlay,
     TilePanelOverlay,
     CoinCountOverlay,
+    TooltipBackground,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -92,6 +93,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::DeckCardNameOverlay => BLACK_ALPHA_50,
             BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
             BackgroundColor::CoinCountOverlay => BLACK_ALPHA_50,
+            BackgroundColor::TooltipBackground => GREEN_700,
         }
     }
 }
@@ -109,6 +111,7 @@ pub enum FontColor {
     ConstructCardTitle,
     CardCost,
     CoinCount,
+    TooltipText,
 }
 
 impl From<FontColor> for FlexColor {
@@ -125,6 +128,7 @@ impl From<FontColor> for FlexColor {
             FontColor::ConstructCardTitle => PINK_700,
             FontColor::CardCost => WHITE,
             FontColor::CoinCount => YELLOW_700,
+            FontColor::TooltipText => WHITE,
         }
     }
 }

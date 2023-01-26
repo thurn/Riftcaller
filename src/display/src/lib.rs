@@ -22,3 +22,4 @@ pub mod interface;
 pub mod positions;
 pub mod render;
 pub mod sync;
+pub mod tutorial_display;

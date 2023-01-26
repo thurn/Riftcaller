@@ -29,7 +29,7 @@ pub fn handle_tutorial_action(
     mut user_action: Option<GameAction>,
 ) -> Result<()> {
     let _span = debug_span!("handle_tutorial_actions").entered();
-    let mut i = game.data.tutorial_step.index;
+    let mut i = game.data.tutorial_state.index;
     while i < crate::STEPS.len() {
         let action = &crate::STEPS[i];
         let _span = debug_span!("handle_tutorial_action", ?action).entered();
@@ -56,15 +56,13 @@ pub fn handle_tutorial_action(
                 }
                 Ok(())
             }
-            TutorialStep::DisplayUntilMatched(displays) => {
-                display_until_matched(game, displays.clone())
-            }
+            TutorialStep::Display(displays) => display(game, displays.clone()),
         }?;
 
         i += 1;
     }
 
-    game.data.tutorial_step.index = i;
+    game.data.tutorial_state.index = i;
     debug!("Tutorial at step {}", i);
 
     Ok(())
@@ -73,7 +71,7 @@ pub fn handle_tutorial_action(
 /// Returns the next tutorial action the AI opponent player should take in the
 /// current game state, if any.
 pub fn current_opponent_action(game: &GameState) -> Result<Option<GameAction>> {
-    let Some(TutorialStep::OpponentAction(tutorial_action)) = crate::STEPS.get(game.data.tutorial_step.index) else {
+    let Some(TutorialStep::OpponentAction(tutorial_action)) = crate::STEPS.get(game.data.tutorial_state.index) else {
         return Ok(None)
     };
 
@@ -176,28 +174,28 @@ fn await_player_actions(
     game_action: Option<GameAction>,
     to_match: &[TutorialAction],
 ) -> Result<bool> {
-    let seen = &game.data.tutorial_step.seen;
+    let seen = &game.data.tutorial_state.seen;
 
     let Some(user_action) = game_action else {
         return Ok(false);
     };
 
     for (i, tutorial_action) in to_match.iter().enumerate() {
-        if game.data.tutorial_step.seen.contains(&i) {
+        if game.data.tutorial_state.seen.contains(&i) {
             continue;
         }
 
         let matched = actions_match(game, tutorial_action, &user_action)?;
         if matched {
             debug!(?seen, ?tutorial_action, ?user_action, "Matched expected player action");
-            game.data.tutorial_step.seen.insert(i);
+            game.data.tutorial_state.seen.insert(i);
             break;
         }
     }
 
-    if game.data.tutorial_step.seen.len() == to_match.len() {
+    if game.data.tutorial_state.seen.len() == to_match.len() {
         debug!("Matched all expected tutorial user actions");
-        game.data.tutorial_step.seen.clear();
+        game.data.tutorial_state.seen.clear();
         Ok(true)
     } else {
         Ok(false)
@@ -237,8 +235,8 @@ fn actions_match(
     })
 }
 
-fn display_until_matched(game: &mut GameState, mut displays: Vec<TutorialDisplay>) -> Result<()> {
-    game.data.tutorial_step.display.append(&mut displays);
+fn display(game: &mut GameState, mut displays: Vec<TutorialDisplay>) -> Result<()> {
+    game.data.tutorial_state.display.append(&mut displays);
     Ok(())
 }
 

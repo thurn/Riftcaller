@@ -22,7 +22,7 @@ use crate::primitives::{RoomId, Side};
 
 /// Displays an arrow pointing to a specific piece of the user interface
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
-pub enum TutorialArrow {
+pub enum TooltipAnchor {
     RaidRoom(RoomId),
     GainMana,
     DrawCard,
@@ -31,14 +31,11 @@ pub enum TutorialArrow {
 /// Content which can be displayed to the user during the game tutorial
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum TutorialDisplay {
-    // Attach an arrow to an interface element after a short delay
-    Arrow(TutorialArrow),
-
-    // Display tutorial text to the player. 8 words at most please!
-    Text(String),
+    // Show text and an arrow pointing to a specific UI element
+    Tooltip(String, TooltipAnchor),
 
     // Display text spoken by a specific player
-    SpeechBubble(Side, String),
+    SpeechBubble(String, Side),
 }
 
 /// State of the in-game tutorial
@@ -98,9 +95,9 @@ pub enum TutorialStep {
     /// allowed, but they won't cause the tutorial to advance.
     AwaitPlayerActions(Vec<TutorialAction>),
 
-    /// Provide tutorial information to show to the user until the next time a
-    /// player action is matched.
-    DisplayUntilMatched(Vec<TutorialDisplay>),
+    /// Provide tutorial information to show to the user until any player action
+    /// is taken.
+    Display(Vec<TutorialDisplay>),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]

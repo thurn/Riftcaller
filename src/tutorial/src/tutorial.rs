@@ -17,7 +17,7 @@ pub mod tutorial_actions;
 use data::card_name::CardName;
 use data::game_actions::CardTarget;
 use data::primitives::{RoomId, Side};
-use data::tutorial_data::{TutorialAction, TutorialStep};
+use data::tutorial_data::{TooltipAnchor, TutorialAction, TutorialDisplay, TutorialStep};
 use once_cell::sync::Lazy;
 
 pub const PLAYER_SIDE: Side = Side::Champion;
@@ -41,10 +41,18 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             CardName::Scout,
             CardTarget::Room(RoomId::RoomA),
         )),
+        TutorialStep::Display(vec![TutorialDisplay::SpeechBubble(
+            "I should play a card...".to_string(),
+            Side::Champion,
+        )]),
         TutorialStep::AwaitPlayerActions(vec![
             TutorialAction::PlayCard(CardName::EldritchSurge, CardTarget::None),
             TutorialAction::PlayCard(CardName::SimpleAxe, CardTarget::None),
         ]),
+        TutorialStep::Display(vec![TutorialDisplay::Tooltip(
+            "Drag portrait here".to_string(),
+            TooltipAnchor::RaidRoom(RoomId::RoomA),
+        )]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::InitiateRaid(RoomId::RoomA)]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::UseWeapon {
             weapon: CardName::SimpleAxe,
