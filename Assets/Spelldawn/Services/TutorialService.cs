@@ -33,7 +33,8 @@ namespace Spelldawn.Services
     
     readonly List<GameObject> _effects = new();
     readonly List<Sequence> _sequences = new();
-    VisualElement? _toast;
+    readonly List<VisualElement> _toasts = new();
+    VisualElement? _activeToast;
 
     public void ClearTutorialEffects()
     {
@@ -42,11 +43,9 @@ namespace Spelldawn.Services
       _effects.ForEach(Destroy);
       _effects.Clear();
 
-      if (_toast != null)
-      {
-        HideToast(_toast);
-        _toast = null;
-      }
+      _toasts.ForEach(toast => HideToast(toast));
+      _activeToast = null;
+      _toasts.Clear();
     }
     
     /// <summary>Displays the provided tutorial elements and clears all existing elements.</summary>
@@ -131,24 +130,24 @@ namespace Spelldawn.Services
     {
       var toast = Mason.Render(_registry, showToast.Node);
       toast.style.position = Position.Absolute;
-      toast.style.top = 0;
+      toast.style.top = -200;
       toast.style.left = 150 + Screen.safeArea.xMin;
-      toast.style.translate = new Translate(0, Length.Percent(-100));
 
       _registry.DocumentService.RootVisualElement.Add(toast);
       var sequence = TweenUtils.Sequence("ShowToast");
       var showTime = DataUtils.ToSeconds(showToast.IdleTimer, 0);
       var hideTime = DataUtils.ToSeconds(showToast.HideTime, 0);
 
-      if (_toast != null)
+      sequence.InsertCallback(Mathf.Max(0f, showTime - 0.3f), () =>
       {
-        showTime = Mathf.Max(0.3f, showTime);
-        sequence.Insert(showTime - 0.3f, HideToast(_toast));
-      }
-      
-      sequence.Insert(showTime, DOTween.To(() => toast.style.translate.value.y.value,
-        y => toast.style.translate = new Translate(0, Length.Percent(y)),
-        20.0f,
+        if (_activeToast != null)
+        {
+          HideToast(_activeToast);
+        }
+        _activeToast = toast;
+      }).Insert(showTime, DOTween.To(() => toast.style.top.value.value,
+        y => toast.style.top = y,
+        12.0f,
         0.3f));
 
       if (hideTime != 0)
@@ -156,16 +155,16 @@ namespace Spelldawn.Services
         sequence.Insert(showTime + hideTime, HideToast(toast));
       }
 
-      _toast = toast;
+      _toasts.Add(toast);
       return sequence;
     }
 
     static Sequence HideToast(VisualElement toast)
     {
       return TweenUtils.Sequence("HideToast").Insert(0,
-        DOTween.To(() => toast.style.translate.value.y.value,
-          y => toast.style.translate = new Translate(0, Length.Percent(y)),
-          -100.0f,
+        DOTween.To(() => toast.style.top.value.value,
+          y => toast.style.top = y,
+          -200,
           0.3f)).AppendCallback(toast.RemoveFromHierarchy);
     }
   }

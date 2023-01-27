@@ -45,16 +45,20 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             CardTarget::Room(RoomId::RoomA),
         )),
         TutorialStep::Display(vec![
+            opponent_say("Surrender to the night!", Milliseconds(0)),
+            user_say("Your tyranny ends here, Vaughn!", Milliseconds(4000)),
+            toast(
+                "Welcome! Here are some quick tips to help you survive in the world of Spelldawn.",
+                Milliseconds(6000),
+            ),
             toast(
                 format!(
                     "<b>Mana</b> ({}) lets you play cards and use weapons. It persists between turns.",
                     icons::MANA
                 ),
-                Milliseconds(0),
+                Milliseconds(10_000),
             ),
-            opponent_say("Surrender to the night!", Milliseconds(4000)),
-            user_say("Your tyranny ends here, Vaughn!", Milliseconds(8000)),
-            user_say("I should play a card...", Milliseconds(20_000)),
+            user_say("I should play a card...", Milliseconds(30_000)),
         ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayAnyCard]),
         TutorialStep::Display(vec![
@@ -83,7 +87,7 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
                 Milliseconds(10_000),
             ),
             toast(
-                format!("You can spend {} to initiate a <b>raid</b>.", icons::ACTION),
+                format!("You can spend {} to start a <b>raid</b>.", icons::ACTION),
                 Milliseconds(10_000),
             ),
         ]),
@@ -94,8 +98,8 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
                 Milliseconds(0),
             ),
             toast(
-                "You can use your new weapon to defeat this minion.",
-                Milliseconds(8000),
+                "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
+                Milliseconds(6000),
             ),
         ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::UseWeapon {
@@ -104,12 +108,8 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
         }]),
         TutorialStep::Display(vec![
             toast(
-                "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
-                Milliseconds(0),
-            ),
-            toast(
                 "Once you access a room, you can <b>score</b> a card inside.",
-                Milliseconds(8000),
+                Milliseconds(0),
             ),
         ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::ScoreAccessedCard(
@@ -134,28 +134,31 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             vec![CardName::ArcaneRecovery, CardName::Lodestone],
         ),
         TutorialStep::Display(vec![
+            user_say("You'll pay for what you did.", Milliseconds(0)),
+            user_say("I need more mana...", Milliseconds(4000)),
             toast(
                 format!("You can spend {} to gain 1{}.", icons::ACTION, icons::MANA),
-                Milliseconds(0),
+                Milliseconds(6000),
             ),
-            user_say("You'll pay for what you did.", Milliseconds(4000)),
-            user_say("I need more mana...", Milliseconds(8000)),
-            tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(11_000)),
+            tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(10_000)),
         ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::GainMana]),
         // User -> 5 mana
-        TutorialStep::Display(vec![user_say("I should play a card...", Milliseconds(20_000))]),
+        TutorialStep::Display(vec![
+            toast("Now you can play this card", Milliseconds(0)),
+            user_say("I should play a card...", Milliseconds(20_000))
+            ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayCard(
             CardName::ArcaneRecovery,
             CardTarget::None,
         )]),
         // User -> 9 mana
         TutorialStep::Display(vec![
+            user_say("I should draw another card...", Milliseconds(0)),
             toast(
                 format!("You can also spend {} to draw a card.", icons::ACTION),
-                Milliseconds(0),
+                Milliseconds(4000),
             ),
-            user_say("I should draw another card...", Milliseconds(4000)),
             tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(7000)),
         ]),
         TutorialStep::AwaitPlayerActions(vec![TutorialAction::DrawCard]),
@@ -176,6 +179,9 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             Side::Champion,
             vec![CardName::SimpleHammer, CardName::Contemplate, CardName::SimpleClub],
         ),
+        TutorialStep::Display(vec![
+            user_say("Let's end this", Milliseconds(0)),
+        ]),
     ]
 });
 
