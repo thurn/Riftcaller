@@ -13,12 +13,18 @@
 // limitations under the License.
 
 use adapters::response_builder::ResponseBuilder;
-use core_ui::design::{BackgroundColor, FontColor};
+use core_ui::design::{BackgroundColor, BorderColor, FontColor, FontSize};
+use core_ui::prelude::*;
+use core_ui::style::Corner;
+use core_ui::text::Text;
 use data::primitives::Milliseconds;
 use data::tutorial_data::{GameTutorialState, TooltipAnchor, TutorialDisplay};
 use protos::spelldawn::show_arrow_bubble::ArrowBubbleAnchor;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
-use protos::spelldawn::{ArrowBubbleCorner, PlayerName, ShowArrowBubble, TutorialEffect};
+use protos::spelldawn::{
+    ArrowBubbleCorner, PlayerName, ShowArrowBubble, ShowToast, TextAlign, TutorialEffect,
+    WhiteSpace,
+};
 
 pub fn render(builder: &ResponseBuilder, state: &GameTutorialState) -> Vec<TutorialEffect> {
     state
@@ -65,5 +71,31 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
                 ..ShowArrowBubble::default()
             })
         }
+        TutorialDisplay::Toast(toast) => TutorialEffectType::ShowToast(ShowToast {
+            node: make_toast(&toast.text),
+            idle_timer: Some(adapters::time_value(toast.delay)),
+            hide_time: None,
+        }),
     }
+}
+
+fn make_toast(text: &str) -> Option<Node> {
+    Row::new("Toast")
+        .style(
+            Style::new()
+                .padding(Edge::Horizontal, 12.px())
+                .max_width(400.px())
+                .background_color(BackgroundColor::Toast)
+                .border_radius(Corner::All, 12.px())
+                .border_color(Edge::All, BorderColor::Toast)
+                .border_width(Edge::All, 2.px()),
+        )
+        .child(
+            Text::new(text)
+                .font_size(FontSize::Toast)
+                .color(FontColor::Toast)
+                .text_align(TextAlign::MiddleLeft)
+                .white_space(WhiteSpace::Normal),
+        )
+        .build()
 }

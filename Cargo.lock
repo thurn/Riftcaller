@@ -2540,6 +2540,7 @@ version = "0.0.0"
 dependencies = [
  "actions",
  "anyhow",
+ "core_ui",
  "data",
  "once_cell",
  "rules",

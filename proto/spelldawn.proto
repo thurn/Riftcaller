@@ -1027,6 +1027,19 @@ message ShowArrowBubble {
     }
 }
 
+message ShowToast {
+    // Content to show inside the toast
+    Node node = 1;
+
+    // How long the user needs to be idle for before displaying this effect. If
+    // not specified, will show immediately.
+    TimeValue idle_timer = 2;
+
+    // Time before the popup should be hidden automatically. If not specified,
+    // will remain permanently.
+    TimeValue hide_time = 3;
+}
+
 // Displays a tutorial UI element to the user when the user is idle for a fixed
 // time period.
 //
@@ -1037,6 +1050,10 @@ message TutorialEffect {
         // Arrow bubble representing a tooltip or text spoken by a player
         // in the game
         ShowArrowBubble arrow_bubble = 1;
+
+        // Pops up a message to provide help context for the user. Only one
+        // toast can be displayed at a time.
+        ShowToast show_toast = 2;
     }
 }
 

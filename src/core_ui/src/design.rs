@@ -68,6 +68,19 @@ pub fn as_hex(color: FlexColor) -> String {
 }
 
 #[derive(Debug, Clone, Copy)]
+pub enum BorderColor {
+    Toast,
+}
+
+impl From<BorderColor> for FlexColor {
+    fn from(color: BorderColor) -> Self {
+        match color {
+            BorderColor::Toast => BLACK,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
 pub enum BackgroundColor {
     CardInfo,
     DeckEditorPanel,
@@ -79,6 +92,7 @@ pub enum BackgroundColor {
     TilePanelOverlay,
     CoinCountOverlay,
     Tooltip,
+    Toast,
     SpeechBubble,
 }
 
@@ -95,6 +109,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
             BackgroundColor::CoinCountOverlay => BLACK_ALPHA_50,
             BackgroundColor::Tooltip => GREEN_700,
+            BackgroundColor::Toast => BLACK,
             BackgroundColor::SpeechBubble => WHITE,
         }
     }
@@ -114,6 +129,7 @@ pub enum FontColor {
     CardCost,
     CoinCount,
     Tooltip,
+    Toast,
     SpeechBubble,
 }
 
@@ -132,6 +148,7 @@ impl From<FontColor> for FlexColor {
             FontColor::CardCost => WHITE,
             FontColor::CoinCount => YELLOW_700,
             FontColor::Tooltip => WHITE,
+            FontColor::Toast => WHITE,
             FontColor::SpeechBubble => BLACK,
         }
     }
@@ -151,6 +168,7 @@ pub enum FontSize {
     CardCount,
     CardCost,
     CoinCount,
+    Toast,
 }
 
 impl From<FontSize> for Dimension {
@@ -168,6 +186,7 @@ impl From<FontSize> for Dimension {
             FontSize::CardCount => 24,
             FontSize::CardCost => 36,
             FontSize::CoinCount => 54,
+            FontSize::Toast => 20,
         })
         .px()
         .into()

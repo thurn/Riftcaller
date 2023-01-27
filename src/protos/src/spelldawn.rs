@@ -946,6 +946,21 @@ pub mod show_arrow_bubble {
         PlayerMana(i32),
     }
 }
+/// Pops up a message to provide help context for the user
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ShowToast {
+    /// Content to show inside the toast
+    #[prost(message, optional, tag = "1")]
+    pub node: ::core::option::Option<Node>,
+    /// How long the user needs to be idle for before displaying this effect. If
+    /// not specified, will show immediately.
+    #[prost(message, optional, tag = "2")]
+    pub idle_timer: ::core::option::Option<TimeValue>,
+    /// Time before the popup should be hidden automatically. If not specified,
+    /// will remain permanently.
+    #[prost(message, optional, tag = "3")]
+    pub hide_time: ::core::option::Option<TimeValue>,
+}
 /// Displays a tutorial UI element to the user when the user is idle for a fixed
 /// time period.
 ///
@@ -953,7 +968,7 @@ pub mod show_arrow_bubble {
 /// network requests are pending.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TutorialEffect {
-    #[prost(oneof = "tutorial_effect::TutorialEffectType", tags = "1")]
+    #[prost(oneof = "tutorial_effect::TutorialEffectType", tags = "1, 2")]
     pub tutorial_effect_type: ::core::option::Option<tutorial_effect::TutorialEffectType>,
 }
 /// Nested message and enum types in `TutorialEffect`.
@@ -964,6 +979,8 @@ pub mod tutorial_effect {
         /// in the game
         #[prost(message, tag = "1")]
         ArrowBubble(super::ShowArrowBubble),
+        #[prost(message, tag = "2")]
+        ShowToast(super::ShowToast),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

@@ -42,6 +42,12 @@ pub struct Tooltip {
     pub delay: Milliseconds,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Toast {
+    pub text: String,
+    pub delay: Milliseconds,
+}
+
 /// Content which can be displayed to the user during the game tutorial
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum TutorialDisplay {
@@ -50,6 +56,9 @@ pub enum TutorialDisplay {
 
     // Display text spoken by a specific player
     SpeechBubble(SpeechBubble),
+
+    // Pop up a general help message to the user
+    Toast(Toast),
 }
 
 /// State of the in-game tutorial

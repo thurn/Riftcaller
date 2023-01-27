@@ -265,6 +265,8 @@ namespace Spelldawn.Services
 
     IEnumerator ApplyOptimisticResponse(ClientAction action)
     {
+      _registry.TutorialService.ClearTutorialEffects();
+      
       switch (action.ActionCase)
       {
         case ClientAction.ActionOneofCase.StandardAction:

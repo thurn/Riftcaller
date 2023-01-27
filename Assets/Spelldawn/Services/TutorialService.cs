@@ -18,9 +18,11 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Spelldawn.Game;
+using Spelldawn.Masonry;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Spelldawn.Services
 {
@@ -28,23 +30,39 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] ArrowBubble _arrowBubblePrefab = null!;
+    
     readonly List<GameObject> _effects = new();
     readonly List<Sequence> _sequences = new();
+    VisualElement? _toast;
 
-    /// <summary>Displays the provided tutorial elements and clears all existing elements.</summary>
-    public void SetTutorialEffects(IEnumerable<TutorialEffect> effects)
+    public void ClearTutorialEffects()
     {
       _sequences.ForEach(s => s.Kill());
       _sequences.Clear();
       _effects.ForEach(Destroy);
       _effects.Clear();
 
+      if (_toast != null)
+      {
+        HideToast(_toast);
+        _toast = null;
+      }
+    }
+    
+    /// <summary>Displays the provided tutorial elements and clears all existing elements.</summary>
+    public void SetTutorialEffects(IEnumerable<TutorialEffect> effects)
+    {
+      ClearTutorialEffects();
+      
       foreach (var effect in effects)
       {
         switch (effect.TutorialEffectTypeCase)
         {
           case TutorialEffect.TutorialEffectTypeOneofCase.ArrowBubble:
             _sequences.Add(AnimateArrowBubble(effect.ArrowBubble));
+            break;
+          case TutorialEffect.TutorialEffectTypeOneofCase.ShowToast:
+            _sequences.Add(AnimateToast(effect.ShowToast));
             break;
           default:
             throw new ArgumentOutOfRangeException();
@@ -107,6 +125,48 @@ namespace Spelldawn.Services
       ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerMana => new Vector3(5f, 0, -1.5f),
       ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerDeck => new Vector3(-4f, 0, -2.5f),
       _ => Vector3.zero
-    };    
+    };
+
+    Sequence AnimateToast(ShowToast showToast)
+    {
+      var toast = Mason.Render(_registry, showToast.Node);
+      toast.style.position = Position.Absolute;
+      toast.style.top = 0;
+      toast.style.left = 150 + Screen.safeArea.xMin;
+      toast.style.translate = new Translate(0, Length.Percent(-100));
+
+      _registry.DocumentService.RootVisualElement.Add(toast);
+      var sequence = TweenUtils.Sequence("ShowToast");
+      var showTime = DataUtils.ToSeconds(showToast.IdleTimer, 0);
+      var hideTime = DataUtils.ToSeconds(showToast.HideTime, 0);
+
+      if (_toast != null)
+      {
+        showTime = Mathf.Max(0.3f, showTime);
+        sequence.Insert(showTime - 0.3f, HideToast(_toast));
+      }
+      
+      sequence.Insert(showTime, DOTween.To(() => toast.style.translate.value.y.value,
+        y => toast.style.translate = new Translate(0, Length.Percent(y)),
+        20.0f,
+        0.3f));
+
+      if (hideTime != 0)
+      {
+        sequence.Insert(showTime + hideTime, HideToast(toast));
+      }
+
+      _toast = toast;
+      return sequence;
+    }
+
+    static Sequence HideToast(VisualElement toast)
+    {
+      return TweenUtils.Sequence("HideToast").Insert(0,
+        DOTween.To(() => toast.style.translate.value.y.value,
+          y => toast.style.translate = new Translate(0, Length.Percent(y)),
+          -100.0f,
+          0.3f)).AppendCallback(toast.RemoveFromHierarchy);
+    }
   }
 }
