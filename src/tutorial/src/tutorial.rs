@@ -14,12 +14,14 @@
 
 pub mod tutorial_actions;
 
+use core_ui::design::{self, FontColor};
 use core_ui::icons;
 use data::card_name::CardName;
 use data::game_actions::CardTarget;
 use data::primitives::{Milliseconds, RoomId, Side};
 use data::tutorial_data::{
-    SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialAction, TutorialDisplay, TutorialStep,
+    SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialDisplay, TutorialOpponentAction,
+    TutorialStep, TutorialTrigger,
 };
 use once_cell::sync::Lazy;
 
@@ -35,12 +37,12 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
         TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleAxe]),
         TutorialStep::KeepOpeningHand(Side::Champion),
         TutorialStep::KeepOpeningHand(Side::Overlord),
-        TutorialStep::OpponentAction(TutorialAction::DrawCard),
-        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+        TutorialStep::OpponentAction(TutorialOpponentAction::DrawCard),
+        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
             CardName::Machinate,
             CardTarget::Room(RoomId::RoomA),
         )),
-        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
             CardName::Captain,
             CardTarget::Room(RoomId::RoomA),
         )),
@@ -48,19 +50,15 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             opponent_say("Surrender to the night!", Milliseconds(0)),
             user_say("Your tyranny ends here, Vaughn!", Milliseconds(4000)),
             toast(
-                "Welcome! Here are some quick tips to help you survive in the world of Spelldawn.",
-                Milliseconds(6000),
-            ),
-            toast(
                 format!(
-                    "<b>Mana</b> ({}) lets you play cards and use weapons. It persists between turns.",
+                    "Tips: <b>Mana</b> ({}) lets you play cards and use weapons. It persists between turns.",
                     icons::MANA
                 ),
-                Milliseconds(10_000),
+                Milliseconds(8000),
             ),
             user_say("I should play a card...", Milliseconds(30_000)),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayAnyCard]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
         TutorialStep::Display(vec![
             user_say("No evil shall stand against my valor.", Milliseconds(4000)),
             toast(
@@ -72,37 +70,29 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             ),
             user_say("I should play a card...", Milliseconds(20_000)),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayAnyCard]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
         // User -> 4 mana
         TutorialStep::Display(vec![
+            user_say("My weapon is ready.", Milliseconds(0)),
+            user_say("I should investigate that room...", Milliseconds(4000)),
             toast(
-                "Weapons let you deal <b>damage</b> to defeat enemy minions.",
-                Milliseconds(0),
+                format!("You can spend {} to start a <b>raid</b> and explore a <b>room</b> of the enemy's dungeon.", icons::ACTION),
+                Milliseconds(6000),
             ),
-            user_say("My weapon is ready.", Milliseconds(4000)),
-            user_say("I should investigate that room...", Milliseconds(8000)),
             tooltip(
                 "Drag portrait here",
                 TooltipAnchor::RaidRoom(RoomId::RoomA),
-                Milliseconds(10_000),
-            ),
-            toast(
-                format!("You can spend {} to start a <b>raid</b>.", icons::ACTION),
-                Milliseconds(10_000),
+                Milliseconds(8000),
             ),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::InitiateRaid(RoomId::RoomA)]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
         TutorialStep::Display(vec![
             toast(
-                "You have started a <b>raid</b>, which will let you explore one the <b>rooms</b> of the enemy's dungeon.",
+                "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
                 Milliseconds(0),
             ),
-            toast(
-                "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
-                Milliseconds(6000),
-            ),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::UseWeapon {
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseWeapon {
             weapon: CardName::SimpleAxe,
             target: CardName::Captain,
         }]),
@@ -112,7 +102,7 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
                 Milliseconds(0),
             ),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::ScoreAccessedCard(
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::ScoreAccessedCard(
             CardName::Machinate,
         )]),
         TutorialStep::Display(vec![
@@ -122,12 +112,12 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             ),
         ]),
         TutorialStep::Display(vec![opponent_say("Curse you!", Milliseconds(0))]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::EndRaid]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::EndRaid]),
         // User -> 4 mana
         TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
-        TutorialStep::OpponentAction(TutorialAction::GainMana),
-        TutorialStep::OpponentAction(TutorialAction::GainMana),
-        TutorialStep::OpponentAction(TutorialAction::GainMana),
+        TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
+        TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
+        TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
         // Opponent -> 5 mana
         TutorialStep::SetTopOfDeck(
             Side::Champion,
@@ -142,13 +132,13 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             ),
             tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(10_000)),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::GainMana]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::GainMana]),
         // User -> 5 mana
         TutorialStep::Display(vec![
             toast("Now you can play this card", Milliseconds(0)),
             user_say("I should play a card...", Milliseconds(20_000))
             ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::PlayCard(
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(
             CardName::ArcaneRecovery,
             CardTarget::None,
         )]),
@@ -161,17 +151,17 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
             ),
             tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(7000)),
         ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialAction::DrawCard]),
+        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::DrawCard]),
         TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
-        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
             CardName::GatheringDark,
             CardTarget::None,
         )),
-        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
             CardName::Devise,
             CardTarget::Room(RoomId::RoomA),
         )),
-        TutorialStep::OpponentAction(TutorialAction::PlayCard(
+        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
             CardName::Frog,
             CardTarget::Room(RoomId::RoomA),
         )),
@@ -181,6 +171,13 @@ pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
         ),
         TutorialStep::Display(vec![
             user_say("Let's end this", Milliseconds(0)),
+            toast(
+                format!("There are three different kinds of weapons: <color={}>Mortal</color>, <color={}>Infernal</color>, and <color={}>Abyssal</color>. You'll want one of each.",
+                 design::as_hex(FontColor::MortalCardTitle),
+                 design::as_hex(FontColor::InfernalCardTitle),
+                 design::as_hex(FontColor::AbyssalCardTitle)),
+                Milliseconds(4000),
+            ),
         ]),
     ]
 });

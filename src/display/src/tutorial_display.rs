@@ -84,7 +84,7 @@ fn make_toast(text: &str) -> Option<Node> {
         .style(
             Style::new()
                 .padding(Edge::Horizontal, 12.px())
-                .max_width(400.px())
+                .max_width(500.px())
                 .background_color(BackgroundColor::Toast)
                 .border_radius(Corner::All, 12.px())
                 .border_color(Edge::All, BorderColor::Toast)

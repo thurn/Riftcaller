@@ -16,11 +16,9 @@ use anyhow::Result;
 use data::card_name::CardName;
 use data::card_state::CardPosition;
 use data::game::{GameState, MulliganDecision};
-use data::game_actions::{
-    AccessPhaseAction, CardTarget, EncounterAction, GameAction, PromptAction,
-};
+use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
 use data::primitives::{CardId, RoomLocation, Side};
-use data::tutorial_data::{TutorialAction, TutorialDisplay, TutorialStep};
+use data::tutorial_data::{TutorialDisplay, TutorialOpponentAction, TutorialStep, TutorialTrigger};
 use rules::mutations;
 use tracing::{debug, debug_span};
 use with_error::WithError;
@@ -115,15 +113,10 @@ fn set_top_of_deck(game: &mut GameState, side: Side, cards: &[CardName]) -> Resu
     Ok(())
 }
 
-fn to_game_action(game: &GameState, action: &TutorialAction) -> Result<GameAction> {
+fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<GameAction> {
     Ok(match action {
-        TutorialAction::DrawCard => GameAction::DrawCard,
-        TutorialAction::PlayAnyCard => {
-            let card_id =
-                game.hand(crate::OPPONENT_SIDE).next().with_error(|| "Card not found")?.id;
-            GameAction::PlayCard(card_id, CardTarget::None)
-        }
-        TutorialAction::PlayCard(name, target) => {
+        TutorialOpponentAction::DrawCard => GameAction::DrawCard,
+        TutorialOpponentAction::PlayCard(name, target) => {
             let card_id = game
                 .hand(crate::OPPONENT_SIDE)
                 .find(|c| c.name == *name)
@@ -131,10 +124,10 @@ fn to_game_action(game: &GameState, action: &TutorialAction) -> Result<GameActio
                 .id;
             GameAction::PlayCard(card_id, *target)
         }
-        TutorialAction::GainMana => GameAction::GainMana,
-        TutorialAction::InitiateRaid(room_id) => GameAction::InitiateRaid(*room_id),
-        TutorialAction::LevelUpRoom(room_id) => GameAction::LevelUpRoom(*room_id),
-        TutorialAction::UseWeapon { weapon, target } => {
+        TutorialOpponentAction::GainMana => GameAction::GainMana,
+        TutorialOpponentAction::InitiateRaid(room_id) => GameAction::InitiateRaid(*room_id),
+        TutorialOpponentAction::LevelUpRoom(room_id) => GameAction::LevelUpRoom(*room_id),
+        TutorialOpponentAction::UseWeapon { weapon, target } => {
             let weapon =
                 game.weapons().find(|c| c.name == *weapon).with_error(|| "Weapon not found")?;
             let target =
@@ -144,7 +137,7 @@ fn to_game_action(game: &GameState, action: &TutorialAction) -> Result<GameActio
                 EncounterAction::UseWeaponAbility(weapon.id, target.id),
             ))
         }
-        TutorialAction::ScoreAccessedCard(name) => {
+        TutorialOpponentAction::ScoreAccessedCard(name) => {
             let id = game
                 .cards(crate::OPPONENT_SIDE)
                 .iter()
@@ -156,25 +149,25 @@ fn to_game_action(game: &GameState, action: &TutorialAction) -> Result<GameActio
                 id,
             )))
         }
-        TutorialAction::EndRaid => {
+        TutorialOpponentAction::EndRaid => {
             GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))
         }
     })
 }
 
 /// Wait for an opponent action. Returns true if the provided [GameAction]
-/// matches the expected opponent [TutorialAction].
+/// matches the expected opponent [TutorialOpponentAction].
 fn match_opponent_action(
     game: &mut GameState,
     game_action: Option<GameAction>,
-    tutorial_action: &TutorialAction,
+    opponent_action: &TutorialOpponentAction,
 ) -> Result<bool> {
     let Some(user_action) = game_action else {
         return Ok(false);
     };
 
-    debug!(?tutorial_action, ?user_action, "Matched expected opponent action");
-    actions_match(game, tutorial_action, &user_action)
+    debug!(?opponent_action, ?user_action, "Matched expected opponent action");
+    actions_match(game, &to_trigger(opponent_action), &user_action)
 }
 
 /// Wait for the player to take specific game actions. Returns true if all
@@ -182,7 +175,7 @@ fn match_opponent_action(
 fn await_player_actions(
     game: &mut GameState,
     game_action: Option<GameAction>,
-    to_match: &[TutorialAction],
+    to_match: &[TutorialTrigger],
 ) -> Result<bool> {
     let seen = &game.data.tutorial_state.seen;
 
@@ -214,36 +207,53 @@ fn await_player_actions(
 
 fn actions_match(
     game: &GameState,
-    tutorial_action: &TutorialAction,
+    tutorial_action: &TutorialTrigger,
     user_action: &GameAction,
 ) -> Result<bool> {
     Ok(match (tutorial_action, user_action) {
-        (TutorialAction::DrawCard, GameAction::DrawCard) => true,
-        (TutorialAction::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
-        (TutorialAction::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
+        (TutorialTrigger::DrawCard, GameAction::DrawCard) => true,
+        (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
+        (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
             game.card(*id).name == *name && t1 == t2
         }
-        (TutorialAction::GainMana, GameAction::GainMana) => true,
-        (TutorialAction::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
-        (TutorialAction::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
+        (TutorialTrigger::GainMana, GameAction::GainMana) => true,
+        (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
+        (TutorialTrigger::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
         (
-            TutorialAction::UseWeapon { weapon, target },
+            TutorialTrigger::UseWeapon { weapon, target },
             GameAction::PromptAction(PromptAction::EncounterAction(
                 EncounterAction::UseWeaponAbility(source_id, target_id),
             )),
         ) => game.card(*source_id).name == *weapon && game.card(*target_id).name == *target,
         (
-            TutorialAction::ScoreAccessedCard(name),
+            TutorialTrigger::ScoreAccessedCard(name),
             GameAction::PromptAction(PromptAction::AccessPhaseAction(
                 AccessPhaseAction::ScoreCard(card_id),
             )),
         ) => game.card(*card_id).name == *name,
         (
-            TutorialAction::EndRaid,
+            TutorialTrigger::EndRaid,
             GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid)),
         ) => true,
         _ => false,
     })
+}
+
+fn to_trigger(opponent_action: &TutorialOpponentAction) -> TutorialTrigger {
+    match opponent_action {
+        TutorialOpponentAction::DrawCard => TutorialTrigger::DrawCard,
+        TutorialOpponentAction::PlayCard(name, target) => TutorialTrigger::PlayCard(*name, *target),
+        TutorialOpponentAction::GainMana => TutorialTrigger::GainMana,
+        TutorialOpponentAction::InitiateRaid(room_id) => TutorialTrigger::InitiateRaid(*room_id),
+        TutorialOpponentAction::LevelUpRoom(room_id) => TutorialTrigger::LevelUpRoom(*room_id),
+        TutorialOpponentAction::UseWeapon { weapon, target } => {
+            TutorialTrigger::UseWeapon { weapon: *weapon, target: *target }
+        }
+        TutorialOpponentAction::ScoreAccessedCard(card_name) => {
+            TutorialTrigger::ScoreAccessedCard(*card_name)
+        }
+        TutorialOpponentAction::EndRaid => TutorialTrigger::EndRaid,
+    }
 }
 
 fn display(game: &mut GameState, mut displays: Vec<TutorialDisplay>) -> Result<()> {

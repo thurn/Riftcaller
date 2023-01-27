@@ -58,7 +58,8 @@ pub const OVERLAY_BORDER: FlexColor = BLACK;
 pub const COIN_COUNT_BORDER: FlexColor = GRAY_500;
 
 /// Converts a [FlexColor] into a hex code representation.
-pub fn as_hex(color: FlexColor) -> String {
+pub fn as_hex(input: impl Into<FlexColor>) -> String {
+    let color = input.into();
     format!(
         "#{:02X}{:02X}{:02X}",
         (color.red * 255.0).round() as i32,
@@ -186,7 +187,7 @@ impl From<FontSize> for Dimension {
             FontSize::CardCount => 24,
             FontSize::CardCost => 36,
             FontSize::CoinCount => 54,
-            FontSize::Toast => 20,
+            FontSize::Toast => 28,
         })
         .px()
         .into()

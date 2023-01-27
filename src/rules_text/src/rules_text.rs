@@ -212,7 +212,7 @@ fn card_type_line(definition: &CardDefinition) -> String {
             Lineage::Abyssal => ("Abyssal", FontColor::AbyssalCardTitle),
             Lineage::Infernal => ("Infernal", FontColor::InfernalCardTitle),
         };
-        let string = format!("<color={}>{}</color>", design::as_hex(color.into()), lineage);
+        let string = format!("<color={}>{}</color>", design::as_hex(color), lineage);
         result.push_str(&string);
     }
 

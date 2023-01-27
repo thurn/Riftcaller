@@ -75,10 +75,22 @@ pub struct GameTutorialState {
     pub display: Vec<TutorialDisplay>,
 }
 
-/// Opponent actions during the tutorial which are scripted to occur, or user
-/// actions to match
+/// Opponent actions during the tutorial which are scripted to occur
 #[derive(Debug)]
-pub enum TutorialAction {
+pub enum TutorialOpponentAction {
+    DrawCard,
+    PlayCard(CardName, CardTarget),
+    GainMana,
+    InitiateRaid(RoomId),
+    LevelUpRoom(RoomId),
+    UseWeapon { weapon: CardName, target: CardName },
+    ScoreAccessedCard(CardName),
+    EndRaid,
+}
+
+/// Matches against user actions to trigger tutorial messages
+#[derive(Debug)]
+pub enum TutorialTrigger {
     DrawCard,
     PlayAnyCard,
     PlayCard(CardName, CardTarget),
@@ -112,12 +124,12 @@ pub enum TutorialStep {
 
     /// Cause the opponent to perform the indicated game actions, bypassing the
     /// AI.
-    OpponentAction(TutorialAction),
+    OpponentAction(TutorialOpponentAction),
 
     /// Wait for the user to perform all of the indicated actions before
     /// advancing to the next tutorial step. Other game actions are still
     /// allowed, but they won't cause the tutorial to advance.
-    AwaitPlayerActions(Vec<TutorialAction>),
+    AwaitPlayerActions(Vec<TutorialTrigger>),
 
     /// Provide tutorial information to show to the user until any player action
     /// is taken.
@@ -127,6 +139,20 @@ pub enum TutorialStep {
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum TutorialMessageKey {
     DeckEditor,
+}
+
+#[derive(Debug)]
+pub struct TutorialMessageTrigger {
+    pub key: TutorialMessageKey,
+    pub trigger: TutorialTrigger,
+    pub display: Vec<TutorialDisplay>,
+}
+
+#[derive(Debug)]
+pub struct TutorialSequence {
+    pub steps: Vec<TutorialStep>,
+    /// Messages which are displayed when some matching game action is taken
+    pub triggers: Vec<TutorialMessageTrigger>,
 }
 
 /// Data model for the player's progress through the game's tutorial
