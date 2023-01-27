@@ -20,8 +20,9 @@ use data::card_name::CardName;
 use data::game_actions::CardTarget;
 use data::primitives::{Milliseconds, RoomId, Side};
 use data::tutorial_data::{
-    SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialDisplay, TutorialOpponentAction,
-    TutorialStep, TutorialTrigger,
+    SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialDisplay, TutorialMessageKey,
+    TutorialMessageTrigger, TutorialOpponentAction, TutorialSequence, TutorialStep,
+    TutorialTrigger,
 };
 use once_cell::sync::Lazy;
 
@@ -29,157 +30,165 @@ pub const PLAYER_SIDE: Side = Side::Champion;
 pub const OPPONENT_SIDE: Side = Side::Overlord;
 
 /// Sequence describing the events of the game's tutorial
-pub static STEPS: Lazy<Vec<TutorialStep>> = Lazy::new(|| {
-    vec![
-        TutorialStep::SetHand(Side::Overlord, vec![CardName::Frog]),
-        TutorialStep::SetHand(Side::Champion, vec![CardName::EldritchSurge]),
-        TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Captain, CardName::Machinate]),
-        TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleAxe]),
-        TutorialStep::KeepOpeningHand(Side::Champion),
-        TutorialStep::KeepOpeningHand(Side::Overlord),
-        TutorialStep::OpponentAction(TutorialOpponentAction::DrawCard),
-        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
-            CardName::Machinate,
-            CardTarget::Room(RoomId::RoomA),
-        )),
-        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
-            CardName::Captain,
-            CardTarget::Room(RoomId::RoomA),
-        )),
-        TutorialStep::Display(vec![
-            opponent_say("Surrender to the night!", Milliseconds(0)),
-            user_say("Your tyranny ends here, Vaughn!", Milliseconds(4000)),
-            toast(
-                format!(
-                    "Tips: <b>Mana</b> ({}) lets you play cards and use weapons. It persists between turns.",
-                    icons::MANA
+pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
+    TutorialSequence {
+        steps: vec![
+            TutorialStep::SetHand(Side::Overlord, vec![CardName::Frog]),
+            TutorialStep::SetHand(Side::Champion, vec![CardName::EldritchSurge]),
+            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Captain, CardName::Machinate]),
+            TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleAxe]),
+            TutorialStep::KeepOpeningHand(Side::Champion),
+            TutorialStep::KeepOpeningHand(Side::Overlord),
+            TutorialStep::OpponentAction(TutorialOpponentAction::DrawCard),
+            TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
+                CardName::Machinate,
+                CardTarget::Room(RoomId::RoomA),
+            )),
+            TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
+                CardName::Captain,
+                CardTarget::Room(RoomId::RoomA),
+            )),
+            TutorialStep::Display(vec![
+                opponent_say("Surrender to the night!", Milliseconds(0)),
+                user_say("Your tyranny ends here, Vaughn!", Milliseconds(4000)),
+                toast_at(
+                    format!(
+                        "Tips: <b>Mana</b> ({}) lets you play cards and use weapons. It persists between turns.",
+                        icons::MANA
+                    ),
+                    Milliseconds(8000),
                 ),
-                Milliseconds(8000),
-            ),
-            user_say("I should play a card...", Milliseconds(30_000)),
-        ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
-        TutorialStep::Display(vec![
-            user_say("No evil shall stand against my valor.", Milliseconds(4000)),
-            toast(
-                format!(
-                    "Playing cards from your hand costs one {} (<b>action point</b>).",
-                    icons::ACTION
-                ),
-                Milliseconds(0),
-            ),
-            user_say("I should play a card...", Milliseconds(20_000)),
-        ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
-        // User -> 4 mana
-        TutorialStep::Display(vec![
-            user_say("My weapon is ready.", Milliseconds(0)),
-            user_say("I should investigate that room...", Milliseconds(4000)),
-            toast(
-                format!("You can spend {} to start a <b>raid</b> and explore a <b>room</b> of the enemy's dungeon.", icons::ACTION),
-                Milliseconds(6000),
-            ),
-            tooltip(
-                "Drag portrait here",
-                TooltipAnchor::RaidRoom(RoomId::RoomA),
-                Milliseconds(8000),
-            ),
-        ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
-        TutorialStep::Display(vec![
-            toast(
-                "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
-                Milliseconds(0),
-            ),
-        ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseWeapon {
-            weapon: CardName::SimpleAxe,
-            target: CardName::Captain,
-        }]),
-        TutorialStep::Display(vec![
-            toast(
-                "Once you access a room, you can <b>score</b> a card inside.",
-                Milliseconds(0),
-            ),
-        ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::ScoreAccessedCard(
-            CardName::Machinate,
-        )]),
-        TutorialStep::Display(vec![
-            toast(
-                "Scoring <b>scheme</b> cards in rooms gives you points. The first player to reach 100 points wins!",
-                Milliseconds(0),
-            ),
-        ]),
-        TutorialStep::Display(vec![opponent_say("Curse you!", Milliseconds(0))]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::EndRaid]),
-        // User -> 4 mana
-        TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
-        TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
-        TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
-        TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
-        // Opponent -> 5 mana
-        TutorialStep::SetTopOfDeck(
-            Side::Champion,
-            vec![CardName::ArcaneRecovery, CardName::Lodestone],
-        ),
-        TutorialStep::Display(vec![
-            user_say("You'll pay for what you did.", Milliseconds(0)),
-            user_say("I need more mana...", Milliseconds(4000)),
-            toast(
-                format!("You can spend {} to gain 1{}.", icons::ACTION, icons::MANA),
-                Milliseconds(6000),
-            ),
-            tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(10_000)),
-        ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::GainMana]),
-        // User -> 5 mana
-        TutorialStep::Display(vec![
-            toast("Now you can play this card", Milliseconds(0)),
-            user_say("I should play a card...", Milliseconds(20_000))
+                user_say("I should play a card...", Milliseconds(30_000)),
             ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(
-            CardName::ArcaneRecovery,
-            CardTarget::None,
-        )]),
-        // User -> 9 mana
-        TutorialStep::Display(vec![
-            user_say("I should draw another card...", Milliseconds(0)),
-            toast(
-                format!("You can also spend {} to draw a card.", icons::ACTION),
-                Milliseconds(4000),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
+            TutorialStep::Display(vec![
+                user_say("No evil shall stand against my valor.", Milliseconds(4000)),
+                toast_at(
+                    format!(
+                        "Playing cards from your hand costs one {} (<b>action point</b>).",
+                        icons::ACTION
+                    ),
+                    Milliseconds(0),
+                ),
+                user_say("I should play a card...", Milliseconds(20_000)),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
+            // User -> 4 mana
+            TutorialStep::Display(vec![
+                user_say("My weapon is ready.", Milliseconds(0)),
+                user_say("I should investigate that room...", Milliseconds(4000)),
+                toast_at(
+                    format!("You can spend {} to start a <b>raid</b> and explore a <b>room</b> of the enemy's dungeon.", icons::ACTION),
+                    Milliseconds(6000),
+                ),
+                tooltip(
+                    "Drag portrait here",
+                    TooltipAnchor::RaidRoom(RoomId::RoomA),
+                    Milliseconds(8000),
+                ),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::Display(vec![
+                toast_at(
+                    "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
+                    Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseWeapon {
+                weapon: CardName::SimpleAxe,
+                target: CardName::Captain,
+            }]),
+            TutorialStep::Display(vec![
+                toast_at(
+                    "Once you access a room, you can <b>score</b> a card inside.",
+                    Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::ScoreAccessedCard(
+                CardName::Machinate,
+            )]),
+            TutorialStep::Display(vec![
+                toast_at(
+                    "Scoring <b>scheme</b> cards in rooms gives you points. The first player to reach 100 points wins!",
+                    Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::Display(vec![opponent_say("Curse you!", Milliseconds(0))]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::EndRaid]),
+            // User -> 4 mana
+            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
+            TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
+            TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
+            TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
+            // Opponent -> 5 mana
+            TutorialStep::SetTopOfDeck(
+                Side::Champion,
+                vec![CardName::ArcaneRecovery, CardName::Lodestone],
             ),
-            tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(7000)),
-        ]),
-        TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::DrawCard]),
-        TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
-        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
-            CardName::GatheringDark,
-            CardTarget::None,
-        )),
-        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
-            CardName::Devise,
-            CardTarget::Room(RoomId::RoomA),
-        )),
-        TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
-            CardName::Frog,
-            CardTarget::Room(RoomId::RoomA),
-        )),
-        TutorialStep::SetTopOfDeck(
-            Side::Champion,
-            vec![CardName::SimpleHammer, CardName::Contemplate, CardName::SimpleClub],
-        ),
-        TutorialStep::Display(vec![
-            user_say("Let's end this", Milliseconds(0)),
-            toast(
-                format!("There are three different kinds of weapons: <color={}>Mortal</color>, <color={}>Infernal</color>, and <color={}>Abyssal</color>. You'll want one of each.",
-                 design::as_hex(FontColor::MortalCardTitle),
-                 design::as_hex(FontColor::InfernalCardTitle),
-                 design::as_hex(FontColor::AbyssalCardTitle)),
-                Milliseconds(4000),
+            TutorialStep::Display(vec![
+                user_say("You'll pay for what you did.", Milliseconds(0)),
+                user_say("I need more mana...", Milliseconds(4000)),
+                toast_at(
+                    format!("You can spend {} to gain 1{}.", icons::ACTION, icons::MANA),
+                    Milliseconds(6000),
+                ),
+                tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(10_000)),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::GainMana]),
+            // User -> 5 mana
+            TutorialStep::Display(vec![
+                toast_at("Now you can play this card", Milliseconds(0)),
+                user_say("I should play a card...", Milliseconds(20_000))
+                ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(
+                CardName::ArcaneRecovery,
+                CardTarget::None,
+            )]),
+            // User -> 9 mana
+            TutorialStep::Display(vec![
+                user_say("I should draw another card...", Milliseconds(0)),
+                toast_at(
+                    format!("You can also spend {} to draw a card.", icons::ACTION),
+                    Milliseconds(4000),
+                ),
+                tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(7000)),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::DrawCard]),
+            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
+            TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
+                CardName::GatheringDark,
+                CardTarget::None,
+            )),
+            TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
+                CardName::Devise,
+                CardTarget::Room(RoomId::RoomA),
+            )),
+            TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
+                CardName::Frog,
+                CardTarget::Room(RoomId::RoomA),
+            )),
+            TutorialStep::SetTopOfDeck(
+                Side::Champion,
+                vec![CardName::SimpleHammer, CardName::Contemplate, CardName::SimpleClub],
             ),
-        ]),
-    ]
+            TutorialStep::Display(vec![
+                user_say("Let's end this", Milliseconds(0)),
+                toast_at(
+                    format!("There are three different kinds of weapons: <color={}>Mortal</color>, <color={}>Infernal</color>, and <color={}>Abyssal</color>. You'll want one of each.",
+                    design::as_hex(FontColor::MortalCardTitle),
+                    design::as_hex(FontColor::InfernalCardTitle),
+                    design::as_hex(FontColor::AbyssalCardTitle)),
+                    Milliseconds(4000),
+                ),
+            ]),
+        ],
+        triggers: vec![
+            TutorialMessageTrigger {
+                key: TutorialMessageKey::PlayAbilityCard,
+                trigger: TutorialTrigger::PlayCard(CardName::Lodestone, CardTarget::None),
+                display: vec![toast("Some cards have <b>activated abilities</b> while in play which show up in your hand")]}
+        ]
+    }
 });
 
 fn user_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
@@ -194,6 +203,10 @@ fn tooltip(text: impl Into<String>, anchor: TooltipAnchor, delay: Milliseconds) 
     TutorialDisplay::Tooltip(Tooltip { text: text.into(), anchor, delay })
 }
 
-fn toast(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
+fn toast(text: impl Into<String>) -> TutorialDisplay {
+    TutorialDisplay::Toast(Toast { text: text.into(), delay: Milliseconds(0) })
+}
+
+fn toast_at(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
     TutorialDisplay::Toast(Toast { text: text.into(), delay })
 }

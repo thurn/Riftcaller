@@ -32,8 +32,8 @@ pub fn handle_tutorial_action(
     let mut i = game.data.tutorial_state.index;
     game.data.tutorial_state.display.clear();
 
-    while i < crate::STEPS.len() {
-        let action = &crate::STEPS[i];
+    while i < crate::SEQUENCE.steps.len() {
+        let action = &crate::SEQUENCE.steps[i];
         let _span = debug_span!("handle_tutorial_action", ?action).entered();
         debug!(?action, "Handling tutorial action");
 
@@ -74,7 +74,8 @@ pub fn handle_tutorial_action(
 /// Returns the next tutorial action the AI opponent player should take in the
 /// current game state, if any.
 pub fn current_opponent_action(game: &GameState) -> Result<Option<GameAction>> {
-    let Some(TutorialStep::OpponentAction(tutorial_action)) = crate::STEPS.get(game.data.tutorial_state.index) else {
+    let Some(TutorialStep::OpponentAction(tutorial_action)) =
+        crate::SEQUENCE.steps.get(game.data.tutorial_state.index) else {
         return Ok(None)
     };
 

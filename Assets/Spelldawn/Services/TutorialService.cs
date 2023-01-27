@@ -130,7 +130,7 @@ namespace Spelldawn.Services
     {
       var toast = Mason.Render(_registry, showToast.Node);
       toast.style.position = Position.Absolute;
-      toast.style.top = -200;
+      toast.style.bottom = Screen.height;
       toast.style.left = 150 + Screen.safeArea.xMin;
 
       _registry.DocumentService.RootVisualElement.Add(toast);
@@ -138,7 +138,11 @@ namespace Spelldawn.Services
       var showTime = DataUtils.ToSeconds(showToast.IdleTimer, 0);
       var hideTime = DataUtils.ToSeconds(showToast.HideTime, 0);
 
-      sequence.InsertCallback(Mathf.Max(0f, showTime - 0.3f), () =>
+      sequence.InsertCallback(0, () =>
+      {
+        toast.style.top = -toast.worldBound.height;
+        toast.style.bottom = new StyleLength(StyleKeyword.Null);
+      }).InsertCallback(Mathf.Max(0f, showTime - 0.3f), () =>
       {
         if (_activeToast != null)
         {
@@ -147,7 +151,7 @@ namespace Spelldawn.Services
         _activeToast = toast;
       }).Insert(showTime, DOTween.To(() => toast.style.top.value.value,
         y => toast.style.top = y,
-        12.0f,
+        16,
         0.3f));
 
       if (hideTime != 0)
@@ -164,7 +168,7 @@ namespace Spelldawn.Services
       return TweenUtils.Sequence("HideToast").Insert(0,
         DOTween.To(() => toast.style.top.value.value,
           y => toast.style.top = y,
-          -200,
+          -toast.worldBound.height,
           0.3f)).AppendCallback(toast.RemoveFromHierarchy);
     }
   }

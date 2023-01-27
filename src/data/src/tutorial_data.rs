@@ -139,6 +139,7 @@ pub enum TutorialStep {
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum TutorialMessageKey {
     DeckEditor,
+    PlayAbilityCard,
 }
 
 #[derive(Debug)]
