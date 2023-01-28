@@ -388,7 +388,7 @@ fn handle_new_game(
         champion_deck,
         GameConfiguration {
             deterministic: debug_options.deterministic,
-            tutorial: action.tutorial,
+            scripted_tutorial: action.tutorial,
             ..GameConfiguration::default()
         },
     );
@@ -396,9 +396,9 @@ fn handle_new_game(
     dispatch::populate_delegate_cache(&mut game);
     mutations::deal_opening_hands(&mut game)?;
 
-    if game.data.config.tutorial {
+    if game.data.config.scripted_tutorial {
         // Start tutorial if needed
-        tutorial_actions::handle_tutorial_action(&mut game, None)?;
+        tutorial_actions::handle_sequence_game_action(&mut game, None)?;
     }
 
     database.write_game(&game)?;
@@ -481,10 +481,7 @@ pub fn handle_game_action(
     action: GameAction,
 ) -> Result<GameResponse> {
     handle_custom_action(database, player_id, game_id, |game, user_side| {
-        if game.data.config.tutorial {
-            tutorial_actions::handle_tutorial_action(game, Some(action))?;
-        }
-
+        tutorial_actions::handle_game_action(game, &action)?;
         actions::handle_game_action(game, user_side, action)
     })
 }

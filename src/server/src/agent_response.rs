@@ -136,14 +136,10 @@ async fn run_agent_loop(
 fn pick_action(game: &SpelldawnState, agent: Box<dyn Agent<SpelldawnState>>) -> Result<GameAction> {
     let error_subscriber = tracing_subscriber::fmt().with_max_level(Level::WARN).finish();
     subscriber::with_default(error_subscriber, || {
-        Ok(if game.data.config.tutorial {
-            if let Some(tutorial_action) = tutorial_actions::current_opponent_action(game)? {
-                tutorial_action
-            } else {
-                agent.pick_action(AgentConfig::with_deadline(3), game)?
-            }
+        if game.data.config.scripted_tutorial {
+            tutorial_actions::current_opponent_action(game)
         } else {
-            agent.pick_action(AgentConfig::with_deadline(3), game)?
-        })
+            agent.pick_action(AgentConfig::with_deadline(3), game)
+        }
     })
 }

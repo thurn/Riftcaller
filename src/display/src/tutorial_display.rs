@@ -74,7 +74,7 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
         TutorialDisplay::Toast(toast) => TutorialEffectType::ShowToast(ShowToast {
             node: make_toast(&toast.text),
             idle_timer: Some(adapters::time_value(toast.delay)),
-            hide_time: None,
+            hide_time: toast.hide_after.map(adapters::time_value),
         }),
     }
 }
@@ -84,7 +84,7 @@ fn make_toast(text: &str) -> Option<Node> {
         .style(
             Style::new()
                 .padding(Edge::Horizontal, 12.px())
-                .max_width(500.px())
+                .max_width(450.px())
                 .background_color(BackgroundColor::Toast)
                 .border_radius(Corner::All, 12.px())
                 .border_color(Edge::All, BorderColor::Toast)

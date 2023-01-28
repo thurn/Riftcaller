@@ -184,7 +184,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Here is some text to read
+  m_text: Here is some text which spans across 3 lines
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e96149557a5a64bb59842fa9c02240c6, type: 2}
   m_sharedMaterial: {fileID: -5884420940402431444, guid: e96149557a5a64bb59842fa9c02240c6, type: 2}
@@ -211,10 +211,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12.8
-  m_fontSizeBase: 16
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 1
   m_fontSizeMax: 100
   m_fontStyle: 0

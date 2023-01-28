@@ -187,7 +187,7 @@ impl From<FontSize> for Dimension {
             FontSize::CardCount => 24,
             FontSize::CardCost => 36,
             FontSize::CoinCount => 54,
-            FontSize::Toast => 28,
+            FontSize::Toast => 24,
         })
         .px()
         .into()

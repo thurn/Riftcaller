@@ -73,14 +73,12 @@ fn tag_parser(event: &Event) -> Option<Tag> {
         _ => match level {
             Level::TRACE => '📍',
             Level::DEBUG => '📝',
-            Level::INFO => '💡',
-            Level::WARN => '🚧',
-            Level::ERROR => '🚨',
+            _ => '💡',
         },
     };
 
     let mut builder = Tag::builder().level(level).icon(icon);
-    if icon == '📝' || icon == '💡' {
+    if icon == '📝' || icon == '💡' || icon == '📍' {
         builder = builder.prefix(target);
     }
 

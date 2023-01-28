@@ -158,7 +158,7 @@ fn create_canonical_game() -> Result<GameState> {
         decklists::CANONICAL_OVERLORD.clone(),
         PlayerId::Named(NamedPlayer::NoAction),
         decklists::CANONICAL_CHAMPION.clone(),
-        GameConfiguration { deterministic: true, simulation: true, tutorial: false },
+        GameConfiguration { deterministic: true, simulation: true, scripted_tutorial: false },
     );
 
     dispatch::populate_delegate_cache(&mut game);

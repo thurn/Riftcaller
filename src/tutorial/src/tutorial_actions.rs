@@ -20,13 +20,34 @@ use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptA
 use data::primitives::{CardId, RoomLocation, Side};
 use data::tutorial_data::{TutorialDisplay, TutorialOpponentAction, TutorialStep, TutorialTrigger};
 use rules::mutations;
-use tracing::{debug, debug_span};
-use with_error::WithError;
+use tracing::{debug, debug_span, info};
+use with_error::{fail, WithError};
 
-/// Handle applying tutorial actions
-pub fn handle_tutorial_action(
+/// Handle applying tutorial actions before evaluating the effects a given
+/// [GameAction].
+///
+/// The tutorial is broken up into two distinct steps: 1) a pre-scripted
+/// tutorial sequence, applied by [handle_sequence_game_action], and 2) a
+/// reactive system which provides contextual help when certain user actions are
+/// taken, applied by `handle_triggered_action`.
+pub fn handle_game_action(game: &mut GameState, action: &GameAction) -> Result<()> {
+    game.data.tutorial_state.display.clear();
+
+    if game.data.config.scripted_tutorial
+        && game.data.tutorial_state.index < crate::SEQUENCE.steps.len()
+    {
+        handle_sequence_game_action(game, Some(action))?;
+    }
+
+    handle_triggered_action(game, action)
+}
+
+/// Handle applying tutorial actions for the pre-scripted tutorial sequence.
+/// This is used at the beginning of the tutorial game, when all behavior is
+/// pre-determined.
+pub fn handle_sequence_game_action(
     game: &mut GameState,
-    mut user_action: Option<GameAction>,
+    mut user_action: Option<&GameAction>,
 ) -> Result<()> {
     let _span = debug_span!("handle_tutorial_actions").entered();
     let mut i = game.data.tutorial_state.index;
@@ -66,20 +87,40 @@ pub fn handle_tutorial_action(
     }
 
     game.data.tutorial_state.index = i;
-    debug!("Tutorial at step {}", i);
+    if i < crate::SEQUENCE.steps.len() {
+        debug!("Tutorial at step {}", i);
+    } else {
+        info!("Pre-scripted tutorial sequence completed");
+    }
+
+    Ok(())
+}
+
+fn handle_triggered_action(game: &mut GameState, action: &GameAction) -> Result<()> {
+    for message in
+        crate::SEQUENCE.messages.iter().filter(|t| !game.data.tutorial_state.data.has_seen(t.key))
+    {
+        if actions_match(game, &message.trigger, action)? {
+            debug!(?message.key, "Triggered tutorial message");
+            game.data.tutorial_state.display.append(&mut message.display.clone());
+            game.data.tutorial_state.data.mark_seen(message.key);
+            break;
+        }
+    }
 
     Ok(())
 }
 
 /// Returns the next tutorial action the AI opponent player should take in the
-/// current game state, if any.
-pub fn current_opponent_action(game: &GameState) -> Result<Option<GameAction>> {
-    let Some(TutorialStep::OpponentAction(tutorial_action)) =
-        crate::SEQUENCE.steps.get(game.data.tutorial_state.index) else {
-        return Ok(None)
-    };
+/// tutorial game
+pub fn current_opponent_action(game: &GameState) -> Result<GameAction> {
+    for i in (0..=game.data.tutorial_state.index).rev() {
+        if let Some(TutorialStep::OpponentAction(tutorial_action)) = crate::SEQUENCE.steps.get(i) {
+            return to_game_action(game, tutorial_action);
+        };
+    }
 
-    Ok(Some(to_game_action(game, tutorial_action)?))
+    fail!("No opponent action found for index {:?}!", game.data.tutorial_state.index);
 }
 
 fn keep_opening_hand(game: &mut GameState, side: Side) -> Result<()> {
@@ -160,7 +201,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
 /// matches the expected opponent [TutorialOpponentAction].
 fn match_opponent_action(
     game: &mut GameState,
-    game_action: Option<GameAction>,
+    game_action: Option<&GameAction>,
     opponent_action: &TutorialOpponentAction,
 ) -> Result<bool> {
     let Some(user_action) = game_action else {
@@ -168,38 +209,38 @@ fn match_opponent_action(
     };
 
     debug!(?opponent_action, ?user_action, "Matched expected opponent action");
-    actions_match(game, &to_trigger(opponent_action), &user_action)
+    actions_match(game, &to_trigger(opponent_action), user_action)
 }
 
 /// Wait for the player to take specific game actions. Returns true if all
 /// named actions have been taken.
 fn await_player_actions(
     game: &mut GameState,
-    game_action: Option<GameAction>,
+    game_action: Option<&GameAction>,
     to_match: &[TutorialTrigger],
 ) -> Result<bool> {
-    let seen = &game.data.tutorial_state.seen;
+    let seen = &game.data.tutorial_state.action_indices_seen;
 
     let Some(user_action) = game_action else {
         return Ok(false);
     };
 
     for (i, tutorial_action) in to_match.iter().enumerate() {
-        if game.data.tutorial_state.seen.contains(&i) {
+        if game.data.tutorial_state.action_indices_seen.contains(&i) {
             continue;
         }
 
-        let matched = actions_match(game, tutorial_action, &user_action)?;
+        let matched = actions_match(game, tutorial_action, user_action)?;
         if matched {
             debug!(?seen, ?tutorial_action, ?user_action, "Matched expected player action");
-            game.data.tutorial_state.seen.insert(i);
+            game.data.tutorial_state.action_indices_seen.insert(i);
             break;
         }
     }
 
-    if game.data.tutorial_state.seen.len() == to_match.len() {
+    if game.data.tutorial_state.action_indices_seen.len() == to_match.len() {
         debug!("Matched all expected tutorial user actions");
-        game.data.tutorial_state.seen.clear();
+        game.data.tutorial_state.action_indices_seen.clear();
         Ok(true)
     } else {
         Ok(false)

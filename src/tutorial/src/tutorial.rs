@@ -29,9 +29,12 @@ use once_cell::sync::Lazy;
 pub const PLAYER_SIDE: Side = Side::Champion;
 pub const OPPONENT_SIDE: Side = Side::Overlord;
 
-/// Sequence describing the events of the game's tutorial
+/// Definition for the game tutorial
 pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
     TutorialSequence {
+
+        /// The first few turns of the tutorial game are pre-scripted and
+        /// defined here
         steps: vec![
             TutorialStep::SetHand(Side::Overlord, vec![CardName::Frog]),
             TutorialStep::SetHand(Side::Champion, vec![CardName::EldritchSurge]),
@@ -126,18 +129,18 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 vec![CardName::ArcaneRecovery, CardName::Lodestone],
             ),
             TutorialStep::Display(vec![
-                user_say("You'll pay for what you did.", Milliseconds(0)),
-                user_say("I need more mana...", Milliseconds(4000)),
+                user_say("I need more mana...", Milliseconds(0)),
                 toast_at(
                     format!("You can spend {} to gain 1{}.", icons::ACTION, icons::MANA),
-                    Milliseconds(6000),
+                    Milliseconds(4000),
                 ),
-                tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(10_000)),
+                tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(4_000)),
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::GainMana]),
             // User -> 5 mana
             TutorialStep::Display(vec![
-                toast_at("Now you can play this card", Milliseconds(0)),
+                user_say("You'll pay for what you did.", Milliseconds(0)),
+                toast_at("Now you can play this card", Milliseconds(4000)),
                 user_say("I should play a card...", Milliseconds(20_000))
                 ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(
@@ -148,10 +151,10 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::Display(vec![
                 user_say("I should draw another card...", Milliseconds(0)),
                 toast_at(
-                    format!("You can also spend {} to draw a card.", icons::ACTION),
+                    format!("You can spend {} to draw a card.", icons::ACTION),
                     Milliseconds(4000),
                 ),
-                tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(7000)),
+                tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(4000)),
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::DrawCard]),
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
@@ -169,24 +172,67 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             )),
             TutorialStep::SetTopOfDeck(
                 Side::Champion,
-                vec![CardName::SimpleHammer, CardName::Contemplate, CardName::SimpleClub],
+                vec![
+                    // We set up the deck in such a way that an Abyssal weapon
+                    // cannot be drawn to defeat the Frog, in order to
+                    // illustrate a failed raid.
+
+                    CardName::SimpleHammer,
+                    CardName::Contemplate,
+                    CardName::ArcaneRecovery,
+                    CardName::EldritchSurge,
+                    CardName::SimpleBlade,
+                    CardName::SimpleSpear,
+                    CardName::SimpleAxe,
+                    CardName::SimpleHammer,
+                    CardName::Contemplate,
+                    CardName::ArcaneRecovery,
+                    CardName::EldritchSurge,
+                    CardName::SimpleBlade,
+                    CardName::SimpleSpear,
+                    CardName::SimpleAxe,
+                    CardName::SimpleHammer,
+                    CardName::Contemplate,
+                    CardName::SimpleBlade,
+                    CardName::SimpleSpear,
+                    CardName::SimpleAxe,
+                ],
             ),
             TutorialStep::Display(vec![
-                user_say("Let's end this", Milliseconds(0)),
+                user_say("Your minions can't keep me out of that room.", Milliseconds(0)),
+            ]),
+            TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::Display(vec![
                 toast_at(
-                    format!("There are three different kinds of weapons: <color={}>Mortal</color>, <color={}>Infernal</color>, and <color={}>Abyssal</color>. You'll want one of each.",
+                    format!("A <color={}>Mortal</color> weapon cannot damage an <color={}>Abyssal</color> minion. A matching weapon is required!",
                     design::as_hex(FontColor::MortalCardTitle),
-                    design::as_hex(FontColor::InfernalCardTitle),
                     design::as_hex(FontColor::AbyssalCardTitle)),
-                    Milliseconds(4000),
+                    Milliseconds(0),
                 ),
             ]),
         ],
-        triggers: vec![
+
+        // From this point on, we transition to running a normal game with
+        // contextual help messages, instead of pre-scripting everything.
+        messages: vec![
+            TutorialMessageTrigger {
+                key: TutorialMessageKey::PlayInfernalWeapon,
+                trigger: TutorialTrigger::PlayCard(CardName::SimpleHammer, CardTarget::None),
+                display: vec![
+                    toast(
+                        format!("There are three different kinds of weapons: <color={}>Mortal</color>, <color={}>Infernal</color>, and <color={}>Abyssal</color>.",
+                        design::as_hex(FontColor::MortalCardTitle),
+                        design::as_hex(FontColor::InfernalCardTitle),
+                        design::as_hex(FontColor::AbyssalCardTitle)),
+                    )
+                ]
+            },
             TutorialMessageTrigger {
                 key: TutorialMessageKey::PlayAbilityCard,
                 trigger: TutorialTrigger::PlayCard(CardName::Lodestone, CardTarget::None),
-                display: vec![toast("Some cards have <b>activated abilities</b> while in play which show up in your hand")]}
+                display: vec![toast("Some cards in play have <b>activated abilities</b> which show up in your hand")]
+            }
         ]
     }
 });
@@ -204,9 +250,13 @@ fn tooltip(text: impl Into<String>, anchor: TooltipAnchor, delay: Milliseconds) 
 }
 
 fn toast(text: impl Into<String>) -> TutorialDisplay {
-    TutorialDisplay::Toast(Toast { text: text.into(), delay: Milliseconds(0) })
+    TutorialDisplay::Toast(Toast {
+        text: text.into(),
+        delay: Milliseconds(0),
+        hide_after: Some(Milliseconds(10_000)),
+    })
 }
 
 fn toast_at(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
-    TutorialDisplay::Toast(Toast { text: text.into(), delay })
+    TutorialDisplay::Toast(Toast { text: text.into(), delay, hide_after: None })
 }

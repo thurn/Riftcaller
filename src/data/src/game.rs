@@ -135,9 +135,9 @@ pub struct GameConfiguration {
     pub deterministic: bool,
     /// Whether to run in simulation mode and thus disable update tracking
     pub simulation: bool,
-    /// Whether to overwrite the normal game behavior with the standard new
-    /// player experience.
-    pub tutorial: bool,
+    /// Whether to overwrite the normal game behavior with the standard
+    /// pre-scripted new player experience.
+    pub scripted_tutorial: bool,
 }
 
 /// Mulligan decision a player made for their opening hand

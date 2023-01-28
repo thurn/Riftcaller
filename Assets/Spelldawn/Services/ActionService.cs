@@ -54,12 +54,12 @@ namespace Spelldawn.Services
         })));
 
     [SerializeField] Registry _registry = null!;
-    [SerializeField] bool _currentlyHandlingAction;
+    ClientAction? _currentlyHandlingAction;
     readonly Queue<ClientAction> _actionQueue = new();
     PlayerIdentifier? _playerIdentifier;
     bool _attemptReconnect;
 
-    public bool Active => _currentlyHandlingAction || _actionQueue.Count > 0;
+    public bool Active => _currentlyHandlingAction != null || _actionQueue.Count > 0;
 
     void Start()
     {
@@ -84,13 +84,13 @@ namespace Spelldawn.Services
 
       if (action.ActionCase == ClientAction.ActionOneofCase.StandardAction)
       {
-        if (_currentlyHandlingAction)
+        if (_currentlyHandlingAction != null)
         {
           // I would like to eventually handle multiple concurrent StandardActions, but it requires
           // more robust testing, for example to ensure that multiple optimistic interface updates
           // work with any sequence of mutations & responses. For now we simply ignore button clicks
           // while an RPC is pending.
-          Debug.Log($"Silently dropping StandardAction while handling '{_actionQueue.Count} actions'");
+          Debug.Log($"Silently dropping StandardAction while handling {_currentlyHandlingAction} with {_actionQueue.Count} queued actions");
         }
         else
         {
@@ -106,10 +106,11 @@ namespace Spelldawn.Services
 
     void Update()
     {
-      if (_actionQueue.Count > 0 && !_currentlyHandlingAction)
+      if (_actionQueue.Count > 0 && _currentlyHandlingAction == null)
       {
-        _currentlyHandlingAction = true;
-        StartCoroutine(HandleActionAsync(_actionQueue.Dequeue()));
+        var next = _actionQueue.Dequeue();
+        _currentlyHandlingAction = next;
+        StartCoroutine(HandleActionAsync(next));
       }
 
 #if USE_UNITY_PLUGIN
@@ -180,7 +181,7 @@ namespace Spelldawn.Services
         if (action.StandardAction.Payload.Length == 0)
         {
           // No need to send empty payload to server
-          _currentlyHandlingAction = false;
+          _currentlyHandlingAction = null;
           yield break;
         }
 
@@ -239,7 +240,7 @@ namespace Spelldawn.Services
           break;
       }
 
-      _currentlyHandlingAction = false;
+      _currentlyHandlingAction = null;
     }
 
     /// <summary>

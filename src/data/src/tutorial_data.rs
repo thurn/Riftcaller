@@ -46,6 +46,7 @@ pub struct Tooltip {
 pub struct Toast {
     pub text: String,
     pub delay: Milliseconds,
+    pub hide_after: Option<Milliseconds>,
 }
 
 /// Content which can be displayed to the user during the game tutorial
@@ -64,12 +65,14 @@ pub enum TutorialDisplay {
 /// State of the in-game tutorial
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct GameTutorialState {
+    pub data: TutorialData,
+
     /// Current position within the `tutorial::STEPS` vector
     pub index: usize,
 
     /// Action indices which have been seen in the current tutorial step via
     /// `Tutorial::AwaitPlayerActions`
-    pub seen: HashSet<usize>,
+    pub action_indices_seen: HashSet<usize>,
 
     /// Tutorial content to show to the user
     pub display: Vec<TutorialDisplay>,
@@ -123,7 +126,8 @@ pub enum TutorialStep {
     SetTopOfDeck(Side, Vec<CardName>),
 
     /// Cause the opponent to perform the indicated game actions, bypassing the
-    /// AI.
+    /// AI. The last action is repeated if the opponent's turn comes again
+    /// without advancing the tutorial state.
     OpponentAction(TutorialOpponentAction),
 
     /// Wait for the user to perform all of the indicated actions before
@@ -136,10 +140,11 @@ pub enum TutorialStep {
     Display(Vec<TutorialDisplay>),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum TutorialMessageKey {
     DeckEditor,
     PlayAbilityCard,
+    PlayInfernalWeapon,
 }
 
 #[derive(Debug)]
@@ -153,7 +158,7 @@ pub struct TutorialMessageTrigger {
 pub struct TutorialSequence {
     pub steps: Vec<TutorialStep>,
     /// Messages which are displayed when some matching game action is taken
-    pub triggers: Vec<TutorialMessageTrigger>,
+    pub messages: Vec<TutorialMessageTrigger>,
 }
 
 /// Data model for the player's progress through the game's tutorial
