@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/raid_tests.rs
-assertion_line: 485
+assertion_line: 477
 expression: "Summary::summarize(&response)"
 ---
 
@@ -51,7 +51,7 @@ command_list:
     cards: 
         card_id: O0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
@@ -101,7 +101,7 @@ command_list:
         owning_player: Opponent
         card_id: C0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: User
@@ -208,7 +208,7 @@ command_list:
     cards: 
         card_id: O0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
@@ -272,7 +272,7 @@ command_list:
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: C0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: User
@@ -379,7 +379,7 @@ command_list:
     cards: 
         card_id: O0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
@@ -443,7 +443,7 @@ command_list:
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: C0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: User
@@ -546,7 +546,7 @@ channel_response:
     cards: 
         card_id: O0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: User
@@ -610,7 +610,7 @@ channel_response:
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: C0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
@@ -704,7 +704,7 @@ channel_response:
     cards: 
         card_id: O0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: User
@@ -768,7 +768,7 @@ channel_response:
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: C0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
@@ -856,7 +856,7 @@ channel_response:
     cards: 
         card_id: O0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: User
@@ -920,7 +920,7 @@ channel_response:
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: C0
         revealed_to_viewer: true
-        is_face_up: false
+        is_face_up: true
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent

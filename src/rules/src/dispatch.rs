@@ -15,32 +15,41 @@
 //! Core functions of the Delegate system. See the module-level comment in
 //! `delegates.rs` for more information about this system.
 
-use std::collections::HashMap;
 use std::fmt::Debug;
 
 use anyhow::Result;
+use data::card_definition::CardDefinition;
 use data::delegates::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
 use data::game::GameState;
-use data::primitives::AbilityId;
+use data::primitives::{AbilityId, CardId};
 
 /// Adds a [DelegateCache] for this game in order to improve lookup performance.
 pub fn populate_delegate_cache(game: &mut GameState) {
-    let mut result = HashMap::new();
+    let mut result = DelegateCache::default();
     for card_id in game.all_card_ids() {
         let definition = crate::get(game.card(card_id).name);
-        for (index, ability) in definition.abilities.iter().enumerate() {
-            let ability_id = AbilityId::new(card_id, index);
-            let scope = Scope::new(ability_id);
-            for delegate in &ability.delegates {
-                result
-                    .entry(delegate.kind())
-                    .or_insert_with(Vec::new)
-                    .push(DelegateContext { delegate: delegate.clone(), scope });
-            }
+        add_card_to_delegate_cache(&mut result, definition, card_id);
+    }
+    game.delegate_cache = result;
+}
+
+/// Adds a new [CardDefinition] to the delegate cache.
+pub fn add_card_to_delegate_cache(
+    cache: &mut DelegateCache,
+    definition: &CardDefinition,
+    card_id: CardId,
+) {
+    for (index, ability) in definition.abilities.iter().enumerate() {
+        let ability_id = AbilityId::new(card_id, index);
+        let scope = Scope::new(ability_id);
+        for delegate in &ability.delegates {
+            cache
+                .lookup
+                .entry(delegate.kind())
+                .or_insert_with(Vec::new)
+                .push(DelegateContext { delegate: delegate.clone(), scope });
         }
     }
-
-    game.delegate_cache = DelegateCache::new(result);
 }
 
 /// Called when a game event occurs, invokes each registered

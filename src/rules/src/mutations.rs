@@ -23,6 +23,7 @@ use std::cmp;
 
 use anyhow::Result;
 use constants::game_constants;
+use data::card_name::CardName;
 #[allow(unused)] // Used in rustdocs
 use data::card_state::{CardData, CardPosition, CardPositionKind};
 use data::delegates::{
@@ -540,5 +541,19 @@ pub fn deal_damage(game: &mut GameState, source: impl HasAbilityId, amount: u32)
         DealtDamageEvent(DealtDamage { source: source.ability_id(), amount, discarded }),
     )?;
 
+    Ok(())
+}
+
+/// Creates an entirely new card from outside the game in the indicated
+/// `position.
+pub fn create_and_add_card(
+    game: &mut GameState,
+    name: CardName,
+    position: CardPosition,
+) -> Result<()> {
+    let definition = crate::get(name);
+    let card_id = game.add_card_internal(name, definition.side, position);
+    dispatch::add_card_to_delegate_cache(&mut game.delegate_cache, definition, card_id);
+    debug!(?name, ?card_id, ?position, "Created new external card");
     Ok(())
 }

@@ -179,6 +179,28 @@ impl CardState {
             data: CardData {
                 revealed_to_owner: is_leader,
                 revealed_to_opponent: is_leader,
+                is_face_up: is_leader,
+                ..CardData::default()
+            },
+        }
+    }
+
+    /// Creates a new [CardState] with a given position and revealed state.
+    pub fn new_with_position(
+        id: CardId,
+        name: CardName,
+        position: CardPosition,
+        sorting_key: u32,
+        revealed_to_all: bool,
+    ) -> Self {
+        Self {
+            id,
+            name,
+            position,
+            sorting_key,
+            data: CardData {
+                revealed_to_owner: revealed_to_all,
+                revealed_to_opponent: revealed_to_all,
                 ..CardData::default()
             },
         }

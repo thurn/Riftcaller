@@ -25,6 +25,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use with_error::WithError;
 
+use crate::card_name::CardName;
 use crate::card_state::{AbilityState, CardPosition, CardPositionKind, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
@@ -575,6 +576,23 @@ impl GameState {
     /// if one has not previously been set
     pub fn ability_state_mut(&mut self, ability_id: impl HasAbilityId) -> &mut AbilityState {
         self.ability_state.entry(ability_id.ability_id()).or_insert_with(AbilityState::default)
+    }
+
+    /// Adds a new card to the game owned by the `side` player in the indicated
+    /// `position` and revealed to both players. Returns the newly-added
+    /// [CardId].
+    ///
+    /// Use `mutations::create_and_add_card` instead of calling this directly.
+    pub fn add_card_internal(
+        &mut self,
+        name: CardName,
+        side: Side,
+        position: CardPosition,
+    ) -> CardId {
+        let id = CardId::new(side, self.cards(side).len());
+        let state = CardState::new_with_position(id, name, position, self.next_sorting_key(), true);
+        self.cards_mut(side).push(state);
+        id
     }
 
     /// Create card states for a deck
