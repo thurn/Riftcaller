@@ -503,10 +503,14 @@ pub struct DelegateContext {
 /// Caches delegates in a given game for faster lookup
 #[derive(Clone, Debug, Default)]
 pub struct DelegateCache {
-    pub lookup: HashMap<DelegateKind, Vec<DelegateContext>>,
+    lookup: HashMap<DelegateKind, Vec<DelegateContext>>,
 }
 
 impl DelegateCache {
+    pub fn new(lookup: HashMap<DelegateKind, Vec<DelegateContext>>) -> Self {
+        Self { lookup }
+    }
+
     pub fn delegate_count(&self, kind: DelegateKind) -> usize {
         self.lookup.get(&kind).map_or(0, Vec::len)
     }

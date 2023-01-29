@@ -65,6 +65,8 @@ pub enum CardPosition {
     /// Marks the leader card for a side. The first leader (by sorting key)
     /// is the primary leader for a player.
     Leader(Side),
+    /// Global modifier cards which change the rules of the game
+    GameModifier,
 }
 
 impl CardPosition {

@@ -26,8 +26,9 @@ use protos::spelldawn::{
     ObjectPositionBrowser, ObjectPositionDeck, ObjectPositionDeckContainer,
     ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer, ObjectPositionHand,
     ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionLeader,
-    ObjectPositionLeaderContainer, ObjectPositionRaid, ObjectPositionRevealedCards,
-    ObjectPositionRoom, ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionLeaderContainer, ObjectPositionOffscreen, ObjectPositionRaid,
+    ObjectPositionRevealedCards, ObjectPositionRoom, ObjectPositionStaging,
+    RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::traits::RaidDisplayState;
 use raids::RaidDataExt;
@@ -177,6 +178,7 @@ fn adapt_position(
             card_release_position(builder, game, side, card_id, target)?
         }
         CardPosition::DeckUnknown(_) => fail!("Invalid card position"),
+        CardPosition::GameModifier => Position::Offscreen(ObjectPositionOffscreen {}),
     })
 }
 

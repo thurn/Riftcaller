@@ -17,7 +17,6 @@
 #![allow(clippy::use_self)] // Required to use EnumKind
 
 use std::collections::HashMap;
-use std::fmt;
 
 use anyhow::Result;
 use rand_xoshiro::rand_core::SeedableRng;
@@ -214,7 +213,7 @@ pub struct RoomState {
 
 /// Stores the primary state for an ongoing game
 #[serde_as]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameState {
     /// Unique identifier for this game
     pub id: GameId,
@@ -588,28 +587,6 @@ impl GameState {
         }));
 
         result
-    }
-}
-
-impl fmt::Debug for GameState {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str("<<Hello, debug>>")
-
-        // f.debug_struct("GameState")
-        //     .field("id", &self.id)
-        //     .field("derek", &"Derek was here")
-        //     .field("data", &self.data)
-        //     .field("updates", &self.updates)
-        //     .field("overlord_cards", &self.overlord_cards)
-        //     .field("champion_cards", &self.champion_cards)
-        //     .field("overlord", &self.overlord)
-        //     .field("champion", &self.champion)
-        //     .field("ability_state", &self.ability_state)
-        //     .field("room_state", &self.room_state)
-        //     .field("next_sorting_key", &self.next_sorting_key)
-        //     .field("rng", &self.rng)
-        //     .field("delegate_cache", &self.delegate_cache)
-        //     .finish()
     }
 }
 

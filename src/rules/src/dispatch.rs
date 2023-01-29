@@ -40,7 +40,7 @@ pub fn populate_delegate_cache(game: &mut GameState) {
         }
     }
 
-    game.delegate_cache = DelegateCache { lookup: result };
+    game.delegate_cache = DelegateCache::new(result);
 }
 
 /// Called when a game event occurs, invokes each registered
