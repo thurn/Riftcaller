@@ -39,6 +39,8 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_game_modifier::overlord_modifiers::tutorial_disable_raid_vault);
     DEFINITIONS.insert(cards_game_modifier::overlord_modifiers::tutorial_disable_raid_crypts);
     DEFINITIONS.insert(cards_game_modifier::overlord_modifiers::tutorial_disable_raid_outer);
+    DEFINITIONS.insert(cards_game_modifier::overlord_modifiers::tutorial_disable_raid_continue);
+    DEFINITIONS.insert(cards_game_modifier::overlord_modifiers::tutorial_disable_end_raid);
     DEFINITIONS.insert(cards_poc::artifacts::invisibility_ring);
     DEFINITIONS.insert(cards_poc::artifacts::accumulator);
     DEFINITIONS.insert(cards_poc::artifacts::mage_gloves);

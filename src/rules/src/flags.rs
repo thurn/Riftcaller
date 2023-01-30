@@ -19,12 +19,13 @@ use data::card_definition::{AbilityType, TargetRequirement};
 use data::card_state::CardPosition;
 use data::delegates::{
     CanActivateAbilityQuery, CanActivateWhileFaceDownQuery, CanDefeatTargetQuery,
-    CanEncounterTargetQuery, CanInitiateRaidQuery, CanLevelUpCardQuery, CanLevelUpRoomQuery,
-    CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CardEncounter, Flag,
+    CanEncounterTargetQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery,
+    CanLevelUpRoomQuery, CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery,
+    CanUseNoWeaponQuery, CardEncounter, Flag,
 };
 use data::game::{GamePhase, GameState};
 use data::game_actions::CardTarget;
-use data::primitives::{AbilityId, CardId, CardType, Lineage, RoomId, Side};
+use data::primitives::{AbilityId, CardId, CardType, Lineage, RaidId, RoomId, Side};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, mana, queries};
@@ -299,4 +300,16 @@ pub fn in_main_phase(game: &GameState, side: Side) -> bool {
         && game.data.raid.is_none()
         && game.overlord.prompt.is_none()
         && game.champion.prompt.is_none()
+}
+
+/// Can the Champion choose to not use a weapon ability when encountering
+/// the indicated minion card?
+pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool {
+    dispatch::perform_query(game, CanUseNoWeaponQuery(card_id), Flag::new(true)).into()
+}
+
+/// Can the Champion choose to use the 'End Raid' button to end the access
+/// phase of a raid?
+pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) -> bool {
+    dispatch::perform_query(game, CanEndRaidAccessPhaseQuery(raid_id), Flag::new(true)).into()
 }

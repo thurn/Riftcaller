@@ -148,7 +148,11 @@ fn minion_combat_actions(game: &GameState, minion_id: CardId) -> Vec<EncounterAc
         .map(EncounterAction::CardAction)
         .collect::<Vec<_>>();
     if result.is_empty() {
-        vec![EncounterAction::NoWeapon]
+        if flags::can_take_use_no_weapon_action(game, minion_id) {
+            vec![EncounterAction::NoWeapon]
+        } else {
+            vec![]
+        }
     } else {
         result
     }

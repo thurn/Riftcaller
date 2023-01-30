@@ -123,6 +123,8 @@ pub enum CardName {
     TutorialDisableRaidVault,
     TutorialDisableRaidCrypts,
     TutorialDisableRaidOuter,
+    TutorialDisableRaidContinue,
+    TutorialDisableEndRaid,
 
     // Basic
     BasicChampionLeader,

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::iter;
-
 use anyhow::Result;
 use data::card_state::CardPosition;
 use data::delegates::{
@@ -26,7 +24,7 @@ use data::primitives::{CardId, CardType, RoomId, Side};
 use data::random;
 use data::updates::GameUpdate;
 use rules::mana::ManaPurpose;
-use rules::{dispatch, mana, mutations, queries};
+use rules::{dispatch, flags, mana, mutations, queries};
 use with_error::{fail, WithError};
 
 use crate::traits::{RaidDisplayState, RaidPhaseImpl};
@@ -66,12 +64,13 @@ impl RaidPhaseImpl for AccessPhase {
     }
 
     fn actions(self, game: &GameState) -> Result<Vec<AccessPhaseAction>> {
-        Ok(game
-            .raid()?
+        let raid = game.raid()?;
+        let can_end = flags::can_take_end_raid_access_phase_action(game, raid.raid_id);
+        Ok(raid
             .accessed
             .iter()
             .filter_map(|card_id| access_action_for_card(game, *card_id))
-            .chain(iter::once(AccessPhaseAction::EndRaid))
+            .chain(can_end.then_some(AccessPhaseAction::EndRaid).into_iter())
             .collect())
     }
 

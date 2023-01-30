@@ -58,7 +58,7 @@ pub fn tutorial_disable_gain_mana() -> CardDefinition {
         simple_ability(
             text!["The Champion cannot take the 'gain mana' action"],
             Delegate::CanTakeGainManaAction(QueryDelegate {
-                requirement: always,
+                requirement: side_is_champion,
                 transformation: |_, _, _, f| f.with_override(false),
             }),
         ),
@@ -111,6 +111,32 @@ pub fn tutorial_disable_raid_outer() -> CardDefinition {
             text!["The Champion cannot raid outer rooms"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: |_, _, room_id| room_id.is_outer_room(),
+                transformation: |_, _, _, f| f.with_override(false),
+            }),
+        ),
+    )
+}
+
+pub fn tutorial_disable_raid_continue() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialDisableRaidContinue,
+        simple_ability(
+            text!["The Champion must use a weapon during raids"],
+            Delegate::CanUseNoWeapon(QueryDelegate {
+                requirement: always,
+                transformation: |_, _, _, f| f.with_override(false),
+            }),
+        ),
+    )
+}
+
+pub fn tutorial_disable_end_raid() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialDisableEndRaid,
+        simple_ability(
+            text!["The Champion cannot end the access phase of raids"],
+            Delegate::CanEndRaidAccessPhase(QueryDelegate {
+                requirement: always,
                 transformation: |_, _, _, f| f.with_override(false),
             }),
         ),

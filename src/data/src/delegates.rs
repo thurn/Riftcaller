@@ -434,8 +434,14 @@ pub enum Delegate {
     /// against the target card (typically a minion) during a raid?
     CanEncounterTarget(QueryDelegate<CardEncounter, Flag>),
     /// Can the source card (typically a weapon) apply an encounter
-    /// action to defeat the target target (typically a minion) during a raid?
+    /// action to defeat the target (typically a minion) during a raid?
     CanDefeatTarget(QueryDelegate<CardEncounter, Flag>),
+    /// Can the Champion choose to not use a weapon ability when encountering
+    /// the indicated minion card?
+    CanUseNoWeapon(QueryDelegate<CardId, Flag>),
+    /// Can the Champion choose to use the 'End Raid' button to end the access
+    /// phase of a raid?
+    CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
 
     /// Query the current mana cost of a card. Invoked with [Cost::mana].
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),

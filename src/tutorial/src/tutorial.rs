@@ -47,6 +47,8 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardName::TutorialDisableRaidVault,
                 CardName::TutorialDisableRaidCrypts,
                 CardName::TutorialDisableRaidOuter,
+                CardName::TutorialDisableRaidContinue,
+                CardName::TutorialDisableEndRaid
             ]),
             TutorialStep::KeepOpeningHand(Side::Champion),
             TutorialStep::KeepOpeningHand(Side::Overlord),
@@ -112,6 +114,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 weapon: CardName::SimpleAxe,
                 target: CardName::Captain,
             }]),
+            TutorialStep::RemoveGameModifiers(vec![
+                CardName::TutorialDisableRaidContinue,
+            ]),
             TutorialStep::Display(vec![
                 toast_at(
                     "Once you access a room, you can <b>score</b> a card inside.",
@@ -121,6 +126,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::ScoreAccessedCard(
                 CardName::Machinate,
             )]),
+            TutorialStep::RemoveGameModifiers(vec![
+                CardName::TutorialDisableEndRaid,
+            ]),
             TutorialStep::Display(vec![
                 toast_at(
                     "Scoring <b>scheme</b> cards in rooms gives you points. The first player to reach 100 points wins!",
@@ -139,6 +147,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 Side::Champion,
                 vec![CardName::ArcaneRecovery, CardName::Lodestone],
             ),
+            TutorialStep::RemoveGameModifiers(vec![
+                CardName::TutorialDisableGainMana,
+            ]),
             TutorialStep::Display(vec![
                 user_say("I need more mana...", Milliseconds(0)),
                 toast_at(
@@ -159,6 +170,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardTarget::None,
             )]),
             // User -> 9 mana
+            TutorialStep::RemoveGameModifiers(vec![
+                CardName::TutorialDisableDrawAction,
+            ]),
             TutorialStep::Display(vec![
                 user_say("I should draw another card...", Milliseconds(0)),
                 toast_at(

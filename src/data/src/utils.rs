@@ -27,7 +27,7 @@ pub fn is_false(function: impl FnOnce() -> Option<bool>) -> bool {
     !is_true(function)
 }
 
-/// Converts an iterator over T into an iterator over Result<T>, wrapping each
+/// Converts an iterator over T into an iterator over `Result<T>`, wrapping each
 /// item in 'Ok'
 pub fn all_ok<T>(it: impl Iterator<Item = T>) -> impl Iterator<Item = Result<T, Error>> {
     it.map(Ok::<T, Error>)

@@ -27,7 +27,7 @@ pub trait Component {
     fn build(self) -> Option<Node>;
 }
 
-/// Lets Option<Component> be used as a component
+/// Lets `Option<Component>` be used as a component
 impl<T: Component> Component for Option<T> {
     fn build(self) -> Option<Node> {
         if let Some(c) = self {
