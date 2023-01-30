@@ -129,7 +129,7 @@ pub enum TargetRequirement<T> {
 impl<T> Debug for TargetRequirement<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let kind: TargetRequirementKind = self.into();
-        write!(f, "{:?}", kind)
+        write!(f, "{kind:?}")
     }
 }
 

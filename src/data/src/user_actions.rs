@@ -141,12 +141,12 @@ impl fmt::Debug for UserAction {
         match self {
             Self::Debug(a) => f.debug_tuple("Debug").field(a).finish(),
             Self::NewAdventure(a) => f.debug_tuple("NewAdventure").field(a).finish(),
-            Self::AdventureAction(a) => write!(f, "{:?}", a),
+            Self::AdventureAction(a) => write!(f, "{a:?}"),
             Self::LeaveAdventure => write!(f, "LeaveAdventure"),
             Self::NewGame(a) => f.debug_tuple("NewGame").field(a).finish(),
-            Self::GameAction(a) => write!(f, "{:?}", a),
+            Self::GameAction(a) => write!(f, "{a:?}"),
             Self::LeaveGame => write!(f, "LeaveGame"),
-            Self::DeckEditorAction(a) => write!(f, "{:?}", a),
+            Self::DeckEditorAction(a) => write!(f, "{a:?}"),
         }
     }
 }

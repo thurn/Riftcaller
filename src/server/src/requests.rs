@@ -99,7 +99,7 @@ impl Spelldawn for GameService {
 
                 if let Err(error) = tx.send(Ok(commands)).await {
                     error!(?player_id, ?error, "Send Error!");
-                    return Err(Status::internal(format!("Send Error: {:#}", error)));
+                    return Err(Status::internal(format!("Send Error: {error:#}")));
                 }
 
                 let result = agent_response::handle_request_if_active(
@@ -108,12 +108,12 @@ impl Spelldawn for GameService {
                     HandleRequest::SendToPlayer,
                 );
                 if let Err(error) = result {
-                    return Err(Status::internal(format!("Agent Error: {:#}", error)));
+                    return Err(Status::internal(format!("Agent Error: {error:#}")));
                 }
             }
             Err(error) => {
                 error!(?player_id, ?error, "Connection Error!");
-                return Err(Status::internal(format!("Connection Error: {:#}", error)));
+                return Err(Status::internal(format!("Connection Error: {error:#}")));
             }
         }
 
@@ -142,7 +142,7 @@ impl Spelldawn for GameService {
                         HandleRequest::SendToPlayer,
                     );
                     if let Err(error) = result {
-                        return Err(Status::internal(format!("Agent Error: {:#}", error)));
+                        return Err(Status::internal(format!("Agent Error: {error:#}")));
                     }
                 }
 
@@ -150,7 +150,7 @@ impl Spelldawn for GameService {
             }
             Err(error) => {
                 error!(?error, "Server Error!");
-                Err(Status::internal(format!("Server Error: {:#}", error)))
+                Err(Status::internal(format!("Server Error: {error:#}")))
             }
         }
     }

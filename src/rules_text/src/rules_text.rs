@@ -180,7 +180,7 @@ fn process_text_tokens(tokens: &[TextToken]) -> String {
                 Keyword::Trap => format!("<b>{}Trap:</b>", icons::TRIGGER),
                 Keyword::Construct => "<b>Construct</b>".to_string(),
             },
-            TextToken::Reminder(text) => format!("<i>{}</i>", text),
+            TextToken::Reminder(text) => format!("<i>{text}</i>"),
             TextToken::Cost(cost) => format!("{}: ", process_text_tokens(cost)),
         })
     }

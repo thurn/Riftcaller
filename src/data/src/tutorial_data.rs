@@ -139,8 +139,11 @@ pub enum TutorialStep {
     /// is taken.
     Display(Vec<TutorialDisplay>),
 
-    /// Adds a global modifier card
+    /// Adds global modifier cards
     AddGameModifiers(Vec<CardName>),
+
+    /// Removes global modifier cards
+    RemoveGameModifiers(Vec<CardName>),
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

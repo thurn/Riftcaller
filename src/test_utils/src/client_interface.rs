@@ -61,7 +61,7 @@ impl ClientInterface {
         let address = self.open_panels.last().expect("No open panel");
         self.panels
             .get(address)
-            .unwrap_or_else(|| panic!("Panel not found: {:?}", address))
+            .unwrap_or_else(|| panic!("Panel not found: {address:?}"))
             .node
             .as_ref()
             .expect("Node")
@@ -164,7 +164,7 @@ pub fn find_element_name(node: &Node, name: impl Into<String>) -> Option<&Node> 
 pub fn assert_has_element_name(node: &Node, name: impl Into<String>) {
     let n = name.into();
     if find_element_name(node, n.clone()).is_none() {
-        panic!("Element '{}' not found!", n);
+        panic!("Element '{n}' not found!");
     }
 }
 

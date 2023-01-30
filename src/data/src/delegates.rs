@@ -421,12 +421,10 @@ pub enum Delegate {
     CanActivateAbility(QueryDelegate<AbilityId, Flag>),
     /// Query whether an ability can be activated while its card is face-down
     CanActivateWhileFaceDown(QueryDelegate<AbilityId, Flag>),
-    /// Can the indicated player currently take the basic game action to
-    /// initiate a raid?
-    CanInitiateRaid(QueryDelegate<Side, Flag>),
-    /// Can the indicated player currently take the basic game action to level
-    /// up a room?
-    CanLevelUpRoom(QueryDelegate<Side, Flag>),
+    /// Can a raid currently be started on the indicated room?
+    CanInitiateRaid(QueryDelegate<RoomId, Flag>),
+    /// Can the indicated player currently level up the indicated room?
+    CanLevelUpRoom(QueryDelegate<RoomId, Flag>),
     /// Can the indicated card be leveled up when the level up action is taken
     /// for a room?
     ///

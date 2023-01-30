@@ -26,7 +26,8 @@ use strum_macros::Display;
 /// This enum is used to connect the state of a card to its game rules.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize, Sequence)]
 pub enum CardName {
-    // When renaming a card, add  #[serde(alias = "OldName")] to preserve serialization
+    // When renaming a card, add  #[serde(alias = "OldName")] to preserve
+    // serialization
 
     // Cards for use in tests
     TestChampionLeader,
@@ -112,9 +113,16 @@ pub enum CardName {
     BridgeTroll,
     Stormcaller,
 
+    // Modifier card which has no effect
+    OverlordEmptyModifier,
+
     // Tutorial Effects
     TutorialDisableDrawAction,
     TutorialDisableGainMana,
+    TutorialDisableRaidSanctum,
+    TutorialDisableRaidVault,
+    TutorialDisableRaidCrypts,
+    TutorialDisableRaidOuter,
 
     // Basic
     BasicChampionLeader,
@@ -156,7 +164,7 @@ impl CardName {
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
             Self::BasicChampionLeader => "Leader".to_string(),
             Self::BasicOverlordLeader => "Leader".to_string(),
-            _ => format!("{}", self).from_case(Case::Pascal).to_case(Case::Title),
+            _ => format!("{self}").from_case(Case::Pascal).to_case(Case::Title),
         }
     }
 

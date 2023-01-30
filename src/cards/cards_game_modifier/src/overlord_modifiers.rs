@@ -14,15 +14,15 @@
 
 use assets::rexard_images;
 use card_helpers::{text, *};
-use data::card_definition::{CardConfig, CardDefinition, Cost};
+use data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
 use data::card_name::CardName;
 use data::delegates::{Delegate, QueryDelegate};
 use data::primitives::{CardType, Rarity, School, Side};
 use data::set_name::SetName;
 
-pub fn tutorial_disable_draw_action() -> CardDefinition {
+fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
     CardDefinition {
-        name: CardName::TutorialDisableDrawAction,
+        name,
         sets: vec![SetName::TutorialEffects],
         cost: Cost::default(),
         image: rexard_images::spell(1, "SpellBook01_01"),
@@ -30,34 +30,89 @@ pub fn tutorial_disable_draw_action() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![ability],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn overlord_empty_modifier() -> CardDefinition {
+    tutorial_modifier(CardName::OverlordEmptyModifier, text_only_ability(text!["No effect"]))
+}
+
+pub fn tutorial_disable_draw_action() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialDisableDrawAction,
+        simple_ability(
             text!["The Champion cannot take the 'draw card' action"],
             Delegate::CanTakeDrawCardAction(QueryDelegate {
                 requirement: side_is_champion,
                 transformation: |_, _, _, f| f.with_override(false),
             }),
-        )],
-        config: CardConfig::default(),
-    }
+        ),
+    )
 }
 
 pub fn tutorial_disable_gain_mana() -> CardDefinition {
-    CardDefinition {
-        name: CardName::TutorialDisableGainMana,
-        sets: vec![SetName::TutorialEffects],
-        cost: Cost::default(),
-        image: rexard_images::spell(1, "SpellBook01_01"),
-        card_type: CardType::GameModifier,
-        side: Side::Overlord,
-        school: School::Neutral,
-        rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+    tutorial_modifier(
+        CardName::TutorialDisableGainMana,
+        simple_ability(
             text!["The Champion cannot take the 'gain mana' action"],
             Delegate::CanTakeGainManaAction(QueryDelegate {
-                requirement: side_is_champion,
+                requirement: always,
                 transformation: |_, _, _, f| f.with_override(false),
             }),
-        )],
-        config: CardConfig::default(),
-    }
+        ),
+    )
+}
+
+pub fn tutorial_disable_raid_sanctum() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialDisableRaidSanctum,
+        simple_ability(
+            text!["The Champion cannot raid the Sanctum"],
+            Delegate::CanInitiateRaid(QueryDelegate {
+                requirement: room_is_sanctum,
+                transformation: |_, _, _, f| f.with_override(false),
+            }),
+        ),
+    )
+}
+
+pub fn tutorial_disable_raid_vault() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialDisableRaidVault,
+        simple_ability(
+            text!["The Champion cannot raid the Vault"],
+            Delegate::CanInitiateRaid(QueryDelegate {
+                requirement: room_is_vault,
+                transformation: |_, _, _, f| f.with_override(false),
+            }),
+        ),
+    )
+}
+
+pub fn tutorial_disable_raid_crypts() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialDisableRaidCrypts,
+        simple_ability(
+            text!["The Champion cannot raid the Crypts"],
+            Delegate::CanInitiateRaid(QueryDelegate {
+                requirement: room_is_crypts,
+                transformation: |_, _, _, f| f.with_override(false),
+            }),
+        ),
+    )
+}
+
+pub fn tutorial_disable_raid_outer() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialDisableRaidOuter,
+        simple_ability(
+            text!["The Champion cannot raid outer rooms"],
+            Delegate::CanInitiateRaid(QueryDelegate {
+                requirement: |_, _, room_id| room_id.is_outer_room(),
+                transformation: |_, _, _, f| f.with_override(false),
+            }),
+        ),
+    )
 }

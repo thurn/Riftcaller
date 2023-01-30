@@ -65,13 +65,13 @@ impl Summary {
         let mut summary = Self::default();
         match response {
             Ok(v) => v.clone().summarize(&mut summary),
-            Err(err) => panic!("Error: {:?}", err),
+            Err(err) => panic!("Error: {err:?}"),
         }
         summary.value
     }
 
     pub fn primitive(&mut self, string: impl Debug) {
-        let _err = write!(self.value, "{:?}", string);
+        let _err = write!(self.value, "{string:?}");
     }
 
     pub fn child(&mut self, name: &'static str, value: Option<impl Summarize>) {

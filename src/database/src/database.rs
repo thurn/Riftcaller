@@ -91,16 +91,16 @@ impl Database for SledDatabase {
     }
 
     fn has_game(&self, id: GameId) -> Result<bool> {
-        games()?.contains_key(id.key()).with_error(|| format!("Error reading key {:?}", id))
+        games()?.contains_key(id.key()).with_error(|| format!("Error reading key {id:?}"))
     }
 
     fn game(&self, id: GameId) -> Result<GameState> {
         let content = games()?
             .get(id.key())
-            .with_error(|| format!("Error reading  game: {:?}", id))?
-            .with_error(|| format!("Game not found: {:?}", id))?;
+            .with_error(|| format!("Error reading  game: {id:?}"))?
+            .with_error(|| format!("Game not found: {id:?}"))?;
         let mut game = de::from_slice(content.as_ref())
-            .with_error(|| format!("Error deserializing game {:?}", id))?;
+            .with_error(|| format!("Error deserializing game {id:?}"))?;
         dispatch::populate_delegate_cache(&mut game);
         Ok(game)
     }
@@ -124,10 +124,10 @@ impl Database for SledDatabase {
         Ok(
             if let Some(content) = players()?
                 .get(player_id.database_key()?)
-                .with_error(|| format!("Error reading player: {:?}", player_id))?
+                .with_error(|| format!("Error reading player: {player_id:?}"))?
             {
                 de::from_slice(content.as_ref())
-                    .with_error(|| format!("Error deserializing player {:?}", player_id))?
+                    .with_error(|| format!("Error deserializing player {player_id:?}"))?
             } else {
                 None
             },

@@ -211,13 +211,13 @@ pub fn can_take_gain_mana_action(game: &GameState, side: Side) -> bool {
 
 /// Returns whether the indicated player can currently take the basic game
 /// action to initiate a raid on the target [RoomId].
-pub fn can_take_initiate_raid_action(game: &GameState, side: Side, target: RoomId) -> bool {
-    let non_empty = target.is_inner_room() || game.occupants(target).next().is_some();
+pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: RoomId) -> bool {
+    let non_empty = room_id.is_inner_room() || game.occupants(room_id).next().is_some();
     let can_initiate = non_empty
         && side == Side::Champion
         && game.data.raid.is_none()
         && in_main_phase(game, side);
-    dispatch::perform_query(game, CanInitiateRaidQuery(side), Flag::new(can_initiate)).into()
+    dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(can_initiate)).into()
 }
 
 /// Returns whether the indicated player can currently take the basic game
@@ -231,7 +231,7 @@ pub fn can_take_level_up_room_action(game: &GameState, side: Side, room_id: Room
         && side == Side::Overlord
         && mana::get(game, side, ManaPurpose::LevelUpRoom(room_id)) > 0
         && in_main_phase(game, side);
-    dispatch::perform_query(game, CanLevelUpRoomQuery(side), Flag::new(can_level_up)).into()
+    dispatch::perform_query(game, CanLevelUpRoomQuery(room_id), Flag::new(can_level_up)).into()
 }
 
 /// Whether the indicated card can be leveled up when the 'level up' action is

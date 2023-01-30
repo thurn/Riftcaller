@@ -116,7 +116,7 @@ impl TestSession {
         let to_update = match () {
             _ if user_id == self.user.id => &mut self.user,
             _ if user_id == self.opponent.id => &mut self.opponent,
-            _ => panic!("Unknown user id: {:?}", user_id),
+            _ => panic!("Unknown user id: {user_id:?}"),
         };
 
         // Clear all previous state
@@ -305,7 +305,7 @@ impl TestSession {
         match () {
             _ if player_id == self.user.id => &self.user,
             _ if player_id == self.opponent.id => &self.opponent,
-            _ => panic!("Unknown player id: {:?}", player_id),
+            _ => panic!("Unknown player id: {player_id:?}"),
         }
     }
 
@@ -321,7 +321,7 @@ impl TestSession {
         } else if self.database.game().player(side).id == self.opponent.id {
             self.opponent.id
         } else {
-            panic!("Cannot find PlayerId for side {:?}", side)
+            panic!("Cannot find PlayerId for side {side:?}")
         }
     }
 
@@ -389,7 +389,7 @@ impl TestSession {
             _ if player_id == self.opponent.id => {
                 (self.user.id, &mut self.opponent, &mut self.user)
             }
-            _ => panic!("Unknown user id: {:?}", player_id),
+            _ => panic!("Unknown user id: {player_id:?}"),
         }
     }
 }
@@ -472,7 +472,7 @@ impl ClientGameData {
         let position = self
             .object_positions
             .get(&GameObjectIdentifier { id: Some(id) })
-            .unwrap_or_else(|| panic!("No position available for {:?}", id))
+            .unwrap_or_else(|| panic!("No position available for {id:?}"))
             .clone()
             .position
             .expect("position");
@@ -632,7 +632,7 @@ pub struct ClientCards {
 
 impl ClientCards {
     pub fn get(&self, card_id: CardIdentifier) -> &ClientCard {
-        self.card_map.get(&card_id).unwrap_or_else(|| panic!("Card not found: {:?}", card_id))
+        self.card_map.get(&card_id).unwrap_or_else(|| panic!("Card not found: {card_id:?}"))
     }
 
     /// Returns a vec containing the titles of all of the cards in the provided

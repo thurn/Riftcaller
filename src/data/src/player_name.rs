@@ -56,6 +56,6 @@ pub enum NamedPlayer {
 
 impl NamedPlayer {
     pub fn displayed_name(&self) -> String {
-        format!("{}", self).from_case(Case::Pascal).to_case(Case::Title)
+        format!("{self}").from_case(Case::Pascal).to_case(Case::Title)
     }
 }

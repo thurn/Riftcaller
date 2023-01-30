@@ -156,7 +156,7 @@ impl Component for CardListCardName {
                             .height(32.px())
                             .border_radius(Corner::All, 8.px()),
                     )
-                    .child(Text::new(format!("{}x", c)).font_size(FontSize::CardCount))
+                    .child(Text::new(format!("{c}x")).font_size(FontSize::CardCount))
             }))
             .build()
     }

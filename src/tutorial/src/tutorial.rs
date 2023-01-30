@@ -42,7 +42,11 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleAxe]),
             TutorialStep::AddGameModifiers(vec![
                 CardName::TutorialDisableDrawAction,
-                CardName::TutorialDisableGainMana
+                CardName::TutorialDisableGainMana,
+                CardName::TutorialDisableRaidSanctum,
+                CardName::TutorialDisableRaidVault,
+                CardName::TutorialDisableRaidCrypts,
+                CardName::TutorialDisableRaidOuter,
             ]),
             TutorialStep::KeepOpeningHand(Side::Champion),
             TutorialStep::KeepOpeningHand(Side::Overlord),
@@ -56,15 +60,15 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardTarget::Room(RoomId::RoomA),
             )),
             TutorialStep::Display(vec![
-                opponent_say("Surrender to the night!", Milliseconds(0)),
-                user_say("Your tyranny ends here, Vaughn!", Milliseconds(4000)),
                 toast_at(
                     format!(
                         "Tips: <b>Mana</b> ({}) lets you play cards and use weapons. It persists between turns.",
                         icons::MANA
                     ),
-                    Milliseconds(8000),
+                    Milliseconds(0),
                 ),
+                opponent_say("Surrender to the night!", Milliseconds(4000)),
+                user_say("Your tyranny ends here, Vaughn!", Milliseconds(8000)),
                 user_say("I should play a card...", Milliseconds(30_000)),
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
@@ -72,7 +76,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 user_say("No evil shall stand against my valor.", Milliseconds(4000)),
                 toast_at(
                     format!(
-                        "Playing cards from your hand costs one {} (<b>action point</b>).",
+                        "Playing cards from your hand costs one {} (action point).",
                         icons::ACTION
                     ),
                     Milliseconds(0),
@@ -81,6 +85,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
             // User -> 4 mana
+            TutorialStep::RemoveGameModifiers(vec![
+                CardName::TutorialDisableRaidOuter,
+            ]),
             TutorialStep::Display(vec![
                 user_say("My weapon is ready.", Milliseconds(0)),
                 user_say("I should investigate that room...", Milliseconds(4000)),

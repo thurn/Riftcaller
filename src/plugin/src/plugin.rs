@@ -45,7 +45,7 @@ unsafe fn initialize_impl(path: *const u8, path_length: i32) -> Result<i32> {
     let slice = std::slice::from_raw_parts(path, path_length as usize);
     let db_path = str::from_utf8(slice)?;
     database::override_path(db_path.to_string());
-    println!("Initialized plugin with database path {}", db_path);
+    println!("Initialized plugin with database path {db_path}");
     Ok(0)
 }
 
@@ -159,7 +159,7 @@ unsafe fn error_boundary(
                 commands: vec![GameCommand {
                     command: Some(Command::Debug(ClientDebugCommand {
                         debug_command: Some(DebugCommand::LogMessage(LogMessage {
-                            text: format!("{:?}", e),
+                            text: format!("{e:?}"),
                             level: LogMessageLevel::Error.into(),
                         })),
                     })),

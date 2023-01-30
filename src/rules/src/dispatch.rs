@@ -33,7 +33,7 @@ pub fn populate_delegate_cache(game: &mut GameState) {
     game.delegate_cache = result;
 }
 
-/// Adds a new [CardDefinition] to the delegate cache.
+/// Adds a new card's [CardDefinition] to the delegate cache.
 pub fn add_card_to_delegate_cache(
     cache: &mut DelegateCache,
     definition: &CardDefinition,
@@ -48,6 +48,25 @@ pub fn add_card_to_delegate_cache(
                 .entry(delegate.kind())
                 .or_insert_with(Vec::new)
                 .push(DelegateContext { delegate: delegate.clone(), scope });
+        }
+    }
+}
+
+/// Removes all cached delegates for a given card.
+///
+/// This function assumes that the set of delegates for the card has not
+/// changed, which is currently always the case.
+pub fn remove_card_from_delegate_cache(
+    cache: &mut DelegateCache,
+    definition: &CardDefinition,
+    card_id: CardId,
+) {
+    for (_, ability) in definition.abilities.iter().enumerate() {
+        for delegate in &ability.delegates {
+            cache
+                .lookup
+                .entry(delegate.kind())
+                .and_modify(|list| list.retain(|context| context.scope.card_id() != card_id));
         }
     }
 }

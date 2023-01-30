@@ -71,7 +71,7 @@ pub enum AbilityText {
 impl Debug for AbilityText {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            AbilityText::Text(tokens) => write!(f, "{:?}", tokens),
+            AbilityText::Text(tokens) => write!(f, "{tokens:?}"),
             AbilityText::TextFn(_) => write!(f, "<TextFn>"),
         }
     }

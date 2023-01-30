@@ -62,7 +62,7 @@ fn main() -> Result<()> {
     for module in &modules {
         if let Some(list) = functions.get(module) {
             for function in list {
-                writeln!(file, "    DEFINITIONS.insert({}::{});", module, function)?;
+                writeln!(file, "    DEFINITIONS.insert({module}::{function});")?;
             }
         }
     }

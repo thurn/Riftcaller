@@ -151,7 +151,7 @@ pub fn card_frame(school: School, card_type: CardType) -> SpriteAddress {
         }
     };
 
-    SpriteAddress { address: format!("{}.png", string) }
+    SpriteAddress { address: format!("{string}.png") }
 }
 
 pub fn ability_card_frame(side: Side) -> SpriteAddress {
@@ -242,8 +242,7 @@ pub fn projectile(projectile: Projectile) -> ProjectileAddress {
     ProjectileAddress {
         address: match projectile {
             Projectile::Hovl(number) => format!(
-                "Hovl Studio/AAA Projectiles Vol 1/Prefabs/Projectiles/Projectile {}.prefab",
-                number
+                "Hovl Studio/AAA Projectiles Vol 1/Prefabs/Projectiles/Projectile {number}.prefab"
             ),
         },
     }
@@ -253,10 +252,10 @@ pub fn timed_effect(effect: TimedEffect) -> EffectAddress {
     EffectAddress {
         address: match effect {
             TimedEffect::HovlMagicHit(number) => {
-                format!("Hovl Studio/Magic hits/Prefabs/Hit {}.prefab", number)
+                format!("Hovl Studio/Magic hits/Prefabs/Hit {number}.prefab")
             }
             TimedEffect::HovlSwordSlash(number) => {
-                format!("Hovl Studio/Sword slash VFX/Prefabs/Sword Slash {}.prefab", number)
+                format!("Hovl Studio/Sword slash VFX/Prefabs/Sword Slash {number}.prefab")
             }
         },
     }
@@ -287,10 +286,7 @@ pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
 
 pub fn fantasy_class_image(name: &'static str, sex: &'static str) -> Sprite {
     Sprite {
-        address: format!(
-            "ForrestIml/FantasyClasses1/Characters/{}/{}_{}_Stock Art.png",
-            name, name, sex
-        ),
+        address: format!("ForrestIml/FantasyClasses1/Characters/{name}/{name}_{sex}_Stock Art.png"),
     }
 }
 

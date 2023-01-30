@@ -82,6 +82,9 @@ pub fn handle_sequence_game_action(
             }
             TutorialStep::Display(displays) => display(game, displays.clone()),
             TutorialStep::AddGameModifiers(card_names) => add_game_modifiers(game, card_names),
+            TutorialStep::RemoveGameModifiers(card_names) => {
+                remove_game_modifiers(game, card_names)
+            }
         }?;
 
         i += 1;
@@ -100,6 +103,20 @@ pub fn handle_sequence_game_action(
 fn add_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
     for card_name in card_names {
         mutations::create_and_add_card(game, *card_name, CardPosition::GameModifier)?;
+    }
+
+    Ok(())
+}
+
+fn remove_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
+    for card_name in card_names {
+        let side = rules::get(*card_name).side;
+        let card_id = game
+            .game_modifiers(side)
+            .find(|c| c.name == *card_name)
+            .with_error(|| "Card not found")?
+            .id;
+        mutations::overwrite_card(game, card_id, CardName::OverlordEmptyModifier)?;
     }
 
     Ok(())

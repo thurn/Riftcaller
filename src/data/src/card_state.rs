@@ -185,13 +185,13 @@ impl CardState {
         }
     }
 
-    /// Creates a new [CardState] with a given position and revealed state.
+    /// Creates a new [CardState] with a given position and face-up state.
     pub fn new_with_position(
         id: CardId,
         name: CardName,
         position: CardPosition,
         sorting_key: u32,
-        revealed_to_all: bool,
+        is_face_up: bool,
     ) -> Self {
         Self {
             id,
@@ -199,8 +199,9 @@ impl CardState {
             position,
             sorting_key,
             data: CardData {
-                revealed_to_owner: revealed_to_all,
-                revealed_to_opponent: revealed_to_all,
+                revealed_to_owner: is_face_up,
+                revealed_to_opponent: is_face_up,
+                is_face_up,
                 ..CardData::default()
             },
         }

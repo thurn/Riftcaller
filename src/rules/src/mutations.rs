@@ -24,6 +24,7 @@ use std::cmp;
 use anyhow::Result;
 use constants::game_constants;
 use data::card_name::CardName;
+use data::card_state::CardState;
 #[allow(unused)] // Used in rustdocs
 use data::card_state::{CardData, CardPosition, CardPositionKind};
 use data::delegates::{
@@ -544,16 +545,41 @@ pub fn deal_damage(game: &mut GameState, source: impl HasAbilityId, amount: u32)
     Ok(())
 }
 
-/// Creates an entirely new card from outside the game in the indicated
-/// `position.
+/// Creates an entirely new card from outside the game face-up in the indicated
+/// `position`.
 pub fn create_and_add_card(
     game: &mut GameState,
     name: CardName,
     position: CardPosition,
 ) -> Result<()> {
     let definition = crate::get(name);
-    let card_id = game.add_card_internal(name, definition.side, position);
+    let side = definition.side;
+    let card_id = CardId::new(side, game.cards(side).len());
+    let state = CardState::new_with_position(
+        card_id,
+        name,
+        position,
+        game.next_sorting_key(),
+        true, /* is_face_up */
+    );
+    game.cards_mut(side).push(state);
     dispatch::add_card_to_delegate_cache(&mut game.delegate_cache, definition, card_id);
     debug!(?name, ?card_id, ?position, "Created new external card");
+    Ok(())
+}
+
+/// Overwrites an existing card with a completely new card from outside the
+/// game, face-down in the same position as the current card. All existing card
+/// state is discarded.
+pub fn overwrite_card(game: &mut GameState, card_id: CardId, new: CardName) -> Result<()> {
+    let old_definition = crate::get(game.card(card_id).name);
+    let position = game.card(card_id).position();
+    let sorting_key = game.card(card_id).sorting_key;
+    *game.card_mut(card_id) =
+        CardState::new_with_position(card_id, new, position, sorting_key, false);
+    dispatch::remove_card_from_delegate_cache(&mut game.delegate_cache, old_definition, card_id);
+    let new_definition = crate::get(new);
+    dispatch::add_card_to_delegate_cache(&mut game.delegate_cache, new_definition, card_id);
+    debug!(?new, ?card_id, "Overwrote existing card with new card");
     Ok(())
 }

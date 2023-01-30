@@ -271,6 +271,11 @@ impl RoomId {
     pub fn is_inner_room(&self) -> bool {
         matches!(self, RoomId::Vault | RoomId::Sanctum | RoomId::Crypts)
     }
+
+    /// An 'outer room' is any room other than the three pre-defined inner rooms
+    pub fn is_outer_room(&self) -> bool {
+        !self.is_inner_room()
+    }
 }
 
 /// Used to control where a card is rendered within a room

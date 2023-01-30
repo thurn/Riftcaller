@@ -28,8 +28,9 @@ use crate::user_actions::UserAction;
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum EncounterAction {
-    /// (source_id, target_id)
+    /// Defeat the minion being encountered with a weapon (source_id, target_id)
     UseWeaponAbility(CardId, CardId),
+    /// Do not use a weapon and apply minion combat effects
     NoWeapon,
     /// Custom card action, resolved and then treated equivalently to 'no
     /// weapon'
@@ -83,10 +84,10 @@ pub enum PromptAction {
 impl fmt::Debug for PromptAction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::MulliganDecision(d) => write!(f, "{:?}", d),
-            Self::EncounterAction(a) => write!(f, "{:?}", a),
-            Self::AccessPhaseAction(a) => write!(f, "{:?}", a),
-            Self::CardAction(a) => write!(f, "{:?}", a),
+            Self::MulliganDecision(d) => write!(f, "{d:?}"),
+            Self::EncounterAction(a) => write!(f, "{a:?}"),
+            Self::AccessPhaseAction(a) => write!(f, "{a:?}"),
+            Self::CardAction(a) => write!(f, "{a:?}"),
         }
     }
 }
@@ -150,7 +151,7 @@ pub enum GameAction {
 impl fmt::Debug for GameAction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::PromptAction(prompt) => write!(f, "@{:?}", prompt),
+            Self::PromptAction(prompt) => write!(f, "@{prompt:?}"),
             Self::Resign => write!(f, "@Resign"),
             Self::GainMana => write!(f, "@GainMana"),
             Self::DrawCard => write!(f, "@DrawCard"),

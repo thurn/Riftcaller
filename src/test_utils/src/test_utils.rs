@@ -418,12 +418,12 @@ pub fn assert_contents_equal<T: Eq + Hash + Debug>(left: Vec<T>, right: Vec<T>) 
 
 /// Asserts that a [Result] is not an error
 pub fn assert_ok<T: Debug, E: Debug>(result: &Result<T, E>) {
-    assert!(result.is_ok(), "Unexpected error, got {:?}", result)
+    assert!(result.is_ok(), "Unexpected error, got {result:?}")
 }
 
 /// Asserts that a [Result] is an error
 pub fn assert_error<T: Debug, E: Debug>(result: Result<T, E>) {
-    assert!(result.is_err(), "Expected an error, got {:?}", result)
+    assert!(result.is_err(), "Expected an error, got {result:?}")
 }
 
 /// Creates a [CardIdentifier] representing the ability with the provided
@@ -441,8 +441,8 @@ pub fn server_card_id(card_id: CardIdentifier) -> CardId {
 }
 
 pub fn create_test_recording(session: &TestSession, name: &str) {
-    record_output_for_side(session, format!("{}_overlord", name), Side::Overlord).unwrap();
-    record_output_for_side(session, format!("{}_champion", name), Side::Champion).unwrap();
+    record_output_for_side(session, format!("{name}_overlord"), Side::Overlord).unwrap();
+    record_output_for_side(session, format!("{name}_champion"), Side::Champion).unwrap();
 }
 
 pub fn record_output_for_side(session: &TestSession, name: String, side: Side) -> Result<()> {
@@ -455,7 +455,7 @@ pub fn record_output_for_side(session: &TestSession, name: String, side: Side) -
             .collect(),
     };
     let encoded = commands.encode_length_delimited_to_vec();
-    fs::write(format!("../Assets/Resources/TestRecordings/test_{}.bytes", name), encoded)?;
+    fs::write(format!("../Assets/Resources/TestRecordings/test_{name}.bytes"), encoded)?;
 
     Ok(())
 }

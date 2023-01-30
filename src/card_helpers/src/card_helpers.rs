@@ -117,6 +117,21 @@ pub fn side_is_overlord(_: &GameState, _: Scope, side: &Side) -> bool {
     *side == Side::Overlord
 }
 
+/// RequirementFn which checks if the [RoomId] parameter is [RoomId::Sanctum]
+pub fn room_is_sanctum(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
+    *room_id == RoomId::Sanctum
+}
+
+/// RequirementFn which checks if the [RoomId] parameter is [RoomId::Vault]
+pub fn room_is_vault(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
+    *room_id == RoomId::Vault
+}
+
+/// RequirementFn which checks if the [RoomId] parameter is [RoomId::Crypts]
+pub fn room_is_crypts(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
+    *room_id == RoomId::Crypts
+}
+
 /// RequirementFn that this delegate's card is currently face up & in play
 pub fn face_up_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     let card = game.card(scope.card_id());

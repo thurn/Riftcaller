@@ -181,7 +181,7 @@ fn handle_score_card(game: &mut GameState, card_id: CardId) -> Result<()> {
         .config
         .stats
         .scheme_points
-        .with_error(|| format!("Expected SchemePoints for {:?}", card_id))?;
+        .with_error(|| format!("Expected SchemePoints for {card_id:?}"))?;
     mutations::score_points(game, Side::Champion, scheme_points.points)?;
 
     mutations::move_card(game, card_id, CardPosition::Scored(Side::Champion))?;
