@@ -33,6 +33,9 @@ pub struct SpeechBubble {
     pub text: String,
     pub side: Side,
     pub delay: Milliseconds,
+
+    // Whether this text should repeat every turn until an action is matched
+    pub recurring: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -40,6 +43,9 @@ pub struct Tooltip {
     pub text: String,
     pub anchor: TooltipAnchor,
     pub delay: Milliseconds,
+
+    // Whether this tooltip should repeat every turn until an action is matched
+    pub recurring: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -47,6 +53,9 @@ pub struct Toast {
     pub text: String,
     pub delay: Milliseconds,
     pub hide_after: Option<Milliseconds>,
+
+    // Whether this toast should repeat every turn until an action is matched
+    pub recurring: bool,
 }
 
 /// Content which can be displayed to the user during the game tutorial
@@ -60,6 +69,16 @@ pub enum TutorialDisplay {
 
     // Pop up a general help message to the user
     Toast(Toast),
+}
+
+impl TutorialDisplay {
+    pub fn recurring(&self) -> bool {
+        match self {
+            TutorialDisplay::Tooltip(tooltip) => tooltip.recurring,
+            TutorialDisplay::SpeechBubble(bubble) => bubble.recurring,
+            TutorialDisplay::Toast(toast) => toast.recurring,
+        }
+    }
 }
 
 /// State of the in-game tutorial
@@ -101,8 +120,9 @@ pub enum TutorialTrigger {
     InitiateRaid(RoomId),
     LevelUpRoom(RoomId),
     UseWeapon { weapon: CardName, target: CardName },
+    UseNoWeapon,
     ScoreAccessedCard(CardName),
-    EndRaid,
+    SuccessfullyEndRaid,
 }
 
 /// Declarative description of events & actions during the tutorial. The
@@ -122,13 +142,17 @@ pub enum TutorialStep {
     /// Sets the top card of a player's deck to contain specific cards. The
     /// cards must exist already in the player's deck.
     ///
-    /// Earlier items in the vector are closer to the top of the deck.
+    /// Later items in the vector are closer to the top of the deck.
     SetTopOfDeck(Side, Vec<CardName>),
 
     /// Cause the opponent to perform the indicated game actions, bypassing the
     /// AI. The last action is repeated if the opponent's turn comes again
     /// without advancing the tutorial state.
     OpponentAction(TutorialOpponentAction),
+
+    /// Cause the opponent to perform the indicated game action repeatedly
+    /// whenever their turn comes up, if no OpponentAction is specified.
+    DefaultOpponentAction(TutorialOpponentAction),
 
     /// Wait for the user to perform all of the indicated actions before
     /// advancing to the next tutorial step. Other game actions are still

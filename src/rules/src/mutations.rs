@@ -301,8 +301,9 @@ pub fn check_start_game(game: &mut GameState) -> Result<()> {
 pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Result<Vec<CardId>> {
     let count = count as usize; // don't run this on 16 bit processors please :)
     let mut cards = game.card_list_for_position(side, CardPosition::DeckTop(side));
-    let result = if count <= cards.len() {
-        cards[0..count].to_vec()
+    let len = cards.len();
+    let result = if count <= len {
+        cards[(len - count)..len].to_vec()
     } else {
         let remaining = count - cards.len();
         let mut shuffled =

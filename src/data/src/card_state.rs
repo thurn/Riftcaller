@@ -100,6 +100,11 @@ impl CardPosition {
         matches!(self.kind(), CardPositionKind::DeckUnknown | CardPositionKind::DeckTop)
     }
 
+    /// Returns true if this card is in an unknown position in the user's deck.
+    pub fn in_deck_unknown(&self) -> bool {
+        matches!(self.kind(), CardPositionKind::DeckUnknown)
+    }
+
     /// Returns true if this card is in a user's discard pile
     pub fn in_discard_pile(&self) -> bool {
         self.kind() == CardPositionKind::DiscardPile

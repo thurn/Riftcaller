@@ -136,7 +136,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
             ]),
             TutorialStep::Display(vec![opponent_say("Curse you!", Milliseconds(0))]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::EndRaid]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
             // User -> 4 mana
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
             TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
@@ -202,32 +202,44 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     // cannot be drawn to defeat the Frog, in order to
                     // illustrate a failed raid.
 
-                    CardName::SimpleHammer,
                     CardName::Contemplate,
+                    CardName::EldritchSurge,
                     CardName::ArcaneRecovery,
+                    CardName::SimpleBlade,
+                    CardName::SimpleSpear,
+                    CardName::SimpleAxe,
+                    CardName::SimpleBlade,
+                    CardName::SimpleHammer,
+                    CardName::Lodestone,
+                    CardName::Contemplate,
                     CardName::EldritchSurge,
                     CardName::SimpleBlade,
                     CardName::SimpleSpear,
-                    CardName::SimpleAxe,
-                    CardName::SimpleHammer,
-                    CardName::Contemplate,
+                    CardName::SimpleSpear,
                     CardName::ArcaneRecovery,
-                    CardName::EldritchSurge,
-                    CardName::SimpleBlade,
-                    CardName::SimpleSpear,
                     CardName::SimpleAxe,
                     CardName::SimpleHammer,
+                    CardName::Lodestone,
                     CardName::Contemplate,
-                    CardName::SimpleBlade,
-                    CardName::SimpleSpear,
-                    CardName::SimpleAxe,
+                    CardName::SimpleHammer,
                 ],
             ),
+            TutorialStep::DefaultOpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::Display(vec![
-                user_say("Your minions can't keep me out of that room.", Milliseconds(0)),
+                user_say("You can't keep me out of that room.", Milliseconds(0)),
+                user_say_recurring("I should return to that room.", Milliseconds(10_000)),
+                tooltip_recurring(
+                    "Drag portrait here",
+                    TooltipAnchor::RaidRoom(RoomId::RoomA),
+                    Milliseconds(15_000),
+                ),
             ]),
-            TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::RemoveGameModifiers(vec![
+                CardName::TutorialDisableRaidVault,
+                CardName::TutorialDisableRaidSanctum,
+                CardName::TutorialDisableRaidCrypts
+            ]),
             TutorialStep::Display(vec![
                 toast_at(
                     format!("A <color={}>Mortal</color> weapon cannot damage an <color={}>Abyssal</color> minion. A matching weapon is required!",
@@ -236,6 +248,69 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0),
                 ),
             ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseNoWeapon]),
+            TutorialStep::Display(vec![
+                user_say("There's got to be another way!", Milliseconds(0)),
+                user_say_recurring("I should search the Vault.", Milliseconds(8_000)),
+                toast_at(
+                    "You can raid the <b>Vault</b> and attempt to score cards on top of your opponent's deck.",
+                    Milliseconds(2000)),
+                tooltip_recurring(
+                    "Drag portrait here",
+                    TooltipAnchor::RaidRoom(RoomId::Vault),
+                    Milliseconds(10_000),
+                ),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::Vault)]),
+            TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleClub]),
+            TutorialStep::Display(vec![
+                toast_at(
+                    "If the top card of your opponent's deck is a <b>scheme</b> card, you can score it for points!",
+                    Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Machinate, CardName::Conspire]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
+            TutorialStep::Display(vec![
+                toast_at(
+                    format!("Now you just need to find an <color={}>Abyssal</color> weapon",
+                    design::as_hex(FontColor::AbyssalCardTitle)),
+                    Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
+                RoomId::RoomA,
+            )),
+            TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
+                RoomId::RoomA,
+            )),
+            TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
+                RoomId::RoomA,
+            )),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::Display(vec![
+                toast_at(
+                    format!("An <color={}>Abyssal</color> weapon can only damage an <color={}>Abyssal</color> minion.",
+                    design::as_hex(FontColor::AbyssalCardTitle),
+                    design::as_hex(FontColor::AbyssalCardTitle)),
+                    Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
+            TutorialStep::Display(vec![
+                user_say("Time to end this.", Milliseconds(0)),
+                user_say_recurring("I need to attack the Sanctum", Milliseconds(8_000)),
+                toast_at(
+                    "You can raid the <b>Sanctum</b> to access a random card from your opponent's hand",
+                    Milliseconds(2000)),
+                tooltip_recurring(
+                    "Drag portrait here",
+                    TooltipAnchor::RaidRoom(RoomId::Sanctum),
+                    Milliseconds(10_000),
+                ),
+            ]),
+
+            // TODO: Force the accessed card to be a scheme
         ],
 
         // From this point on, we transition to running a normal game with
@@ -263,15 +338,42 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
 });
 
 fn user_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
-    TutorialDisplay::SpeechBubble(SpeechBubble { text: text.into(), side: Side::Champion, delay })
+    TutorialDisplay::SpeechBubble(SpeechBubble {
+        text: text.into(),
+        side: Side::Champion,
+        delay,
+        recurring: false,
+    })
+}
+
+fn user_say_recurring(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
+    TutorialDisplay::SpeechBubble(SpeechBubble {
+        text: text.into(),
+        side: Side::Champion,
+        delay,
+        recurring: true,
+    })
 }
 
 fn opponent_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
-    TutorialDisplay::SpeechBubble(SpeechBubble { text: text.into(), side: Side::Overlord, delay })
+    TutorialDisplay::SpeechBubble(SpeechBubble {
+        text: text.into(),
+        side: Side::Overlord,
+        delay,
+        recurring: false,
+    })
 }
 
 fn tooltip(text: impl Into<String>, anchor: TooltipAnchor, delay: Milliseconds) -> TutorialDisplay {
-    TutorialDisplay::Tooltip(Tooltip { text: text.into(), anchor, delay })
+    TutorialDisplay::Tooltip(Tooltip { text: text.into(), anchor, delay, recurring: false })
+}
+
+fn tooltip_recurring(
+    text: impl Into<String>,
+    anchor: TooltipAnchor,
+    delay: Milliseconds,
+) -> TutorialDisplay {
+    TutorialDisplay::Tooltip(Tooltip { text: text.into(), anchor, delay, recurring: true })
 }
 
 fn toast(text: impl Into<String>) -> TutorialDisplay {
@@ -279,9 +381,10 @@ fn toast(text: impl Into<String>) -> TutorialDisplay {
         text: text.into(),
         delay: Milliseconds(0),
         hide_after: Some(Milliseconds(10_000)),
+        recurring: false,
     })
 }
 
 fn toast_at(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
-    TutorialDisplay::Toast(Toast { text: text.into(), delay, hide_after: None })
+    TutorialDisplay::Toast(Toast { text: text.into(), delay, hide_after: None, recurring: false })
 }

@@ -17,7 +17,7 @@ use core_ui::design::{BackgroundColor, BorderColor, FontColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use data::primitives::Milliseconds;
+use data::primitives::{Milliseconds, RoomId};
 use data::tutorial_data::{GameTutorialState, TooltipAnchor, TutorialDisplay};
 use protos::spelldawn::show_arrow_bubble::ArrowBubbleAnchor;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
@@ -50,7 +50,9 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
                 TooltipAnchor::DrawCard => ArrowBubbleAnchor::PlayerDeck(PlayerName::User.into()),
             }),
             idle_timer: Some(adapters::time_value(tooltip.delay)),
-            arrow_corner: if tooltip.anchor == TooltipAnchor::GainMana {
+            arrow_corner: if tooltip.anchor == TooltipAnchor::GainMana
+                || tooltip.anchor == TooltipAnchor::RaidRoom(RoomId::Vault)
+            {
                 ArrowBubbleCorner::BottomRight
             } else {
                 ArrowBubbleCorner::BottomLeft

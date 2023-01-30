@@ -120,7 +120,8 @@ namespace Spelldawn.Services
     {
       ShowArrowBubble.ArrowBubbleAnchorOneofCase.Player => 
         showBubble.Player == PlayerName.User ? new Vector3(-0.5f, 0f, -2f) : new Vector3(-1f, 0f, -1f),
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.Room => new Vector3(3f, 0, 0),
+      ShowArrowBubble.ArrowBubbleAnchorOneofCase.Room => showBubble.Room == RoomIdentifier.Vault ? 
+        new Vector3(12.5f, 0, 0) : new Vector3(3f, 0, 0),
       ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerMana => new Vector3(5f, 0, -1.5f),
       ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerDeck => new Vector3(-4f, 0, -2.5f),
       _ => Vector3.zero
@@ -133,7 +134,7 @@ namespace Spelldawn.Services
       toast.style.bottom = Screen.height;
       toast.style.left = 150 + Screen.safeArea.xMin;
 
-      _registry.DocumentService.RootVisualElement.Add(toast);
+      _registry.DocumentService.RootVisualElement.Insert(0, toast);
       var sequence = TweenUtils.Sequence("ShowToast");
       var showTime = DataUtils.ToSeconds(showToast.IdleTimer, 0);
       var hideTime = DataUtils.ToSeconds(showToast.HideTime, 0);

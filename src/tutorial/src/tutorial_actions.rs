@@ -31,7 +31,7 @@ use with_error::{fail, WithError};
 /// reactive system which provides contextual help when certain user actions are
 /// taken, applied by `handle_triggered_action`.
 pub fn handle_game_action(game: &mut GameState, action: &GameAction) -> Result<()> {
-    game.data.tutorial_state.display.clear();
+    game.data.tutorial_state.display.retain(|display| display.recurring());
 
     if game.data.config.scripted_tutorial
         && game.data.tutorial_state.index < crate::SEQUENCE.steps.len()
@@ -51,7 +51,6 @@ pub fn handle_sequence_game_action(
 ) -> Result<()> {
     let _span = debug_span!("handle_tutorial_actions").entered();
     let mut i = game.data.tutorial_state.index;
-    game.data.tutorial_state.display.clear();
 
     while i < crate::SEQUENCE.steps.len() {
         let action = &crate::SEQUENCE.steps[i];
@@ -71,9 +70,13 @@ pub fn handle_sequence_game_action(
                 }
                 Ok(())
             }
+            TutorialStep::DefaultOpponentAction(_) => Ok(()),
             TutorialStep::AwaitPlayerActions(actions) => {
                 if await_player_actions(game, user_action, actions)? {
                     user_action = None; // Consume action, avoid matching again
+
+                    // Clear recurring messages
+                    game.data.tutorial_state.display.clear();
                 } else {
                     debug!(?actions, "Awaiting user action");
                     break;
@@ -98,6 +101,26 @@ pub fn handle_sequence_game_action(
     }
 
     Ok(())
+}
+
+/// Returns the next tutorial action the AI opponent player should take in the
+/// tutorial game
+pub fn current_opponent_action(game: &GameState) -> Result<GameAction> {
+    if let Some(TutorialStep::OpponentAction(a)) =
+        crate::SEQUENCE.steps.get(game.data.tutorial_state.index)
+    {
+        return to_game_action(game, a);
+    }
+
+    for i in (0..=game.data.tutorial_state.index).rev() {
+        if let Some(TutorialStep::DefaultOpponentAction(tutorial_action)) =
+            crate::SEQUENCE.steps.get(i)
+        {
+            return to_game_action(game, tutorial_action);
+        };
+    }
+
+    fail!("No opponent action found for index {:?}!", game.data.tutorial_state.index);
 }
 
 fn add_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
@@ -135,18 +158,6 @@ fn handle_triggered_action(game: &mut GameState, action: &GameAction) -> Result<
     }
 
     Ok(())
-}
-
-/// Returns the next tutorial action the AI opponent player should take in the
-/// tutorial game
-pub fn current_opponent_action(game: &GameState) -> Result<GameAction> {
-    for i in (0..=game.data.tutorial_state.index).rev() {
-        if let Some(TutorialStep::OpponentAction(tutorial_action)) = crate::SEQUENCE.steps.get(i) {
-            return to_game_action(game, tutorial_action);
-        };
-    }
-
-    fail!("No opponent action found for index {:?}!", game.data.tutorial_state.index);
 }
 
 fn keep_opening_hand(game: &mut GameState, side: Side) -> Result<()> {
@@ -294,13 +305,17 @@ fn actions_match(
             )),
         ) => game.card(*source_id).name == *weapon && game.card(*target_id).name == *target,
         (
+            TutorialTrigger::UseNoWeapon,
+            GameAction::PromptAction(PromptAction::EncounterAction(EncounterAction::NoWeapon)),
+        ) => true,
+        (
             TutorialTrigger::ScoreAccessedCard(name),
             GameAction::PromptAction(PromptAction::AccessPhaseAction(
                 AccessPhaseAction::ScoreCard(card_id),
             )),
         ) => game.card(*card_id).name == *name,
         (
-            TutorialTrigger::EndRaid,
+            TutorialTrigger::SuccessfullyEndRaid,
             GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid)),
         ) => true,
         _ => false,
@@ -320,7 +335,7 @@ fn to_trigger(opponent_action: &TutorialOpponentAction) -> TutorialTrigger {
         TutorialOpponentAction::ScoreAccessedCard(card_name) => {
             TutorialTrigger::ScoreAccessedCard(*card_name)
         }
-        TutorialOpponentAction::EndRaid => TutorialTrigger::EndRaid,
+        TutorialOpponentAction::EndRaid => TutorialTrigger::SuccessfullyEndRaid,
     }
 }
 
@@ -332,5 +347,6 @@ fn display(game: &mut GameState, mut displays: Vec<TutorialDisplay>) -> Result<(
 /// Finds a card with the given `name` in the `side` player's deck, or returns
 /// an error if no such card exists.
 fn find_in_deck(game: &mut GameState, side: Side, name: CardName) -> Result<CardId> {
-    Ok(game.deck(side).find(|c| c.name == name).with_error(|| "Card not found")?.id)
+    let mut deck = game.cards(side).iter().filter(|c| c.position().in_deck_unknown());
+    Ok(deck.find(|c| c.name == name).with_error(|| "Card not found")?.id)
 }
