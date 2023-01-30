@@ -12,15 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use enum_iterator::Sequence;
-use serde::{Deserialize, Serialize};
-use strum_macros::Display;
+//! Cards which globally modify the rules of a game
 
-/// Names for sets of cards. Each card may belong to any number of sets.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize, Sequence)]
-pub enum SetName {
-    Test,
-    ProofOfConcept,
-    TutorialEffects,
-    Basics,
-}
+pub mod overlord_modifiers;

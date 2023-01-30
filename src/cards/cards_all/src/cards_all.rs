@@ -30,8 +30,10 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_basic::overlord_basics::fire_goblin);
     DEFINITIONS.insert(cards_basic::overlord_basics::toucan);
     DEFINITIONS.insert(cards_basic::overlord_basics::frog);
-    DEFINITIONS.insert(cards_basic::overlord_basics::scout);
     DEFINITIONS.insert(cards_basic::overlord_basics::captain);
+    DEFINITIONS.insert(cards_basic::overlord_basics::scout);
+    DEFINITIONS.insert(cards_game_modifier::overlord_modifiers::tutorial_disable_draw_action);
+    DEFINITIONS.insert(cards_game_modifier::overlord_modifiers::tutorial_disable_gain_mana);
     DEFINITIONS.insert(cards_poc::artifacts::invisibility_ring);
     DEFINITIONS.insert(cards_poc::artifacts::accumulator);
     DEFINITIONS.insert(cards_poc::artifacts::mage_gloves);

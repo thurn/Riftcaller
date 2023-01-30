@@ -315,11 +315,10 @@ pub enum Rarity {
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum CardType {
     Leader,
-
+    GameModifier,
     ChampionSpell,
     Weapon,
     Artifact,
-
     Scheme,
     OverlordSpell,
     Project,

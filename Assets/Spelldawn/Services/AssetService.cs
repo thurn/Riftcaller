@@ -31,7 +31,6 @@ namespace Spelldawn.Services
 {
   public sealed class AssetService : MonoBehaviour
   {
-    [SerializeField] Registry _registry = null!;
     [SerializeField] RenderTexture _studioRenderTexture = null!;
     [SerializeField] DevelopmentAssets _developmentAssets = null!;
     bool _anyCompleted;
@@ -312,6 +311,7 @@ namespace Spelldawn.Services
       if (playerView != null)
       {
         LoadPlayerInfoAssets(requests, playerView.PlayerInfo);
+        LoadDeckViewAssets(requests, playerView.DeckView);
       }
     }
 
@@ -374,11 +374,18 @@ namespace Spelldawn.Services
     {
       if (playerInfo != null)
       {
-        LoadSprite(requests, playerInfo.CardBack);
         LoadSprite(requests, playerInfo.ArenaPortrait);
       }
     }
 
+    void LoadDeckViewAssets(IDictionary<string, AsyncOperationHandle> requests, DeckView? deckView)
+    {
+      if (deckView != null)
+      {
+        LoadSprite(requests, deckView.CardBack);
+      }
+    }    
+    
     void LoadBackground(IDictionary<string, AsyncOperationHandle> requests, NodeBackground? background)
     {
       if (background != null)

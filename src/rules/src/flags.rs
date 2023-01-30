@@ -157,6 +157,7 @@ fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> boo
                 if room_can_add(game, room_id, vec![CardType::Project, CardType::Scheme]))
         }
         CardType::Leader => false,
+        CardType::GameModifier => false,
     }
 }
 

@@ -138,6 +138,9 @@ pub enum TutorialStep {
     /// Provide tutorial information to show to the user until any player action
     /// is taken.
     Display(Vec<TutorialDisplay>),
+
+    /// Adds a global modifier card
+    AddGameModifiers(Vec<CardName>),
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

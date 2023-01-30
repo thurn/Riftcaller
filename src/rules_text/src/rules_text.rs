@@ -201,6 +201,7 @@ fn card_type_line(definition: &CardDefinition) -> String {
         CardType::Project => "Project",
         CardType::Scheme => "Scheme",
         CardType::Leader => "Leader",
+        CardType::GameModifier => "Modifier",
     });
 
     if let Some(lineage) = definition.config.lineage {

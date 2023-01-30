@@ -113,7 +113,10 @@ namespace Spelldawn.Game
 
     public void OnArrowMoved(Vector3 position)
     {
-      _registry.ArenaService.ShowRoomSelectorForMousePosition(Errors.CheckNotNull(_validRoomsToVisit));
+      if (_owner == PlayerName.User)
+      {
+        _registry.ArenaService.ShowRoomSelectorForMousePosition(Errors.CheckNotNull(_validRoomsToVisit));
+      }
     }
 
     public void OnArrowReleased(Vector3 position)

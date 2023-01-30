@@ -935,10 +935,9 @@ message CardView {
 message PlayerInfo {
     google.protobuf.StringValue name = 1;
     SpriteAddress arena_portrait = 2;
-    repeated RoomIdentifier valid_rooms_to_visit = 3;
 
-    // Card back asset to use for this player's cards.
-    SpriteAddress card_back = 4;
+    // Rooms which this player can currently visit (raid/level up)
+    repeated RoomIdentifier valid_rooms_to_visit = 3;
 }
 
 message ManaView {
@@ -946,6 +945,10 @@ message ManaView {
 
     // Additional mana with custom use restrictions.
     uint32 bonus_mana = 2;
+
+    // Can the viewer currently take the 'gain mana' action on this mana
+    // display?
+    bool can_take_gain_mana_action = 3;
 }
 
 message ScoreView {
@@ -956,15 +959,27 @@ message ActionTrackerView {
     uint32 available_action_count = 1;
 }
 
+message DeckView {
+    // How many cards are in this deck?
+    uint32 card_count = 1;
+
+    // Card back asset to use for this player's cards.
+    SpriteAddress card_back = 2;
+
+    // Can the viewer currently take the 'draw card' action on this deck?
+    bool can_take_draw_card_action = 3;
+}
+
 message PlayerView {
     PlayerSide side = 1;
     PlayerInfo player_info = 2;
     ScoreView score = 3;
     ManaView mana = 4;
     ActionTrackerView action_tracker = 5;
+    DeckView deck_view = 6;
 
-    // Whether this player is currently able to take a game action
-    bool can_take_action = 6;
+    // Whether this player is currently able to take some game action
+    bool can_take_action = 7;
 }
 
 // Positions of non-Card game objects.

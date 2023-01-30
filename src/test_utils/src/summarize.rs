@@ -389,7 +389,6 @@ impl Summarize for PlayerInfo {
     fn summarize(self, summary: &mut Summary) {
         summary.child("name", self.name);
         summary.child("arena_portrait", self.arena_portrait);
-        summary.child("card_back", self.card_back);
         summary.children(
             "valid_rooms_to_visit",
             self.valid_rooms_to_visit

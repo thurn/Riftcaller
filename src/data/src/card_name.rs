@@ -112,6 +112,10 @@ pub enum CardName {
     BridgeTroll,
     Stormcaller,
 
+    // Tutorial Effects
+    TutorialDisableDrawAction,
+    TutorialDisableGainMana,
+
     // Basic
     BasicChampionLeader,
     ArcaneRecovery,

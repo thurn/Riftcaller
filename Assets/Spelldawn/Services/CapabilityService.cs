@@ -39,7 +39,6 @@ namespace Spelldawn.Services
                                     _registry.InterfaceOverlay.Enabled ||
                                     _registry.LongPressOverlay.Enabled;
 
-
     /// <summary>
     /// Can the user currently zoom a card that exists in the provided GameContext.
     /// </summary>

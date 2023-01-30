@@ -329,6 +329,7 @@ name = "cards_all"
 version = "0.0.0"
 dependencies = [
  "cards_basic",
+ "cards_game_modifier",
  "cards_poc",
  "cards_test",
  "rules",
@@ -354,6 +355,17 @@ dependencies = [
  "once_cell",
  "regex",
  "walkdir",
+]
+
+[[package]]
+name = "cards_game_modifier"
+version = "0.0.0"
+dependencies = [
+ "assets",
+ "card_helpers",
+ "data",
+ "rules",
+ "with_error",
 ]
 
 [[package]]

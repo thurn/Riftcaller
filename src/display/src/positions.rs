@@ -127,6 +127,10 @@ pub fn browser() -> Position {
     Position::Browser(ObjectPositionBrowser {})
 }
 
+pub fn offscreen() -> Position {
+    Position::Offscreen(ObjectPositionOffscreen {})
+}
+
 pub fn revealed_cards(large: bool) -> Position {
     Position::Revealed(ObjectPositionRevealedCards {
         size: if large { RevealedCardsBrowserSize::Large } else { RevealedCardsBrowserSize::Small }
@@ -178,7 +182,7 @@ fn adapt_position(
             card_release_position(builder, game, side, card_id, target)?
         }
         CardPosition::DeckUnknown(_) => fail!("Invalid card position"),
-        CardPosition::GameModifier => Position::Offscreen(ObjectPositionOffscreen {}),
+        CardPosition::GameModifier => offscreen(),
     })
 }
 

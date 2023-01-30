@@ -230,7 +230,7 @@ BoxCollider:
   m_Center: {x: 0, y: 0, z: -0.15}
 --- !u!95 &21974847
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -247,7 +247,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!82 &21974848
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5258,6 +5258,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 482190262797073905, guid: b59a607d538974c15a9b1945c5000e09, type: 3}
+      propertyPath: _owner
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 482190262797073905, guid: b59a607d538974c15a9b1945c5000e09, type: 3}
       propertyPath: _registry
       value: 
@@ -20555,7 +20559,6 @@ MonoBehaviour:
   _animationRunning: 0
   _singleElementY: 0.5
   _registry: {fileID: 1445473048}
-  _clickable: 0
   _owner: 2
 --- !u!114 &5837746589248747215
 MonoBehaviour:
@@ -20868,11 +20871,10 @@ MonoBehaviour:
   _animationRunning: 0
   _singleElementY: 0.5
   _registry: {fileID: 1445473048}
-  _clickable: 1
   _owner: 1
 --- !u!95 &8743940975631140571
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -20889,7 +20891,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1001 &8860017396857175396
 PrefabInstance:
   m_ObjectHideFlags: 0

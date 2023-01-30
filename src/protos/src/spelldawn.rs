@@ -840,11 +840,9 @@ pub struct PlayerInfo {
     pub name: ::core::option::Option<::prost::alloc::string::String>,
     #[prost(message, optional, tag = "2")]
     pub arena_portrait: ::core::option::Option<SpriteAddress>,
+    /// Rooms which this player can currently visit (raid/level up)
     #[prost(enumeration = "RoomIdentifier", repeated, tag = "3")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
-    /// Card back asset to use for this player's cards.
-    #[prost(message, optional, tag = "4")]
-    pub card_back: ::core::option::Option<SpriteAddress>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ManaView {
@@ -853,6 +851,10 @@ pub struct ManaView {
     /// Additional mana with custom use restrictions.
     #[prost(uint32, tag = "2")]
     pub bonus_mana: u32,
+    /// Can the viewer currently take the 'gain mana' action on this mana
+    /// display?
+    #[prost(bool, tag = "3")]
+    pub can_take_gain_mana_action: bool,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ScoreView {
@@ -863,6 +865,18 @@ pub struct ScoreView {
 pub struct ActionTrackerView {
     #[prost(uint32, tag = "1")]
     pub available_action_count: u32,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeckView {
+    /// How many cards are in this deck?
+    #[prost(uint32, tag = "1")]
+    pub card_count: u32,
+    /// Card back asset to use for this player's cards.
+    #[prost(message, optional, tag = "2")]
+    pub card_back: ::core::option::Option<SpriteAddress>,
+    /// Can the viewer currently take the 'draw card' action on this deck?
+    #[prost(bool, tag = "3")]
+    pub can_take_draw_card_action: bool,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerView {
@@ -876,8 +890,10 @@ pub struct PlayerView {
     pub mana: ::core::option::Option<ManaView>,
     #[prost(message, optional, tag = "5")]
     pub action_tracker: ::core::option::Option<ActionTrackerView>,
-    /// Whether this player is currently able to take a game action
-    #[prost(bool, tag = "6")]
+    #[prost(message, optional, tag = "6")]
+    pub deck_view: ::core::option::Option<DeckView>,
+    /// Whether this player is currently able to take some game action
+    #[prost(bool, tag = "7")]
     pub can_take_action: bool,
 }
 /// Positions of non-Card game objects.
@@ -946,7 +962,6 @@ pub mod show_arrow_bubble {
         PlayerMana(i32),
     }
 }
-/// Pops up a message to provide help context for the user
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ShowToast {
     /// Content to show inside the toast
@@ -979,6 +994,8 @@ pub mod tutorial_effect {
         /// in the game
         #[prost(message, tag = "1")]
         ArrowBubble(super::ShowArrowBubble),
+        /// Pops up a message to provide help context for the user. Only one
+        /// toast can be displayed at a time.
         #[prost(message, tag = "2")]
         ShowToast(super::ShowToast),
     }

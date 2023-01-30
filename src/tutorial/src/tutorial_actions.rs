@@ -81,6 +81,7 @@ pub fn handle_sequence_game_action(
                 Ok(())
             }
             TutorialStep::Display(displays) => display(game, displays.clone()),
+            TutorialStep::AddGameModifiers(card_names) => add_game_modifiers(game, card_names),
         }?;
 
         i += 1;
@@ -91,6 +92,14 @@ pub fn handle_sequence_game_action(
         debug!("Tutorial at step {}", i);
     } else {
         info!("Pre-scripted tutorial sequence completed");
+    }
+
+    Ok(())
+}
+
+fn add_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
+    for card_name in card_names {
+        mutations::create_and_add_card(game, *card_name, CardPosition::GameModifier)?;
     }
 
     Ok(())

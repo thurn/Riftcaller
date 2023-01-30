@@ -197,7 +197,7 @@ namespace Spelldawn.Services
 
     IEnumerator HandleUpdateGameView(GameView game, bool animate)
     {
-      _registry.CardService.SetCardBacks(game.User?.PlayerInfo?.CardBack, game.Opponent?.PlayerInfo?.CardBack);
+      _registry.CardService.SetDeckViews(game.User?.DeckView, game.Opponent?.DeckView);
 
       if (game.User != null)
       {

@@ -126,18 +126,18 @@ namespace Spelldawn.Services
       yield return _registry.RevealedCardsBrowserSmall.WaitUntilIdle();
     }
 
-    public void SetCardBacks(SpriteAddress? userCardBack, SpriteAddress? opponentCardBack)
+    public void SetDeckViews(DeckView? userDeckView, DeckView? opponentDeckView)
     {
-      if (userCardBack != null)
+      if (userDeckView != null)
       {
-        _registry.DeckForPlayer(PlayerName.User).SetCardBacks(userCardBack);
-        _userCardBack = userCardBack;
+        _registry.DeckForPlayer(PlayerName.User).RenderDeckView(userDeckView);
+        _userCardBack = userDeckView.CardBack;
       }
 
-      if (opponentCardBack != null)
+      if (opponentDeckView != null)
       {
-        _registry.DeckForPlayer(PlayerName.Opponent).SetCardBacks(opponentCardBack);
-        _opponentCardBack = opponentCardBack;
+        _registry.DeckForPlayer(PlayerName.Opponent).RenderDeckView(opponentDeckView);
+        _opponentCardBack = opponentDeckView.CardBack;
       }
     }
 

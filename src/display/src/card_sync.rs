@@ -163,6 +163,7 @@ fn revealed_card_view(
                 CardType::Project => positions::unspecified_room(RoomLocation::Occupant),
                 CardType::Scheme => positions::unspecified_room(RoomLocation::Occupant),
                 CardType::Leader => positions::staging(),
+                CardType::GameModifier => positions::offscreen(),
             },
         )),
         supplemental_info: rules_text::build_supplemental_info(

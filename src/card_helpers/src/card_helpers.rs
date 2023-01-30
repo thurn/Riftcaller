@@ -107,6 +107,16 @@ pub fn always<T>(_: &GameState, _: Scope, _: &T) -> bool {
     true
 }
 
+/// RequirementFn which checks if the [Side] parameter is [Side::Champion]
+pub fn side_is_champion(_: &GameState, _: Scope, side: &Side) -> bool {
+    *side == Side::Champion
+}
+
+/// RequirementFn which checks if the [Side] parameter is [Side::Overlord]
+pub fn side_is_overlord(_: &GameState, _: Scope, side: &Side) -> bool {
+    *side == Side::Overlord
+}
+
 /// RequirementFn that this delegate's card is currently face up & in play
 pub fn face_up_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     let card = game.card(scope.card_id());

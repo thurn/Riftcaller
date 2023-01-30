@@ -11,7 +11,6 @@ command_list:
             player_info: 
                 name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
@@ -22,7 +21,6 @@ command_list:
             player_info: 
                 name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 0
@@ -177,7 +175,6 @@ command_list:
             player_info: 
                 name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
@@ -188,7 +185,6 @@ command_list:
             player_info: 
                 name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 3
@@ -348,7 +344,6 @@ command_list:
             player_info: 
                 name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
@@ -359,7 +354,6 @@ command_list:
             player_info: 
                 name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 3
@@ -521,7 +515,6 @@ channel_response:
             player_info: 
                 name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 0
@@ -532,7 +525,6 @@ channel_response:
             player_info: 
                 name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
@@ -687,7 +679,6 @@ channel_response:
             player_info: 
                 name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 3
@@ -698,7 +689,6 @@ channel_response:
             player_info: 
                 name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0
@@ -876,7 +866,6 @@ channel_response:
             player_info: 
                 name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 3
@@ -887,7 +876,6 @@ channel_response:
             player_info: 
                 name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
-                card_back: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
             action_tracker: 0

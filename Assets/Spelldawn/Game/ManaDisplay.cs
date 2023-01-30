@@ -36,17 +36,21 @@ namespace Spelldawn.Game
     [SerializeField] TextMeshPro _manaSymbol = null!;
     [SerializeField] uint _currentMana = 5;
     [SerializeField] uint _currentBonusMana = 0;
+    
     bool _animationDisabled;
+    bool _canTakeGainManaAction;
 
     public uint CurrentMana => _currentMana;
 
     bool Clickable => _owner == PlayerName.User &&
+                      _canTakeGainManaAction &&
                       _registry.CapabilityService.CanExecuteAction(ClientAction.ActionOneofCase.GainMana);
 
     public void RenderManaDisplay(ManaView manaView)
     {
       SetMana(manaView.BaseMana);
       SetBonusMana(manaView.BonusMana);
+      _canTakeGainManaAction = manaView.CanTakeGainManaAction;
     }
 
     public void DisableAnimation()
