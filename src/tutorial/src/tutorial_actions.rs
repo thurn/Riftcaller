@@ -292,12 +292,12 @@ fn actions_match(
     user_action: &GameAction,
 ) -> Result<bool> {
     Ok(match (tutorial_action, user_action) {
-        (TutorialTrigger::DrawCard, GameAction::DrawCard) => true,
+        (TutorialTrigger::DrawCardAction, GameAction::DrawCard) => true,
         (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
         (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
             game.card(*id).name == *name && t1 == t2
         }
-        (TutorialTrigger::GainMana, GameAction::GainMana) => true,
+        (TutorialTrigger::GainManaAction, GameAction::GainMana) => true,
         (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
         (TutorialTrigger::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
         (
@@ -326,9 +326,9 @@ fn actions_match(
 
 fn to_trigger(opponent_action: &TutorialOpponentAction) -> TutorialTrigger {
     match opponent_action {
-        TutorialOpponentAction::DrawCard => TutorialTrigger::DrawCard,
+        TutorialOpponentAction::DrawCard => TutorialTrigger::DrawCardAction,
         TutorialOpponentAction::PlayCard(name, target) => TutorialTrigger::PlayCard(*name, *target),
-        TutorialOpponentAction::GainMana => TutorialTrigger::GainMana,
+        TutorialOpponentAction::GainMana => TutorialTrigger::GainManaAction,
         TutorialOpponentAction::InitiateRaid(room_id) => TutorialTrigger::InitiateRaid(*room_id),
         TutorialOpponentAction::LevelUpRoom(room_id) => TutorialTrigger::LevelUpRoom(*room_id),
         TutorialOpponentAction::UseWeapon { weapon, target } => {

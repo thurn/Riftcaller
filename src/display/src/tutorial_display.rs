@@ -58,6 +58,7 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
                 ArrowBubbleCorner::BottomLeft
             }
             .into(),
+            clear_on_action: true,
             ..ShowArrowBubble::default()
         }),
         TutorialDisplay::SpeechBubble(speech_bubble) => {
@@ -70,6 +71,7 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
                 )),
                 idle_timer: Some(adapters::time_value(speech_bubble.delay)),
                 hide_time: Some(adapters::time_value(Milliseconds(4000))),
+                clear_on_action: speech_bubble.recurring,
                 ..ShowArrowBubble::default()
             })
         }
@@ -77,6 +79,7 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
             node: make_toast(&toast.text),
             idle_timer: Some(adapters::time_value(toast.delay)),
             hide_time: toast.hide_after.map(adapters::time_value),
+            clear_on_action: true,
         }),
     }
 }

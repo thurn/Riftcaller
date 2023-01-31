@@ -266,7 +266,10 @@ namespace Spelldawn.Services
 
     IEnumerator ApplyOptimisticResponse(ClientAction action)
     {
-      _registry.TutorialService.ClearTutorialEffects();
+      if (action.ActionCase != ClientAction.ActionOneofCase.FetchPanel)
+      {
+        _registry.TutorialService.OnOptimisticAction();
+      }
       
       switch (action.ActionCase)
       {

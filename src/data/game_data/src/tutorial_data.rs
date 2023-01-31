@@ -53,9 +53,6 @@ pub struct Toast {
     pub text: String,
     pub delay: Milliseconds,
     pub hide_after: Option<Milliseconds>,
-
-    // Whether this toast should repeat every turn until an action is matched
-    pub recurring: bool,
 }
 
 /// Content which can be displayed to the user during the game tutorial
@@ -76,7 +73,7 @@ impl TutorialDisplay {
         match self {
             TutorialDisplay::Tooltip(tooltip) => tooltip.recurring,
             TutorialDisplay::SpeechBubble(bubble) => bubble.recurring,
-            TutorialDisplay::Toast(toast) => toast.recurring,
+            TutorialDisplay::Toast(_) => false,
         }
     }
 }
@@ -113,10 +110,10 @@ pub enum TutorialOpponentAction {
 /// Matches against user actions to trigger tutorial messages
 #[derive(Debug)]
 pub enum TutorialTrigger {
-    DrawCard,
+    DrawCardAction,
     PlayAnyCard,
     PlayCard(CardName, CardTarget),
-    GainMana,
+    GainManaAction,
     InitiateRaid(RoomId),
     LevelUpRoom(RoomId),
     UseWeapon { weapon: CardName, target: CardName },

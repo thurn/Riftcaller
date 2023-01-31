@@ -62,7 +62,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardTarget::Room(RoomId::RoomA),
             )),
             TutorialStep::Display(vec![
-                toast_at(
+                permanent_toast(
                     format!(
                         "Tips: <b>Mana</b> ({}) lets you play cards and use weapons. It persists between turns.",
                         icons::MANA
@@ -76,7 +76,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
             TutorialStep::Display(vec![
                 user_say("No evil shall stand against my valor.", Milliseconds(4000)),
-                toast_at(
+                permanent_toast(
                     format!(
                         "Playing cards from your hand costs one {} (action point).",
                         icons::ACTION
@@ -93,7 +93,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::Display(vec![
                 user_say("My weapon is ready.", Milliseconds(0)),
                 user_say("I should investigate that room...", Milliseconds(4000)),
-                toast_at(
+                permanent_toast(
                     format!("You can spend {} to start a <b>raid</b> and explore a <b>room</b> of the enemy's dungeon.", icons::ACTION),
                     Milliseconds(6000),
                 ),
@@ -105,7 +105,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
             TutorialStep::Display(vec![
-                toast_at(
+                permanent_toast(
                     "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
                     Milliseconds(0),
                 ),
@@ -118,8 +118,8 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardName::TutorialDisableRaidContinue,
             ]),
             TutorialStep::Display(vec![
-                toast_at(
-                    "Once you access a room, you can <b>score</b> a card inside.",
+                permanent_toast(
+                    "Once you access a room, you can <b>score</b> the card inside for 45 points.",
                     Milliseconds(0),
                 ),
             ]),
@@ -130,7 +130,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardName::TutorialDisableEndRaid,
             ]),
             TutorialStep::Display(vec![
-                toast_at(
+                permanent_toast(
                     "Scoring <b>scheme</b> cards in rooms gives you points. The first player to reach 100 points wins!",
                     Milliseconds(0),
                 ),
@@ -139,6 +139,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
             // User -> 4 mana
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
+            TutorialStep::Display(vec![opponent_say("My power grows.", Milliseconds(0))]),
             TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
@@ -152,17 +153,17 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::Display(vec![
                 user_say("I need more mana...", Milliseconds(0)),
-                toast_at(
+                permanent_toast(
                     format!("You can spend {} to gain 1{}.", icons::ACTION, icons::MANA),
                     Milliseconds(4000),
                 ),
                 tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(4_000)),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::GainMana]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::GainManaAction]),
             // User -> 5 mana
             TutorialStep::Display(vec![
                 user_say("You'll pay for what you did.", Milliseconds(0)),
-                toast_at("Now you can play this card", Milliseconds(4000)),
+                permanent_toast("Now you can play this card", Milliseconds(4000)),
                 user_say("I should play a card...", Milliseconds(20_000))
                 ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(
@@ -175,13 +176,13 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::Display(vec![
                 user_say("I should draw another card...", Milliseconds(0)),
-                toast_at(
+                permanent_toast(
                     format!("You can spend {} to draw a card.", icons::ACTION),
                     Milliseconds(4000),
                 ),
                 tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(4000)),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::DrawCard]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::DrawCardAction]),
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
             TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
                 CardName::GatheringDark,
@@ -191,6 +192,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardName::Devise,
                 CardTarget::Room(RoomId::RoomA),
             )),
+            TutorialStep::Display(vec![opponent_say("Arise, my minions!", Milliseconds(0))]),
             TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
                 CardName::Frog,
                 CardTarget::Room(RoomId::RoomA),
@@ -226,6 +228,10 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ),
             TutorialStep::DefaultOpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::Display(vec![
+                permanent_toast(
+                    "Minions are never permanently defeated. They respawn between raids.",
+                    Milliseconds(0),
+                ),
                 user_say("You can't keep me out of that room.", Milliseconds(0)),
                 user_say_recurring("I should return to that room.", Milliseconds(10_000)),
                 tooltip_recurring(
@@ -241,7 +247,8 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardName::TutorialDisableRaidCrypts
             ]),
             TutorialStep::Display(vec![
-                toast_at(
+                user_say("Law and Light! My weapon is useless.", Milliseconds(0)),
+                permanent_toast(
                     format!("A <color={}>Mortal</color> weapon cannot damage an <color={}>Abyssal</color> minion. A matching weapon is required!",
                     design::as_hex(FontColor::MortalCardTitle),
                     design::as_hex(FontColor::AbyssalCardTitle)),
@@ -250,11 +257,10 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseNoWeapon]),
             TutorialStep::Display(vec![
-                user_say("There's got to be another way!", Milliseconds(0)),
-                user_say_recurring("I should search the Vault.", Milliseconds(8_000)),
-                toast_at(
+                permanent_toast(
                     "You can raid the <b>Vault</b> and attempt to score cards on top of your opponent's deck.",
                     Milliseconds(2000)),
+                user_say_recurring("I should search the Vault.", Milliseconds(8_000)),
                 tooltip_recurring(
                     "Drag portrait here",
                     TooltipAnchor::RaidRoom(RoomId::Vault),
@@ -264,7 +270,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::Vault)]),
             TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleClub]),
             TutorialStep::Display(vec![
-                toast_at(
+                permanent_toast(
                     "If the top card of your opponent's deck is a <b>scheme</b> card, you can score it for points!",
                     Milliseconds(0),
                 ),
@@ -272,10 +278,18 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Machinate, CardName::Conspire]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
             TutorialStep::Display(vec![
-                toast_at(
+                permanent_toast(
                     format!("Now you just need to find an <color={}>Abyssal</color> weapon",
                     design::as_hex(FontColor::AbyssalCardTitle)),
                     Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::Display(vec![
+                user_say_recurring("I should draw a card", Milliseconds(10_000)),
+                tooltip_recurring(
+                    "Draw Card",
+                    TooltipAnchor::DrawCard,
+                    Milliseconds(15_000),
                 ),
             ]),
             TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
@@ -287,12 +301,25 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
                 RoomId::RoomA,
             )),
+            TutorialStep::Display(vec![
+                permanent_toast(
+                    format!("Your opponent can <b>level up</b> the cards in a room for {} and 1{}. If the <b>level requirement</b> of a scheme card is met, they score it.", icons::ACTION, icons::MANA),
+                    Milliseconds(0),
+                ),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(CardName::SimpleClub, CardTarget::None)]),
+            TutorialStep::Display(vec![
+                user_say_recurring("Time to try again.", Milliseconds(5000)),
+                tooltip_recurring(
+                    "Drag portrait here",
+                    TooltipAnchor::RaidRoom(RoomId::RoomA),
+                    Milliseconds(15_000),
+                ),
+            ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
             TutorialStep::Display(vec![
-                toast_at(
-                    format!("An <color={}>Abyssal</color> weapon can only damage an <color={}>Abyssal</color> minion.",
-                    design::as_hex(FontColor::AbyssalCardTitle),
-                    design::as_hex(FontColor::AbyssalCardTitle)),
+                permanent_toast(
+                    format!("During a raid encounter, you can power up your weapon's damage using {}", icons::MANA),
                     Milliseconds(0),
                 ),
             ]),
@@ -300,7 +327,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::Display(vec![
                 user_say("Time to end this.", Milliseconds(0)),
                 user_say_recurring("I need to attack the Sanctum", Milliseconds(8_000)),
-                toast_at(
+                permanent_toast(
                     "You can raid the <b>Sanctum</b> to access a random card from your opponent's hand",
                     Milliseconds(2000)),
                 tooltip_recurring(
@@ -381,10 +408,9 @@ fn toast(text: impl Into<String>) -> TutorialDisplay {
         text: text.into(),
         delay: Milliseconds(0),
         hide_after: Some(Milliseconds(10_000)),
-        recurring: false,
     })
 }
 
-fn toast_at(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
-    TutorialDisplay::Toast(Toast { text: text.into(), delay, hide_after: None, recurring: false })
+fn permanent_toast(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
+    TutorialDisplay::Toast(Toast { text: text.into(), delay, hide_after: None })
 }
