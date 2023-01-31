@@ -15,7 +15,6 @@
 use serde::{Deserialize, Serialize};
 
 use crate::adventure::TilePosition;
-use crate::user_actions::UserAction;
 
 /// Actions which can be taken for the 'adventure' game mode.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -34,10 +33,4 @@ pub enum AdventureAction {
     VisitShop(TilePosition),
     /// Draft the purchase at the indicated index on a shop screen
     BuyCard(TilePosition, usize),
-}
-
-impl From<AdventureAction> for UserAction {
-    fn from(a: AdventureAction) -> Self {
-        UserAction::AdventureAction(a)
-    }
 }

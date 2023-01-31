@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::{CardChoice, Coins, DraftData, TileEntity};
 use core_ui::icons;
-use game_data::adventure::{CardChoice, Coins, DraftData, TileEntity};
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
 use test_utils::client_interface::{self, HasText};

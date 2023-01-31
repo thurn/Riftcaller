@@ -23,11 +23,11 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use game_data::primitives::Side;
-use game_data::user_actions::DebugAction;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
+use user_action_data::DebugAction;
 
 #[derive(Debug, Default)]
 pub struct DebugPanel {}

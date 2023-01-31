@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::TilePosition;
 use core_ui::button::{Button, ButtonType};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
-use game_data::adventure::TilePosition;
 use panel_address::{Panel, PanelAddress};
 
 pub struct ShopPromptPanel {

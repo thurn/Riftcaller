@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::{Coins, TilePosition};
+use adventure_data::adventure_action::AdventureAction;
 use core_ui::button::{Button, ButtonType};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::{icons, style};
-use game_data::adventure::{Coins, TilePosition};
-use game_data::adventure_action::AdventureAction;
-use game_data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
+use user_action_data::UserAction;
 
 pub struct ExplorePanel {
     pub cost: Coins,

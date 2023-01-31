@@ -22,9 +22,9 @@ use core_ui::prelude::*;
 use element_names::CurrentDraggable;
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
-use game_data::user_actions::DeckEditorAction;
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexVector2};
+use user_action_data::DeckEditorAction;
 
 use crate::card_list_card_name::CardListCardName;
 use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;

@@ -23,9 +23,9 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::Side;
-use game_data::user_actions::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
+use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
 
 #[derive(Debug, Default)]
 pub struct MainMenuPanel {}

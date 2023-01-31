@@ -14,15 +14,14 @@
 
 use std::collections::HashMap;
 
+use adventure_data::adventure::{AdventureConfiguration, TileEntity};
 use adventure_generator::mock_adventure;
 use core_ui::actions::InterfaceAction;
-use game_data::adventure::{AdventureConfiguration, TileEntity};
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
 use game_data::primitives::Side;
 use game_data::tutorial_data::TutorialData;
-use game_data::user_actions::UserAction;
 use maplit::hashmap;
 use player_data::PlayerData;
 use protos::spelldawn::client_action::Action;
@@ -32,6 +31,7 @@ use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use server::requests;
 use server::requests::GameResponse;
+use user_action_data::UserAction;
 
 use crate::client_interface::{ClientInterface, HasText};
 use crate::fake_database;

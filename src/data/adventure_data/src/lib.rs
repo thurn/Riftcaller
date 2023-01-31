@@ -12,22 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Data types used to represent game state
-
-pub mod agent_definition;
-pub mod card_definition;
-pub mod card_name;
-pub mod card_state;
-pub mod deck;
-pub mod delegates;
-pub mod game;
-pub mod game_actions;
-pub mod player_name;
-pub mod primitives;
-pub mod random;
-pub mod set_name;
-pub mod special_effects;
-pub mod text;
-pub mod tutorial_data;
-pub mod updates;
-pub mod utils;
+pub mod adventure;
+pub mod adventure_action;

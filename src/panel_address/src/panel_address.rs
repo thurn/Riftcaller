@@ -14,9 +14,9 @@
 
 //! Addresses for user interface panels
 
+use adventure_data::adventure::TilePosition;
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
-use game_data::adventure::TilePosition;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{DeckId, GameId, Side};
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};

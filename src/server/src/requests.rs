@@ -16,6 +16,7 @@
 
 use actions;
 use adapters::ServerCardId;
+use adventure_data::adventure::{AdventureConfiguration, AdventureState};
 use anyhow::Result;
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
@@ -23,7 +24,6 @@ use dashmap::DashMap;
 use database::{Database, SledDatabase};
 use deck_editor::deck_editor_actions;
 use display::render;
-use game_data::adventure::{AdventureConfiguration, AdventureState};
 use game_data::deck::Deck;
 use game_data::game::{GameConfiguration, GameState};
 use game_data::game_actions;
@@ -32,7 +32,6 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Side};
 use game_data::tutorial_data::TutorialData;
 use game_data::updates::{UpdateTracker, Updates};
-use game_data::user_actions::{NewGameAction, NewGameDeck, UserAction};
 use once_cell::sync::Lazy;
 use panel_address::PanelAddress;
 use player_data::{PlayerData, PlayerStatus};
@@ -53,6 +52,7 @@ use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
 use tracing::{error, info, info_span, instrument, warn};
 use tutorial::tutorial_actions;
+use user_action_data::{NewGameAction, NewGameDeck, UserAction};
 use with_error::{fail, verify, WithError};
 
 use crate::agent_response::HandleRequest;

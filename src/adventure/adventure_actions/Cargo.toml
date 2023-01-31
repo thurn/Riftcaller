@@ -13,5 +13,6 @@ doctest = false
 [dependencies]
 anyhow = "1.0.58"
 
+adventure_data = { path = "../../data/adventure_data", version = "0.0.0" }
 game_data = { path = "../../data/game_data", version = "0.0.0" }
 with_error = { path = "../../with_error", version = "0.0.0" }

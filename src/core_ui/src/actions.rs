@@ -15,13 +15,13 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use game_data::adventure_action::AdventureAction;
+use adventure_data::adventure_action::AdventureAction;
 use game_data::game_actions::{GameAction, PromptAction};
-use game_data::user_actions::{DebugAction, UserAction};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, CommandList, GameCommand, StandardAction};
 use serde_json::ser;
+use user_action_data::{DebugAction, UserAction};
 
 /// Represents an action that can be performed in the user interface. Initiating
 /// a server request and performing an immediate client update are both

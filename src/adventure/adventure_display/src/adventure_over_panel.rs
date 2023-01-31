@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use game_data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
 use panels::button_menu::ButtonMenu;
+use user_action_data::UserAction;
 
 #[derive(Default)]
 pub struct AdventureOverPanel {}

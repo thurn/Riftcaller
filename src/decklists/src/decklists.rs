@@ -20,9 +20,9 @@ use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::player_name::NamedPlayer;
 use game_data::primitives::Side;
-use game_data::user_actions::NamedDeck;
 use maplit::hashmap;
 use once_cell::sync::Lazy;
+use user_action_data::NamedDeck;
 
 /// Empty Overlord deck for use in tests
 pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {

@@ -14,13 +14,12 @@
 
 use std::fmt;
 
+use adventure_data::adventure_action::AdventureAction;
+use game_data::card_name::CardName;
+use game_data::game_actions::GameAction;
+use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
 use serde::{Deserialize, Serialize};
-
-use crate::adventure_action::AdventureAction;
-use crate::card_name::CardName;
-use crate::game_actions::GameAction;
-use crate::player_name::{NamedPlayer, PlayerId};
-use crate::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Default, Serialize, Deserialize)]
 pub struct NewGameDebugOptions {
@@ -134,6 +133,18 @@ pub enum UserAction {
 
     /// Perform an action in the deck editor
     DeckEditorAction(DeckEditorAction),
+}
+
+impl From<GameAction> for UserAction {
+    fn from(a: GameAction) -> Self {
+        UserAction::GameAction(a)
+    }
+}
+
+impl From<AdventureAction> for UserAction {
+    fn from(a: AdventureAction) -> Self {
+        UserAction::AdventureAction(a)
+    }
 }
 
 impl fmt::Debug for UserAction {

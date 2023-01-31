@@ -14,8 +14,8 @@
 
 use anyhow::Result;
 use game_data::tutorial_data::TutorialMessageKey;
-use game_data::user_actions::DeckEditorAction;
 use player_data::PlayerData;
+use user_action_data::DeckEditorAction;
 use with_error::{fail, verify, WithError};
 
 pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {

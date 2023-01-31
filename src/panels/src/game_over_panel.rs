@@ -19,9 +19,9 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use game_data::user_actions::UserAction;
 use panel_address::{GameOverData, Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
+use user_action_data::UserAction;
 
 #[derive(Debug)]
 pub struct GameOverPanel {

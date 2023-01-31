@@ -32,10 +32,10 @@ use element_names::{CurrentDraggable, TargetName};
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::primitives::Side;
-use game_data::user_actions::DeckEditorAction;
 use panel_address::CollectionBrowserFilters;
 use player_data::PlayerData;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition};
+use user_action_data::DeckEditorAction;
 
 use crate::card_list;
 use crate::card_list_card_name::CardListCardName;

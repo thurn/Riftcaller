@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::user_actions::UserAction;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::StandardAction;
+use user_action_data::UserAction;
 
 use crate::actions;
 use crate::actions::InterfaceAction;

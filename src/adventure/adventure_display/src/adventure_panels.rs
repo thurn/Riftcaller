@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::{TileEntity, TilePosition};
 use anyhow::Result;
 use core_ui::full_screen_loading::FullScreenLoading;
 use core_ui::prelude::*;
-use game_data::adventure::{TileEntity, TilePosition};
-use player_data::PlayerData;
 use panel_address::{Panel, PanelAddress};
+use player_data::PlayerData;
 use protos::spelldawn::InterfacePanel;
 use with_error::{fail, WithError};
 

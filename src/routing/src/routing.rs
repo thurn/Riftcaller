@@ -15,12 +15,12 @@
 //! Panel rendering. A 'panel' is a discrete rectangular piece of UI which can
 //! be opened or closed by the user, such as a game menu or window.
 
+use adventure_data::adventure::AdventureState;
 use adventure_display::adventure_panels;
 use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
-use game_data::adventure::AdventureState;
 use panel_address::{Panel, PanelAddress};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;

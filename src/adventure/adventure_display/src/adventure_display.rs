@@ -22,12 +22,14 @@ pub mod explore_panel;
 pub mod shop_panel;
 pub mod shop_prompt_panel;
 
+use adventure_data::adventure::{
+    AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState,
+};
+use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use core_ui::panels::Panels;
 use core_ui::{design, panels};
-use game_data::adventure::{AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState};
-use game_data::adventure_action::AdventureAction;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{

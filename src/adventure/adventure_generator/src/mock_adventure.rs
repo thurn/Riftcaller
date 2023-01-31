@@ -16,7 +16,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use game_data::adventure::{
+use adventure_data::adventure::{
     AdventureConfiguration, AdventureState, RegionId, TileEntity, TilePosition, TileState,
 };
 use game_data::card_name::CardName;

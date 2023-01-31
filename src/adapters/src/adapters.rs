@@ -16,8 +16,8 @@
 
 pub mod response_builder;
 
+use adventure_data::adventure::TilePosition;
 use anyhow::Result;
-use game_data::adventure::TilePosition;
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{
     AbilityId, AbilityIndex, CardId, GameId, GameObjectId, Milliseconds, RoomId, Side, Sprite,

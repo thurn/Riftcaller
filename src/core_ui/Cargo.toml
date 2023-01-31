@@ -11,7 +11,9 @@ test = false
 
 [dependencies]
 constants = { path = "../constants", version = "0.0.0" }
+adventure_data = { path = "../data/adventure_data", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
+user_action_data = { path = "../data/user_action_data", version = "0.0.0" }
 element_names = { path = "../element_names", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 serde_json = "1.0.82"

@@ -14,7 +14,6 @@
 
 use std::collections::HashMap;
 
-use game_data::user_actions::UserAction;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
@@ -22,6 +21,7 @@ use protos::spelldawn::{
     InterfacePanel, InterfacePanelAddress, PanelTransitionOptions, StandardAction,
     TogglePanelCommand, UpdatePanelsCommand,
 };
+use user_action_data::UserAction;
 
 use crate::actions::{self, InterfaceAction};
 

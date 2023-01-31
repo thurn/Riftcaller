@@ -20,14 +20,14 @@ use game_data::card_name::CardName;
 use game_data::game::GameState;
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
-use game_data::user_actions::{
-    DebugAction, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
-};
 use panel_address::PanelAddress;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mana;
+use user_action_data::{
+    DebugAction, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
+};
 use with_error::WithError;
 
 use crate::requests;

@@ -24,7 +24,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::game::MulliganDecision;
 use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, RoomId, Side};
-use crate::user_actions::UserAction;
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum EncounterAction {
@@ -165,11 +164,5 @@ impl fmt::Debug for GameAction {
             Self::LevelUpRoom(arg0) => f.debug_tuple("@LevelUpRoom").field(arg0).finish(),
             Self::SpendActionPoint => write!(f, "@SpendActionPoint"),
         }
-    }
-}
-
-impl From<GameAction> for UserAction {
-    fn from(a: GameAction) -> Self {
-        UserAction::GameAction(a)
     }
 }

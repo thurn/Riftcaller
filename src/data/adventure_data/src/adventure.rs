@@ -18,6 +18,10 @@ use anyhow::Result;
 use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
+use game_data::card_name::CardName;
+use game_data::deck::Deck;
+use game_data::player_name::PlayerId;
+use game_data::primitives::Side;
 use rand::distributions::uniform::{SampleRange, SampleUniform};
 use rand::prelude::IteratorRandom;
 use rand::Rng;
@@ -25,11 +29,6 @@ use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use with_error::WithError;
-
-use crate::card_name::CardName;
-use crate::deck::Deck;
-use crate::player_name::PlayerId;
-use crate::primitives::Side;
 
 /// Identifies a set of tiles which can be revealed via the 'explore' action.
 pub type RegionId = u32;

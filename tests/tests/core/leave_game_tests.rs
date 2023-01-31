@@ -15,10 +15,10 @@
 use core_ui::actions::InterfaceAction;
 use game_data::game_actions::GameAction;
 use game_data::primitives::Side;
-use game_data::user_actions::UserAction;
 use insta::assert_snapshot;
 use test_utils::summarize::Summary;
 use test_utils::*;
+use user_action_data::UserAction;
 
 #[test]
 fn resign() {

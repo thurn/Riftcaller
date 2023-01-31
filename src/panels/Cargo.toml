@@ -10,6 +10,8 @@ doctest = false
 test = false
 
 [dependencies]
+adventure_data = { path = "../data/adventure_data", version = "0.0.0" }
+user_action_data = { path = "../data/user_action_data", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
 core_ui = { path = "../core_ui", version = "0.0.0" }
 panel_address = { path = "../panel_address", version = "0.0.0" }

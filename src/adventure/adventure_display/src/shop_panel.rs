@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
+use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_ui::action_builder::ActionBuilder;
 use core_ui::animations::{
@@ -21,12 +23,10 @@ use core_ui::button::Button;
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::prelude::*;
 use core_ui::{icons, style};
-use game_data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
-use game_data::adventure_action::AdventureAction;
-use player_data::PlayerData;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::{Panel, PanelAddress};
+use player_data::PlayerData;
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexVector2};
 use screen_overlay::ScreenOverlay;

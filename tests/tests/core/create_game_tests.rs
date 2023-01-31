@@ -18,9 +18,6 @@ use game_data::game_actions::{GameAction, PromptAction};
 use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Side};
 use game_data::tutorial_data::TutorialData;
-use game_data::user_actions::{
-    NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
-};
 use insta::assert_snapshot;
 use maplit::hashmap;
 use player_data::PlayerData;
@@ -30,6 +27,7 @@ use test_utils::client_interface::HasText;
 use test_utils::fake_database::FakeDatabase;
 use test_utils::summarize::Summary;
 use test_utils::*;
+use user_action_data::{NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction};
 
 static OVERLORD_DECK: NewGameDeck = NewGameDeck::NamedDeck(NamedDeck::OverlordTestSpells);
 static CHAMPION_DECK: NewGameDeck = NewGameDeck::NamedDeck(NamedDeck::ChampionTestSpells);

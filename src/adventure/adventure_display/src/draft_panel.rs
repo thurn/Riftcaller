@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::DraftData;
+use adventure_data::adventure_action::AdventureAction;
 use core_ui::button::Button;
 use core_ui::design::FontSize;
 use core_ui::full_screen_image::FullScreenImage;
@@ -19,8 +21,6 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::text::Text;
-use game_data::adventure::DraftData;
-use game_data::adventure_action::AdventureAction;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::FlexJustify;
