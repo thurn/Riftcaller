@@ -17,8 +17,6 @@ doctest = false
 cards_all = { path = "../cards/cards_all", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 server = { path = "../server", version = "0.0.0" }
-
-anyhow = "1.0.58"
 tokio = { version = "1.19.2", features = ["macros", "rt-multi-thread", "sync", "time"] }
 tonic = { version = "0.7.2", features = ["compression"] }
 tonic-web = "0.3.0"

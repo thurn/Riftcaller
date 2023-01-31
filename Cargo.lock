@@ -38,8 +38,6 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "game_data",
- "protos",
- "rules",
  "with_error",
 ]
 
@@ -49,7 +47,6 @@ version = "0.0.0"
 dependencies = [
  "adapters",
  "anyhow",
- "constants",
  "core_ui",
  "deck_card",
  "element_names",
@@ -344,7 +341,6 @@ dependencies = [
  "card_helpers",
  "game_data",
  "rules",
- "with_error",
 ]
 
 [[package]]
@@ -352,8 +348,6 @@ name = "cards_codegen"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "maplit",
- "once_cell",
  "regex",
  "walkdir",
 ]
@@ -365,8 +359,6 @@ dependencies = [
  "assets",
  "card_helpers",
  "game_data",
- "rules",
- "with_error",
 ]
 
 [[package]]
@@ -384,7 +376,6 @@ dependencies = [
 name = "cards_test"
 version = "0.0.0"
 dependencies = [
- "assets",
  "card_helpers",
  "game_data",
  "rules",
@@ -737,7 +728,6 @@ dependencies = [
 name = "decklists"
 version = "0.0.0"
 dependencies = [
- "anyhow",
  "game_data",
  "maplit",
  "once_cell",
@@ -1466,19 +1456,9 @@ name = "player_data"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "clap 3.2.16",
- "convert_case 0.5.0",
- "derive_more",
- "enum-iterator",
- "enum-kinds",
- "fallible-iterator",
  "game_data",
- "macros",
- "rand",
- "rand_xoshiro",
  "serde",
  "serde_with",
- "strum_macros",
  "with_error",
 ]
 
@@ -1783,7 +1763,6 @@ version = "0.0.0"
 dependencies = [
  "adventure_display",
  "anyhow",
- "core_ui",
  "deck_editor",
  "game_data",
  "panel_address",
@@ -1812,19 +1791,12 @@ dependencies = [
 name = "rules_text"
 version = "0.0.0"
 dependencies = [
- "actions",
- "adapters",
- "anyhow",
  "assets",
  "core_ui",
- "enum-iterator",
  "game_data",
- "panel_address",
  "prompts",
  "protos",
- "raids",
  "rules",
- "with_error",
 ]
 
 [[package]]
@@ -1981,13 +1953,11 @@ dependencies = [
  "once_cell",
  "panel_address",
  "player_data",
- "prost",
  "protos",
  "routing",
  "rules",
  "screen_overlay",
  "serde_json",
- "sled",
  "tokio",
  "tokio-stream",
  "tonic",
@@ -2054,7 +2024,6 @@ dependencies = [
 name = "spelldawn"
 version = "0.0.0"
 dependencies = [
- "anyhow",
  "cards_all",
  "protos",
  "rusty-hook",

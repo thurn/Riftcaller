@@ -15,7 +15,6 @@ anyhow = "1.0.58"
 
 adapters = { path = "../../adapters", version = "0.0.0"}
 core_ui = { path = "../../core_ui", version = "0.0.0"}
-constants = { path = "../../constants", version = "0.0.0"}
 game_data = { path = "../../data/game_data", version = "0.0.0" }
 player_data = { path = "../../data/player_data", version = "0.0.0" }
 deck_card = { path = "../../deck_card", version = "0.0.0" }
