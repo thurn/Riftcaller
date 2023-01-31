@@ -85,9 +85,6 @@ pub enum DebugAction {
     SaveState(u64),
     LoadState(u64),
     SetNamedPlayer(Side, NamedPlayer),
-
-    /// Gives the player copies of every card
-    FullCollection,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

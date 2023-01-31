@@ -17,14 +17,13 @@
 use std::cmp::Ordering;
 
 use convert_case::{Case, Casing};
-use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;
 
 /// Possible names of cards.
 ///
 /// This enum is used to connect the state of a card to its game rules.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize, Sequence)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize)]
 pub enum CardName {
     // When renaming a card, add  #[serde(alias = "OldName")] to preserve
     // serialization

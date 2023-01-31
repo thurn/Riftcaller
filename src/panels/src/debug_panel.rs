@@ -86,8 +86,7 @@ impl Component for DebugPanel {
                     .child(debug_button(
                         "Champion AI",
                         Panels::open(PanelAddress::SetPlayerName(Side::Champion)),
-                    ))
-                    .child(debug_button("Full Collection", DebugAction::FullCollection)),
+                    )),
             )
             .build()
     }

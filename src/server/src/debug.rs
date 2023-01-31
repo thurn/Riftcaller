@@ -16,7 +16,6 @@ use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use core_ui::panels::Panels;
 use database::Database;
-use game_data::card_name::CardName;
 use game_data::game::GameState;
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
@@ -124,16 +123,6 @@ pub fn handle_debug_action(
             requests::handle_custom_action(database, player_id, game_id, |game, _| {
                 game.player_mut(side).id = PlayerId::Named(name);
                 Ok(())
-            })
-        }
-        DebugAction::FullCollection => {
-            requests::handle_player_action(database, player_id, |player| {
-                for name in enum_iterator::all::<CardName>() {
-                    if !name.is_test_card() && !name.is_null_leader() {
-                        player.adventure_mut()?.collection.insert(name, 3);
-                    }
-                }
-                Ok(vec![])
             })
         }
     }
