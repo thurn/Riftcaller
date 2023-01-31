@@ -145,7 +145,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             // Opponent -> 5 mana
             TutorialStep::SetTopOfDeck(
                 Side::Champion,
-                vec![CardName::ArcaneRecovery, CardName::Lodestone],
+                vec![CardName::Lodestone, CardName::ArcaneRecovery],
             ),
             TutorialStep::RemoveGameModifiers(vec![
                 CardName::TutorialDisableGainMana,
