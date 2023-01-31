@@ -19,11 +19,11 @@ use core_ui::style::Corner;
 use core_ui::text::Text;
 use game_data::primitives::{Milliseconds, RoomId};
 use game_data::tutorial_data::{GameTutorialState, TooltipAnchor, TutorialDisplay};
-use protos::spelldawn::show_arrow_bubble::ArrowBubbleAnchor;
+use protos::spelldawn::arrow_bubble_anchor::BubbleAnchor;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
-    ArrowBubbleCorner, PlayerName, ShowArrowBubble, ShowToast, TextAlign, TutorialEffect,
-    WhiteSpace,
+    ArrowBubbleAnchor, ArrowBubbleCorner, PlayerName, ShowArrowBubble, ShowToast, TextAlign,
+    TutorialEffect, WhiteSpace,
 };
 
 pub fn render(builder: &ResponseBuilder, state: &GameTutorialState) -> Vec<TutorialEffect> {
@@ -42,12 +42,12 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
             text: tooltip.text.clone(),
             color: Some(BackgroundColor::Tooltip.into()),
             font_color: Some(FontColor::Tooltip.into()),
-            arrow_bubble_anchor: Some(match tooltip.anchor {
+            anchor: make_anchor(match tooltip.anchor {
                 TooltipAnchor::RaidRoom(room) => {
-                    ArrowBubbleAnchor::Room(adapters::room_identifier(room))
+                    BubbleAnchor::Room(adapters::room_identifier(room))
                 }
-                TooltipAnchor::GainMana => ArrowBubbleAnchor::PlayerMana(PlayerName::User.into()),
-                TooltipAnchor::DrawCard => ArrowBubbleAnchor::PlayerDeck(PlayerName::User.into()),
+                TooltipAnchor::GainMana => BubbleAnchor::PlayerMana(PlayerName::User.into()),
+                TooltipAnchor::DrawCard => BubbleAnchor::PlayerDeck(PlayerName::User.into()),
             }),
             idle_timer: Some(adapters::time_value(tooltip.delay)),
             arrow_corner: if tooltip.anchor == TooltipAnchor::GainMana
@@ -65,7 +65,7 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
                 text: speech_bubble.text.clone(),
                 color: Some(BackgroundColor::SpeechBubble.into()),
                 font_color: Some(FontColor::SpeechBubble.into()),
-                arrow_bubble_anchor: Some(ArrowBubbleAnchor::Player(
+                anchor: make_anchor(BubbleAnchor::Player(
                     builder.to_player_name(speech_bubble.side),
                 )),
                 idle_timer: Some(adapters::time_value(speech_bubble.delay)),
@@ -79,6 +79,10 @@ fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> Tutori
             hide_time: toast.hide_after.map(adapters::time_value),
         }),
     }
+}
+
+fn make_anchor(anchor: BubbleAnchor) -> Option<ArrowBubbleAnchor> {
+    Some(ArrowBubbleAnchor { bubble_anchor: Some(anchor) })
 }
 
 fn make_toast(text: &str) -> Option<Node> {

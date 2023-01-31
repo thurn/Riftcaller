@@ -90,7 +90,7 @@ namespace Spelldawn.Services
     {
       var component = ComponentUtils.Instantiate(_arrowBubblePrefab);
       component.ApplyStyle(showBubble);
-      var anchorPosition = AnchorTransform(showBubble).position + AnchorOffset(showBubble);
+      var anchorPosition = AnchorTransform(showBubble.Anchor).position + AnchorOffset(showBubble.Anchor);
       
       // Offset position to be bottom-left anchored
       anchorPosition.x -= (ArrowBubble.DefaultDeltaSize.x / 2.0f);
@@ -102,28 +102,28 @@ namespace Spelldawn.Services
       return component;
     }
 
-    Transform AnchorTransform(ShowArrowBubble showBubble) => showBubble.ArrowBubbleAnchorCase switch
+    Transform AnchorTransform(ArrowBubbleAnchor anchor) => anchor.BubbleAnchorCase switch
     {
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.Player => 
-        _registry.LeaderCardForPlayer(showBubble.Player).transform,
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.Room => 
-        _registry.ArenaService.FindRoom(showBubble.Room).transform,
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerDeck => 
-        _registry.DeckForPlayer(showBubble.PlayerDeck).transform,
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerMana => 
-        _registry.ManaDisplayForPlayer(showBubble.PlayerMana).transform,
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.Player => 
+        _registry.LeaderCardForPlayer(anchor.Player).transform,
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.Room => 
+        _registry.ArenaService.FindRoom(anchor.Room).transform,
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerDeck => 
+        _registry.DeckForPlayer(anchor.PlayerDeck).transform,
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerMana => 
+        _registry.ManaDisplayForPlayer(anchor.PlayerMana).transform,
       _ => throw new ArgumentOutOfRangeException(
-        nameof(showBubble.ArrowBubbleAnchorCase), showBubble.ArrowBubbleAnchorCase, null)
+        nameof(anchor.BubbleAnchorCase), anchor.BubbleAnchorCase, null)
     };
     
-    Vector3 AnchorOffset(ShowArrowBubble showBubble) => showBubble.ArrowBubbleAnchorCase switch
+    Vector3 AnchorOffset(ArrowBubbleAnchor anchor) => anchor.BubbleAnchorCase switch
     {
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.Player => 
-        showBubble.Player == PlayerName.User ? new Vector3(-0.5f, 0f, -2f) : new Vector3(-1f, 0f, -1f),
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.Room => showBubble.Room == RoomIdentifier.Vault ? 
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.Player => 
+        anchor.Player == PlayerName.User ? new Vector3(-0.5f, 0f, -2f) : new Vector3(-1f, 0f, -1f),
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.Room => anchor.Room == RoomIdentifier.Vault ? 
         new Vector3(12.5f, 0, 0) : new Vector3(3f, 0, 0),
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerMana => new Vector3(5f, 0, -1.5f),
-      ShowArrowBubble.ArrowBubbleAnchorOneofCase.PlayerDeck => new Vector3(-4f, 0, -2.5f),
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerMana => new Vector3(5f, 0, -1.5f),
+      ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerDeck => new Vector3(-4f, 0, -2.5f),
       _ => Vector3.zero
     };
 

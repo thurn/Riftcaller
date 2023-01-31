@@ -912,6 +912,30 @@ pub struct GameObjectPositions {
     #[prost(message, optional, tag = "6")]
     pub opponent_discard: ::core::option::Option<ObjectPosition>,
 }
+/// Where to display the arrow bubble
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ArrowBubbleAnchor {
+    #[prost(oneof = "arrow_bubble_anchor::BubbleAnchor", tags = "1, 2, 3, 4")]
+    pub bubble_anchor: ::core::option::Option<arrow_bubble_anchor::BubbleAnchor>,
+}
+/// Nested message and enum types in `ArrowBubbleAnchor`.
+pub mod arrow_bubble_anchor {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum BubbleAnchor {
+        /// Arrow pointing to a player
+        #[prost(enumeration = "super::PlayerName", tag = "1")]
+        Player(i32),
+        /// Arrow pointing to a room
+        #[prost(enumeration = "super::RoomIdentifier", tag = "2")]
+        Room(i32),
+        /// Arrow pointing to a player's deck
+        #[prost(enumeration = "super::PlayerName", tag = "3")]
+        PlayerDeck(i32),
+        /// Arrow pointing to a player's mana
+        #[prost(enumeration = "super::PlayerName", tag = "4")]
+        PlayerMana(i32),
+    }
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ShowArrowBubble {
     /// Text to show.
@@ -937,30 +961,12 @@ pub struct ShowArrowBubble {
     /// Multiplier for size of arrow buble. Defaults to 1.0.
     #[prost(message, optional, tag = "7")]
     pub scale: ::core::option::Option<f32>,
+    /// Which corner should the arrow be shown on?
     #[prost(enumeration = "ArrowBubbleCorner", tag = "8")]
     pub arrow_corner: i32,
     /// Where to display the arrow bubble
-    #[prost(oneof = "show_arrow_bubble::ArrowBubbleAnchor", tags = "9, 10, 11, 12")]
-    pub arrow_bubble_anchor: ::core::option::Option<show_arrow_bubble::ArrowBubbleAnchor>,
-}
-/// Nested message and enum types in `ShowArrowBubble`.
-pub mod show_arrow_bubble {
-    /// Where to display the arrow bubble
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum ArrowBubbleAnchor {
-        /// Arrow pointing to a player
-        #[prost(enumeration = "super::PlayerName", tag = "9")]
-        Player(i32),
-        /// Arrow pointing to a room
-        #[prost(enumeration = "super::RoomIdentifier", tag = "10")]
-        Room(i32),
-        /// Arrow pointing to a player's deck
-        #[prost(enumeration = "super::PlayerName", tag = "11")]
-        PlayerDeck(i32),
-        /// Arrow pointing to a player's mana
-        #[prost(enumeration = "super::PlayerName", tag = "12")]
-        PlayerMana(i32),
-    }
+    #[prost(message, optional, tag = "9")]
+    pub anchor: ::core::option::Option<ArrowBubbleAnchor>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ShowToast {
