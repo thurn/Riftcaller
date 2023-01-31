@@ -15,12 +15,12 @@
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use core_ui::icons;
-use data::card_definition::{AbilityType, TargetRequirement};
-use data::card_state::CardState;
-use data::game::GameState;
-use data::game_actions::CardTarget;
-use data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation};
-use data::text::RulesTextContext;
+use game_data::card_definition::{AbilityType, TargetRequirement};
+use game_data::card_state::CardState;
+use game_data::game::GameState;
+use game_data::game_actions::CardTarget;
+use game_data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation};
+use game_data::text::RulesTextContext;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,

@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
-use data::delegates::{RaidStart, RaidStartEvent};
-use data::game::{GameState, InternalRaidPhase};
-use data::game_actions::PromptAction;
-use data::primitives::Side;
+use game_data::delegates::{RaidStart, RaidStartEvent};
+use game_data::game::{GameState, InternalRaidPhase};
+use game_data::game_actions::PromptAction;
+use game_data::primitives::Side;
 use rules::dispatch;
 use with_error::fail;
 

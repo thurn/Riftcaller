@@ -19,10 +19,10 @@ use core_ui::animations::{
 use core_ui::conditional::Conditional;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
-use data::card_name::CardName;
-use data::deck::Deck;
-use data::user_actions::DeckEditorAction;
 use element_names::CurrentDraggable;
+use game_data::card_name::CardName;
+use game_data::deck::Deck;
+use game_data::user_actions::DeckEditorAction;
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexVector2};
 

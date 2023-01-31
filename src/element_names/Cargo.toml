@@ -11,5 +11,5 @@ doctest = false
 test = false
 
 [dependencies]
-data = { path = "../data", version = "0.0.0" }
+game_data = { path = "../data/game_data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }

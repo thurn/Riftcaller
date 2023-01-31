@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use cards_test::test_cards::{MINION_COST, TEST_LINEAGE};
-use data::card_name::CardName;
-use data::primitives::{RoomId, Side};
+use game_data::card_name::CardName;
+use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{ObjectPositionBrowser, PlayerName};
 use test_utils::*;

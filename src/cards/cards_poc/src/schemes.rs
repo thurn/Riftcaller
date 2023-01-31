@@ -17,12 +17,12 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{text, *};
-use data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, SchemePoints};
-use data::card_name::CardName;
-use data::delegates::{Delegate, EventDelegate, QueryDelegate};
-use data::primitives::{CardType, Rarity, School, Side};
-use data::set_name::SetName;
-use data::text::Keyword;
+use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, SchemePoints};
+use game_data::card_name::CardName;
+use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
+use game_data::primitives::{CardType, Rarity, School, Side};
+use game_data::set_name::SetName;
+use game_data::text::Keyword;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 

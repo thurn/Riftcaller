@@ -18,15 +18,15 @@ use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::text_macro::text;
 use card_helpers::{abilities, *};
-use data::card_definition::{
+use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
 };
-use data::card_name::CardName;
-use data::delegates::{Delegate, EventDelegate};
-use data::primitives::{CardType, Rarity, School, Side};
-use data::set_name::SetName;
-use data::text::{Keyword, Sentence};
-use data::utils;
+use game_data::card_name::CardName;
+use game_data::delegates::{Delegate, EventDelegate};
+use game_data::primitives::{CardType, Rarity, School, Side};
+use game_data::set_name::SetName;
+use game_data::text::{Keyword, Sentence};
+use game_data::utils;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

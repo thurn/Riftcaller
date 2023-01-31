@@ -15,8 +15,8 @@
 use anyhow::Result;
 use core_ui::full_screen_loading::FullScreenLoading;
 use core_ui::prelude::*;
-use data::adventure::{TileEntity, TilePosition};
-use data::player_data::PlayerData;
+use game_data::adventure::{TileEntity, TilePosition};
+use game_data::player_data::PlayerData;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::InterfacePanel;
 use with_error::{fail, WithError};

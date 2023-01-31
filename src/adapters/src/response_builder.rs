@@ -14,7 +14,7 @@
 
 use std::collections::HashMap;
 
-use data::primitives::Side;
+use game_data::primitives::Side;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     CardIdentifier, GameView, ObjectPosition, PlayerName, UpdateGameViewCommand,

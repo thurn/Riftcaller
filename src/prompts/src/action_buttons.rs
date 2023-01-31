@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use core_ui::icons;
-use data::game::{GameState, MulliganDecision};
-use data::game_actions::{AccessPhaseAction, CardPromptAction, EncounterAction, PromptAction};
-use data::primitives::Side;
+use game_data::game::{GameState, MulliganDecision};
+use game_data::game_actions::{AccessPhaseAction, CardPromptAction, EncounterAction, PromptAction};
+use game_data::primitives::Side;
 use rules::queries;
 
 use crate::response_button::ResponseButton;

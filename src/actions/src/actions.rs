@@ -19,15 +19,15 @@
 pub mod legal_actions;
 
 use anyhow::Result;
-use data::card_definition::AbilityType;
-use data::card_state::CardPosition;
-use data::delegates::{
+use game_data::card_definition::AbilityType;
+use game_data::card_state::CardPosition;
+use game_data::delegates::{
     AbilityActivated, ActivateAbilityEvent, CardPlayed, CastCardEvent, DrawCardActionEvent,
 };
-use data::game::{GamePhase, GameState, MulliganDecision};
-use data::game_actions::{CardTarget, GameAction, PromptAction};
-use data::primitives::{AbilityId, CardId, RoomId, Side};
-use data::updates::{GameUpdate, InitiatedBy};
+use game_data::game::{GamePhase, GameState, MulliganDecision};
+use game_data::game_actions::{CardTarget, GameAction, PromptAction};
+use game_data::primitives::{AbilityId, CardId, RoomId, Side};
+use game_data::updates::{GameUpdate, InitiatedBy};
 use raids::RaidDataExt;
 use rules::mana::ManaPurpose;
 use rules::{card_prompt, dispatch, flags, mana, mutations, queries};

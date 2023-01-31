@@ -16,11 +16,11 @@
 
 use std::collections::{HashMap, HashSet};
 
-use data::adventure::{
+use game_data::adventure::{
     AdventureConfiguration, AdventureState, RegionId, TileEntity, TilePosition, TileState,
 };
-use data::card_name::CardName;
-use data::deck::Deck;
+use game_data::card_name::CardName;
+use game_data::deck::Deck;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;

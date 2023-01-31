@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use core_ui::actions::InterfaceAction;
-use data::game_actions::GameAction;
-use data::primitives::Side;
-use data::user_actions::UserAction;
+use game_data::game_actions::GameAction;
+use game_data::primitives::Side;
+use game_data::user_actions::UserAction;
 use insta::assert_snapshot;
 use test_utils::summarize::Summary;
 use test_utils::*;

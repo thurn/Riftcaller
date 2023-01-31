@@ -17,9 +17,9 @@ use std::ops::{Deref, DerefMut};
 use actions::legal_actions;
 use ai_core::game_state_node::{GameStateNode, GameStatus};
 use anyhow::Result;
-use data::game::{GamePhase, GameState};
-use data::game_actions::GameAction;
-use data::primitives::Side;
+use game_data::game::{GamePhase, GameState};
+use game_data::game_actions::GameAction;
+use game_data::primitives::Side;
 
 /// Wrapper over [GameState] to allow trait to be implemented in this crate.
 pub struct SpelldawnState(pub GameState);

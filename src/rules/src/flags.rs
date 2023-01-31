@@ -15,17 +15,17 @@
 //! Functions to query boolean game information, typically whether some game
 //! action can currently be taken
 
-use data::card_definition::{AbilityType, TargetRequirement};
-use data::card_state::CardPosition;
-use data::delegates::{
+use game_data::card_definition::{AbilityType, TargetRequirement};
+use game_data::card_state::CardPosition;
+use game_data::delegates::{
     CanActivateAbilityQuery, CanActivateWhileFaceDownQuery, CanDefeatTargetQuery,
     CanEncounterTargetQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery,
     CanLevelUpRoomQuery, CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery,
     CanUseNoWeaponQuery, CardEncounter, Flag,
 };
-use data::game::{GamePhase, GameState};
-use data::game_actions::CardTarget;
-use data::primitives::{AbilityId, CardId, CardType, Lineage, RaidId, RoomId, Side};
+use game_data::game::{GamePhase, GameState};
+use game_data::game_actions::CardTarget;
+use game_data::primitives::{AbilityId, CardId, CardType, Lineage, RaidId, RoomId, Side};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, mana, queries};

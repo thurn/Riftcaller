@@ -17,7 +17,7 @@ use anyhow::Result;
 use core_ui::actions::{InterfaceAction, NoAction};
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use data::primitives::CardId;
+use game_data::primitives::CardId;
 use protos::spelldawn::{AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify};
 use with_error::WithError;
 

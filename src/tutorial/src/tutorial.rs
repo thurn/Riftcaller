@@ -16,10 +16,10 @@ pub mod tutorial_actions;
 
 use core_ui::design::{self, FontColor};
 use core_ui::icons;
-use data::card_name::CardName;
-use data::game_actions::CardTarget;
-use data::primitives::{Milliseconds, RoomId, Side};
-use data::tutorial_data::{
+use game_data::card_name::CardName;
+use game_data::game_actions::CardTarget;
+use game_data::primitives::{Milliseconds, RoomId, Side};
+use game_data::tutorial_data::{
     SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialDisplay, TutorialMessageKey,
     TutorialMessageTrigger, TutorialOpponentAction, TutorialSequence, TutorialStep,
     TutorialTrigger,

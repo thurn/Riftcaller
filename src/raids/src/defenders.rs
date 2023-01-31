@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
-use data::game::GameState;
-use data::primitives::{CardId, RoomId, Side};
-use data::utils;
 use fallible_iterator::FallibleIterator;
+use game_data::game::GameState;
+use game_data::primitives::{CardId, RoomId, Side};
+use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{mana, queries};
 use with_error::WithError;

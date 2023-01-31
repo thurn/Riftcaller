@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use data::user_actions::UserAction;
+use game_data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
 use panels::button_menu::ButtonMenu;
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use data::card_definition::CardDefinition;
+use game_data::card_definition::CardDefinition;
 use protos::spelldawn::{BackgroundImageAutoSize, FlexAlign, FlexJustify, FlexPosition};
 
 use crate::CardHeight;

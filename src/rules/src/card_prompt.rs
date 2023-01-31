@@ -15,10 +15,10 @@
 //! Handler for interactive card prompts
 
 use anyhow::Result;
-use data::delegates::RaidOutcome;
-use data::game::GameState;
-use data::game_actions::CardPromptAction;
-use data::primitives::Side;
+use game_data::delegates::RaidOutcome;
+use game_data::game::GameState;
+use game_data::game_actions::CardPromptAction;
+use game_data::primitives::Side;
 
 use crate::mana::ManaPurpose;
 use crate::{mana, mutations};

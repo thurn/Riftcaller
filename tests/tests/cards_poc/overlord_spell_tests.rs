@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use data::card_name::CardName;
-use data::primitives::Side;
+use game_data::card_name::CardName;
+use game_data::primitives::Side;
 use test_utils::*;
 
 #[test]

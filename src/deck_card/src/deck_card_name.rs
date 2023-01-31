@@ -15,7 +15,7 @@
 use core_ui::design::Font;
 use core_ui::prelude::*;
 use core_ui::text::Text;
-use data::card_definition::CardDefinition;
+use game_data::card_definition::CardDefinition;
 use protos::spelldawn::{BackgroundImageAutoSize, FlexAlign, FlexJustify, FlexPosition};
 
 use crate::CardHeight;

@@ -13,13 +13,15 @@
 // limitations under the License.
 
 use core_ui::actions::InterfaceAction;
-use data::game::MulliganDecision;
-use data::game_actions::{GameAction, PromptAction};
-use data::player_data::PlayerData;
-use data::player_name::PlayerId;
-use data::primitives::{GameId, Side};
-use data::tutorial_data::TutorialData;
-use data::user_actions::{NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction};
+use game_data::game::MulliganDecision;
+use game_data::game_actions::{GameAction, PromptAction};
+use game_data::player_data::PlayerData;
+use game_data::player_name::PlayerId;
+use game_data::primitives::{GameId, Side};
+use game_data::tutorial_data::TutorialData;
+use game_data::user_actions::{
+    NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
+};
 use insta::assert_snapshot;
 use maplit::hashmap;
 use protos::spelldawn::PlayerName;

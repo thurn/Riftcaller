@@ -13,16 +13,16 @@
 // limitations under the License.
 
 use anyhow::Result;
-use data::card_state::CardPosition;
-use data::delegates::{
+use game_data::card_state::CardPosition;
+use game_data::delegates::{
     CardAccessEvent, ChampionScoreCardEvent, RaidAccessStartEvent, RaidOutcome, ScoreCard,
     ScoreCardEvent,
 };
-use data::game::{GameState, InternalRaidPhase};
-use data::game_actions::{AccessPhaseAction, PromptAction};
-use data::primitives::{CardId, CardType, RoomId, Side};
-use data::random;
-use data::updates::GameUpdate;
+use game_data::game::{GameState, InternalRaidPhase};
+use game_data::game_actions::{AccessPhaseAction, PromptAction};
+use game_data::primitives::{CardId, CardType, RoomId, Side};
+use game_data::random;
+use game_data::updates::GameUpdate;
 use rules::mana::ManaPurpose;
 use rules::{dispatch, flags, mana, mutations, queries};
 use with_error::{fail, WithError};

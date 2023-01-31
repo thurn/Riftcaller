@@ -19,7 +19,7 @@ adapters = { path = "../adapters", version = "0.0.0" }
 raids = { path = "../raids", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 rules_text = { path = "../rules_text", version = "0.0.0" }
-data = { path = "../data", version = "0.0.0" }
+game_data = { path = "../data/game_data", version = "0.0.0" }
 panel_address = { path = "../panel_address", version = "0.0.0" }
 panels = { path = "../panels", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }

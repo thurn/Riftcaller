@@ -21,9 +21,9 @@ use std::fmt::Write as _;
 use core_ui::component::Component;
 use core_ui::design::FontColor;
 use core_ui::{design, icons};
-use data::card_definition::{Ability, AbilityType, CardDefinition, Cost};
-use data::primitives::{AbilityId, AbilityIndex, CardSubtype, CardType, Lineage};
-use data::text::{
+use game_data::card_definition::{Ability, AbilityType, CardDefinition, Cost};
+use game_data::primitives::{AbilityId, AbilityIndex, CardSubtype, CardType, Lineage};
+use game_data::text::{
     AbilityText, DamageWord, Keyword, KeywordKind, NumericOperator, RulesTextContext, Sentence,
     TextToken,
 };

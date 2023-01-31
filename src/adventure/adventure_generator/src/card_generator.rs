@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use data::adventure::{AdventureConfiguration, CardChoice, Coins, DraftData, ShopData};
-use data::card_name::CardName;
-use data::primitives::{Rarity, Side};
-use data::set_name::SetName;
+use game_data::adventure::{AdventureConfiguration, CardChoice, Coins, DraftData, ShopData};
+use game_data::card_name::CardName;
+use game_data::primitives::{Rarity, Side};
+use game_data::set_name::SetName;
 
 /// Generates options for drafting a card during an adventure
 pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {

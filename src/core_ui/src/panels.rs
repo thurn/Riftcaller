@@ -14,7 +14,7 @@
 
 use std::collections::HashMap;
 
-use data::user_actions::UserAction;
+use game_data::user_actions::UserAction;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;

@@ -17,10 +17,10 @@
 use std::iter;
 
 use anyhow::Result;
-use data::card_definition::{AbilityType, TargetRequirement};
-use data::game::{GamePhase, GameState, MulliganDecision};
-use data::game_actions::{CardTarget, CardTargetKind, GameAction, PromptAction};
-use data::primitives::{AbilityId, CardId, RoomId, Side};
+use game_data::card_definition::{AbilityType, TargetRequirement};
+use game_data::game::{GamePhase, GameState, MulliganDecision};
+use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, PromptAction};
+use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::{flags, queries};
 use with_error::fail;
 

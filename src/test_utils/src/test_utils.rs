@@ -32,17 +32,19 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use adapters::ServerCardId;
 use anyhow::Result;
-use data::card_name::CardName;
-use data::card_state::{CardPosition, CardPositionKind};
-use data::deck::Deck;
-use data::game::{GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData};
-use data::player_data::{PlayerData, PlayerStatus};
-use data::player_name::PlayerId;
-use data::primitives::{
+use game_data::card_name::CardName;
+use game_data::card_state::{CardPosition, CardPositionKind};
+use game_data::deck::Deck;
+use game_data::game::{
+    GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData,
+};
+use game_data::player_data::{PlayerData, PlayerStatus};
+use game_data::player_name::PlayerId;
+use game_data::primitives::{
     ActionCount, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue, PointsValue, RaidId,
     RoomId, Side,
 };
-use data::tutorial_data::TutorialData;
+use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
 use prost::Message;
 use protos::spelldawn::client_action::Action;

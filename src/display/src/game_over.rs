@@ -15,7 +15,7 @@
 use ::panels::game_over_panel::GameOverPanel;
 use adapters::response_builder::ResponseBuilder;
 use core_ui::panels::{self, Panels};
-use data::game::{GamePhase, GameState};
+use game_data::game::{GamePhase, GameState};
 use panel_address::{GameOverData, Panel, PanelAddress};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};

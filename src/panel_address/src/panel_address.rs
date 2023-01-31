@@ -16,9 +16,9 @@
 
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
-use data::adventure::TilePosition;
-use data::player_name::PlayerId;
-use data::primitives::{DeckId, GameId, Side};
+use game_data::adventure::TilePosition;
+use game_data::player_name::PlayerId;
+use game_data::primitives::{DeckId, GameId, Side};
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;

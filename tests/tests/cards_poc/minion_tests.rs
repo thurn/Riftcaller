@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use core_ui::icons;
-use data::card_name::CardName;
-use data::primitives::{RoomId, Side};
+use game_data::card_name::CardName;
+use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{ClientRoomLocation, ObjectPositionRaid, PlayerName};
 use test_utils::client_interface::HasText;

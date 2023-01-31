@@ -21,12 +21,12 @@ use std::collections::HashMap;
 use actions::legal_actions;
 use adapters;
 use anyhow::Result;
-use data::card_name::CardName;
-use data::card_state::{CardPosition, CardState};
-use data::game::GameState;
-use data::game_actions::GameAction;
-use data::player_name::PlayerId;
-use data::primitives::{
+use game_data::card_name::CardName;
+use game_data::card_state::{CardPosition, CardState};
+use game_data::game::GameState;
+use game_data::game_actions::GameAction;
+use game_data::player_name::PlayerId;
+use game_data::primitives::{
     ActionCount, CardId, CardType, GameId, ManaValue, PointsValue, RoomId, Side,
 };
 use protos::spelldawn::card_targeting::Targeting;

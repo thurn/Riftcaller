@@ -16,16 +16,16 @@
 
 use anyhow::Result;
 use constants::game_constants;
-use data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequirement};
-use data::card_state::{CardPosition, CardState};
-use data::delegates::{
+use game_data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequirement};
+use game_data::card_state::{CardPosition, CardState};
+use game_data::delegates::{
     AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, AttackValueQuery, BoostCountQuery,
     BreachValueQuery, HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery,
     SanctumAccessCountQuery, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
-use data::game::GameState;
-use data::game_actions::{CardTarget, CardTargetKind};
-use data::primitives::{
+use game_data::game::GameState;
+use game_data::game_actions::{CardTarget, CardTargetKind};
+use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BreachValue, CardId, CardType, HealthValue,
     ItemLocation, ManaValue, RoomId, RoomLocation, ShieldValue, Side,
 };

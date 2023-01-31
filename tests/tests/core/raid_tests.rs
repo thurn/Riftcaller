@@ -14,9 +14,9 @@
 
 use cards_test::test_cards::WEAPON_COST;
 use core_ui::icons;
-use data::card_name::CardName;
-use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
-use data::primitives::{RoomId, Side};
+use game_data::card_name::CardName;
+use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
+use game_data::primitives::{RoomId, Side};
 use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_object_identifier::Id;

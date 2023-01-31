@@ -17,7 +17,7 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
-use data::adventure::TilePosition;
+use game_data::adventure::TilePosition;
 use panel_address::{Panel, PanelAddress};
 
 pub struct ShopPromptPanel {

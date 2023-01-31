@@ -21,7 +21,7 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use data::game_actions::GameAction;
+use game_data::game_actions::GameAction;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 

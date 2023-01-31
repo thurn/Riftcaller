@@ -11,7 +11,7 @@ test = false
 path = "src/decklists.rs"
 
 [dependencies]
-data = { path = "../data", version = "0.0.0" }
+game_data = { path = "../data/game_data", version = "0.0.0" }
 
 anyhow = "1.0.58"
 maplit = "1.0.2"

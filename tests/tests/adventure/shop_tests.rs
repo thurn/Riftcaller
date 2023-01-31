@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use core_ui::icons;
-use data::adventure::{CardChoice, Coins, ShopData, TileEntity};
-use data::card_name::CardName;
-use data::primitives::Side;
+use game_data::adventure::{CardChoice, Coins, ShopData, TileEntity};
+use game_data::card_name::CardName;
+use game_data::primitives::Side;
 use test_utils::client_interface::{self, HasText};
 use test_utils::test_adventure::{TestAdventure, TestConfig, SHOP_ICON};
 

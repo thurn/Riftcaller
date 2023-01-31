@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use anyhow::Result;
-use data::game::{GameState, InternalRaidPhase};
-use data::game_actions::{PromptAction, PromptContext};
-use data::primitives::{CardId, Side};
-use data::utils;
 use fallible_iterator::FallibleIterator;
+use game_data::game::{GameState, InternalRaidPhase};
+use game_data::game_actions::{PromptAction, PromptContext};
+use game_data::primitives::{CardId, Side};
+use game_data::utils;
 
 /// Represents how the current state of a raid should be represented in the user
 /// interface -- with no content, as a sequence of defenders, or by showing

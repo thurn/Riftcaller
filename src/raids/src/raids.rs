@@ -22,10 +22,10 @@ mod defenders;
 mod encounter;
 
 use anyhow::Result;
-use data::game::{GameState, InternalRaidPhase, RaidData, RaidJumpRequest, RoomState};
-use data::game_actions::{GamePrompt, PromptAction};
-use data::primitives::{RaidId, RoomId, Side};
-use data::updates::{GameUpdate, InitiatedBy};
+use game_data::game::{GameState, InternalRaidPhase, RaidData, RaidJumpRequest, RoomState};
+use game_data::game_actions::{GamePrompt, PromptAction};
+use game_data::primitives::{RaidId, RoomId, Side};
+use game_data::updates::{GameUpdate, InitiatedBy};
 use rules::{flags, mutations, queries};
 use tracing::info;
 use with_error::{verify, WithError};

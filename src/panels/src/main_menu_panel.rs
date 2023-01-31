@@ -21,9 +21,9 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::Side;
-use data::user_actions::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
+use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::primitives::Side;
+use game_data::user_actions::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 

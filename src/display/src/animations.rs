@@ -14,13 +14,13 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
-use data::game::GameState;
-use data::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
-use data::special_effects::{
+use game_data::game::GameState;
+use game_data::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
+use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
-use data::updates::{GameUpdate, InitiatedBy, TargetedInteraction};
-use data::utils;
+use game_data::updates::{GameUpdate, InitiatedBy, TargetedInteraction};
+use game_data::utils;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::play_effect_position::EffectPosition;

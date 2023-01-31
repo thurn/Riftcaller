@@ -16,11 +16,11 @@
 
 use std::collections::HashMap;
 
-use data::card_name::CardName;
-use data::deck::Deck;
-use data::player_name::NamedPlayer;
-use data::primitives::Side;
-use data::user_actions::NamedDeck;
+use game_data::card_name::CardName;
+use game_data::deck::Deck;
+use game_data::player_name::NamedPlayer;
+use game_data::primitives::Side;
+use game_data::user_actions::NamedDeck;
 use maplit::hashmap;
 use once_cell::sync::Lazy;
 

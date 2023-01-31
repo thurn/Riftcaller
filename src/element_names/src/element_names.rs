@@ -14,7 +14,7 @@
 
 //! Unique identifiers for UI elements
 
-use data::card_name::CardName;
+use game_data::card_name::CardName;
 use protos::spelldawn::element_selector::Selector;
 use protos::spelldawn::ElementSelector;
 

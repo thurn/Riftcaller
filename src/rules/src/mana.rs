@@ -18,8 +18,8 @@
 use std::cmp;
 
 use anyhow::Result;
-use data::game::{GameState, SpecificRaidMana};
-use data::primitives::{AbilityId, CardId, ManaValue, RaidId, RoomId, Side};
+use game_data::game::{GameState, SpecificRaidMana};
+use game_data::primitives::{AbilityId, CardId, ManaValue, RaidId, RoomId, Side};
 use with_error::{verify, WithError};
 
 /// Identifies possible reasons why a player's mana value would need to be

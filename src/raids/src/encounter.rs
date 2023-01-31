@@ -13,14 +13,14 @@
 // limitations under the License.
 
 use anyhow::Result;
-use data::delegates::{
+use game_data::delegates::{
     EncounterMinionEvent, MinionCombatAbilityEvent, MinionCombatActionsQuery, MinionDefeatedEvent,
     UsedWeapon, UsedWeaponEvent,
 };
-use data::game::{GameState, InternalRaidPhase};
-use data::game_actions::{EncounterAction, PromptAction};
-use data::primitives::{CardId, GameObjectId, Side};
-use data::updates::{GameUpdate, TargetedInteraction};
+use game_data::game::{GameState, InternalRaidPhase};
+use game_data::game_actions::{EncounterAction, PromptAction};
+use game_data::primitives::{CardId, GameObjectId, Side};
+use game_data::updates::{GameUpdate, TargetedInteraction};
 use rules::mana::ManaPurpose;
 use rules::{card_prompt, dispatch, flags, mana, mutations, queries};
 use with_error::{fail, WithError};

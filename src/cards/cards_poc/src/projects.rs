@@ -17,11 +17,11 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
-use data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
-use data::card_name::CardName;
-use data::primitives::{CardType, Rarity, School, Side};
-use data::set_name::SetName;
-use data::text::{Keyword, Sentence};
+use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
+use game_data::card_name::CardName;
+use game_data::primitives::{CardType, Rarity, School, Side};
+use game_data::set_name::SetName;
+use game_data::text::{Keyword, Sentence};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

@@ -15,8 +15,8 @@
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
 use anyhow::Result;
-use data::adventure::{AdventureChoiceScreen, AdventureState, Coins, TileEntity, TilePosition};
-use data::adventure_action::AdventureAction;
+use game_data::adventure::{AdventureChoiceScreen, AdventureState, Coins, TileEntity, TilePosition};
+use game_data::adventure_action::AdventureAction;
 use with_error::{fail, verify};
 
 /// Handles an incoming [AdventureAction] and produces a client response.

@@ -15,15 +15,15 @@
 //! Test cards
 
 use card_helpers::{abilities, text, *};
-use data::card_definition::{
+use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SchemePoints,
     SpecialEffects,
 };
-use data::card_name::CardName;
-use data::primitives::{CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite};
-use data::set_name::SetName;
-use data::special_effects::{Projectile, TimedEffect};
-use data::text::{Keyword, Sentence};
+use game_data::card_name::CardName;
+use game_data::primitives::{CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite};
+use game_data::set_name::SetName;
+use game_data::special_effects::{Projectile, TimedEffect};
+use game_data::text::{Keyword, Sentence};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

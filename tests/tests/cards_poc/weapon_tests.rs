@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use data::card_name::CardName;
-use data::primitives::{Lineage, RoomId, Side};
+use game_data::card_name::CardName;
+use game_data::primitives::{Lineage, RoomId, Side};
 use test_utils::client_interface::HasText;
 use test_utils::*;
 

@@ -19,24 +19,24 @@ pub mod abilities;
 pub mod text_macro;
 
 use anyhow::Result;
-use data::card_definition::{
+use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardStats, Cost, CustomCost, SchemePoints, SpecialEffects,
 };
-use data::card_state::CardPosition;
-use data::delegates::{
+use game_data::card_state::CardPosition;
+use game_data::delegates::{
     AbilityActivated, CardPlayed, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded,
     RaidStart, RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
-use data::game::GameState;
-use data::game_actions::{CardPromptAction, CardTarget};
-use data::primitives::{
+use game_data::game::GameState;
+use game_data::game_actions::{CardPromptAction, CardTarget};
+use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue,
     RaidId, RoomId, Side, TurnNumber,
 };
-use data::special_effects::Projectile;
-use data::text::{AbilityText, Keyword, NumericOperator, TextToken};
-use data::updates::{GameUpdate, InitiatedBy};
-use data::utils;
+use game_data::special_effects::Projectile;
+use game_data::text::{AbilityText, Keyword, NumericOperator, TextToken};
+use game_data::updates::{GameUpdate, InitiatedBy};
+use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{mana, mutations, queries};
 

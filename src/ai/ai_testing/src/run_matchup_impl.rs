@@ -20,9 +20,9 @@ use ai_game_integration::agents;
 use ai_game_integration::state_node::SpelldawnState;
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
-use data::game::{GameConfiguration, GameState};
-use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{GameId, Side};
+use game_data::game::{GameConfiguration, GameState};
+use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]

@@ -17,16 +17,16 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
 use card_helpers::{abilities, text, *};
-use data::card_definition::{
+use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
 };
-use data::card_name::CardName;
-use data::delegates::{Delegate, QueryDelegate};
-use data::primitives::{CardType, Lineage, Rarity, School, Side};
-use data::set_name::SetName;
-use data::special_effects::{Projectile, TimedEffect};
-use data::text::Keyword;
-use data::utils;
+use game_data::card_name::CardName;
+use game_data::delegates::{Delegate, QueryDelegate};
+use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
+use game_data::set_name::SetName;
+use game_data::special_effects::{Projectile, TimedEffect};
+use game_data::text::Keyword;
+use game_data::utils;
 
 pub fn marauders_axe() -> CardDefinition {
     CardDefinition {

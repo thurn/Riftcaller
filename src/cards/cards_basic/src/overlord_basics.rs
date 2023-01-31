@@ -15,13 +15,13 @@
 use assets::rexard_images::RexardPack;
 use assets::{rexard_images, EnvironmentType};
 use card_helpers::{text, *};
-use data::card_definition::{
+use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints, TargetRequirement,
 };
-use data::card_name::CardName;
-use data::primitives::{CardType, Lineage, Rarity, School, Side};
-use data::set_name::SetName;
-use data::text::{DamageWord, Keyword, Sentence, TextToken};
+use game_data::card_name::CardName;
+use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
+use game_data::set_name::SetName;
+use game_data::text::{DamageWord, Keyword, Sentence, TextToken};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 

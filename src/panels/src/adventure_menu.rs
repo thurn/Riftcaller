@@ -14,8 +14,8 @@
 
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use data::adventure_action::AdventureAction;
-use data::user_actions::UserAction;
+use game_data::adventure_action::AdventureAction;
+use game_data::user_actions::UserAction;
 use panel_address::{Panel, PanelAddress};
 
 use crate::button_menu::ButtonMenu;

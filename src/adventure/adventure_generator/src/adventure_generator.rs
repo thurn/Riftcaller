@@ -17,7 +17,7 @@
 pub mod card_generator;
 pub mod mock_adventure;
 
-use data::adventure::{AdventureConfiguration, AdventureState, Coins, TileEntity};
+use game_data::adventure::{AdventureConfiguration, AdventureState, Coins, TileEntity};
 
 pub const STARTING_COINS: Coins = Coins(500);
 

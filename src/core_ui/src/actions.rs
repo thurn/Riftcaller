@@ -15,9 +15,9 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use data::adventure_action::AdventureAction;
-use data::game_actions::{GameAction, PromptAction};
-use data::user_actions::{DebugAction, UserAction};
+use game_data::adventure_action::AdventureAction;
+use game_data::game_actions::{GameAction, PromptAction};
+use game_data::user_actions::{DebugAction, UserAction};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, CommandList, GameCommand, StandardAction};

@@ -16,8 +16,8 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
-use data::game::GameState;
-use data::primitives::{RoomId, Side};
+use game_data::game::GameState;
+use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::{
     ActionTrackerView, CardView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
 };

@@ -13,12 +13,14 @@
 // limitations under the License.
 
 use anyhow::Result;
-use data::card_name::CardName;
-use data::card_state::CardPosition;
-use data::game::{GameState, MulliganDecision};
-use data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
-use data::primitives::{CardId, RoomLocation, Side};
-use data::tutorial_data::{TutorialDisplay, TutorialOpponentAction, TutorialStep, TutorialTrigger};
+use game_data::card_name::CardName;
+use game_data::card_state::CardPosition;
+use game_data::game::{GameState, MulliganDecision};
+use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
+use game_data::primitives::{CardId, RoomLocation, Side};
+use game_data::tutorial_data::{
+    TutorialDisplay, TutorialOpponentAction, TutorialStep, TutorialTrigger,
+};
 use rules::mutations;
 use tracing::{debug, debug_span, info};
 use with_error::{fail, WithError};

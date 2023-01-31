@@ -20,7 +20,7 @@ ai_tree_search = { path = "../src/ai/ai_tree_search", version = "0.0.0" }
 adventure_generator = { path = "../src/adventure/adventure_generator", version = "0.0.0" }
 cards_test = { path = "../src/cards/cards_test", version = "0.0.0" }
 cards_all = { path = "../src/cards/cards_all", version = "0.0.0" }
-data = { path = "../src/data", version = "0.0.0" }
+game_data = { path = "../src/data/game_data", version = "0.0.0" }
 decklists = { path = "../src/decklists", version = "0.0.0" }
 element_names = { path = "../src/element_names", version = "0.0.0" }
 protos = { path = "../src/protos", version = "0.0.0" }

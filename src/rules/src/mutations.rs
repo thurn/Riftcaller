@@ -23,24 +23,24 @@ use std::cmp;
 
 use anyhow::Result;
 use constants::game_constants;
-use data::card_name::CardName;
-use data::card_state::CardState;
+use game_data::card_name::CardName;
+use game_data::card_state::CardState;
 #[allow(unused)] // Used in rustdocs
-use data::card_state::{CardData, CardPosition, CardPositionKind};
-use data::delegates::{
+use game_data::card_state::{CardData, CardPosition, CardPositionKind};
+use game_data::delegates::{
     CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterPlayEvent,
     MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidFailureEvent, RaidOutcome,
     RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
     UnveilProjectEvent,
 };
-use data::game::{GamePhase, GameState, TurnData};
-use data::game_actions::{CardPromptAction, GamePrompt};
-use data::primitives::{
+use game_data::game::{GamePhase, GameState, TurnData};
+use game_data::game_actions::{CardPromptAction, GamePrompt};
+use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
     Side, TurnNumber,
 };
-use data::random;
-use data::updates::GameUpdate;
+use game_data::random;
+use game_data::updates::GameUpdate;
 use tracing::{debug, instrument};
 use with_error::verify;
 

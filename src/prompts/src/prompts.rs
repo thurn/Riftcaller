@@ -16,9 +16,9 @@ use anyhow::Result;
 use core_ui::design::FontSize;
 use core_ui::prelude::*;
 use core_ui::text::Text;
-use data::game::GameState;
-use data::game_actions::{GamePrompt, PromptContext};
-use data::primitives::Side;
+use game_data::game::GameState;
+use game_data::game_actions::{GamePrompt, PromptContext};
+use game_data::primitives::Side;
 use protos::spelldawn::InterfaceMainControls;
 
 use crate::action_buttons;

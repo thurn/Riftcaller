@@ -14,8 +14,8 @@
 
 use adapters::response_builder::{ResponseBuilder, ResponseState};
 use anyhow::Result;
-use data::game::GameState;
-use data::primitives::Side;
+use game_data::game::GameState;
+use game_data::primitives::Side;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{LoadSceneCommand, SceneLoadMode};
 

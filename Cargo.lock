@@ -7,8 +7,8 @@ name = "actions"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "data",
  "enum-iterator",
+ "game_data",
  "raids",
  "rules",
  "tracing",
@@ -20,7 +20,7 @@ name = "adapters"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "data",
+ "game_data",
  "protos",
  "serde_json",
  "with_error",
@@ -37,7 +37,7 @@ name = "adventure_actions"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "data",
+ "game_data",
  "protos",
  "rules",
  "with_error",
@@ -51,9 +51,9 @@ dependencies = [
  "anyhow",
  "constants",
  "core_ui",
- "data",
  "deck_card",
  "element_names",
+ "game_data",
  "panel_address",
  "panels",
  "protos",
@@ -65,8 +65,8 @@ dependencies = [
 name = "adventure_generator"
 version = "0.0.0"
 dependencies = [
- "data",
  "decklists",
+ "game_data",
  "rules",
 ]
 
@@ -108,7 +108,7 @@ dependencies = [
  "ai_monte_carlo",
  "ai_tree_search",
  "anyhow",
- "data",
+ "game_data",
  "rules",
  "with_error",
 ]
@@ -135,8 +135,8 @@ dependencies = [
  "anyhow",
  "cards_all",
  "clap 3.2.16",
- "data",
  "decklists",
+ "game_data",
  "rules",
  "with_error",
 ]
@@ -170,7 +170,7 @@ name = "assets"
 version = "0.0.0"
 dependencies = [
  "core_ui",
- "data",
+ "game_data",
  "protos",
 ]
 
@@ -319,7 +319,7 @@ name = "card_helpers"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "data",
+ "game_data",
  "raids",
  "rules",
 ]
@@ -341,7 +341,7 @@ version = "0.0.0"
 dependencies = [
  "assets",
  "card_helpers",
- "data",
+ "game_data",
  "rules",
  "with_error",
 ]
@@ -363,7 +363,7 @@ version = "0.0.0"
 dependencies = [
  "assets",
  "card_helpers",
- "data",
+ "game_data",
  "rules",
  "with_error",
 ]
@@ -374,7 +374,7 @@ version = "0.0.0"
 dependencies = [
  "assets",
  "card_helpers",
- "data",
+ "game_data",
  "rules",
  "with_error",
 ]
@@ -385,7 +385,7 @@ version = "0.0.0"
 dependencies = [
  "assets",
  "card_helpers",
- "data",
+ "game_data",
  "rules",
 ]
 
@@ -517,8 +517,8 @@ name = "core_ui"
 version = "0.0.0"
 dependencies = [
  "constants",
- "data",
  "element_names",
+ "game_data",
  "protos",
  "serde_json",
 ]
@@ -683,32 +683,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "data"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "clap 3.2.16",
- "convert_case 0.5.0",
- "derive_more",
- "enum-iterator",
- "enum-kinds",
- "fallible-iterator",
- "macros",
- "rand",
- "rand_xoshiro",
- "serde",
- "serde_with",
- "strum_macros",
- "with_error",
-]
-
-[[package]]
 name = "database"
 version = "0.0.0"
 dependencies = [
  "adapters",
  "anyhow",
- "data",
+ "game_data",
  "once_cell",
  "prost",
  "protos",
@@ -725,8 +705,8 @@ dependencies = [
  "adapters",
  "assets",
  "core_ui",
- "data",
  "element_names",
+ "game_data",
  "protos",
  "rules",
  "rules_text",
@@ -740,9 +720,9 @@ dependencies = [
  "anyhow",
  "assets",
  "core_ui",
- "data",
  "deck_card",
  "element_names",
+ "game_data",
  "panel_address",
  "protos",
  "rules",
@@ -755,7 +735,7 @@ name = "decklists"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "data",
+ "game_data",
  "maplit",
  "once_cell",
 ]
@@ -782,8 +762,8 @@ dependencies = [
  "anyhow",
  "assets",
  "core_ui",
- "data",
  "enum-iterator",
+ "game_data",
  "panel_address",
  "panels",
  "prompts",
@@ -804,7 +784,7 @@ checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 name = "element_names"
 version = "0.0.0"
 dependencies = [
- "data",
+ "game_data",
  "protos",
 ]
 
@@ -954,6 +934,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"
 dependencies = [
  "byteorder",
+]
+
+[[package]]
+name = "game_data"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "clap 3.2.16",
+ "convert_case 0.5.0",
+ "derive_more",
+ "enum-iterator",
+ "enum-kinds",
+ "fallible-iterator",
+ "macros",
+ "rand",
+ "rand_xoshiro",
+ "serde",
+ "serde_with",
+ "strum_macros",
+ "with_error",
 ]
 
 [[package]]
@@ -1355,7 +1355,7 @@ name = "panel_address"
 version = "0.0.0"
 dependencies = [
  "core_ui",
- "data",
+ "game_data",
  "protos",
  "serde",
  "serde_json",
@@ -1366,8 +1366,8 @@ name = "panels"
 version = "0.0.0"
 dependencies = [
  "core_ui",
- "data",
  "enum-iterator",
+ "game_data",
  "panel_address",
  "protos",
 ]
@@ -1554,7 +1554,7 @@ dependencies = [
  "adapters",
  "anyhow",
  "core_ui",
- "data",
+ "game_data",
  "protos",
  "rules",
  "with_error",
@@ -1638,8 +1638,8 @@ name = "raids"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "data",
  "fallible-iterator",
+ "game_data",
  "rules",
  "tracing",
  "with_error",
@@ -1760,8 +1760,8 @@ dependencies = [
  "adventure_display",
  "anyhow",
  "core_ui",
- "data",
  "deck_editor",
+ "game_data",
  "panel_address",
  "panels",
  "protos",
@@ -1776,8 +1776,8 @@ dependencies = [
  "anyhow",
  "constants",
  "dashmap",
- "data",
  "enum-iterator",
+ "game_data",
  "once_cell",
  "tracing",
  "with_error",
@@ -1792,8 +1792,8 @@ dependencies = [
  "anyhow",
  "assets",
  "core_ui",
- "data",
  "enum-iterator",
+ "game_data",
  "panel_address",
  "prompts",
  "protos",
@@ -1856,8 +1856,8 @@ version = "0.0.0"
 dependencies = [
  "constants",
  "core_ui",
- "data",
  "element_names",
+ "game_data",
  "panel_address",
  "protos",
 ]
@@ -1946,12 +1946,12 @@ dependencies = [
  "concurrent-queue",
  "core_ui",
  "dashmap",
- "data",
  "database",
  "deck_editor",
  "decklists",
  "display",
  "enum-iterator",
+ "game_data",
  "once_cell",
  "panel_address",
  "prost",
@@ -2111,8 +2111,8 @@ dependencies = [
  "anyhow",
  "cards_all",
  "core_ui",
- "data",
  "database",
+ "game_data",
  "maplit",
  "prost",
  "protos",
@@ -2138,9 +2138,9 @@ dependencies = [
  "cards_test",
  "core_ui",
  "criterion",
- "data",
  "decklists",
  "element_names",
+ "game_data",
  "insta",
  "maplit",
  "protos",
@@ -2553,7 +2553,7 @@ dependencies = [
  "actions",
  "anyhow",
  "core_ui",
- "data",
+ "game_data",
  "once_cell",
  "rules",
  "tracing",

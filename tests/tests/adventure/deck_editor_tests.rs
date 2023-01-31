@@ -14,10 +14,10 @@
 
 use core_ui::icons;
 use core_ui::prelude::Node;
-use data::card_name::CardName;
-use data::deck::Deck;
-use data::primitives::Side;
 use element_names::ElementName;
+use game_data::card_name::CardName;
+use game_data::deck::Deck;
+use game_data::primitives::Side;
 use maplit::hashmap;
 use test_utils::client_interface::{self, HasText};
 use test_utils::test_adventure::{TestAdventure, TestConfig};

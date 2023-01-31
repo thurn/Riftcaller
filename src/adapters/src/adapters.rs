@@ -17,9 +17,9 @@
 pub mod response_builder;
 
 use anyhow::Result;
-use data::adventure::TilePosition;
-use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{
+use game_data::adventure::TilePosition;
+use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::primitives::{
     AbilityId, AbilityIndex, CardId, GameId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
 };
 use protos::spelldawn::game_object_identifier::Id;

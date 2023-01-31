@@ -19,9 +19,9 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
-use data::player_data::PlayerData;
-use data::primitives::DeckId;
-use data::user_actions::DeckEditorAction;
+use game_data::player_data::PlayerData;
+use game_data::primitives::DeckId;
+use game_data::user_actions::DeckEditorAction;
 use panel_address::{DeckEditorData, Panel, PanelAddress};
 use screen_overlay::ScreenOverlay;
 

@@ -17,10 +17,10 @@
 use std::collections::HashMap;
 
 use dashmap::DashSet;
-use data::card_definition::{Ability, CardDefinition};
-use data::card_name::CardName;
-use data::game::GameState;
-use data::primitives::{AbilityId, CardId};
+use game_data::card_definition::{Ability, CardDefinition};
+use game_data::card_name::CardName;
+use game_data::game::GameState;
+use game_data::primitives::{AbilityId, CardId};
 use once_cell::sync::Lazy;
 
 pub mod card_prompt;

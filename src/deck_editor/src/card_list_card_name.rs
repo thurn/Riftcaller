@@ -20,8 +20,8 @@ use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use data::card_name::CardName;
 use deck_card::DeckCard;
+use game_data::card_name::CardName;
 use protos::spelldawn::{
     BackgroundImageAutoSize, FlexAlign, FlexDirection, FlexJustify, FlexPosition, ImageScaleMode,
 };

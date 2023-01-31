@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use core_ui::icons;
-use data::adventure::{Coins, TileEntity};
-use data::primitives::Side;
+use game_data::adventure::{Coins, TileEntity};
+use game_data::primitives::Side;
 use test_utils::client_interface::HasText;
 use test_utils::test_adventure::{TestAdventure, TestConfig, EXPLORE_ICON};
 

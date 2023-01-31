@@ -17,8 +17,8 @@
 pub mod rexard_images;
 
 use core_ui::design::FontColor;
-use data::primitives::{CardType, Lineage, Rarity, School, Side, Sprite};
-use data::special_effects::{
+use game_data::primitives::{CardType, Lineage, Rarity, School, Side, Sprite};
+use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
 use protos::spelldawn::{

@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use cards_test::test_cards::MINION_HEALTH;
-use data::card_name::CardName;
-use data::primitives::{Lineage, Side};
+use game_data::card_name::CardName;
+use game_data::primitives::{Lineage, Side};
 use protos::spelldawn::PlayerName;
 use test_utils::*;
 

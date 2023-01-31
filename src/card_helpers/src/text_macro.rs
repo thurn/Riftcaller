@@ -15,14 +15,14 @@
 //! Macro for building [AbilityText]
 
 #[allow(unused)] // Used in rustdocs
-use data::text::{AbilityText, TextToken};
+use game_data::text::{AbilityText, TextToken};
 
 /// Macro which converts its arguments into an [AbilityText::Text] via
 /// [TextToken::from].
 #[macro_export]
 macro_rules! text {
     ($($x:expr),*) => {
-        data::text::AbilityText::Text(vec! [$(data::text::TextToken::from($x)),*])
+        game_data::text::AbilityText::Text(vec! [$(game_data::text::TextToken::from($x)),*])
     };
     ($($x:expr,)*) => {text![$($x),*]}
 }

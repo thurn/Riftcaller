@@ -17,8 +17,8 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::{icons, style};
-use data::adventure::{Coins, TilePosition};
-use data::adventure_action::AdventureAction;
+use game_data::adventure::{Coins, TilePosition};
+use game_data::adventure_action::AdventureAction;
 use panel_address::{Panel, PanelAddress};
 
 pub struct DraftPromptPanel {

@@ -14,12 +14,12 @@
 
 //! Helpers for defining common card abilities
 
-use data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
-use data::card_state::CardPosition;
-use data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
-use data::game::GameState;
-use data::primitives::{AbilityId, AttackValue, CardId, ManaValue};
-use data::text::{AbilityText, DamageWord, Keyword, RulesTextContext, Sentence, TextToken};
+use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
+use game_data::card_state::CardPosition;
+use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
+use game_data::game::GameState;
+use game_data::primitives::{AbilityId, AttackValue, CardId, ManaValue};
+use game_data::text::{AbilityText, DamageWord, Keyword, RulesTextContext, Sentence, TextToken};
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
 

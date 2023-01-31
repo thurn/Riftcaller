@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use cards_test::test_cards::{ARTIFACT_COST, MANA_STORED, MANA_TAKEN, UNVEIL_COST};
-use data::card_name::CardName;
-use data::game_actions;
-use data::game_actions::GameAction;
-use data::primitives::{RoomId, Side};
+use game_data::card_name::CardName;
+use game_data::game_actions;
+use game_data::game_actions::GameAction;
+use game_data::primitives::{RoomId, Side};
 use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::object_position::Position;

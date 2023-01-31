@@ -26,10 +26,10 @@ use ai_tree_search::minimax::MinimaxAlgorithm;
 use anyhow::Result;
 use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
-use data::game::{GameConfiguration, GameState, MulliganDecision};
-use data::game_actions::{GameAction, PromptAction};
-use data::player_name::{NamedPlayer, PlayerId};
-use data::primitives::{GameId, Side};
+use game_data::game::{GameConfiguration, GameState, MulliganDecision};
+use game_data::game_actions::{GameAction, PromptAction};
+use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};
 
 criterion_group!(

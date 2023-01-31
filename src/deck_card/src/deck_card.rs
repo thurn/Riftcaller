@@ -29,8 +29,8 @@ pub const CARD_HEIGHT: f32 = 36.0;
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
-use data::card_name::CardName;
-use data::text::RulesTextContext;
+use game_data::card_name::CardName;
+use game_data::text::RulesTextContext;
 use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
 use rules_text::card_icons;
 

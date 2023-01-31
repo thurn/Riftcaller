@@ -14,7 +14,7 @@
 
 use ai_core::state_evaluator::StateEvaluator;
 use anyhow::Result;
-use data::primitives::Side;
+use game_data::primitives::Side;
 use rules::mana;
 use rules::mana::ManaPurpose;
 

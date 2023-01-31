@@ -18,10 +18,10 @@
 use adventure_display::adventure_panels;
 use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
-use data::adventure::AdventureState;
-use data::player_data::PlayerData;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
+use game_data::adventure::AdventureState;
+use game_data::player_data::PlayerData;
 use panel_address::{Panel, PanelAddress};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;

@@ -16,11 +16,11 @@
 
 use assets::rexard_images;
 use card_helpers::{text, *};
-use data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement};
-use data::card_name::CardName;
-use data::delegates::{Delegate, QueryDelegate};
-use data::primitives::{CardType, Rarity, RoomId, School, Side};
-use data::set_name::SetName;
+use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement};
+use game_data::card_name::CardName;
+use game_data::delegates::{Delegate, QueryDelegate};
+use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
+use game_data::set_name::SetName;
 use rules::{flags, mana, mutations};
 
 pub fn meditation() -> CardDefinition {

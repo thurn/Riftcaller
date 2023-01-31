@@ -15,11 +15,11 @@
 use std::collections::HashMap;
 
 use anyhow::Result;
-use data::game::GameState;
-use data::player_data::PlayerData;
-use data::player_name::PlayerId;
-use data::primitives::GameId;
 use database::Database;
+use game_data::game::GameState;
+use game_data::player_data::PlayerData;
+use game_data::player_name::PlayerId;
+use game_data::primitives::GameId;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::PlayerIdentifier;
 

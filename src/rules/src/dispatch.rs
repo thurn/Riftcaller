@@ -18,10 +18,10 @@
 use std::fmt::Debug;
 
 use anyhow::Result;
-use data::card_definition::CardDefinition;
-use data::delegates::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
-use data::game::GameState;
-use data::primitives::{AbilityId, CardId};
+use game_data::card_definition::CardDefinition;
+use game_data::delegates::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
+use game_data::game::GameState;
+use game_data::primitives::{AbilityId, CardId};
 
 /// Adds a [DelegateCache] for this game in order to improve lookup performance.
 pub fn populate_delegate_cache(game: &mut GameState) {
@@ -72,7 +72,7 @@ pub fn remove_card_from_delegate_cache(
 }
 
 /// Called when a game event occurs, invokes each registered
-/// [data::delegates::Delegate] for this event to mutate the [GameState]
+/// `Delegate` for this event to mutate the [GameState]
 /// appropriately.
 pub fn invoke_event<D: Debug, E: EventData<D>>(game: &mut GameState, event: E) -> Result<()> {
     let count = game.delegate_cache.delegate_count(event.kind());
@@ -90,7 +90,7 @@ pub fn invoke_event<D: Debug, E: EventData<D>>(game: &mut GameState, event: E) -
 }
 
 /// Called when game state information is needed. Invokes each registered
-/// [data::delegates::Delegate] for this query and allows them to intercept &
+/// `Delegate` for this query and allows them to intercept &
 /// transform the final result.
 pub fn perform_query<D: Debug, R: Debug, E: QueryData<D, R>>(
     game: &GameState,
