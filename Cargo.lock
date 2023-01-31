@@ -39,7 +39,6 @@ version = "0.0.0"
 dependencies = [
  "adventure_data",
  "anyhow",
- "game_data",
  "with_error",
 ]
 
@@ -48,19 +47,12 @@ name = "adventure_data"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "clap 3.2.16",
- "convert_case 0.5.0",
  "derive_more",
- "enum-iterator",
- "enum-kinds",
- "fallible-iterator",
  "game_data",
- "macros",
  "rand",
  "rand_xoshiro",
  "serde",
  "serde_with",
- "strum_macros",
  "with_error",
 ]
 
@@ -74,7 +66,6 @@ dependencies = [
  "core_ui",
  "deck_card",
  "element_names",
- "game_data",
  "panel_address",
  "panels",
  "player_data",
@@ -966,7 +957,6 @@ dependencies = [
  "anyhow",
  "clap 3.2.16",
  "convert_case 0.5.0",
- "derive_more",
  "enum-iterator",
  "enum-kinds",
  "fallible-iterator",
@@ -1800,7 +1790,6 @@ dependencies = [
  "adventure_display",
  "anyhow",
  "deck_editor",
- "game_data",
  "panel_address",
  "panels",
  "player_data",
@@ -2617,21 +2606,8 @@ name = "user_action_data"
 version = "0.0.0"
 dependencies = [
  "adventure_data",
- "anyhow",
- "clap 3.2.16",
- "convert_case 0.5.0",
- "derive_more",
- "enum-iterator",
- "enum-kinds",
- "fallible-iterator",
  "game_data",
- "macros",
- "rand",
- "rand_xoshiro",
  "serde",
- "serde_with",
- "strum_macros",
- "with_error",
 ]
 
 [[package]]
