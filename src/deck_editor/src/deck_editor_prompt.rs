@@ -19,10 +19,10 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
-use game_data::player_data::PlayerData;
 use game_data::primitives::DeckId;
 use game_data::user_actions::DeckEditorAction;
 use panel_address::{DeckEditorData, Panel, PanelAddress};
+use player_data::PlayerData;
 use screen_overlay::ScreenOverlay;
 
 pub struct DeckEditorPromptPanel<'a> {

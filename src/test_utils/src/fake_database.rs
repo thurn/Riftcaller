@@ -17,9 +17,9 @@ use std::collections::HashMap;
 use anyhow::Result;
 use database::Database;
 use game_data::game::GameState;
-use game_data::player_data::PlayerData;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
+use player_data::PlayerData;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::PlayerIdentifier;
 

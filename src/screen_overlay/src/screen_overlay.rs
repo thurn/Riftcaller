@@ -23,10 +23,10 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use game_data::player_data::{PlayerData, PlayerStatus};
 use game_data::primitives::DeckId;
 use game_data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PanelAddress};
+use player_data::{PlayerData, PlayerStatus};
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 
 pub struct ScreenOverlay<'a> {

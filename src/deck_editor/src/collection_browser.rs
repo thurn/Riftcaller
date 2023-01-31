@@ -31,10 +31,10 @@ use deck_card::{CardHeight, DeckCard};
 use element_names::{CurrentDraggable, TargetName};
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
-use game_data::player_data::PlayerData;
 use game_data::primitives::Side;
 use game_data::user_actions::DeckEditorAction;
 use panel_address::CollectionBrowserFilters;
+use player_data::PlayerData;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition};
 
 use crate::card_list;

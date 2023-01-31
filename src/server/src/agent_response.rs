@@ -24,7 +24,6 @@ use concurrent_queue::ConcurrentQueue;
 use database::Database;
 use game_data::game::GameState;
 use game_data::game_actions::GameAction;
-use game_data::player_data;
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
 use once_cell::sync::Lazy;

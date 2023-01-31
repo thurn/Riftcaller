@@ -15,7 +15,6 @@
 use core_ui::actions::InterfaceAction;
 use game_data::game::MulliganDecision;
 use game_data::game_actions::{GameAction, PromptAction};
-use game_data::player_data::PlayerData;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Side};
 use game_data::tutorial_data::TutorialData;
@@ -24,6 +23,7 @@ use game_data::user_actions::{
 };
 use insta::assert_snapshot;
 use maplit::hashmap;
+use player_data::PlayerData;
 use protos::spelldawn::PlayerName;
 use test_utils::client::TestSession;
 use test_utils::client_interface::HasText;

@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::player_data::PlayerData;
 use game_data::tutorial_data::TutorialMessageKey;
 use game_data::user_actions::DeckEditorAction;
+use player_data::PlayerData;
 use with_error::{fail, verify, WithError};
 
 pub fn handle(player: &mut PlayerData, action: DeckEditorAction) -> Result<()> {

@@ -21,9 +21,9 @@ use core_ui::prelude::*;
 use core_ui::{icons, style};
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
-use game_data::player_data::PlayerData;
 use game_data::primitives::DeckId;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
+use player_data::PlayerData;
 use protos::spelldawn::FlexJustify;
 use screen_overlay::ScreenOverlay;
 

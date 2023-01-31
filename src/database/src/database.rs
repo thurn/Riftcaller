@@ -18,10 +18,10 @@ use std::sync::Mutex;
 
 use anyhow::Result;
 use game_data::game::GameState;
-use game_data::player_data::PlayerData;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
 use once_cell::sync::Lazy;
+use player_data::PlayerData;
 use prost::Message;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::PlayerIdentifier;

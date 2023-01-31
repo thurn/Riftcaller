@@ -38,7 +38,6 @@ use game_data::deck::Deck;
 use game_data::game::{
     GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData,
 };
-use game_data::player_data::{PlayerData, PlayerStatus};
 use game_data::player_name::PlayerId;
 use game_data::primitives::{
     ActionCount, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue, PointsValue, RaidId,
@@ -46,6 +45,7 @@ use game_data::primitives::{
 };
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
+use player_data::{PlayerData, PlayerStatus};
 use prost::Message;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{

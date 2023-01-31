@@ -23,7 +23,7 @@ use core_ui::prelude::*;
 use core_ui::{icons, style};
 use game_data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
 use game_data::adventure_action::AdventureAction;
-use game_data::player_data::PlayerData;
+use player_data::PlayerData;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::{Panel, PanelAddress};
