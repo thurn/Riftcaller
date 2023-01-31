@@ -14,8 +14,8 @@
 
 use adventure_data::adventure::{AdventureConfiguration, CardChoice, Coins, DraftData, ShopData};
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::primitives::{Rarity, Side};
-use game_data::set_name::SetName;
 
 /// Generates options for drafting a card during an adventure
 pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
@@ -48,7 +48,7 @@ pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
 fn common_cards(side: Side) -> impl Iterator<Item = CardName> {
     rules::all_cards()
         .filter(move |definition| {
-            definition.sets.contains(&SetName::ProofOfConcept)
+            definition.sets.contains(&CardSetName::ProofOfConcept)
                 && definition.rarity == Rarity::Common
                 && definition.side == side
         })

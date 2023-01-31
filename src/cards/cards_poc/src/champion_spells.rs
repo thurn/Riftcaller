@@ -16,17 +16,19 @@
 
 use assets::rexard_images;
 use card_helpers::{text, *};
-use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement};
+use game_data::card_definition::{
+    Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement,
+};
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
-use game_data::set_name::SetName;
 use rules::{flags, mana, mutations};
 
 pub fn meditation() -> CardDefinition {
     CardDefinition {
         name: CardName::Meditation,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_98"),
         card_type: CardType::ChampionSpell,
@@ -47,7 +49,7 @@ pub fn meditation() -> CardDefinition {
 pub fn coup_de_grace() -> CardDefinition {
     CardDefinition {
         name: CardName::CoupDeGrace,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(0),
         image: rexard_images::spell(1, "SpellBook01_76"),
         card_type: CardType::ChampionSpell,
@@ -82,7 +84,7 @@ pub fn coup_de_grace() -> CardDefinition {
 pub fn charged_strike() -> CardDefinition {
     CardDefinition {
         name: CardName::ChargedStrike,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_67"),
         card_type: CardType::ChampionSpell,
@@ -109,7 +111,7 @@ pub fn charged_strike() -> CardDefinition {
 pub fn stealth_mission() -> CardDefinition {
     CardDefinition {
         name: CardName::StealthMission,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_89"),
         card_type: CardType::ChampionSpell,
@@ -150,7 +152,7 @@ pub fn stealth_mission() -> CardDefinition {
 pub fn preparation() -> CardDefinition {
     CardDefinition {
         name: CardName::Preparation,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_79"),
         card_type: CardType::ChampionSpell,

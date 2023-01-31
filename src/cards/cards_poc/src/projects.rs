@@ -19,8 +19,8 @@ use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::set_name::SetName;
 use game_data::text::{Keyword, Sentence};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
@@ -28,7 +28,7 @@ use rules::mutations::OnZeroStored;
 pub fn gemcarver() -> CardDefinition {
     CardDefinition {
         name: CardName::Gemcarver,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_30_b"),
         card_type: CardType::Project,
@@ -67,7 +67,7 @@ pub fn gemcarver() -> CardDefinition {
 pub fn spike_trap() -> CardDefinition {
     CardDefinition {
         name: CardName::SpikeTrap,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_45_b"),
         card_type: CardType::Project,

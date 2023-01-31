@@ -18,14 +18,14 @@ use assets::rexard_images;
 use card_helpers::{text, *};
 use game_data::card_definition::{CardConfig, CardDefinition, TargetRequirement};
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::set_name::SetName;
 use rules::{flags, mana, mutations};
 
 pub fn overwhelming_power() -> CardDefinition {
     CardDefinition {
         name: CardName::OverwhelmingPower,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(10),
         image: rexard_images::spell(1, "SpellBook01_92"),
         card_type: CardType::OverlordSpell,
@@ -46,7 +46,7 @@ pub fn overwhelming_power() -> CardDefinition {
 pub fn forced_march() -> CardDefinition {
     CardDefinition {
         name: CardName::ForcedMarch,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(1),
         image: rexard_images::spell(3, "SpellBook03_04"),
         card_type: CardType::OverlordSpell,

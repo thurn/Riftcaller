@@ -19,9 +19,9 @@ use assets::rexard_images::RexardPack;
 use card_helpers::{text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, SchemePoints};
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::set_name::SetName;
 use game_data::text::Keyword;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
@@ -29,7 +29,7 @@ use rules::{mana, mutations, queries};
 pub fn gold_mine() -> CardDefinition {
     CardDefinition {
         name: CardName::GoldMine,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: scheme_cost(),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_08_b"),
         card_type: CardType::Scheme,
@@ -54,7 +54,7 @@ pub fn gold_mine() -> CardDefinition {
 pub fn activate_reinforcements() -> CardDefinition {
     CardDefinition {
         name: CardName::ActivateReinforcements,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: scheme_cost(),
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::Scheme,
@@ -88,7 +88,7 @@ pub fn activate_reinforcements() -> CardDefinition {
 pub fn research_project() -> CardDefinition {
     CardDefinition {
         name: CardName::ResearchProject,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: scheme_cost(),
         image: rexard_images::spell(1, "SpellBook01_03"),
         card_type: CardType::Scheme,

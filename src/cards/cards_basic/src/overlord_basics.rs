@@ -19,8 +19,8 @@ use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints, TargetRequirement,
 };
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
-use game_data::set_name::SetName;
 use game_data::text::{DamageWord, Keyword, Sentence, TextToken};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
@@ -28,7 +28,7 @@ use rules::{mana, mutations};
 pub fn basic_overlord_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::BasicOverlordLeader,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: leader_cost(),
         image: assets::fantasy_class_image("Warlock", "Male"),
         card_type: CardType::Leader,
@@ -50,7 +50,7 @@ pub fn basic_overlord_leader() -> CardDefinition {
 pub fn conspire() -> CardDefinition {
     CardDefinition {
         name: CardName::Conspire,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: scheme_cost(),
         image: rexard_images::spell(2, "SpellBook02_17"),
         card_type: CardType::Scheme,
@@ -68,7 +68,7 @@ pub fn conspire() -> CardDefinition {
 pub fn devise() -> CardDefinition {
     CardDefinition {
         name: CardName::Devise,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: scheme_cost(),
         image: rexard_images::spell(2, "SpellBook02_27"),
         card_type: CardType::Scheme,
@@ -86,7 +86,7 @@ pub fn devise() -> CardDefinition {
 pub fn machinate() -> CardDefinition {
     CardDefinition {
         name: CardName::Machinate,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: scheme_cost(),
         image: rexard_images::spell(2, "SpellBook02_29"),
         card_type: CardType::Scheme,
@@ -104,7 +104,7 @@ pub fn machinate() -> CardDefinition {
 pub fn gathering_dark() -> CardDefinition {
     CardDefinition {
         name: CardName::GatheringDark,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(5),
         image: rexard_images::spell(1, "SpellBook01_88"),
         card_type: CardType::OverlordSpell,
@@ -125,7 +125,7 @@ pub fn gathering_dark() -> CardDefinition {
 pub fn coinery() -> CardDefinition {
     CardDefinition {
         name: CardName::Coinery,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(2),
         image: rexard_images::get(RexardPack::LootIcons, "coins_b_03"),
         card_type: CardType::Project,
@@ -161,7 +161,7 @@ pub fn coinery() -> CardDefinition {
 pub fn leyline() -> CardDefinition {
     CardDefinition {
         name: CardName::Leyline,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(2),
         image: rexard_images::spell(2, "SpellBook02_78"),
         card_type: CardType::Project,
@@ -185,7 +185,7 @@ pub fn leyline() -> CardDefinition {
 pub fn ore_refinery() -> CardDefinition {
     CardDefinition {
         name: CardName::OreRefinery,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(4),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_06_b"),
         card_type: CardType::Project,
@@ -217,7 +217,7 @@ pub fn ore_refinery() -> CardDefinition {
 pub fn crab() -> CardDefinition {
     CardDefinition {
         name: CardName::Crab,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(4),
         image: rexard_images::get(RexardPack::MonstersAvatars, "64"),
         card_type: CardType::Minion,
@@ -236,7 +236,7 @@ pub fn crab() -> CardDefinition {
 pub fn fire_goblin() -> CardDefinition {
     CardDefinition {
         name: CardName::FireGoblin,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(1),
         image: rexard_images::get(RexardPack::MonstersAvatars, "70"),
         card_type: CardType::Minion,
@@ -269,7 +269,7 @@ pub fn fire_goblin() -> CardDefinition {
 pub fn toucan() -> CardDefinition {
     CardDefinition {
         name: CardName::Toucan,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(3),
         image: rexard_images::get(RexardPack::MonstersAvatars, "65"),
         card_type: CardType::Minion,
@@ -288,7 +288,7 @@ pub fn toucan() -> CardDefinition {
 pub fn frog() -> CardDefinition {
     CardDefinition {
         name: CardName::Frog,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(4),
         image: rexard_images::get(RexardPack::MonstersAvatars, "66"),
         card_type: CardType::Minion,
@@ -307,7 +307,7 @@ pub fn frog() -> CardDefinition {
 pub fn captain() -> CardDefinition {
     CardDefinition {
         name: CardName::Captain,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(3),
         image: rexard_images::get(RexardPack::MonstersAvatars, "103"),
         card_type: CardType::Minion,
@@ -326,7 +326,7 @@ pub fn captain() -> CardDefinition {
 pub fn scout() -> CardDefinition {
     CardDefinition {
         name: CardName::Scout,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(5),
         image: rexard_images::get(RexardPack::MonstersAvatars, "19"),
         card_type: CardType::Minion,

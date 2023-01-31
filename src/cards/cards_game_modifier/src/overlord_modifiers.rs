@@ -16,14 +16,14 @@ use assets::rexard_images;
 use card_helpers::{text, *};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::set_name::SetName;
 
 fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
     CardDefinition {
         name,
-        sets: vec![SetName::TutorialEffects],
+        sets: vec![CardSetName::TutorialEffects],
         cost: Cost::default(),
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::GameModifier,

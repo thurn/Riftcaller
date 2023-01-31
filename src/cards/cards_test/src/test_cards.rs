@@ -20,8 +20,10 @@ use game_data::card_definition::{
     SpecialEffects,
 };
 use game_data::card_name::CardName;
-use game_data::primitives::{CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite};
-use game_data::set_name::SetName;
+use game_data::card_set_name::CardSetName;
+use game_data::primitives::{
+    CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite,
+};
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::{Keyword, Sentence};
 use rules::mutations;
@@ -39,7 +41,7 @@ pub const TEST_LINEAGE: Lineage = Lineage::Infernal;
 pub fn test_overlord_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TestOverlordLeader,
-        sets: vec![SetName::Test],
+        sets: vec![CardSetName::Test],
         cost: leader_cost(),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/3.png"),
         card_type: CardType::Leader,
@@ -54,7 +56,7 @@ pub fn test_overlord_leader() -> CardDefinition {
 pub fn test_champion_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TestChampionLeader,
-        sets: vec![SetName::Test],
+        sets: vec![CardSetName::Test],
         cost: leader_cost(),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/2.png"),
         card_type: CardType::Leader,

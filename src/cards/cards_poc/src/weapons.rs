@@ -21,9 +21,9 @@ use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
 };
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
-use game_data::set_name::SetName;
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::Keyword;
 use game_data::utils;
@@ -31,7 +31,7 @@ use game_data::utils;
 pub fn marauders_axe() -> CardDefinition {
     CardDefinition {
         name: CardName::MaraudersAxe,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(5),
         image: rexard_images::weapon(RexardWeaponType::Axes, "a_n_b_01"),
         card_type: CardType::Weapon,
@@ -81,7 +81,7 @@ pub fn marauders_axe() -> CardDefinition {
 pub fn keen_halberd() -> CardDefinition {
     CardDefinition {
         name: CardName::KeenHalberd,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(3),
         image: rexard_images::weapon(RexardWeaponType::Polearms, "sp_b_04"),
         card_type: CardType::Weapon,
@@ -106,7 +106,7 @@ pub fn keen_halberd() -> CardDefinition {
 pub fn bow_of_the_alliance() -> CardDefinition {
     CardDefinition {
         name: CardName::BowOfTheAlliance,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(3),
         image: rexard_images::weapon(RexardWeaponType::Bows, "b_b_01"),
         card_type: CardType::Weapon,

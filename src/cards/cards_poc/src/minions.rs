@@ -19,12 +19,12 @@ use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game::RaidJumpRequest;
 use game_data::game_actions::CardPromptAction;
 use game_data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
-use game_data::set_name::SetName;
 use game_data::text::{DamageWord, Keyword};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
@@ -34,7 +34,7 @@ use with_error::WithError;
 pub fn time_golem() -> CardDefinition {
     CardDefinition {
         name: CardName::TimeGolem,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MonstersAvatars, "10"),
         card_type: CardType::Minion,
@@ -75,7 +75,7 @@ pub fn time_golem() -> CardDefinition {
 pub fn temporal_stalker() -> CardDefinition {
     CardDefinition {
         name: CardName::TemporalStalker,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(6),
         image: rexard_images::get(RexardPack::MonstersAvatars, "87"),
         card_type: CardType::Minion,
@@ -125,7 +125,7 @@ pub fn temporal_stalker() -> CardDefinition {
 pub fn shadow_lurker() -> CardDefinition {
     CardDefinition {
         name: CardName::ShadowLurker,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(3),
         image: rexard_images::get(RexardPack::MonstersAvatars, "80"),
         card_type: CardType::Minion,
@@ -153,7 +153,7 @@ pub fn shadow_lurker() -> CardDefinition {
 pub fn sphinx_of_winters_breath() -> CardDefinition {
     CardDefinition {
         name: CardName::SphinxOfWintersBreath,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MonstersAvatars, "17"),
         card_type: CardType::Minion,
@@ -192,7 +192,7 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
 pub fn bridge_troll() -> CardDefinition {
     CardDefinition {
         name: CardName::BridgeTroll,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MonstersAvatars, "29"),
         card_type: CardType::Minion,
@@ -228,7 +228,7 @@ pub fn bridge_troll() -> CardDefinition {
 pub fn stormcaller() -> CardDefinition {
     CardDefinition {
         name: CardName::Stormcaller,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(4),
         image: rexard_images::get(RexardPack::MonstersAvatars, "53"),
         card_type: CardType::Minion,

@@ -22,9 +22,9 @@ use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
 };
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::set_name::SetName;
 use game_data::text::{Keyword, Sentence};
 use game_data::utils;
 use rules::mutations;
@@ -33,7 +33,7 @@ use rules::mutations::OnZeroStored;
 pub fn invisibility_ring() -> CardDefinition {
     CardDefinition {
         name: CardName::InvisibilityRing,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(2),
         image: rexard_images::get(RexardPack::JeweleryRings, "rn_b_03"),
         card_type: CardType::Artifact,
@@ -59,7 +59,7 @@ pub fn invisibility_ring() -> CardDefinition {
 pub fn accumulator() -> CardDefinition {
     CardDefinition {
         name: CardName::Accumulator,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(3),
         image: rexard_images::get(RexardPack::JeweleryNecklaces, "07_ob"),
         card_type: CardType::Artifact,
@@ -92,7 +92,7 @@ pub fn accumulator() -> CardDefinition {
 pub fn mage_gloves() -> CardDefinition {
     CardDefinition {
         name: CardName::MageGloves,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(5),
         image: rexard_images::artifact(RexardArtifactType::Gloves, "gloves_20"),
         card_type: CardType::Artifact,
@@ -134,7 +134,7 @@ pub fn mage_gloves() -> CardDefinition {
 pub fn magical_resonator() -> CardDefinition {
     CardDefinition {
         name: CardName::MagicalResonator,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(1),
         image: rexard_images::artifact(RexardArtifactType::Bracers, "bracers_2"),
         card_type: CardType::Artifact,
@@ -166,7 +166,7 @@ pub fn magical_resonator() -> CardDefinition {
 pub fn dark_grimoire() -> CardDefinition {
     CardDefinition {
         name: CardName::DarkGrimoire,
-        sets: vec![SetName::ProofOfConcept],
+        sets: vec![CardSetName::ProofOfConcept],
         cost: cost(3),
         image: rexard_images::get(RexardPack::MagicItems, "book_06_b"),
         card_type: CardType::Artifact,

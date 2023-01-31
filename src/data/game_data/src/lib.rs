@@ -17,6 +17,7 @@
 pub mod agent_definition;
 pub mod card_definition;
 pub mod card_name;
+pub mod card_set_name;
 pub mod card_state;
 pub mod deck;
 pub mod delegates;
@@ -25,7 +26,6 @@ pub mod game_actions;
 pub mod player_name;
 pub mod primitives;
 pub mod random;
-pub mod set_name;
 pub mod special_effects;
 pub mod text;
 pub mod tutorial_data;

@@ -24,6 +24,7 @@ use anyhow::Result;
 use enum_kinds::EnumKind;
 
 use crate::card_name::CardName;
+use crate::card_set_name::CardSetName;
 use crate::delegates::Delegate;
 use crate::game::GameState;
 use crate::primitives::{
@@ -31,7 +32,6 @@ use crate::primitives::{
     HealthValue, LevelValue, Lineage, ManaValue, PointsValue, Rarity, RoomId, School, ShieldValue,
     Side, Sprite,
 };
-use crate::set_name::SetName;
 use crate::special_effects::{Projectile, TimedEffect};
 use crate::text::AbilityText;
 
@@ -193,7 +193,7 @@ pub struct CardConfig {
 #[derive(Debug)]
 pub struct CardDefinition {
     pub name: CardName,
-    pub sets: Vec<SetName>,
+    pub sets: Vec<CardSetName>,
     pub cost: Cost<CardId>,
     pub image: Sprite,
     pub card_type: CardType,

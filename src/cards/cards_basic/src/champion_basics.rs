@@ -20,8 +20,8 @@ use game_data::card_definition::{
     TargetRequirement,
 };
 use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
-use game_data::set_name::SetName;
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::{Keyword, Sentence};
 use rules::mutations::OnZeroStored;
@@ -30,7 +30,7 @@ use rules::{mana, mutations};
 pub fn basic_champion_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::BasicChampionLeader,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: leader_cost(),
         image: assets::fantasy_class_image("Priest", "Female"),
         card_type: CardType::Leader,
@@ -52,7 +52,7 @@ pub fn basic_champion_leader() -> CardDefinition {
 pub fn arcane_recovery() -> CardDefinition {
     CardDefinition {
         name: CardName::ArcaneRecovery,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(5),
         image: rexard_images::spell(1, "SpellBook01_24"),
         card_type: CardType::ChampionSpell,
@@ -73,7 +73,7 @@ pub fn arcane_recovery() -> CardDefinition {
 pub fn eldritch_surge() -> CardDefinition {
     CardDefinition {
         name: CardName::EldritchSurge,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(0),
         image: rexard_images::spell(1, "SpellBook01_56"),
         card_type: CardType::ChampionSpell,
@@ -94,7 +94,7 @@ pub fn eldritch_surge() -> CardDefinition {
 pub fn lodestone() -> CardDefinition {
     CardDefinition {
         name: CardName::Lodestone,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(1),
         image: rexard_images::get(RexardPack::MagicItems, "orb_04_b"),
         card_type: CardType::Artifact,
@@ -112,7 +112,7 @@ pub fn lodestone() -> CardDefinition {
 pub fn mana_battery() -> CardDefinition {
     CardDefinition {
         name: CardName::ManaBattery,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(0),
         image: rexard_images::get(RexardPack::MagicItems, "artifact_11_b"),
         card_type: CardType::Artifact,
@@ -145,7 +145,7 @@ pub fn mana_battery() -> CardDefinition {
 pub fn contemplate() -> CardDefinition {
     CardDefinition {
         name: CardName::Contemplate,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(0),
         image: rexard_images::spell(2, "SpellBook02_01"),
         card_type: CardType::ChampionSpell,
@@ -167,7 +167,7 @@ pub fn contemplate() -> CardDefinition {
 pub fn ancestral_knowledge() -> CardDefinition {
     CardDefinition {
         name: CardName::AncestralKnowledge,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(1),
         image: rexard_images::spell(3, "SpellBook03_46"),
         card_type: CardType::ChampionSpell,
@@ -188,7 +188,7 @@ pub fn ancestral_knowledge() -> CardDefinition {
 pub fn simple_blade() -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleBlade,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(4),
         image: rexard_images::weapon(RexardWeaponType::Swords, "swnb_01"),
         card_type: CardType::Weapon,
@@ -212,7 +212,7 @@ pub fn simple_blade() -> CardDefinition {
 pub fn simple_axe() -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleAxe,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(4),
         image: rexard_images::weapon(RexardWeaponType::Axes, "a_n_b_01"),
         card_type: CardType::Weapon,
@@ -239,7 +239,7 @@ pub fn simple_axe() -> CardDefinition {
 pub fn simple_bow() -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleBow,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(0),
         image: rexard_images::weapon(RexardWeaponType::Bows, "b_b_02"),
         card_type: CardType::Weapon,
@@ -263,7 +263,7 @@ pub fn simple_bow() -> CardDefinition {
 pub fn simple_club() -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleClub,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(2),
         image: rexard_images::weapon(RexardWeaponType::Clubs, "bl_b_07"),
         card_type: CardType::Weapon,
@@ -287,7 +287,7 @@ pub fn simple_club() -> CardDefinition {
 pub fn simple_hammer() -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleHammer,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(3),
         image: rexard_images::weapon(RexardWeaponType::Hammers, "hmmr_f_b_01"),
         card_type: CardType::Weapon,
@@ -311,7 +311,7 @@ pub fn simple_hammer() -> CardDefinition {
 pub fn simple_spear() -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleSpear,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(4),
         image: rexard_images::weapon(RexardWeaponType::Polearms, "sp_b_08"),
         card_type: CardType::Weapon,
@@ -335,7 +335,7 @@ pub fn simple_spear() -> CardDefinition {
 pub fn ethereal_blade() -> CardDefinition {
     CardDefinition {
         name: CardName::EtherealBlade,
-        sets: vec![SetName::Basics],
+        sets: vec![CardSetName::Basics],
         cost: cost(1),
         image: rexard_images::weapon(RexardWeaponType::Swords, "sv_b_01"),
         card_type: CardType::Weapon,

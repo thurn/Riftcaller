@@ -18,7 +18,7 @@ use strum_macros::Display;
 
 /// Names for sets of cards. Each card may belong to any number of sets.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize, Sequence)]
-pub enum SetName {
+pub enum CardSetName {
     Test,
     ProofOfConcept,
     TutorialEffects,
