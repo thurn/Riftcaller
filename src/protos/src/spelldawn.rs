@@ -967,9 +967,6 @@ pub struct ShowArrowBubble {
     /// Where to display the arrow bubble
     #[prost(message, optional, tag = "9")]
     pub anchor: ::core::option::Option<ArrowBubbleAnchor>,
-    /// Whether this bubble should be removed when a user action is taken.
-    #[prost(bool, tag = "10")]
-    pub clear_on_action: bool,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ShowToast {
@@ -984,9 +981,6 @@ pub struct ShowToast {
     /// will remain permanently.
     #[prost(message, optional, tag = "3")]
     pub hide_time: ::core::option::Option<TimeValue>,
-    /// Whether this toast should be removed when a user action is taken.
-    #[prost(bool, tag = "4")]
-    pub clear_on_action: bool,
 }
 /// Displays a tutorial UI element to the user when the user is idle for a fixed
 /// time period.

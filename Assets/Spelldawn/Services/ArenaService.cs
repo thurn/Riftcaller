@@ -133,6 +133,7 @@ namespace Spelldawn.Services
     {
       var room = FindRoom(command.RoomId).transform;
       var leaderCard = _registry.LeaderCardForPlayer(command.Initiator).transform;
+      
       yield return TweenUtils.Sequence("RoomVisit")
         .Append(leaderCard
           .DOMove(room.position, 0.3f).SetEase(Ease.OutSine))

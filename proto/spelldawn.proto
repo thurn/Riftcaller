@@ -1046,9 +1046,6 @@ message ShowArrowBubble {
 
     // Where to display the arrow bubble
     ArrowBubbleAnchor anchor = 9;
-
-    // Whether this bubble should be removed when a user action is taken.
-    bool clear_on_action = 10;
 }
 
 message ShowToast {
@@ -1062,9 +1059,6 @@ message ShowToast {
     // Time before the popup should be hidden automatically. If not specified,
     // will remain permanently.
     TimeValue hide_time = 3;
-
-    // Whether this toast should be removed when a user action is taken.
-    bool clear_on_action = 4;
 }
 
 // Displays a tutorial UI element to the user when the user is idle for a fixed

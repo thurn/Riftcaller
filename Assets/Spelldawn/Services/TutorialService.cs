@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using DG.Tweening;
 using Spelldawn.Game;
 using Spelldawn.Masonry;
@@ -32,22 +32,17 @@ namespace Spelldawn.Services
     [SerializeField] Registry _registry = null!;
     [SerializeField] ArrowBubble _arrowBubblePrefab = null!;
 
+    [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
     sealed record EffectKey(
       TutorialEffect.TutorialEffectTypeOneofCase EffectType,
-      ArrowBubbleAnchor.BubbleAnchorOneofCase? Anchor = null);
+      ArrowBubbleAnchor? Anchor = null);
 
     sealed class EffectData
     {
-      public bool ClearOnAction { get; private set; }
       readonly List<Sequence> _sequences = new();
       readonly List<GameObject> _gameObjects = new();
       readonly List<VisualElement> _elements = new();
 
-      public void AddClearOnAction(bool clearOnAction)
-      {
-        ClearOnAction |= clearOnAction;
-      }
-      
       public void AddSequence(Sequence sequence)
       {
         _sequences.Add(sequence);
@@ -65,7 +60,6 @@ namespace Spelldawn.Services
 
       public void Merge(EffectData other)
       {
-        ClearOnAction |= other.ClearOnAction;
         _sequences.AddRange(other._sequences);
         _gameObjects.AddRange(other._gameObjects);
         _elements.AddRange(other._elements);
@@ -86,12 +80,12 @@ namespace Spelldawn.Services
 
     public void OnOptimisticAction()
     {
-      foreach (var data in _effectMap.Values.Where(d => d.ClearOnAction))
+      foreach (var data in _effectMap.Values/*.Where(d => d.ClearOnAction)*/)
       {
         data.DestroyAll();
       }
     }
-    
+
     /// <summary>Displays the provided tutorial elements and clears all existing elements.</summary>
     public void SetTutorialEffects(IEnumerable<TutorialEffect> effects)
     {
@@ -123,7 +117,7 @@ namespace Spelldawn.Services
     {
       var key = new EffectKey(
         TutorialEffect.TutorialEffectTypeOneofCase.ArrowBubble,
-        showBubble.Anchor.BubbleAnchorCase);
+        showBubble.Anchor);
       RemoveEffectIfExists(key);
       
       var bubble = NewArrowBubble(showBubble);
@@ -139,7 +133,6 @@ namespace Spelldawn.Services
       }
 
       CreateEffectDataIfNeeded(newEffectMap, key);
-      newEffectMap[key].AddClearOnAction(showBubble.ClearOnAction);
       newEffectMap[key].AddSequence(sequence);
       newEffectMap[key].AddObject(bubble.gameObject);
     }
@@ -148,7 +141,23 @@ namespace Spelldawn.Services
     {
       var component = ComponentUtils.Instantiate(_arrowBubblePrefab);
       component.ApplyStyle(showBubble);
-      var anchorPosition = AnchorTransform(showBubble.Anchor).position + AnchorOffset(showBubble.Anchor);
+      var parent = AnchorTransform(showBubble.Anchor);
+      var anchorPosition = parent.position;
+      
+      Transform? offsetPosition = null!;
+      if (_registry.RaidService.RaidActive)
+      {
+        offsetPosition = parent.Find("RaidAnchorPosition");
+      }
+      if (!offsetPosition)
+      {
+        offsetPosition = parent.Find("AnchorPosition");
+      }
+      if (offsetPosition)
+      {
+        anchorPosition.x += offsetPosition.localPosition.x;
+        anchorPosition.z += offsetPosition.localPosition.z;
+      }
       
       // Offset position to be bottom-left anchored
       anchorPosition.x -= (ArrowBubble.DefaultDeltaSize.x / 2.0f);
@@ -171,17 +180,6 @@ namespace Spelldawn.Services
         _registry.ManaDisplayForPlayer(anchor.PlayerMana).transform,
       _ => throw new ArgumentOutOfRangeException(
         nameof(anchor.BubbleAnchorCase), anchor.BubbleAnchorCase, null)
-    };
-    
-    Vector3 AnchorOffset(ArrowBubbleAnchor anchor) => anchor.BubbleAnchorCase switch
-    {
-      ArrowBubbleAnchor.BubbleAnchorOneofCase.Player => 
-        anchor.Player == PlayerName.User ? new Vector3(-0.5f, 0f, -2f) : new Vector3(-1f, 0f, -1f),
-      ArrowBubbleAnchor.BubbleAnchorOneofCase.Room => anchor.Room == RoomIdentifier.Vault ? 
-        new Vector3(12.5f, 0, 0) : new Vector3(3f, 0, 0),
-      ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerMana => new Vector3(5f, 0, -1.5f),
-      ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerDeck => new Vector3(-4f, 0, -2.5f),
-      _ => Vector3.zero
     };
 
     void CreateToast(Dictionary<EffectKey, EffectData> newEffectMap, ShowToast showToast)
@@ -215,7 +213,6 @@ namespace Spelldawn.Services
       }
 
       CreateEffectDataIfNeeded(newEffectMap, key);
-      newEffectMap[key].AddClearOnAction(showToast.ClearOnAction); 
       newEffectMap[key].AddSequence(sequence);
       newEffectMap[key].AddElement(toast);
     }

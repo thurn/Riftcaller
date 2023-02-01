@@ -119,7 +119,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::Display(vec![
                 permanent_toast(
-                    "Once you access a room, you can <b>score</b> the card inside for 45 points.",
+                    "You have accessed the room and can now <b>score</b> this card for 45 points.",
                     Milliseconds(0),
                 ),
             ]),
@@ -232,7 +232,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     "Minions are never permanently defeated. They respawn between raids.",
                     Milliseconds(0),
                 ),
-                user_say("You can't keep me out of that room.", Milliseconds(0)),
+                user_say("You can't keep me out of that room.", Milliseconds(4000)),
                 user_say_recurring("I should return to that room.", Milliseconds(10_000)),
                 tooltip_recurring(
                     "Drag portrait here",
@@ -243,8 +243,6 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
             TutorialStep::RemoveGameModifiers(vec![
                 CardName::TutorialDisableRaidVault,
-                CardName::TutorialDisableRaidSanctum,
-                CardName::TutorialDisableRaidCrypts
             ]),
             TutorialStep::Display(vec![
                 user_say("Law and Light! My weapon is useless.", Milliseconds(0)),
@@ -252,7 +250,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     format!("A <color={}>Mortal</color> weapon cannot damage an <color={}>Abyssal</color> minion. A matching weapon is required!",
                     design::as_hex(FontColor::MortalCardTitle),
                     design::as_hex(FontColor::AbyssalCardTitle)),
-                    Milliseconds(0),
+                    Milliseconds(4000),
                 ),
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseNoWeapon]),
@@ -268,7 +266,6 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::Vault)]),
-            TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleClub]),
             TutorialStep::Display(vec![
                 permanent_toast(
                     "If the top card of your opponent's deck is a <b>scheme</b> card, you can score it for points!",
@@ -277,6 +274,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Machinate, CardName::Conspire]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
+            TutorialStep::AddGameModifiers(vec![
+                CardName::TutorialDisableRaidVault,
+            ]),
             TutorialStep::Display(vec![
                 permanent_toast(
                     format!("Now you just need to find an <color={}>Abyssal</color> weapon",
@@ -298,6 +298,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
                 RoomId::RoomA,
             )),
+            TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleClub]),
             TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
                 RoomId::RoomA,
             )),
@@ -309,7 +310,8 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(CardName::SimpleClub, CardTarget::None)]),
             TutorialStep::Display(vec![
-                user_say_recurring("Time to try again.", Milliseconds(5000)),
+                user_say("Time to try again.", Milliseconds(0)),
+                user_say_recurring("I can use this weapon to raid that room.", Milliseconds(10_000)),
                 tooltip_recurring(
                     "Drag portrait here",
                     TooltipAnchor::RaidRoom(RoomId::RoomA),
@@ -323,6 +325,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0),
                 ),
             ]),
+            TutorialStep::RemoveGameModifiers(vec![
+                CardName::TutorialDisableRaidSanctum,
+            ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
             TutorialStep::Display(vec![
                 user_say("Time to end this.", Milliseconds(0)),
@@ -334,6 +339,13 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     "Drag portrait here",
                     TooltipAnchor::RaidRoom(RoomId::Sanctum),
                     Milliseconds(10_000),
+                ),
+            ]),
+            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::Sanctum)]),
+            TutorialStep::Display(vec![
+                permanent_toast(
+                    "If the random card in hand is a <b>scheme</b> card, you can score it!",
+                    Milliseconds(0)
                 ),
             ]),
 
