@@ -78,9 +78,9 @@ namespace Spelldawn.Services
     
     readonly Dictionary<EffectKey, EffectData> _effectMap = new();
 
-    public void OnOptimisticAction()
+    public void ClearTutorialEffects()
     {
-      foreach (var data in _effectMap.Values/*.Where(d => d.ClearOnAction)*/)
+      foreach (var data in _effectMap.Values)
       {
         data.DestroyAll();
       }

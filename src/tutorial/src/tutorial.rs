@@ -286,11 +286,6 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::Display(vec![
                 user_say_recurring("I should draw a card", Milliseconds(10_000)),
-                tooltip_recurring(
-                    "Draw Card",
-                    TooltipAnchor::DrawCard,
-                    Milliseconds(15_000),
-                ),
             ]),
             TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
                 RoomId::RoomA,

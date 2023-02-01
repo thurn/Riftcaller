@@ -268,7 +268,7 @@ namespace Spelldawn.Services
     {
       if (action.ActionCase != ClientAction.ActionOneofCase.FetchPanel)
       {
-        _registry.TutorialService.OnOptimisticAction();
+        _registry.TutorialService.ClearTutorialEffects();
       }
       
       switch (action.ActionCase)
