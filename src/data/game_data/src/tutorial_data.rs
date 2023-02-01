@@ -107,6 +107,12 @@ pub enum TutorialOpponentAction {
     EndRaid,
 }
 
+/// Matches against game states to trigger tutorial messages
+#[derive(Debug)]
+pub enum TutorialGameStateTrigger {
+    HandContainsCard(Side, CardName),
+}
+
 /// Matches against user actions to trigger tutorial messages
 #[derive(Debug)]
 pub enum TutorialTrigger {
@@ -154,7 +160,10 @@ pub enum TutorialStep {
     /// Wait for the user to perform all of the indicated actions before
     /// advancing to the next tutorial step. Other game actions are still
     /// allowed, but they won't cause the tutorial to advance.
-    AwaitPlayerActions(Vec<TutorialTrigger>),
+    AwaitTriggers(Vec<TutorialTrigger>),
+
+    /// Wait for a specific game state before continuing
+    AwaitGameState(TutorialGameStateTrigger),
 
     /// Provide tutorial information to show to the user until any player action
     /// is taken.

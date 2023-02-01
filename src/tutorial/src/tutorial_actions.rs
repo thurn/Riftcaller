@@ -19,7 +19,8 @@ use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
 use game_data::primitives::{CardId, RoomLocation, Side};
 use game_data::tutorial_data::{
-    TutorialDisplay, TutorialOpponentAction, TutorialStep, TutorialTrigger,
+    TutorialDisplay, TutorialGameStateTrigger, TutorialOpponentAction, TutorialStep,
+    TutorialTrigger,
 };
 use rules::mutations;
 use tracing::{debug, debug_span, info};
@@ -32,13 +33,15 @@ use with_error::{fail, WithError};
 /// tutorial sequence, applied by [handle_sequence_game_action], and 2) a
 /// reactive system which provides contextual help when certain user actions are
 /// taken, applied by `handle_triggered_action`.
-pub fn handle_game_action(game: &mut GameState, action: &GameAction) -> Result<()> {
-    game.data.tutorial_state.display.retain(|display| display.recurring());
+pub fn handle_game_action(game: &mut GameState, action: Option<&GameAction>) -> Result<()> {
+    if action.is_some() {
+        game.data.tutorial_state.display.retain(|display| display.recurring());
+    }
 
     if game.data.config.scripted_tutorial
         && game.data.tutorial_state.index < crate::SEQUENCE.steps.len()
     {
-        handle_sequence_game_action(game, Some(action))?;
+        handle_sequence_game_action(game, action)?;
     }
 
     handle_triggered_action(game, action)
@@ -51,7 +54,7 @@ pub fn handle_sequence_game_action(
     game: &mut GameState,
     mut user_action: Option<&GameAction>,
 ) -> Result<()> {
-    let _span = debug_span!("handle_tutorial_actions").entered();
+    let _span = debug_span!("handle_sequence_game_action").entered();
     let mut i = game.data.tutorial_state.index;
 
     while i < crate::SEQUENCE.steps.len() {
@@ -73,7 +76,7 @@ pub fn handle_sequence_game_action(
                 Ok(())
             }
             TutorialStep::DefaultOpponentAction(_) => Ok(()),
-            TutorialStep::AwaitPlayerActions(actions) => {
+            TutorialStep::AwaitTriggers(actions) => {
                 if await_player_actions(game, user_action, actions)? {
                     user_action = None; // Consume action, avoid matching again
 
@@ -81,6 +84,13 @@ pub fn handle_sequence_game_action(
                     game.data.tutorial_state.display.clear();
                 } else {
                     debug!(?actions, "Awaiting user action");
+                    break;
+                }
+                Ok(())
+            }
+            TutorialStep::AwaitGameState(trigger) => {
+                if !game_state_matches(game, trigger) {
+                    debug!(?trigger, "Awaiting game state");
                     break;
                 }
                 Ok(())
@@ -147,11 +157,11 @@ fn remove_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Resul
     Ok(())
 }
 
-fn handle_triggered_action(game: &mut GameState, action: &GameAction) -> Result<()> {
+fn handle_triggered_action(game: &mut GameState, action: Option<&GameAction>) -> Result<()> {
     for message in
         crate::SEQUENCE.messages.iter().filter(|t| !game.data.tutorial_state.data.has_seen(t.key))
     {
-        if actions_match(game, &message.trigger, action)? {
+        if trigger_matches(game, &message.trigger, action)? {
             debug!(?message.key, "Triggered tutorial message");
             game.data.tutorial_state.display.append(&mut message.display.clone());
             game.data.tutorial_state.data.mark_seen(message.key);
@@ -243,12 +253,8 @@ fn match_opponent_action(
     game_action: Option<&GameAction>,
     opponent_action: &TutorialOpponentAction,
 ) -> Result<bool> {
-    let Some(user_action) = game_action else {
-        return Ok(false);
-    };
-
-    debug!(?opponent_action, ?user_action, "Matched expected opponent action");
-    actions_match(game, &to_trigger(opponent_action), user_action)
+    debug!(?opponent_action, ?game_action, "Matched expected opponent action");
+    trigger_matches(game, &to_trigger(opponent_action), game_action)
 }
 
 /// Wait for the player to take specific game actions. Returns true if all
@@ -260,25 +266,20 @@ fn await_player_actions(
 ) -> Result<bool> {
     let seen = &game.data.tutorial_state.action_indices_seen;
 
-    let Some(user_action) = game_action else {
-        return Ok(false);
-    };
-
     for (i, tutorial_action) in to_match.iter().enumerate() {
         if game.data.tutorial_state.action_indices_seen.contains(&i) {
             continue;
         }
 
-        let matched = actions_match(game, tutorial_action, user_action)?;
+        let matched = trigger_matches(game, tutorial_action, game_action)?;
         if matched {
-            debug!(?seen, ?tutorial_action, ?user_action, "Matched expected player action");
+            debug!(?seen, ?tutorial_action, ?game_action, "Matched expected player action");
             game.data.tutorial_state.action_indices_seen.insert(i);
             break;
         }
     }
 
     if game.data.tutorial_state.action_indices_seen.len() == to_match.len() {
-        debug!("Matched all expected tutorial user actions");
         game.data.tutorial_state.action_indices_seen.clear();
         Ok(true)
     } else {
@@ -286,12 +287,16 @@ fn await_player_actions(
     }
 }
 
-fn actions_match(
+fn trigger_matches(
     game: &GameState,
     tutorial_action: &TutorialTrigger,
-    user_action: &GameAction,
+    user_action: Option<&GameAction>,
 ) -> Result<bool> {
-    Ok(match (tutorial_action, user_action) {
+    let Some(action) = user_action else {
+        return Ok(false);
+    };
+
+    Ok(match (tutorial_action, action) {
         (TutorialTrigger::DrawCardAction, GameAction::DrawCard) => true,
         (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
         (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
@@ -322,6 +327,14 @@ fn actions_match(
         ) => true,
         _ => false,
     })
+}
+
+fn game_state_matches(game: &GameState, trigger: &TutorialGameStateTrigger) -> bool {
+    match trigger {
+        TutorialGameStateTrigger::HandContainsCard(side, card_name) => {
+            game.hand(*side).any(|c| c.name == *card_name)
+        }
+    }
 }
 
 fn to_trigger(opponent_action: &TutorialOpponentAction) -> TutorialTrigger {

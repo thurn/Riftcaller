@@ -20,9 +20,9 @@ use game_data::card_name::CardName;
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{Milliseconds, RoomId, Side};
 use game_data::tutorial_data::{
-    SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialDisplay, TutorialMessageKey,
-    TutorialMessageTrigger, TutorialOpponentAction, TutorialSequence, TutorialStep,
-    TutorialTrigger,
+    SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialDisplay, TutorialGameStateTrigger,
+    TutorialMessageKey, TutorialMessageTrigger, TutorialOpponentAction, TutorialSequence,
+    TutorialStep, TutorialTrigger,
 };
 use once_cell::sync::Lazy;
 
@@ -73,7 +73,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 user_say("Your tyranny ends here, Vaughn!", Milliseconds(8000)),
                 user_say("I should play a card...", Milliseconds(30_000)),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::PlayAnyCard]),
             TutorialStep::Display(vec![
                 user_say("No evil shall stand against my valor.", Milliseconds(4000)),
                 permanent_toast(
@@ -85,7 +85,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
                 user_say("I should play a card...", Milliseconds(20_000)),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayAnyCard]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::PlayAnyCard]),
             // User -> 4 mana
             TutorialStep::RemoveGameModifiers(vec![
                 CardName::TutorialDisableRaidOuter,
@@ -103,14 +103,14 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(8000),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
             TutorialStep::Display(vec![
                 permanent_toast(
                     "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
                     Milliseconds(0),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseWeapon {
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::UseWeapon {
                 weapon: CardName::SimpleAxe,
                 target: CardName::Captain,
             }]),
@@ -123,7 +123,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::ScoreAccessedCard(
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::ScoreAccessedCard(
                 CardName::Machinate,
             )]),
             TutorialStep::RemoveGameModifiers(vec![
@@ -136,7 +136,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
             ]),
             TutorialStep::Display(vec![opponent_say("Curse you!", Milliseconds(0))]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::SuccessfullyEndRaid]),
             // User -> 4 mana
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
             TutorialStep::Display(vec![opponent_say("My power grows.", Milliseconds(0))]),
@@ -159,14 +159,14 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
                 tooltip("Tap to gain mana", TooltipAnchor::GainMana, Milliseconds(4_000)),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::GainManaAction]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::GainManaAction]),
             // User -> 5 mana
             TutorialStep::Display(vec![
                 user_say("You'll pay for what you did.", Milliseconds(0)),
                 permanent_toast("Now you can play this card", Milliseconds(4000)),
                 user_say("I should play a card...", Milliseconds(20_000))
                 ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::PlayCard(
                 CardName::ArcaneRecovery,
                 CardTarget::None,
             )]),
@@ -182,7 +182,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
                 tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(4000)),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::DrawCardAction]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::DrawCardAction]),
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
             TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
                 CardName::GatheringDark,
@@ -233,14 +233,14 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0),
                 ),
                 user_say("You can't keep me out of that room.", Milliseconds(4000)),
-                user_say_recurring("I should return to that room.", Milliseconds(10_000)),
+                user_say_recurring("I should raid again.", Milliseconds(10_000)),
                 tooltip_recurring(
                     "Drag portrait here",
                     TooltipAnchor::RaidRoom(RoomId::RoomA),
                     Milliseconds(15_000),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
             TutorialStep::RemoveGameModifiers(vec![
                 CardName::TutorialDisableRaidVault,
             ]),
@@ -253,7 +253,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(4000),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::UseNoWeapon]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::UseNoWeapon]),
             TutorialStep::Display(vec![
                 permanent_toast(
                     "You can raid the <b>Vault</b> and attempt to score cards on top of your opponent's deck.",
@@ -265,7 +265,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(10_000),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::Vault)]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::InitiateRaid(RoomId::Vault)]),
             TutorialStep::Display(vec![
                 permanent_toast(
                     "If the top card of your opponent's deck is a <b>scheme</b> card, you can score it for points!",
@@ -273,7 +273,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
             ]),
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Machinate, CardName::Conspire]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::SuccessfullyEndRaid]),
             TutorialStep::AddGameModifiers(vec![
                 CardName::TutorialDisableRaidVault,
             ]),
@@ -308,7 +308,12 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::PlayCard(CardName::SimpleClub, CardTarget::None)]),
+            TutorialStep::AwaitGameState(TutorialGameStateTrigger::HandContainsCard(Side::Champion, CardName::SimpleClub)),
+            TutorialStep::Display(vec![
+                user_say("The weapon I need!", Milliseconds(0)),
+                user_say_recurring("I should play this Simple Club", Milliseconds(10_000)),
+            ]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::PlayCard(CardName::SimpleClub, CardTarget::None)]),
             TutorialStep::Display(vec![
                 user_say("Time to try again.", Milliseconds(0)),
                 user_say_recurring("I can use this weapon to raid that room.", Milliseconds(10_000)),
@@ -318,7 +323,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(15_000),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
             TutorialStep::Display(vec![
                 permanent_toast(
                     format!("During a raid encounter, you can power up your weapon's damage using {}", icons::MANA),
@@ -331,7 +336,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::AddGameModifiers(vec![
                 CardName::TutorialForceSanctumScore,
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::SuccessfullyEndRaid]),
             TutorialStep::Display(vec![
                 user_say_recurring("Time to end this.", Milliseconds(4_000)),
                 permanent_toast(
@@ -343,7 +348,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(8_000),
                 ),
             ]),
-            TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::Sanctum)]),
+            TutorialStep::AwaitTriggers(vec![TutorialTrigger::InitiateRaid(RoomId::Sanctum)]),
             TutorialStep::Display(vec![
                 permanent_toast(
                     "If the random card in hand is a <b>scheme</b> card, you can score it!",

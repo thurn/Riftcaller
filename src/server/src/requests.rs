@@ -481,8 +481,9 @@ pub fn handle_game_action(
     action: GameAction,
 ) -> Result<GameResponse> {
     handle_custom_action(database, player_id, game_id, |game, user_side| {
-        tutorial_actions::handle_game_action(game, &action)?;
-        actions::handle_game_action(game, user_side, action)
+        tutorial_actions::handle_game_action(game, Some(&action))?;
+        actions::handle_game_action(game, user_side, action)?;
+        tutorial_actions::handle_game_action(game, None)
     })
 }
 
