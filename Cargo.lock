@@ -376,6 +376,7 @@ dependencies = [
  "assets",
  "card_helpers",
  "game_data",
+ "rules",
 ]
 
 [[package]]

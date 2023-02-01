@@ -25,7 +25,7 @@ use game_data::card_definition::{
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
     AbilityActivated, CardPlayed, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded,
-    RaidStart, RequirementFn, Scope, TransformationFn, UsedWeapon,
+    RaidEvent, RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game::GameState;
 use game_data::game_actions::{CardPromptAction, CardTarget};
@@ -236,8 +236,8 @@ pub fn on_overlord_score(mutation: MutationFn<CardId>) -> Delegate {
 
 /// Delegate which fires when a raid starts
 pub fn on_raid_start(
-    requirement: RequirementFn<RaidStart>,
-    mutation: MutationFn<RaidStart>,
+    requirement: RequirementFn<RaidEvent>,
+    mutation: MutationFn<RaidEvent>,
 ) -> Delegate {
     Delegate::RaidStart(EventDelegate { requirement, mutation })
 }

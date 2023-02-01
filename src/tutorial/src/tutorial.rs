@@ -328,17 +328,19 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::RemoveGameModifiers(vec![
                 CardName::TutorialDisableRaidSanctum,
             ]),
+            TutorialStep::AddGameModifiers(vec![
+                CardName::TutorialForceSanctumScore,
+            ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::SuccessfullyEndRaid]),
             TutorialStep::Display(vec![
-                user_say("Time to end this.", Milliseconds(0)),
-                user_say_recurring("I need to attack the Sanctum", Milliseconds(8_000)),
+                user_say_recurring("Time to end this.", Milliseconds(4_000)),
                 permanent_toast(
                     "You can raid the <b>Sanctum</b> to access a random card from your opponent's hand",
                     Milliseconds(2000)),
                 tooltip_recurring(
                     "Drag portrait here",
                     TooltipAnchor::RaidRoom(RoomId::Sanctum),
-                    Milliseconds(10_000),
+                    Milliseconds(8_000),
                 ),
             ]),
             TutorialStep::AwaitPlayerActions(vec![TutorialTrigger::InitiateRaid(RoomId::Sanctum)]),
@@ -348,8 +350,6 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0)
                 ),
             ]),
-
-            // TODO: Force the accessed card to be a scheme
         ],
 
         // From this point on, we transition to running a normal game with

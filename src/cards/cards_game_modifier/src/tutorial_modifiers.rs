@@ -17,8 +17,8 @@ use card_helpers::{text, *};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, QueryDelegate};
-use game_data::primitives::{CardType, Rarity, School, Side};
+use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
+use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
 
 fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
     CardDefinition {
@@ -138,6 +138,28 @@ pub fn tutorial_disable_end_raid() -> CardDefinition {
             Delegate::CanEndRaidAccessPhase(QueryDelegate {
                 requirement: always,
                 transformation: |_, _, _, f| f.with_override(false),
+            }),
+        ),
+    )
+}
+
+pub fn tutorial_force_sanctum_score() -> CardDefinition {
+    tutorial_modifier(
+        CardName::TutorialForceSanctumScore,
+        simple_ability(
+            text!["The Champion always accesses a scheme card when raiding the Sanctum"],
+            Delegate::RaidAccessSelected(EventDelegate {
+                requirement: |_, _, event| event.target == RoomId::Sanctum,
+                mutation: |g, _, _| {
+                    let scheme = g
+                        .hand(Side::Overlord)
+                        .find(|card| rules::get(card.name).card_type == CardType::Scheme)
+                        .map(|c| c.id);
+                    if let Some(id) = scheme {
+                        g.raid_mut()?.accessed = vec![id];
+                    }
+                    Ok(())
+                },
             }),
         ),
     )

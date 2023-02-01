@@ -14,4 +14,4 @@
 
 //! Cards which globally modify the rules of a game
 
-pub mod overlord_modifiers;
+pub mod tutorial_modifiers;

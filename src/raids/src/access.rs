@@ -15,8 +15,8 @@
 use anyhow::Result;
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
-    CardAccessEvent, ChampionScoreCardEvent, RaidAccessStartEvent, RaidOutcome, ScoreCard,
-    ScoreCardEvent,
+    CardAccessEvent, ChampionScoreCardEvent, RaidAccessSelectedEvent, RaidAccessStartEvent,
+    RaidEvent, RaidOutcome, ScoreCard, ScoreCardEvent,
 };
 use game_data::game::{GameState, InternalRaidPhase};
 use game_data::game_actions::{AccessPhaseAction, PromptAction};
@@ -53,8 +53,20 @@ impl RaidPhaseImpl for AccessPhase {
             return Ok(None);
         }
 
-        let accessed = accessed_cards(game)?;
-        game.raid_mut()?.accessed = accessed.clone();
+        game.raid_mut()?.accessed = select_accessed_cards(game)?;
+
+        dispatch::invoke_event(
+            game,
+            RaidAccessSelectedEvent(RaidEvent {
+                raid_id: game.raid()?.raid_id,
+                target: game.raid()?.target,
+            }),
+        )?;
+
+        let accessed = game.raid()?.accessed.clone();
+        for card_id in &accessed {
+            game.card_mut(*card_id).set_revealed_to(Side::Champion, true);
+        }
 
         for card_id in &accessed {
             dispatch::invoke_event(game, CardAccessEvent(*card_id))?;
@@ -98,9 +110,8 @@ impl RaidPhaseImpl for AccessPhase {
 }
 
 /// Returns a vector of the cards accessed for the current raid target, mutating
-/// the [GameState] to store the results of random zone selections and mark
-/// cards as revealed.
-fn accessed_cards(game: &mut GameState) -> Result<Vec<CardId>> {
+/// the [GameState] to store the results of random zone selections.
+fn select_accessed_cards(game: &mut GameState) -> Result<Vec<CardId>> {
     let target = game.raid()?.target;
 
     let accessed = match target {
@@ -111,6 +122,7 @@ fn accessed_cards(game: &mut GameState) -> Result<Vec<CardId>> {
         )?,
         RoomId::Sanctum => {
             let count = queries::sanctum_access_count(game)?;
+
             random::cards_in_position(
                 game,
                 Side::Overlord,
@@ -123,10 +135,6 @@ fn accessed_cards(game: &mut GameState) -> Result<Vec<CardId>> {
         }
         _ => game.occupants(target).map(|c| c.id).collect(),
     };
-
-    for card_id in &accessed {
-        game.card_mut(*card_id).set_revealed_to(Side::Champion, true);
-    }
 
     Ok(accessed)
 }

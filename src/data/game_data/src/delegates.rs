@@ -267,7 +267,7 @@ impl CardEncounter {
 
 /// Event data when a raid is initiated
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
-pub struct RaidStart {
+pub struct RaidEvent {
     pub raid_id: RaidId,
     pub target: RoomId,
 }
@@ -373,7 +373,7 @@ pub enum Delegate {
     /// Either player scores a card
     ScoreCard(EventDelegate<ScoreCard>),
     /// A Raid is initiated
-    RaidStart(EventDelegate<RaidStart>),
+    RaidStart(EventDelegate<RaidEvent>),
     /// A minion is encountered during a raid
     EncounterMinion(EventDelegate<CardId>),
     /// A weapon boost is activated for a given card
@@ -392,8 +392,13 @@ pub enum Delegate {
     /// Minion encounters have been completed for a raid and the Access phase is
     /// about to start. The set of accessed cards has not yet been selected.
     RaidAccessStart(EventDelegate<RaidId>),
-    /// The card with the provided `card_id` has been accessed during a raid (in
-    /// any zone), but not yet scored/acted on.
+    /// The set of cards accessed during a raid have been selected and written
+    /// to `GameState`, but not 'on access' effects have yet triggered. This is
+    /// the expected place to modify the set of accessed cards if it was not
+    /// possible earlier.
+    RaidAccessSelected(EventDelegate<RaidEvent>),
+    /// The card with the provided `card_id` has been accessed and revealed
+    /// during a raid (in any zone), but not yet scored/acted on.
     CardAccess(EventDelegate<CardId>),
     /// A Raid is completed, either successfully or unsuccessfully.
     ///

@@ -124,6 +124,7 @@ pub enum CardName {
     TutorialDisableRaidOuter,
     TutorialDisableRaidContinue,
     TutorialDisableEndRaid,
+    TutorialForceSanctumScore,
 
     // Basic
     BasicChampionLeader,

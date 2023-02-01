@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::delegates::{RaidStart, RaidStartEvent};
+use game_data::delegates::{RaidEvent, RaidStartEvent};
 use game_data::game::{GameState, InternalRaidPhase};
 use game_data::game_actions::PromptAction;
 use game_data::primitives::Side;
@@ -42,7 +42,7 @@ impl RaidPhaseImpl for BeginPhase {
     fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
         dispatch::invoke_event(
             game,
-            RaidStartEvent(RaidStart {
+            RaidStartEvent(RaidEvent {
                 raid_id: game.raid()?.raid_id,
                 target: game.raid()?.target,
             }),
