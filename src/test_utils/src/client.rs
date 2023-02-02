@@ -43,8 +43,8 @@ use protos::spelldawn::{
     RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
-use server::requests;
 use server::requests::GameResponse;
+use server::{agent_response, requests};
 use with_error::WithError;
 
 use crate::client_interface::{ClientInterface, HasText};
@@ -355,6 +355,14 @@ impl TestSession {
         legal_actions::evaluate(self.database.game.as_ref().expect("game"), side)
             .expect("Error evaluating legal actions")
             .collect()
+    }
+
+    pub async fn run_agent_loop(&mut self) {
+        let (game_id, user_id) = (self.game_id(), self.user_id());
+        agent_response::run_agent_loop_for_tests(&mut self.database, game_id, user_id)
+            .await
+            .expect("Error running agent loop");
+        self.connect(user_id).expect("Error re-connecting to session");
     }
 
     fn activate_ability_impl(

@@ -15,16 +15,11 @@
 use core_ui::actions::InterfaceAction;
 use game_data::game::MulliganDecision;
 use game_data::game_actions::{GameAction, PromptAction};
-use game_data::player_name::PlayerId;
-use game_data::primitives::{GameId, Side};
-use game_data::tutorial_data::TutorialData;
+use game_data::primitives::Side;
 use insta::assert_snapshot;
-use maplit::hashmap;
-use player_data::PlayerData;
 use protos::spelldawn::PlayerName;
 use test_utils::client::TestSession;
 use test_utils::client_interface::HasText;
-use test_utils::fake_database::FakeDatabase;
 use test_utils::summarize::Summary;
 use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction};
@@ -35,7 +30,7 @@ static CHAMPION_DECK: NewGameDeck = NewGameDeck::NamedDeck(NamedDeck::ChampionTe
 #[test]
 fn create_new_game() {
     let (game_id, overlord_id, champion_id) = generate_ids();
-    let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
+    let mut session = new_session(game_id, overlord_id, champion_id);
     let response = session.perform_action(
         UserAction::NewGame(NewGameAction {
             deck: OVERLORD_DECK,
@@ -55,7 +50,7 @@ fn create_new_game() {
 #[test]
 fn connect_to_new_game() {
     let (game_id, overlord_id, champion_id) = generate_ids();
-    let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
+    let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
     let response = session.connect(overlord_id);
@@ -70,7 +65,7 @@ fn connect_to_new_game() {
 #[test]
 fn mulligan_legal_actions() {
     let (game_id, overlord_id, champion_id) = generate_ids();
-    let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
+    let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
     assert_contents_equal(
@@ -102,7 +97,7 @@ fn mulligan_legal_actions() {
 #[test]
 fn keep_opening_hand() {
     let (game_id, overlord_id, champion_id) = generate_ids();
-    let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
+    let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
     let response = session.click_on(overlord_id, "Keep");
@@ -120,7 +115,7 @@ fn keep_opening_hand() {
 #[test]
 fn mulligan_opening_hand() {
     let (game_id, overlord_id, champion_id) = generate_ids();
-    let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
+    let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
     let response = session.click_on(overlord_id, "Mulligan");
@@ -138,7 +133,7 @@ fn mulligan_opening_hand() {
 #[test]
 fn both_keep_opening_hands() {
     let (game_id, overlord_id, champion_id) = generate_ids();
-    let mut session = make_overlord_test_session(game_id, overlord_id, champion_id);
+    let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
     session.click_on(overlord_id, "Keep");
@@ -156,37 +151,6 @@ fn both_keep_opening_hands() {
     assert_eq!(3, session.opponent.other_player.actions());
 
     assert!(session.dusk());
-}
-
-/// Creates a [TestSession] for the Overlord player. Both players have their
-/// decks populated, but neither has submitted a 'new game' request.
-fn make_overlord_test_session(
-    game_id: GameId,
-    overlord_id: PlayerId,
-    champion_id: PlayerId,
-) -> TestSession {
-    cards_all::initialize();
-
-    let database = FakeDatabase {
-        generated_game_id: Some(game_id),
-        game: None,
-        players: hashmap! {
-            overlord_id => PlayerData {
-                id: overlord_id,
-                status: None,
-                adventure: None,
-                tutorial: TutorialData::default()
-            },
-            champion_id => PlayerData {
-                id: champion_id,
-                status: None,
-                adventure: None,
-                tutorial: TutorialData::default()
-            }
-        },
-    };
-
-    TestSession::new(database, overlord_id, champion_id)
 }
 
 fn initiate_game(session: &mut TestSession) {

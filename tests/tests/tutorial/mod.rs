@@ -12,9 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod adventure;
-mod ai;
-mod cards_basic;
-mod cards_poc;
-mod core;
-mod tutorial;
+pub mod tutorial_tests;

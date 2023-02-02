@@ -100,7 +100,11 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
         overlord_deck,
         champion_user,
         champion_deck,
-        GameConfiguration { deterministic: true, ..GameConfiguration::default() },
+        GameConfiguration {
+            deterministic: true,
+            scripted_tutorial: args.tutorial,
+            ..GameConfiguration::default()
+        },
     );
     dispatch::populate_delegate_cache(&mut game);
 
@@ -217,6 +221,8 @@ pub struct Args {
     /// If false, will not attempt to automatically connect to this game.
     /// Defaults to true.
     pub connect: bool,
+    /// If true, will configure the created game in scripted tutorial mode.
+    pub tutorial: bool,
 }
 
 impl Default for Args {
@@ -236,6 +242,7 @@ impl Default for Args {
             opponent_discard: None,
             add_raid: false,
             connect: true,
+            tutorial: false,
         }
     }
 }
@@ -266,6 +273,34 @@ fn set_discard_pile(game: &mut GameState, side: Side, discard: Option<CardName>)
         game.move_card_internal(target_id, CardPosition::DiscardPile(side));
         game.card_mut(target_id).turn_face_down();
     }
+}
+
+/// Creates an empty [TestSession]. Both provided [PlayerId]s are mapped to
+/// empty data. If a game is requested for the session, it will receive the
+/// provided [GameId].
+pub fn new_session(game_id: GameId, user_id: PlayerId, opponent_id: PlayerId) -> TestSession {
+    cards_all::initialize();
+
+    let database = FakeDatabase {
+        generated_game_id: Some(game_id),
+        game: None,
+        players: hashmap! {
+            user_id => PlayerData {
+                id: user_id,
+                status: None,
+                adventure: None,
+                tutorial: TutorialData::default()
+            },
+            opponent_id => PlayerData {
+                id: opponent_id,
+                status: None,
+                adventure: None,
+                tutorial: TutorialData::default()
+            }
+        },
+    };
+
+    TestSession::new(database, user_id, opponent_id)
 }
 
 pub fn spend_actions_until_turn_over(session: &mut TestSession, side: Side) {

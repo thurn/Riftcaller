@@ -46,8 +46,12 @@ pub enum HandleRequest {
     /// Send each response to the the player who initiated the `GameRequest`.
     SendToPlayer,
 
-    /// Store each response in the [RESPONSES] queue for use by the plugin.
+    /// Store each response in the [RESPONSES] queue for use by the plugin and
+    /// integration tests.
     PushQueue,
+
+    /// Do not send responses
+    Ignore,
 }
 
 /// Respond to a player by producing an AI response, if any AI agents are
@@ -67,7 +71,7 @@ pub fn handle_request_if_active(
     if active_agent(&game).is_some() && !AGENT_RUNNING.swap(true, Ordering::Relaxed) {
         info!(?player_id, ?game_id, "Computing agent response");
         tokio::spawn(async move {
-            run_agent_loop(database, game_id, respond_to, handle_request)
+            run_agent_loop(&mut database, game_id, respond_to, handle_request)
                 .await
                 .expect("Error running agent");
             AGENT_RUNNING.store(false, Ordering::Relaxed);
@@ -89,8 +93,18 @@ fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>
     None
 }
 
+/// Manually runs the agent-response loop, for use in tests. Do not call in
+/// production.
+pub async fn run_agent_loop_for_tests(
+    database: &mut impl Database,
+    game_id: GameId,
+    player_id: PlayerId,
+) -> Result<()> {
+    run_agent_loop(database, game_id, player_id, HandleRequest::Ignore).await
+}
+
 async fn run_agent_loop(
-    mut database: impl Database,
+    database: &mut impl Database,
     game_id: GameId,
     respond_to: PlayerId,
     handle_request: HandleRequest,
@@ -104,7 +118,7 @@ async fn run_agent_loop(
 
             warn!(?action, ?respond_to, ?game_id, "Agent Action");
             let response = requests::handle_game_action(
-                &mut database,
+                database,
                 game.player(side).id,
                 Some(game_id),
                 action,
@@ -128,6 +142,7 @@ async fn run_agent_loop(
             HandleRequest::PushQueue => {
                 RESPONSES.push(commands)?;
             }
+            HandleRequest::Ignore => {}
         }
     }
 }
