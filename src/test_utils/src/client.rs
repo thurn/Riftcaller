@@ -34,6 +34,7 @@ use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::object_position::Position;
+use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
     card_target, ArrowTargetRoom, CardIdentifier, CardTarget, CardView, ClientAction,
     ClientItemLocation, ClientRoomLocation, CommandList, GameMessageType, GameObjectIdentifier,
@@ -467,6 +468,7 @@ pub struct ClientGameData {
     raid_active: Option<bool>,
     object_positions: HashMap<GameObjectIdentifier, ObjectPosition>,
     last_message: Option<GameMessageType>,
+    tutorial_effects: Vec<TutorialEffectType>,
 }
 
 impl ClientGameData {
@@ -508,6 +510,20 @@ impl ClientGameData {
         self.last_message.expect("Game Message")
     }
 
+    /// Returns the text of the first tutorial toast which will be shown to the
+    /// user, or panics if no toast is showing.
+    pub fn toast(&self) -> String {
+        self.tutorial_effects
+            .iter()
+            .filter_map(|effect| match effect {
+                TutorialEffectType::ArrowBubble(_) => None,
+                TutorialEffectType::ShowToast(toast) => Some(toast.node.clone().expect("Node")),
+            })
+            .next()
+            .expect("Toast")
+            .all_text()
+    }
+
     fn update(&mut self, command: Command) {
         match command {
             Command::UpdateGameView(update_game) => {
@@ -525,6 +541,12 @@ impl ClientGameData {
                 self.insert_position(leader_id(PlayerName::Opponent), &non_card.opponent_leader);
                 self.insert_position(discard_id(PlayerName::User), &non_card.user_discard);
                 self.insert_position(discard_id(PlayerName::Opponent), &non_card.opponent_deck);
+                self.tutorial_effects = game
+                    .tutorial_effects
+                    .clone()
+                    .iter()
+                    .filter_map(|e| e.tutorial_effect_type.clone())
+                    .collect();
             }
             Command::MoveGameObjects(move_objects) => {
                 for move_object in move_objects.moves {
@@ -708,6 +730,15 @@ impl ClientCards {
     /// Iterator over cards in a player's hand
     pub fn cards_in_hand(&self, player: PlayerName) -> impl Iterator<Item = &ClientCard> {
         self.in_position(Position::Hand(ObjectPositionHand { owner: player.into() }))
+    }
+
+    /// Looks for the ID of card in the user's hand with a given name. Panics if
+    /// no such card can be found.
+    pub fn find_in_user_hand(&self, card: CardName) -> CardIdentifier {
+        self.cards_in_hand(PlayerName::User)
+            .find(|c| c.title() == card.displayed_name())
+            .expect("Card in hand")
+            .id()
     }
 
     /// Returns a list of the titles of cards in the provided `position`, or the

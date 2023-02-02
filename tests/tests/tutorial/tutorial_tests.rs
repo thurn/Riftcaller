@@ -15,7 +15,8 @@
 use core_ui::actions::InterfaceAction;
 use game_data::card_name::CardName;
 use game_data::player_name::{NamedPlayer, PlayerId};
-use protos::spelldawn::PlayerName;
+use game_data::primitives::RoomId;
+use protos::spelldawn::{ClientRoomLocation, PlayerName};
 use test_utils::client::TestSession;
 use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
@@ -26,16 +27,47 @@ async fn set_up_tutorial() {
     let (game_id, user_id, _) = generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
     start_tutorial(&mut session).await;
+
     assert_eq!(
         cards(vec![CardName::EldritchSurge, CardName::SimpleAxe]),
         session.user.cards.hand(PlayerName::User)
     );
-    assert_eq!(
-        cards(vec![CardName::Frog, CardName::Machinate]),
-        session.opponent.cards.hand(PlayerName::User)
-    );
+    assert_eq!(1, session.user.cards.hand(PlayerName::Opponent).len());
+    assert!(session.me().can_take_action());
+    assert!(session.user.data.toast().contains("lets you play cards and use weapons"));
+    assert_eq!(1, session.user.cards.room_cards(RoomId::RoomA, ClientRoomLocation::Front).len());
+    assert_eq!(1, session.user.cards.room_cards(RoomId::RoomA, ClientRoomLocation::Back).len());
 }
 
+#[tokio::test]
+async fn tutorial_turn_one() {
+    let (game_id, user_id, _) = generate_ids();
+    let mut session = new_session(game_id, user_id, OPPONENT);
+    start_tutorial(&mut session).await;
+
+    session.play_card(
+        session.user.cards.find_in_user_hand(CardName::EldritchSurge),
+        session.user_id(),
+        None,
+    );
+    assert!(session.user.data.toast().contains("Playing cards from your hand costs one"));
+
+    session.play_card(
+        session.user.cards.find_in_user_hand(CardName::SimpleAxe),
+        session.user_id(),
+        None,
+    );
+    assert!(session.user.data.toast().contains("of the enemy's dungeon"));
+
+    session.initiate_raid(RoomId::RoomA);
+    assert!(session.user.data.toast().contains("To get past a defending minion"));
+}
+
+/// Initiates the tutorial.
+///
+/// *NOTE*: Opponent session state is not updated for the tutorial (it is
+/// assumed to be single-player), and thus calls to `session.opponent` will not
+/// have accurate information.
 async fn start_tutorial(session: &mut TestSession) {
     session
         .perform_action(
