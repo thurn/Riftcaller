@@ -134,7 +134,7 @@ impl TestAdventure {
 
             if standard.payload.is_empty() {
                 // Do not send empty payload to server
-                return GameResponse::from_commands(vec![]);
+                return GameResponse::from_commands(None, vec![]);
             }
         }
 

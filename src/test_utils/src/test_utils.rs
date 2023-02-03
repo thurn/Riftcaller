@@ -484,6 +484,7 @@ pub fn create_test_recording(session: &TestSession, name: &str) {
 
 pub fn record_output_for_side(session: &TestSession, name: String, side: Side) -> Result<()> {
     let commands = CommandList {
+        logging_metadata: vec![],
         commands: session
             .player_for_side(side)
             .history

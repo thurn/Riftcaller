@@ -29,7 +29,7 @@ use game_data::game::{GameConfiguration, GameState};
 use game_data::game_actions;
 use game_data::game_actions::GameAction;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{GameId, Side};
+use game_data::primitives::{GameId, ResponseContext, Side};
 use game_data::tutorial_data::TutorialData;
 use game_data::updates::{UpdateTracker, Updates};
 use once_cell::sync::Lazy;
@@ -190,14 +190,9 @@ pub struct GameResponse {
 }
 
 impl GameResponse {
-    pub fn from_commands(command_list: Vec<Command>) -> Self {
+    pub fn from_commands(context: Option<ResponseContext>, command_list: Vec<Command>) -> Self {
         Self {
-            command_list: CommandList {
-                commands: command_list
-                    .into_iter()
-                    .map(|c| GameCommand { command: Some(c) })
-                    .collect(),
-            },
+            command_list: core_ui::actions::command_list(context, command_list),
             opponent_response: None,
             run_agent: false,
         }
@@ -225,12 +220,13 @@ pub fn handle_request(database: &mut impl Database, request: &GameRequest) -> Re
             &request.open_panels,
             standard_action,
         ),
-        Action::FetchPanel(fetch_panel) => {
-            Ok(GameResponse::from_commands(vec![Command::UpdatePanels(routing::render_panel(
+        Action::FetchPanel(fetch_panel) => Ok(GameResponse::from_commands(
+            game_id.map(ResponseContext::Game),
+            vec![Command::UpdatePanels(routing::render_panel(
                 &find_player(database, player_id)?,
                 fetch_panel.panel_address.clone().with_error(|| "missing address")?,
-            )?)]))
-        }
+            )?)],
+        )),
         Action::DrawCard(_) => {
             let _span = info_span!("handle_draw_card").entered();
             warn!(?player_id, ?game_id, "Handling draw card action");
@@ -289,9 +285,11 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
     warn!(?player_id, "handle_connect");
 
     let mut commands = vec![];
+    let mut context: Option<ResponseContext> = None;
     match (&player.status, &player.adventure) {
         (Some(PlayerStatus::Playing(game_id)), _) => {
             if database.has_game(*game_id)? {
+                context = Some(ResponseContext::Game(*game_id));
                 let game = database.game(*game_id)?;
                 let side = user_side(player_id, &game)?;
                 commands.extend(render::connect(&game, side)?);
@@ -302,6 +300,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
         }
         (Some(PlayerStatus::RequestedGame(_)), _) => todo!("Not implemented"),
         (None, Some(adventure_state)) => {
+            context = Some(ResponseContext::Adventure(adventure_state.id));
             commands.extend(adventure_display::render(adventure_state)?);
             routing::render_panels(
                 &mut commands,
@@ -325,7 +324,7 @@ pub fn handle_connect(database: &mut impl Database, player_id: PlayerId) -> Resu
     }
 
     commands.push(update_navbar(&player));
-    Ok(command_list(commands))
+    Ok(core_ui::actions::command_list(context, commands))
 }
 
 fn handle_new_adventure(
@@ -337,11 +336,14 @@ fn handle_new_adventure(
     player.adventure =
         Some(adventure_generator::new_adventure(AdventureConfiguration::new(player_id, side)));
     database.write_player(&player)?;
-    Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
-        scene_name: "World".to_string(),
-        mode: SceneLoadMode::Single.into(),
-        skip_if_current: true,
-    })]))
+    Ok(GameResponse::from_commands(
+        None,
+        vec![Command::LoadScene(LoadSceneCommand {
+            scene_name: "World".to_string(),
+            mode: SceneLoadMode::Single.into(),
+            skip_if_current: true,
+        })],
+    ))
 }
 
 /// Creates a new default [GameState], deals opening hands, and writes its value
@@ -362,7 +364,7 @@ fn handle_new_game(
             player.status = Some(PlayerStatus::RequestedGame(action));
             database.write_player(&player)?;
             // TODO: Implement this
-            return Ok(GameResponse::from_commands(vec![]));
+            return Ok(GameResponse::from_commands(None, vec![]));
         };
 
     let (user_side, opponent_side) = (user_deck.side, opponent_deck.side);
@@ -412,11 +414,12 @@ fn handle_new_game(
         database.write_player(&opponent)?;
     }
 
+    let context = Some(ResponseContext::Game(game_id));
     Ok(GameResponse {
-        command_list: command_list(render::connect(&game, user_side)?),
+        command_list: core_ui::actions::command_list(context, render::connect(&game, user_side)?),
         opponent_response: Some((
             opponent_id,
-            command_list(render::connect(&game, opponent_side)?),
+            core_ui::actions::command_list(context, render::connect(&game, opponent_side)?),
         )),
         run_agent: false,
     })
@@ -433,11 +436,14 @@ fn handle_leave_game(database: &mut impl Database, player_id: PlayerId) -> Resul
     let mut player = database.player(player_id)?.with_error(|| "Player not found")?;
     player.status = None;
     database.write_player(&player)?;
-    Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
-        scene_name: "Main".to_string(),
-        mode: SceneLoadMode::Single.into(),
-        skip_if_current: true,
-    })]))
+    Ok(GameResponse::from_commands(
+        Some(ResponseContext::LeaveGame),
+        vec![Command::LoadScene(LoadSceneCommand {
+            scene_name: "Main".to_string(),
+            mode: SceneLoadMode::Single.into(),
+            skip_if_current: true,
+        })],
+    ))
 }
 
 fn handle_leave_adventure(state: &mut PlayerData) -> Result<Vec<Command>> {
@@ -502,13 +508,19 @@ pub fn handle_custom_action(
 
     let user_result = render::render_updates(&game, user_side)?;
     let opponent_id = game.player(user_side.opponent()).id;
+    let context = game_id.map(ResponseContext::Game);
 
-    let channel_response =
-        Some((opponent_id, command_list(render::render_updates(&game, user_side.opponent())?)));
+    let channel_response = Some((
+        opponent_id,
+        core_ui::actions::command_list(
+            context,
+            render::render_updates(&game, user_side.opponent())?,
+        ),
+    ));
     database.write_game(&game)?;
 
     Ok(GameResponse {
-        command_list: command_list(user_result),
+        command_list: core_ui::actions::command_list(context, user_result),
         opponent_response: channel_response,
         run_agent: true,
     })
@@ -518,12 +530,13 @@ pub fn handle_custom_action(
 pub fn handle_player_action(
     database: &mut impl Database,
     player_id: PlayerId,
+    context: Option<ResponseContext>,
     function: impl Fn(&mut PlayerData) -> Result<Vec<Command>>,
 ) -> Result<GameResponse> {
     let mut player = find_player(database, player_id)?;
     let response = function(&mut player)?;
     database.write_player(&player)?;
-    Ok(GameResponse::from_commands(response))
+    Ok(GameResponse::from_commands(context, response))
 }
 
 /// Allows mutation of a player's data outside of an active game ([PlayerData]).
@@ -534,10 +547,11 @@ pub fn with_adventure(
 ) -> Result<GameResponse> {
     let mut player = find_player(database, player_id)?;
     let adventure_state = player.adventure.as_mut().with_error(|| "Expected active adventure")?;
+    let id = adventure_state.id;
     function(adventure_state)?;
     let commands = adventure_display::render(adventure_state)?;
     database.write_player(&player)?;
-    Ok(GameResponse::from_commands(commands))
+    Ok(GameResponse::from_commands(Some(ResponseContext::Adventure(id)), commands))
 }
 
 /// Sends a game response to a given player, if they are connected to the
@@ -574,9 +588,12 @@ fn handle_standard_action(
         UserAction::AdventureAction(action) => with_adventure(database, player_id, |state| {
             adventure_actions::handle_adventure_action(state, &action)
         }),
-        UserAction::LeaveAdventure => {
-            handle_player_action(database, player_id, handle_leave_adventure)
-        }
+        UserAction::LeaveAdventure => handle_player_action(
+            database,
+            player_id,
+            Some(ResponseContext::LeaveAdventure),
+            handle_leave_adventure,
+        ),
         UserAction::NewGame(new_game_action) => {
             handle_new_game(database, player_id, new_game_action)
         }
@@ -585,10 +602,12 @@ fn handle_standard_action(
             debug::handle_debug_action(database, player_id, game_id, debug_action)
         }
         UserAction::GameAction(a) => handle_game_action(database, player_id, game_id, a),
-        UserAction::DeckEditorAction(a) => handle_player_action(database, player_id, |player| {
-            deck_editor_actions::handle(player, a)?;
-            Ok(vec![])
-        }),
+        UserAction::DeckEditorAction(a) => {
+            handle_player_action(database, player_id, None, |player| {
+                deck_editor_actions::handle(player, a)?;
+                Ok(vec![])
+            })
+        }
     }?;
 
     let player = find_player(database, player_id)?;
@@ -694,10 +713,4 @@ fn card_target(target: &Option<CardTarget>) -> game_actions::CardTarget {
                 .map_or(game_actions::CardTarget::None, game_actions::CardTarget::Room),
         })
     })
-}
-
-fn command_list(commands: Vec<Command>) -> CommandList {
-    CommandList {
-        commands: commands.into_iter().map(|c| GameCommand { command: Some(c) }).collect(),
-    }
 }

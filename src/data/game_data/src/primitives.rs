@@ -63,6 +63,36 @@ impl fmt::Debug for GameId {
     }
 }
 
+impl fmt::Display for GameId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.value)
+    }
+}
+
+/// Identifies an ongoing adventure
+#[derive(Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+pub struct AdventureId {
+    pub value: u64,
+}
+
+impl AdventureId {
+    pub fn new(value: u64) -> Self {
+        Self { value }
+    }
+}
+
+impl fmt::Debug for AdventureId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "A{}", self.value)
+    }
+}
+
+impl fmt::Display for AdventureId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.value)
+    }
+}
+
 /// The two players in a game: Overlord & Champion
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd, Sequence)]
 pub enum Side {
@@ -360,3 +390,16 @@ impl HasCardId for BoostData {
 /// An interval of time in milliseconds
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct Milliseconds(pub u32);
+
+/// Contextual information to include with client response payloads for use in
+/// logging and crash attribution.
+#[derive(Copy, Clone, Debug)]
+pub enum ResponseContext {
+    Default,
+    Adventure(AdventureId),
+    Game(GameId),
+
+    // Explicitly clear stored metadata when leaving a game/adventure
+    LeaveAdventure,
+    LeaveGame,
+}

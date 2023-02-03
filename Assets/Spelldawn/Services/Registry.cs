@@ -209,6 +209,9 @@ namespace Spelldawn.Services
     [SerializeField] TutorialService _tutorialService = null!;
     public TutorialService TutorialService => _tutorialService;
 
+    [SerializeField] AnalyticsService _analyticsService = null!;
+    public AnalyticsService AnalyticsService => _analyticsService;
+
     IEnumerator Start()
     {
       Application.targetFrameRate = 60;
@@ -252,8 +255,9 @@ namespace Spelldawn.Services
     {
       if (type is LogType.Error or LogType.Exception)
       {
-        if (!condition.Contains("RpcException"))
+        if (!condition.Contains("RpcException") && !condition.Contains("[Error]"))
         {
+          Debug.LogException(new Exception($"[Error] {AnalyticsService.CurrentMetadata} {condition}")); 
           StartCoroutine(CommandService.HandleCommands(new GameCommand
           {
             Debug = new ClientDebugCommand

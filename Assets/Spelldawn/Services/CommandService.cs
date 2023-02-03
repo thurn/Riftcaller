@@ -21,6 +21,7 @@ using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 #nullable enable
 
@@ -61,9 +62,11 @@ namespace Spelldawn.Services
         StartCoroutine(HandleCommandsAsync(_queue.Dequeue(), isParallel: false, () => { _currentlyHandling = false; }));
       }
     }
-
+    
     IEnumerator HandleCommandsAsync(CommandList commandList, bool isParallel = false, Action? onComplete = null)
     {
+      _registry.AnalyticsService.SetMetadata(commandList.LoggingMetadata);
+      
       if (commandList.Commands.Any(c => c.CommandCase == GameCommand.CommandOneofCase.UpdateGameView))
       {
         // Clear UI during animations

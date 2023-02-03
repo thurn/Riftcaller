@@ -40,32 +40,35 @@ pub fn handle_debug_action(
 ) -> Result<GameResponse> {
     let close = Panels::close(PanelAddress::DebugPanel);
     match action {
-        DebugAction::NewGame(side) => Ok(GameResponse::from_commands(vec![
-            Command::Debug(ClientDebugCommand {
-                debug_command: Some(DebugCommand::InvokeAction(ClientAction {
-                    action: Some(
-                        UserAction::NewGame(NewGameAction {
-                            opponent: PlayerId::Named(NamedPlayer::NoAction),
-                            deck: match side {
-                                Side::Overlord => {
-                                    NewGameDeck::NamedDeck(NamedDeck::CanonicalOverlord)
-                                }
-                                Side::Champion => {
-                                    NewGameDeck::NamedDeck(NamedDeck::CanonicalChampion)
-                                }
-                            },
-                            debug_options: Some(NewGameDebugOptions {
-                                deterministic: false,
-                                override_game_id: Some(GameId::new(0)),
-                            }),
-                            tutorial: false,
-                        })
-                        .as_client_action(),
-                    ),
-                })),
-            }),
-            close.into(),
-        ])),
+        DebugAction::NewGame(side) => Ok(GameResponse::from_commands(
+            None,
+            vec![
+                Command::Debug(ClientDebugCommand {
+                    debug_command: Some(DebugCommand::InvokeAction(ClientAction {
+                        action: Some(
+                            UserAction::NewGame(NewGameAction {
+                                opponent: PlayerId::Named(NamedPlayer::NoAction),
+                                deck: match side {
+                                    Side::Overlord => {
+                                        NewGameDeck::NamedDeck(NamedDeck::CanonicalOverlord)
+                                    }
+                                    Side::Champion => {
+                                        NewGameDeck::NamedDeck(NamedDeck::CanonicalChampion)
+                                    }
+                                },
+                                debug_options: Some(NewGameDebugOptions {
+                                    deterministic: false,
+                                    override_game_id: Some(GameId::new(0)),
+                                }),
+                                tutorial: false,
+                            })
+                            .as_client_action(),
+                        ),
+                    })),
+                }),
+                close.into(),
+            ],
+        )),
         DebugAction::JoinGame => {
             let mut game = requests::find_game(database, Some(GameId::new(0)))?;
             if matches!(game.overlord.id, PlayerId::Named(_)) {
@@ -107,17 +110,20 @@ pub fn handle_debug_action(
             let mut game = load_game(database, game_id)?;
             game.id = GameId::new(u64::MAX - index);
             database.write_game(&game)?;
-            Ok(GameResponse::from_commands(vec![]))
+            Ok(GameResponse::from_commands(None, vec![]))
         }
         DebugAction::LoadState(index) => {
             let mut game = database.game(GameId::new(u64::MAX - index))?;
             game.id = game_id.with_error(|| "Expected GameId")?;
             database.write_game(&game)?;
-            Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
-                scene_name: "Game".to_string(),
-                mode: SceneLoadMode::Single.into(),
-                skip_if_current: false,
-            })]))
+            Ok(GameResponse::from_commands(
+                None,
+                vec![Command::LoadScene(LoadSceneCommand {
+                    scene_name: "Game".to_string(),
+                    mode: SceneLoadMode::Single.into(),
+                    skip_if_current: false,
+                })],
+            ))
         }
         DebugAction::SetNamedPlayer(side, name) => {
             requests::handle_custom_action(database, player_id, game_id, |game, _| {
@@ -129,11 +135,14 @@ pub fn handle_debug_action(
 }
 
 fn load_scene() -> Result<GameResponse> {
-    Ok(GameResponse::from_commands(vec![Command::LoadScene(LoadSceneCommand {
-        scene_name: "Game".to_string(),
-        mode: SceneLoadMode::Single as i32,
-        skip_if_current: false,
-    })]))
+    Ok(GameResponse::from_commands(
+        None,
+        vec![Command::LoadScene(LoadSceneCommand {
+            scene_name: "Game".to_string(),
+            mode: SceneLoadMode::Single as i32,
+            skip_if_current: false,
+        })],
+    ))
 }
 
 fn load_game(database: &mut impl Database, game_id: Option<GameId>) -> Result<GameState> {

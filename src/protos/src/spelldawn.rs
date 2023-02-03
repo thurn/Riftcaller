@@ -1173,13 +1173,6 @@ pub struct DebugLogCommand {
     #[prost(string, tag = "1")]
     pub message: ::prost::alloc::string::String,
 }
-/// Run a series of command lists simultaneously. Warning: applying multiple
-/// commands to the same game object will have unpredictable results.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RunInParallelCommand {
-    #[prost(message, repeated, tag = "1")]
-    pub commands: ::prost::alloc::vec::Vec<CommandList>,
-}
 /// Wait before executing the next command in sequence.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DelayCommand {
@@ -1806,8 +1799,19 @@ pub mod game_command {
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LoggingMetadata {
+    #[prost(string, tag = "1")]
+    pub key: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub value: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CommandList {
+    /// Metadata to include with logging for this client, e.g. for crash
+    /// attribution.
     #[prost(message, repeated, tag = "1")]
+    pub logging_metadata: ::prost::alloc::vec::Vec<LoggingMetadata>,
+    #[prost(message, repeated, tag = "2")]
     pub commands: ::prost::alloc::vec::Vec<GameCommand>,
 }
 // ============================================================================

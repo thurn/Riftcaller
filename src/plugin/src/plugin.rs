@@ -156,6 +156,7 @@ unsafe fn error_boundary(
         Ok(i) => i,
         Err(e) => {
             let error = CommandList {
+                logging_metadata: vec![],
                 commands: vec![GameCommand {
                     command: Some(Command::Debug(ClientDebugCommand {
                         debug_command: Some(DebugCommand::LogMessage(LogMessage {

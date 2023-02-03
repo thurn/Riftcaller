@@ -121,10 +121,10 @@ impl From<Panels> for Command {
 
 impl InterfaceAction for Panels {
     fn as_client_action(&self) -> Action {
-        let clone: Panels = self.clone();
+        let clone = self.clone();
         Action::StandardAction(StandardAction {
             payload: clone.action.map_or_else(Vec::new, actions::payload),
-            update: Some(actions::command_list(vec![clone.into()])),
+            update: Some(actions::command_list(None, vec![clone.into()])),
             request_fields: HashMap::new(),
         })
     }

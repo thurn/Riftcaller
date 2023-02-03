@@ -1217,12 +1217,6 @@ message DebugLogCommand {
     string message = 1;
 }
 
-// Run a series of command lists simultaneously. Warning: applying multiple
-// commands to the same game object will have unpredictable results.
-message RunInParallelCommand {
-    repeated CommandList commands = 1;
-}
-
 // Wait before executing the next command in sequence.
 message DelayCommand {
     TimeValue duration = 1;
@@ -1786,8 +1780,20 @@ message GameCommand {
     }
 }
 
+// Metadata to include with logging for this client, e.g. for crash
+// attribution. These values are indexed by key and are never removed,
+// the server can clear an entry by explicitly sending the empty string.
+message LoggingMetadata {
+    string key = 1;
+    string value = 2;
+}
+
 message CommandList {
-    repeated GameCommand commands = 1;
+    // Metadata to include with logging for this client, e.g. for crash
+    // attribution.
+    repeated LoggingMetadata logging_metadata = 1;
+
+    repeated GameCommand commands = 2;
 }
 
 service Spelldawn {

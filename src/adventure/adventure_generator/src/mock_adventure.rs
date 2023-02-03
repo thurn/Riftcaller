@@ -21,6 +21,7 @@ use adventure_data::adventure::{
 };
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
+use game_data::primitives::AdventureId;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;
@@ -107,6 +108,7 @@ pub fn create(
     let side = config.side;
 
     AdventureState {
+        id: AdventureId::new(0),
         side,
         choice_screen: None,
         coins: crate::STARTING_COINS,

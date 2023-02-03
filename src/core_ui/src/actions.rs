@@ -17,9 +17,10 @@ use std::fmt::Debug;
 
 use adventure_data::adventure_action::AdventureAction;
 use game_data::game_actions::{GameAction, PromptAction};
+use game_data::primitives::ResponseContext;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientAction, CommandList, GameCommand, StandardAction};
+use protos::spelldawn::{ClientAction, CommandList, GameCommand, LoggingMetadata, StandardAction};
 use serde_json::ser;
 use user_action_data::{DebugAction, UserAction};
 
@@ -111,7 +112,7 @@ impl InterfaceAction for Command {
     fn as_client_action(&self) -> Action {
         Action::StandardAction(StandardAction {
             payload: vec![],
-            update: Some(command_list(vec![self.clone()])),
+            update: Some(command_list(None, vec![self.clone()])),
             request_fields: HashMap::new(),
         })
     }
@@ -121,7 +122,7 @@ impl InterfaceAction for Vec<Command> {
     fn as_client_action(&self) -> Action {
         Action::StandardAction(StandardAction {
             payload: vec![],
-            update: Some(command_list(self.clone())),
+            update: Some(command_list(None, self.clone())),
             request_fields: HashMap::new(),
         })
     }
@@ -144,7 +145,7 @@ pub fn with_optimistic_update(
 
     Action::StandardAction(StandardAction {
         payload,
-        update: Some(command_list(update)),
+        update: Some(command_list(None, update)),
         request_fields: HashMap::new(),
     })
 }
@@ -153,8 +154,30 @@ pub fn payload(action: UserAction) -> Vec<u8> {
     ser::to_vec(&action).expect("Serialization failed")
 }
 
-pub fn command_list(commands: Vec<Command>) -> CommandList {
+pub fn command_list(context: Option<ResponseContext>, commands: Vec<Command>) -> CommandList {
     CommandList {
+        logging_metadata: logging_metadata(context),
         commands: commands.into_iter().map(|c| GameCommand { command: Some(c) }).collect(),
+    }
+}
+
+fn logging_metadata(context: Option<ResponseContext>) -> Vec<LoggingMetadata> {
+    match context {
+        Some(ResponseContext::Adventure(adventure_id)) => {
+            vec![LoggingMetadata {
+                key: "adventure_id".to_string(),
+                value: adventure_id.to_string(),
+            }]
+        }
+        Some(ResponseContext::Game(game_id)) => {
+            vec![LoggingMetadata { key: "game_id".to_string(), value: game_id.to_string() }]
+        }
+        Some(ResponseContext::LeaveAdventure) => {
+            vec![LoggingMetadata { key: "adventure_id".to_string(), value: String::new() }]
+        }
+        Some(ResponseContext::LeaveGame) => {
+            vec![LoggingMetadata { key: "game_id".to_string(), value: String::new() }]
+        }
+        _ => vec![],
     }
 }

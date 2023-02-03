@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt;
+
 use anyhow::Result;
 use clap::ArgEnum;
 use convert_case::{Case, Casing};
@@ -38,6 +40,15 @@ impl PlayerId {
         match self {
             PlayerId::Database(key) => Ok(key.to_be_bytes()),
             _ => fail!("Expected PlayerId::Database"),
+        }
+    }
+}
+
+impl fmt::Display for PlayerId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            PlayerId::Database(id) => write!(f, "{}", id),
+            PlayerId::Named(name) => write!(f, "{}", name),
         }
     }
 }

@@ -51,8 +51,8 @@ impl From<Conditional> for Command {
     fn from(conditional: Conditional) -> Self {
         Command::Conditional(ConditionalCommand {
             query: Some(conditional.query),
-            if_true: Some(actions::command_list(conditional.if_true)),
-            if_false: Some(actions::command_list(conditional.if_false)),
+            if_true: Some(actions::command_list(None, conditional.if_true)),
+            if_false: Some(actions::command_list(None, conditional.if_false)),
         })
     }
 }

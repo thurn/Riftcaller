@@ -36,7 +36,7 @@ impl ActionBuilder {
     pub fn build(self) -> StandardAction {
         StandardAction {
             payload: self.action.map_or(vec![], actions::payload),
-            update: Some(actions::command_list(self.update.clone())),
+            update: Some(actions::command_list(None, self.update.clone())),
             request_fields: self
                 .request_fields
                 .iter()

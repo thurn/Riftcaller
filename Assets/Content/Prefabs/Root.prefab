@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: 3790007980437034109}
   - component: {fileID: 3210582071691945273}
   - component: {fileID: 9218228602600786081}
+  - component: {fileID: 8679095155801471873}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -245,6 +246,7 @@ MonoBehaviour:
   _characterService: {fileID: 0}
   _updateInterfaceService: {fileID: 3210582071691945273}
   _tutorialService: {fileID: 9218228602600786081}
+  _analyticsService: {fileID: 8679095155801471873}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,7 +273,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
-  _currentlyHandlingAction: 0
 --- !u!114 &205228965686964162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,7 +334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fc51058f0b74ece8e210d1e6c56a92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _registry: {fileID: 205228965686964167}
   _studioRenderTexture: {fileID: 8400000, guid: 7bfc4a7c7b8f645e3a6c465eaa238802, type: 2}
   _developmentAssets: {fileID: 205228965686964221}
 --- !u!114 &205228965686964169
@@ -535,6 +535,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
   _arrowBubblePrefab: {fileID: 8392308209551879796, guid: c9639fe46e9d64cc884327b1b1d0389b, type: 3}
+--- !u!114 &8679095155801471873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205228965686964173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f3d59d7bd71439881d5f4002656c0f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &205228965825750781
 GameObject:
   m_ObjectHideFlags: 0

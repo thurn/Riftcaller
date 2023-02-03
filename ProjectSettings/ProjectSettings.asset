@@ -872,7 +872,8 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Game Performance: 1
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -887,11 +888,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: ddf77106-b952-413f-af57-d10fb5218787
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Spelldawn
+  organizationId: derek-thurn
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

@@ -21,7 +21,7 @@ use derive_more::{
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
-use game_data::primitives::Side;
+use game_data::primitives::{AdventureId, Side};
 use rand::distributions::uniform::{SampleRange, SampleUniform};
 use rand::prelude::IteratorRandom;
 use rand::Rng;
@@ -188,6 +188,8 @@ impl AdventureConfiguration {
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {
+    /// Unique identifier for this adventure
+    pub id: AdventureId,
     /// Player type
     pub side: Side,
     /// Coin count, used to purchase more cards for deck

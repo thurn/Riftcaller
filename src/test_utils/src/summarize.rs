@@ -32,10 +32,10 @@ use protos::spelldawn::{
     ManaView, MapPosition, MoveGameObjectsCommand, MusicState, NoTargeting, Node, NodeType,
     ObjectPosition, PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand,
     PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress, RenderScreenOverlayCommand,
-    RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, RunInParallelCommand,
-    SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress,
-    TimeValue, TogglePanelCommand, UpdateGameViewCommand, UpdateInterfaceCommand,
-    UpdatePanelsCommand, UpdateWorldMapCommand, VisitRoomCommand, WorldMapSprite, WorldMapTile,
+    RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, SceneLoadMode, ScoreView,
+    SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand,
+    UpdateGameViewCommand, UpdateInterfaceCommand, UpdatePanelsCommand, UpdateWorldMapCommand,
+    VisitRoomCommand, WorldMapSprite, WorldMapTile,
 };
 use server::requests::GameResponse;
 
@@ -284,12 +284,6 @@ impl Summarize for Command {
             Self::UpdateInterface(v) => summary.child_node("UpdateInterface", v),
             Self::Conditional(v) => summary.child_node("Conditional", v),
         }
-    }
-}
-
-impl Summarize for RunInParallelCommand {
-    fn summarize(self, summary: &mut Summary) {
-        summary.values(self.commands);
     }
 }
 
