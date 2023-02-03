@@ -468,6 +468,8 @@ pub mod node_type {
 pub struct EventHandlers {
     #[prost(message, optional, tag = "1")]
     pub on_click: ::core::option::Option<ClientAction>,
+    #[prost(message, optional, tag = "2")]
+    pub on_long_press: ::core::option::Option<ClientAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {

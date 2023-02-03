@@ -152,6 +152,18 @@ namespace Spelldawn.Masonry
         {
           callbacks.SetCallback(Callbacks.Event.Click, null);
         }
+        
+        if (node.EventHandlers?.OnLongPress is { } longPress)
+        {
+          callbacks.SetCallback(Callbacks.Event.LongPress, () =>
+          {
+            registry.ActionService.HandleAction(longPress);
+          });
+        }
+        else
+        {
+          callbacks.SetCallback(Callbacks.Event.LongPress, null);
+        }        
 
         if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
         {

@@ -85,7 +85,8 @@ impl<'a> Component for ScreenOverlay<'a> {
                                 ClientDebugCommand {
                                     debug_command: Some(DebugCommand::ShowFeedbackForm(())),
                                 },
-                            ))),
+                            )))
+                            .long_press_action(Panels::open(PanelAddress::DebugPanel)),
                     )
                     .child(self.player.adventure.as_ref().map(|adventure| {
                         Row::new("CoinCount")

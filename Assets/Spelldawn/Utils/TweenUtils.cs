@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using DG.Tweening;
 using Spelldawn.Tests;
 
@@ -25,7 +26,7 @@ namespace Spelldawn.Utils
     public const float GlobalAnimationMultiplier = 1.0f;
     public const float MoveAnimationDurationSeconds = 0.3f * GlobalAnimationMultiplier;
     public const float FlipAnimationDurationSeconds = 0.4f * GlobalAnimationMultiplier;
-
+    
     public static Sequence Sequence(string name)
     {
       var result = DOTween.Sequence();
@@ -37,6 +38,11 @@ namespace Spelldawn.Utils
       }
       
       return result;
+    }
+
+    public static void ExecuteAfter(float seconds, Action action)
+    {
+      Sequence("ExecuteAfter").InsertCallback(seconds, () => action());
     }
   }
 }

@@ -302,6 +302,7 @@ namespace Spelldawn.Services
           PlayerPrefs.SetInt(command.SetBooleanPreference.Key, command.SetBooleanPreference.Value ? 1 : 0);
           break;
         case ClientDebugCommand.DebugCommandOneofCase.ShowFeedbackForm:
+          _registry.UserReportingScript.transform.parent.GetComponent<Canvas>().enabled = true;
           _registry.DocumentService.Loading = true;
           _registry.UserReportingScript.CreateUserReport(() =>
           {

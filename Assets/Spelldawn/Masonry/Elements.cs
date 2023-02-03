@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -56,12 +55,14 @@ namespace Spelldawn.Masonry
       MouseUp,
       MouseEnter,
       MouseLeave,
+      LongPress,
       Change
     }
 
     readonly HashSet<Event> _registered = new();
     readonly Dictionary<Event, Action?> _actions = new();
-    float _lastClickTime;
+    bool _mouseDown;
+    bool _firedLongPress;
 
     public void SetCallback(VisualElement e, Event eventType, Action? callback)
     {
@@ -83,18 +84,18 @@ namespace Spelldawn.Masonry
         case Event.Click:
           e.RegisterCallback<ClickEvent>(OnClick);
           break;
-        case Event.MouseDown:
-          e.RegisterCallback<MouseDownEvent>(OnMouseDown);
-          break;
-        case Event.MouseUp:
-          e.RegisterCallback<MouseUpEvent>(OnMouseUp);
-          break;
         case Event.MouseEnter:
           e.RegisterCallback<MouseEnterEvent>(OnMouseEnter);
           break;
         case Event.MouseLeave:
           e.RegisterCallback<MouseLeaveEvent>(OnMouseLeave);
           break;
+        case Event.MouseDown:
+        case Event.MouseUp:
+        case Event.LongPress:
+          e.RegisterCallback<MouseDownEvent>(OnMouseDown);
+          e.RegisterCallback<MouseUpEvent>(OnMouseUp);          
+          break;        
         case Event.Change:
           e.RegisterCallback<ChangeEvent<float>>(OnChange);
           break;
@@ -105,36 +106,47 @@ namespace Spelldawn.Masonry
 
     public void OnClick(ClickEvent evt)
     {
-      if (Mathf.Abs(Time.time - _lastClickTime) > 0.1f)
+      if (!_firedLongPress)
       {
-        _actions[Event.Click]?.Invoke();
-        _lastClickTime = Time.time;
+        _actions.GetValueOrDefault(Event.Click)?.Invoke();
       }
+      
+      _firedLongPress = false;
     }
 
     void OnMouseDown(MouseDownEvent evt)
     {
-      _actions[Event.MouseDown]?.Invoke();
+      _mouseDown = true;
+      _actions.GetValueOrDefault(Event.MouseDown)?.Invoke();
+      TweenUtils.ExecuteAfter(0.5f, () =>
+      {
+        if (_mouseDown)
+        {
+          _firedLongPress = true;
+          _actions.GetValueOrDefault(Event.LongPress)?.Invoke();
+        }
+      });
     }
 
     void OnMouseUp(MouseUpEvent evt)
     {
-      _actions[Event.MouseUp]?.Invoke();
+      _mouseDown = false;
+      _actions.GetValueOrDefault(Event.MouseUp)?.Invoke();
     }
 
     void OnMouseEnter(MouseEnterEvent evt)
     {
-      _actions[Event.MouseEnter]?.Invoke();
+      _actions.GetValueOrDefault(Event.MouseEnter)?.Invoke();
     }
 
     void OnMouseLeave(MouseLeaveEvent evt)
     {
-      _actions[Event.MouseLeave]?.Invoke();
+      _actions.GetValueOrDefault(Event.MouseLeave)?.Invoke();
     }
 
     void OnChange(ChangeEvent<float> evt)
     {
-      _actions[Event.Change]?.Invoke();
+      _actions.GetValueOrDefault(Event.Change)?.Invoke();
     }
   }
 

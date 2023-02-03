@@ -590,6 +590,8 @@ message NodeType {
 
 message EventHandlers {
     ClientAction on_click = 1;
+
+    ClientAction on_long_press = 2;
 }
 
 

@@ -160,6 +160,7 @@ pub struct IconButton {
     layout: Layout,
     button_type: IconButtonType,
     action: Box<dyn InterfaceAction>,
+    long_press_action: Box<dyn InterfaceAction>,
     show_frame: bool,
 }
 
@@ -171,6 +172,7 @@ impl IconButton {
             layout: Layout::default(),
             button_type: IconButtonType::Secondary,
             action: Box::new(NoAction {}),
+            long_press_action: Box::new(NoAction {}),
             show_frame: false,
         }
     }
@@ -192,6 +194,11 @@ impl IconButton {
 
     pub fn action(mut self, action: impl InterfaceAction + 'static) -> Self {
         self.action = Box::new(action);
+        self
+    }
+
+    pub fn long_press_action(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.long_press_action = Box::new(action);
         self
     }
 
@@ -243,6 +250,7 @@ impl Component for IconButton {
                     .flex_shrink(0.0),
             )
             .on_click(self.action.as_client_action())
+            .on_long_press(self.long_press_action.as_client_action())
             .child(if self.show_frame {
                 Some(
                     Row::new("Frame").style(

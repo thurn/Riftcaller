@@ -111,7 +111,15 @@ pub trait HasRenderNode: Sized {
 
     /// Action to invoke when this component is clicked/tapped
     fn on_click(mut self, action: impl InterfaceAction + 'static) -> Self {
-        self.render_node().event_handlers = Some(EventHandlers { on_click: Some(action.build()) });
+        self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_click =
+            Some(action.build());
+        self
+    }
+
+    /// Action to invoke when this component is pressed down for 500ms
+    fn on_long_press(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_long_press =
+            Some(action.build());
         self
     }
 }
