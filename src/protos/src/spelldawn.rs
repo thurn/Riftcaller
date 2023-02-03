@@ -1482,7 +1482,7 @@ pub struct LogMessage {
 /// Activates client-side debugging functionality
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientDebugCommand {
-    #[prost(oneof = "client_debug_command::DebugCommand", tags = "1, 2, 3, 4")]
+    #[prost(oneof = "client_debug_command::DebugCommand", tags = "1, 2, 3, 4, 5")]
     pub debug_command: ::core::option::Option<client_debug_command::DebugCommand>,
 }
 /// Nested message and enum types in `ClientDebugCommand`.
@@ -1497,6 +1497,8 @@ pub mod client_debug_command {
         LogMessage(super::LogMessage),
         #[prost(message, tag = "4")]
         SetBooleanPreference(super::SetBooleanPreference),
+        #[prost(message, tag = "5")]
+        ShowFeedbackForm(()),
     }
 }
 /// Position of a tile on the world map
@@ -1798,6 +1800,9 @@ pub mod game_command {
         Conditional(super::ConditionalCommand),
     }
 }
+/// Metadata to include with logging for this client, e.g. for crash
+/// attribution. These values are indexed by key and are never removed,
+/// the server can clear an entry by explicitly sending the empty string.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LoggingMetadata {
     #[prost(string, tag = "1")]

@@ -1,0 +1,3 @@
+Code in this directory is copyright Unity and provided as part of the user reporting SDK.
+
+See https://unitytech.github.io/clouddiagnostics/userreporting/UnityCloudDiagnosticsUserReports.html

@@ -212,6 +212,9 @@ namespace Spelldawn.Services
     [SerializeField] AnalyticsService _analyticsService = null!;
     public AnalyticsService AnalyticsService => _analyticsService;
 
+    [SerializeField] UserReportingScript _userReportingScript = null!;
+    public UserReportingScript UserReportingScript => _userReportingScript;
+
     IEnumerator Start()
     {
       Application.targetFrameRate = 60;

@@ -21,7 +21,6 @@ using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Random = System.Random;
 
 #nullable enable
 
@@ -301,6 +300,13 @@ namespace Spelldawn.Services
           break;
         case ClientDebugCommand.DebugCommandOneofCase.SetBooleanPreference:
           PlayerPrefs.SetInt(command.SetBooleanPreference.Key, command.SetBooleanPreference.Value ? 1 : 0);
+          break;
+        case ClientDebugCommand.DebugCommandOneofCase.ShowFeedbackForm:
+          _registry.DocumentService.Loading = true;
+          _registry.UserReportingScript.CreateUserReport(() =>
+          {
+            _registry.DocumentService.Loading = false;
+          });
           break;
       }
     }

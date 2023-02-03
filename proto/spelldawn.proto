@@ -1536,10 +1536,11 @@ message LogMessage {
 // Activates client-side debugging functionality
 message ClientDebugCommand {
     oneof debug_command {
-        google.protobuf.Empty ShowLogs = 1;
+        google.protobuf.Empty show_logs = 1;
         ClientAction invoke_action = 2;
         LogMessage log_message = 3;
         SetBooleanPreference set_boolean_preference = 4;
+        google.protobuf.Empty show_feedback_form = 5;
     }
 }
 

@@ -16,6 +16,7 @@
 //! and provide navigation
 
 use constants::ui_constants;
+use core_ui::action_builder::ActionBuilder;
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::{BackgroundColor, FontSize, COIN_COUNT_BORDER};
 use core_ui::icons;
@@ -27,7 +28,9 @@ use game_data::primitives::DeckId;
 use game_data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PanelAddress};
 use player_data::{PlayerData, PlayerStatus};
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
+use protos::spelldawn::client_debug_command::DebugCommand;
+use protos::spelldawn::game_command::Command;
+use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPosition};
 
 pub struct ScreenOverlay<'a> {
     player: &'a PlayerData,
@@ -78,7 +81,11 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .name(&element_names::FEEDBACK_BUTTON)
                             .button_type(IconButtonType::NavBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
-                            .action(Panels::open(PanelAddress::DebugPanel)),
+                            .action(ActionBuilder::new().update(Command::Debug(
+                                ClientDebugCommand {
+                                    debug_command: Some(DebugCommand::ShowFeedbackForm(())),
+                                },
+                            ))),
                     )
                     .child(self.player.adventure.as_ref().map(|adventure| {
                         Row::new("CoinCount")
