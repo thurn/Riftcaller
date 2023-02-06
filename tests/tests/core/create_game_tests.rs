@@ -150,7 +150,29 @@ fn both_keep_opening_hands() {
     assert_eq!(0, session.opponent.this_player.actions());
     assert_eq!(3, session.opponent.other_player.actions());
 
+    assert_eq!(6, session.user.cards.hand(PlayerName::User).len());
+    assert_eq!(5, session.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(5, session.opponent.cards.hand(PlayerName::User).len());
+    assert_eq!(6, session.opponent.cards.hand(PlayerName::Opponent).len());
+
     assert!(session.dusk());
+}
+
+#[test]
+fn draw_leader_card() {
+    let (game_id, overlord_id, champion_id) = generate_ids();
+    let mut session = new_session(game_id, overlord_id, champion_id);
+    initiate_game(&mut session);
+
+    session.click_on(overlord_id, "Keep");
+    session.click_on(champion_id, "Keep");
+    let hand = session.user.cards.hand(PlayerName::User);
+    assert_eq!("Test Overlord Leader", hand[0]);
+
+    spend_actions_until_turn_over(&mut session, Side::Overlord);
+
+    let hand = session.opponent.cards.hand(PlayerName::User);
+    assert_eq!("Test Champion Leader", hand[0]);
 }
 
 fn initiate_game(session: &mut TestSession) {

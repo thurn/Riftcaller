@@ -103,7 +103,7 @@ pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     primary_school: School::Neutral,
-    leader: Some(CardName::TestOverlordLeader),
+    leader: Some(CardName::TestChampionLeader),
     cards: hashmap! {CardName::TestChampionSpell => 45},
 });
 
