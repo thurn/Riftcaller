@@ -70,7 +70,7 @@ pub static TUTORIAL_OVERLORD: Lazy<Deck> =
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     primary_school: School::Neutral,
-    leader: None,
+    leader: Some(CardName::TutorialOverlordLeader),
     cards: hashmap! {
         CardName::GoldMine => 3,
         CardName::ActivateReinforcements => 2,
@@ -137,7 +137,7 @@ pub static TUTORIAL_CHAMPION: Lazy<Deck> =
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     primary_school: School::Neutral,
-    leader: None,
+    leader: Some(CardName::TutorialChampionLeader),
     cards: hashmap! {
         CardName::Meditation => 2,
         CardName::CoupDeGrace => 3,

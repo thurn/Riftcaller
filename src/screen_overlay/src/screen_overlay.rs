@@ -17,6 +17,7 @@
 
 use constants::ui_constants;
 use core_ui::action_builder::ActionBuilder;
+use core_ui::actions::InterfaceAction;
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::design::{BackgroundColor, FontSize, COIN_COUNT_BORDER};
 use core_ui::icons;
@@ -81,11 +82,15 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .name(&element_names::FEEDBACK_BUTTON)
                             .button_type(IconButtonType::NavBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
-                            .action(ActionBuilder::new().update(Command::Debug(
-                                ClientDebugCommand {
-                                    debug_command: Some(DebugCommand::ShowFeedbackForm(())),
-                                },
-                            )))
+                            .action(if cfg!(debug_assertions) {
+                                Panels::open(PanelAddress::DebugPanel).as_client_action()
+                            } else {
+                                ActionBuilder::new()
+                                    .update(Command::Debug(ClientDebugCommand {
+                                        debug_command: Some(DebugCommand::ShowFeedbackForm(())),
+                                    }))
+                                    .as_client_action()
+                            })
                             .long_press_action(Panels::open(PanelAddress::DebugPanel)),
                     )
                     .child(self.player.adventure.as_ref().map(|adventure| {

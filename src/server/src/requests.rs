@@ -472,6 +472,8 @@ fn requested_deck(
         // TODO: Each named player should have their own decklist
         PlayerId::Named(name) => match name {
             NamedPlayer::TutorialOpponent => Some(decklists::TUTORIAL_OVERLORD.clone()),
+            NamedPlayer::DebugChampion => Some(decklists::CANONICAL_CHAMPION.clone()),
+            NamedPlayer::DebugOverlord => Some(decklists::CANONICAL_OVERLORD.clone()),
             _ => Some(decklists::basic_deck(side)),
         },
     })

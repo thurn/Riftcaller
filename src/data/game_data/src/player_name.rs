@@ -59,6 +59,8 @@ impl fmt::Display for PlayerId {
 )]
 pub enum NamedPlayer {
     NoAction,
+    DebugOverlord,
+    DebugChampion,
     TutorialOpponent,
     TestMinimax,
     TestAlphaBetaScores,
@@ -69,5 +71,12 @@ pub enum NamedPlayer {
 impl NamedPlayer {
     pub fn displayed_name(&self) -> String {
         format!("{self}").from_case(Case::Pascal).to_case(Case::Title)
+    }
+
+    pub fn has_no_actions(self) -> bool {
+        match self {
+            Self::NoAction | Self::DebugOverlord | Self::DebugChampion => true,
+            _ => false,
+        }
     }
 }

@@ -31,7 +31,7 @@ pub fn tutorial_champion_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TutorialChampionLeader,
         sets: vec![CardSetName::Basics],
-        cost: leader_cost(),
+        cost: cost(0),
         image: assets::fantasy_class_image("Priest", "Female"),
         card_type: CardType::Leader,
         side: Side::Champion,

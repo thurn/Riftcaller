@@ -74,7 +74,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 82aa0cde6e9a949bd977d8be58cfa587
-    m_Address: Assets/ThirdParty/Rexard/BadgesMegapack/champion.png
+    m_Address: Rexard/BadgesMegapack/champion.png
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 5669d5d2212b743f598ab5e0fead6a70

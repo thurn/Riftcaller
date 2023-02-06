@@ -24,7 +24,7 @@ use concurrent_queue::ConcurrentQueue;
 use database::Database;
 use game_data::game::GameState;
 use game_data::game_actions::GameAction;
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Side};
 use once_cell::sync::Lazy;
 use protos::spelldawn::{CommandList, PlayerIdentifier};
@@ -85,7 +85,7 @@ pub fn handle_request_if_active(
 fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>>)> {
     for side in enum_iterator::all::<Side>() {
         if let PlayerId::Named(name) = game.player(side).id {
-            if name != NamedPlayer::NoAction && actions::can_take_action(game, side) {
+            if !name.has_no_actions() && actions::can_take_action(game, side) {
                 return Some((side, agents::get(name)));
             }
         }

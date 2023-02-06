@@ -151,13 +151,13 @@ fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> boo
         CardType::ChampionSpell
         | CardType::Weapon
         | CardType::Artifact
+        | CardType::Leader
         | CardType::OverlordSpell => target == CardTarget::None,
         CardType::Minion => matches!(target, CardTarget::Room(_)),
         CardType::Project | CardType::Scheme => {
             matches!(target, CardTarget::Room(room_id)
                 if room_can_add(game, room_id, vec![CardType::Project, CardType::Scheme]))
         }
-        CardType::Leader => false,
         CardType::GameModifier => false,
     }
 }

@@ -29,7 +29,7 @@ pub fn tutorial_overlord_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TutorialOverlordLeader,
         sets: vec![CardSetName::Basics],
-        cost: leader_cost(),
+        cost: cost(0),
         image: assets::fantasy_class_image("Warlock", "Male"),
         card_type: CardType::Leader,
         side: Side::Overlord,

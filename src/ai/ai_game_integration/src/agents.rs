@@ -33,6 +33,8 @@ pub fn get(name: NamedPlayer) -> Box<dyn Agent<SpelldawnState>> {
     match name {
         NamedPlayer::NoAction => Box::new(NoActionAgent {}),
         NamedPlayer::TutorialOpponent => Box::new(NoActionAgent {}),
+        NamedPlayer::DebugChampion => Box::new(NoActionAgent {}),
+        NamedPlayer::DebugOverlord => Box::new(NoActionAgent {}),
         NamedPlayer::TestMinimax => Box::new(AgentData::omniscient(
             "MINIMAX",
             MinimaxAlgorithm { search_depth: 4 },

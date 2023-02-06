@@ -47,7 +47,10 @@ pub fn handle_debug_action(
                     debug_command: Some(DebugCommand::InvokeAction(ClientAction {
                         action: Some(
                             UserAction::NewGame(NewGameAction {
-                                opponent: PlayerId::Named(NamedPlayer::NoAction),
+                                opponent: PlayerId::Named(match side {
+                                    Side::Overlord => NamedPlayer::DebugChampion,
+                                    Side::Champion => NamedPlayer::DebugOverlord,
+                                }),
                                 deck: match side {
                                     Side::Overlord => {
                                         NewGameDeck::NamedDeck(NamedDeck::CanonicalOverlord)
