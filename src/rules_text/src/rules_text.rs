@@ -15,6 +15,7 @@
 //! Builds the text displayed on cards based on their card definition
 
 pub mod card_icons;
+pub mod rules_text2;
 
 use std::fmt::Write as _;
 

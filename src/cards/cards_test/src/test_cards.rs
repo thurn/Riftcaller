@@ -27,7 +27,6 @@ use game_data::primitives::{
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::{Keyword, Sentence};
 use game_data::text2::trigger;
-use game_data::text2::Token::*;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

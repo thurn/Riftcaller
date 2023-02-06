@@ -23,8 +23,7 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
-use game_data::text2::Token::*;
-use game_data::text2::{activation, trigger, Text2};
+use game_data::text2::{trigger, Text2};
 use rules::{flags, mana, mutations};
 
 pub fn meditation() -> CardDefinition {

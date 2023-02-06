@@ -22,8 +22,7 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::text::{DamageWord, Keyword, Sentence, TextToken};
-use game_data::text2::Token::*;
-use game_data::text2::{activation, trigger};
+use game_data::text2::trigger;
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -128,7 +127,7 @@ pub fn gathering_dark() -> CardDefinition {
 
 pub fn coinery() -> CardDefinition {
     let t2 = text2![text2![Unveil, "when activated", Then, StoreMana(15)]];
-    let t3 = activation(text2![TakeMana(3)]);
+    let t3 = text2![TakeMana(3)];
 
     CardDefinition {
         name: CardName::Coinery,

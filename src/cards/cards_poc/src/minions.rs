@@ -27,7 +27,6 @@ use game_data::game_actions::CardPromptAction;
 use game_data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
 use game_data::text::{DamageWord, Keyword};
 use game_data::text2::trigger;
-use game_data::text2::Token::*;
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};

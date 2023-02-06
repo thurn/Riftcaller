@@ -24,7 +24,6 @@ use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::Keyword;
 use game_data::text2::trigger;
-use game_data::text2::Token::*;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 

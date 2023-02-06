@@ -23,7 +23,6 @@ use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::{Keyword, Sentence};
 use game_data::text2::trigger;
-use game_data::text2::Token::*;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

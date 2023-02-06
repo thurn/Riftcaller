@@ -20,8 +20,8 @@ use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, 
 use game_data::game::GameState;
 use game_data::primitives::{AbilityId, AttackValue, CardId, ManaValue};
 use game_data::text::{AbilityText, DamageWord, Keyword, RulesTextContext, Sentence, TextToken};
+use game_data::text2::trigger;
 use game_data::text2::Token::*;
-use game_data::text2::{activation, trigger};
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
 
@@ -83,7 +83,7 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
 
 /// Activated ability to take `N` stored mana from this card by paying a cost
 pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability {
-    let t2 = activation(text2![TakeMana(N)]);
+    let t2 = text2![TakeMana(N)];
 
     Ability {
         ability_type: AbilityType::Activated(cost, TargetRequirement::None),

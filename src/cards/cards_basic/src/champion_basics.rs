@@ -24,8 +24,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::{Keyword, Sentence};
-use game_data::text2::Token::*;
-use game_data::text2::{activation, trigger};
+use game_data::text2::trigger;
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -117,7 +116,7 @@ pub fn lodestone() -> CardDefinition {
 
 pub fn mana_battery() -> CardDefinition {
     let t2 = trigger(Dawn, text2![TakeMana(1)]);
-    let t2 = activation(text2![StoreMana(3)]);
+    let t2 = text2![StoreMana(3)];
 
     CardDefinition {
         name: CardName::ManaBattery,

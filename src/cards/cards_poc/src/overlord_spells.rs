@@ -20,7 +20,6 @@ use game_data::card_definition::{CardConfig, CardDefinition, TargetRequirement};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::text2::Token::*;
 use rules::{flags, mana, mutations};
 
 pub fn overwhelming_power() -> CardDefinition {

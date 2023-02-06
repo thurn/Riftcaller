@@ -38,6 +38,7 @@ use game_data::primitives::{
 use game_data::special_effects::Projectile;
 use game_data::text::{AbilityText, Keyword, NumericOperator, TextToken};
 use game_data::text2::Text2;
+pub use game_data::text2::Token::*;
 use game_data::updates::{GameUpdate, InitiatedBy};
 use game_data::utils;
 use rules::mana::ManaPurpose;

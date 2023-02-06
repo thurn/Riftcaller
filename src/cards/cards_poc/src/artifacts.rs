@@ -25,8 +25,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::{Keyword, Sentence};
-use game_data::text2::Token::*;
-use game_data::text2::{activation, trigger};
+use game_data::text2::trigger;
 use game_data::utils;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
@@ -62,7 +61,7 @@ pub fn invisibility_ring() -> CardDefinition {
 
 pub fn accumulator() -> CardDefinition {
     let t2 = trigger(SuccessfulRaid, text2![StoreMana(1)]);
-    let t2 = activation(text2![StoreMana(1), "then take all stored", ManaSymbol]);
+    let t2 = text2![StoreMana(1), "then take all stored", ManaSymbol];
 
     CardDefinition {
         name: CardName::Accumulator,
@@ -144,7 +143,7 @@ pub fn mage_gloves() -> CardDefinition {
 }
 
 pub fn magical_resonator() -> CardDefinition {
-    let t2 = activation(text2![text2![TakeMana(3)], text2!["Use this ability once per turn"]]);
+    let t2 = text2![text2![TakeMana(3)], text2!["Use this ability once per turn"]];
 
     CardDefinition {
         name: CardName::MagicalResonator,

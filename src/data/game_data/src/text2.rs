@@ -12,23 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::card_definition::Cost;
 use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue};
 
 pub fn trigger(name: Token, effect: Vec<Text2>) -> Vec<Text2> {
-    vec![Text2::KeywordTrigger(name, effect)]
-}
-
-pub fn activation(effect: Vec<Text2>) -> Vec<Text2> {
-    vec![Text2::ActivationEffect(effect)]
+    vec![Text2::Trigger(name, effect)]
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum Text2 {
     Children(Vec<Self>),
-    KeywordTrigger(Token, Vec<Self>),
-    ActivationCost(Vec<Self>),
-    ActivationEffect(Vec<Self>),
+    Trigger(Token, Vec<Text2>),
     Literal(String),
     Reminder(String),
     Token(Token),
@@ -96,17 +89,17 @@ impl From<Vec<Text2>> for Text2 {
     }
 }
 
-impl<T> From<Cost<T>> for Text2 {
-    fn from(cost: Cost<T>) -> Self {
-        let mut result = vec![];
-        if let Some(mana) = cost.mana {
-            result.push(Self::Token(Token::Mana(mana)))
-        }
+// impl<T> From<Cost<T>> for Text2 {
+//     fn from(cost: Cost<T>) -> Self {
+//         let mut result = vec![];
+//         if let Some(mana) = cost.mana {
+//             result.push(Self::Token(Token::Mana(mana)))
+//         }
 
-        if cost.actions > 1 {
-            result.push(Self::Token(Token::Actions(cost.actions)));
-        }
+//         if cost.actions > 1 {
+//             result.push(Self::Token(Token::Actions(cost.actions)));
+//         }
 
-        Self::ActivationCost(result)
-    }
-}
+//         Self::ActivationCost(result)
+//     }
+// }

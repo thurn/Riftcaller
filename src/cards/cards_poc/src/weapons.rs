@@ -27,7 +27,6 @@ use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::Keyword;
 use game_data::text2::trigger;
-use game_data::text2::Token::*;
 use game_data::utils;
 
 pub fn marauders_axe() -> CardDefinition {
