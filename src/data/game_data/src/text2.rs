@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use crate::card_definition::Cost;
-use crate::primitives::{ActionCount, BreachValue, DamageAmount, HealthValue, ManaValue};
+use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue};
 
 pub fn trigger(name: Token, effect: Vec<Text2>) -> Text2 {
-    Text2::Literal("Hello".to_string())
+    Text2::KeywordTrigger(name, effect)
 }
 
 pub fn activation(effect: Vec<Text2>) -> Text2 {
@@ -26,6 +26,7 @@ pub fn activation(effect: Vec<Text2>) -> Text2 {
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum Text2 {
     Children(Vec<Self>),
+    KeywordTrigger(Token, Vec<Self>),
     ActivationCost(Vec<Self>),
     BoostCost(Vec<Self>),
     Literal(String),

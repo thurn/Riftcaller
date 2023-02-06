@@ -147,7 +147,7 @@ pub fn coinery() -> CardDefinition {
             ]),
             Ability {
                 text: text![Keyword::Take(Sentence::Start, 3)],
-                ability_type: AbilityType::Activated(actions(1), TargetRequirement::None),
+                ability_type: activate_for_action(),
                 delegates: vec![
                     activate_while_face_down(),
                     face_down_ability_cost(),

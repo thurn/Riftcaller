@@ -140,7 +140,7 @@ pub fn mana_battery() -> CardDefinition {
             ),
             Ability {
                 text: text![Keyword::Store(Sentence::Start, 3)],
-                ability_type: AbilityType::Activated(actions(1), TargetRequirement::None),
+                ability_type: activate_for_action(),
                 delegates: vec![on_activated(|g, s, _| {
                     add_stored_mana(g, s.card_id(), 3);
                     Ok(())

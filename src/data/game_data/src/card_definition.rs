@@ -155,8 +155,8 @@ pub enum AbilityType {
 /// the Delegate system, see delegates.rs for more information.
 #[derive(Debug)]
 pub struct Ability {
-    pub text: AbilityText,
     pub ability_type: AbilityType,
+    pub text: AbilityText,
     pub delegates: Vec<Delegate>,
 }
 

@@ -22,6 +22,7 @@ pub mod text_macro2;
 use anyhow::Result;
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardStats, Cost, CustomCost, SchemePoints, SpecialEffects,
+    TargetRequirement,
 };
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
@@ -101,6 +102,11 @@ pub fn once_per_turn_cost() -> Option<CustomCost<AbilityId>> {
 /// Creates a standard [Ability] with a single [Delegate].
 pub fn simple_ability(text: AbilityText, delegate: Delegate) -> Ability {
     Ability { text, ability_type: AbilityType::Standard, delegates: vec![delegate] }
+}
+
+/// An [AbilityType] for an ability which costs 1 action and has no target.
+pub fn activate_for_action() -> AbilityType {
+    AbilityType::Activated(actions(1), TargetRequirement::None)
 }
 
 /// RequirementFn which always returns true

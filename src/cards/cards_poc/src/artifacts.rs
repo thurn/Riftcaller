@@ -83,8 +83,8 @@ pub fn accumulator() -> CardDefinition {
                 }),
             ),
             Ability {
+                ability_type: activate_for_action(),
                 text: text!(Keyword::Store(Sentence::Start, 1), ", then take all stored mana."),
-                ability_type: AbilityType::Activated(actions(1), TargetRequirement::None),
                 delegates: vec![on_activated(|g, s, activated| {
                     let mana = add_stored_mana(g, s.card_id(), 1);
                     mutations::take_stored_mana(g, activated.card_id(), mana, OnZeroStored::Ignore)
