@@ -42,7 +42,7 @@ pub fn test_overlord_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TestOverlordLeader,
         sets: vec![CardSetName::Test],
-        cost: leader_cost(),
+        cost: cost(0),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/3.png"),
         card_type: CardType::Leader,
         side: Side::Overlord,
@@ -57,7 +57,7 @@ pub fn test_champion_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TestChampionLeader,
         sets: vec![CardSetName::Test],
-        cost: leader_cost(),
+        cost: cost(0),
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/2.png"),
         card_type: CardType::Leader,
         side: Side::Champion,

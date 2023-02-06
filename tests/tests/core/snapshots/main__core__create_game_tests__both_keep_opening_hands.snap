@@ -83,6 +83,7 @@ command_list:
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
+            top_left_icon: "0"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -271,6 +272,7 @@ command_list:
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
+            top_left_icon: "0"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -458,6 +460,7 @@ command_list:
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
+            top_left_icon: "0"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -611,6 +614,7 @@ channel_response:
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
+            top_left_icon: "0"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -799,6 +803,7 @@ channel_response:
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
+            top_left_icon: "0"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -991,6 +996,7 @@ channel_response:
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
+            top_left_icon: "0"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -1001,7 +1007,7 @@ channel_response:
             title: "Test Overlord Leader"
             rules_text: "<RulesText>"
             targeting: 
-                can_play: false
+                can_play: true
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionLeaderContainer { owner: User }

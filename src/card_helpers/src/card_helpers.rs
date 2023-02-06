@@ -72,11 +72,6 @@ pub fn cost(mana: ManaValue) -> Cost<CardId> {
     Cost { mana: Some(mana), actions: 1, custom_cost: None }
 }
 
-/// [Cost] for an leader card
-pub fn leader_cost() -> Cost<CardId> {
-    Cost::default()
-}
-
 /// [Cost] for a scheme card
 pub fn scheme_cost() -> Cost<CardId> {
     Cost { mana: None, actions: 1, custom_cost: None }
