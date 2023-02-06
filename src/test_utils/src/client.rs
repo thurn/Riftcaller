@@ -407,7 +407,7 @@ impl TestSession {
 /// provided `card_name`.
 pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_name: CardName) {
     let card = game.card(card_id);
-    let mut state = CardState::new(card_id, card_name, false);
+    let mut state = CardState::new(card_id, card_name);
     state.set_position_internal(card.sorting_key, card.position());
     *game.card_mut(card_id) = state;
 

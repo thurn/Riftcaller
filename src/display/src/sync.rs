@@ -68,7 +68,6 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
     Ok(PlayerView {
         side: adapters::player_side(side),
         player_info: Some(PlayerInfo {
-            name: Some(leader.name.displayed_name()),
             arena_portrait: Some(adapters::sprite(
                 definition.config.player_portrait.as_ref().unwrap_or(&definition.image),
             )),
@@ -93,7 +92,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
             available_action_count: game.player(side).actions,
         }),
         deck_view: Some(DeckView {
-            card_back: Some(assets::card_back(rules::get(leader.name).school)),
+            card_back: Some(assets::card_back(game.player(side).primary_school)),
             card_count: game.deck(side).count() as u32,
             can_take_draw_card_action: flags::can_take_draw_card_action(game, side),
         }),

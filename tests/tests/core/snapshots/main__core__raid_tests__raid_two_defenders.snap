@@ -9,7 +9,6 @@ command_list:
         user: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -19,7 +18,6 @@ command_list:
         opponent: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 998
@@ -164,7 +162,6 @@ command_list:
         user: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -174,7 +171,6 @@ command_list:
         opponent: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -328,7 +324,6 @@ command_list:
         user: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -338,7 +333,6 @@ command_list:
         opponent: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -498,7 +492,6 @@ channel_response:
         user: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 998
@@ -508,7 +501,6 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -654,7 +646,6 @@ channel_response:
         user: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -664,7 +655,6 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -804,7 +794,6 @@ channel_response:
         user: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995
@@ -814,7 +803,6 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 995

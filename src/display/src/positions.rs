@@ -178,7 +178,7 @@ fn adapt_position(
         CardPosition::Hand(side) => hand(builder, side),
         CardPosition::DeckTop(side) => deck(builder, side),
         CardPosition::DiscardPile(side) => discard(builder, side),
-        CardPosition::Scored(side) | CardPosition::Leader(side) => leader(builder, side),
+        CardPosition::Scored(side) | CardPosition::ArenaLeader(side) => leader(builder, side),
         CardPosition::Scoring => staging(),
         CardPosition::Played(side, target) => {
             card_release_position(builder, game, side, card_id, target)?

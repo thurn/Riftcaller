@@ -265,10 +265,9 @@ namespace Spelldawn.Protos {
             "LnNwZWxsZGF3bi5QbGF5ZXJOYW1lEjIKDXJldmVhbGVkX2NhcmQYCiABKAsy",
             "Gy5zcGVsbGRhd24uUmV2ZWFsZWRDYXJkVmlldxIyCg9jcmVhdGVfcG9zaXRp",
             "b24YCyABKAsyGS5zcGVsbGRhd24uT2JqZWN0UG9zaXRpb24SMwoQZGVzdHJv",
-            "eV9wb3NpdGlvbhgMIAEoCzIZLnNwZWxsZGF3bi5PYmplY3RQb3NpdGlvbiKj",
-            "AQoKUGxheWVySW5mbxIqCgRuYW1lGAEgASgLMhwuZ29vZ2xlLnByb3RvYnVm",
-            "LlN0cmluZ1ZhbHVlEjAKDmFyZW5hX3BvcnRyYWl0GAIgASgLMhguc3BlbGxk",
-            "YXduLlNwcml0ZUFkZHJlc3MSNwoUdmFsaWRfcm9vbXNfdG9fdmlzaXQYAyAD",
+            "eV9wb3NpdGlvbhgMIAEoCzIZLnNwZWxsZGF3bi5PYmplY3RQb3NpdGlvbiJ3",
+            "CgpQbGF5ZXJJbmZvEjAKDmFyZW5hX3BvcnRyYWl0GAEgASgLMhguc3BlbGxk",
+            "YXduLlNwcml0ZUFkZHJlc3MSNwoUdmFsaWRfcm9vbXNfdG9fdmlzaXQYAiAD",
             "KA4yGS5zcGVsbGRhd24uUm9vbUlkZW50aWZpZXIiVAoITWFuYVZpZXcSEQoJ",
             "YmFzZV9tYW5hGAEgASgNEhIKCmJvbnVzX21hbmEYAiABKA0SIQoZY2FuX3Rh",
             "a2VfZ2Fpbl9tYW5hX2FjdGlvbhgDIAEoCCIaCglTY29yZVZpZXcSDQoFc2Nv",
@@ -718,7 +717,7 @@ namespace Spelldawn.Protos {
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ObjectPosition), global::Spelldawn.Protos.ObjectPosition.Parser, new[]{ "SortingKey", "SortingSubkey", "Offscreen", "Room", "Item", "Staging", "Hand", "Deck", "DeckContainer", "DiscardPile", "DiscardPileContainer", "Raid", "Browser", "Leader", "LeaderContainer", "IntoCard", "Revealed" }, new[]{ "Position" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.RevealedCardView), global::Spelldawn.Protos.RevealedCardView.Parser, new[]{ "CardFrame", "TitleBackground", "Jewel", "Image", "Title", "RulesText", "Targeting", "OnReleasePosition", "SupplementalInfo", "ImageBackground" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.CardView), global::Spelldawn.Protos.CardView.Parser, new[]{ "CardId", "CardPosition", "Prefab", "RevealedToViewer", "IsFaceUp", "CardIcons", "ArenaFrame", "FaceDownArenaFrame", "OwningPlayer", "RevealedCard", "CreatePosition", "DestroyPosition" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.PlayerInfo), global::Spelldawn.Protos.PlayerInfo.Parser, new[]{ "Name", "ArenaPortrait", "ValidRoomsToVisit" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.PlayerInfo), global::Spelldawn.Protos.PlayerInfo.Parser, new[]{ "ArenaPortrait", "ValidRoomsToVisit" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ManaView), global::Spelldawn.Protos.ManaView.Parser, new[]{ "BaseMana", "BonusMana", "CanTakeGainManaAction" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ScoreView), global::Spelldawn.Protos.ScoreView.Parser, new[]{ "Score" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ActionTrackerView), global::Spelldawn.Protos.ActionTrackerView.Parser, new[]{ "AvailableActionCount" }, null, null, null, null),
@@ -20329,7 +20328,6 @@ namespace Spelldawn.Protos {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerInfo(PlayerInfo other) : this() {
-      Name = other.Name;
       arenaPortrait_ = other.arenaPortrait_ != null ? other.arenaPortrait_.Clone() : null;
       validRoomsToVisit_ = other.validRoomsToVisit_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -20340,21 +20338,8 @@ namespace Spelldawn.Protos {
       return new PlayerInfo(this);
     }
 
-    /// <summary>Field number for the "name" field.</summary>
-    public const int NameFieldNumber = 1;
-    private static readonly pb::FieldCodec<string> _single_name_codec = pb::FieldCodec.ForClassWrapper<string>(10);
-    private string name_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Name {
-      get { return name_; }
-      set {
-        name_ = value;
-      }
-    }
-
-
     /// <summary>Field number for the "arena_portrait" field.</summary>
-    public const int ArenaPortraitFieldNumber = 2;
+    public const int ArenaPortraitFieldNumber = 1;
     private global::Spelldawn.Protos.SpriteAddress arenaPortrait_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Spelldawn.Protos.SpriteAddress ArenaPortrait {
@@ -20365,9 +20350,9 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "valid_rooms_to_visit" field.</summary>
-    public const int ValidRoomsToVisitFieldNumber = 3;
+    public const int ValidRoomsToVisitFieldNumber = 2;
     private static readonly pb::FieldCodec<global::Spelldawn.Protos.RoomIdentifier> _repeated_validRoomsToVisit_codec
-        = pb::FieldCodec.ForEnum(26, x => (int) x, x => (global::Spelldawn.Protos.RoomIdentifier) x);
+        = pb::FieldCodec.ForEnum(18, x => (int) x, x => (global::Spelldawn.Protos.RoomIdentifier) x);
     private readonly pbc::RepeatedField<global::Spelldawn.Protos.RoomIdentifier> validRoomsToVisit_ = new pbc::RepeatedField<global::Spelldawn.Protos.RoomIdentifier>();
     /// <summary>
     /// Rooms which this player can currently visit (raid/level up)
@@ -20390,7 +20375,6 @@ namespace Spelldawn.Protos {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Name != other.Name) return false;
       if (!object.Equals(ArenaPortrait, other.ArenaPortrait)) return false;
       if(!validRoomsToVisit_.Equals(other.validRoomsToVisit_)) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -20399,7 +20383,6 @@ namespace Spelldawn.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (name_ != null) hash ^= Name.GetHashCode();
       if (arenaPortrait_ != null) hash ^= ArenaPortrait.GetHashCode();
       hash ^= validRoomsToVisit_.GetHashCode();
       if (_unknownFields != null) {
@@ -20418,11 +20401,8 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (name_ != null) {
-        _single_name_codec.WriteTagAndValue(output, Name);
-      }
       if (arenaPortrait_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(10);
         output.WriteMessage(ArenaPortrait);
       }
       validRoomsToVisit_.WriteTo(output, _repeated_validRoomsToVisit_codec);
@@ -20435,11 +20415,8 @@ namespace Spelldawn.Protos {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (name_ != null) {
-        _single_name_codec.WriteTagAndValue(ref output, Name);
-      }
       if (arenaPortrait_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(10);
         output.WriteMessage(ArenaPortrait);
       }
       validRoomsToVisit_.WriteTo(ref output, _repeated_validRoomsToVisit_codec);
@@ -20452,9 +20429,6 @@ namespace Spelldawn.Protos {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (name_ != null) {
-        size += _single_name_codec.CalculateSizeWithTag(Name);
-      }
       if (arenaPortrait_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ArenaPortrait);
       }
@@ -20469,11 +20443,6 @@ namespace Spelldawn.Protos {
     public void MergeFrom(PlayerInfo other) {
       if (other == null) {
         return;
-      }
-      if (other.name_ != null) {
-        if (name_ == null || other.Name != "") {
-          Name = other.Name;
-        }
       }
       if (other.arenaPortrait_ != null) {
         if (arenaPortrait_ == null) {
@@ -20497,21 +20466,14 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            string value = _single_name_codec.Read(input);
-            if (name_ == null || value != "") {
-              Name = value;
-            }
-            break;
-          }
-          case 18: {
             if (arenaPortrait_ == null) {
               ArenaPortrait = new global::Spelldawn.Protos.SpriteAddress();
             }
             input.ReadMessage(ArenaPortrait);
             break;
           }
-          case 26:
-          case 24: {
+          case 18:
+          case 16: {
             validRoomsToVisit_.AddEntriesFrom(input, _repeated_validRoomsToVisit_codec);
             break;
           }
@@ -20530,21 +20492,14 @@ namespace Spelldawn.Protos {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            string value = _single_name_codec.Read(ref input);
-            if (name_ == null || value != "") {
-              Name = value;
-            }
-            break;
-          }
-          case 18: {
             if (arenaPortrait_ == null) {
               ArenaPortrait = new global::Spelldawn.Protos.SpriteAddress();
             }
             input.ReadMessage(ArenaPortrait);
             break;
           }
-          case 26:
-          case 24: {
+          case 18:
+          case 16: {
             validRoomsToVisit_.AddEntriesFrom(ref input, _repeated_validRoomsToVisit_codec);
             break;
           }

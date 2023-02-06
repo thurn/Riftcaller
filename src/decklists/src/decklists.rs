@@ -19,7 +19,7 @@ use std::collections::HashMap;
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::player_name::NamedPlayer;
-use game_data::primitives::Side;
+use game_data::primitives::{School, Side};
 use maplit::hashmap;
 use once_cell::sync::Lazy;
 use user_action_data::NamedDeck;
@@ -27,6 +27,7 @@ use user_action_data::NamedDeck;
 /// Empty Overlord deck for use in tests
 pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
+    primary_school: School::Neutral,
     leader: CardName::TestOverlordLeader,
     cards: HashMap::new(),
 });
@@ -34,6 +35,7 @@ pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 /// Spell Overlord deck for use in tests
 pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
+    primary_school: School::Neutral,
     leader: CardName::TestOverlordLeader,
     cards: hashmap! {CardName::TestOverlordSpell => 45},
 });
@@ -41,6 +43,7 @@ pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
 /// Basic Overlord starter deck in adventure mode
 pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
+    primary_school: School::Neutral,
     leader: CardName::BasicOverlordLeader,
     cards: hashmap! {
         CardName::Conspire => 3,
@@ -62,6 +65,7 @@ pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 /// Standard Overlord deck for use in tests
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
+    primary_school: School::Neutral,
     leader: CardName::TestOverlordLeader,
     cards: hashmap! {
         CardName::GoldMine => 3,
@@ -86,6 +90,7 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 /// Empty Champion deck for use in tests
 pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
+    primary_school: School::Neutral,
     leader: CardName::TestChampionLeader,
     cards: HashMap::new(),
 });
@@ -93,6 +98,7 @@ pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 /// Spell Overlord deck for use in tests
 pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
+    primary_school: School::Neutral,
     leader: CardName::TestChampionLeader,
     cards: hashmap! {CardName::TestChampionSpell => 45},
 });
@@ -100,6 +106,7 @@ pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
 /// Basic Champion starter deck in adventure mode
 pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
+    primary_school: School::Neutral,
     leader: CardName::BasicChampionLeader,
     cards: hashmap! {
         CardName::ArcaneRecovery => 3,
@@ -121,6 +128,7 @@ pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 /// Standard Champion deck for use in tests
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
+    primary_school: School::Neutral,
     leader: CardName::TestChampionLeader,
     cards: hashmap! {
         CardName::Meditation => 2,

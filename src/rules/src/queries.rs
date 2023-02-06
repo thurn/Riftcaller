@@ -244,7 +244,7 @@ pub fn played_position(
         CardType::Project | CardType::Scheme => {
             CardPosition::Room(target.room_id()?, RoomLocation::Occupant)
         }
-        CardType::Leader => CardPosition::Leader(side),
+        CardType::Leader => CardPosition::ArenaLeader(side),
         CardType::GameModifier => CardPosition::GameModifier,
     })
 }

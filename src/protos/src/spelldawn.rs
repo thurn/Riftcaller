@@ -839,11 +839,9 @@ pub struct CardView {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerInfo {
     #[prost(message, optional, tag = "1")]
-    pub name: ::core::option::Option<::prost::alloc::string::String>,
-    #[prost(message, optional, tag = "2")]
     pub arena_portrait: ::core::option::Option<SpriteAddress>,
     /// Rooms which this player can currently visit (raid/level up)
-    #[prost(enumeration = "RoomIdentifier", repeated, tag = "3")]
+    #[prost(enumeration = "RoomIdentifier", repeated, tag = "2")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

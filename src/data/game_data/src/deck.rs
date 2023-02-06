@@ -21,7 +21,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
 use crate::card_name::CardName;
-use crate::primitives::Side;
+use crate::primitives::{School, Side};
 
 /// Represents a player deck outside of an active game
 #[serde_as]
@@ -29,6 +29,8 @@ use crate::primitives::Side;
 pub struct Deck {
     /// Identifies which side this deck plays as.
     pub side: Side,
+    /// The school for this deck, determines e.g. card back used
+    pub primary_school: School,
     /// Leader card for this deck
     pub leader: CardName,
     /// How many (non-leader) cards with each name are present in this deck?

@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/create_game_tests.rs
-assertion_line: 117
+assertion_line: 112
 expression: "Summary::summarize(&response)"
 ---
 
@@ -9,7 +9,6 @@ command_list:
         user: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 0
@@ -19,7 +18,6 @@ command_list:
         opponent: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 0
@@ -214,7 +212,6 @@ channel_response:
         user: 
             side: Champion
             player_info: 
-                name: "Test Champion Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 0
@@ -224,7 +221,6 @@ channel_response:
         opponent: 
             side: Overlord
             player_info: 
-                name: "Test Overlord Leader"
                 arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 0

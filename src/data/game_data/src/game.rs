@@ -25,14 +25,14 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use with_error::WithError;
 
-use crate::card_state::{AbilityState, CardPosition, CardPositionKind, CardState};
+use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
 use crate::game_actions::GamePrompt;
 use crate::player_name::PlayerId;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
-    RaidId, RoomId, RoomLocation, Side, TurnNumber,
+    RaidId, RoomId, RoomLocation, School, Side, TurnNumber,
 };
 use crate::tutorial_data::GameTutorialState;
 use crate::updates::{GameUpdate, UpdateStep, UpdateTracker, Updates};
@@ -60,6 +60,7 @@ pub struct ManaState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlayerState {
     pub id: PlayerId,
+    pub primary_school: School,
     pub mana_state: ManaState,
     pub actions: ActionCount,
     pub score: PointsValue,
@@ -71,8 +72,15 @@ pub struct PlayerState {
 
 impl PlayerState {
     /// Create an empty player state.
-    pub fn new(id: PlayerId) -> Self {
-        Self { id, mana_state: ManaState::default(), actions: 0, score: 0, prompt: None }
+    pub fn new(id: PlayerId, primary_school: School) -> Self {
+        Self {
+            id,
+            primary_school,
+            mana_state: ManaState::default(),
+            actions: 0,
+            score: 0,
+            prompt: None,
+        }
     }
 }
 
@@ -280,8 +288,8 @@ impl GameState {
             },
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
-            overlord: PlayerState::new(overlord),
-            champion: PlayerState::new(champion),
+            overlord: PlayerState::new(overlord, overlord_deck.primary_school),
+            champion: PlayerState::new(champion, champion_deck.primary_school),
             ability_state: HashMap::new(),
             room_state: HashMap::new(),
             updates: UpdateTracker::new(if config.simulation {
@@ -341,20 +349,10 @@ impl GameState {
         }
     }
 
-    /// Returns leader cards for the provided Side
-    pub fn leaders(&self, side: Side) -> impl Iterator<Item = &CardState> {
-        self.cards(side).iter().filter(|c| c.position().kind() == CardPositionKind::Leader)
-    }
-
     /// Returns the first leader for the `side` player.
     pub fn first_leader(&self, side: Side) -> Result<CardId> {
-        let leaders = self.card_list_for_position(side, CardPosition::Leader(side));
+        let leaders = self.card_list_for_position(side, CardPosition::ArenaLeader(side));
         Ok(*leaders.first().with_error(|| "No leader found")?)
-    }
-
-    /// Returns an arbitrary leader card for the provided `side`, if any.
-    pub fn some_leader(&self, side: Side) -> Result<&CardState> {
-        self.leaders(side).next().with_error(|| format!("No leader card for {side:?}"))
     }
 
     /// Look up [CardState] for a card. Panics if this card is not present in
@@ -584,12 +582,17 @@ impl GameState {
 
     /// Create card states for a deck
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
-        let mut result =
-            vec![CardState::new(CardId::new(side, 0), deck.leader, true /* is_leader */)];
+        let mut leader = CardState::new(CardId::new(side, 0), deck.leader);
+        leader.set_position_internal(1, CardPosition::ArenaLeader(side));
+        leader.turn_face_up();
+        let mut result = vec![leader];
 
-        result.extend(deck.card_names().iter().enumerate().map(move |(index, name)| {
-            CardState::new(CardId::new(side, index + 1), *name, false /* is_leader */)
-        }));
+        result.extend(
+            deck.card_names()
+                .iter()
+                .enumerate()
+                .map(move |(index, name)| CardState::new(CardId::new(side, index + 1), *name)),
+        );
 
         result
     }
@@ -656,12 +659,14 @@ mod tests {
             PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Overlord,
+                primary_school: School::Law,
                 leader: CardName::TestOverlordLeader,
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
             PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Champion,
+                primary_school: School::Law,
                 leader: CardName::TestOverlordLeader,
                 cards: champion.into_iter().map(|name| (name, 1)).collect(),
             },

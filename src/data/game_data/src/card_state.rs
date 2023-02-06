@@ -62,9 +62,8 @@ pub enum CardPosition {
     /// A card has been played by the [Side] player and is in the process of
     /// resolving with the provided target
     Played(Side, CardTarget),
-    /// Marks the leader card for a side. The first leader (by sorting key)
-    /// is the primary leader for a player.
-    Leader(Side),
+    /// A leader card which is currently in play.
+    ArenaLeader(Side),
     /// Global modifier cards which change the rules of the game
     GameModifier,
 }
@@ -123,11 +122,6 @@ impl CardPosition {
     pub fn in_score_pile(&self) -> bool {
         self.kind() == CardPositionKind::Scored
     }
-
-    /// True if this card is an leader card
-    pub fn is_leader(&self) -> bool {
-        self.kind() == CardPositionKind::Leader
-    }
 }
 
 /// Optional card state, properties which are not universal
@@ -169,22 +163,17 @@ pub struct CardState {
 
 impl CardState {
     /// Creates a new card state, placing the card into the `side` player's
-    /// deck. If `is_leader` is true, the card is instead marked as revealed
-    /// and placed into the player's leader zone.
-    pub fn new(id: CardId, name: CardName, is_leader: bool) -> Self {
+    /// deck.
+    pub fn new(id: CardId, name: CardName) -> Self {
         Self {
             id,
             name,
-            position: if is_leader {
-                CardPosition::Leader(id.side)
-            } else {
-                CardPosition::DeckUnknown(id.side)
-            },
+            position: CardPosition::DeckUnknown(id.side),
             sorting_key: 0,
             data: CardData {
-                revealed_to_owner: is_leader,
-                revealed_to_opponent: is_leader,
-                is_face_up: is_leader,
+                revealed_to_owner: false,
+                revealed_to_opponent: false,
+                is_face_up: false,
                 ..CardData::default()
             },
         }

@@ -20,7 +20,7 @@ use core_ui::actions::InterfaceAction;
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
-use game_data::primitives::Side;
+use game_data::primitives::{School, Side};
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
 use player_data::PlayerData;
@@ -77,6 +77,7 @@ impl TestAdventure {
             },
             config.deck.unwrap_or(Deck {
                 side,
+                primary_school: School::Neutral,
                 leader: if side == Side::Overlord {
                     CardName::TestOverlordLeader
                 } else {
