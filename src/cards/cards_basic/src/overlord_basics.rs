@@ -25,7 +25,7 @@ use game_data::text::{DamageWord, Keyword, Sentence, TextToken};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
-pub fn basic_overlord_leader() -> CardDefinition {
+pub fn tutorial_overlord_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TutorialOverlordLeader,
         sets: vec![CardSetName::Basics],
@@ -35,7 +35,7 @@ pub fn basic_overlord_leader() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![text_only_ability(text!["Your leader starts the game in play"])],
+        abilities: vec![],
         config: CardConfig {
             player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Warlock_M")),
             image_background: Some(assets::environments(

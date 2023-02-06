@@ -593,6 +593,36 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
+        card_id: O15
+        revealed_to_viewer: false
+        is_face_up: false
+        card_icons: 
+        arena_frame: "<SpriteAddress>"
+        owning_player: Opponent
+        card_id: O18
+        revealed_to_viewer: false
+        is_face_up: false
+        card_icons: 
+        arena_frame: "<SpriteAddress>"
+        owning_player: Opponent
+        card_id: O19
+        revealed_to_viewer: false
+        is_face_up: false
+        card_icons: 
+        arena_frame: "<SpriteAddress>"
+        owning_player: Opponent
+        card_id: O24
+        revealed_to_viewer: false
+        is_face_up: false
+        card_icons: 
+        arena_frame: "<SpriteAddress>"
+        owning_player: Opponent
+        card_id: O26
+        revealed_to_viewer: false
+        is_face_up: false
+        card_icons: 
+        arena_frame: "<SpriteAddress>"
+        owning_player: Opponent
         card_id: C10
         revealed_to_viewer: true
         is_face_up: false

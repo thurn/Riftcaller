@@ -31,7 +31,7 @@ use crate::{card_sync, interface, positions, tutorial_display};
 pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
     let cards: Result<Vec<CardView>> = game
         .all_cards()
-        .filter(|c| !skip_sending_to_client(c, builder.user_side))
+        .filter(|c| !skip_sending_to_client(c))
         .flat_map(|c| {
             let mut cards = card_sync::activated_ability_cards(builder, game, c);
             cards.push(card_sync::card_view(builder, game, c));
@@ -67,7 +67,10 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
     Ok(PlayerView {
         side: adapters::player_side(side),
         player_info: Some(PlayerInfo {
-            arena_portrait: None,
+            arena_portrait: game
+                .leader_in_play(side)
+                .and_then(|card| rules::get(card.name).config.player_portrait.as_ref())
+                .map(adapters::sprite),
             valid_rooms_to_visit: match side {
                 Side::Overlord => enum_iterator::all::<RoomId>()
                     .filter(|room_id| flags::can_take_level_up_room_action(game, side, *room_id))
@@ -97,9 +100,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
     })
 }
 
-fn skip_sending_to_client(card: &CardState, user_side: Side) -> bool {
+fn skip_sending_to_client(card: &CardState) -> bool {
     let kind = card.position().kind();
-    kind == CardPositionKind::DeckUnknown
-        || kind == CardPositionKind::DeckTop && !card.is_revealed_to(user_side)
-        || kind == CardPositionKind::PreGameLeader
+    kind == CardPositionKind::DeckUnknown || kind == CardPositionKind::PreGameLeader
 }

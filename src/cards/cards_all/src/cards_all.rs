@@ -2,9 +2,8 @@
 
 use rules::DEFINITIONS;
 
-
 pub fn initialize() {
-    DEFINITIONS.insert(cards_basic::champion_basics::basic_champion_leader);
+    DEFINITIONS.insert(cards_basic::champion_basics::tutorial_champion_leader);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
     DEFINITIONS.insert(cards_basic::champion_basics::eldritch_surge);
     DEFINITIONS.insert(cards_basic::champion_basics::lodestone);
@@ -18,7 +17,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_basic::champion_basics::simple_hammer);
     DEFINITIONS.insert(cards_basic::champion_basics::simple_spear);
     DEFINITIONS.insert(cards_basic::champion_basics::ethereal_blade);
-    DEFINITIONS.insert(cards_basic::overlord_basics::basic_overlord_leader);
+    DEFINITIONS.insert(cards_basic::overlord_basics::tutorial_overlord_leader);
     DEFINITIONS.insert(cards_basic::overlord_basics::conspire);
     DEFINITIONS.insert(cards_basic::overlord_basics::devise);
     DEFINITIONS.insert(cards_basic::overlord_basics::machinate);

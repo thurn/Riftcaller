@@ -57,7 +57,7 @@ impl Component for MainMenuPanel {
                     .child(menu_button(
                         "Tutorial",
                         self.close().action(UserAction::NewGame(NewGameAction {
-                            deck: NewGameDeck::NamedDeck(NamedDeck::BasicChampion),
+                            deck: NewGameDeck::NamedDeck(NamedDeck::TutorialChampion),
                             opponent: PlayerId::Named(NamedPlayer::TutorialOpponent),
                             tutorial: true,
                             debug_options: None,

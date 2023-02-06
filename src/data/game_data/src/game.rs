@@ -513,6 +513,12 @@ impl GameState {
         self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
     }
 
+    /// Returns a leader card which has been played for the `side` player if one
+    /// exists.
+    pub fn leader_in_play(&self, side: Side) -> Option<&CardState> {
+        self.cards_in_position(side, CardPosition::ArenaLeader(side)).next()
+    }
+
     /// All global game modifier cards, in an unspecified order
     pub fn game_modifiers(&self, side: Side) -> impl Iterator<Item = &CardState> {
         self.cards_in_position(side, CardPosition::GameModifier)
@@ -580,14 +586,16 @@ impl GameState {
         if let Some(leader) = deck.leader {
             let mut card = CardState::new(CardId::new(side, 0), leader);
             card.set_position_internal(1, CardPosition::PreGameLeader(side));
+            card.set_revealed_to(side, true);
             result.push(card);
         }
 
+        let offset = result.len();
         result.extend(
             deck.card_names()
                 .iter()
                 .enumerate()
-                .map(move |(index, name)| CardState::new(CardId::new(side, index + 1), *name)),
+                .map(move |(index, name)| CardState::new(CardId::new(side, index + offset), *name)),
         );
 
         result

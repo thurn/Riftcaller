@@ -82,6 +82,12 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
+        card_id: C11
+        revealed_to_viewer: false
+        is_face_up: false
+        card_icons: 
+        arena_frame: "<SpriteAddress>"
+        owning_player: Opponent
     UpdateGameView: 
         user: 
             side: Overlord

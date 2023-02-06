@@ -203,6 +203,7 @@ fn set_leader_in_play(game: &mut GameState, side: Side) -> Result<()> {
         .with_error(|| format!("Leader not found for {side:?}"))?
         .id;
     mutations::move_card(game, leader, CardPosition::ArenaLeader(side))?;
+    game.card_mut(leader).turn_face_up();
     Ok(())
 }
 

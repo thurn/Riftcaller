@@ -27,7 +27,7 @@ use game_data::text::{Keyword, Sentence};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
-pub fn basic_champion_leader() -> CardDefinition {
+pub fn tutorial_champion_leader() -> CardDefinition {
     CardDefinition {
         name: CardName::TutorialChampionLeader,
         sets: vec![CardSetName::Basics],
@@ -37,7 +37,7 @@ pub fn basic_champion_leader() -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![text_only_ability(text!["Your leader starts the game in play"])],
+        abilities: vec![],
         config: CardConfig {
             player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Priest_F")),
             image_background: Some(assets::environments(
