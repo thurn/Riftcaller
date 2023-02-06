@@ -9,7 +9,6 @@ command_list:
         user: 
             side: Champion
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 2
@@ -18,7 +17,6 @@ command_list:
         opponent: 
             side: Overlord
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 0
@@ -221,7 +219,6 @@ command_list:
         user: 
             side: Champion
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 2
@@ -230,7 +227,6 @@ command_list:
         opponent: 
             side: Overlord
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 0
@@ -455,7 +451,6 @@ channel_response:
         user: 
             side: Overlord
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 0
@@ -464,7 +459,6 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 2
@@ -668,7 +662,6 @@ channel_response:
         user: 
             side: Overlord
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 996
             action_tracker: 0
@@ -677,7 +670,6 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-                arena_portrait: "<SpriteAddress>"
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 2

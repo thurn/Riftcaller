@@ -349,12 +349,6 @@ impl GameState {
         }
     }
 
-    /// Returns the first leader for the `side` player.
-    pub fn first_leader(&self, side: Side) -> Result<CardId> {
-        let leaders = self.card_list_for_position(side, CardPosition::ArenaLeader(side));
-        Ok(*leaders.first().with_error(|| "No leader found")?)
-    }
-
     /// Look up [CardState] for a card. Panics if this card is not present in
     /// the game.
     pub fn card(&self, card_id: CardId) -> &CardState {

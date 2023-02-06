@@ -63,14 +63,10 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
 }
 
 fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
-    let leader = game.card(game.first_leader(side)?);
-    let definition = rules::get(leader.name);
     Ok(PlayerView {
         side: adapters::player_side(side),
         player_info: Some(PlayerInfo {
-            arena_portrait: Some(adapters::sprite(
-                definition.config.player_portrait.as_ref().unwrap_or(&definition.image),
-            )),
+            arena_portrait: None,
             valid_rooms_to_visit: match side {
                 Side::Overlord => enum_iterator::all::<RoomId>()
                     .filter(|room_id| flags::can_take_level_up_room_action(game, side, *room_id))
