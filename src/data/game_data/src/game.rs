@@ -577,8 +577,7 @@ impl GameState {
     /// Create card states for a deck
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
         let mut leader = CardState::new(CardId::new(side, 0), deck.leader);
-        leader.set_position_internal(1, CardPosition::ArenaLeader(side));
-        leader.turn_face_up();
+        leader.set_position_internal(1, CardPosition::PreGameLeader(side));
         let mut result = vec![leader];
 
         result.extend(

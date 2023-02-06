@@ -43,24 +43,6 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Overlord Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: O44
         revealed_to_viewer: true
         is_face_up: true
@@ -87,24 +69,6 @@ command_list:
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: C0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C11
         revealed_to_viewer: true
         is_face_up: false
@@ -200,24 +164,6 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Overlord Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: O44
         revealed_to_viewer: true
         is_face_up: true
@@ -258,24 +204,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C11
         revealed_to_viewer: true
         is_face_up: false
@@ -355,24 +283,6 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Overlord Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: O44
         revealed_to_viewer: true
         is_face_up: true
@@ -413,24 +323,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C11
         revealed_to_viewer: false
         is_face_up: false
@@ -501,24 +393,6 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Overlord Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: O44
         revealed_to_viewer: true
         is_face_up: true
@@ -559,24 +433,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C0
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Leader"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C11
         revealed_to_viewer: false
         is_face_up: false

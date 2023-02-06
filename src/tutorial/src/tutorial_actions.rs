@@ -65,6 +65,7 @@ pub fn handle_sequence_game_action(
         match action {
             TutorialStep::KeepOpeningHand(side) => keep_opening_hand(game, *side),
             TutorialStep::SetHand(side, cards) => set_hand(game, *side, cards),
+            TutorialStep::SetLeaderInPlay(side) => set_leader_in_play(game, *side),
             TutorialStep::SetTopOfDeck(side, cards) => set_top_of_deck(game, *side, cards),
             TutorialStep::OpponentAction(action) => {
                 if match_opponent_action(game, user_action, action)? {
@@ -195,6 +196,16 @@ fn set_hand(game: &mut GameState, side: Side, cards: &[CardName]) -> Result<()> 
     Ok(())
 }
 
+fn set_leader_in_play(game: &mut GameState, side: Side) -> Result<()> {
+    let leader = game
+        .cards_in_position(side, CardPosition::PreGameLeader(side))
+        .next()
+        .with_error(|| format!("Leader not found for {side:?}"))?
+        .id;
+    mutations::move_card(game, leader, CardPosition::ArenaLeader(side))?;
+    Ok(())
+}
+
 fn set_top_of_deck(game: &mut GameState, side: Side, cards: &[CardName]) -> Result<()> {
     for name in cards {
         let card_id = find_in_deck(game, side, *name)?;
@@ -211,7 +222,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
             let card_id = game
                 .hand(crate::OPPONENT_SIDE)
                 .find(|c| c.name == *name)
-                .with_error(|| "Card not found")?
+                .with_error(|| format!("Card not found {name}"))?
                 .id;
             GameAction::PlayCard(card_id, *target)
         }
@@ -219,10 +230,14 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
         TutorialOpponentAction::InitiateRaid(room_id) => GameAction::InitiateRaid(*room_id),
         TutorialOpponentAction::LevelUpRoom(room_id) => GameAction::LevelUpRoom(*room_id),
         TutorialOpponentAction::UseWeapon { weapon, target } => {
-            let weapon =
-                game.weapons().find(|c| c.name == *weapon).with_error(|| "Weapon not found")?;
-            let target =
-                game.minions().find(|c| c.name == *target).with_error(|| "Target not found")?;
+            let weapon = game
+                .weapons()
+                .find(|c| c.name == *weapon)
+                .with_error(|| format!("Weapon not found {weapon})"))?;
+            let target = game
+                .minions()
+                .find(|c| c.name == *target)
+                .with_error(|| format!("Target not found {target}"))?;
 
             GameAction::PromptAction(PromptAction::EncounterAction(
                 EncounterAction::UseWeaponAbility(weapon.id, target.id),
@@ -234,7 +249,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
                 .iter()
                 .filter(|c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Occupant)))
                 .find(|c| c.name == *name)
-                .with_error(|| "Scheme not found")?
+                .with_error(|| format!("Scheme not found {name}"))?
                 .id;
             GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::ScoreCard(
                 id,
