@@ -48,6 +48,16 @@ pub fn background_scale(icon_type: CardIconType) -> Option<f32> {
     })
 }
 
+pub fn side_badge(side: Side) -> Sprite {
+    Sprite {
+        address: match side {
+            Side::Overlord => "Rexard/BadgesMegapack/overlord.png",
+            Side::Champion => "Rexard/BadgesMegapack/champion.png",
+        }
+        .to_string(),
+    }
+}
+
 /// Address for a given [CardIconType]
 pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
     SpriteAddress {
