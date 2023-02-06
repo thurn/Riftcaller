@@ -42,8 +42,8 @@ pub fn gemcarver() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability {
-                text: text![Keyword::Unveil, "at Dusk, then", Keyword::Store(Sentence::Start, 9)],
                 ability_type: AbilityType::Standard,
+                text: text![Keyword::Unveil, "at Dusk, then", Keyword::Store(Sentence::Start, 9)],
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<9>()],
             },
             simple_ability(

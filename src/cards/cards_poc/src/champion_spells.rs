@@ -66,11 +66,11 @@ pub fn coup_de_grace() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
             text: text!(
                 "Raid the Sanctum or Vault, accessing 1 additional card.",
                 "If successful, draw a card."
             ),
-            ability_type: AbilityType::Standard,
             delegates: vec![
                 on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
                 add_vault_access::<1>(matching_raid),
@@ -135,13 +135,13 @@ pub fn stealth_mission() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
             text: text!(
                 "Initiate a raid.",
                 "During that raid, summon costs are increased by",
                 mana_text(3),
                 "."
             ),
-            ability_type: AbilityType::Standard,
             delegates: vec![
                 on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
                 Delegate::ManaCost(QueryDelegate {

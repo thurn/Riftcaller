@@ -146,8 +146,8 @@ pub fn coinery() -> CardDefinition {
                 Keyword::Store(Sentence::Start, 15)
             ]),
             Ability {
-                text: text![Keyword::Take(Sentence::Start, 3)],
                 ability_type: activate_for_action(),
+                text: text![Keyword::Take(Sentence::Start, 3)],
                 delegates: vec![
                     activate_while_face_down(),
                     face_down_ability_cost(),
@@ -206,12 +206,12 @@ pub fn ore_refinery() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability {
+                ability_type: AbilityType::Standard,
                 text: text![
                     Keyword::Unveil,
                     "at Dusk, then",
                     Keyword::Store(Sentence::Internal, 12)
                 ],
-                ability_type: AbilityType::Standard,
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
             },
             simple_ability(

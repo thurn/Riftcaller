@@ -41,8 +41,8 @@ pub fn gold_mine() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
-            text: text![Keyword::Score, "Gain", mana_text(7)],
             ability_type: AbilityType::Standard,
+            text: text![Keyword::Score, "Gain", mana_text(7)],
             delegates: vec![on_overlord_score(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 Ok(())
@@ -69,10 +69,10 @@ pub fn activate_reinforcements() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
             text: text![
                 "When this scheme is scored by either player, summon a face down minion for free"
             ],
-            ability_type: AbilityType::Standard,
             delegates: vec![Delegate::ScoreCard(EventDelegate {
                 requirement: this_card,
                 mutation: |g, _, _| {
@@ -108,8 +108,8 @@ pub fn research_project() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
-            text: text![Keyword::Score, "Draw 2 cards.", "You get +2 maximum hand size."],
             ability_type: AbilityType::Standard,
+            text: text![Keyword::Score, "Draw 2 cards.", "You get +2 maximum hand size."],
             delegates: vec![
                 on_overlord_score(|g, s, _| mutations::draw_cards(g, s.side(), 2).map(|_| ())),
                 Delegate::MaximumHandSize(QueryDelegate {

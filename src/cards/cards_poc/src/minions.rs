@@ -181,13 +181,13 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
             text: text![
                 Keyword::Combat,
                 Keyword::DealDamage(DamageWord::DealStart, 1),
                 ".",
                 "If a card with an odd mana cost is discarded, end the raid."
             ],
-            ability_type: AbilityType::Standard,
             delegates: vec![
                 combat(|g, s, _| mutations::deal_damage(g, s, 1)),
                 Delegate::DealtDamage(EventDelegate {

@@ -139,8 +139,8 @@ pub fn mana_battery() -> CardDefinition {
                 }),
             ),
             Ability {
-                text: text![Keyword::Store(Sentence::Start, 3)],
                 ability_type: activate_for_action(),
+                text: text![Keyword::Store(Sentence::Start, 3)],
                 delegates: vec![on_activated(|g, s, _| {
                     add_stored_mana(g, s.card_id(), 3);
                     Ok(())
@@ -360,8 +360,8 @@ pub fn ethereal_blade() -> CardDefinition {
         abilities: vec![
             abilities::encounter_boost(),
             Ability {
-                text: text!["When you use this weapon, sacrifice it at the end of the raid."],
                 ability_type: AbilityType::Standard,
+                text: text!["When you use this weapon, sacrifice it at the end of the raid."],
                 delegates: vec![
                     on_weapon_used(
                         |_g, s, used_weapon| used_weapon.weapon_id == s.card_id(),

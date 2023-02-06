@@ -45,13 +45,13 @@ pub fn marauders_axe() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability {
+                ability_type: AbilityType::Standard,
                 text: text![
                     Keyword::SuccessfulRaid,
                     "This weapon costs",
                     mana_text(2),
                     "less to play this turn."
                 ],
-                ability_type: AbilityType::Standard,
                 delegates: vec![
                     on_raid_success(always, |g, s, _| {
                         save_turn(g, s);

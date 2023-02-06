@@ -45,10 +45,10 @@ pub fn invisibility_ring() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
             text: text!(
                 "The first time each turn you access the Sanctum, access 1 additional card."
             ),
-            ability_type: AbilityType::Standard,
             delegates: vec![
                 on_raid_access_start(face_up_in_play, |g, s, raid_id| {
                     once_per_turn(g, s, raid_id, save_raid_id)
@@ -114,13 +114,6 @@ pub fn mage_gloves() -> CardDefinition {
         abilities: vec![
             abilities::store_mana_on_play::<12>(),
             Ability {
-                text: text!(
-                    "Raid an",
-                    Keyword::InnerRoom(Sentence::Internal),
-                    "you have not raided this turn.",
-                    "If successful,",
-                    Keyword::Take(Sentence::Internal, 3)
-                ),
                 ability_type: AbilityType::Activated(
                     actions(1),
                     TargetRequirement::TargetRoom(|g, _, room_id| {
@@ -129,6 +122,13 @@ pub fn mage_gloves() -> CardDefinition {
                                 Some(g.room_state.get(&room_id)?.last_raided? == g.data.turn)
                             })
                     }),
+                ),
+                text: text!(
+                    "Raid an",
+                    Keyword::InnerRoom(Sentence::Internal),
+                    "you have not raided this turn.",
+                    "If successful,",
+                    Keyword::Take(Sentence::Internal, 3)
                 ),
                 delegates: vec![
                     on_activated(|g, s, activated| initiate_raid(g, s, activated.target)),
@@ -158,15 +158,15 @@ pub fn magical_resonator() -> CardDefinition {
         abilities: vec![
             abilities::store_mana_on_play::<9>(),
             Ability {
+                ability_type: AbilityType::Activated(
+                    Cost { mana: None, actions: 1, custom_cost: once_per_turn_cost() },
+                    TargetRequirement::None,
+                ),
                 text: text![
                     Keyword::Take(Sentence::Start, 3),
                     ".",
                     "Use this ability only once per turn."
                 ],
-                ability_type: AbilityType::Activated(
-                    Cost { mana: None, actions: 1, custom_cost: once_per_turn_cost() },
-                    TargetRequirement::None,
-                ),
                 delegates: vec![on_activated(|g, _s, activated| {
                     mutations::take_stored_mana(g, activated.card_id(), 3, OnZeroStored::Sacrifice)
                         .map(|_| ())
