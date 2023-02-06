@@ -183,7 +183,9 @@ fn adapt_position(
         CardPosition::Played(side, target) => {
             card_release_position(builder, game, side, card_id, target)?
         }
-        CardPosition::DeckUnknown(_) => fail!("Invalid card position"),
+        CardPosition::PreGameLeader(_) | CardPosition::DeckUnknown(_) => {
+            fail!("Invalid card position")
+        }
         CardPosition::GameModifier => offscreen(),
     })
 }

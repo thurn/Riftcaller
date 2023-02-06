@@ -279,12 +279,6 @@ command_list:
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: O18
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
         card_id: O25
         revealed_to_viewer: false
         is_face_up: false

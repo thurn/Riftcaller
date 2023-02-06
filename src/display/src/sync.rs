@@ -16,6 +16,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
+use game_data::card_state::{CardPositionKind, CardState};
 use game_data::game::GameState;
 use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::{
@@ -30,7 +31,7 @@ use crate::{card_sync, interface, positions, tutorial_display};
 pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
     let cards: Result<Vec<CardView>> = game
         .all_cards()
-        .filter(|c| !c.position().shuffled_into_deck())
+        .filter(|c| !skip_sending_to_client(c, builder.user_side))
         .flat_map(|c| {
             let mut cards = card_sync::activated_ability_cards(builder, game, c);
             cards.push(card_sync::card_view(builder, game, c));
@@ -94,4 +95,11 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
         }),
         can_take_action: actions::can_take_action(game, side),
     })
+}
+
+fn skip_sending_to_client(card: &CardState, user_side: Side) -> bool {
+    let kind = card.position().kind();
+    kind == CardPositionKind::DeckUnknown
+        || kind == CardPositionKind::DeckTop && !card.is_revealed_to(user_side)
+        || kind == CardPositionKind::PreGameLeader
 }

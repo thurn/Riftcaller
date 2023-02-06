@@ -64,6 +64,8 @@ pub enum CardPosition {
     Played(Side, CardTarget),
     /// A leader card which is currently in play.
     ArenaLeader(Side),
+    /// The position leader cards occupy before the game starts
+    PreGameLeader(Side),
     /// Global modifier cards which change the rules of the game
     GameModifier,
 }

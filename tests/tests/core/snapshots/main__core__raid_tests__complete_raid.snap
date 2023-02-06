@@ -221,12 +221,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-        card_id: O10
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
         card_id: O11
         revealed_to_viewer: false
         is_face_up: false
