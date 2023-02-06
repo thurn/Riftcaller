@@ -62,7 +62,6 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
 
     Ok(())
 }
-
 fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
     let badge = assets::side_badge(side);
     Ok(PlayerView {

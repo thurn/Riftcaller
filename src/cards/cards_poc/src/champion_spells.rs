@@ -15,7 +15,7 @@
 //! Card definitions for the Spell card type & Champion player
 
 use assets::rexard_images;
-use card_helpers::{text, *};
+use card_helpers::{text, text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement,
 };
@@ -23,9 +23,13 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
+use game_data::text2::Token::*;
+use game_data::text2::{activation, trigger, Text2};
 use rules::{flags, mana, mutations};
 
 pub fn meditation() -> CardDefinition {
+    let t2 = text2![text2![Gain, Mana(5)], text2![Lose, Actions(1), reminder2("(if able)")]];
+
     CardDefinition {
         name: CardName::Meditation,
         sets: vec![CardSetName::ProofOfConcept],
@@ -47,6 +51,11 @@ pub fn meditation() -> CardDefinition {
 }
 
 pub fn coup_de_grace() -> CardDefinition {
+    let t2 = text2![
+        text2!["Raid the", Sanctum, "or", Vault, ", accessing", 1, "additional card"],
+        text2!["If successful, draw a card"]
+    ];
+
     CardDefinition {
         name: CardName::CoupDeGrace,
         sets: vec![CardSetName::ProofOfConcept],
@@ -82,6 +91,8 @@ pub fn coup_de_grace() -> CardDefinition {
 }
 
 pub fn charged_strike() -> CardDefinition {
+    let t2 = text2![text2![BeginARaid], text2!["Gain", Mana(5), "to spend during that raid"]];
+
     CardDefinition {
         name: CardName::ChargedStrike,
         sets: vec![CardSetName::ProofOfConcept],
@@ -109,6 +120,11 @@ pub fn charged_strike() -> CardDefinition {
 }
 
 pub fn stealth_mission() -> CardDefinition {
+    let t2 = text2![
+        text2![BeginARaid],
+        text2!["During that raid, summon costs are increased by", Mana(3)]
+    ];
+
     CardDefinition {
         name: CardName::StealthMission,
         sets: vec![CardSetName::ProofOfConcept],
@@ -150,6 +166,8 @@ pub fn stealth_mission() -> CardDefinition {
 }
 
 pub fn preparation() -> CardDefinition {
+    let t2 = text2![text2!["Draw", 4, "cards"], text2!["Lose", Actions(1), reminder2("(if able)")]];
+
     CardDefinition {
         name: CardName::Preparation,
         sets: vec![CardSetName::ProofOfConcept],

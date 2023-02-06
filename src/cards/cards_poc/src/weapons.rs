@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
-use card_helpers::{abilities, text, *};
+use card_helpers::{abilities, text, text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
 };
@@ -26,9 +26,14 @@ use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::Keyword;
+use game_data::text2::trigger;
+use game_data::text2::Token::*;
 use game_data::utils;
 
 pub fn marauders_axe() -> CardDefinition {
+    let t2 =
+        trigger(SuccessfulRaid, text2!["This weapon costs", Mana(2), "less to play this turn"]);
+
     CardDefinition {
         name: CardName::MaraudersAxe,
         sets: vec![CardSetName::ProofOfConcept],
@@ -104,6 +109,8 @@ pub fn keen_halberd() -> CardDefinition {
 }
 
 pub fn bow_of_the_alliance() -> CardDefinition {
+    let t2 = text2![Plus(1), Attack, "per weapon you control"];
+
     CardDefinition {
         name: CardName::BowOfTheAlliance,
         sets: vec![CardSetName::ProofOfConcept],

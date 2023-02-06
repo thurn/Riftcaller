@@ -12,23 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Data types used to represent game state
+//! Macro for building text.
 
-pub mod agent_definition;
-pub mod card_definition;
-pub mod card_name;
-pub mod card_set_name;
-pub mod card_state;
-pub mod deck;
-pub mod delegates;
-pub mod game;
-pub mod game_actions;
-pub mod player_name;
-pub mod primitives;
-pub mod random;
-pub mod special_effects;
-pub mod text;
-pub mod text2;
-pub mod tutorial_data;
-pub mod updates;
-pub mod utils;
+#[macro_export]
+macro_rules! text2 {
+    ($($x:expr),*) => {
+        vec! [$(game_data::text2::Text2::from($x)),*]
+    };
+    ($($x:expr,)*) => {text![$($x),*]}
+}
+
+pub use text2;

@@ -22,6 +22,8 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::text::{DamageWord, Keyword, Sentence, TextToken};
+use game_data::text2::Token::*;
+use game_data::text2::{activation, trigger};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -102,6 +104,8 @@ pub fn machinate() -> CardDefinition {
 }
 
 pub fn gathering_dark() -> CardDefinition {
+    let t2 = text2![Gain, Mana(9)];
+
     CardDefinition {
         name: CardName::GatheringDark,
         sets: vec![CardSetName::Basics],
@@ -123,6 +127,9 @@ pub fn gathering_dark() -> CardDefinition {
 }
 
 pub fn coinery() -> CardDefinition {
+    let t2 = text2![text2![Unveil, "when activated", Then, StoreMana(15)]];
+    let t3 = activation(text2![TakeMana(3)]);
+
     CardDefinition {
         name: CardName::Coinery,
         sets: vec![CardSetName::Basics],
@@ -159,6 +166,8 @@ pub fn coinery() -> CardDefinition {
 }
 
 pub fn leyline() -> CardDefinition {
+    let t2 = trigger(Dusk, text2!["Gain", Mana(1)]);
+
     CardDefinition {
         name: CardName::Leyline,
         sets: vec![CardSetName::Basics],
@@ -183,6 +192,9 @@ pub fn leyline() -> CardDefinition {
 }
 
 pub fn ore_refinery() -> CardDefinition {
+    let t2 = text2![Unveil, "at", Dusk, Then, StoreMana(12)];
+    let t2 = trigger(Dusk, text2![TakeMana(3)]);
+
     CardDefinition {
         name: CardName::OreRefinery,
         sets: vec![CardSetName::Basics],

@@ -16,16 +16,21 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{abilities, text, *};
+use card_helpers::{abilities, text, text2, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::{Keyword, Sentence};
+use game_data::text2::trigger;
+use game_data::text2::Token::*;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
 pub fn gemcarver() -> CardDefinition {
+    let t2 = text2![Unveil, "at", Dusk, "then", StoreMana(9)];
+    let t3 = trigger(Dusk, text2![text2![TakeMana(3)], text2!["When empty, draw a card"]]);
+
     CardDefinition {
         name: CardName::Gemcarver,
         sets: vec![CardSetName::ProofOfConcept],
@@ -65,6 +70,11 @@ pub fn gemcarver() -> CardDefinition {
 }
 
 pub fn spike_trap() -> CardDefinition {
+    let t2 = trigger(
+        Trap,
+        text2!["If this card is in play,", DealDamage(2), "plus", 1, "per level counter"],
+    );
+
     CardDefinition {
         name: CardName::SpikeTrap,
         sets: vec![CardSetName::ProofOfConcept],

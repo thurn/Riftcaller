@@ -16,8 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
-use card_helpers::text_macro::text;
-use card_helpers::{abilities, *};
+use card_helpers::{abilities, text, text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
 };
@@ -26,11 +25,16 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::{Keyword, Sentence};
+use game_data::text2::Token::*;
+use game_data::text2::{activation, trigger};
 use game_data::utils;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
 pub fn invisibility_ring() -> CardDefinition {
+    let t2 =
+        text2!["The first time each turn you access the Sanctum, access", 1, "additional card."];
+
     CardDefinition {
         name: CardName::InvisibilityRing,
         sets: vec![CardSetName::ProofOfConcept],
@@ -57,6 +61,9 @@ pub fn invisibility_ring() -> CardDefinition {
 }
 
 pub fn accumulator() -> CardDefinition {
+    let t2 = trigger(SuccessfulRaid, text2![StoreMana(1)]);
+    let t2 = activation(text2![StoreMana(1), "then take all stored", ManaSymbol]);
+
     CardDefinition {
         name: CardName::Accumulator,
         sets: vec![CardSetName::ProofOfConcept],
@@ -90,6 +97,11 @@ pub fn accumulator() -> CardDefinition {
 }
 
 pub fn mage_gloves() -> CardDefinition {
+    let t2 = text2![
+        text2!["Raid an", InnerRoom, "you have not raided this turn"],
+        text2!["If successful,", TakeMana(3)]
+    ];
+
     CardDefinition {
         name: CardName::MageGloves,
         sets: vec![CardSetName::ProofOfConcept],
@@ -132,6 +144,8 @@ pub fn mage_gloves() -> CardDefinition {
 }
 
 pub fn magical_resonator() -> CardDefinition {
+    let t2 = activation(text2![text2![TakeMana(3)], text2!["Use this ability once per turn"]]);
+
     CardDefinition {
         name: CardName::MagicalResonator,
         sets: vec![CardSetName::ProofOfConcept],
@@ -164,6 +178,8 @@ pub fn magical_resonator() -> CardDefinition {
 }
 
 pub fn dark_grimoire() -> CardDefinition {
+    let t2 = text2!["The first time each turn you take the 'draw card' action, draw another card"];
+
     CardDefinition {
         name: CardName::DarkGrimoire,
         sets: vec![CardSetName::ProofOfConcept],

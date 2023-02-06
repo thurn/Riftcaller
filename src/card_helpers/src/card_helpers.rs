@@ -17,6 +17,7 @@
 
 pub mod abilities;
 pub mod text_macro;
+pub mod text_macro2;
 
 use anyhow::Result;
 use game_data::card_definition::{
@@ -35,6 +36,7 @@ use game_data::primitives::{
 };
 use game_data::special_effects::Projectile;
 use game_data::text::{AbilityText, Keyword, NumericOperator, TextToken};
+use game_data::text2::Text2;
 use game_data::updates::{GameUpdate, InitiatedBy};
 use game_data::utils;
 use rules::mana::ManaPurpose;
@@ -54,6 +56,10 @@ pub fn actions_text(value: ActionCount) -> TextToken {
 
 pub fn reminder(text: &'static str) -> TextToken {
     TextToken::Reminder(text.to_string())
+}
+
+pub fn reminder2(text: &'static str) -> Text2 {
+    Text2::Reminder(text.to_string())
 }
 
 /// An ability which only exists to add text to a card.

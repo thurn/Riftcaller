@@ -14,7 +14,7 @@
 
 //! Test cards
 
-use card_helpers::{abilities, text, *};
+use card_helpers::{abilities, text, text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SchemePoints,
     SpecialEffects,
@@ -26,6 +26,8 @@ use game_data::primitives::{
 };
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::{Keyword, Sentence};
+use game_data::text2::trigger;
+use game_data::text2::Token::*;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
@@ -332,6 +334,9 @@ pub fn activated_ability_take_mana() -> CardDefinition {
 }
 
 pub fn triggered_ability_take_mana() -> CardDefinition {
+    let t2 = text2![Unveil, "at", Dusk, Then, StoreMana(MANA_STORED)];
+    let t3 = trigger(Dusk, text2![TakeMana(MANA_TAKEN)]);
+
     CardDefinition {
         name: CardName::TestTriggeredAbilityTakeManaAtDusk,
         cost: cost(UNVEIL_COST),
@@ -401,6 +406,9 @@ pub fn deal_damage_end_raid() -> CardDefinition {
 }
 
 pub fn test_card_stored_mana() -> CardDefinition {
+    let t2 = text2![Unveil, "at", Dusk, Then, StoreMana(12)];
+    let t3 = trigger(Dusk, text2![TakeMana(3)]);
+
     CardDefinition {
         name: CardName::TestCardStoredMana,
         cost: cost(4),

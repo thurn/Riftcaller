@@ -16,17 +16,21 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{text, *};
+use card_helpers::{text, text2, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, SchemePoints};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::Keyword;
+use game_data::text2::trigger;
+use game_data::text2::Token::*;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 
 pub fn gold_mine() -> CardDefinition {
+    let t2 = trigger(Score, text2![Gain, Mana(7)]);
+
     CardDefinition {
         name: CardName::GoldMine,
         sets: vec![CardSetName::ProofOfConcept],
@@ -52,6 +56,9 @@ pub fn gold_mine() -> CardDefinition {
 }
 
 pub fn activate_reinforcements() -> CardDefinition {
+    let t2 =
+        text2!["When this scheme is scored by either player, summon a face-down minion for free"];
+
     CardDefinition {
         name: CardName::ActivateReinforcements,
         sets: vec![CardSetName::ProofOfConcept],
@@ -86,6 +93,11 @@ pub fn activate_reinforcements() -> CardDefinition {
 }
 
 pub fn research_project() -> CardDefinition {
+    let t2 = trigger(
+        Score,
+        text2![text2!["Draw", 2, "cards"], text2!["You get", Plus(2), "maximum hand size"]],
+    );
+
     CardDefinition {
         name: CardName::ResearchProject,
         sets: vec![CardSetName::ProofOfConcept],

@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{abilities, text, *};
+use card_helpers::{abilities, text, text2, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -26,12 +26,19 @@ use game_data::game::RaidJumpRequest;
 use game_data::game_actions::CardPromptAction;
 use game_data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
 use game_data::text::{DamageWord, Keyword};
+use game_data::text2::trigger;
+use game_data::text2::Token::*;
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 use with_error::WithError;
 
 pub fn time_golem() -> CardDefinition {
+    let t2 = trigger(
+        Encounter,
+        text2!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
+    );
+
     CardDefinition {
         name: CardName::TimeGolem,
         sets: vec![CardSetName::ProofOfConcept],
@@ -73,6 +80,9 @@ pub fn time_golem() -> CardDefinition {
 }
 
 pub fn temporal_stalker() -> CardDefinition {
+    let t2 = trigger(Combat, text2!["End the raid unless the Champion pays", Actions(2)]);
+    let t3 = trigger(Combat, text2!["Summon a minion from the", Sanctum, "or", Crypts, "for free"]);
+
     CardDefinition {
         name: CardName::TemporalStalker,
         sets: vec![CardSetName::ProofOfConcept],
@@ -123,6 +133,8 @@ pub fn temporal_stalker() -> CardDefinition {
 }
 
 pub fn shadow_lurker() -> CardDefinition {
+    let t2 = text2!["While this minion is in an", OuterRoom, "it has", Plus(2), Health];
+
     CardDefinition {
         name: CardName::ShadowLurker,
         sets: vec![CardSetName::ProofOfConcept],
@@ -151,6 +163,14 @@ pub fn shadow_lurker() -> CardDefinition {
 }
 
 pub fn sphinx_of_winters_breath() -> CardDefinition {
+    let t2 = trigger(
+        Combat,
+        text2![
+            text2![DealDamage(1)],
+            text2!["If a card with an odd mana cost is discarded, end the raid"]
+        ],
+    );
+
     CardDefinition {
         name: CardName::SphinxOfWintersBreath,
         sets: vec![CardSetName::ProofOfConcept],
@@ -190,6 +210,14 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
 }
 
 pub fn bridge_troll() -> CardDefinition {
+    let t2 = trigger(
+        Combat,
+        text2![
+            text2!["The Champion loses", Mana(3)],
+            text2!["If they have", Mana(6), "or less, end the raid"]
+        ],
+    );
+
     CardDefinition {
         name: CardName::BridgeTroll,
         sets: vec![CardSetName::ProofOfConcept],
@@ -226,6 +254,11 @@ pub fn bridge_troll() -> CardDefinition {
 }
 
 pub fn stormcaller() -> CardDefinition {
+    let t2 = trigger(
+        Combat,
+        text2!["The Champion must end the raid and", TakeDamage(2), "or", TakeDamage(4)],
+    );
+
     CardDefinition {
         name: CardName::Stormcaller,
         sets: vec![CardSetName::ProofOfConcept],
@@ -246,7 +279,7 @@ pub fn stormcaller() -> CardDefinition {
             ],
             minion_combat_actions(|g, s, _, _| {
                 vec![
-                    // (must take this action even if it ends the game)
+                    // don't use helper, must take this action even if it ends the game
                     Some(CardPromptAction::TakeDamageEndRaid(s.ability_id(), 2)),
                     take_damage_prompt(g, s, 4),
                 ]

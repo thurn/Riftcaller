@@ -24,6 +24,8 @@ use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 use game_data::text::{Keyword, Sentence};
+use game_data::text2::Token::*;
+use game_data::text2::{activation, trigger};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -50,6 +52,8 @@ pub fn tutorial_champion_leader() -> CardDefinition {
 }
 
 pub fn arcane_recovery() -> CardDefinition {
+    let t2 = text2![Gain, Mana(9)];
+
     CardDefinition {
         name: CardName::ArcaneRecovery,
         sets: vec![CardSetName::Basics],
@@ -71,6 +75,8 @@ pub fn arcane_recovery() -> CardDefinition {
 }
 
 pub fn eldritch_surge() -> CardDefinition {
+    let t2 = text2![Gain, Mana(3)];
+
     CardDefinition {
         name: CardName::EldritchSurge,
         sets: vec![CardSetName::Basics],
@@ -110,6 +116,9 @@ pub fn lodestone() -> CardDefinition {
 }
 
 pub fn mana_battery() -> CardDefinition {
+    let t2 = trigger(Dawn, text2![TakeMana(1)]);
+    let t2 = activation(text2![StoreMana(3)]);
+
     CardDefinition {
         name: CardName::ManaBattery,
         sets: vec![CardSetName::Basics],
@@ -143,6 +152,8 @@ pub fn mana_battery() -> CardDefinition {
 }
 
 pub fn contemplate() -> CardDefinition {
+    let t2 = text2![text2![Gain, Mana(2)], text2!["Draw a card"]];
+
     CardDefinition {
         name: CardName::Contemplate,
         sets: vec![CardSetName::Basics],
@@ -165,6 +176,8 @@ pub fn contemplate() -> CardDefinition {
 }
 
 pub fn ancestral_knowledge() -> CardDefinition {
+    let t2 = text2!["Draw", 3, "cards"];
+
     CardDefinition {
         name: CardName::AncestralKnowledge,
         sets: vec![CardSetName::Basics],
@@ -333,6 +346,8 @@ pub fn simple_spear() -> CardDefinition {
 }
 
 pub fn ethereal_blade() -> CardDefinition {
+    let t2 = text2!["When you use this weapon, sacrifice it at the end of the raid."];
+
     CardDefinition {
         name: CardName::EtherealBlade,
         sets: vec![CardSetName::Basics],
