@@ -47,7 +47,7 @@ impl<'a> RulesTextContext<'a> {
         }
     }
 
-    /// Invokes the provided `game` function to product a value in the active
+    /// Invokes the provided `game` function to produce a value in the active
     /// game context, otherwise returns some `default`.
     pub fn query_or<T>(&self, default: T, game: impl Fn(&GameState, CardId) -> T) -> T {
         match self {
