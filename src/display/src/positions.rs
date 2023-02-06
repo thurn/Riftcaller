@@ -19,7 +19,7 @@ use game_data::card_state::{CardPosition, CardState};
 use game_data::game::{GamePhase, GameState, MulliganData, RaidData};
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{
-    AbilityId, CardId, GameObjectId, ItemLocation, RoomId, RoomLocation, Side,
+    AbilityId, CardId, CardType, GameObjectId, ItemLocation, RoomId, RoomLocation, Side,
 };
 use game_data::utils;
 use protos::spelldawn::object_position::Position;
@@ -181,7 +181,7 @@ fn adapt_position(
         CardPosition::Scored(side) | CardPosition::ArenaLeader(side) => leader(builder, side),
         CardPosition::Scoring => staging(),
         CardPosition::Played(side, target) => {
-            card_release_position(builder, game, side, card_id, target)?
+            played_position(builder, game, side, card_id, target)?
         }
         CardPosition::PreGameLeader(_) | CardPosition::DeckUnknown(_) => {
             fail!("Invalid card position")
@@ -196,7 +196,7 @@ fn adapt_position(
 /// area. We also animate spell cards to staging while resolving their effects.
 /// For other card types, we move them directly to their destination to make
 /// playing a card feel more responsive.
-pub fn card_release_position(
+pub fn played_position(
     builder: &ResponseBuilder,
     game: &GameState,
     side: Side,
@@ -205,6 +205,8 @@ pub fn card_release_position(
 ) -> Result<Position> {
     if builder.user_side != side || rules::card_definition(game, card_id).card_type.is_spell() {
         Ok(staging())
+    } else if rules::card_definition(game, card_id).card_type == CardType::Leader {
+        Ok(leader_container(builder, side))
     } else {
         adapt_position(
             builder,
