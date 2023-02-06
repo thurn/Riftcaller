@@ -95,7 +95,7 @@ fn config() -> TestConfig {
         deck: Some(Deck {
             side: Side::Champion,
             primary_school: School::Neutral,
-            leader: CardName::TestChampionLeader,
+            leader: Some(CardName::TestChampionLeader),
             cards: hashmap! { EXAMPLE_CARD => 2 },
         }),
         collection: hashmap! { EXAMPLE_CARD => 3},

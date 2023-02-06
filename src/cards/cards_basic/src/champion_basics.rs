@@ -29,7 +29,7 @@ use rules::{mana, mutations};
 
 pub fn basic_champion_leader() -> CardDefinition {
     CardDefinition {
-        name: CardName::BasicChampionLeader,
+        name: CardName::TutorialChampionLeader,
         sets: vec![CardSetName::Basics],
         cost: leader_cost(),
         image: assets::fantasy_class_image("Priest", "Female"),

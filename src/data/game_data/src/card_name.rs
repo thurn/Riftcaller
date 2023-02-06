@@ -127,7 +127,7 @@ pub enum CardName {
     TutorialForceSanctumScore,
 
     // Basic
-    BasicChampionLeader,
+    TutorialChampionLeader,
     ArcaneRecovery,
     EldritchSurge,
     Lodestone,
@@ -142,7 +142,7 @@ pub enum CardName {
     SimpleSpear,
     SimpleStaff,
     EtherealBlade,
-    BasicOverlordLeader,
+    TutorialOverlordLeader,
     Conspire,
     Devise,
     Machinate,
@@ -164,8 +164,8 @@ impl CardName {
         match self {
             Self::MaraudersAxe => "Marauder's Axe".to_string(),
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
-            Self::BasicChampionLeader => "Leader".to_string(),
-            Self::BasicOverlordLeader => "Leader".to_string(),
+            Self::TutorialChampionLeader => "Leader".to_string(),
+            Self::TutorialOverlordLeader => "Leader".to_string(),
             _ => format!("{self}").from_case(Case::Pascal).to_case(Case::Title),
         }
     }

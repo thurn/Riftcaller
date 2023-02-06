@@ -27,7 +27,7 @@ use rules::{mana, mutations};
 
 pub fn basic_overlord_leader() -> CardDefinition {
     CardDefinition {
-        name: CardName::BasicOverlordLeader,
+        name: CardName::TutorialOverlordLeader,
         sets: vec![CardSetName::Basics],
         cost: leader_cost(),
         image: assets::fantasy_class_image("Warlock", "Male"),

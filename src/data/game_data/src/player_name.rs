@@ -59,6 +59,7 @@ impl fmt::Display for PlayerId {
 )]
 pub enum NamedPlayer {
     NoAction,
+    TutorialOpponent,
     TestMinimax,
     TestAlphaBetaScores,
     TestAlphaBetaHeuristics,

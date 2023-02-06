@@ -86,13 +86,13 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     let overlord_deck = Deck {
         side: Side::Overlord,
         primary_school: School::Neutral,
-        leader: CardName::TestOverlordLeader,
+        leader: Some(CardName::TestOverlordLeader),
         cards: hashmap! {CardName::TestOverlordSpell => 45},
     };
     let champion_deck = Deck {
         side: Side::Champion,
         primary_school: School::Neutral,
-        leader: CardName::TestChampionLeader,
+        leader: Some(CardName::TestChampionLeader),
         cards: hashmap! {CardName::TestChampionSpell => 45},
     };
 

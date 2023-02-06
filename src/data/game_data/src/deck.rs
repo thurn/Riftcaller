@@ -31,8 +31,8 @@ pub struct Deck {
     pub side: Side,
     /// The school for this deck, determines e.g. card back used
     pub primary_school: School,
-    /// Leader card for this deck
-    pub leader: CardName,
+    /// Leader card for this deck, if any
+    pub leader: Option<CardName>,
     /// How many (non-leader) cards with each name are present in this deck?
     #[serde_as(as = "Vec<(_, _)>")]
     pub cards: HashMap<CardName, u32>,

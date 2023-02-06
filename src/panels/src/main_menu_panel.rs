@@ -58,7 +58,7 @@ impl Component for MainMenuPanel {
                         "Tutorial",
                         self.close().action(UserAction::NewGame(NewGameAction {
                             deck: NewGameDeck::NamedDeck(NamedDeck::BasicChampion),
-                            opponent: PlayerId::Named(NamedPlayer::TestAlphaBetaHeuristics),
+                            opponent: PlayerId::Named(NamedPlayer::TutorialOpponent),
                             tutorial: true,
                             debug_options: None,
                         })),

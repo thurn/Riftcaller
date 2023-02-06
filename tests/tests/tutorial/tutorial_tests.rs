@@ -24,7 +24,7 @@ use protos::spelldawn::{
 use test_utils::client::TestSession;
 use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
-static OPPONENT: PlayerId = PlayerId::Named(NamedPlayer::TestAlphaBetaHeuristics);
+static OPPONENT: PlayerId = PlayerId::Named(NamedPlayer::TutorialOpponent);
 
 #[tokio::test]
 async fn set_up_tutorial() {
@@ -159,7 +159,7 @@ async fn start_tutorial(session: &mut TestSession) {
     session
         .perform_action(
             UserAction::NewGame(NewGameAction {
-                deck: NewGameDeck::NamedDeck(NamedDeck::BasicChampion),
+                deck: NewGameDeck::NamedDeck(NamedDeck::TutorialChampion),
                 opponent: OPPONENT,
                 tutorial: true,
                 debug_options: None,

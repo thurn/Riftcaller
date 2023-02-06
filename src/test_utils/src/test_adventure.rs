@@ -78,11 +78,11 @@ impl TestAdventure {
             config.deck.unwrap_or(Deck {
                 side,
                 primary_school: School::Neutral,
-                leader: if side == Side::Overlord {
+                leader: Some(if side == Side::Overlord {
                     CardName::TestOverlordLeader
                 } else {
                     CardName::TestChampionLeader
-                },
+                }),
                 cards: HashMap::new(),
             }),
             config.collection,

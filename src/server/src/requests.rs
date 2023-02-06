@@ -28,7 +28,7 @@ use game_data::deck::Deck;
 use game_data::game::{GameConfiguration, GameState};
 use game_data::game_actions;
 use game_data::game_actions::GameAction;
-use game_data::player_name::PlayerId;
+use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{GameId, ResponseContext, Side};
 use game_data::tutorial_data::TutorialData;
 use game_data::updates::{UpdateTracker, Updates};
@@ -470,7 +470,10 @@ fn requested_deck(
             }
         }
         // TODO: Each named player should have their own decklist
-        PlayerId::Named(_) => Some(decklists::basic_deck(side)),
+        PlayerId::Named(name) => match name {
+            NamedPlayer::TutorialOpponent => Some(decklists::TUTORIAL_OVERLORD.clone()),
+            _ => Some(decklists::basic_deck(side)),
+        },
     })
 }
 

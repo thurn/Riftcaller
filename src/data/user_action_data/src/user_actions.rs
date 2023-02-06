@@ -37,7 +37,9 @@ pub enum NamedDeck {
     ChampionTestSpells,
     OverlordTestSpells,
     BasicChampion,
+    TutorialChampion,
     BasicOverlord,
+    TutorialOverlord,
     CanonicalChampion,
     CanonicalOverlord,
 }

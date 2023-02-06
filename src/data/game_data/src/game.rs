@@ -576,9 +576,12 @@ impl GameState {
 
     /// Create card states for a deck
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
-        let mut leader = CardState::new(CardId::new(side, 0), deck.leader);
-        leader.set_position_internal(1, CardPosition::PreGameLeader(side));
-        let mut result = vec![leader];
+        let mut result = vec![];
+        if let Some(leader) = deck.leader {
+            let mut card = CardState::new(CardId::new(side, 0), leader);
+            card.set_position_internal(1, CardPosition::PreGameLeader(side));
+            result.push(card);
+        }
 
         result.extend(
             deck.card_names()
@@ -653,14 +656,14 @@ mod tests {
             Deck {
                 side: Side::Overlord,
                 primary_school: School::Law,
-                leader: CardName::TestOverlordLeader,
+                leader: None,
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
             PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Champion,
                 primary_school: School::Law,
-                leader: CardName::TestOverlordLeader,
+                leader: None,
                 cards: champion.into_iter().map(|name| (name, 1)).collect(),
             },
             GameConfiguration { deterministic: true, ..GameConfiguration::default() },
