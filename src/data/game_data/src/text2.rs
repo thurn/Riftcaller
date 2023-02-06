@@ -15,12 +15,12 @@
 use crate::card_definition::Cost;
 use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue};
 
-pub fn trigger(name: Token, effect: Vec<Text2>) -> Text2 {
-    Text2::KeywordTrigger(name, effect)
+pub fn trigger(name: Token, effect: Vec<Text2>) -> Vec<Text2> {
+    vec![Text2::KeywordTrigger(name, effect)]
 }
 
-pub fn activation(effect: Vec<Text2>) -> Text2 {
-    Text2::Literal("Hello".to_string())
+pub fn activation(effect: Vec<Text2>) -> Vec<Text2> {
+    vec![Text2::ActivationEffect(effect)]
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
@@ -28,7 +28,7 @@ pub enum Text2 {
     Children(Vec<Self>),
     KeywordTrigger(Token, Vec<Self>),
     ActivationCost(Vec<Self>),
-    BoostCost(Vec<Self>),
+    ActivationEffect(Vec<Self>),
     Literal(String),
     Reminder(String),
     Token(Token),
@@ -42,6 +42,7 @@ pub enum Token {
     Actions(ActionCount),
     Number(u32),
     Plus(u32),
+    EncounterBoost,
     Then,
     Attack,
     Health,
