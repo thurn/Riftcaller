@@ -12,10 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod adventure;
-mod ai;
-mod cards_basic;
-mod cards_poc;
-mod core;
-mod rules_text;
-mod tutorial;
+use core_ui::icons;
+use game_data::card_name::CardName;
+use game_data::primitives::Side;
+use test_utils::*;
+
+#[test]
+fn test_keyword_aggregation() {
+    let mut g = new_game(Side::Overlord, Args::default());
+    let id = g.play_from_hand(CardName::TestMinionDealDamageEndRaid);
+    assert_eq!(
+        format!("{}<b>Combat:</b> Deal 1 damage. End the raid.", icons::TRIGGER),
+        g.user.cards.get(id).rules_text()
+    );
+}

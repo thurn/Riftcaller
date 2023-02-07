@@ -787,6 +787,7 @@ impl ClientCards {
 pub struct ClientCard {
     id: Option<CardIdentifier>,
     title: Option<String>,
+    rules_text: Option<String>,
     position: Option<ObjectPosition>,
     revealed_to_me: Option<bool>,
     is_face_up: Option<bool>,
@@ -819,6 +820,10 @@ impl ClientCard {
     /// available
     pub fn title_option(&self) -> Option<String> {
         self.title.clone()
+    }
+
+    pub fn rules_text(&self) -> String {
+        self.rules_text.clone().expect("No rules text found")
     }
 
     pub fn revealed_to_me(&self) -> bool {
@@ -906,6 +911,8 @@ impl ClientCard {
         if let Some(title) = revealed.clone().title.map(|title| title.text) {
             self.title = Some(title);
         }
+
+        self.rules_text = revealed.rules_text.as_ref().map(|r| r.text.clone())
     }
 }
 
