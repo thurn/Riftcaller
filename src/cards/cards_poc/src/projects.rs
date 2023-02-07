@@ -73,13 +73,7 @@ pub fn spike_trap() -> CardDefinition {
             simple_ability(
                 trigger_text(
                     Trap,
-                    text![
-                        "If this card is in play,",
-                        DealDamage(2),
-                        "plus",
-                        1,
-                        "per level counter"
-                    ],
+                    text!["If this card is in play,", DealDamage(2), "plus", 1, "per level"],
                 ),
                 on_accessed(|g, s, _| {
                     if g.card(s.card_id()).position().in_play() {

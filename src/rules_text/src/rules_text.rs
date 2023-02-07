@@ -13,13 +13,11 @@
 // limitations under the License.
 
 pub mod card_icons;
-
-use std::iter;
+pub mod supplemental_info;
 
 use core_ui::icons;
-use core_ui::prelude::Node;
 use game_data::card_definition::{Ability, AbilityType, AttackBoost, CardDefinition, Cost};
-use game_data::primitives::{AbilityId, AbilityIndex};
+use game_data::primitives::AbilityId;
 use game_data::text::{RulesTextContext, TextElement, TextToken};
 use protos::spelldawn::RulesText;
 use rules::queries;
@@ -92,19 +90,12 @@ pub fn ability_text(context: &RulesTextContext, ability: &Ability) -> String {
     build_text(context, &ability.text, true)
 }
 
-/// Builds the supplemental info display for a card, which displays additional
-/// help information and appears on long-press.
-///
-/// If an `ability_index` is provided, only supplemental info for that index is
-/// returned. Otherwise, supplemental info for all abilities is returned.
-pub fn build_supplemental_info(_: &RulesTextContext, _: Option<AbilityIndex>) -> Option<Node> {
-    None
-}
-
 fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<TextElement> {
-    let mut result = iter::repeat(TextElement::Token(TextToken::ActionSymbol))
-        .take(cost.actions as usize)
-        .collect::<Vec<_>>();
+    let mut result = vec![];
+
+    if cost.actions > 0 {
+        result.push(TextElement::Token(TextToken::Actions(cost.actions)));
+    }
 
     if let Some(mana) = cost.mana {
         if mana > 0 {
@@ -176,7 +167,7 @@ fn process_token(context: &RulesTextContext, token: &TextToken) -> String {
         TextToken::ManaSymbol => icons::MANA.to_string(),
         TextToken::Mana(n) => format!("{n}{}", icons::MANA),
         TextToken::ActionSymbol => icons::ACTION.to_string(),
-        TextToken::Actions(n) => format!("{n}{}", icons::ACTION),
+        TextToken::Actions(n) => icons::ACTION.repeat(*n as usize),
         TextToken::Number(n) => n.to_string(),
         TextToken::Plus(n) => format!("+{n}"),
         TextToken::EncounterBoostCost => {

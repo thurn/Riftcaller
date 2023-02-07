@@ -27,7 +27,7 @@ use protos::spelldawn::{
     PlayInRoom, RevealedCardView, RulesText, SpriteAddress, TargetingArrow,
 };
 use rules::{flags, queries};
-use rules_text::card_icons;
+use rules_text::{card_icons, supplemental_info};
 use {adapters, assets, rules_text};
 
 use crate::positions;
@@ -166,10 +166,7 @@ fn revealed_card_view(
                 CardType::GameModifier => positions::offscreen(),
             },
         )),
-        supplemental_info: rules_text::build_supplemental_info(
-            &RulesTextContext::Game(game, card),
-            None,
-        ),
+        supplemental_info: supplemental_info::build(&RulesTextContext::Game(game, card), None),
     }
 }
 
@@ -207,7 +204,7 @@ fn revealed_ability_card_view(
             flags::can_take_activate_ability_action(game, ability_id.side(), ability_id, target)
         })),
         on_release_position: Some(positions::for_ability(game, ability_id, positions::staging())),
-        supplemental_info: rules_text::build_supplemental_info(
+        supplemental_info: supplemental_info::build(
             &RulesTextContext::Game(game, card),
             Some(ability_id.index),
         ),

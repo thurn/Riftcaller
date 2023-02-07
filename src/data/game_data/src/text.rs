@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use enum_kinds::EnumKind;
+
 use crate::card_definition::CardDefinition;
 use crate::card_name::CardName;
 use crate::card_state::{CardData, CardState};
@@ -29,7 +31,8 @@ pub enum TextElement {
     Token(TextToken),
 }
 
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, EnumKind)]
+#[enum_kind(TextTokenKind, derive(Ord, PartialOrd))]
 pub enum TextToken {
     ManaSymbol,
     Mana(ManaValue),
@@ -70,6 +73,10 @@ pub enum TextToken {
 impl TextToken {
     pub fn is_keyword(&self) -> bool {
         matches!(self, Self::Breach(_) | Self::LevelUp | Self::Trap | Self::Construct)
+    }
+
+    pub fn kind(&self) -> TextTokenKind {
+        self.into()
     }
 }
 
