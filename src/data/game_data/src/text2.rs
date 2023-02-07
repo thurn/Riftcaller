@@ -15,13 +15,14 @@
 use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue};
 
 pub fn trigger(name: Token, effect: Vec<Text2>) -> Vec<Text2> {
-    vec![Text2::Trigger(name, effect)]
+    vec![Text2::NamedTrigger(name, effect)]
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum Text2 {
     Children(Vec<Self>),
-    Trigger(Token, Vec<Text2>),
+    NamedTrigger(Token, Vec<Text2>),
+    Activated { cost: Vec<Text2>, effect: Vec<Text2> },
     Literal(String),
     Reminder(String),
     Token(Token),

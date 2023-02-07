@@ -34,6 +34,7 @@ use crate::primitives::{
 };
 use crate::special_effects::{Projectile, TimedEffect};
 use crate::text::AbilityText;
+use crate::text2::Text2;
 
 /// A cost represented by custom functions.
 ///
@@ -160,6 +161,13 @@ pub struct Ability {
     pub delegates: Vec<Delegate>,
 }
 
+#[derive(Debug)]
+pub struct Ability2 {
+    pub ability_type: AbilityType,
+    pub text: Vec<Text2>,
+    pub delegates: Vec<Delegate>,
+}
+
 /// Describes custom visual & audio effects for this card
 #[derive(Debug, Default)]
 pub struct SpecialEffects {
@@ -201,6 +209,20 @@ pub struct CardDefinition {
     pub school: School,
     pub rarity: Rarity,
     pub abilities: Vec<Ability>,
+    pub config: CardConfig,
+}
+
+#[derive(Debug)]
+pub struct CardDefinition2 {
+    pub name: CardName,
+    pub sets: Vec<CardSetName>,
+    pub cost: Cost<CardId>,
+    pub image: Sprite,
+    pub card_type: CardType,
+    pub side: Side,
+    pub school: School,
+    pub rarity: Rarity,
+    pub abilities: Vec<Ability2>,
     pub config: CardConfig,
 }
 
