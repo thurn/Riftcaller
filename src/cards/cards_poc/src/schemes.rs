@@ -22,7 +22,6 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::text::trigger;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 
@@ -38,7 +37,7 @@ pub fn gold_mine() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: trigger(Score, text![Gain, Mana(7)]),
+            text: trigger_text(Score, text![Gain, Mana(7)]),
             delegates: vec![on_overlord_score(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 Ok(())
@@ -97,7 +96,7 @@ pub fn research_project() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: trigger(
+            text: trigger_text(
                 Score,
                 text![text!["Draw", 2, "cards"], text!["You get", Plus(2), "maximum hand size"]],
             ),

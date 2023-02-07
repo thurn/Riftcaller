@@ -35,12 +35,23 @@ use game_data::primitives::{
     RaidId, RoomId, Side, TurnNumber,
 };
 use game_data::special_effects::Projectile;
-use game_data::text::TextElement;
 pub use game_data::text::TextToken::*;
+use game_data::text::{TextElement, TextToken};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{mana, mutations, queries};
+
+pub fn trigger_text(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElement> {
+    vec![TextElement::NamedTrigger(name, effect)]
+}
+
+pub fn encounter_ability_text(
+    cost: Vec<TextElement>,
+    effect: Vec<TextElement>,
+) -> Vec<TextElement> {
+    vec![TextElement::EncounterAbility { cost, effect }]
+}
 
 pub fn reminder(text: &'static str) -> TextElement {
     TextElement::Reminder(text.to_string())

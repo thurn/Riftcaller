@@ -18,17 +18,6 @@ use crate::card_state::{CardData, CardState};
 use crate::game::GameState;
 use crate::primitives::{ActionCount, BreachValue, CardId, DamageAmount, ManaValue};
 
-pub fn trigger(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElement> {
-    vec![TextElement::NamedTrigger(name, effect)]
-}
-
-pub fn encounter_ability_text(
-    cost: Vec<TextElement>,
-    effect: Vec<TextElement>,
-) -> Vec<TextElement> {
-    vec![TextElement::EncounterAbility { cost, effect }]
-}
-
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TextElement {
     Children(Vec<Self>),

@@ -22,7 +22,6 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text::trigger;
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -120,7 +119,7 @@ pub fn mana_battery() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                trigger(Dawn, text![TakeMana(1)]),
+                trigger_text(Dawn, text![TakeMana(1)]),
                 at_dawn(|g, s, _| {
                     let taken =
                         mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;

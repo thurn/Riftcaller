@@ -21,7 +21,6 @@ use game_data::card_definition::{
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
-use game_data::text::trigger;
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -167,7 +166,7 @@ pub fn leyline() -> CardDefinition {
         abilities: vec![
             unveil_at_dusk_ability(),
             simple_ability(
-                trigger(Dusk, text!["Gain", Mana(1)]),
+                trigger_text(Dusk, text!["Gain", Mana(1)]),
                 at_dusk(|g, s, _| {
                     mana::gain(g, s.side(), 1);
                     Ok(())
@@ -195,7 +194,7 @@ pub fn ore_refinery() -> CardDefinition {
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
             },
             simple_ability(
-                trigger(Dusk, text![TakeMana(3)]),
+                trigger_text(Dusk, text![TakeMana(3)]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     Ok(())

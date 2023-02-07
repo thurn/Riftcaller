@@ -24,7 +24,6 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::text::trigger;
 use game_data::utils;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
@@ -69,7 +68,7 @@ pub fn accumulator() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                trigger(SuccessfulRaid, text![StoreMana(1)]),
+                trigger_text(SuccessfulRaid, text![StoreMana(1)]),
                 on_raid_success(face_up_in_play, |g, s, _| {
                     add_stored_mana(g, s.card_id(), 1);
                     alert(g, s);

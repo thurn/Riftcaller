@@ -21,7 +21,6 @@ use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinitio
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::text::trigger;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
@@ -42,7 +41,7 @@ pub fn gemcarver() -> CardDefinition {
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<9>()],
             },
             simple_ability(
-                trigger(Dusk, text![text![TakeMana(3)], text!["When empty, draw a card"]]),
+                trigger_text(Dusk, text![text![TakeMana(3)], text!["When empty, draw a card"]]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     if g.card(s.card_id()).data.stored_mana == 0 {
@@ -72,7 +71,7 @@ pub fn spike_trap() -> CardDefinition {
         abilities: vec![
             abilities::level_up(),
             simple_ability(
-                trigger(
+                trigger_text(
                     Trap,
                     text![
                         "If this card is in play,",

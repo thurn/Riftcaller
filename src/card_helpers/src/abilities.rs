@@ -20,7 +20,6 @@ use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, 
 use game_data::game::GameState;
 use game_data::primitives::{AbilityId, AttackValue, BoostCount, CardId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
-use game_data::text::{encounter_ability_text, trigger};
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
 
@@ -74,7 +73,7 @@ fn add_boost(game: &GameState, _: Scope, card_id: &CardId, current: AttackValue)
 pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Play, text![StoreMana(N)]),
+        text: trigger_text(Play, text![StoreMana(N)]),
         delegates: vec![
             Delegate::CastCard(EventDelegate::new(this_card, |g, _s, played| {
                 g.card_mut(played.card_id).data.stored_mana = N;
@@ -109,7 +108,7 @@ pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability
 pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text![DealDamage(N)]),
+        text: trigger_text(Combat, text![DealDamage(N)]),
         delegates: vec![combat(|g, s, _| mutations::deal_damage(g, s, N))],
     }
 }
@@ -118,7 +117,7 @@ pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
 pub fn combat_end_raid() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text!["End the raid"]),
+        text: trigger_text(Combat, text!["End the raid"]),
         delegates: vec![combat(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
     }
 }
@@ -127,7 +126,7 @@ pub fn combat_end_raid() -> Ability {
 pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text![Gain, Mana(N)]),
+        text: trigger_text(Combat, text![Gain, Mana(N)]),
         delegates: vec![combat(|g, _, _| {
             mana::gain(g, Side::Overlord, N);
             Ok(())
@@ -140,7 +139,7 @@ pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
 pub fn remove_actions_if_able<const N: ActionCount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text!["Remove", Actions(1)]),
+        text: trigger_text(Combat, text!["Remove", Actions(1)]),
         delegates: vec![combat(|g, _s, _| {
             mutations::lose_action_points_if_able(g, Side::Champion, N)
         })],

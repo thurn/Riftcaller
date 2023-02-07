@@ -25,7 +25,6 @@ use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game::RaidJumpRequest;
 use game_data::game_actions::CardPromptAction;
 use game_data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
-use game_data::text::trigger;
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
@@ -44,7 +43,7 @@ pub fn time_golem() -> CardDefinition {
         abilities: vec![
             abilities::construct(),
             simple_ability(
-                trigger(
+                trigger_text(
                     Encounter,
                     text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
                 ),
@@ -81,13 +80,13 @@ pub fn temporal_stalker() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                trigger(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
+                trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
                 minion_combat_actions(|g, _, _, _| {
                     vec![Some(CardPromptAction::EndRaid), lose_actions_prompt(g, Side::Champion, 2)]
                 }),
             ),
             simple_ability(
-                trigger(
+                trigger_text(
                     Combat,
                     text!["Summon a minion from the", Sanctum, "or", Crypts, "for free"],
                 ),
@@ -162,7 +161,7 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: trigger(
+            text: trigger_text(
                 Combat,
                 text![
                     text![DealDamage(1)],
@@ -201,7 +200,7 @@ pub fn bridge_troll() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            trigger(
+            trigger_text(
                 Combat,
                 text![
                     text!["The Champion loses", Mana(3)],
@@ -235,7 +234,7 @@ pub fn stormcaller() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            trigger(
+            trigger_text(
                 Combat,
                 text!["The Champion must end the raid and", TakeDamage(2), "or", TakeDamage(4)],
             ),

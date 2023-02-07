@@ -25,7 +25,6 @@ use game_data::primitives::{
     CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite,
 };
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text::trigger;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
@@ -343,7 +342,7 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<MANA_STORED>()],
             },
             Ability {
-                text: trigger(Dusk, text![TakeMana(MANA_TAKEN)]),
+                text: trigger_text(Dusk, text![TakeMana(MANA_TAKEN)]),
                 ability_type: AbilityType::Standard,
                 delegates: vec![at_dusk(|g, s, _| {
                     mutations::take_stored_mana(
@@ -411,7 +410,7 @@ pub fn test_card_stored_mana() -> CardDefinition {
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
             },
             simple_ability(
-                trigger(Dusk, text![TakeMana(3)]),
+                trigger_text(Dusk, text![TakeMana(3)]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     alert(g, s);
