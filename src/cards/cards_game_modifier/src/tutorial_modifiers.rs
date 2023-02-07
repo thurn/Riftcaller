@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use assets::rexard_images;
-use card_helpers::{text, *};
+use card_helpers::{text2, *};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -36,14 +36,14 @@ fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
 }
 
 pub fn overlord_empty_modifier() -> CardDefinition {
-    tutorial_modifier(CardName::OverlordEmptyModifier, text_only_ability(text!["No effect"]))
+    tutorial_modifier(CardName::OverlordEmptyModifier, text_only_ability(text2!["No effect"]))
 }
 
 pub fn tutorial_disable_draw_action() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableDrawAction,
         simple_ability(
-            text!["The Champion cannot take the 'draw card' action"],
+            text2!["The Champion cannot take the 'draw card' action"],
             Delegate::CanTakeDrawCardAction(QueryDelegate {
                 requirement: side_is_champion,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -56,7 +56,7 @@ pub fn tutorial_disable_gain_mana() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableGainMana,
         simple_ability(
-            text!["The Champion cannot take the 'gain mana' action"],
+            text2!["The Champion cannot take the 'gain mana' action"],
             Delegate::CanTakeGainManaAction(QueryDelegate {
                 requirement: side_is_champion,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -69,7 +69,7 @@ pub fn tutorial_disable_raid_sanctum() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidSanctum,
         simple_ability(
-            text!["The Champion cannot raid the Sanctum"],
+            text2!["The Champion cannot raid the Sanctum"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_sanctum,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -82,7 +82,7 @@ pub fn tutorial_disable_raid_vault() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidVault,
         simple_ability(
-            text!["The Champion cannot raid the Vault"],
+            text2!["The Champion cannot raid the Vault"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_vault,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -95,7 +95,7 @@ pub fn tutorial_disable_raid_crypts() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidCrypts,
         simple_ability(
-            text!["The Champion cannot raid the Crypts"],
+            text2!["The Champion cannot raid the Crypts"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_crypts,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -108,7 +108,7 @@ pub fn tutorial_disable_raid_outer() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidOuter,
         simple_ability(
-            text!["The Champion cannot raid outer rooms"],
+            text2!["The Champion cannot raid outer rooms"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: |_, _, room_id| room_id.is_outer_room(),
                 transformation: |_, _, _, f| f.with_override(false),
@@ -121,7 +121,7 @@ pub fn tutorial_disable_raid_continue() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidContinue,
         simple_ability(
-            text!["The Champion must use a weapon during raids"],
+            text2!["The Champion must use a weapon during raids"],
             Delegate::CanUseNoWeapon(QueryDelegate {
                 requirement: always,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -134,7 +134,7 @@ pub fn tutorial_disable_end_raid() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableEndRaid,
         simple_ability(
-            text!["The Champion cannot end the access phase of raids"],
+            text2!["The Champion cannot end the access phase of raids"],
             Delegate::CanEndRaidAccessPhase(QueryDelegate {
                 requirement: always,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -147,7 +147,7 @@ pub fn tutorial_force_sanctum_score() -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialForceSanctumScore,
         simple_ability(
-            text!["The Champion always accesses a scheme card when raiding the Sanctum"],
+            text2!["The Champion always accesses a scheme card when raiding the Sanctum"],
             Delegate::RaidAccessSelected(EventDelegate {
                 requirement: |_, _, event| event.target == RoomId::Sanctum,
                 mutation: |g, _, _| {

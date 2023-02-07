@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
-use card_helpers::{abilities, text, text2, *};
+use card_helpers::{abilities, text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
 };
@@ -24,16 +24,12 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::text::{Keyword, Sentence};
 use game_data::text2::trigger;
 use game_data::utils;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
 pub fn invisibility_ring() -> CardDefinition {
-    let t2 =
-        text2!["The first time each turn you access the Sanctum, access", 1, "additional card."];
-
     CardDefinition {
         name: CardName::InvisibilityRing,
         sets: vec![CardSetName::ProofOfConcept],
@@ -45,9 +41,11 @@ pub fn invisibility_ring() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text!(
-                "The first time each turn you access the Sanctum, access 1 additional card."
-            ),
+            text: text2![
+                "The first time each turn you access the Sanctum, access",
+                1,
+                "additional card."
+            ],
             delegates: vec![
                 on_raid_access_start(face_up_in_play, |g, s, raid_id| {
                     once_per_turn(g, s, raid_id, save_raid_id)
@@ -60,9 +58,6 @@ pub fn invisibility_ring() -> CardDefinition {
 }
 
 pub fn accumulator() -> CardDefinition {
-    let t2 = trigger(SuccessfulRaid, text2![StoreMana(1)]);
-    let t2 = text2![StoreMana(1), "then take all stored", ManaSymbol];
-
     CardDefinition {
         name: CardName::Accumulator,
         sets: vec![CardSetName::ProofOfConcept],
@@ -74,7 +69,7 @@ pub fn accumulator() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                text!(Keyword::SuccessfulRaid, Keyword::Store(Sentence::Start, 1)),
+                trigger(SuccessfulRaid, text2![StoreMana(1)]),
                 on_raid_success(face_up_in_play, |g, s, _| {
                     add_stored_mana(g, s.card_id(), 1);
                     alert(g, s);
@@ -83,7 +78,7 @@ pub fn accumulator() -> CardDefinition {
             ),
             Ability {
                 ability_type: activate_for_action(),
-                text: text!(Keyword::Store(Sentence::Start, 1), ", then take all stored mana."),
+                text: text2![StoreMana(1), ", then take all stored", ManaSymbol],
                 delegates: vec![on_activated(|g, s, activated| {
                     let mana = add_stored_mana(g, s.card_id(), 1);
                     mutations::take_stored_mana(g, activated.card_id(), mana, OnZeroStored::Ignore)
@@ -96,11 +91,6 @@ pub fn accumulator() -> CardDefinition {
 }
 
 pub fn mage_gloves() -> CardDefinition {
-    let t2 = text2![
-        text2!["Raid an", InnerRoom, "you have not raided this turn"],
-        text2!["If successful,", TakeMana(3)]
-    ];
-
     CardDefinition {
         name: CardName::MageGloves,
         sets: vec![CardSetName::ProofOfConcept],
@@ -122,13 +112,10 @@ pub fn mage_gloves() -> CardDefinition {
                             })
                     }),
                 ),
-                text: text!(
-                    "Raid an",
-                    Keyword::InnerRoom(Sentence::Internal),
-                    "you have not raided this turn.",
-                    "If successful,",
-                    Keyword::Take(Sentence::Internal, 3)
-                ),
+                text: text2![
+                    text2!["Raid an", InnerRoom, "you have not raided this turn"],
+                    text2!["If successful,", TakeMana(3)]
+                ],
                 delegates: vec![
                     on_activated(|g, s, activated| initiate_raid(g, s, activated.target)),
                     on_raid_success(matching_raid, |g, s, _| {
@@ -143,8 +130,6 @@ pub fn mage_gloves() -> CardDefinition {
 }
 
 pub fn magical_resonator() -> CardDefinition {
-    let t2 = text2![text2![TakeMana(3)], text2!["Use this ability once per turn"]];
-
     CardDefinition {
         name: CardName::MagicalResonator,
         sets: vec![CardSetName::ProofOfConcept],
@@ -161,11 +146,7 @@ pub fn magical_resonator() -> CardDefinition {
                     Cost { mana: None, actions: 1, custom_cost: once_per_turn_cost() },
                     TargetRequirement::None,
                 ),
-                text: text![
-                    Keyword::Take(Sentence::Start, 3),
-                    ".",
-                    "Use this ability only once per turn."
-                ],
+                text: text2![text2![TakeMana(3)], text2!["Use this ability once per turn"]],
                 delegates: vec![on_activated(|g, _s, activated| {
                     mutations::take_stored_mana(g, activated.card_id(), 3, OnZeroStored::Sacrifice)
                         .map(|_| ())
@@ -177,8 +158,6 @@ pub fn magical_resonator() -> CardDefinition {
 }
 
 pub fn dark_grimoire() -> CardDefinition {
-    let t2 = text2!["The first time each turn you take the 'draw card' action, draw another card"];
-
     CardDefinition {
         name: CardName::DarkGrimoire,
         sets: vec![CardSetName::ProofOfConcept],
@@ -189,7 +168,7 @@ pub fn dark_grimoire() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!["The first time each turn you take the 'draw card' action, draw another card."],
+            text2!["The first time each turn you take the 'draw card' action, draw another card"],
             Delegate::DrawCardAction(EventDelegate {
                 requirement: face_up_in_play,
                 mutation: |g, s, _| {

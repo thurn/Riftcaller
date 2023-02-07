@@ -15,7 +15,7 @@
 //! Card definitions for the Spell card type & Champion player
 
 use assets::rexard_images;
-use card_helpers::{text, text2, *};
+use card_helpers::{text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement,
 };
@@ -23,12 +23,9 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
-use game_data::text2::{trigger, Text2};
 use rules::{flags, mana, mutations};
 
 pub fn meditation() -> CardDefinition {
-    let t2 = text2![text2![Gain, Mana(5)], text2![Lose, Actions(1), reminder2("(if able)")]];
-
     CardDefinition {
         name: CardName::Meditation,
         sets: vec![CardSetName::ProofOfConcept],
@@ -39,7 +36,7 @@ pub fn meditation() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Gain", mana_text(5), ".", "Lose", actions_text(1), reminder("(if able).")),
+            text2![text2![Gain, Mana(5)], text2![Lose, Actions(1), reminder("(if able)")]],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 5);
                 mutations::lose_action_points_if_able(g, s.side(), 1)
@@ -50,11 +47,6 @@ pub fn meditation() -> CardDefinition {
 }
 
 pub fn coup_de_grace() -> CardDefinition {
-    let t2 = text2![
-        text2!["Raid the", Sanctum, "or", Vault, ", accessing", 1, "additional card"],
-        text2!["If successful, draw a card"]
-    ];
-
     CardDefinition {
         name: CardName::CoupDeGrace,
         sets: vec![CardSetName::ProofOfConcept],
@@ -66,10 +58,10 @@ pub fn coup_de_grace() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text!(
-                "Raid the Sanctum or Vault, accessing 1 additional card.",
-                "If successful, draw a card."
-            ),
+            text: text2![
+                text2!["Raid the", Sanctum, "or", Vault, ", accessing", 1, "additional card"],
+                text2!["If successful, draw a card"]
+            ],
             delegates: vec![
                 on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
                 add_vault_access::<1>(matching_raid),
@@ -90,8 +82,6 @@ pub fn coup_de_grace() -> CardDefinition {
 }
 
 pub fn charged_strike() -> CardDefinition {
-    let t2 = text2![text2![BeginARaid], text2!["Gain", Mana(5), "to spend during that raid"]];
-
     CardDefinition {
         name: CardName::ChargedStrike,
         sets: vec![CardSetName::ProofOfConcept],
@@ -102,7 +92,7 @@ pub fn charged_strike() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Initiate a raid.", "Gain", mana_text(5), "to spend during that raid."),
+            text2![text2![BeginARaid], text2![Gain, Mana(5), "to spend during that raid"]],
             on_cast(|g, s, play_card| {
                 initiate_raid_with_callback(g, s, play_card.target, |game, raid_id| {
                     mana::add_raid_specific_mana(game, s.side(), raid_id, 5);
@@ -119,11 +109,6 @@ pub fn charged_strike() -> CardDefinition {
 }
 
 pub fn stealth_mission() -> CardDefinition {
-    let t2 = text2![
-        text2![BeginARaid],
-        text2!["During that raid, summon costs are increased by", Mana(3)]
-    ];
-
     CardDefinition {
         name: CardName::StealthMission,
         sets: vec![CardSetName::ProofOfConcept],
@@ -135,12 +120,10 @@ pub fn stealth_mission() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text!(
-                "Initiate a raid.",
-                "During that raid, summon costs are increased by",
-                mana_text(3),
-                "."
-            ),
+            text: text2![
+                text2![BeginARaid],
+                text2!["During that raid, summon costs are increased by", Mana(3)]
+            ],
             delegates: vec![
                 on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
                 Delegate::ManaCost(QueryDelegate {
@@ -165,8 +148,6 @@ pub fn stealth_mission() -> CardDefinition {
 }
 
 pub fn preparation() -> CardDefinition {
-    let t2 = text2![text2!["Draw", 4, "cards"], text2!["Lose", Actions(1), reminder2("(if able)")]];
-
     CardDefinition {
         name: CardName::Preparation,
         sets: vec![CardSetName::ProofOfConcept],
@@ -177,7 +158,7 @@ pub fn preparation() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Draw 4 cards.", "Lose", actions_text(1), reminder("(if able).")),
+            text2![text2!["Draw", 4, "cards"], text2!["Lose", Actions(1), reminder("(if able)")]],
             on_cast(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 4)?;
                 mutations::lose_action_points_if_able(g, s.side(), 1)

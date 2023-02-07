@@ -20,7 +20,7 @@ use game_data::card_state::CardState;
 use game_data::game::GameState;
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation};
-use game_data::text::RulesTextContext;
+use game_data::text2::RulesTextContext;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,

@@ -15,7 +15,7 @@
 //! Card definitions for the Spell card type & Overlord player
 
 use assets::rexard_images;
-use card_helpers::{text, text2, *};
+use card_helpers::{text2, *};
 use game_data::card_definition::{CardConfig, CardDefinition, TargetRequirement};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -23,8 +23,6 @@ use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::{flags, mana, mutations};
 
 pub fn overwhelming_power() -> CardDefinition {
-    let t2 = text2![Gain, Mana(15)];
-
     CardDefinition {
         name: CardName::OverwhelmingPower,
         sets: vec![CardSetName::ProofOfConcept],
@@ -35,7 +33,7 @@ pub fn overwhelming_power() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Gain", mana_text(15)),
+            text2![Gain, Mana(15)],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 15);
                 Ok(())
@@ -46,10 +44,6 @@ pub fn overwhelming_power() -> CardDefinition {
 }
 
 pub fn forced_march() -> CardDefinition {
-    let t2 = text2![
-        "Place 2 level counters on each card in target room which didn't enter play this turn"
-    ];
-
     CardDefinition {
         name: CardName::ForcedMarch,
         sets: vec![CardSetName::ProofOfConcept],
@@ -60,9 +54,9 @@ pub fn forced_march() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!(
+            text2![
                 "Place 2 level counters on each card in target room which didn't enter play this turn"
-            ),
+            ],
             on_cast(|g, _, played| {
                 let targets = g
                     .defenders_and_occupants(played.target.room_id()?)
@@ -77,8 +71,8 @@ pub fn forced_march() -> CardDefinition {
                 }
 
                 Ok(())
-            }))
-        ],
+            }),
+        )],
         config: CardConfig {
             custom_targeting: Some(TargetRequirement::TargetRoom(|game, _, room_id| {
                 game.defenders_and_occupants(room_id).any(|card| {

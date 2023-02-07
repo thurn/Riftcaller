@@ -14,16 +14,14 @@
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use assets::EnvironmentType;
-use card_helpers::{text, *};
+use card_helpers::*;
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
-    TargetRequirement,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text::{Keyword, Sentence};
 use game_data::text2::trigger;
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
@@ -51,8 +49,6 @@ pub fn tutorial_champion_leader() -> CardDefinition {
 }
 
 pub fn arcane_recovery() -> CardDefinition {
-    let t2 = text2![Gain, Mana(9)];
-
     CardDefinition {
         name: CardName::ArcaneRecovery,
         sets: vec![CardSetName::Basics],
@@ -63,7 +59,7 @@ pub fn arcane_recovery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Gain", mana_text(9)),
+            text2![Gain, Mana(9)],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
@@ -74,8 +70,6 @@ pub fn arcane_recovery() -> CardDefinition {
 }
 
 pub fn eldritch_surge() -> CardDefinition {
-    let t2 = text2![Gain, Mana(3)];
-
     CardDefinition {
         name: CardName::EldritchSurge,
         sets: vec![CardSetName::Basics],
@@ -86,7 +80,7 @@ pub fn eldritch_surge() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Gain", mana_text(3)),
+            text2![Gain, Mana(3)],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 3);
                 Ok(())
@@ -115,9 +109,6 @@ pub fn lodestone() -> CardDefinition {
 }
 
 pub fn mana_battery() -> CardDefinition {
-    let t2 = trigger(Dawn, text2![TakeMana(1)]);
-    let t2 = text2![StoreMana(3)];
-
     CardDefinition {
         name: CardName::ManaBattery,
         sets: vec![CardSetName::Basics],
@@ -129,7 +120,7 @@ pub fn mana_battery() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                text![Keyword::Dawn, Keyword::Take(Sentence::Start, 1)],
+                trigger(Dawn, text2![TakeMana(1)]),
                 at_dawn(|g, s, _| {
                     let taken =
                         mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;
@@ -139,7 +130,7 @@ pub fn mana_battery() -> CardDefinition {
             ),
             Ability {
                 ability_type: activate_for_action(),
-                text: text![Keyword::Store(Sentence::Start, 3)],
+                text: text2![StoreMana(3)],
                 delegates: vec![on_activated(|g, s, _| {
                     add_stored_mana(g, s.card_id(), 3);
                     Ok(())
@@ -151,8 +142,6 @@ pub fn mana_battery() -> CardDefinition {
 }
 
 pub fn contemplate() -> CardDefinition {
-    let t2 = text2![text2![Gain, Mana(2)], text2!["Draw a card"]];
-
     CardDefinition {
         name: CardName::Contemplate,
         sets: vec![CardSetName::Basics],
@@ -163,7 +152,7 @@ pub fn contemplate() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Gain", mana_text(2), ". Draw a card."),
+            text2![text2![Gain, Mana(2)], text2!["Draw a card"]],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 2);
                 mutations::draw_cards(g, s.side(), 1)?;
@@ -175,8 +164,6 @@ pub fn contemplate() -> CardDefinition {
 }
 
 pub fn ancestral_knowledge() -> CardDefinition {
-    let t2 = text2!["Draw", 3, "cards"];
-
     CardDefinition {
         name: CardName::AncestralKnowledge,
         sets: vec![CardSetName::Basics],
@@ -187,7 +174,7 @@ pub fn ancestral_knowledge() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Draw 3 cards."),
+            text2!["Draw", 3, "cards"],
             on_cast(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 3)?;
                 Ok(())
@@ -345,8 +332,6 @@ pub fn simple_spear() -> CardDefinition {
 }
 
 pub fn ethereal_blade() -> CardDefinition {
-    let t2 = text2!["When you use this weapon, sacrifice it at the end of the raid."];
-
     CardDefinition {
         name: CardName::EtherealBlade,
         sets: vec![CardSetName::Basics],
@@ -360,7 +345,7 @@ pub fn ethereal_blade() -> CardDefinition {
             abilities::encounter_boost(),
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text!["When you use this weapon, sacrifice it at the end of the raid."],
+                text: text2!["When you use this weapon, sacrifice it at the end of the raid"],
                 delegates: vec![
                     on_weapon_used(
                         |_g, s, used_weapon| used_weapon.weapon_id == s.card_id(),

@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{abilities, text, text2, *};
+use card_helpers::{abilities, text2, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -25,7 +25,6 @@ use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game::RaidJumpRequest;
 use game_data::game_actions::CardPromptAction;
 use game_data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
-use game_data::text::{DamageWord, Keyword};
 use game_data::text2::trigger;
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
@@ -33,11 +32,6 @@ use rules::{mana, mutations, queries};
 use with_error::WithError;
 
 pub fn time_golem() -> CardDefinition {
-    let t2 = trigger(
-        Encounter,
-        text2!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
-    );
-
     CardDefinition {
         name: CardName::TimeGolem,
         sets: vec![CardSetName::ProofOfConcept],
@@ -50,13 +44,10 @@ pub fn time_golem() -> CardDefinition {
         abilities: vec![
             abilities::construct(),
             simple_ability(
-                text![
-                    Keyword::Encounter,
-                    "End the raid unless the Champion pays",
-                    mana_text(5),
-                    "or",
-                    actions_text(2)
-                ],
+                trigger(
+                    Encounter,
+                    text2!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
+                ),
                 on_encountered(|g, _s, _| {
                     mutations::set_prompt(
                         g,
@@ -79,9 +70,6 @@ pub fn time_golem() -> CardDefinition {
 }
 
 pub fn temporal_stalker() -> CardDefinition {
-    let t2 = trigger(Combat, text2!["End the raid unless the Champion pays", Actions(2)]);
-    let t3 = trigger(Combat, text2!["Summon a minion from the", Sanctum, "or", Crypts, "for free"]);
-
     CardDefinition {
         name: CardName::TemporalStalker,
         sets: vec![CardSetName::ProofOfConcept],
@@ -93,13 +81,16 @@ pub fn temporal_stalker() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                text![Keyword::Combat, "End the raid unless the Champion pays", actions_text(2)],
+                trigger(Combat, text2!["End the raid unless the Champion pays", Actions(2)]),
                 minion_combat_actions(|g, _, _, _| {
                     vec![Some(CardPromptAction::EndRaid), lose_actions_prompt(g, Side::Champion, 2)]
                 }),
             ),
             simple_ability(
-                text![Keyword::Combat, "Summon a minion from the Sanctum or Crypts for free."],
+                trigger(
+                    Combat,
+                    text2!["Summon a minion from the", Sanctum, "or", Crypts, "for free"],
+                ),
                 combat(|g, s, _| {
                     let cards = g
                         .hand(Side::Overlord)
@@ -132,8 +123,6 @@ pub fn temporal_stalker() -> CardDefinition {
 }
 
 pub fn shadow_lurker() -> CardDefinition {
-    let t2 = text2!["While this minion is in an", OuterRoom, "it has", Plus(2), Health];
-
     CardDefinition {
         name: CardName::ShadowLurker,
         sets: vec![CardSetName::ProofOfConcept],
@@ -145,13 +134,13 @@ pub fn shadow_lurker() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                text!["While this minion is in an outer room, it has +2 health"],
+                text2!["While this minion is in an", OuterRoom, "it has", Plus(2), Health],
                 on_calculate_health(|g, s, _, current| match g.card(s.card_id()).position() {
                     CardPosition::Room(room_id, _) if !is_inner_room(room_id) => current + 2,
                     _ => current,
                 }),
             ),
-            abilities::end_raid(),
+            abilities::combat_end_raid(),
         ],
         config: CardConfig {
             stats: CardStats { health: Some(2), shield: Some(1), ..CardStats::default() },
@@ -162,14 +151,6 @@ pub fn shadow_lurker() -> CardDefinition {
 }
 
 pub fn sphinx_of_winters_breath() -> CardDefinition {
-    let t2 = trigger(
-        Combat,
-        text2![
-            text2![DealDamage(1)],
-            text2!["If a card with an odd mana cost is discarded, end the raid"]
-        ],
-    );
-
     CardDefinition {
         name: CardName::SphinxOfWintersBreath,
         sets: vec![CardSetName::ProofOfConcept],
@@ -181,12 +162,13 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text![
-                Keyword::Combat,
-                Keyword::DealDamage(DamageWord::DealStart, 1),
-                ".",
-                "If a card with an odd mana cost is discarded, end the raid."
-            ],
+            text: trigger(
+                Combat,
+                text2![
+                    text2![DealDamage(1)],
+                    text2!["If a card with an odd mana cost is discarded, end the raid"]
+                ],
+            ),
             delegates: vec![
                 combat(|g, s, _| mutations::deal_damage(g, s, 1)),
                 Delegate::DealtDamage(EventDelegate {
@@ -209,14 +191,6 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
 }
 
 pub fn bridge_troll() -> CardDefinition {
-    let t2 = trigger(
-        Combat,
-        text2![
-            text2!["The Champion loses", Mana(3)],
-            text2!["If they have", Mana(6), "or less, end the raid"]
-        ],
-    );
-
     CardDefinition {
         name: CardName::BridgeTroll,
         sets: vec![CardSetName::ProofOfConcept],
@@ -227,15 +201,13 @@ pub fn bridge_troll() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text![
-                Keyword::Combat,
-                "The Champion loses",
-                mana_text(3),
-                ".",
-                "If they have",
-                mana_text(6),
-                "or less, end the raid."
-            ],
+            trigger(
+                Combat,
+                text2![
+                    text2!["The Champion loses", Mana(3)],
+                    text2!["If they have", Mana(6), "or less, end the raid"]
+                ],
+            ),
             combat(|g, _, _| {
                 mana::lose_upto(g, Side::Champion, ManaPurpose::PayForTriggeredAbility, 3);
                 if mana::get(g, Side::Champion, ManaPurpose::BaseMana) <= 6 {
@@ -253,11 +225,6 @@ pub fn bridge_troll() -> CardDefinition {
 }
 
 pub fn stormcaller() -> CardDefinition {
-    let t2 = trigger(
-        Combat,
-        text2!["The Champion must end the raid and", TakeDamage(2), "or", TakeDamage(4)],
-    );
-
     CardDefinition {
         name: CardName::Stormcaller,
         sets: vec![CardSetName::ProofOfConcept],
@@ -268,14 +235,10 @@ pub fn stormcaller() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text![
-                Keyword::Combat,
-                "The Champion must end the raid and",
-                Keyword::DealDamage(DamageWord::TakeInternal, 2),
-                "or",
-                Keyword::DealDamage(DamageWord::TakeInternal, 4),
-                "."
-            ],
+            trigger(
+                Combat,
+                text2!["The Champion must end the raid and", TakeDamage(2), "or", TakeDamage(4)],
+            ),
             minion_combat_actions(|g, s, _, _| {
                 vec![
                     // don't use helper, must take this action even if it ends the game

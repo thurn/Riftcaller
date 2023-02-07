@@ -14,7 +14,7 @@
 
 //! Test cards
 
-use card_helpers::{abilities, text, text2, *};
+use card_helpers::{abilities, text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SchemePoints,
     SpecialEffects,
@@ -25,7 +25,6 @@ use game_data::primitives::{
     CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite,
 };
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text::{Keyword, Sentence};
 use game_data::text2::trigger;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
@@ -114,7 +113,7 @@ pub fn test_minion_end_raid() -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionEndRaid,
         cost: cost(MINION_COST),
-        abilities: vec![abilities::end_raid()],
+        abilities: vec![abilities::combat_end_raid()],
         card_type: CardType::Minion,
         config: CardConfig {
             stats: health(MINION_HEALTH),
@@ -129,7 +128,7 @@ pub fn test_minion_shield_1() -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield1Infernal,
         cost: cost(MINION_COST),
-        abilities: vec![abilities::end_raid()],
+        abilities: vec![abilities::combat_end_raid()],
         card_type: CardType::Minion,
         config: CardConfig {
             stats: CardStats {
@@ -148,7 +147,7 @@ pub fn test_minion_shield_2_abyssal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield2Abyssal,
         cost: cost(MINION_COST),
-        abilities: vec![abilities::end_raid()],
+        abilities: vec![abilities::combat_end_raid()],
         card_type: CardType::Minion,
         config: CardConfig {
             stats: CardStats {
@@ -333,25 +332,18 @@ pub fn activated_ability_take_mana() -> CardDefinition {
 }
 
 pub fn triggered_ability_take_mana() -> CardDefinition {
-    let t2 = text2![Unveil, "at", Dusk, Then, StoreMana(MANA_STORED)];
-    let t3 = trigger(Dusk, text2![TakeMana(MANA_TAKEN)]);
-
     CardDefinition {
         name: CardName::TestTriggeredAbilityTakeManaAtDusk,
         cost: cost(UNVEIL_COST),
         card_type: CardType::Project,
         abilities: vec![
             Ability {
-                text: text![
-                    Keyword::Unveil,
-                    "this project at Dusk, then",
-                    Keyword::Store(Sentence::Start, MANA_STORED)
-                ],
+                text: text2![Unveil, "at", Dusk, ", then", StoreMana(MANA_STORED)],
                 ability_type: AbilityType::Standard,
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<MANA_STORED>()],
             },
             Ability {
-                text: text![Keyword::Dusk, Keyword::Take(Sentence::Start, MANA_TAKEN)],
+                text: trigger(Dusk, text2![TakeMana(MANA_TAKEN)]),
                 ability_type: AbilityType::Standard,
                 delegates: vec![at_dusk(|g, s, _| {
                     mutations::take_stored_mana(
@@ -394,7 +386,7 @@ pub fn deal_damage_end_raid() -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::combat_deal_damage::<1>(), abilities::end_raid()],
+        abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_end_raid()],
         config: CardConfig {
             stats: CardStats { health: Some(5), shield: Some(1), ..CardStats::default() },
             lineage: Some(Lineage::Infernal),
@@ -405,9 +397,6 @@ pub fn deal_damage_end_raid() -> CardDefinition {
 }
 
 pub fn test_card_stored_mana() -> CardDefinition {
-    let t2 = text2![Unveil, "at", Dusk, Then, StoreMana(12)];
-    let t3 = trigger(Dusk, text2![TakeMana(3)]);
-
     CardDefinition {
         name: CardName::TestCardStoredMana,
         cost: cost(4),
@@ -417,12 +406,12 @@ pub fn test_card_stored_mana() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability {
-                text: text![Keyword::Unveil, "at Dusk, then", Keyword::Store(Sentence::Start, 12)],
+                text: text2![Unveil, "at", Dusk, ", then", StoreMana(12)],
                 ability_type: AbilityType::Standard,
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
             },
             simple_ability(
-                text![Keyword::Dusk, Keyword::Take(Sentence::Start, 3)],
+                trigger(Dusk, text2![TakeMana(3)]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     alert(g, s);

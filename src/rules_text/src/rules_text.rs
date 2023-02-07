@@ -12,42 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Builds the text displayed on cards based on their card definition
-
 pub mod card_icons;
-pub mod rules_text2;
 
-use std::fmt::Write as _;
+use std::iter;
 
-use core_ui::component::Component;
-use core_ui::design::FontColor;
-use core_ui::{design, icons};
-use game_data::card_definition::{Ability, AbilityType, CardDefinition, Cost};
-use game_data::primitives::{AbilityId, AbilityIndex, CardSubtype, CardType, Lineage};
-use game_data::text::{
-    AbilityText, DamageWord, Keyword, KeywordKind, NumericOperator, RulesTextContext, Sentence,
-    TextToken,
-};
-use prompts::card_info::SupplementalCardInfo;
-use protos::spelldawn::{Node, RulesText};
+use core_ui::icons;
+use core_ui::prelude::Node;
+use game_data::card_definition::{Ability, AbilityType, AttackBoost, CardDefinition, Cost};
+use game_data::primitives::{AbilityId, AbilityIndex};
+use game_data::text2::{RulesTextContext, Text2, Token};
+use protos::spelldawn::RulesText;
+use rules::queries;
 
 /// Primary function which turns the current state of a card into its client
 /// [RulesText] representation
 pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesText {
     let mut lines = vec![];
-    for (_index, ability) in definition.abilities.iter().enumerate() {
-        let mut line = String::new();
-        if let AbilityType::Activated(cost, _) = &ability.ability_type {
-            line.push_str(&ability_cost_string(cost));
+    for ability in &definition.abilities {
+        let mut text = if let AbilityType::Activated(cost, _) = &ability.ability_type {
+            build_text(
+                context,
+                &[Text2::Activated {
+                    cost: ability_cost_string(cost),
+                    effect: ability.text.clone(),
+                }],
+                true,
+            )
+        } else {
+            build_text(context, &ability.text, true)
+        };
+
+        text = text.replace(" ,", ",");
+        text = text.replace(" .", ".");
+
+        if !text.is_empty() {
+            lines.push(text);
         }
-
-        line.push_str(&ability_text(context, ability));
-
-        lines.push(line);
     }
 
     if let Some(breach) = definition.config.stats.breach {
-        lines.push(process_text_tokens(&[TextToken::Keyword(Keyword::Breach(breach))]));
+        lines.push(build_text(context, &[Text2::Token(Token::Breach(breach))], false))
     }
 
     RulesText { text: lines.join("\n") }
@@ -56,13 +60,7 @@ pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesTe
 /// Builds the rules text for a single [Ability], not including its cost (if
 /// any).
 pub fn ability_text(context: &RulesTextContext, ability: &Ability) -> String {
-    match &ability.text {
-        AbilityText::Text(text) => process_text_tokens(text),
-        AbilityText::TextFn(function) => {
-            let tokens = function(context);
-            process_text_tokens(&tokens)
-        }
-    }
+    build_text(context, &ability.text, true)
 }
 
 /// Builds the supplemental info display for a card, which displays additional
@@ -70,245 +68,125 @@ pub fn ability_text(context: &RulesTextContext, ability: &Ability) -> String {
 ///
 /// If an `ability_index` is provided, only supplemental info for that index is
 /// returned. Otherwise, supplemental info for all abilities is returned.
-pub fn build_supplemental_info(
-    context: &RulesTextContext,
-    ability_index: Option<AbilityIndex>,
-) -> Option<Node> {
-    let definition = rules::get(context.card_name());
-    let mut result = vec![card_type_line(definition)];
-    let mut keywords = vec![];
-    for (index, ability) in definition.abilities.iter().enumerate() {
-        if matches!(ability_index, Some(i) if i.value() != index) {
-            continue;
-        }
-
-        match &ability.text {
-            AbilityText::Text(text) => find_keywords(text, &mut keywords),
-            AbilityText::TextFn(function) => {
-                let tokens = function(context);
-                find_keywords(&tokens, &mut keywords)
-            }
-        };
-    }
-
-    if definition.config.stats.breach.is_some() {
-        keywords.push(KeywordKind::Breach);
-    }
-
-    process_keywords(&mut keywords, &mut result);
-    SupplementalCardInfo::new(result).build()
+pub fn build_supplemental_info(_: &RulesTextContext, _: Option<AbilityIndex>) -> Option<Node> {
+    None
 }
 
-fn ability_cost_string(cost: &Cost<AbilityId>) -> String {
-    let mut actions = icons::ACTION.repeat(cost.actions as usize);
+fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<Text2> {
+    let mut result = iter::repeat(Text2::Token(Token::ActionSymbol))
+        .take(cost.actions as usize)
+        .collect::<Vec<_>>();
 
     if let Some(mana) = cost.mana {
         if mana > 0 {
-            let _err = write!(actions, ",{}{}", mana, icons::MANA);
+            result.push(Text2::Token(Token::Mana(mana)))
         }
-    }
-
-    let _err = write!(actions, " {} ", icons::ARROW);
-    actions
-}
-
-/// Primary function for converting a sequence of [TextToken]s into a string
-fn process_text_tokens(tokens: &[TextToken]) -> String {
-    let mut result = vec![];
-    for token in tokens {
-        result.push(match token {
-            TextToken::Literal(text) => text.clone(),
-            TextToken::Number(operator, number) => format!(
-                "{}{}",
-                match operator {
-                    NumericOperator::None => "",
-                    NumericOperator::Add => "+",
-                },
-                number
-            ),
-            TextToken::Mana(mana) => format!("{}{}", mana, icons::MANA),
-            TextToken::Actions(actions) => format!("{}{}", actions, icons::ACTION),
-            TextToken::Keyword(keyword) => match keyword {
-                Keyword::Play => format!("{}<b>Play:</b>", icons::TRIGGER),
-                Keyword::Dawn => format!("{}<b>Dawn:</b>", icons::TRIGGER),
-                Keyword::Dusk => format!("{}<b>Dusk:</b>", icons::TRIGGER),
-                Keyword::Score => format!("{}<b>Score:</b>", icons::TRIGGER),
-                Keyword::Combat => format!("{}<b>Combat:</b>", icons::TRIGGER),
-                Keyword::Encounter => format!("{}<b>Encounter:</b>", icons::TRIGGER),
-                Keyword::Unveil => "<b>Unveil</b>".to_string(),
-                Keyword::SuccessfulRaid => format!("{}<b>Successful Raid:</b>", icons::TRIGGER),
-                Keyword::Store(sentence_position, n) => {
-                    format!(
-                        "<b>{}</b>{}{}{}",
-                        match sentence_position {
-                            Sentence::Start => "Store",
-                            Sentence::Internal => "store",
-                        },
-                        icons::NON_BREAKING_SPACE,
-                        n,
-                        icons::MANA
-                    )
-                }
-                Keyword::Take(sentence_position, n) => format!(
-                    "{}{}{}{}",
-                    match sentence_position {
-                        Sentence::Start => "Take",
-                        Sentence::Internal => "take",
-                    },
-                    icons::NON_BREAKING_SPACE,
-                    n,
-                    icons::MANA
-                ),
-                Keyword::DealDamage(word, amount) => format!(
-                    "{} {} damage",
-                    match word {
-                        DamageWord::DealStart => "Deal",
-                        DamageWord::DealInternal => "deal",
-                        DamageWord::TakeStart => "Take",
-                        DamageWord::TakeInternal => "take",
-                    },
-                    amount,
-                ),
-                Keyword::InnerRoom(sentence_position) => match sentence_position {
-                    Sentence::Start => "Inner room",
-                    Sentence::Internal => "inner room",
-                }
-                .to_string(),
-                Keyword::Breach(breach) => {
-                    format!("<b>Breach</b>{}{}", icons::NON_BREAKING_SPACE, breach)
-                }
-                Keyword::LevelUp => "<b>Level Up</b>".to_string(),
-                Keyword::Trap => format!("<b>{}Trap:</b>", icons::TRIGGER),
-                Keyword::Construct => "<b>Construct</b>".to_string(),
-            },
-            TextToken::Reminder(text) => format!("<i>{text}</i>"),
-            TextToken::Cost(cost) => format!("{}: ", process_text_tokens(cost)),
-        })
-    }
-
-    let string = result.join(" ");
-    string.replace(" .", ".").replace(" ,", ",") // Don't have punctuation exist
-                                                 // on its own
-}
-
-fn card_type_line(definition: &CardDefinition) -> String {
-    let mut result = String::new();
-    result.push_str(match definition.card_type {
-        CardType::ChampionSpell => "Spell",
-        CardType::Weapon => "Weapon",
-        CardType::Artifact => "Artifact",
-        CardType::OverlordSpell => "Spell",
-        CardType::Minion => "Minion",
-        CardType::Project => "Project",
-        CardType::Scheme => "Scheme",
-        CardType::Leader => "Leader",
-        CardType::GameModifier => "Modifier",
-    });
-
-    if let Some(lineage) = definition.config.lineage {
-        result.push_str(" • ");
-        let (lineage, color) = match lineage {
-            Lineage::Prismatic => ("Prismatic", FontColor::PrismaticCardTitle),
-            Lineage::Construct => ("Construct", FontColor::ConstructCardTitle),
-            Lineage::Mortal => ("Mortal", FontColor::MortalCardTitle),
-            Lineage::Abyssal => ("Abyssal", FontColor::AbyssalCardTitle),
-            Lineage::Infernal => ("Infernal", FontColor::InfernalCardTitle),
-        };
-        let string = format!("<color={}>{}</color>", design::as_hex(color), lineage);
-        result.push_str(&string);
-    }
-
-    for subtype in &definition.config.subtypes {
-        result.push_str(" • ");
-        result.push_str(match subtype {
-            CardSubtype::Silvered => "Silvered",
-        });
     }
 
     result
 }
 
-fn find_keywords(tokens: &[TextToken], keywords: &mut Vec<KeywordKind>) {
-    keywords.extend(tokens.iter().filter_map(|t| {
-        if let TextToken::Keyword(k) = t {
-            Some(k.kind())
-        } else {
-            None
+/// Combines a series of text elements together separated by the space
+/// character.
+///
+/// If `add_period` is true, appends a final '.' if the last element is not
+/// itself a sentence-level element.
+fn build_text(context: &RulesTextContext, text: &[Text2], add_period: bool) -> String {
+    if text.is_empty() {
+        return String::new();
+    }
+
+    let mut result =
+        text.iter().map(|text| process_text(context, text)).collect::<Vec<_>>().join(" ");
+    if add_period {
+        match text[text.len() - 1] {
+            Text2::Token(t) if text.len() > 1 || !t.is_keyword() => result.push('.'),
+            Text2::Literal(_) | Text2::Reminder(_) => result.push('.'),
+            _ => {}
         }
-    }));
+    }
+    capitalize(result)
 }
 
-fn process_keywords(keywords: &mut Vec<KeywordKind>, output: &mut Vec<String>) {
-    keywords.sort();
-    keywords.dedup();
-
-    for keyword in keywords {
-        match keyword {
-            KeywordKind::Play => {
-                output.push("<b>Play:</b> Triggers when this card enters the arena.".to_string());
-            }
-            KeywordKind::Dawn => {
-                output
-                    .push("<b>Dawn:</b> Triggers at the start of the Champion's turn.".to_string());
-            }
-            KeywordKind::Dusk => {
-                output
-                    .push("<b>Dusk:</b> Triggers at the start of the Overlord's turn.".to_string());
-            }
-            KeywordKind::Score => {
-                output
-                    .push("<b>Score:</b> Triggers when the Overlord scores this card.".to_string());
-            }
-            KeywordKind::Combat => {
-                output.push(
-                    "<b>Combat:</b> Triggers if this minion is not defeated during a raid."
-                        .to_string(),
-                );
-            }
-            KeywordKind::Encounter => {
-                output.push(
-                    "<b>Encounter:</b> Triggers when this minion is approached during a raid."
-                        .to_string(),
-                );
-            }
-            KeywordKind::Unveil => {
-                output.push("<b>Unveil:</b> Pay cost and turn face up (if able)".to_string());
-            }
-            KeywordKind::SuccessfulRaid => {
-                output.push(
-                    "<b>Successful Raid:</b> Triggers after the access phase of a raid."
-                        .to_string(),
-                );
-            }
-            KeywordKind::Store => {
-                output.push(format!(
-                    "<b>Store:</b> Place {} on this card to take later.",
-                    icons::MANA
-                ));
-            }
-            KeywordKind::DealDamage => {
-                output.push(
-                    "<b>Damage:</b> Causes the Champion to discard cards at random.".to_string(),
-                );
-            }
-            KeywordKind::InnerRoom => {
-                output.push("<b>Inner Room:</b> The Sanctum, Vault or Crypts.".to_string())
-            }
-            KeywordKind::Breach => output.push(
-                "<b>Breach:</b> Allows this weapon to bypass some amount of Shield.".to_string(),
-            ),
-            KeywordKind::LevelUp => output.push(
-                "<b>Level Up:</b> This card gets level counters when its room is leveled up."
-                    .to_string(),
-            ),
-            KeywordKind::Trap => output.push(
-                "<b>Trap:</b> Triggers when this card is accessed during a raid.".to_string(),
-            ),
-            KeywordKind::Construct => output.push(
-                "<b>Construct:</b> Goes to discard pile when defeated. Damage with any weapon."
-                    .to_string(),
-            ),
-            _ => {}
-        };
+fn capitalize(mut s: String) -> String {
+    if let Some(r) = s.get_mut(0..1) {
+        r.make_ascii_uppercase();
     }
+
+    s
+}
+
+fn process_text(context: &RulesTextContext, text: &Text2) -> String {
+    match text {
+        Text2::Children(children) => build_text(context, children, true),
+        Text2::NamedTrigger(token, children) => {
+            format!(
+                "{}<b>{}</b>: {}",
+                icons::TRIGGER,
+                process_token(context, token),
+                build_text(context, children, true)
+            )
+        }
+        Text2::Activated { cost, effect } => {
+            format!(
+                "{} {} {}",
+                build_text(context, cost, false),
+                icons::ARROW,
+                build_text(context, effect, true)
+            )
+        }
+        Text2::EncounterAbility { cost, effect } => {
+            format!("{}: {}", build_text(context, cost, false), build_text(context, effect, true))
+        }
+        Text2::Literal(string) => string.clone(),
+        Text2::Reminder(string) => string.clone(),
+        Text2::Token(token) => process_token(context, token),
+    }
+}
+
+fn process_token(context: &RulesTextContext, token: &Token) -> String {
+    match token {
+        Token::ManaSymbol => icons::MANA.to_string(),
+        Token::Mana(n) => format!("{n}{}", icons::MANA),
+        Token::ActionSymbol => icons::ACTION.to_string(),
+        Token::Actions(n) => format!("{n}{}", icons::ACTION),
+        Token::Number(n) => n.to_string(),
+        Token::Plus(n) => format!("+{n}"),
+        Token::EncounterBoostCost => format!("{}{}", encounter_boost(context).cost, icons::MANA),
+        Token::EncounterBoostBonus => format!("+{} attack", encounter_boost(context).bonus),
+        Token::Attack => "attack".to_string(),
+        Token::Health => "health".to_string(),
+        Token::Gain => "gain".to_string(),
+        Token::Lose => "lose".to_string(),
+        Token::Play => "Play".to_string(),
+        Token::Dawn => "Dawn".to_string(),
+        Token::Dusk => "Dusk".to_string(),
+        Token::Score => "Score".to_string(),
+        Token::Combat => "Combat".to_string(),
+        Token::Encounter => "Encounter".to_string(),
+        Token::Unveil => "<b>Unveil</b>".to_string(),
+        Token::BeginARaid => "Begin a raid".to_string(),
+        Token::SuccessfulRaid => "Successful Raid".to_string(),
+        Token::StoreMana(n) => format!("<b>Store</b> {n}{}", icons::MANA),
+        Token::TakeMana(n) => format!("<b>Take</b> {n}{}", icons::MANA),
+        Token::DealDamage(n) => format!("deal {n} damage"),
+        Token::TakeDamage(n) => format!("take {n} damage"),
+        Token::InnerRoom => "inner room".to_string(),
+        Token::OuterRoom => "outer room".to_string(),
+        Token::Sanctum => "Sanctum".to_string(),
+        Token::Vault => "Vault".to_string(),
+        Token::Crypts => "Crypts".to_string(),
+        Token::Breach(n) => format!("<b>Breach {n}</b>"),
+        Token::LevelUp => "<b>Level Up</b>".to_string(),
+        Token::Trap => "<b>Trap</b>".to_string(),
+        Token::Construct => "<b>Construct</b>".to_string(),
+    }
+}
+
+fn encounter_boost(context: &RulesTextContext) -> AttackBoost {
+    match context {
+        RulesTextContext::Default(definition) => definition.config.stats.attack_boost,
+        RulesTextContext::Game(game, card) => queries::attack_boost(game, card.id),
+    }
+    .unwrap_or_default()
 }

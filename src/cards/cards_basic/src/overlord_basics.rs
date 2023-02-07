@@ -14,14 +14,13 @@
 
 use assets::rexard_images::RexardPack;
 use assets::{rexard_images, EnvironmentType};
-use card_helpers::{text, *};
+use card_helpers::*;
 use game_data::card_definition::{
-    Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints, TargetRequirement,
+    Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
-use game_data::text::{DamageWord, Keyword, Sentence, TextToken};
 use game_data::text2::trigger;
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
@@ -103,8 +102,6 @@ pub fn machinate() -> CardDefinition {
 }
 
 pub fn gathering_dark() -> CardDefinition {
-    let t2 = text2![Gain, Mana(9)];
-
     CardDefinition {
         name: CardName::GatheringDark,
         sets: vec![CardSetName::Basics],
@@ -115,7 +112,7 @@ pub fn gathering_dark() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text!("Gain", mana_text(9)),
+            text2![Gain, Mana(9)],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
@@ -126,9 +123,6 @@ pub fn gathering_dark() -> CardDefinition {
 }
 
 pub fn coinery() -> CardDefinition {
-    let t2 = text2![text2![Unveil, "when activated", Then, StoreMana(15)]];
-    let t3 = text2![TakeMana(3)];
-
     CardDefinition {
         name: CardName::Coinery,
         sets: vec![CardSetName::Basics],
@@ -139,14 +133,10 @@ pub fn coinery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            text_only_ability(text![
-                Keyword::Unveil,
-                "when activated, then",
-                Keyword::Store(Sentence::Start, 15)
-            ]),
+            text_only_ability(text2![text2![Unveil, "when activated, then", StoreMana(15)]]),
             Ability {
                 ability_type: activate_for_action(),
-                text: text![Keyword::Take(Sentence::Start, 3)],
+                text: text2![TakeMana(3)],
                 delegates: vec![
                     activate_while_face_down(),
                     face_down_ability_cost(),
@@ -165,8 +155,6 @@ pub fn coinery() -> CardDefinition {
 }
 
 pub fn leyline() -> CardDefinition {
-    let t2 = trigger(Dusk, text2!["Gain", Mana(1)]);
-
     CardDefinition {
         name: CardName::Leyline,
         sets: vec![CardSetName::Basics],
@@ -179,7 +167,7 @@ pub fn leyline() -> CardDefinition {
         abilities: vec![
             unveil_at_dusk_ability(),
             simple_ability(
-                text![Keyword::Dusk, "Gain", TextToken::Mana(1)],
+                trigger(Dusk, text2!["Gain", Mana(1)]),
                 at_dusk(|g, s, _| {
                     mana::gain(g, s.side(), 1);
                     Ok(())
@@ -191,9 +179,6 @@ pub fn leyline() -> CardDefinition {
 }
 
 pub fn ore_refinery() -> CardDefinition {
-    let t2 = text2![Unveil, "at", Dusk, Then, StoreMana(12)];
-    let t2 = trigger(Dusk, text2![TakeMana(3)]);
-
     CardDefinition {
         name: CardName::OreRefinery,
         sets: vec![CardSetName::Basics],
@@ -206,15 +191,11 @@ pub fn ore_refinery() -> CardDefinition {
         abilities: vec![
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text![
-                    Keyword::Unveil,
-                    "at Dusk, then",
-                    Keyword::Store(Sentence::Internal, 12)
-                ],
+                text: text2![Unveil, "at", Dusk, ", then", StoreMana(12)],
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
             },
             simple_ability(
-                text![Keyword::Dusk, Keyword::Take(Sentence::Start, 3)],
+                trigger(Dusk, text2![TakeMana(3)]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     Ok(())
@@ -235,7 +216,7 @@ pub fn crab() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![abilities::end_raid()],
+        abilities: vec![abilities::combat_end_raid()],
         config: CardConfig {
             stats: CardStats { health: Some(2), ..CardStats::default() },
             lineage: Some(Lineage::Infernal),
@@ -254,21 +235,7 @@ pub fn fire_goblin() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
-            text![
-                Keyword::Combat,
-                Keyword::DealDamage(DamageWord::DealStart, 1),
-                ".",
-                "Gain",
-                mana_text(1),
-                "."
-            ],
-            combat(|g, s, _| {
-                mutations::deal_damage(g, s, 1)?;
-                mana::gain(g, Side::Overlord, 1);
-                Ok(())
-            }),
-        )],
+        abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_gain_mana::<1>()],
         config: CardConfig {
             stats: CardStats { health: Some(1), shield: Some(2), ..CardStats::default() },
             lineage: Some(Lineage::Infernal),
@@ -287,7 +254,7 @@ pub fn toucan() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![abilities::end_raid()],
+        abilities: vec![abilities::combat_end_raid()],
         config: CardConfig {
             stats: CardStats { health: Some(3), ..CardStats::default() },
             lineage: Some(Lineage::Abyssal),
@@ -306,7 +273,7 @@ pub fn frog() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![abilities::end_raid()],
+        abilities: vec![abilities::combat_end_raid()],
         config: CardConfig {
             stats: CardStats { health: Some(4), ..CardStats::default() },
             lineage: Some(Lineage::Abyssal),
@@ -325,7 +292,7 @@ pub fn captain() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![abilities::end_raid(), abilities::remove_actions_if_able::<1>()],
+        abilities: vec![abilities::combat_end_raid(), abilities::remove_actions_if_able::<1>()],
         config: CardConfig {
             stats: CardStats { health: Some(2), ..CardStats::default() },
             lineage: Some(Lineage::Mortal),
@@ -344,7 +311,7 @@ pub fn scout() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![abilities::end_raid()],
+        abilities: vec![abilities::combat_end_raid()],
         config: CardConfig {
             stats: CardStats { health: Some(4), ..CardStats::default() },
             lineage: Some(Lineage::Mortal),

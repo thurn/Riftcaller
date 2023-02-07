@@ -15,7 +15,7 @@
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use game_data::card_definition::CardDefinition;
-use game_data::text::RulesTextContext;
+use game_data::text2::RulesTextContext;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, WhiteSpace};
 
 use crate::CardHeight;

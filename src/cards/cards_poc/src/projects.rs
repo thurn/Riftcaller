@@ -16,20 +16,16 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{abilities, text, text2, *};
+use card_helpers::{abilities, text2, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::text::{Keyword, Sentence};
 use game_data::text2::trigger;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
 pub fn gemcarver() -> CardDefinition {
-    let t2 = text2![Unveil, "at", Dusk, "then", StoreMana(9)];
-    let t3 = trigger(Dusk, text2![text2![TakeMana(3)], text2!["When empty, draw a card"]]);
-
     CardDefinition {
         name: CardName::Gemcarver,
         sets: vec![CardSetName::ProofOfConcept],
@@ -42,16 +38,11 @@ pub fn gemcarver() -> CardDefinition {
         abilities: vec![
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text![Keyword::Unveil, "at Dusk, then", Keyword::Store(Sentence::Start, 9)],
+                text: text2![Unveil, "at", Dusk, ", then", StoreMana(9)],
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<9>()],
             },
             simple_ability(
-                text![
-                    Keyword::Dusk,
-                    Keyword::Take(Sentence::Start, 3),
-                    ".",
-                    "When empty, draw a card."
-                ],
+                trigger(Dusk, text2![text2![TakeMana(3)], text2!["When empty, draw a card"]]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     if g.card(s.card_id()).data.stored_mana == 0 {
@@ -69,11 +60,6 @@ pub fn gemcarver() -> CardDefinition {
 }
 
 pub fn spike_trap() -> CardDefinition {
-    let t2 = trigger(
-        Trap,
-        text2!["If this card is in play,", DealDamage(2), "plus", 1, "per level counter"],
-    );
-
     CardDefinition {
         name: CardName::SpikeTrap,
         sets: vec![CardSetName::ProofOfConcept],
@@ -86,10 +72,16 @@ pub fn spike_trap() -> CardDefinition {
         abilities: vec![
             abilities::level_up(),
             simple_ability(
-                text![
-                    Keyword::Trap,
-                    "If this card is in play, deal 2 damage plus 1 per level counter"
-                ],
+                trigger(
+                    Trap,
+                    text2![
+                        "If this card is in play,",
+                        DealDamage(2),
+                        "plus",
+                        1,
+                        "per level counter"
+                    ],
+                ),
                 on_accessed(|g, s, _| {
                     if g.card(s.card_id()).position().in_play() {
                         mutations::deal_damage(g, s, 2 + g.card(s.card_id()).data.card_level)?;

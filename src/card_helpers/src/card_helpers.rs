@@ -16,7 +16,6 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
-pub mod text_macro;
 pub mod text_macro2;
 
 use anyhow::Result;
@@ -36,7 +35,6 @@ use game_data::primitives::{
     RaidId, RoomId, Side, TurnNumber,
 };
 use game_data::special_effects::Projectile;
-use game_data::text::{AbilityText, Keyword, NumericOperator, TextToken};
 use game_data::text2::Text2;
 pub use game_data::text2::Token::*;
 use game_data::updates::{GameUpdate, InitiatedBy};
@@ -44,28 +42,12 @@ use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{mana, mutations, queries};
 
-pub fn add_number(number: impl Into<u32>) -> TextToken {
-    TextToken::Number(NumericOperator::Add, number.into())
-}
-
-pub fn mana_text(value: ManaValue) -> TextToken {
-    TextToken::Mana(value)
-}
-
-pub fn actions_text(value: ActionCount) -> TextToken {
-    TextToken::Actions(value)
-}
-
-pub fn reminder(text: &'static str) -> TextToken {
-    TextToken::Reminder(text.to_string())
-}
-
-pub fn reminder2(text: &'static str) -> Text2 {
+pub fn reminder(text: &'static str) -> Text2 {
     Text2::Reminder(text.to_string())
 }
 
 /// An ability which only exists to add text to a card.
-pub fn text_only_ability(text: AbilityText) -> Ability {
+pub fn text_only_ability(text: Vec<Text2>) -> Ability {
     Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
 }
 
@@ -101,7 +83,7 @@ pub fn once_per_turn_cost() -> Option<CustomCost<AbilityId>> {
 }
 
 /// Creates a standard [Ability] with a single [Delegate].
-pub fn simple_ability(text: AbilityText, delegate: Delegate) -> Ability {
+pub fn simple_ability(text: Vec<Text2>, delegate: Delegate) -> Ability {
     Ability { text, ability_type: AbilityType::Standard, delegates: vec![delegate] }
 }
 
@@ -410,7 +392,7 @@ pub fn unveil_at_dusk() -> Delegate {
 
 /// Ability to attempt to unveil a project each turn at Dusk.
 pub fn unveil_at_dusk_ability() -> Ability {
-    simple_ability(text![Keyword::Unveil, "at Dusk"], unveil_at_dusk())
+    simple_ability(text2![Unveil, "at", Dusk], unveil_at_dusk())
 }
 
 /// Delegate to store mana in a card when it is unveiled

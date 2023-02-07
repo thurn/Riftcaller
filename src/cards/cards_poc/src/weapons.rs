@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
-use card_helpers::{abilities, text, text2, *};
+use card_helpers::{abilities, text2, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
 };
@@ -25,14 +25,10 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text::Keyword;
-use game_data::text2::trigger;
+use game_data::text2::{encounter_ability_text, trigger};
 use game_data::utils;
 
 pub fn marauders_axe() -> CardDefinition {
-    let t2 =
-        trigger(SuccessfulRaid, text2!["This weapon costs", Mana(2), "less to play this turn"]);
-
     CardDefinition {
         name: CardName::MaraudersAxe,
         sets: vec![CardSetName::ProofOfConcept],
@@ -45,12 +41,10 @@ pub fn marauders_axe() -> CardDefinition {
         abilities: vec![
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text![
-                    Keyword::SuccessfulRaid,
-                    "This weapon costs",
-                    mana_text(2),
-                    "less to play this turn."
-                ],
+                text: trigger(
+                    SuccessfulRaid,
+                    text2!["This weapon costs", Mana(2), "less to play this turn"],
+                ),
                 delegates: vec![
                     on_raid_success(always, |g, s, _| {
                         save_turn(g, s);
@@ -108,8 +102,6 @@ pub fn keen_halberd() -> CardDefinition {
 }
 
 pub fn bow_of_the_alliance() -> CardDefinition {
-    let t2 = text2![Plus(1), Attack, "per weapon you control"];
-
     CardDefinition {
         name: CardName::BowOfTheAlliance,
         sets: vec![CardSetName::ProofOfConcept],
@@ -120,9 +112,12 @@ pub fn bow_of_the_alliance() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::encounter_boost(),
+            abilities::silent_ability(abilities::encounter_boost()),
             simple_ability(
-                text!["+1 attack per weapon you control"],
+                encounter_ability_text(
+                    text2![EncounterBoostCost],
+                    text2![Plus(1), Attack, "per weapon you control"],
+                ),
                 Delegate::AttackBoost(QueryDelegate {
                     requirement: this_card,
                     transformation: |g, _s, _, boost| AttackBoost {

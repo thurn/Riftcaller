@@ -12,10 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue};
+use crate::card_definition::CardDefinition;
+use crate::card_name::CardName;
+use crate::card_state::{CardData, CardState};
+use crate::game::GameState;
+use crate::primitives::{ActionCount, BreachValue, CardId, DamageAmount, ManaValue};
 
 pub fn trigger(name: Token, effect: Vec<Text2>) -> Vec<Text2> {
     vec![Text2::NamedTrigger(name, effect)]
+}
+
+pub fn encounter_ability_text(cost: Vec<Text2>, effect: Vec<Text2>) -> Vec<Text2> {
+    vec![Text2::EncounterAbility { cost, effect }]
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
@@ -23,6 +31,7 @@ pub enum Text2 {
     Children(Vec<Self>),
     NamedTrigger(Token, Vec<Text2>),
     Activated { cost: Vec<Text2>, effect: Vec<Text2> },
+    EncounterAbility { cost: Vec<Text2>, effect: Vec<Text2> },
     Literal(String),
     Reminder(String),
     Token(Token),
@@ -36,8 +45,8 @@ pub enum Token {
     Actions(ActionCount),
     Number(u32),
     Plus(u32),
-    EncounterBoost,
-    Then,
+    EncounterBoostCost,
+    EncounterBoostBonus,
     Attack,
     Health,
     Gain,
@@ -66,6 +75,12 @@ pub enum Token {
     Construct,
 }
 
+impl Token {
+    pub fn is_keyword(&self) -> bool {
+        matches!(self, Self::Breach(_) | Self::LevelUp | Self::Trap | Self::Construct)
+    }
+}
+
 impl From<&str> for Text2 {
     fn from(s: &str) -> Self {
         Self::Literal(s.to_owned())
@@ -90,17 +105,34 @@ impl From<Vec<Text2>> for Text2 {
     }
 }
 
-// impl<T> From<Cost<T>> for Text2 {
-//     fn from(cost: Cost<T>) -> Self {
-//         let mut result = vec![];
-//         if let Some(mana) = cost.mana {
-//             result.push(Self::Token(Token::Mana(mana)))
-//         }
+/// Provides the context in which rules text is being evaluated, i.e. during an
+/// active game or in a deck editor.
+pub enum RulesTextContext<'a> {
+    Default(&'a CardDefinition),
+    Game(&'a GameState, &'a CardState),
+}
 
-//         if cost.actions > 1 {
-//             result.push(Self::Token(Token::Actions(cost.actions)));
-//         }
+impl<'a> RulesTextContext<'a> {
+    pub fn card_name(&self) -> CardName {
+        match self {
+            RulesTextContext::Default(definition) => definition.name,
+            RulesTextContext::Game(_, card) => card.name,
+        }
+    }
 
-//         Self::ActivationCost(result)
-//     }
-// }
+    pub fn card_data(&self) -> Option<&CardData> {
+        match self {
+            RulesTextContext::Default(_) => None,
+            RulesTextContext::Game(_, card) => Some(&card.data),
+        }
+    }
+
+    /// Invokes the provided `game` function to product a value in the active
+    /// game context, otherwise returns some `default`.
+    pub fn query_or<T>(&self, default: T, game: impl Fn(&GameState, CardId) -> T) -> T {
+        match self {
+            RulesTextContext::Default(_) => default,
+            RulesTextContext::Game(state, card) => game(state, card.id),
+        }
+    }
+}

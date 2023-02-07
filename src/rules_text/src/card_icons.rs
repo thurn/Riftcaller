@@ -16,7 +16,7 @@ use assets;
 use assets::CardIconType;
 use game_data::card_definition::CardDefinition;
 use game_data::primitives::ManaValue;
-use game_data::text::RulesTextContext;
+use game_data::text2::RulesTextContext;
 use protos::spelldawn::{CardIcon, CardIcons};
 use rules::queries;
 

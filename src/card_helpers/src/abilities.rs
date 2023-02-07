@@ -18,37 +18,25 @@ use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
 use game_data::game::GameState;
-use game_data::primitives::{AbilityId, AttackValue, CardId, ManaValue};
-use game_data::text::{AbilityText, DamageWord, Keyword, RulesTextContext, Sentence, TextToken};
-use game_data::text2::trigger;
+use game_data::primitives::{AbilityId, AttackValue, BoostCount, CardId, DamageAmount, ManaValue};
 use game_data::text2::Token::*;
+use game_data::text2::{encounter_ability_text, trigger};
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
 
-use crate::text_macro::text;
 use crate::text_macro2::text2;
 use crate::*;
+
+pub fn silent_ability(ability: Ability) -> Ability {
+    Ability { text: text2![], ..ability }
+}
 
 /// The standard weapon ability; applies an attack boost for the duration of a
 /// single encounter.
 pub fn encounter_boost() -> Ability {
-    let t2 = text2![EncounterBoost];
-
     Ability {
         ability_type: AbilityType::Encounter,
-        text: AbilityText::TextFn(|context| {
-            let boost = match context {
-                RulesTextContext::Default(definition) => definition.config.stats.attack_boost,
-                RulesTextContext::Game(game, card) => queries::attack_boost(game, card.id),
-            }
-            .unwrap_or_default();
-
-            vec![
-                cost(boost.cost).into(),
-                add_number(boost.bonus),
-                TextToken::Literal("Attack".to_owned()),
-            ]
-        }),
+        text: encounter_ability_text(text2![EncounterBoostCost], text2![EncounterBoostBonus]),
         delegates: vec![
             Delegate::ActivateBoost(EventDelegate::new(this_card, mutations::write_boost)),
             Delegate::AttackValue(QueryDelegate::new(this_card, add_boost)),
@@ -57,14 +45,36 @@ pub fn encounter_boost() -> Ability {
     }
 }
 
+pub fn custom_encounter_boost(
+    _text: Vec<Text2>,
+    _function: fn(&GameState, CardId, BoostCount) -> AttackValue,
+) -> Ability {
+    Ability {
+        ability_type: AbilityType::Encounter,
+        text: encounter_ability_text(text2![EncounterBoostCost], text2![EncounterBoostBonus]),
+        delegates: vec![
+            Delegate::ActivateBoost(EventDelegate::new(this_card, mutations::write_boost)),
+            Delegate::AttackValue(QueryDelegate::new(this_card, add_boost)),
+            Delegate::EncounterEnd(EventDelegate::new(always, mutations::clear_boost)),
+        ],
+    }
+}
+
+/// Applies this card's `attack_boost` stat a number of times equal to its
+/// [CardState::boost_count]. Returns default if this card has no attack boost
+/// defined.
+fn add_boost(game: &GameState, _: Scope, card_id: &CardId, current: AttackValue) -> AttackValue {
+    let boost_count = queries::boost_count(game, *card_id);
+    let bonus = queries::attack_boost(game, *card_id).unwrap_or_default().bonus;
+    current + (boost_count * bonus)
+}
+
 /// Store `N` mana in this card when played. Move it to the discard pile when
 /// the stored mana is depleted.
 pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
-    let t2 = trigger(Play, text2![StoreMana(N)]);
-
     Ability {
         ability_type: AbilityType::Standard,
-        text: text![Keyword::Play, Keyword::Store(Sentence::Start, N)],
+        text: trigger(Play, text2![StoreMana(N)]),
         delegates: vec![
             Delegate::CastCard(EventDelegate::new(this_card, |g, _s, played| {
                 g.card_mut(played.card_id).data.stored_mana = N;
@@ -83,11 +93,9 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
 
 /// Activated ability to take `N` stored mana from this card by paying a cost
 pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability {
-    let t2 = text2![TakeMana(N)];
-
     Ability {
         ability_type: AbilityType::Activated(cost, TargetRequirement::None),
-        text: text![Keyword::Take(Sentence::Start, N)],
+        text: text2![TakeMana(N)],
         delegates: vec![on_activated(|g, _s, activated| {
             mutations::take_stored_mana(g, activated.card_id(), N, OnZeroStored::Sacrifice)
                 .map(|_| ())
@@ -98,57 +106,52 @@ pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability
 /// Minion combat ability which deals damage to the Champion player during
 /// combat, causing them to discard `N` random cards and lose the game if they
 /// cannot.
-pub fn combat_deal_damage<const N: u32>() -> Ability {
-    let t2 = trigger(Combat, text2![DealDamage(N)]);
-
+pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: text![Keyword::Combat, Keyword::DealDamage(DamageWord::DealStart, N), "."],
+        text: trigger(Combat, text2![DealDamage(N)]),
         delegates: vec![combat(|g, s, _| mutations::deal_damage(g, s, N))],
     }
 }
 
 /// Minion combat ability which ends the current raid in failure.
-pub fn end_raid() -> Ability {
-    let t2 = trigger(Combat, text2!["End the raid"]);
-
+pub fn combat_end_raid() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: text![Keyword::Combat, "End the raid."],
+        text: trigger(Combat, text2!["End the raid"]),
         delegates: vec![combat(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
+    }
+}
+
+/// Minion combat ability which gains mana
+pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
+    Ability {
+        ability_type: AbilityType::Standard,
+        text: trigger(Combat, text2![Gain, Mana(N)]),
+        delegates: vec![combat(|g, _, _| {
+            mana::gain(g, Side::Overlord, N);
+            Ok(())
+        })],
     }
 }
 
 /// Minion combat ability which causes the Champion player to lose action
 /// points.
 pub fn remove_actions_if_able<const N: ActionCount>() -> Ability {
-    let t2 = trigger(Combat, text2!["Remove", Actions(1)]);
-
     Ability {
         ability_type: AbilityType::Standard,
-        text: text![Keyword::Combat, "Remove", TextToken::Actions(1)],
+        text: trigger(Combat, text2!["Remove", Actions(1)]),
         delegates: vec![combat(|g, _s, _| {
             mutations::lose_action_points_if_able(g, Side::Champion, N)
         })],
     }
 }
 
-/// Applies this card's `attack_boost` stat a number of times equal to its
-/// [CardState::boost_count]. Returns default if this card has no attack boost
-/// defined.
-fn add_boost(game: &GameState, _: Scope, card_id: &CardId, current: AttackValue) -> AttackValue {
-    let boost_count = queries::boost_count(game, *card_id);
-    let bonus = queries::attack_boost(game, *card_id).unwrap_or_default().bonus;
-    current + (boost_count * bonus)
-}
-
 /// An ability which allows a card to have level counters placed on it.
 pub fn level_up() -> Ability {
-    let t2 = text2![LevelUp];
-
     Ability {
         ability_type: AbilityType::Standard,
-        text: text![Keyword::LevelUp],
+        text: text2![LevelUp],
         delegates: vec![Delegate::CanLevelUpCard(QueryDelegate {
             requirement: this_card,
             transformation: |_g, _, _, current| current.with_override(true),
@@ -157,11 +160,9 @@ pub fn level_up() -> Ability {
 }
 
 pub fn construct() -> Ability {
-    let t2 = text2![Construct];
-
     Ability {
         ability_type: AbilityType::Standard,
-        text: text![Keyword::Construct],
+        text: text2![Construct],
         delegates: vec![Delegate::MinionDefeated(EventDelegate {
             requirement: this_card,
             mutation: |g, s, _| {
