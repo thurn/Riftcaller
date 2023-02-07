@@ -17,7 +17,7 @@
 #[macro_export]
 macro_rules! text2 {
     ($($x:expr),*) => {
-        vec! [$(game_data::text2::Text2::from($x)),*]
+        vec! [$(game_data::text::TextElement::from($x)),*]
     };
     ($($x:expr,)*) => {text![$($x),*]}
 }

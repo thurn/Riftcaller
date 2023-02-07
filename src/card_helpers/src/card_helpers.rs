@@ -16,7 +16,7 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
-pub mod text_macro2;
+pub mod text_macro;
 
 use anyhow::Result;
 use game_data::card_definition::{
@@ -35,19 +35,19 @@ use game_data::primitives::{
     RaidId, RoomId, Side, TurnNumber,
 };
 use game_data::special_effects::Projectile;
-use game_data::text2::Text2;
-pub use game_data::text2::Token::*;
+use game_data::text::TextElement;
+pub use game_data::text::TextToken::*;
 use game_data::updates::{GameUpdate, InitiatedBy};
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{mana, mutations, queries};
 
-pub fn reminder(text: &'static str) -> Text2 {
-    Text2::Reminder(text.to_string())
+pub fn reminder(text: &'static str) -> TextElement {
+    TextElement::Reminder(text.to_string())
 }
 
 /// An ability which only exists to add text to a card.
-pub fn text_only_ability(text: Vec<Text2>) -> Ability {
+pub fn text_only_ability(text: Vec<TextElement>) -> Ability {
     Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
 }
 
@@ -83,7 +83,7 @@ pub fn once_per_turn_cost() -> Option<CustomCost<AbilityId>> {
 }
 
 /// Creates a standard [Ability] with a single [Delegate].
-pub fn simple_ability(text: Vec<Text2>, delegate: Delegate) -> Ability {
+pub fn simple_ability(text: Vec<TextElement>, delegate: Delegate) -> Ability {
     Ability { text, ability_type: AbilityType::Standard, delegates: vec![delegate] }
 }
 

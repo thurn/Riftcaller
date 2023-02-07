@@ -25,7 +25,7 @@ use game_data::primitives::{
     CardType, HealthValue, Lineage, ManaValue, Rarity, School, Side, Sprite,
 };
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text2::trigger;
+use game_data::text::trigger;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

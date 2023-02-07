@@ -22,7 +22,7 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text2::trigger;
+use game_data::text::trigger;
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 

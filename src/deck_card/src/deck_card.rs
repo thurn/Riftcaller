@@ -30,7 +30,7 @@ use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
 use game_data::card_name::CardName;
-use game_data::text2::RulesTextContext;
+use game_data::text::RulesTextContext;
 use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
 use rules_text::card_icons;
 

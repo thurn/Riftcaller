@@ -27,7 +27,7 @@ pub mod player_name;
 pub mod primitives;
 pub mod random;
 pub mod special_effects;
-pub mod text2;
+pub mod text;
 pub mod tutorial_data;
 pub mod updates;
 pub mod utils;

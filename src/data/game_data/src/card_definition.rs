@@ -33,7 +33,7 @@ use crate::primitives::{
     Side, Sprite,
 };
 use crate::special_effects::{Projectile, TimedEffect};
-use crate::text2::Text2;
+use crate::text::TextElement;
 
 /// A cost represented by custom functions.
 ///
@@ -156,7 +156,7 @@ pub enum AbilityType {
 #[derive(Debug)]
 pub struct Ability {
     pub ability_type: AbilityType,
-    pub text: Vec<Text2>,
+    pub text: Vec<TextElement>,
     pub delegates: Vec<Delegate>,
 }
 

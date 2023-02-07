@@ -25,7 +25,7 @@ use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game::RaidJumpRequest;
 use game_data::game_actions::CardPromptAction;
 use game_data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
-use game_data::text2::trigger;
+use game_data::text::trigger;
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};

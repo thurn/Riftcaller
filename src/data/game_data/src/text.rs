@@ -18,27 +18,30 @@ use crate::card_state::{CardData, CardState};
 use crate::game::GameState;
 use crate::primitives::{ActionCount, BreachValue, CardId, DamageAmount, ManaValue};
 
-pub fn trigger(name: Token, effect: Vec<Text2>) -> Vec<Text2> {
-    vec![Text2::NamedTrigger(name, effect)]
+pub fn trigger(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElement> {
+    vec![TextElement::NamedTrigger(name, effect)]
 }
 
-pub fn encounter_ability_text(cost: Vec<Text2>, effect: Vec<Text2>) -> Vec<Text2> {
-    vec![Text2::EncounterAbility { cost, effect }]
+pub fn encounter_ability_text(
+    cost: Vec<TextElement>,
+    effect: Vec<TextElement>,
+) -> Vec<TextElement> {
+    vec![TextElement::EncounterAbility { cost, effect }]
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
-pub enum Text2 {
+pub enum TextElement {
     Children(Vec<Self>),
-    NamedTrigger(Token, Vec<Text2>),
-    Activated { cost: Vec<Text2>, effect: Vec<Text2> },
-    EncounterAbility { cost: Vec<Text2>, effect: Vec<Text2> },
+    NamedTrigger(TextToken, Vec<TextElement>),
+    Activated { cost: Vec<TextElement>, effect: Vec<TextElement> },
+    EncounterAbility { cost: Vec<TextElement>, effect: Vec<TextElement> },
     Literal(String),
     Reminder(String),
-    Token(Token),
+    Token(TextToken),
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
-pub enum Token {
+pub enum TextToken {
     ManaSymbol,
     Mana(ManaValue),
     ActionSymbol,
@@ -75,32 +78,32 @@ pub enum Token {
     Construct,
 }
 
-impl Token {
+impl TextToken {
     pub fn is_keyword(&self) -> bool {
         matches!(self, Self::Breach(_) | Self::LevelUp | Self::Trap | Self::Construct)
     }
 }
 
-impl From<&str> for Text2 {
+impl From<&str> for TextElement {
     fn from(s: &str) -> Self {
         Self::Literal(s.to_owned())
     }
 }
 
-impl From<u32> for Text2 {
+impl From<u32> for TextElement {
     fn from(v: u32) -> Self {
-        Self::Token(Token::Number(v))
+        Self::Token(TextToken::Number(v))
     }
 }
 
-impl From<Token> for Text2 {
-    fn from(k: Token) -> Self {
+impl From<TextToken> for TextElement {
+    fn from(k: TextToken) -> Self {
         Self::Token(k)
     }
 }
 
-impl From<Vec<Text2>> for Text2 {
-    fn from(children: Vec<Text2>) -> Self {
+impl From<Vec<TextElement>> for TextElement {
+    fn from(children: Vec<TextElement>) -> Self {
         Self::Children(children)
     }
 }

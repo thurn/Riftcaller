@@ -21,7 +21,7 @@ use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinitio
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::text2::trigger;
+use game_data::text::trigger;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 

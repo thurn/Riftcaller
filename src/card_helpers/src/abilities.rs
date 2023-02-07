@@ -19,12 +19,12 @@ use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
 use game_data::game::GameState;
 use game_data::primitives::{AbilityId, AttackValue, BoostCount, CardId, DamageAmount, ManaValue};
-use game_data::text2::Token::*;
-use game_data::text2::{encounter_ability_text, trigger};
+use game_data::text::TextToken::*;
+use game_data::text::{encounter_ability_text, trigger};
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
 
-use crate::text_macro2::text2;
+use crate::text_macro::text2;
 use crate::*;
 
 pub fn silent_ability(ability: Ability) -> Ability {
@@ -46,7 +46,7 @@ pub fn encounter_boost() -> Ability {
 }
 
 pub fn custom_encounter_boost(
-    _text: Vec<Text2>,
+    _text: Vec<TextElement>,
     _function: fn(&GameState, CardId, BoostCount) -> AttackValue,
 ) -> Ability {
     Ability {

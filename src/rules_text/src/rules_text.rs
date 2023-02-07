@@ -20,7 +20,7 @@ use core_ui::icons;
 use core_ui::prelude::Node;
 use game_data::card_definition::{Ability, AbilityType, AttackBoost, CardDefinition, Cost};
 use game_data::primitives::{AbilityId, AbilityIndex};
-use game_data::text2::{RulesTextContext, Text2, Token};
+use game_data::text::{RulesTextContext, TextElement, TextToken};
 use protos::spelldawn::RulesText;
 use rules::queries;
 
@@ -32,7 +32,7 @@ pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesTe
         let mut text = if let AbilityType::Activated(cost, _) = &ability.ability_type {
             build_text(
                 context,
-                &[Text2::Activated {
+                &[TextElement::Activated {
                     cost: ability_cost_string(cost),
                     effect: ability.text.clone(),
                 }],
@@ -51,7 +51,7 @@ pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesTe
     }
 
     if let Some(breach) = definition.config.stats.breach {
-        lines.push(build_text(context, &[Text2::Token(Token::Breach(breach))], false))
+        lines.push(build_text(context, &[TextElement::Token(TextToken::Breach(breach))], false))
     }
 
     RulesText { text: lines.join("\n") }
@@ -72,14 +72,14 @@ pub fn build_supplemental_info(_: &RulesTextContext, _: Option<AbilityIndex>) ->
     None
 }
 
-fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<Text2> {
-    let mut result = iter::repeat(Text2::Token(Token::ActionSymbol))
+fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<TextElement> {
+    let mut result = iter::repeat(TextElement::Token(TextToken::ActionSymbol))
         .take(cost.actions as usize)
         .collect::<Vec<_>>();
 
     if let Some(mana) = cost.mana {
         if mana > 0 {
-            result.push(Text2::Token(Token::Mana(mana)))
+            result.push(TextElement::Token(TextToken::Mana(mana)))
         }
     }
 
@@ -91,7 +91,7 @@ fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<Text2> {
 ///
 /// If `add_period` is true, appends a final '.' if the last element is not
 /// itself a sentence-level element.
-fn build_text(context: &RulesTextContext, text: &[Text2], add_period: bool) -> String {
+fn build_text(context: &RulesTextContext, text: &[TextElement], add_period: bool) -> String {
     if text.is_empty() {
         return String::new();
     }
@@ -100,8 +100,8 @@ fn build_text(context: &RulesTextContext, text: &[Text2], add_period: bool) -> S
         text.iter().map(|text| process_text(context, text)).collect::<Vec<_>>().join(" ");
     if add_period {
         match text[text.len() - 1] {
-            Text2::Token(t) if text.len() > 1 || !t.is_keyword() => result.push('.'),
-            Text2::Literal(_) | Text2::Reminder(_) => result.push('.'),
+            TextElement::Token(t) if !(text.len() == 1 && t.is_keyword()) => result.push('.'),
+            TextElement::Literal(_) | TextElement::Reminder(_) => result.push('.'),
             _ => {}
         }
     }
@@ -112,14 +112,13 @@ fn capitalize(mut s: String) -> String {
     if let Some(r) = s.get_mut(0..1) {
         r.make_ascii_uppercase();
     }
-
     s
 }
 
-fn process_text(context: &RulesTextContext, text: &Text2) -> String {
+fn process_text(context: &RulesTextContext, text: &TextElement) -> String {
     match text {
-        Text2::Children(children) => build_text(context, children, true),
-        Text2::NamedTrigger(token, children) => {
+        TextElement::Children(children) => build_text(context, children, true),
+        TextElement::NamedTrigger(token, children) => {
             format!(
                 "{}<b>{}</b>: {}",
                 icons::TRIGGER,
@@ -127,7 +126,7 @@ fn process_text(context: &RulesTextContext, text: &Text2) -> String {
                 build_text(context, children, true)
             )
         }
-        Text2::Activated { cost, effect } => {
+        TextElement::Activated { cost, effect } => {
             format!(
                 "{} {} {}",
                 build_text(context, cost, false),
@@ -135,51 +134,53 @@ fn process_text(context: &RulesTextContext, text: &Text2) -> String {
                 build_text(context, effect, true)
             )
         }
-        Text2::EncounterAbility { cost, effect } => {
+        TextElement::EncounterAbility { cost, effect } => {
             format!("{}: {}", build_text(context, cost, false), build_text(context, effect, true))
         }
-        Text2::Literal(string) => string.clone(),
-        Text2::Reminder(string) => string.clone(),
-        Text2::Token(token) => process_token(context, token),
+        TextElement::Literal(string) => string.clone(),
+        TextElement::Reminder(string) => string.clone(),
+        TextElement::Token(token) => process_token(context, token),
     }
 }
 
-fn process_token(context: &RulesTextContext, token: &Token) -> String {
+fn process_token(context: &RulesTextContext, token: &TextToken) -> String {
     match token {
-        Token::ManaSymbol => icons::MANA.to_string(),
-        Token::Mana(n) => format!("{n}{}", icons::MANA),
-        Token::ActionSymbol => icons::ACTION.to_string(),
-        Token::Actions(n) => format!("{n}{}", icons::ACTION),
-        Token::Number(n) => n.to_string(),
-        Token::Plus(n) => format!("+{n}"),
-        Token::EncounterBoostCost => format!("{}{}", encounter_boost(context).cost, icons::MANA),
-        Token::EncounterBoostBonus => format!("+{} attack", encounter_boost(context).bonus),
-        Token::Attack => "attack".to_string(),
-        Token::Health => "health".to_string(),
-        Token::Gain => "gain".to_string(),
-        Token::Lose => "lose".to_string(),
-        Token::Play => "Play".to_string(),
-        Token::Dawn => "Dawn".to_string(),
-        Token::Dusk => "Dusk".to_string(),
-        Token::Score => "Score".to_string(),
-        Token::Combat => "Combat".to_string(),
-        Token::Encounter => "Encounter".to_string(),
-        Token::Unveil => "<b>Unveil</b>".to_string(),
-        Token::BeginARaid => "Begin a raid".to_string(),
-        Token::SuccessfulRaid => "Successful Raid".to_string(),
-        Token::StoreMana(n) => format!("<b>Store</b> {n}{}", icons::MANA),
-        Token::TakeMana(n) => format!("<b>Take</b> {n}{}", icons::MANA),
-        Token::DealDamage(n) => format!("deal {n} damage"),
-        Token::TakeDamage(n) => format!("take {n} damage"),
-        Token::InnerRoom => "inner room".to_string(),
-        Token::OuterRoom => "outer room".to_string(),
-        Token::Sanctum => "Sanctum".to_string(),
-        Token::Vault => "Vault".to_string(),
-        Token::Crypts => "Crypts".to_string(),
-        Token::Breach(n) => format!("<b>Breach {n}</b>"),
-        Token::LevelUp => "<b>Level Up</b>".to_string(),
-        Token::Trap => "<b>Trap</b>".to_string(),
-        Token::Construct => "<b>Construct</b>".to_string(),
+        TextToken::ManaSymbol => icons::MANA.to_string(),
+        TextToken::Mana(n) => format!("{n}{}", icons::MANA),
+        TextToken::ActionSymbol => icons::ACTION.to_string(),
+        TextToken::Actions(n) => format!("{n}{}", icons::ACTION),
+        TextToken::Number(n) => n.to_string(),
+        TextToken::Plus(n) => format!("+{n}"),
+        TextToken::EncounterBoostCost => {
+            format!("{}{}", encounter_boost(context).cost, icons::MANA)
+        }
+        TextToken::EncounterBoostBonus => format!("+{} attack", encounter_boost(context).bonus),
+        TextToken::Attack => "attack".to_string(),
+        TextToken::Health => "health".to_string(),
+        TextToken::Gain => "gain".to_string(),
+        TextToken::Lose => "lose".to_string(),
+        TextToken::Play => "Play".to_string(),
+        TextToken::Dawn => "Dawn".to_string(),
+        TextToken::Dusk => "Dusk".to_string(),
+        TextToken::Score => "Score".to_string(),
+        TextToken::Combat => "Combat".to_string(),
+        TextToken::Encounter => "Encounter".to_string(),
+        TextToken::Unveil => "<b>Unveil</b>".to_string(),
+        TextToken::BeginARaid => "Begin a raid".to_string(),
+        TextToken::SuccessfulRaid => "Successful Raid".to_string(),
+        TextToken::StoreMana(n) => format!("<b>Store</b> {n}{}", icons::MANA),
+        TextToken::TakeMana(n) => format!("<b>Take</b> {n}{}", icons::MANA),
+        TextToken::DealDamage(n) => format!("deal {n} damage"),
+        TextToken::TakeDamage(n) => format!("take {n} damage"),
+        TextToken::InnerRoom => "inner room".to_string(),
+        TextToken::OuterRoom => "outer room".to_string(),
+        TextToken::Sanctum => "Sanctum".to_string(),
+        TextToken::Vault => "Vault".to_string(),
+        TextToken::Crypts => "Crypts".to_string(),
+        TextToken::Breach(n) => format!("<b>Breach {n}</b>"),
+        TextToken::LevelUp => "<b>Level Up</b>".to_string(),
+        TextToken::Trap => "<b>Trap</b>".to_string(),
+        TextToken::Construct => "<b>Construct</b>".to_string(),
     }
 }
 

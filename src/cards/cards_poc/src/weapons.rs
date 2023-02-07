@@ -25,7 +25,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::text2::{encounter_ability_text, trigger};
+use game_data::text::{encounter_ability_text, trigger};
 use game_data::utils;
 
 pub fn marauders_axe() -> CardDefinition {
