@@ -112,7 +112,7 @@ pub fn gathering_dark() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2![Gain, Mana(9)],
+            text![Gain, Mana(9)],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
@@ -133,10 +133,10 @@ pub fn coinery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            text_only_ability(text2![text2![Unveil, "when activated, then", StoreMana(15)]]),
+            text_only_ability(text![text![Unveil, "when activated, then", StoreMana(15)]]),
             Ability {
                 ability_type: activate_for_action(),
-                text: text2![TakeMana(3)],
+                text: text![TakeMana(3)],
                 delegates: vec![
                     activate_while_face_down(),
                     face_down_ability_cost(),
@@ -167,7 +167,7 @@ pub fn leyline() -> CardDefinition {
         abilities: vec![
             unveil_at_dusk_ability(),
             simple_ability(
-                trigger(Dusk, text2!["Gain", Mana(1)]),
+                trigger(Dusk, text!["Gain", Mana(1)]),
                 at_dusk(|g, s, _| {
                     mana::gain(g, s.side(), 1);
                     Ok(())
@@ -191,11 +191,11 @@ pub fn ore_refinery() -> CardDefinition {
         abilities: vec![
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text2![Unveil, "at", Dusk, ", then", StoreMana(12)],
+                text: text![Unveil, "at", Dusk, ", then", StoreMana(12)],
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
             },
             simple_ability(
-                trigger(Dusk, text2![TakeMana(3)]),
+                trigger(Dusk, text![TakeMana(3)]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     Ok(())

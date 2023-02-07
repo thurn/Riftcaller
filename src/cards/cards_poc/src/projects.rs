@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{abilities, text2, *};
+use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -38,11 +38,11 @@ pub fn gemcarver() -> CardDefinition {
         abilities: vec![
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text2![Unveil, "at", Dusk, ", then", StoreMana(9)],
+                text: text![Unveil, "at", Dusk, ", then", StoreMana(9)],
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<9>()],
             },
             simple_ability(
-                trigger(Dusk, text2![text2![TakeMana(3)], text2!["When empty, draw a card"]]),
+                trigger(Dusk, text![text![TakeMana(3)], text!["When empty, draw a card"]]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     if g.card(s.card_id()).data.stored_mana == 0 {
@@ -74,7 +74,7 @@ pub fn spike_trap() -> CardDefinition {
             simple_ability(
                 trigger(
                     Trap,
-                    text2![
+                    text![
                         "If this card is in play,",
                         DealDamage(2),
                         "plus",

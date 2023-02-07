@@ -392,7 +392,7 @@ pub fn unveil_at_dusk() -> Delegate {
 
 /// Ability to attempt to unveil a project each turn at Dusk.
 pub fn unveil_at_dusk_ability() -> Ability {
-    simple_ability(text2![Unveil, "at", Dusk], unveil_at_dusk())
+    simple_ability(text![Unveil, "at", Dusk], unveil_at_dusk())
 }
 
 /// Delegate to store mana in a card when it is unveiled

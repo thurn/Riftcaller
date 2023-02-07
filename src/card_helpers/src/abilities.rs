@@ -24,11 +24,11 @@ use game_data::text::{encounter_ability_text, trigger};
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
 
-use crate::text_macro::text2;
+use crate::text_macro::text;
 use crate::*;
 
 pub fn silent_ability(ability: Ability) -> Ability {
-    Ability { text: text2![], ..ability }
+    Ability { text: text![], ..ability }
 }
 
 /// The standard weapon ability; applies an attack boost for the duration of a
@@ -36,7 +36,7 @@ pub fn silent_ability(ability: Ability) -> Ability {
 pub fn encounter_boost() -> Ability {
     Ability {
         ability_type: AbilityType::Encounter,
-        text: encounter_ability_text(text2![EncounterBoostCost], text2![EncounterBoostBonus]),
+        text: encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
         delegates: vec![
             Delegate::ActivateBoost(EventDelegate::new(this_card, mutations::write_boost)),
             Delegate::AttackValue(QueryDelegate::new(this_card, add_boost)),
@@ -51,7 +51,7 @@ pub fn custom_encounter_boost(
 ) -> Ability {
     Ability {
         ability_type: AbilityType::Encounter,
-        text: encounter_ability_text(text2![EncounterBoostCost], text2![EncounterBoostBonus]),
+        text: encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
         delegates: vec![
             Delegate::ActivateBoost(EventDelegate::new(this_card, mutations::write_boost)),
             Delegate::AttackValue(QueryDelegate::new(this_card, add_boost)),
@@ -74,7 +74,7 @@ fn add_boost(game: &GameState, _: Scope, card_id: &CardId, current: AttackValue)
 pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Play, text2![StoreMana(N)]),
+        text: trigger(Play, text![StoreMana(N)]),
         delegates: vec![
             Delegate::CastCard(EventDelegate::new(this_card, |g, _s, played| {
                 g.card_mut(played.card_id).data.stored_mana = N;
@@ -95,7 +95,7 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
 pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability {
     Ability {
         ability_type: AbilityType::Activated(cost, TargetRequirement::None),
-        text: text2![TakeMana(N)],
+        text: text![TakeMana(N)],
         delegates: vec![on_activated(|g, _s, activated| {
             mutations::take_stored_mana(g, activated.card_id(), N, OnZeroStored::Sacrifice)
                 .map(|_| ())
@@ -109,7 +109,7 @@ pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability
 pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text2![DealDamage(N)]),
+        text: trigger(Combat, text![DealDamage(N)]),
         delegates: vec![combat(|g, s, _| mutations::deal_damage(g, s, N))],
     }
 }
@@ -118,7 +118,7 @@ pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
 pub fn combat_end_raid() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text2!["End the raid"]),
+        text: trigger(Combat, text!["End the raid"]),
         delegates: vec![combat(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
     }
 }
@@ -127,7 +127,7 @@ pub fn combat_end_raid() -> Ability {
 pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text2![Gain, Mana(N)]),
+        text: trigger(Combat, text![Gain, Mana(N)]),
         delegates: vec![combat(|g, _, _| {
             mana::gain(g, Side::Overlord, N);
             Ok(())
@@ -140,7 +140,7 @@ pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
 pub fn remove_actions_if_able<const N: ActionCount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger(Combat, text2!["Remove", Actions(1)]),
+        text: trigger(Combat, text!["Remove", Actions(1)]),
         delegates: vec![combat(|g, _s, _| {
             mutations::lose_action_points_if_able(g, Side::Champion, N)
         })],
@@ -151,7 +151,7 @@ pub fn remove_actions_if_able<const N: ActionCount>() -> Ability {
 pub fn level_up() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: text2![LevelUp],
+        text: text![LevelUp],
         delegates: vec![Delegate::CanLevelUpCard(QueryDelegate {
             requirement: this_card,
             transformation: |_g, _, _, current| current.with_override(true),
@@ -162,7 +162,7 @@ pub fn level_up() -> Ability {
 pub fn construct() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: text2![Construct],
+        text: text![Construct],
         delegates: vec![Delegate::MinionDefeated(EventDelegate {
             requirement: this_card,
             mutation: |g, s, _| {

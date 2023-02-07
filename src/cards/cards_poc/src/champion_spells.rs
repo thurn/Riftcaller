@@ -15,7 +15,7 @@
 //! Card definitions for the Spell card type & Champion player
 
 use assets::rexard_images;
-use card_helpers::{text2, *};
+use card_helpers::{text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement,
 };
@@ -36,7 +36,7 @@ pub fn meditation() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2![text2![Gain, Mana(5)], text2![Lose, Actions(1), reminder("(if able)")]],
+            text![text![Gain, Mana(5)], text![Lose, Actions(1), reminder("(if able)")]],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 5);
                 mutations::lose_action_points_if_able(g, s.side(), 1)
@@ -58,9 +58,9 @@ pub fn coup_de_grace() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text2![
-                text2!["Raid the", Sanctum, "or", Vault, ", accessing", 1, "additional card"],
-                text2!["If successful, draw a card"]
+            text: text![
+                text!["Raid the", Sanctum, "or", Vault, ", accessing", 1, "additional card"],
+                text!["If successful, draw a card"]
             ],
             delegates: vec![
                 on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
@@ -92,7 +92,7 @@ pub fn charged_strike() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2![text2![BeginARaid], text2![Gain, Mana(5), "to spend during that raid"]],
+            text![text![BeginARaid], text![Gain, Mana(5), "to spend during that raid"]],
             on_cast(|g, s, play_card| {
                 initiate_raid_with_callback(g, s, play_card.target, |game, raid_id| {
                     mana::add_raid_specific_mana(game, s.side(), raid_id, 5);
@@ -120,9 +120,9 @@ pub fn stealth_mission() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text2![
-                text2![BeginARaid],
-                text2!["During that raid, summon costs are increased by", Mana(3)]
+            text: text![
+                text![BeginARaid],
+                text!["During that raid, summon costs are increased by", Mana(3)]
             ],
             delegates: vec![
                 on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
@@ -158,7 +158,7 @@ pub fn preparation() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2![text2!["Draw", 4, "cards"], text2!["Lose", Actions(1), reminder("(if able)")]],
+            text![text!["Draw", 4, "cards"], text!["Lose", Actions(1), reminder("(if able)")]],
             on_cast(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 4)?;
                 mutations::lose_action_points_if_able(g, s.side(), 1)

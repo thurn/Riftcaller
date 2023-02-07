@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{text2, *};
+use card_helpers::{text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, SchemePoints};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -38,7 +38,7 @@ pub fn gold_mine() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: trigger(Score, text2![Gain, Mana(7)]),
+            text: trigger(Score, text![Gain, Mana(7)]),
             delegates: vec![on_overlord_score(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 Ok(())
@@ -63,7 +63,7 @@ pub fn activate_reinforcements() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text2![
+            text: text![
                 "When this scheme is scored by either player, summon a face-down minion for free"
             ],
             delegates: vec![Delegate::ScoreCard(EventDelegate {
@@ -99,7 +99,7 @@ pub fn research_project() -> CardDefinition {
             ability_type: AbilityType::Standard,
             text: trigger(
                 Score,
-                text2![text2!["Draw", 2, "cards"], text2!["You get", Plus(2), "maximum hand size"]],
+                text![text!["Draw", 2, "cards"], text!["You get", Plus(2), "maximum hand size"]],
             ),
             delegates: vec![
                 on_overlord_score(|g, s, _| mutations::draw_cards(g, s.side(), 2).map(|_| ())),

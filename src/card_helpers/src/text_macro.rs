@@ -15,11 +15,11 @@
 //! Macro for building text.
 
 #[macro_export]
-macro_rules! text2 {
+macro_rules! text {
     ($($x:expr),*) => {
         vec! [$(game_data::text::TextElement::from($x)),*]
     };
     ($($x:expr,)*) => {text![$($x),*]}
 }
 
-pub use text2;
+pub use text;

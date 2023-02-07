@@ -14,7 +14,7 @@
 
 //! Test cards
 
-use card_helpers::{abilities, text2, *};
+use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SchemePoints,
     SpecialEffects,
@@ -338,12 +338,12 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
         card_type: CardType::Project,
         abilities: vec![
             Ability {
-                text: text2![Unveil, "at", Dusk, ", then", StoreMana(MANA_STORED)],
+                text: text![Unveil, "at", Dusk, ", then", StoreMana(MANA_STORED)],
                 ability_type: AbilityType::Standard,
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<MANA_STORED>()],
             },
             Ability {
-                text: trigger(Dusk, text2![TakeMana(MANA_TAKEN)]),
+                text: trigger(Dusk, text![TakeMana(MANA_TAKEN)]),
                 ability_type: AbilityType::Standard,
                 delegates: vec![at_dusk(|g, s, _| {
                     mutations::take_stored_mana(
@@ -406,12 +406,12 @@ pub fn test_card_stored_mana() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability {
-                text: text2![Unveil, "at", Dusk, ", then", StoreMana(12)],
+                text: text![Unveil, "at", Dusk, ", then", StoreMana(12)],
                 ability_type: AbilityType::Standard,
                 delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
             },
             simple_ability(
-                trigger(Dusk, text2![TakeMana(3)]),
+                trigger(Dusk, text![TakeMana(3)]),
                 at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     alert(g, s);

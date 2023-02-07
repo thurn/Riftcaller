@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
-use card_helpers::{abilities, text2, *};
+use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
 };
@@ -43,7 +43,7 @@ pub fn marauders_axe() -> CardDefinition {
                 ability_type: AbilityType::Standard,
                 text: trigger(
                     SuccessfulRaid,
-                    text2!["This weapon costs", Mana(2), "less to play this turn"],
+                    text!["This weapon costs", Mana(2), "less to play this turn"],
                 ),
                 delegates: vec![
                     on_raid_success(always, |g, s, _| {
@@ -115,8 +115,8 @@ pub fn bow_of_the_alliance() -> CardDefinition {
             abilities::silent_ability(abilities::encounter_boost()),
             simple_ability(
                 encounter_ability_text(
-                    text2![EncounterBoostCost],
-                    text2![Plus(1), Attack, "per weapon you control"],
+                    text![EncounterBoostCost],
+                    text![Plus(1), Attack, "per weapon you control"],
                 ),
                 Delegate::AttackBoost(QueryDelegate {
                     requirement: this_card,

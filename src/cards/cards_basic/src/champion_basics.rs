@@ -59,7 +59,7 @@ pub fn arcane_recovery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2![Gain, Mana(9)],
+            text![Gain, Mana(9)],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
@@ -80,7 +80,7 @@ pub fn eldritch_surge() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2![Gain, Mana(3)],
+            text![Gain, Mana(3)],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 3);
                 Ok(())
@@ -120,7 +120,7 @@ pub fn mana_battery() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                trigger(Dawn, text2![TakeMana(1)]),
+                trigger(Dawn, text![TakeMana(1)]),
                 at_dawn(|g, s, _| {
                     let taken =
                         mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;
@@ -130,7 +130,7 @@ pub fn mana_battery() -> CardDefinition {
             ),
             Ability {
                 ability_type: activate_for_action(),
-                text: text2![StoreMana(3)],
+                text: text![StoreMana(3)],
                 delegates: vec![on_activated(|g, s, _| {
                     add_stored_mana(g, s.card_id(), 3);
                     Ok(())
@@ -152,7 +152,7 @@ pub fn contemplate() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2![text2![Gain, Mana(2)], text2!["Draw a card"]],
+            text![text![Gain, Mana(2)], text!["Draw a card"]],
             on_cast(|g, s, _| {
                 mana::gain(g, s.side(), 2);
                 mutations::draw_cards(g, s.side(), 1)?;
@@ -174,7 +174,7 @@ pub fn ancestral_knowledge() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
-            text2!["Draw", 3, "cards"],
+            text!["Draw", 3, "cards"],
             on_cast(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 3)?;
                 Ok(())
@@ -345,7 +345,7 @@ pub fn ethereal_blade() -> CardDefinition {
             abilities::encounter_boost(),
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text2!["When you use this weapon, sacrifice it at the end of the raid"],
+                text: text!["When you use this weapon, sacrifice it at the end of the raid"],
                 delegates: vec![
                     on_weapon_used(
                         |_g, s, used_weapon| used_weapon.weapon_id == s.card_id(),

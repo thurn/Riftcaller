@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{abilities, text2, *};
+use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -46,7 +46,7 @@ pub fn time_golem() -> CardDefinition {
             simple_ability(
                 trigger(
                     Encounter,
-                    text2!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
+                    text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
                 ),
                 on_encountered(|g, _s, _| {
                     mutations::set_prompt(
@@ -81,7 +81,7 @@ pub fn temporal_stalker() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                trigger(Combat, text2!["End the raid unless the Champion pays", Actions(2)]),
+                trigger(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
                 minion_combat_actions(|g, _, _, _| {
                     vec![Some(CardPromptAction::EndRaid), lose_actions_prompt(g, Side::Champion, 2)]
                 }),
@@ -89,7 +89,7 @@ pub fn temporal_stalker() -> CardDefinition {
             simple_ability(
                 trigger(
                     Combat,
-                    text2!["Summon a minion from the", Sanctum, "or", Crypts, "for free"],
+                    text!["Summon a minion from the", Sanctum, "or", Crypts, "for free"],
                 ),
                 combat(|g, s, _| {
                     let cards = g
@@ -134,7 +134,7 @@ pub fn shadow_lurker() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                text2!["While this minion is in an", OuterRoom, "it has", Plus(2), Health],
+                text!["While this minion is in an", OuterRoom, "it has", Plus(2), Health],
                 on_calculate_health(|g, s, _, current| match g.card(s.card_id()).position() {
                     CardPosition::Room(room_id, _) if !is_inner_room(room_id) => current + 2,
                     _ => current,
@@ -164,9 +164,9 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
             ability_type: AbilityType::Standard,
             text: trigger(
                 Combat,
-                text2![
-                    text2![DealDamage(1)],
-                    text2!["If a card with an odd mana cost is discarded, end the raid"]
+                text![
+                    text![DealDamage(1)],
+                    text!["If a card with an odd mana cost is discarded, end the raid"]
                 ],
             ),
             delegates: vec![
@@ -203,9 +203,9 @@ pub fn bridge_troll() -> CardDefinition {
         abilities: vec![simple_ability(
             trigger(
                 Combat,
-                text2![
-                    text2!["The Champion loses", Mana(3)],
-                    text2!["If they have", Mana(6), "or less, end the raid"]
+                text![
+                    text!["The Champion loses", Mana(3)],
+                    text!["If they have", Mana(6), "or less, end the raid"]
                 ],
             ),
             combat(|g, _, _| {
@@ -237,7 +237,7 @@ pub fn stormcaller() -> CardDefinition {
         abilities: vec![simple_ability(
             trigger(
                 Combat,
-                text2!["The Champion must end the raid and", TakeDamage(2), "or", TakeDamage(4)],
+                text!["The Champion must end the raid and", TakeDamage(2), "or", TakeDamage(4)],
             ),
             minion_combat_actions(|g, s, _, _| {
                 vec![
