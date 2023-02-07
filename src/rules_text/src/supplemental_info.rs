@@ -121,9 +121,6 @@ fn token_description(token: TextTokenKind) -> Option<String> {
             entry("Encounter", "Triggers when this minion is approached during a raid")
         }
         TextTokenKind::Unveil => entry("Unveil", "Pay cost and turn face up (if able)"),
-        TextTokenKind::SuccessfulRaid => {
-            entry("Successful Raid", "Triggers after the access phase of a raid")
-        }
         TextTokenKind::StoreMana => {
             entry("Store", format!("Add {} to this card to <b>take</b> later", icons::MANA))
         }

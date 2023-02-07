@@ -68,7 +68,7 @@ pub fn accumulator() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             simple_ability(
-                trigger_text(SuccessfulRaid, text![StoreMana(1)]),
+                text!["When you access a room", StoreMana(1)],
                 on_raid_success(face_up_in_play, |g, s, _| {
                     add_stored_mana(g, s.card_id(), 1);
                     alert(g, s);

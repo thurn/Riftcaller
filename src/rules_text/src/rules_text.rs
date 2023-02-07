@@ -166,6 +166,7 @@ fn process_token(context: &RulesTextContext, token: &TextToken) -> String {
     match token {
         TextToken::ManaSymbol => icons::MANA.to_string(),
         TextToken::Mana(n) => format!("{n}{}", icons::MANA),
+        TextToken::ManaMinus(n) => format!("-{n}{}", icons::MANA),
         TextToken::ActionSymbol => icons::ACTION.to_string(),
         TextToken::Actions(n) => icons::ACTION.repeat(*n as usize),
         TextToken::Number(n) => n.to_string(),
@@ -186,7 +187,6 @@ fn process_token(context: &RulesTextContext, token: &TextToken) -> String {
         TextToken::Encounter => "Encounter".to_string(),
         TextToken::Unveil => "<b>Unveil</b>".to_string(),
         TextToken::BeginARaid => "Begin a raid".to_string(),
-        TextToken::SuccessfulRaid => "Successful Raid".to_string(),
         TextToken::StoreMana(n) => format!("<b>Store</b> {n}{}", icons::MANA),
         TextToken::TakeMana(n) => format!("<b>Take</b> {n}{}", icons::MANA),
         TextToken::DealDamage(n) => format!("deal {n} damage"),

@@ -36,6 +36,7 @@ pub enum TextElement {
 pub enum TextToken {
     ManaSymbol,
     Mana(ManaValue),
+    ManaMinus(ManaValue),
     ActionSymbol,
     Actions(ActionCount),
     Number(u32),
@@ -54,7 +55,6 @@ pub enum TextToken {
     Encounter,
     Unveil,
     BeginARaid,
-    SuccessfulRaid,
     StoreMana(ManaValue),
     TakeMana(ManaValue),
     DealDamage(DamageAmount),

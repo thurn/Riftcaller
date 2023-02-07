@@ -120,7 +120,7 @@ pub fn card_back(school: School) -> SpriteAddress {
                 School::Beyond => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardBack"
                 }
-                School::Blood => {
+                School::Pact => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardBack"
                 }
                 School::Neutral => {
@@ -145,7 +145,7 @@ pub fn card_frame(school: School, card_type: CardType) -> SpriteAddress {
             School::Beyond => {
                 "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBeyondFullHeight"
             }
-            School::Blood => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBloodFullHeight",
+            School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBloodFullHeight",
             School::Neutral => {
                 "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardNeutralFullHeight"
             }
@@ -156,7 +156,7 @@ pub fn card_frame(school: School, card_type: CardType) -> SpriteAddress {
             School::Shadow => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame",
             School::Primal => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame",
             School::Beyond => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame",
-            School::Blood => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame",
+            School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame",
             School::Neutral => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame",
         }
     };

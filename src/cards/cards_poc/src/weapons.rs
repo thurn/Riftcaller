@@ -40,10 +40,11 @@ pub fn marauders_axe() -> CardDefinition {
         abilities: vec![
             Ability {
                 ability_type: AbilityType::Standard,
-                text: trigger_text(
-                    SuccessfulRaid,
-                    text!["This weapon costs", Mana(2), "less to play this turn"],
-                ),
+                text: text![
+                    "When you access a room, this weapon costs",
+                    ManaMinus(2),
+                    "to play this turn"
+                ],
                 delegates: vec![
                     on_raid_success(always, |g, s, _| {
                         save_turn(g, s);

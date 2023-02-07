@@ -272,7 +272,7 @@ pub enum School {
     Law,
     Shadow,
     Primal,
-    Blood,
+    Pact,
     Beyond,
     Neutral,
 }
