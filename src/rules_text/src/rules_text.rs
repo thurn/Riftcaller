@@ -28,20 +28,9 @@ use rules::queries;
 /// [RulesText] representation
 pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesText {
     let mut lines = vec![];
-    for ability in &definition.abilities {
-        let mut text = if let AbilityType::Activated(cost, _) = &ability.ability_type {
-            build_text(
-                context,
-                &[TextElement::Activated {
-                    cost: ability_cost_string(cost),
-                    effect: ability.text.clone(),
-                }],
-                true,
-            )
-        } else {
-            build_text(context, &ability.text, true)
-        };
-
+    let abilities = aggregate_named_triggers(&definition.abilities);
+    for ability in abilities {
+        let mut text = build_text(context, &ability, true);
         text = text.replace(" ,", ",");
         text = text.replace(" .", ".");
 
@@ -55,6 +44,46 @@ pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesTe
     }
 
     RulesText { text: lines.join("\n") }
+}
+
+/// Merge together abilities which have the same trigger in order to conserve
+/// space.
+fn aggregate_named_triggers(abilities: &[Ability]) -> Vec<Vec<TextElement>> {
+    let mut results: Vec<(Option<TextToken>, Vec<TextElement>)> = vec![];
+    for ability in abilities {
+        if let AbilityType::Activated(cost, _) = &ability.ability_type {
+            results.push((
+                None,
+                vec![TextElement::Activated {
+                    cost: ability_cost_string(cost),
+                    effect: ability.text.clone(),
+                }],
+            ));
+        } else if ability.text.len() == 1 {
+            if let all @ TextElement::NamedTrigger(name, text) = &ability.text[0] {
+                let mut found = false;
+                for (i, (token, existing)) in results.iter().enumerate() {
+                    if Some(name) == token.as_ref() {
+                        let mut new_text = existing.clone();
+                        new_text.push(TextElement::Children(text.clone()));
+                        results[i] = (*token, new_text);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if !found {
+                    results.push((Some(*name), vec![all.clone()]));
+                }
+            } else {
+                results.push((None, ability.text.clone()));
+            }
+        } else {
+            results.push((None, ability.text.clone()));
+        }
+    }
+
+    results.into_iter().map(|(_, elements)| elements).collect()
 }
 
 /// Builds the rules text for a single [Ability], not including its cost (if
@@ -120,7 +149,7 @@ fn process_text(context: &RulesTextContext, text: &TextElement) -> String {
         TextElement::Children(children) => build_text(context, children, true),
         TextElement::NamedTrigger(token, children) => {
             format!(
-                "{}<b>{}</b>: {}",
+                "{}<b>{}:</b> {}",
                 icons::TRIGGER,
                 process_token(context, token),
                 build_text(context, children, true)
@@ -128,9 +157,8 @@ fn process_text(context: &RulesTextContext, text: &TextElement) -> String {
         }
         TextElement::Activated { cost, effect } => {
             format!(
-                "{} {} {}",
+                "{}<b>:</b> {}",
                 build_text(context, cost, false),
-                icons::ARROW,
                 build_text(context, effect, true)
             )
         }

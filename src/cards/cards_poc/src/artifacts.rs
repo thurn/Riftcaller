@@ -44,7 +44,7 @@ pub fn invisibility_ring() -> CardDefinition {
             text: text2![
                 "The first time each turn you access the Sanctum, access",
                 1,
-                "additional card."
+                "additional card"
             ],
             delegates: vec![
                 on_raid_access_start(face_up_in_play, |g, s, raid_id| {
