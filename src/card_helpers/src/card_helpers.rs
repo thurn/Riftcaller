@@ -25,8 +25,8 @@ use game_data::card_definition::{
 };
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
-    AbilityActivated, CardPlayed, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded,
-    RaidEvent, RequirementFn, Scope, TransformationFn, UsedWeapon,
+    AbilityActivated, CardPlayed, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate,
+    RaidEnded, RaidEvent, RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game::GameState;
 use game_data::game_actions::{CardPromptAction, CardTarget};
@@ -286,6 +286,11 @@ pub fn on_raid_failure(
     mutation: MutationFn<RaidId>,
 ) -> Delegate {
     Delegate::RaidFailure(EventDelegate { requirement, mutation })
+}
+
+/// A delegate which triggers if a card is face up in play when damage is dealt.
+pub fn on_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
+    Delegate::DealtDamage(EventDelegate { requirement: face_up_in_play, mutation })
 }
 
 /// Delegate which transforms how a minion's health is calculated

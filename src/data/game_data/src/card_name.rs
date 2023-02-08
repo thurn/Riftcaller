@@ -166,13 +166,23 @@ pub enum CardName {
 impl CardName {
     /// Returns the user-visible name for this card
     pub fn displayed_name(&self) -> String {
-        match self {
-            Self::MaraudersAxe => "Marauder's Axe".to_string(),
-            Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
-            Self::TutorialChampionLeader => "Leader".to_string(),
-            Self::TutorialOverlordLeader => "Leader".to_string(),
-            Self::EnneraImrisBloodBound => "Ennera Imris, Blood-Bound".to_string(),
-            _ => format!("{self}").from_case(Case::Pascal).to_case(Case::Title),
+        let custom = match self {
+            Self::MaraudersAxe => "Marauder's Axe",
+            Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath",
+            Self::TutorialChampionLeader => "Aris Fey",
+            Self::TutorialOverlordLeader => "Leader",
+            Self::EnneraImrisBloodBound => "Ennera Imris, Blood-Bound",
+            Self::ArisFeyTheRadiantSun => "Aris Fey, The Radiant Sun",
+            Self::TelantesDugothEarthbreaker => "Telantes Dugoth, Earthbreaker",
+            Self::AndvariEstNightsWarden => "Andvari Est, Night's Warden",
+            Self::UbrasEfarisTimeShaper => "Ubras Efaris, Time Shaper",
+            _ => "",
+        };
+
+        if custom.is_empty() {
+            format!("{self}").from_case(Case::Pascal).to_case(Case::Title)
+        } else {
+            custom.to_string()
         }
     }
 

@@ -28,3 +28,17 @@ fn ennera_imris_blood_bound() {
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(STARTING_MANA + gained - cost, g.me().mana());
 }
+
+#[test]
+fn aris_fey_the_radiant_sun() {
+    let mut g = new_game(Side::Champion, Args::default());
+    g.play_from_hand(CardName::ArisFeyTheRadiantSun);
+    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.play_from_hand(CardName::TestMinionDealDamage);
+    set_up_minion_combat(&mut g);
+    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
+    click_on_continue(&mut g);
+    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
+}

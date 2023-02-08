@@ -16,6 +16,8 @@ pub const STARTING_HAND_SIZE: u32 = 5;
 
 pub const STARTING_MANA: u32 = 5;
 
+pub const START_OF_TURN_ACTIONS: u32 = 3;
+
 pub const STARTING_MAXIMUM_HAND_SIZE: u32 = 7;
 
 pub const MAXIMUM_MINIONS_IN_ROOM: usize = 4;

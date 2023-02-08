@@ -18,7 +18,7 @@ use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use rules::mana;
+use rules::{mana, mutations};
 
 pub fn ennera_imris_blood_bound() -> CardDefinition {
     CardDefinition {
@@ -29,13 +29,13 @@ pub fn ennera_imris_blood_bound() -> CardDefinition {
         card_type: CardType::Leader,
         side: Side::Champion,
         school: School::Pact,
-        rarity: Rarity::Common,
+        rarity: Rarity::Exalted,
         abilities: vec![simple_ability(
             trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
             at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
-                    mana::gain(g, s.side(), 1);
                     alert(g, s);
+                    mana::gain(g, s.side(), 1);
                 }
                 Ok(())
             }),
@@ -45,6 +45,37 @@ pub fn ennera_imris_blood_bound() -> CardDefinition {
             image_background: Some(assets::environments(
                 EnvironmentType::CastlesTowersKeeps,
                 "Tavern/SceneryTavern_outside_1",
+            )),
+            ..CardConfig::default()
+        },
+    }
+}
+
+pub fn aris_fey_the_radiant_sun() -> CardDefinition {
+    CardDefinition {
+        name: CardName::ArisFeyTheRadiantSun,
+        sets: vec![CardSetName::ProofOfConcept],
+        cost: cost(3),
+        image: assets::fantasy_class_image("Priest", "Female"),
+        card_type: CardType::Leader,
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Exalted,
+        abilities: vec![simple_ability(
+            text!["The first time you take damage each turn, draw a card"],
+            on_damage(|g, s, _| {
+                once_per_turn(g, s, &(), |g, s, _| {
+                    alert(g, s);
+                    mutations::draw_cards(g, s.side(), 1)?;
+                    Ok(())
+                })
+            }),
+        )],
+        config: CardConfig {
+            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Priest_F")),
+            image_background: Some(assets::environments(
+                EnvironmentType::CastlesTowersKeeps,
+                "Enchanted/SceneryEForest_outside_1",
             )),
             ..CardConfig::default()
         },
