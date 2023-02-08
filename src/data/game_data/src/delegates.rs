@@ -79,7 +79,7 @@ use crate::game::GameState;
 use crate::game_actions::{CardPromptAction, CardTarget, PromptAction};
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BoostData, BreachValue, CardId, HasAbilityId,
-    HasCardId, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
+    HasCardId, HasRoomId, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -270,6 +270,12 @@ impl CardEncounter {
 pub struct RaidEvent {
     pub raid_id: RaidId,
     pub target: RoomId,
+}
+
+impl HasRoomId for RaidEvent {
+    fn room_id(&self) -> RoomId {
+        self.target
+    }
 }
 
 /// Event data when a weapon is used

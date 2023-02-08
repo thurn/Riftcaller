@@ -18,7 +18,7 @@ use std::convert::Infallible;
 use std::error;
 use std::fmt::Display;
 
-use anyhow::{Context, Error};
+use anyhow::{Context, Error, Result};
 
 /// Should the system panic when an error is encountered?
 ///

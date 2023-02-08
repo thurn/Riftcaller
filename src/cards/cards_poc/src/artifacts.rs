@@ -46,7 +46,7 @@ pub fn invisibility_ring() -> CardDefinition {
                 "additional card"
             ],
             delegates: vec![
-                on_raid_access_start(face_up_in_play, |g, s, raid_id| {
+                in_play::on_raid_access_start(|g, s, raid_id| {
                     once_per_turn(g, s, raid_id, save_raid_id)
                 }),
                 add_sanctum_access::<1>(matching_raid),
@@ -69,9 +69,9 @@ pub fn accumulator() -> CardDefinition {
         abilities: vec![
             simple_ability(
                 text!["When you access a room", StoreMana(1)],
-                on_raid_success(face_up_in_play, |g, s, _| {
-                    add_stored_mana(g, s.card_id(), 1);
+                in_play::after_room_accessed(|g, s, _| {
                     alert(g, s);
+                    add_stored_mana(g, s.card_id(), 1);
                     Ok(())
                 }),
             ),
@@ -80,8 +80,13 @@ pub fn accumulator() -> CardDefinition {
                 text: text![StoreMana(1), ", then take all stored", ManaSymbol],
                 delegates: vec![on_activated(|g, s, activated| {
                     let mana = add_stored_mana(g, s.card_id(), 1);
-                    mutations::take_stored_mana(g, activated.card_id(), mana, OnZeroStored::Ignore)
-                        .map(|_| ())
+                    mutations::take_stored_mana(
+                        g,
+                        activated.card_id(),
+                        mana,
+                        OnZeroStored::Ignore,
+                    )?;
+                    Ok(())
                 })],
             },
         ],

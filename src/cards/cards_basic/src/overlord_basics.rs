@@ -167,7 +167,7 @@ pub fn leyline() -> CardDefinition {
             unveil_at_dusk_ability(),
             simple_ability(
                 trigger_text(Dusk, text!["Gain", Mana(1)]),
-                at_dusk(|g, s, _| {
+                in_play::at_dusk(|g, s, _| {
                     mana::gain(g, s.side(), 1);
                     Ok(())
                 }),
@@ -195,7 +195,7 @@ pub fn ore_refinery() -> CardDefinition {
             },
             simple_ability(
                 trigger_text(Dusk, text![TakeMana(3)]),
-                at_dusk(|g, s, _| {
+                in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     Ok(())
                 }),

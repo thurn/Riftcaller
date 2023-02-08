@@ -309,6 +309,37 @@ impl RoomId {
     }
 }
 
+/// Identifies a struct that is 1:1 associated with a given [RoomId].
+pub trait HasRoomId {
+    fn room_id(&self) -> RoomId;
+}
+
+/// Identifies a struct which identies a [RoomId] at compile time.
+pub trait RoomIdMarker {
+    fn room_id() -> RoomId;
+}
+
+pub struct RoomIdVault;
+impl RoomIdMarker for RoomIdVault {
+    fn room_id() -> RoomId {
+        RoomId::Vault
+    }
+}
+
+pub struct RoomIdSanctum;
+impl RoomIdMarker for RoomIdSanctum {
+    fn room_id() -> RoomId {
+        RoomId::Sanctum
+    }
+}
+
+pub struct RoomIdCrypts;
+impl RoomIdMarker for RoomIdCrypts {
+    fn room_id() -> RoomId {
+        RoomId::Crypts
+    }
+}
+
 /// Used to control where a card is rendered within a room
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum RoomLocation {

@@ -32,7 +32,7 @@ pub fn ennera_imris_blood_bound() -> CardDefinition {
         rarity: Rarity::Exalted,
         abilities: vec![simple_ability(
             trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
-            at_dawn(|g, s, _| {
+            in_play::at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
                     alert(g, s);
                     mana::gain(g, s.side(), 1);
@@ -63,7 +63,7 @@ pub fn aris_fey_the_radiant_sun() -> CardDefinition {
         rarity: Rarity::Exalted,
         abilities: vec![simple_ability(
             text!["The first time you take damage each turn, draw a card"],
-            on_damage(|g, s, _| {
+            in_play::on_damage(|g, s, _| {
                 once_per_turn(g, s, &(), |g, s, _| {
                     alert(g, s);
                     mutations::draw_cards(g, s.side(), 1)?;
@@ -93,8 +93,8 @@ pub fn telantes_dugoth_earthbreaker() -> CardDefinition {
         school: School::Primal,
         rarity: Rarity::Exalted,
         abilities: vec![simple_ability(
-            text!["Whenever you access the", Sanctum, ", discard the top card of the", Vault],
-            triggers::on_sanctum_access(|g, s, _| {
+            text!["After you access the", Sanctum, ", discard the top card of the", Vault],
+            in_play::after_sanctum_accessed(|g, s, _| {
                 alert(g, s);
                 mutations::discard_from_vault(g, 1)
             }),

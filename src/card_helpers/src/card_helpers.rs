@@ -16,8 +16,8 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
+pub mod in_play;
 pub mod text_macro;
-pub mod triggers;
 
 use anyhow::Result;
 use game_data::card_definition::{
@@ -26,14 +26,14 @@ use game_data::card_definition::{
 };
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
-    AbilityActivated, CardPlayed, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate,
-    RaidEnded, RaidEvent, RequirementFn, Scope, TransformationFn, UsedWeapon,
+    AbilityActivated, CardPlayed, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded,
+    RaidEvent, RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game::GameState;
 use game_data::game_actions::{CardPromptAction, CardTarget};
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue,
-    RaidId, RoomId, Side, TurnNumber,
+    RaidId, RoomId, Side,
 };
 use game_data::special_effects::Projectile;
 pub use game_data::text::TextToken::*;
@@ -204,16 +204,6 @@ pub fn when_unveiled(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::UnveilProject(EventDelegate { requirement: this_card, mutation })
 }
 
-/// A delegate which triggers at dawn if a card is face up in play
-pub fn at_dawn(mutation: MutationFn<TurnNumber>) -> Delegate {
-    Delegate::Dawn(EventDelegate { requirement: face_up_in_play, mutation })
-}
-
-/// A delegate which triggers at dusk if a card is face up in play
-pub fn at_dusk(mutation: MutationFn<TurnNumber>) -> Delegate {
-    Delegate::Dusk(EventDelegate { requirement: face_up_in_play, mutation })
-}
-
 /// A minion delegate which triggers when it is encountered
 pub fn on_encountered(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::EncounterMinion(EventDelegate { requirement: this_card, mutation })
@@ -236,28 +226,12 @@ pub fn on_overlord_score(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::OverlordScoreCard(EventDelegate { requirement: this_card, mutation })
 }
 
-/// Delegate which fires when a raid starts
-pub fn on_raid_start(
-    requirement: RequirementFn<RaidEvent>,
-    mutation: MutationFn<RaidEvent>,
-) -> Delegate {
-    Delegate::RaidStart(EventDelegate { requirement, mutation })
-}
-
 /// Delegate which fires when a weapon is used
 pub fn on_weapon_used(
     requirement: RequirementFn<UsedWeapon>,
     mutation: MutationFn<UsedWeapon>,
 ) -> Delegate {
     Delegate::UsedWeapon(EventDelegate { requirement, mutation })
-}
-
-/// Delegate which fires when the 'access' phase of a raid begins.
-pub fn on_raid_access_start(
-    requirement: RequirementFn<RaidId>,
-    mutation: MutationFn<RaidId>,
-) -> Delegate {
-    Delegate::RaidAccessStart(EventDelegate { requirement, mutation })
 }
 
 /// Delegate which fires when its card is accessed
@@ -279,19 +253,6 @@ pub fn on_raid_success(
     mutation: MutationFn<RaidEvent>,
 ) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement, mutation })
-}
-
-/// A delegate which fires when a raid ends in failure
-pub fn on_raid_failure(
-    requirement: RequirementFn<RaidEvent>,
-    mutation: MutationFn<RaidEvent>,
-) -> Delegate {
-    Delegate::RaidFailure(EventDelegate { requirement, mutation })
-}
-
-/// A delegate which triggers if a card is face up in play when damage is dealt.
-pub fn on_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
-    Delegate::DealtDamage(EventDelegate { requirement: face_up_in_play, mutation })
 }
 
 /// Delegate which transforms how a minion's health is calculated

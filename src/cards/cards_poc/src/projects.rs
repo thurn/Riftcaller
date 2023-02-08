@@ -42,7 +42,7 @@ pub fn gemcarver() -> CardDefinition {
             },
             simple_ability(
                 trigger_text(Dusk, text![text![TakeMana(3)], text!["When empty, draw a card"]]),
-                at_dusk(|g, s, _| {
+                in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     if g.card(s.card_id()).data.stored_mana == 0 {
                         mutations::draw_cards(g, s.side(), 1)?;

@@ -344,7 +344,7 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
             Ability {
                 text: trigger_text(Dusk, text![TakeMana(MANA_TAKEN)]),
                 ability_type: AbilityType::Standard,
-                delegates: vec![at_dusk(|g, s, _| {
+                delegates: vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(
                         g,
                         s.card_id(),
@@ -411,7 +411,7 @@ pub fn test_card_stored_mana() -> CardDefinition {
             },
             simple_ability(
                 trigger_text(Dusk, text![TakeMana(3)]),
-                at_dusk(|g, s, _| {
+                in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     alert(g, s);
                     Ok(())

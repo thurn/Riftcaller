@@ -120,7 +120,7 @@ pub fn mana_battery() -> CardDefinition {
         abilities: vec![
             simple_ability(
                 trigger_text(Dawn, text![TakeMana(1)]),
-                at_dawn(|g, s, _| {
+                in_play::at_dawn(|g, s, _| {
                     let taken =
                         mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;
                     alert_if_nonzero(g, s, taken);
