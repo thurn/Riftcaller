@@ -29,9 +29,9 @@ use game_data::card_state::CardState;
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegates::{
     CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterPlayEvent,
-    MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidFailureEvent, RaidOutcome,
-    RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
-    UnveilProjectEvent,
+    MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidEvent, RaidFailureEvent,
+    RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
+    SummonMinionEvent, UnveilProjectEvent,
 };
 use game_data::game::{GamePhase, GameState, TurnData};
 use game_data::game_actions::{CardPromptAction, GamePrompt};
@@ -249,12 +249,12 @@ pub fn set_prompt(
 /// Ends the current raid. Returns an error if no raid is currently active.
 pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
     debug!("Ending raid");
-    let raid_id = game.raid()?.raid_id;
+    let event = RaidEvent { raid_id: game.raid()?.raid_id, target: game.raid()?.target };
     match outcome {
-        RaidOutcome::Success => dispatch::invoke_event(game, RaidSuccessEvent(raid_id))?,
-        RaidOutcome::Failure => dispatch::invoke_event(game, RaidFailureEvent(raid_id))?,
+        RaidOutcome::Success => dispatch::invoke_event(game, RaidSuccessEvent(event))?,
+        RaidOutcome::Failure => dispatch::invoke_event(game, RaidFailureEvent(event))?,
     }
-    dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_id, outcome }))?;
+    dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;
     game.data.raid = None;
     check_end_turn(game)?;
     Ok(())
@@ -559,6 +559,16 @@ pub fn deal_damage(game: &mut GameState, source: impl HasAbilityId, amount: u32)
         DealtDamageEvent(DealtDamage { source: source.ability_id(), amount, discarded }),
     )?;
 
+    Ok(())
+}
+
+/// Discards `amount` cards from the top of the Overlord's deck.
+///
+/// If insufficient cards are present, discards all available cards.
+pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
+    for card_id in realize_top_of_deck(game, Side::Overlord, amount)? {
+        move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
+    }
     Ok(())
 }
 

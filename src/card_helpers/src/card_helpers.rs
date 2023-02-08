@@ -17,6 +17,7 @@
 
 pub mod abilities;
 pub mod text_macro;
+pub mod triggers;
 
 use anyhow::Result;
 use game_data::card_definition::{
@@ -274,16 +275,16 @@ pub fn on_raid_ended(
 
 /// A delegate which fires when a raid ends in success
 pub fn on_raid_success(
-    requirement: RequirementFn<RaidId>,
-    mutation: MutationFn<RaidId>,
+    requirement: RequirementFn<RaidEvent>,
+    mutation: MutationFn<RaidEvent>,
 ) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement, mutation })
 }
 
 /// A delegate which fires when a raid ends in failure
 pub fn on_raid_failure(
-    requirement: RequirementFn<RaidId>,
-    mutation: MutationFn<RaidId>,
+    requirement: RequirementFn<RaidEvent>,
+    mutation: MutationFn<RaidEvent>,
 ) -> Delegate {
     Delegate::RaidFailure(EventDelegate { requirement, mutation })
 }

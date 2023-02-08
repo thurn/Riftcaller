@@ -81,3 +81,31 @@ pub fn aris_fey_the_radiant_sun() -> CardDefinition {
         },
     }
 }
+
+pub fn telantes_dugoth_earthbreaker() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TelantesDugothEarthbreaker,
+        sets: vec![CardSetName::ProofOfConcept],
+        cost: cost(3),
+        image: assets::fantasy_class_image("Druid", "Male"),
+        card_type: CardType::Leader,
+        side: Side::Champion,
+        school: School::Primal,
+        rarity: Rarity::Exalted,
+        abilities: vec![simple_ability(
+            text!["Whenever you access the", Sanctum, ", discard the top card of the", Vault],
+            triggers::on_sanctum_access(|g, s, _| {
+                alert(g, s);
+                mutations::discard_from_vault(g, 1)
+            }),
+        )],
+        config: CardConfig {
+            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Druid_M")),
+            image_background: Some(assets::environments(
+                EnvironmentType::CastlesTowersKeeps,
+                "Enchanted/SceneryEForest_inside_2",
+            )),
+            ..CardConfig::default()
+        },
+    }
+}

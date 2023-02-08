@@ -304,13 +304,13 @@ pub enum RaidOutcome {
 /// Event data when a raid is completed
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
 pub struct RaidEnded {
-    pub raid_id: RaidId,
+    pub raid_event: RaidEvent,
     pub outcome: RaidOutcome,
 }
 
 impl From<RaidEnded> for RaidId {
     fn from(this: RaidEnded) -> Self {
-        this.raid_id
+        this.raid_event.raid_id
     }
 }
 
@@ -405,9 +405,9 @@ pub enum Delegate {
     /// Note that this is invoked before `game.data.raid` is cleared.
     RaidEnd(EventDelegate<RaidEnded>),
     /// A raid has ended in failure.
-    RaidFailure(EventDelegate<RaidId>),
+    RaidFailure(EventDelegate<RaidEvent>),
     /// A raid has ended in success.
-    RaidSuccess(EventDelegate<RaidId>),
+    RaidSuccess(EventDelegate<RaidEvent>),
     /// Stored mana is taken from a card
     StoredManaTaken(EventDelegate<CardId>),
     /// Damage has been dealt to the Champion player (in the form of discarded

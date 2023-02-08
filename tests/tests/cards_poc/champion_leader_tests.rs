@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::card_name::CardName;
-use game_data::primitives::Side;
+use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::PlayerName;
 use test_utils::*;
 
@@ -41,4 +41,14 @@ fn aris_fey_the_radiant_sun() {
     click_on_continue(&mut g);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
+}
+
+#[test]
+fn telantes_dugoth_earthbreaker() {
+    let mut g = new_game(Side::Champion, Args::default());
+    g.play_from_hand(CardName::TelantesDugothEarthbreaker);
+    g.initiate_raid(RoomId::Sanctum);
+    assert_eq!(0, g.user.cards.discard_pile(PlayerName::Opponent).len());
+    click_on_end_raid(&mut g);
+    assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
 }
