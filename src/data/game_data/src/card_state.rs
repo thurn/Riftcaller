@@ -78,7 +78,10 @@ impl CardPosition {
 
     /// Returns true if this card is in a room or has been played as an item
     pub fn in_play(&self) -> bool {
-        matches!(self.kind(), CardPositionKind::Room | CardPositionKind::ArenaItem)
+        matches!(
+            self.kind(),
+            CardPositionKind::Room | CardPositionKind::ArenaItem | CardPositionKind::ArenaLeader
+        )
     }
 
     /// Returns true if this card is in a room
@@ -131,7 +134,6 @@ impl CardPosition {
 pub struct CardData {
     /// How many times has this card been leveled up?
     pub card_level: LevelValue,
-    /// How many times the boost ability of this card has been activated --
     /// typically used to increase weapon attack power during a raid.
     pub boost_count: BoostCount,
     /// How much mana is stored in this card?

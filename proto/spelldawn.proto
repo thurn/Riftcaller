@@ -890,6 +890,7 @@ enum CardPrefab {
     CARD_PREFAB_STANDARD = 1;
     CARD_PREFAB_TOKEN_CARD = 2;
     CARD_PREFAB_FULL_HEIGHT = 3;
+    CARD_PREFAB_FULL_HEIGHT_TOKEN = 4;
 }
 
 message CardView {

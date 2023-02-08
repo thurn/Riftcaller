@@ -15,7 +15,7 @@
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use core_ui::icons;
-use game_data::card_definition::{AbilityType, TargetRequirement};
+use game_data::card_definition::{AbilityType, CardDefinition, TargetRequirement};
 use game_data::card_state::CardState;
 use game_data::game::GameState;
 use game_data::game_actions::CardTarget;
@@ -97,10 +97,18 @@ pub fn ability_card_view(
     ability_id: AbilityId,
     target_requirement: Option<&TargetRequirement<AbilityId>>,
 ) -> CardView {
+    let card = game.card(ability_id.card_id);
+    let definition = rules::get(card.name);
+
     CardView {
         card_id: Some(adapters::ability_card_identifier(ability_id)),
         card_position: Some(positions::ability_card_position(builder, game, ability_id)),
-        prefab: CardPrefab::TokenCard.into(),
+        prefab: if definition.card_type == CardType::Leader {
+            CardPrefab::FullHeightToken
+        } else {
+            CardPrefab::TokenCard
+        }
+        .into(),
         revealed_to_viewer: true,
         is_face_up: false,
         card_icons: Some(CardIcons {
@@ -112,8 +120,9 @@ pub fn ability_card_view(
         face_down_arena_frame: None,
         owning_player: builder.to_player_name(ability_id.card_id.side),
         revealed_card: Some(revealed_ability_card_view(
-            builder,
             game,
+            card,
+            definition,
             ability_id,
             target_requirement,
         )),
@@ -171,13 +180,12 @@ fn revealed_card_view(
 }
 
 fn revealed_ability_card_view(
-    _builder: &ResponseBuilder,
     game: &GameState,
+    card: &CardState,
+    definition: &CardDefinition,
     ability_id: AbilityId,
     target_requirement: Option<&TargetRequirement<AbilityId>>,
 ) -> RevealedCardView {
-    let card = game.card(ability_id.card_id);
-    let definition = rules::get(card.name);
     let ability = definition.ability(ability_id.index);
     RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, definition.card_type)),

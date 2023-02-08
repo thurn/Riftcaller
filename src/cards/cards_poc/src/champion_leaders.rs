@@ -1,0 +1,52 @@
+// Copyright © Spelldawn 2021-present
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//    https://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use assets::EnvironmentType;
+use card_helpers::*;
+use game_data::card_definition::{CardConfig, CardDefinition};
+use game_data::card_name::CardName;
+use game_data::card_set_name::CardSetName;
+use game_data::primitives::{CardType, Rarity, School, Side};
+use rules::mana;
+
+pub fn ennera_imris_blood_bound() -> CardDefinition {
+    CardDefinition {
+        name: CardName::EnneraImrisBloodBound,
+        sets: vec![CardSetName::ProofOfConcept],
+        cost: cost(0),
+        image: assets::fantasy_class_image("Warrior", "Female"),
+        card_type: CardType::Leader,
+        side: Side::Champion,
+        school: School::Pact,
+        rarity: Rarity::Common,
+        abilities: vec![simple_ability(
+            trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
+            at_dawn(|g, s, _| {
+                if g.hand(s.side()).count() <= 2 {
+                    mana::gain(g, s.side(), 1);
+                    alert(g, s);
+                }
+                Ok(())
+            }),
+        )],
+        config: CardConfig {
+            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Warrior_F")),
+            image_background: Some(assets::environments(
+                EnvironmentType::CastlesTowersKeeps,
+                "Tavern/SceneryTavern_outside_1",
+            )),
+            ..CardConfig::default()
+        },
+    }
+}

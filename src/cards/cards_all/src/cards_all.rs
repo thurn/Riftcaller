@@ -2,6 +2,7 @@
 
 use rules::DEFINITIONS;
 
+
 pub fn initialize() {
     DEFINITIONS.insert(cards_basic::champion_basics::tutorial_champion_leader);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
@@ -46,6 +47,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::artifacts::mage_gloves);
     DEFINITIONS.insert(cards_poc::artifacts::magical_resonator);
     DEFINITIONS.insert(cards_poc::artifacts::dark_grimoire);
+    DEFINITIONS.insert(cards_poc::champion_leaders::ennera_imris_blood_bound);
     DEFINITIONS.insert(cards_poc::champion_spells::meditation);
     DEFINITIONS.insert(cards_poc::champion_spells::coup_de_grace);
     DEFINITIONS.insert(cards_poc::champion_spells::charged_strike);

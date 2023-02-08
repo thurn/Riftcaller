@@ -2114,6 +2114,7 @@ pub enum CardPrefab {
     Standard = 1,
     TokenCard = 2,
     FullHeight = 3,
+    FullHeightToken = 4,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]

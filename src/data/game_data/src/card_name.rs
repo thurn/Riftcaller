@@ -111,6 +111,11 @@ pub enum CardName {
     SphinxOfWintersBreath,
     BridgeTroll,
     Stormcaller,
+    EnneraImrisBloodBound,
+    ArisFeyTheRadiantSun,
+    TelantesDugothEarthbreaker,
+    AndvariEstNightsWarden,
+    UbrasEfarisTimeShaper,
 
     // Modifier card which has no effect
     OverlordEmptyModifier,
@@ -166,6 +171,7 @@ impl CardName {
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath".to_string(),
             Self::TutorialChampionLeader => "Leader".to_string(),
             Self::TutorialOverlordLeader => "Leader".to_string(),
+            Self::EnneraImrisBloodBound => "Ennera Imris, Blood-Bound".to_string(),
             _ => format!("{self}").from_case(Case::Pascal).to_case(Case::Title),
         }
     }
