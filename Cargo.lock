@@ -734,6 +734,7 @@ dependencies = [
  "assets",
  "core_ui",
  "deck_card",
+ "display",
  "element_names",
  "game_data",
  "panel_address",

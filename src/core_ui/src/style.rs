@@ -18,8 +18,8 @@ use protos::spelldawn::{
     FlexColor, FlexDirection, FlexDisplayStyle, FlexJustify, FlexOverflow, FlexPickingMode,
     FlexPosition, FlexRotate, FlexScale, FlexStyle, FlexTranslate, FlexVector3, FlexVisibility,
     FlexWrap, FontAddress, FontStyle, ImageScaleMode, NodeBackground, OverflowClipBox,
-    SpriteAddress, TextAlign, TextOverflow, TextOverflowPosition, TextShadow, TimeValue,
-    WhiteSpace,
+    SpriteAddress, StudioDisplay, TextAlign, TextOverflow, TextOverflowPosition, TextShadow,
+    TimeValue, WhiteSpace,
 };
 
 /// Pixels unit. Not literally equivalent to screen pixels, Unity resizes these
@@ -258,8 +258,8 @@ impl Style {
         Self::default()
     }
 
-    pub fn wrapped_style(self) -> FlexStyle {
-        self.wrapped_style
+    pub fn wrapped_style(self) -> Box<FlexStyle> {
+        Box::new(self.wrapped_style)
     }
 
     pub fn align_content(mut self, align_content: FlexAlign) -> Self {
@@ -291,8 +291,16 @@ impl Style {
     }
 
     pub fn background_image(mut self, sprite: SpriteAddress) -> Self {
-        self.wrapped_style.background_image =
-            Some(NodeBackground { background_address: Some(BackgroundAddress::Sprite(sprite)) });
+        self.wrapped_style.background_image = Some(Box::new(NodeBackground {
+            background_address: Some(BackgroundAddress::Sprite(sprite)),
+        }));
+        self
+    }
+
+    pub fn background_display(mut self, display: StudioDisplay) -> Self {
+        self.wrapped_style.background_image = Some(Box::new(NodeBackground {
+            background_address: Some(BackgroundAddress::StudioDisplay(Box::new(display))),
+        }));
         self
     }
 

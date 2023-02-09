@@ -172,12 +172,11 @@ namespace Spelldawn.Services
       PlayDrawCardAnimation(_optimisticCard);
     }
 
-    public Card CreateAndAddCard(CardView cardView, GameContext gameContext, bool animate)
+    public Card CreateCard(CardView cardView, GameContext gameContext, bool animate)
     {
       var card = InstantiateCardPrefab(cardView.Prefab);
       card.transform.localScale = new Vector3(Card.CardScale, Card.CardScale, 1f);
       card.Render(cardView, gameContext, animate: animate);
-      _cards[Errors.CheckNotNull(cardView.CardId)] = card;
       return card;
     }
 

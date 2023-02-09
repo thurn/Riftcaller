@@ -26,7 +26,7 @@ pub struct RenderTextureAddress {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeBackground {
-    #[prost(oneof = "node_background::BackgroundAddress", tags = "1, 2")]
+    #[prost(oneof = "node_background::BackgroundAddress", tags = "1, 2, 3")]
     pub background_address: ::core::option::Option<node_background::BackgroundAddress>,
 }
 /// Nested message and enum types in `NodeBackground`.
@@ -37,6 +37,8 @@ pub mod node_background {
         Sprite(super::SpriteAddress),
         #[prost(message, tag = "2")]
         RenderTexture(super::RenderTextureAddress),
+        #[prost(message, tag = "3")]
+        StudioDisplay(::prost::alloc::boxed::Box<super::StudioDisplay>),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -180,8 +182,8 @@ pub struct FlexStyle {
     pub align_self: i32,
     #[prost(message, optional, tag = "4")]
     pub background_color: ::core::option::Option<FlexColor>,
-    #[prost(message, optional, tag = "5")]
-    pub background_image: ::core::option::Option<NodeBackground>,
+    #[prost(message, optional, boxed, tag = "5")]
+    pub background_image: ::core::option::Option<::prost::alloc::boxed::Box<NodeBackground>>,
     #[prost(message, optional, tag = "6")]
     pub border_color: ::core::option::Option<BorderColor>,
     #[prost(message, optional, tag = "7")]
@@ -294,8 +296,8 @@ pub struct Text {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ScrollBar {
-    #[prost(message, optional, tag = "1")]
-    pub style: ::core::option::Option<FlexStyle>,
+    #[prost(message, optional, boxed, tag = "1")]
+    pub style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ScrollViewNode {
@@ -307,8 +309,8 @@ pub struct ScrollViewNode {
     #[prost(message, optional, tag = "2")]
     pub horizontal_page_size: ::core::option::Option<f32>,
     /// Horizontal scrollbar
-    #[prost(message, optional, tag = "3")]
-    pub horizontal_scroll_bar: ::core::option::Option<ScrollBar>,
+    #[prost(message, optional, boxed, tag = "3")]
+    pub horizontal_scroll_bar: ::core::option::Option<::prost::alloc::boxed::Box<ScrollBar>>,
     /// Specifies whether the horizontal scroll bar is visible.
     #[prost(enumeration = "ScrollBarVisibility", tag = "4")]
     pub horizontal_scroll_bar_visibility: i32,
@@ -324,8 +326,8 @@ pub struct ScrollViewNode {
     #[prost(message, optional, tag = "7")]
     pub vertical_page_size: ::core::option::Option<f32>,
     /// Vertical scrollbar
-    #[prost(message, optional, tag = "8")]
-    pub vertical_scroll_bar: ::core::option::Option<ScrollBar>,
+    #[prost(message, optional, boxed, tag = "8")]
+    pub vertical_scroll_bar: ::core::option::Option<::prost::alloc::boxed::Box<ScrollBar>>,
     /// Specifies whether the vertical scroll bar is visible.
     #[prost(enumeration = "ScrollBarVisibility", tag = "9")]
     pub vertical_scroll_bar_visibility: i32,
@@ -430,16 +432,16 @@ pub struct SliderNode {
     /// The visibility of the optional field inside the slider control.
     #[prost(bool, tag = "9")]
     pub show_input_field: bool,
-    #[prost(message, optional, tag = "10")]
-    pub label_style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "11")]
-    pub drag_container_style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "12")]
-    pub tracker_style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "13")]
-    pub dragger_style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "14")]
-    pub dragger_border_style: ::core::option::Option<FlexStyle>,
+    #[prost(message, optional, boxed, tag = "10")]
+    pub label_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    #[prost(message, optional, boxed, tag = "11")]
+    pub drag_container_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    #[prost(message, optional, boxed, tag = "12")]
+    pub tracker_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    #[prost(message, optional, boxed, tag = "13")]
+    pub dragger_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    #[prost(message, optional, boxed, tag = "14")]
+    pub dragger_border_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
@@ -453,7 +455,7 @@ pub mod node_type {
         #[prost(message, tag = "1")]
         Text(super::Text),
         #[prost(message, tag = "2")]
-        ScrollViewNode(super::ScrollViewNode),
+        ScrollViewNode(::prost::alloc::boxed::Box<super::ScrollViewNode>),
         #[prost(message, tag = "3")]
         DraggableNode(::prost::alloc::boxed::Box<super::DraggableNode>),
         #[prost(message, tag = "4")]
@@ -461,7 +463,7 @@ pub mod node_type {
         #[prost(message, tag = "5")]
         TextFieldNode(super::TextFieldNode),
         #[prost(message, tag = "6")]
-        SliderNode(super::SliderNode),
+        SliderNode(::prost::alloc::boxed::Box<super::SliderNode>),
     }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -482,12 +484,12 @@ pub struct Node {
     pub children: ::prost::alloc::vec::Vec<Node>,
     #[prost(message, optional, tag = "4")]
     pub event_handlers: ::core::option::Option<EventHandlers>,
-    #[prost(message, optional, tag = "5")]
-    pub style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "6")]
-    pub hover_style: ::core::option::Option<FlexStyle>,
-    #[prost(message, optional, tag = "7")]
-    pub pressed_style: ::core::option::Option<FlexStyle>,
+    #[prost(message, optional, boxed, tag = "5")]
+    pub style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    #[prost(message, optional, boxed, tag = "6")]
+    pub hover_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    #[prost(message, optional, boxed, tag = "7")]
+    pub pressed_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
 // ============================================================================
 // Game Primitives
@@ -786,8 +788,8 @@ pub struct RevealedCardView {
     pub on_release_position: ::core::option::Option<ObjectPosition>,
     /// Additional interface element rendered to the side of the card during an
     /// info zoom.
-    #[prost(message, optional, tag = "9")]
-    pub supplemental_info: ::core::option::Option<Node>,
+    #[prost(message, optional, boxed, tag = "9")]
+    pub supplemental_info: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
     /// Content to display behind the main image
     #[prost(message, optional, tag = "10")]
     pub image_background: ::core::option::Option<SpriteAddress>,
@@ -821,8 +823,8 @@ pub struct CardView {
     #[prost(enumeration = "PlayerName", tag = "9")]
     pub owning_player: i32,
     /// Card information which is only present on revealed cards.
-    #[prost(message, optional, tag = "10")]
-    pub revealed_card: ::core::option::Option<RevealedCardView>,
+    #[prost(message, optional, boxed, tag = "10")]
+    pub revealed_card: ::core::option::Option<::prost::alloc::boxed::Box<RevealedCardView>>,
     /// Optionally, a position at which to create this card.
     ///
     /// If this card does not already exist, it will be created at this position
@@ -1030,6 +1032,20 @@ pub struct GameView {
     /// Tutorial UI elements
     #[prost(message, repeated, tag = "7")]
     pub tutorial_effects: ::prost::alloc::vec::Vec<TutorialEffect>,
+}
+/// Content to display as the background of a Node via the StudioManager.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StudioDisplay {
+    #[prost(oneof = "studio_display::Display", tags = "1")]
+    pub display: ::core::option::Option<studio_display::Display>,
+}
+/// Nested message and enum types in `StudioDisplay`.
+pub mod studio_display {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Display {
+        #[prost(message, tag = "1")]
+        Card(::prost::alloc::boxed::Box<super::CardView>),
+    }
 }
 // ============================================================================
 // Actions

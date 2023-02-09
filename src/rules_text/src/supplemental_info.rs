@@ -26,7 +26,7 @@ use crate::card_info::SupplementalCardInfo;
 ///
 /// If an `ability_index` is provided, only supplemental info for that index is
 /// returned. Otherwise, supplemental info for all abilities is returned.
-pub fn build(context: &RulesTextContext, ability_index: Option<AbilityIndex>) -> Option<Node> {
+pub fn build(context: &RulesTextContext, ability_index: Option<AbilityIndex>) -> Option<Box<Node>> {
     let definition = rules::get(context.card_name());
     let mut result = vec![card_type_line(definition)];
     let mut tokens = vec![];
@@ -46,7 +46,7 @@ pub fn build(context: &RulesTextContext, ability_index: Option<AbilityIndex>) ->
     tokens.dedup();
     result.extend(tokens.into_iter().filter_map(token_description));
 
-    SupplementalCardInfo::new(result).build()
+    SupplementalCardInfo::new(result).build().map(Box::new)
 }
 
 fn card_type_line(definition: &CardDefinition) -> String {

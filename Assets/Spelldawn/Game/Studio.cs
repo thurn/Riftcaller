@@ -20,11 +20,25 @@ namespace Spelldawn.Game
 {
   public sealed class Studio : MonoBehaviour
   {
+    [SerializeField] Camera _camera = null!;
     [SerializeField] Transform _subjectPosition = null!;
     [SerializeField] GameObject? _subject;
+    
     int _studioLayer;
+    public int StudioNumber { get; private set; }
+    public RenderTexture RenderTexture { get; private set; } = null!;
 
     public const string TextureAddress = "Textures/StudioRenderTexture";
+
+    public void Initialize(int studioNumber)
+    {
+      StudioNumber = studioNumber;
+      _studioLayer = LayerMask.NameToLayer("Studio");
+      RenderTexture = new RenderTexture(1024, 1024, 32, RenderTextureFormat.ARGB32);
+      _camera.targetTexture = RenderTexture;
+    }
+
+    public string ClassNameTag() => $"_StudioDisplay{StudioNumber}"; 
 
     void Start()
     {

@@ -70,7 +70,7 @@ impl Component for Slider {
                 .wrapped_style(),
         );
         self.render_node.node_type = Some(Box::new(NodeType {
-            node_type: Some(node_type::NodeType::SliderNode(self.slider_node)),
+            node_type: Some(node_type::NodeType::SliderNode(Box::new(self.slider_node))),
         }));
         self.render_node.style = Some(self.layout.to_style().wrapped_style());
         Some(self.render_node)

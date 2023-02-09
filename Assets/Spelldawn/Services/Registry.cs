@@ -215,6 +215,9 @@ namespace Spelldawn.Services
     [SerializeField] UserReportingScript _userReportingScript = null!;
     public UserReportingScript UserReportingScript => _userReportingScript;
 
+    [SerializeField] StudioManager _studioManager = null!;
+    public StudioManager StudioManager => _studioManager;
+
     IEnumerator Start()
     {
       Application.targetFrameRate = 60;

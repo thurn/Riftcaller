@@ -189,6 +189,7 @@ message NodeBackground {
     oneof background_address {
         SpriteAddress sprite = 1;
         RenderTextureAddress render_texture = 2;
+        StudioDisplay studio_display = 3;
     }
 }
 
@@ -1101,6 +1102,13 @@ message GameView {
 
     // Tutorial UI elements
     repeated TutorialEffect tutorial_effects = 7;
+}
+
+// Content to display as the background of a Node via the StudioManager.
+message StudioDisplay {
+    oneof display {
+        CardView card = 1;
+    }
 }
 
 

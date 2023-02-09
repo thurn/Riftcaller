@@ -481,8 +481,12 @@ namespace Spelldawn.Game
       Registry.AssetService.AssignSprite(_frame, revealed.CardFrame);
       Registry.AssetService.AssignSprite(_titleBackground, revealed.TitleBackground);
       SetTitle(revealed.Title.Text);
+
+      if (revealed.Title?.TextColor != null)
+      {
+        _title.color = Mason.ToUnityColor(revealed.Title.TextColor);
+      }
       
-      _title.color = Mason.ToUnityColor(revealed.Title.TextColor);
       if (revealed.RulesText?.Text != null)
       {
         _rulesText.text = revealed.RulesText.Text;

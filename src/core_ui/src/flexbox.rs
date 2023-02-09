@@ -220,7 +220,7 @@ impl<D: FlexboxDirection> Component for Flexbox<D> {
                 style.flex_direction = d.into();
             } else {
                 self.render_node.style =
-                    Some(FlexStyle { flex_direction: d.into(), ..FlexStyle::default() })
+                    Some(Box::new(FlexStyle { flex_direction: d.into(), ..FlexStyle::default() }))
             }
         }
         build_with_children(self.render_node, self.children)

@@ -155,6 +155,7 @@ GameObject:
   - component: {fileID: 3210582071691945273}
   - component: {fileID: 9218228602600786081}
   - component: {fileID: 8679095155801471873}
+  - component: {fileID: 5046173552731427907}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -248,6 +249,7 @@ MonoBehaviour:
   _tutorialService: {fileID: 9218228602600786081}
   _analyticsService: {fileID: 8679095155801471873}
   _userReportingScript: {fileID: 3419366364935352034}
+  _studioManager: {fileID: 5046173552731427907}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,6 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _studioRenderTexture: {fileID: 8400000, guid: 7bfc4a7c7b8f645e3a6c465eaa238802, type: 2}
+  _newRenderTexture: {fileID: 0}
   _developmentAssets: {fileID: 205228965686964221}
 --- !u!114 &205228965686964169
 MonoBehaviour:
@@ -549,6 +552,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3d59d7bd71439881d5f4002656c0f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5046173552731427907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205228965686964173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40b69388192d41969295028dcbb4df0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _registry: {fileID: 205228965686964167}
+  _studioPrefab: {fileID: 8868668501757707318, guid: c42080a601804497988b1bf23051d052, type: 3}
 --- !u!1 &205228965825750781
 GameObject:
   m_ObjectHideFlags: 0
@@ -4113,7 +4130,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3379906888536118954}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}

@@ -477,8 +477,11 @@ namespace Spelldawn.Masonry
             e.style.backgroundImage = new StyleBackground(sprite);
             break;
           case NodeBackground.BackgroundAddressOneofCase.RenderTexture:
-            var renderTexture = registry.AssetService.GetRenderTexture(bi.RenderTexture);
+            var renderTexture = registry.AssetService.GetRenderTexture(registry, bi.RenderTexture);
             e.style.backgroundImage = new StyleBackground(new Background { renderTexture = renderTexture });
+            break;
+          case NodeBackground.BackgroundAddressOneofCase.StudioDisplay:
+            registry.StudioManager.DisplayAsBackground(e, input.BackgroundImage.StudioDisplay);
             break;
         }
       }

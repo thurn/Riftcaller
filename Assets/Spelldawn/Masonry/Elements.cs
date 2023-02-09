@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable

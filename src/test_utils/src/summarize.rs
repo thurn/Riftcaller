@@ -451,7 +451,9 @@ impl Summarize for CardView {
         summary.child("card_icons", self.card_icons);
         summary.child("arena_frame", self.arena_frame);
         summary.child("owning_player", PlayerName::from_i32(self.owning_player));
-        summary.child("revealed_card", self.revealed_card);
+        if let Some(c) = self.revealed_card {
+            summary.child("revealed_card", Some(*c));
+        }
     }
 }
 

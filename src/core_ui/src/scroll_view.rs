@@ -70,7 +70,7 @@ impl HasNodeChildren for ScrollView {
 impl Component for ScrollView {
     fn build(mut self) -> Option<Node> {
         self.render_node.node_type = Some(Box::new(NodeType {
-            node_type: Some(node_type::NodeType::ScrollViewNode(self.scroll_node)),
+            node_type: Some(node_type::NodeType::ScrollViewNode(Box::new(self.scroll_node))),
         }));
         flexbox::build_with_children(self.render_node, self.children)
     }

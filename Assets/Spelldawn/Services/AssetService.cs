@@ -42,7 +42,7 @@ namespace Spelldawn.Services
       return AssetPreference.UseProductionAssets ? Get<Sprite>(address.Address) : _developmentAssets.GetSprite(address);
     }
 
-    public RenderTexture GetRenderTexture(RenderTextureAddress address)
+    public RenderTexture GetRenderTexture(Registry registry, RenderTextureAddress address)
     {
       return address.Address switch
       {
@@ -103,7 +103,24 @@ namespace Spelldawn.Services
 
       var requests = new Dictionary<string, AsyncOperationHandle>();
       LoadCommandListAssets(requests, commandList);
+      yield return WaitForRequests(requests);
+    }
+    
+    public IEnumerator LoadStudioAssets(StudioDisplay display)
+    {
+      if (!AssetPreference.UseProductionAssets)
+      {
+        yield break;
+      }
 
+      var requests = new Dictionary<string, AsyncOperationHandle>();
+      switch (display.DisplayCase)
+      {
+        case StudioDisplay.DisplayOneofCase.Card:
+          LoadCardAssets(requests, display.Card);
+          break;
+      }
+      
       yield return WaitForRequests(requests);
     }
 

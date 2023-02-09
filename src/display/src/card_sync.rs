@@ -143,9 +143,9 @@ fn revealed_card_view(
     builder: &ResponseBuilder,
     game: &GameState,
     card: &CardState,
-) -> RevealedCardView {
+) -> Box<RevealedCardView> {
     let definition = rules::get(card.name);
-    RevealedCardView {
+    Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
         title_background: Some(assets::title_background(definition.config.lineage)),
         jewel: Some(assets::jewel(definition.rarity)),
@@ -176,7 +176,7 @@ fn revealed_card_view(
             },
         )),
         supplemental_info: supplemental_info::build(&RulesTextContext::Game(game, card), None),
-    }
+    })
 }
 
 fn revealed_ability_card_view(
@@ -185,9 +185,9 @@ fn revealed_ability_card_view(
     definition: &CardDefinition,
     ability_id: AbilityId,
     target_requirement: Option<&TargetRequirement<AbilityId>>,
-) -> RevealedCardView {
+) -> Box<RevealedCardView> {
     let ability = definition.ability(ability_id.index);
-    RevealedCardView {
+    Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
         title_background: Some(SpriteAddress {
             address: "LittleSweetDaemon/TCG_Card_Design/Custom/Title/TokenTitleBackground.png"
@@ -216,7 +216,7 @@ fn revealed_ability_card_view(
             &RulesTextContext::Game(game, card),
             Some(ability_id.index),
         ),
-    }
+    })
 }
 
 fn card_targeting<T>(
