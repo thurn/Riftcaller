@@ -28,7 +28,7 @@ use with_error::WithError;
 use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
-use crate::game_actions::GamePrompt;
+use crate::game_actions::{GameAction, GamePrompt};
 use crate::player_name::PlayerId;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
@@ -194,8 +194,8 @@ pub enum GamePhase {
     GameOver { winner: Side },
 }
 
-/// State and configuration of the overall game, including whose turn it is and
-/// whether a raid is active.
+/// Information about the overall game, including whose turn it is and whether a
+/// raid is active.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameData {
     /// Current [GamePhase].
@@ -217,6 +217,13 @@ pub struct GameData {
 pub struct RoomState {
     /// When was a raid last initiated for this room?
     pub last_raided: Option<TurnData>,
+}
+
+/// Records a history of actions which have happened during this game.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HistoryAction {
+    pub turn: TurnData,
+    pub action: GameAction,
 }
 
 /// Stores the primary state for an ongoing game
@@ -248,6 +255,10 @@ pub struct GameState {
     #[serde_as(as = "Vec<(_, _)>")]
     #[serde(default)]
     pub room_state: HashMap<RoomId, RoomState>,
+    /// History of game actions which have happened during this game. This is
+    /// always updated *after* applying an action, i.e. it will typically not
+    /// include the action currently being resolved.
+    pub history: Vec<HistoryAction>,
     /// Next sorting key to use for card moves. Automatically updated by
     /// [Self::next_sorting_key] and [Self::move_card_internal].
     next_sorting_key: u32,
@@ -292,6 +303,7 @@ impl GameState {
             champion: PlayerState::new(champion, champion_deck.primary_school),
             ability_state: HashMap::new(),
             room_state: HashMap::new(),
+            history: vec![],
             updates: UpdateTracker::new(if config.simulation {
                 Updates::Ignore
             } else {
@@ -321,6 +333,7 @@ impl GameState {
                 champion: self.champion.clone(),
                 ability_state: self.ability_state.clone(),
                 room_state: self.room_state.clone(),
+                history: self.history.clone(),
                 next_sorting_key: self.next_sorting_key,
                 rng: None,
                 delegate_cache: DelegateCache::default(),
@@ -343,6 +356,7 @@ impl GameState {
             champion: self.champion.clone(),
             ability_state: self.ability_state.clone(),
             room_state: self.room_state.clone(),
+            history: self.history.clone(),
             next_sorting_key: self.next_sorting_key,
             rng: self.rng.clone(),
             delegate_cache: self.delegate_cache.clone(),
@@ -578,6 +592,18 @@ impl GameState {
     /// if one has not previously been set
     pub fn ability_state_mut(&mut self, ability_id: impl HasAbilityId) -> &mut AbilityState {
         self.ability_state.entry(ability_id.ability_id()).or_insert_with(AbilityState::default)
+    }
+
+    /// Returns the record of game actions which happened on a given `turn`.
+    pub fn turn_history_for(&self, turn: TurnData) -> impl Iterator<Item = &HistoryAction> {
+        self.history.iter().filter(move |a| a.turn == turn)
+    }
+
+    /// Returns the record of game actions which happened on the current
+    /// player's turn so far.
+    pub fn turn_history(&self) -> impl Iterator<Item = &HistoryAction> {
+        let current = self.data.turn;
+        self.history.iter().filter(move |a| a.turn == current)
     }
 
     /// Create card states for a deck
