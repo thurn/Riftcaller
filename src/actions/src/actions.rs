@@ -24,7 +24,7 @@ use game_data::card_state::CardPosition;
 use game_data::delegates::{
     AbilityActivated, ActivateAbilityEvent, CardPlayed, CastCardEvent, DrawCardActionEvent,
 };
-use game_data::game::{GamePhase, GameState, HistoryAction, MulliganDecision};
+use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent, MulliganDecision};
 use game_data::game_actions::{CardTarget, GameAction, PromptAction};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
@@ -54,8 +54,6 @@ pub fn handle_game_action(game: &mut GameState, user_side: Side, action: GameAct
         GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
     }?;
-
-    game.history.push(HistoryAction { turn: game.data.turn, action });
 
     Ok(())
 }
@@ -184,6 +182,8 @@ fn play_card_action(
         queries::played_position(game, user_side, card_id, target)?,
     )?;
 
+    game.history
+        .push(HistoryEntry { turn: game.data.turn, event: HistoryEvent::PlayedCard(card_id) });
     mutations::check_end_turn(game)?;
     Ok(())
 }

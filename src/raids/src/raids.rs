@@ -22,7 +22,9 @@ mod defenders;
 mod encounter;
 
 use anyhow::Result;
-use game_data::game::{GameState, InternalRaidPhase, RaidData, RaidJumpRequest, RoomState};
+use game_data::game::{
+    GameState, HistoryEntry, HistoryEvent, InternalRaidPhase, RaidData, RaidJumpRequest,
+};
 use game_data::game_actions::{GamePrompt, PromptAction};
 use game_data::primitives::{RaidId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
@@ -90,11 +92,11 @@ pub fn initiate(
 
     game.data.next_raid_id += 1;
     game.data.raid = Some(raid);
-    game.room_state.entry(target_room).or_insert_with(RoomState::default).last_raided =
-        Some(game.data.turn);
     on_begin(game, raid_id);
     game.record_update(|| GameUpdate::InitiateRaid(target_room, initiated_by));
     enter_phase(game, Some(phase))?;
+    game.history
+        .push(HistoryEntry { turn: game.data.turn, event: HistoryEvent::RaidBegan(target_room) });
 
     Ok(())
 }

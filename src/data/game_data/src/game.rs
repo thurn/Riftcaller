@@ -28,7 +28,7 @@ use with_error::WithError;
 use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
-use crate::game_actions::{GameAction, GamePrompt};
+use crate::game_actions::GamePrompt;
 use crate::player_name::PlayerId;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
@@ -219,11 +219,20 @@ pub struct RoomState {
     pub last_raided: Option<TurnData>,
 }
 
-/// Records a history of actions which have happened during this game.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct HistoryAction {
+/// Records a single event which happened during this game.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum HistoryEvent {
+    /// A card was played from hand via the 'play card' game action
+    PlayedCard(CardId),
+    /// A raid was started, either via a card effect or the explicit game action
+    RaidBegan(RoomId),
+}
+
+/// Records a history of events which have happened during this game.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct HistoryEntry {
     pub turn: TurnData,
-    pub action: GameAction,
+    pub event: HistoryEvent,
 }
 
 /// Stores the primary state for an ongoing game
@@ -251,14 +260,10 @@ pub struct GameState {
     /// State for abilities of cards in this game
     #[serde_as(as = "Vec<(_, _)>")]
     pub ability_state: HashMap<AbilityId, AbilityState>,
-    /// State for rooms
-    #[serde_as(as = "Vec<(_, _)>")]
-    #[serde(default)]
-    pub room_state: HashMap<RoomId, RoomState>,
     /// History of game actions which have happened during this game. This is
     /// always updated *after* applying an action, i.e. it will typically not
     /// include the action currently being resolved.
-    pub history: Vec<HistoryAction>,
+    pub history: Vec<HistoryEntry>,
     /// Next sorting key to use for card moves. Automatically updated by
     /// [Self::next_sorting_key] and [Self::move_card_internal].
     next_sorting_key: u32,
@@ -302,7 +307,6 @@ impl GameState {
             overlord: PlayerState::new(overlord, overlord_deck.primary_school),
             champion: PlayerState::new(champion, champion_deck.primary_school),
             ability_state: HashMap::new(),
-            room_state: HashMap::new(),
             history: vec![],
             updates: UpdateTracker::new(if config.simulation {
                 Updates::Ignore
@@ -332,7 +336,6 @@ impl GameState {
                 overlord: self.overlord.clone(),
                 champion: self.champion.clone(),
                 ability_state: self.ability_state.clone(),
-                room_state: self.room_state.clone(),
                 history: self.history.clone(),
                 next_sorting_key: self.next_sorting_key,
                 rng: None,
@@ -355,7 +358,6 @@ impl GameState {
             overlord: self.overlord.clone(),
             champion: self.champion.clone(),
             ability_state: self.ability_state.clone(),
-            room_state: self.room_state.clone(),
             history: self.history.clone(),
             next_sorting_key: self.next_sorting_key,
             rng: self.rng.clone(),

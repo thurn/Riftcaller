@@ -12,28 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::game::{GameState, HistoryAction, TurnData};
-use game_data::game_actions::GameAction;
-use game_data::primitives::CardId;
+use game_data::game::{GameState, HistoryEvent, TurnData};
+use game_data::primitives::{CardId, RoomId};
 
-/// Returns the record of game actions which happened on a given `turn`.
-pub fn for_turn(game: &GameState, turn: TurnData) -> impl Iterator<Item = &HistoryAction> {
-    game.history.iter().filter(move |a| a.turn == turn)
+/// Returns the record of game events which happened on a given `turn`.
+pub fn for_turn(game: &GameState, turn: TurnData) -> impl Iterator<Item = HistoryEvent> + '_ {
+    game.history.iter().filter_map(move |entry| (entry.turn == turn).then_some(entry.event))
 }
 
-/// Returns the record of game actions which happened on the current
+/// Returns the record of game events which happened on the current
 /// player's turn so far.
-pub fn current_turn(game: &GameState) -> impl Iterator<Item = &HistoryAction> {
-    let current = game.data.turn;
-    game.history.iter().filter(move |a| a.turn == current)
+pub fn current_turn(game: &GameState) -> impl Iterator<Item = HistoryEvent> + '_ {
+    for_turn(game, game.data.turn)
 }
 
 /// Returns an iterator over cards which have been played in the current
 /// player's turn so far.
 pub fn cards_played_this_turn(game: &GameState) -> impl Iterator<Item = CardId> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let GameAction::PlayCard(id, _) = h.action {
+        if let HistoryEvent::PlayedCard(id) = h {
             Some(id)
+        } else {
+            None
+        }
+    })
+}
+
+/// Returns an iterator over rooms which have been raided in the current
+/// player's turn so far.
+pub fn rooms_raided_this_turn(game: &GameState) -> impl Iterator<Item = RoomId> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::RaidBegan(room_id) = h {
+            Some(room_id)
         } else {
             None
         }

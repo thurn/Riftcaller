@@ -24,7 +24,6 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
-use game_data::utils;
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
@@ -111,9 +110,7 @@ pub fn mage_gloves() -> CardDefinition {
                     actions(1),
                     TargetRequirement::TargetRoom(|g, _, room_id| {
                         is_inner_room(room_id)
-                            && utils::is_false(|| {
-                                Some(g.room_state.get(&room_id)?.last_raided? == g.data.turn)
-                            })
+                            && history::rooms_raided_this_turn(g).all(|r| r != room_id)
                     }),
                 ),
                 text: text![
