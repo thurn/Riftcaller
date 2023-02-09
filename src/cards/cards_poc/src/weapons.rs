@@ -25,7 +25,6 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
-use game_data::utils;
 
 pub fn marauders_axe() -> CardDefinition {
     CardDefinition {
@@ -45,22 +44,16 @@ pub fn marauders_axe() -> CardDefinition {
                     ManaMinus(2),
                     "to play this turn"
                 ],
-                delegates: vec![
-                    on_raid_success(always, |g, s, _| {
-                        save_turn(g, s);
-                        Ok(())
-                    }),
-                    Delegate::ManaCost(QueryDelegate {
-                        requirement: this_card,
-                        transformation: |g, s, _, value| {
-                            if utils::is_true(|| Some(g.ability_state(s)?.turn? == g.data.turn)) {
-                                value.map(|v| v.saturating_sub(2))
-                            } else {
-                                value
-                            }
-                        },
-                    }),
-                ],
+                delegates: vec![Delegate::ManaCost(QueryDelegate {
+                    requirement: this_card,
+                    transformation: |g, _, _, value| {
+                        if history::raid_accesses_this_turn(g).count() > 0 {
+                            value.map(|v| v.saturating_sub(2))
+                        } else {
+                            value
+                        }
+                    },
+                })],
             },
             abilities::encounter_boost(),
         ],

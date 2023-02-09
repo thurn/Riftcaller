@@ -33,7 +33,7 @@ use game_data::delegates::{
     RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
     SummonMinionEvent, UnveilProjectEvent,
 };
-use game_data::game::{GamePhase, GameState, TurnData};
+use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData};
 use game_data::game_actions::{CardPromptAction, GamePrompt};
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
@@ -249,10 +249,17 @@ pub fn set_prompt(
 /// Ends the current raid. Returns an error if no raid is currently active.
 pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
     debug!("Ending raid");
-    let event = RaidEvent { raid_id: game.raid()?.raid_id, target: game.raid()?.target };
+    let target = game.raid()?.target;
+    let event = RaidEvent { raid_id: game.raid()?.raid_id, target };
     match outcome {
-        RaidOutcome::Success => dispatch::invoke_event(game, RaidSuccessEvent(event))?,
-        RaidOutcome::Failure => dispatch::invoke_event(game, RaidFailureEvent(event))?,
+        RaidOutcome::Success => {
+            dispatch::invoke_event(game, RaidSuccessEvent(event))?;
+            game.add_history(HistoryEvent::RaidSuccess(target));
+        }
+        RaidOutcome::Failure => {
+            dispatch::invoke_event(game, RaidFailureEvent(event))?;
+            game.add_history(HistoryEvent::RaidFailure(target));
+        }
     }
     dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;
     game.data.raid = None;

@@ -226,6 +226,10 @@ pub enum HistoryEvent {
     PlayedCard(CardId),
     /// A raid was started, either via a card effect or the explicit game action
     RaidBegan(RoomId),
+    /// A raid ended in success.
+    RaidSuccess(RoomId),
+    /// A raid ended in failure.
+    RaidFailure(RoomId),
 }
 
 /// Records a history of events which have happened during this game.
@@ -594,6 +598,11 @@ impl GameState {
     /// if one has not previously been set
     pub fn ability_state_mut(&mut self, ability_id: impl HasAbilityId) -> &mut AbilityState {
         self.ability_state.entry(ability_id.ability_id()).or_insert_with(AbilityState::default)
+    }
+
+    /// Adds a [HistoryEvent] for the current turn.
+    pub fn add_history(&mut self, event: HistoryEvent) {
+        self.history.push(HistoryEntry { turn: self.data.turn, event })
     }
 
     /// Create card states for a deck

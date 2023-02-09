@@ -49,3 +49,15 @@ pub fn rooms_raided_this_turn(game: &GameState) -> impl Iterator<Item = RoomId> 
         }
     })
 }
+
+/// Returns an iterator over rooms which have been successfully raided in the
+/// current player's turn so far.
+pub fn raid_accesses_this_turn(game: &GameState) -> impl Iterator<Item = RoomId> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::RaidSuccess(room_id) = h {
+            Some(room_id)
+        } else {
+            None
+        }
+    })
+}
