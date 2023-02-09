@@ -21,6 +21,7 @@ use ai_game_integration::state_node::SpelldawnState;
 use ai_monte_carlo::monte_carlo::{MonteCarloAlgorithm, RandomPlayoutEvaluator};
 use ai_monte_carlo::uct1::Uct1;
 use ai_testing::nim::{NimState, NimWinLossEvaluator};
+use ai_testing::run_matchup_impl::{self, Args, Verbosity};
 use ai_tree_search::alpha_beta::AlphaBetaAlgorithm;
 use ai_tree_search::minimax::MinimaxAlgorithm;
 use anyhow::Result;
@@ -34,6 +35,7 @@ use rules::{dispatch, mutations};
 
 criterion_group!(
     benches,
+    run_matchup,
     legal_actions,
     minimax_nim,
     alpha_beta_nim,
@@ -46,6 +48,25 @@ criterion_main!(benches);
 fn configure(group: &mut BenchmarkGroup<WallTime>) {
     cards_all::initialize();
     group.confidence_level(0.99).noise_threshold(0.025).measurement_time(Duration::from_secs(60));
+}
+
+pub fn run_matchup(c: &mut Criterion) {
+    let mut group = c.benchmark_group("run_matchup");
+    configure(&mut group);
+    group.bench_function("run_matchup", |b| {
+        b.iter(|| {
+            let _result = run_matchup_impl::run(Args {
+                overlord: NamedPlayer::BenchmarkAlphaBetaDepth3,
+                champion: NamedPlayer::BenchmarkAlphaBetaDepth3,
+                move_time: 3600,
+                matches: 1,
+                verbosity: Verbosity::None,
+                deterministic: true,
+                panic_on_search_timeout: true,
+            });
+        })
+    });
+    group.finish();
 }
 
 pub fn legal_actions(c: &mut Criterion) {

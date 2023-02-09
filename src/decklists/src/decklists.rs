@@ -66,7 +66,7 @@ pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 pub static TUTORIAL_OVERLORD: Lazy<Deck> =
     Lazy::new(|| Deck { leader: Some(CardName::TutorialOverlordLeader), ..BASIC_OVERLORD.clone() });
 
-/// Standard Overlord deck for use in tests
+/// Standard Overlord deck for use in benchmarks
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     primary_school: School::Neutral,
@@ -133,7 +133,7 @@ pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 pub static TUTORIAL_CHAMPION: Lazy<Deck> =
     Lazy::new(|| Deck { leader: Some(CardName::TutorialChampionLeader), ..BASIC_CHAMPION.clone() });
 
-/// Standard Champion deck for use in tests
+/// Standard Champion deck for use in benchmarks
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     primary_school: School::Neutral,

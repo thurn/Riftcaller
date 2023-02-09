@@ -57,7 +57,10 @@ pub struct Args {
 }
 
 pub fn main() -> Result<()> {
-    let args: Args = Args::parse();
+    run(Args::parse())
+}
+
+pub fn run(args: Args) -> Result<()> {
     cards_all::initialize();
     let overlord = agents::get(args.overlord);
     let champion = agents::get(args.champion);
@@ -82,7 +85,9 @@ pub fn main() -> Result<()> {
         mutations::deal_opening_hands(&mut game)?;
 
         let mut state = SpelldawnState(game);
-        println!("Starting game");
+        if args.verbosity > Verbosity::None {
+            println!("Starting game");
+        }
 
         loop {
             match state.status() {
@@ -95,7 +100,9 @@ pub fn main() -> Result<()> {
                     let action = agent.pick_action(config, &state)?;
                     state.execute_action(current_turn, action)?;
                     clear_action_line(args.verbosity);
-                    println!("{} performs action {:?}", agent.name(), action);
+                    if args.verbosity > Verbosity::None {
+                        println!("{} performs action {:?}", agent.name(), action);
+                    }
                 }
                 GameStatus::Completed { winner } => {
                     let agent = if winner == Side::Overlord { &overlord } else { &champion };
@@ -114,12 +121,11 @@ pub fn main() -> Result<()> {
             }
         }
     }
-
     Ok(())
 }
 
 fn clear_action_line(verbosity: Verbosity) {
-    if verbosity < Verbosity::Actions {
+    if verbosity == Verbosity::Matches {
         print!("\x1B[1F"); // Moves cursor to beginning of previous line, 1 line up
         print!("\x1B[2K"); // Erase the entire line
     }

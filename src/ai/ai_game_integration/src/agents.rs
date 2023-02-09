@@ -45,6 +45,11 @@ pub fn get(name: NamedPlayer) -> Box<dyn Agent<SpelldawnState>> {
             AlphaBetaAlgorithm { search_depth: 4 },
             CompoundEvaluator { evaluators: vec![(1, Box::new(ScoreEvaluator {}))] },
         )),
+        NamedPlayer::BenchmarkAlphaBetaDepth3 => Box::new(AgentData::omniscient(
+            "ALPHA_BETA_DEPTH_3",
+            AlphaBetaAlgorithm { search_depth: 3 },
+            CompoundEvaluator { evaluators: vec![(1, Box::new(ScoreEvaluator {}))] },
+        )),
         NamedPlayer::TestAlphaBetaHeuristics => Box::new(AgentData::omniscient(
             "ALPHA_BETA_HEURISTICS",
             AlphaBetaAlgorithm { search_depth: 4 },

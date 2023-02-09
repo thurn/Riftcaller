@@ -64,6 +64,7 @@ pub enum NamedPlayer {
     TutorialOpponent,
     TestMinimax,
     TestAlphaBetaScores,
+    BenchmarkAlphaBetaDepth3,
     TestAlphaBetaHeuristics,
     TestUct1,
 }
