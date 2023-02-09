@@ -594,18 +594,6 @@ impl GameState {
         self.ability_state.entry(ability_id.ability_id()).or_insert_with(AbilityState::default)
     }
 
-    /// Returns the record of game actions which happened on a given `turn`.
-    pub fn turn_history_for(&self, turn: TurnData) -> impl Iterator<Item = &HistoryAction> {
-        self.history.iter().filter(move |a| a.turn == turn)
-    }
-
-    /// Returns the record of game actions which happened on the current
-    /// player's turn so far.
-    pub fn turn_history(&self) -> impl Iterator<Item = &HistoryAction> {
-        let current = self.data.turn;
-        self.history.iter().filter(move |a| a.turn == current)
-    }
-
     /// Create card states for a deck
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
         let mut result = vec![];

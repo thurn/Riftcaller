@@ -458,7 +458,7 @@ pub enum Delegate {
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),
     /// Query the current mana cost of an ability. Invoked with [Cost::mana].
     AbilityManaCost(QueryDelegate<AbilityId, Option<ManaValue>>),
-    /// Query the current mana cost of a card. Invoked with [Cost::actions].
+    /// Query the current action cost of a card. Invoked with [Cost::actions].
     ActionCost(QueryDelegate<CardId, ActionCount>),
     /// Query the current attack value of a card. Invoked with
     /// [CardStats::base_attack] or 0.

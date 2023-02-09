@@ -12,10 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::delegates::{DealtDamage, Delegate, EventDelegate, MutationFn, RaidEvent, Scope};
+use game_data::delegates::{
+    DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
+    TransformationFn,
+};
 use game_data::game::GameState;
 use game_data::primitives::{
-    HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum, RoomIdVault, TurnNumber,
+    ActionCount, CardId, HasRoomId, ManaValue, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
+    RoomIdVault, TurnNumber,
 };
 
 /// A delegate which triggers at dawn if a card is face up in play
@@ -31,6 +35,16 @@ pub fn at_dusk(mutation: MutationFn<TurnNumber>) -> Delegate {
 /// A delegate which triggers if a card is face up in play when damage is dealt.
 pub fn on_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
     Delegate::DealtDamage(EventDelegate { requirement: crate::face_up_in_play, mutation })
+}
+
+/// A `RequirementFn` which matches for face up in play cards and events
+/// targeting a specific room.
+pub fn in_play_with_room<M: RoomIdMarker>(
+    game: &GameState,
+    scope: Scope,
+    data: &impl HasRoomId,
+) -> bool {
+    crate::face_up_in_play(game, scope, &data) && data.room_id() == M::room_id()
 }
 
 /// Delegate which fires when the 'access' phase of a raid begins.
@@ -77,12 +91,14 @@ pub fn vault_access_selected(mutation: MutationFn<RaidEvent>) -> Delegate {
     })
 }
 
-/// A `RequirementFn` which matches for face up in play cards and events
-/// targeting a specific room.
-pub fn in_play_with_room<M: RoomIdMarker>(
-    game: &GameState,
-    scope: Scope,
-    data: &impl HasRoomId,
-) -> bool {
-    crate::face_up_in_play(game, scope, &data) && data.room_id() == M::room_id()
+/// A delegate which intercepts queries for the mana costs of cards while its
+/// parent is face up and in play.
+pub fn on_query_mana_cost(transformation: TransformationFn<CardId, Option<ManaValue>>) -> Delegate {
+    Delegate::ManaCost(QueryDelegate { requirement: crate::face_up_in_play, transformation })
+}
+
+/// A delegate which intercepts queries for the action costs of cards while its
+/// parent is face up and in play.
+pub fn on_query_action_cost(transformation: TransformationFn<CardId, ActionCount>) -> Delegate {
+    Delegate::ActionCost(QueryDelegate { requirement: crate::face_up_in_play, transformation })
 }

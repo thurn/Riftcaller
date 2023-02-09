@@ -164,7 +164,8 @@ fn play_card_action(
     let definition = rules::get(card.name);
     mutations::move_card(game, card_id, CardPosition::Played(user_side, target))?;
 
-    mutations::spend_action_points(game, user_side, definition.cost.actions)?;
+    let actions = queries::action_cost(game, card_id);
+    mutations::spend_action_points(game, user_side, actions)?;
 
     if flags::enters_play_face_up(game, card_id) {
         let amount = queries::mana_cost(game, card_id).with_error(|| "Card has no mana cost")?;

@@ -16,6 +16,7 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
+pub mod history;
 pub mod in_play;
 pub mod text_macro;
 

@@ -47,7 +47,7 @@ use crate::text::TextElement;
 pub struct CustomCost<T> {
     /// Whether this cost can currently be paid
     pub can_pay: fn(&GameState, T) -> bool,
-    /// Mutate the game to pay this cost. May fail if `can_pay` would return
+    /// Mutate the game to pay this cost. Should fail if `can_pay` would return
     /// false.
     pub pay: fn(&mut GameState, T) -> Result<()>,
 }
@@ -214,5 +214,13 @@ impl CardDefinition {
     /// Iterator over all [AbilityId]s of a card.
     pub fn ability_ids(&self, card_id: CardId) -> impl Iterator<Item = AbilityId> {
         (0..self.abilities.len()).map(move |i| AbilityId::new(card_id, i))
+    }
+
+    pub fn is_spell(&self) -> bool {
+        self.card_type.is_spell()
+    }
+
+    pub fn is_scheme(&self) -> bool {
+        self.card_type == CardType::Scheme
     }
 }
