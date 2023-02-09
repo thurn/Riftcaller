@@ -87,7 +87,7 @@ pub fn test_champion_spell() -> CardDefinition {
 
 pub fn test_scheme_315() -> CardDefinition {
     CardDefinition {
-        name: CardName::TestScheme31,
+        name: CardName::TestScheme3_15,
         cost: scheme_cost(),
         card_type: CardType::Scheme,
         config: CardConfig {

@@ -42,7 +42,7 @@ pub fn on_raid_access_start(mutation: MutationFn<RaidId>) -> Delegate {
 /// sanctum ends in success
 pub fn after_sanctum_accessed(mutation: MutationFn<RaidEvent>) -> Delegate {
     Delegate::RaidSuccess(EventDelegate {
-        requirement: face_up_in_play_with_room::<RoomIdSanctum>,
+        requirement: in_play_with_room::<RoomIdSanctum>,
         mutation,
     })
 }
@@ -50,17 +50,14 @@ pub fn after_sanctum_accessed(mutation: MutationFn<RaidEvent>) -> Delegate {
 /// A delegate which fires when a card is face up & in play when a raid on the
 /// vault ends in success
 pub fn after_vault_accessed(mutation: MutationFn<RaidEvent>) -> Delegate {
-    Delegate::RaidSuccess(EventDelegate {
-        requirement: face_up_in_play_with_room::<RoomIdVault>,
-        mutation,
-    })
+    Delegate::RaidSuccess(EventDelegate { requirement: in_play_with_room::<RoomIdVault>, mutation })
 }
 
 /// A delegate which fires when a card is face up & in play when a raid on the
 /// crypts ends in success
 pub fn after_crypts_accessed(mutation: MutationFn<RaidEvent>) -> Delegate {
     Delegate::RaidSuccess(EventDelegate {
-        requirement: face_up_in_play_with_room::<RoomIdCrypts>,
+        requirement: in_play_with_room::<RoomIdCrypts>,
         mutation,
     })
 }
@@ -71,9 +68,18 @@ pub fn after_room_accessed(mutation: MutationFn<RaidEvent>) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement: crate::face_up_in_play, mutation })
 }
 
+/// A delegate which fires when a card is face up & in play when a raid on the
+/// vault is selecting cards to access.
+pub fn vault_access_selected(mutation: MutationFn<RaidEvent>) -> Delegate {
+    Delegate::RaidAccessSelected(EventDelegate {
+        requirement: in_play_with_room::<RoomIdVault>,
+        mutation,
+    })
+}
+
 /// A `RequirementFn` which matches for face up in play cards and events
 /// targeting a specific room.
-pub fn face_up_in_play_with_room<M: RoomIdMarker>(
+pub fn in_play_with_room<M: RoomIdMarker>(
     game: &GameState,
     scope: Scope,
     data: &impl HasRoomId,

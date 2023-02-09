@@ -33,8 +33,8 @@ pub enum CardName {
     TestOverlordLeader,
     TestChampionSpell,
     TestOverlordSpell,
-    /// Scheme requiring 3 levels to score 1 point
-    TestScheme31,
+    /// Scheme requiring 3 levels to score 15 points
+    TestScheme3_15,
     /// Blank project with a mana cost of 2
     TestProject2Cost,
     /// Minion with 5 health, 3 mana cost, and an "end the raid" ability.

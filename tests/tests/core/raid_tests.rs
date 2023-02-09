@@ -267,7 +267,7 @@ fn cannot_activate() {
         Args { turn: Some(Side::Overlord), actions: 2, opponent_mana: 0, ..Args::default() },
     );
 
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     g.play_from_hand(CardName::TestMinionEndRaid);
 
     g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
@@ -309,7 +309,7 @@ fn raid_vault() {
         Args {
             turn: Some(Side::Overlord),
             actions: 1,
-            opponent_deck_top: Some(CardName::TestScheme31),
+            opponent_deck_top: vec![CardName::TestScheme3_15],
             ..Args::default()
         },
     );
@@ -329,7 +329,7 @@ fn raid_sanctum() {
         Args { turn: Some(Side::Overlord), actions: 1, ..Args::default() },
     );
 
-    g.add_to_hand(CardName::TestScheme31);
+    g.add_to_hand(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Sanctum);
     g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Sanctum);
@@ -346,12 +346,12 @@ fn raid_crypts() {
         Args {
             turn: Some(Side::Overlord),
             actions: 1,
-            opponent_discard: Some(CardName::TestScheme31),
+            opponent_discard: Some(CardName::TestScheme3_15),
             ..Args::default()
         },
     );
 
-    g.add_to_hand(CardName::TestScheme31);
+    g.add_to_hand(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Crypts);
     g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Crypts);
@@ -368,7 +368,7 @@ fn raid_vault_twice() {
         Args {
             turn: Some(Side::Overlord),
             actions: 1,
-            opponent_deck_top: Some(CardName::TestScheme31),
+            opponent_deck_top: vec![CardName::TestScheme3_15],
             ..Args::default()
         },
     );
@@ -406,7 +406,7 @@ fn raid_no_defenders() {
         Args { turn: Some(Side::Overlord), actions: 1, ..Args::default() },
     );
 
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     let response = g.initiate_raid(ROOM_ID);
     // Should immediately jump to the Score action
     assert!(g.user.interface.controls().has_text("Score"));
@@ -418,7 +418,7 @@ fn raid_no_defenders() {
 fn raid_vault_no_defenders() {
     let mut g = new_game(
         Side::Champion,
-        Args { opponent_deck_top: Some(CardName::TestScheme31), ..Args::default() },
+        Args { opponent_deck_top: vec![CardName::TestScheme3_15], ..Args::default() },
     );
 
     g.initiate_raid(RoomId::Vault);
@@ -462,7 +462,7 @@ fn raid_two_defenders() {
         Args {
             turn: Some(Side::Overlord),
             actions: 2,
-            opponent_deck_top: Some(CardName::TestScheme31),
+            opponent_deck_top: vec![CardName::TestScheme3_15],
             ..Args::default()
         },
     );
@@ -484,7 +484,7 @@ fn raid_two_defenders_full_raid() {
         Args {
             turn: Some(Side::Overlord),
             actions: 2,
-            opponent_deck_top: Some(CardName::TestScheme31),
+            opponent_deck_top: vec![CardName::TestScheme3_15],
             ..Args::default()
         },
     );
@@ -526,7 +526,7 @@ fn raid_two_defenders_cannot_afford_second() {
         Args {
             turn: Some(Side::Overlord),
             actions: 2,
-            opponent_deck_top: Some(CardName::TestScheme31),
+            opponent_deck_top: vec![CardName::TestScheme3_15],
             opponent_mana: 1,
             ..Args::default()
         },
@@ -551,7 +551,7 @@ fn raid_add_defender() {
     );
 
     g.play_from_hand(CardName::TestMinionEndRaid);
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     assert!(g.dawn());
 
     // Raid 1
@@ -571,7 +571,7 @@ fn raid_add_defender() {
     // Opponent Turn
     assert!(g.dusk());
     g.play_from_hand(CardName::TestMinionDealDamage);
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     g.perform(Action::GainMana(GainManaAction {}), g.opponent_id());
 
     // User Turn, Raid 3

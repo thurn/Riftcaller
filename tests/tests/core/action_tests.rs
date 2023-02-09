@@ -40,7 +40,7 @@ fn connect_to_ongoing() {
         Side::Overlord,
         Args {
             actions: 3,
-            deck_top: Some(CardName::TestMinionDealDamageEndRaid),
+            deck_top: vec![CardName::TestMinionDealDamageEndRaid],
             ..Args::default()
         },
     );
@@ -63,7 +63,7 @@ fn draw_card() {
         Side::Overlord,
         Args {
             actions: 3,
-            deck_top: Some(CardName::TestMinionDealDamageEndRaid),
+            deck_top: vec![CardName::TestMinionDealDamageEndRaid],
             ..Args::default()
         },
     );
@@ -101,7 +101,7 @@ fn cannot_draw_during_raid() {
 fn maximum_hand_size() {
     let mut g = new_game(
         Side::Overlord,
-        Args { deck_top: Some(CardName::TestMinionEndRaid), ..Args::default() },
+        Args { deck_top: vec![CardName::TestMinionEndRaid], ..Args::default() },
     );
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
@@ -228,7 +228,7 @@ fn cannot_gain_mana_during_raid() {
 #[test]
 fn level_up_room() {
     let mut g = new_game(Side::Overlord, Args { mana: 10, ..Args::default() });
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     let response = g.perform_action(
         Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() }),
         g.user_id(),
@@ -255,7 +255,7 @@ fn minion_limit() {
 #[test]
 fn score_overlord_card() {
     let mut g = new_game(Side::Overlord, Args { mana: 10, actions: 5, ..Args::default() });
-    let scheme_id = g.play_from_hand(CardName::TestScheme31);
+    let scheme_id = g.play_from_hand(CardName::TestScheme3_15);
     let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
     g.perform(level_up.clone(), g.user_id());
@@ -273,7 +273,7 @@ fn score_overlord_card() {
 fn overlord_win_game() {
     let mut g =
         new_game(Side::Overlord, Args { mana: 10, score: 90, actions: 5, ..Args::default() });
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
     g.perform(level_up.clone(), g.user_id());
@@ -462,7 +462,7 @@ fn legal_actions() {
 #[test]
 fn legal_actions_level_up_room() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![GameAction::GainMana, GameAction::DrawCard, GameAction::LevelUpRoom(RoomId::RoomA)],

@@ -27,7 +27,7 @@ fn overwhelming_power() {
 #[test]
 fn forced_march() {
     let mut g = new_game(Side::Overlord, Args::default());
-    let scheme = g.play_from_hand(CardName::TestScheme31);
+    let scheme = g.play_from_hand(CardName::TestScheme3_15);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
     g.play_with_target_room(CardName::ForcedMarch, ROOM_ID);
@@ -38,6 +38,6 @@ fn forced_march() {
 #[should_panic]
 fn forced_march_same_turn_panic() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::ForcedMarch, ROOM_ID);
 }

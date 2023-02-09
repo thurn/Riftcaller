@@ -321,7 +321,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 31"
+            title: "Test Scheme 3_15"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 
@@ -450,7 +450,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 31"
+            title: "Test Scheme 3_15"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 

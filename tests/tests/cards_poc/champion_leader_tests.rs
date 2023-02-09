@@ -52,3 +52,24 @@ fn telantes_dugoth_earthbreaker() {
     click_on_end_raid(&mut g);
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
 }
+
+#[test]
+fn andvari_est_nights_warden() {
+    let mut g = new_game(
+        Side::Champion,
+        Args {
+            opponent_deck_top: vec![
+                CardName::TestChampionSpell,
+                CardName::TestChampionSpell,
+                CardName::TestScheme3_15,
+                CardName::TestChampionSpell,
+                CardName::TestChampionSpell,
+            ],
+            ..Args::default()
+        },
+    );
+    g.play_from_hand(CardName::AndvariEstNightsWarden);
+    g.initiate_raid(RoomId::Vault);
+    click_on_score(&mut g);
+    assert_eq!(15, g.me().score())
+}

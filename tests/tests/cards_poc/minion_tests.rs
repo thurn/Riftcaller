@@ -48,7 +48,7 @@ fn time_golem_pay_mana() {
 fn time_golem_defeat() {
     let mut g = new_game(Side::Overlord, Args::default());
     g.play_from_hand(CardName::TimeGolem);
-    g.play_from_hand(CardName::TestScheme31);
+    g.play_from_hand(CardName::TestScheme3_15);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     g.play_from_hand(CardName::TestWeapon5Attack);
     g.initiate_raid(ROOM_ID);
@@ -107,7 +107,7 @@ fn temporal_stalker_pay_actions() {
     assert_eq!(0, g.opponent.this_player.actions());
     assert!(g.user.data.raid_active());
     assert_eq!(
-        vec!["Test Minion End Raid", "Test Scheme 31"],
+        vec!["Test Minion End Raid", "Test Scheme 3_15"],
         g.user.cards.names_in_position(Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
@@ -160,7 +160,7 @@ fn shadow_lurker_inner_room() {
 fn sphinx_of_winters_breath_discard_even() {
     let mut g = new_game(
         Side::Overlord,
-        Args { opponent_deck_top: Some(CardName::Test0CostChampionSpell), ..Args::default() },
+        Args { opponent_deck_top: vec![CardName::Test0CostChampionSpell], ..Args::default() },
     );
     g.play_from_hand(CardName::SphinxOfWintersBreath);
     set_up_minion_combat_with_action(&mut g, |g| {
@@ -175,7 +175,7 @@ fn sphinx_of_winters_breath_discard_even() {
 fn sphinx_of_winters_breath_discard_odd() {
     let mut g = new_game(
         Side::Overlord,
-        Args { opponent_deck_top: Some(CardName::Test1CostChampionSpell), ..Args::default() },
+        Args { opponent_deck_top: vec![CardName::Test1CostChampionSpell], ..Args::default() },
     );
     g.play_from_hand(CardName::SphinxOfWintersBreath);
     set_up_minion_combat_with_action(&mut g, |g| {

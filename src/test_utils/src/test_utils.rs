@@ -210,9 +210,9 @@ pub struct Args {
     /// This card will be drawn when drawing randomly from the deck (as long as
     /// no known cards are placed on top of it) because the game is created with
     /// [GameConfiguration::deterministic] set to true.
-    pub deck_top: Option<CardName>,
+    pub deck_top: Vec<CardName>,
     /// Card to be inserted into the opponent player's deck as the next draw.
-    pub opponent_deck_top: Option<CardName>,
+    pub opponent_deck_top: Vec<CardName>,
     /// Card to be inserted into the `user_side` player's discard pile.
     pub discard: Option<CardName>,
     /// Card to be inserted into the opponent player's discard pile.
@@ -238,8 +238,8 @@ impl Default for Args {
             opponent_score: 0,
             hand_size: 0,
             opponent_hand_size: 0,
-            deck_top: None,
-            opponent_deck_top: None,
+            deck_top: vec![],
+            opponent_deck_top: vec![],
             discard: None,
             opponent_discard: None,
             add_raid: false,
@@ -249,15 +249,15 @@ impl Default for Args {
     }
 }
 
-fn set_deck_top(game: &mut GameState, side: Side, deck_top: Option<CardName>) {
-    if let Some(deck_top) = deck_top {
+fn set_deck_top(game: &mut GameState, side: Side, deck_top: Vec<CardName>) {
+    for card in deck_top {
         let target_id = game
             .cards(side)
             .iter()
             .find(|c| c.position().kind() == CardPositionKind::DeckUnknown)
             .expect("No cards in deck")
             .id;
-        client::overwrite_card(game, target_id, deck_top);
+        client::overwrite_card(game, target_id, card);
         game.move_card_internal(target_id, CardPosition::DeckTop(side))
     }
 }
@@ -355,7 +355,7 @@ pub fn set_up_minion_combat_with_action(
     session: &mut TestSession,
     action: impl FnOnce(&mut TestSession),
 ) {
-    session.play_from_hand(CardName::TestScheme31);
+    session.play_from_hand(CardName::TestScheme3_15);
     spend_actions_until_turn_over(session, Side::Overlord);
     assert!(session.dawn());
     action(session);
@@ -388,7 +388,7 @@ pub fn setup_raid_target(
 ) -> (CardIdentifier, CardIdentifier) {
     spend_actions_until_turn_over(session, Side::Champion);
     assert!(session.dusk());
-    let scheme_id = session.play_from_hand(CardName::TestScheme31);
+    let scheme_id = session.play_from_hand(CardName::TestScheme3_15);
     let minion_id = session.play_from_hand(card_name);
     spend_actions_until_turn_over(session, Side::Overlord);
     assert!(session.dawn());

@@ -109,3 +109,45 @@ pub fn telantes_dugoth_earthbreaker() -> CardDefinition {
         },
     }
 }
+
+pub fn andvari_est_nights_warden() -> CardDefinition {
+    CardDefinition {
+        name: CardName::AndvariEstNightsWarden,
+        sets: vec![CardSetName::ProofOfConcept],
+        cost: cost(1),
+        image: assets::fantasy_class_image("Thief", "Male"),
+        card_type: CardType::Leader,
+        side: Side::Champion,
+        school: School::Primal,
+        rarity: Rarity::Exalted,
+        abilities: vec![simple_ability(
+            text![
+                "When you access the",
+                Vault,
+                ", access a scheme card in the top",
+                5,
+                "cards, if present"
+            ],
+            in_play::vault_access_selected(|g, _, _| {
+                let cards = mutations::realize_top_of_deck(g, Side::Overlord, 5)?;
+                if let Some(card_id) = cards
+                    .into_iter()
+                    .find(|id| rules::card_definition(g, *id).card_type == CardType::Scheme)
+                {
+                    if !g.raid()?.accessed.contains(&card_id) {
+                        g.raid_mut()?.accessed.push(card_id);
+                    }
+                }
+                Ok(())
+            }),
+        )],
+        config: CardConfig {
+            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Thief_M")),
+            image_background: Some(assets::environments(
+                EnvironmentType::CastlesTowersKeeps,
+                "Fortress/SceneryFortress_inside_1",
+            )),
+            ..CardConfig::default()
+        },
+    }
+}

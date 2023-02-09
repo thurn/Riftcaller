@@ -123,8 +123,8 @@ pub fn mage_gloves() -> CardDefinition {
                 delegates: vec![
                     on_activated(|g, s, activated| initiate_raid(g, s, activated.target)),
                     on_raid_success(matching_raid, |g, s, _| {
-                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)
-                            .map(|_| ())
+                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                        Ok(())
                     }),
                 ],
             },
@@ -151,9 +151,9 @@ pub fn magical_resonator() -> CardDefinition {
                     TargetRequirement::None,
                 ),
                 text: text![text![TakeMana(3)], text!["Use this ability once per turn"]],
-                delegates: vec![on_activated(|g, _s, activated| {
-                    mutations::take_stored_mana(g, activated.card_id(), 3, OnZeroStored::Sacrifice)
-                        .map(|_| ())
+                delegates: vec![on_activated(|g, s, _| {
+                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                    Ok(())
                 })],
             },
         ],
@@ -177,7 +177,8 @@ pub fn dark_grimoire() -> CardDefinition {
                 requirement: face_up_in_play,
                 mutation: |g, s, _| {
                     once_per_turn(g, s, &(), |g, s, _| {
-                        mutations::draw_cards(g, s.side(), 1).map(|_| ())
+                        mutations::draw_cards(g, s.side(), 1)?;
+                        Ok(())
                     })
                 },
             }),

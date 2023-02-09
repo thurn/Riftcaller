@@ -155,7 +155,7 @@ pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
         CardName::KeenHalberd => 2,
         CardName::EtherealBlade => 2,
         CardName::BowOfTheAlliance => 2,
-        CardName::TelantesDugothEarthbreaker => 100,
+        CardName::AndvariEstNightsWarden => 100,
     },
 });
 
