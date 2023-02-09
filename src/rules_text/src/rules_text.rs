@@ -13,6 +13,7 @@
 // limitations under the License.
 
 pub mod card_icons;
+pub mod card_info;
 pub mod supplemental_info;
 
 use core_ui::icons;

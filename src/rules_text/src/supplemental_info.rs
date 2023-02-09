@@ -18,7 +18,8 @@ use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::primitives::{AbilityIndex, CardSubtype, CardType, Lineage};
 use game_data::text::{RulesTextContext, TextElement, TextTokenKind};
-use prompts::card_info::SupplementalCardInfo;
+
+use crate::card_info::SupplementalCardInfo;
 
 /// Builds the supplemental info display for a card, which displays additional
 /// help information and appears on press.
