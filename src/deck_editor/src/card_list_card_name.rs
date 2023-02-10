@@ -73,6 +73,7 @@ impl Component for CardListCardName {
             .on_drop(self.on_drop)
             .horizontal_drag_start_distance(100)
             .remove_original(if let Some(v) = self.count { v <= 1 } else { false })
+            .hide_indicator_children(vec![element_names::card_list_card_quantity(self.card_name)])
             .style(
                 Style::new()
                     .height(72.px())
