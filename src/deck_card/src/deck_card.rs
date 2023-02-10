@@ -14,30 +14,22 @@
 
 //! Renders cards as they're seen in the deck editor and adventure UI
 
-pub mod deck_card_icon;
-pub mod deck_card_name;
-pub mod deck_card_rarity;
 pub mod deck_card_slot;
-pub mod deck_card_text;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
-/// Card height as a percentage of the height of the viewport. Intended to allow
-/// two rows of cards to be displayed with room for additional UI elements.
-pub const CARD_HEIGHT: f32 = 36.0;
-
+use adapters::response_builder::{ResponseBuilder, ResponseState};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
+use display::card_sync;
 use game_data::card_name::CardName;
 use game_data::card_view_context::CardViewContext;
-use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
-use rules_text::card_icons;
-
-use crate::deck_card_icon::DeckCardIcon;
-use crate::deck_card_name::DeckCardName;
-use crate::deck_card_rarity::DeckCardRarity;
-use crate::deck_card_text::DeckCardText;
+use game_data::primitives::Side;
+use protos::spelldawn::studio_display::Display;
+use protos::spelldawn::{
+    CardIcon, CardView, Dimension, FlexAlign, FlexPosition, ImageScaleMode, StudioDisplay,
+};
 
 /// Abstraction representing the height of a card, allowing other measurments to
 /// be scaled proportionately.
@@ -96,74 +88,55 @@ impl DeckCard {
     }
 }
 
+fn add_quantity(quantity: u32, mut view: CardView) -> CardView {
+    let mut icons = view.card_icons.unwrap_or_default();
+    icons.top_right_icon = Some(CardIcon {
+        background: Some(style::sprite("Sprites/QuantityBackground")),
+        text: Some(format!("{quantity}x")),
+        background_scale: None,
+    });
+    view.card_icons = Some(icons);
+    view
+}
+
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
         let definition = rules::get(self.name);
-        let icons = card_icons::build(&CardViewContext::Default(definition), true);
+        let response_builder = ResponseBuilder::new(
+            Side::Champion,
+            ResponseState { animate: false, is_final_update: true },
+        );
+        let context = CardViewContext::Default(definition);
 
         let result = Column::new(element_names::deck_card(self.name))
-            .style(self.layout.to_style().align_items(FlexAlign::Center))
+            .style(
+                self.layout
+                    .to_style()
+                    .align_items(FlexAlign::Center)
+                    .height(self.height.dim(100.0))
+                    .width(self.height.dim(100.0 * CARD_ASPECT_RATIO)),
+            )
             .child(
-                Row::new("CardImage").style(
+                Row::new("Card").style(
                     Style::new()
+                        // We zoom the size of this and offset it slightly
+                        // because the camera adds extra space around the
+                        // captured image
                         .position_type(FlexPosition::Absolute)
-                        .background_image(adapters::sprite(&definition.image))
-                        .position(Edge::Top, self.height.dim(7.0))
-                        .height(self.height.dim(56.0))
-                        .width(self.height.dim(56.0)),
+                        .height(self.height.dim(110.0))
+                        .width(self.height.dim(110.0 * CARD_ASPECT_RATIO))
+                        .background_image_scale_mode(ImageScaleMode::ScaleAndCrop)
+                        .background_display(StudioDisplay {
+                            display: Some(Display::Card(Box::new(add_quantity(
+                                self.quantity,
+                                card_sync::card_view(&response_builder, &context)
+                                    .expect("Error building CardView"),
+                            )))),
+                        })
+                        .position(Edge::Top, self.height.dim(-6.0))
+                        .position(Edge::Left, self.height.dim(-2.5)),
                 ),
-            )
-            .child(
-                Row::new("CardFrame").style(
-                    Style::new()
-                        .height(self.height.dim(100.0))
-                        .background_image_auto_size(BackgroundImageAutoSize::FromHeight)
-                        .background_image(assets::card_frame(
-                            definition.school,
-                            definition.card_type,
-                        )),
-                ),
-            )
-            .child(DeckCardName::new(definition, self.height))
-            .child(DeckCardText::new(definition, self.height))
-            .child(icons.top_left_icon.map(|icon| {
-                DeckCardIcon::new(icon, self.height).name("TopLeftIcon").layout(
-                    Layout::new()
-                        .position(Edge::Left, self.height.dim(-2.0))
-                        .position(Edge::Top, self.height.dim(6.0)),
-                )
-            }))
-            .child(
-                DeckCardIcon::new(
-                    CardIcon {
-                        background: Some(style::sprite("Sprites/QuantityBackground")),
-                        text: Some(format!("{}x", self.quantity)),
-                        background_scale: None,
-                    },
-                    self.height,
-                )
-                .name(element_names::deck_card_quantity(self.name))
-                .layout(
-                    Layout::new()
-                        .position(Edge::Right, self.height.dim(-2.0))
-                        .position(Edge::Top, self.height.dim(6.0)),
-                ),
-            )
-            .child(icons.bottom_left_icon.map(|icon| {
-                DeckCardIcon::new(icon, self.height).name("BottomLeftIcon").layout(
-                    Layout::new()
-                        .position(Edge::Left, self.height.dim(-4.0))
-                        .position(Edge::Bottom, self.height.dim(-6.0)),
-                )
-            }))
-            .child(icons.bottom_right_icon.map(|icon| {
-                DeckCardIcon::new(icon, self.height).name("BottomRightIcon").layout(
-                    Layout::new()
-                        .position(Edge::Right, self.height.dim(-4.0))
-                        .position(Edge::Bottom, self.height.dim(-6.0)),
-                )
-            }))
-            .child(DeckCardRarity::new(definition, self.height));
+            );
 
         if let Some(draggable) = self.draggable {
             draggable.child(result).build()

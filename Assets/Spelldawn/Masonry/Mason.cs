@@ -242,6 +242,11 @@ namespace Spelldawn.Masonry
         return;
       }
 
+      foreach (var name in e.GetClasses().ToList().Where(name => name.StartsWith("sd_")))
+      {
+        e.RemoveFromClassList(name);
+      }
+
       e.style.alignContent = AdaptAlign(input.AlignContent);
       e.style.alignItems = AdaptAlign(input.AlignItems);
       e.style.alignSelf = AdaptAlign(input.AlignSelf);

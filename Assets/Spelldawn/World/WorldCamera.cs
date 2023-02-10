@@ -29,7 +29,7 @@ namespace Spelldawn.World
     Vector3 _dragStartPosition;
 
     void Update () {
-      if (_registry.DocumentService.MouseOverScreenElement())
+      if (_registry.DocumentService.MouseOverScreenElement() || _registry.DocumentService.IsAnyPanelOpen())
       {
         return;
       }

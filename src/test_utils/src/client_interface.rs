@@ -16,10 +16,12 @@ use std::collections::HashMap;
 
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
+use protos::spelldawn::node_background::BackgroundAddress;
+use protos::spelldawn::studio_display::Display;
 use protos::spelldawn::toggle_panel_command::ToggleCommand;
 use protos::spelldawn::{
-    node_type, CardAnchorNode, ClientAction, DraggableNode, EventHandlers, FetchPanelAction,
-    InterfacePanel, InterfacePanelAddress, Node, NodeType,
+    node_type, CardAnchorNode, CardView, ClientAction, DraggableNode, EventHandlers,
+    FetchPanelAction, InterfacePanel, InterfacePanelAddress, Node, NodeType, StudioDisplay,
 };
 
 /// Simulated user interface state
@@ -183,6 +185,38 @@ pub fn find_draggable(node: &Node) -> Option<&DraggableNode> {
     }
 
     None
+}
+
+/// Finds a [StudioDisplay] which is the background of a Node, if any
+pub fn find_studio_display(node: &Node) -> Option<&StudioDisplay> {
+    if let Some(display) = (|| {
+        let background =
+            node.style.as_ref()?.background_image.as_ref()?.background_address.as_ref();
+        if let Some(BackgroundAddress::StudioDisplay(d)) = background {
+            Some(d)
+        } else {
+            None
+        }
+    })() {
+        return Some(display.as_ref());
+    }
+
+    for child in &node.children {
+        if let Some(c) = find_studio_display(child) {
+            return Some(c);
+        }
+    }
+
+    None
+}
+
+/// Finds a [CardView] embedded within a [StudioDisplay] in this Node, if any.
+pub fn find_card_view(node: &Node) -> Option<&CardView> {
+    if let Some(Display::Card(c)) = find_studio_display(node).as_ref()?.display.as_ref() {
+        Some(c)
+    } else {
+        None
+    }
 }
 
 pub trait HasText {

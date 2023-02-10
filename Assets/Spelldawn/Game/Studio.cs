@@ -32,13 +32,14 @@ namespace Spelldawn.Game
 
     public void Initialize(int studioNumber)
     {
+      name = $"Studio {studioNumber}";
       StudioNumber = studioNumber;
       _studioLayer = LayerMask.NameToLayer("Studio");
       RenderTexture = new RenderTexture(1024, 1024, 32, RenderTextureFormat.ARGB32);
       _camera.targetTexture = RenderTexture;
     }
 
-    public string ClassNameTag() => $"_StudioDisplay{StudioNumber}"; 
+    public string ClassNameTag() => $"sd_StudioDisplay{StudioNumber}"; 
 
     void Start()
     {

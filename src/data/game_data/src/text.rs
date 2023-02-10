@@ -14,11 +14,7 @@
 
 use enum_kinds::EnumKind;
 
-use crate::card_definition::CardDefinition;
-use crate::card_name::CardName;
-use crate::card_state::{CardData, CardState};
-use crate::game::GameState;
-use crate::primitives::{ActionCount, BreachValue, CardId, DamageAmount, ManaValue};
+use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue};
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TextElement {

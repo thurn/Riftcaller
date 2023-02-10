@@ -34,6 +34,11 @@ namespace Spelldawn.Services
     int _nextX = 2;
     int _nextStudioNumber = 1;
 
+    public void DisplayAsBackground(VisualElement element, StudioDisplay display)
+    {
+      StartCoroutine(DisplayAsBackgroundAsync(element, display));
+    }
+
     IEnumerator Start()
     {
       while (true)
@@ -49,11 +54,6 @@ namespace Spelldawn.Services
 
         yield return new WaitForSeconds(1.0f);
       }
-    }    
-    
-    public void DisplayAsBackground(VisualElement element, StudioDisplay display)
-    {
-      StartCoroutine(DisplayAsBackgroundAsync(element, display));
     }
 
     IEnumerator DisplayAsBackgroundAsync(VisualElement element, StudioDisplay display)

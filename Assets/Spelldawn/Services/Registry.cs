@@ -22,6 +22,7 @@ using Spelldawn.Tests;
 using Spelldawn.World;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Screen = UnityEngine.Device.Screen;
 
 #nullable enable
 

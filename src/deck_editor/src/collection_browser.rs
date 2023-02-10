@@ -87,7 +87,6 @@ impl<'a> CollectionBrowser<'a> {
                         .drop_target(element_names::CARD_LIST)
                         .over_target_indicator(move || CardListCardName::new(card_name).build())
                         .on_drop(Some(self.drop_action(card_name)))
-                        .hide_indicator_children(vec![element_names::deck_card_quantity(card_name)])
                 },
             ))));
 
@@ -105,15 +104,15 @@ impl<'a> CollectionBrowser<'a> {
                             Style::new()
                                 .position_type(FlexPosition::Absolute)
                                 .position(Edge::Left, 50.pct())
-                                .position(Edge::Bottom, 0.pct())
-                                .translate((-50).pct(), (-50).pct())
+                                .position(Edge::Bottom, 0.px())
+                                .translate((-50).pct(), (25).pct())
                                 .background_color(BackgroundColor::TilePanelOverlay)
                                 .padding(Edge::All, 8.px())
                                 .border_radius(Corner::All, 8.px())
                                 .justify_content(FlexJustify::Center)
                                 .align_items(FlexAlign::Center),
                         )
-                        .child(Text::new("In Deck").font_size(FontSize::Body)),
+                        .child(Text::new("In Deck").font_size(FontSize::Meta)),
                 )
                 .build()
         } else {

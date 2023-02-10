@@ -718,6 +718,7 @@ dependencies = [
  "adapters",
  "assets",
  "core_ui",
+ "display",
  "element_names",
  "game_data",
  "protos",

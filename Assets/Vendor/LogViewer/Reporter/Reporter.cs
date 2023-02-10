@@ -26,6 +26,12 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 #endif
 
+public static class ReporterConstants
+{
+	public static float ToolbarXOffset => Screen.safeArea.x;
+	public static float ToolbarYOffset => Screen.safeArea.y + 120;
+	public static float ToolbarWidth() => Screen.safeArea.width - ToolbarXOffset;
+}
 
 [System.Serializable]
 public class Images
@@ -976,7 +982,7 @@ public class Reporter : MonoBehaviour
 	{
 		screenRect.x = 0f;
 		screenRect.y = 0f;
-		screenRect.width = Screen.width;
+		screenRect.width = ReporterConstants.ToolbarWidth();
 		screenRect.height = Screen.height;
 		GUILayout.BeginArea(screenRect, backStyle);
 		GUILayout.BeginVertical();
@@ -1010,9 +1016,9 @@ public class Reporter : MonoBehaviour
 	void drawToolBar()
 	{
 
-		toolBarRect.x = 0f;
-		toolBarRect.y = 0f;
-		toolBarRect.width = Screen.width;
+		toolBarRect.x = ReporterConstants.ToolbarXOffset;
+		toolBarRect.y = ReporterConstants.ToolbarYOffset;
+		toolBarRect.width = ReporterConstants.ToolbarWidth();
 		toolBarRect.height = size.y * 2f;
 
 		//toolbarScrollerSkin.verticalScrollbar.fixedWidth = 0f;
@@ -1183,8 +1189,7 @@ public class Reporter : MonoBehaviour
 
 		GUILayout.EndArea();
 	}
-
-
+	
 	Rect tempRect;
 	void DrawLogs()
 	{
@@ -1393,7 +1398,7 @@ public class Reporter : MonoBehaviour
 
 		buttomRect.x = 0f;
 		buttomRect.y = Screen.height - size.y;
-		buttomRect.width = Screen.width;
+		buttomRect.width = ReporterConstants.ToolbarWidth();
 		buttomRect.height = size.y;
 
 		if (showGraph)
@@ -1617,23 +1622,23 @@ public class Reporter : MonoBehaviour
 		getDownPos();
 
 
-		logsRect.x = 0f;
-		logsRect.y = size.y * 2f;
-		logsRect.width = Screen.width;
+		logsRect.x = ReporterConstants.ToolbarXOffset;
+		logsRect.y = ReporterConstants.ToolbarYOffset + (size.y * 2f);
+		logsRect.width = ReporterConstants.ToolbarWidth();
 		logsRect.height = Screen.height * 0.75f - size.y * 2f;
 
 		stackRectTopLeft.x = 0f;
 		stackRect.x = 0f;
 		stackRectTopLeft.y = Screen.height * 0.75f;
 		stackRect.y = Screen.height * 0.75f;
-		stackRect.width = Screen.width;
+		stackRect.width = ReporterConstants.ToolbarWidth();
 		stackRect.height = Screen.height * 0.25f - size.y;
 
 
 
 		detailRect.x = 0f;
 		detailRect.y = Screen.height - size.y * 3;
-		detailRect.width = Screen.width;
+		detailRect.width = ReporterConstants.ToolbarWidth();
 		detailRect.height = size.y * 3;
 
 		if (currentView == ReportView.Info)

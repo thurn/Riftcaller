@@ -19,7 +19,7 @@ use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::primitives::{School, Side};
 use maplit::hashmap;
-use test_utils::client_interface::{self, HasText};
+use test_utils::client_interface::{self, find_card_view, HasText};
 use test_utils::test_adventure::{TestAdventure, TestConfig};
 
 const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
@@ -64,8 +64,9 @@ fn test_remove_from_deck() {
     let quantity2 = find_card_node(&adventure, element_names::card_list_card_quantity);
     assert_eq!("1x", quantity2.get_text().join(""));
 
+    let card = find_card_node(&adventure, element_names::deck_card);
     // Quantity in collection browser is unchanged
-    assert_eq!("3x", find_card_node(&adventure, element_names::deck_card_quantity).all_text());
+    assert_eq!("3x", find_card_quantity(card).expect("quantity"));
 }
 
 #[test]
@@ -85,9 +86,15 @@ fn test_add_to_deck() {
     assert_eq!("3x", quantity2.all_text());
 
     assert!(find_card_node(&adventure, element_names::deck_card_slot_overlay).has_text("In Deck"));
+    let card = find_card_node(&adventure, element_names::deck_card);
 
     // Quantity in collection browser is unchanged
-    assert_eq!("3x", find_card_node(&adventure, element_names::deck_card_quantity).all_text());
+    assert_eq!("3x", find_card_quantity(card).expect("quantity"));
+}
+
+fn find_card_quantity(node: &Node) -> Option<&String> {
+    let view = find_card_view(node).expect("CardView");
+    view.card_icons.as_ref()?.top_right_icon.as_ref()?.text.as_ref()
 }
 
 fn config() -> TestConfig {
