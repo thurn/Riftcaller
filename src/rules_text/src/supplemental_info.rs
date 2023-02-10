@@ -16,8 +16,9 @@ use core_ui::design::{self, FontColor};
 use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
+use game_data::card_view_context::CardViewContext;
 use game_data::primitives::{AbilityIndex, CardSubtype, CardType, Lineage};
-use game_data::text::{RulesTextContext, TextElement, TextTokenKind};
+use game_data::text::{TextElement, TextTokenKind};
 
 use crate::card_info::SupplementalCardInfo;
 
@@ -26,8 +27,8 @@ use crate::card_info::SupplementalCardInfo;
 ///
 /// If an `ability_index` is provided, only supplemental info for that index is
 /// returned. Otherwise, supplemental info for all abilities is returned.
-pub fn build(context: &RulesTextContext, ability_index: Option<AbilityIndex>) -> Option<Box<Node>> {
-    let definition = rules::get(context.card_name());
+pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> Option<Box<Node>> {
+    let definition = context.definition();
     let mut result = vec![card_type_line(definition)];
     let mut tokens = vec![];
     for (index, ability) in definition.abilities.iter().enumerate() {

@@ -19,6 +19,7 @@ pub mod card_definition;
 pub mod card_name;
 pub mod card_set_name;
 pub mod card_state;
+pub mod card_view_context;
 pub mod deck;
 pub mod delegates;
 pub mod game;

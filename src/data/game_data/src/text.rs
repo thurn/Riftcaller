@@ -103,35 +103,3 @@ impl From<Vec<TextElement>> for TextElement {
         Self::Children(children)
     }
 }
-
-/// Provides the context in which rules text is being evaluated, i.e. during an
-/// active game or in a deck editor.
-pub enum RulesTextContext<'a> {
-    Default(&'a CardDefinition),
-    Game(&'a GameState, &'a CardState),
-}
-
-impl<'a> RulesTextContext<'a> {
-    pub fn card_name(&self) -> CardName {
-        match self {
-            RulesTextContext::Default(definition) => definition.name,
-            RulesTextContext::Game(_, card) => card.name,
-        }
-    }
-
-    pub fn card_data(&self) -> Option<&CardData> {
-        match self {
-            RulesTextContext::Default(_) => None,
-            RulesTextContext::Game(_, card) => Some(&card.data),
-        }
-    }
-
-    /// Invokes the provided `game` function to product a value in the active
-    /// game context, otherwise returns some `default`.
-    pub fn query_or<T>(&self, default: T, game: impl Fn(&GameState, CardId) -> T) -> T {
-        match self {
-            RulesTextContext::Default(_) => default,
-            RulesTextContext::Game(state, card) => game(state, card.id),
-        }
-    }
-}

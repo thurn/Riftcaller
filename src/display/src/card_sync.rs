@@ -15,12 +15,12 @@
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use core_ui::icons;
-use game_data::card_definition::{AbilityType, CardDefinition, TargetRequirement};
+use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardState;
+use game_data::card_view_context::CardViewContext;
 use game_data::game::GameState;
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation};
-use game_data::text::RulesTextContext;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,
@@ -32,43 +32,39 @@ use {adapters, assets, rules_text};
 
 use crate::positions;
 
-pub fn card_view(
-    builder: &ResponseBuilder,
-    game: &GameState,
-    card: &CardState,
-) -> Result<CardView> {
-    let definition = rules::get(card.name);
-    let revealed = card.is_revealed_to(builder.user_side);
+pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result<CardView> {
+    let revealed = context.query_or(true, |_, card| card.is_revealed_to(builder.user_side));
     Ok(CardView {
-        card_id: Some(adapters::card_identifier(card.id)),
-        card_position: Some(positions::convert(builder, game, card)?),
-        prefab: if definition.card_type == CardType::Leader {
+        card_id: context.query_or_none(|_, card| adapters::card_identifier(card.id)),
+        card_position: context
+            .query_or_ok(None, |game, card| Ok(Some(positions::convert(builder, game, card)?)))?,
+        prefab: if context.definition().card_type == CardType::Leader {
             CardPrefab::FullHeight
         } else {
             CardPrefab::Standard
         }
         .into(),
-        revealed_to_viewer: card.is_revealed_to(builder.user_side),
-        is_face_up: card.is_face_up(),
-        card_icons: Some(card_icons::build(
-            &RulesTextContext::Game(game, card),
-            definition,
-            revealed,
-        )),
+        revealed_to_viewer: revealed,
+        is_face_up: context.query_or(true, |_, card| card.is_face_up()),
+        card_icons: Some(card_icons::build(context, revealed)),
         arena_frame: Some(assets::arena_frame(
-            definition.side,
-            definition.card_type,
-            definition.config.lineage,
+            context.definition().side,
+            context.definition().card_type,
+            context.definition().config.lineage,
         )),
         face_down_arena_frame: Some(assets::face_down_arena_frame()),
-        owning_player: builder.to_player_name(definition.side),
-        revealed_card: revealed.then(|| revealed_card_view(builder, game, card)),
+        owning_player: builder.to_player_name(context.definition().side),
+        revealed_card: revealed.then(|| revealed_card_view(builder, context)),
         create_position: if builder.state.animate {
-            Some(positions::for_card(card, positions::deck(builder, card.side())))
+            context.query_or_none(|_, card| {
+                positions::for_card(card, positions::deck(builder, card.side()))
+            })
         } else {
             None
         },
-        destroy_position: Some(positions::for_card(card, positions::deck(builder, card.side()))),
+        destroy_position: context.query_or_none(|_, card| {
+            positions::for_card(card, positions::deck(builder, card.side()))
+        }),
     })
 }
 
@@ -99,6 +95,7 @@ pub fn ability_card_view(
 ) -> CardView {
     let card = game.card(ability_id.card_id);
     let definition = rules::get(card.name);
+    let context = CardViewContext::Game(definition, game, card);
 
     CardView {
         card_id: Some(adapters::ability_card_identifier(ability_id)),
@@ -119,13 +116,7 @@ pub fn ability_card_view(
         arena_frame: None,
         face_down_arena_frame: None,
         owning_player: builder.to_player_name(ability_id.card_id.side),
-        revealed_card: Some(revealed_ability_card_view(
-            game,
-            card,
-            definition,
-            ability_id,
-            target_requirement,
-        )),
+        revealed_card: Some(revealed_ability_card_view(&context, ability_id, target_requirement)),
         create_position: if builder.state.animate {
             Some(positions::for_ability(game, ability_id, positions::parent_card(ability_id)))
         } else {
@@ -141,10 +132,9 @@ pub fn ability_card_view(
 
 fn revealed_card_view(
     builder: &ResponseBuilder,
-    game: &GameState,
-    card: &CardState,
+    context: &CardViewContext,
 ) -> Box<RevealedCardView> {
-    let definition = rules::get(card.name);
+    let definition = context.definition();
     Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
         title_background: Some(assets::title_background(definition.config.lineage)),
@@ -155,12 +145,14 @@ fn revealed_card_view(
             text: definition.name.displayed_name(),
             text_color: Some(assets::title_color(definition.config.lineage)),
         }),
-        rules_text: Some(rules_text::build(&RulesTextContext::Game(game, card), definition)),
-        targeting: Some(card_targeting(
-            definition.config.custom_targeting.as_ref(),
-            flags::enters_play_in_room(game, card.id),
-            |target| flags::can_take_play_card_action(game, builder.user_side, card.id, target),
-        )),
+        rules_text: Some(rules_text::build(context)),
+        targeting: context.query_or_none(|game, card| {
+            card_targeting(
+                definition.config.custom_targeting.as_ref(),
+                flags::enters_play_in_room(game, card.id),
+                |target| flags::can_take_play_card_action(game, builder.user_side, card.id, target),
+            )
+        }),
         on_release_position: Some(positions::for_sorting_key(
             positions::RELEASE_SORTING_KEY,
             match definition.card_type {
@@ -175,17 +167,16 @@ fn revealed_card_view(
                 CardType::GameModifier => positions::offscreen(),
             },
         )),
-        supplemental_info: supplemental_info::build(&RulesTextContext::Game(game, card), None),
+        supplemental_info: supplemental_info::build(context, None),
     })
 }
 
 fn revealed_ability_card_view(
-    game: &GameState,
-    card: &CardState,
-    definition: &CardDefinition,
+    context: &CardViewContext,
     ability_id: AbilityId,
     target_requirement: Option<&TargetRequirement<AbilityId>>,
 ) -> Box<RevealedCardView> {
+    let definition = context.definition();
     let ability = definition.ability(ability_id.index);
     Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
@@ -205,17 +196,16 @@ fn revealed_ability_card_view(
             ),
             text_color: Some(assets::title_color(None)),
         }),
-        rules_text: Some(RulesText {
-            text: rules_text::ability_text(&RulesTextContext::Game(game, card), ability),
+        rules_text: Some(RulesText { text: rules_text::ability_text(context, ability) }),
+        targeting: context.query_or_none(|game, _| {
+            card_targeting(target_requirement, false, |target| {
+                flags::can_take_activate_ability_action(game, ability_id.side(), ability_id, target)
+            })
         }),
-        targeting: Some(card_targeting(target_requirement, false, |target| {
-            flags::can_take_activate_ability_action(game, ability_id.side(), ability_id, target)
-        })),
-        on_release_position: Some(positions::for_ability(game, ability_id, positions::staging())),
-        supplemental_info: supplemental_info::build(
-            &RulesTextContext::Game(game, card),
-            Some(ability_id.index),
-        ),
+        on_release_position: context.query_or_none(|game, _| {
+            positions::for_ability(game, ability_id, positions::staging())
+        }),
+        supplemental_info: supplemental_info::build(context, Some(ability_id.index)),
     })
 }
 

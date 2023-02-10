@@ -17,6 +17,7 @@
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::card_state::{CardPositionKind, CardState};
+use game_data::card_view_context::CardViewContext;
 use game_data::game::GameState;
 use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::{
@@ -34,7 +35,10 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
         .filter(|c| !skip_sending_to_client(c))
         .flat_map(|c| {
             let mut cards = card_sync::activated_ability_cards(builder, game, c);
-            cards.push(card_sync::card_view(builder, game, c));
+            cards.push(card_sync::card_view(
+                builder,
+                &CardViewContext::Game(rules::get(c.name), game, c),
+            ));
             cards
         })
         .collect();

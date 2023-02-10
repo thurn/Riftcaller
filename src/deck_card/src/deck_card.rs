@@ -30,7 +30,7 @@ use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
 use game_data::card_name::CardName;
-use game_data::text::RulesTextContext;
+use game_data::card_view_context::CardViewContext;
 use protos::spelldawn::{BackgroundImageAutoSize, CardIcon, Dimension, FlexAlign, FlexPosition};
 use rules_text::card_icons;
 
@@ -99,7 +99,7 @@ impl DeckCard {
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
         let definition = rules::get(self.name);
-        let icons = card_icons::build(&RulesTextContext::Default(definition), definition, true);
+        let icons = card_icons::build(&CardViewContext::Default(definition), true);
 
         let result = Column::new(element_names::deck_card(self.name))
             .style(self.layout.to_style().align_items(FlexAlign::Center))

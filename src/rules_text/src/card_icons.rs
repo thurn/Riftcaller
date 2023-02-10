@@ -14,13 +14,13 @@
 
 use assets;
 use assets::CardIconType;
-use game_data::card_definition::CardDefinition;
+use game_data::card_view_context::CardViewContext;
 use game_data::primitives::ManaValue;
-use game_data::text::RulesTextContext;
 use protos::spelldawn::{CardIcon, CardIcons};
 use rules::queries;
 
-pub fn build(context: &RulesTextContext, definition: &CardDefinition, revealed: bool) -> CardIcons {
+pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
+    let definition = context.definition();
     let mut icons = CardIcons::default();
 
     match context.card_data() {
@@ -46,27 +46,28 @@ pub fn build(context: &RulesTextContext, definition: &CardDefinition, revealed: 
     }
 
     if revealed {
-        icons.top_left_icon =
-            if let Some(mana_cost) = context.query_or(definition.cost.mana, queries::mana_cost) {
-                Some(mana_card_icon(mana_cost))
-            } else {
-                definition.config.stats.scheme_points.map(|points| CardIcon {
-                    background: Some(assets::card_icon(CardIconType::LevelRequirement)),
-                    text: Some(points.level_requirement.to_string()),
-                    background_scale: assets::background_scale(CardIconType::LevelRequirement),
-                })
-            };
+        icons.top_left_icon = if let Some(mana_cost) =
+            context.query_id_or(definition.cost.mana, queries::mana_cost)
+        {
+            Some(mana_card_icon(mana_cost))
+        } else {
+            definition.config.stats.scheme_points.map(|points| CardIcon {
+                background: Some(assets::card_icon(CardIconType::LevelRequirement)),
+                text: Some(points.level_requirement.to_string()),
+                background_scale: assets::background_scale(CardIconType::LevelRequirement),
+            })
+        };
 
         icons.bottom_right_icon = if let Some(attack) = definition.config.stats.base_attack {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Attack)),
-                text: Some(context.query_or(attack, queries::attack).to_string()),
+                text: Some(context.query_id_or(attack, queries::attack).to_string()),
                 background_scale: assets::background_scale(CardIconType::Attack),
             })
         } else if let Some(health) = definition.config.stats.health {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Health)),
-                text: Some(context.query_or(health, queries::health).to_string()),
+                text: Some(context.query_id_or(health, queries::health).to_string()),
                 background_scale: assets::background_scale(CardIconType::Health),
             })
         } else {
@@ -77,8 +78,8 @@ pub fn build(context: &RulesTextContext, definition: &CardDefinition, revealed: 
             })
         };
 
-        let shield =
-            context.query_or(definition.config.stats.shield.unwrap_or_default(), queries::shield);
+        let shield = context
+            .query_id_or(definition.config.stats.shield.unwrap_or_default(), queries::shield);
         icons.bottom_left_icon = if shield > 0 {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Shield)),

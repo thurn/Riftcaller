@@ -17,17 +17,18 @@ pub mod card_info;
 pub mod supplemental_info;
 
 use core_ui::icons;
-use game_data::card_definition::{Ability, AbilityType, AttackBoost, CardDefinition, Cost};
+use game_data::card_definition::{Ability, AbilityType, AttackBoost, Cost};
+use game_data::card_view_context::CardViewContext;
 use game_data::primitives::AbilityId;
-use game_data::text::{RulesTextContext, TextElement, TextToken};
+use game_data::text::{TextElement, TextToken};
 use protos::spelldawn::RulesText;
 use rules::queries;
 
 /// Primary function which turns the current state of a card into its client
 /// [RulesText] representation
-pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesText {
+pub fn build(context: &CardViewContext) -> RulesText {
     let mut lines = vec![];
-    let abilities = aggregate_named_triggers(&definition.abilities);
+    let abilities = aggregate_named_triggers(&context.definition().abilities);
     for ability in abilities {
         let mut text = build_text(context, &ability, true);
         text = text.replace(" ,", ",");
@@ -38,7 +39,7 @@ pub fn build(context: &RulesTextContext, definition: &CardDefinition) -> RulesTe
         }
     }
 
-    if let Some(breach) = definition.config.stats.breach {
+    if let Some(breach) = context.definition().config.stats.breach {
         lines.push(build_text(context, &[TextElement::Token(TextToken::Breach(breach))], false))
     }
 
@@ -87,7 +88,7 @@ fn aggregate_named_triggers(abilities: &[Ability]) -> Vec<Vec<TextElement>> {
 
 /// Builds the rules text for a single [Ability], not including its cost (if
 /// any).
-pub fn ability_text(context: &RulesTextContext, ability: &Ability) -> String {
+pub fn ability_text(context: &CardViewContext, ability: &Ability) -> String {
     build_text(context, &ability.text, true)
 }
 
@@ -112,7 +113,7 @@ fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<TextElement> {
 ///
 /// If `add_period` is true, appends a final '.' if the last element is not
 /// itself a sentence-level element.
-fn build_text(context: &RulesTextContext, text: &[TextElement], add_period: bool) -> String {
+fn build_text(context: &CardViewContext, text: &[TextElement], add_period: bool) -> String {
     if text.is_empty() {
         return String::new();
     }
@@ -136,7 +137,7 @@ fn capitalize(mut s: String) -> String {
     s
 }
 
-fn process_text(context: &RulesTextContext, text: &TextElement) -> String {
+fn process_text(context: &CardViewContext, text: &TextElement) -> String {
     match text {
         TextElement::Children(children) => build_text(context, children, true),
         TextElement::NamedTrigger(token, children) => {
@@ -163,7 +164,7 @@ fn process_text(context: &RulesTextContext, text: &TextElement) -> String {
     }
 }
 
-fn process_token(context: &RulesTextContext, token: &TextToken) -> String {
+fn process_token(context: &CardViewContext, token: &TextToken) -> String {
     match token {
         TextToken::ManaSymbol => icons::MANA.to_string(),
         TextToken::Mana(n) => format!("{n}{}", icons::MANA),
@@ -204,10 +205,10 @@ fn process_token(context: &RulesTextContext, token: &TextToken) -> String {
     }
 }
 
-fn encounter_boost(context: &RulesTextContext) -> AttackBoost {
+fn encounter_boost(context: &CardViewContext) -> AttackBoost {
     match context {
-        RulesTextContext::Default(definition) => definition.config.stats.attack_boost,
-        RulesTextContext::Game(game, card) => queries::attack_boost(game, card.id),
+        CardViewContext::Default(definition) => definition.config.stats.attack_boost,
+        CardViewContext::Game(_, game, card) => queries::attack_boost(game, card.id),
     }
     .unwrap_or_default()
 }

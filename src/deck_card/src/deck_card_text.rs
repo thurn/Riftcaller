@@ -15,7 +15,7 @@
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use game_data::card_definition::CardDefinition;
-use game_data::text::RulesTextContext;
+use game_data::card_view_context::CardViewContext;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, WhiteSpace};
 
 use crate::CardHeight;
@@ -33,7 +33,7 @@ impl<'a> DeckCardText<'a> {
 
 impl<'a> Component for DeckCardText<'a> {
     fn build(self) -> Option<Node> {
-        let text = rules_text::build(&RulesTextContext::Default(self.definition), self.definition);
+        let text = rules_text::build(&CardViewContext::Default(self.definition));
         Column::new("RulesText")
             .style(
                 Style::new()
