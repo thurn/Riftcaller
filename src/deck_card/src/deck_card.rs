@@ -25,10 +25,12 @@ use core_ui::style;
 use display::card_sync;
 use game_data::card_name::CardName;
 use game_data::card_view_context::CardViewContext;
-use game_data::primitives::Side;
+use game_data::primitives::{Milliseconds, Side};
+use protos::spelldawn::studio_appear_effect::StudioAppear;
 use protos::spelldawn::studio_display::Display;
 use protos::spelldawn::{
-    CardIcon, CardView, Dimension, FlexAlign, FlexPosition, ImageScaleMode, StudioDisplay,
+    CardIcon, CardView, Dimension, FlexAlign, FlexPosition, ImageScaleMode, StudioAppearEffect,
+    StudioDisplay, StudioDisplayCard,
 };
 
 /// Abstraction representing the height of a card, allowing other measurments to
@@ -53,6 +55,7 @@ pub struct DeckCard {
     height: CardHeight,
     quantity: u32,
     layout: Layout,
+    reveal_delay: Option<Milliseconds>,
     draggable: Option<Draggable>,
 }
 
@@ -63,6 +66,7 @@ impl DeckCard {
             height: CardHeight::vh(36.0),
             quantity: 1,
             layout: Layout::default(),
+            reveal_delay: None,
             draggable: None,
         }
     }
@@ -82,13 +86,24 @@ impl DeckCard {
         self
     }
 
+    /// Optionally, wait a fixed amount of time after display before flipping
+    /// the card face up.
+    pub fn reveal_delay(mut self, delay: Option<Milliseconds>) -> Self {
+        self.reveal_delay = delay;
+        self
+    }
+
     pub fn draggable(mut self, draggable: Option<Draggable>) -> Self {
         self.draggable = draggable;
         self
     }
 }
 
-fn add_quantity(quantity: u32, mut view: CardView) -> CardView {
+fn build_card_view(
+    quantity: u32,
+    reveal_delay: Option<Milliseconds>,
+    mut view: CardView,
+) -> StudioDisplayCard {
     let mut icons = view.card_icons.unwrap_or_default();
     icons.top_right_icon = Some(CardIcon {
         background: Some(style::sprite("Sprites/QuantityBackground")),
@@ -96,7 +111,18 @@ fn add_quantity(quantity: u32, mut view: CardView) -> CardView {
         background_scale: None,
     });
     view.card_icons = Some(icons);
-    view
+
+    let appear_effects = if let Some(delay) = reveal_delay {
+        view.revealed_to_viewer = false;
+        vec![StudioAppearEffect {
+            delay: Some(adapters::time_value(delay)),
+            studio_appear: Some(StudioAppear::SetRevealed(true)),
+        }]
+    } else {
+        vec![]
+    };
+
+    StudioDisplayCard { card: Some(Box::new(view)), appear_effects }
 }
 
 impl Component for DeckCard {
@@ -127,8 +153,9 @@ impl Component for DeckCard {
                         .width(self.height.dim(110.0 * CARD_ASPECT_RATIO))
                         .background_image_scale_mode(ImageScaleMode::ScaleAndCrop)
                         .background_display(StudioDisplay {
-                            display: Some(Display::Card(Box::new(add_quantity(
+                            display: Some(Display::Card(Box::new(build_card_view(
                                 self.quantity,
+                                self.reveal_delay,
                                 card_sync::card_view(&response_builder, &context)
                                     .expect("Error building CardView"),
                             )))),

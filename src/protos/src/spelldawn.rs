@@ -811,7 +811,8 @@ pub struct CardView {
     /// card.
     #[prost(bool, tag = "5")]
     pub revealed_to_viewer: bool,
-    /// Whether the card is in the 'face up' state.
+    /// Whether the card is in the 'face up' state in the arena. Has no effect
+    /// on cards which are not in play.
     #[prost(bool, tag = "6")]
     pub is_face_up: bool,
     #[prost(message, optional, tag = "7")]
@@ -1036,6 +1037,31 @@ pub struct GameView {
     #[prost(message, repeated, tag = "7")]
     pub tutorial_effects: ::prost::alloc::vec::Vec<TutorialEffect>,
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StudioAppearEffect {
+    /// Time to wait before the animation. Defaults to 300ms.
+    #[prost(message, optional, tag = "1")]
+    pub delay: ::core::option::Option<TimeValue>,
+    #[prost(oneof = "studio_appear_effect::StudioAppear", tags = "2")]
+    pub studio_appear: ::core::option::Option<studio_appear_effect::StudioAppear>,
+}
+/// Nested message and enum types in `StudioAppearEffect`.
+pub mod studio_appear_effect {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum StudioAppear {
+        #[prost(bool, tag = "2")]
+        SetRevealed(bool),
+    }
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StudioDisplayCard {
+    #[prost(message, optional, boxed, tag = "1")]
+    pub card: ::core::option::Option<::prost::alloc::boxed::Box<CardView>>,
+    /// Optionally, visual effects to animate when the card first appears
+    /// on-screen.
+    #[prost(message, repeated, tag = "2")]
+    pub appear_effects: ::prost::alloc::vec::Vec<StudioAppearEffect>,
+}
 /// Content to display as the background of a Node via the StudioManager.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StudioDisplay {
@@ -1047,7 +1073,7 @@ pub mod studio_display {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Display {
         #[prost(message, tag = "1")]
-        Card(::prost::alloc::boxed::Box<super::CardView>),
+        Card(::prost::alloc::boxed::Box<super::StudioDisplayCard>),
     }
 }
 // ============================================================================

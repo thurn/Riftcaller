@@ -66,6 +66,7 @@ dependencies = [
  "core_ui",
  "deck_card",
  "element_names",
+ "game_data",
  "panel_address",
  "panels",
  "player_data",

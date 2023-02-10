@@ -117,7 +117,7 @@ namespace Spelldawn.Services
       switch (display.DisplayCase)
       {
         case StudioDisplay.DisplayOneofCase.Card:
-          LoadCardAssets(requests, display.Card);
+          LoadCardAssets(requests, display.Card.Card);
           break;
       }
       

@@ -909,7 +909,8 @@ message CardView {
     // Whether the viewer (current player) is able to see the front of this card.
     bool revealed_to_viewer = 5;
 
-    // Whether the card is in the 'face up' state.
+    // Whether the card is in the 'face up' state in the arena. Has no effect
+    // on cards which are not in play.
     bool is_face_up = 6;
 
     CardIcons card_icons = 7;
@@ -1107,10 +1108,27 @@ message GameView {
     repeated TutorialEffect tutorial_effects = 7;
 }
 
+message StudioAppearEffect {
+    // Time to wait before the animation. Defaults to 300ms.
+    TimeValue delay = 1;
+
+    oneof studio_appear {
+        bool set_revealed = 2;
+    }
+}
+
+message StudioDisplayCard {
+    CardView card = 1;
+
+    // Optionally, visual effects to animate when the card first appears
+    // on-screen.
+    repeated StudioAppearEffect appear_effects = 2;
+}
+
 // Content to display as the background of a Node via the StudioManager.
 message StudioDisplay {
     oneof display {
-        CardView card = 1;
+        StudioDisplayCard card = 1;
     }
 }
 

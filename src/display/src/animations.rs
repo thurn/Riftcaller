@@ -88,7 +88,7 @@ pub fn render(
             targeted_interaction(builder, snapshot, interaction)
         }
         GameUpdate::ScoreCard(_, card_id) => score_card(builder, *card_id),
-        GameUpdate::GameOver(_side) => {} //game_over(builder, snapshot, *side)?,
+        GameUpdate::GameOver(_) => {}
     }
     Ok(())
 }

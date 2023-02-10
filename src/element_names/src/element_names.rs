@@ -98,3 +98,7 @@ pub fn card_list_card_quantity(name: CardName) -> ElementName {
 pub fn buy_card(name: CardName) -> ElementName {
     ElementName { tag: "BuyCard", count: name as u64 }
 }
+
+pub fn draft_card(name: CardName) -> ElementName {
+    ElementName { tag: "DraftCard", count: name as u64 }
+}

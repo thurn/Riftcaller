@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
@@ -55,6 +56,7 @@ namespace Spelldawn.Services
 
         yield return new WaitForSeconds(1.0f);
       }
+      // ReSharper disable once IteratorNeverReturns
     }
 
     IEnumerator DisplayAsBackgroundAsync(VisualElement element, StudioDisplay display)
@@ -69,8 +71,7 @@ namespace Spelldawn.Services
       
       var subject = display.DisplayCase switch
       {
-        StudioDisplay.DisplayOneofCase.Card =>
-          _registry.CardService.CreateCard(display.Card, GameContext.InfoZoom, animate: false).gameObject,
+        StudioDisplay.DisplayOneofCase.Card => CreateCard(display.Card),
         _ => throw new ArgumentOutOfRangeException()
       };
 
@@ -90,5 +91,28 @@ namespace Spelldawn.Services
       }
       element.style.backgroundImage = new StyleBackground(new Background { renderTexture = studio.RenderTexture });
     }
+    
+    GameObject CreateCard(StudioDisplayCard displayCard)
+    {
+      var view = displayCard.Card;
+      var card = _registry.CardService.CreateCard(Errors.CheckNotNull(view), GameContext.InfoZoom, animate: false);
+      foreach (var effect in displayCard.AppearEffects)
+      {
+        switch (effect.StudioAppearCase)
+        {
+          case StudioAppearEffect.StudioAppearOneofCase.SetRevealed:
+            TweenUtils.Sequence("StudioAppearEffect").InsertCallback(DataUtils.ToSeconds(effect.Delay, ifNullMs: 300),
+              () =>
+              {
+                var updated = view.Clone();
+                updated.RevealedToViewer = effect.SetRevealed;
+                card.Render(updated, animate: true);
+              });
+            break;
+        }
+      }
+
+      return card.gameObject;
+    }    
   }
 }

@@ -213,7 +213,7 @@ pub fn find_studio_display(node: &Node) -> Option<&StudioDisplay> {
 /// Finds a [CardView] embedded within a [StudioDisplay] in this Node, if any.
 pub fn find_card_view(node: &Node) -> Option<&CardView> {
     if let Some(Display::Card(c)) = find_studio_display(node).as_ref()?.display.as_ref() {
-        Some(c)
+        Some(c.card.as_ref()?)
     } else {
         None
     }

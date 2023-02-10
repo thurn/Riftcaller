@@ -14,6 +14,7 @@
 
 use adventure_data::adventure::DraftData;
 use adventure_data::adventure_action::AdventureAction;
+use core_ui::action_builder::ActionBuilder;
 use core_ui::button::Button;
 use core_ui::design::FontSize;
 use core_ui::full_screen_image::FullScreenImage;
@@ -22,6 +23,7 @@ use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::text::Text;
 use deck_card::{CardHeight, DeckCard};
+use game_data::primitives::Milliseconds;
 use panel_address::{Panel, PanelAddress};
 use protos::spelldawn::FlexJustify;
 
@@ -41,11 +43,13 @@ impl<'a> Component for DraftPanel<'a> {
             .image(style::sprite("TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1"))
             .content(Row::new("DraftPanel").style(Style::new().justify_content(FlexJustify::Center)).children(self.data.choices.iter().enumerate().map(
                 |(i, choice)| {
+                    let button = element_names::draft_card(choice.card);
                     Column::new("Choice")
                         .style(Style::new().margin(Edge::All, 32.px()))
                         .child(
                             DeckCard::new(choice.card)
                                 .layout(Layout::new().margin(Edge::All, 8.px()))
+                                .reveal_delay(Some(Milliseconds(300 + (i as u32 * 300))))
                                 .height(CardHeight::vh(50.0)),
                         )
                         .child(
@@ -55,13 +59,15 @@ impl<'a> Component for DraftPanel<'a> {
                         )
                         .child(
                             Button::new("Pick")
+                                .name(button)
                                 .layout(
                                     Layout::new()
                                         .margin(Edge::Horizontal, 8.px())
                                         .margin(Edge::Top, 16.px()),
                                 )
-                                .action(Panels::close(self.address())
-                                    .action(AdventureAction::DraftCard(i))),
+                                .action(ActionBuilder::new()
+                                    .action(AdventureAction::DraftCard(i))
+                                    .update(Panels::close(self.address())))
                         )
                 },
             )))

@@ -25,9 +25,11 @@ use core_ui::prelude::*;
 use core_ui::{icons, style};
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
+use element_names::ElementName;
 use panel_address::{Panel, PanelAddress};
 use player_data::PlayerData;
 use protos::spelldawn::animate_element_style::Property;
+use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexVector2};
 use screen_overlay::ScreenOverlay;
 use with_error::fail;
@@ -56,6 +58,17 @@ impl<'a> Panel for ShopPanel<'a> {
     fn screen_overlay(&self) -> Option<Node> {
         ScreenOverlay::new(self.player).show_close_button(self.address()).build()
     }
+}
+
+fn animate_card_to_deck(card_element: ElementName, pick_button: ElementName) -> impl Into<Command> {
+    animations::combine(vec![
+        animations::fade_out(pick_button),
+        InterfaceAnimation::new()
+            .start(card_element, CloneElement)
+            .start(card_element, AnimateStyle::new(Property::Scale(FlexVector2 { x: 0.1, y: 0.1 })))
+            .start(card_element, AnimateToElement::new(element_names::DECK_BUTTON))
+            .insert(animations::default_duration(), card_element, DestroyElement),
+    ])
 }
 
 fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
@@ -96,27 +109,7 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                         .action(
                             ActionBuilder::new()
                                 .action(AdventureAction::BuyCard(position, i))
-                                .update(animations::combine(vec![
-                                    animations::fade_out(button),
-                                    InterfaceAnimation::new()
-                                        .start(card_element, CloneElement)
-                                        .start(
-                                            card_element,
-                                            AnimateStyle::new(Property::Scale(FlexVector2 {
-                                                x: 0.1,
-                                                y: 0.1,
-                                            })),
-                                        )
-                                        .start(
-                                            card_element,
-                                            AnimateToElement::new(element_names::DECK_BUTTON),
-                                        )
-                                        .insert(
-                                            animations::default_duration(),
-                                            card_element,
-                                            DestroyElement,
-                                        ),
-                                ])),
+                                .update(animate_card_to_deck(card_element, button)),
                         )
                         .build()
                 })
