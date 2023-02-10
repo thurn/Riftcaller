@@ -42,6 +42,7 @@ namespace Spelldawn.Services
 
     public void StartDragging(Draggable currentDragSource)
     {
+      Debug.Log($"StartDragging: Position: {currentDragSource.worldBound.position}");
       _originalDragSource = currentDragSource;
       var element = (Draggable)((IMasonElement)currentDragSource).Clone(_registry);
       var initialPosition = currentDragSource.worldBound.position;
@@ -237,18 +238,28 @@ namespace Spelldawn.Services
       _overTarget = false;
     }
 
-    Vector2 GetMousePosition(VisualElement element)
+    Vector2? GetMousePosition(VisualElement element)
     {
+      if (!(float.IsNormal(element.layout.width) && float.IsNormal(element.layout.height)))
+      {
+        return null;
+      }
+      
       var position = _registry.DocumentService.ScreenPositionToElementPosition(Input.mousePosition);
       return new Vector2(
         position.Left - (element.layout.width / 2),
         position.Top - (element.layout.height / 2));
     }
 
-    void SetPosition(VisualElement element, Vector2 pos)
+    void SetPosition(VisualElement element, Vector2? position)
     {
-      element.style.left = pos.x;
-      element.style.top = pos.y;
+      if (position is {} pos)
+      {
+        Errors.CheckArgument(!float.IsNaN(pos.x), $"x coordinate error {pos.x}");
+        Errors.CheckArgument(!float.IsNaN(pos.y), $"y coordinate error {pos.y}");
+        element.style.left = pos.x;
+        element.style.top = pos.y;        
+      }
     }
   }
 }
