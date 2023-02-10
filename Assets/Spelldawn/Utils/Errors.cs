@@ -82,6 +82,15 @@ namespace Spelldawn.Utils
         throw new ArgumentException(message);
       }
     }
+    
+    public static void CheckFloat(float v)
+    {
+      if (float.IsInfinity(v) || float.IsNaN(v))
+      {
+        throw new ArgumentException($"Invalid float {v}");
+      }
+    }
+    
 
     public static void CheckState(bool expression, string message)
     {

@@ -42,7 +42,6 @@ namespace Spelldawn.Services
 
     public void StartDragging(Draggable currentDragSource)
     {
-      Debug.Log($"StartDragging: Position: {currentDragSource.worldBound.position}");
       _originalDragSource = currentDragSource;
       var element = (Draggable)((IMasonElement)currentDragSource).Clone(_registry);
       var initialPosition = currentDragSource.worldBound.position;
@@ -224,12 +223,14 @@ namespace Spelldawn.Services
         _registry.UpdateInterfaceService.MoveElementToPosition(
           currentlyDragging,
           Errors.CheckNotNull(_originalDragSource),
-          new Protos.TimeValue { Milliseconds = 100 }, () =>
+          new Protos.TimeValue { Milliseconds = 100 }, 
+          () =>
           {
             if (_originalDragSource?.RemoveOriginal == true)
             {
               _originalDragSource.style.visibility = Visibility.Visible;
             }
+            currentlyDragging.RemoveFromHierarchy();
           });
       }
 
@@ -255,8 +256,8 @@ namespace Spelldawn.Services
     {
       if (position is {} pos)
       {
-        Errors.CheckArgument(!float.IsNaN(pos.x), $"x coordinate error {pos.x}");
-        Errors.CheckArgument(!float.IsNaN(pos.y), $"y coordinate error {pos.y}");
+        Errors.CheckFloat(pos.x);
+        Errors.CheckFloat(pos.y);
         element.style.left = pos.x;
         element.style.top = pos.y;        
       }
