@@ -255,18 +255,19 @@ namespace Spelldawn.Protos {
             "cG9zaXRpb24YCCABKAsyGS5zcGVsbGRhd24uT2JqZWN0UG9zaXRpb24SKgoR",
             "c3VwcGxlbWVudGFsX2luZm8YCSABKAsyDy5zcGVsbGRhd24uTm9kZRIyChBp",
             "bWFnZV9iYWNrZ3JvdW5kGAogASgLMhguc3BlbGxkYXduLlNwcml0ZUFkZHJl",
-            "c3MinAQKCENhcmRWaWV3EioKB2NhcmRfaWQYASABKAsyGS5zcGVsbGRhd24u",
+            "c3MiyQQKCENhcmRWaWV3EioKB2NhcmRfaWQYASABKAsyGS5zcGVsbGRhd24u",
             "Q2FyZElkZW50aWZpZXISMAoNY2FyZF9wb3NpdGlvbhgCIAEoCzIZLnNwZWxs",
             "ZGF3bi5PYmplY3RQb3NpdGlvbhIlCgZwcmVmYWIYAyABKA4yFS5zcGVsbGRh",
-            "d24uQ2FyZFByZWZhYhIaChJyZXZlYWxlZF90b192aWV3ZXIYBCABKAgSEgoK",
-            "aXNfZmFjZV91cBgFIAEoCBIoCgpjYXJkX2ljb25zGAYgASgLMhQuc3BlbGxk",
-            "YXduLkNhcmRJY29ucxItCgthcmVuYV9mcmFtZRgHIAEoCzIYLnNwZWxsZGF3",
-            "bi5TcHJpdGVBZGRyZXNzEjcKFWZhY2VfZG93bl9hcmVuYV9mcmFtZRgIIAEo",
+            "d24uQ2FyZFByZWZhYhIrCgljYXJkX2JhY2sYBCABKAsyGC5zcGVsbGRhd24u",
+            "U3ByaXRlQWRkcmVzcxIaChJyZXZlYWxlZF90b192aWV3ZXIYBSABKAgSEgoK",
+            "aXNfZmFjZV91cBgGIAEoCBIoCgpjYXJkX2ljb25zGAcgASgLMhQuc3BlbGxk",
+            "YXduLkNhcmRJY29ucxItCgthcmVuYV9mcmFtZRgIIAEoCzIYLnNwZWxsZGF3",
+            "bi5TcHJpdGVBZGRyZXNzEjcKFWZhY2VfZG93bl9hcmVuYV9mcmFtZRgJIAEo",
             "CzIYLnNwZWxsZGF3bi5TcHJpdGVBZGRyZXNzEiwKDW93bmluZ19wbGF5ZXIY",
-            "CSABKA4yFS5zcGVsbGRhd24uUGxheWVyTmFtZRIyCg1yZXZlYWxlZF9jYXJk",
-            "GAogASgLMhsuc3BlbGxkYXduLlJldmVhbGVkQ2FyZFZpZXcSMgoPY3JlYXRl",
-            "X3Bvc2l0aW9uGAsgASgLMhkuc3BlbGxkYXduLk9iamVjdFBvc2l0aW9uEjMK",
-            "EGRlc3Ryb3lfcG9zaXRpb24YDCABKAsyGS5zcGVsbGRhd24uT2JqZWN0UG9z",
+            "CiABKA4yFS5zcGVsbGRhd24uUGxheWVyTmFtZRIyCg1yZXZlYWxlZF9jYXJk",
+            "GAsgASgLMhsuc3BlbGxkYXduLlJldmVhbGVkQ2FyZFZpZXcSMgoPY3JlYXRl",
+            "X3Bvc2l0aW9uGAwgASgLMhkuc3BlbGxkYXduLk9iamVjdFBvc2l0aW9uEjMK",
+            "EGRlc3Ryb3lfcG9zaXRpb24YDSABKAsyGS5zcGVsbGRhd24uT2JqZWN0UG9z",
             "aXRpb24idwoKUGxheWVySW5mbxIwCg5hcmVuYV9wb3J0cmFpdBgBIAEoCzIY",
             "LnNwZWxsZGF3bi5TcHJpdGVBZGRyZXNzEjcKFHZhbGlkX3Jvb21zX3RvX3Zp",
             "c2l0GAIgAygOMhkuc3BlbGxkYXduLlJvb21JZGVudGlmaWVyIlQKCE1hbmFW",
@@ -719,7 +720,7 @@ namespace Spelldawn.Protos {
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ObjectPositionRevealedCards), global::Spelldawn.Protos.ObjectPositionRevealedCards.Parser, new[]{ "Size" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ObjectPosition), global::Spelldawn.Protos.ObjectPosition.Parser, new[]{ "SortingKey", "SortingSubkey", "Offscreen", "Room", "Item", "Staging", "Hand", "Deck", "DeckContainer", "DiscardPile", "DiscardPileContainer", "Raid", "Browser", "Leader", "LeaderContainer", "IntoCard", "Revealed" }, new[]{ "Position" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.RevealedCardView), global::Spelldawn.Protos.RevealedCardView.Parser, new[]{ "CardFrame", "TitleBackground", "Jewel", "Image", "Title", "RulesText", "Targeting", "OnReleasePosition", "SupplementalInfo", "ImageBackground" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.CardView), global::Spelldawn.Protos.CardView.Parser, new[]{ "CardId", "CardPosition", "Prefab", "RevealedToViewer", "IsFaceUp", "CardIcons", "ArenaFrame", "FaceDownArenaFrame", "OwningPlayer", "RevealedCard", "CreatePosition", "DestroyPosition" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.CardView), global::Spelldawn.Protos.CardView.Parser, new[]{ "CardId", "CardPosition", "Prefab", "CardBack", "RevealedToViewer", "IsFaceUp", "CardIcons", "ArenaFrame", "FaceDownArenaFrame", "OwningPlayer", "RevealedCard", "CreatePosition", "DestroyPosition" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.PlayerInfo), global::Spelldawn.Protos.PlayerInfo.Parser, new[]{ "ArenaPortrait", "ValidRoomsToVisit" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ManaView), global::Spelldawn.Protos.ManaView.Parser, new[]{ "BaseMana", "BonusMana", "CanTakeGainManaAction" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Spelldawn.Protos.ScoreView), global::Spelldawn.Protos.ScoreView.Parser, new[]{ "Score" }, null, null, null, null),
@@ -19712,6 +19713,7 @@ namespace Spelldawn.Protos {
       cardId_ = other.cardId_ != null ? other.cardId_.Clone() : null;
       cardPosition_ = other.cardPosition_ != null ? other.cardPosition_.Clone() : null;
       prefab_ = other.prefab_;
+      cardBack_ = other.cardBack_ != null ? other.cardBack_.Clone() : null;
       revealedToViewer_ = other.revealedToViewer_;
       isFaceUp_ = other.isFaceUp_;
       cardIcons_ = other.cardIcons_ != null ? other.cardIcons_.Clone() : null;
@@ -19768,8 +19770,22 @@ namespace Spelldawn.Protos {
       }
     }
 
+    /// <summary>Field number for the "card_back" field.</summary>
+    public const int CardBackFieldNumber = 4;
+    private global::Spelldawn.Protos.SpriteAddress cardBack_;
+    /// <summary>
+    /// Image shown as the back of this card
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Spelldawn.Protos.SpriteAddress CardBack {
+      get { return cardBack_; }
+      set {
+        cardBack_ = value;
+      }
+    }
+
     /// <summary>Field number for the "revealed_to_viewer" field.</summary>
-    public const int RevealedToViewerFieldNumber = 4;
+    public const int RevealedToViewerFieldNumber = 5;
     private bool revealedToViewer_;
     /// <summary>
     /// Whether the viewer (current player) is able to see the front of this card.
@@ -19783,7 +19799,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "is_face_up" field.</summary>
-    public const int IsFaceUpFieldNumber = 5;
+    public const int IsFaceUpFieldNumber = 6;
     private bool isFaceUp_;
     /// <summary>
     /// Whether the card is in the 'face up' state.
@@ -19797,7 +19813,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "card_icons" field.</summary>
-    public const int CardIconsFieldNumber = 6;
+    public const int CardIconsFieldNumber = 7;
     private global::Spelldawn.Protos.CardIcons cardIcons_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Spelldawn.Protos.CardIcons CardIcons {
@@ -19808,7 +19824,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "arena_frame" field.</summary>
-    public const int ArenaFrameFieldNumber = 7;
+    public const int ArenaFrameFieldNumber = 8;
     private global::Spelldawn.Protos.SpriteAddress arenaFrame_;
     /// <summary>
     /// Frame shown on arena card when face-up
@@ -19822,7 +19838,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "face_down_arena_frame" field.</summary>
-    public const int FaceDownArenaFrameFieldNumber = 8;
+    public const int FaceDownArenaFrameFieldNumber = 9;
     private global::Spelldawn.Protos.SpriteAddress faceDownArenaFrame_;
     /// <summary>
     /// Frame shown on arena card when face-down
@@ -19836,7 +19852,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "owning_player" field.</summary>
-    public const int OwningPlayerFieldNumber = 9;
+    public const int OwningPlayerFieldNumber = 10;
     private global::Spelldawn.Protos.PlayerName owningPlayer_ = global::Spelldawn.Protos.PlayerName.Unspecified;
     /// <summary>
     /// Used to e.g. determine which card back to display for this card.
@@ -19850,7 +19866,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "revealed_card" field.</summary>
-    public const int RevealedCardFieldNumber = 10;
+    public const int RevealedCardFieldNumber = 11;
     private global::Spelldawn.Protos.RevealedCardView revealedCard_;
     /// <summary>
     /// Card information which is only present on revealed cards.
@@ -19864,7 +19880,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "create_position" field.</summary>
-    public const int CreatePositionFieldNumber = 11;
+    public const int CreatePositionFieldNumber = 12;
     private global::Spelldawn.Protos.ObjectPosition createPosition_;
     /// <summary>
     /// Optionally, a position at which to create this card.
@@ -19881,7 +19897,7 @@ namespace Spelldawn.Protos {
     }
 
     /// <summary>Field number for the "destroy_position" field.</summary>
-    public const int DestroyPositionFieldNumber = 12;
+    public const int DestroyPositionFieldNumber = 13;
     private global::Spelldawn.Protos.ObjectPosition destroyPosition_;
     /// <summary>
     /// Optionally, a position at which to destroy this card.
@@ -19913,6 +19929,7 @@ namespace Spelldawn.Protos {
       if (!object.Equals(CardId, other.CardId)) return false;
       if (!object.Equals(CardPosition, other.CardPosition)) return false;
       if (Prefab != other.Prefab) return false;
+      if (!object.Equals(CardBack, other.CardBack)) return false;
       if (RevealedToViewer != other.RevealedToViewer) return false;
       if (IsFaceUp != other.IsFaceUp) return false;
       if (!object.Equals(CardIcons, other.CardIcons)) return false;
@@ -19931,6 +19948,7 @@ namespace Spelldawn.Protos {
       if (cardId_ != null) hash ^= CardId.GetHashCode();
       if (cardPosition_ != null) hash ^= CardPosition.GetHashCode();
       if (Prefab != global::Spelldawn.Protos.CardPrefab.Unspecified) hash ^= Prefab.GetHashCode();
+      if (cardBack_ != null) hash ^= CardBack.GetHashCode();
       if (RevealedToViewer != false) hash ^= RevealedToViewer.GetHashCode();
       if (IsFaceUp != false) hash ^= IsFaceUp.GetHashCode();
       if (cardIcons_ != null) hash ^= CardIcons.GetHashCode();
@@ -19968,40 +19986,44 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(24);
         output.WriteEnum((int) Prefab);
       }
+      if (cardBack_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(CardBack);
+      }
       if (RevealedToViewer != false) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteBool(RevealedToViewer);
       }
       if (IsFaceUp != false) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteBool(IsFaceUp);
       }
       if (cardIcons_ != null) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(58);
         output.WriteMessage(CardIcons);
       }
       if (arenaFrame_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(66);
         output.WriteMessage(ArenaFrame);
       }
       if (faceDownArenaFrame_ != null) {
-        output.WriteRawTag(66);
+        output.WriteRawTag(74);
         output.WriteMessage(FaceDownArenaFrame);
       }
       if (OwningPlayer != global::Spelldawn.Protos.PlayerName.Unspecified) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(80);
         output.WriteEnum((int) OwningPlayer);
       }
       if (revealedCard_ != null) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(90);
         output.WriteMessage(RevealedCard);
       }
       if (createPosition_ != null) {
-        output.WriteRawTag(90);
+        output.WriteRawTag(98);
         output.WriteMessage(CreatePosition);
       }
       if (destroyPosition_ != null) {
-        output.WriteRawTag(98);
+        output.WriteRawTag(106);
         output.WriteMessage(DestroyPosition);
       }
       if (_unknownFields != null) {
@@ -20025,40 +20047,44 @@ namespace Spelldawn.Protos {
         output.WriteRawTag(24);
         output.WriteEnum((int) Prefab);
       }
+      if (cardBack_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(CardBack);
+      }
       if (RevealedToViewer != false) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteBool(RevealedToViewer);
       }
       if (IsFaceUp != false) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteBool(IsFaceUp);
       }
       if (cardIcons_ != null) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(58);
         output.WriteMessage(CardIcons);
       }
       if (arenaFrame_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(66);
         output.WriteMessage(ArenaFrame);
       }
       if (faceDownArenaFrame_ != null) {
-        output.WriteRawTag(66);
+        output.WriteRawTag(74);
         output.WriteMessage(FaceDownArenaFrame);
       }
       if (OwningPlayer != global::Spelldawn.Protos.PlayerName.Unspecified) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(80);
         output.WriteEnum((int) OwningPlayer);
       }
       if (revealedCard_ != null) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(90);
         output.WriteMessage(RevealedCard);
       }
       if (createPosition_ != null) {
-        output.WriteRawTag(90);
+        output.WriteRawTag(98);
         output.WriteMessage(CreatePosition);
       }
       if (destroyPosition_ != null) {
-        output.WriteRawTag(98);
+        output.WriteRawTag(106);
         output.WriteMessage(DestroyPosition);
       }
       if (_unknownFields != null) {
@@ -20078,6 +20104,9 @@ namespace Spelldawn.Protos {
       }
       if (Prefab != global::Spelldawn.Protos.CardPrefab.Unspecified) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Prefab);
+      }
+      if (cardBack_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CardBack);
       }
       if (RevealedToViewer != false) {
         size += 1 + 1;
@@ -20131,6 +20160,12 @@ namespace Spelldawn.Protos {
       }
       if (other.Prefab != global::Spelldawn.Protos.CardPrefab.Unspecified) {
         Prefab = other.Prefab;
+      }
+      if (other.cardBack_ != null) {
+        if (cardBack_ == null) {
+          CardBack = new global::Spelldawn.Protos.SpriteAddress();
+        }
+        CardBack.MergeFrom(other.CardBack);
       }
       if (other.RevealedToViewer != false) {
         RevealedToViewer = other.RevealedToViewer;
@@ -20209,54 +20244,61 @@ namespace Spelldawn.Protos {
             Prefab = (global::Spelldawn.Protos.CardPrefab) input.ReadEnum();
             break;
           }
-          case 32: {
-            RevealedToViewer = input.ReadBool();
+          case 34: {
+            if (cardBack_ == null) {
+              CardBack = new global::Spelldawn.Protos.SpriteAddress();
+            }
+            input.ReadMessage(CardBack);
             break;
           }
           case 40: {
+            RevealedToViewer = input.ReadBool();
+            break;
+          }
+          case 48: {
             IsFaceUp = input.ReadBool();
             break;
           }
-          case 50: {
+          case 58: {
             if (cardIcons_ == null) {
               CardIcons = new global::Spelldawn.Protos.CardIcons();
             }
             input.ReadMessage(CardIcons);
             break;
           }
-          case 58: {
+          case 66: {
             if (arenaFrame_ == null) {
               ArenaFrame = new global::Spelldawn.Protos.SpriteAddress();
             }
             input.ReadMessage(ArenaFrame);
             break;
           }
-          case 66: {
+          case 74: {
             if (faceDownArenaFrame_ == null) {
               FaceDownArenaFrame = new global::Spelldawn.Protos.SpriteAddress();
             }
             input.ReadMessage(FaceDownArenaFrame);
             break;
           }
-          case 72: {
+          case 80: {
             OwningPlayer = (global::Spelldawn.Protos.PlayerName) input.ReadEnum();
             break;
           }
-          case 82: {
+          case 90: {
             if (revealedCard_ == null) {
               RevealedCard = new global::Spelldawn.Protos.RevealedCardView();
             }
             input.ReadMessage(RevealedCard);
             break;
           }
-          case 90: {
+          case 98: {
             if (createPosition_ == null) {
               CreatePosition = new global::Spelldawn.Protos.ObjectPosition();
             }
             input.ReadMessage(CreatePosition);
             break;
           }
-          case 98: {
+          case 106: {
             if (destroyPosition_ == null) {
               DestroyPosition = new global::Spelldawn.Protos.ObjectPosition();
             }
@@ -20295,54 +20337,61 @@ namespace Spelldawn.Protos {
             Prefab = (global::Spelldawn.Protos.CardPrefab) input.ReadEnum();
             break;
           }
-          case 32: {
-            RevealedToViewer = input.ReadBool();
+          case 34: {
+            if (cardBack_ == null) {
+              CardBack = new global::Spelldawn.Protos.SpriteAddress();
+            }
+            input.ReadMessage(CardBack);
             break;
           }
           case 40: {
+            RevealedToViewer = input.ReadBool();
+            break;
+          }
+          case 48: {
             IsFaceUp = input.ReadBool();
             break;
           }
-          case 50: {
+          case 58: {
             if (cardIcons_ == null) {
               CardIcons = new global::Spelldawn.Protos.CardIcons();
             }
             input.ReadMessage(CardIcons);
             break;
           }
-          case 58: {
+          case 66: {
             if (arenaFrame_ == null) {
               ArenaFrame = new global::Spelldawn.Protos.SpriteAddress();
             }
             input.ReadMessage(ArenaFrame);
             break;
           }
-          case 66: {
+          case 74: {
             if (faceDownArenaFrame_ == null) {
               FaceDownArenaFrame = new global::Spelldawn.Protos.SpriteAddress();
             }
             input.ReadMessage(FaceDownArenaFrame);
             break;
           }
-          case 72: {
+          case 80: {
             OwningPlayer = (global::Spelldawn.Protos.PlayerName) input.ReadEnum();
             break;
           }
-          case 82: {
+          case 90: {
             if (revealedCard_ == null) {
               RevealedCard = new global::Spelldawn.Protos.RevealedCardView();
             }
             input.ReadMessage(RevealedCard);
             break;
           }
-          case 90: {
+          case 98: {
             if (createPosition_ == null) {
               CreatePosition = new global::Spelldawn.Protos.ObjectPosition();
             }
             input.ReadMessage(CreatePosition);
             break;
           }
-          case 98: {
+          case 106: {
             if (destroyPosition_ == null) {
               DestroyPosition = new global::Spelldawn.Protos.ObjectPosition();
             }

@@ -804,38 +804,41 @@ pub struct CardView {
     /// Which prefab to use for this card, controls the overall appearance
     #[prost(enumeration = "CardPrefab", tag = "3")]
     pub prefab: i32,
+    /// Image shown as the back of this card
+    #[prost(message, optional, tag = "4")]
+    pub card_back: ::core::option::Option<SpriteAddress>,
     /// Whether the viewer (current player) is able to see the front of this
     /// card.
-    #[prost(bool, tag = "4")]
+    #[prost(bool, tag = "5")]
     pub revealed_to_viewer: bool,
     /// Whether the card is in the 'face up' state.
-    #[prost(bool, tag = "5")]
+    #[prost(bool, tag = "6")]
     pub is_face_up: bool,
-    #[prost(message, optional, tag = "6")]
+    #[prost(message, optional, tag = "7")]
     pub card_icons: ::core::option::Option<CardIcons>,
     /// Frame shown on arena card when face-up
-    #[prost(message, optional, tag = "7")]
+    #[prost(message, optional, tag = "8")]
     pub arena_frame: ::core::option::Option<SpriteAddress>,
     /// Frame shown on arena card when face-down
-    #[prost(message, optional, tag = "8")]
+    #[prost(message, optional, tag = "9")]
     pub face_down_arena_frame: ::core::option::Option<SpriteAddress>,
     /// Used to e.g. determine which card back to display for this card.
-    #[prost(enumeration = "PlayerName", tag = "9")]
+    #[prost(enumeration = "PlayerName", tag = "10")]
     pub owning_player: i32,
     /// Card information which is only present on revealed cards.
-    #[prost(message, optional, boxed, tag = "10")]
+    #[prost(message, optional, boxed, tag = "11")]
     pub revealed_card: ::core::option::Option<::prost::alloc::boxed::Box<RevealedCardView>>,
     /// Optionally, a position at which to create this card.
     ///
     /// If this card does not already exist, it will be created at this position
     /// before being animated to its 'card_position'.
-    #[prost(message, optional, tag = "11")]
+    #[prost(message, optional, tag = "12")]
     pub create_position: ::core::option::Option<ObjectPosition>,
     /// Optionally, a position at which to destroy this card.
     ///
     /// If provided, the card will be animated to this position before being
     /// destroyed.
-    #[prost(message, optional, tag = "12")]
+    #[prost(message, optional, tag = "13")]
     pub destroy_position: ::core::option::Option<ObjectPosition>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]

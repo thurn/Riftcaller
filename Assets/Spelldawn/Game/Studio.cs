@@ -14,6 +14,7 @@
 
 #nullable enable
 
+using Spelldawn.Utils;
 using UnityEngine;
 
 namespace Spelldawn.Game
@@ -23,7 +24,8 @@ namespace Spelldawn.Game
     [SerializeField] Camera _camera = null!;
     [SerializeField] Transform _subjectPosition = null!;
     [SerializeField] GameObject? _subject;
-    
+
+    bool _initialized;
     int _studioLayer;
     public int StudioNumber { get; private set; }
     public RenderTexture RenderTexture { get; private set; } = null!;
@@ -32,11 +34,13 @@ namespace Spelldawn.Game
 
     public void Initialize(int studioNumber)
     {
+      Errors.CheckState(!_initialized, "Already initialized!");
       name = $"Studio {studioNumber}";
       StudioNumber = studioNumber;
       _studioLayer = LayerMask.NameToLayer("Studio");
       RenderTexture = new RenderTexture(1024, 1024, 32, RenderTextureFormat.ARGB32);
       _camera.targetTexture = RenderTexture;
+      _initialized = true;
     }
 
     public string ClassNameTag() => $"sd_StudioDisplay{StudioNumber}"; 

@@ -45,15 +45,12 @@ namespace Spelldawn.World
         var mouseMove = MousePosition();
         transform.position -= mouseMove - _dragStartPosition;
       }
-      else if (Input.GetMouseButtonUp(0))
+      else if (Input.GetMouseButtonUp(0) && _dragStartScreenPosition is {} startPosition)
       {
         var mouseUp = Input.mousePosition;
-        if (Vector2.Distance(_dragStartScreenPosition!.Value, mouseUp) < 10f)
+        if (Vector2.Distance(startPosition, mouseUp) < 10f)
         {
-          if (!_registry.DocumentService.IsAnyPanelOpen())
-          {
-            _worldMap.OnClick(MousePosition());
-          }
+          _worldMap.OnClick(MousePosition());
         }
 
         _dragStartScreenPosition = null;

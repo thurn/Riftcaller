@@ -131,9 +131,9 @@ namespace Spelldawn.Game
         SetGameContext(gc);
       }
 
-      if (cardView.OwningPlayer != PlayerName.Unspecified)
+      if (cardView.CardBack is {} back)
       {
-        Registry.AssetService.AssignSprite(_cardBack, Registry.CardService.GetCardBack(cardView.OwningPlayer));
+        Registry.AssetService.AssignSprite(_cardBack, back);
       }
 
       _outline.sortingOrder = -1;
@@ -412,9 +412,9 @@ namespace Spelldawn.Game
 
     void RenderCardView(CardView card)
     {
-      _serverRevealedInArena = card.RevealedToViewer && card.IsFaceUp;
+      _serverRevealedInArena = card is { RevealedToViewer: true, IsFaceUp: true };
 
-      if (card.RevealedToViewer && card.RevealedCard != null)
+      if (card is { RevealedToViewer: true, RevealedCard: { } })
       {
         RenderRevealedCard(card.RevealedCard);
       }

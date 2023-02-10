@@ -44,6 +44,7 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result
             CardPrefab::Standard
         }
         .into(),
+        card_back: Some(assets::card_back(context.definition().school)),
         revealed_to_viewer: revealed,
         is_face_up: context.query_or(true, |_, card| card.is_face_up()),
         card_icons: Some(card_icons::build(context, revealed)),
@@ -106,6 +107,7 @@ pub fn ability_card_view(
             CardPrefab::TokenCard
         }
         .into(),
+        card_back: Some(assets::card_back(context.definition().school)),
         revealed_to_viewer: true,
         is_face_up: false,
         card_icons: Some(CardIcons {

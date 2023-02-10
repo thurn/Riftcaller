@@ -46,6 +46,7 @@ namespace Spelldawn.Services
         // Periodically remove studios which are not currently being used in the UI.
         var remove = _studios.Where(kvp =>
           !_registry.DocumentService.RootVisualElement.Query().Class(kvp.Value.ClassNameTag()).Build().Any()).ToList();
+
         foreach (var (key, studio) in remove)
         {
           _studios.Remove(key);
@@ -58,14 +59,14 @@ namespace Spelldawn.Services
 
     IEnumerator DisplayAsBackgroundAsync(VisualElement element, StudioDisplay display)
     {
+      yield return _registry.AssetService.LoadStudioAssets(display);
+
       if (_studios.ContainsKey(display))
       {
         SetStudio(element, _studios[display]);
         yield break;
       }
-
-      yield return _registry.AssetService.LoadStudioAssets(display);
-
+      
       var subject = display.DisplayCase switch
       {
         StudioDisplay.DisplayOneofCase.Card =>

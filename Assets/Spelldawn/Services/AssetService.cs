@@ -347,6 +347,7 @@ namespace Spelldawn.Services
     {
       if (card != null)
       {
+        LoadSprite(requests, card.CardBack);
         LoadCardIconsAssets(requests, card.CardIcons);
         LoadSprite(requests, card.ArenaFrame);
         LoadSprite(requests, card.FaceDownArenaFrame);
