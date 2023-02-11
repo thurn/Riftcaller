@@ -196,19 +196,34 @@ namespace Spelldawn.Services
       return false;
     }
 
-    public void DisplayInfoZoom(Vector3 worldMousePosition, Card card)
+    public void HandleInfoZoomCommand(InfoZoomCommand command)
     {
-      StartCoroutine(InfoZoom(worldMousePosition, card));
+      if (command is { Show: true, Card: {} view })
+      {
+        var card = CreateCard(view, GameContext.InfoZoom, animate: false);
+        StartCoroutine(InfoZoom(card));
+      }
+      else
+      {
+        ClearInfoZoom();
+      }
     }
 
-    IEnumerator InfoZoom(Vector3 worldMousePosition, Card card)
+    public void DisplayInfoZoom(Card card)
+    {
+      StartCoroutine(InfoZoom(card));
+    }
+
+    IEnumerator InfoZoom(Card card)
     {
       ClearInfoZoom();
+      var showOnLeft = Input.mousePosition.x > Screen.width / 2.0;
+      
       var zoomed = InfoCopy(card);
       if (zoomed.SupplementalInfo != null)
       {
         zoomed.SupplementalInfo.Style.Margin = MasonUtil.GroupDip(32f, -120f, 0f, -120f);
-        zoomed.SupplementalInfo.Style.AlignItems = worldMousePosition.x < 0 ? FlexAlign.FlexStart : FlexAlign.FlexEnd;
+        zoomed.SupplementalInfo.Style.AlignItems = showOnLeft ? FlexAlign.FlexStart : FlexAlign.FlexEnd;
       }
 
       var node = MasonUtil.Row("InfoZoom",
@@ -217,11 +232,11 @@ namespace Spelldawn.Services
           Position = FlexPosition.Absolute,
           Inset = new DimensionGroup
           {
-            Left = worldMousePosition.x < 0 ? MasonUtil.Px(0) : null,
-            Right = worldMousePosition.x < 0 ? null : MasonUtil.Px(0)
+            Left = showOnLeft ? MasonUtil.Px(0) : null,
+            Right = showOnLeft ? null : MasonUtil.Px(0)
           }
         },
-        worldMousePosition.x < 0 ? null : zoomed.SupplementalInfo,
+        showOnLeft ? null : zoomed.SupplementalInfo,
         MasonUtil.Column("Image",
           new FlexStyle
           {
@@ -235,7 +250,7 @@ namespace Spelldawn.Services
               }
             }
           }),
-        worldMousePosition.x < 0 ? zoomed.SupplementalInfo : null
+        showOnLeft ? zoomed.SupplementalInfo : null
       );
 
       yield return _registry.AssetService.LoadAssetsForNode(node);

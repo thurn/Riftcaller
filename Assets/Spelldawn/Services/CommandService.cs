@@ -17,6 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Assets;
+using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -141,6 +142,9 @@ namespace Spelldawn.Services
             break;
           case GameCommand.CommandOneofCase.Conditional:
             yield return HandleConditionalCommand(command.Conditional);
+            break;
+          case GameCommand.CommandOneofCase.InfoZoom:
+            _registry.CardService.HandleInfoZoomCommand(command.InfoZoom);
             break;
           case GameCommand.CommandOneofCase.None:
             break;

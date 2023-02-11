@@ -28,9 +28,9 @@ use protos::spelldawn::{
     CardTitle, CardView, CommandList, ConditionalCommand, CreateTokenCardCommand, DelayCommand,
     DisplayGameMessageCommand, DisplayRewardsCommand, EffectAddress, FireProjectileCommand,
     GameCommand, GameMessageType, GameObjectIdentifier, GameObjectMove, GameObjectPositions,
-    GameView, InterfaceMainControls, InterfacePanel, InterfacePanelAddress, LoadSceneCommand,
-    ManaView, MapPosition, MoveGameObjectsCommand, MusicState, NoTargeting, Node, NodeType,
-    ObjectPosition, PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand,
+    GameView, InfoZoomCommand, InterfaceMainControls, InterfacePanel, InterfacePanelAddress,
+    LoadSceneCommand, ManaView, MapPosition, MoveGameObjectsCommand, MusicState, NoTargeting, Node,
+    NodeType, ObjectPosition, PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand,
     PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress, RenderScreenOverlayCommand,
     RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, SceneLoadMode, ScoreView,
     SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand,
@@ -283,6 +283,7 @@ impl Summarize for Command {
             Self::RenderScreenOverlay(v) => summary.child_node("RenderScreenOverlay", v),
             Self::UpdateInterface(v) => summary.child_node("UpdateInterface", v),
             Self::Conditional(v) => summary.child_node("Conditional", v),
+            Self::InfoZoom(v) => summary.child_node("InfoZoom", v),
         }
     }
 }
@@ -704,5 +705,11 @@ impl Summarize for UpdateInterfaceCommand {
 impl Summarize for ConditionalCommand {
     fn summarize(self, summary: &mut Summary) {
         summary.primitive("<ConditionalCommand>");
+    }
+}
+
+impl Summarize for InfoZoomCommand {
+    fn summarize(self, summary: &mut Summary) {
+        summary.primitive("<InfoZoom>");
     }
 }

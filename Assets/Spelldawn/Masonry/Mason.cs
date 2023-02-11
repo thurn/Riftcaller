@@ -121,7 +121,15 @@ namespace Spelldawn.Masonry
           var pressedStyle = new FlexStyle();
           pressedStyle.MergeFrom(node.Style);
           pressedStyle.MergeFrom(node.PressedStyle);
-          callbacks.SetCallback(Callbacks.Event.MouseDown, () => { ApplyStyle(registry, element, pressedStyle); });
+          callbacks.SetCallback(Callbacks.Event.MouseDown, () =>
+          {
+            ApplyStyle(registry, element, pressedStyle);
+            
+            if (node.EventHandlers?.OnMouseDown is { } onMouseDown)
+            {
+              registry.ActionService.HandleAction(onMouseDown);
+            }
+          });
           callbacks.SetCallback(Callbacks.Event.MouseUp, () =>
           {
             var style = node.Style;
@@ -133,37 +141,21 @@ namespace Spelldawn.Masonry
             }
 
             ApplyStyle(registry, element, style);
+            
+            if (node.EventHandlers?.OnMouseUp is { } onMouseUp)
+            {
+              registry.ActionService.HandleAction(onMouseUp);
+            }            
           });
         }
         else
         {
-          callbacks.SetCallback(Callbacks.Event.MouseDown, null);
-          callbacks.SetCallback(Callbacks.Event.MouseUp, null);
+          SetCallback(registry, callbacks, node.EventHandlers?.OnMouseDown, Callbacks.Event.MouseDown);
+          SetCallback(registry, callbacks, node.EventHandlers?.OnMouseUp, Callbacks.Event.MouseUp);
         }
 
-        if (node.EventHandlers?.OnClick is { } onClick)
-        {
-          callbacks.SetCallback(Callbacks.Event.Click, () =>
-          {
-            registry.ActionService.HandleAction(onClick);
-          });
-        }
-        else
-        {
-          callbacks.SetCallback(Callbacks.Event.Click, null);
-        }
-        
-        if (node.EventHandlers?.OnLongPress is { } longPress)
-        {
-          callbacks.SetCallback(Callbacks.Event.LongPress, () =>
-          {
-            registry.ActionService.HandleAction(longPress);
-          });
-        }
-        else
-        {
-          callbacks.SetCallback(Callbacks.Event.LongPress, null);
-        }        
+        SetCallback(registry, callbacks, node.EventHandlers?.OnClick, Callbacks.Event.Click);
+        SetCallback(registry, callbacks, node.EventHandlers?.OnLongPress, Callbacks.Event.LongPress);
 
         if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
         {
@@ -181,6 +173,21 @@ namespace Spelldawn.Masonry
         {
           Debug.LogError($"Custom element {element} cannot have interaction");
         }
+      }
+    }
+    
+    static void SetCallback(Registry registry, INodeCallbacks element, ClientAction? action, Callbacks.Event eventType)
+    {
+      if (action != null)
+      {
+        element.SetCallback(eventType, () =>
+        {
+          registry.ActionService.HandleAction(action);
+        });
+      }
+      else
+      {
+        element.SetCallback(eventType, null);
       }
     }
 

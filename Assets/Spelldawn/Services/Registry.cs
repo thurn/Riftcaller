@@ -264,7 +264,6 @@ namespace Spelldawn.Services
       {
         if (!condition.Contains("RpcException") && !condition.Contains("[Error]"))
         {
-          Debug.LogException(new Exception($"[Error] {AnalyticsService.CurrentMetadata} {condition}")); 
           StartCoroutine(CommandService.HandleCommands(new GameCommand
           {
             Debug = new ClientDebugCommand

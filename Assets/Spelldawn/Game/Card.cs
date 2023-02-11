@@ -259,9 +259,7 @@ namespace Spelldawn.Game
       if (Registry.CapabilityService.CanInfoZoom(this, GameContext) && _isRevealed)
       {
         Registry.StaticAssets.PlayCardSound();
-        Registry.CardService.DisplayInfoZoom(
-          WorldMousePosition(Registry, Registry.MainCamera.WorldToScreenPoint(gameObject.transform.position).z),
-          this);
+        Registry.CardService.DisplayInfoZoom(this);
       }
 
       if (InHand() && CanPlay())

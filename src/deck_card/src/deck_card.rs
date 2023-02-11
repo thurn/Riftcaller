@@ -26,11 +26,12 @@ use display::card_sync;
 use game_data::card_name::CardName;
 use game_data::card_view_context::CardViewContext;
 use game_data::primitives::{Milliseconds, Side};
+use protos::spelldawn::game_command::Command;
 use protos::spelldawn::studio_appear_effect::StudioAppear;
 use protos::spelldawn::studio_display::Display;
 use protos::spelldawn::{
-    CardIcon, CardView, Dimension, FlexAlign, FlexPosition, ImageScaleMode, StudioAppearEffect,
-    StudioDisplay, StudioDisplayCard,
+    CardIcon, CardView, Dimension, FlexAlign, FlexPosition, ImageScaleMode, InfoZoomCommand,
+    StudioAppearEffect, StudioDisplay, StudioDisplayCard,
 };
 
 /// Abstraction representing the height of a card, allowing other measurments to
@@ -135,6 +136,8 @@ impl Component for DeckCard {
             ResponseState { animate: false, is_final_update: true },
         );
         let context = CardViewContext::Default(definition);
+        let card_view =
+            card_sync::card_view(&response_builder, &context).expect("Error building CardView");
 
         let result = Column::new(element_names::deck_card(self.name))
             .style(
@@ -144,6 +147,11 @@ impl Component for DeckCard {
                     .height(self.height.dim(100.0))
                     .width(self.height.dim(100.0 * CARD_ASPECT_RATIO)),
             )
+            .on_mouse_down(Command::InfoZoom(InfoZoomCommand {
+                show: true,
+                card: Some(card_view.clone()),
+            }))
+            .on_mouse_up(Command::InfoZoom(InfoZoomCommand { show: false, card: None }))
             .child(
                 Row::new("Card").style(
                     Style::new()
@@ -158,8 +166,7 @@ impl Component for DeckCard {
                             display: Some(Display::Card(Box::new(build_card_view(
                                 self.quantity,
                                 self.reveal_delay,
-                                card_sync::card_view(&response_builder, &context)
-                                    .expect("Error building CardView"),
+                                card_view,
                             )))),
                         })
                         .position(Edge::Top, self.height.dim(-6.0))

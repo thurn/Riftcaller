@@ -122,6 +122,20 @@ pub trait HasRenderNode: Sized {
             Some(action.build());
         self
     }
+
+    /// Action to invoke when this component is pressed down
+    fn on_mouse_down(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_mouse_down =
+            Some(action.build());
+        self
+    }
+
+    /// Action to invoke when a press on this component is released
+    fn on_mouse_up(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_mouse_up =
+            Some(action.build());
+        self
+    }
 }
 
 pub trait HasNodeChildren: HasRenderNode {

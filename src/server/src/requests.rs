@@ -708,6 +708,7 @@ pub fn command_name(command: &GameCommand) -> &'static str {
         Command::RenderScreenOverlay(_) => "RenderScreenOverlay",
         Command::UpdateInterface(_) => "UpdateInterface",
         Command::Conditional(_) => "Conditional",
+        Command::InfoZoom(_) => "InfoZoom",
     })
 }
 

@@ -476,6 +476,10 @@ pub struct EventHandlers {
     pub on_click: ::core::option::Option<ClientAction>,
     #[prost(message, optional, tag = "2")]
     pub on_long_press: ::core::option::Option<ClientAction>,
+    #[prost(message, optional, tag = "3")]
+    pub on_mouse_down: ::core::option::Option<ClientAction>,
+    #[prost(message, optional, tag = "4")]
+    pub on_mouse_up: ::core::option::Option<ClientAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
@@ -1795,11 +1799,23 @@ pub struct ConditionalCommand {
     #[prost(message, optional, tag = "3")]
     pub if_false: ::core::option::Option<CommandList>,
 }
+/// Displays an 'info zoom' relative to the current mouse or touch position,
+/// a popup when a card is selected which shows a larger version of it which
+/// is easier to read.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct InfoZoomCommand {
+    /// Whether to show or hide the InfoZoom.
+    #[prost(bool, tag = "1")]
+    pub show: bool,
+    /// The card to display information about, if 'show' is true.
+    #[prost(message, optional, tag = "2")]
+    pub card: ::core::option::Option<CardView>,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -1847,6 +1863,8 @@ pub mod game_command {
         UpdateInterface(super::UpdateInterfaceCommand),
         #[prost(message, tag = "21")]
         Conditional(super::ConditionalCommand),
+        #[prost(message, tag = "22")]
+        InfoZoom(super::InfoZoomCommand),
     }
 }
 /// Metadata to include with logging for this client, e.g. for crash

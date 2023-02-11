@@ -597,8 +597,11 @@ message EventHandlers {
     ClientAction on_click = 1;
 
     ClientAction on_long_press = 2;
-}
 
+    ClientAction on_mouse_down = 3;
+
+    ClientAction on_mouse_up = 4;
+}
 
 message Node {
     // Used to identify this node in the view hierarchy
@@ -1791,6 +1794,17 @@ message ConditionalCommand {
     CommandList if_false = 3;
 }
 
+// Displays an 'info zoom' relative to the current mouse or touch position,
+// a popup when a card is selected which shows a larger version of it which
+// is easier to read.
+message InfoZoomCommand {
+    // Whether to show or hide the InfoZoom.
+    bool show = 1;
+
+    // The card to display information about, if 'show' is true.
+    CardView card = 2;
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -1813,6 +1827,7 @@ message GameCommand {
         RenderScreenOverlayCommand render_screen_overlay = 19;
         UpdateInterfaceCommand update_interface = 20;
         ConditionalCommand conditional = 21;
+        InfoZoomCommand info_zoom = 22;
     }
 }
 

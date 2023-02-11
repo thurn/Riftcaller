@@ -77,7 +77,7 @@ namespace Spelldawn.Services
 
       var studio = ComponentUtils.Instantiate(_studioPrefab);
       studio.Initialize(_nextStudioNumber++);
-      studio.transform.position = new Vector3(_nextX++ * 50, 50, 50);
+      studio.transform.position = new Vector3(_nextX++ * 5, 50, 50);
       studio.SetSubject(subject);
       SetStudio(element, studio);
       _studios[display] = studio;
