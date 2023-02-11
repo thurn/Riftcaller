@@ -81,14 +81,15 @@ impl<'a> CollectionBrowser<'a> {
 
         let slot = DeckCardSlot::new(CardHeight::vh(36.0))
             .layout(Layout::new().margin(Edge::All, 16.px()))
-            .card(Some(DeckCard::new(card_name).quantity(quantity).draggable((!in_deck).then(
-                || {
+            .card(Some(DeckCard::new(card_name).quantity(Some(quantity)).draggable(
+                (!in_deck).then(|| {
                     Draggable::new(card_name.to_string())
                         .drop_target(element_names::CARD_LIST)
                         .over_target_indicator(move || CardListCardName::new(card_name).build())
                         .on_drop(Some(self.drop_action(card_name)))
-                },
-            ))));
+                        .custom_drag_indicator(DeckCard::new(card_name).build())
+                }),
+            )));
 
         if in_deck {
             Column::new(element_names::deck_card_slot_overlay(card_name))

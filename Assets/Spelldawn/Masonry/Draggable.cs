@@ -35,6 +35,7 @@ namespace Spelldawn.Masonry
     public uint? HorizontalDragStartDistance { get; set; }
     public bool RemoveOriginal { get; set; }
     public List<string> HideIndicatorChildren { get; set; }
+    public Node? CustomDragIndicator { get; set; }
 
     public static void Apply(Registry registry, Draggable view, Node data)
     {
@@ -46,6 +47,7 @@ namespace Spelldawn.Masonry
       view.HorizontalDragStartDistance = data.NodeType.DraggableNode.HorizontalDragStartDistance;
       view.RemoveOriginal = data.NodeType.DraggableNode.RemoveOriginal;
       view.HideIndicatorChildren = data.NodeType.DraggableNode.HideIndicatorChildren.ToList();
+      view.CustomDragIndicator = data.NodeType.DraggableNode.CustomDragIndicator;
     }
 
     public Draggable()

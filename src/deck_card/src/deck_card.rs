@@ -53,7 +53,7 @@ impl CardHeight {
 pub struct DeckCard {
     name: CardName,
     height: CardHeight,
-    quantity: u32,
+    quantity: Option<u32>,
     layout: Layout,
     reveal_delay: Option<Milliseconds>,
     draggable: Option<Draggable>,
@@ -64,7 +64,7 @@ impl DeckCard {
         Self {
             name,
             height: CardHeight::vh(36.0),
-            quantity: 1,
+            quantity: None,
             layout: Layout::default(),
             reveal_delay: None,
             draggable: None,
@@ -76,7 +76,7 @@ impl DeckCard {
         self
     }
 
-    pub fn quantity(mut self, quantity: u32) -> Self {
+    pub fn quantity(mut self, quantity: Option<u32>) -> Self {
         self.quantity = quantity;
         self
     }
@@ -100,17 +100,19 @@ impl DeckCard {
 }
 
 fn build_card_view(
-    quantity: u32,
+    quantity: Option<u32>,
     reveal_delay: Option<Milliseconds>,
     mut view: CardView,
 ) -> StudioDisplayCard {
-    let mut icons = view.card_icons.unwrap_or_default();
-    icons.top_right_icon = Some(CardIcon {
-        background: Some(style::sprite("Sprites/QuantityBackground")),
-        text: Some(format!("{quantity}x")),
-        background_scale: None,
-    });
-    view.card_icons = Some(icons);
+    if let Some(quantity) = quantity {
+        let mut icons = view.card_icons.unwrap_or_default();
+        icons.top_right_icon = Some(CardIcon {
+            background: Some(style::sprite("Sprites/QuantityBackground")),
+            text: Some(format!("{quantity}x")),
+            background_scale: None,
+        });
+        view.card_icons = Some(icons);
+    }
 
     let appear_effects = if let Some(delay) = reveal_delay {
         view.revealed_to_viewer = false;

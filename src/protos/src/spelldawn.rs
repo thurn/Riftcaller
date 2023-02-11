@@ -359,6 +359,10 @@ pub struct DraggableNode {
     /// drag indicator element.
     #[prost(string, repeated, tag = "6")]
     pub hide_indicator_children: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Optionally, a UI element to use for the drag indicator instead of
+    /// cloning this element directly.
+    #[prost(message, optional, boxed, tag = "7")]
+    pub custom_drag_indicator: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}

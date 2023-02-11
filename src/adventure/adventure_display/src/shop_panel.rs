@@ -87,8 +87,9 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                     DeckCardSlot::new(CardHeight::vh(40.0))
                         .layout(Layout::new().margin(Edge::All, 4.px()))
                         .card(
-                            (!choice.sold)
-                                .then(|| DeckCard::new(choice.card).quantity(choice.quantity)),
+                            (!choice.sold).then(|| {
+                                DeckCard::new(choice.card).quantity(Some(choice.quantity))
+                            }),
                         ),
                 )
                 .child_node(if choice.sold {

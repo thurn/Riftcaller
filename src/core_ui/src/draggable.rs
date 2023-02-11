@@ -74,6 +74,13 @@ impl Draggable {
         self.draggable.hide_indicator_children = children.into_iter().map(Into::into).collect();
         self
     }
+
+    /// Optionally, a UI element to use for the drag indicator instead of
+    /// cloning this element directly.
+    pub fn custom_drag_indicator(mut self, indicator: Option<Node>) -> Self {
+        self.draggable.custom_drag_indicator = indicator.map(Box::new);
+        self
+    }
 }
 
 impl HasRenderNode for Draggable {

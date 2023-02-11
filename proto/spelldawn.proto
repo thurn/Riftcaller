@@ -482,6 +482,10 @@ message DraggableNode {
     // Identifiers of children of this Draggable which should be hidden in the
     // drag indicator element.
     repeated string hide_indicator_children = 6;
+
+    // Optionally, a UI element to use for the drag indicator instead of cloning
+    // this element directly.
+    Node custom_drag_indicator = 7;
 }
 
 message DropTargetNode {

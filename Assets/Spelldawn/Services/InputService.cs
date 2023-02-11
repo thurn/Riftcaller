@@ -31,7 +31,7 @@ namespace Spelldawn.Services
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
     Displayable? _lastClicked;
     Draggable? _originalDragSource;
-    Draggable? _currentlyDragging;
+    VisualElement? _currentlyDragging;
     VisualElement? _overTargetIndicator;
     Vector2? _dragStartMousePosition;
     bool _overTarget;
@@ -40,25 +40,37 @@ namespace Spelldawn.Services
     const string DragElementName = "<DragElement>";
     const string OverTargetIndicatorElementName = "<OverTargetIndicator>";
 
-    public void StartDragging(Draggable currentDragSource)
+    public void StartDragging(Draggable newDragSource)
     {
-      _originalDragSource = currentDragSource;
-      var element = (Draggable)((IMasonElement)currentDragSource).Clone(_registry);
-      var initialPosition = currentDragSource.worldBound.position;
+      _originalDragSource = newDragSource;
+      VisualElement element;
+      if (newDragSource.CustomDragIndicator is { } indicator)
+      {
+        var draggable = Mason.Render(_registry, indicator);
+        element = draggable;
+      }
+      else
+      {
+        var draggable = (Draggable)((IMasonElement)newDragSource).Clone(_registry);
+        draggable.OnStartDrag();
+        element = draggable;
+      }
+
+      var initialPosition = newDragSource.worldBound.position;
       element.name = DragElementName;
       SetPosition(element, initialPosition);
       element.style.position = Position.Absolute;
       _registry.DocumentService.RootVisualElement.Add(element);
       element.BringToFront();
       element.style.visibility = Visibility.Hidden;
-      element.OnStartDrag();
+
       _currentlyDragging = element;
       _dragStartMousePosition = _registry.DocumentService.ElementMousePosition();
       _overTarget = false;
 
-      if (element.OverTargetIndicator != null)
+      if (newDragSource.OverTargetIndicator != null)
       {
-        _overTargetIndicator = Mason.Render(_registry, element.OverTargetIndicator);
+        _overTargetIndicator = Mason.Render(_registry, newDragSource.OverTargetIndicator);
         _overTargetIndicator.style.position = Position.Absolute;
         _overTargetIndicator.style.visibility = Visibility.Hidden;
         _registry.DocumentService.RootVisualElement.Add(_overTargetIndicator);
@@ -136,11 +148,11 @@ namespace Spelldawn.Services
       return fired;
     }
 
-    void ElementMouseMove(Draggable currentlyDragging)
+    void ElementMouseMove(VisualElement currentlyDragging)
     {
       var mousePosition = _registry.DocumentService.ElementMousePosition();
       var horizontalDistance = Mathf.Abs(mousePosition.x - _dragStartMousePosition!.Value.x);
-      if (_currentlyDragging!.HorizontalDragStartDistance is { } distance && horizontalDistance < distance)
+      if (_originalDragSource is { HorizontalDragStartDistance: { } distance } && horizontalDistance < distance)
       {
         _currentlyDragging!.style.visibility = Visibility.Hidden;
         if (_overTargetIndicator != null)
@@ -167,7 +179,8 @@ namespace Spelldawn.Services
 
       var target = dropTargets.Where(target =>
           target.worldBound.Contains(mousePosition) &&
-          currentlyDragging.TargetIdentifiers.Contains(target.name))
+          _originalDragSource != null &&
+          _originalDragSource.TargetIdentifiers.Contains(target.name))
         .OrderBy(x =>
           Vector2.Distance(x.worldBound.position,
             dragger.worldBound.position)).FirstOrDefault();
@@ -191,7 +204,7 @@ namespace Spelldawn.Services
       }
     }
 
-    void ElementMouseUp(Draggable currentlyDragging)
+    void ElementMouseUp(VisualElement currentlyDragging)
     {
       if (currentlyDragging.style.visibility == Visibility.Hidden)
       {
@@ -203,10 +216,10 @@ namespace Spelldawn.Services
         _overTargetIndicator.RemoveFromHierarchy();
       }
 
-      if (currentlyDragging.OnDrop != null && _overTarget)
+      if (_originalDragSource is { OnDrop: { } } drag && _overTarget)
       {
         // Leave the currently-visible drag object in the hierarchy, the OnDrop action is responsible for removing it.
-        _registry.ActionService.HandleAction(currentlyDragging.OnDrop);
+        _registry.ActionService.HandleAction(drag.OnDrop);
         if (_originalDragSource?.RemoveOriginal == true)
         {
           TweenUtils.Sequence("RemoveDragOriginal").Append(
