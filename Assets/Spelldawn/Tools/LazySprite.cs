@@ -27,7 +27,7 @@ namespace Spelldawn.Assets
 
     IEnumerator Start()
     {
-      if (AssetPreference.UseProductionAssets)
+      if (UseProductionAssets.ShouldUseProductionAssets)
       {
         var operation = Addressables.LoadAssetAsync<Sprite>(_sprite);
         yield return operation;

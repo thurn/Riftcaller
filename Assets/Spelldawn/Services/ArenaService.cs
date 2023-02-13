@@ -51,7 +51,7 @@ namespace Spelldawn.Services
 
     public IEnumerator Initialize()
     {
-      if (AssetPreference.UseProductionAssets)
+      if (UseProductionAssets.ShouldUseProductionAssets)
       {
         yield return Addressables.LoadSceneAsync(_arenaScene, LoadSceneMode.Additive);
         FlipView();

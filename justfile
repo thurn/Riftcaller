@@ -394,6 +394,10 @@ just paths:
 #     us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
 # Pushing Local Docker Image:
 # docker push us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+# Running commands on container:
+#  docker exec 7458a883c1b9 rm -r db
+# Restart container
+#  docker restart 7458a883c1b9
 
 # GRPC CLI
 # grpc_cli ls 35.184.200.62:50052 -l

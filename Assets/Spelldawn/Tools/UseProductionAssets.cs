@@ -14,20 +14,17 @@
 
 #nullable enable
 
-using System.Collections;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace Spelldawn.Assets
 {
-  public static class AssetPreference
+  public static class UseProductionAssets
   {
     const string MenuName = "Tools/Use Production Assets";
-    const string SettingName = "UseProductionAssets";
+    public const string SettingName = "UseProductionAssets";
     
 #if UNITY_EDITOR 
-    public static bool UseProductionAssets
+    public static bool ShouldUseProductionAssets
     {
       get => EditorPrefs.GetBool(SettingName, false);
       set => EditorPrefs.SetBool(SettingName, value);
@@ -36,17 +33,17 @@ namespace Spelldawn.Assets
     [MenuItem(MenuName)]
     static void ToggleAction()
     {
-      UseProductionAssets = !UseProductionAssets;
+      ShouldUseProductionAssets = !ShouldUseProductionAssets;
     }
   
     [MenuItem(MenuName, true)]
     static bool ToggleActionValidate()
     {
-      Menu.SetChecked(MenuName, UseProductionAssets);
+      Menu.SetChecked(MenuName, ShouldUseProductionAssets);
       return true;
     }
 #else
-    public static bool UseProductionAssets => true;
+    public static bool ShouldUseProductionAssets => true;
 #endif
   }
 }

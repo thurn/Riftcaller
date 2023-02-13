@@ -39,7 +39,7 @@ namespace Spelldawn.Services
 
     public Sprite? GetSprite(SpriteAddress address)
     {
-      return AssetPreference.UseProductionAssets ? Get<Sprite>(address.Address) : _developmentAssets.GetSprite(address);
+      return UseProductionAssets.ShouldUseProductionAssets ? Get<Sprite>(address.Address) : _developmentAssets.GetSprite(address);
     }
 
     public RenderTexture GetRenderTexture(Registry registry, RenderTextureAddress address)
@@ -72,31 +72,31 @@ namespace Spelldawn.Services
 
     public Font GetFont(FontAddress address)
     {
-      return AssetPreference.UseProductionAssets ? Get<Font>(address.Address) : _developmentAssets.GetFont(address);
+      return UseProductionAssets.ShouldUseProductionAssets ? Get<Font>(address.Address) : _developmentAssets.GetFont(address);
     }
 
     public Projectile GetProjectile(ProjectileAddress address)
     {
-      return AssetPreference.UseProductionAssets
+      return UseProductionAssets.ShouldUseProductionAssets
         ? GetComponent<Projectile>(address.Address)
         : _developmentAssets.GetProjectile(address);
     }
 
     public TimedEffect GetEffect(EffectAddress address)
     {
-      return AssetPreference.UseProductionAssets
+      return UseProductionAssets.ShouldUseProductionAssets
         ? GetComponent<TimedEffect>(address.Address)
         : _developmentAssets.GetTimedEffect(address);
     }
 
     public AudioClip? GetAudioClip(AudioClipAddress address)
     {
-      return AssetPreference.UseProductionAssets ? Get<AudioClip>(address.Address) : null;
+      return UseProductionAssets.ShouldUseProductionAssets ? Get<AudioClip>(address.Address) : null;
     }
 
     public IEnumerator LoadAssets(CommandList commandList)
     {
-      if (!AssetPreference.UseProductionAssets)
+      if (!UseProductionAssets.ShouldUseProductionAssets)
       {
         yield break;
       }
@@ -108,7 +108,7 @@ namespace Spelldawn.Services
     
     public IEnumerator LoadStudioAssets(StudioDisplay display)
     {
-      if (!AssetPreference.UseProductionAssets)
+      if (!UseProductionAssets.ShouldUseProductionAssets)
       {
         yield break;
       }
@@ -175,7 +175,7 @@ namespace Spelldawn.Services
 
     public IEnumerator LoadAssetsForNode(Node node)
     {
-      if (!AssetPreference.UseProductionAssets)
+      if (!UseProductionAssets.ShouldUseProductionAssets)
       {
         yield break;
       }

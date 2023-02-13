@@ -51,7 +51,7 @@ namespace Spelldawn.Services
 
     void Start()
     {
-      if (!AssetPreference.UseProductionAssets)
+      if (!UseProductionAssets.ShouldUseProductionAssets)
       {
         _redArrow.HeadPrefab = _placeholderHeadPrefab;
         _redArrow.PiecePrefab = _placeholderPiecePrefab;

@@ -38,7 +38,7 @@ namespace Spelldawn.Services
       Transform? parent = null,
       Action<GameObject>? onCreate = null)
     {
-      if (AssetPreference.UseProductionAssets)
+      if (UseProductionAssets.ShouldUseProductionAssets)
       {
         var operation = Addressables.LoadAssetAsync<GameObject>(prefabReference);
         yield return operation;

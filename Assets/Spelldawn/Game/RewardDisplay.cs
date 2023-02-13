@@ -113,7 +113,7 @@ namespace Spelldawn.Game
       _appearLight.SetActive(true);
       yield return new WaitForSeconds(_duration);
 
-      if (AssetPreference.UseProductionAssets)
+      if (UseProductionAssets.ShouldUseProductionAssets)
       {
         StartCoroutine(_registry.AssetPoolService.CreateFromReference(_chestReference, transform.position,
           onCreate: result =>

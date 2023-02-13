@@ -1,6 +1,7 @@
 *
 
-!crates
+!src
+!tests
 !Cargo.toml
 !Cargo.lock
 !Dockerfile

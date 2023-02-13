@@ -18,10 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
-using UnityEditor.Search;
-using UnityEngine;
 using UnityEngine.UIElements;
-using Quaternion = System.Numerics.Quaternion;
 
 namespace Spelldawn.Masonry
 {

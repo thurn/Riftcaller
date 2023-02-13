@@ -37,12 +37,16 @@ namespace Spelldawn.Services
 {
   public sealed class ActionService : MonoBehaviour
   {
-    const string LocalServerAddress = "http://localhost";
-    const string ProductionServerAddress = "http://localhost";
+    //const string LocalServerAddress = "http://localhost";
+    const string LocalServerAddress = "http://192.168.0.155";
+    const string ProductionServerAddress = "http://trunk.spelldawn.com";
 
+    static string ServerAddress() =>
+      UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress;
+    
     readonly Lazy<Protos.Spelldawn.SpelldawnClient> _client = new(() => new Protos.Spelldawn.SpelldawnClient(
       GrpcChannel.ForAddress(
-        UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress,
+        ServerAddress(),
         new GrpcChannelOptions
         {
           HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
@@ -146,6 +150,7 @@ namespace Spelldawn.Services
       };
 
       // TODO: Android in particular seems to hang for multiple minutes when the server can't be reached?
+      Debug.Log($"Attempting to connect to {ServerAddress()}");
       using var call = _client.Value.Connect(request);
 
       try
@@ -156,6 +161,7 @@ namespace Spelldawn.Services
           {
             var commands = call.ResponseStream.Current;
             _attemptReconnect = false;
+            Debug.Log($"Connected to {ServerAddress()}");
             StartCoroutine(_registry.CommandService.HandleCommands(commands,
               () => { _registry.DocumentService.Loading = false; }));
             _registry.DocumentService.FetchOpenPanelsOnConnect();

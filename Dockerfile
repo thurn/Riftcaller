@@ -2,6 +2,7 @@ FROM rust:1.65-bullseye
 
 WORKDIR /usr/src/spelldawn
 COPY src src
+COPY tests tests
 COPY justfile justfile
 COPY Cargo.toml Cargo.toml
 COPY Cargo.lock Cargo.lock
@@ -11,4 +12,4 @@ RUN cargo install --path src/spelldawn
 
 CMD ["spelldawn"]
 
-EXPOSE 50052
+EXPOSE 80

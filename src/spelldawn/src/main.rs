@@ -53,7 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     .accept_gzip();
     let service = tonic_web::config().enable(server);
 
-    warn!("Server listening on {}.", address);
+    warn!("Server listening on {}", address);
     Server::builder().accept_http1(true).add_service(service).serve(address).await?;
 
     Ok(())

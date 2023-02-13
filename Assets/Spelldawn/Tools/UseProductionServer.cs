@@ -21,7 +21,8 @@ namespace Spelldawn.Tools
   public static class UseProductionServer
   {
     const string MenuName = "Tools/Use Production Server";
-    const string SettingName = "UseProductionServer";
+    public const string SettingName = "UseProductionServer";
+    public const string DefineName = "USE_PRODUCTION_SERVER";
     
 #if UNITY_EDITOR 
     public static bool ShouldUseProductionServer
@@ -40,10 +41,14 @@ namespace Spelldawn.Tools
     static bool ToggleActionValidate()
     {
       Menu.SetChecked(MenuName, ShouldUseProductionServer);
+      ScriptingDefineSymbols.Update();
       return true;
     }
-#else
+    
+#elif USE_PRODUCTION_SERVER
     public static bool ShouldUseProductionServer => true;
+#else
+    public static bool ShouldUseProductionServer => false;
 #endif
   }
 }
