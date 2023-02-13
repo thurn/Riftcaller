@@ -17,7 +17,6 @@
 use adventure_data::adventure::TilePosition;
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
-use game_data::player_name::PlayerId;
 use game_data::primitives::{DeckId, GameId, Side};
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
@@ -99,5 +98,5 @@ impl DeckEditorData {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct GameOverData {
     pub game_id: GameId,
-    pub winner: PlayerId,
+    pub winner: Side,
 }

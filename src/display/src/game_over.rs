@@ -35,7 +35,7 @@ pub fn check_game_over(builder: &mut ResponseBuilder, game: &GameState) {
             .into(),
         }));
 
-        let data = GameOverData { game_id: game.id, winner: game.player(winner).id };
+        let data = GameOverData { game_id: game.id, winner };
         if let Some(panel) = (GameOverPanel { data }.build_panel()) {
             builder.push(panels::update(panel));
         }
