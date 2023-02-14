@@ -23,7 +23,7 @@ use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
-use with_error::WithError;
+use with_error::{fail, WithError};
 
 use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
@@ -409,6 +409,17 @@ impl GameState {
         match side {
             Side::Overlord => &mut self.overlord,
             Side::Champion => &mut self.champion,
+        }
+    }
+
+    /// Returns the [Side] the indicated player is representing in this game
+    pub fn player_side(&self, player_id: PlayerId) -> Result<Side> {
+        if player_id == self.champion.id {
+            Ok(Side::Champion)
+        } else if player_id == self.overlord.id {
+            Ok(Side::Overlord)
+        } else {
+            fail!("Player {:?} is not a participant in game {:?}", player_id, self.id)
         }
     }
 

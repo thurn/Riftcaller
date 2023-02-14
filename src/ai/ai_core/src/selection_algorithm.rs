@@ -20,7 +20,7 @@ use crate::state_evaluator::StateEvaluator;
 
 /// A trait for generic decision rules that select a game action to take without
 /// specific game knowledge.
-pub trait SelectionAlgorithm {
+pub trait SelectionAlgorithm: Send {
     /// Should return the best action action for the current player `player`
     /// to take in the provided `node` game state, using the provided
     /// `evaluator` to evaluate different game outcomes.

@@ -70,7 +70,7 @@ pub fn run(args: Args) -> Result<()> {
             println!(">>> Running match {} between {} and {}", i, overlord.name(), champion.name());
         }
         let mut game = GameState::new(
-            GameId::new(0),
+            GameId::new_from_u128(0),
             PlayerId::Named(args.overlord),
             decklists::deck_for_player(args.overlord, Side::Overlord),
             PlayerId::Named(args.champion),

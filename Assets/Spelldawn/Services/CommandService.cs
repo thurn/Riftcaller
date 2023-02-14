@@ -16,8 +16,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Spelldawn.Assets;
-using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -32,8 +32,8 @@ namespace Spelldawn.Services
     [SerializeField] Registry _registry = null!;
     [SerializeField] bool _currentlyHandling;
     readonly Queue<CommandList> _queue = new();
-
     public bool Active => _currentlyHandling;
+    public ClientMetadata ClientMetadata { get; private set; } = new();
 
     public IEnumerator HandleCommands(IEnumerable<GameCommand> commands)
     {
@@ -59,12 +59,13 @@ namespace Spelldawn.Services
       if (_queue.Count > 0 && !_currentlyHandling)
       {
         _currentlyHandling = true;
-        StartCoroutine(HandleCommandsAsync(_queue.Dequeue(), isParallel: false, () => { _currentlyHandling = false; }));
+        StartCoroutine(HandleCommandsAsync(_queue.Dequeue(), () => { _currentlyHandling = false; }));
       }
     }
     
-    IEnumerator HandleCommandsAsync(CommandList commandList, bool isParallel = false, Action? onComplete = null)
+    IEnumerator HandleCommandsAsync(CommandList commandList, Action? onComplete = null)
     {
+      SetMetadata(commandList.Metadata);
       _registry.AnalyticsService.SetMetadata(commandList.LoggingMetadata);
       
       if (commandList.Commands.Any(c => c.CommandCase == GameCommand.CommandOneofCase.UpdateGameView))
@@ -157,6 +158,28 @@ namespace Spelldawn.Services
       onComplete?.Invoke();
     }
 
+    void SetMetadata(ClientMetadata? metadata)
+    {
+      if (metadata != null)
+      {
+        if (!ClientMetadata.Equals(metadata))
+        {
+          var logs = new List<string>();
+          if (!string.IsNullOrEmpty(metadata.AdventureId))
+          {
+            logs.Add($"Adventure: {metadata.AdventureId}");
+          }
+          if (!string.IsNullOrEmpty(metadata.GameId))
+          {
+            logs.Add($"Game: {metadata.GameId}");
+          }          
+          Debug.Log(string.Join(" ", logs));
+        }
+
+        ClientMetadata = metadata;
+      }
+    }
+    
     IEnumerator HandleConditionalCommand(ConditionalCommand command)
     {
       var query = command.Query.QueryCase switch
@@ -269,6 +292,7 @@ namespace Spelldawn.Services
         yield break;
       }
       
+      Debug.Log($"Loading scene '{command.SceneName}'");
       yield return SceneManager.LoadSceneAsync(command.SceneName, command.Mode switch
       {
         SceneLoadMode.Single => LoadSceneMode.Single,

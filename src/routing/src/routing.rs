@@ -21,7 +21,7 @@ use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel, StandardPanel};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;
 use panels::debug_panel::DebugPanel;
@@ -40,15 +40,15 @@ use with_error::WithError;
 
 pub fn main_menu_panels() -> Vec<PanelAddress> {
     vec![
-        PanelAddress::MainMenu,
-        PanelAddress::Settings,
-        PanelAddress::About,
-        PanelAddress::Disclaimer,
+        StandardPanel::MainMenu.into(),
+        StandardPanel::Settings.into(),
+        StandardPanel::About.into(),
+        StandardPanel::Disclaimer.into(),
     ]
 }
 
 pub fn game_panels() -> Vec<PanelAddress> {
-    vec![PanelAddress::GameMenu, PanelAddress::DebugPanel]
+    vec![StandardPanel::GameMenu.into(), StandardPanel::DebugPanel.into()]
 }
 
 pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
@@ -56,16 +56,16 @@ pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
         .tiles
         .iter()
         .filter_map(|(position, state)| {
-            state.entity.as_ref().map(|_| PanelAddress::TilePrompt(*position))
+            state.entity.as_ref().map(|_| PlayerPanel::TilePrompt(*position).into())
         })
         .chain(adventure.tiles.iter().filter_map(|(position, state)| {
-            state.entity.as_ref().map(|_| PanelAddress::TileLoading(*position))
+            state.entity.as_ref().map(|_| PlayerPanel::TileLoading(*position).into())
         }))
         .chain(vec![
-            PanelAddress::AdventureMenu,
-            PanelAddress::Settings,
-            PanelAddress::DeckEditorPrompt,
-            PanelAddress::DeckEditorLoading,
+            StandardPanel::AdventureMenu.into(),
+            StandardPanel::Settings.into(),
+            PlayerPanel::DeckEditorPrompt.into(),
+            StandardPanel::DeckEditorLoading.into(),
         ])
         .collect()
 }
@@ -93,40 +93,55 @@ pub fn render_panel(
 
 fn render_server_panel(
     player: &PlayerData,
-    server_address: PanelAddress,
+    address: PanelAddress,
 ) -> Result<Option<InterfacePanel>> {
-    Ok(match server_address {
-        PanelAddress::MainMenu => MainMenuPanel::new().build_panel(),
-        PanelAddress::About => AboutPanel::new().build_panel(),
-        PanelAddress::Settings => SettingsPanel::new().build_panel(),
-        PanelAddress::Disclaimer => DisclaimerPanel::new().build_panel(),
-        PanelAddress::DebugPanel => DebugPanel::new().build_panel(),
-        PanelAddress::GameMenu => GameMenuPanel::new().build_panel(),
-        PanelAddress::AdventureMenu => AdventureMenu::new().build_panel(),
-        PanelAddress::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
-        PanelAddress::DeckEditorLoading => LoadingPanel::new(
-            server_address,
+    match address {
+        PanelAddress::StandardPanel(panel) => render_standard_panel(panel),
+        PanelAddress::PlayerPanel(panel) => render_player_panel(player, panel),
+    }
+}
+
+pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePanel>> {
+    Ok(match panel {
+        StandardPanel::MainMenu => MainMenuPanel::new().build_panel(),
+        StandardPanel::About => AboutPanel::new().build_panel(),
+        StandardPanel::Settings => SettingsPanel::new().build_panel(),
+        StandardPanel::Disclaimer => DisclaimerPanel::new().build_panel(),
+        StandardPanel::DebugPanel => DebugPanel::new().build_panel(),
+        StandardPanel::GameMenu => GameMenuPanel::new().build_panel(),
+        StandardPanel::AdventureMenu => AdventureMenu::new().build_panel(),
+        StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
+        StandardPanel::DeckEditorLoading => LoadingPanel::new(
+            panel.into(),
             "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
         )
         .build_panel(),
-        PanelAddress::DeckEditorPrompt => DeckEditorPromptPanel { player }.build_panel(),
-        PanelAddress::DeckEditor(data) => DeckEditorPanel {
+    })
+}
+
+pub fn render_player_panel(
+    player: &PlayerData,
+    address: PlayerPanel,
+) -> Result<Option<InterfacePanel>> {
+    Ok(match address {
+        PlayerPanel::DeckEditorPrompt => DeckEditorPromptPanel { player }.build_panel(),
+        PlayerPanel::DeckEditor(data) => DeckEditorPanel {
             player,
             data,
             deck: player.deck(data.deck_id)?,
             collection: &player.adventure()?.collection,
         }
         .build_panel(),
-        PanelAddress::GameOver(data) => GameOverPanel { data }.build_panel(),
-        PanelAddress::TileLoading(position) => {
+        PlayerPanel::GameOver(data) => GameOverPanel { data }.build_panel(),
+        PlayerPanel::TileLoading(position) => {
             adventure_panels::render_tile_loading_panel(position, player)?
         }
-        PanelAddress::TilePrompt(position) => {
+        PlayerPanel::TilePrompt(position) => {
             adventure_panels::render_tile_prompt_panel(position, player)?
         }
-        PanelAddress::DraftCard => render_adventure_choice(player)?,
-        PanelAddress::AdventureOver => render_adventure_choice(player)?,
-        PanelAddress::Shop(position) => ShopPanel::new(player, position)?.build_panel(),
+        PlayerPanel::DraftCard => render_adventure_choice(player)?,
+        PlayerPanel::AdventureOver => render_adventure_choice(player)?,
+        PlayerPanel::Shop(position) => ShopPanel::new(player, position)?.build_panel(),
     })
 }
 

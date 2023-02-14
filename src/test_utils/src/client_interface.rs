@@ -63,7 +63,7 @@ impl ClientInterface {
         let address = self.open_panels.last().expect("No open panel");
         self.panels
             .get(address)
-            .unwrap_or_else(|| panic!("Panel not found: {address:?}"))
+            .unwrap_or_else(|| panic!("Panel not found: {:?}", address.debug_string))
             .node
             .as_ref()
             .expect("Node")

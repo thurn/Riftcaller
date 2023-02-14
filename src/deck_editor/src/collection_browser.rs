@@ -34,7 +34,8 @@ use game_data::deck::Deck;
 use game_data::primitives::Side;
 use panel_address::CollectionBrowserFilters;
 use player_data::PlayerData;
-use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition};
+use protos::spelldawn::game_command::Command;
+use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition, InfoZoomCommand};
 use user_action_data::DeckEditorAction;
 
 use crate::card_list;
@@ -87,6 +88,11 @@ impl<'a> CollectionBrowser<'a> {
                         .drop_target(element_names::CARD_LIST)
                         .over_target_indicator(move || CardListCardName::new(card_name).build())
                         .on_drop(Some(self.drop_action(card_name)))
+                        .on_drag_detected(Some(Command::InfoZoom(InfoZoomCommand {
+                            show: false,
+                            card: None,
+                        })))
+                        .horizontal_drag_start_distance(25)
                         .custom_drag_indicator(DeckCard::new(card_name).build())
                 }),
             )));

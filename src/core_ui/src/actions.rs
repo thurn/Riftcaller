@@ -158,6 +158,7 @@ pub fn command_list(context: Option<ResponseContext>, commands: Vec<Command>) ->
     CommandList {
         logging_metadata: logging_metadata(context),
         commands: commands.into_iter().map(|c| GameCommand { command: Some(c) }).collect(),
+        metadata: None,
     }
 }
 

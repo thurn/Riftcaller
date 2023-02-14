@@ -26,11 +26,11 @@ use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
 static OPPONENT: PlayerId = PlayerId::Named(NamedPlayer::TutorialOpponent);
 
-#[tokio::test]
-async fn set_up_tutorial() {
+#[test]
+fn set_up_tutorial() {
     let (game_id, user_id, _) = generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
-    start_tutorial(&mut session).await;
+    start_tutorial(&mut session);
 
     assert_eq!(
         cards(vec![CardName::EldritchSurge, CardName::SimpleAxe]),
@@ -43,15 +43,15 @@ async fn set_up_tutorial() {
     assert_eq!(1, session.user.cards.room_cards(RoomId::RoomA, ClientRoomLocation::Back).len());
 }
 
-#[tokio::test]
-async fn tutorial_turn_one() {
+#[test]
+fn tutorial_turn_one() {
     let (game_id, user_id, _) = generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
-    run_tutorial_turn_one(&mut session, user_id).await;
+    run_tutorial_turn_one(&mut session, user_id);
 }
 
-async fn run_tutorial_turn_one(session: &mut TestSession, user_id: PlayerId) {
-    start_tutorial(session).await;
+fn run_tutorial_turn_one(session: &mut TestSession, user_id: PlayerId) {
+    start_tutorial(session);
 
     play_from_hand(session, CardName::EldritchSurge);
     assert!(session.user.data.toast().contains("Playing cards from your hand costs one"));
@@ -68,17 +68,18 @@ async fn run_tutorial_turn_one(session: &mut TestSession, user_id: PlayerId) {
     click_on_score(session);
     click_on_end_raid(session);
 
-    session.run_agent_loop().await;
+    session.run_agent_loop();
+    session.connect(session.user_id()).expect("Error reconnecting to session");
 
     assert_eq!(cards(vec![CardName::ArcaneRecovery]), session.user.cards.hand(PlayerName::User));
     assert!(session.me().can_take_action());
 }
 
-#[tokio::test]
-async fn tutorial_cannot_raid_vault() {
+#[test]
+fn tutorial_cannot_raid_vault() {
     let (game_id, user_id, _) = generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
-    start_tutorial(&mut session).await;
+    start_tutorial(&mut session);
     let result = session.perform_action(
         Action::InitiateRaid(InitiateRaidAction { room_id: RoomIdentifier::Vault.into() }),
         session.user_id(),
@@ -87,11 +88,11 @@ async fn tutorial_cannot_raid_vault() {
     assert!(result.is_err())
 }
 
-#[tokio::test]
-async fn tutorial_cannot_raid_sanctum() {
+#[test]
+fn tutorial_cannot_raid_sanctum() {
     let (game_id, user_id, _) = generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
-    start_tutorial(&mut session).await;
+    start_tutorial(&mut session);
     let result = session.perform_action(
         Action::InitiateRaid(InitiateRaidAction { room_id: RoomIdentifier::Sanctum.into() }),
         session.user_id(),
@@ -100,19 +101,20 @@ async fn tutorial_cannot_raid_sanctum() {
     assert!(result.is_err())
 }
 
-#[tokio::test]
-async fn tutorial_turn_two() {
+#[test]
+fn tutorial_turn_two() {
     let (game_id, user_id, _) = generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
-    run_tutorial_turn_one(&mut session, user_id).await;
-    run_tutorial_turn_two(&mut session, user_id).await;
+    run_tutorial_turn_one(&mut session, user_id);
+    run_tutorial_turn_two(&mut session, user_id);
 }
 
-async fn run_tutorial_turn_two(session: &mut TestSession, user_id: PlayerId) {
+fn run_tutorial_turn_two(session: &mut TestSession, user_id: PlayerId) {
     session.perform(Action::GainMana(GainManaAction {}), user_id);
     play_from_hand(session, CardName::ArcaneRecovery);
     session.perform(Action::DrawCard(DrawCardAction {}), user_id);
-    session.run_agent_loop().await;
+    session.run_agent_loop();
+    session.connect(session.user_id()).expect("Error reconnecting to session");
 
     assert_eq!(
         cards(vec![CardName::Lodestone, CardName::SimpleHammer]),
@@ -121,23 +123,24 @@ async fn run_tutorial_turn_two(session: &mut TestSession, user_id: PlayerId) {
     assert!(session.me().can_take_action());
 }
 
-#[tokio::test]
-async fn tutorial_turn_three() {
+#[test]
+fn tutorial_turn_three() {
     let (game_id, user_id, _) = generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
-    run_tutorial_turn_one(&mut session, user_id).await;
-    run_tutorial_turn_two(&mut session, user_id).await;
-    run_tutorial_turn_three(&mut session, user_id).await;
+    run_tutorial_turn_one(&mut session, user_id);
+    run_tutorial_turn_two(&mut session, user_id);
+    run_tutorial_turn_three(&mut session, user_id);
 }
 
-async fn run_tutorial_turn_three(session: &mut TestSession, user_id: PlayerId) {
+fn run_tutorial_turn_three(session: &mut TestSession, user_id: PlayerId) {
     session.initiate_raid(RoomId::RoomA);
     click_on_continue(session);
     session.initiate_raid(RoomId::Vault);
     click_on_score(session);
     click_on_end_raid(session);
     session.perform(Action::DrawCard(DrawCardAction {}), user_id);
-    session.run_agent_loop().await;
+    session.run_agent_loop();
+    session.connect(session.user_id()).expect("Error reconnecting to session");
 
     assert_eq!(
         cards(vec![
@@ -155,7 +158,7 @@ async fn run_tutorial_turn_three(session: &mut TestSession, user_id: PlayerId) {
 /// *NOTE*: Opponent session state is not updated for the tutorial (it is
 /// assumed to be single-player), and thus calls to `session.opponent` will not
 /// have accurate information.
-async fn start_tutorial(session: &mut TestSession) {
+fn start_tutorial(session: &mut TestSession) {
     session
         .perform_action(
             UserAction::NewGame(NewGameAction {
@@ -168,7 +171,8 @@ async fn start_tutorial(session: &mut TestSession) {
             session.user_id(),
         )
         .expect("Error starting tutorial");
-    session.run_agent_loop().await
+    session.run_agent_loop();
+    session.connect(session.user_id()).expect("Error reconnecting to session");
 }
 
 fn play_from_hand(session: &mut TestSession, card: CardName) {

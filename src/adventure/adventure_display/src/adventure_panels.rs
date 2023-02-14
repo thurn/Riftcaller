@@ -16,7 +16,7 @@ use adventure_data::adventure::{TileEntity, TilePosition};
 use anyhow::Result;
 use core_ui::full_screen_loading::FullScreenLoading;
 use core_ui::prelude::*;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PlayerPanel};
 use player_data::PlayerData;
 use protos::spelldawn::InterfacePanel;
 use with_error::{fail, WithError};
@@ -31,7 +31,6 @@ pub fn render_tile_prompt_panel(
     position: TilePosition,
     player: &PlayerData,
 ) -> Result<Option<InterfacePanel>> {
-    let address = PanelAddress::TilePrompt(position);
     let Some(adventure) = &player.adventure else {
         fail!("Expected active adventure");
     };
@@ -44,13 +43,9 @@ pub fn render_tile_prompt_panel(
     };
 
     Ok(match entity {
-        TileEntity::Explore { cost, .. } => {
-            ExplorePanel { cost: *cost, address, position }.build_panel()
-        }
-        TileEntity::Draft { cost, .. } => {
-            DraftPromptPanel { cost: *cost, address, position }.build_panel()
-        }
-        TileEntity::Shop { .. } => ShopPromptPanel { address, position }.build_panel(),
+        TileEntity::Explore { cost, .. } => ExplorePanel { cost: *cost, position }.build_panel(),
+        TileEntity::Draft { cost, .. } => DraftPromptPanel { cost: *cost, position }.build_panel(),
+        TileEntity::Shop { .. } => ShopPromptPanel { position }.build_panel(),
     })
 }
 
@@ -75,7 +70,7 @@ pub fn render_tile_loading_panel(
     };
 
     Ok(Some(InterfacePanel {
-        address: Some(PanelAddress::TileLoading(position).into()),
+        address: Some(PlayerPanel::TileLoading(position).into()),
         node,
         screen_overlay: None,
     }))

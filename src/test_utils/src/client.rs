@@ -19,7 +19,6 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use actions::legal_actions;
-use adapters;
 use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::card_state::{CardPosition, CardState};
@@ -37,16 +36,17 @@ use protos::spelldawn::object_position::Position;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
     card_target, ArrowTargetRoom, CardIdentifier, CardTarget, CardView, ClientAction,
-    ClientItemLocation, ClientRoomLocation, CommandList, GameMessageType, GameObjectIdentifier,
-    GameRequest, InitiateRaidAction, NoTargeting, ObjectPosition, ObjectPositionBrowser,
-    ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem, ObjectPositionRevealedCards,
-    ObjectPositionRoom, PlayCardAction, PlayInRoom, PlayerName, PlayerView, RevealedCardView,
-    RevealedCardsBrowserSize, RoomIdentifier,
+    ClientItemLocation, ClientMetadata, ClientRoomLocation, CommandList, GameMessageType,
+    GameObjectIdentifier, GameRequest, InitiateRaidAction, NoTargeting, ObjectPosition,
+    ObjectPositionBrowser, ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem,
+    ObjectPositionRevealedCards, ObjectPositionRoom, PlayCardAction, PlayInRoom, PlayerName,
+    PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
-use server::requests::GameResponse;
-use server::{agent_response, requests};
+use server::ai_agent_response;
+use server::server_data::GameResponseOutput;
 use with_error::WithError;
+use {adapters, tokio};
 
 use crate::client_interface::{ClientInterface, HasText};
 use crate::fake_database::FakeDatabase;
@@ -71,6 +71,8 @@ pub struct TestSession {
     /// This is the perspective of the player identified by the `opponent_id`
     /// parameter to [Self::new].
     pub opponent: TestClient,
+
+    metadata: ClientMetadata,
     database: FakeDatabase,
 }
 
@@ -82,7 +84,12 @@ impl TestSession {
     /// of information into the [GameState] here, because this helps avoid
     /// coupling tests to the specific implementation details of [GameState].
     pub fn new(database: FakeDatabase, user_id: PlayerId, opponent_id: PlayerId) -> Self {
-        Self { user: TestClient::new(user_id), opponent: TestClient::new(opponent_id), database }
+        Self {
+            user: TestClient::new(user_id),
+            opponent: TestClient::new(opponent_id),
+            metadata: ClientMetadata::default(),
+            database,
+        }
     }
 
     pub fn game_id(&self) -> GameId {
@@ -112,8 +119,9 @@ impl TestSession {
     /// Simulates a client connecting to the server.
     ///
     /// Returns the commands which would be sent to the client when connected.
-    pub fn connect(&mut self, user_id: PlayerId) -> Result<CommandList> {
-        let result = requests::handle_connect(&mut self.database, user_id)?;
+    #[tokio::main]
+    pub async fn connect(&mut self, user_id: PlayerId) -> Result<CommandList> {
+        let result = server::handle_connect(&mut self.database, user_id).await?.build();
         let to_update = match () {
             _ if user_id == self.user.id => &mut self.user,
             _ if user_id == self.opponent.id => &mut self.opponent,
@@ -123,30 +131,47 @@ impl TestSession {
         // Clear all previous state
         *to_update = TestClient::new(user_id);
 
-        for command in result.commands.iter() {
+        if let Some(m) = result.user_response.metadata.clone() {
+            self.metadata = m;
+        }
+
+        for command in result.user_response.commands.iter() {
             let c = command.command.as_ref().with_error(|| "command")?;
             to_update.handle_command(c);
         }
 
-        Ok(result)
+        Ok(result.user_response)
     }
 
     /// Execute a simulated client request for this game as a specific user,
     /// updating the client state as appropriate based on the responses.
-    /// Returns the [GameResponse] for this action or an error if the server
-    /// request failed.
-    pub fn perform_action(&mut self, action: Action, player_id: PlayerId) -> Result<GameResponse> {
-        let response = requests::handle_request(
+    /// Returns the [GameResponseOutput] for this action or an error if the
+    /// server request failed.
+    #[tokio::main]
+    pub async fn perform_action(
+        &mut self,
+        action: Action,
+        player_id: PlayerId,
+    ) -> Result<GameResponseOutput> {
+        let metadata = self.metadata.clone();
+        let response = server::handle_action(
             &mut self.database,
+            player_id,
             &GameRequest {
                 action: Some(ClientAction { action: Some(action) }),
                 player_id: Some(fake_database::to_player_identifier(player_id)),
                 open_panels: vec![],
+                metadata: Some(metadata),
             },
-        )?;
+        )
+        .await?
+        .build();
 
+        if let Some(m) = response.user_response.metadata.clone() {
+            self.metadata = m;
+        }
         let (opponent_id, local, remote) = self.opponent_local_remote(player_id);
-        for command in &response.command_list.commands {
+        for command in &response.user_response.commands {
             local.handle_command(command.command.as_ref().expect("Empty command"));
         }
 
@@ -168,7 +193,7 @@ impl TestSession {
 
     /// Helper function to invoke [Self::perform] to initiate a raid on the
     /// provided `room_id`.
-    pub fn initiate_raid(&mut self, room_id: RoomId) -> GameResponse {
+    pub fn initiate_raid(&mut self, room_id: RoomId) -> GameResponseOutput {
         self.perform_action(
             Action::InitiateRaid(InitiateRaidAction {
                 room_id: adapters::room_identifier(room_id),
@@ -274,7 +299,7 @@ impl TestSession {
 
     /// Locate a button containing the provided `text` in the provided player's
     /// interface controls and invoke its registered action.
-    pub fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponse {
+    pub fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
         let (_, player, _) = self.opponent_local_remote(player_id);
         let handlers = player.interface.controls().find_handlers(text);
         let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
@@ -358,12 +383,12 @@ impl TestSession {
             .collect()
     }
 
+    #[tokio::main]
     pub async fn run_agent_loop(&mut self) {
         let (game_id, user_id) = (self.game_id(), self.user_id());
-        agent_response::run_agent_loop_for_tests(&mut self.database, game_id, user_id)
+        ai_agent_response::run_agent_loop_for_tests(&mut self.database, game_id, user_id)
             .await
             .expect("Error running agent loop");
-        self.connect(user_id).expect("Error re-connecting to session");
     }
 
     fn activate_ability_impl(

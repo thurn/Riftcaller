@@ -177,7 +177,7 @@ fn keep_opening_hand(game: &mut GameState, side: Side) -> Result<()> {
     actions::handle_game_action(
         game,
         side,
-        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        &GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
     )
 }
 

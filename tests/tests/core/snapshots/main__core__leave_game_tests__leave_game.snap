@@ -8,4 +8,3 @@ command_list:
     LoadScene: 
         scene_name: "Main"
         mode: Single
-    RenderScreenOverlay: "<ScreenOverlay>"

@@ -45,8 +45,3 @@ expression: "Summary::run(&response)"
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-    UpdatePanels: 
-    panels: "<Panel>"
-    UpdatePanels: 
-    panels: "<Panel>"
-    RenderScreenOverlay: "<ScreenOverlay>"

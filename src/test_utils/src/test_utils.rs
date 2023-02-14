@@ -53,6 +53,7 @@ use protos::spelldawn::{
     SpendActionPointAction,
 };
 use rules::{dispatch, mana};
+use ulid::Ulid;
 
 use crate::client::TestSession;
 use crate::fake_database::FakeDatabase;
@@ -177,7 +178,11 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
 
 pub fn generate_ids() -> (GameId, PlayerId, PlayerId) {
     let next_id = NEXT_ID.fetch_add(2, Ordering::SeqCst);
-    (GameId::new(next_id), PlayerId::Database(next_id), PlayerId::Database(next_id + 1))
+    (
+        GameId::new_from_u128(next_id as u128),
+        PlayerId::Database(Ulid(next_id as u128)),
+        PlayerId::Database(Ulid(next_id as u128 + 1)),
+    )
 }
 
 /// Arguments to [new_game]
@@ -493,6 +498,7 @@ pub fn record_output_for_side(session: &TestSession, name: String, side: Side) -
             .iter()
             .map(|c| GameCommand { command: Some(c.clone()) })
             .collect(),
+        metadata: None,
     };
     let encoded = commands.encode_length_delimited_to_vec();
     fs::write(format!("../Assets/Resources/TestRecordings/test_{name}.bytes"), encoded)?;

@@ -213,9 +213,9 @@ dependencies = [
 
 [[package]]
 name = "async-trait"
-version = "0.1.56"
+version = "0.1.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96cf8829f67d2eab0b2dfa42c5d0ef737e0724e4a82b01b3e292456202b19716"
+checksum = "1cd7fce9ba8c3c042128ce72d8b2ddbf3a05747efb67ea0313c635e10bda47a2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -701,14 +701,15 @@ version = "0.0.0"
 dependencies = [
  "adapters",
  "anyhow",
+ "async-trait",
  "game_data",
  "once_cell",
  "player_data",
- "prost",
  "protos",
  "rules",
  "serde_json",
  "sled",
+ "ulid",
  "with_error",
 ]
 
@@ -970,6 +971,7 @@ dependencies = [
  "serde",
  "serde_with",
  "strum_macros",
+ "ulid",
  "with_error",
 ]
 
@@ -1373,6 +1375,7 @@ version = "0.0.0"
 dependencies = [
  "adventure_data",
  "core_ui",
+ "enum-kinds",
  "game_data",
  "protos",
  "serde",
@@ -1517,18 +1520,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9a81d2759aae1dae668f783c308bc5c8ebd191ff4184aaa1b37f65a6ae5a56f"
 dependencies = [
  "plotters-backend",
-]
-
-[[package]]
-name = "plugin"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "cards_all",
- "database",
- "prost",
- "protos",
- "server",
 ]
 
 [[package]]
@@ -1880,6 +1871,7 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 name = "screen_overlay"
 version = "0.0.0"
 dependencies = [
+ "adventure_data",
  "constants",
  "core_ui",
  "element_names",
@@ -1987,6 +1979,7 @@ dependencies = [
  "routing",
  "rules",
  "screen_overlay",
+ "serde",
  "serde_json",
  "tokio",
  "tokio-stream",
@@ -1994,6 +1987,7 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "tutorial",
+ "ulid",
  "user_action_data",
  "with_error",
 ]
@@ -2137,6 +2131,7 @@ dependencies = [
  "adventure_data",
  "adventure_generator",
  "anyhow",
+ "async-trait",
  "cards_all",
  "core_ui",
  "database",
@@ -2148,6 +2143,8 @@ dependencies = [
  "rand_xoshiro",
  "rules",
  "server",
+ "tokio",
+ "ulid",
  "user_action_data",
  "with_error",
 ]
@@ -2178,7 +2175,6 @@ dependencies = [
  "protos",
  "rules",
  "rusty-hook",
- "server",
  "test_utils",
  "tokio",
  "tonic",
@@ -2591,6 +2587,16 @@ dependencies = [
  "rules",
  "tracing",
  "with_error",
+]
+
+[[package]]
+name = "ulid"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13a3aaa69b04e5b66cc27309710a569ea23593612387d67daaf102e73aa974fd"
+dependencies = [
+ "rand",
+ "serde",
 ]
 
 [[package]]

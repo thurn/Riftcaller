@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 use panels::button_menu::ButtonMenu;
 use user_action_data::UserAction;
 
@@ -28,7 +28,7 @@ impl AdventureOverPanel {
 
 impl Panel for AdventureOverPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::AdventureOver
+        PlayerPanel::AdventureOver.into()
     }
 }
 

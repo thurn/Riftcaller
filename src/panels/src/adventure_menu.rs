@@ -15,7 +15,7 @@
 use adventure_data::adventure_action::AdventureAction;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, StandardPanel};
 use user_action_data::UserAction;
 
 use crate::button_menu::ButtonMenu;
@@ -31,7 +31,7 @@ impl AdventureMenu {
 
 impl Panel for AdventureMenu {
     fn address(&self) -> PanelAddress {
-        PanelAddress::AdventureMenu
+        StandardPanel::AdventureMenu.into()
     }
 }
 
@@ -43,7 +43,7 @@ impl Component for AdventureMenu {
                 Panels::close(self.address())
                     .action(UserAction::AdventureAction(AdventureAction::AbandonAdventure)),
             )
-            .button("Settings", Panels::open(PanelAddress::Settings))
+            .button("Settings", Panels::open(StandardPanel::Settings))
             .build()
     }
 }

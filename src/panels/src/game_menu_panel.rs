@@ -22,7 +22,7 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use game_data::game_actions::GameAction;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, StandardPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
@@ -36,13 +36,13 @@ impl GameMenuPanel {
 
 impl Panel for GameMenuPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::GameMenu
+        StandardPanel::GameMenu.into()
     }
 }
 
 impl Component for GameMenuPanel {
     fn build(self) -> Option<Node> {
-        let address = PanelAddress::GameMenu;
+        let address = StandardPanel::GameMenu;
         PanelWindow::new(address, 512.px(), 600.px())
             .title("Menu")
             .content(

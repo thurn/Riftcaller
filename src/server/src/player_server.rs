@@ -12,8 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Crate for operating the GRPC sever and handling top-level client requests.
+use anyhow::Result;
+use database::Database;
+use deck_editor::deck_editor_actions;
+use user_action_data::DeckEditorAction;
 
-pub mod agent_response;
-pub mod debug;
-pub mod requests;
+use crate::requests;
+use crate::server_data::{ClientData, GameResponse, RequestData};
+
+pub async fn handle_deck_editor_action(
+    database: &mut impl Database,
+    data: &RequestData,
+    action: &DeckEditorAction,
+) -> Result<GameResponse> {
+    requests::with_player(database, data, |player| {
+        deck_editor_actions::handle(player, action)?;
+        Ok(GameResponse::new(ClientData::propagate(data)))
+    })
+    .await
+}

@@ -17,7 +17,7 @@ use anyhow::Result;
 use crate::game_state_node::GameStateNode;
 
 /// A trait implementation for producing a 'score' for a given game state.
-pub trait StateEvaluator<TNode: GameStateNode> {
+pub trait StateEvaluator<TNode: GameStateNode>: Send {
     /// Evaluate the heuristic value of the given game state for the provided
     /// `player`, returning a higher number for "better" game states.
     ///

@@ -27,7 +27,7 @@ use core_ui::style::Corner;
 use core_ui::text::Text;
 use game_data::primitives::DeckId;
 use game_data::tutorial_data::TutorialMessageKey;
-use panel_address::{DeckEditorData, PanelAddress};
+use panel_address::{DeckEditorData, PanelAddress, PlayerPanel, StandardPanel};
 use player_data::{PlayerData, PlayerStatus};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
@@ -83,7 +83,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .button_type(IconButtonType::NavBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .action(if cfg!(debug_assertions) {
-                                Panels::open(PanelAddress::DebugPanel).as_client_action()
+                                Panels::open(StandardPanel::DebugPanel).as_client_action()
                             } else {
                                 ActionBuilder::new()
                                     .update(Command::Debug(ClientDebugCommand {
@@ -91,7 +91,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                                     }))
                                     .as_client_action()
                             })
-                            .long_press_action(Panels::open(PanelAddress::DebugPanel)),
+                            .long_press_action(Panels::open(StandardPanel::DebugPanel)),
                     )
                     .child(self.player.adventure.as_ref().map(|adventure| {
                         Row::new("CoinCount")
@@ -123,13 +123,13 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .button_type(IconButtonType::NavBrown)
                             .action(
                                 if self.player.tutorial.has_seen(TutorialMessageKey::DeckEditor) {
-                                    Panels::open(PanelAddress::DeckEditor(DeckEditorData::new(
+                                    Panels::open(PlayerPanel::DeckEditor(DeckEditorData::new(
                                         DeckId::Adventure,
                                     )))
-                                    .loading(PanelAddress::DeckEditorLoading)
+                                    .loading(StandardPanel::DeckEditorLoading)
                                 } else {
-                                    Panels::open(PanelAddress::DeckEditorPrompt)
-                                        .loading(PanelAddress::DeckEditorLoading)
+                                    Panels::open(PlayerPanel::DeckEditorPrompt)
+                                        .loading(StandardPanel::DeckEditorLoading)
                                 },
                             )
                             .layout(Layout::new().margin(Edge::All, 12.px()))
@@ -141,9 +141,9 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .button_type(IconButtonType::NavBrown)
                             .action(Panels::open(
                                 if matches!(self.player.status, Some(PlayerStatus::Playing(_))) {
-                                    PanelAddress::GameMenu
+                                    StandardPanel::GameMenu
                                 } else {
-                                    PanelAddress::AdventureMenu
+                                    StandardPanel::AdventureMenu
                                 },
                             )),
                     ),

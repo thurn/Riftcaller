@@ -22,7 +22,7 @@ use core_ui::{icons, style};
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::primitives::DeckId;
-use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress};
+use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerData;
 use protos::spelldawn::FlexJustify;
 use screen_overlay::ScreenOverlay;
@@ -52,7 +52,7 @@ impl<'a> DeckEditorPanel<'a> {
             )
             .child(show.then(|| {
                 IconButton::new(icon).button_type(IconButtonType::NavBrown).action(
-                    Panels::open(PanelAddress::DeckEditor(DeckEditorData {
+                    Panels::open(PlayerPanel::DeckEditor(DeckEditorData {
                         deck_id: DeckId::Adventure,
                         collection_filters: CollectionBrowserFilters {
                             offset: if subtract {
@@ -71,7 +71,7 @@ impl<'a> DeckEditorPanel<'a> {
 
 impl<'a> Panel for DeckEditorPanel<'a> {
     fn address(&self) -> PanelAddress {
-        PanelAddress::DeckEditor(self.data)
+        PlayerPanel::DeckEditor(self.data).into()
     }
 
     fn screen_overlay(&self) -> Option<Node> {

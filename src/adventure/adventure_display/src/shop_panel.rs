@@ -26,7 +26,7 @@ use core_ui::{icons, style};
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use element_names::ElementName;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerData;
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::game_command::Command;
@@ -52,7 +52,7 @@ impl<'a> ShopPanel<'a> {
 
 impl<'a> Panel for ShopPanel<'a> {
     fn address(&self) -> PanelAddress {
-        PanelAddress::Shop(self.position)
+        PlayerPanel::Shop(self.position).into()
     }
 
     fn screen_overlay(&self) -> Option<Node> {

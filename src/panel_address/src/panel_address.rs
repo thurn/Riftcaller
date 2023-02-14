@@ -17,6 +17,7 @@
 use adventure_data::adventure::TilePosition;
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
+use enum_kinds::EnumKind;
 use game_data::primitives::{DeckId, GameId, Side};
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
@@ -49,8 +50,9 @@ pub trait Panel: Component {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PanelAddress {
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, EnumKind)]
+#[enum_kind(StandardPanelKind)]
+pub enum StandardPanel {
     MainMenu,
     About,
     Settings,
@@ -59,8 +61,26 @@ pub enum PanelAddress {
     GameMenu,
     AdventureMenu,
     SetPlayerName(Side),
-    DeckEditorPrompt,
     DeckEditorLoading,
+}
+
+impl From<StandardPanel> for PanelAddress {
+    fn from(value: StandardPanel) -> Self {
+        PanelAddress::StandardPanel(value)
+    }
+}
+
+impl From<StandardPanel> for InterfacePanelAddress {
+    fn from(address: StandardPanel) -> Self {
+        let a: PanelAddress = address.into();
+        a.into()
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, EnumKind)]
+#[enum_kind(PlayerPanelKind)]
+pub enum PlayerPanel {
+    DeckEditorPrompt,
     DeckEditor(DeckEditorData),
     GameOver(GameOverData),
     TileLoading(TilePosition),
@@ -70,9 +90,40 @@ pub enum PanelAddress {
     AdventureOver,
 }
 
+impl From<PlayerPanel> for PanelAddress {
+    fn from(value: PlayerPanel) -> Self {
+        PanelAddress::PlayerPanel(value)
+    }
+}
+
+impl From<PlayerPanel> for InterfacePanelAddress {
+    fn from(address: PlayerPanel) -> Self {
+        let a: PanelAddress = address.into();
+        a.into()
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PanelAddress {
+    StandardPanel(StandardPanel),
+    PlayerPanel(PlayerPanel),
+}
+
 impl From<PanelAddress> for InterfacePanelAddress {
     fn from(address: PanelAddress) -> Self {
-        Self { serialized: ser::to_vec(&address).expect("Serialization failed") }
+        Self {
+            debug_string: match address {
+                PanelAddress::StandardPanel(p) => {
+                    let kind: StandardPanelKind = p.into();
+                    format!("{kind:?}")
+                }
+                PanelAddress::PlayerPanel(p) => {
+                    let kind: PlayerPanelKind = p.into();
+                    format!("{kind:?}")
+                }
+            },
+            serialized: ser::to_vec(&address).expect("Serialization failed"),
+        }
     }
 }
 

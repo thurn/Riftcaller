@@ -1,8 +1,7 @@
 ---
 source: tests/tests/core/create_game_tests.rs
-assertion_line: 51
+assertion_line: 47
 expression: "Summary::run(&response)"
 ---
 
 command_list: 
-    RenderScreenOverlay: "<ScreenOverlay>"

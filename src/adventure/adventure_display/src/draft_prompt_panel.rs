@@ -19,17 +19,16 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::{icons, style};
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 
 pub struct DraftPromptPanel {
     pub cost: Coins,
-    pub address: PanelAddress,
     pub position: TilePosition,
 }
 
 impl Panel for DraftPromptPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::TilePrompt(self.position)
+        PlayerPanel::TilePrompt(self.position).into()
     }
 }
 
@@ -41,9 +40,9 @@ impl Component for DraftPromptPanel {
             .buttons(vec![
                 Button::new(format!("Draft: {} {}", self.cost, icons::COINS))
                     .action(
-                        Panels::open(PanelAddress::DraftCard)
+                        Panels::open(PlayerPanel::DraftCard)
                             .and_close(self.address())
-                            .loading(PanelAddress::TileLoading(self.position))
+                            .loading(PlayerPanel::TileLoading(self.position))
                             .do_not_fetch(true)
                             .action(AdventureAction::InitiateDraft(self.position)))
                     .layout(Layout::new().margin(Edge::All, 8.px())),

@@ -27,6 +27,9 @@ server = { path = "../server", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
 
 anyhow = "1.0.58"
+async-trait = "0.1.64"
 maplit = "1.0.2"
 prost = "0.10.4"
 rand_xoshiro = { version = "0.6.0", features = ["serde1"] }
+tokio = { version = "1.19.2", features = ["macros", "rt-multi-thread", "sync", "time"] }
+ulid = { version = "1.0.0", features = ["serde"] }

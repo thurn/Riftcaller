@@ -420,7 +420,6 @@ command_list:
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-    RenderScreenOverlay: "<ScreenOverlay>"
 channel_response: 
     UpdateGameView: 
         user: 

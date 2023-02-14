@@ -21,7 +21,7 @@ use game_data::tutorial_data::TutorialData;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use user_action_data::NewGameAction;
-use with_error::WithError;
+use with_error::{fail, WithError};
 
 /// Represents the state of a game the player is participating in.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -30,6 +30,13 @@ pub enum PlayerStatus {
     RequestedGame(NewGameAction),
     /// The player is currently playing in the [GameId] game.
     Playing(GameId),
+}
+
+/// Identifies the current major activity this player is doing in the game.
+pub enum PlayerActivity<'a> {
+    None,
+    Adventure(&'a AdventureState),
+    PlayingGame(GameId),
 }
 
 /// Represents a player's stored data.
@@ -51,6 +58,29 @@ pub struct PlayerData {
 impl PlayerData {
     pub fn new(id: PlayerId) -> Self {
         Self { id, status: None, adventure: None, tutorial: TutorialData::default() }
+    }
+
+    /// Returns what this player is currently doing within the game.
+    pub fn current_activity(&self) -> PlayerActivity {
+        if let Some(PlayerStatus::Playing(game_id)) = self.status {
+            return PlayerActivity::PlayingGame(game_id);
+        }
+
+        if let Some(adventure) = &self.adventure {
+            return PlayerActivity::Adventure(adventure);
+        }
+
+        PlayerActivity::None
+    }
+
+    /// Returns the current game this player is playing in, or an error if there
+    /// is no such game.
+    pub fn current_game_id(&self) -> Result<GameId> {
+        if let Some(PlayerStatus::Playing(game_id)) = self.status {
+            Ok(game_id)
+        } else {
+            fail!("Player {} is not currently playing in a game", self.id)
+        }
     }
 
     /// Returns the active [AdventureState] when one is expected to exist

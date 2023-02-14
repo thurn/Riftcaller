@@ -14,19 +14,18 @@
 
 use std::fmt;
 
-use anyhow::Result;
 use clap::ArgEnum;
 use convert_case::{Case, Casing};
 use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;
-use with_error::fail;
+use ulid::Ulid;
 
 /// Identifies a player across different games
-#[derive(Debug, Clone, Copy, Hash, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Hash, Eq, PartialEq, Serialize, Deserialize)]
 pub enum PlayerId {
     /// ID stored in the database, i.e. a human player
-    Database(u64),
+    Database(Ulid),
     /// Known player, i.e. an AI agent.
     ///
     /// In the future these might be characters in a single-player story?
@@ -34,12 +33,20 @@ pub enum PlayerId {
 }
 
 impl PlayerId {
-    /// Returns the database key for this player, or an error if this is not a
-    /// database-backed player ID.
-    pub fn database_key(&self) -> Result<[u8; 8]> {
+    pub fn generate() -> Self {
+        Self::Database(Ulid::new())
+    }
+
+    pub fn new(ulid: Ulid) -> Self {
+        Self::Database(ulid)
+    }
+}
+
+impl fmt::Debug for PlayerId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            PlayerId::Database(key) => Ok(key.to_be_bytes()),
-            _ => fail!("Expected PlayerId::Database"),
+            PlayerId::Database(id) => write!(f, "{}", id.to_string().to_ascii_lowercase()),
+            PlayerId::Named(name) => write!(f, "{}", name),
         }
     }
 }
@@ -47,7 +54,7 @@ impl PlayerId {
 impl fmt::Display for PlayerId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            PlayerId::Database(id) => write!(f, "{}", id),
+            PlayerId::Database(id) => write!(f, "{}", id.to_string()),
             PlayerId::Named(name) => write!(f, "{}", name),
         }
     }

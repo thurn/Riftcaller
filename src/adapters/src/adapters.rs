@@ -20,26 +20,18 @@ use adventure_data::adventure::TilePosition;
 use anyhow::Result;
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{
-    AbilityId, AbilityIndex, CardId, GameId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
+    AbilityId, AbilityIndex, CardId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
 };
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::{
-    CardIdentifier, GameIdentifier, GameObjectIdentifier, MapPosition, PlayerIdentifier,
-    PlayerSide, RoomIdentifier, SpriteAddress, TimeValue,
+    CardIdentifier, GameObjectIdentifier, MapPosition, PlayerIdentifier, PlayerSide,
+    RoomIdentifier, SpriteAddress, TimeValue,
 };
 use serde_json::{de, ser};
 use with_error::fail;
 
 use crate::response_builder::ResponseBuilder;
-
-pub fn game_identifier(game_id: GameId) -> GameIdentifier {
-    GameIdentifier { value: game_id.value }
-}
-
-pub fn game_id(game_id: GameIdentifier) -> GameId {
-    GameId { value: game_id.value }
-}
 
 pub fn card_identifier(card_id: CardId) -> CardIdentifier {
     // Maybe need to obfuscate this somehow?

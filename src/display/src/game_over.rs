@@ -16,7 +16,7 @@ use ::panels::game_over_panel::GameOverPanel;
 use adapters::response_builder::ResponseBuilder;
 use core_ui::panels::{self, Panels};
 use game_data::game::{GamePhase, GameState};
-use panel_address::{GameOverData, Panel, PanelAddress};
+use panel_address::{GameOverData, Panel, PlayerPanel};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};
 
@@ -39,6 +39,6 @@ pub fn check_game_over(builder: &mut ResponseBuilder, game: &GameState) {
         if let Some(panel) = (GameOverPanel { data }.build_panel()) {
             builder.push(panels::update(panel));
         }
-        builder.push(Panels::open(PanelAddress::GameOver(data)).into())
+        builder.push(Panels::open(PlayerPanel::GameOver(data)).into())
     }
 }

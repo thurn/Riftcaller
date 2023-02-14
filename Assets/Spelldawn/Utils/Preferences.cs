@@ -18,6 +18,7 @@ namespace Spelldawn.Utils
 {
   public static class Preferences
   {
-    public const string MusicVolume = "MusicVolume";
+    public const string PlayerId = "SDPlayerId"; 
+    public const string MusicVolume = "SDMusicVolume";
   }
 }

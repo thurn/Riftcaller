@@ -108,7 +108,7 @@ pub fn create(
     let side = config.side;
 
     AdventureState {
-        id: AdventureId::new(0),
+        id: AdventureId::new_from_u128(0),
         side,
         choice_screen: None,
         coins: crate::STARTING_COINS,

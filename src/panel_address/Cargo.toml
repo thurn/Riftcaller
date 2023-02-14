@@ -16,5 +16,6 @@ core_ui = { path = "../core_ui", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 
+enum-kinds = "0.5.1"
 serde = { version = "1.0.138", features = ["derive"] }
 serde_json = "1.0.82"

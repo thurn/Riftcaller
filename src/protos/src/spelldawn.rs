@@ -363,6 +363,10 @@ pub struct DraggableNode {
     /// cloning this element directly.
     #[prost(message, optional, boxed, tag = "7")]
     pub custom_drag_indicator: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
+    /// Action to invoke when a gesture has been confirmed as a drag, i.e. the
+    /// element has been dragged through some fixed distance.
+    #[prost(message, optional, tag = "8")]
+    pub on_drag_detected: ::core::option::Option<ClientAction>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}
@@ -505,28 +509,20 @@ pub struct Node {
 
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerIdentifier {
-    #[prost(oneof = "player_identifier::PlayerIdentifierType", tags = "1, 2, 3")]
+    #[prost(oneof = "player_identifier::PlayerIdentifierType", tags = "1, 2")]
     pub player_identifier_type: ::core::option::Option<player_identifier::PlayerIdentifierType>,
 }
 /// Nested message and enum types in `PlayerIdentifier`.
 pub mod player_identifier {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PlayerIdentifierType {
-        /// An identifier from Unity's social API: Social.localUser.id
+        /// Client-generated identifier, see <https://github.com/ulid/spec>
         #[prost(string, tag = "1")]
-        SocialIdentifier(::prost::alloc::string::String),
-        /// An identifier for a device: SystemInfo.deviceUniqueIdentifier
-        #[prost(string, tag = "2")]
-        DeviceIdentifier(::prost::alloc::string::String),
+        Ulid(::prost::alloc::string::String),
         /// An opaque identifier specified on the server, e.g. for an AI player
-        #[prost(bytes, tag = "3")]
+        #[prost(bytes, tag = "2")]
         ServerIdentifier(::prost::alloc::vec::Vec<u8>),
     }
-}
-#[derive(Eq, Hash, Copy, Ord, PartialOrd, Clone, PartialEq, ::prost::Message)]
-pub struct GameIdentifier {
-    #[prost(uint64, tag = "1")]
-    pub value: u64,
 }
 #[derive(Eq, Hash, Copy, Ord, PartialOrd, Clone, PartialEq, ::prost::Message)]
 pub struct CardIdentifier {
@@ -1195,6 +1191,15 @@ pub mod client_action {
         SpendActionPoint(super::SpendActionPointAction),
     }
 }
+/// Client state values included with the server response which must be
+/// included with all subsequent GameRequests.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ClientMetadata {
+    #[prost(message, optional, tag = "2")]
+    pub adventure_id: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(message, optional, tag = "1")]
+    pub game_id: ::core::option::Option<::prost::alloc::string::String>,
+}
 /// Initiate a play session and download the current state for the
 /// provided player.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1205,6 +1210,7 @@ pub struct ConnectRequest {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameRequest {
+    /// Action to perform.
     #[prost(message, optional, tag = "1")]
     pub action: ::core::option::Option<ClientAction>,
     /// Identifies the user making this request. At some point I'm going to
@@ -1216,6 +1222,9 @@ pub struct GameRequest {
     /// updated.
     #[prost(message, repeated, tag = "3")]
     pub open_panels: ::prost::alloc::vec::Vec<InterfacePanelAddress>,
+    /// Values received from a previous server call.
+    #[prost(message, optional, tag = "4")]
+    pub metadata: ::core::option::Option<ClientMetadata>,
 }
 // ============================================================================
 // Commands
@@ -1235,7 +1244,9 @@ pub struct DelayCommand {
 /// Identifies an InterfacePanel.
 #[derive(Eq, Hash, Clone, PartialEq, ::prost::Message)]
 pub struct InterfacePanelAddress {
-    #[prost(bytes = "vec", tag = "1")]
+    #[prost(string, tag = "1")]
+    pub debug_string: ::prost::alloc::string::String,
+    #[prost(bytes = "vec", tag = "2")]
     pub serialized: ::prost::alloc::vec::Vec<u8>,
 }
 /// A 'panel' is an independently addressable block of UI. The contents
@@ -1885,6 +1896,10 @@ pub struct CommandList {
     pub logging_metadata: ::prost::alloc::vec::Vec<LoggingMetadata>,
     #[prost(message, repeated, tag = "2")]
     pub commands: ::prost::alloc::vec::Vec<GameCommand>,
+    /// Optionally, client information to store. When provided, this
+    /// must be included on all subsequent PerformAction calls.
+    #[prost(message, optional, tag = "3")]
+    pub metadata: ::core::option::Option<ClientMetadata>,
 }
 // ============================================================================
 // Masonry

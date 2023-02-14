@@ -19,7 +19,7 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, StandardPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
 
 pub const TEXT: &str = "Spelldawn is open source and licensed under the Apache License, version 2.0. Source code is available at github.com/thurn/spelldawn
@@ -43,7 +43,7 @@ impl AboutPanel {
 
 impl Panel for AboutPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::About
+        StandardPanel::About.into()
     }
 }
 

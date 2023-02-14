@@ -25,7 +25,7 @@ pub enum SelectionMode {
 /// explore. The child which returns the highest score is selected. Inputs are
 /// the number of visits to the current parent, number of visits to this child,
 /// known reward value for this child, and [SelectionMode].
-pub trait ChildScoreAlgorithm {
+pub trait ChildScoreAlgorithm: Send {
     fn score(
         &self,
         parent_visits: f64,

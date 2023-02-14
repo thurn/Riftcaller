@@ -19,7 +19,7 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::slider::Slider;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, StandardPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 
 #[derive(Debug, Default)]
@@ -33,13 +33,13 @@ impl SettingsPanel {
 
 impl Panel for SettingsPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::Settings
+        StandardPanel::Settings.into()
     }
 }
 
 impl Component for SettingsPanel {
     fn build(self) -> Option<Node> {
-        PanelWindow::new(PanelAddress::Settings, 600.px(), 600.px())
+        PanelWindow::new(StandardPanel::Settings, 600.px(), 600.px())
             .title("Settings")
             .content(
                 Column::new("SettingsContent")

@@ -30,7 +30,7 @@ use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use core_ui::panels::Panels;
 use core_ui::{design, panels};
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
@@ -78,7 +78,7 @@ pub fn render_adventure_choice_screen(
     Ok(match screen {
         AdventureChoiceScreen::AdventureOver => RenderedChoiceScreen {
             panel: AdventureOverPanel::new().build_panel(),
-            address: PanelAddress::AdventureOver,
+            address: PlayerPanel::AdventureOver.into(),
         },
         AdventureChoiceScreen::Draft(position) => {
             let TileEntity::Draft { data, .. } = state.tile_entity(*position)? else {
@@ -87,7 +87,7 @@ pub fn render_adventure_choice_screen(
 
             RenderedChoiceScreen {
                 panel: DraftPanel { data }.build_panel(),
-                address: PanelAddress::DraftCard,
+                address: PlayerPanel::DraftCard.into(),
             }
         }
     })
@@ -149,13 +149,13 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
 
 fn visit_action_for_entity(entity: &TileEntity, position: TilePosition) -> Panels {
     let result = match entity {
-        TileEntity::Shop { data } if data.visited => Panels::open(PanelAddress::Shop(position)),
-        TileEntity::Shop { .. } => Panels::open(PanelAddress::TilePrompt(position))
+        TileEntity::Shop { data } if data.visited => Panels::open(PlayerPanel::Shop(position)),
+        TileEntity::Shop { .. } => Panels::open(PlayerPanel::TilePrompt(position))
             .action(AdventureAction::VisitShop(position)),
-        _ => Panels::open(PanelAddress::TilePrompt(position)),
+        _ => Panels::open(PlayerPanel::TilePrompt(position)),
     };
 
-    result.loading(PanelAddress::TileLoading(position))
+    result.loading(PlayerPanel::TileLoading(position))
 }
 
 fn sprite_address_for_entity(entity: &TileEntity) -> SpriteAddress {

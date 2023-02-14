@@ -18,16 +18,15 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 
 pub struct ShopPromptPanel {
-    pub address: PanelAddress,
     pub position: TilePosition,
 }
 
 impl Panel for ShopPromptPanel {
     fn address(&self) -> PanelAddress {
-        self.address
+        PlayerPanel::TilePrompt(self.position).into()
     }
 }
 
@@ -40,13 +39,13 @@ impl Component for ShopPromptPanel {
             .prompt("Walking through town, you come upon the illuminated windows of a shop stocked with magical wares")
             .buttons(vec![
                 Button::new("Continue")
-                    .action(Panels::open(PanelAddress::Shop(self.position))
+                    .action(Panels::open(PlayerPanel::Shop(self.position))
                         .and_close(self.address())
-                        .loading(PanelAddress::TileLoading(self.position)))
+                        .loading(PlayerPanel::TileLoading(self.position)))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(Panels::close(self.address))
+                    .action(Panels::close(self.address()))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

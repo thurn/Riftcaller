@@ -486,6 +486,10 @@ message DraggableNode {
     // Optionally, a UI element to use for the drag indicator instead of cloning
     // this element directly.
     Node custom_drag_indicator = 7;
+
+    // Action to invoke when a gesture has been confirmed as a drag, i.e. the
+    // element has been dragged through some fixed distance.
+    ClientAction on_drag_detected = 8;
 }
 
 message DropTargetNode {
@@ -625,17 +629,11 @@ message Node {
 
 message PlayerIdentifier {
     oneof player_identifier_type {
-        // An identifier from Unity's social API: Social.localUser.id
-        string social_identifier = 1;
-        // An identifier for a device: SystemInfo.deviceUniqueIdentifier
-        string device_identifier = 2;
+        // Client-generated identifier, see https://github.com/ulid/spec
+        string ulid = 1;
         // An opaque identifier specified on the server, e.g. for an AI player
-        bytes server_identifier = 3;
+        bytes server_identifier = 2;
     }
-}
-
-message GameIdentifier {
-    uint64 value = 1;
 }
 
 enum PlayerSide {
@@ -1227,6 +1225,13 @@ message ClientAction {
     }
 }
 
+// Client state values included with the server response which must be
+// included with all subsequent GameRequests.
+message ClientMetadata {
+    google.protobuf.StringValue adventure_id = 2;
+    google.protobuf.StringValue game_id = 1;
+}
+
 // Initiate a play session and download the current state for the
 // provided player.
 message ConnectRequest {
@@ -1235,6 +1240,7 @@ message ConnectRequest {
 }
 
 message GameRequest {
+    // Action to perform.
     ClientAction action = 1;
 
     // Identifies the user making this request. At some point I'm going to
@@ -1245,6 +1251,9 @@ message GameRequest {
     // Interface panels which were open at the time of the action, to be
     // updated.
     repeated InterfacePanelAddress open_panels = 3;
+
+    // Values received from a previous server call.
+    ClientMetadata metadata = 4;
 }
 
 // ============================================================================
@@ -1262,7 +1271,9 @@ message DelayCommand {
 
 // Identifies an InterfacePanel.
 message InterfacePanelAddress {
-    bytes serialized = 1;
+    string debug_string = 1;
+
+    bytes serialized = 2;
 }
 
 // A 'panel' is an independently addressable block of UI. The contents
@@ -1845,6 +1856,10 @@ message CommandList {
     repeated LoggingMetadata logging_metadata = 1;
 
     repeated GameCommand commands = 2;
+
+    // Optionally, client information to store. When provided, this
+    // must be included on all subsequent PerformAction calls.
+    ClientMetadata metadata = 3;
 }
 
 service Spelldawn {

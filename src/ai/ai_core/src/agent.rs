@@ -48,7 +48,7 @@ impl AgentConfig {
 /// This trait is almost always used as a wrapper for [AgentData] with fewer
 /// type parameters, but it can also be implemented on its own for novel agent
 /// types.
-pub trait Agent<TNode>
+pub trait Agent<TNode>: Send
 where
     TNode: GameStateNode,
 {
@@ -59,6 +59,11 @@ where
     /// state. Should attempt to return a result before the [AgentConfig]'s
     /// `deadline`.
     fn pick_action(&self, config: AgentConfig, node: &TNode) -> Result<TNode::Action>;
+
+    /// If true, this agent will not be queried for actions on their turn.
+    fn inactive(&self) -> bool {
+        false
+    }
 }
 
 /// A tuple of various pieces needed to perform agent action selection.

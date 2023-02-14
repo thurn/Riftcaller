@@ -23,7 +23,7 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use game_data::primitives::Side;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, StandardPanel};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
@@ -40,15 +40,15 @@ impl DebugPanel {
 
 impl Panel for DebugPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::DebugPanel
+        StandardPanel::DebugPanel.into()
     }
 }
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {
-        let close = Panels::close(PanelAddress::DebugPanel);
+        let close = Panels::close(StandardPanel::DebugPanel);
 
-        PanelWindow::new(PanelAddress::DebugPanel, 1024.px(), 600.px())
+        PanelWindow::new(StandardPanel::DebugPanel, 1024.px(), 600.px())
             .title("Debug Controls")
             .show_close_button(true)
             .content(
@@ -61,7 +61,8 @@ impl Component for DebugPanel {
                     )
                     .child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
                     .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Champion)))
-                    .child(debug_button("Join Game", DebugAction::JoinGame))
+                    .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Overlord)))
+                    .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Champion)))
                     .child(debug_button(
                         "Show Logs",
                         vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
@@ -81,11 +82,15 @@ impl Component for DebugPanel {
                     .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadState(3)))
                     .child(debug_button(
                         "Overlord AI",
-                        Panels::open(PanelAddress::SetPlayerName(Side::Overlord)),
+                        Panels::open(StandardPanel::SetPlayerName(Side::Overlord))
+                            .wait_to_load(true)
+                            .and_close(self.address()),
                     ))
                     .child(debug_button(
                         "Champion AI",
-                        Panels::open(PanelAddress::SetPlayerName(Side::Champion)),
+                        Panels::open(StandardPanel::SetPlayerName(Side::Champion))
+                            .wait_to_load(true)
+                            .and_close(self.address()),
                     )),
             )
             .build()

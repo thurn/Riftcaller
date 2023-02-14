@@ -98,7 +98,7 @@ namespace Spelldawn.Services
       (allowInOverlay || !_registry.RaidService.RaidActive) &&
       (!actionPointRequired || _registry.ActionDisplayForPlayer(PlayerName.User).AvailableActions > 0);
 
-    public bool CanDragInterfaceElement() => !_registry.CommandService.Active && !_registry.ActionService.Active;
+    public bool CanDragInterfaceElement() => true;
 
     void Update()
     {

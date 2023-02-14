@@ -81,6 +81,15 @@ impl Draggable {
         self.draggable.custom_drag_indicator = indicator.map(Box::new);
         self
     }
+
+    /// Action to invoke when a gesture has been confirmed as a drag, i.e. the
+    /// element has been dragged through some fixed distance.
+    pub fn on_drag_detected(mut self, action: Option<impl InterfaceAction + 'static>) -> Self {
+        self.enabled = action.is_some();
+        self.draggable.on_drag_detected =
+            action.map(|d| ClientAction { action: Some(d.as_client_action()) });
+        self
+    }
 }
 
 impl HasRenderNode for Draggable {

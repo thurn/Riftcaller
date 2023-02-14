@@ -19,7 +19,7 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use panel_address::{GameOverData, Panel, PanelAddress};
+use panel_address::{GameOverData, Panel, PanelAddress, PlayerPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 use user_action_data::UserAction;
 
@@ -30,7 +30,7 @@ pub struct GameOverPanel {
 
 impl Panel for GameOverPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::GameOver(self.data)
+        PlayerPanel::GameOver(self.data).into()
     }
 }
 

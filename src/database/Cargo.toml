@@ -11,15 +11,16 @@ doctest = false
 test = false
 
 [dependencies]
-anyhow = "1.0.58"
-once_cell = "1.13.0"
-prost = "0.10.4"
-serde_json = "1.0.82"
-sled = "0.34.7"
-
 adapters = { path = "../adapters", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
 player_data = { path = "../data/player_data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
+
+async-trait = "0.1.64"
+anyhow = "1.0.58"
+once_cell = "1.13.0"
+serde_json = "1.0.82"
+sled = "0.34.7"
+ulid = "1.0.0"

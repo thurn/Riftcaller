@@ -25,19 +25,18 @@ use protos::spelldawn::play_effect_position::EffectPosition;
 use protos::spelldawn::{
     node_type, ActionTrackerView, AnchorCorner, ArrowTargetRoom, AudioClipAddress, CardAnchor,
     CardAnchorNode, CardCreationAnimation, CardIcon, CardIcons, CardIdentifier, CardTargeting,
-    CardTitle, CardView, CommandList, ConditionalCommand, CreateTokenCardCommand, DelayCommand,
+    CardTitle, CardView, CommandList, CreateTokenCardCommand, DelayCommand,
     DisplayGameMessageCommand, DisplayRewardsCommand, EffectAddress, FireProjectileCommand,
     GameCommand, GameMessageType, GameObjectIdentifier, GameObjectMove, GameObjectPositions,
-    GameView, InfoZoomCommand, InterfaceMainControls, InterfacePanel, InterfacePanelAddress,
-    LoadSceneCommand, ManaView, MapPosition, MoveGameObjectsCommand, MusicState, NoTargeting, Node,
-    NodeType, ObjectPosition, PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand,
-    PlayerInfo, PlayerName, PlayerSide, PlayerView, ProjectileAddress, RenderScreenOverlayCommand,
-    RevealedCardView, RoomIdentifier, RoomVisitType, RulesText, SceneLoadMode, ScoreView,
-    SetGameObjectsEnabledCommand, SetMusicCommand, SpriteAddress, TimeValue, TogglePanelCommand,
-    UpdateGameViewCommand, UpdateInterfaceCommand, UpdatePanelsCommand, UpdateWorldMapCommand,
+    GameView, InterfaceMainControls, InterfacePanelAddress, LoadSceneCommand, ManaView,
+    MapPosition, MoveGameObjectsCommand, MusicState, NoTargeting, Node, NodeType, ObjectPosition,
+    PlayEffectCommand, PlayEffectPosition, PlayInRoom, PlaySoundCommand, PlayerInfo, PlayerName,
+    PlayerSide, PlayerView, ProjectileAddress, RevealedCardView, RoomIdentifier, RoomVisitType,
+    RulesText, SceneLoadMode, ScoreView, SetGameObjectsEnabledCommand, SetMusicCommand,
+    SpriteAddress, TimeValue, TogglePanelCommand, UpdateGameViewCommand, UpdateWorldMapCommand,
     VisitRoomCommand, WorldMapSprite, WorldMapTile,
 };
-use server::requests::GameResponse;
+use server::server_data::GameResponseOutput;
 
 pub trait Summarize {
     fn summarize(self, summary: &mut Summary);
@@ -239,9 +238,9 @@ impl Summarize for TimeValue {
     }
 }
 
-impl Summarize for GameResponse {
+impl Summarize for GameResponseOutput {
     fn summarize(self, summary: &mut Summary) {
-        summary.child_node_indent("command_list", self.command_list, false);
+        summary.child_node_indent("command_list", self.user_response, false);
         if let Some((_, list)) = self.opponent_response {
             summary.child_node_indent("channel_response", list, false);
         }
@@ -265,7 +264,7 @@ impl Summarize for Command {
         match self {
             Self::Debug(_) => summary.primitive("Debug!"),
             Self::Delay(v) => summary.child_node("Delay", v),
-            Self::UpdatePanels(v) => summary.child_node("UpdatePanels", v),
+            Self::UpdatePanels(_) => {}
             Self::TogglePanel(v) => summary.child_node("TogglePanel", v),
             Self::UpdateGameView(v) => summary.child_node("UpdateGameView", v),
             Self::VisitRoom(v) => summary.child_node("VisitRoom", v),
@@ -280,10 +279,10 @@ impl Summarize for Command {
             Self::LoadScene(v) => summary.child_node("LoadScene", v),
             Self::CreateTokenCard(v) => summary.child_node("CreateTokenCard", v),
             Self::UpdateWorldMap(v) => summary.child_node("UpdateWorldMap", v),
-            Self::RenderScreenOverlay(v) => summary.child_node("RenderScreenOverlay", v),
-            Self::UpdateInterface(v) => summary.child_node("UpdateInterface", v),
-            Self::Conditional(v) => summary.child_node("Conditional", v),
-            Self::InfoZoom(v) => summary.child_node("InfoZoom", v),
+            Self::RenderScreenOverlay(_) => {}
+            Self::UpdateInterface(_) => {}
+            Self::Conditional(_) => {}
+            Self::InfoZoom(_) => {}
         }
     }
 }
@@ -297,18 +296,6 @@ impl Summarize for DelayCommand {
 impl Summarize for TogglePanelCommand {
     fn summarize(self, summary: &mut Summary) {
         summary.primitive("<TogglePanelCommand>");
-    }
-}
-
-impl Summarize for UpdatePanelsCommand {
-    fn summarize(self, summary: &mut Summary) {
-        summary.children("panels", self.panels);
-    }
-}
-
-impl Summarize for InterfacePanel {
-    fn summarize(self, summary: &mut Summary) {
-        summary.primitive("<Panel>");
     }
 }
 
@@ -687,29 +674,5 @@ impl Summarize for WorldMapTile {
     fn summarize(self, summary: &mut Summary) {
         summary.children("sprites", self.sprites);
         summary.child("position", self.position);
-    }
-}
-
-impl Summarize for RenderScreenOverlayCommand {
-    fn summarize(self, summary: &mut Summary) {
-        summary.primitive("<ScreenOverlay>");
-    }
-}
-
-impl Summarize for UpdateInterfaceCommand {
-    fn summarize(self, summary: &mut Summary) {
-        summary.primitive("<UpdateInterfaceCommand>");
-    }
-}
-
-impl Summarize for ConditionalCommand {
-    fn summarize(self, summary: &mut Summary) {
-        summary.primitive("<ConditionalCommand>");
-    }
-}
-
-impl Summarize for InfoZoomCommand {
-    fn summarize(self, summary: &mut Summary) {
-        summary.primitive("<InfoZoom>");
     }
 }

@@ -20,10 +20,8 @@ using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Tests;
 using Spelldawn.World;
-using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Screen = UnityEngine.Device.Screen;
 
 #nullable enable
 
@@ -220,18 +218,6 @@ namespace Spelldawn.Services
     [SerializeField] StudioManager _studioManager = null!;
     public StudioManager StudioManager => _studioManager;
 
-    async void Awake()
-    {
-      try
-      {
-        await UnityServices.InitializeAsync();
-      }
-      catch (Exception e)
-      {
-        Debug.LogException(e);
-      }
-    }    
-    
     IEnumerator Start()
     {
       Application.targetFrameRate = 60;

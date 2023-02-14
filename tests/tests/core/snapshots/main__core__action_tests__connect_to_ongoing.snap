@@ -51,8 +51,3 @@ expression: "Summary::run(&r3)"
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-    UpdatePanels: 
-    panels: "<Panel>"
-    UpdatePanels: 
-    panels: "<Panel>"
-    RenderScreenOverlay: "<ScreenOverlay>"

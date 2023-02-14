@@ -73,10 +73,8 @@ pub enum DebugAction {
     /// current player's player data with the canonical decklists.
     NewGame(Side),
 
-    /// Adds the current player to the game with ID 0, overwriting the non-human
-    /// player in this game. Overwrites the current player's player data
-    /// with the canonical decklists.
-    JoinGame,
+    /// Adds the current player to the game with ID 0 with the given side.
+    JoinGame(Side),
 
     /// Swaps which side the current player is playing as in their current game.
     FlipViewpoint,
@@ -84,8 +82,8 @@ pub enum DebugAction {
     AddMana(ManaValue),
     AddActionPoints(ActionCount),
     AddScore(PointsValue),
-    SaveState(u64),
-    LoadState(u64),
+    SaveState(u128),
+    LoadState(u128),
     SetNamedPlayer(Side, NamedPlayer),
 }
 

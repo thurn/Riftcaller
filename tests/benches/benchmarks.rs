@@ -174,7 +174,7 @@ pub fn alpha_beta_search(c: &mut Criterion) {
 /// opening hands and resolves mulligans.
 fn create_canonical_game() -> Result<GameState> {
     let mut game = GameState::new(
-        GameId::new(0),
+        GameId::new_from_u128(0),
         PlayerId::Named(NamedPlayer::NoAction),
         decklists::CANONICAL_OVERLORD.clone(),
         PlayerId::Named(NamedPlayer::NoAction),
@@ -187,12 +187,12 @@ fn create_canonical_game() -> Result<GameState> {
     actions::handle_game_action(
         &mut game,
         Side::Overlord,
-        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        &GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
     actions::handle_game_action(
         &mut game,
         Side::Champion,
-        GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        &GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
 
     Ok(game)

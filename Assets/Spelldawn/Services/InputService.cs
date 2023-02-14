@@ -52,7 +52,6 @@ namespace Spelldawn.Services
       else
       {
         var draggable = (Draggable)((IMasonElement)newDragSource).Clone(_registry);
-        draggable.OnStartDrag();
         element = draggable;
       }
 
@@ -169,6 +168,8 @@ namespace Spelldawn.Services
         return;
       }
 
+      _originalDragSource?.OnDragged();
+      
       if (_originalDragSource?.RemoveOriginal == true)
       {
         _originalDragSource.style.visibility = Visibility.Hidden;

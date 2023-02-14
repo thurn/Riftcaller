@@ -33,6 +33,8 @@ namespace Spelldawn.Masonry
     public bool RemoveOriginal { get; set; }
     public List<string> HideIndicatorChildren { get; set; }
     public Node? CustomDragIndicator { get; set; }
+    public ClientAction? OnDragDetected { get; set; }
+    bool _firedDragDetected;
 
     public static void Apply(Registry registry, Draggable view, Node data)
     {
@@ -45,6 +47,7 @@ namespace Spelldawn.Masonry
       view.RemoveOriginal = data.NodeType.DraggableNode.RemoveOriginal;
       view.HideIndicatorChildren = data.NodeType.DraggableNode.HideIndicatorChildren.ToList();
       view.CustomDragIndicator = data.NodeType.DraggableNode.CustomDragIndicator;
+      view.OnDragDetected = data.NodeType.DraggableNode.OnDragDetected;
     }
 
     public Draggable()
@@ -65,18 +68,28 @@ namespace Spelldawn.Masonry
     {
       if (OnDrop != null && Registry.CapabilityService.CanDragInterfaceElement())
       {
+        _firedDragDetected = false;
         Registry.InputService.StartDragging(this);        
       }
     }
 
-    public void OnStartDrag()
+    public void OnDragged()
     {
-      foreach (var child in HideIndicatorChildren)
+      if (!_firedDragDetected)
       {
-        if (this.Q<VisualElement>(child) is { } element)
+        foreach (var child in HideIndicatorChildren)
         {
-          element.style.visibility = Visibility.Hidden;
+          if (this.Q<VisualElement>(child) is { } element)
+          {
+            element.style.visibility = Visibility.Hidden;
+          }
         }
+
+        if (OnDragDetected != null)
+        {
+          Registry.ActionService.HandleAction(OnDragDetected);
+        }
+        _firedDragDetected = true;
       }
     }
   }

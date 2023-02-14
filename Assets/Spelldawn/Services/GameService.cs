@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections;
+using System;
 using Spelldawn.Protos;
+using Spelldawn.Utils;
 using UnityEngine;
 
 #nullable enable
@@ -24,24 +25,31 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
 
-    PlayerIdentifier? _playerIdentifier;
-
     public void Initialize(GlobalGameMode globalGameMode)
     {
       if (globalGameMode == GlobalGameMode.Default)
       {
-        StartCoroutine(Authenticate());
-      }
-    }
+        PlayerIdentifier playerId;
+        if (PlayerPrefs.HasKey(Preferences.PlayerId))
+        {
+          playerId = new PlayerIdentifier
+          {
+            Ulid = PlayerPrefs.GetString(Preferences.PlayerId)
+          };
+        }
+        else
+        {
+          var id = Ulid.NewUlid().ToString();
+          PlayerPrefs.SetString(Preferences.PlayerId, id);
+          PlayerPrefs.Save();
+          playerId = new PlayerIdentifier
+          {
+            Ulid = id
+          };          
+        }
 
-    IEnumerator Authenticate()
-    {
-      yield return new WaitForSeconds(0.1f);
-      var identifier = new PlayerIdentifier
-      {
-        DeviceIdentifier = (Application.isEditor ? "Editor/" : "") + SystemInfo.deviceUniqueIdentifier
-      };
-      _registry.ActionService.Connect(identifier);
+        _registry.ActionService.Connect(playerId);
+      }
     }
   }
 }

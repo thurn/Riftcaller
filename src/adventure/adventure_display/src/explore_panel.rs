@@ -19,18 +19,17 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::{icons, style};
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 use user_action_data::UserAction;
 
 pub struct ExplorePanel {
     pub cost: Coins,
-    pub address: PanelAddress,
     pub position: TilePosition,
 }
 
 impl Panel for ExplorePanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::TilePrompt(self.position)
+        PlayerPanel::TilePrompt(self.position).into()
     }
 }
 
@@ -47,7 +46,7 @@ impl Component for ExplorePanel {
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")
                     .button_type(ButtonType::Secondary)
-                    .action(Panels::close(self.address))
+                    .action(Panels::close(self.address()))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
             ])
             .build()

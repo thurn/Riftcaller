@@ -17,7 +17,7 @@
 use std::env;
 
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
-use server::requests::GameService;
+use server::GameService;
 use tonic::transport::Server;
 use tracing::{warn, Event, Level};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
@@ -44,17 +44,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
     let address = "0.0.0.0:80".parse().expect("valid address");
-    let server = SpelldawnServer::new(GameService {
-        // To print responses:
-        // response_interceptor: Some(|response| eprintln!("{}", Summary::summarize(response)))
-        response_interceptor: None,
-    })
-    .send_gzip()
-    .accept_gzip();
+    let server = SpelldawnServer::new(GameService).send_gzip().accept_gzip();
     let service = tonic_web::config().enable(server);
 
     warn!("Server listening on {}", address);
-    Server::builder().accept_http1(true).add_service(service).serve(address).await?;
+    Server::builder()
+        .trace_fn(|_| tracing::info_span!(">>>"))
+        .accept_http1(true)
+        .add_service(service)
+        .serve(address)
+        .await?;
 
     Ok(())
 }

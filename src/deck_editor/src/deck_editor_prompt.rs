@@ -20,7 +20,7 @@ use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
 use game_data::primitives::DeckId;
-use panel_address::{DeckEditorData, Panel, PanelAddress};
+use panel_address::{DeckEditorData, Panel, PanelAddress, PlayerPanel, StandardPanel};
 use player_data::PlayerData;
 use screen_overlay::ScreenOverlay;
 use user_action_data::DeckEditorAction;
@@ -31,7 +31,7 @@ pub struct DeckEditorPromptPanel<'a> {
 
 impl<'a> Panel for DeckEditorPromptPanel<'a> {
     fn address(&self) -> PanelAddress {
-        PanelAddress::DeckEditorPrompt
+        PlayerPanel::DeckEditorPrompt.into()
     }
 
     fn screen_overlay(&self) -> Option<Node> {
@@ -49,11 +49,11 @@ impl<'a> Component for DeckEditorPromptPanel<'a> {
             .buttons(vec![
                 Button::new("Continue")
                     .action(
-                        Panels::open(PanelAddress::DeckEditor(DeckEditorData::new(
+                        Panels::open(PlayerPanel::DeckEditor(DeckEditorData::new(
                             DeckId::Adventure,
                         )))
                         .and_close(self.address())
-                        .loading(PanelAddress::DeckEditorLoading)
+                        .loading(StandardPanel::DeckEditorLoading)
                         .action(DeckEditorAction::ViewedPrompt),
                     )
                     .layout(Layout::new().margin(Edge::All, 8.px())),

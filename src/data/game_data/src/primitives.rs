@@ -21,6 +21,7 @@ use std::fmt::Formatter;
 
 use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
+use ulid::Ulid;
 
 pub type TurnNumber = u32;
 pub type ActionCount = u32;
@@ -43,54 +44,69 @@ pub enum DeckId {
 
 /// Identifies an ongoing game
 #[derive(Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
-pub struct GameId {
-    pub value: u64,
-}
+pub struct GameId(Ulid);
 
 impl GameId {
-    pub fn new(value: u64) -> Self {
-        Self { value }
+    pub fn generate() -> Self {
+        Self(Ulid::new())
     }
 
-    /// Byte array representation of this ID
-    pub fn key(&self) -> [u8; 8] {
-        self.value.to_be_bytes()
+    pub fn new(ulid: Ulid) -> Self {
+        Self(ulid)
+    }
+
+    pub fn new_from_u128(value: u128) -> Self {
+        Self(Ulid(value))
+    }
+
+    pub fn as_u128(self) -> u128 {
+        self.0 .0
     }
 }
 
 impl fmt::Debug for GameId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.value)
+        write!(f, "{}", self.0.to_string().to_ascii_lowercase())
     }
 }
 
 impl fmt::Display for GameId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.value)
+        write!(f, "{}", self.0.to_string())
     }
 }
 
 /// Identifies an ongoing adventure
 #[derive(Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
-pub struct AdventureId {
-    pub value: u64,
-}
+pub struct AdventureId(Ulid);
 
 impl AdventureId {
-    pub fn new(value: u64) -> Self {
-        Self { value }
+    pub fn generate() -> Self {
+        Self(Ulid::new())
+    }
+
+    pub fn new(ulid: Ulid) -> Self {
+        Self(ulid)
+    }
+
+    pub fn new_from_u128(value: u128) -> Self {
+        Self(Ulid(value))
+    }
+
+    pub fn as_u128(self) -> u128 {
+        self.0 .0
     }
 }
 
 impl fmt::Debug for AdventureId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "A{}", self.value)
+        write!(f, "{}", self.0.to_string().to_ascii_lowercase())
     }
 }
 
 impl fmt::Display for AdventureId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.value)
+        write!(f, "{}", self.0.to_string())
     }
 }
 

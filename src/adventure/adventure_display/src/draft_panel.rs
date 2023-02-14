@@ -24,7 +24,7 @@ use core_ui::style;
 use core_ui::text::Text;
 use deck_card::{CardHeight, DeckCard};
 use game_data::primitives::Milliseconds;
-use panel_address::{Panel, PanelAddress};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 use protos::spelldawn::FlexJustify;
 
 pub struct DraftPanel<'a> {
@@ -33,7 +33,7 @@ pub struct DraftPanel<'a> {
 
 impl<'a> Panel for DraftPanel<'a> {
     fn address(&self) -> PanelAddress {
-        PanelAddress::DraftCard
+        PlayerPanel::DraftCard.into()
     }
 }
 

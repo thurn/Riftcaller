@@ -32,7 +32,11 @@ use crate::state_node::SpelldawnState;
 pub fn get(name: NamedPlayer) -> Box<dyn Agent<SpelldawnState>> {
     match name {
         NamedPlayer::NoAction => Box::new(NoActionAgent {}),
-        NamedPlayer::TutorialOpponent => Box::new(NoActionAgent {}),
+        NamedPlayer::TutorialOpponent => Box::new(AgentData::omniscient(
+            "TUTORIAL",
+            MinimaxAlgorithm { search_depth: 4 },
+            ScoreEvaluator {},
+        )),
         NamedPlayer::DebugChampion => Box::new(NoActionAgent {}),
         NamedPlayer::DebugOverlord => Box::new(NoActionAgent {}),
         NamedPlayer::TestMinimax => Box::new(AgentData::omniscient(
@@ -80,5 +84,9 @@ impl Agent<SpelldawnState> for NoActionAgent {
 
     fn pick_action(&self, _: AgentConfig, _: &SpelldawnState) -> Result<GameAction> {
         fail!("No Action")
+    }
+
+    fn inactive(&self) -> bool {
+        true
     }
 }

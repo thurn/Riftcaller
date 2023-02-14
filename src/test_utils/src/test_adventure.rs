@@ -26,11 +26,11 @@ use maplit::hashmap;
 use player_data::PlayerData;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientAction, CommandList, GameRequest, WorldMapTile};
+use protos::spelldawn::{ClientAction, ClientMetadata, CommandList, GameRequest, WorldMapTile};
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
-use server::requests;
-use server::requests::GameResponse;
+use server::server_data::{ClientData, GameResponse, GameResponseOutput};
+use tokio;
 use user_action_data::UserAction;
 
 use crate::client_interface::{ClientInterface, HasText};
@@ -44,6 +44,7 @@ pub const SHOP_ICON: &str = "icon_architecture_6.png";
 pub struct TestAdventure {
     pub side: Side,
     pub player_id: PlayerId,
+    pub metadata: Option<ClientMetadata>,
     pub interface: ClientInterface,
     pub map: TestWorldMap,
     pub database: FakeDatabase,
@@ -94,6 +95,7 @@ impl TestAdventure {
         let mut result = Self {
             side,
             player_id,
+            metadata: None,
             interface: ClientInterface::default(),
             map: TestWorldMap::default(),
             database: FakeDatabase {
@@ -115,48 +117,74 @@ impl TestAdventure {
         result
     }
 
-    pub fn connect(&mut self) -> CommandList {
-        let commands =
-            requests::handle_connect(&mut self.database, self.player_id).expect("Connection error");
-        self.handle_commands(commands.clone());
-        commands
+    #[tokio::main]
+    pub async fn connect(&mut self) -> CommandList {
+        let response = server::handle_connect(&mut self.database, self.player_id)
+            .await
+            .expect("Connection error")
+            .build();
+        self.handle_commands(response.user_response.clone());
+        response.user_response
     }
 
-    pub fn perform(&mut self, action: UserAction) -> GameResponse {
+    pub fn perform(&mut self, action: UserAction) -> GameResponseOutput {
         self.perform_client_action(ClientAction { action: Some(action.as_client_action()) })
     }
 
-    pub fn perform_client_action(&mut self, action: ClientAction) -> GameResponse {
-        if let Some(Action::StandardAction(standard)) = action.action.as_ref() {
-            if let Some(update) = &standard.update {
-                // Handle optimistic update
-                self.handle_commands(update.clone());
+    #[tokio::main]
+    pub async fn perform_client_action(&mut self, action: ClientAction) -> GameResponseOutput {
+        let mut actions = vec![action];
+        let mut result = None;
+
+        while !actions.is_empty() {
+            let action = actions.pop().unwrap();
+
+            let mut empty_payload = false;
+            if let Some(Action::StandardAction(standard)) = action.action.as_ref() {
+                if let Some(update) = &standard.update {
+                    // Handle optimistic update
+                    actions.append(&mut self.handle_commands(update.clone()));
+                }
+
+                if standard.payload.is_empty() {
+                    // Do not send empty payload to server
+                    empty_payload = true;
+                }
             }
 
-            if standard.payload.is_empty() {
-                // Do not send empty payload to server
-                return GameResponse::from_commands(None, vec![]);
+            if empty_payload {
+                if result.is_none() {
+                    result = Some(GameResponse::new(ClientData::default()).build());
+                }
+            } else {
+                let response = server::handle_action(
+                    &mut self.database,
+                    self.player_id,
+                    &GameRequest {
+                        action: Some(action),
+                        player_id: Some(fake_database::to_player_identifier(self.player_id)),
+                        open_panels: self.interface.open_panels(),
+                        metadata: self.metadata.clone(),
+                    },
+                )
+                .await
+                .expect("Error handling game request")
+                .build();
+
+                if result.is_none() {
+                    result = Some(response.clone());
+                }
+
+                actions.append(&mut self.handle_commands(response.user_response));
             }
         }
 
-        let response = requests::handle_request(
-            &mut self.database,
-            &GameRequest {
-                action: Some(action),
-                player_id: Some(fake_database::to_player_identifier(self.player_id)),
-                open_panels: self.interface.open_panels(),
-            },
-        )
-        .expect("Error handling game request");
-
-        self.handle_commands(response.command_list.clone());
-
-        response
+        result.unwrap()
     }
 
     /// Attempts to find a tile with a sprite containing the substring 'icon'
     /// and then invokes the 'on visit' action for that tile.
-    pub fn visit_tile_with_icon(&mut self, icon: impl Into<String>) -> GameResponse {
+    pub fn visit_tile_with_icon(&mut self, icon: impl Into<String>) -> GameResponseOutput {
         let tile = self.map.find_tile_with_sprite(icon);
         let action = tile.tile.on_visit.as_ref().expect("No visit action found");
         self.perform_client_action(action.clone())
@@ -164,7 +192,7 @@ impl TestAdventure {
 
     /// Invokes the event handlers for a node with the provided text on the top
     /// currently-open interface panel.
-    pub fn click_on(&mut self, text: impl Into<String>) -> GameResponse {
+    pub fn click_on(&mut self, text: impl Into<String>) -> GameResponseOutput {
         let handlers = self.interface.top_panel().find_handlers(text);
         let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
         self.perform_client_action(action)
@@ -172,23 +200,24 @@ impl TestAdventure {
 
     /// Invokes the event handlers for a node with the provided text on the
     /// navbar.
-    pub fn click_on_navbar(&mut self, text: impl Into<String>) -> GameResponse {
+    pub fn click_on_navbar(&mut self, text: impl Into<String>) -> GameResponseOutput {
         let handlers = self.interface.screen_overlay().find_handlers(text);
         let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
         self.perform_client_action(action)
     }
 
-    fn handle_commands(&mut self, list: CommandList) {
+    fn handle_commands(&mut self, list: CommandList) -> Vec<ClientAction> {
         let mut actions = vec![];
+        if let Some(m) = list.metadata {
+            self.metadata = Some(m);
+        }
         for c in list.commands {
             let command = c.command.expect("Command");
             actions.extend(self.interface.update(command.clone()));
             self.map.update(command);
         }
 
-        for action in actions {
-            self.perform_client_action(action);
-        }
+        actions
     }
 }
 

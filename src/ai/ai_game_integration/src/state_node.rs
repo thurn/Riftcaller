@@ -67,6 +67,6 @@ impl GameStateNode for SpelldawnState {
     }
 
     fn execute_action(&mut self, player: Side, action: GameAction) -> Result<()> {
-        actions::handle_game_action(self, player, action)
+        actions::handle_game_action(self, player, &action)
     }
 }

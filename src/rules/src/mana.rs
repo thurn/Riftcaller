@@ -20,6 +20,7 @@ use std::cmp;
 use anyhow::Result;
 use game_data::game::{GameState, SpecificRaidMana};
 use game_data::primitives::{AbilityId, CardId, ManaValue, RaidId, RoomId, Side};
+use tracing::debug;
 use with_error::{verify, WithError};
 
 /// Identifies possible reasons why a player's mana value would need to be
@@ -71,6 +72,7 @@ pub fn spend(
     purpose: ManaPurpose,
     amount: ManaValue,
 ) -> Result<()> {
+    debug!(?amount, ?side, "Spending mana");
     verify!(get(game, side, purpose) >= amount);
     let mut to_spend = amount;
 
@@ -96,6 +98,7 @@ pub fn spend(
 
 /// Causes a player to lose up to a given amount of mana.
 pub fn lose_upto(game: &mut GameState, side: Side, purpose: ManaPurpose, amount: ManaValue) {
+    debug!(?amount, ?side, "Losing up to 'amount' mana");
     spend(game, side, purpose, cmp::min(get(game, side, purpose), amount))
         .expect("Error spending mana");
 }
@@ -103,11 +106,13 @@ pub fn lose_upto(game: &mut GameState, side: Side, purpose: ManaPurpose, amount:
 /// Adds the specified amount of base mana (no restrictions on use) for the
 /// `side` player.
 pub fn gain(game: &mut GameState, side: Side, amount: ManaValue) {
+    debug!(?amount, ?side, "Gaining mana");
     game.player_mut(side).mana_state.base_mana += amount
 }
 
 /// Sets an amount of base mana for the `side` player.
 pub fn set(game: &mut GameState, side: Side, amount: ManaValue) {
+    debug!(?amount, ?side, "Setting mana");
     game.player_mut(side).mana_state.base_mana = amount;
 }
 
@@ -119,6 +124,7 @@ pub fn add_raid_specific_mana(
     raid_id: RaidId,
     amount: ManaValue,
 ) {
+    debug!(?amount, ?side, ?raid_id, "Adding raid-specific mana");
     match &mut game.player_mut(side).mana_state.specific_raid_mana {
         Some(raid_mana) if raid_mana.raid_id == raid_id => raid_mana.mana += amount,
         _ => {

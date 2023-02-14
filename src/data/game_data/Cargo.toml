@@ -20,6 +20,7 @@ rand_xoshiro = { version = "0.6.0", features = ["serde1"] }
 serde = { version = "1.0.138", features = ["derive"] }
 serde_with = "1.14.0"
 strum_macros = "0.24.2"
+ulid = { version = "1.0.0", features = ["serde"] }
 
 macros = { path = "../../macros", version = "0.0.0" }
 with_error = { path = "../../with_error", version = "0.0.0" }
