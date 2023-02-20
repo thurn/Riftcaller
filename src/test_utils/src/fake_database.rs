@@ -21,7 +21,6 @@ use game_data::game::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
 use player_data::PlayerData;
-use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::PlayerIdentifier;
 
 #[derive(Clone, Debug, Default)]
@@ -66,50 +65,11 @@ impl Database for FakeDatabase {
     }
 }
 
-/*
-impl Database for FakeDatabase {
-    fn generate_game_id(&self) -> Result<GameId> {
-        Ok(self.generated_game_id.expect("generated_game_id"))
-    }
-
-    fn has_game(&self, id: GameId) -> Result<bool> {
-        Ok(matches!(&self.game, Some(game) if game.id == id))
-    }
-
-    fn game(&self, _id: GameId) -> Result<GameState> {
-        Ok(self.game.clone().expect("game"))
-    }
-
-    fn write_game(&mut self, game: &GameState) -> Result<()> {
-        self.game = Some(game.clone());
-        Ok(())
-    }
-
-    fn player(&self, player_id: PlayerId) -> Result<Option<PlayerData>> {
-        Ok(Some(self.players[&player_id].clone()))
-    }
-
-    fn write_player(&mut self, player: &PlayerData) -> Result<()> {
-        self.players.insert(player.id, player.clone());
-        Ok(())
-    }
-
-    fn adapt_player_identifier(&mut self, identifier: &PlayerIdentifier) -> Result<PlayerId> {
-        match identifier.player_identifier_type.clone().unwrap() {
-            PlayerIdentifierType::Ulid(s) => {
-                Ok(PlayerId::Database(Ulid::from_string(&s).expect("valid ulid")))
-            }
-            _ => panic!("Unsupported identifier type"),
-        }
-    }
-}
-*/
-
 pub fn to_player_identifier(id: PlayerId) -> PlayerIdentifier {
     let value = match id {
         PlayerId::Database(value) => value,
         _ => panic!("Unsupported PlayerId type"),
     };
 
-    PlayerIdentifier { player_identifier_type: Some(PlayerIdentifierType::Ulid(value.to_string())) }
+    PlayerIdentifier { ulid: value.to_string() }
 }

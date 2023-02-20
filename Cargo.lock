@@ -23,7 +23,6 @@ dependencies = [
  "anyhow",
  "game_data",
  "protos",
- "serde_json",
  "with_error",
 ]
 
@@ -1785,6 +1784,7 @@ dependencies = [
  "adventure_display",
  "anyhow",
  "deck_editor",
+ "game_data",
  "panel_address",
  "panels",
  "player_data",

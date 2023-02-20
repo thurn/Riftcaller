@@ -24,13 +24,18 @@ use with_error::WithError;
 use crate::requests;
 use crate::server_data::{ClientData, GameResponse, RequestData};
 
-pub fn connect(player: &PlayerData, adventure: &AdventureState) -> Result<GameResponse> {
+pub async fn connect(
+    database: &impl Database,
+    player: &PlayerData,
+    adventure: &AdventureState,
+) -> Result<GameResponse> {
     info!(?player.id, ?adventure.id, "Connected to adventure");
     let mut commands = vec![requests::load_scene("World")];
     commands.append(&mut adventure_display::render(adventure)?);
-    routing::render_panels(&mut commands, player, routing::adventure_panels(adventure))?;
     let client_data = ClientData { adventure_id: Some(adventure.id), game_id: None };
-    Ok(GameResponse::new(client_data).commands(commands))
+    let mut result = GameResponse::new(client_data).commands(commands);
+    requests::add_panels(database, player.id, Some(player), &mut result).await?;
+    Ok(result)
 }
 
 pub async fn handle_new_adventure(

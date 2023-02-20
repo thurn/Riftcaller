@@ -31,7 +31,6 @@ use once_cell::sync::Lazy;
 use panel_address::PanelAddress;
 use player_data::PlayerData;
 use protos::spelldawn::client_action::Action;
-use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::{
     CommandList, ConnectRequest, FetchPanelAction, GameRequest, PlayerIdentifier, StandardAction,
@@ -41,7 +40,7 @@ use tokio::sync::mpsc;
 use tokio::sync::mpsc::Sender;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
-use tracing::{error, info, info_span, Instrument};
+use tracing::{error, info, info_span, warn, Instrument};
 use ulid::Ulid;
 use user_action_data::UserAction;
 use with_error::WithError;
@@ -117,9 +116,9 @@ pub async fn handle_connect(
 ) -> Result<GameResponse> {
     let player = fetch_or_create_player(database, player_id).await?;
     let mut result = match player.current_activity() {
-        player_data::PlayerActivity::None => main_menu_server::connect(&player),
+        player_data::PlayerActivity::None => main_menu_server::connect(database, &player).await,
         player_data::PlayerActivity::Adventure(adventure) => {
-            adventure_server::connect(&player, adventure)
+            adventure_server::connect(database, &player, adventure).await
         }
         player_data::PlayerActivity::PlayingGame(game_id) => {
             game_server::connect(database, &player, game_id).await
@@ -145,16 +144,8 @@ pub async fn handle_action(
 
     let metadata = ClientData::from_client_metadata(request.metadata.as_ref())?;
 
-    let data = RequestData {
-        player_id,
-        game_id: metadata.game_id,
-        adventure_id: metadata.adventure_id,
-        fetch_panels: request
-            .open_panels
-            .iter()
-            .map(|p| de::from_slice(&p.serialized))
-            .collect::<Result<Vec<PanelAddress>, _>>()?,
-    };
+    let data =
+        RequestData { player_id, game_id: metadata.game_id, adventure_id: metadata.adventure_id };
 
     let span = info_span!("handle_action", ?metadata, ?player_id);
     match action {
@@ -228,9 +219,9 @@ async fn handle_fetch_panel(
         &action.panel_address.as_ref().with_error(|| "No panel specified")?.serialized,
     )
     .with_error(|| "deserialization failed")?;
-    info!(?address, ?data.player_id, "Fetch Panel");
+    warn!(?address, ?data.player_id, "Fetch Panel");
     Ok(GameResponse::new(ClientData::propagate(data)).command(
-        requests::fetch_panels(database, data, None, &[address])
+        requests::fetch_panels(database, data.player_id, None, &[address])
             .await?
             .with_error(|| "Panels should be nonempty")?,
     ))
@@ -262,11 +253,7 @@ fn parse_client_id(player_id: Option<&PlayerIdentifier>) -> Result<PlayerId, Sta
         return Err(Status::invalid_argument("Client player_id is required"));
     };
 
-    let Some(PlayerIdentifierType::Ulid(ulid)) = &player_id.player_identifier_type else {
-        return Err(Status::invalid_argument("Client player_id must be of ULID type"));
-    };
-
-    match Ulid::from_string(ulid) {
+    match Ulid::from_string(&player_id.ulid) {
         Ok(id) => Ok(PlayerId::new(id)),
         Err(e) => Err(Status::invalid_argument(format!("Invalid player_id. {e:?}"))),
     }

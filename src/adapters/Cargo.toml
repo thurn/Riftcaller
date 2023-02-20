@@ -12,7 +12,6 @@ test = false
 
 [dependencies]
 anyhow = "1.0.58"
-serde_json = "1.0.82"
 
 adventure_data = { path = "../data/adventure_data", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }

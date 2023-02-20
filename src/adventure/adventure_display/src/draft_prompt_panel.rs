@@ -43,7 +43,6 @@ impl Component for DraftPromptPanel {
                         Panels::open(PlayerPanel::DraftCard)
                             .and_close(self.address())
                             .loading(PlayerPanel::TileLoading(self.position))
-                            .do_not_fetch(true)
                             .action(AdventureAction::InitiateDraft(self.position)))
                     .layout(Layout::new().margin(Edge::All, 8.px())),
                 Button::new("Close")

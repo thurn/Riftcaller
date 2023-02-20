@@ -33,7 +33,7 @@ use crate::server_data::{ClientData, GameResponse, RequestData};
 use crate::{ai_agent_response, requests};
 
 pub async fn connect(
-    database: &mut impl Database,
+    database: &impl Database,
     player: &PlayerData,
     game_id: GameId,
 ) -> Result<GameResponse> {
@@ -42,12 +42,13 @@ pub async fn connect(
     let side = game.player_side(player.id)?;
     let mut commands = vec![requests::load_scene("Game")];
     commands.append(&mut render::connect(&game, side)?);
-    routing::render_panels(&mut commands, player, routing::game_panels())?;
     let client_data = ClientData {
         adventure_id: player.adventure.as_ref().map(|a| a.id),
         game_id: Some(game.id),
     };
-    Ok(GameResponse::new(client_data).commands(commands))
+    let mut result = GameResponse::new(client_data).commands(commands);
+    requests::add_panels(database, player.id, None, &mut result).await?;
+    Ok(result)
 }
 
 pub async fn handle_leave_game(
@@ -88,7 +89,7 @@ pub async fn handle_game_action(
             .opponent_response(opponent_id, opponent_commands)
     };
 
-    requests::add_open_panels(database, data, None, &mut result).await?;
+    requests::add_panels(database, data.player_id, None, &mut result).await?;
     database.write_game(&game).await?;
     Ok(result)
 }

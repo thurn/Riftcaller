@@ -15,7 +15,8 @@
 //! Panel rendering. A 'panel' is a discrete rectangular piece of UI which can
 //! be opened or closed by the user, such as a game menu or window.
 
-use adventure_data::adventure::AdventureState;
+pub mod all_panels;
+
 use adventure_display::adventure_panels;
 use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
@@ -37,38 +38,6 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, UpdatePanelsCommand};
 use serde_json::de;
 use with_error::WithError;
-
-pub fn main_menu_panels() -> Vec<PanelAddress> {
-    vec![
-        StandardPanel::MainMenu.into(),
-        StandardPanel::Settings.into(),
-        StandardPanel::About.into(),
-        StandardPanel::Disclaimer.into(),
-    ]
-}
-
-pub fn game_panels() -> Vec<PanelAddress> {
-    vec![StandardPanel::GameMenu.into(), StandardPanel::DebugPanel.into()]
-}
-
-pub fn adventure_panels(adventure: &AdventureState) -> Vec<PanelAddress> {
-    adventure
-        .tiles
-        .iter()
-        .filter_map(|(position, state)| {
-            state.entity.as_ref().map(|_| PlayerPanel::TilePrompt(*position).into())
-        })
-        .chain(adventure.tiles.iter().filter_map(|(position, state)| {
-            state.entity.as_ref().map(|_| PlayerPanel::TileLoading(*position).into())
-        }))
-        .chain(vec![
-            StandardPanel::AdventureMenu.into(),
-            StandardPanel::Settings.into(),
-            PlayerPanel::DeckEditorPrompt.into(),
-            StandardPanel::DeckEditorLoading.into(),
-        ])
-        .collect()
-}
 
 pub fn render_panels(
     commands: &mut Vec<Command>,

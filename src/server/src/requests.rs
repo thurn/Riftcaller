@@ -25,6 +25,7 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     LoadSceneCommand, RenderScreenOverlayCommand, SceneLoadMode, UpdatePanelsCommand,
 };
+use routing::all_panels;
 use rules::dispatch;
 use screen_overlay::ScreenOverlay;
 use with_error::WithError;
@@ -41,7 +42,7 @@ pub async fn with_game(
 ) -> Result<GameResponse> {
     let mut game = fetch_game(database, data.game_id).await?;
     let mut result = fun(&mut game)?;
-    add_open_panels(database, data, None, &mut result).await?;
+    add_panels(database, data.player_id, None, &mut result).await?;
     database.write_game(&game).await?;
     Ok(result)
 }
@@ -55,7 +56,7 @@ pub async fn with_player(
 ) -> Result<GameResponse> {
     let mut player = fetch_player(database, data.player_id).await?;
     let mut result = fun(&mut player)?;
-    add_open_panels(database, data, Some(&player), &mut result).await?;
+    add_panels(database, data.player_id, Some(&player), &mut result).await?;
     result.push_command(requests::update_screen_overlay(&player));
     database.write_player(&player).await?;
     Ok(result)
@@ -104,14 +105,28 @@ pub fn propagate_request_context(data: &RequestData) -> ResponseContext {
     }
 }
 
-pub async fn add_open_panels(
+pub async fn add_panels(
     database: &impl Database,
-    data: &RequestData,
+    player_id: PlayerId,
     player: Option<&PlayerData>,
     response: &mut GameResponse,
 ) -> Result<()> {
-    if let Some(command) = fetch_panels(database, data, player, &data.fetch_panels).await? {
-        response.push_command(command);
+    // Currently we unconditionally include all panels with every response. This
+    // is something to revisit in the future if the payload size becomes too large.
+    let panels = if let Some(p) = player {
+        all_panels::player_panels(p)
+            .into_iter()
+            .map(PanelAddress::PlayerPanel)
+            .chain(all_panels::standard_panels().into_iter().map(PanelAddress::StandardPanel))
+            .collect::<Vec<PanelAddress>>()
+    } else {
+        all_panels::standard_panels()
+            .into_iter()
+            .map(PanelAddress::StandardPanel)
+            .collect::<Vec<PanelAddress>>()
+    };
+    if let Some(command) = fetch_panels(database, player_id, player, &panels).await? {
+        response.insert_command(0, command);
     }
     Ok(())
 }
@@ -119,7 +134,7 @@ pub async fn add_open_panels(
 /// Fetches the rendered version of the panels provided in the `panels` slice.
 pub async fn fetch_panels(
     database: &impl Database,
-    data: &RequestData,
+    player_id: PlayerId,
     player: Option<&PlayerData>,
     panels: &[PanelAddress],
 ) -> Result<Option<Command>> {
@@ -144,7 +159,7 @@ pub async fn fetch_panels(
     }
 
     if !player_panels.is_empty() {
-        fetch_player_if_needed(database, data, player, |player_data| {
+        fetch_player_if_needed(database, player_id, player, |player_data| {
             for panel in &player_panels {
                 if let Some(p) = routing::render_player_panel(player_data, **panel)? {
                     panels.push(p);
@@ -162,14 +177,14 @@ pub async fn fetch_panels(
 /// `player`.
 async fn fetch_player_if_needed(
     database: &impl Database,
-    data: &RequestData,
+    player_id: PlayerId,
     player: Option<&PlayerData>,
     mut fun: impl FnMut(&PlayerData) -> Result<()>,
 ) -> Result<()> {
     match player {
         Some(p) => fun(p),
         None => {
-            let player = fetch_player(database, data.player_id).await?;
+            let player = fetch_player(database, player_id).await?;
             fun(&player)
         }
     }

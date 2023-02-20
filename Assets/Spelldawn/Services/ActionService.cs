@@ -52,7 +52,7 @@ namespace Spelldawn.Services
           Credentials = ChannelCredentials.Insecure,
           CompressionProviders = new List<ICompressionProvider>
           {
-            new GzipCompressionProvider(CompressionLevel.Optimal)
+            new DebugGzipCompressionProvider(CompressionLevel.Optimal)
           }
         })));
 
@@ -377,7 +377,7 @@ namespace Spelldawn.Services
 
     public Stream CreateDecompressionStream(Stream stream)
     {
-      Debug.Log($">>> Decompressing: {stream.Length}");
+      Debug.Log($">>> Decompressing: {stream.Length / 1024.0:0.00}KB");
       return _wrappedProvider.CreateDecompressionStream(stream);
     }
 

@@ -14,7 +14,6 @@
 
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{AdventureId, GameId};
-use panel_address::PanelAddress;
 use player_data::PlayerData;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientMetadata, CommandList, GameCommand};
@@ -52,6 +51,10 @@ impl GameResponse {
     pub fn command(mut self, command: impl Into<Command>) -> Self {
         self.commands.push(command.into());
         self
+    }
+
+    pub fn insert_command(&mut self, index: usize, command: impl Into<Command>) {
+        self.commands.insert(index, command.into());
     }
 
     pub fn push_command(&mut self, command: impl Into<Command>) {
@@ -98,7 +101,6 @@ pub struct RequestData {
     pub player_id: PlayerId,
     pub game_id: Option<GameId>,
     pub adventure_id: Option<AdventureId>,
-    pub fetch_panels: Vec<PanelAddress>,
 }
 
 /// Standard parameters to send with a client response

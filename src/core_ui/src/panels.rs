@@ -32,7 +32,6 @@ pub struct Panels {
     close: Option<InterfacePanelAddress>,
     loading: Option<InterfacePanelAddress>,
     action: Option<UserAction>,
-    do_not_fetch: bool,
     wait_to_load: bool,
 }
 
@@ -44,7 +43,6 @@ impl Panels {
             close: None,
             loading: None,
             action: None,
-            do_not_fetch: false,
             wait_to_load: false,
         }
     }
@@ -56,7 +54,6 @@ impl Panels {
             close: Some(address.into()),
             loading: None,
             action: None,
-            do_not_fetch: false,
             wait_to_load: false,
         }
     }
@@ -90,13 +87,6 @@ impl Panels {
         self
     }
 
-    /// If true, do not attempt to fetch the provided 'open' panel, just wait
-    /// for it to be returned.
-    pub fn do_not_fetch(mut self, do_not_fetch: bool) -> Self {
-        self.do_not_fetch = do_not_fetch;
-        self
-    }
-
     /// If true, displays a loading animation on the 'close' screen while
     /// fetching the 'open' screen, then transitions once it is loaded.
     pub fn wait_to_load(mut self, wait_to_load: bool) -> Self {
@@ -112,7 +102,6 @@ impl From<Panels> for Command {
                 open: panels.open,
                 close: panels.close,
                 loading: panels.loading,
-                do_not_fetch: panels.do_not_fetch,
                 wait_to_load: panels.wait_to_load,
             })),
         })

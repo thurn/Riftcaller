@@ -628,12 +628,7 @@ message Node {
 // ============================================================================
 
 message PlayerIdentifier {
-    oneof player_identifier_type {
-        // Client-generated identifier, see https://github.com/ulid/spec
-        string ulid = 1;
-        // An opaque identifier specified on the server, e.g. for an AI player
-        bytes server_identifier = 2;
-    }
+    string ulid = 1;
 }
 
 enum PlayerSide {
@@ -1344,22 +1339,22 @@ message AddressWithLoadingState {
 // Will log an error if 'open' is not available and no loading state is
 // provided, or if the loading state is not available.
 message PanelTransitionOptions {
-    // New panel to open
+    // New panel to open.
     InterfacePanelAddress open = 1;
 
     // Previous panel to close, if any
     InterfacePanelAddress close = 2;
 
-    // Panel to display if 'open' has not yet been fetched
+    // Panel to display if 'open' is not present in the panel cache.
     InterfacePanelAddress loading = 3;
 
-    // If true, do not attempt to fetch the 'open' panel, just wait for
-    // it to be returned
-    bool do_not_fetch = 4;
-
     // If true, displays a loading animation on the 'close' screen while
-    // fetching the 'open' screen, then transitions once it is loaded.
-    bool wait_to_load = 5;
+    // 'open' is not presenet in the panel cache.
+    bool wait_to_load = 4;
+
+    // If true, the 'open' panel will be explicitly fetched from the server if
+    // it is not present in the panel cache.
+    bool fetch = 5;
 }
 
 // Requests to open or close the given interface panel.

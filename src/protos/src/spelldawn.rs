@@ -509,20 +509,8 @@ pub struct Node {
 
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerIdentifier {
-    #[prost(oneof = "player_identifier::PlayerIdentifierType", tags = "1, 2")]
-    pub player_identifier_type: ::core::option::Option<player_identifier::PlayerIdentifierType>,
-}
-/// Nested message and enum types in `PlayerIdentifier`.
-pub mod player_identifier {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum PlayerIdentifierType {
-        /// Client-generated identifier, see <https://github.com/ulid/spec>
-        #[prost(string, tag = "1")]
-        Ulid(::prost::alloc::string::String),
-        /// An opaque identifier specified on the server, e.g. for an AI player
-        #[prost(bytes, tag = "2")]
-        ServerIdentifier(::prost::alloc::vec::Vec<u8>),
-    }
+    #[prost(string, tag = "1")]
+    pub ulid: ::prost::alloc::string::String,
 }
 #[derive(Eq, Hash, Copy, Ord, PartialOrd, Clone, PartialEq, ::prost::Message)]
 pub struct CardIdentifier {
@@ -1327,13 +1315,9 @@ pub struct PanelTransitionOptions {
     /// Panel to display if 'open' has not yet been fetched
     #[prost(message, optional, tag = "3")]
     pub loading: ::core::option::Option<InterfacePanelAddress>,
-    /// If true, do not attempt to fetch the 'open' panel, just wait for
-    /// it to be returned
-    #[prost(bool, tag = "4")]
-    pub do_not_fetch: bool,
     /// If true, displays a loading animation on the 'close' screen while
     /// fetching the 'open' screen, then transitions once it is loaded.
-    #[prost(bool, tag = "5")]
+    #[prost(bool, tag = "4")]
     pub wait_to_load: bool,
 }
 /// Requests to open or close the given interface panel.

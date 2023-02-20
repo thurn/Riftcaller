@@ -18,17 +18,14 @@ pub mod response_builder;
 
 use adventure_data::adventure::TilePosition;
 use anyhow::Result;
-use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{
     AbilityId, AbilityIndex, CardId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
 };
 use protos::spelldawn::game_object_identifier::Id;
-use protos::spelldawn::player_identifier::PlayerIdentifierType;
 use protos::spelldawn::{
-    CardIdentifier, GameObjectIdentifier, MapPosition, PlayerIdentifier, PlayerSide,
-    RoomIdentifier, SpriteAddress, TimeValue,
+    CardIdentifier, GameObjectIdentifier, MapPosition, PlayerSide, RoomIdentifier, SpriteAddress,
+    TimeValue,
 };
-use serde_json::{de, ser};
 use with_error::fail;
 
 use crate::response_builder::ResponseBuilder;
@@ -80,18 +77,6 @@ pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
             index: AbilityIndex(index as usize),
         }))
     })
-}
-
-pub fn named_player_identifier(player_name: NamedPlayer) -> PlayerIdentifier {
-    PlayerIdentifier {
-        player_identifier_type: Some(PlayerIdentifierType::ServerIdentifier(
-            ser::to_vec(&player_name).expect("Serialization failed"),
-        )),
-    }
-}
-
-pub fn named_player_id(payload: &[u8]) -> Result<PlayerId> {
-    Ok(PlayerId::Named(de::from_slice(payload)?))
 }
 
 pub fn player_side(side: Side) -> i32 {

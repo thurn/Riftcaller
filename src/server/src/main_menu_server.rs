@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use core_ui::panels::Panels;
+use database::Database;
 use panel_address::StandardPanel;
 use player_data::PlayerData;
 use tracing::info;
@@ -21,11 +22,12 @@ use tracing::info;
 use crate::requests;
 use crate::server_data::{ClientData, GameResponse};
 
-pub fn connect(player: &PlayerData) -> Result<GameResponse> {
+pub async fn connect(database: &impl Database, player: &PlayerData) -> Result<GameResponse> {
     info!(?player.id, "Connected");
     let mut commands = vec![requests::load_scene("Main")];
-    routing::render_panels(&mut commands, player, routing::main_menu_panels())?;
     commands.push(Panels::open(StandardPanel::MainMenu).into());
     let client_data = ClientData { adventure_id: None, game_id: None };
-    Ok(GameResponse::new(client_data).commands(commands))
+    let mut result = GameResponse::new(client_data).commands(commands);
+    requests::add_panels(database, player.id, Some(player), &mut result).await?;
+    Ok(result)
 }
