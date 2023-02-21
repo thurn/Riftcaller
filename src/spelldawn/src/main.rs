@@ -18,13 +18,16 @@ use std::env;
 
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
 use server::GameService;
+use tonic::codec::CompressionEncoding;
 use tonic::transport::Server;
+use tonic_web::GrpcWebLayer;
 use tracing::{warn, Event, Level};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_forest::{ForestLayer, PrettyPrinter, Tag};
 use tracing_subscriber::filter::EnvFilter;
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::Registry;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     cards_all::initialize();
@@ -44,14 +47,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
     let address = "0.0.0.0:80".parse().expect("valid address");
-    let server = SpelldawnServer::new(GameService).send_gzip().accept_gzip();
-    let service = tonic_web::config().enable(server);
+    let server = SpelldawnServer::new(GameService)
+        .send_compressed(CompressionEncoding::Gzip)
+        .accept_compressed(CompressionEncoding::Gzip);
 
     warn!("Server listening on {}", address);
     Server::builder()
         .trace_fn(|_| tracing::info_span!(">>>"))
         .accept_http1(true)
-        .add_service(service)
+        .layer(GrpcWebLayer::new())
+        .add_service(server)
         .serve(address)
         .await?;
 

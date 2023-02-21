@@ -1351,10 +1351,6 @@ message PanelTransitionOptions {
     // If true, displays a loading animation on the 'close' screen while
     // 'open' is not presenet in the panel cache.
     bool wait_to_load = 4;
-
-    // If true, the 'open' panel will be explicitly fetched from the server if
-    // it is not present in the panel cache.
-    bool fetch = 5;
 }
 
 // Requests to open or close the given interface panel.

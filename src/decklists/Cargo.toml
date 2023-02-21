@@ -15,4 +15,4 @@ game_data = { path = "../data/game_data", version = "0.0.0" }
 user_action_data = { path = "../data/user_action_data", version = "0.0.0" }
 
 maplit = "1.0.2"
-once_cell = "1.13.0"
+once_cell = "1.17.1"

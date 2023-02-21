@@ -11,6 +11,6 @@ path = "src/cards_codegen.rs"
 test = false
 
 [dependencies]
-anyhow = "1.0.58"
-regex = "1.6.0"
+anyhow = "1.0.69"
+regex = "1.7.1"
 walkdir = "2.3.2"

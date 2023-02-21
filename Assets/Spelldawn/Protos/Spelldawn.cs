@@ -29723,7 +29723,7 @@ namespace Spelldawn.Protos {
     public const int OpenFieldNumber = 1;
     private global::Spelldawn.Protos.InterfacePanelAddress open_;
     /// <summary>
-    /// New panel to open
+    /// New panel to open.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Spelldawn.Protos.InterfacePanelAddress Open {
@@ -29751,7 +29751,7 @@ namespace Spelldawn.Protos {
     public const int LoadingFieldNumber = 3;
     private global::Spelldawn.Protos.InterfacePanelAddress loading_;
     /// <summary>
-    /// Panel to display if 'open' has not yet been fetched
+    /// Panel to display if 'open' is not present in the panel cache.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Spelldawn.Protos.InterfacePanelAddress Loading {
@@ -29766,7 +29766,7 @@ namespace Spelldawn.Protos {
     private bool waitToLoad_;
     /// <summary>
     /// If true, displays a loading animation on the 'close' screen while
-    /// fetching the 'open' screen, then transitions once it is loaded.
+    /// 'open' is not presenet in the panel cache.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public bool WaitToLoad {

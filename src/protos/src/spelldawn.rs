@@ -1,3 +1,4 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexColor {
     /// Red color component, specified in the range 0.0 to 1.0 inclusive.
@@ -14,16 +15,19 @@ pub struct FlexColor {
     #[prost(float, tag = "4")]
     pub alpha: f32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SpriteAddress {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RenderTextureAddress {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeBackground {
     #[prost(oneof = "node_background::BackgroundAddress", tags = "1, 2, 3")]
@@ -31,6 +35,7 @@ pub struct NodeBackground {
 }
 /// Nested message and enum types in `NodeBackground`.
 pub mod node_background {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum BackgroundAddress {
         #[prost(message, tag = "1")]
@@ -41,26 +46,31 @@ pub mod node_background {
         StudioDisplay(::prost::alloc::boxed::Box<super::StudioDisplay>),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FontAddress {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ProjectileAddress {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EffectAddress {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AudioClipAddress {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexVector2 {
     #[prost(float, tag = "1")]
@@ -68,6 +78,7 @@ pub struct FlexVector2 {
     #[prost(float, tag = "2")]
     pub y: f32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexVector3 {
     #[prost(float, tag = "1")]
@@ -77,6 +88,7 @@ pub struct FlexVector3 {
     #[prost(float, tag = "3")]
     pub z: f32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Dimension {
     #[prost(enumeration = "DimensionUnit", tag = "1")]
@@ -84,6 +96,7 @@ pub struct Dimension {
     #[prost(float, tag = "2")]
     pub value: f32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DimensionGroup {
     #[prost(message, optional, tag = "1")]
@@ -95,6 +108,7 @@ pub struct DimensionGroup {
     #[prost(message, optional, tag = "4")]
     pub left: ::core::option::Option<Dimension>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BorderWidth {
     #[prost(float, tag = "1")]
@@ -106,6 +120,7 @@ pub struct BorderWidth {
     #[prost(float, tag = "4")]
     pub left: f32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BorderColor {
     #[prost(message, optional, tag = "1")]
@@ -117,6 +132,7 @@ pub struct BorderColor {
     #[prost(message, optional, tag = "4")]
     pub left: ::core::option::Option<FlexColor>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BorderRadius {
     #[prost(message, optional, tag = "1")]
@@ -128,11 +144,13 @@ pub struct BorderRadius {
     #[prost(message, optional, tag = "4")]
     pub bottom_left: ::core::option::Option<Dimension>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexRotate {
     #[prost(float, tag = "1")]
     pub degrees: f32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexTranslate {
     #[prost(message, optional, tag = "1")]
@@ -142,11 +160,13 @@ pub struct FlexTranslate {
     #[prost(float, tag = "3")]
     pub z: f32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexScale {
     #[prost(message, optional, tag = "1")]
     pub amount: ::core::option::Option<FlexVector3>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TextShadow {
     #[prost(message, optional, tag = "1")]
@@ -156,11 +176,13 @@ pub struct TextShadow {
     #[prost(message, optional, tag = "3")]
     pub color: ::core::option::Option<FlexColor>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TimeValue {
     #[prost(uint32, tag = "1")]
     pub milliseconds: u32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ImageSlice {
     #[prost(uint32, tag = "1")]
@@ -172,6 +194,7 @@ pub struct ImageSlice {
     #[prost(uint32, tag = "4")]
     pub left: u32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexStyle {
     #[prost(enumeration = "FlexAlign", tag = "1")]
@@ -287,18 +310,22 @@ pub struct FlexStyle {
     #[prost(enumeration = "BackgroundImageAutoSize", tag = "56")]
     pub background_image_auto_size: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Flexbox {}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Text {
     #[prost(string, tag = "1")]
     pub label: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ScrollBar {
     #[prost(message, optional, boxed, tag = "1")]
     pub style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ScrollViewNode {
     /// The amount of elasticity to use when a user tries to scroll past
@@ -332,6 +359,7 @@ pub struct ScrollViewNode {
     #[prost(enumeration = "ScrollBarVisibility", tag = "9")]
     pub vertical_scroll_bar_visibility: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DraggableNode {
     /// Identifiers of DropTargetNodes that are valid drop targets for this
@@ -368,8 +396,10 @@ pub struct DraggableNode {
     #[prost(message, optional, tag = "8")]
     pub on_drag_detected: ::core::option::Option<ClientAction>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DropTargetNode {}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TextFieldNode {
     /// Globally unique identifier for this text field, used to avoid
@@ -406,6 +436,7 @@ pub struct TextFieldNode {
     #[prost(string, tag = "9")]
     pub mask_character: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SliderNode {
     /// Value to display in the slider when first rendered.
@@ -418,7 +449,7 @@ pub struct SliderNode {
     /// to the float PlayerPreference with the provided key.
     #[prost(string, tag = "3")]
     pub preference_key: ::prost::alloc::string::String,
-    //// Orientation of the slider. Defaults to horizontal.
+    /// / Orientation of the slider. Defaults to horizontal.
     #[prost(enumeration = "SliderDirection", tag = "4")]
     pub direction: i32,
     /// The maximum value that the slider encodes.
@@ -451,6 +482,7 @@ pub struct SliderNode {
     #[prost(message, optional, boxed, tag = "14")]
     pub dragger_border_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeType {
     #[prost(oneof = "node_type::NodeType", tags = "1, 2, 3, 4, 5, 6")]
@@ -458,6 +490,7 @@ pub struct NodeType {
 }
 /// Nested message and enum types in `NodeType`.
 pub mod node_type {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum NodeType {
         #[prost(message, tag = "1")]
@@ -474,6 +507,7 @@ pub mod node_type {
         SliderNode(::prost::alloc::boxed::Box<super::SliderNode>),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventHandlers {
     #[prost(message, optional, tag = "1")]
@@ -485,6 +519,7 @@ pub struct EventHandlers {
     #[prost(message, optional, tag = "4")]
     pub on_mouse_up: ::core::option::Option<ClientAction>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
     /// Used to identify this node in the view hierarchy
@@ -503,16 +538,15 @@ pub struct Node {
     #[prost(message, optional, boxed, tag = "7")]
     pub pressed_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
-// ============================================================================
-// Game Primitives
-// ============================================================================
-
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerIdentifier {
     #[prost(string, tag = "1")]
     pub ulid: ::prost::alloc::string::String,
 }
-#[derive(Eq, Hash, Copy, Ord, PartialOrd, Clone, PartialEq, ::prost::Message)]
+#[derive(Eq, Hash, Copy, Ord, PartialOrd)]
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardIdentifier {
     #[prost(enumeration = "PlayerSide", tag = "1")]
     pub side: i32,
@@ -523,14 +557,18 @@ pub struct CardIdentifier {
     #[prost(message, optional, tag = "3")]
     pub ability_id: ::core::option::Option<u32>,
 }
-#[derive(Eq, Hash, Copy, Ord, PartialOrd, Clone, PartialEq, ::prost::Message)]
+#[derive(Eq, Hash, Copy, Ord, PartialOrd)]
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameObjectIdentifier {
     #[prost(oneof = "game_object_identifier::Id", tags = "1, 2, 3, 4")]
     pub id: ::core::option::Option<game_object_identifier::Id>,
 }
 /// Nested message and enum types in `GameObjectIdentifier`.
 pub mod game_object_identifier {
-    #[derive(Eq, Hash, Copy, Ord, PartialOrd, Clone, PartialEq, ::prost::Oneof)]
+    #[derive(Eq, Hash, Copy, Ord, PartialOrd)]
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Id {
         #[prost(message, tag = "1")]
         CardId(super::CardIdentifier),
@@ -542,10 +580,7 @@ pub mod game_object_identifier {
         DiscardPile(i32),
     }
 }
-// ============================================================================
-// Game View
-// ============================================================================
-
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardIcon {
     /// Background for the icon.
@@ -558,6 +593,7 @@ pub struct CardIcon {
     #[prost(message, optional, tag = "3")]
     pub background_scale: ::core::option::Option<f32>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardIcons {
     #[prost(message, optional, tag = "1")]
@@ -571,6 +607,7 @@ pub struct CardIcons {
     #[prost(message, optional, tag = "5")]
     pub arena_icon: ::core::option::Option<CardIcon>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardTitle {
     #[prost(string, tag = "1")]
@@ -578,12 +615,14 @@ pub struct CardTitle {
     #[prost(message, optional, tag = "2")]
     pub text_color: ::core::option::Option<FlexColor>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RulesText {
     #[prost(string, tag = "1")]
     pub text: ::prost::alloc::string::String,
 }
 /// Card has no targeting requirement
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NoTargeting {
     /// True if this card can currently be played
@@ -591,6 +630,7 @@ pub struct NoTargeting {
     pub can_play: bool,
 }
 /// This card should prompt for a room to be played into.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayInRoom {
     /// The card can be played if at least one identifier is present here
@@ -598,6 +638,7 @@ pub struct PlayInRoom {
     pub valid_rooms: ::prost::alloc::vec::Vec<i32>,
 }
 /// The card should show an arrow to select a room to target
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ArrowTargetRoom {
     /// The card can be played if at least one identifier is present here
@@ -607,6 +648,7 @@ pub struct ArrowTargetRoom {
     #[prost(enumeration = "TargetingArrow", tag = "2")]
     pub arrow: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardTargeting {
     #[prost(oneof = "card_targeting::Targeting", tags = "1, 2, 3")]
@@ -614,6 +656,7 @@ pub struct CardTargeting {
 }
 /// Nested message and enum types in `CardTargeting`.
 pub mod card_targeting {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Targeting {
         #[prost(message, tag = "1")]
@@ -624,8 +667,10 @@ pub mod card_targeting {
         ArrowTargetRoom(super::ArrowTargetRoom),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionOffscreen {}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionRoom {
     #[prost(enumeration = "RoomIdentifier", tag = "1")]
@@ -633,33 +678,40 @@ pub struct ObjectPositionRoom {
     #[prost(enumeration = "ClientRoomLocation", tag = "2")]
     pub room_location: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionItem {
     #[prost(enumeration = "ClientItemLocation", tag = "1")]
     pub item_location: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionStaging {}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionHand {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionDeck {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionDeckContainer {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionDiscardPile {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionDiscardPileContainer {
     #[prost(enumeration = "PlayerName", tag = "1")]
@@ -667,37 +719,46 @@ pub struct ObjectPositionDiscardPileContainer {
 }
 /// Large display of cards *while* the score animation is playing. After the
 /// score animation finishes, scored cards move to 'Leader' position.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionScoreAnimation {}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionRaid {}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionBrowser {}
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionLeader {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionLeaderContainer {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionRewardChest {}
-//// An object position which represents moving into a given card.
+/// / An object position which represents moving into a given card.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionIntoCard {
     #[prost(message, optional, tag = "1")]
     pub card_id: ::core::option::Option<CardIdentifier>,
 }
-//// An object position for newly-revealed cards, appears above other content
-//// like the staging area.
+/// / An object position for newly-revealed cards, appears above other content
+/// / like the staging area.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionRevealedCards {
     #[prost(enumeration = "RevealedCardsBrowserSize", tag = "1")]
     pub size: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPosition {
     /// A key by which to sort this object -- objects with higher sorting keys
@@ -720,6 +781,7 @@ pub struct ObjectPosition {
 }
 /// Nested message and enum types in `ObjectPosition`.
 pub mod object_position {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Position {
         #[prost(message, tag = "3")]
@@ -754,6 +816,7 @@ pub mod object_position {
         Revealed(super::ObjectPositionRevealedCards),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RevealedCardView {
     #[prost(message, optional, tag = "1")]
@@ -786,6 +849,7 @@ pub struct RevealedCardView {
     #[prost(message, optional, tag = "10")]
     pub image_background: ::core::option::Option<SpriteAddress>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardView {
     #[prost(message, optional, tag = "1")]
@@ -834,6 +898,7 @@ pub struct CardView {
     #[prost(message, optional, tag = "13")]
     pub destroy_position: ::core::option::Option<ObjectPosition>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerInfo {
     #[prost(message, optional, tag = "1")]
@@ -842,6 +907,7 @@ pub struct PlayerInfo {
     #[prost(enumeration = "RoomIdentifier", repeated, tag = "2")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ManaView {
     #[prost(uint32, tag = "1")]
@@ -854,16 +920,19 @@ pub struct ManaView {
     #[prost(bool, tag = "3")]
     pub can_take_gain_mana_action: bool,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ScoreView {
     #[prost(uint32, tag = "1")]
     pub score: u32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ActionTrackerView {
     #[prost(uint32, tag = "1")]
     pub available_action_count: u32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeckView {
     /// How many cards are in this deck?
@@ -876,6 +945,7 @@ pub struct DeckView {
     #[prost(bool, tag = "3")]
     pub can_take_draw_card_action: bool,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerView {
     #[prost(enumeration = "PlayerSide", tag = "1")]
@@ -895,6 +965,7 @@ pub struct PlayerView {
     pub can_take_action: bool,
 }
 /// Positions of non-Card game objects.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameObjectPositions {
     #[prost(message, optional, tag = "1")]
@@ -911,6 +982,7 @@ pub struct GameObjectPositions {
     pub opponent_discard: ::core::option::Option<ObjectPosition>,
 }
 /// Where to display the arrow bubble
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ArrowBubbleAnchor {
     #[prost(oneof = "arrow_bubble_anchor::BubbleAnchor", tags = "1, 2, 3, 4")]
@@ -918,6 +990,7 @@ pub struct ArrowBubbleAnchor {
 }
 /// Nested message and enum types in `ArrowBubbleAnchor`.
 pub mod arrow_bubble_anchor {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum BubbleAnchor {
         /// Arrow pointing to a player
@@ -934,6 +1007,7 @@ pub mod arrow_bubble_anchor {
         PlayerMana(i32),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ShowArrowBubble {
     /// Text to show.
@@ -966,6 +1040,7 @@ pub struct ShowArrowBubble {
     #[prost(message, optional, tag = "9")]
     pub anchor: ::core::option::Option<ArrowBubbleAnchor>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ShowToast {
     /// Content to show inside the toast
@@ -985,6 +1060,7 @@ pub struct ShowToast {
 ///
 /// Taking any game action resets the timer, and the timer doesn't start while
 /// network requests are pending.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TutorialEffect {
     #[prost(oneof = "tutorial_effect::TutorialEffectType", tags = "1, 2")]
@@ -992,6 +1068,7 @@ pub struct TutorialEffect {
 }
 /// Nested message and enum types in `TutorialEffect`.
 pub mod tutorial_effect {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum TutorialEffectType {
         /// Arrow bubble representing a tooltip or text spoken by a player
@@ -1004,6 +1081,7 @@ pub mod tutorial_effect {
         ShowToast(super::ShowToast),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameView {
     #[prost(message, optional, tag = "1")]
@@ -1029,6 +1107,7 @@ pub struct GameView {
     #[prost(message, repeated, tag = "7")]
     pub tutorial_effects: ::prost::alloc::vec::Vec<TutorialEffect>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StudioAppearEffect {
     /// Time to wait before the animation. Defaults to 300ms.
@@ -1039,12 +1118,14 @@ pub struct StudioAppearEffect {
 }
 /// Nested message and enum types in `StudioAppearEffect`.
 pub mod studio_appear_effect {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum StudioAppear {
         #[prost(bool, tag = "2")]
         SetRevealed(bool),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StudioDisplayCard {
     #[prost(message, optional, boxed, tag = "1")]
@@ -1055,6 +1136,7 @@ pub struct StudioDisplayCard {
     pub appear_effects: ::prost::alloc::vec::Vec<StudioAppearEffect>,
 }
 /// Content to display as the background of a Node via the StudioManager.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StudioDisplay {
     #[prost(oneof = "studio_display::Display", tags = "1")]
@@ -1062,16 +1144,14 @@ pub struct StudioDisplay {
 }
 /// Nested message and enum types in `StudioDisplay`.
 pub mod studio_display {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Display {
         #[prost(message, tag = "1")]
         Card(::prost::alloc::boxed::Box<super::StudioDisplayCard>),
     }
 }
-// ============================================================================
-// Actions
-// ============================================================================
-
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StandardAction {
     /// Opaque payload to send to the server when invoked.
@@ -1093,19 +1173,23 @@ pub struct StandardAction {
 }
 /// Spend an action to gain 1 mana.
 /// Optimistic: Mana is added immediately.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GainManaAction {}
 /// Spend an action to draw a card.
 /// Optimistic: Face-down card animates to reveal area.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DrawCardAction {}
 /// Spend an action to level up a room.
 /// Optimistic: Room visit animation plays
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LevelUpRoomAction {
     #[prost(enumeration = "RoomIdentifier", tag = "1")]
     pub room_id: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardTarget {
     #[prost(oneof = "card_target::CardTarget", tags = "1")]
@@ -1113,6 +1197,7 @@ pub struct CardTarget {
 }
 /// Nested message and enum types in `CardTarget`.
 pub mod card_target {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum CardTarget {
         #[prost(enumeration = "super::RoomIdentifier", tag = "1")]
@@ -1121,8 +1206,9 @@ pub mod card_target {
 }
 /// Spend an action to play a card from hand.
 /// Optimistic:
-///   - Card animates to its 'on_release' position. If the RoomIdentifier is
-///     unspecified for a room position, the targeted room is used.
+///    - Card animates to its 'on_release' position. If the RoomIdentifier is
+///      unspecified for a room position, the targeted room is used.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayCardAction {
     #[prost(message, optional, tag = "1")]
@@ -1132,12 +1218,14 @@ pub struct PlayCardAction {
 }
 /// Spend an action to initiate a raid on one of the overlord's rooms
 /// Optimistic: Room visit animation plays
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct InitiateRaidAction {
     #[prost(enumeration = "RoomIdentifier", tag = "1")]
     pub room_id: i32,
 }
 /// Fetch the contents of a given interface panel.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FetchPanelAction {
     #[prost(message, optional, tag = "1")]
@@ -1145,6 +1233,7 @@ pub struct FetchPanelAction {
 }
 /// Spend an action point with no other effect, typically used for
 /// tests
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SpendActionPointAction {}
 /// Possible game actions taken by the user.
@@ -1152,6 +1241,7 @@ pub struct SpendActionPointAction {}
 /// Actions have an associated 'optimistic' behavior to display while waiting
 /// for a server response. The client should not send multiple actions at the
 /// same time -- interaction should be disabled while an action is pending.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientAction {
     #[prost(oneof = "client_action::Action", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
@@ -1159,6 +1249,7 @@ pub struct ClientAction {
 }
 /// Nested message and enum types in `ClientAction`.
 pub mod client_action {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Action {
         #[prost(message, tag = "1")]
@@ -1181,6 +1272,7 @@ pub mod client_action {
 }
 /// Client state values included with the server response which must be
 /// included with all subsequent GameRequests.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientMetadata {
     #[prost(message, optional, tag = "2")]
@@ -1190,12 +1282,14 @@ pub struct ClientMetadata {
 }
 /// Initiate a play session and download the current state for the
 /// provided player.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ConnectRequest {
     /// User making this request.
     #[prost(message, optional, tag = "1")]
     pub player_id: ::core::option::Option<PlayerIdentifier>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameRequest {
     /// Action to perform.
@@ -1214,23 +1308,23 @@ pub struct GameRequest {
     #[prost(message, optional, tag = "4")]
     pub metadata: ::core::option::Option<ClientMetadata>,
 }
-// ============================================================================
-// Commands
-// ============================================================================
-
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DebugLogCommand {
     #[prost(string, tag = "1")]
     pub message: ::prost::alloc::string::String,
 }
 /// Wait before executing the next command in sequence.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DelayCommand {
     #[prost(message, optional, tag = "1")]
     pub duration: ::core::option::Option<TimeValue>,
 }
 /// Identifies an InterfacePanel.
-#[derive(Eq, Hash, Clone, PartialEq, ::prost::Message)]
+#[derive(Eq, Hash)]
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct InterfacePanelAddress {
     #[prost(string, tag = "1")]
     pub debug_string: ::prost::alloc::string::String,
@@ -1240,6 +1334,7 @@ pub struct InterfacePanelAddress {
 /// A 'panel' is an independently addressable block of UI. The contents
 /// of each known panel are cached and can then be opened immediately
 /// by the client, without waiting for a server response.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct InterfacePanel {
     #[prost(message, optional, tag = "1")]
@@ -1254,6 +1349,7 @@ pub struct InterfacePanel {
 }
 /// Requests that a specific corner of a Node be anchored to a specific
 /// corner of a card.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardAnchor {
     #[prost(enumeration = "AnchorCorner", tag = "1")]
@@ -1262,6 +1358,7 @@ pub struct CardAnchor {
     pub card_corner: i32,
 }
 /// Render an interface element attached to a specific card.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardAnchorNode {
     #[prost(message, optional, tag = "1")]
@@ -1274,6 +1371,7 @@ pub struct CardAnchorNode {
     #[prost(message, repeated, tag = "3")]
     pub anchors: ::prost::alloc::vec::Vec<CardAnchor>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct InterfaceMainControls {
     /// Main controls area
@@ -1284,6 +1382,7 @@ pub struct InterfaceMainControls {
     pub card_anchor_nodes: ::prost::alloc::vec::Vec<CardAnchorNode>,
 }
 /// Updates the contents of one or more user interface panels
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdatePanelsCommand {
     /// List of panels to update.
@@ -1292,6 +1391,7 @@ pub struct UpdatePanelsCommand {
 }
 /// Open a panel and display the provided loading state while it is
 /// being fetched
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AddressWithLoadingState {
     #[prost(message, optional, tag = "1")]
@@ -1304,23 +1404,25 @@ pub struct AddressWithLoadingState {
 ///
 /// Will log an error if 'open' is not available and no loading state is
 /// provided, or if the loading state is not available.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PanelTransitionOptions {
-    /// New panel to open
+    /// New panel to open.
     #[prost(message, optional, tag = "1")]
     pub open: ::core::option::Option<InterfacePanelAddress>,
     /// Previous panel to close, if any
     #[prost(message, optional, tag = "2")]
     pub close: ::core::option::Option<InterfacePanelAddress>,
-    /// Panel to display if 'open' has not yet been fetched
+    /// Panel to display if 'open' is not present in the panel cache.
     #[prost(message, optional, tag = "3")]
     pub loading: ::core::option::Option<InterfacePanelAddress>,
     /// If true, displays a loading animation on the 'close' screen while
-    /// fetching the 'open' screen, then transitions once it is loaded.
+    /// 'open' is not presenet in the panel cache.
     #[prost(bool, tag = "4")]
     pub wait_to_load: bool,
 }
 /// Requests to open or close the given interface panel.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TogglePanelCommand {
     #[prost(oneof = "toggle_panel_command::ToggleCommand", tags = "1, 2, 3, 4, 5")]
@@ -1328,6 +1430,7 @@ pub struct TogglePanelCommand {
 }
 /// Nested message and enum types in `TogglePanelCommand`.
 pub mod toggle_panel_command {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum ToggleCommand {
         /// Open a new panel with transition options.
@@ -1357,6 +1460,7 @@ pub mod toggle_panel_command {
     }
 }
 /// Updates the current GameView state.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdateGameViewCommand {
     #[prost(message, optional, tag = "1")]
@@ -1367,6 +1471,7 @@ pub struct UpdateGameViewCommand {
 }
 /// Animates 'initiator' moving to a room and plays a standard particle effect
 /// based on the visit type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct VisitRoomCommand {
     #[prost(enumeration = "PlayerName", tag = "1")]
@@ -1385,6 +1490,7 @@ pub struct VisitRoomCommand {
 ///
 /// Note that the created card will always be deleted by the next
 /// UpdateGameViewCommand if its ID is not present in that update.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateTokenCardCommand {
     #[prost(message, optional, tag = "1")]
@@ -1393,6 +1499,7 @@ pub struct CreateTokenCardCommand {
     #[prost(bool, tag = "2")]
     pub animate: bool,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameObjectMove {
     #[prost(message, optional, tag = "1")]
@@ -1401,6 +1508,7 @@ pub struct GameObjectMove {
     pub position: ::core::option::Option<ObjectPosition>,
 }
 /// Move a list of game objects to new positions, in parallel
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MoveGameObjectsCommand {
     #[prost(message, repeated, tag = "1")]
@@ -1411,17 +1519,20 @@ pub struct MoveGameObjectsCommand {
     #[prost(message, optional, tag = "3")]
     pub delay: ::core::option::Option<TimeValue>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlaySoundCommand {
     #[prost(message, optional, tag = "1")]
     pub sound: ::core::option::Option<AudioClipAddress>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SetMusicCommand {
     #[prost(enumeration = "MusicState", tag = "1")]
     pub music_state: i32,
 }
 /// Fire a projectile from one game object at another.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FireProjectileCommand {
     #[prost(message, optional, tag = "1")]
@@ -1456,6 +1567,7 @@ pub struct FireProjectileCommand {
     #[prost(message, optional, tag = "11")]
     pub jump_to_position: ::core::option::Option<ObjectPosition>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayEffectPosition {
     #[prost(oneof = "play_effect_position::EffectPosition", tags = "1")]
@@ -1463,12 +1575,14 @@ pub struct PlayEffectPosition {
 }
 /// Nested message and enum types in `PlayEffectPosition`.
 pub mod play_effect_position {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum EffectPosition {
         #[prost(message, tag = "1")]
         GameObject(super::GameObjectIdentifier),
     }
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayEffectCommand {
     #[prost(message, optional, tag = "1")]
@@ -1483,23 +1597,27 @@ pub struct PlayEffectCommand {
     #[prost(message, optional, tag = "5")]
     pub sound: ::core::option::Option<AudioClipAddress>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DisplayGameMessageCommand {
     #[prost(enumeration = "GameMessageType", tag = "1")]
     pub message_type: i32,
 }
 /// Used to hide and show all game UI elements.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SetGameObjectsEnabledCommand {
     #[prost(bool, tag = "1")]
     pub game_objects_enabled: bool,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DisplayRewardsCommand {
     #[prost(message, repeated, tag = "1")]
     pub rewards: ::prost::alloc::vec::Vec<CardView>,
 }
 /// Loads a named Unity scene
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LoadSceneCommand {
     #[prost(string, tag = "1")]
@@ -1512,6 +1630,7 @@ pub struct LoadSceneCommand {
     pub skip_if_current: bool,
 }
 /// Sets a client-side boolean player preference
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SetBooleanPreference {
     #[prost(string, tag = "1")]
@@ -1520,6 +1639,7 @@ pub struct SetBooleanPreference {
     pub value: bool,
 }
 /// Logs a client message
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LogMessage {
     #[prost(string, tag = "1")]
@@ -1528,6 +1648,7 @@ pub struct LogMessage {
     pub level: i32,
 }
 /// Activates client-side debugging functionality
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientDebugCommand {
     #[prost(oneof = "client_debug_command::DebugCommand", tags = "1, 2, 3, 4, 5")]
@@ -1535,6 +1656,7 @@ pub struct ClientDebugCommand {
 }
 /// Nested message and enum types in `ClientDebugCommand`.
 pub mod client_debug_command {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum DebugCommand {
         #[prost(message, tag = "1")]
@@ -1556,21 +1678,22 @@ pub mod client_debug_command {
 ///
 /// ```text
 /// 
-///       /  \    / \
-///     /     \ /     \
-///    |  0,2  |  1,2  |
-///    |       |       |
-///   / \     / \     / \
+///        /  \    / \
+///      /     \ /     \
+///     |  0,2  |  1,2  |
+///     |       |       |
+///    / \     / \     / \
 /// /     \ /     \ /     \
 /// |  0,1  |  1,1  |  2,1  |
 /// |       |       |       |
 /// \     / \     / \     /
-///   \ /     \ /     \ /
-///    |  0,0  |  1,0  |
-///    |       |       |
-///     \     / \     /
-///       \ /     \ /
+///    \ /     \ /     \ /
+///     |  0,0  |  1,0  |
+///     |       |       |
+///      \     / \     /
+///        \ /     \ /
 /// ```
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MapPosition {
     #[prost(int32, tag = "1")]
@@ -1578,6 +1701,7 @@ pub struct MapPosition {
     #[prost(int32, tag = "2")]
     pub y: i32,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WorldMapSprite {
     /// Addressable asset path of sprite to display on the hex grid
@@ -1595,6 +1719,7 @@ pub struct WorldMapSprite {
     pub scale: ::core::option::Option<FlexVector3>,
 }
 /// Represents the contents of a world map tile.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WorldMapTile {
     /// Images to display on this tile. Will be rendered in z-index order, with
@@ -1613,6 +1738,7 @@ pub struct WorldMapTile {
     pub tile_type: i32,
 }
 /// Updates the world map tilemap. Only valid in the 'World' scene.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdateWorldMapCommand {
     #[prost(message, repeated, tag = "1")]
@@ -1620,12 +1746,14 @@ pub struct UpdateWorldMapCommand {
 }
 /// Displays a UI element on top of all other elements. This is typically used
 /// to render chrome, e.g. buttons related to global navigation.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RenderScreenOverlayCommand {
     #[prost(message, optional, tag = "1")]
     pub node: ::core::option::Option<Node>,
 }
 /// A method for unqiuely identifying a single user interface element
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ElementSelector {
     #[prost(oneof = "element_selector::Selector", tags = "1, 2, 3")]
@@ -1633,6 +1761,7 @@ pub struct ElementSelector {
 }
 /// Nested message and enum types in `ElementSelector`.
 pub mod element_selector {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Selector {
         /// Identify an element by name
@@ -1648,6 +1777,7 @@ pub mod element_selector {
     }
 }
 /// Describes how to animate an element change
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ElementAnimation {
     /// Duration over which to animate the change.
@@ -1658,6 +1788,7 @@ pub struct ElementAnimation {
     pub ease: i32,
 }
 /// Animates the element to match the position of another element
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AnimateToPosition {
     #[prost(message, optional, tag = "1")]
@@ -1681,6 +1812,7 @@ pub struct AnimateToPosition {
 /// The target can be retrieved via the 'target' element selector using the
 /// provided target_name. These element names only need to be unique among
 /// other targets, it is idiomatic to use the same name as the source element.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateTargetAtChildIndex {
     #[prost(message, optional, tag = "1")]
@@ -1693,6 +1825,7 @@ pub struct CreateTargetAtChildIndex {
     pub animation: ::core::option::Option<ElementAnimation>,
 }
 /// Animates a style property of an element to a new value
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AnimateElementStyle {
     #[prost(message, optional, tag = "1")]
@@ -1702,6 +1835,7 @@ pub struct AnimateElementStyle {
 }
 /// Nested message and enum types in `AnimateElementStyle`.
 pub mod animate_element_style {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Property {
         #[prost(float, tag = "2")]
@@ -1715,6 +1849,7 @@ pub mod animate_element_style {
     }
 }
 /// Possible updates to a single interface element
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct InterfaceUpdate {
     #[prost(oneof = "interface_update::Update", tags = "1, 2, 3, 4, 5, 6")]
@@ -1722,6 +1857,7 @@ pub struct InterfaceUpdate {
 }
 /// Nested message and enum types in `InterfaceUpdate`.
 pub mod interface_update {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Update {
         /// Make a copy of this element and set the original to
@@ -1748,6 +1884,7 @@ pub mod interface_update {
     }
 }
 /// A single, optionally animated, tranformation to an interface element.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdateInterfaceStep {
     /// Identifies the element to update
@@ -1761,12 +1898,14 @@ pub struct UpdateInterfaceStep {
     pub start_time: ::core::option::Option<TimeValue>,
 }
 /// Applies a sequence of user interface element mutations
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdateInterfaceCommand {
     #[prost(message, repeated, tag = "1")]
     pub steps: ::prost::alloc::vec::Vec<UpdateInterfaceStep>,
 }
 /// Boolean-valued expression
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ConditionalQuery {
     #[prost(oneof = "conditional_query::Query", tags = "1")]
@@ -1774,6 +1913,7 @@ pub struct ConditionalQuery {
 }
 /// Nested message and enum types in `ConditionalQuery`.
 pub mod conditional_query {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Query {
         /// Does a given user interface element exist?
@@ -1782,6 +1922,7 @@ pub mod conditional_query {
     }
 }
 /// Conditionally executes one of two command lists based on a boolean query
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ConditionalCommand {
     /// Boolean value to evaluate on the client
@@ -1797,6 +1938,7 @@ pub struct ConditionalCommand {
 /// Displays an 'info zoom' relative to the current mouse or touch position,
 /// a popup when a card is selected which shows a larger version of it which
 /// is easier to read.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct InfoZoomCommand {
     /// Whether to show or hide the InfoZoom.
@@ -1806,6 +1948,7 @@ pub struct InfoZoomCommand {
     #[prost(message, optional, tag = "2")]
     pub card: ::core::option::Option<CardView>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
@@ -1816,6 +1959,7 @@ pub struct GameCommand {
 }
 /// Nested message and enum types in `GameCommand`.
 pub mod game_command {
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Command {
         #[prost(message, tag = "1")]
@@ -1865,6 +2009,7 @@ pub mod game_command {
 /// Metadata to include with logging for this client, e.g. for crash
 /// attribution. These values are indexed by key and are never removed,
 /// the server can clear an entry by explicitly sending the empty string.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LoggingMetadata {
     #[prost(string, tag = "1")]
@@ -1872,6 +2017,7 @@ pub struct LoggingMetadata {
     #[prost(string, tag = "2")]
     pub value: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CommandList {
     /// Metadata to include with logging for this client, e.g. for crash
@@ -1885,10 +2031,6 @@ pub struct CommandList {
     #[prost(message, optional, tag = "3")]
     pub metadata: ::core::option::Option<ClientMetadata>,
 }
-// ============================================================================
-// Masonry
-// ============================================================================
-
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum FlexAlign {
@@ -1899,12 +2041,66 @@ pub enum FlexAlign {
     FlexEnd = 4,
     Stretch = 5,
 }
+impl FlexAlign {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexAlign::Unspecified => "FLEX_ALIGN_UNSPECIFIED",
+            FlexAlign::Auto => "FLEX_ALIGN_AUTO",
+            FlexAlign::FlexStart => "FLEX_ALIGN_FLEX_START",
+            FlexAlign::Center => "FLEX_ALIGN_CENTER",
+            FlexAlign::FlexEnd => "FLEX_ALIGN_FLEX_END",
+            FlexAlign::Stretch => "FLEX_ALIGN_STRETCH",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_ALIGN_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_ALIGN_AUTO" => Some(Self::Auto),
+            "FLEX_ALIGN_FLEX_START" => Some(Self::FlexStart),
+            "FLEX_ALIGN_CENTER" => Some(Self::Center),
+            "FLEX_ALIGN_FLEX_END" => Some(Self::FlexEnd),
+            "FLEX_ALIGN_STRETCH" => Some(Self::Stretch),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum FlexDisplayStyle {
     Unspecified = 0,
     Flex = 1,
     None = 2,
+}
+impl FlexDisplayStyle {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexDisplayStyle::Unspecified => "FLEX_DISPLAY_STYLE_UNSPECIFIED",
+            FlexDisplayStyle::Flex => "FLEX_DISPLAY_STYLE_FLEX",
+            FlexDisplayStyle::None => "FLEX_DISPLAY_STYLE_NONE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_DISPLAY_STYLE_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_DISPLAY_STYLE_FLEX" => Some(Self::Flex),
+            "FLEX_DISPLAY_STYLE_NONE" => Some(Self::None),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -1915,6 +2111,34 @@ pub enum FlexDirection {
     Row = 3,
     RowReverse = 4,
 }
+impl FlexDirection {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexDirection::Unspecified => "FLEX_DIRECTION_UNSPECIFIED",
+            FlexDirection::Column => "FLEX_DIRECTION_COLUMN",
+            FlexDirection::ColumnReverse => "FLEX_DIRECTION_COLUMN_REVERSE",
+            FlexDirection::Row => "FLEX_DIRECTION_ROW",
+            FlexDirection::RowReverse => "FLEX_DIRECTION_ROW_REVERSE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_DIRECTION_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_DIRECTION_COLUMN" => Some(Self::Column),
+            "FLEX_DIRECTION_COLUMN_REVERSE" => Some(Self::ColumnReverse),
+            "FLEX_DIRECTION_ROW" => Some(Self::Row),
+            "FLEX_DIRECTION_ROW_REVERSE" => Some(Self::RowReverse),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum FlexWrap {
@@ -1922,6 +2146,32 @@ pub enum FlexWrap {
     NoWrap = 1,
     Wrap = 2,
     WrapReverse = 3,
+}
+impl FlexWrap {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexWrap::Unspecified => "FLEX_WRAP_UNSPECIFIED",
+            FlexWrap::NoWrap => "FLEX_WRAP_NO_WRAP",
+            FlexWrap::Wrap => "FLEX_WRAP_WRAP",
+            FlexWrap::WrapReverse => "FLEX_WRAP_WRAP_REVERSE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_WRAP_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_WRAP_NO_WRAP" => Some(Self::NoWrap),
+            "FLEX_WRAP_WRAP" => Some(Self::Wrap),
+            "FLEX_WRAP_WRAP_REVERSE" => Some(Self::WrapReverse),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -1933,12 +2183,66 @@ pub enum FlexJustify {
     SpaceBetween = 4,
     SpaceAround = 5,
 }
+impl FlexJustify {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexJustify::Unspecified => "FLEX_JUSTIFY_UNSPECIFIED",
+            FlexJustify::FlexStart => "FLEX_JUSTIFY_FLEX_START",
+            FlexJustify::Center => "FLEX_JUSTIFY_CENTER",
+            FlexJustify::FlexEnd => "FLEX_JUSTIFY_FLEX_END",
+            FlexJustify::SpaceBetween => "FLEX_JUSTIFY_SPACE_BETWEEN",
+            FlexJustify::SpaceAround => "FLEX_JUSTIFY_SPACE_AROUND",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_JUSTIFY_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_JUSTIFY_FLEX_START" => Some(Self::FlexStart),
+            "FLEX_JUSTIFY_CENTER" => Some(Self::Center),
+            "FLEX_JUSTIFY_FLEX_END" => Some(Self::FlexEnd),
+            "FLEX_JUSTIFY_SPACE_BETWEEN" => Some(Self::SpaceBetween),
+            "FLEX_JUSTIFY_SPACE_AROUND" => Some(Self::SpaceAround),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum FlexOverflow {
     Unspecified = 0,
     Visible = 1,
     Hidden = 2,
+}
+impl FlexOverflow {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexOverflow::Unspecified => "FLEX_OVERFLOW_UNSPECIFIED",
+            FlexOverflow::Visible => "FLEX_OVERFLOW_VISIBLE",
+            FlexOverflow::Hidden => "FLEX_OVERFLOW_HIDDEN",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_OVERFLOW_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_OVERFLOW_VISIBLE" => Some(Self::Visible),
+            "FLEX_OVERFLOW_HIDDEN" => Some(Self::Hidden),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -1947,12 +2251,60 @@ pub enum FlexPosition {
     Relative = 1,
     Absolute = 2,
 }
+impl FlexPosition {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexPosition::Unspecified => "FLEX_POSITION_UNSPECIFIED",
+            FlexPosition::Relative => "FLEX_POSITION_RELATIVE",
+            FlexPosition::Absolute => "FLEX_POSITION_ABSOLUTE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_POSITION_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_POSITION_RELATIVE" => Some(Self::Relative),
+            "FLEX_POSITION_ABSOLUTE" => Some(Self::Absolute),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum TextOverflow {
     Unspecified = 0,
     Clip = 1,
     Ellipsis = 2,
+}
+impl TextOverflow {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            TextOverflow::Unspecified => "TEXT_OVERFLOW_UNSPECIFIED",
+            TextOverflow::Clip => "TEXT_OVERFLOW_CLIP",
+            TextOverflow::Ellipsis => "TEXT_OVERFLOW_ELLIPSIS",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "TEXT_OVERFLOW_UNSPECIFIED" => Some(Self::Unspecified),
+            "TEXT_OVERFLOW_CLIP" => Some(Self::Clip),
+            "TEXT_OVERFLOW_ELLIPSIS" => Some(Self::Ellipsis),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -1982,6 +2334,72 @@ pub enum EasingMode {
     EaseOutBounce = 22,
     EaseInOutBounce = 23,
 }
+impl EasingMode {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            EasingMode::Unspecified => "EASING_MODE_UNSPECIFIED",
+            EasingMode::Ease => "EASING_MODE_EASE",
+            EasingMode::EaseIn => "EASING_MODE_EASE_IN",
+            EasingMode::EaseOut => "EASING_MODE_EASE_OUT",
+            EasingMode::EaseInOut => "EASING_MODE_EASE_IN_OUT",
+            EasingMode::Linear => "EASING_MODE_LINEAR",
+            EasingMode::EaseInSine => "EASING_MODE_EASE_IN_SINE",
+            EasingMode::EaseOutSine => "EASING_MODE_EASE_OUT_SINE",
+            EasingMode::EaseInOutSine => "EASING_MODE_EASE_IN_OUT_SINE",
+            EasingMode::EaseInCubic => "EASING_MODE_EASE_IN_CUBIC",
+            EasingMode::EaseOutCubic => "EASING_MODE_EASE_OUT_CUBIC",
+            EasingMode::EaseInOutCubic => "EASING_MODE_EASE_IN_OUT_CUBIC",
+            EasingMode::EaseInCirc => "EASING_MODE_EASE_IN_CIRC",
+            EasingMode::EaseOutCirc => "EASING_MODE_EASE_OUT_CIRC",
+            EasingMode::EaseInOutCirc => "EASING_MODE_EASE_IN_OUT_CIRC",
+            EasingMode::EaseInElastic => "EASING_MODE_EASE_IN_ELASTIC",
+            EasingMode::EaseOutElastic => "EASING_MODE_EASE_OUT_ELASTIC",
+            EasingMode::EaseInOutElastic => "EASING_MODE_EASE_IN_OUT_ELASTIC",
+            EasingMode::EaseInBack => "EASING_MODE_EASE_IN_BACK",
+            EasingMode::EaseOutBack => "EASING_MODE_EASE_OUT_BACK",
+            EasingMode::EaseInOutBack => "EASING_MODE_EASE_IN_OUT_BACK",
+            EasingMode::EaseInBounce => "EASING_MODE_EASE_IN_BOUNCE",
+            EasingMode::EaseOutBounce => "EASING_MODE_EASE_OUT_BOUNCE",
+            EasingMode::EaseInOutBounce => "EASING_MODE_EASE_IN_OUT_BOUNCE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "EASING_MODE_UNSPECIFIED" => Some(Self::Unspecified),
+            "EASING_MODE_EASE" => Some(Self::Ease),
+            "EASING_MODE_EASE_IN" => Some(Self::EaseIn),
+            "EASING_MODE_EASE_OUT" => Some(Self::EaseOut),
+            "EASING_MODE_EASE_IN_OUT" => Some(Self::EaseInOut),
+            "EASING_MODE_LINEAR" => Some(Self::Linear),
+            "EASING_MODE_EASE_IN_SINE" => Some(Self::EaseInSine),
+            "EASING_MODE_EASE_OUT_SINE" => Some(Self::EaseOutSine),
+            "EASING_MODE_EASE_IN_OUT_SINE" => Some(Self::EaseInOutSine),
+            "EASING_MODE_EASE_IN_CUBIC" => Some(Self::EaseInCubic),
+            "EASING_MODE_EASE_OUT_CUBIC" => Some(Self::EaseOutCubic),
+            "EASING_MODE_EASE_IN_OUT_CUBIC" => Some(Self::EaseInOutCubic),
+            "EASING_MODE_EASE_IN_CIRC" => Some(Self::EaseInCirc),
+            "EASING_MODE_EASE_OUT_CIRC" => Some(Self::EaseOutCirc),
+            "EASING_MODE_EASE_IN_OUT_CIRC" => Some(Self::EaseInOutCirc),
+            "EASING_MODE_EASE_IN_ELASTIC" => Some(Self::EaseInElastic),
+            "EASING_MODE_EASE_OUT_ELASTIC" => Some(Self::EaseOutElastic),
+            "EASING_MODE_EASE_IN_OUT_ELASTIC" => Some(Self::EaseInOutElastic),
+            "EASING_MODE_EASE_IN_BACK" => Some(Self::EaseInBack),
+            "EASING_MODE_EASE_OUT_BACK" => Some(Self::EaseOutBack),
+            "EASING_MODE_EASE_IN_OUT_BACK" => Some(Self::EaseInOutBack),
+            "EASING_MODE_EASE_IN_BOUNCE" => Some(Self::EaseInBounce),
+            "EASING_MODE_EASE_OUT_BOUNCE" => Some(Self::EaseOutBounce),
+            "EASING_MODE_EASE_IN_OUT_BOUNCE" => Some(Self::EaseInOutBounce),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ImageScaleMode {
@@ -1989,6 +2407,32 @@ pub enum ImageScaleMode {
     StretchToFill = 1,
     ScaleAndCrop = 2,
     ScaleToFit = 3,
+}
+impl ImageScaleMode {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            ImageScaleMode::Unspecified => "IMAGE_SCALE_MODE_UNSPECIFIED",
+            ImageScaleMode::StretchToFill => "IMAGE_SCALE_MODE_STRETCH_TO_FILL",
+            ImageScaleMode::ScaleAndCrop => "IMAGE_SCALE_MODE_SCALE_AND_CROP",
+            ImageScaleMode::ScaleToFit => "IMAGE_SCALE_MODE_SCALE_TO_FIT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "IMAGE_SCALE_MODE_UNSPECIFIED" => Some(Self::Unspecified),
+            "IMAGE_SCALE_MODE_STRETCH_TO_FILL" => Some(Self::StretchToFill),
+            "IMAGE_SCALE_MODE_SCALE_AND_CROP" => Some(Self::ScaleAndCrop),
+            "IMAGE_SCALE_MODE_SCALE_TO_FIT" => Some(Self::ScaleToFit),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -1999,12 +2443,64 @@ pub enum FontStyle {
     Italic = 3,
     BoldAndItalic = 4,
 }
+impl FontStyle {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FontStyle::Unspecified => "FONT_STYLE_UNSPECIFIED",
+            FontStyle::Normal => "FONT_STYLE_NORMAL",
+            FontStyle::Bold => "FONT_STYLE_BOLD",
+            FontStyle::Italic => "FONT_STYLE_ITALIC",
+            FontStyle::BoldAndItalic => "FONT_STYLE_BOLD_AND_ITALIC",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FONT_STYLE_UNSPECIFIED" => Some(Self::Unspecified),
+            "FONT_STYLE_NORMAL" => Some(Self::Normal),
+            "FONT_STYLE_BOLD" => Some(Self::Bold),
+            "FONT_STYLE_ITALIC" => Some(Self::Italic),
+            "FONT_STYLE_BOLD_AND_ITALIC" => Some(Self::BoldAndItalic),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum OverflowClipBox {
     Unspecified = 0,
     PaddingBox = 1,
     ContentBox = 2,
+}
+impl OverflowClipBox {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            OverflowClipBox::Unspecified => "OVERFLOW_CLIP_BOX_UNSPECIFIED",
+            OverflowClipBox::PaddingBox => "OVERFLOW_CLIP_BOX_PADDING_BOX",
+            OverflowClipBox::ContentBox => "OVERFLOW_CLIP_BOX_CONTENT_BOX",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "OVERFLOW_CLIP_BOX_UNSPECIFIED" => Some(Self::Unspecified),
+            "OVERFLOW_CLIP_BOX_PADDING_BOX" => Some(Self::PaddingBox),
+            "OVERFLOW_CLIP_BOX_CONTENT_BOX" => Some(Self::ContentBox),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2020,6 +2516,44 @@ pub enum TextAlign {
     LowerCenter = 8,
     LowerRight = 9,
 }
+impl TextAlign {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            TextAlign::Unspecified => "TEXT_ALIGN_UNSPECIFIED",
+            TextAlign::UpperLeft => "TEXT_ALIGN_UPPER_LEFT",
+            TextAlign::UpperCenter => "TEXT_ALIGN_UPPER_CENTER",
+            TextAlign::UpperRight => "TEXT_ALIGN_UPPER_RIGHT",
+            TextAlign::MiddleLeft => "TEXT_ALIGN_MIDDLE_LEFT",
+            TextAlign::MiddleCenter => "TEXT_ALIGN_MIDDLE_CENTER",
+            TextAlign::MiddleRight => "TEXT_ALIGN_MIDDLE_RIGHT",
+            TextAlign::LowerLeft => "TEXT_ALIGN_LOWER_LEFT",
+            TextAlign::LowerCenter => "TEXT_ALIGN_LOWER_CENTER",
+            TextAlign::LowerRight => "TEXT_ALIGN_LOWER_RIGHT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "TEXT_ALIGN_UNSPECIFIED" => Some(Self::Unspecified),
+            "TEXT_ALIGN_UPPER_LEFT" => Some(Self::UpperLeft),
+            "TEXT_ALIGN_UPPER_CENTER" => Some(Self::UpperCenter),
+            "TEXT_ALIGN_UPPER_RIGHT" => Some(Self::UpperRight),
+            "TEXT_ALIGN_MIDDLE_LEFT" => Some(Self::MiddleLeft),
+            "TEXT_ALIGN_MIDDLE_CENTER" => Some(Self::MiddleCenter),
+            "TEXT_ALIGN_MIDDLE_RIGHT" => Some(Self::MiddleRight),
+            "TEXT_ALIGN_LOWER_LEFT" => Some(Self::LowerLeft),
+            "TEXT_ALIGN_LOWER_CENTER" => Some(Self::LowerCenter),
+            "TEXT_ALIGN_LOWER_RIGHT" => Some(Self::LowerRight),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum TextOverflowPosition {
@@ -2028,6 +2562,32 @@ pub enum TextOverflowPosition {
     Start = 2,
     Middle = 3,
 }
+impl TextOverflowPosition {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            TextOverflowPosition::Unspecified => "TEXT_OVERFLOW_POSITION_UNSPECIFIED",
+            TextOverflowPosition::End => "TEXT_OVERFLOW_POSITION_END",
+            TextOverflowPosition::Start => "TEXT_OVERFLOW_POSITION_START",
+            TextOverflowPosition::Middle => "TEXT_OVERFLOW_POSITION_MIDDLE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "TEXT_OVERFLOW_POSITION_UNSPECIFIED" => Some(Self::Unspecified),
+            "TEXT_OVERFLOW_POSITION_END" => Some(Self::End),
+            "TEXT_OVERFLOW_POSITION_START" => Some(Self::Start),
+            "TEXT_OVERFLOW_POSITION_MIDDLE" => Some(Self::Middle),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum FlexVisibility {
@@ -2035,12 +2595,60 @@ pub enum FlexVisibility {
     Visible = 1,
     Hidden = 2,
 }
+impl FlexVisibility {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexVisibility::Unspecified => "FLEX_VISIBILITY_UNSPECIFIED",
+            FlexVisibility::Visible => "FLEX_VISIBILITY_VISIBLE",
+            FlexVisibility::Hidden => "FLEX_VISIBILITY_HIDDEN",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_VISIBILITY_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_VISIBILITY_VISIBLE" => Some(Self::Visible),
+            "FLEX_VISIBILITY_HIDDEN" => Some(Self::Hidden),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum WhiteSpace {
     Unspecified = 0,
     Normal = 1,
     NoWrap = 2,
+}
+impl WhiteSpace {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            WhiteSpace::Unspecified => "WHITE_SPACE_UNSPECIFIED",
+            WhiteSpace::Normal => "WHITE_SPACE_NORMAL",
+            WhiteSpace::NoWrap => "WHITE_SPACE_NO_WRAP",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "WHITE_SPACE_UNSPECIFIED" => Some(Self::Unspecified),
+            "WHITE_SPACE_NORMAL" => Some(Self::Normal),
+            "WHITE_SPACE_NO_WRAP" => Some(Self::NoWrap),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2064,6 +2672,42 @@ pub enum DimensionUnit {
     /// Units relative to 100% of the size of the safe area left inset
     SafeAreaLeft = 8,
 }
+impl DimensionUnit {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            DimensionUnit::Unspecified => "DIMENSION_UNIT_UNSPECIFIED",
+            DimensionUnit::Pixels => "DIMENSION_UNIT_PIXELS",
+            DimensionUnit::Percentage => "DIMENSION_UNIT_PERCENTAGE",
+            DimensionUnit::ViewportWidth => "DIMENSION_UNIT_VIEWPORT_WIDTH",
+            DimensionUnit::ViewportHeight => "DIMENSION_UNIT_VIEWPORT_HEIGHT",
+            DimensionUnit::SafeAreaTop => "DIMENSION_UNIT_SAFE_AREA_TOP",
+            DimensionUnit::SafeAreaRight => "DIMENSION_UNIT_SAFE_AREA_RIGHT",
+            DimensionUnit::SafeAreaBottom => "DIMENSION_UNIT_SAFE_AREA_BOTTOM",
+            DimensionUnit::SafeAreaLeft => "DIMENSION_UNIT_SAFE_AREA_LEFT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "DIMENSION_UNIT_UNSPECIFIED" => Some(Self::Unspecified),
+            "DIMENSION_UNIT_PIXELS" => Some(Self::Pixels),
+            "DIMENSION_UNIT_PERCENTAGE" => Some(Self::Percentage),
+            "DIMENSION_UNIT_VIEWPORT_WIDTH" => Some(Self::ViewportWidth),
+            "DIMENSION_UNIT_VIEWPORT_HEIGHT" => Some(Self::ViewportHeight),
+            "DIMENSION_UNIT_SAFE_AREA_TOP" => Some(Self::SafeAreaTop),
+            "DIMENSION_UNIT_SAFE_AREA_RIGHT" => Some(Self::SafeAreaRight),
+            "DIMENSION_UNIT_SAFE_AREA_BOTTOM" => Some(Self::SafeAreaBottom),
+            "DIMENSION_UNIT_SAFE_AREA_LEFT" => Some(Self::SafeAreaLeft),
+            _ => None,
+        }
+    }
+}
 /// Controls whether elements respond to interface events.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2075,6 +2719,30 @@ pub enum FlexPickingMode {
     /// Picking disabled, events ignored.
     Ignore = 2,
 }
+impl FlexPickingMode {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            FlexPickingMode::Unspecified => "FLEX_PICKING_MODE_UNSPECIFIED",
+            FlexPickingMode::Position => "FLEX_PICKING_MODE_POSITION",
+            FlexPickingMode::Ignore => "FLEX_PICKING_MODE_IGNORE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "FLEX_PICKING_MODE_UNSPECIFIED" => Some(Self::Unspecified),
+            "FLEX_PICKING_MODE_POSITION" => Some(Self::Position),
+            "FLEX_PICKING_MODE_IGNORE" => Some(Self::Ignore),
+            _ => None,
+        }
+    }
+}
 /// Allows the size of a Node to be determined by the size of its background
 /// sprite.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
@@ -2085,6 +2753,30 @@ pub enum BackgroundImageAutoSize {
     FromWidth = 1,
     /// Determine the Node width based on its specified height
     FromHeight = 2,
+}
+impl BackgroundImageAutoSize {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            BackgroundImageAutoSize::Unspecified => "BACKGROUND_IMAGE_AUTO_SIZE_UNSPECIFIED",
+            BackgroundImageAutoSize::FromWidth => "BACKGROUND_IMAGE_AUTO_SIZE_FROM_WIDTH",
+            BackgroundImageAutoSize::FromHeight => "BACKGROUND_IMAGE_AUTO_SIZE_FROM_HEIGHT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "BACKGROUND_IMAGE_AUTO_SIZE_UNSPECIFIED" => Some(Self::Unspecified),
+            "BACKGROUND_IMAGE_AUTO_SIZE_FROM_WIDTH" => Some(Self::FromWidth),
+            "BACKGROUND_IMAGE_AUTO_SIZE_FROM_HEIGHT" => Some(Self::FromHeight),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2098,6 +2790,32 @@ pub enum ScrollBarVisibility {
     /// The scroll bar is always hidden.
     Hidden = 3,
 }
+impl ScrollBarVisibility {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            ScrollBarVisibility::Unspecified => "SCROLL_BAR_VISIBILITY_UNSPECIFIED",
+            ScrollBarVisibility::Auto => "SCROLL_BAR_VISIBILITY_AUTO",
+            ScrollBarVisibility::AlwaysVisible => "SCROLL_BAR_VISIBILITY_ALWAYS_VISIBLE",
+            ScrollBarVisibility::Hidden => "SCROLL_BAR_VISIBILITY_HIDDEN",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "SCROLL_BAR_VISIBILITY_UNSPECIFIED" => Some(Self::Unspecified),
+            "SCROLL_BAR_VISIBILITY_AUTO" => Some(Self::Auto),
+            "SCROLL_BAR_VISIBILITY_ALWAYS_VISIBLE" => Some(Self::AlwaysVisible),
+            "SCROLL_BAR_VISIBILITY_HIDDEN" => Some(Self::Hidden),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum TouchScrollBehavior {
@@ -2110,12 +2828,62 @@ pub enum TouchScrollBehavior {
     /// The content position is clamped to the ScrollView boundaries.
     Clamped = 3,
 }
+impl TouchScrollBehavior {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            TouchScrollBehavior::Unspecified => "TOUCH_SCROLL_BEHAVIOR_UNSPECIFIED",
+            TouchScrollBehavior::Unrestricted => "TOUCH_SCROLL_BEHAVIOR_UNRESTRICTED",
+            TouchScrollBehavior::Elastic => "TOUCH_SCROLL_BEHAVIOR_ELASTIC",
+            TouchScrollBehavior::Clamped => "TOUCH_SCROLL_BEHAVIOR_CLAMPED",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "TOUCH_SCROLL_BEHAVIOR_UNSPECIFIED" => Some(Self::Unspecified),
+            "TOUCH_SCROLL_BEHAVIOR_UNRESTRICTED" => Some(Self::Unrestricted),
+            "TOUCH_SCROLL_BEHAVIOR_ELASTIC" => Some(Self::Elastic),
+            "TOUCH_SCROLL_BEHAVIOR_CLAMPED" => Some(Self::Clamped),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum SliderDirection {
     Unspecified = 0,
     Horizontal = 1,
     Vertical = 2,
+}
+impl SliderDirection {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            SliderDirection::Unspecified => "SLIDER_DIRECTION_UNSPECIFIED",
+            SliderDirection::Horizontal => "SLIDER_DIRECTION_HORIZONTAL",
+            SliderDirection::Vertical => "SLIDER_DIRECTION_VERTICAL",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "SLIDER_DIRECTION_UNSPECIFIED" => Some(Self::Unspecified),
+            "SLIDER_DIRECTION_HORIZONTAL" => Some(Self::Horizontal),
+            "SLIDER_DIRECTION_VERTICAL" => Some(Self::Vertical),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2124,12 +2892,60 @@ pub enum PlayerSide {
     Overlord = 1,
     Champion = 2,
 }
+impl PlayerSide {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            PlayerSide::Unspecified => "PLAYER_SIDE_UNSPECIFIED",
+            PlayerSide::Overlord => "PLAYER_SIDE_OVERLORD",
+            PlayerSide::Champion => "PLAYER_SIDE_CHAMPION",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "PLAYER_SIDE_UNSPECIFIED" => Some(Self::Unspecified),
+            "PLAYER_SIDE_OVERLORD" => Some(Self::Overlord),
+            "PLAYER_SIDE_CHAMPION" => Some(Self::Champion),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum PlayerName {
     Unspecified = 0,
     User = 1,
     Opponent = 2,
+}
+impl PlayerName {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            PlayerName::Unspecified => "PLAYER_NAME_UNSPECIFIED",
+            PlayerName::User => "PLAYER_NAME_USER",
+            PlayerName::Opponent => "PLAYER_NAME_OPPONENT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "PLAYER_NAME_UNSPECIFIED" => Some(Self::Unspecified),
+            "PLAYER_NAME_USER" => Some(Self::User),
+            "PLAYER_NAME_OPPONENT" => Some(Self::Opponent),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2144,6 +2960,42 @@ pub enum RoomIdentifier {
     RoomD = 7,
     RoomE = 8,
 }
+impl RoomIdentifier {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            RoomIdentifier::Unspecified => "ROOM_IDENTIFIER_UNSPECIFIED",
+            RoomIdentifier::Vault => "ROOM_IDENTIFIER_VAULT",
+            RoomIdentifier::Sanctum => "ROOM_IDENTIFIER_SANCTUM",
+            RoomIdentifier::Crypts => "ROOM_IDENTIFIER_CRYPTS",
+            RoomIdentifier::RoomA => "ROOM_IDENTIFIER_ROOM_A",
+            RoomIdentifier::RoomB => "ROOM_IDENTIFIER_ROOM_B",
+            RoomIdentifier::RoomC => "ROOM_IDENTIFIER_ROOM_C",
+            RoomIdentifier::RoomD => "ROOM_IDENTIFIER_ROOM_D",
+            RoomIdentifier::RoomE => "ROOM_IDENTIFIER_ROOM_E",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ROOM_IDENTIFIER_UNSPECIFIED" => Some(Self::Unspecified),
+            "ROOM_IDENTIFIER_VAULT" => Some(Self::Vault),
+            "ROOM_IDENTIFIER_SANCTUM" => Some(Self::Sanctum),
+            "ROOM_IDENTIFIER_CRYPTS" => Some(Self::Crypts),
+            "ROOM_IDENTIFIER_ROOM_A" => Some(Self::RoomA),
+            "ROOM_IDENTIFIER_ROOM_B" => Some(Self::RoomB),
+            "ROOM_IDENTIFIER_ROOM_C" => Some(Self::RoomC),
+            "ROOM_IDENTIFIER_ROOM_D" => Some(Self::RoomD),
+            "ROOM_IDENTIFIER_ROOM_E" => Some(Self::RoomE),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum TargetingArrow {
@@ -2152,12 +3004,62 @@ pub enum TargetingArrow {
     Blue = 2,
     Green = 3,
 }
+impl TargetingArrow {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            TargetingArrow::Unspecified => "TARGETING_ARROW_UNSPECIFIED",
+            TargetingArrow::Red => "TARGETING_ARROW_RED",
+            TargetingArrow::Blue => "TARGETING_ARROW_BLUE",
+            TargetingArrow::Green => "TARGETING_ARROW_GREEN",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "TARGETING_ARROW_UNSPECIFIED" => Some(Self::Unspecified),
+            "TARGETING_ARROW_RED" => Some(Self::Red),
+            "TARGETING_ARROW_BLUE" => Some(Self::Blue),
+            "TARGETING_ARROW_GREEN" => Some(Self::Green),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ClientRoomLocation {
     Unspecified = 0,
     Back = 1,
     Front = 2,
+}
+impl ClientRoomLocation {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            ClientRoomLocation::Unspecified => "CLIENT_ROOM_LOCATION_UNSPECIFIED",
+            ClientRoomLocation::Back => "CLIENT_ROOM_LOCATION_BACK",
+            ClientRoomLocation::Front => "CLIENT_ROOM_LOCATION_FRONT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "CLIENT_ROOM_LOCATION_UNSPECIFIED" => Some(Self::Unspecified),
+            "CLIENT_ROOM_LOCATION_BACK" => Some(Self::Back),
+            "CLIENT_ROOM_LOCATION_FRONT" => Some(Self::Front),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2166,12 +3068,60 @@ pub enum ClientItemLocation {
     Left = 1,
     Right = 2,
 }
+impl ClientItemLocation {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            ClientItemLocation::Unspecified => "CLIENT_ITEM_LOCATION_UNSPECIFIED",
+            ClientItemLocation::Left => "CLIENT_ITEM_LOCATION_LEFT",
+            ClientItemLocation::Right => "CLIENT_ITEM_LOCATION_RIGHT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "CLIENT_ITEM_LOCATION_UNSPECIFIED" => Some(Self::Unspecified),
+            "CLIENT_ITEM_LOCATION_LEFT" => Some(Self::Left),
+            "CLIENT_ITEM_LOCATION_RIGHT" => Some(Self::Right),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum RevealedCardsBrowserSize {
     Unspecified = 0,
     Small = 1,
     Large = 2,
+}
+impl RevealedCardsBrowserSize {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            RevealedCardsBrowserSize::Unspecified => "REVEALED_CARDS_BROWSER_SIZE_UNSPECIFIED",
+            RevealedCardsBrowserSize::Small => "REVEALED_CARDS_BROWSER_SIZE_SMALL",
+            RevealedCardsBrowserSize::Large => "REVEALED_CARDS_BROWSER_SIZE_LARGE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "REVEALED_CARDS_BROWSER_SIZE_UNSPECIFIED" => Some(Self::Unspecified),
+            "REVEALED_CARDS_BROWSER_SIZE_SMALL" => Some(Self::Small),
+            "REVEALED_CARDS_BROWSER_SIZE_LARGE" => Some(Self::Large),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2182,12 +3132,64 @@ pub enum CardPrefab {
     FullHeight = 3,
     FullHeightToken = 4,
 }
+impl CardPrefab {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            CardPrefab::Unspecified => "CARD_PREFAB_UNSPECIFIED",
+            CardPrefab::Standard => "CARD_PREFAB_STANDARD",
+            CardPrefab::TokenCard => "CARD_PREFAB_TOKEN_CARD",
+            CardPrefab::FullHeight => "CARD_PREFAB_FULL_HEIGHT",
+            CardPrefab::FullHeightToken => "CARD_PREFAB_FULL_HEIGHT_TOKEN",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "CARD_PREFAB_UNSPECIFIED" => Some(Self::Unspecified),
+            "CARD_PREFAB_STANDARD" => Some(Self::Standard),
+            "CARD_PREFAB_TOKEN_CARD" => Some(Self::TokenCard),
+            "CARD_PREFAB_FULL_HEIGHT" => Some(Self::FullHeight),
+            "CARD_PREFAB_FULL_HEIGHT_TOKEN" => Some(Self::FullHeightToken),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ArrowBubbleCorner {
     Unspecified = 0,
     BottomLeft = 1,
     BottomRight = 2,
+}
+impl ArrowBubbleCorner {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            ArrowBubbleCorner::Unspecified => "ARROW_BUBBLE_CORNER_UNSPECIFIED",
+            ArrowBubbleCorner::BottomLeft => "ARROW_BUBBLE_CORNER_BOTTOM_LEFT",
+            ArrowBubbleCorner::BottomRight => "ARROW_BUBBLE_CORNER_BOTTOM_RIGHT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ARROW_BUBBLE_CORNER_UNSPECIFIED" => Some(Self::Unspecified),
+            "ARROW_BUBBLE_CORNER_BOTTOM_LEFT" => Some(Self::BottomLeft),
+            "ARROW_BUBBLE_CORNER_BOTTOM_RIGHT" => Some(Self::BottomRight),
+            _ => None,
+        }
+    }
 }
 /// Possible corners which can be anchored.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
@@ -2199,12 +3201,64 @@ pub enum AnchorCorner {
     BottomLeft = 3,
     BottomRight = 4,
 }
+impl AnchorCorner {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            AnchorCorner::Unspecified => "ANCHOR_CORNER_UNSPECIFIED",
+            AnchorCorner::TopLeft => "ANCHOR_CORNER_TOP_LEFT",
+            AnchorCorner::TopRight => "ANCHOR_CORNER_TOP_RIGHT",
+            AnchorCorner::BottomLeft => "ANCHOR_CORNER_BOTTOM_LEFT",
+            AnchorCorner::BottomRight => "ANCHOR_CORNER_BOTTOM_RIGHT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ANCHOR_CORNER_UNSPECIFIED" => Some(Self::Unspecified),
+            "ANCHOR_CORNER_TOP_LEFT" => Some(Self::TopLeft),
+            "ANCHOR_CORNER_TOP_RIGHT" => Some(Self::TopRight),
+            "ANCHOR_CORNER_BOTTOM_LEFT" => Some(Self::BottomLeft),
+            "ANCHOR_CORNER_BOTTOM_RIGHT" => Some(Self::BottomRight),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum RoomVisitType {
     Unspecified = 0,
     InitiateRaid = 1,
     LevelUpRoom = 2,
+}
+impl RoomVisitType {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            RoomVisitType::Unspecified => "ROOM_VISIT_TYPE_UNSPECIFIED",
+            RoomVisitType::InitiateRaid => "ROOM_VISIT_TYPE_INITIATE_RAID",
+            RoomVisitType::LevelUpRoom => "ROOM_VISIT_TYPE_LEVEL_UP_ROOM",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ROOM_VISIT_TYPE_UNSPECIFIED" => Some(Self::Unspecified),
+            "ROOM_VISIT_TYPE_INITIATE_RAID" => Some(Self::InitiateRaid),
+            "ROOM_VISIT_TYPE_LEVEL_UP_ROOM" => Some(Self::LevelUpRoom),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2216,6 +3270,30 @@ pub enum CardCreationAnimation {
     /// identifier with no 'ability_id') to its create position.
     FromParentCard = 2,
 }
+impl CardCreationAnimation {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            CardCreationAnimation::Unspecified => "CARD_CREATION_ANIMATION_UNSPECIFIED",
+            CardCreationAnimation::DrawCard => "CARD_CREATION_ANIMATION_DRAW_CARD",
+            CardCreationAnimation::FromParentCard => "CARD_CREATION_ANIMATION_FROM_PARENT_CARD",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "CARD_CREATION_ANIMATION_UNSPECIFIED" => Some(Self::Unspecified),
+            "CARD_CREATION_ANIMATION_DRAW_CARD" => Some(Self::DrawCard),
+            "CARD_CREATION_ANIMATION_FROM_PARENT_CARD" => Some(Self::FromParentCard),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum MusicState {
@@ -2224,6 +3302,34 @@ pub enum MusicState {
     Gameplay = 2,
     Raid = 3,
     MainMenu = 4,
+}
+impl MusicState {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            MusicState::Unspecified => "MUSIC_STATE_UNSPECIFIED",
+            MusicState::Silent => "MUSIC_STATE_SILENT",
+            MusicState::Gameplay => "MUSIC_STATE_GAMEPLAY",
+            MusicState::Raid => "MUSIC_STATE_RAID",
+            MusicState::MainMenu => "MUSIC_STATE_MAIN_MENU",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "MUSIC_STATE_UNSPECIFIED" => Some(Self::Unspecified),
+            "MUSIC_STATE_SILENT" => Some(Self::Silent),
+            "MUSIC_STATE_GAMEPLAY" => Some(Self::Gameplay),
+            "MUSIC_STATE_RAID" => Some(Self::Raid),
+            "MUSIC_STATE_MAIN_MENU" => Some(Self::MainMenu),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2234,6 +3340,34 @@ pub enum GameMessageType {
     Victory = 3,
     Defeat = 4,
 }
+impl GameMessageType {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            GameMessageType::Unspecified => "GAME_MESSAGE_TYPE_UNSPECIFIED",
+            GameMessageType::Dawn => "GAME_MESSAGE_TYPE_DAWN",
+            GameMessageType::Dusk => "GAME_MESSAGE_TYPE_DUSK",
+            GameMessageType::Victory => "GAME_MESSAGE_TYPE_VICTORY",
+            GameMessageType::Defeat => "GAME_MESSAGE_TYPE_DEFEAT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "GAME_MESSAGE_TYPE_UNSPECIFIED" => Some(Self::Unspecified),
+            "GAME_MESSAGE_TYPE_DAWN" => Some(Self::Dawn),
+            "GAME_MESSAGE_TYPE_DUSK" => Some(Self::Dusk),
+            "GAME_MESSAGE_TYPE_VICTORY" => Some(Self::Victory),
+            "GAME_MESSAGE_TYPE_DEFEAT" => Some(Self::Defeat),
+            _ => None,
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum SceneLoadMode {
@@ -2243,6 +3377,30 @@ pub enum SceneLoadMode {
     /// Adds a scene to the current loaded scenes.
     Additive = 2,
 }
+impl SceneLoadMode {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            SceneLoadMode::Unspecified => "SCENE_LOAD_MODE_UNSPECIFIED",
+            SceneLoadMode::Single => "SCENE_LOAD_MODE_SINGLE",
+            SceneLoadMode::Additive => "SCENE_LOAD_MODE_ADDITIVE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "SCENE_LOAD_MODE_UNSPECIFIED" => Some(Self::Unspecified),
+            "SCENE_LOAD_MODE_SINGLE" => Some(Self::Single),
+            "SCENE_LOAD_MODE_ADDITIVE" => Some(Self::Additive),
+            _ => None,
+        }
+    }
+}
 /// Possible client logging levels
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2251,6 +3409,32 @@ pub enum LogMessageLevel {
     Standard = 1,
     Warning = 2,
     Error = 3,
+}
+impl LogMessageLevel {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            LogMessageLevel::Unspecified => "LOG_MESSAGE_LEVEL_UNSPECIFIED",
+            LogMessageLevel::Standard => "LOG_MESSAGE_LEVEL_STANDARD",
+            LogMessageLevel::Warning => "LOG_MESSAGE_LEVEL_WARNING",
+            LogMessageLevel::Error => "LOG_MESSAGE_LEVEL_ERROR",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "LOG_MESSAGE_LEVEL_UNSPECIFIED" => Some(Self::Unspecified),
+            "LOG_MESSAGE_LEVEL_STANDARD" => Some(Self::Standard),
+            "LOG_MESSAGE_LEVEL_WARNING" => Some(Self::Warning),
+            "LOG_MESSAGE_LEVEL_ERROR" => Some(Self::Error),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -2263,15 +3447,41 @@ pub enum MapTileType {
     /// Player cannot enter this tile but can click to walk adjacent to it
     Visitable = 3,
 }
+impl MapTileType {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            MapTileType::Unspecified => "MAP_TILE_TYPE_UNSPECIFIED",
+            MapTileType::Obstacle => "MAP_TILE_TYPE_OBSTACLE",
+            MapTileType::Walkable => "MAP_TILE_TYPE_WALKABLE",
+            MapTileType::Visitable => "MAP_TILE_TYPE_VISITABLE",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "MAP_TILE_TYPE_UNSPECIFIED" => Some(Self::Unspecified),
+            "MAP_TILE_TYPE_OBSTACLE" => Some(Self::Obstacle),
+            "MAP_TILE_TYPE_WALKABLE" => Some(Self::Walkable),
+            "MAP_TILE_TYPE_VISITABLE" => Some(Self::Visitable),
+            _ => None,
+        }
+    }
+}
 /// Generated server implementations.
 pub mod spelldawn_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    ///Generated trait containing gRPC methods that should be implemented for
+    /// Generated trait containing gRPC methods that should be implemented for
     /// use with SpelldawnServer.
     #[async_trait]
     pub trait Spelldawn: Send + Sync + 'static {
-        ///Server streaming response type for the Connect method.
+        /// Server streaming response type for the Connect method.
         type ConnectStream: futures_core::Stream<Item = Result<super::CommandList, tonic::Status>>
             + Send
             + 'static;
@@ -2314,17 +3524,18 @@ pub mod spelldawn_server {
             InterceptedService::new(Self::new(inner), interceptor)
         }
 
-        /// Enable decompressing requests with `gzip`.
+        /// Enable decompressing requests with the given encoding.
         #[must_use]
-        pub fn accept_gzip(mut self) -> Self {
-            self.accept_compression_encodings.enable_gzip();
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.accept_compression_encodings.enable(encoding);
             self
         }
 
-        /// Compress responses with `gzip`, if the client supports it.
+        /// Compress responses with the given encoding, if the client supports
+        /// it.
         #[must_use]
-        pub fn send_gzip(mut self) -> Self {
-            self.send_compression_encodings.enable_gzip();
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.send_compression_encodings.enable(encoding);
             self
         }
     }
@@ -2442,7 +3653,7 @@ pub mod spelldawn_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: Spelldawn> tonic::transport::NamedService for SpelldawnServer<T> {
+    impl<T: Spelldawn> tonic::server::NamedService for SpelldawnServer<T> {
         const NAME: &'static str = "spelldawn.Spelldawn";
     }
 }

@@ -15,8 +15,8 @@ constants = { path = "../constants", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
 
-anyhow = "1.0.58"
-dashmap = "5.3.4"
-enum-iterator = "1.1.3"
-once_cell = "1.13.0"
-tracing = { version = "0.1.35", features = ["max_level_debug", "release_max_level_warn"] }
+anyhow = "1.0.69"
+dashmap = "5.4.0"
+enum-iterator = "1.3.0"
+once_cell = "1.17.1"
+tracing = { version = "0.1.37", features = ["max_level_debug", "release_max_level_warn"] }

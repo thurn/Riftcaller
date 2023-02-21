@@ -52,7 +52,7 @@ namespace Spelldawn.Services
           Credentials = ChannelCredentials.Insecure,
           CompressionProviders = new List<ICompressionProvider>
           {
-            new DebugGzipCompressionProvider(CompressionLevel.Optimal)
+            new GzipCompressionProvider(CompressionLevel.Optimal)
           }
         })));
 
