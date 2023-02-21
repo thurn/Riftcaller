@@ -324,12 +324,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c4872d67bab6358e59559027aa3b9157c53d9358c51423c17554809a8858e0f8"
 
 [[package]]
-name = "cache-padded"
-version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1db59621ec70f09c5e9b597b220c7a2b43611f4710dc03ceb8748637775692c"
-
-[[package]]
 name = "card_helpers"
 version = "0.0.0"
 dependencies = [
@@ -483,15 +477,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e8ad8cef104ac57b68b89df3208164d228503abbdce70f6880ffa3d970e7443a"
 dependencies = [
  "cc",
-]
-
-[[package]]
-name = "concurrent-queue"
-version = "1.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30ed07550be01594c6026cff2a1d7fe9c8f683caa798e12b68694ac9e88286a3"
-dependencies = [
- "cache-padded",
 ]
 
 [[package]]
@@ -698,17 +683,13 @@ dependencies = [
 name = "database"
 version = "0.0.0"
 dependencies = [
- "adapters",
  "anyhow",
  "async-trait",
  "game_data",
  "once_cell",
  "player_data",
- "protos",
- "rules",
  "serde_json",
  "sled",
- "ulid",
  "with_error",
 ]
 
@@ -717,14 +698,12 @@ name = "deck_card"
 version = "0.0.0"
 dependencies = [
  "adapters",
- "assets",
  "core_ui",
  "display",
  "element_names",
  "game_data",
  "protos",
  "rules",
- "rules_text",
 ]
 
 [[package]]
@@ -736,7 +715,6 @@ dependencies = [
  "assets",
  "core_ui",
  "deck_card",
- "display",
  "element_names",
  "game_data",
  "panel_address",
@@ -1814,7 +1792,6 @@ dependencies = [
  "assets",
  "core_ui",
  "game_data",
- "prompts",
  "protos",
  "rules",
 ]
@@ -1871,7 +1848,6 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 name = "screen_overlay"
 version = "0.0.0"
 dependencies = [
- "adventure_data",
  "constants",
  "core_ui",
  "element_names",
@@ -1963,7 +1939,6 @@ dependencies = [
  "ai_core",
  "ai_game_integration",
  "anyhow",
- "concurrent-queue",
  "core_ui",
  "dashmap",
  "database",
@@ -2171,16 +2146,11 @@ dependencies = [
  "game_data",
  "insta",
  "maplit",
- "player_data",
  "protos",
  "rules",
  "rusty-hook",
  "test_utils",
  "tokio",
- "tonic",
- "tonic-web",
- "tracing",
- "tracing-subscriber",
  "user_action_data",
 ]
 
