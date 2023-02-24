@@ -63,7 +63,6 @@ use crate::{fake_database, ROOM_ID};
 /// their own view of the state of the game, which differs due to hidden
 /// information. This struct has two different [TestClient]s which get updated
 /// based on server responses, representing what the two players are seeing.
-#[derive(Clone)]
 pub struct TestSession {
     /// This is the perspective of the player identified by the `user_id`
     /// parameter to [Self::new].
@@ -227,9 +226,11 @@ impl TestSession {
             .last() // Use last to avoid overwriting 'next draw' configuration
             .unwrap()
             .id;
-        overwrite_card(self.database.game_mut(), card_id, card_name);
-        self.database.game_mut().move_card_internal(card_id, CardPosition::Hand(side));
-        self.database.game_mut().card_mut(card_id).set_revealed_to(card_id.side, true);
+        self.database.mutate_game(|game| {
+            overwrite_card(game, card_id, card_name);
+            game.move_card_internal(card_id, CardPosition::Hand(side));
+            game.card_mut(card_id).set_revealed_to(card_id.side, true);
+        });
 
         self.connect(self.user.id).expect("User connection error");
         self.connect(self.opponent.id).expect("Opponent connection error");
@@ -369,16 +370,15 @@ impl TestSession {
 
     /// Equivalent to [legal_actions] but returns a [Result] instead of panic on
     /// error
-    pub fn legal_actions_result<'a>(
-        &'a self,
-        side: Side,
-    ) -> Result<Box<dyn Iterator<Item = GameAction> + 'a>> {
-        legal_actions::evaluate(self.database.game.as_ref().expect("game"), side)
+    pub fn legal_actions_result(&self, side: Side) -> Result<Vec<GameAction>> {
+        let game = self.database.game.lock().unwrap();
+        let actions = legal_actions::evaluate(game.as_ref().expect("game"), side)?;
+        Ok(actions.collect())
     }
 
     /// Evaluates legal actions for the [Side] player in the current game state.
     pub fn legal_actions(&self, side: Side) -> Vec<GameAction> {
-        legal_actions::evaluate(self.database.game.as_ref().expect("game"), side)
+        legal_actions::evaluate(self.database.game.lock().unwrap().as_ref().expect("game"), side)
             .expect("Error evaluating legal actions")
             .collect()
     }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use std::collections::HashMap;
+use std::sync::Mutex;
 
 use adventure_data::adventure::{AdventureConfiguration, TileEntity};
 use adventure_generator::mock_adventure;
@@ -100,15 +101,15 @@ impl TestAdventure {
             map: TestWorldMap::default(),
             database: FakeDatabase {
                 generated_game_id: Some(game_id),
-                game: None,
-                players: hashmap! {
+                game: Mutex::new(None),
+                players: Mutex::new(hashmap! {
                     player_id => PlayerData {
                         id: player_id,
                         status: None,
                         adventure: Some(adventure),
                         tutorial: TutorialData::new().skip_all(!config.show_tutorial)
                     }
-                },
+                }),
             },
         };
 

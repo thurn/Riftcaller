@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use std::collections::HashMap;
+use std::sync::Mutex;
 
 use anyhow::Result;
 use async_trait::async_trait;
@@ -23,20 +24,21 @@ use game_data::primitives::GameId;
 use player_data::PlayerData;
 use protos::spelldawn::PlayerIdentifier;
 
-#[derive(Clone, Debug, Default)]
+#[derive(Debug, Default)]
 pub struct FakeDatabase {
     pub generated_game_id: Option<GameId>,
-    pub game: Option<GameState>,
-    pub players: HashMap<PlayerId, PlayerData>,
+    pub game: Mutex<Option<GameState>>,
+    pub players: Mutex<HashMap<PlayerId, PlayerData>>,
 }
 
 impl FakeDatabase {
-    pub fn game(&self) -> &GameState {
-        self.game.as_ref().expect("game")
+    pub fn game(&self) -> GameState {
+        self.game.lock().unwrap().clone().expect("game")
     }
 
-    pub fn game_mut(&mut self) -> &mut GameState {
-        self.game.as_mut().expect("game")
+    pub fn mutate_game(&self, mut fun: impl FnMut(&mut GameState)) {
+        let mut game = self.game.lock().unwrap();
+        fun(game.as_mut().expect("game"))
     }
 }
 
@@ -47,20 +49,20 @@ impl Database for FakeDatabase {
     }
 
     async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>> {
-        Ok(Some(self.players[&id].clone()))
+        Ok(Some(self.players.lock().unwrap()[&id].clone()))
     }
 
     async fn write_player(&mut self, player: &PlayerData) -> Result<()> {
-        self.players.insert(player.id, player.clone());
+        self.players.lock().unwrap().insert(player.id, player.clone());
         Ok(())
     }
 
     async fn fetch_game(&self, _id: GameId) -> Result<Option<GameState>> {
-        Ok(Some(self.game.clone().expect("game")))
+        Ok(Some(self.game.lock().unwrap().clone().expect("game")))
     }
 
     async fn write_game(&mut self, game: &GameState) -> Result<()> {
-        self.game = Some(game.clone());
+        let _ = self.game.lock().unwrap().insert(game.clone());
         Ok(())
     }
 }

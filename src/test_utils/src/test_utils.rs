@@ -29,6 +29,7 @@ use std::fmt::Debug;
 use std::fs;
 use std::hash::Hash;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Mutex;
 
 use adapters::ServerCardId;
 use anyhow::Result;
@@ -138,8 +139,8 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
 
     let database = FakeDatabase {
         generated_game_id: None,
-        game: Some(game),
-        players: hashmap! {
+        game: Mutex::new(Some(game)),
+        players: Mutex::new(hashmap! {
             overlord_user => PlayerData {
                 id: overlord_user,
                 status: Some(PlayerStatus::Playing(game_id)),
@@ -152,7 +153,7 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
                 adventure: None,
                 tutorial: TutorialData::default()
             }
-        },
+        }),
     };
 
     let mut session = TestSession::new(database, user_id, opponent_id);
@@ -290,8 +291,8 @@ pub fn new_session(game_id: GameId, user_id: PlayerId, opponent_id: PlayerId) ->
 
     let database = FakeDatabase {
         generated_game_id: Some(game_id),
-        game: None,
-        players: hashmap! {
+        game: Mutex::new(None),
+        players: Mutex::new(hashmap! {
             user_id => PlayerData {
                 id: user_id,
                 status: None,
@@ -304,7 +305,7 @@ pub fn new_session(game_id: GameId, user_id: PlayerId, opponent_id: PlayerId) ->
                 adventure: None,
                 tutorial: TutorialData::default()
             }
-        },
+        }),
     };
 
     TestSession::new(database, user_id, opponent_id)
