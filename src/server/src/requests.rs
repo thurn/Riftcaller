@@ -17,7 +17,7 @@ use core_ui::prelude::*;
 use database::Database;
 use game_data::game::GameState;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{GameId, ResponseContext};
+use game_data::primitives::GameId;
 use game_data::updates::{UpdateTracker, Updates};
 use panel_address::PanelAddress;
 use player_data::PlayerData;
@@ -96,13 +96,6 @@ pub fn load_scene(name: impl Into<String>) -> Command {
         mode: SceneLoadMode::Single.into(),
         skip_if_current: true,
     })
-}
-
-pub fn propagate_request_context(data: &RequestData) -> ResponseContext {
-    match data.game_id {
-        Some(game_id) => ResponseContext::Game(game_id),
-        _ => ResponseContext::Default,
-    }
 }
 
 pub async fn add_panels(
