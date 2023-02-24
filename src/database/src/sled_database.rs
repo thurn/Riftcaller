@@ -42,7 +42,7 @@ impl Database for SledDatabase {
             .transpose()
     }
 
-    async fn write_player(&mut self, player: &PlayerData) -> Result<()> {
+    async fn write_player(&self, player: &PlayerData) -> Result<()> {
         players()?.insert(
             player_id_key(player.id)?,
             ser::to_vec(player).with_error(|| format!("Error serializing player {}", player.id))?,
@@ -61,7 +61,7 @@ impl Database for SledDatabase {
             .transpose()
     }
 
-    async fn write_game(&mut self, game: &GameState) -> Result<()> {
+    async fn write_game(&self, game: &GameState) -> Result<()> {
         games()?.insert(
             game_id_key(game.id),
             ser::to_vec(game).with_error(|| format!("Error serializing game {}", game.id))?,

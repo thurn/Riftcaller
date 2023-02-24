@@ -52,7 +52,7 @@ impl Database for FakeDatabase {
         Ok(Some(self.players.lock().unwrap()[&id].clone()))
     }
 
-    async fn write_player(&mut self, player: &PlayerData) -> Result<()> {
+    async fn write_player(&self, player: &PlayerData) -> Result<()> {
         self.players.lock().unwrap().insert(player.id, player.clone());
         Ok(())
     }
@@ -61,7 +61,7 @@ impl Database for FakeDatabase {
         Ok(Some(self.game.lock().unwrap().clone().expect("game")))
     }
 
-    async fn write_game(&mut self, game: &GameState) -> Result<()> {
+    async fn write_game(&self, game: &GameState) -> Result<()> {
         let _ = self.game.lock().unwrap().insert(game.clone());
         Ok(())
     }

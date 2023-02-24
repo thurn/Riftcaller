@@ -36,7 +36,7 @@ use crate::server_data::{ClientData, GameResponse, RequestData};
 use crate::{game_server, requests};
 
 pub async fn handle_debug_action(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &DebugAction,
 ) -> Result<GameResponse> {

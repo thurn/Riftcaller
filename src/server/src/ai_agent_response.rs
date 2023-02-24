@@ -84,7 +84,7 @@ pub async fn maybe_run_ai(
 /// Manually runs the agent-response loop, for use in tests. Do not call in
 /// production.
 pub async fn run_agent_loop_for_tests(
-    database: &mut impl Database,
+    database: &impl Database,
     game_id: GameId,
     player_id: PlayerId,
 ) -> Result<()> {

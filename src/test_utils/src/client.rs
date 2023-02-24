@@ -120,7 +120,7 @@ impl TestSession {
     /// Returns the commands which would be sent to the client when connected.
     #[tokio::main]
     pub async fn connect(&mut self, user_id: PlayerId) -> Result<CommandList> {
-        let result = server::handle_connect(&mut self.database, user_id).await?.build();
+        let result = server::handle_connect(&self.database, user_id).await?.build();
         let to_update = match () {
             _ if user_id == self.user.id => &mut self.user,
             _ if user_id == self.opponent.id => &mut self.opponent,
@@ -154,7 +154,7 @@ impl TestSession {
     ) -> Result<GameResponseOutput> {
         let metadata = self.metadata.clone();
         let response = server::handle_action(
-            &mut self.database,
+            &self.database,
             player_id,
             &GameRequest {
                 action: Some(ClientAction { action: Some(action) }),
@@ -386,7 +386,7 @@ impl TestSession {
     #[tokio::main]
     pub async fn run_agent_loop(&mut self) {
         let (game_id, user_id) = (self.game_id(), self.user_id());
-        ai_agent_response::run_agent_loop_for_tests(&mut self.database, game_id, user_id)
+        ai_agent_response::run_agent_loop_for_tests(&self.database, game_id, user_id)
             .await
             .expect("Error running agent loop");
     }

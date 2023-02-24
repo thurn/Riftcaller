@@ -32,7 +32,7 @@ use crate::{ai_agent_response, requests};
 
 /// Creates a new game and assigns the player to their requested side & deck.
 pub async fn create(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &NewGameAction,
 ) -> Result<GameResponse> {

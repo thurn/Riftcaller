@@ -16,7 +16,7 @@
 
 use std::env;
 
-use database::firestore_database::FirestoreDatabase;
+use database::sled_database::SledDatabase;
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
 use server::GameService;
 use tonic::codec::CompressionEncoding;
@@ -48,7 +48,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
     let address = "0.0.0.0:80".parse().expect("valid address");
-    let database = FirestoreDatabase::new("spelldawn").await?;
+    //let database = FirestoreDatabase::new("spelldawn").await?;
+    let database = SledDatabase;
     let server = SpelldawnServer::new(GameService { database })
         .send_compressed(CompressionEncoding::Gzip)
         .accept_compressed(CompressionEncoding::Gzip);

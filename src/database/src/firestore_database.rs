@@ -46,7 +46,7 @@ impl Database for FirestoreDatabase {
             .with_error(|| format!("Error fetching player {id}"))
     }
 
-    async fn write_player(&mut self, player: &PlayerData) -> Result<()> {
+    async fn write_player(&self, player: &PlayerData) -> Result<()> {
         self.db
             .fluent()
             .insert()
@@ -69,7 +69,7 @@ impl Database for FirestoreDatabase {
             .with_error(|| format!("Error fetching game {id}"))
     }
 
-    async fn write_game(&mut self, game: &GameState) -> Result<()> {
+    async fn write_game(&self, game: &GameState) -> Result<()> {
         self.db
             .fluent()
             .insert()

@@ -120,7 +120,7 @@ impl TestAdventure {
 
     #[tokio::main]
     pub async fn connect(&mut self) -> CommandList {
-        let response = server::handle_connect(&mut self.database, self.player_id)
+        let response = server::handle_connect(&self.database, self.player_id)
             .await
             .expect("Connection error")
             .build();
@@ -159,7 +159,7 @@ impl TestAdventure {
                 }
             } else {
                 let response = server::handle_action(
-                    &mut self.database,
+                    &self.database,
                     self.player_id,
                     &GameRequest {
                         action: Some(action),

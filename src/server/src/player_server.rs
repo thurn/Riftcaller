@@ -21,7 +21,7 @@ use crate::requests;
 use crate::server_data::{ClientData, GameResponse, RequestData};
 
 pub async fn handle_deck_editor_action(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &DeckEditorAction,
 ) -> Result<GameResponse> {

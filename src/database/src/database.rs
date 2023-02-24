@@ -17,8 +17,6 @@
 pub mod firestore_database;
 pub mod sled_database;
 
-use std::collections::HashMap;
-
 use anyhow::Result;
 use async_trait::async_trait;
 use game_data::game::GameState;
@@ -34,44 +32,9 @@ pub trait Database: Send + Sync {
 
     async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>>;
 
-    async fn write_player(&mut self, player: &PlayerData) -> Result<()>;
+    async fn write_player(&self, player: &PlayerData) -> Result<()>;
 
     async fn fetch_game(&self, id: GameId) -> Result<Option<GameState>>;
 
-    async fn write_game(&mut self, game: &GameState) -> Result<()>;
-}
-
-#[derive(Default)]
-pub struct InMemoryDatabase {
-    players: HashMap<PlayerId, PlayerData>,
-    games: HashMap<GameId, GameState>,
-}
-
-#[async_trait]
-impl Database for InMemoryDatabase {
-    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>> {
-        if self.players.contains_key(&id) {
-            Ok(Some(self.players[&id].clone()))
-        } else {
-            Ok(None)
-        }
-    }
-
-    async fn write_player(&mut self, player: &PlayerData) -> Result<()> {
-        self.players.insert(player.id, player.clone());
-        Ok(())
-    }
-
-    async fn fetch_game(&self, id: GameId) -> Result<Option<GameState>> {
-        if self.games.contains_key(&id) {
-            Ok(Some(self.games[&id].clone()))
-        } else {
-            Ok(None)
-        }
-    }
-
-    async fn write_game(&mut self, game: &GameState) -> Result<()> {
-        self.games.insert(game.id, game.clone());
-        Ok(())
-    }
+    async fn write_game(&self, game: &GameState) -> Result<()>;
 }

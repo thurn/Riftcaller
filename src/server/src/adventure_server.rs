@@ -39,7 +39,7 @@ pub async fn connect(
 }
 
 pub async fn handle_new_adventure(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     side: Side,
 ) -> Result<GameResponse> {
@@ -55,7 +55,7 @@ pub async fn handle_new_adventure(
 }
 
 pub async fn handle_adventure_action(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &AdventureAction,
 ) -> Result<GameResponse> {
@@ -66,7 +66,7 @@ pub async fn handle_adventure_action(
 }
 
 pub async fn handle_leave_adventure(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
 ) -> Result<GameResponse> {
     requests::with_player(database, data, |player| {
@@ -78,7 +78,7 @@ pub async fn handle_leave_adventure(
 }
 
 async fn update_adventure(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     function: impl Fn(&mut AdventureState) -> Result<()>,
 ) -> Result<GameResponse> {

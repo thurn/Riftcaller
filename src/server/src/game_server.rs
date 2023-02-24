@@ -52,7 +52,7 @@ pub async fn connect(
 }
 
 pub async fn handle_leave_game(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
 ) -> Result<GameResponse> {
     requests::with_player(database, data, |player| {
@@ -64,7 +64,7 @@ pub async fn handle_leave_game(
 }
 
 pub async fn handle_game_action(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &GameAction,
 ) -> Result<GameResponse> {
@@ -102,7 +102,7 @@ pub fn apply_game_action(game: &mut GameState, side: Side, action: &GameAction) 
 }
 
 pub async fn handle_gain_mana(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     _: &GainManaAction,
 ) -> Result<GameResponse> {
@@ -111,7 +111,7 @@ pub async fn handle_gain_mana(
 }
 
 pub async fn handle_draw_card(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     _: &DrawCardAction,
 ) -> Result<GameResponse> {
@@ -120,7 +120,7 @@ pub async fn handle_draw_card(
 }
 
 pub async fn handle_play_card(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &PlayCardAction,
 ) -> Result<GameResponse> {
@@ -135,7 +135,7 @@ pub async fn handle_play_card(
 }
 
 pub async fn handle_level_up_room(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &LevelUpRoomAction,
 ) -> Result<GameResponse> {
@@ -145,7 +145,7 @@ pub async fn handle_level_up_room(
 }
 
 pub async fn handle_initiate_raid(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     action: &InitiateRaidAction,
 ) -> Result<GameResponse> {
@@ -155,7 +155,7 @@ pub async fn handle_initiate_raid(
 }
 
 pub async fn handle_spend_action_point(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     _: &SpendActionPointAction,
 ) -> Result<GameResponse> {
@@ -166,7 +166,7 @@ pub async fn handle_spend_action_point(
 /// Applies a game mutation and produces a snapshot of the resulting game state
 /// to send to both players.
 pub async fn update_game(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     function: impl Fn(&mut GameState, Side) -> Result<()>,
 ) -> Result<GameResponse> {

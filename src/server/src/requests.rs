@@ -36,7 +36,7 @@ use crate::server_data::{GameResponse, RequestData};
 /// Fetches the current state of the current game from the database, applies a
 /// mutation function to it, and then writes the result back to the database.
 pub async fn with_game(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     mut fun: impl FnMut(&mut GameState) -> Result<GameResponse>,
 ) -> Result<GameResponse> {
@@ -50,7 +50,7 @@ pub async fn with_game(
 /// Fetches the current state of the current player from the database, applies a
 /// mutation function to it, and then writes the result back to the database.
 pub async fn with_player(
-    database: &mut impl Database,
+    database: &impl Database,
     data: &RequestData,
     mut fun: impl FnMut(&mut PlayerData) -> Result<GameResponse>,
 ) -> Result<GameResponse> {
