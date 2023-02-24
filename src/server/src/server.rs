@@ -24,6 +24,7 @@ pub mod server_data;
 
 use anyhow::Result;
 use dashmap::DashMap;
+use database::firestore_database::FirestoreDatabase;
 use database::sled_database::SledDatabase;
 use database::Database;
 use game_data::player_name::PlayerId;
@@ -56,7 +57,9 @@ use crate::server_data::{ClientData, GameResponse, RequestData};
 static CHANNELS: Lazy<DashMap<PlayerId, Sender<Result<CommandList, Status>>>> =
     Lazy::new(DashMap::new);
 
-pub struct GameService;
+pub struct GameService {
+    pub database: FirestoreDatabase,
+}
 
 #[tonic::async_trait]
 impl Spelldawn for GameService {

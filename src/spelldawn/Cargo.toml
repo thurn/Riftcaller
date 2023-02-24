@@ -15,6 +15,7 @@ doctest = false
 
 [dependencies]
 cards_all = { path = "../cards/cards_all", version = "0.0.0" }
+database = { path = "../database", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 server = { path = "../server", version = "0.0.0" }
 tokio = { version = "1.25.0", features = ["macros", "rt-multi-thread", "sync", "time"] }

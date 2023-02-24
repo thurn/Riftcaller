@@ -14,6 +14,7 @@
 
 //! Core database implementation, handles querying and storing game state.
 
+pub mod firestore_database;
 pub mod sled_database;
 
 use std::collections::HashMap;
