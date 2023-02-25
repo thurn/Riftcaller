@@ -264,6 +264,7 @@ async fn fetch_or_create_player(
     } else {
         let player = PlayerData::new(player_id);
         database.write_player(&player).await?;
+        info!(?player_id, "Created new player");
         player
     })
 }

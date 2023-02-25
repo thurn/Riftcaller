@@ -221,7 +221,7 @@ namespace Spelldawn.Services
       var call = _client.Value.PerformActionAsync(request);
       var task = call.GetAwaiter();
       yield return new WaitUntil(() => task.IsCompleted);
-      
+
       switch (call.GetStatus().StatusCode)
       {
         case StatusCode.OK:
@@ -231,6 +231,8 @@ namespace Spelldawn.Services
           {
             Debug.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
           }
+
+          var commands = string.Join(",", task.GetResult().Commands.Select(c => c.CommandCase));
 
           yield return _registry.CommandService.HandleCommands(task.GetResult());
           break;

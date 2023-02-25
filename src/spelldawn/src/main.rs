@@ -16,13 +16,15 @@
 
 use std::env;
 
+use database::firestore_database::FirestoreDatabase;
 use database::sled_database::SledDatabase;
+use database::Database;
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
 use server::GameService;
 use tonic::codec::CompressionEncoding;
 use tonic::transport::Server;
 use tonic_web::GrpcWebLayer;
-use tracing::{warn, Event, Level};
+use tracing::{info, warn, Event, Level};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_forest::{ForestLayer, PrettyPrinter, Tag};
 use tracing_subscriber::filter::EnvFilter;
@@ -32,6 +34,7 @@ use tracing_subscriber::Registry;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     cards_all::initialize();
+    let args = env::args().collect::<Vec<_>>();
 
     let file_appender = tracing_appender::rolling::hourly("log", "spelldawn.log");
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
@@ -39,7 +42,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let filter = if let Ok(v) = env::var("RUST_LOG") {
         EnvFilter::new(v)
     } else {
-        EnvFilter::new("debug,hyper=warn")
+        EnvFilter::new("debug,hyper=warn,h2=warn,tower=warn")
     };
     let forest_layer = ForestLayer::new(PrettyPrinter::new(), tag_parser);
 
@@ -47,9 +50,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Registry::default().with(JsonStorageLayer).with(bunyan).with(forest_layer).with(filter);
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
+    if args.len() >= 2 && args[1] == "--firestore" {
+        info!("Using firestore database");
+        start_server(FirestoreDatabase::new("spelldawn").await?).await
+    } else {
+        info!("Using sled database");
+        start_server(SledDatabase).await
+    }
+}
+
+async fn start_server(database: impl Database + 'static) -> Result<(), Box<dyn std::error::Error>> {
     let address = "0.0.0.0:80".parse().expect("valid address");
-    //let database = FirestoreDatabase::new("spelldawn").await?;
-    let database = SledDatabase;
     let server = SpelldawnServer::new(GameService { database })
         .send_compressed(CompressionEncoding::Gzip)
         .accept_compressed(CompressionEncoding::Gzip);

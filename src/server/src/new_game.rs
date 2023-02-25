@@ -95,8 +95,8 @@ pub async fn create(
     ai_agent_response::maybe_run_ai(data, &mut game, IncrementalUpdates::Skip).await?;
 
     let result = Ok(GameResponse::new(ClientData::with_game_id(data, Some(game_id)))
-        .commands(render::connect(&game, user_side)?)
-        .opponent_response(opponent_id, render::connect(&game, opponent_side)?));
+        .command(requests::force_load_scene("Game"))
+        .opponent_response(opponent_id, vec![requests::force_load_scene("Game")]));
 
     database.write_game(&game).await?;
     database.write_player(&player).await?;

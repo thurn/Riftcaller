@@ -19,7 +19,7 @@ use game_data::game::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
 use player_data::PlayerData;
-use with_error::WithError;
+use with_error::{fail, WithError};
 
 use crate::Database;
 
@@ -36,21 +36,18 @@ impl FirestoreDatabase {
 #[async_trait]
 impl Database for FirestoreDatabase {
     async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>> {
-        self.db
-            .fluent()
-            .select()
-            .by_id_in("players")
-            .obj()
-            .one(id.to_string())
-            .await
-            .with_error(|| format!("Error fetching player {id}"))
+        let res = self.db.fluent().select().by_id_in("players").obj().one(id.to_string()).await;
+        match res {
+            Ok(r) => Ok(r),
+            Err(e) => fail!("Error fetching player {:?}", e),
+        }
     }
 
     async fn write_player(&self, player: &PlayerData) -> Result<()> {
         self.db
             .fluent()
-            .insert()
-            .into("players")
+            .update()
+            .in_col("players")
             .document_id(player.id.to_string())
             .object(player)
             .execute()
@@ -72,8 +69,8 @@ impl Database for FirestoreDatabase {
     async fn write_game(&self, game: &GameState) -> Result<()> {
         self.db
             .fluent()
-            .insert()
-            .into("games")
+            .update()
+            .in_col("games")
             .document_id(game.id.to_string())
             .object(game)
             .execute()

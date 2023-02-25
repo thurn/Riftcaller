@@ -98,6 +98,14 @@ pub fn load_scene(name: impl Into<String>) -> Command {
     })
 }
 
+pub fn force_load_scene(name: impl Into<String>) -> Command {
+    Command::LoadScene(LoadSceneCommand {
+        scene_name: name.into(),
+        mode: SceneLoadMode::Single.into(),
+        skip_if_current: false,
+    })
+}
+
 pub async fn add_panels(
     database: &impl Database,
     player_id: PlayerId,

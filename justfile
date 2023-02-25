@@ -11,6 +11,9 @@ build:
 run:
     cargo run --bin spelldawn
 
+run-firestore:
+    cargo run --bin spelldawn -- --firestore
+
 test:
     cargo test
 
@@ -236,6 +239,9 @@ fix: git-status fmt clippy-fix fix-lints
 
 watch:
     cargo watch -c -w src -x run
+
+watch-firestore:
+    cargo watch -c -w src -x run -- --firestore
 
 fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 

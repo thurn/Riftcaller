@@ -16,7 +16,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Spelldawn.Assets;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
@@ -67,6 +66,12 @@ namespace Spelldawn.Services
     {
       SetMetadata(commandList.Metadata);
       _registry.AnalyticsService.SetMetadata(commandList.LoggingMetadata);
+
+      if (commandList.Commands.Count == 0)
+      {
+        onComplete?.Invoke();
+        yield break;
+      }
       
       if (commandList.Commands.Any(c => c.CommandCase == GameCommand.CommandOneofCase.UpdateGameView))
       {
@@ -75,6 +80,9 @@ namespace Spelldawn.Services
       }
 
       yield return _registry.AssetService.LoadAssets(commandList);
+
+      var names = string.Join(",", commandList.Commands.Select(c => c.CommandCase));
+      Debug.Log($"Handling Commands: {names}");
 
       foreach (var command in commandList.Commands)
       {
