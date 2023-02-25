@@ -38,7 +38,7 @@ namespace Spelldawn.Services
   public sealed class ActionService : MonoBehaviour
   {
     const string LocalServerAddress = "http://localhost";
-    const string ProductionServerAddress = "http://trunk.spelldawn.com";
+    const string ProductionServerAddress = "https://spelldawn-zs4r5i5clq-uc.a.run.app"; 
 
     static string ServerAddress() =>
       UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress;
@@ -49,7 +49,7 @@ namespace Spelldawn.Services
         new GrpcChannelOptions
         {
           HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
-          Credentials = ChannelCredentials.Insecure,
+          Credentials = ChannelCredentials.SecureSsl,
           CompressionProviders = new List<ICompressionProvider>
           {
             new GzipCompressionProvider(CompressionLevel.Optimal)
@@ -215,7 +215,7 @@ namespace Spelldawn.Services
       }
       else if (!NoNetworkDelay.ShouldRemoveNetworkDelay)
       {
-        yield return new WaitForSeconds(Random.Range(0f, 0.5f));
+        yield return new WaitForSeconds(Random.Range(0.25f, 0.75f));
       }
 
       var call = _client.Value.PerformActionAsync(request);

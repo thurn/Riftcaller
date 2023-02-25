@@ -24,7 +24,7 @@ use server::GameService;
 use tonic::codec::CompressionEncoding;
 use tonic::transport::Server;
 use tonic_web::GrpcWebLayer;
-use tracing::{info, warn, Event, Level};
+use tracing::{warn, Event, Level};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_forest::{ForestLayer, PrettyPrinter, Tag};
 use tracing_subscriber::filter::EnvFilter;
@@ -51,21 +51,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
     if args.len() >= 2 && args[1] == "--firestore" {
-        info!("Using firestore database");
-        start_server(FirestoreDatabase::new("spelldawn").await?).await
+        start_server(FirestoreDatabase::new("spelldawn").await?, "firestore").await
     } else {
-        info!("Using sled database");
-        start_server(SledDatabase).await
+        start_server(SledDatabase, "sled").await
     }
 }
 
-async fn start_server(database: impl Database + 'static) -> Result<(), Box<dyn std::error::Error>> {
+async fn start_server(
+    database: impl Database + 'static,
+    db_name: impl Into<String>,
+) -> Result<(), Box<dyn std::error::Error>> {
     let address = "0.0.0.0:80".parse().expect("valid address");
     let server = SpelldawnServer::new(GameService { database })
         .send_compressed(CompressionEncoding::Gzip)
         .accept_compressed(CompressionEncoding::Gzip);
 
-    warn!("Server listening on {}", address);
+    warn!("Server listening on {} with {} database", address, db_name.into());
     Server::builder()
         .trace_fn(|_| tracing::info_span!(">>>"))
         .accept_http1(true)

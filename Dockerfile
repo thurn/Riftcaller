@@ -1,4 +1,4 @@
-FROM rust:1.65-bullseye
+FROM rust:1.67-bullseye
 
 WORKDIR /usr/src/spelldawn
 COPY src src
@@ -10,6 +10,6 @@ COPY Cargo.lock Cargo.lock
 RUN apt-get update && apt-get install -y cmake && rm -rf /var/lib/apt/lists/*
 RUN cargo install --path src/spelldawn
 
-CMD ["spelldawn"]
+CMD ["spelldawn", "--firestore"]
 
 EXPOSE 80
