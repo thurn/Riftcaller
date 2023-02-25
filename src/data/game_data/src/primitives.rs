@@ -66,7 +66,7 @@ impl GameId {
 
 impl fmt::Debug for GameId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0.to_string().to_ascii_lowercase())
+        write!(f, "{}", self.0.to_string())
     }
 }
 
@@ -100,7 +100,7 @@ impl AdventureId {
 
 impl fmt::Debug for AdventureId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0.to_string().to_ascii_lowercase())
+        write!(f, "{}", self.0.to_string())
     }
 }
 

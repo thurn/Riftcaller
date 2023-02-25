@@ -81,7 +81,7 @@ pub fn render_adventure_choice_screen(
             address: PlayerPanel::AdventureOver.into(),
         },
         AdventureChoiceScreen::Draft(position) => {
-            let TileEntity::Draft { data, .. } = state.tile_entity(*position)? else {
+            let TileEntity::Draft(_, data) = state.tile_entity(*position)? else {
                 fail!("Expected draft at indicated position")
             };
 
@@ -149,8 +149,8 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
 
 fn visit_action_for_entity(entity: &TileEntity, position: TilePosition) -> Panels {
     let result = match entity {
-        TileEntity::Shop { data } if data.visited => Panels::open(PlayerPanel::Shop(position)),
-        TileEntity::Shop { .. } => Panels::open(PlayerPanel::TilePrompt(position))
+        TileEntity::Shop(data) if data.visited => Panels::open(PlayerPanel::Shop(position)),
+        TileEntity::Shop(_) => Panels::open(PlayerPanel::TilePrompt(position))
             .action(AdventureAction::VisitShop(position)),
         _ => Panels::open(PlayerPanel::TilePrompt(position)),
     };

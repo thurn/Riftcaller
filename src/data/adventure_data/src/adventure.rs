@@ -13,6 +13,8 @@
 // limitations under the License.
 
 use std::collections::{HashMap, HashSet};
+use std::fmt::{self, Display, Formatter};
+use std::str::FromStr;
 
 use anyhow::Result;
 use derive_more::{
@@ -27,8 +29,8 @@ use rand::prelude::IteratorRandom;
 use rand::Rng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
-use with_error::WithError;
+use serde_with::{serde_as, DisplayFromStr};
+use with_error::{fail, WithError};
 
 /// Identifies a set of tiles which can be revealed via the 'explore' action.
 pub type RegionId = u32;
@@ -70,6 +72,25 @@ pub struct TilePosition {
     pub y: i32,
 }
 
+impl FromStr for TilePosition {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        let vec = s.split(',').collect::<Vec<_>>();
+        if vec.len() == 2 {
+            Ok(TilePosition { x: vec[0].parse::<i32>()?, y: vec[1].parse::<i32>()? })
+        } else {
+            fail!("Expected exactly one ',' character")
+        }
+    }
+}
+
+impl Display for TilePosition {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{},{}", self.x, self.y)
+    }
+}
+
 impl TilePosition {
     pub fn new(x: i32, y: i32) -> Self {
         Self { x, y }
@@ -101,9 +122,9 @@ pub struct ShopData {
 /// icons
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TileEntity {
-    Explore { region: RegionId, cost: Coins },
-    Draft { cost: Coins, data: DraftData },
-    Shop { data: ShopData },
+    Explore(RegionId, Coins),
+    Draft(Coins, DraftData),
+    Shop(ShopData),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -197,7 +218,7 @@ pub struct AdventureState {
     /// Currently active mandatory choice screen, if any.
     pub choice_screen: Option<AdventureChoiceScreen>,
     /// States of world map tiles
-    #[serde_as(as = "Vec<(_, _)>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub tiles: HashMap<TilePosition, TileState>,
     /// Regions which the player can currently see. By default Region 1 is
     /// revealed.
@@ -206,7 +227,7 @@ pub struct AdventureState {
     pub deck: Deck,
     /// Cards collected by this player during this adventure, inclusive of cards
     /// in `deck` and cards not currently being used.
-    #[serde_as(as = "Vec<(_, _)>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub collection: HashMap<CardName, u32>,
     /// Customization options for this adventure
     pub config: AdventureConfiguration,

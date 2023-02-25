@@ -45,7 +45,7 @@ impl PlayerId {
 impl fmt::Debug for PlayerId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            PlayerId::Database(id) => write!(f, "{}", id.to_string().to_ascii_lowercase()),
+            PlayerId::Database(id) => write!(f, "{}", id.to_string()),
             PlayerId::Named(name) => write!(f, "{}", name),
         }
     }

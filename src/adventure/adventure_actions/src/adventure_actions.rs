@@ -43,7 +43,7 @@ fn handle_explore(state: &mut AdventureState, position: TilePosition) -> Result<
     verify_revealed(state, position)?;
 
     let (region, cost) = match state.tile_entity(position)? {
-        TileEntity::Explore { region, cost } => (*region, *cost),
+        TileEntity::Explore(region, cost) => (*region, *cost),
         _ => fail!("Expected explore entity"),
     };
 
@@ -59,7 +59,7 @@ fn handle_initiate_draft(state: &mut AdventureState, position: TilePosition) -> 
     verify_revealed(state, position)?;
 
     let cost = match state.tile_entity(position)? {
-        TileEntity::Draft { cost, .. } => *cost,
+        TileEntity::Draft(cost, _) => *cost,
         _ => fail!("Expected explore entity"),
     };
 
@@ -74,7 +74,7 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
         fail!("No active draft!");
     };
 
-    let TileEntity::Draft { data, ..} = state.tile_entity(*position)? else {
+    let TileEntity::Draft(_, data) = state.tile_entity(*position)? else {
         fail!("Invalid draft position");
     };
 
@@ -92,7 +92,7 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
 }
 
 fn handle_visit_shop(state: &mut AdventureState, position: TilePosition) -> Result<()> {
-    let TileEntity::Shop { data } = state.tile_entity_mut(position)? else {
+    let TileEntity::Shop(data) = state.tile_entity_mut(position)? else {
         fail!("Expected shop entity")
     };
 
@@ -101,7 +101,7 @@ fn handle_visit_shop(state: &mut AdventureState, position: TilePosition) -> Resu
 }
 
 fn handle_buy_card(state: &mut AdventureState, position: TilePosition, index: usize) -> Result<()> {
-    let TileEntity::Shop { data } = state.tile_entity_mut(position)? else {
+    let TileEntity::Shop(data) = state.tile_entity_mut(position)? else {
         fail!("Expected shop entity")
     };
 

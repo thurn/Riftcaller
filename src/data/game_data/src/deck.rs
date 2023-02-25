@@ -18,7 +18,7 @@ use std::collections::HashMap;
 use std::iter;
 
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
+use serde_with::{serde_as, DisplayFromStr};
 
 use crate::card_name::CardName;
 use crate::primitives::{School, Side};
@@ -34,7 +34,7 @@ pub struct Deck {
     /// Leader card for this deck, if any
     pub leader: Option<CardName>,
     /// How many (non-leader) cards with each name are present in this deck?
-    #[serde_as(as = "Vec<(_, _)>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub cards: HashMap<CardName, u32>,
 }
 

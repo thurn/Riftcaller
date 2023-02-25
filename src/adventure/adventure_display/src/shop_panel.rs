@@ -42,7 +42,7 @@ pub struct ShopPanel<'a> {
 
 impl<'a> ShopPanel<'a> {
     pub fn new(player: &'a PlayerData, position: TilePosition) -> Result<Self> {
-        let TileEntity::Shop { data } = player.adventure()?.tile_entity(position)? else {
+        let TileEntity::Shop(data) = player.adventure()?.tile_entity(position)? else {
             fail!("Expected shop entity")
         };
 

@@ -14,7 +14,6 @@
 
 use anyhow::Result;
 use database::Database;
-use display::render;
 use game_data::deck::Deck;
 use game_data::game::{GameConfiguration, GameState};
 use game_data::player_name::{NamedPlayer, PlayerId};

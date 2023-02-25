@@ -68,17 +68,15 @@ fn test_buy_card() {
 
 fn config() -> TestConfig {
     TestConfig {
-        draft: Some(TileEntity::Shop {
-            data: ShopData {
-                visited: false,
-                choices: vec![CardChoice {
-                    quantity: 2,
-                    card: EXAMPLE_CARD,
-                    cost: BUY_COST,
-                    sold: false,
-                }],
-            },
-        }),
+        draft: Some(TileEntity::Shop(ShopData {
+            visited: false,
+            choices: vec![CardChoice {
+                quantity: 2,
+                card: EXAMPLE_CARD,
+                cost: BUY_COST,
+                sold: false,
+            }],
+        })),
         ..TestConfig::default()
     }
 }

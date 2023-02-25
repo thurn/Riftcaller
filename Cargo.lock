@@ -1161,6 +1161,7 @@ dependencies = [
  "rand_xoshiro",
  "serde",
  "serde_with",
+ "strum",
  "strum_macros",
  "ulid",
  "with_error",
@@ -2681,6 +2682,12 @@ checksum = "2ccdc5c4c1178a0331f79c58b515577e525d4b658bdea0b55a497ad08bacaf75"
 dependencies = [
  "convert_case 0.6.0",
 ]
+
+[[package]]
+name = "strum"
+version = "0.24.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "063e6045c0e62079840579a7e47a355ae92f60eb74daaf156fb1e84ba164e63f"
 
 [[package]]
 name = "strum_macros"

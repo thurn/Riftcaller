@@ -60,9 +60,9 @@ fn test_pick_card() {
 
 fn config() -> TestConfig {
     TestConfig {
-        draft: Some(TileEntity::Draft {
-            cost: DRAFT_COST,
-            data: DraftData {
+        draft: Some(TileEntity::Draft(
+            DRAFT_COST,
+            DraftData {
                 choices: vec![CardChoice {
                     quantity: 2,
                     card: EXAMPLE_CARD,
@@ -70,7 +70,7 @@ fn config() -> TestConfig {
                     sold: false,
                 }],
             },
-        }),
+        )),
         ..TestConfig::default()
     }
 }

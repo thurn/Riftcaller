@@ -47,8 +47,5 @@ fn test_invoke_explore() {
 }
 
 fn config() -> TestConfig {
-    TestConfig {
-        explore: Some(TileEntity::Explore { region: 2, cost: Coins(100) }),
-        ..TestConfig::default()
-    }
+    TestConfig { explore: Some(TileEntity::Explore(2, Coins(100))), ..TestConfig::default() }
 }

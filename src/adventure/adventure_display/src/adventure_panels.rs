@@ -43,9 +43,9 @@ pub fn render_tile_prompt_panel(
     };
 
     Ok(match entity {
-        TileEntity::Explore { cost, .. } => ExplorePanel { cost: *cost, position }.build_panel(),
-        TileEntity::Draft { cost, .. } => DraftPromptPanel { cost: *cost, position }.build_panel(),
-        TileEntity::Shop { .. } => ShopPromptPanel { position }.build_panel(),
+        TileEntity::Explore(_, cost) => ExplorePanel { cost: *cost, position }.build_panel(),
+        TileEntity::Draft(cost, _) => DraftPromptPanel { cost: *cost, position }.build_panel(),
+        TileEntity::Shop(_) => ShopPromptPanel { position }.build_panel(),
     })
 }
 
