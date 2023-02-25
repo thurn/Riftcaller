@@ -49,24 +49,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let subscriber =
         Registry::default().with(JsonStorageLayer).with(bunyan).with(forest_layer).with(filter);
     tracing::subscriber::set_global_default(subscriber).unwrap();
+    let version = if args.len() >= 3 { &args[2] } else { "unspecified" };
+    let port = env::var("PORT").unwrap_or_else(|_| "80".to_string());
 
-    if args.len() >= 2 && args[1] == "--firestore" {
-        start_server(FirestoreDatabase::new("spelldawn").await?, "firestore").await
+    if args.len() >= 2 && args[1].contains("firestore") {
+        start_server(version, port, FirestoreDatabase::new("spelldawn").await?, "firestore").await
     } else {
-        start_server(SledDatabase, "sled").await
+        start_server(version, port, SledDatabase, "sled").await
     }
 }
 
 async fn start_server(
+    version: impl Into<String>,
+    port: impl Into<String>,
     database: impl Database + 'static,
     db_name: impl Into<String>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let address = "0.0.0.0:80".parse().expect("valid address");
+    let address = format!("0.0.0.0:{}", port.into()).parse().expect("valid address");
     let server = SpelldawnServer::new(GameService { database })
         .send_compressed(CompressionEncoding::Gzip)
         .accept_compressed(CompressionEncoding::Gzip);
 
-    warn!("Server listening on {} with {} database", address, db_name.into());
+    warn!(
+        "Server version '{}' listening on '{}' with '{}' database",
+        version.into(),
+        address,
+        db_name.into()
+    );
+
     Server::builder()
         .trace_fn(|_| tracing::info_span!(">>>"))
         .accept_http1(true)

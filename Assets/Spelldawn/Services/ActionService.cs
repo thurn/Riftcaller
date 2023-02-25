@@ -213,7 +213,7 @@ namespace Spelldawn.Services
       {
         yield return new WaitForSeconds(5f);
       }
-      else if (!NoNetworkDelay.ShouldRemoveNetworkDelay)
+      else if (!NoNetworkDelay.ShouldRemoveNetworkDelay && !UseProductionServer.ShouldUseProductionServer)
       {
         yield return new WaitForSeconds(Random.Range(0.25f, 0.75f));
       }

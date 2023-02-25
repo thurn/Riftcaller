@@ -9,10 +9,10 @@ build:
     cargo build --all-targets --all-features
 
 run:
-    cargo run --bin spelldawn
+    cargo run --bin spelldawn -- sled local
 
 run-firestore:
-    cargo run --bin spelldawn -- --firestore
+    cargo run --bin spelldawn -- firestore local
 
 test:
     cargo test
@@ -29,8 +29,11 @@ docker-run:
     docker run -it --rm -p 50052:50052 --name spelldawn spelldawn
 
 # Submit docker build to Google Cloud Build
-cloud-build:
-    gcloud builds submit --region=us-central1 --config cloudbuild.yaml
+cloud-build: git-status
+    #!/usr/bin/env sh
+    set -euxo pipefail
+    SHA=`git rev-parse --short HEAD`
+    gcloud builds submit --region=us-central1 --config cloudbuild.yaml --substitutions=SHORT_SHA=${SHA}
 
 # Updates current google cloud image
 cloud-update:
@@ -238,10 +241,10 @@ doc:
 fix: git-status fmt clippy-fix fix-lints
 
 watch:
-    cargo watch -c -w src -x run
+    cargo watch -c -w src -x run -- sled local
 
 watch-firestore:
-    cargo watch -c -w src -x run -- --firestore
+    cargo watch -c -w src -x run -- --firestore local
 
 fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 

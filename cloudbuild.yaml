@@ -1,5 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:latest', '.' ]
+  args: [ 'build', "--build-arg", "SDVERSION=$SHORT_SHA", '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:latest', '.' ]
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:latest'
