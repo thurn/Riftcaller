@@ -1,20 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', "--build-arg", "SDVERSION=$SHORT_SHA", '-t', 'gcr.io/$PROJECT_ID/spelldawn', '.' ]
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/spelldawn']
-
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
-  args:
-   - 'run'
-   - 'deploy'
-   - 'spelldawn'
-   - '--image'
-   - 'gcr.io/$PROJECT_ID/spelldawn'
-   - '--region'
-   - 'us-central1'
+  args: [ 'build', "--build-arg", "SDVERSION=$SHORT_SHA", '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA', '.' ]
 
 images:
-- 'gcr.io/$PROJECT_ID/spelldawn'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA'
