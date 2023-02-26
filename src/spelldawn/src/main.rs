@@ -72,7 +72,7 @@ async fn start_server(
 
     warn!(
         "{} server version '{}' listening on '{}' with '{}' database",
-        if cfg!(debug_assertions) { "Debug " } else { "Release" },
+        if cfg!(debug_assertions) { "Debug" } else { "Release" },
         version.into(),
         address,
         db_name.into()
