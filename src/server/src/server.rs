@@ -228,20 +228,28 @@ async fn handle_fetch_panel(
 pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
     if let Some((player_id, commands)) = response {
         if let Some(channel) = CHANNELS.get(&player_id) {
-            if channel.send(Ok(commands)).await.is_err() {
+            if let Err(e) = channel.send(Ok(commands)).await {
                 // This returns SendError if the client is disconnected, which isn't a
                 // huge problem. Hopefully they will reconnect again in the future.
-                info!(?player_id, "Client is disconnected");
+                warn!(?player_id, "Unable to send to player: {e:?}");
             }
+        } else {
+            warn!(?player_id, "Player is not connected to this instance");
         }
     }
 }
 
 /// Sends an error response to a connected player
 pub async fn send_player_error(player_id: PlayerId, error: &anyhow::Error) {
-    let Some(channel) = CHANNELS.get(&player_id) else { return };
-    // Error sending the error! Oh well.
-    let _ = channel.send(Err(Status::internal(format!("Error running agent {error}")))).await;
+    let Some(channel) = CHANNELS.get(&player_id) else {
+        warn!(?player_id, "Player is not connected");
+        return
+    };
+    if let Err(e) =
+        channel.send(Err(Status::internal(format!("Error running agent {error}")))).await
+    {
+        warn!("Unable to send error to player: {e:?}")
+    }
 }
 
 fn parse_client_id(player_id: Option<&PlayerIdentifier>) -> Result<PlayerId, Status> {

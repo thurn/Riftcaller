@@ -46,30 +46,40 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
-    // let file_appender = tracing_appender::rolling::hourly("log",
-    // "spelldawn.log");
-    //let (non_blocking, _guard) =
-    //tracing_appender::non_blocking(file_appender);
-
-    let stackdriver = tracing_stackdriver::layer()
-        .enable_cloud_trace(CloudTraceConfiguration { project_id: "spelldawn".to_string() });
-
     let filter = if let Ok(v) = env::var("RUST_LOG") {
         EnvFilter::new(v)
     } else {
         EnvFilter::new("debug,hyper=warn,h2=warn,tower=warn")
     };
-    let forest_layer = ForestLayer::new(PrettyPrinter::new(), tag_parser);
 
-    let subscriber = Registry::default().with(stackdriver).with(forest_layer).with(filter);
-    tracing::subscriber::set_global_default(subscriber).unwrap();
     let version = if args.len() >= 3 { &args[2] } else { "unspecified" };
+
+    let logging = if args.len() >= 4 && args[3].contains("stackdriver") {
+        let stackdriver = tracing_stackdriver::layer()
+            .enable_cloud_trace(CloudTraceConfiguration { project_id: "spelldawn".to_string() });
+        let subscriber = Registry::default().with(stackdriver).with(filter);
+        tracing::subscriber::set_global_default(subscriber).unwrap();
+        "stackdriver"
+    } else {
+        let forest_layer = ForestLayer::new(PrettyPrinter::new(), tag_parser);
+        let subscriber = Registry::default().with(forest_layer).with(filter);
+        tracing::subscriber::set_global_default(subscriber).unwrap();
+        "tracing-forest"
+    };
+
     let port = env::var("PORT").unwrap_or_else(|_| "80".to_string());
 
     if args.len() >= 2 && args[1].contains("firestore") {
-        start_server(version, port, FirestoreDatabase::new("spelldawn").await?, "firestore").await
+        start_server(
+            version,
+            port,
+            FirestoreDatabase::new("spelldawn").await?,
+            "firestore",
+            logging,
+        )
+        .await
     } else {
-        start_server(version, port, SledDatabase, "sled").await
+        start_server(version, port, SledDatabase, "sled", logging).await
     }
 }
 
@@ -78,6 +88,7 @@ async fn start_server(
     port: impl Into<String>,
     database: impl Database + 'static,
     db_name: impl Into<String>,
+    logging: impl Into<String>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let address = format!("0.0.0.0:{}", port.into()).parse().expect("valid address");
     let server = SpelldawnServer::new(GameService { database })
@@ -85,11 +96,12 @@ async fn start_server(
         .accept_compressed(CompressionEncoding::Gzip);
 
     warn!(
-        "{} server version '{}' listening on '{}' with '{}' database",
+        "{} server version '{}' listening on '{}' with '{}' database and '{}' logging",
         if cfg!(debug_assertions) { "Debug" } else { "Release" },
         version.into(),
         address,
-        db_name.into()
+        db_name.into(),
+        logging.into()
     );
 
     Server::builder()

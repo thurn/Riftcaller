@@ -43,7 +43,7 @@ use game_data::primitives::{GameId, Milliseconds, Side};
 use game_data::updates::{UpdateTracker, Updates};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::DelayCommand;
-use tracing::{error, info, info_span, subscriber, Instrument, Level};
+use tracing::{debug, error, info, info_span, subscriber, Instrument, Level};
 use tutorial::tutorial_actions;
 use with_error::WithError;
 
@@ -155,6 +155,7 @@ async fn send_snapshot_to_player(
         }
     }
     let commands = response.commands(rendered).build().user_response;
+    debug!(?player_id, ?game.id, "Sending incremental AI response to player");
     crate::send_player_response(Some((player_id, commands))).await;
     Ok(())
 }

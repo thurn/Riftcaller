@@ -24,7 +24,7 @@ use protos::spelldawn::{
     DrawCardAction, GainManaAction, InitiateRaidAction, LevelUpRoomAction, PlayCardAction,
     SpendActionPointAction,
 };
-use tracing::info;
+use tracing::{debug, info};
 use tutorial::tutorial_actions;
 use with_error::WithError;
 
@@ -75,7 +75,8 @@ pub async fn handle_game_action(
     let ran_agent =
         ai_agent_response::maybe_run_ai(data, &mut game, IncrementalUpdates::Send).await?;
 
-    let mut result = if ran_agent {
+    let result = if ran_agent {
+        debug!("AI connected, sending empty response");
         // In order to avoid a race between incremental updates and the server
         // response, we send an empty response when an AI opponent is playing.
         GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
@@ -84,12 +85,13 @@ pub async fn handle_game_action(
         let opponent_id = game.player(user_side.opponent()).id;
         let opponent_commands = render::render_updates(&game, user_side.opponent())?;
 
-        GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
+        let mut result = GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
             .commands(user_result)
-            .opponent_response(opponent_id, opponent_commands)
+            .opponent_response(opponent_id, opponent_commands);
+        requests::add_panels(database, data.player_id, None, &mut result).await?;
+        result
     };
 
-    requests::add_panels(database, data.player_id, None, &mut result).await?;
     database.write_game(&game).await?;
     Ok(result)
 }

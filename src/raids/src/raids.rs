@@ -145,7 +145,7 @@ pub fn current_prompt(game: &GameState, user_side: Side) -> Result<Option<GamePr
     }
 }
 
-/// Sets the gam eto a new raid phase and invokes callbacks as needed.
+/// Sets the game to a new raid phase and invokes callbacks as needed.
 fn enter_phase(game: &mut GameState, mut phase: Option<InternalRaidPhase>) -> Result<()> {
     loop {
         if let Some(s) = phase {

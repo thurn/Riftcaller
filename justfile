@@ -9,10 +9,10 @@ build:
     cargo build --all-targets --all-features
 
 run:
-    cargo run --bin spelldawn -- sled local
+    cargo run --bin spelldawn -- sled local forest
 
 run-firestore:
-    cargo run --bin spelldawn -- firestore local
+    cargo run --bin spelldawn -- firestore local forest
 
 test:
     cargo test
@@ -241,10 +241,10 @@ doc:
 fix: git-status fmt clippy-fix fix-lints
 
 watch:
-    cargo watch -c -w src -x run -- sled local
+    cargo watch -c -w src -x run -- sled local forest
 
 watch-firestore:
-    cargo watch -c -w src -x run -- --firestore local
+    cargo watch -c -w src -x run -- --firestore local forest
 
 fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 
