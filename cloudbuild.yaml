@@ -5,5 +5,16 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA']
 
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+   - 'run'
+   - 'deploy'
+   - 'spelldawn'
+   - '--image'
+   - 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA'
+   - '--region'
+   - 'us-central1'
+
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA'
