@@ -19,7 +19,7 @@ use display::render;
 use game_data::game::GameState;
 use game_data::game_actions::{self, GameAction};
 use game_data::primitives::{GameId, Side};
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::{
     DrawCardAction, GainManaAction, InitiateRaidAction, LevelUpRoomAction, PlayCardAction,
     SpendActionPointAction,
@@ -34,7 +34,7 @@ use crate::{ai_agent_response, requests};
 
 pub async fn connect(
     database: &impl Database,
-    player: &PlayerData,
+    player: &PlayerState,
     game_id: GameId,
 ) -> Result<GameResponse> {
     let game = requests::fetch_game(database, Some(game_id)).await?;

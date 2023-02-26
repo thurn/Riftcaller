@@ -47,7 +47,7 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
         user: Some(player_view(game, builder.user_side)?),
         opponent: Some(player_view(game, builder.user_side.opponent())?),
         cards: cards?,
-        raid_active: game.data.raid.is_some(),
+        raid_active: game.info.raid.is_some(),
         game_object_positions: Some(positions::game_object_positions(builder, game)?),
         main_controls: if builder.state.is_final_update {
             // Only include controls on final update to ensure interface doesn't show
@@ -58,7 +58,7 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
         },
         tutorial_effects: if builder.state.is_final_update {
             // Likewise hide tutorial updates while animating
-            tutorial_display::render(builder, &game.data.tutorial_state)
+            tutorial_display::render(builder, &game.info.tutorial_state)
         } else {
             vec![]
         },

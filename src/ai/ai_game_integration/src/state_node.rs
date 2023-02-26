@@ -47,7 +47,7 @@ impl GameStateNode for SpelldawnState {
     }
 
     fn status(&self) -> GameStatus<Side> {
-        match self.data.phase {
+        match self.info.phase {
             GamePhase::GameOver { winner } => GameStatus::Completed { winner },
             _ => {
                 if actions::can_take_action(self, Side::Overlord) {

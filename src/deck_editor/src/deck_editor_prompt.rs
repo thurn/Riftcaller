@@ -21,12 +21,12 @@ use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
 use game_data::primitives::DeckId;
 use panel_address::{DeckEditorData, Panel, PanelAddress, PlayerPanel, StandardPanel};
-use player_data::PlayerData;
+use player_data::PlayerState;
 use screen_overlay::ScreenOverlay;
 use user_action_data::DeckEditorAction;
 
 pub struct DeckEditorPromptPanel<'a> {
-    pub player: &'a PlayerData,
+    pub player: &'a PlayerState,
 }
 
 impl<'a> Panel for DeckEditorPromptPanel<'a> {

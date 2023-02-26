@@ -33,7 +33,7 @@ use crate::{dispatch, mana, queries};
 /// Returns whether a player can currently make a mulligan decision
 pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
     matches!(
-        &game.data.phase, GamePhase::ResolveMulligans(mulligan) if mulligan.decision(side).is_none()
+        &game.info.phase, GamePhase::ResolveMulligans(mulligan) if mulligan.decision(side).is_none()
     )
 }
 
@@ -216,7 +216,7 @@ pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: Room
     let non_empty = room_id.is_inner_room() || game.occupants(room_id).next().is_some();
     let can_initiate = non_empty
         && side == Side::Champion
-        && game.data.raid.is_none()
+        && game.info.raid.is_none()
         && in_main_phase(game, side);
     dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(can_initiate)).into()
 }
@@ -244,7 +244,7 @@ pub fn can_level_up_card(game: &GameState, card_id: CardId) -> bool {
 
 /// Whether the indicated card entered play this turn
 pub fn entered_play_this_turn(game: &GameState, card_id: CardId) -> bool {
-    game.card(card_id).data.last_entered_play == Some(game.data.turn)
+    game.card(card_id).data.last_entered_play == Some(game.info.turn)
 }
 
 /// Whether the provided `source` card is able to target the `target` card with
@@ -295,9 +295,9 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
 /// with no pending prompt responses, and thus can take a primary game action.
 pub fn in_main_phase(game: &GameState, side: Side) -> bool {
     game.player(side).actions > 0
-        && matches!(&game.data.phase, GamePhase::Play)
-        && game.data.turn.side == side
-        && game.data.raid.is_none()
+        && matches!(&game.info.phase, GamePhase::Play)
+        && game.info.turn.side == side
+        && game.info.raid.is_none()
         && game.overlord.prompt.is_none()
         && game.champion.prompt.is_none()
 }

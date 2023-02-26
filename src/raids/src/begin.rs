@@ -48,7 +48,7 @@ impl RaidPhaseImpl for BeginPhase {
             }),
         )?;
 
-        if game.data.raid.is_none() {
+        if game.info.raid.is_none() {
             return Ok(None);
         }
 

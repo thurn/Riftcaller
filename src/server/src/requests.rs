@@ -20,7 +20,7 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
 use game_data::updates::{UpdateTracker, Updates};
 use panel_address::PanelAddress;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     LoadSceneCommand, RenderScreenOverlayCommand, SceneLoadMode, UpdatePanelsCommand,
@@ -52,7 +52,7 @@ pub async fn with_game(
 pub async fn with_player(
     database: &impl Database,
     data: &RequestData,
-    mut fun: impl FnMut(&mut PlayerData) -> Result<GameResponse>,
+    mut fun: impl FnMut(&mut PlayerState) -> Result<GameResponse>,
 ) -> Result<GameResponse> {
     let mut player = fetch_player(database, data.player_id).await?;
     let mut result = fun(&mut player)?;
@@ -64,7 +64,7 @@ pub async fn with_player(
 
 /// Looks up a player by ID in the database. Prefer to use [with_player] if
 /// possible.
-pub async fn fetch_player(database: &impl Database, player_id: PlayerId) -> Result<PlayerData> {
+pub async fn fetch_player(database: &impl Database, player_id: PlayerId) -> Result<PlayerState> {
     database.fetch_player(player_id).await?.with_error(|| format!("Player not found {player_id}"))
 }
 
@@ -74,7 +74,7 @@ pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Re
     let id = game_id.with_error(|| "Expected GameId to be included with client request")?;
     let mut game = database.fetch_game(id).await?.with_error(|| format!("Game not found {id}"))?;
     dispatch::populate_delegate_cache(&mut game);
-    game.updates = UpdateTracker::new(if game.data.config.simulation {
+    game.updates = UpdateTracker::new(if game.info.config.simulation {
         Updates::Ignore
     } else {
         Updates::Push
@@ -83,7 +83,7 @@ pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Re
 }
 
 /// Builds a command to update the screen overlay (UI chrome)
-pub fn update_screen_overlay(player: &PlayerData) -> Command {
+pub fn update_screen_overlay(player: &PlayerState) -> Command {
     Command::RenderScreenOverlay(RenderScreenOverlayCommand {
         node: ScreenOverlay::new(player).build(),
     })
@@ -109,7 +109,7 @@ pub fn force_load_scene(name: impl Into<String>) -> Command {
 pub async fn add_panels(
     database: &impl Database,
     player_id: PlayerId,
-    player: Option<&PlayerData>,
+    player: Option<&PlayerState>,
     response: &mut GameResponse,
 ) -> Result<()> {
     // Currently we unconditionally include all panels with every response. This
@@ -136,7 +136,7 @@ pub async fn add_panels(
 pub async fn fetch_panels(
     database: &impl Database,
     player_id: PlayerId,
-    player: Option<&PlayerData>,
+    player: Option<&PlayerState>,
     panels: &[PanelAddress],
 ) -> Result<Option<Command>> {
     if panels.is_empty() {
@@ -179,8 +179,8 @@ pub async fn fetch_panels(
 async fn fetch_player_if_needed(
     database: &impl Database,
     player_id: PlayerId,
-    player: Option<&PlayerData>,
-    mut fun: impl FnMut(&PlayerData) -> Result<()>,
+    player: Option<&PlayerState>,
+    mut fun: impl FnMut(&PlayerState) -> Result<()>,
 ) -> Result<()> {
     match player {
         Some(p) => fun(p),

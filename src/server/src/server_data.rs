@@ -14,7 +14,7 @@
 
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{AdventureId, GameId};
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientMetadata, CommandList, GameCommand};
 use serde::{Deserialize, Serialize};
@@ -151,7 +151,7 @@ fn parse_ulid(s: &str) -> anyhow::Result<Ulid> {
 
 /// Describes player data for an oppposing player in a game.
 pub enum OpponentData {
-    HumanPlayer(Box<PlayerData>),
+    HumanPlayer(Box<PlayerState>),
     NamedPlayer(NamedPlayer),
 }
 

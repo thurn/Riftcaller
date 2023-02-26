@@ -35,11 +35,11 @@ use with_error::{fail, WithError};
 /// taken, applied by `handle_triggered_action`.
 pub fn handle_game_action(game: &mut GameState, action: Option<&GameAction>) -> Result<()> {
     if action.is_some() {
-        game.data.tutorial_state.display.retain(|display| display.recurring());
+        game.info.tutorial_state.display.retain(|display| display.recurring());
     }
 
-    if game.data.config.scripted_tutorial
-        && game.data.tutorial_state.index < crate::SEQUENCE.steps.len()
+    if game.info.config.scripted_tutorial
+        && game.info.tutorial_state.index < crate::SEQUENCE.steps.len()
     {
         handle_sequence_game_action(game, action)?;
     }
@@ -55,7 +55,7 @@ pub fn handle_sequence_game_action(
     mut user_action: Option<&GameAction>,
 ) -> Result<()> {
     let _span = debug_span!("handle_sequence_game_action").entered();
-    let mut i = game.data.tutorial_state.index;
+    let mut i = game.info.tutorial_state.index;
 
     while i < crate::SEQUENCE.steps.len() {
         let action = &crate::SEQUENCE.steps[i];
@@ -82,7 +82,7 @@ pub fn handle_sequence_game_action(
                     user_action = None; // Consume action, avoid matching again
 
                     // Clear recurring messages
-                    game.data.tutorial_state.display.clear();
+                    game.info.tutorial_state.display.clear();
                 } else {
                     debug!(?actions, "Awaiting user action");
                     break;
@@ -106,7 +106,7 @@ pub fn handle_sequence_game_action(
         i += 1;
     }
 
-    game.data.tutorial_state.index = i;
+    game.info.tutorial_state.index = i;
     if i < crate::SEQUENCE.steps.len() {
         debug!("Tutorial at step {}", i);
     } else {
@@ -120,12 +120,12 @@ pub fn handle_sequence_game_action(
 /// tutorial game
 pub fn current_opponent_action(game: &GameState) -> Result<GameAction> {
     if let Some(TutorialStep::OpponentAction(a)) =
-        crate::SEQUENCE.steps.get(game.data.tutorial_state.index)
+        crate::SEQUENCE.steps.get(game.info.tutorial_state.index)
     {
         return to_game_action(game, a);
     }
 
-    for i in (0..=game.data.tutorial_state.index).rev() {
+    for i in (0..=game.info.tutorial_state.index).rev() {
         if let Some(TutorialStep::DefaultOpponentAction(tutorial_action)) =
             crate::SEQUENCE.steps.get(i)
         {
@@ -133,7 +133,7 @@ pub fn current_opponent_action(game: &GameState) -> Result<GameAction> {
         };
     }
 
-    fail!("No opponent action found for index {:?}!", game.data.tutorial_state.index);
+    fail!("No opponent action found for index {:?}!", game.info.tutorial_state.index);
 }
 
 fn add_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
@@ -160,12 +160,12 @@ fn remove_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Resul
 
 fn handle_triggered_action(game: &mut GameState, action: Option<&GameAction>) -> Result<()> {
     for message in
-        crate::SEQUENCE.messages.iter().filter(|t| !game.data.tutorial_state.data.has_seen(t.key))
+        crate::SEQUENCE.messages.iter().filter(|t| !game.info.tutorial_state.data.has_seen(t.key))
     {
         if trigger_matches(game, &message.trigger, action)? {
             debug!(?message.key, "Triggered tutorial message");
-            game.data.tutorial_state.display.append(&mut message.display.clone());
-            game.data.tutorial_state.data.mark_seen(message.key);
+            game.info.tutorial_state.display.append(&mut message.display.clone());
+            game.info.tutorial_state.data.mark_seen(message.key);
             break;
         }
     }
@@ -280,23 +280,23 @@ fn await_player_actions(
     game_action: Option<&GameAction>,
     to_match: &[TutorialTrigger],
 ) -> Result<bool> {
-    let seen = &game.data.tutorial_state.action_indices_seen;
+    let seen = &game.info.tutorial_state.action_indices_seen;
 
     for (i, tutorial_action) in to_match.iter().enumerate() {
-        if game.data.tutorial_state.action_indices_seen.contains(&i) {
+        if game.info.tutorial_state.action_indices_seen.contains(&i) {
             continue;
         }
 
         let matched = trigger_matches(game, tutorial_action, game_action)?;
         if matched {
             debug!(?seen, ?tutorial_action, ?game_action, "Matched expected player action");
-            game.data.tutorial_state.action_indices_seen.insert(i);
+            game.info.tutorial_state.action_indices_seen.insert(i);
             break;
         }
     }
 
-    if game.data.tutorial_state.action_indices_seen.len() == to_match.len() {
-        game.data.tutorial_state.action_indices_seen.clear();
+    if game.info.tutorial_state.action_indices_seen.len() == to_match.len() {
+        game.info.tutorial_state.action_indices_seen.clear();
         Ok(true)
     } else {
         Ok(false)
@@ -371,7 +371,7 @@ fn to_trigger(opponent_action: &TutorialOpponentAction) -> TutorialTrigger {
 }
 
 fn display(game: &mut GameState, mut displays: Vec<TutorialDisplay>) -> Result<()> {
-    game.data.tutorial_state.display.append(&mut displays);
+    game.info.tutorial_state.display.append(&mut displays);
     Ok(())
 }
 

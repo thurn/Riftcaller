@@ -17,7 +17,7 @@ use anyhow::Result;
 use core_ui::full_screen_loading::FullScreenLoading;
 use core_ui::prelude::*;
 use panel_address::{Panel, PlayerPanel};
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::InterfacePanel;
 use with_error::{fail, WithError};
 
@@ -29,7 +29,7 @@ use crate::shop_prompt_panel::ShopPromptPanel;
 /// [TilePosition].
 pub fn render_tile_prompt_panel(
     position: TilePosition,
-    player: &PlayerData,
+    player: &PlayerState,
 ) -> Result<Option<InterfacePanel>> {
     let Some(adventure) = &player.adventure else {
         fail!("Expected active adventure");
@@ -53,7 +53,7 @@ pub fn render_tile_prompt_panel(
 /// [TilePosition], if any.
 pub fn render_tile_loading_panel(
     position: TilePosition,
-    player: &PlayerData,
+    player: &PlayerState,
 ) -> Result<Option<InterfacePanel>> {
     let node = match player.adventure()?.tile_entity(position)? {
         TileEntity::Explore { .. } => {

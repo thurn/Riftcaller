@@ -23,7 +23,7 @@ pub fn for_turn(game: &GameState, turn: TurnData) -> impl Iterator<Item = Histor
 /// Returns the record of game events which happened on the current
 /// player's turn so far.
 pub fn current_turn(game: &GameState) -> impl Iterator<Item = HistoryEvent> + '_ {
-    for_turn(game, game.data.turn)
+    for_turn(game, game.info.turn)
 }
 
 /// Returns an iterator over cards which have been played in the current

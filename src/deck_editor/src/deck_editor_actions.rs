@@ -14,11 +14,11 @@
 
 use anyhow::Result;
 use game_data::tutorial_data::TutorialMessageKey;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use user_action_data::DeckEditorAction;
 use with_error::{fail, verify, WithError};
 
-pub fn handle(player: &mut PlayerData, action: &DeckEditorAction) -> Result<()> {
+pub fn handle(player: &mut PlayerState, action: &DeckEditorAction) -> Result<()> {
     match action {
         DeckEditorAction::ViewedPrompt => {
             player.tutorial.mark_seen(TutorialMessageKey::DeckEditor);

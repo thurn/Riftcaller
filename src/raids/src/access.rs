@@ -49,7 +49,7 @@ impl RaidPhaseImpl for AccessPhase {
 
     fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
         dispatch::invoke_event(game, RaidAccessStartEvent(game.raid()?.raid_id))?;
-        if game.data.raid.is_none() {
+        if game.info.raid.is_none() {
             return Ok(None);
         }
 
@@ -157,7 +157,7 @@ fn access_action_for_card(game: &GameState, card_id: CardId) -> Option<AccessPha
 /// Can the Champion player score the `card_id` card when accessed during a
 /// raid?
 fn can_score_card(game: &GameState, card_id: CardId) -> bool {
-    let raid = match &game.data.raid {
+    let raid = match &game.info.raid {
         Some(r) => r,
         None => return false,
     };

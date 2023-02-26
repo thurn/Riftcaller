@@ -21,14 +21,14 @@ use database::Database;
 use game_data::game::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::PlayerIdentifier;
 
 #[derive(Debug, Default)]
 pub struct FakeDatabase {
     pub generated_game_id: Option<GameId>,
     pub game: Mutex<Option<GameState>>,
-    pub players: Mutex<HashMap<PlayerId, PlayerData>>,
+    pub players: Mutex<HashMap<PlayerId, PlayerState>>,
 }
 
 impl FakeDatabase {
@@ -48,11 +48,11 @@ impl Database for FakeDatabase {
         GameId::generate()
     }
 
-    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>> {
+    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerState>> {
         Ok(Some(self.players.lock().unwrap()[&id].clone()))
     }
 
-    async fn write_player(&self, player: &PlayerData) -> Result<()> {
+    async fn write_player(&self, player: &PlayerState) -> Result<()> {
         self.players.lock().unwrap().insert(player.id, player.clone());
         Ok(())
     }

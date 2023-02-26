@@ -79,7 +79,7 @@ pub fn initiate(
     initiated_by: InitiatedBy,
     on_begin: impl Fn(&mut GameState, RaidId),
 ) -> Result<()> {
-    let raid_id = RaidId(game.data.next_raid_id);
+    let raid_id = RaidId(game.info.next_raid_id);
     let phase = InternalRaidPhase::Begin;
     let raid = RaidData {
         target: target_room,
@@ -90,13 +90,13 @@ pub fn initiate(
         jump_request: None,
     };
 
-    game.data.next_raid_id += 1;
-    game.data.raid = Some(raid);
+    game.info.next_raid_id += 1;
+    game.info.raid = Some(raid);
     on_begin(game, raid_id);
     game.record_update(|| GameUpdate::InitiateRaid(target_room, initiated_by));
     enter_phase(game, Some(phase))?;
     game.history
-        .push(HistoryEntry { turn: game.data.turn, event: HistoryEvent::RaidBegan(target_room) });
+        .push(HistoryEntry { turn: game.info.turn, event: HistoryEvent::RaidBegan(target_room) });
 
     Ok(())
 }
@@ -113,7 +113,7 @@ pub fn handle_action(game: &mut GameState, user_side: Side, action: PromptAction
     let mut new_state = phase.handle_prompt(game, action)?;
     new_state = apply_jump(game)?.or(new_state);
 
-    if game.data.raid.is_some() {
+    if game.info.raid.is_some() {
         enter_phase(game, new_state)
     } else {
         Ok(())
@@ -123,7 +123,7 @@ pub fn handle_action(game: &mut GameState, user_side: Side, action: PromptAction
 /// Returns a list of the user actions which are possible in the current raid
 /// state for the `side` player, or `None` if no such actions are possible.
 pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<PromptAction>>> {
-    if let Some(raid) = &game.data.raid {
+    if let Some(raid) = &game.info.raid {
         if raid.phase().active_side() == user_side {
             let prompts = raid.phase().prompts(game)?;
             if !prompts.is_empty() {
@@ -161,7 +161,7 @@ fn enter_phase(game: &mut GameState, mut phase: Option<InternalRaidPhase>) -> Re
 /// Implements a [RaidJumpRequest], if one has been specified for the current
 /// raid.
 fn apply_jump(game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-    if let Some(raid) = &game.data.raid {
+    if let Some(raid) = &game.info.raid {
         if let Some(RaidJumpRequest::EncounterMinion(card_id)) = raid.jump_request {
             let (room_id, index) =
                 queries::minion_position(game, card_id).with_error(|| "Minion not found")?;

@@ -24,7 +24,7 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::{School, Side};
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientMetadata, CommandList, GameRequest, WorldMapTile};
@@ -103,7 +103,7 @@ impl TestAdventure {
                 generated_game_id: Some(game_id),
                 game: Mutex::new(None),
                 players: Mutex::new(hashmap! {
-                    player_id => PlayerData {
+                    player_id => PlayerState {
                         id: player_id,
                         status: None,
                         adventure: Some(adventure),

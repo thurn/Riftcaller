@@ -18,7 +18,7 @@ use firestore::FirestoreDb;
 use game_data::game::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use with_error::{fail, WithError};
 
 use crate::Database;
@@ -35,7 +35,7 @@ impl FirestoreDatabase {
 
 #[async_trait]
 impl Database for FirestoreDatabase {
-    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>> {
+    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerState>> {
         let res = self.db.fluent().select().by_id_in("players").obj().one(id.to_string()).await;
         match res {
             Ok(r) => Ok(r),
@@ -43,7 +43,7 @@ impl Database for FirestoreDatabase {
         }
     }
 
-    async fn write_player(&self, player: &PlayerData) -> Result<()> {
+    async fn write_player(&self, player: &PlayerState) -> Result<()> {
         self.db
             .fluent()
             .update()

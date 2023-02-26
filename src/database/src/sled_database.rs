@@ -18,7 +18,7 @@ use game_data::game::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
 use once_cell::sync::Lazy;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use serde_json::{de, ser};
 use sled::{Db, Tree};
 use with_error::{fail, WithError};
@@ -31,18 +31,18 @@ pub struct SledDatabase;
 
 #[async_trait]
 impl Database for SledDatabase {
-    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>> {
+    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerState>> {
         players()?
             .get(player_id_key(id)?)
             .with_error(|| format!("Error fetching player {id}"))?
             .map(|slice| {
-                de::from_slice::<PlayerData>(&slice)
+                de::from_slice::<PlayerState>(&slice)
                     .with_error(|| format!("Error deserializing player {id}"))
             })
             .transpose()
     }
 
-    async fn write_player(&self, player: &PlayerData) -> Result<()> {
+    async fn write_player(&self, player: &PlayerState) -> Result<()> {
         players()?.insert(
             player_id_key(player.id)?,
             ser::to_vec(player).with_error(|| format!("Error serializing player {}", player.id))?,

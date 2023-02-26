@@ -17,7 +17,7 @@ use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use database::Database;
 use game_data::primitives::Side;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use tracing::info;
 use with_error::WithError;
 
@@ -26,7 +26,7 @@ use crate::server_data::{ClientData, GameResponse, RequestData};
 
 pub async fn connect(
     database: &impl Database,
-    player: &PlayerData,
+    player: &PlayerState,
     adventure: &AdventureState,
 ) -> Result<GameResponse> {
     info!(?player.id, ?adventure.id, "Connected to adventure");

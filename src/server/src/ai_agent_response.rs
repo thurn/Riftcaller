@@ -181,7 +181,7 @@ async fn pick_action(
 ) -> Result<GameAction> {
     let error_subscriber = tracing_subscriber::fmt().with_max_level(Level::WARN).finish();
     subscriber::with_default(error_subscriber, || {
-        if game.data.config.scripted_tutorial {
+        if game.info.config.scripted_tutorial {
             tutorial_actions::current_opponent_action(game)
         } else {
             agent.pick_action(AgentConfig::with_deadline(3), game)

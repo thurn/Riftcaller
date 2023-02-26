@@ -16,13 +16,13 @@ use anyhow::Result;
 use core_ui::panels::Panels;
 use database::Database;
 use panel_address::StandardPanel;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use tracing::info;
 
 use crate::requests;
 use crate::server_data::{ClientData, GameResponse};
 
-pub async fn connect(database: &impl Database, player: &PlayerData) -> Result<GameResponse> {
+pub async fn connect(database: &impl Database, player: &PlayerState) -> Result<GameResponse> {
     info!(?player.id, "Connected");
     let mut commands = vec![requests::load_scene("Main")];
     commands.push(Panels::open(StandardPanel::MainMenu).into());

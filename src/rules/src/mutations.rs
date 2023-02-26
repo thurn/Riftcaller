@@ -68,7 +68,7 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     }
 
     if !old_position.in_play() && new_position.in_play() {
-        game.card_mut(card_id).data.last_entered_play = Some(game.data.turn);
+        game.card_mut(card_id).data.last_entered_play = Some(game.info.turn);
         dispatch::invoke_event(game, EnterPlayEvent(card_id))?;
     }
 
@@ -179,7 +179,7 @@ pub fn score_points(game: &mut GameState, side: Side, amount: PointsValue) -> Re
 
 /// Mark the game as won by the `winner` player.
 pub fn game_over(game: &mut GameState, winner: Side) -> Result<()> {
-    game.data.phase = GamePhase::GameOver { winner };
+    game.info.phase = GamePhase::GameOver { winner };
     game.record_update(|| GameUpdate::GameOver(winner));
     Ok(())
 }
@@ -262,7 +262,7 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
         }
     }
     dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;
-    game.data.raid = None;
+    game.info.raid = None;
     check_end_turn(game)?;
     Ok(())
 }
@@ -286,7 +286,7 @@ pub fn check_start_game(game: &mut GameState) -> Result<()> {
         game.cards_in_position(side, CardPosition::PreGameLeader(side)).next().map(|c| c.id)
     }
 
-    match &game.data.phase {
+    match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans)
             if mulligans.overlord.is_some() && mulligans.champion.is_some() =>
         {
@@ -353,14 +353,14 @@ fn check_minion_limit(game: &mut GameState, room_id: RoomId) -> Result<()> {
 /// Invoked after taking a game action to check if the turn should be switched
 /// for the provided player.
 pub fn check_end_turn(game: &mut GameState) -> Result<()> {
-    if !matches!(game.data.phase, GamePhase::Play) {
+    if !matches!(game.info.phase, GamePhase::Play) {
         return Ok(());
     }
 
-    let turn = game.data.turn;
+    let turn = game.info.turn;
     let side = turn.side;
 
-    if game.player(side).actions == 0 && game.data.raid.is_none() {
+    if game.player(side).actions == 0 && game.info.raid.is_none() {
         let max_hand_size = queries::maximum_hand_size(game, side) as usize;
         let hand = game.card_list_for_position(side, CardPosition::Hand(side));
 
@@ -492,8 +492,8 @@ pub fn unveil_project_ignoring_costs(game: &mut GameState, card_id: CardId) -> R
 
 /// Starts the turn for the `next_side` player.
 fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber) -> Result<()> {
-    game.data.phase = GamePhase::Play;
-    game.data.turn = TurnData { side: next_side, turn_number };
+    game.info.phase = GamePhase::Play;
+    game.info.turn = TurnData { side: next_side, turn_number };
 
     debug!(?next_side, "Starting player turn");
     game.record_update(|| GameUpdate::StartTurn(next_side));

@@ -270,7 +270,7 @@ fn position_override(
     game: &GameState,
     card: &CardState,
 ) -> Result<Option<ObjectPosition>> {
-    match &game.data.phase {
+    match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => {
             Ok(opening_hand_position_override(builder, game, card, mulligans))
         }
@@ -280,7 +280,7 @@ fn position_override(
 }
 
 fn raid_position_override(game: &GameState, id: GameObjectId) -> Result<Option<ObjectPosition>> {
-    Ok(if let Some(raid_data) = &game.data.raid {
+    Ok(if let Some(raid_data) = &game.info.raid {
         match raid_data.phase().display_state(game)? {
             RaidDisplayState::None => None,
             RaidDisplayState::Defenders(defenders) => {

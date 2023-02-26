@@ -86,10 +86,10 @@ pub fn scheme_cost() -> Cost<CardId> {
 pub fn once_per_turn_cost() -> Option<CustomCost<AbilityId>> {
     Some(CustomCost {
         can_pay: |game, ability_id| {
-            utils::is_false(|| Some(game.ability_state(ability_id)?.turn? == game.data.turn))
+            utils::is_false(|| Some(game.ability_state(ability_id)?.turn? == game.info.turn))
         },
         pay: |game, ability_id| {
-            game.ability_state_mut(ability_id).turn = Some(game.data.turn);
+            game.ability_state_mut(ability_id).turn = Some(game.info.turn);
             Ok(())
         },
     })
@@ -169,7 +169,7 @@ pub fn this_ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilit
 /// [RaidId] for this `scope`.
 pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     utils::is_true(|| {
-        Some(game.ability_state(scope.ability_id())?.raid_id? == game.data.raid.as_ref()?.raid_id)
+        Some(game.ability_state(scope.ability_id())?.raid_id? == game.info.raid.as_ref()?.raid_id)
     })
 }
 
@@ -327,7 +327,7 @@ pub fn once_per_turn<T>(
     data: &T,
     function: MutationFn<T>,
 ) -> Result<()> {
-    if utils::is_false(|| Some(game.ability_state(scope.ability_id())?.turn? == game.data.turn)) {
+    if utils::is_false(|| Some(game.ability_state(scope.ability_id())?.turn? == game.info.turn)) {
         save_turn(game, scope);
         function(game, scope, data)
     } else {
@@ -337,7 +337,7 @@ pub fn once_per_turn<T>(
 
 /// Stores the current turn as ability state for the provided `ability_id`.
 pub fn save_turn(game: &mut GameState, ability_id: impl HasAbilityId) {
-    game.ability_state_mut(ability_id.ability_id()).turn = Some(game.data.turn);
+    game.ability_state_mut(ability_id.ability_id()).turn = Some(game.info.turn);
 }
 
 /// Helper to store the provided [RaidId] as ability state for this [Scope].

@@ -67,21 +67,21 @@ pub fn handle_game_action(
 /// Returns true if the indicated player currently has a legal game action
 /// available to them.
 pub fn can_take_action(game: &GameState, side: Side) -> bool {
-    match &game.data.phase {
+    match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => return mulligans.decision(side).is_none(),
         GamePhase::GameOver { .. } => return false,
         _ => {}
     };
 
-    match &game.data.raid {
+    match &game.info.raid {
         Some(raid) => side == raid.phase().active_side(),
-        None => side == game.data.turn.side,
+        None => side == game.info.turn.side,
     }
 }
 
 fn handle_resign_action(game: &mut GameState, side: Side) -> Result<()> {
     debug!(?side, "Applying resign action");
-    if !matches!(game.data.phase, GamePhase::GameOver { .. }) {
+    if !matches!(game.info.phase, GamePhase::GameOver { .. }) {
         mutations::game_over(game, side.opponent())?;
     }
     Ok(())
@@ -100,7 +100,7 @@ fn handle_mulligan_decision(
     );
 
     debug!(?user_side, ?decision, "Applying mulligan action");
-    let mut mulligans = match &mut game.data.phase {
+    let mut mulligans = match &mut game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => mulligans,
         _ => fail!("Incorrect game phase"),
     };
@@ -189,7 +189,7 @@ fn play_card_action(
     )?;
 
     game.history
-        .push(HistoryEntry { turn: game.data.turn, event: HistoryEvent::PlayedCard(card_id) });
+        .push(HistoryEntry { turn: game.info.turn, event: HistoryEvent::PlayedCard(card_id) });
     mutations::check_end_turn(game)?;
     Ok(())
 }

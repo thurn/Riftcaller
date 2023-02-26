@@ -23,7 +23,7 @@ use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::primitives::DeckId;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress, PlayerPanel};
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::FlexJustify;
 use screen_overlay::ScreenOverlay;
 
@@ -33,7 +33,7 @@ use crate::collection_browser::{self, CollectionBrowser};
 pub const EDITOR_COLUMN_WIDTH: i32 = 25;
 
 pub struct DeckEditorPanel<'a> {
-    pub player: &'a PlayerData,
+    pub player: &'a PlayerState,
     pub data: DeckEditorData,
     pub deck: &'a Deck,
     pub collection: &'a HashMap<CardName, u32>,

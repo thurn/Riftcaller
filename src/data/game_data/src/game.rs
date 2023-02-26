@@ -58,7 +58,7 @@ pub struct ManaState {
 /// State of a player within a game, containing their score and available
 /// resources
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PlayerState {
+pub struct GamePlayerData {
     pub id: PlayerId,
     pub primary_school: School,
     pub mana_state: ManaState,
@@ -70,7 +70,7 @@ pub struct PlayerState {
     pub prompt: Option<GamePrompt>,
 }
 
-impl PlayerState {
+impl GamePlayerData {
     /// Create an empty player state.
     pub fn new(id: PlayerId, primary_school: School) -> Self {
         Self {
@@ -197,7 +197,7 @@ pub enum GamePhase {
 /// Information about the overall game, including whose turn it is and whether a
 /// raid is active.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GameData {
+pub struct GameInfo {
     /// Current [GamePhase].
     pub phase: GamePhase,
     /// Identifies current game turn
@@ -246,7 +246,7 @@ pub struct GameState {
     /// Unique identifier for this game
     pub id: GameId,
     /// General game state & configuration
-    pub data: GameData,
+    pub info: GameInfo,
     /// Used to track changes to game state in order to update the client. See
     /// [UpdateTracker] for more information.
     #[serde(skip)]
@@ -258,9 +258,9 @@ pub struct GameState {
     /// helper methods below instead of accessing this directly.
     pub champion_cards: Vec<CardState>,
     /// State for the overlord player
-    pub overlord: PlayerState,
+    pub overlord: GamePlayerData,
     /// State for the champion player
-    pub champion: PlayerState,
+    pub champion: GamePlayerData,
     /// State for abilities of cards in this game
     #[serde_as(as = "Vec<(_, _)>")]
     pub ability_state: HashMap<AbilityId, AbilityState>,
@@ -298,7 +298,7 @@ impl GameState {
     ) -> Self {
         Self {
             id,
-            data: GameData {
+            info: GameInfo {
                 phase: GamePhase::ResolveMulligans(MulliganData::default()),
                 turn: TurnData { side: Side::Overlord, turn_number: 0 },
                 raid: None,
@@ -308,8 +308,8 @@ impl GameState {
             },
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
-            overlord: PlayerState::new(overlord, overlord_deck.primary_school),
-            champion: PlayerState::new(champion, champion_deck.primary_school),
+            overlord: GamePlayerData::new(overlord, overlord_deck.primary_school),
+            champion: GamePlayerData::new(champion, champion_deck.primary_school),
             ability_state: HashMap::new(),
             history: vec![],
             updates: UpdateTracker::new(if config.simulation {
@@ -333,7 +333,7 @@ impl GameState {
             // logic.
             let clone = Self {
                 id: self.id,
-                data: self.data.clone(),
+                info: self.info.clone(),
                 updates: UpdateTracker::new(Updates::Ignore),
                 overlord_cards: self.overlord_cards.clone(),
                 champion_cards: self.champion_cards.clone(),
@@ -355,7 +355,7 @@ impl GameState {
     pub fn clone_without_updates(&self) -> Self {
         Self {
             id: self.id,
-            data: self.data.clone(),
+            info: self.info.clone(),
             updates: UpdateTracker::default(),
             overlord_cards: self.overlord_cards.clone(),
             champion_cards: self.champion_cards.clone(),
@@ -397,7 +397,7 @@ impl GameState {
     }
 
     /// State for the players in the game
-    pub fn player(&self, side: Side) -> &PlayerState {
+    pub fn player(&self, side: Side) -> &GamePlayerData {
         match side {
             Side::Overlord => &self.overlord,
             Side::Champion => &self.champion,
@@ -405,7 +405,7 @@ impl GameState {
     }
 
     /// Mutable version of [Self::player]
-    pub fn player_mut(&mut self, side: Side) -> &mut PlayerState {
+    pub fn player_mut(&mut self, side: Side) -> &mut GamePlayerData {
         match side {
             Side::Overlord => &mut self.overlord,
             Side::Champion => &mut self.champion,
@@ -576,12 +576,12 @@ impl GameState {
     /// Helper method to return the current [RaidData] or an error when one is
     /// expected to exist.
     pub fn raid(&self) -> Result<&RaidData> {
-        self.data.raid.as_ref().with_error(|| "Expected Raid")
+        self.info.raid.as_ref().with_error(|| "Expected Raid")
     }
 
     /// Mutable version of [Self::raid].
     pub fn raid_mut(&mut self) -> Result<&mut RaidData> {
-        self.data.raid.as_mut().with_error(|| "Expected Raid")
+        self.info.raid.as_mut().with_error(|| "Expected Raid")
     }
 
     /// Helper method to return the current raid encounter position or an error
@@ -613,7 +613,7 @@ impl GameState {
 
     /// Adds a [HistoryEvent] for the current turn.
     pub fn add_history(&mut self, event: HistoryEvent) {
-        self.history.push(HistoryEntry { turn: self.data.turn, event })
+        self.history.push(HistoryEntry { turn: self.info.turn, event })
     }
 
     /// Create card states for a deck

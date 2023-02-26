@@ -21,7 +21,7 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};
 
 pub fn check_game_over(builder: &mut ResponseBuilder, game: &GameState) {
-    if let GamePhase::GameOver { winner } = game.data.phase {
+    if let GamePhase::GameOver { winner } = game.info.phase {
         builder.push(Command::SetGameObjectsEnabled(SetGameObjectsEnabledCommand {
             game_objects_enabled: false,
         }));

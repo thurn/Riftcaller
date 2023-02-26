@@ -41,10 +41,10 @@ pub enum PlayerActivity<'a> {
 
 /// Represents a player's stored data.
 ///
-/// For a player's state *within a given game* see `PlayerState`.
+/// For a player's state *within a given game* see `GamePlayerData`.
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PlayerData {
+pub struct PlayerState {
     /// Unique identifier for this player
     pub id: PlayerId,
     /// Identifies the game this player is currently participating in, if any.
@@ -55,7 +55,7 @@ pub struct PlayerData {
     pub tutorial: TutorialData,
 }
 
-impl PlayerData {
+impl PlayerState {
     pub fn new(id: PlayerId) -> Self {
         Self { id, status: None, adventure: None, tutorial: TutorialData::default() }
     }
@@ -110,7 +110,7 @@ impl PlayerData {
 
 /// Returns the [GameId] an optional [PlayerData] is currently playing in, if
 /// any.
-pub fn current_game_id(data: Option<PlayerData>) -> Option<GameId> {
+pub fn current_game_id(data: Option<PlayerState>) -> Option<GameId> {
     match data.as_ref().and_then(|player| player.status.as_ref()) {
         Some(PlayerStatus::Playing(id)) => Some(*id),
         _ => None,

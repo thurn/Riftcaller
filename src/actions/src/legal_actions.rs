@@ -30,7 +30,7 @@ pub fn evaluate<'a>(
     game: &'a GameState,
     side: Side,
 ) -> Result<Box<dyn Iterator<Item = GameAction> + 'a>> {
-    match &game.data.phase {
+    match &game.info.phase {
         GamePhase::ResolveMulligans(data) => {
             return Ok(if data.decision(side).is_some() {
                 fail!("Error: Mulligan decision already submitted")

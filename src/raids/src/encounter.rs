@@ -51,7 +51,7 @@ impl RaidPhaseImpl for EncounterPhase {
     fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
         if defenders::can_summon_defender(game, game.raid_defender()?)? {
             mutations::summon_minion(game, game.raid_defender()?, SummonMinion::PayCosts)?;
-            if game.data.raid.is_none() {
+            if game.info.raid.is_none() {
                 return Ok(None);
             }
         }
@@ -116,7 +116,7 @@ impl RaidPhaseImpl for EncounterPhase {
             card_prompt::handle(game, Side::Champion, card_action)?;
         }
 
-        Ok(if game.data.raid.is_none() {
+        Ok(if game.info.raid.is_none() {
             // Abilities may have ended the raid
             None
         } else if let Some(encounter) =

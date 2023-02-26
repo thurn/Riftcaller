@@ -18,7 +18,7 @@ use game_data::deck::Deck;
 use game_data::game::{GameConfiguration, GameState};
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::Side;
-use player_data::{PlayerData, PlayerStatus};
+use player_data::{PlayerState, PlayerStatus};
 use rules::{dispatch, mutations};
 use tracing::info;
 use tutorial::tutorial_actions;
@@ -83,7 +83,7 @@ pub async fn create(
     dispatch::populate_delegate_cache(&mut game);
     mutations::deal_opening_hands(&mut game)?;
 
-    if game.data.config.scripted_tutorial {
+    if game.info.config.scripted_tutorial {
         // Start tutorial if needed
         tutorial_actions::handle_sequence_game_action(&mut game, None)?;
     }
@@ -133,7 +133,7 @@ fn requested_deck(opponent: &OpponentData, side: Side) -> Result<Option<Deck>> {
     })
 }
 
-fn find_deck(player: &PlayerData, deck: NewGameDeck) -> Result<Deck> {
+fn find_deck(player: &PlayerState, deck: NewGameDeck) -> Result<Deck> {
     Ok(match deck {
         NewGameDeck::DeckId(id) => player.deck(id)?.clone(),
         NewGameDeck::NamedDeck(name) => decklists::named_deck(name),

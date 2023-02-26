@@ -26,7 +26,7 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
         return prompts::action_prompt(game, side, prompt);
     } else if let Some(prompt) = raids::current_prompt(game, side)? {
         return prompts::action_prompt(game, side, &prompt);
-    } else if let GamePhase::ResolveMulligans(data) = &game.data.phase {
+    } else if let GamePhase::ResolveMulligans(data) = &game.info.phase {
         if data.decision(side).is_none() {
             return prompts::action_prompt(
                 game,

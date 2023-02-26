@@ -33,7 +33,7 @@ use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::primitives::Side;
 use panel_address::CollectionBrowserFilters;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition, InfoZoomCommand};
 use user_action_data::DeckEditorAction;
@@ -54,7 +54,7 @@ pub fn get_matching_cards(
 }
 
 pub struct CollectionBrowser<'a> {
-    pub player: &'a PlayerData,
+    pub player: &'a PlayerState,
     pub deck: &'a Deck,
     pub collection: &'a HashMap<CardName, u32>,
     pub filters: CollectionBrowserFilters,

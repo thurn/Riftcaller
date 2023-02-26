@@ -22,7 +22,7 @@ use async_trait::async_trait;
 use game_data::game::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
-use player_data::PlayerData;
+use player_data::PlayerState;
 
 #[async_trait]
 pub trait Database: Send + Sync {
@@ -30,9 +30,9 @@ pub trait Database: Send + Sync {
         GameId::generate()
     }
 
-    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerData>>;
+    async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerState>>;
 
-    async fn write_player(&self, player: &PlayerData) -> Result<()>;
+    async fn write_player(&self, player: &PlayerState) -> Result<()>;
 
     async fn fetch_game(&self, id: GameId) -> Result<Option<GameState>>;
 

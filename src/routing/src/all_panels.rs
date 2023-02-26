@@ -15,7 +15,7 @@
 use adventure_data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
 use game_data::primitives::{DeckId, Side};
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PlayerPanel, StandardPanel};
-use player_data::PlayerData;
+use player_data::PlayerState;
 
 /// Enumerates all standard panel addresses
 pub fn standard_panels() -> Vec<StandardPanel> {
@@ -34,7 +34,7 @@ pub fn standard_panels() -> Vec<StandardPanel> {
 }
 
 /// Enumerates all player panel addresses
-pub fn player_panels(player: &PlayerData) -> Vec<PlayerPanel> {
+pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
     let panels =
         vec![PlayerPanel::DeckEditorPrompt, PlayerPanel::DraftCard, PlayerPanel::AdventureOver];
     if let Some(adventure) = &player.adventure {

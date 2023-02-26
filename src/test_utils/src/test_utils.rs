@@ -46,7 +46,7 @@ use game_data::primitives::{
 };
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
-use player_data::{PlayerData, PlayerStatus};
+use player_data::{PlayerState, PlayerStatus};
 use prost::Message;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{
@@ -113,8 +113,8 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     dispatch::populate_delegate_cache(&mut game);
 
     let turn_side = args.turn.unwrap_or(user_side);
-    game.data.phase = GamePhase::Play;
-    game.data.turn = TurnData { side: turn_side, turn_number: 0 };
+    game.info.phase = GamePhase::Play;
+    game.info.turn = TurnData { side: turn_side, turn_number: 0 };
     mana::set(&mut game, user_side, args.mana);
     game.player_mut(user_side).score = args.score;
     mana::set(&mut game, user_side.opponent(), args.opponent_mana);
@@ -127,7 +127,7 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     set_discard_pile(&mut game, user_side.opponent(), args.opponent_discard);
 
     if args.add_raid {
-        game.data.raid = Some(RaidData {
+        game.info.raid = Some(RaidData {
             raid_id: RAID_ID,
             target: ROOM_ID,
             internal_phase: InternalRaidPhase::Begin,
@@ -141,13 +141,13 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
         generated_game_id: None,
         game: Mutex::new(Some(game)),
         players: Mutex::new(hashmap! {
-            overlord_user => PlayerData {
+            overlord_user => PlayerState {
                 id: overlord_user,
                 status: Some(PlayerStatus::Playing(game_id)),
                 adventure: None,
                 tutorial: TutorialData::default()
             },
-            champion_user => PlayerData {
+            champion_user => PlayerState {
                 id: champion_user,
                 status: Some(PlayerStatus::Playing(game_id)),
                 adventure: None,
@@ -293,13 +293,13 @@ pub fn new_session(game_id: GameId, user_id: PlayerId, opponent_id: PlayerId) ->
         generated_game_id: Some(game_id),
         game: Mutex::new(None),
         players: Mutex::new(hashmap! {
-            user_id => PlayerData {
+            user_id => PlayerState {
                 id: user_id,
                 status: None,
                 adventure: None,
                 tutorial: TutorialData::default()
             },
-            opponent_id => PlayerData {
+            opponent_id => PlayerState {
                 id: opponent_id,
                 status: None,
                 adventure: None,

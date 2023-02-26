@@ -28,7 +28,7 @@ use database::Database;
 use game_data::player_name::PlayerId;
 use once_cell::sync::Lazy;
 use panel_address::PanelAddress;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::spelldawn_server::Spelldawn;
 use protos::spelldawn::{
@@ -258,11 +258,11 @@ fn parse_client_id(player_id: Option<&PlayerIdentifier>) -> Result<PlayerId, Sta
 async fn fetch_or_create_player(
     database: &impl Database,
     player_id: PlayerId,
-) -> Result<PlayerData> {
+) -> Result<PlayerState> {
     Ok(if let Some(player) = database.fetch_player(player_id).await? {
         player
     } else {
-        let player = PlayerData::new(player_id);
+        let player = PlayerState::new(player_id);
         database.write_player(&player).await?;
         info!(?player_id, "Created new player");
         player

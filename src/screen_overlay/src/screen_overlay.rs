@@ -28,19 +28,19 @@ use core_ui::text::Text;
 use game_data::primitives::DeckId;
 use game_data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PanelAddress, PlayerPanel, StandardPanel};
-use player_data::{PlayerData, PlayerStatus};
+use player_data::{PlayerState, PlayerStatus};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPosition};
 
 pub struct ScreenOverlay<'a> {
-    player: &'a PlayerData,
+    player: &'a PlayerState,
     show_close_button: Option<PanelAddress>,
     show_deck_button: bool,
 }
 
 impl<'a> ScreenOverlay<'a> {
-    pub fn new(player: &'a PlayerData) -> Self {
+    pub fn new(player: &'a PlayerState) -> Self {
         Self { player, show_close_button: None, show_deck_button: player.status.is_none() }
     }
 

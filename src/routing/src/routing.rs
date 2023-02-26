@@ -33,7 +33,7 @@ use panels::loading_panel::LoadingPanel;
 use panels::main_menu_panel::MainMenuPanel;
 use panels::set_player_name_panel::SetPlayerNamePanel;
 use panels::settings_panel::SettingsPanel;
-use player_data::PlayerData;
+use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, UpdatePanelsCommand};
 use serde_json::de;
@@ -41,7 +41,7 @@ use with_error::WithError;
 
 pub fn render_panels(
     commands: &mut Vec<Command>,
-    player: &PlayerData,
+    player: &PlayerState,
     addresses: Vec<PanelAddress>,
 ) -> Result<()> {
     for address in addresses {
@@ -51,7 +51,7 @@ pub fn render_panels(
 }
 
 pub fn render_panel(
-    player: &PlayerData,
+    player: &PlayerState,
     client_address: InterfacePanelAddress,
 ) -> Result<UpdatePanelsCommand> {
     let server_address =
@@ -61,7 +61,7 @@ pub fn render_panel(
 }
 
 fn render_server_panel(
-    player: &PlayerData,
+    player: &PlayerState,
     address: PanelAddress,
 ) -> Result<Option<InterfacePanel>> {
     match address {
@@ -89,7 +89,7 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
 }
 
 pub fn render_player_panel(
-    player: &PlayerData,
+    player: &PlayerState,
     address: PlayerPanel,
 ) -> Result<Option<InterfacePanel>> {
     Ok(match address {
@@ -114,7 +114,7 @@ pub fn render_player_panel(
     })
 }
 
-fn render_adventure_choice(player: &PlayerData) -> Result<Option<InterfacePanel>> {
+fn render_adventure_choice(player: &PlayerState) -> Result<Option<InterfacePanel>> {
     // It's normal for the client to request screens which aren't always valid,
     // e.g. refreshing the cached choice screen after it's been removed.
 
