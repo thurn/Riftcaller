@@ -27,8 +27,8 @@ use tonic::codec::CompressionEncoding;
 use tonic::transport::Server;
 use tonic_web::GrpcWebLayer;
 use tracing::{warn, Event, Level};
-use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_forest::{ForestLayer, PrettyPrinter, Tag};
+use tracing_stackdriver::CloudTraceConfiguration;
 use tracing_subscriber::filter::EnvFilter;
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::Registry;
@@ -46,9 +46,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
-    let file_appender = tracing_appender::rolling::hourly("log", "spelldawn.log");
-    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
-    let bunyan = BunyanFormattingLayer::new("spelldawn".to_string(), non_blocking);
+    // let file_appender = tracing_appender::rolling::hourly("log",
+    // "spelldawn.log");
+    //let (non_blocking, _guard) =
+    //tracing_appender::non_blocking(file_appender);
+
+    let stackdriver = tracing_stackdriver::layer()
+        .enable_cloud_trace(CloudTraceConfiguration { project_id: "spelldawn".to_string() });
+
     let filter = if let Ok(v) = env::var("RUST_LOG") {
         EnvFilter::new(v)
     } else {
@@ -56,8 +61,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let forest_layer = ForestLayer::new(PrettyPrinter::new(), tag_parser);
 
-    let subscriber =
-        Registry::default().with(JsonStorageLayer).with(bunyan).with(forest_layer).with(filter);
+    let subscriber = Registry::default().with(stackdriver).with(forest_layer).with(filter);
     tracing::subscriber::set_global_default(subscriber).unwrap();
     let version = if args.len() >= 3 { &args[2] } else { "unspecified" };
     let port = env::var("PORT").unwrap_or_else(|_| "80".to_string());

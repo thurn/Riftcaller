@@ -49,7 +49,8 @@ namespace Spelldawn.Services
         new GrpcChannelOptions
         {
           HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
-          Credentials = ChannelCredentials.SecureSsl,
+          Credentials = UseProductionServer.ShouldUseProductionServer ? 
+            ChannelCredentials.SecureSsl : ChannelCredentials.Insecure,
           CompressionProviders = new List<ICompressionProvider>
           {
             new GzipCompressionProvider(CompressionLevel.Optimal)
