@@ -71,7 +71,8 @@ async fn start_server(
         .accept_compressed(CompressionEncoding::Gzip);
 
     warn!(
-        "Server version '{}' listening on '{}' with '{}' database",
+        "{} server version '{}' listening on '{}' with '{}' database",
+        if cfg!(debug_assertions) { "Debug " } else { "Release" },
         version.into(),
         address,
         db_name.into()

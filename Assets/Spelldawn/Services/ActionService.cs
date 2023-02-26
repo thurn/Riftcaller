@@ -38,8 +38,8 @@ namespace Spelldawn.Services
   public sealed class ActionService : MonoBehaviour
   {
     const string LocalServerAddress = "http://localhost";
-    const string ProductionServerAddress = "https://spelldawn-zs4r5i5clq-uc.a.run.app"; 
-
+    const string ProductionServerAddress = "https://trunk.spelldawn.com";
+ 
     static string ServerAddress() =>
       UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress;
     
