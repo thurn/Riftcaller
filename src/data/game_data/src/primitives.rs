@@ -16,12 +16,14 @@
 
 #![allow(clippy::copy_iterator)] // Suppress IntoEnumIterator warning
 
-use std::fmt;
-use std::fmt::Formatter;
+use std::fmt::{self, Display, Formatter};
+use std::str::FromStr;
 
+use anyhow::Result;
 use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use ulid::Ulid;
+use with_error::fail;
 
 pub type TurnNumber = u32;
 pub type ActionCount = u32;
@@ -125,6 +127,22 @@ impl Side {
             Side::Overlord => Self::Champion,
         }
     }
+
+    pub fn letter(&self) -> &'static str {
+        match self {
+            Side::Overlord => "O",
+            Side::Champion => "C",
+        }
+    }
+
+    pub fn from_letter(s: impl Into<String>) -> Result<Side> {
+        let letter = s.into();
+        match () {
+            _ if letter == "O" => Ok(Side::Overlord),
+            _ if letter == "C" => Ok(Side::Champion),
+            _ => fail!("Invalid side identifier"),
+        }
+    }
 }
 
 impl fmt::Debug for Side {
@@ -168,15 +186,7 @@ impl HasCardId for CardId {
 
 impl fmt::Debug for CardId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}{}",
-            match self.side {
-                Side::Overlord => "O",
-                Side::Champion => "C",
-            },
-            self.index
-        )
+        write!(f, "{}{}", self.side.letter(), self.index)
     }
 }
 
@@ -217,7 +227,29 @@ pub struct AbilityId {
 
 impl fmt::Debug for AbilityId {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}[{:?}]", self.card_id, self.index)
+        write!(f, "{}/{}/{}", self.card_id.side.letter(), self.card_id.index, self.index.0)
+    }
+}
+
+impl FromStr for AbilityId {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self> {
+        let vec = s.split('/').collect::<Vec<_>>();
+        if vec.len() == 3 {
+            Ok(AbilityId {
+                card_id: CardId::new(Side::from_letter(vec[0])?, vec[1].parse::<usize>()?),
+                index: AbilityIndex(vec[2].parse::<usize>()?),
+            })
+        } else {
+            fail!("Expected exactly two '/' characters")
+        }
+    }
+}
+
+impl Display for AbilityId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
     }
 }
 

@@ -19,7 +19,6 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::{DeckId, GameId};
 use game_data::tutorial_data::TutorialData;
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
 use user_action_data::NewGameAction;
 use with_error::{fail, WithError};
 
@@ -42,7 +41,6 @@ pub enum PlayerActivity<'a> {
 /// Represents a player's stored data.
 ///
 /// For a player's state *within a given game* see `GamePlayerData`.
-#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlayerState {
     /// Unique identifier for this player
@@ -108,7 +106,7 @@ impl PlayerState {
     }
 }
 
-/// Returns the [GameId] an optional [PlayerData] is currently playing in, if
+/// Returns the [GameId] an optional [PlayerState] is currently playing in, if
 /// any.
 pub fn current_game_id(data: Option<PlayerState>) -> Option<GameId> {
     match data.as_ref().and_then(|player| player.status.as_ref()) {

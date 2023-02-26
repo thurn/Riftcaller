@@ -229,7 +229,7 @@ command_list:
                 position: ObjectPositionStaging
     CreateTokenCard: 
         card: 
-            card_id: O45[1]
+            card_id: O/45/1
             revealed_to_viewer: true
             is_face_up: false
             card_icons: 
@@ -607,7 +607,7 @@ channel_response:
         owning_player: Opponent
     CreateTokenCard: 
         card: 
-            card_id: O45[1]
+            card_id: O/45/1
             revealed_to_viewer: true
             is_face_up: false
             card_icons: 

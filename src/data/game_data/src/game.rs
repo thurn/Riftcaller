@@ -22,7 +22,7 @@ use anyhow::Result;
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
+use serde_with::{serde_as, DisplayFromStr};
 use with_error::{fail, WithError};
 
 use crate::card_state::{AbilityState, CardPosition, CardState};
@@ -262,7 +262,7 @@ pub struct GameState {
     /// State for the champion player
     pub champion: GamePlayerData,
     /// State for abilities of cards in this game
-    #[serde_as(as = "Vec<(_, _)>")]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub ability_state: HashMap<AbilityId, AbilityState>,
     /// History of game actions which have happened during this game. This is
     /// always updated *after* applying an action, i.e. it will typically not
