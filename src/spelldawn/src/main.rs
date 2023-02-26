@@ -14,13 +14,15 @@
 
 //! Spelldawn: An asymmetric trading card game
 
-use std::env;
+use std::{env, thread};
 
 use database::firestore_database::FirestoreDatabase;
 use database::sled_database::SledDatabase;
 use database::Database;
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
 use server::GameService;
+use signal_hook::consts::SIGTERM;
+use signal_hook::iterator::Signals;
 use tonic::codec::CompressionEncoding;
 use tonic::transport::Server;
 use tonic_web::GrpcWebLayer;
@@ -35,6 +37,14 @@ use tracing_subscriber::Registry;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     cards_all::initialize();
     let args = env::args().collect::<Vec<_>>();
+
+    let mut signals = Signals::new([SIGTERM])?;
+    thread::spawn(move || {
+        for _ in signals.forever() {
+            warn!("Received SIGTERM");
+            println!("Received SIGTERM");
+        }
+    });
 
     let file_appender = tracing_appender::rolling::hourly("log", "spelldawn.log");
     let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
