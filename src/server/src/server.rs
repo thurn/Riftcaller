@@ -94,6 +94,9 @@ impl<T: Database + 'static> Spelldawn for GameService<T> {
         request: Request<GameRequest>,
     ) -> Result<Response<CommandList>, Status> {
         let player_id = parse_client_id(request.get_ref().player_id.as_ref())?;
+        if !CHANNELS.contains_key(&player_id) {
+            warn!(?player_id, "Received action from player who is not connected");
+        }
         let result = handle_action(&self.database, player_id, request.get_ref()).await;
         match result {
             Ok(response) => {
@@ -233,7 +236,7 @@ pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
                 // huge problem. Hopefully they will reconnect again in the future.
                 warn!(?player_id, "Unable to send to player: {e:?}");
             }
-        } else {
+        } else if !player_id.is_named_player() {
             warn!(?player_id, "Player is not connected to this instance");
         }
     }

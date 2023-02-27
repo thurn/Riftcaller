@@ -40,6 +40,13 @@ impl PlayerId {
     pub fn new(ulid: Ulid) -> Self {
         Self::Database(ulid)
     }
+
+    pub fn is_named_player(&self) -> bool {
+        match self {
+            Self::Named(_) => true,
+            _ => false,
+        }
+    }
 }
 
 impl fmt::Debug for PlayerId {
