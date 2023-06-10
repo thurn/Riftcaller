@@ -550,6 +550,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "concurrent-queue"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "62ec6771ecfa0762d24683ee5a32ad78487a3d3afdc0fb8cae19d2c5deb50b7c"
+dependencies = [
+ "crossbeam-utils",
+]
+
+[[package]]
 name = "console"
 version = "0.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -697,12 +706,11 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-utils"
-version = "0.8.10"
+version = "0.8.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d82ee10ce34d7bc12c2122495e7593a9c41347ecdd64185af4ecf72cb1a7f83"
+checksum = "3c063cd8cc95f5c377ed0d4b49a4b21f632396ff690e8470c29b3359b346984b"
 dependencies = [
  "cfg-if",
- "once_cell",
 ]
 
 [[package]]
@@ -1951,6 +1959,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "plugin"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "cards_all",
+ "database",
+ "once_cell",
+ "prost",
+ "protos",
+ "server",
+ "tokio",
+]
+
+[[package]]
 name = "ppv-lite86"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2575,6 +2597,7 @@ dependencies = [
  "ai_core",
  "ai_game_integration",
  "anyhow",
+ "concurrent-queue",
  "core_ui",
  "dashmap",
  "database",

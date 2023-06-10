@@ -34,6 +34,7 @@ use ai_core::agent::{Agent, AgentConfig};
 use ai_game_integration::agents;
 use ai_game_integration::state_node::SpelldawnState;
 use anyhow::Result;
+use concurrent_queue::ConcurrentQueue;
 use database::Database;
 use display::render;
 use game_data::game::GameState;
@@ -41,14 +42,17 @@ use game_data::game_actions::GameAction;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Milliseconds, Side};
 use game_data::updates::{UpdateTracker, Updates};
+use once_cell::sync::Lazy;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::DelayCommand;
+use protos::spelldawn::{CommandList, DelayCommand};
 use tracing::{debug, error, info, info_span, subscriber, Instrument, Level};
 use tutorial::tutorial_actions;
 use with_error::WithError;
 
 use crate::game_server;
 use crate::server_data::{ClientData, GameResponse, RequestData};
+
+pub static RESPONSES: Lazy<ConcurrentQueue<CommandList>> = Lazy::new(ConcurrentQueue::unbounded);
 
 /// Whether incremenetal updates should be sent to the connected player during
 /// AI turns.
@@ -156,6 +160,7 @@ async fn send_snapshot_to_player(
     }
     let commands = response.commands(rendered).build().user_response;
     debug!(?player_id, ?game.id, "Sending incremental AI response to player");
+    RESPONSES.push(commands.clone())?;
     crate::send_player_response(Some((player_id, commands))).await;
     Ok(())
 }

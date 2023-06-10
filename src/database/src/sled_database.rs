@@ -17,7 +17,6 @@ use async_trait::async_trait;
 use game_data::game::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
-use once_cell::sync::Lazy;
 use player_data::PlayerState;
 use serde_json::{de, ser};
 use sled::{Db, Tree};
@@ -25,14 +24,28 @@ use with_error::{fail, WithError};
 
 use crate::Database;
 
-static DATABASE: Lazy<Db> = Lazy::new(|| sled::open("db").expect("Unable to open database"));
+pub struct SledDatabase {
+    db: Db,
+}
 
-pub struct SledDatabase;
+impl SledDatabase {
+    pub fn new(path: impl Into<String>) -> Self {
+        Self { db: sled::open(path.into()).expect("Unable to open database") }
+    }
+
+    fn games(&self) -> Result<Tree> {
+        self.db.open_tree("games").with_error(|| "Error opening the 'games' tree")
+    }
+
+    fn players(&self) -> Result<Tree> {
+        self.db.open_tree("players").with_error(|| "Error opening the 'players' tree")
+    }
+}
 
 #[async_trait]
 impl Database for SledDatabase {
     async fn fetch_player(&self, id: PlayerId) -> Result<Option<PlayerState>> {
-        players()?
+        self.players()?
             .get(player_id_key(id)?)
             .with_error(|| format!("Error fetching player {id}"))?
             .map(|slice| {
@@ -43,15 +56,16 @@ impl Database for SledDatabase {
     }
 
     async fn write_player(&self, player: &PlayerState) -> Result<()> {
-        players()?.insert(
+        self.players()?.insert(
             player_id_key(player.id)?,
             ser::to_vec(player).with_error(|| format!("Error serializing player {}", player.id))?,
         )?;
+        self.db.flush()?;
         Ok(())
     }
 
     async fn fetch_game(&self, id: GameId) -> Result<Option<GameState>> {
-        games()?
+        self.games()?
             .get(game_id_key(id))
             .with_error(|| format!("Error fetching game {id}"))?
             .map(|slice| {
@@ -62,20 +76,13 @@ impl Database for SledDatabase {
     }
 
     async fn write_game(&self, game: &GameState) -> Result<()> {
-        games()?.insert(
+        self.games()?.insert(
             game_id_key(game.id),
             ser::to_vec(game).with_error(|| format!("Error serializing game {}", game.id))?,
         )?;
+        self.db.flush()?;
         Ok(())
     }
-}
-
-fn games() -> Result<Tree> {
-    DATABASE.open_tree("games").with_error(|| "Error opening the 'games' tree")
-}
-
-fn players() -> Result<Tree> {
-    DATABASE.open_tree("players").with_error(|| "Error opening the 'players' tree")
 }
 
 fn player_id_key(player_id: PlayerId) -> Result<[u8; 16]> {

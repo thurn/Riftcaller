@@ -79,7 +79,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .await
     } else {
-        start_server(version, port, SledDatabase, "sled", logging).await
+        start_server(version, port, SledDatabase::new("db"), "sled", logging).await
     }
 }
 

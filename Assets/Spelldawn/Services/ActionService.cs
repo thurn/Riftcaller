@@ -39,6 +39,7 @@ namespace Spelldawn.Services
   {
     const string LocalServerAddress = "http://localhost";
     const string ProductionServerAddress = "https://trunk.spelldawn.com";
+    public bool DevelopmentMode { get; private set; }
  
     static string ServerAddress() =>
       UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress;
@@ -117,13 +118,14 @@ namespace Spelldawn.Services
         StartCoroutine(HandleActionAsync(next));
       }
 
-#if USE_UNITY_PLUGIN
-      var pollCommands = Plugin.Poll();
-      if (pollCommands != null)
-      { 
-        StartCoroutine(_registry.CommandService.HandleCommands(pollCommands));
+      if (!DevelopmentMode)
+      {
+        var pollCommands = Plugin.Poll();
+        if (pollCommands != null)
+        { 
+          StartCoroutine(_registry.CommandService.HandleCommands(pollCommands));
+        }        
       }
-#endif
     }
 
     IEnumerator AutoReconnect()
@@ -149,34 +151,51 @@ namespace Spelldawn.Services
         PlayerId = Errors.CheckNotNull(_playerIdentifier),
       };
 
-      // TODO: Android in particular seems to hang for multiple minutes when the server can't be reached?
-      Debug.Log($"Connecting to {ServerAddress()}");
-      using var call = _client.Value.Connect(request);
-
-      try
+      if (DevelopmentMode)
       {
-        while (await call.ResponseStream.MoveNext())
+        Debug.Log($"Connecting to {ServerAddress()}");
+        using var call = _client.Value.Connect(request);
+
+        try
         {
-          if (this != null)
+          while (await call.ResponseStream.MoveNext())
           {
-            var commands = call.ResponseStream.Current;
-            _attemptReconnect = false;
-            StartCoroutine(_registry.CommandService.HandleCommands(commands,
-              () => { _registry.DocumentService.Loading = false; }));
-            _registry.DocumentService.FetchOpenPanelsOnConnect();
+            if (this != null)
+            {
+              var commands = call.ResponseStream.Current;
+              _attemptReconnect = false;
+              StartCoroutine(_registry.CommandService.HandleCommands(commands,
+                () => { _registry.DocumentService.Loading = false; }));
+              _registry.DocumentService.FetchOpenPanelsOnConnect();
+            }
           }
         }
-      }
-      catch (RpcException e)
-      {
-        _registry.DocumentService.Loading = true;
-        _attemptReconnect = true;
-        if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
+        catch (RpcException e)
         {
-          Debug.Log($"RpcException: {e.StatusCode} -- {e.Message}");
-        }
+          _registry.DocumentService.Loading = true;
+          _attemptReconnect = true;
+          if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
+          {
+            Debug.Log($"RpcException: {e.StatusCode} -- {e.Message}");
+          }
+        }        
+      }
+      else
+      {
+        Debug.Log($"Connecting to Plugin");
+        StartCoroutine(ConnectToOfflineGame(request));        
       }
     }
+    
+    /// <summary>Connects to an existing offline game, handling responses.</summary>
+    public IEnumerator ConnectToOfflineGame(ConnectRequest request)
+    {
+      var commands = Plugin.Connect(request);
+      if (commands != null)
+      {
+        yield return _registry.CommandService.HandleCommands(commands);
+      }
+    }    
 
     IEnumerator HandleActionAsync(ClientAction action)
     {
@@ -202,52 +221,59 @@ namespace Spelldawn.Services
       };
       request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);
 
-      float startTime = 0;
-      if (LogRpcTime.ShouldLogRpcTime)
+      if (DevelopmentMode)
       {
-        Debug.Log($"Sending {request.Action.ActionCase}");
-        startTime = Time.time;
-      }
+        float startTime = 0;
+        if (LogRpcTime.ShouldLogRpcTime)
+        {
+          Debug.Log($"Sending {request.Action.ActionCase}");
+          startTime = Time.time;
+        }
 
-      // Introduce simulated server delay
-      if (IntroduceNetworkDelay.ShouldIntroduceLongNetworkDelay)
+        // Introduce simulated server delay
+        if (IntroduceNetworkDelay.ShouldIntroduceLongNetworkDelay)
+        {
+          yield return new WaitForSeconds(5f);
+        }
+        else if (!NoNetworkDelay.ShouldRemoveNetworkDelay && !UseProductionServer.ShouldUseProductionServer)
+        {
+          yield return new WaitForSeconds(Random.Range(0.25f, 0.75f));
+        }
+
+        var call = _client.Value.PerformActionAsync(request);
+        var task = call.GetAwaiter();
+        yield return new WaitUntil(() => task.IsCompleted);
+
+        switch (call.GetStatus().StatusCode)
+        {
+          case StatusCode.OK:
+            _registry.DocumentService.Loading = false;
+            _attemptReconnect = false;
+            if (LogRpcTime.ShouldLogRpcTime)
+            {
+              Debug.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
+            }
+
+            var commands = string.Join(",", task.GetResult().Commands.Select(c => c.CommandCase));
+
+            yield return _registry.CommandService.HandleCommands(task.GetResult());
+            break;
+          default:
+            _registry.DocumentService.Loading = true;
+            _attemptReconnect = true;
+            if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
+            {
+              Debug.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
+            }
+
+            break;
+        }
+      }
+      else
       {
-        yield return new WaitForSeconds(5f);
+        yield return _registry.CommandService.HandleCommands(Plugin.PerformAction(request));        
       }
-      else if (!NoNetworkDelay.ShouldRemoveNetworkDelay && !UseProductionServer.ShouldUseProductionServer)
-      {
-        yield return new WaitForSeconds(Random.Range(0.25f, 0.75f));
-      }
-
-      var call = _client.Value.PerformActionAsync(request);
-      var task = call.GetAwaiter();
-      yield return new WaitUntil(() => task.IsCompleted);
-
-      switch (call.GetStatus().StatusCode)
-      {
-        case StatusCode.OK:
-          _registry.DocumentService.Loading = false;
-          _attemptReconnect = false;
-          if (LogRpcTime.ShouldLogRpcTime)
-          {
-            Debug.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
-          }
-
-          var commands = string.Join(",", task.GetResult().Commands.Select(c => c.CommandCase));
-
-          yield return _registry.CommandService.HandleCommands(task.GetResult());
-          break;
-        default:
-          _registry.DocumentService.Loading = true;
-          _attemptReconnect = true;
-          if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
-          {
-            Debug.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
-          }
-
-          break;
-      }
-
+      
       _currentlyHandlingAction = null;
     }
 

@@ -19,6 +19,8 @@ HostedData/
 Assets/StreamingAssets/
 Assets/EntityCache
 Assets/Plugins/
+Assets/AddressableAssetsData/link.xml
+Assets/AddressableAssetsData/link.xml.meta
 UserSettings/
 db/
 log/

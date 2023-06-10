@@ -255,7 +255,7 @@ pub async fn send_player_error(player_id: PlayerId, error: &anyhow::Error) {
     }
 }
 
-fn parse_client_id(player_id: Option<&PlayerIdentifier>) -> Result<PlayerId, Status> {
+pub fn parse_client_id(player_id: Option<&PlayerIdentifier>) -> Result<PlayerId, Status> {
     let Some(player_id) = player_id else {
         return Err(Status::invalid_argument("Client player_id is required"));
     };
