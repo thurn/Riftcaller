@@ -41,7 +41,7 @@ cloud-update:
 
 protos:
     cargo run --bin gen_protos
-    rm src/protos/src/google.protobuf.rs
+    rm -f src/protos/src/google.protobuf.rs
 
     - rm proto/*.cs
     - rm -r proto/bin

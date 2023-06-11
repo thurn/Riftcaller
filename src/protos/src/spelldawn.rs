@@ -1289,6 +1289,15 @@ pub struct ConnectRequest {
     #[prost(message, optional, tag = "1")]
     pub player_id: ::core::option::Option<PlayerIdentifier>,
 }
+/// Poll to see if any new updates have been posted for the provided player,
+/// e.g. due to asynchronous AI game actions.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct PollRequest {
+    /// User making this request.
+    #[prost(message, optional, tag = "1")]
+    pub player_id: ::core::option::Option<PlayerIdentifier>,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameRequest {

@@ -1234,6 +1234,13 @@ message ConnectRequest {
     PlayerIdentifier player_id = 1;
 }
 
+// Poll to see if any new updates have been posted for the provided player,
+// e.g. due to asynchronous AI game actions.
+message PollRequest {
+    // User making this request.
+    PlayerIdentifier player_id = 1;
+}
+
 message GameRequest {
     // Action to perform.
     ClientAction action = 1;

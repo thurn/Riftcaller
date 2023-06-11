@@ -39,7 +39,7 @@ namespace Spelldawn.Services
   {
     const string LocalServerAddress = "http://localhost";
     const string ProductionServerAddress = "https://trunk.spelldawn.com";
-    public bool DevelopmentMode { get; private set; }
+    public bool DevelopmentMode { get; set; }
  
     static string ServerAddress() =>
       UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress;
@@ -120,7 +120,10 @@ namespace Spelldawn.Services
 
       if (!DevelopmentMode)
       {
-        var pollCommands = Plugin.Poll();
+        var pollCommands = Plugin.Poll(new PollRequest
+        {
+          PlayerId = Errors.CheckNotNull(_playerIdentifier),
+        });
         if (pollCommands != null)
         { 
           StartCoroutine(_registry.CommandService.HandleCommands(pollCommands));
@@ -253,9 +256,7 @@ namespace Spelldawn.Services
             {
               LogUtils.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
             }
-
-            var commands = string.Join(",", task.GetResult().Commands.Select(c => c.CommandCase));
-
+            
             yield return _registry.CommandService.HandleCommands(task.GetResult());
             break;
           default:

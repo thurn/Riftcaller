@@ -28,9 +28,8 @@ use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     ClientDebugCommand, CommandList, ConnectRequest, GameCommand, GameRequest, LogMessage,
-    LogMessageLevel,
+    LogMessageLevel, PollRequest,
 };
-use server::ai_agent_response;
 use tokio::sync::Mutex;
 static DATABASE: Lazy<Mutex<Option<SledDatabase>>> = Lazy::new(|| Mutex::new(None));
 
@@ -93,7 +92,7 @@ async unsafe fn connect_impl(
     let database = guard.as_ref().expect("Database not initialized");
     let connect_request = ConnectRequest::decode(request_data)?;
     let player_id = server::parse_client_id(connect_request.player_id.as_ref())?;
-    let game_response = server::handle_connect(database, player_id).await?;
+    let game_response = server::plugin_connect(database, player_id).await?;
     let command_list = game_response.build().user_response;
     let mut out = std::slice::from_raw_parts_mut(response, response_length as usize);
     command_list.encode(&mut out)?;
@@ -103,6 +102,9 @@ async unsafe fn connect_impl(
 /// Checks for new game responses which are available to be rendered on the
 /// client.
 ///
+/// `request` should be a buffer including the protobuf serialization of a
+/// `PollRequest` message of `request_length` bytes.
+///
 /// `response` should be an empty buffer of `response_length` bytes, this buffer
 /// will be populated with a protobuf-serialized `CommandList` describing an
 /// update to the game state, if any is available.
@@ -110,18 +112,32 @@ async unsafe fn connect_impl(
 /// Returns the number of bytes written to the `response` buffer, 0 if no update
 /// is available, or -1 on error.
 #[no_mangle]
-pub unsafe extern "C" fn spelldawn_poll(response: *mut u8, response_length: i32) -> i32 {
-    error_boundary(response, response_length, || poll_impl(response, response_length))
+pub unsafe extern "C" fn spelldawn_poll(
+    request: *const u8,
+    request_length: i32,
+    response: *mut u8,
+    response_length: i32,
+) -> i32 {
+    error_boundary(response, response_length, || {
+        poll_impl(request, request_length, response, response_length)
+    })
 }
 
-unsafe fn poll_impl(response: *mut u8, response_length: i32) -> Result<i32> {
-    if ai_agent_response::RESPONSES.is_empty() {
-        Ok(0)
-    } else {
-        let command_list = ai_agent_response::RESPONSES.pop()?;
+unsafe fn poll_impl(
+    request: *const u8,
+    request_length: i32,
+    response: *mut u8,
+    response_length: i32,
+) -> Result<i32> {
+    let poll_data = std::slice::from_raw_parts(request, request_length as usize);
+    let poll_request = PollRequest::decode(poll_data)?;
+    let player_id = server::parse_client_id(poll_request.player_id.as_ref())?;
+    if let Some(command_list) = server::plugin_poll(player_id)? {
         let mut out = std::slice::from_raw_parts_mut(response, response_length as usize);
         command_list.encode(&mut out)?;
         Ok(command_list.encoded_len() as i32)
+    } else {
+        Ok(0)
     }
 }
 

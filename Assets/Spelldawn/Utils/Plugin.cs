@@ -46,9 +46,12 @@ namespace Spelldawn.Utils
       return responseSize > 0 ? CommandList.Parser.ParseFrom(output, 0, responseSize) : null;
     }
 
-    public static CommandList? Poll()
+    public static CommandList? Poll(PollRequest request)
     {
-      var responseSize = Errors.CheckNonNegative(spelldawn_poll(PollBuffer, PollBuffer.Length), "Plugin poll error");
+      var input = request.ToByteArray();
+      var responseSize = Errors.CheckNonNegative(
+          spelldawn_poll(input, input.Length, PollBuffer, PollBuffer.Length),
+          "Plugin poll error");
       return responseSize > 0 ? CommandList.Parser.ParseFrom(PollBuffer, 0, responseSize) : null;
     }
 
@@ -86,6 +89,8 @@ namespace Spelldawn.Utils
     [DllImport("plugin")]
 #endif
     public static extern int spelldawn_poll(
+      byte[] request,
+      int requestLength,
       [Out] byte[] response,
       int responseLength);
 

@@ -23,6 +23,7 @@ pub mod requests;
 pub mod server_data;
 
 use anyhow::Result;
+use concurrent_queue::ConcurrentQueue;
 use dashmap::DashMap;
 use database::Database;
 use game_data::player_name::PlayerId;
@@ -42,21 +43,20 @@ use tonic::{Request, Response, Status};
 use tracing::{error, info, info_span, warn, Instrument};
 use ulid::Ulid;
 use user_action_data::UserAction;
-use with_error::WithError;
+use with_error::{fail, WithError};
 
 use crate::server_data::{ClientData, GameResponse, RequestData};
 
 /// Stores active channels for each user.
-///
-/// TODO: Clean this up on disconnect. This is quite easy to do with 'real' gRPC
-/// but I haven't figured out how to do it with gRPC-web (which is just
-/// fake-streaming over HTTP1). Unity doesn't support HTTP2 natively, but it's
-/// possible to do it via a third party networking stack.
-static CHANNELS: Lazy<DashMap<PlayerId, Sender<Result<CommandList, Status>>>> =
-    Lazy::new(DashMap::new);
+static CHANNELS: Lazy<DashMap<PlayerId, ChannelType>> = Lazy::new(DashMap::new);
 
 pub struct GameService<T: Database> {
     pub database: T,
+}
+
+pub enum ChannelType {
+    Sender(Sender<Result<CommandList, Status>>),
+    Polling(ConcurrentQueue<CommandList>),
 }
 
 #[tonic::async_trait]
@@ -85,7 +85,7 @@ impl<T: Database + 'static> Spelldawn for GameService<T> {
             }
         }
 
-        CHANNELS.insert(player_id, tx);
+        CHANNELS.insert(player_id, ChannelType::Sender(tx));
         Ok(Response::new(ReceiverStream::new(rx)))
     }
 
@@ -107,6 +107,37 @@ impl<T: Database + 'static> Spelldawn for GameService<T> {
             Err(error) => {
                 error!(?error, "Server Error!");
                 Err(Status::internal(format!("Server Error: {error:#}")))
+            }
+        }
+    }
+}
+
+/// Registers a new user connecting via the Unity native plugin and subscribes
+/// that user to receive updates from response polling.
+pub async fn plugin_connect(database: &impl Database, player_id: PlayerId) -> Result<GameResponse> {
+    CHANNELS.insert(player_id, ChannelType::Polling(ConcurrentQueue::unbounded()));
+    handle_connect(database, player_id).await
+}
+
+/// Request new updates which have been stored for the provided player,
+/// typically because of some asynchronous AI action. The provided player must
+/// previously have been connected via [plugin_connect].
+pub fn plugin_poll(player_id: PlayerId) -> Result<Option<CommandList>> {
+    let Some(channel) = CHANNELS.get(&player_id) else {
+        error!(?player_id, "Player is not connected");
+        fail!("Player is not connected {:?}", player_id);
+    };
+
+    match channel.value() {
+        ChannelType::Sender(_) => {
+            error!(?player_id, "Player did not connect via plugin_connect()");
+            fail!("Player did not connect via plugin_connect {:?}", player_id);
+        }
+        ChannelType::Polling(queue) => {
+            if queue.is_empty() {
+                Ok(None)
+            } else {
+                Ok(Some(queue.pop()?))
             }
         }
     }
@@ -230,28 +261,27 @@ async fn handle_fetch_panel(
 /// server.
 pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
     if let Some((player_id, commands)) = response {
-        if let Some(channel) = CHANNELS.get(&player_id) {
-            if let Err(e) = channel.send(Ok(commands)).await {
-                // This returns SendError if the client is disconnected, which isn't a
-                // huge problem. Hopefully they will reconnect again in the future.
-                warn!(?player_id, "Unable to send to player: {e:?}");
-            }
-        } else if !player_id.is_named_player() {
-            warn!(?player_id, "Player is not connected to this instance");
+        if player_id.is_named_player() {
+            // Don't need to send updates to AI players
+            return;
         }
-    }
-}
 
-/// Sends an error response to a connected player
-pub async fn send_player_error(player_id: PlayerId, error: &anyhow::Error) {
-    let Some(channel) = CHANNELS.get(&player_id) else {
-        warn!(?player_id, "Player is not connected");
-        return
-    };
-    if let Err(e) =
-        channel.send(Err(Status::internal(format!("Error running agent {error}")))).await
-    {
-        warn!("Unable to send error to player: {e:?}")
+        if let Some(channel_type) = CHANNELS.get(&player_id) {
+            match channel_type.value() {
+                ChannelType::Sender(sender) => {
+                    if let Err(e) = sender.send(Ok(commands)).await {
+                        error!(?player_id, "Unable to send to player: {e:?}");
+                    }
+                }
+                ChannelType::Polling(queue) => {
+                    if let Err(e) = queue.push(commands) {
+                        error!(?player_id, "Unable to enqueue for player: {e:?}");
+                    }
+                }
+            }
+        } else {
+            error!(?player_id, "Player is not connected to this instance");
+        }
     }
 }
 
