@@ -16,18 +16,14 @@ doctest = false
 [dependencies]
 cards_all = { path = "../cards/cards_all", version = "0.0.0" }
 database = { path = "../database", version = "0.0.0" }
+logging = { path = "../logging", version = "0.0.0", features = ["ansi"] }
 protos = { path = "../protos", version = "0.0.0" }
 server = { path = "../server", version = "0.0.0" }
 
-signal-hook = "0.3.15"
 tokio = { version = "1.25.0", features = ["macros", "rt-multi-thread", "sync", "time"] }
 tonic = { version = "0.8.3", features = ["gzip"] }
 tonic-web = "0.5.0"
 tracing = { version = "0.1.37", features = ["max_level_debug"] }
-tracing-appender = "0.2.2"
-tracing-forest = { version = "0.1.5", features = ["ansi", "env-filter", "tokio"] }
-tracing-subscriber = "0.3.16"
-tracing-stackdriver = { version = "0.6.2", features = ["opentelemetry"] }
 
 [dev-dependencies]
 rusty-hook = "0.11.2"

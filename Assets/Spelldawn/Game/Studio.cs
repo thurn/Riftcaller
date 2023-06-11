@@ -54,7 +54,7 @@ namespace Spelldawn.Game
     {
       if (!Application.isPlaying)
       {
-        Debug.LogError("Not Playing");
+        LogUtils.LogError("Not Playing");
         return;
       }
 

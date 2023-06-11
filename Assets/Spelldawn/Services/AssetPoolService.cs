@@ -49,7 +49,7 @@ namespace Spelldawn.Services
         }
         else
         {
-          Debug.LogError($"Error: Failed to load asset {prefabReference}");
+          LogUtils.LogError($"Error: Failed to load asset {prefabReference}");
         }
       }
     }

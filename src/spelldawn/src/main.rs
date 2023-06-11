@@ -14,58 +14,32 @@
 
 //! Spelldawn: An asymmetric trading card game
 
-use std::{env, thread};
+use std::env;
 
 use database::firestore_database::FirestoreDatabase;
 use database::sled_database::SledDatabase;
 use database::Database;
+use logging::LoggingType;
 use protos::spelldawn::spelldawn_server::SpelldawnServer;
 use server::GameService;
-use signal_hook::consts::SIGTERM;
-use signal_hook::iterator::Signals;
 use tonic::codec::CompressionEncoding;
 use tonic::transport::Server;
 use tonic_web::GrpcWebLayer;
-use tracing::{warn, Event, Level};
-use tracing_forest::{ForestLayer, PrettyPrinter, Tag};
-use tracing_stackdriver::CloudTraceConfiguration;
-use tracing_subscriber::filter::EnvFilter;
-use tracing_subscriber::prelude::*;
-use tracing_subscriber::Registry;
+use tracing::warn;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     cards_all::initialize();
     let args = env::args().collect::<Vec<_>>();
 
-    let mut signals = Signals::new([SIGTERM])?;
-    thread::spawn(move || {
-        for _ in signals.forever() {
-            warn!("Received SIGTERM");
-            println!("Received SIGTERM");
-        }
-    });
-
-    let filter = if let Ok(v) = env::var("RUST_LOG") {
-        EnvFilter::new(v)
-    } else {
-        EnvFilter::new("debug,hyper=warn,h2=warn,tower=warn")
-    };
-
     let version = if args.len() >= 3 { &args[2] } else { "unspecified" };
 
-    let logging = if args.len() >= 4 && args[3].contains("stackdriver") {
-        let stackdriver = tracing_stackdriver::layer()
-            .enable_cloud_trace(CloudTraceConfiguration { project_id: "spelldawn".to_string() });
-        let subscriber = Registry::default().with(stackdriver).with(filter);
-        tracing::subscriber::set_global_default(subscriber).unwrap();
-        "stackdriver"
+    let logging_type = if args.len() >= 4 && args[3].contains("stackdriver") {
+        LoggingType::Stackdriver
     } else {
-        let forest_layer = ForestLayer::new(PrettyPrinter::new(), tag_parser);
-        let subscriber = Registry::default().with(forest_layer).with(filter);
-        tracing::subscriber::set_global_default(subscriber).unwrap();
-        "tracing-forest"
+        LoggingType::Forest
     };
+    logging::initialize(logging_type);
 
     let port = env::var("PORT").unwrap_or_else(|_| "80".to_string());
 
@@ -75,11 +49,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             port,
             FirestoreDatabase::new("spelldawn").await?,
             "firestore",
-            logging,
+            logging_type,
         )
         .await
     } else {
-        start_server(version, port, SledDatabase::new("db"), "sled", logging).await
+        start_server(version, port, SledDatabase::new("db"), "sled", logging_type).await
     }
 }
 
@@ -113,30 +87,4 @@ async fn start_server(
         .await?;
 
     Ok(())
-}
-
-fn tag_parser(event: &Event) -> Option<Tag> {
-    let target = event.metadata().target();
-    let level = *event.metadata().level();
-    let icon = match target {
-        _ if level == Level::ERROR => '🚨',
-        _ if level == Level::WARN => '🚧',
-        _ if target.contains("rules") => '🎴',
-        _ if target.contains("tutorial") => '🎓',
-        _ if target.contains("server") => '💻',
-        _ if target.contains("actions") => '🎬',
-        _ if target.contains("raids") => '🔪',
-        _ => match level {
-            Level::TRACE => '📍',
-            Level::DEBUG => '📝',
-            _ => '💡',
-        },
-    };
-
-    let mut builder = Tag::builder().level(level).icon(icon);
-    if icon == '📝' || icon == '💡' || icon == '📍' {
-        builder = builder.prefix(target);
-    }
-
-    Some(builder.build())
 }

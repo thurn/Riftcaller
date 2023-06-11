@@ -15,6 +15,7 @@
 #if UNITY_EDITOR && UNITY_IOS
 
 using System.IO;
+using Spelldawn.Utils;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -25,7 +26,7 @@ public class BuildIos
   [PostProcessBuild]
   public static void OnPostProcessBuild(BuildTarget target, string path)
   {
-    Debug.Log("Post-processing iOS Build");
+    LogUtils.Log("Post-processing iOS Build");
     var projectPath = PBXProject.GetPBXProjectPath(path);
     var project = new PBXProject();
     project.ReadFromString(File.ReadAllText(projectPath));

@@ -99,7 +99,7 @@ namespace Spelldawn.Tests
         var fileName = $"{textAsset.name}_{count}.png";
         if (ShouldHandle(command.CommandCase) && ShouldPause(fileName))
         {
-          Debug.Log($"Preparing to run {fileName}");
+          LogUtils.Log($"Preparing to run {fileName}");
           Debug.Break();
         }
         yield return Registry.CommandService.HandleCommands(command);
@@ -109,7 +109,7 @@ namespace Spelldawn.Tests
         {
           if (ShouldPause(fileName))
           {
-            Debug.Log($"Saving Screenshot for {fileName}");
+            LogUtils.Log($"Saving Screenshot for {fileName}");
             Debug.Break();
           }
           yield return Capture(fileName);
@@ -125,7 +125,7 @@ namespace Spelldawn.Tests
 
       if (Math.Abs(Screen.dpi - 255.0) > 0.1f && !Application.isEditor)
       {
-        Debug.LogError($"ERROR: DPI is {Screen.dpi}, screenshot tests can only run on a 255 dpi screen.");
+        LogUtils.LogError($"ERROR: DPI is {Screen.dpi}, screenshot tests can only run on a 255 dpi screen.");
         Quit(1);
         return;
       }
@@ -134,7 +134,7 @@ namespace Spelldawn.Tests
       _directory = Application.isEditor
         ? "/tmp/spelldawn/Screenshots"
         : Path.Combine(Application.dataPath, "Screenshots");
-      Debug.Log($"Saving screenshots to {_directory}");
+      LogUtils.Log($"Saving screenshots to {_directory}");
 
       if (Directory.Exists(_directory))
       {

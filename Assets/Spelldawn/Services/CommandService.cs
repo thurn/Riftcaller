@@ -82,7 +82,7 @@ namespace Spelldawn.Services
       yield return _registry.AssetService.LoadAssets(commandList);
 
       var names = string.Join(",", commandList.Commands.Select(c => c.CommandCase));
-      Debug.Log($"Handling Commands: {names}");
+      LogUtils.Log($"Handling Commands: {names}");
 
       foreach (var command in commandList.Commands)
       {
@@ -157,7 +157,7 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.None:
             break;
           default:
-            Debug.LogError($"Unknown game command: {command.CommandCase}");
+            LogUtils.LogError($"Unknown game command: {command.CommandCase}");
             break;
         }
       }
@@ -180,7 +180,7 @@ namespace Spelldawn.Services
           {
             logs.Add($"Game: {metadata.GameId}");
           }          
-          Debug.Log(string.Join(" ", logs));
+          LogUtils.Log(string.Join(" ", logs));
         }
 
         ClientMetadata = metadata;
@@ -299,7 +299,7 @@ namespace Spelldawn.Services
         yield break;
       }
       
-      Debug.Log($"Loading scene '{command.SceneName}'");
+      LogUtils.Log($"Loading scene '{command.SceneName}'");
       yield return SceneManager.LoadSceneAsync(command.SceneName, command.Mode switch
       {
         SceneLoadMode.Single => LoadSceneMode.Single,
@@ -322,13 +322,13 @@ namespace Spelldawn.Services
           switch (command.LogMessage.Level)
           {
             case LogMessageLevel.Error:
-              Debug.LogError(command.LogMessage.Text);
+              LogUtils.LogError(command.LogMessage.Text);
               break;
             case LogMessageLevel.Warning:
               Debug.LogWarning(command.LogMessage.Text);
               break;
             default:
-              Debug.Log(command.LogMessage.Text);
+              LogUtils.Log(command.LogMessage.Text);
               break;
           }
 

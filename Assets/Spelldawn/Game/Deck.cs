@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
+using Spelldawn.Utils;
 using UnityEngine;
 
 #nullable enable
@@ -73,7 +74,7 @@ namespace Spelldawn.Game
         }
         else
         {
-          Debug.Log("Ignoring click on deck, cannot currently draw a card");
+          LogUtils.Log("Ignoring click on deck, cannot currently draw a card");
         }
       }
     }

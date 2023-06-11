@@ -90,7 +90,7 @@ namespace Spelldawn.Services
         case ClientItemLocation.Right:
           return _rightItems.AddObject(card, animate);
         default:
-          Debug.LogError($"Unknown item location: {position.ItemLocation}");
+          LogUtils.LogError($"Unknown item location: {position.ItemLocation}");
           return _rightItems.AddObject(card, animate);
       }
     }

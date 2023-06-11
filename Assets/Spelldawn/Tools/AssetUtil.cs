@@ -15,6 +15,7 @@
 #nullable enable
 
 using System.Collections;
+using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -41,7 +42,7 @@ namespace Spelldawn.Assets
       }
       else
       {
-        Debug.LogError($"Error loading asset {reference}");
+        LogUtils.LogError($"Error loading asset {reference}");
       }
     }
   }

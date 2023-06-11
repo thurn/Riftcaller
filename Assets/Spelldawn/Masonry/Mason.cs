@@ -171,7 +171,7 @@ namespace Spelldawn.Masonry
       {
         if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
         {
-          Debug.LogError($"Custom element {element} cannot have interaction");
+          LogUtils.LogError($"Custom element {element} cannot have interaction");
         }
       }
     }

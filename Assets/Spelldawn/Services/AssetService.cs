@@ -200,7 +200,7 @@ namespace Spelldawn.Services
           }
           else
           {
-            Debug.LogError($"Null asset for {address}");
+            LogUtils.LogError($"Null asset for {address}");
           }
         }
       }
@@ -215,7 +215,7 @@ namespace Spelldawn.Services
       }
       else
       {
-        Debug.LogError($"Asset not found: {address}");
+        LogUtils.LogError($"Asset not found: {address}");
         return null!;
       }
     }
@@ -229,7 +229,7 @@ namespace Spelldawn.Services
       }
       else
       {
-        Debug.LogError($"Asset not found: {address}");
+        LogUtils.LogError($"Asset not found: {address}");
         return null!;
       }
     }    

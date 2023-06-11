@@ -1541,6 +1541,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "logging"
+version = "0.0.0"
+dependencies = [
+ "tracing",
+ "tracing-appender",
+ "tracing-forest",
+ "tracing-stackdriver",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "macros"
 version = "0.0.0"
 dependencies = [
@@ -1965,11 +1976,16 @@ dependencies = [
  "anyhow",
  "cards_all",
  "database",
+ "logging",
  "once_cell",
  "prost",
  "protos",
  "server",
  "tokio",
+ "tracing",
+ "tracing-appender",
+ "tracing-forest",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -2636,16 +2652,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "signal-hook"
-version = "0.3.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "732768f1176d21d09e076c23a93123d40bba92d50c4058da34d45c8de8e682b9"
-dependencies = [
- "libc",
- "signal-hook-registry",
-]
-
-[[package]]
 name = "signal-hook-registry"
 version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2716,18 +2722,14 @@ version = "0.0.0"
 dependencies = [
  "cards_all",
  "database",
+ "logging",
  "protos",
  "rusty-hook",
  "server",
- "signal-hook",
  "tokio",
  "tonic",
  "tonic-web",
  "tracing",
- "tracing-appender",
- "tracing-forest",
- "tracing-stackdriver",
- "tracing-subscriber",
 ]
 
 [[package]]

@@ -95,7 +95,7 @@ namespace Spelldawn.Services
           // more robust testing, for example to ensure that multiple optimistic interface updates
           // work with any sequence of mutations & responses. For now we simply ignore button clicks
           // while an RPC is pending.
-          Debug.Log($"Silently dropping StandardAction while handling {_currentlyHandlingAction} with {_actionQueue.Count} queued actions");
+          LogUtils.Log($"Silently dropping StandardAction while handling {_currentlyHandlingAction} with {_actionQueue.Count} queued actions");
         }
         else
         {
@@ -153,7 +153,7 @@ namespace Spelldawn.Services
 
       if (DevelopmentMode)
       {
-        Debug.Log($"Connecting to {ServerAddress()}");
+        LogUtils.Log($"Connecting to {ServerAddress()}");
         using var call = _client.Value.Connect(request);
 
         try
@@ -176,13 +176,13 @@ namespace Spelldawn.Services
           _attemptReconnect = true;
           if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
           {
-            Debug.Log($"RpcException: {e.StatusCode} -- {e.Message}");
+            LogUtils.Log($"RpcException: {e.StatusCode} -- {e.Message}");
           }
         }        
       }
       else
       {
-        Debug.Log($"Connecting to Plugin");
+        LogUtils.Log($"Connecting to Plugin");
         StartCoroutine(ConnectToOfflineGame(request));        
       }
     }
@@ -226,7 +226,7 @@ namespace Spelldawn.Services
         float startTime = 0;
         if (LogRpcTime.ShouldLogRpcTime)
         {
-          Debug.Log($"Sending {request.Action.ActionCase}");
+          LogUtils.Log($"Sending {request.Action.ActionCase}");
           startTime = Time.time;
         }
 
@@ -251,7 +251,7 @@ namespace Spelldawn.Services
             _attemptReconnect = false;
             if (LogRpcTime.ShouldLogRpcTime)
             {
-              Debug.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
+              LogUtils.Log($"Got response in {(Time.time - startTime) * 1000} milliseconds");
             }
 
             var commands = string.Join(",", task.GetResult().Commands.Select(c => c.CommandCase));
@@ -263,7 +263,7 @@ namespace Spelldawn.Services
             _attemptReconnect = true;
             if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
             {
-              Debug.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
+              LogUtils.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
             }
 
             break;
@@ -406,7 +406,7 @@ namespace Spelldawn.Services
 
     public Stream CreateDecompressionStream(Stream stream)
     {
-      Debug.Log($">>> Decompressing: {stream.Length / 1024.0:0.00}KB");
+      LogUtils.Log($">>> Decompressing: {stream.Length / 1024.0:0.00}KB");
       return _wrappedProvider.CreateDecompressionStream(stream);
     }
 

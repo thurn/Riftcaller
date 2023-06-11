@@ -21,6 +21,7 @@ use std::{panic, str};
 
 use anyhow::Result;
 use database::sled_database::SledDatabase;
+use logging::LoggingType;
 use once_cell::sync::Lazy;
 use prost::Message;
 use protos::spelldawn::client_debug_command::DebugCommand;
@@ -31,7 +32,6 @@ use protos::spelldawn::{
 };
 use server::ai_agent_response;
 use tokio::sync::Mutex;
-
 static DATABASE: Lazy<Mutex<Option<SledDatabase>>> = Lazy::new(|| Mutex::new(None));
 
 /// Initialize the plugin. Must be called immediately at application start.
@@ -52,6 +52,8 @@ async unsafe fn initialize_impl(path: *const u8, path_length: i32) -> Result<i32
     let db_path = str::from_utf8(slice)?;
     let mut guard = DATABASE.lock().await;
     let _ = guard.insert(SledDatabase::new(db_path));
+
+    logging::initialize(LoggingType::Forest);
     println!("Initialized plugin with database path {db_path}");
     Ok(0)
 }

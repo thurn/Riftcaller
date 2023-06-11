@@ -1,0 +1,21 @@
+[package]
+name = "logging"
+version = "0.0.0"
+description = "Configuration for execution tracing"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+path = "src/logging.rs"
+test = false
+doctest = false
+
+[features]
+ansi = ["tracing-forest/ansi"]
+
+[dependencies]
+tracing = { version = "0.1.37", features = ["max_level_debug"] }
+tracing-appender = "0.2.2"
+tracing-forest = { version = "0.1.5", features = ["env-filter", "tokio"] }
+tracing-stackdriver = { version = "0.6.2", features = ["opentelemetry"] }
+tracing-subscriber = "0.3.16"
