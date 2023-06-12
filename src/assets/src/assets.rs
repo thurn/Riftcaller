@@ -132,33 +132,14 @@ pub fn card_back(school: School) -> SpriteAddress {
 }
 
 /// Address for the frame of a card of a given [School]
-pub fn card_frame(school: School, card_type: CardType) -> SpriteAddress {
-    let string = if card_type == CardType::Leader {
-        match school {
-            School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardLawFullHeight",
-            School::Shadow => {
-                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardShadowFullHeight"
-            }
-            School::Primal => {
-                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardPrimalFullHeight"
-            }
-            School::Beyond => {
-                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBeyondFullHeight"
-            }
-            School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBloodFullHeight",
-            School::Neutral => {
-                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardNeutralFullHeight"
-            }
-        }
-    } else {
-        match school {
-            School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardFrame",
-            School::Shadow => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame",
-            School::Primal => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame",
-            School::Beyond => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame",
-            School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame",
-            School::Neutral => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame",
-        }
+pub fn card_frame(school: School, _: CardType) -> SpriteAddress {
+    let string = match school {
+        School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardFrame",
+        School::Shadow => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame",
+        School::Primal => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame",
+        School::Beyond => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame",
+        School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame",
+        School::Neutral => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame",
     };
 
     SpriteAddress { address: format!("{string}.png") }
@@ -199,7 +180,7 @@ pub fn title_background(_: Option<Lineage>) -> SpriteAddress {
 }
 
 /// Address for the frame of a card in the arena
-pub fn arena_frame(side: Side, card_type: CardType, lineage: Option<Lineage>) -> SpriteAddress {
+pub fn arena_frame(_: Side, card_type: CardType, lineage: Option<Lineage>) -> SpriteAddress {
     SpriteAddress {
         address: format!(
             "{}.png",
@@ -210,7 +191,6 @@ pub fn arena_frame(side: Side, card_type: CardType, lineage: Option<Lineage>) ->
                 Some(Lineage::Prismatic) => "SpriteWay/Icons/Clean Frames/9047",
                 Some(Lineage::Construct) => "SpriteWay/Icons/Clean Frames/9003",
                 None => match card_type {
-                    CardType::Leader => leader_card_frame_string(side),
                     CardType::Artifact => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",

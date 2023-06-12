@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
-use assets::EnvironmentType;
 use card_helpers::*;
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
@@ -24,28 +23,6 @@ use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
-
-pub fn tutorial_champion_leader() -> CardDefinition {
-    CardDefinition {
-        name: CardName::TutorialChampionLeader,
-        sets: vec![CardSetName::Basics],
-        cost: cost(0),
-        image: assets::fantasy_class_image("Priest", "Female"),
-        card_type: CardType::Leader,
-        side: Side::Champion,
-        school: School::Neutral,
-        rarity: Rarity::Common,
-        abilities: vec![],
-        config: CardConfig {
-            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Priest_F")),
-            image_background: Some(assets::environments(
-                EnvironmentType::CastlesTowersKeeps,
-                "Enchanted/SceneryEForest_outside_1",
-            )),
-            ..CardConfig::default()
-        },
-    }
-}
 
 pub fn arcane_recovery() -> CardDefinition {
     CardDefinition {

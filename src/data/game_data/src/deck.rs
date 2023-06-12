@@ -29,11 +29,14 @@ use crate::primitives::{School, Side};
 pub struct Deck {
     /// Identifies which side this deck plays as.
     pub side: Side,
-    /// The school for this deck, determines e.g. card back used
-    pub primary_school: School,
-    /// Leader card for this deck, if any
-    pub leader: Option<CardName>,
-    /// How many (non-leader) cards with each name are present in this deck?
+    /// The schools associated with this deck, in order of selection. The first
+    /// school is often called the 'primary' school for a deck and is e.g. used
+    /// to determine the card backs shown for this player.
+    pub schools: Vec<School>,
+    /// Sigil cards for this deck, which start the game in play and provide
+    /// global effects.
+    pub sigils: Vec<CardName>,
+    /// How many (non-sigil) cards with each name are present in this deck?
     #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub cards: HashMap<CardName, u32>,
 }
@@ -41,7 +44,7 @@ pub struct Deck {
 impl Deck {
     /// Returns a vector which repeats each [CardName] in [Self::cards] in
     /// alphabetical order a number of times equal to its deck count. Note: The
-    /// returned vector does *not* contain [Self::leader].
+    /// returned vector does *not* contain sigils.
     pub fn card_names(&self) -> Vec<CardName> {
         let mut result = self
             .cards

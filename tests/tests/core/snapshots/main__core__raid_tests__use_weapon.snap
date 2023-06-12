@@ -43,13 +43,13 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O11
+        card_id: O10
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: O44
+        card_id: O43
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -69,13 +69,13 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: C24
+        card_id: C23
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -94,7 +94,7 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -115,8 +115,8 @@ command_list:
                 sorting_key: 101
                 position: ObjectPositionItem { item_location: Left }
     FireProjectile: 
-        source_id: C45
-        target_id: O44
+        source_id: C44
+        target_id: O43
         projectile: "<ProjectileAddress>"
         travel_duration: 300
         wait_duration: 300
@@ -142,7 +142,7 @@ command_list:
             node: 
                 text: "End Raid"
         card_anchor_nodes: 
-            card_id: O45
+            card_id: O44
             node: 
                 text: "Score!"
         anchors: 
@@ -170,13 +170,13 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O11
+        card_id: O10
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: O44
+        card_id: O43
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -196,7 +196,7 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -216,7 +216,7 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C24
+        card_id: C23
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -235,7 +235,7 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -294,7 +294,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O11
+        card_id: O10
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -313,7 +313,7 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-        card_id: O44
+        card_id: O43
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -333,7 +333,7 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -353,13 +353,13 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C24
+        card_id: C23
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -380,8 +380,8 @@ channel_response:
                 sorting_key: 101
                 position: ObjectPositionItem { item_location: Left }
     FireProjectile: 
-        source_id: C45
-        target_id: O44
+        source_id: C44
+        target_id: O43
         projectile: "<ProjectileAddress>"
         travel_duration: 300
         wait_duration: 300
@@ -423,7 +423,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O11
+        card_id: O10
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -442,7 +442,7 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-        card_id: O44
+        card_id: O43
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -462,7 +462,7 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -482,13 +482,13 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C24
+        card_id: C23
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 

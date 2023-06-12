@@ -17,7 +17,7 @@ use core_ui::prelude::Node;
 use element_names::ElementName;
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
-use game_data::primitives::{School, Side};
+use game_data::primitives::Side;
 use maplit::hashmap;
 use test_utils::client_interface::{self, find_card_view, HasText};
 use test_utils::test_adventure::{TestAdventure, TestConfig};
@@ -101,8 +101,8 @@ fn config() -> TestConfig {
     TestConfig {
         deck: Some(Deck {
             side: Side::Champion,
-            primary_school: School::Neutral,
-            leader: Some(CardName::TestChampionLeader),
+            schools: vec![],
+            sigils: vec![],
             cards: hashmap! { EXAMPLE_CARD => 2 },
         }),
         collection: hashmap! { EXAMPLE_CARD => 3},

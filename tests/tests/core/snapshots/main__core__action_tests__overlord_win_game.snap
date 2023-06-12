@@ -43,7 +43,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -102,7 +102,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -128,12 +128,12 @@ command_list:
         sound: "<AudioClipAddress>"
     PlayEffect: 
         effect: "<EffectAddress>"
-        position: O45
+        position: O44
         duration: 700
         sound: "<AudioClipAddress>"
     PlayEffect: 
         effect: "<EffectAddress>"
-        position: O45
+        position: O44
         duration: 300
         sound: "<AudioClipAddress>"
     Delay: 1000
@@ -175,7 +175,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -233,7 +233,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -296,7 +296,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
@@ -345,7 +345,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -371,12 +371,12 @@ channel_response:
         sound: "<AudioClipAddress>"
     PlayEffect: 
         effect: "<EffectAddress>"
-        position: O45
+        position: O44
         duration: 700
         sound: "<AudioClipAddress>"
     PlayEffect: 
         effect: "<EffectAddress>"
-        position: O45
+        position: O44
         duration: 300
         sound: "<AudioClipAddress>"
     Delay: 1000
@@ -418,7 +418,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -476,7 +476,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O45
+        card_id: O44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 

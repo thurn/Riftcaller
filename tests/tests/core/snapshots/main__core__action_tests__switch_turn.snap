@@ -82,7 +82,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C11
+        card_id: C10
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
@@ -126,7 +126,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C11
+        card_id: C10
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
@@ -210,7 +210,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C11
+        card_id: C10
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -230,7 +230,7 @@ channel_response:
                 sorting_key: 101
                 position: ObjectPositionStaging
     MoveGameObjects: 
-        id: C11
+        id: C10
         position: 
             sorting_key: 1
             position: ObjectPositionRevealedCards { size: Small }
@@ -272,7 +272,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C11
+        card_id: C10
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 

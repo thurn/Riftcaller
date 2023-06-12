@@ -45,7 +45,7 @@ expression: "Summary::run(&r3)"
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O1
+        card_id: O0
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 

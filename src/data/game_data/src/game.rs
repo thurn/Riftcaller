@@ -60,7 +60,7 @@ pub struct ManaState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GamePlayerData {
     pub id: PlayerId,
-    pub primary_school: School,
+    pub schools: Vec<School>,
     pub mana_state: ManaState,
     pub actions: ActionCount,
     pub score: PointsValue,
@@ -72,15 +72,8 @@ pub struct GamePlayerData {
 
 impl GamePlayerData {
     /// Create an empty player state.
-    pub fn new(id: PlayerId, primary_school: School) -> Self {
-        Self {
-            id,
-            primary_school,
-            mana_state: ManaState::default(),
-            actions: 0,
-            score: 0,
-            prompt: None,
-        }
+    pub fn new(id: PlayerId, schools: Vec<School>) -> Self {
+        Self { id, schools, mana_state: ManaState::default(), actions: 0, score: 0, prompt: None }
     }
 }
 
@@ -308,8 +301,8 @@ impl GameState {
             },
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
-            overlord: GamePlayerData::new(overlord, overlord_deck.primary_school),
-            champion: GamePlayerData::new(champion, champion_deck.primary_school),
+            overlord: GamePlayerData::new(overlord, overlord_deck.schools),
+            champion: GamePlayerData::new(champion, champion_deck.schools),
             ability_state: HashMap::new(),
             history: vec![],
             updates: UpdateTracker::new(if config.simulation {
@@ -544,12 +537,6 @@ impl GameState {
         self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
     }
 
-    /// Returns a leader card which has been played for the `side` player if one
-    /// exists.
-    pub fn leader_in_play(&self, side: Side) -> Option<&CardState> {
-        self.cards_in_position(side, CardPosition::ArenaLeader(side)).next()
-    }
-
     /// All global game modifier cards, in an unspecified order
     pub fn game_modifiers(&self, side: Side) -> impl Iterator<Item = &CardState> {
         self.cards_in_position(side, CardPosition::GameModifier)
@@ -619,10 +606,12 @@ impl GameState {
     /// Create card states for a deck
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
         let mut result = vec![];
-        if let Some(leader) = deck.leader {
-            let mut card = CardState::new(CardId::new(side, 0), leader);
-            card.set_position_internal(1, CardPosition::PreGameLeader(side));
-            card.set_revealed_to(side, true);
+
+        for (i, sigil) in deck.sigils.iter().enumerate() {
+            let mut card = CardState::new(CardId::new(side, i), *sigil);
+            card.set_position_internal(i as u32, CardPosition::Sigil(side));
+            card.set_revealed_to(Side::Overlord, true);
+            card.set_revealed_to(Side::Champion, true);
             result.push(card);
         }
 
@@ -699,15 +688,15 @@ mod tests {
             PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Overlord,
-                primary_school: School::Law,
-                leader: None,
+                schools: vec![School::Law],
+                sigils: vec![],
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
             PlayerId::Named(NamedPlayer::NoAction),
             Deck {
                 side: Side::Champion,
-                primary_school: School::Law,
-                leader: None,
+                schools: vec![School::Law],
+                sigils: vec![],
                 cards: champion.into_iter().map(|name| (name, 1)).collect(),
             },
             GameConfiguration { deterministic: true, ..GameConfiguration::default() },

@@ -43,7 +43,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C/45/1
+        card_id: C/44/1
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -60,7 +60,7 @@ command_list:
             on_release_position: 
                 sorting_key: 4
                 position: ObjectPositionStaging
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -118,7 +118,7 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C/45/1
+        card_id: C/44/1
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -135,7 +135,7 @@ command_list:
             on_release_position: 
                 sorting_key: 4
                 position: ObjectPositionStaging
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -194,7 +194,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 
@@ -216,7 +216,7 @@ channel_response:
                 position: ObjectPositionItem { item_location: Right }
     CreateTokenCard: 
         card: 
-            card_id: C/45/1
+            card_id: C/44/1
             revealed_to_viewer: true
             is_face_up: false
             card_icons: 
@@ -272,7 +272,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C45
+        card_id: C44
         revealed_to_viewer: true
         is_face_up: true
         card_icons: 

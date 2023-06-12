@@ -19,7 +19,7 @@ use anyhow::Result;
 use game_data::card_state::{CardPositionKind, CardState};
 use game_data::card_view_context::CardViewContext;
 use game_data::game::GameState;
-use game_data::primitives::{RoomId, Side};
+use game_data::primitives::{RoomId, School, Side};
 use protos::spelldawn::{
     ActionTrackerView, CardView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
 };
@@ -71,11 +71,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
     Ok(PlayerView {
         side: adapters::player_side(side),
         player_info: Some(PlayerInfo {
-            arena_portrait: Some(adapters::sprite(
-                game.leader_in_play(side)
-                    .and_then(|card| rules::get(card.name).config.player_portrait.as_ref())
-                    .unwrap_or(&badge),
-            )),
+            arena_portrait: Some(adapters::sprite(&badge)),
             valid_rooms_to_visit: match side {
                 Side::Overlord => enum_iterator::all::<RoomId>()
                     .filter(|room_id| flags::can_take_level_up_room_action(game, side, *room_id))
@@ -97,7 +93,9 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
             available_action_count: game.player(side).actions,
         }),
         deck_view: Some(DeckView {
-            card_back: Some(assets::card_back(game.player(side).primary_school)),
+            card_back: Some(assets::card_back(
+                *game.player(side).schools.get(0).unwrap_or(&School::Neutral),
+            )),
             card_count: game.deck(side).count() as u32,
             can_take_draw_card_action: flags::can_take_draw_card_action(game, side),
         }),
@@ -107,5 +105,5 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
 
 fn skip_sending_to_client(card: &CardState) -> bool {
     let kind = card.position().kind();
-    kind == CardPositionKind::DeckUnknown || kind == CardPositionKind::PreGameLeader
+    kind == CardPositionKind::DeckUnknown
 }

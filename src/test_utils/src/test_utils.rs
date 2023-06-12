@@ -42,7 +42,7 @@ use game_data::game::{
 use game_data::player_name::PlayerId;
 use game_data::primitives::{
     ActionCount, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue, PointsValue, RaidId,
-    RoomId, School, Side,
+    RoomId, Side,
 };
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
@@ -87,14 +87,14 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
 
     let overlord_deck = Deck {
         side: Side::Overlord,
-        primary_school: School::Neutral,
-        leader: Some(CardName::TestOverlordLeader),
+        schools: vec![],
+        sigils: vec![],
         cards: hashmap! {CardName::TestOverlordSpell => 45},
     };
     let champion_deck = Deck {
         side: Side::Champion,
-        primary_school: School::Neutral,
-        leader: Some(CardName::TestChampionLeader),
+        schools: vec![],
+        sigils: vec![],
         cards: hashmap! {CardName::TestChampionSpell => 45},
     };
 

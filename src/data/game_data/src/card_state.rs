@@ -60,10 +60,8 @@ pub enum CardPosition {
     /// A card has been played by the [Side] player and is in the process of
     /// resolving with the provided target
     Played(Side, CardTarget),
-    /// A leader card which is currently in play.
-    ArenaLeader(Side),
-    /// The position leader cards occupy before the game starts
-    PreGameLeader(Side),
+    /// A sigil card owned by a player in the game.
+    Sigil(Side),
     /// Global modifier cards which change the rules of the game
     GameModifier,
 }
@@ -76,10 +74,7 @@ impl CardPosition {
 
     /// Returns true if this card is in a room or has been played as an item
     pub fn in_play(&self) -> bool {
-        matches!(
-            self.kind(),
-            CardPositionKind::Room | CardPositionKind::ArenaItem | CardPositionKind::ArenaLeader
-        )
+        matches!(self.kind(), CardPositionKind::Room | CardPositionKind::ArenaItem)
     }
 
     /// Returns true if this card is in a room

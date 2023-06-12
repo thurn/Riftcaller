@@ -65,7 +65,6 @@ pub fn handle_sequence_game_action(
         match action {
             TutorialStep::KeepOpeningHand(side) => keep_opening_hand(game, *side),
             TutorialStep::SetHand(side, cards) => set_hand(game, *side, cards),
-            TutorialStep::SetLeaderInPlay(side) => set_leader_in_play(game, *side),
             TutorialStep::SetTopOfDeck(side, cards) => set_top_of_deck(game, *side, cards),
             TutorialStep::OpponentAction(action) => {
                 if match_opponent_action(game, user_action, action)? {
@@ -193,17 +192,6 @@ fn set_hand(game: &mut GameState, side: Side, cards: &[CardName]) -> Result<()> 
 
     // Ignore game update caused by reshuffling
     game.updates.steps.clear();
-    Ok(())
-}
-
-fn set_leader_in_play(game: &mut GameState, side: Side) -> Result<()> {
-    let leader = game
-        .cards_in_position(side, CardPosition::PreGameLeader(side))
-        .next()
-        .with_error(|| format!("Leader not found for {side:?}"))?
-        .id;
-    mutations::move_card(game, leader, CardPosition::ArenaLeader(side))?;
-    game.card_mut(leader).turn_face_up();
     Ok(())
 }
 

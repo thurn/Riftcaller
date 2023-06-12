@@ -2,9 +2,7 @@
 
 use rules::DEFINITIONS;
 
-
 pub fn initialize() {
-    DEFINITIONS.insert(cards_basic::champion_basics::tutorial_champion_leader);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
     DEFINITIONS.insert(cards_basic::champion_basics::eldritch_surge);
     DEFINITIONS.insert(cards_basic::champion_basics::lodestone);
@@ -18,7 +16,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_basic::champion_basics::simple_hammer);
     DEFINITIONS.insert(cards_basic::champion_basics::simple_spear);
     DEFINITIONS.insert(cards_basic::champion_basics::ethereal_blade);
-    DEFINITIONS.insert(cards_basic::overlord_basics::tutorial_overlord_leader);
     DEFINITIONS.insert(cards_basic::overlord_basics::conspire);
     DEFINITIONS.insert(cards_basic::overlord_basics::devise);
     DEFINITIONS.insert(cards_basic::overlord_basics::machinate);
@@ -73,8 +70,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::weapons::marauders_axe);
     DEFINITIONS.insert(cards_poc::weapons::keen_halberd);
     DEFINITIONS.insert(cards_poc::weapons::bow_of_the_alliance);
-    DEFINITIONS.insert(cards_test::test_cards::test_overlord_leader);
-    DEFINITIONS.insert(cards_test::test_cards::test_champion_leader);
     DEFINITIONS.insert(cards_test::test_cards::test_overlord_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_315);

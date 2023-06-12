@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use assets::{rexard_images, EnvironmentType};
 use card_helpers::*;
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints,
@@ -23,28 +23,6 @@ use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
-
-pub fn tutorial_overlord_leader() -> CardDefinition {
-    CardDefinition {
-        name: CardName::TutorialOverlordLeader,
-        sets: vec![CardSetName::Basics],
-        cost: cost(0),
-        image: assets::fantasy_class_image("Warlock", "Male"),
-        card_type: CardType::Leader,
-        side: Side::Overlord,
-        school: School::Neutral,
-        rarity: Rarity::Common,
-        abilities: vec![],
-        config: CardConfig {
-            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Warlock_M")),
-            image_background: Some(assets::environments(
-                EnvironmentType::CastlesTowersKeeps,
-                "BoneKeep/SceneryBKeep_outside_2",
-            )),
-            ..CardConfig::default()
-        },
-    }
-}
 
 pub fn conspire() -> CardDefinition {
     CardDefinition {

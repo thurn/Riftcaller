@@ -19,7 +19,7 @@ use game_data::card_state::{CardPosition, CardState};
 use game_data::game::{GamePhase, GameState, MulliganData, RaidData};
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{
-    AbilityId, CardId, CardType, GameObjectId, ItemLocation, RoomId, RoomLocation, Side,
+    AbilityId, CardId, GameObjectId, ItemLocation, RoomId, RoomLocation, Side,
 };
 use game_data::utils;
 use protos::spelldawn::object_position::Position;
@@ -112,11 +112,11 @@ pub fn discard_container(builder: &ResponseBuilder, side: Side) -> Position {
     })
 }
 
-pub fn leader(builder: &ResponseBuilder, side: Side) -> Position {
+pub fn character(builder: &ResponseBuilder, side: Side) -> Position {
     Position::Character(ObjectPositionCharacter { owner: builder.to_player_name(side) })
 }
 
-pub fn leader_container(builder: &ResponseBuilder, side: Side) -> Position {
+pub fn character_container(builder: &ResponseBuilder, side: Side) -> Position {
     Position::CharacterContainer(ObjectPositionCharacterContainer {
         owner: builder.to_player_name(side),
     })
@@ -179,12 +179,12 @@ fn adapt_position(
         CardPosition::Hand(side) => hand(builder, side),
         CardPosition::DeckTop(side) => deck(builder, side),
         CardPosition::DiscardPile(side) => discard(builder, side),
-        CardPosition::Scored(side) | CardPosition::ArenaLeader(side) => leader(builder, side),
+        CardPosition::Scored(side) | CardPosition::Sigil(side) => character(builder, side),
         CardPosition::Scoring => staging(),
         CardPosition::Played(side, target) => {
             played_position(builder, game, side, card_id, target)?
         }
-        CardPosition::PreGameLeader(_) | CardPosition::DeckUnknown(_) => {
+        CardPosition::DeckUnknown(_) => {
             fail!("Invalid card position")
         }
         CardPosition::GameModifier => offscreen(),
@@ -206,8 +206,6 @@ pub fn played_position(
 ) -> Result<Position> {
     if builder.user_side != side || rules::card_definition(game, card_id).card_type.is_spell() {
         Ok(staging())
-    } else if rules::card_definition(game, card_id).card_type == CardType::Leader {
-        Ok(leader_container(builder, side))
     } else {
         adapt_position(
             builder,
@@ -260,7 +258,7 @@ fn non_card(
         match id {
             GameObjectId::Deck(side) => for_sorting_key(0, deck_container(builder, side)),
             GameObjectId::DiscardPile(side) => for_sorting_key(0, discard_container(builder, side)),
-            GameObjectId::Character(side) => for_sorting_key(0, leader_container(builder, side)),
+            GameObjectId::Character(side) => for_sorting_key(0, character_container(builder, side)),
             _ => fail!("Unsupported ID type"),
         }
     })

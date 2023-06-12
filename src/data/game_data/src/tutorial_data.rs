@@ -142,9 +142,6 @@ pub enum TutorialStep {
     /// select the 'keep opening hand' prompt option.
     SetHand(Side, Vec<CardName>),
 
-    /// Moves the leader card for a player into play
-    SetLeaderInPlay(Side),
-
     /// Sets the top card of a player's deck to contain specific cards. The
     /// cards must exist already in the player's deck.
     ///

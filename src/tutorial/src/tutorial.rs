@@ -38,8 +38,6 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
         steps: vec![
             TutorialStep::SetHand(Side::Overlord, vec![CardName::Frog]),
             TutorialStep::SetHand(Side::Champion, vec![CardName::EldritchSurge]),
-            TutorialStep::SetLeaderInPlay(Side::Champion),
-            TutorialStep::SetLeaderInPlay(Side::Overlord),
             TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Captain, CardName::Machinate]),
             TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleAxe]),
             TutorialStep::AddGameModifiers(vec![

@@ -38,12 +38,7 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result
         card_id: context.query_or_none(|_, card| adapters::card_identifier(card.id)),
         card_position: context
             .query_or_ok(None, |game, card| Ok(Some(positions::convert(builder, game, card)?)))?,
-        prefab: if context.definition().card_type == CardType::Leader {
-            CardPrefab::FullHeight
-        } else {
-            CardPrefab::Standard
-        }
-        .into(),
+        prefab: CardPrefab::Standard.into(),
         card_back: Some(assets::card_back(context.definition().school)),
         revealed_to_viewer: revealed,
         is_face_up: context.query_or(true, |_, card| card.is_face_up()),
@@ -101,12 +96,7 @@ pub fn ability_card_view(
     CardView {
         card_id: Some(adapters::ability_card_identifier(ability_id)),
         card_position: Some(positions::ability_card_position(builder, game, ability_id)),
-        prefab: if definition.card_type == CardType::Leader {
-            CardPrefab::FullHeightToken
-        } else {
-            CardPrefab::TokenCard
-        }
-        .into(),
+        prefab: CardPrefab::TokenCard.into(),
         card_back: Some(assets::card_back(context.definition().school)),
         revealed_to_viewer: true,
         is_face_up: false,
@@ -165,7 +155,7 @@ fn revealed_card_view(
                 CardType::Minion => positions::unspecified_room(RoomLocation::Defender),
                 CardType::Project => positions::unspecified_room(RoomLocation::Occupant),
                 CardType::Scheme => positions::unspecified_room(RoomLocation::Occupant),
-                CardType::Leader => positions::leader_container(builder, definition.side),
+                CardType::Sigil => positions::character_container(builder, definition.side),
                 CardType::GameModifier => positions::offscreen(),
             },
         )),

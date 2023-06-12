@@ -29,8 +29,6 @@ pub enum CardName {
     // serialization
 
     // Cards for use in tests
-    TestChampionLeader,
-    TestOverlordLeader,
     TestChampionSpell,
     TestOverlordSpell,
     /// Scheme requiring 3 levels to score 15 points
@@ -132,7 +130,6 @@ pub enum CardName {
     TutorialForceSanctumScore,
 
     // Basic
-    TutorialChampionLeader,
     ArcaneRecovery,
     EldritchSurge,
     Lodestone,
@@ -147,7 +144,6 @@ pub enum CardName {
     SimpleSpear,
     SimpleStaff,
     EtherealBlade,
-    TutorialOverlordLeader,
     Conspire,
     Devise,
     Machinate,
@@ -169,8 +165,6 @@ impl CardName {
         let custom = match self {
             Self::MaraudersAxe => "Marauder's Axe",
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath",
-            Self::TutorialChampionLeader => "Aris Fey",
-            Self::TutorialOverlordLeader => "Leader",
             Self::EnneraImrisBloodBound => "Ennera Imris, Blood-Bound",
             Self::ArisFeyTheRadiantSun => "Aris Fey, The Radiant Sun",
             Self::TelantesDugothEarthbreaker => "Telantes Dugoth, Earthbreaker",
@@ -189,10 +183,6 @@ impl CardName {
     /// Returns true if this card is a test blank
     pub fn is_test_card(&self) -> bool {
         self.displayed_name().starts_with("Test")
-    }
-
-    pub fn is_null_leader(&self) -> bool {
-        self.displayed_name().starts_with("No Leader")
     }
 }
 

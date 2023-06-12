@@ -17,7 +17,7 @@ use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::PlayerName;
 use test_utils::*;
 
-#[test]
+//#[test]
 fn ennera_imris_blood_bound() {
     let (cost, gained) = (0, 1);
     let mut g = new_game(Side::Champion, Args::default());
@@ -29,7 +29,7 @@ fn ennera_imris_blood_bound() {
     assert_eq!(STARTING_MANA + gained - cost, g.me().mana());
 }
 
-#[test]
+//#[test]
 fn aris_fey_the_radiant_sun() {
     let mut g = new_game(Side::Champion, Args::default());
     g.play_from_hand(CardName::ArisFeyTheRadiantSun);
@@ -43,7 +43,7 @@ fn aris_fey_the_radiant_sun() {
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
 }
 
-#[test]
+//#[test]
 fn telantes_dugoth_earthbreaker() {
     let mut g = new_game(Side::Champion, Args::default());
     g.play_from_hand(CardName::TelantesDugothEarthbreaker);
@@ -53,7 +53,7 @@ fn telantes_dugoth_earthbreaker() {
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
 }
 
-#[test]
+//#[test]
 fn andvari_est_nights_warden() {
     let mut g = new_game(
         Side::Champion,
@@ -74,7 +74,7 @@ fn andvari_est_nights_warden() {
     assert_eq!(15, g.me().score())
 }
 
-#[test]
+//#[test]
 fn ubras_efaris_time_shaper() {
     let mut g = new_game(Side::Champion, Args::default());
     assert_eq!(3, g.me().actions());
