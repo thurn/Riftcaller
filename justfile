@@ -204,17 +204,25 @@ llvm_toolchain := if os() == "macos" {
 
 # If you get an error about libgcc not being found, see here:
 # https://github.com/rust-lang/rust/pull/85806
-# "Find directories containing file libunwind.a and create a text file called libgcc.a with the text INPUT(-lunwind)"
+# "Find directories containing file libunwind.a and create a text file called
+# libgcc.a with the text INPUT(-lunwind)"
 
-clang := "aarch64-linux-android21-clang"
+# Need to set up target toolchain, see https://github.com/briansmith/ring/issues/897
+
 toolchains := "toolchains/llvm/prebuilt"
-export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER := join(android_ndk, toolchains, llvm_toolchain, "bin", clang)
+export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER := join(android_ndk, toolchains, llvm_toolchain, "bin", "aarch64-linux-android29-clang")
+export TARGET_AR := join(android_ndk, toolchains, llvm_toolchain, "bin", "aarch64-linux-android-ar")
+export TARGET_CC := CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER
+
+
 
 android-plugin:
     # Note: builds for Android that use native plugins must use IL2CPP
     # This is only arm64, need to do arm7 at some point too
-    @ echo "Using linker $CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER"
-    cargo build --release --target={{target_android}}
+    @ echo "Using linker:\n $CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER"
+    @ echo "Using TARGET_AR:\n $TARGET_AR"
+    @ echo "Using TARGET_CC:\n $TARGET_CC"
+    cargo build --release -p plugin --target={{target_android}}
     mkdir -p {{plugin_out}}/Android/ARM64
     # You see, standalone osx builds *do not* want the lib prefix but android fails *without* it...
     cp target/{{target_android}}/release/libplugin.so {{plugin_out}}/Android/ARM64/
