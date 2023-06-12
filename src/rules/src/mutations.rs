@@ -282,26 +282,12 @@ pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
 /// Handles assigning initial mana & action points to players.
 #[instrument(skip(game))]
 pub fn check_start_game(game: &mut GameState) -> Result<()> {
-    fn leader_card(game: &GameState, side: Side) -> Option<CardId> {
-        game.cards_in_position(side, CardPosition::PreGameLeader(side)).next().map(|c| c.id)
-    }
-
     match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans)
             if mulligans.overlord.is_some() && mulligans.champion.is_some() =>
         {
             mana::set(game, Side::Overlord, game_constants::STARTING_MANA);
             mana::set(game, Side::Champion, game_constants::STARTING_MANA);
-
-            // Place leader cards on top of decks. This does not always apply,
-            // e.g. in the tutorial.
-            if let Some(card_id) = leader_card(game, Side::Overlord) {
-                move_card(game, card_id, CardPosition::DeckTop(Side::Overlord))?;
-            }
-            if let Some(card_id) = leader_card(game, Side::Champion) {
-                move_card(game, card_id, CardPosition::DeckTop(Side::Champion))?;
-            }
-
             start_turn(game, Side::Overlord, 1)?;
         }
         _ => {}
