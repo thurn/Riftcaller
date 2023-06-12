@@ -24,7 +24,7 @@ pub fn ennera_imris_blood_bound() -> CardDefinition {
     CardDefinition {
         name: CardName::EnneraImrisBloodBound,
         sets: vec![CardSetName::ProofOfConcept],
-        cost: cost(0),
+        cost: sigil_cost(),
         image: assets::fantasy_class_image("Warrior", "Female"),
         card_type: CardType::Sigil,
         side: Side::Champion,
@@ -55,7 +55,7 @@ pub fn aris_fey_the_radiant_sun() -> CardDefinition {
     CardDefinition {
         name: CardName::ArisFeyTheRadiantSun,
         sets: vec![CardSetName::ProofOfConcept],
-        cost: cost(3),
+        cost: sigil_cost(),
         image: assets::fantasy_class_image("Priest", "Female"),
         card_type: CardType::Sigil,
         side: Side::Champion,
@@ -86,7 +86,7 @@ pub fn telantes_dugoth_earthbreaker() -> CardDefinition {
     CardDefinition {
         name: CardName::TelantesDugothEarthbreaker,
         sets: vec![CardSetName::ProofOfConcept],
-        cost: cost(3),
+        cost: sigil_cost(),
         image: assets::fantasy_class_image("Druid", "Male"),
         card_type: CardType::Sigil,
         side: Side::Champion,
@@ -114,7 +114,7 @@ pub fn andvari_est_nights_warden() -> CardDefinition {
     CardDefinition {
         name: CardName::AndvariEstNightsWarden,
         sets: vec![CardSetName::ProofOfConcept],
-        cost: cost(1),
+        cost: sigil_cost(),
         image: assets::fantasy_class_image("Thief", "Male"),
         card_type: CardType::Sigil,
         side: Side::Champion,
@@ -155,7 +155,7 @@ pub fn ubras_efaris_time_shaper() -> CardDefinition {
     CardDefinition {
         name: CardName::UbrasEfarisTimeShaper,
         sets: vec![CardSetName::ProofOfConcept],
-        cost: cost(4),
+        cost: sigil_cost(),
         image: assets::fantasy_class_image("Mage", "Male"),
         card_type: CardType::Sigil,
         side: Side::Champion,

@@ -72,9 +72,13 @@ impl CardPosition {
         self.into()
     }
 
-    /// Returns true if this card is in a room or has been played as an item
+    /// Returns true if this card is a sigil, is in a room, or has been played
+    /// as an item.
     pub fn in_play(&self) -> bool {
-        matches!(self.kind(), CardPositionKind::Room | CardPositionKind::ArenaItem)
+        matches!(
+            self.kind(),
+            CardPositionKind::Sigil | CardPositionKind::Room | CardPositionKind::ArenaItem
+        )
     }
 
     /// Returns true if this card is in a room

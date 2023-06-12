@@ -15,7 +15,7 @@
 //! Contains the definitions for proof-of-concept cards
 
 pub mod artifacts;
-pub mod champion_leaders;
+pub mod champion_sigils;
 pub mod champion_spells;
 pub mod minions;
 pub mod overlord_spells;

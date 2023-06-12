@@ -13,7 +13,7 @@
 // limitations under the License.
 
 mod artifact_tests;
-mod champion_leader_tests;
+mod champion_sigil_tests;
 mod champion_spell_tests;
 mod minion_tests;
 mod overlord_spell_tests;

@@ -17,22 +17,28 @@ use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::PlayerName;
 use test_utils::*;
 
-//#[test]
+#[test]
 fn ennera_imris_blood_bound() {
-    let (cost, gained) = (0, 1);
-    let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::EnneraImrisBloodBound);
+    let gained = 1;
+    let mut g = new_game(
+        Side::Champion,
+        Args { sigils: vec![CardName::EnneraImrisBloodBound], ..Args::default() },
+    );
+
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     spend_actions_until_turn_over(&mut g, Side::Champion);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
-    assert_eq!(STARTING_MANA + gained - cost, g.me().mana());
+    assert_eq!(STARTING_MANA + gained, g.me().mana());
 }
 
-//#[test]
+#[test]
 fn aris_fey_the_radiant_sun() {
-    let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::ArisFeyTheRadiantSun);
+    let mut g = new_game(
+        Side::Champion,
+        Args { sigils: vec![CardName::ArisFeyTheRadiantSun], ..Args::default() },
+    );
+
     spend_actions_until_turn_over(&mut g, Side::Champion);
     g.play_from_hand(CardName::TestMinionDealDamage);
     set_up_minion_combat(&mut g);
@@ -43,21 +49,25 @@ fn aris_fey_the_radiant_sun() {
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
 }
 
-//#[test]
+#[test]
 fn telantes_dugoth_earthbreaker() {
-    let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::TelantesDugothEarthbreaker);
+    let mut g = new_game(
+        Side::Champion,
+        Args { sigils: vec![CardName::TelantesDugothEarthbreaker], ..Args::default() },
+    );
+
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::Opponent).len());
     click_on_end_raid(&mut g);
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
 }
 
-//#[test]
+#[test]
 fn andvari_est_nights_warden() {
     let mut g = new_game(
         Side::Champion,
         Args {
+            sigils: vec![CardName::AndvariEstNightsWarden],
             opponent_deck_top: vec![
                 CardName::TestChampionSpell,
                 CardName::TestChampionSpell,
@@ -68,21 +78,24 @@ fn andvari_est_nights_warden() {
             ..Args::default()
         },
     );
-    g.play_from_hand(CardName::AndvariEstNightsWarden);
+
     g.initiate_raid(RoomId::Vault);
     click_on_score(&mut g);
     assert_eq!(15, g.me().score())
 }
 
-//#[test]
+#[test]
 fn ubras_efaris_time_shaper() {
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = new_game(
+        Side::Champion,
+        Args { sigils: vec![CardName::UbrasEfarisTimeShaper], ..Args::default() },
+    );
+
     assert_eq!(3, g.me().actions());
     g.play_from_hand(CardName::TestChampionSpell);
-    g.play_from_hand(CardName::UbrasEfarisTimeShaper);
-    assert_eq!(1, g.me().actions());
+    assert_eq!(2, g.me().actions());
+    g.play_from_hand(CardName::TestChampionSpell);
+    assert_eq!(2, g.me().actions());
     g.play_from_hand(CardName::TestChampionSpell);
     assert_eq!(1, g.me().actions());
-    g.play_from_hand(CardName::TestChampionSpell);
-    assert_eq!(0, g.me().actions());
 }

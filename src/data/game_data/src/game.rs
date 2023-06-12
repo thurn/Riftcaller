@@ -608,10 +608,10 @@ impl GameState {
         let mut result = vec![];
 
         for (i, sigil) in deck.sigils.iter().enumerate() {
+            // Put all sigil cards into play face up
             let mut card = CardState::new(CardId::new(side, i), *sigil);
             card.set_position_internal(i as u32, CardPosition::Sigil(side));
-            card.set_revealed_to(Side::Overlord, true);
-            card.set_revealed_to(Side::Champion, true);
+            card.turn_face_up();
             result.push(card);
         }
 

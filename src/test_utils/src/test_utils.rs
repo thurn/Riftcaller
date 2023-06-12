@@ -85,16 +85,21 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
         Side::Champion => (opponent_id, user_id),
     };
 
+    let (overlord_sigils, champion_sigils) = match user_side {
+        Side::Overlord => (args.sigils, args.opponent_sigils),
+        Side::Champion => (args.opponent_sigils, args.sigils),
+    };
+
     let overlord_deck = Deck {
         side: Side::Overlord,
         schools: vec![],
-        sigils: vec![],
+        sigils: overlord_sigils,
         cards: hashmap! {CardName::TestOverlordSpell => 45},
     };
     let champion_deck = Deck {
         side: Side::Champion,
         schools: vec![],
-        sigils: vec![],
+        sigils: champion_sigils,
         cards: hashmap! {CardName::TestChampionSpell => 45},
     };
 
@@ -223,6 +228,10 @@ pub struct Args {
     pub discard: Option<CardName>,
     /// Card to be inserted into the opponent player's discard pile.
     pub opponent_discard: Option<CardName>,
+    /// Sigils which start in play for the `user_side` player.
+    pub sigils: Vec<CardName>,
+    /// Sigils which start in play for the opponent player.
+    pub opponent_sigils: Vec<CardName>,
     /// Set up an active raid within the created game using [ROOM_ID] as the
     /// target and [RAID_ID] as the ID.
     pub add_raid: bool,
@@ -248,6 +257,8 @@ impl Default for Args {
             opponent_deck_top: vec![],
             discard: None,
             opponent_discard: None,
+            sigils: vec![],
+            opponent_sigils: vec![],
             add_raid: false,
             connect: true,
             tutorial: false,
