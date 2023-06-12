@@ -168,17 +168,17 @@ namespace Spelldawn.Services
     public ActionDisplay ActionDisplayForPlayer(PlayerName playerName) =>
       playerName == PlayerName.User ? _userActionDisplay : _opponentActionDisplay;
 
-    [SerializeField] ObjectDisplay _userLeaderCardPosition = null!;
-    [SerializeField] ObjectDisplay _opponentLeaderCardPosition = null!;
+    [FormerlySerializedAs("_userLeaderCardPosition")] [SerializeField] ObjectDisplay _userCharacterPosition = null!;
+    [FormerlySerializedAs("_opponentLeaderCardPosition")] [SerializeField] ObjectDisplay _opponentCharacterPosition = null!;
 
-    public ObjectDisplay LeaderCardPositionForPlayer(PlayerName playerName) =>
-      playerName == PlayerName.User ? _userLeaderCardPosition : _opponentLeaderCardPosition;
+    public ObjectDisplay CharacterPositionForPlayer(PlayerName playerName) =>
+      playerName == PlayerName.User ? _userCharacterPosition : _opponentCharacterPosition;
 
-    [SerializeField] LeaderCard _userLeaderCard = null!;
-    [SerializeField] LeaderCard _opponentLeaderCard = null!;
+    [FormerlySerializedAs("_userLeaderCard")] [SerializeField] GameCharacter _userGameCharacter = null!;
+    [FormerlySerializedAs("_opponentLeaderCard")] [SerializeField] GameCharacter _opponentGameCharacter = null!;
 
-    public LeaderCard LeaderCardForPlayer(PlayerName playerName) =>
-      playerName == PlayerName.User ? _userLeaderCard : _opponentLeaderCard;
+    public GameCharacter GameCharacterForPlayer(PlayerName playerName) =>
+      playerName == PlayerName.User ? _userGameCharacter : _opponentGameCharacter;
 
     [SerializeField] GameObject? _userActiveLight;
     [SerializeField] GameObject? _opponentActiveLight;

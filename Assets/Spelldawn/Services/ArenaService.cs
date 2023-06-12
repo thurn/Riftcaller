@@ -132,10 +132,10 @@ namespace Spelldawn.Services
     public IEnumerator HandleVisitRoom(VisitRoomCommand command)
     {
       var room = FindRoom(command.RoomId).transform;
-      var leaderCard = _registry.LeaderCardForPlayer(command.Initiator).transform;
+      var character = _registry.GameCharacterForPlayer(command.Initiator).transform;
       
       yield return TweenUtils.Sequence("RoomVisit")
-        .Append(leaderCard
+        .Append(character
           .DOMove(room.position, 0.3f).SetEase(Ease.OutSine))
         .AppendCallback(() =>
         {
@@ -146,8 +146,8 @@ namespace Spelldawn.Services
             _ => throw new ArgumentOutOfRangeException(nameof(command.VisitType), command.VisitType, null)
           }, room.position, onCreate: result => result.transform.localScale = 5f * Vector3.one));
         })
-        .Append(leaderCard
-          .DOMove(_registry.LeaderCardPositionForPlayer(command.Initiator).transform.position, 0.3f)
+        .Append(character
+          .DOMove(_registry.CharacterPositionForPlayer(command.Initiator).transform.position, 0.3f)
           .SetEase(Ease.OutSine))
         .WaitForCompletion();
     }
@@ -180,10 +180,10 @@ namespace Spelldawn.Services
     {
       _registry.ActionDisplayForPlayer(playerName).gameObject.SetActive(command.GameObjectsEnabled);
       _registry.ManaDisplayForPlayer(playerName).gameObject.SetActive(command.GameObjectsEnabled);
-      _registry.LeaderCardForPlayer(playerName).gameObject.SetActive(command.GameObjectsEnabled);
+      _registry.GameCharacterForPlayer(playerName).gameObject.SetActive(command.GameObjectsEnabled);
       SetObjectDisplayActive(_registry.DeckForPlayer(playerName), command);
       SetObjectDisplayActive(_registry.DiscardPileForPlayer(playerName), command);
-      SetObjectDisplayActive(_registry.LeaderCardForPlayer(playerName), command);
+      SetObjectDisplayActive(_registry.GameCharacterForPlayer(playerName), command);
       SetObjectDisplayActive(_registry.HandForPlayer(playerName), command);
     }
 

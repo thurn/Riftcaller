@@ -97,9 +97,9 @@ namespace Spelldawn.Services
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
           IdUtil.DeckObjectId(PlayerName.Opponent), positions.OpponentDeck, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
-          IdUtil.LeaderCardId(PlayerName.User), positions.UserLeader, animate)));
+          IdUtil.CharacterObjectId(PlayerName.User), positions.UserCharacter, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
-          IdUtil.LeaderCardId(PlayerName.Opponent), positions.OpponentLeader, animate)));
+          IdUtil.CharacterObjectId(PlayerName.Opponent), positions.OpponentCharacter, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
           IdUtil.DiscardPileObjectId(PlayerName.User), positions.UserDiscard, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(

@@ -22,15 +22,15 @@ namespace Spelldawn.Utils
   {
     public static readonly GameObjectIdentifier UserCardId = new()
     {
-      Leader = PlayerName.User
+      Character = PlayerName.User
     };
 
     public static readonly GameObjectIdentifier OpponentCardId = new()
     {
-      Leader = PlayerName.Opponent
+      Character = PlayerName.Opponent
     };
 
-    public static GameObjectIdentifier LeaderCardId(PlayerName playerName) =>
+    public static GameObjectIdentifier CharacterObjectId(PlayerName playerName) =>
       playerName == PlayerName.User ? UserCardId : OpponentCardId;
 
     public static GameObjectIdentifier DeckObjectId(PlayerName playerName) => new()

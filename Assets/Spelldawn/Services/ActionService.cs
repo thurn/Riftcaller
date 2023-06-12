@@ -39,8 +39,13 @@ namespace Spelldawn.Services
   {
     const string LocalServerAddress = "http://localhost";
     const string ProductionServerAddress = "https://trunk.spelldawn.com";
-    public bool DevelopmentMode { get; set; }
- 
+    
+#if UNITY_EDITOR    
+    public bool DevelopmentMode { get; set; } = true;
+#else    
+    public bool DevelopmentMode { get; set; } = false;
+#endif
+
     static string ServerAddress() =>
       UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress;
     

@@ -171,7 +171,7 @@ namespace Spelldawn.Services
     Transform AnchorTransform(ArrowBubbleAnchor anchor) => anchor.BubbleAnchorCase switch
     {
       ArrowBubbleAnchor.BubbleAnchorOneofCase.Player => 
-        _registry.LeaderCardForPlayer(anchor.Player).transform,
+        _registry.GameCharacterForPlayer(anchor.Player).transform,
       ArrowBubbleAnchor.BubbleAnchorOneofCase.Room => 
         _registry.ArenaService.FindRoom(anchor.Room).transform,
       ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerDeck => 

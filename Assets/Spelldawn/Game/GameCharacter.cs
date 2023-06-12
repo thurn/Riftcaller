@@ -24,9 +24,9 @@ using UnityEngine;
 
 namespace Spelldawn.Game
 {
-  public sealed class LeaderCard : StackObjectDisplay, ArrowService.IArrowDelegate
+  public sealed class GameCharacter : StackObjectDisplay, ArrowService.IArrowDelegate
   {
-    [Header("Leader")] [SerializeField] Registry _registry = null!;
+    [Header("Character")] [SerializeField] Registry _registry = null!;
     [SerializeField] SpriteRenderer _image = null!;
     [SerializeField] TextMeshPro _scoreText = null!;
     [SerializeField] GameObject _raidSymbol = null!;
@@ -39,7 +39,7 @@ namespace Spelldawn.Game
 
     protected override Registry Registry => _registry;
 
-    protected override GameContext DefaultGameContext() => GameContext.Leader;
+    protected override GameContext DefaultGameContext() => GameContext.GameCharacter;
 
     protected override float? CalculateObjectScale(int index, int count) => 0f;
 
