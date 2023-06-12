@@ -276,7 +276,7 @@ pub enum GameObjectId {
     AbilityId(AbilityId),
     Deck(Side),
     DiscardPile(Side),
-    Leader(Side),
+    Character(Side),
 }
 
 impl From<CardId> for GameObjectId {

@@ -49,7 +49,7 @@ pub fn game_object_identifier(
             GameObjectId::AbilityId(ability_id) => Id::CardId(ability_card_identifier(ability_id)),
             GameObjectId::Deck(side) => Id::Deck(builder.to_player_name(side)),
             GameObjectId::DiscardPile(side) => Id::DiscardPile(builder.to_player_name(side)),
-            GameObjectId::Leader(side) => Id::Leader(builder.to_player_name(side)),
+            GameObjectId::Character(side) => Id::Character(builder.to_player_name(side)),
         }),
     }
 }

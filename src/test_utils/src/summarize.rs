@@ -404,8 +404,8 @@ impl Summarize for GameObjectPositions {
     fn summarize(self, summary: &mut Summary) {
         summary.child("user_deck", self.user_deck);
         summary.child("opponent_deck", self.opponent_deck);
-        summary.child("user_leader", self.user_leader);
-        summary.child("opponent_leader", self.opponent_leader);
+        summary.child("user_character", self.user_character);
+        summary.child("opponent_character", self.opponent_character);
         summary.child("user_discard", self.user_discard);
         summary.child("opponent_discard", self.opponent_discard);
     }
@@ -541,8 +541,8 @@ impl Summarize for Position {
             Self::DiscardPileContainer(v) => summary.primitive(v),
             Self::Raid(v) => summary.primitive(v),
             Self::Browser(v) => summary.primitive(v),
-            Self::Leader(v) => summary.primitive(v),
-            Self::LeaderContainer(v) => summary.primitive(v),
+            Self::Character(v) => summary.primitive(v),
+            Self::CharacterContainer(v) => summary.primitive(v),
             Self::IntoCard(v) => summary.primitive(v),
             Self::Revealed(v) => summary.primitive(v),
         }

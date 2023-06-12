@@ -30,12 +30,12 @@ command_list:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -97,7 +97,7 @@ command_list:
                 can_play: false
             on_release_position: 
                 sorting_key: 101
-                position: ObjectPositionLeaderContainer { owner: User }
+                position: ObjectPositionCharacterContainer { owner: User }
         card_id: C10
         revealed_to_viewer: true
         is_face_up: false
@@ -219,12 +219,12 @@ command_list:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -286,7 +286,7 @@ command_list:
                 can_play: false
             on_release_position: 
                 sorting_key: 101
-                position: ObjectPositionLeaderContainer { owner: User }
+                position: ObjectPositionCharacterContainer { owner: User }
         card_id: C10
         revealed_to_viewer: true
         is_face_up: false
@@ -407,12 +407,12 @@ command_list:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -474,7 +474,7 @@ command_list:
                 can_play: false
             on_release_position: 
                 sorting_key: 101
-                position: ObjectPositionLeaderContainer { owner: User }
+                position: ObjectPositionCharacterContainer { owner: User }
         card_id: C10
         revealed_to_viewer: true
         is_face_up: false
@@ -596,12 +596,12 @@ channel_response:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -627,7 +627,7 @@ channel_response:
                 can_play: false
             on_release_position: 
                 sorting_key: 101
-                position: ObjectPositionLeaderContainer { owner: User }
+                position: ObjectPositionCharacterContainer { owner: User }
         card_id: O4
         revealed_to_viewer: true
         is_face_up: false
@@ -785,12 +785,12 @@ channel_response:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -816,7 +816,7 @@ channel_response:
                 can_play: false
             on_release_position: 
                 sorting_key: 101
-                position: ObjectPositionLeaderContainer { owner: User }
+                position: ObjectPositionCharacterContainer { owner: User }
         card_id: O4
         revealed_to_viewer: true
         is_face_up: false
@@ -978,12 +978,12 @@ channel_response:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -1009,7 +1009,7 @@ channel_response:
                 can_play: true
             on_release_position: 
                 sorting_key: 101
-                position: ObjectPositionLeaderContainer { owner: User }
+                position: ObjectPositionCharacterContainer { owner: User }
         card_id: O4
         revealed_to_viewer: true
         is_face_up: false

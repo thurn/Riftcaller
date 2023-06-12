@@ -573,7 +573,7 @@ pub mod game_object_identifier {
         #[prost(message, tag = "1")]
         CardId(super::CardIdentifier),
         #[prost(enumeration = "super::PlayerName", tag = "2")]
-        Leader(i32),
+        Character(i32),
         #[prost(enumeration = "super::PlayerName", tag = "3")]
         Deck(i32),
         #[prost(enumeration = "super::PlayerName", tag = "4")]
@@ -717,8 +717,7 @@ pub struct ObjectPositionDiscardPileContainer {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
-/// Large display of cards *while* the score animation is playing. After the
-/// score animation finishes, scored cards move to 'Leader' position.
+/// Large display of cards *while* the score animation is playing
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionScoreAnimation {}
@@ -730,13 +729,13 @@ pub struct ObjectPositionRaid {}
 pub struct ObjectPositionBrowser {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ObjectPositionLeader {
+pub struct ObjectPositionCharacter {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ObjectPositionLeaderContainer {
+pub struct ObjectPositionCharacterContainer {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
@@ -807,9 +806,9 @@ pub mod object_position {
         #[prost(message, tag = "14")]
         Browser(super::ObjectPositionBrowser),
         #[prost(message, tag = "15")]
-        Leader(super::ObjectPositionLeader),
+        Character(super::ObjectPositionCharacter),
         #[prost(message, tag = "16")]
-        LeaderContainer(super::ObjectPositionLeaderContainer),
+        CharacterContainer(super::ObjectPositionCharacterContainer),
         #[prost(message, tag = "17")]
         IntoCard(super::ObjectPositionIntoCard),
         #[prost(message, tag = "18")]
@@ -973,9 +972,9 @@ pub struct GameObjectPositions {
     #[prost(message, optional, tag = "2")]
     pub opponent_deck: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "3")]
-    pub user_leader: ::core::option::Option<ObjectPosition>,
+    pub user_character: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "4")]
-    pub opponent_leader: ::core::option::Option<ObjectPosition>,
+    pub opponent_character: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "5")]
     pub user_discard: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "6")]

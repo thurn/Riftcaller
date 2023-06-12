@@ -25,12 +25,11 @@ use game_data::utils;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     ClientItemLocation, ClientRoomLocation, GameObjectPositions, ObjectPosition,
-    ObjectPositionBrowser, ObjectPositionDeck, ObjectPositionDeckContainer,
-    ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer, ObjectPositionHand,
-    ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionLeader,
-    ObjectPositionLeaderContainer, ObjectPositionOffscreen, ObjectPositionRaid,
-    ObjectPositionRevealedCards, ObjectPositionRoom, ObjectPositionStaging,
-    RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionBrowser, ObjectPositionCharacter, ObjectPositionCharacterContainer,
+    ObjectPositionDeck, ObjectPositionDeckContainer, ObjectPositionDiscardPile,
+    ObjectPositionDiscardPileContainer, ObjectPositionHand, ObjectPositionIntoCard,
+    ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid, ObjectPositionRevealedCards,
+    ObjectPositionRoom, ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::traits::RaidDisplayState;
 use raids::RaidDataExt;
@@ -114,11 +113,13 @@ pub fn discard_container(builder: &ResponseBuilder, side: Side) -> Position {
 }
 
 pub fn leader(builder: &ResponseBuilder, side: Side) -> Position {
-    Position::Leader(ObjectPositionLeader { owner: builder.to_player_name(side) })
+    Position::Character(ObjectPositionCharacter { owner: builder.to_player_name(side) })
 }
 
 pub fn leader_container(builder: &ResponseBuilder, side: Side) -> Position {
-    Position::LeaderContainer(ObjectPositionLeaderContainer { owner: builder.to_player_name(side) })
+    Position::CharacterContainer(ObjectPositionCharacterContainer {
+        owner: builder.to_player_name(side),
+    })
 }
 
 pub fn staging() -> Position {
@@ -241,8 +242,8 @@ pub fn game_object_positions(
     Ok(GameObjectPositions {
         user_deck: Some(non_card(builder, game, GameObjectId::Deck(side))?),
         opponent_deck: Some(non_card(builder, game, GameObjectId::Deck(opponent))?),
-        user_leader: Some(non_card(builder, game, GameObjectId::Leader(side))?),
-        opponent_leader: Some(non_card(builder, game, GameObjectId::Leader(opponent))?),
+        user_character: Some(non_card(builder, game, GameObjectId::Character(side))?),
+        opponent_character: Some(non_card(builder, game, GameObjectId::Character(opponent))?),
         user_discard: Some(non_card(builder, game, GameObjectId::DiscardPile(side))?),
         opponent_discard: Some(non_card(builder, game, GameObjectId::DiscardPile(opponent))?),
     })
@@ -259,7 +260,7 @@ fn non_card(
         match id {
             GameObjectId::Deck(side) => for_sorting_key(0, deck_container(builder, side)),
             GameObjectId::DiscardPile(side) => for_sorting_key(0, discard_container(builder, side)),
-            GameObjectId::Leader(side) => for_sorting_key(0, leader_container(builder, side)),
+            GameObjectId::Character(side) => for_sorting_key(0, leader_container(builder, side)),
             _ => fail!("Unsupported ID type"),
         }
     })
@@ -330,7 +331,7 @@ fn raid_browser(game: &GameState, raid: &RaidData, defenders: Vec<CardId>) -> Ve
             result.push(GameObjectId::Deck(Side::Overlord));
         }
         RoomId::Sanctum => {
-            result.push(GameObjectId::Leader(Side::Overlord));
+            result.push(GameObjectId::Character(Side::Overlord));
         }
         RoomId::Crypts => {
             result.push(GameObjectId::DiscardPile(Side::Overlord));
@@ -340,7 +341,7 @@ fn raid_browser(game: &GameState, raid: &RaidData, defenders: Vec<CardId>) -> Ve
 
     result.extend(game.occupants(raid.target).map(|card| GameObjectId::CardId(card.id)));
     result.extend(defenders.iter().map(|card_id| GameObjectId::CardId(*card_id)));
-    result.push(GameObjectId::Leader(Side::Champion));
+    result.push(GameObjectId::Character(Side::Champion));
     result
 }
 

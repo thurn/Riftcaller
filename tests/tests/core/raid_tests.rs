@@ -23,7 +23,7 @@ use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     ClientRoomLocation, GainManaAction, InitiateRaidAction, ObjectPositionBrowser,
-    ObjectPositionDiscardPile, ObjectPositionLeader, ObjectPositionLeaderContainer,
+    ObjectPositionCharacter, ObjectPositionCharacterContainer, ObjectPositionDiscardPile,
     ObjectPositionRaid, ObjectPositionRoom, PlayerName, SpendActionPointAction,
 };
 use test_utils::client_interface::HasText;
@@ -62,11 +62,11 @@ fn initiate_raid() {
         (1, Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
-        g.user.data.object_index_position(Id::Leader(PlayerName::User.into())),
+        g.user.data.object_index_position(Id::Character(PlayerName::User.into())),
         (2, Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
-        g.opponent.data.object_index_position(Id::Leader(PlayerName::Opponent.into())),
+        g.opponent.data.object_index_position(Id::Character(PlayerName::Opponent.into())),
         (2, Position::Raid(ObjectPositionRaid {}))
     );
 
@@ -119,8 +119,10 @@ fn use_weapon() {
         })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Leader(PlayerName::User.into())),
-        Position::LeaderContainer(ObjectPositionLeaderContainer { owner: PlayerName::User.into() })
+        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        Position::CharacterContainer(ObjectPositionCharacterContainer {
+            owner: PlayerName::User.into()
+        })
     );
 
     assert_snapshot!(Summary::summarize(&response));
@@ -171,8 +173,10 @@ fn fire_combat_ability() {
         })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Leader(PlayerName::User.into())),
-        Position::LeaderContainer(ObjectPositionLeaderContainer { owner: PlayerName::User.into() })
+        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        Position::CharacterContainer(ObjectPositionCharacterContainer {
+            owner: PlayerName::User.into()
+        })
     );
 
     assert_snapshot!(Summary::summarize(&response));
@@ -209,11 +213,13 @@ fn score_scheme_card() {
 
     assert_eq!(
         g.user.data.object_position(Id::CardId(scheme_id)),
-        Position::Leader(ObjectPositionLeader { owner: PlayerName::User.into() })
+        Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Leader(PlayerName::User.into())),
-        Position::LeaderContainer(ObjectPositionLeaderContainer { owner: PlayerName::User.into() })
+        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        Position::CharacterContainer(ObjectPositionCharacterContainer {
+            owner: PlayerName::User.into()
+        })
     );
 
     assert_eq!(
@@ -249,11 +255,13 @@ fn complete_raid() {
 
     assert_eq!(
         g.user.data.object_position(Id::CardId(scheme_id)),
-        Position::Leader(ObjectPositionLeader { owner: PlayerName::User.into() })
+        Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Leader(PlayerName::User.into())),
-        Position::LeaderContainer(ObjectPositionLeaderContainer { owner: PlayerName::User.into() })
+        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        Position::CharacterContainer(ObjectPositionCharacterContainer {
+            owner: PlayerName::User.into()
+        })
     );
 
     assert_snapshot!(Summary::summarize(&response));

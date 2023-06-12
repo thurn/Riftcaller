@@ -30,12 +30,12 @@ command_list:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -87,12 +87,12 @@ command_list:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -145,12 +145,12 @@ channel_response:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
@@ -203,12 +203,12 @@ channel_response:
             opponent_deck: 
                 sorting_key: 1
                 position: ObjectPositionDeckContainer { owner: Opponent }
-            user_leader: 
+            user_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: User }
-            opponent_leader: 
+                position: ObjectPositionCharacterContainer { owner: User }
+            opponent_character: 
                 sorting_key: 1
-                position: ObjectPositionLeaderContainer { owner: Opponent }
+                position: ObjectPositionCharacterContainer { owner: Opponent }
             user_discard: 
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: User }
