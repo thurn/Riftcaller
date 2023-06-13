@@ -90,18 +90,6 @@ pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
     }
 }
 
-/// Address for the frame of a player's leader card image
-pub fn leader_card_frame(side: Side) -> SpriteAddress {
-    SpriteAddress { address: format!("{}.png", leader_card_frame_string(side)) }
-}
-
-fn leader_card_frame_string(side: Side) -> &'static str {
-    match side {
-        Side::Overlord => "SpriteWay/Icons/Fantasy Player Frames/50002",
-        Side::Champion => "SpriteWay/Icons/Fantasy Player Frames/50003",
-    }
-}
-
 /// Address for the back of a card of a given [School]
 pub fn card_back(school: School) -> SpriteAddress {
     SpriteAddress {

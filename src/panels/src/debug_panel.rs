@@ -24,75 +24,91 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use game_data::primitives::Side;
 use panel_address::{Panel, PanelAddress, StandardPanel};
+use player_data::PlayerActivityKind;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
 use user_action_data::DebugAction;
 
-#[derive(Debug, Default)]
-pub struct DebugPanel {}
+#[derive(Debug)]
+pub struct DebugPanel {
+    activity: PlayerActivityKind,
+}
 
 impl DebugPanel {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(activity: PlayerActivityKind) -> Self {
+        Self { activity }
+    }
+
+    fn main_menu_buttons(&self, row: Row) -> Row {
+        let close = Panels::close(self.address());
+        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
+            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Champion)))
+            .child(debug_button(
+                "Show Logs",
+                vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
+            ))
+    }
+
+    fn game_mode_buttons(&self, row: Row) -> Row {
+        let close = Panels::close(self.address());
+        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
+            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Champion)))
+            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Overlord)))
+            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Champion)))
+            .child(debug_button(
+                "Show Logs",
+                vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
+            ))
+            .child(debug_button(format!("+10{}", icons::MANA), DebugAction::AddMana(10)))
+            .child(debug_button(format!("+{}", icons::ACTION), DebugAction::AddActionPoints(1)))
+            .child(debug_button("+ Point", DebugAction::AddScore(1)))
+            .child(debug_button("Flip View", DebugAction::FlipViewpoint))
+            .child(debug_button(format!("{} 1", icons::SAVE), DebugAction::SaveState(1)))
+            .child(debug_button(format!("{} 1", icons::RESTORE), DebugAction::LoadState(1)))
+            .child(debug_button(format!("{} 2", icons::SAVE), DebugAction::SaveState(1)))
+            .child(debug_button(format!("{} 2", icons::RESTORE), DebugAction::LoadState(1)))
+            .child(debug_button(format!("{} 3", icons::SAVE), DebugAction::SaveState(3)))
+            .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadState(3)))
+            .child(debug_button(
+                "Overlord AI",
+                Panels::open(StandardPanel::SetPlayerName(Side::Overlord))
+                    .wait_to_load(true)
+                    .and_close(self.address()),
+            ))
+            .child(debug_button(
+                "Champion AI",
+                Panels::open(StandardPanel::SetPlayerName(Side::Champion))
+                    .wait_to_load(true)
+                    .and_close(self.address()),
+            ))
     }
 }
 
 impl Panel for DebugPanel {
     fn address(&self) -> PanelAddress {
-        StandardPanel::DebugPanel.into()
+        StandardPanel::DebugPanel(self.activity).into()
     }
 }
 
 impl Component for DebugPanel {
     fn build(self) -> Option<Node> {
-        let close = Panels::close(StandardPanel::DebugPanel);
+        let row = Row::new("DebugButtons").style(
+            Style::new()
+                .align_items(FlexAlign::Center)
+                .justify_content(FlexJustify::Center)
+                .wrap(FlexWrap::Wrap),
+        );
+        let content = match self.activity {
+            PlayerActivityKind::None => self.main_menu_buttons(row),
+            PlayerActivityKind::Adventure => row,
+            PlayerActivityKind::PlayingGame => self.game_mode_buttons(row),
+        };
 
-        PanelWindow::new(StandardPanel::DebugPanel, 1024.px(), 600.px())
+        PanelWindow::new(self.address(), 1024.px(), 600.px())
             .title("Debug Controls")
             .show_close_button(true)
-            .content(
-                Row::new("DebugButtons")
-                    .style(
-                        Style::new()
-                            .align_items(FlexAlign::Center)
-                            .justify_content(FlexJustify::Center)
-                            .wrap(FlexWrap::Wrap),
-                    )
-                    .child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
-                    .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Champion)))
-                    .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Overlord)))
-                    .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Champion)))
-                    .child(debug_button(
-                        "Show Logs",
-                        vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
-                    ))
-                    .child(debug_button(format!("+10{}", icons::MANA), DebugAction::AddMana(10)))
-                    .child(debug_button(
-                        format!("+{}", icons::ACTION),
-                        DebugAction::AddActionPoints(1),
-                    ))
-                    .child(debug_button("+ Point", DebugAction::AddScore(1)))
-                    .child(debug_button("Flip View", DebugAction::FlipViewpoint))
-                    .child(debug_button(format!("{} 1", icons::SAVE), DebugAction::SaveState(1)))
-                    .child(debug_button(format!("{} 1", icons::RESTORE), DebugAction::LoadState(1)))
-                    .child(debug_button(format!("{} 2", icons::SAVE), DebugAction::SaveState(1)))
-                    .child(debug_button(format!("{} 2", icons::RESTORE), DebugAction::LoadState(1)))
-                    .child(debug_button(format!("{} 3", icons::SAVE), DebugAction::SaveState(3)))
-                    .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadState(3)))
-                    .child(debug_button(
-                        "Overlord AI",
-                        Panels::open(StandardPanel::SetPlayerName(Side::Overlord))
-                            .wait_to_load(true)
-                            .and_close(self.address()),
-                    ))
-                    .child(debug_button(
-                        "Champion AI",
-                        Panels::open(StandardPanel::SetPlayerName(Side::Champion))
-                            .wait_to_load(true)
-                            .and_close(self.address()),
-                    )),
-            )
+            .content(content)
             .build()
     }
 }

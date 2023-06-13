@@ -76,7 +76,7 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         StandardPanel::About => AboutPanel::new().build_panel(),
         StandardPanel::Settings => SettingsPanel::new().build_panel(),
         StandardPanel::Disclaimer => DisclaimerPanel::new().build_panel(),
-        StandardPanel::DebugPanel => DebugPanel::new().build_panel(),
+        StandardPanel::DebugPanel(activity) => DebugPanel::new(activity).build_panel(),
         StandardPanel::GameMenu => GameMenuPanel::new().build_panel(),
         StandardPanel::AdventureMenu => AdventureMenu::new().build_panel(),
         StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),

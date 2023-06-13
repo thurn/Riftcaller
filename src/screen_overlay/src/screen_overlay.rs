@@ -28,7 +28,7 @@ use core_ui::text::Text;
 use game_data::primitives::DeckId;
 use game_data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PanelAddress, PlayerPanel, StandardPanel};
-use player_data::{PlayerState, PlayerStatus};
+use player_data::{PlayerActivityKind, PlayerState, PlayerStatus};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPosition};
@@ -37,11 +37,17 @@ pub struct ScreenOverlay<'a> {
     player: &'a PlayerState,
     show_close_button: Option<PanelAddress>,
     show_deck_button: bool,
+    show_menu_button: bool,
 }
 
 impl<'a> ScreenOverlay<'a> {
     pub fn new(player: &'a PlayerState) -> Self {
-        Self { player, show_close_button: None, show_deck_button: player.status.is_none() }
+        Self {
+            player,
+            show_close_button: None,
+            show_deck_button: player.current_activity().kind() == PlayerActivityKind::Adventure,
+            show_menu_button: player.current_activity().kind() != PlayerActivityKind::None,
+        }
     }
 
     pub fn show_close_button(mut self, show_close_button: PanelAddress) -> Self {
@@ -57,6 +63,7 @@ impl<'a> ScreenOverlay<'a> {
 
 impl<'a> Component for ScreenOverlay<'a> {
     fn build(self) -> Option<Node> {
+        let activity = self.player.current_activity().kind();
         Row::new("Navbar")
             .style(
                 Style::new()
@@ -83,7 +90,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .button_type(IconButtonType::NavBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .action(if cfg!(debug_assertions) {
-                                Panels::open(StandardPanel::DebugPanel).as_client_action()
+                                Panels::open(StandardPanel::DebugPanel(activity)).as_client_action()
                             } else {
                                 ActionBuilder::new()
                                     .update(Command::Debug(ClientDebugCommand {
@@ -91,7 +98,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                                     }))
                                     .as_client_action()
                             })
-                            .long_press_action(Panels::open(StandardPanel::DebugPanel)),
+                            .long_press_action(Panels::open(StandardPanel::DebugPanel(activity))),
                     )
                     .child(self.player.adventure.as_ref().map(|adventure| {
                         Row::new("CoinCount")
@@ -134,7 +141,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             )
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                     }))
-                    .child(
+                    .child(self.show_menu_button.then(|| {
                         IconButton::new(icons::BARS)
                             .name(&element_names::MENU_BUTTON)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
@@ -145,8 +152,8 @@ impl<'a> Component for ScreenOverlay<'a> {
                                 } else {
                                     StandardPanel::AdventureMenu
                                 },
-                            )),
-                    ),
+                            ))
+                    })),
             )
             .build()
     }

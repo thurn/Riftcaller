@@ -19,6 +19,7 @@ use core_ui::panels::Panels;
 use core_ui::prelude::Component;
 use enum_kinds::EnumKind;
 use game_data::primitives::{DeckId, GameId, Side};
+use player_data::PlayerActivityKind;
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
@@ -57,7 +58,7 @@ pub enum StandardPanel {
     About,
     Settings,
     Disclaimer,
-    DebugPanel,
+    DebugPanel(PlayerActivityKind),
     GameMenu,
     AdventureMenu,
     SetPlayerName(Side),

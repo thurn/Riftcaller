@@ -562,8 +562,11 @@ impl ClientGameData {
                 let non_card = game.game_object_positions.as_ref().unwrap();
                 self.insert_position(deck_id(PlayerName::User), &non_card.user_deck);
                 self.insert_position(deck_id(PlayerName::Opponent), &non_card.opponent_deck);
-                self.insert_position(leader_id(PlayerName::User), &non_card.user_character);
-                self.insert_position(leader_id(PlayerName::Opponent), &non_card.opponent_character);
+                self.insert_position(character_id(PlayerName::User), &non_card.user_character);
+                self.insert_position(
+                    character_id(PlayerName::Opponent),
+                    &non_card.opponent_character,
+                );
                 self.insert_position(discard_id(PlayerName::User), &non_card.user_discard);
                 self.insert_position(discard_id(PlayerName::Opponent), &non_card.opponent_deck);
                 self.tutorial_effects = game
@@ -606,7 +609,7 @@ fn deck_id(name: PlayerName) -> GameObjectIdentifier {
     GameObjectIdentifier { id: Some(Id::Deck(name as i32)) }
 }
 
-fn leader_id(name: PlayerName) -> GameObjectIdentifier {
+fn character_id(name: PlayerName) -> GameObjectIdentifier {
     GameObjectIdentifier { id: Some(Id::Character(name as i32)) }
 }
 

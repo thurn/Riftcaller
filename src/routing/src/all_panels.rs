@@ -15,7 +15,7 @@
 use adventure_data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
 use game_data::primitives::{DeckId, Side};
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PlayerPanel, StandardPanel};
-use player_data::PlayerState;
+use player_data::{PlayerActivityKind, PlayerState};
 
 /// Enumerates all standard panel addresses
 pub fn standard_panels() -> Vec<StandardPanel> {
@@ -24,7 +24,9 @@ pub fn standard_panels() -> Vec<StandardPanel> {
         StandardPanel::About,
         StandardPanel::Settings,
         StandardPanel::Disclaimer,
-        StandardPanel::DebugPanel,
+        StandardPanel::DebugPanel(PlayerActivityKind::None),
+        StandardPanel::DebugPanel(PlayerActivityKind::Adventure),
+        StandardPanel::DebugPanel(PlayerActivityKind::PlayingGame),
         StandardPanel::GameMenu,
         StandardPanel::AdventureMenu,
         StandardPanel::SetPlayerName(Side::Champion),

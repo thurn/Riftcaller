@@ -16,12 +16,10 @@ use std::mem;
 
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
-use core_ui::panels::Panels;
 use database::Database;
 use game_data::game::GameState;
 use game_data::player_name::{NamedPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
-use panel_address::StandardPanel;
 use player_data::PlayerStatus;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
@@ -111,8 +109,8 @@ pub async fn handle_debug_action(
 }
 
 fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
-    Ok(GameResponse::new(ClientData::propagate(data)).commands(vec![
-        Command::Debug(ClientDebugCommand {
+    Ok(GameResponse::new(ClientData::propagate(data)).commands(vec![Command::Debug(
+        ClientDebugCommand {
             debug_command: Some(DebugCommand::InvokeAction(ClientAction {
                 action: Some(
                     UserAction::NewGame(NewGameAction {
@@ -133,9 +131,8 @@ fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
                     .as_client_action(),
                 ),
             })),
-        }),
-        Panels::close(StandardPanel::DebugPanel).into(),
-    ]))
+        },
+    )]))
 }
 
 fn reload_scene(data: &RequestData, game: &GameState) -> Result<GameResponse> {

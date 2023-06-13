@@ -14,6 +14,7 @@
 
 use adventure_data::adventure::AdventureState;
 use anyhow::Result;
+use enum_kinds::EnumKind;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{DeckId, GameId};
@@ -32,10 +33,18 @@ pub enum PlayerStatus {
 }
 
 /// Identifies the current major activity this player is doing in the game.
+#[derive(EnumKind)]
+#[enum_kind(PlayerActivityKind, derive(Serialize, Deserialize, Hash))]
 pub enum PlayerActivity<'a> {
     None,
     Adventure(&'a AdventureState),
     PlayingGame(GameId),
+}
+
+impl<'a> PlayerActivity<'a> {
+    pub fn kind(&self) -> PlayerActivityKind {
+        self.into()
+    }
 }
 
 /// Represents a player's stored data.
