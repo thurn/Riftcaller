@@ -117,6 +117,12 @@ namespace Spelldawn.Services
         yield return coroutine;
       }
 
+      if (positions != null)
+      {
+        _registry.GameCharacterForPlayer(PlayerName.User).SetFacingDirection(positions.UserCharacterFacing);
+        _registry.GameCharacterForPlayer(PlayerName.Opponent).SetFacingDirection(positions.OpponentCharacterFacing);
+      }
+
       // Wait for optimistic animations to play out before continuing, to avoid jumping the card around.
       foreach (var sequence in _optimisticAnimations.Where(s => s.IsActive()))
       {

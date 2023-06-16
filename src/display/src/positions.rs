@@ -24,12 +24,13 @@ use game_data::primitives::{
 use game_data::utils;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
-    ClientItemLocation, ClientRoomLocation, GameObjectPositions, ObjectPosition,
-    ObjectPositionBrowser, ObjectPositionCharacter, ObjectPositionCharacterContainer,
-    ObjectPositionDeck, ObjectPositionDeckContainer, ObjectPositionDiscardPile,
-    ObjectPositionDiscardPileContainer, ObjectPositionHand, ObjectPositionIntoCard,
-    ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid, ObjectPositionRevealedCards,
-    ObjectPositionRoom, ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
+    ClientItemLocation, ClientRoomLocation, GameCharacterFacingDirection, GameObjectPositions,
+    ObjectPosition, ObjectPositionBrowser, ObjectPositionCharacter,
+    ObjectPositionCharacterContainer, ObjectPositionDeck, ObjectPositionDeckContainer,
+    ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer, ObjectPositionHand,
+    ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid,
+    ObjectPositionRevealedCards, ObjectPositionRoom, ObjectPositionStaging,
+    RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::traits::RaidDisplayState;
 use raids::RaidDataExt;
@@ -242,6 +243,18 @@ pub fn game_object_positions(
         opponent_deck: Some(non_card(builder, game, GameObjectId::Deck(opponent))?),
         user_character: Some(non_card(builder, game, GameObjectId::Character(side))?),
         opponent_character: Some(non_card(builder, game, GameObjectId::Character(opponent))?),
+        user_character_facing: character_facing_direction_for_side(
+            builder,
+            game,
+            builder.user_side,
+        )?
+        .into(),
+        opponent_character_facing: character_facing_direction_for_side(
+            builder,
+            game,
+            builder.user_side.opponent(),
+        )?
+        .into(),
         user_discard: Some(non_card(builder, game, GameObjectId::DiscardPile(side))?),
         opponent_discard: Some(non_card(builder, game, GameObjectId::DiscardPile(opponent))?),
     })
@@ -353,4 +366,28 @@ fn raid_access_browser(game: &GameState, raid: &RaidData) -> Vec<GameObjectId> {
         }
         _ => raid.accessed.iter().map(|card_id| GameObjectId::CardId(*card_id)).collect(),
     }
+}
+
+fn character_facing_direction_for_side(
+    builder: &ResponseBuilder,
+    game: &GameState,
+    side: Side,
+) -> Result<GameCharacterFacingDirection> {
+    if let Some(raid) = &game.info.raid {
+        if matches!(raid.phase().display_state(game)?, RaidDisplayState::Defenders(_)) {
+            if side == Side::Champion {
+                return Ok(GameCharacterFacingDirection::Right);
+            }
+
+            if side == Side::Overlord && raid.target == RoomId::Sanctum {
+                return Ok(GameCharacterFacingDirection::Left);
+            }
+        }
+    }
+
+    Ok(if builder.user_side == side {
+        GameCharacterFacingDirection::Up
+    } else {
+        GameCharacterFacingDirection::Down
+    })
 }

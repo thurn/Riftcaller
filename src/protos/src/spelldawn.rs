@@ -975,9 +975,13 @@ pub struct GameObjectPositions {
     pub user_character: ::core::option::Option<ObjectPosition>,
     #[prost(message, optional, tag = "4")]
     pub opponent_character: ::core::option::Option<ObjectPosition>,
-    #[prost(message, optional, tag = "5")]
+    #[prost(enumeration = "GameCharacterFacingDirection", tag = "5")]
+    pub user_character_facing: i32,
+    #[prost(enumeration = "GameCharacterFacingDirection", tag = "6")]
+    pub opponent_character_facing: i32,
+    #[prost(message, optional, tag = "7")]
     pub user_discard: ::core::option::Option<ObjectPosition>,
-    #[prost(message, optional, tag = "6")]
+    #[prost(message, optional, tag = "8")]
     pub opponent_discard: ::core::option::Option<ObjectPosition>,
 }
 /// Where to display the arrow bubble
@@ -3164,6 +3168,45 @@ impl CardPrefab {
             "CARD_PREFAB_TOKEN_CARD" => Some(Self::TokenCard),
             "CARD_PREFAB_FULL_HEIGHT" => Some(Self::FullHeight),
             "CARD_PREFAB_FULL_HEIGHT_TOKEN" => Some(Self::FullHeightToken),
+            _ => None,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum GameCharacterFacingDirection {
+    Unspecified = 0,
+    Up = 1,
+    Down = 2,
+    Left = 3,
+    Right = 4,
+}
+impl GameCharacterFacingDirection {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            GameCharacterFacingDirection::Unspecified => {
+                "GAME_CHARACTER_FACING_DIRECTION_UNSPECIFIED"
+            }
+            GameCharacterFacingDirection::Up => "GAME_CHARACTER_FACING_DIRECTION_UP",
+            GameCharacterFacingDirection::Down => "GAME_CHARACTER_FACING_DIRECTION_DOWN",
+            GameCharacterFacingDirection::Left => "GAME_CHARACTER_FACING_DIRECTION_LEFT",
+            GameCharacterFacingDirection::Right => "GAME_CHARACTER_FACING_DIRECTION_RIGHT",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "GAME_CHARACTER_FACING_DIRECTION_UNSPECIFIED" => Some(Self::Unspecified),
+            "GAME_CHARACTER_FACING_DIRECTION_UP" => Some(Self::Up),
+            "GAME_CHARACTER_FACING_DIRECTION_DOWN" => Some(Self::Down),
+            "GAME_CHARACTER_FACING_DIRECTION_LEFT" => Some(Self::Left),
+            "GAME_CHARACTER_FACING_DIRECTION_RIGHT" => Some(Self::Right),
             _ => None,
         }
     }

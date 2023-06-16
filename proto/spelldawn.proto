@@ -988,14 +988,24 @@ message PlayerView {
     bool can_take_action = 7;
 }
 
+enum GameCharacterFacingDirection {
+    GAME_CHARACTER_FACING_DIRECTION_UNSPECIFIED = 0;
+    GAME_CHARACTER_FACING_DIRECTION_UP = 1;
+    GAME_CHARACTER_FACING_DIRECTION_DOWN = 2;
+    GAME_CHARACTER_FACING_DIRECTION_LEFT = 3;
+    GAME_CHARACTER_FACING_DIRECTION_RIGHT = 4;
+}
+
 // Positions of non-Card game objects.
 message GameObjectPositions {
     ObjectPosition user_deck = 1;
     ObjectPosition opponent_deck = 2;
     ObjectPosition user_character = 3;
     ObjectPosition opponent_character = 4;
-    ObjectPosition user_discard = 5;
-    ObjectPosition opponent_discard = 6;
+    GameCharacterFacingDirection user_character_facing = 5;
+    GameCharacterFacingDirection opponent_character_facing = 6;
+    ObjectPosition user_discard = 7;
+    ObjectPosition opponent_discard = 8;
 }
 
 enum ArrowBubbleCorner {

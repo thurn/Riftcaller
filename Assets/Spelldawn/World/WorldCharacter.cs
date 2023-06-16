@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Spelldawn.World
 {
@@ -30,29 +29,18 @@ namespace Spelldawn.World
     const float AnimatorSide = 1f;
     const float AnimatorDown = 2f;
 
-    [SerializeField] Animator _animator = null!;
-    [SerializeField] SortingGroup _sortingGroup = null!;
-    [SerializeField] GameObject _down = null!;
-    [SerializeField] GameObject _side = null!;
-    [SerializeField] GameObject _up = null!;
+    AnimatedCharacter _character = null!;
     WorldMap _worldMap = null!;
     float _moveSpeed;
     Action? _onArriveAtDestination;
     
     readonly Queue<Vector2> _targetPositions = new();
 
-    enum Direction
-    {
-      Up,
-      Down,
-      Left,
-      Right
-    }
-
     public void Initialize(WorldMap worldMap)
     {
-      SetDirection(Direction.Right);
-      _animator.SetFloat(SpeedParam, 0f);
+      _character = GetComponent<AnimatedCharacter>();
+      _character.SetDirection(AnimatedCharacter.Direction.Right);
+      _character.SetSpeed(0f);
       _worldMap = worldMap;
     }
 
@@ -72,7 +60,7 @@ namespace Spelldawn.World
           _targetPositions.Dequeue();
           if (_targetPositions.Count == 0)
           {
-            _animator.SetFloat(SpeedParam, 0f);
+            _character.SetSpeed(0f);
             _onArriveAtDestination?.Invoke();
             _onArriveAtDestination = null;
           }
@@ -84,7 +72,7 @@ namespace Spelldawn.World
       }
 
       var mapPosition = _worldMap.FromWorldPosition(transform.position);
-      _sortingGroup.sortingOrder = _worldMap.SortOrderForTileId(new WorldMap.TileId(mapPosition, 10));
+      _character.SortingGroup.sortingOrder = _worldMap.SortOrderForTileId(new WorldMap.TileId(mapPosition, 10));
     }
 
     public void MoveOnPath(List<Vector3> positions, Action? onArriveAtDestination = null)
@@ -92,7 +80,7 @@ namespace Spelldawn.World
       if (positions.Count > 0)
       {
         _targetPositions.Clear();
-        _animator.SetFloat(SpeedParam, 0.5f);
+        _character.SetSpeed(0.5f);
         _moveSpeed = 3.0f;
         foreach (var p in positions)
         {
@@ -113,46 +101,11 @@ namespace Spelldawn.World
       var direction = (target - ((Vector2)transform.position)).normalized;
       if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
       {
-        SetDirection(direction.x < 0 ? Direction.Left : Direction.Right);
+        _character.SetDirection(direction.x < 0 ? AnimatedCharacter.Direction.Left : AnimatedCharacter.Direction.Right);
       }
       else
       {
-        SetDirection(direction.y < 0 ? Direction.Down : Direction.Up);
-      }
-    }
-
-    void SetDirection(Direction direction)
-    {
-      _down.SetActive(false);
-      _up.SetActive(false);
-      _side.SetActive(false);
-
-      switch (direction)
-      {
-        case Direction.Up:
-          _up.SetActive(true);
-          _animator.SetFloat(DirectionParam, AnimatorUp);
-          break;
-        case Direction.Down:
-          _down.SetActive(true);
-          _animator.SetFloat(DirectionParam, AnimatorDown);          
-          break;
-        case Direction.Left:
-          _side.SetActive(true);
-          _animator.SetFloat(DirectionParam, AnimatorSide);
-          var s1 = _side.transform.localScale;
-          s1.x = Mathf.Abs(s1.x) * -1;
-          _side.transform.localScale = s1;          
-          break;
-        case Direction.Right:
-          _side.SetActive(true);
-          _animator.SetFloat(DirectionParam, AnimatorSide);
-          var s2 = _side.transform.localScale;
-          s2.x = Mathf.Abs(s2.x);
-          _side.transform.localScale = s2;             
-          break;
-        default:
-          throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+        _character.SetDirection(direction.y < 0 ? AnimatedCharacter.Direction.Down : AnimatedCharacter.Direction.Up);
       }
     }
   }

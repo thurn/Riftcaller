@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
+using Spelldawn.World;
 using TMPro;
 using UnityEngine;
 
@@ -26,13 +28,13 @@ namespace Spelldawn.Game
 {
   public sealed class GameCharacter : StackObjectDisplay, ArrowService.IArrowDelegate
   {
-    [Header("Character")] [SerializeField] Registry _registry = null!;
-    [SerializeField] SpriteRenderer _image = null!;
+    [Header("Character")]
+    [SerializeField] Registry _registry = null!;
     [SerializeField] TextMeshPro _scoreText = null!;
-    [SerializeField] GameObject _raidSymbol = null!;
     [SerializeField] PlayerName _owner;
     [SerializeField] GameObject _speechBubble = null!;
     [SerializeField] TextMeshPro _speechBubbleText = null!;
+    [SerializeField] AnimatedCharacter _character = null!;
     ISet<RoomIdentifier>? _validRoomsToVisit;
 
     public PlayerSide Side { get; set; }
@@ -47,25 +49,44 @@ namespace Spelldawn.Game
 
     public override bool IsContainer() => false;
 
+    protected override void OnStart()
+    {
+      _character.SetSpeed(0f);
+    }
+
     public void OnRaidStateChanged(bool raidActive)
     {
-      if (Side == PlayerSide.Champion)
+    }
+
+    public void SetFacingDirection(GameCharacterFacingDirection direction)
+    {
+      switch (direction)
       {
-        _raidSymbol.SetActive(raidActive);
+        case GameCharacterFacingDirection.Up:
+          _character.SetDirection(AnimatedCharacter.Direction.Up);
+          break;
+        case GameCharacterFacingDirection.Down:
+          _character.SetDirection(AnimatedCharacter.Direction.Down);          
+          break;
+        case GameCharacterFacingDirection.Left:
+          _character.SetDirection(AnimatedCharacter.Direction.Left);          
+          break;
+        case GameCharacterFacingDirection.Right:
+          _character.SetDirection(AnimatedCharacter.Direction.Right);          
+          break;
+        case GameCharacterFacingDirection.Unspecified:
+        default:
+          throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
       }
     }
 
     public void DisableAnimation()
     {
-      var text = ComponentUtils.GetComponent<TextMeshPro>(_raidSymbol);
-      text.fontMaterial = new Material(Shader.Find("TextMeshPro/Distance Field"));
-      text.color = new Color(1.0f, 0.435f, 0.0f);
     }
 
     public void RenderPlayerInfo(PlayerInfo playerInfo)
     {
       _validRoomsToVisit = playerInfo.ValidRoomsToVisit.ToHashSet();
-      _registry.AssetService.AssignSprite(_image, playerInfo.ArenaPortrait);
     }
 
     public void RenderScore(ScoreView scoreView)
