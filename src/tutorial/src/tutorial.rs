@@ -98,7 +98,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(6000),
                 ),
                 tooltip(
-                    "Drag portrait here",
+                    "Drag character here",
                     TooltipAnchor::RaidRoom(RoomId::RoomA),
                     Milliseconds(8000),
                 ),
@@ -235,7 +235,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 user_say("You can't keep me out of that room.", Milliseconds(4000)),
                 user_say_recurring("I should raid again.", Milliseconds(10_000)),
                 tooltip_recurring(
-                    "Drag portrait here",
+                    "Drag character here",
                     TooltipAnchor::RaidRoom(RoomId::RoomA),
                     Milliseconds(15_000),
                 ),
@@ -260,7 +260,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(2000)),
                 user_say_recurring("I should search the Vault.", Milliseconds(8_000)),
                 tooltip_recurring(
-                    "Drag portrait here",
+                    "Drag character here",
                     TooltipAnchor::RaidRoom(RoomId::Vault),
                     Milliseconds(10_000),
                 ),
@@ -313,7 +313,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 user_say("Time to try again.", Milliseconds(0)),
                 user_say_recurring("I can use this weapon to raid that room.", Milliseconds(10_000)),
                 tooltip_recurring(
-                    "Drag portrait here",
+                    "Drag character here",
                     TooltipAnchor::RaidRoom(RoomId::RoomA),
                     Milliseconds(15_000),
                 ),
@@ -338,7 +338,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     "You can raid the <b>Sanctum</b> to access a random card from your opponent's hand",
                     Milliseconds(2000)),
                 tooltip_recurring(
-                    "Drag portrait here",
+                    "Drag character here",
                     TooltipAnchor::RaidRoom(RoomId::Sanctum),
                     Milliseconds(8_000),
                 ),
