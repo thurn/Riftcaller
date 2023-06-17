@@ -73,14 +73,6 @@ MonoBehaviour:
     m_Address: Sprites/QuantityBackground.png
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 82aa0cde6e9a949bd977d8be58cfa587
-    m_Address: Rexard/BadgesMegapack/champion.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 5669d5d2212b743f598ab5e0fead6a70
-    m_Address: Rexard/BadgesMegapack/overlord.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:
