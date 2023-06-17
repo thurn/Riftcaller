@@ -2176,12 +2176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Press \uf188 to submit feedback
-
-    Connected. Pre-Alpha Build 8dcea1e
-
-    Game
-    ID: 1000023423423'
+  m_text: Press \uf188 to submit feedback
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e96149557a5a64bb59842fa9c02240c6, type: 2}
   m_sharedMaterial: {fileID: -5884420940402431444, guid: e96149557a5a64bb59842fa9c02240c6, type: 2}
@@ -2303,7 +2298,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 491704058}
   m_LocalRotation: {x: 0, y: -0.76604444, z: 0.64278764, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 34.98}
+  m_LocalPosition: {x: 0, y: 0, z: 34.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2312,7 +2307,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 100, y: 0, z: 180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -16.19, y: 10}
+  m_AnchoredPosition: {x: 9.37, y: 10.07}
   m_SizeDelta: {x: 11.2898, y: 1.8058}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &500662261
