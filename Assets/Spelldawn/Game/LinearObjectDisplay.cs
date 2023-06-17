@@ -19,7 +19,7 @@ using UnityEngine;
 
 namespace Spelldawn.Game
 {
-  public sealed class LinearObjectDisplay : ObjectDisplay
+  public class LinearObjectDisplay : ObjectDisplay
   {
     [SerializeField] float _width;
     [SerializeField] float _initialSpacing;
@@ -29,7 +29,7 @@ namespace Spelldawn.Game
 
     protected override Registry Registry => _registry;
 
-    protected override GameContext DefaultGameContext() => Game.GameContext.Arena;
+    protected override GameContext DefaultGameContext() => GameContext.Arena;
 
     protected override Vector3 CalculateObjectPosition(int index, int count) =>
       transform.position + new Vector3(CalculateXOffset(_width, _initialSpacing, _cardSize, index, count), 0, 0);

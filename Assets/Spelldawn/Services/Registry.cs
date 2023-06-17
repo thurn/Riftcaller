@@ -218,6 +218,9 @@ namespace Spelldawn.Services
     [SerializeField] StudioManager _studioManager = null!;
     public StudioManager StudioManager => _studioManager;
 
+    [SerializeField] SigilDisplay _sigilDisplay = null!;
+    public SigilDisplay SigilDisplay => _sigilDisplay;
+
     IEnumerator Start()
     {
       Application.targetFrameRate = 60;

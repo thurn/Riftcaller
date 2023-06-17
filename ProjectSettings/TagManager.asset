@@ -45,6 +45,9 @@ TagManager:
   - name: Hidden
     uniqueID: 1670812453
     locked: 0
+  - name: Sigils
+    uniqueID: 3809635539
+    locked: 0
   - name: Arena
     uniqueID: 1471301815
     locked: 0

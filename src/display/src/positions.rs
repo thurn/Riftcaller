@@ -29,7 +29,7 @@ use protos::spelldawn::{
     ObjectPositionCharacterContainer, ObjectPositionDeck, ObjectPositionDeckContainer,
     ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer, ObjectPositionHand,
     ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid,
-    ObjectPositionRevealedCards, ObjectPositionRoom, ObjectPositionStaging,
+    ObjectPositionRevealedCards, ObjectPositionRoom, ObjectPositionSigil, ObjectPositionStaging,
     RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::traits::RaidDisplayState;
@@ -117,6 +117,10 @@ pub fn character(builder: &ResponseBuilder, side: Side) -> Position {
     Position::Character(ObjectPositionCharacter { owner: builder.to_player_name(side) })
 }
 
+pub fn sigil(builder: &ResponseBuilder, side: Side) -> Position {
+    Position::Sigil(ObjectPositionSigil { owner: builder.to_player_name(side) })
+}
+
 pub fn character_container(builder: &ResponseBuilder, side: Side) -> Position {
     Position::CharacterContainer(ObjectPositionCharacterContainer {
         owner: builder.to_player_name(side),
@@ -180,7 +184,8 @@ fn adapt_position(
         CardPosition::Hand(side) => hand(builder, side),
         CardPosition::DeckTop(side) => deck(builder, side),
         CardPosition::DiscardPile(side) => discard(builder, side),
-        CardPosition::Scored(side) | CardPosition::Sigil(side) => character(builder, side),
+        CardPosition::Scored(side) => character(builder, side),
+        CardPosition::Sigil(side) => sigil(builder, side),
         CardPosition::Scoring => staging(),
         CardPosition::Played(side, target) => {
             played_position(builder, game, side, card_id, target)?

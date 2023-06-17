@@ -545,6 +545,7 @@ impl Summarize for Position {
             Self::CharacterContainer(v) => summary.primitive(v),
             Self::IntoCard(v) => summary.primitive(v),
             Self::Revealed(v) => summary.primitive(v),
+            Self::Sigil(v) => summary.primitive(v),
         }
     }
 }

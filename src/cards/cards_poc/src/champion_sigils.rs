@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use assets::EnvironmentType;
+use assets::rexard_images::RexardBadges;
+use assets::{rexard_images, EnvironmentType};
 use card_helpers::{history, *};
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::CardName;
@@ -20,12 +21,12 @@ use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::{mana, mutations};
 
-pub fn ennera_imris_blood_bound() -> CardDefinition {
+pub fn radiant_sigil() -> CardDefinition {
     CardDefinition {
-        name: CardName::EnneraImrisBloodBound,
+        name: CardName::RadiantSigil,
         sets: vec![CardSetName::ProofOfConcept],
         cost: sigil_cost(),
-        image: assets::fantasy_class_image("Warrior", "Female"),
+        image: rexard_images::badge(RexardBadges::Fantasy, "Tex_badge_24"),
         card_type: CardType::Sigil,
         side: Side::Champion,
         school: School::Pact,
@@ -40,14 +41,7 @@ pub fn ennera_imris_blood_bound() -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfig {
-            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Warrior_F")),
-            image_background: Some(assets::environments(
-                EnvironmentType::CastlesTowersKeeps,
-                "Tavern/SceneryTavern_outside_1",
-            )),
-            ..CardConfig::default()
-        },
+        config: CardConfig::default(),
     }
 }
 

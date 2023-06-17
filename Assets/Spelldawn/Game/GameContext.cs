@@ -47,7 +47,8 @@ namespace Spelldawn.Game
     LongPressBrowser = 19,
     RewardBrowser = 14,
     InfoZoom = 15,
-    SplashScreen = 20
+    SplashScreen = 20,
+    Sigils = 21 
   }
 
   public static class GameContextUtil
@@ -56,25 +57,26 @@ namespace Spelldawn.Game
     {
       GameContext.Unspecified => 0,
       GameContext.Hidden => 1,
-      GameContext.Arena => 2,
-      GameContext.Deck => 3,
-      GameContext.DiscardPile => 4,
-      GameContext.GameCharacter => 5,
-      GameContext.ArenaRaidParticipant => 6,
-      GameContext.RaidParticipant => 7,
-      GameContext.Hand => 8,
-      GameContext.Interface => 9,
-      GameContext.Browser => 10,
-      GameContext.Staging => 11,
-      GameContext.RevealedCardsBrowser => 12,
-      GameContext.Scored => 13,
-      GameContext.Effects => 14,
-      GameContext.Dragging => 15,
-      GameContext.UserMessage => 16,
-      GameContext.LongPressBrowser => 17,
-      GameContext.RewardBrowser => 18,
-      GameContext.InfoZoom => 19,
-      GameContext.SplashScreen => 20,
+      GameContext.Sigils => 2,
+      GameContext.Arena => 3,
+      GameContext.Deck => 4,
+      GameContext.DiscardPile => 5,
+      GameContext.GameCharacter => 6,
+      GameContext.ArenaRaidParticipant => 7,
+      GameContext.RaidParticipant => 8,
+      GameContext.Hand => 9,
+      GameContext.Interface => 10,
+      GameContext.Browser => 11,
+      GameContext.Staging => 12,
+      GameContext.RevealedCardsBrowser => 13,
+      GameContext.Scored => 14,
+      GameContext.Effects => 15,
+      GameContext.Dragging => 16,
+      GameContext.UserMessage => 17,
+      GameContext.LongPressBrowser => 18,
+      GameContext.RewardBrowser => 19,
+      GameContext.InfoZoom => 20,
+      GameContext.SplashScreen => 21,
       _ => throw new ArgumentOutOfRangeException(nameof(gameContext), gameContext, null)
     };
 
@@ -82,6 +84,7 @@ namespace Spelldawn.Game
     {
       GameContext.Arena => true,
       GameContext.ArenaRaidParticipant => true,
+      GameContext.Sigils => true,
       _ => false
     };
   }

@@ -827,6 +827,11 @@ message ObjectPositionRevealedCards {
     RevealedCardsBrowserSize size = 1;
 }
 
+/// Position in which active sigils are displayed during gameplay
+message ObjectPositionSigil {
+    PlayerName owner = 1;
+}
+
 message ObjectPosition {
     // A key by which to sort this object -- objects with higher sorting keys
     // should be displayed 'on top of' or 'in front of' objects with lower
@@ -856,6 +861,7 @@ message ObjectPosition {
         ObjectPositionCharacterContainer character_container = 16;
         ObjectPositionIntoCard into_card = 17;
         ObjectPositionRevealedCards revealed = 18;
+        ObjectPositionSigil sigil = 19;
     }
 }
 

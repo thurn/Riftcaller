@@ -20,10 +20,8 @@ use test_utils::*;
 #[test]
 fn ennera_imris_blood_bound() {
     let gained = 1;
-    let mut g = new_game(
-        Side::Champion,
-        Args { sigils: vec![CardName::EnneraImrisBloodBound], ..Args::default() },
-    );
+    let mut g =
+        new_game(Side::Champion, Args { sigils: vec![CardName::RadiantSigil], ..Args::default() });
 
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     spend_actions_until_turn_over(&mut g, Side::Champion);

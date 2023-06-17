@@ -151,3 +151,20 @@ impl RexardArtifactType {
         .to_string()
     }
 }
+
+pub enum RexardBadges {
+    Fantasy,
+}
+
+impl RexardBadges {
+    fn path(&self) -> String {
+        match self {
+            RexardBadges::Fantasy => "FantasyBadges",
+        }
+        .to_string()
+    }
+}
+
+pub fn badge(subtype: RexardBadges, name: impl Into<String>) -> Sprite {
+    Sprite { address: format!("Rexard/BadgesMegapack/{}/{}.png", subtype.path(), name.into()) }
+}

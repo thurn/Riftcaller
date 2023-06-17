@@ -757,6 +757,13 @@ pub struct ObjectPositionRevealedCards {
     #[prost(enumeration = "RevealedCardsBrowserSize", tag = "1")]
     pub size: i32,
 }
+/// / Position in which active sigils are displayed during gameplay
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ObjectPositionSigil {
+    #[prost(enumeration = "PlayerName", tag = "1")]
+    pub owner: i32,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPosition {
@@ -774,7 +781,7 @@ pub struct ObjectPosition {
     pub sorting_subkey: u32,
     #[prost(
         oneof = "object_position::Position",
-        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18"
+        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19"
     )]
     pub position: ::core::option::Option<object_position::Position>,
 }
@@ -813,6 +820,8 @@ pub mod object_position {
         IntoCard(super::ObjectPositionIntoCard),
         #[prost(message, tag = "18")]
         Revealed(super::ObjectPositionRevealedCards),
+        #[prost(message, tag = "19")]
+        Sigil(super::ObjectPositionSigil),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

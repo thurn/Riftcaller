@@ -109,7 +109,7 @@ pub enum CardName {
     SphinxOfWintersBreath,
     BridgeTroll,
     Stormcaller,
-    EnneraImrisBloodBound,
+    RadiantSigil,
     ArisFeyTheRadiantSun,
     TelantesDugothEarthbreaker,
     AndvariEstNightsWarden,
@@ -165,11 +165,6 @@ impl CardName {
         let custom = match self {
             Self::MaraudersAxe => "Marauder's Axe",
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath",
-            Self::EnneraImrisBloodBound => "Ennera Imris, Blood-Bound",
-            Self::ArisFeyTheRadiantSun => "Aris Fey, The Radiant Sun",
-            Self::TelantesDugothEarthbreaker => "Telantes Dugoth, Earthbreaker",
-            Self::AndvariEstNightsWarden => "Andvari Est, Night's Warden",
-            Self::UbrasEfarisTimeShaper => "Ubras Efaris, Time Shaper",
             _ => "",
         };
 

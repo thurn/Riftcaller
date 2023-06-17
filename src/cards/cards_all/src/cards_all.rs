@@ -44,7 +44,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::artifacts::mage_gloves);
     DEFINITIONS.insert(cards_poc::artifacts::magical_resonator);
     DEFINITIONS.insert(cards_poc::artifacts::dark_grimoire);
-    DEFINITIONS.insert(cards_poc::champion_sigils::ennera_imris_blood_bound);
+    DEFINITIONS.insert(cards_poc::champion_sigils::radiant_sigil);
     DEFINITIONS.insert(cards_poc::champion_sigils::aris_fey_the_radiant_sun);
     DEFINITIONS.insert(cards_poc::champion_sigils::telantes_dugoth_earthbreaker);
     DEFINITIONS.insert(cards_poc::champion_sigils::andvari_est_nights_warden);

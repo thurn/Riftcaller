@@ -137,7 +137,7 @@ pub static TUTORIAL_CHAMPION: Lazy<Deck> =
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![],
-    sigils: vec![],
+    sigils: vec![CardName::RadiantSigil],
     cards: hashmap! {
         CardName::Meditation => 2,
         CardName::CoupDeGrace => 3,

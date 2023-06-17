@@ -48,16 +48,6 @@ pub fn background_scale(icon_type: CardIconType) -> Option<f32> {
     })
 }
 
-pub fn side_badge(side: Side) -> Sprite {
-    Sprite {
-        address: match side {
-            Side::Overlord => "Rexard/BadgesMegapack/overlord.png",
-            Side::Champion => "Rexard/BadgesMegapack/champion.png",
-        }
-        .to_string(),
-    }
-}
-
 /// Address for a given [CardIconType]
 pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
     SpriteAddress {
@@ -168,7 +158,7 @@ pub fn title_background(_: Option<Lineage>) -> SpriteAddress {
 }
 
 /// Address for the frame of a card in the arena
-pub fn arena_frame(_: Side, card_type: CardType, lineage: Option<Lineage>) -> SpriteAddress {
+pub fn arena_frame(side: Side, card_type: CardType, lineage: Option<Lineage>) -> SpriteAddress {
     SpriteAddress {
         address: format!(
             "{}.png",
@@ -182,6 +172,12 @@ pub fn arena_frame(_: Side, card_type: CardType, lineage: Option<Lineage>) -> Sp
                     CardType::Artifact => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
+                    CardType::Sigil =>
+                        if side == Side::Overlord {
+                            "SpriteWay/Icons/Clean Frames/9002"
+                        } else {
+                            "SpriteWay/Icons/Clean Frames/9033"
+                        },
                     _ => "SpriteWay/Icons/Clean Frames/9062",
                 },
             }
