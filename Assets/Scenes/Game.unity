@@ -1536,6 +1536,7 @@ GameObject:
   m_Component:
   - component: {fileID: 317749079}
   - component: {fileID: 317749080}
+  - component: {fileID: 317749081}
   m_Layer: 0
   m_Name: UserHand
   m_TagString: Untagged
@@ -1591,6 +1592,22 @@ MonoBehaviour:
   _gizmoRadius: 1
   _objectScale: 0
   _registry: {fileID: 1445473048}
+--- !u!114 &317749081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 317749078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cfdbec5e23d4ba39ac59478c3776671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _registry: {fileID: 1445473048}
+  _offset: {x: 0, y: 35}
+  _owner: 1
+  _cameraDistance: 15
 --- !u!1 &319105149
 GameObject:
   m_ObjectHideFlags: 0
@@ -7104,6 +7121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1072430062}
   - component: {fileID: 1072430061}
+  - component: {fileID: 1072430063}
   m_Layer: 0
   m_Name: OpponentHand
   m_TagString: Untagged
@@ -7159,6 +7177,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 280, y: 0, z: 0}
+--- !u!114 &1072430063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072430060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cfdbec5e23d4ba39ac59478c3776671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _registry: {fileID: 1445473048}
+  _offset: {x: 0, y: 50}
+  _owner: 2
+  _cameraDistance: 30
 --- !u!1 &1086194763
 GameObject:
   m_ObjectHideFlags: 0

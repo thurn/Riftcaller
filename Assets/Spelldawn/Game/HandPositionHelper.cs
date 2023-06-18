@@ -14,31 +14,27 @@
 
 #nullable enable
 
+using Spelldawn.Protos;
 using Spelldawn.Services;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Spelldawn.Game
 {
-  public sealed class ViewportAnchor2 : MonoBehaviour
+  public sealed class HandPositionHelper : MonoBehaviour
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] Vector2 _offset;
-    [SerializeField] float _zPosition;
-    [SerializeField] TextAnchor _anchorPosition;
+    [SerializeField] PlayerName _owner;
+    [SerializeField] float _cameraDistance;
+    
     void Update()
     {
-      var point = _anchorPosition switch
-      {
-        TextAnchor.LowerLeft => 
-          new Vector3(_offset.x + Screen.safeArea.xMin, _offset.y + Screen.safeArea.yMin, _zPosition),
-        TextAnchor.LowerRight => 
-          new Vector3(Screen.safeArea.xMax - _offset.x, _offset.y + Screen.safeArea.yMin, _zPosition),
-        TextAnchor.UpperLeft => 
-          new Vector3(_offset.x + Screen.safeArea.xMin, Screen.safeArea.yMax - _offset.y, _zPosition),
-        TextAnchor.UpperRight => 
-          new Vector3(Screen.safeArea.xMax - _offset.x, Screen.safeArea.yMax - _offset.y, _zPosition),          
-      };
-      var target = _registry.MainCamera.ScreenToWorldPoint(point);
+      var target = _registry.MainCamera.ScreenToWorldPoint(
+        new Vector3(
+          _offset.x + Screen.width / 2.0f, 
+          _owner == PlayerName.User ? _offset.y : Screen.height - _offset.y,
+          _cameraDistance));
       transform.position = target;
     }    
   }
