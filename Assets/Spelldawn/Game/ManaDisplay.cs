@@ -18,24 +18,24 @@ using Spelldawn.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.EventSystems;
 
 #nullable enable
 
 namespace Spelldawn.Game
 {
-  public sealed class ManaDisplay : MonoBehaviour
+  public sealed class ManaDisplay : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] PlayerName _owner;
     [SerializeField] AssetReferenceGameObject _onPress = null!;
-    [SerializeField] Transform _onPressPosition = null!;
+    [SerializeField] RectTransform _effectPosition = null!;
     [SerializeField] AssetReferenceGameObject _onChange = null!;
-    [SerializeField] Transform _onChangePosition = null!;
-    [SerializeField] TextMeshPro _manaText = null!;
-    [SerializeField] TextMeshPro _bonusManaText = null!;
-    [SerializeField] TextMeshPro _manaSymbol = null!;
+    [SerializeField] TextMeshProUGUI _manaText = null!;
+    [SerializeField] TextMeshProUGUI _bonusManaText = null!;
+    [SerializeField] TextMeshProUGUI _manaSymbol = null!;
     [SerializeField] uint _currentMana = 5;
-    [SerializeField] uint _currentBonusMana = 0;
+    [SerializeField] uint _currentBonusMana;
     
     bool _animationDisabled;
     bool _canTakeGainManaAction;
@@ -77,8 +77,7 @@ namespace Spelldawn.Game
 
       if (currentMana != _currentMana && !_animationDisabled)
       {
-        StartCoroutine(
-          _registry.AssetPoolService.CreateFromReference(_onChange, _onChangePosition.position, _onChangePosition));        
+        PlayEffect(_onChange);
       }
 
       _currentMana = currentMana;
@@ -91,8 +90,7 @@ namespace Spelldawn.Game
 
       if (bonusMana != _currentBonusMana)
       {
-        StartCoroutine(
-          _registry.AssetPoolService.CreateFromReference(_onChange, _onChangePosition.position, _onChangePosition));
+        PlayEffect(_onChange);
       }
 
       _currentBonusMana = bonusMana;
@@ -101,7 +99,26 @@ namespace Spelldawn.Game
       _bonusManaText.text = "" + _currentBonusMana;
     }
 
-    void OnMouseDown()
+    public void OnPointerClick(PointerEventData eventData)
+    {
+      if (Clickable)
+      {
+        PlayEffect(_onPress);
+        _registry.ActionService.HandleAction(new ClientAction
+        {
+          GainMana = new GainManaAction()
+        });
+      }
+    }
+
+    void PlayEffect(AssetReferenceGameObject effect)
+    {
+      StartCoroutine(
+        _registry.AssetPoolService.CreateFromReference(effect, _registry.MainCamera.ScreenToWorldPoint(
+          new Vector3(_effectPosition.position.x, _effectPosition.position.y, 8f))));      
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
     {
       if (Clickable)
       {
@@ -109,24 +126,11 @@ namespace Spelldawn.Game
       }
     }
 
-    void OnMouseUp()
+    public void OnPointerUp(PointerEventData eventData)
     {
       if (Clickable)
       {
         transform.localScale = Vector3.one;
-      }
-    }
-
-    void OnMouseUpAsButton()
-    {
-      if (Clickable)
-      {
-        StartCoroutine(
-          _registry.AssetPoolService.CreateFromReference(_onPress, _onPressPosition.position, _onPressPosition));
-        _registry.ActionService.HandleAction(new ClientAction
-        {
-          GainMana = new GainManaAction()
-        });
       }
     }
   }

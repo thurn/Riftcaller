@@ -24,7 +24,7 @@ namespace Spelldawn.Game
   public sealed class ActionDisplay : MonoBehaviour
   {
     [SerializeField] uint _availableActions = 3;
-    [SerializeField] TextMeshPro _number = null!;
+    [SerializeField] TextMeshProUGUI _number = null!;
     [SerializeField] ActionSymbol _left = null!;
     [SerializeField] ActionSymbol _center = null!;
     [SerializeField] ActionSymbol _right = null!;

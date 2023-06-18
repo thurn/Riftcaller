@@ -14,6 +14,8 @@
 
 #nullable enable
 
+using DG.Tweening;
+using Spelldawn.Utils;
 using TMPro;
 using UnityEngine;
 
@@ -21,34 +23,15 @@ namespace Spelldawn.Game
 {
   public sealed class ActionSymbol : MonoBehaviour
   {
-    [SerializeField] TextMeshPro _text = null!;
-    [SerializeField] GameObject _rotationAxis = null!;
-    [SerializeField] float _speed = 300f;
+    [SerializeField] TextMeshProUGUI _text = null!;
     [SerializeField] Material _activeMaterial = null!;
     [SerializeField] Material _inactiveMaterial = null!;
-    
     bool _filled = true;
-    bool _animate;
-    float _total;
-    Vector3 _startPosition;
-    Vector3? _rotatedPosition;
-    Material? _setMaterialTo;
-
-    public bool IsAnimating => _animate;
-
-    void Start()
-    {
-      _startPosition = transform.position;
-    }
+    
+    public bool IsAnimating { get; private set; } 
 
     public void SetFilled(bool filled)
     {
-      if (_animate)
-      {
-        // Animation already running
-        return;
-      }
-
       if (filled)
       {
         gameObject.SetActive(true);
@@ -57,12 +40,18 @@ namespace Spelldawn.Game
       switch (filled)
       {
         case true when !_filled:
-          _setMaterialTo = _activeMaterial;
-          _animate = true;
+          IsAnimating = true;
+          TweenUtils.Sequence("RotateActionSymbol")
+            .Insert(0f, GetComponent<RectTransform>().DORotate(new Vector3(0f, 0f, 0.0f), 0.5f))
+            .InsertCallback(0.25f, () => _text.fontMaterial = _activeMaterial)
+            .AppendCallback(() => IsAnimating = false);
           break;
         case false when _filled:
-          _setMaterialTo = _inactiveMaterial;
-          _animate = true;
+          IsAnimating = true;
+          TweenUtils.Sequence("RotateActionSymbol")
+            .Insert(0f, GetComponent<RectTransform>().DORotate(new Vector3(0f, 0f, 180.0f), 0.5f))
+            .InsertCallback(0.25f, () => _text.fontMaterial = _inactiveMaterial)
+            .AppendCallback(() => IsAnimating = false);
           break;
       }
 
@@ -76,47 +65,6 @@ namespace Spelldawn.Game
       var inactive = Instantiate(material);
       inactive.SetColor(ShaderUtilities.ID_FaceColor, Color.black);
       _inactiveMaterial = inactive;
-    }
-
-    void Update()
-    {
-      // The world's most sketchy rotate animation. I couldn't get the obvious ways of
-      // doing this to work because I am bad at Unity. As Blaise Pascal once said,
-      // "If I had more time, I would have written you some shorter code".
-      
-      if (_animate)
-      {
-        var degrees = _speed * Time.deltaTime;
-        var axis = new Vector3(0, -1f, -0.2f); // MainCamera.forward
-        transform.RotateAround(_rotationAxis.transform.position, axis, degrees);
-        _total += degrees;
-
-        if (_total >= 150f && _setMaterialTo)
-        {
-          _text.fontMaterial = _setMaterialTo;
-          _setMaterialTo = null;
-        }
-
-        if (_total >= 180.0f)
-        {
-          _animate = false;
-          _total = 0;
-
-          if (Mathf.Abs(transform.localEulerAngles.z) < 1f)
-          {
-            // The position and angles get slightly offset after several rotations, causing the object
-            // to move slightly, so we save the first positions we see and snap it back to those.
-            transform.localEulerAngles = Vector3.zero;
-            transform.position = _startPosition;
-          }
-          else
-          {
-            transform.localEulerAngles = new Vector3(0f, 0f, 180f);
-            _rotatedPosition ??= transform.position;
-            transform.position = _rotatedPosition.Value;
-          }
-        }
-      }
     }
   }
 }
