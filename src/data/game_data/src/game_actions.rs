@@ -26,6 +26,16 @@ use crate::game::MulliganDecision;
 use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, RoomId, Side};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+pub enum SummonAction {
+    /// Pay costs to summon the indicated minion during a raid, turning it
+    /// face-up.
+    SummonMinion(CardId),
+    /// Do not pay the costs to summon a minion during a raid, and proceed to
+    /// the next raid phase.
+    DoNotSummmon,
+}
+
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum EncounterAction {
     /// Defeat the minion being encountered with a weapon (source_id, target_id)
     UseWeaponAbility(CardId, CardId),
@@ -72,6 +82,9 @@ pub enum CardPromptAction {
 pub enum PromptAction {
     /// Action to keep or mulligan opening hand
     MulliganDecision(MulliganDecision),
+    /// Overlord action during a raid to decide whether to summon a defending
+    /// minion.
+    SummonAction(SummonAction),
     /// Champion action in response to a raid encounter
     EncounterAction(EncounterAction),
     /// Action to target & destroy an accessed card
@@ -84,6 +97,7 @@ impl fmt::Debug for PromptAction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::MulliganDecision(d) => write!(f, "{d:?}"),
+            Self::SummonAction(a) => write!(f, "{a:?}"),
             Self::EncounterAction(a) => write!(f, "{a:?}"),
             Self::AccessPhaseAction(a) => write!(f, "{a:?}"),
             Self::CardAction(a) => write!(f, "{a:?}"),

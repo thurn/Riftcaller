@@ -14,12 +14,14 @@
 
 use anyhow::Result;
 use fallible_iterator::FallibleIterator;
-use game_data::game::GameState;
+use game_data::game::{GameState, InternalRaidPhase};
 use game_data::primitives::{CardId, RoomId, Side};
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{mana, queries};
 use with_error::WithError;
+
+use crate::traits::RaidDisplayState;
 
 /// Returns true if the raid `defender_id` is currently face down and could be
 /// turned face up automatically by paying its mana cost.
@@ -40,6 +42,34 @@ pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> Result<bool
     Ok(can_summon)
 }
 
+pub fn defender_list_display_state(game: &GameState) -> Result<RaidDisplayState> {
+    let defenders = game.defender_list(game.raid()?.target);
+    Ok(RaidDisplayState::Defenders(defenders[0..=game.raid_encounter()?].to_vec()))
+}
+
+/// Mutates the provided game to update the current raid encounter to the next
+/// available encounter number, if one is available. Returns the next
+/// [InternalRaidPhase] which should be entered, based on whether a suitable
+/// encounter was found.
+pub fn advance_to_next_encounter(game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
+    if game.info.raid.is_none() {
+        // Abilities may have ended the raid
+        return Ok(None);
+    }
+
+    let current_position = game.info.raid.as_ref().and_then(|r| r.encounter);
+    Ok(if let Some(encounter) = next_encounter(game, current_position)? {
+        game.raid_mut()?.encounter = Some(encounter);
+        if game.card(game.raid_defender()?).is_face_down() {
+            Some(InternalRaidPhase::Summon)
+        } else {
+            Some(InternalRaidPhase::Encounter)
+        }
+    } else {
+        Some(InternalRaidPhase::Access)
+    })
+}
+
 /// Searches for the next defender to encounter during an ongoing raid with a
 /// position less than the provided index (or any index if not provided). If an
 /// eligible defender is available with position < `less_than`, its index is
@@ -47,7 +77,7 @@ pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> Result<bool
 ///
 /// An 'eligible' defender is either one which is face up, or one which *can* be
 /// turned face up by paying its costs.
-pub fn next_encounter(game: &GameState, less_than: Option<usize>) -> Result<Option<usize>> {
+fn next_encounter(game: &GameState, less_than: Option<usize>) -> Result<Option<usize>> {
     let target = game.raid()?.target;
     let defenders = game.defender_list(target);
     let mut reversed = utils::fallible(defenders.iter().enumerate().rev());

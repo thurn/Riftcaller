@@ -104,6 +104,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
             ]),
             TutorialStep::AwaitTriggers(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::OpponentAction(TutorialOpponentAction::SummonMinion(
+                CardName::Captain
+            )),
             TutorialStep::Display(vec![
                 permanent_toast(
                     "To get past a defending minion, you must deal damage to it equal to its <b>health</b>.",
@@ -241,6 +244,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 ),
             ]),
             TutorialStep::AwaitTriggers(vec![TutorialTrigger::InitiateRaid(RoomId::RoomA)]),
+            TutorialStep::OpponentAction(TutorialOpponentAction::SummonMinion(
+                CardName::Frog
+            )),
             TutorialStep::RemoveGameModifiers(vec![
                 CardName::TutorialDisableRaidVault,
             ]),

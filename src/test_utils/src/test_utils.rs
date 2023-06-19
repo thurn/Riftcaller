@@ -54,6 +54,7 @@ use protos::spelldawn::{
     SpendActionPointAction,
 };
 use rules::{dispatch, mana};
+use server::server_data::GameResponseOutput;
 use ulid::Ulid;
 
 use crate::client::TestSession;
@@ -358,8 +359,9 @@ pub fn level_up_room(session: &mut TestSession, times: u32) {
 
 /// Must be invoked during the Overlord turn. Performs the following actions:
 /// - Plays a test Scheme card
-///  - Ends the Overlord turn
-///  - Initiates a raid on the [ROOM_ID] room
+/// - Ends the Overlord turn
+/// - Initiates a raid on the [ROOM_ID] room
+/// - Summons the minion in the room
 ///
 /// NOTE: This causes the Champion player to draw a card for their turn!
 pub fn set_up_minion_combat(session: &mut TestSession) {
@@ -377,6 +379,7 @@ pub fn set_up_minion_combat_with_action(
     assert!(session.dawn());
     action(session);
     session.initiate_raid(ROOM_ID);
+    click_on_summon(session);
 }
 
 pub fn minion_for_lineage(lineage: Lineage) -> CardName {
@@ -412,6 +415,14 @@ pub fn setup_raid_target(
     (scheme_id, minion_id)
 }
 
+pub fn click_on_summon(session: &mut TestSession) -> GameResponseOutput {
+    session.click_on(session.player_id_for_side(Side::Overlord), "Summon")
+}
+
+pub fn click_on_pass(session: &mut TestSession) -> GameResponseOutput {
+    session.click_on(session.player_id_for_side(Side::Overlord), "Pass")
+}
+
 pub fn click_on_continue(session: &mut TestSession) {
     session.click_on(session.player_id_for_side(Side::Champion), "Continue");
 }
@@ -429,7 +440,7 @@ pub fn click_on_end_raid(session: &mut TestSession) {
 /// - Performs all actions described in [setup_raid_target], creating a minion
 ///   of the indicated [Lineage] with `MINION_HEALTH` health.
 /// - Initiates a raid on the [ROOM_ID] room.
-/// - Activates the room
+/// - Summons the minion
 /// - Clicks on the button with text matching `name` in order to fire weapon
 ///   abilities.
 ///
@@ -437,6 +448,7 @@ pub fn click_on_end_raid(session: &mut TestSession) {
 pub fn fire_weapon_combat_abilities(session: &mut TestSession, lineage: Lineage, name: CardName) {
     setup_raid_target(session, minion_for_lineage(lineage));
     session.initiate_raid(ROOM_ID);
+    click_on_summon(session);
     session.click_on(session.player_id_for_side(Side::Champion), name.displayed_name());
 }
 

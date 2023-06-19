@@ -106,7 +106,7 @@ namespace Spelldawn.Game
       _speechBubbleText.text = "";      
     }
 
-    public override bool CanHandleMouseDown() => true;
+    public override bool CanHandleMouseDown() => !Registry.CapabilityService.AnyOverlayOpen();
 
     public override void MouseDown()
     {

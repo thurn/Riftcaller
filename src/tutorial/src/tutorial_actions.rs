@@ -16,7 +16,9 @@ use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::card_state::CardPosition;
 use game_data::game::{GameState, MulliganDecision};
-use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
+use game_data::game_actions::{
+    AccessPhaseAction, EncounterAction, GameAction, PromptAction, SummonAction,
+};
 use game_data::primitives::{CardId, RoomLocation, Side};
 use game_data::tutorial_data::{
     TutorialDisplay, TutorialGameStateTrigger, TutorialOpponentAction, TutorialStep,
@@ -218,6 +220,15 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
         TutorialOpponentAction::GainMana => GameAction::GainMana,
         TutorialOpponentAction::InitiateRaid(room_id) => GameAction::InitiateRaid(*room_id),
         TutorialOpponentAction::LevelUpRoom(room_id) => GameAction::LevelUpRoom(*room_id),
+        TutorialOpponentAction::SummonMinion(minion_name) => {
+            let minion = game
+                .minions()
+                .find(|c| c.name == *minion_name)
+                .with_error(|| format!("Minion not found {minion_name})"))?;
+            GameAction::PromptAction(PromptAction::SummonAction(SummonAction::SummonMinion(
+                minion.id,
+            )))
+        }
         TutorialOpponentAction::UseWeapon { weapon, target } => {
             let weapon = game
                 .weapons()
@@ -310,6 +321,12 @@ fn trigger_matches(
         (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
         (TutorialTrigger::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
         (
+            TutorialTrigger::SummonMinion(minion),
+            GameAction::PromptAction(PromptAction::SummonAction(SummonAction::SummonMinion(
+                minion_id,
+            ))),
+        ) => game.card(*minion_id).name == *minion,
+        (
             TutorialTrigger::UseWeapon { weapon, target },
             GameAction::PromptAction(PromptAction::EncounterAction(
                 EncounterAction::UseWeaponAbility(source_id, target_id),
@@ -348,6 +365,9 @@ fn to_trigger(opponent_action: &TutorialOpponentAction) -> TutorialTrigger {
         TutorialOpponentAction::GainMana => TutorialTrigger::GainManaAction,
         TutorialOpponentAction::InitiateRaid(room_id) => TutorialTrigger::InitiateRaid(*room_id),
         TutorialOpponentAction::LevelUpRoom(room_id) => TutorialTrigger::LevelUpRoom(*room_id),
+        TutorialOpponentAction::SummonMinion(minion_name) => {
+            TutorialTrigger::SummonMinion(*minion_name)
+        }
         TutorialOpponentAction::UseWeapon { weapon, target } => {
             TutorialTrigger::UseWeapon { weapon: *weapon, target: *target }
         }

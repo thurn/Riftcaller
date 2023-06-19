@@ -85,6 +85,9 @@ impl GamePlayerData {
 pub enum InternalRaidPhase {
     /// Raid has been created
     Begin,
+    /// The Overlord is currently deciding whether to summon the face-down
+    /// defender with the `encounter` index position.
+    Summon,
     /// The defender with the `encounter` index position is currently being
     /// encountered. The Champion is deciding which weapons, if any, to employ.
     ///

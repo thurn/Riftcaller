@@ -48,16 +48,7 @@ impl RaidPhaseImpl for BeginPhase {
             }),
         )?;
 
-        if game.info.raid.is_none() {
-            return Ok(None);
-        }
-
-        Ok(Some(if let Some(encounter) = defenders::next_encounter(game, None)? {
-            game.raid_mut()?.encounter = Some(encounter);
-            InternalRaidPhase::Encounter
-        } else {
-            InternalRaidPhase::Access
-        }))
+        defenders::advance_to_next_encounter(game)
     }
 
     fn actions(self, _: &GameState) -> Result<Vec<()>> {

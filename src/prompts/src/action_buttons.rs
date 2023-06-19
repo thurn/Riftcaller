@@ -14,7 +14,9 @@
 
 use core_ui::icons;
 use game_data::game::{GameState, MulliganDecision};
-use game_data::game_actions::{AccessPhaseAction, CardPromptAction, EncounterAction, PromptAction};
+use game_data::game_actions::{
+    AccessPhaseAction, CardPromptAction, EncounterAction, PromptAction, SummonAction,
+};
 use game_data::primitives::Side;
 use rules::queries;
 
@@ -23,6 +25,7 @@ use crate::response_button::ResponseButton;
 pub fn for_prompt(game: &GameState, side: Side, action: PromptAction) -> ResponseButton {
     match action {
         PromptAction::MulliganDecision(data) => mulligan_button(data),
+        PromptAction::SummonAction(data) => summon_button(game, data),
         PromptAction::EncounterAction(data) => encounter_action_button(game, side, data),
         PromptAction::AccessPhaseAction(data) => access_button(data),
         PromptAction::CardAction(data) => card_response_button(side, data),
@@ -34,6 +37,27 @@ fn mulligan_button(mulligan: MulliganDecision) -> ResponseButton {
     match mulligan {
         MulliganDecision::Keep => ResponseButton::new("Keep"),
         MulliganDecision::Mulligan => ResponseButton::new("Mulligan").primary(false),
+    }
+}
+
+fn summon_button(game: &GameState, summon_action: SummonAction) -> ResponseButton {
+    match summon_action {
+        SummonAction::SummonMinion(minion_id) => {
+            let label = rules::card_definition(game, minion_id).name.displayed_name();
+            if let Some(cost) = queries::mana_cost(game, minion_id) {
+                if cost > 0 {
+                    return ResponseButton::new(format!(
+                        "Summon {}\n{}{}",
+                        label,
+                        cost,
+                        icons::MANA
+                    ))
+                    .two_lines(true);
+                }
+            }
+            ResponseButton::new(format!("Summon {label}"))
+        }
+        SummonAction::DoNotSummmon => ResponseButton::new("Pass").primary(false),
     }
 }
 

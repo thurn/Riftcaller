@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/raid_tests.rs
-assertion_line: 485
+assertion_line: 502
 expression: "Summary::summarize(&response)"
 ---
 
@@ -128,15 +128,15 @@ command_list:
             mana: 995
             action_tracker: 1
             score: 0
-            can_take_action: true
+            can_take_action: false
         opponent: 
             side: Overlord
             player_info: 
             valid_rooms_to_visit: 
-            mana: 995
+            mana: 998
             action_tracker: 0
             score: 0
-            can_take_action: false
+            can_take_action: true
         raid_active: true
         game_object_positions: 
             user_deck: 
@@ -185,154 +185,11 @@ command_list:
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: O44
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "3"
-            bottom_right_icon: "5"
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Minion End Raid"
-            rules_text: "<RulesText>"
-            targeting: 
-            valid_rooms: 
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: C10
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
-        card_id: C44
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "3"
-            bottom_right_icon: "3"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Weapon 3 Attack 12 Boost 3 Cost"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionItem { item_location: Left }
-    MoveGameObjects: 
-    UpdateGameView: 
-        user: 
-            side: Champion
-            player_info: 
-            valid_rooms_to_visit: 
-            mana: 995
-            action_tracker: 1
-            score: 0
-            can_take_action: true
-        opponent: 
-            side: Overlord
-            player_info: 
-            valid_rooms_to_visit: 
-            mana: 995
-            action_tracker: 0
-            score: 0
-            can_take_action: false
-        raid_active: true
-        controls: 
-            node: 
-                text: "Test Weapon 3 Attack 12 Boost 3 Cost\n1\u{f06d}"
-                text: "Continue"
-        card_anchor_nodes: 
-        game_object_positions: 
-            user_deck: 
-                sorting_key: 1
-                position: ObjectPositionDeckContainer { owner: User }
-            opponent_deck: 
-                sorting_key: 0
-                position: ObjectPositionRaid
-            user_character: 
-                sorting_key: 2
-                position: ObjectPositionRaid
-            opponent_character: 
-                sorting_key: 1
-                position: ObjectPositionCharacterContainer { owner: Opponent }
-            user_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: User }
-            opponent_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: Opponent }
-    cards: 
-        card_id: O0
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: O43
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "1"
-            bottom_right_icon: "5"
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Minion Deal Damage"
-            rules_text: "<RulesText>"
-            targeting: 
-            valid_rooms: 
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: O44
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "3"
-            bottom_right_icon: "5"
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Minion End Raid"
-            rules_text: "<RulesText>"
-            targeting: 
-            valid_rooms: 
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: C10
         revealed_to_viewer: true
         is_face_up: false
@@ -494,10 +351,10 @@ channel_response:
             side: Overlord
             player_info: 
             valid_rooms_to_visit: 
-            mana: 995
+            mana: 998
             action_tracker: 0
             score: 0
-            can_take_action: false
+            can_take_action: true
         opponent: 
             side: Champion
             player_info: 
@@ -505,8 +362,13 @@ channel_response:
             mana: 995
             action_tracker: 1
             score: 0
-            can_take_action: true
+            can_take_action: false
         raid_active: true
+        controls: 
+            node: 
+                text: "Summon Test Minion End Raid\n3\u{f06d}"
+                text: "Pass"
+        card_anchor_nodes: 
         game_object_positions: 
             user_deck: 
                 sorting_key: 0
@@ -555,117 +417,7 @@ channel_response:
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
         card_id: O44
         revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "3"
-            bottom_right_icon: "5"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Minion End Raid"
-            rules_text: "<RulesText>"
-            targeting: 
-            valid_rooms: 
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: C10
-        revealed_to_viewer: false
         is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        card_id: C44
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "3"
-            bottom_right_icon: "3"
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Weapon 3 Attack 12 Boost 3 Cost"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionItem { item_location: Left }
-    UpdateGameView: 
-        user: 
-            side: Overlord
-            player_info: 
-            valid_rooms_to_visit: 
-            mana: 995
-            action_tracker: 0
-            score: 0
-            can_take_action: false
-        opponent: 
-            side: Champion
-            player_info: 
-            valid_rooms_to_visit: 
-            mana: 995
-            action_tracker: 1
-            score: 0
-            can_take_action: true
-        raid_active: true
-        game_object_positions: 
-            user_deck: 
-                sorting_key: 0
-                position: ObjectPositionRaid
-            opponent_deck: 
-                sorting_key: 1
-                position: ObjectPositionDeckContainer { owner: Opponent }
-            user_character: 
-                sorting_key: 1
-                position: ObjectPositionCharacterContainer { owner: User }
-            opponent_character: 
-                sorting_key: 2
-                position: ObjectPositionRaid
-            user_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: User }
-            opponent_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: Opponent }
-    cards: 
-        card_id: O0
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        card_id: O43
-        revealed_to_viewer: true
-        is_face_up: true
-        card_icons: 
-            top_left_icon: "1"
-            bottom_right_icon: "5"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Minion Deal Damage"
-            rules_text: "<RulesText>"
-            targeting: 
-            valid_rooms: 
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }
-        card_id: O44
-        revealed_to_viewer: true
-        is_face_up: true
         card_icons: 
             top_left_icon: "3"
             bottom_right_icon: "5"

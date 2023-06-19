@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Spelldawn.Utils;
 using UnityEngine;
 
 #nullable enable
@@ -34,7 +35,8 @@ namespace Spelldawn.Game
 
     protected override Vector3? CalculateObjectRotation(int index, int count) => transform.rotation.eulerAngles;
 
-    public override bool CanHandleMouseDown() => true;
+    public override bool CanHandleMouseDown() =>
+      !Errors.CheckNotNull(Registry).CapabilityService.AnyOverlayOpen();
 
     public override void MouseDown()
     {

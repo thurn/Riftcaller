@@ -60,6 +60,13 @@ fn run_tutorial_turn_one(session: &mut TestSession, user_id: PlayerId) {
     assert!(session.user.data.toast().contains("of the enemy's dungeon"));
 
     session.initiate_raid(RoomId::RoomA);
+
+    // Opponent action: summon minion
+    session.run_agent_loop();
+    session.connect(session.user_id()).expect("Error reconnecting to session");
+
+    let toast = session.user.data.toast();
+    eprintln!("Toast is {toast:?}");
     assert!(session.user.data.toast().contains("To get past a defending minion"));
 
     session.click_on(user_id, CardName::SimpleAxe.displayed_name());
@@ -134,11 +141,17 @@ fn tutorial_turn_three() {
 
 fn run_tutorial_turn_three(session: &mut TestSession, user_id: PlayerId) {
     session.initiate_raid(RoomId::RoomA);
+
+    // Opponent action: summon minion
+    session.run_agent_loop();
+    session.connect(session.user_id()).expect("Error reconnecting to session");
+
     click_on_continue(session);
     session.initiate_raid(RoomId::Vault);
     click_on_score(session);
     click_on_end_raid(session);
     session.perform(Action::DrawCard(DrawCardAction {}), user_id);
+
     session.run_agent_loop();
     session.connect(session.user_id()).expect("Error reconnecting to session");
 

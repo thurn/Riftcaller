@@ -21,7 +21,7 @@ namespace Spelldawn.Game
 {
   public sealed class SigilDisplay : LinearObjectDisplay
   {
-    public override bool CanHandleMouseDown() => true;
+    public override bool CanHandleMouseDown() => !Registry.CapabilityService.AnyOverlayOpen();
 
     public override void MouseDown()
     {

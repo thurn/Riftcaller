@@ -20,6 +20,7 @@ mod access;
 mod begin;
 mod defenders;
 mod encounter;
+mod summon;
 
 use anyhow::Result;
 use game_data::game::{
@@ -35,6 +36,7 @@ use with_error::{verify, WithError};
 use crate::access::AccessPhase;
 use crate::begin::BeginPhase;
 use crate::encounter::EncounterPhase;
+use crate::summon::SummonPhase;
 use crate::traits::RaidPhase;
 
 /// Extension trait to add the `phase` method to [RaidData] without introducing
@@ -47,6 +49,7 @@ impl RaidDataExt for RaidData {
     fn phase(&self) -> Box<dyn RaidPhase> {
         match self.internal_phase {
             InternalRaidPhase::Begin => Box::new(BeginPhase {}),
+            InternalRaidPhase::Summon => Box::new(SummonPhase {}),
             InternalRaidPhase::Encounter => Box::new(EncounterPhase {}),
             InternalRaidPhase::Access => Box::new(AccessPhase {}),
         }

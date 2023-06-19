@@ -22,11 +22,10 @@ use game_data::game_actions::{EncounterAction, PromptAction};
 use game_data::primitives::{CardId, GameObjectId, Side};
 use game_data::updates::{GameUpdate, TargetedInteraction};
 use rules::mana::ManaPurpose;
-use rules::{card_prompt, dispatch, flags, mana, mutations, queries};
+use rules::{card_prompt, dispatch, flags, mana, queries};
 use with_error::{fail, WithError};
 
 use crate::defenders;
-use crate::mutations::SummonMinion;
 use crate::traits::{RaidDisplayState, RaidPhaseImpl};
 
 /// The primary combat phase of a raid, in which the Champion may use weapon
@@ -49,13 +48,6 @@ impl RaidPhaseImpl for EncounterPhase {
     }
 
     fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-        if defenders::can_summon_defender(game, game.raid_defender()?)? {
-            mutations::summon_minion(game, game.raid_defender()?, SummonMinion::PayCosts)?;
-            if game.info.raid.is_none() {
-                return Ok(None);
-            }
-        }
-
         dispatch::invoke_event(game, EncounterMinionEvent(game.raid_defender()?))?;
         Ok(None)
     }
@@ -101,7 +93,6 @@ impl RaidPhaseImpl for EncounterPhase {
             }
             EncounterAction::NoWeapon | EncounterAction::CardAction(_) => {
                 let defender_id = game.raid_defender()?;
-                // TODO: This assumes card actions are always negative
                 game.record_update(|| {
                     GameUpdate::TargetedInteraction(TargetedInteraction {
                         source: GameObjectId::CardId(defender_id),
@@ -116,17 +107,7 @@ impl RaidPhaseImpl for EncounterPhase {
             card_prompt::handle(game, Side::Champion, card_action)?;
         }
 
-        Ok(if game.info.raid.is_none() {
-            // Abilities may have ended the raid
-            None
-        } else if let Some(encounter) =
-            defenders::next_encounter(game, Some(game.raid_encounter()?))?
-        {
-            game.raid_mut()?.encounter = Some(encounter);
-            Some(InternalRaidPhase::Encounter)
-        } else {
-            Some(InternalRaidPhase::Access)
-        })
+        defenders::advance_to_next_encounter(game)
     }
 
     fn active_side(self) -> Side {
@@ -134,8 +115,7 @@ impl RaidPhaseImpl for EncounterPhase {
     }
 
     fn display_state(self, game: &GameState) -> Result<RaidDisplayState> {
-        let defenders = game.defender_list(game.raid()?.target);
-        Ok(RaidDisplayState::Defenders(defenders[0..=game.raid_encounter()?].to_vec()))
+        defenders::defender_list_display_state(game)
     }
 }
 
