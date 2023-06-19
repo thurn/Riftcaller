@@ -26,7 +26,7 @@ pub fn radiant_sigil() -> CardDefinition {
         name: CardName::RadiantSigil,
         sets: vec![CardSetName::ProofOfConcept],
         cost: sigil_cost(),
-        image: rexard_images::badge(RexardBadges::Fantasy, "Tex_badge_24"),
+        image: rexard_images::spell(8, "SpellBook08_09"),
         card_type: CardType::Sigil,
         side: Side::Champion,
         school: School::Law,

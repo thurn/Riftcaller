@@ -212,6 +212,7 @@ namespace Spelldawn.Game
         }
 
         _arenaFrame.gameObject.SetActive(true);
+        _image.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         _cardShadow.SetActive(false);
         _arenaShadow.SetActive(true);
         // In Arena mode, we want the image content to be centered within the card, so we shift
@@ -232,6 +233,7 @@ namespace Spelldawn.Game
         }
 
         _arenaFrame.gameObject.SetActive(false);
+        _image.maskInteraction = SpriteMaskInteraction.None;
         _cardShadow.SetActive(true);
         _arenaShadow.SetActive(false);
         _arenaCard.localPosition = new Vector3(0, _arenaCardYOffset, 0);
