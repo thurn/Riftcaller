@@ -327,7 +327,6 @@ namespace Spelldawn.Services
     {
       if (playerView != null)
       {
-        LoadPlayerInfoAssets(requests, playerView.PlayerInfo);
         LoadDeckViewAssets(requests, playerView.DeckView);
       }
     }
@@ -387,15 +386,7 @@ namespace Spelldawn.Services
         LoadSprite(requests, cardIcon.Background);
       }
     }
-
-    void LoadPlayerInfoAssets(IDictionary<string, AsyncOperationHandle> requests, PlayerInfo? playerInfo)
-    {
-      if (playerInfo != null)
-      {
-        LoadSprite(requests, playerInfo.ArenaPortrait);
-      }
-    }
-
+    
     void LoadDeckViewAssets(IDictionary<string, AsyncOperationHandle> requests, DeckView? deckView)
     {
       if (deckView != null)

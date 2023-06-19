@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use assets::{rexard_images, EnvironmentType};
+use assets::rexard_images;
 use card_helpers::*;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::CardName;

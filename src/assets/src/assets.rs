@@ -258,29 +258,6 @@ pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
     }
 }
 
-pub fn fantasy_class_image(name: &'static str, sex: &'static str) -> Sprite {
-    Sprite {
-        address: format!("ForrestIml/FantasyClasses1/Characters/{name}/{name}_{sex}_Stock Art.png"),
-    }
-}
-
-pub fn fantasy_class_portrait(side: Side, name: impl Into<String>) -> Sprite {
-    Sprite {
-        address: format!(
-            "ForrestIml/FantasyClasses1/UI_Portraits/{}_Square/UI_Portrait_{}_Square_{}.png",
-            match side {
-                Side::Overlord => "Silver",
-                Side::Champion => "Gold",
-            },
-            match side {
-                Side::Overlord => "Silver",
-                Side::Champion => "Gold",
-            },
-            name.into()
-        ),
-    }
-}
-
 pub enum EnvironmentType {
     CastlesTowersKeeps,
     DungeonsShrinesAltars,

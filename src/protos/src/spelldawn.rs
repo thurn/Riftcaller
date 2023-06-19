@@ -909,10 +909,8 @@ pub struct CardView {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerInfo {
-    #[prost(message, optional, tag = "1")]
-    pub arena_portrait: ::core::option::Option<SpriteAddress>,
     /// Rooms which this player can currently visit (raid/level up)
-    #[prost(enumeration = "RoomIdentifier", repeated, tag = "2")]
+    #[prost(enumeration = "RoomIdentifier", repeated, tag = "1")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

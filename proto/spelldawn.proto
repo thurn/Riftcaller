@@ -946,10 +946,8 @@ message CardView {
 }
 
 message PlayerInfo {
-    SpriteAddress arena_portrait = 1;
-
     // Rooms which this player can currently visit (raid/level up)
-    repeated RoomIdentifier valid_rooms_to_visit = 2;
+    repeated RoomIdentifier valid_rooms_to_visit = 1;
 }
 
 message ManaView {
