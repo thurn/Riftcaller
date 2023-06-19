@@ -149,7 +149,7 @@ namespace Spelldawn.Services
 
     public bool MouseOverScreenElement()
     {
-      return _panels.Children().Concat(_screenOverlay.Children())
+      return _panels.Children().Concat(_screenOverlay.Children()).Concat(_mainControls.Children())
         .Any(c => c.ContainsPoint(c.WorldToLocal(ElementMousePosition())));
     }
 

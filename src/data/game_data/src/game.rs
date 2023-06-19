@@ -77,13 +77,15 @@ impl GamePlayerData {
     }
 }
 
-/// Current internal state of the raid state machine. Use the methods of the
-/// `RaidPhase` trait to interact with an ongoing raid.
+/// Current internal state of the raid state machine.
+///
+/// Use the methods of the `RaidPhase` trait to interact with an ongoing raid
+/// instead of referencing these directly.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
 pub enum InternalRaidPhase {
     /// Raid has been created
     Begin,
-    /// The defender with the provided index position is currently being
+    /// The defender with the `encounter` index position is currently being
     /// encountered. The Champion is deciding which weapons, if any, to employ.
     ///
     /// Note that defenders are encountered in decreasing position order.

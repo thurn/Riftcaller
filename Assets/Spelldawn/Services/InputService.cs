@@ -119,6 +119,12 @@ namespace Spelldawn.Services
 
     Displayable? FireMouseDown()
     {
+      if (_registry.DocumentService.IsAnyPanelOpen() ||
+          _registry.DocumentService.MouseOverScreenElement())
+      {
+        return null;
+      }
+      
       var ray = _registry.MainCamera.ScreenPointToRay(Input.mousePosition);
       var hits = Physics.RaycastNonAlloc(ray, _raycastHitsTempBuffer, 100);
 
