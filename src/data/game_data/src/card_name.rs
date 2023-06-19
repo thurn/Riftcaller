@@ -110,9 +110,9 @@ pub enum CardName {
     BridgeTroll,
     Stormcaller,
     RadiantSigil,
-    ArisFeyTheRadiantSun,
-    TelantesDugothEarthbreaker,
-    AndvariEstNightsWarden,
+    RestorationSigil,
+    ForgeSigil,
+    CrabSigil,
     ArcaneSigil,
 
     // Modifier card which has no effect

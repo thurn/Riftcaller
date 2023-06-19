@@ -44,15 +44,15 @@ pub fn radiant_sigil() -> CardDefinition {
     }
 }
 
-pub fn aris_fey_the_radiant_sun() -> CardDefinition {
+pub fn restoration_sigil() -> CardDefinition {
     CardDefinition {
-        name: CardName::ArisFeyTheRadiantSun,
+        name: CardName::RestorationSigil,
         sets: vec![CardSetName::ProofOfConcept],
         cost: sigil_cost(),
-        image: assets::fantasy_class_image("Priest", "Female"),
+        image: rexard_images::spell(8, "SpellBook08_73"),
         card_type: CardType::Sigil,
         side: Side::Champion,
-        school: School::Law,
+        school: School::Pact,
         rarity: Rarity::Exalted,
         abilities: vec![simple_ability(
             text!["The first time you take damage each turn, draw a card"],
@@ -64,23 +64,16 @@ pub fn aris_fey_the_radiant_sun() -> CardDefinition {
                 })
             }),
         )],
-        config: CardConfig {
-            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Priest_F")),
-            image_background: Some(assets::environments(
-                EnvironmentType::CastlesTowersKeeps,
-                "Enchanted/SceneryEForest_outside_1",
-            )),
-            ..CardConfig::default()
-        },
+        config: CardConfig::default(),
     }
 }
 
-pub fn telantes_dugoth_earthbreaker() -> CardDefinition {
+pub fn forge_sigil() -> CardDefinition {
     CardDefinition {
-        name: CardName::TelantesDugothEarthbreaker,
+        name: CardName::ForgeSigil,
         sets: vec![CardSetName::ProofOfConcept],
         cost: sigil_cost(),
-        image: assets::fantasy_class_image("Druid", "Male"),
+        image: rexard_images::spell(8, "SpellBook08_76"),
         card_type: CardType::Sigil,
         side: Side::Champion,
         school: School::Primal,
@@ -92,23 +85,16 @@ pub fn telantes_dugoth_earthbreaker() -> CardDefinition {
                 mutations::discard_from_vault(g, 1)
             }),
         )],
-        config: CardConfig {
-            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Druid_M")),
-            image_background: Some(assets::environments(
-                EnvironmentType::CastlesTowersKeeps,
-                "Enchanted/SceneryEForest_inside_2",
-            )),
-            ..CardConfig::default()
-        },
+        config: CardConfig::default(),
     }
 }
 
 pub fn andvari_est_nights_warden() -> CardDefinition {
     CardDefinition {
-        name: CardName::AndvariEstNightsWarden,
+        name: CardName::CrabSigil,
         sets: vec![CardSetName::ProofOfConcept],
         cost: sigil_cost(),
-        image: assets::fantasy_class_image("Thief", "Male"),
+        image: rexard_images::spell(8, "SpellBook08_119"),
         card_type: CardType::Sigil,
         side: Side::Champion,
         school: School::Shadow,
@@ -133,13 +119,6 @@ pub fn andvari_est_nights_warden() -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfig {
-            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Thief_M")),
-            image_background: Some(assets::environments(
-                EnvironmentType::CastlesTowersKeeps,
-                "Fortress/SceneryFortress_inside_1",
-            )),
-            ..CardConfig::default()
-        },
+        config: CardConfig::default(),
     }
 }

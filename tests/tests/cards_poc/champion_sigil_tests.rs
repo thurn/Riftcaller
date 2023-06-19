@@ -34,7 +34,7 @@ fn ennera_imris_blood_bound() {
 fn aris_fey_the_radiant_sun() {
     let mut g = new_game(
         Side::Champion,
-        Args { sigils: vec![CardName::ArisFeyTheRadiantSun], ..Args::default() },
+        Args { sigils: vec![CardName::RestorationSigil], ..Args::default() },
     );
 
     spend_actions_until_turn_over(&mut g, Side::Champion);
@@ -49,10 +49,8 @@ fn aris_fey_the_radiant_sun() {
 
 #[test]
 fn telantes_dugoth_earthbreaker() {
-    let mut g = new_game(
-        Side::Champion,
-        Args { sigils: vec![CardName::TelantesDugothEarthbreaker], ..Args::default() },
-    );
+    let mut g =
+        new_game(Side::Champion, Args { sigils: vec![CardName::ForgeSigil], ..Args::default() });
 
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::Opponent).len());
@@ -65,7 +63,7 @@ fn andvari_est_nights_warden() {
     let mut g = new_game(
         Side::Champion,
         Args {
-            sigils: vec![CardName::AndvariEstNightsWarden],
+            sigils: vec![CardName::CrabSigil],
             opponent_deck_top: vec![
                 CardName::TestChampionSpell,
                 CardName::TestChampionSpell,
