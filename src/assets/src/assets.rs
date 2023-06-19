@@ -174,9 +174,9 @@ pub fn arena_frame(side: Side, card_type: CardType, lineage: Option<Lineage>) ->
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
                     CardType::Sigil =>
                         if side == Side::Overlord {
-                            "SpriteWay/Icons/Clean Frames/9002"
+                            "SpriteWay/Icons/Clean Frames/9022"
                         } else {
-                            "SpriteWay/Icons/Clean Frames/9033"
+                            "SpriteWay/Icons/Clean Frames/9040"
                         },
                     _ => "SpriteWay/Icons/Clean Frames/9062",
                 },

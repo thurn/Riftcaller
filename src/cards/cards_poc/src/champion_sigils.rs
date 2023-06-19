@@ -29,7 +29,7 @@ pub fn radiant_sigil() -> CardDefinition {
         image: rexard_images::badge(RexardBadges::Fantasy, "Tex_badge_24"),
         card_type: CardType::Sigil,
         side: Side::Champion,
-        school: School::Pact,
+        school: School::Law,
         rarity: Rarity::Exalted,
         abilities: vec![simple_ability(
             trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),

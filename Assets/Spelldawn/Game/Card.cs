@@ -474,7 +474,8 @@ namespace Spelldawn.Game
       _cardBack.gameObject.SetActive(value: false);
       _cardFront.gameObject.SetActive(value: true);
       Registry.AssetService.AssignSprite(_imageBackground, revealed.ImageBackground);
-      Registry.AssetService.AssignSprite(_image, revealed.Image, referenceWidth: _referenceImageWidth);
+      Registry.AssetService.AssignSprite(_image, revealed.Image, 
+        referenceWidth:  _referenceImageWidth);
       _image.gameObject.SetActive(true);
       Registry.AssetService.AssignSprite(_frame, revealed.CardFrame);
       Registry.AssetService.AssignSprite(_titleBackground, revealed.TitleBackground);
