@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::test_cards::WEAPON_COST;
+use cards_test::test_cards::{MINION_COST, WEAPON_COST};
 use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
@@ -37,6 +37,7 @@ fn initiate_raid() {
     let (scheme_id, minion_id) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
 
     let response = g.initiate_raid(ROOM_ID);
+
     click_on_summon(&mut g);
 
     assert_eq!(2, g.me().actions());
@@ -90,6 +91,47 @@ fn initiate_raid() {
     );
 
     assert_snapshot!(Summary::summarize(&response));
+}
+
+#[test]
+fn summon_minion() {
+    let mut g = new_game(Side::Champion, Args::default());
+    let (_, minion_id) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
+
+    g.initiate_raid(ROOM_ID);
+
+    assert!(!g.user.this_player.can_take_action());
+    assert!(g.user.other_player.can_take_action());
+    assert!(!g.opponent.other_player.can_take_action());
+    assert!(g.opponent.this_player.can_take_action());
+
+    assert!(!g.user.cards.get(minion_id).is_face_up());
+    assert_eq!(g.user.other_player.mana(), STARTING_MANA);
+
+    click_on_summon(&mut g);
+
+    assert!(g.user.cards.get(minion_id).is_face_up());
+    assert_eq!(g.user.other_player.mana(), STARTING_MANA - MINION_COST);
+    assert!(g.user.this_player.can_take_action());
+    assert!(!g.user.other_player.can_take_action());
+    assert!(g.opponent.other_player.can_take_action());
+    assert!(!g.opponent.this_player.can_take_action());
+}
+
+#[test]
+fn do_not_summon_minion() {
+    let mut g = new_game(Side::Champion, Args::default());
+    let (_, minion_id) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
+
+    g.initiate_raid(ROOM_ID);
+    click_on_pass(&mut g);
+
+    assert!(!g.user.cards.get(minion_id).is_face_up());
+    assert_eq!(g.user.other_player.mana(), STARTING_MANA);
+    assert!(g.user.this_player.can_take_action());
+    assert!(!g.user.other_player.can_take_action());
+    assert!(g.opponent.other_player.can_take_action());
+    assert!(!g.opponent.this_player.can_take_action());
 }
 
 #[test]
