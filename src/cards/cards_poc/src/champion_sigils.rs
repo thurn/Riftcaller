@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use assets::rexard_images::RexardBadges;
 use assets::{rexard_images, EnvironmentType};
-use card_helpers::{history, *};
+use card_helpers::*;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -139,38 +138,6 @@ pub fn andvari_est_nights_warden() -> CardDefinition {
             image_background: Some(assets::environments(
                 EnvironmentType::CastlesTowersKeeps,
                 "Fortress/SceneryFortress_inside_1",
-            )),
-            ..CardConfig::default()
-        },
-    }
-}
-
-pub fn ubras_efaris_time_shaper() -> CardDefinition {
-    CardDefinition {
-        name: CardName::UbrasEfarisTimeShaper,
-        sets: vec![CardSetName::ProofOfConcept],
-        cost: sigil_cost(),
-        image: assets::fantasy_class_image("Mage", "Male"),
-        card_type: CardType::Sigil,
-        side: Side::Champion,
-        school: School::Beyond,
-        rarity: Rarity::Exalted,
-        abilities: vec![simple_ability(
-            text!["The second spell you cast each turn does not cost", ActionSymbol],
-            in_play::on_query_action_cost(|g, _, _, actions| {
-                let cards = history::cards_played_this_turn(g);
-                if cards.filter(|id| rules::card_definition(g, *id).is_spell()).count() == 1 {
-                    0
-                } else {
-                    actions
-                }
-            }),
-        )],
-        config: CardConfig {
-            player_portrait: Some(assets::fantasy_class_portrait(Side::Champion, "Mage_M")),
-            image_background: Some(assets::environments(
-                EnvironmentType::CastlesTowersKeeps,
-                "Forge/SceneryForge_outside_1",
             )),
             ..CardConfig::default()
         },

@@ -18,6 +18,7 @@ pub mod artifacts;
 pub mod champion_sigils;
 pub mod champion_spells;
 pub mod minions;
+pub mod overlord_sigils;
 pub mod overlord_spells;
 pub mod projects;
 pub mod schemes;

@@ -70,16 +70,14 @@ namespace Spelldawn.Game
     }
 
     /// <summary>
-    /// Sent every frame while the mouse button is held down to objects which received <see cref="MouseDown"/>
-    /// and returned true.
+    /// Sent every frame while the mouse button is held down to objects which received <see cref="MouseDown"/>.
     /// </summary>
     public virtual void MouseDrag()
     {
     }
 
     /// <summary>
-    /// Sent on *any* mouse up event, anywhere on screen, to objects which received a <see cref="MouseDown"/>
-    /// event and returned true.
+    /// Sent on *any* mouse up event, anywhere on screen, to objects which received a <see cref="MouseDown"/>.
     /// </summary>
     public virtual void MouseUp()
     {

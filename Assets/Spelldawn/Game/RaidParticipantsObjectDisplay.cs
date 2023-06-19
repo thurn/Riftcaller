@@ -32,7 +32,7 @@ namespace Spelldawn.Game
     protected override GameContext DefaultGameContext() => GameContext.RaidParticipant;
 
     protected override Vector3 CalculateObjectPosition(int index, int count) =>
-      transform.position + new Vector3(LinearObjectDisplay.CalculateXOffset(
+      transform.position + new Vector3(LinearObjectDisplay.CalculateOffset(
         _width, _initialSpacing, _cardSize, index, count,
         minOffsetMultiplier: 0f,
         maxOffsetMultiplier: 1f), 0, 0);

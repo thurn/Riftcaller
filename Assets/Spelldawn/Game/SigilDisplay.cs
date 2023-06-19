@@ -14,9 +14,18 @@
 
 #nullable enable
 
+using Spelldawn.Services;
+using UnityEngine;
+
 namespace Spelldawn.Game
 {
   public sealed class SigilDisplay : LinearObjectDisplay
   {
+    public override bool CanHandleMouseDown() => true;
+
+    public override void MouseDown()
+    {
+      StartCoroutine(Registry.LongPressCardBrowser.BrowseCards(this));
+    }    
   }
 }

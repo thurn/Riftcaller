@@ -84,10 +84,8 @@ fn andvari_est_nights_warden() {
 
 #[test]
 fn ubras_efaris_time_shaper() {
-    let mut g = new_game(
-        Side::Champion,
-        Args { sigils: vec![CardName::UbrasEfarisTimeShaper], ..Args::default() },
-    );
+    let mut g =
+        new_game(Side::Champion, Args { sigils: vec![CardName::ArcaneSigil], ..Args::default() });
 
     assert_eq!(3, g.me().actions());
     g.play_from_hand(CardName::TestChampionSpell);

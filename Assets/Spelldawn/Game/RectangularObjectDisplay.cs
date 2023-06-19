@@ -54,7 +54,7 @@ namespace Spelldawn.Game
         index -= count;
       }
 
-      return LinearObjectDisplay.CalculateXOffset(_width, _initialSpacing, _cardSize, index, count);
+      return LinearObjectDisplay.CalculateOffset(_width, _initialSpacing, _cardSize, index, count);
     }
 
     float CalculateZOffset(int index, int count)

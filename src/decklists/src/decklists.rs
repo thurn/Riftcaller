@@ -70,7 +70,7 @@ pub static TUTORIAL_OVERLORD: Lazy<Deck> =
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![],
-    sigils: vec![],
+    sigils: vec![CardName::ArcaneSigil],
     cards: hashmap! {
         CardName::GoldMine => 3,
         CardName::ActivateReinforcements => 2,

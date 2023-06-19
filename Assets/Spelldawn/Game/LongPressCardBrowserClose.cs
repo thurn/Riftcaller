@@ -15,14 +15,15 @@
 #nullable enable
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Spelldawn.Game
 {
-  public sealed class LongPressCardBrowserClose : MonoBehaviour
+  public sealed class LongPressCardBrowserClose : MonoBehaviour, IPointerClickHandler
   {
     [SerializeField] LongPressCardBrowser _browser = null!;
     
-    void OnMouseUpAsButton()
+    public void OnPointerClick(PointerEventData eventData)
     {
       _browser.Close();
       gameObject.SetActive(false);

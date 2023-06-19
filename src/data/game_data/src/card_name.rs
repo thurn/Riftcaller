@@ -113,7 +113,7 @@ pub enum CardName {
     ArisFeyTheRadiantSun,
     TelantesDugothEarthbreaker,
     AndvariEstNightsWarden,
-    UbrasEfarisTimeShaper,
+    ArcaneSigil,
 
     // Modifier card which has no effect
     OverlordEmptyModifier,

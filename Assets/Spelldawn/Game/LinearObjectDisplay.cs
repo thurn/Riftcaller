@@ -25,19 +25,23 @@ namespace Spelldawn.Game
     [SerializeField] float _initialSpacing;
     [SerializeField] float _cardSize;
     [SerializeField] float _rotation = 270;
+    [SerializeField] bool _vertical;
     [SerializeField] Registry _registry = null!;
 
     protected override Registry Registry => _registry;
 
     protected override GameContext DefaultGameContext() => GameContext.Arena;
 
-    protected override Vector3 CalculateObjectPosition(int index, int count) =>
-      transform.position + new Vector3(CalculateXOffset(_width, _initialSpacing, _cardSize, index, count), 0, 0);
+    protected override Vector3 CalculateObjectPosition(int index, int count)
+    {
+      var offset = CalculateOffset(_width, _initialSpacing, _cardSize, index, count);
+      return transform.position + (_vertical ? new Vector3(0, 0, offset) : new Vector3(offset, 0, 0));
+    }
 
     protected override Vector3? CalculateObjectRotation(int index, int count) =>
       new Vector3(x: _rotation, y: 0, 0);
 
-    public static float CalculateXOffset(
+    public static float CalculateOffset(
       float width,
       float initialSpacing,
       float cardWidth,
@@ -59,9 +63,13 @@ namespace Spelldawn.Game
     void OnDrawGizmosSelected()
     {
       Gizmos.color = Color.blue;
-      Gizmos.DrawSphere(transform.position + new Vector3(_width / 2f, 0, 0), radius: 1);
+      Gizmos.DrawSphere(
+        transform.position + (_vertical ? new Vector3(0, 0, _width / 2f) : new Vector3(_width / 2f, 0, 0)), 
+        radius: 1);
       Gizmos.DrawSphere(transform.position, radius: 1);
-      Gizmos.DrawSphere(transform.position + new Vector3(_width / -2f, 0, 0), radius: 1);
+      Gizmos.DrawSphere(
+        transform.position + (_vertical ? new Vector3(0, 0, _width / -2f) : new Vector3(_width / -2f, 0, 0)),
+        radius: 1);
     }
   }
 }

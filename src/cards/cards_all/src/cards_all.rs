@@ -48,7 +48,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::champion_sigils::aris_fey_the_radiant_sun);
     DEFINITIONS.insert(cards_poc::champion_sigils::telantes_dugoth_earthbreaker);
     DEFINITIONS.insert(cards_poc::champion_sigils::andvari_est_nights_warden);
-    DEFINITIONS.insert(cards_poc::champion_sigils::ubras_efaris_time_shaper);
     DEFINITIONS.insert(cards_poc::champion_spells::meditation);
     DEFINITIONS.insert(cards_poc::champion_spells::coup_de_grace);
     DEFINITIONS.insert(cards_poc::champion_spells::charged_strike);
@@ -60,6 +59,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::minions::sphinx_of_winters_breath);
     DEFINITIONS.insert(cards_poc::minions::bridge_troll);
     DEFINITIONS.insert(cards_poc::minions::stormcaller);
+    DEFINITIONS.insert(cards_poc::overlord_sigils::arcane_sigil);
     DEFINITIONS.insert(cards_poc::overlord_spells::overwhelming_power);
     DEFINITIONS.insert(cards_poc::overlord_spells::forced_march);
     DEFINITIONS.insert(cards_poc::projects::gemcarver);

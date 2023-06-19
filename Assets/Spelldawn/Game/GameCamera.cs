@@ -22,9 +22,11 @@ namespace Spelldawn.Game
   {
     [SerializeField] float _fieldOfView = 100.0f;
     [SerializeField] Camera _mainCamera = null!;
-    
+
     void Update() {
-      var halfWidth = Mathf.Tan(0.5f * _fieldOfView * Mathf.Deg2Rad);
+      var safeAreaSize = Screen.safeArea.xMin + (Screen.width - Screen.safeArea.xMax);
+      var targetFieldOfView = safeAreaSize > 150 ? _fieldOfView + 5 : _fieldOfView;
+      var halfWidth = Mathf.Tan(0.5f * targetFieldOfView * Mathf.Deg2Rad);
       var halfHeight = halfWidth * Screen.height / Screen.width;
       var verticalFoV = 2.0f * Mathf.Atan(halfHeight) * Mathf.Rad2Deg;
       _mainCamera.fieldOfView = verticalFoV;

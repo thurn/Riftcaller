@@ -249,10 +249,10 @@ doc:
 fix: git-status fmt clippy-fix fix-lints
 
 watch:
-    cargo watch -c -w src -x run -- sled local forest
+    cargo watch -c -w src -x "run -- sled local forest"
 
 watch-firestore:
-    cargo watch -c -w src -x run -- --firestore local forest
+    cargo watch -c -w src -x "run -- --firestore local forest"
 
 fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 

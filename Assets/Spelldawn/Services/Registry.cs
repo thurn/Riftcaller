@@ -218,8 +218,11 @@ namespace Spelldawn.Services
     [SerializeField] StudioManager _studioManager = null!;
     public StudioManager StudioManager => _studioManager;
 
-    [SerializeField] SigilDisplay _sigilDisplay = null!;
-    public SigilDisplay SigilDisplay => _sigilDisplay;
+    [SerializeField] SigilDisplay _userSigilDisplay = null!;
+    [SerializeField] SigilDisplay _opponentSigilDisplay = null!;
+
+    public SigilDisplay SigilDisplayForPlayer(PlayerName playerName) =>
+      playerName == PlayerName.User ? _userSigilDisplay : _opponentSigilDisplay;
 
     IEnumerator Start()
     {
