@@ -16,6 +16,7 @@ use core_ui::icons;
 use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{
     AccessPhaseAction, CardPromptAction, EncounterAction, PromptAction, SummonAction,
+    UnveilProjectAction,
 };
 use game_data::primitives::Side;
 use rules::queries;
@@ -28,6 +29,7 @@ pub fn for_prompt(game: &GameState, side: Side, action: PromptAction) -> Respons
         PromptAction::SummonAction(data) => summon_button(game, data),
         PromptAction::EncounterAction(data) => encounter_action_button(game, side, data),
         PromptAction::AccessPhaseAction(data) => access_button(data),
+        PromptAction::UnveilProjectAction(data) => unveil_button(game, data),
         PromptAction::CardAction(data) => card_response_button(side, data),
     }
     .action(action)
@@ -93,6 +95,27 @@ fn access_button(access: AccessPhaseAction) -> ResponseButton {
         AccessPhaseAction::EndRaid => {
             ResponseButton::new("End Raid").primary(false).shift_down(true)
         }
+    }
+}
+
+fn unveil_button(game: &GameState, unveil_action: UnveilProjectAction) -> ResponseButton {
+    match unveil_action {
+        UnveilProjectAction::Unveil(project_id) => {
+            let label = rules::card_definition(game, project_id).name.displayed_name();
+            if let Some(cost) = queries::mana_cost(game, project_id) {
+                if cost > 0 {
+                    return ResponseButton::new(format!(
+                        "Unveil {}\n{}{}",
+                        label,
+                        cost,
+                        icons::MANA
+                    ))
+                    .two_lines(true);
+                }
+            }
+            ResponseButton::new(format!("Unveil {label}"))
+        }
+        UnveilProjectAction::DoNotUnveil => ResponseButton::new("Continue").primary(false),
     }
 }
 

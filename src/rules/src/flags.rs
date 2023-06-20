@@ -38,7 +38,10 @@ pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
 }
 
 /// Returns true if the owner of the `card_id` card can currently pay its cost.
-pub fn can_pay_card_cost(game: &GameState, card_id: CardId) -> bool {
+///
+/// See [can_take_play_card_action] for a function which checks all factors
+/// related to playing a card.
+fn can_pay_card_cost(game: &GameState, card_id: CardId) -> bool {
     let mut can_pay = matches!(queries::mana_cost(game, card_id), Some(cost)
                              if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)));
     if let Some(custom_cost) = &crate::card_definition(game, card_id).cost.custom_cost {
@@ -311,4 +314,15 @@ pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool 
 /// phase of a raid?
 pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) -> bool {
     dispatch::perform_query(game, CanEndRaidAccessPhaseQuery(raid_id), Flag::new(true)).into()
+}
+
+/// Is the Overlord currently able to unveil the provided project?
+///
+/// This checks the preconditions for a project to be unveiled but does *not*
+/// specifically check that an unveil prompt condition has been met.
+pub fn can_unveil_project(game: &GameState, project_id: CardId) -> bool {
+    game.card(project_id).is_face_down()
+        && game.card(project_id).position().in_play()
+        && crate::card_definition(game, project_id).card_type == CardType::Project
+        && can_pay_card_cost(game, project_id)
 }

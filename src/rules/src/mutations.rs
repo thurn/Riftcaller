@@ -42,7 +42,7 @@ use game_data::primitives::{
 use game_data::random;
 use game_data::updates::GameUpdate;
 use tracing::{debug, instrument};
-use with_error::verify;
+use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, flags, mana, queries};
@@ -455,6 +455,37 @@ pub fn try_unveil_project(game: &mut GameState, card_id: CardId) -> Result<bool>
     }
 
     Ok(result)
+}
+
+/// Pays a project's cost and turns it face up, returning an error if the
+/// project is already face-up or cannot be unveiled for any other reason.
+pub fn unveil_project(game: &mut GameState, card_id: CardId) -> Result<()> {
+    verify!(game.card(card_id).is_face_down(), "Card is not face-down");
+    verify!(game.card(card_id).position().in_play(), "Card is not in play");
+
+    if let Some(custom_cost) = &crate::card_definition(game, card_id).cost.custom_cost {
+        if (custom_cost.can_pay)(game, card_id) {
+            (custom_cost.pay)(game, card_id)?;
+        } else {
+            fail!("Cannot pay custom cost for project");
+        }
+    }
+
+    match queries::mana_cost(game, card_id) {
+        None => {
+            game.card_mut(card_id).turn_face_up();
+        }
+        Some(cost) if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)) => {
+            mana::spend(game, card_id.side, ManaPurpose::PayForCard(card_id), cost)?;
+            game.card_mut(card_id).turn_face_up();
+        }
+        _ => fail!("Insufficient mana available to unveil project"),
+    }
+
+    game.record_update(|| GameUpdate::UnveilProject(card_id));
+    dispatch::invoke_event(game, UnveilProjectEvent(card_id))?;
+
+    Ok(())
 }
 
 /// Equivalent function to [try_unveil_project] which ignores costs. Returns

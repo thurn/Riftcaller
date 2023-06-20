@@ -58,6 +58,14 @@ pub enum PromptContext {
     RaidAdvance,
 }
 
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+pub enum UnveilProjectAction {
+    /// Pay costs to unveil the indicated project, turning it face-up.
+    Unveil(CardId),
+    /// Do not pay the costs to unveil a project during a raid.
+    DoNotUnveil,
+}
+
 /// A choice which can be made as part of an ability of an individual card
 ///
 /// Maybe switch this to a trait someday?
@@ -89,6 +97,9 @@ pub enum PromptAction {
     EncounterAction(EncounterAction),
     /// Action to target & destroy an accessed card
     AccessPhaseAction(AccessPhaseAction),
+    /// Action to decide whether to unveil a project (pay its cost and turn it
+    /// face up)
+    UnveilProjectAction(UnveilProjectAction),
     /// Action to take as part of a card ability
     CardAction(CardPromptAction),
 }
@@ -100,6 +111,7 @@ impl fmt::Debug for PromptAction {
             Self::SummonAction(a) => write!(f, "{a:?}"),
             Self::EncounterAction(a) => write!(f, "{a:?}"),
             Self::AccessPhaseAction(a) => write!(f, "{a:?}"),
+            Self::UnveilProjectAction(a) => write!(f, "{a:?}"),
             Self::CardAction(a) => write!(f, "{a:?}"),
         }
     }
@@ -120,6 +132,18 @@ impl GamePrompt {
         Self {
             context: None,
             responses: actions.into_iter().map(PromptAction::CardAction).collect(),
+        }
+    }
+
+    /// Prompt to choose whether to unveil the `card_id` project, turning it
+    /// face up and paying its costs.
+    pub fn unveil_project(card_id: CardId) -> Self {
+        Self {
+            context: None,
+            responses: vec![
+                PromptAction::UnveilProjectAction(UnveilProjectAction::Unveil(card_id)),
+                PromptAction::UnveilProjectAction(UnveilProjectAction::DoNotUnveil),
+            ],
         }
     }
 }

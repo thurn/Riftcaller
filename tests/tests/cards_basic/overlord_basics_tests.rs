@@ -68,6 +68,7 @@ fn leyline() {
     g.play_from_hand(CardName::Leyline);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
+    click_on_unveil(&mut g);
     assert_eq!(STARTING_MANA - card_cost + gained, g.me().mana());
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);

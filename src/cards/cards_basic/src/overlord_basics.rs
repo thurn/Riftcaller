@@ -20,6 +20,8 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
+use game_data::delegates::{Delegate, EventDelegate};
+use game_data::game_actions::GamePrompt;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
@@ -143,7 +145,25 @@ pub fn leyline() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            unveil_at_dusk_ability(),
+            simple_ability(
+                text![],
+                Delegate::Dusk(EventDelegate {
+                    requirement: requirements::can_unveil_project,
+                    mutation: |g, s, _| {
+                        g.player_mut(s.side())
+                            .card_prompt_queue
+                            .push(GamePrompt::unveil_project(s.card_id()));
+                        Ok(())
+                    },
+                }),
+            ),
+            simple_ability(
+                text![],
+                when_unveiled(|g, s, _| {
+                    mana::gain(g, s.side(), 1);
+                    Ok(())
+                }),
+            ),
             simple_ability(
                 trigger_text(Dusk, text!["Gain", Mana(1)]),
                 in_play::at_dusk(|g, s, _| {

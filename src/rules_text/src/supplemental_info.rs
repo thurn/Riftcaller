@@ -96,13 +96,13 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
 fn add_card_subtype_info(builder: &mut Vec<String>, definition: &CardDefinition) {
     if definition.config.subtypes.iter().any(|t| CardSubtype::Activated == *t) {
         builder.push(
-            "<b>Activated Project</b>: Pay its cost to turn this card face up before activating abilities.".to_string(),
+            "<b>Activated Project</b>: Pay this card's cost to turn it face up before activating abilities.".to_string(),
         );
     }
 
     if definition.config.subtypes.iter().any(|t| CardSubtype::Triggered == *t) {
         builder.push(
-            "<b>Triggered Project</b>: You may pay its cost to turn this card face up when it would affect the game".to_string(),
+            "<b>Triggered Project</b>: You may pay this card's cost to turn it face up when it would trigger".to_string(),
         );
     }
 }
