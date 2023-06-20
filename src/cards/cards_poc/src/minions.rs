@@ -48,7 +48,7 @@ pub fn time_golem() -> CardDefinition {
                     text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
                 ),
                 on_encountered(|g, _s, _| {
-                    mutations::set_prompt(
+                    mutations::add_card_prompt(
                         g,
                         Side::Champion,
                         vec![

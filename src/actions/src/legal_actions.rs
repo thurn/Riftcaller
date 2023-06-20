@@ -49,7 +49,7 @@ pub fn evaluate<'a>(
         GamePhase::GameOver { .. } => fail!("Game has ended"),
     }
 
-    if let Some(prompt) = &game.player(side).prompt {
+    if let Some(prompt) = &game.player(side).card_prompt_queue.get(0) {
         return Ok(Box::new(
             prompt.responses.iter().map(|prompt| GameAction::PromptAction(*prompt)),
         ));

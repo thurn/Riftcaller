@@ -273,22 +273,29 @@ fn spend_action_point_action(game: &mut GameState, user_side: Side) -> Result<()
     Ok(())
 }
 
-/// Handles a [PromptAction] for the `user_side` player. Clears active prompts.
+/// Handles a [PromptAction] for the `user_side` player and then removes it from
+/// the queue.
 fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
-    if let Some(prompt) = &game.player(user_side).prompt {
+    if let Some(prompt) = &game.player(user_side).card_prompt_queue.get(0) {
         verify!(
             prompt.responses.iter().any(|p| *p == action),
             "Unexpected action {:?} received",
             action
         );
-        game.player_mut(user_side).prompt = None;
-    }
-
-    match action {
-        PromptAction::MulliganDecision(mulligan) => {
-            handle_mulligan_decision(game, user_side, mulligan)
+        game.player_mut(user_side).card_prompt_queue.remove(0);
+        let PromptAction::CardAction(card_action) = action else {
+            fail!("Expected CardAction");
+        };
+        card_prompt::handle(game, user_side, card_action)
+    } else {
+        match action {
+            PromptAction::MulliganDecision(mulligan) => {
+                handle_mulligan_decision(game, user_side, mulligan)
+            }
+            PromptAction::SummonAction(_)
+            | PromptAction::EncounterAction(_)
+            | PromptAction::AccessPhaseAction(_) => raids::handle_action(game, user_side, action),
+            PromptAction::CardAction(_) => fail!("Not expecting CardAction"),
         }
-        PromptAction::CardAction(card_action) => card_prompt::handle(game, user_side, card_action),
-        _ => raids::handle_action(game, user_side, action),
     }
 }

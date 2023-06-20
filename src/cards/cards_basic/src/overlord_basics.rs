@@ -20,7 +20,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardSubtype, CardType, Lineage, Rarity, School, Side};
+use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -128,7 +128,7 @@ pub fn coinery() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfig { subtypes: vec![CardSubtype::Activated], ..CardConfig::default() },
+        config: projects::activated_config(),
     }
 }
 
@@ -152,7 +152,7 @@ pub fn leyline() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfig::default(),
+        config: projects::triggered_config(),
     }
 }
 

@@ -231,18 +231,16 @@ pub fn clear_boost<T>(game: &mut GameState, scope: Scope, _: &T) -> Result<()> {
     Ok(())
 }
 
-/// Sets the current prompt for the `side` player to contain the non-`None`
+/// Ads the a prompt for the `side` player containing the non-`None`
 /// card actions in `actions`.
-///
-/// Returns an error if a prompt is already set for this player.
-pub fn set_prompt(
+pub fn add_card_prompt(
     game: &mut GameState,
     side: Side,
     actions: Vec<Option<CardPromptAction>>,
 ) -> Result<()> {
-    verify!(game.player(side).prompt.is_none(), "Prompt already present");
-    game.player_mut(side).prompt =
-        Some(GamePrompt::card_actions(actions.into_iter().flatten().collect()));
+    game.player_mut(side)
+        .card_prompt_queue
+        .push(GamePrompt::card_actions(actions.into_iter().flatten().collect()));
     Ok(())
 }
 

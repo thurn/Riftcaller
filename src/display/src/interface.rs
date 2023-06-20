@@ -22,7 +22,7 @@ use protos::spelldawn::InterfaceMainControls;
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
 pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainControls>> {
-    if let Some(prompt) = &game.player(side).prompt {
+    if let Some(prompt) = &game.player(side).card_prompt_queue.get(0) {
         return prompts::action_prompt(game, side, prompt);
     } else if let Some(prompt) = raids::current_prompt(game, side)? {
         return prompts::action_prompt(game, side, &prompt);

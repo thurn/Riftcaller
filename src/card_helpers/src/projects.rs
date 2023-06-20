@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::card_definition::{Ability, AbilityType};
+use game_data::card_definition::{Ability, AbilityType, CardConfig};
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
+use game_data::primitives::CardSubtype;
 use rules::{mutations, queries};
 
 use crate::text;
@@ -30,6 +31,14 @@ pub fn activated() -> Ability {
             unveil_when_activated(),
         ],
     }
+}
+
+pub fn activated_config() -> CardConfig {
+    CardConfig { subtypes: vec![CardSubtype::Activated], ..CardConfig::default() }
+}
+
+pub fn triggered_config() -> CardConfig {
+    CardConfig { subtypes: vec![CardSubtype::Triggered], ..CardConfig::default() }
 }
 
 /// Marks a card's abilities as possible to activate while it is face-down

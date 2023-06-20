@@ -297,8 +297,8 @@ pub fn in_main_phase(game: &GameState, side: Side) -> bool {
         && matches!(&game.info.phase, GamePhase::Play)
         && game.info.turn.side == side
         && game.info.raid.is_none()
-        && game.overlord.prompt.is_none()
-        && game.champion.prompt.is_none()
+        && game.overlord.card_prompt_queue.is_empty()
+        && game.champion.card_prompt_queue.is_empty()
 }
 
 /// Can the Champion choose to not use a weapon ability when encountering
