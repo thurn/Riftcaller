@@ -16,3 +16,5 @@ rules = { path = "../rules", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 core_ui = { path = "../core_ui", version = "0.0.0"}
+
+convert_case = "0.5.0"

@@ -54,10 +54,10 @@ fn coinery() {
     let (card_cost, taken) = (2, 3);
     let mut g = new_game(Side::Overlord, Args::default());
     let id = g.play_from_hand(CardName::Coinery);
-    g.activate_ability(id, 1);
+    g.activate_ability(id, 2);
     assert_eq!(STARTING_MANA - card_cost + taken, g.me().mana());
     assert!(g.user.get_card(id).is_face_up());
-    g.activate_ability(id, 1);
+    g.activate_ability(id, 2);
     assert_eq!(STARTING_MANA - card_cost + (taken * 2), g.me().mana());
 }
 

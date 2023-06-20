@@ -18,6 +18,7 @@
 pub mod abilities;
 pub mod history;
 pub mod in_play;
+pub mod projects;
 pub mod text_macro;
 
 use anyhow::Result;

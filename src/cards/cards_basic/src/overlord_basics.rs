@@ -20,7 +20,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
+use game_data::primitives::{CardSubtype, CardType, Lineage, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -110,24 +110,25 @@ pub fn coinery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            text_only_ability(text![text![Unveil, "when activated, then", StoreMana(15)]]),
+            projects::activated(),
+            Ability {
+                ability_type: AbilityType::Standard,
+                text: trigger_text(Unveil, text![StoreMana(15)]),
+                delegates: vec![when_unveiled(|g, s, _| {
+                    add_stored_mana(g, s.card_id(), 15);
+                    Ok(())
+                })],
+            },
             Ability {
                 ability_type: activate_for_action(),
                 text: text![TakeMana(3)],
-                delegates: vec![
-                    activate_while_face_down(),
-                    face_down_ability_cost(),
-                    on_activated(|g, s, _| {
-                        if mutations::unveil_project_ignoring_costs(g, s.card_id())? {
-                            add_stored_mana(g, s.card_id(), 15);
-                        }
-                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)
-                            .map(|_| ())
-                    }),
-                ],
+                delegates: vec![on_activated(|g, s, _| {
+                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                    Ok(())
+                })],
             },
         ],
-        config: CardConfig::default(),
+        config: CardConfig { subtypes: vec![CardSubtype::Activated], ..CardConfig::default() },
     }
 }
 

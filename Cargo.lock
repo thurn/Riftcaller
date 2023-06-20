@@ -2351,6 +2351,7 @@ name = "rules_text"
 version = "0.0.0"
 dependencies = [
  "assets",
+ "convert_case 0.5.0",
  "core_ui",
  "game_data",
  "protos",

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use convert_case::{Case, Casing};
 use core_ui::design::{self, FontColor};
 use core_ui::icons;
 use core_ui::prelude::*;
@@ -29,7 +30,14 @@ use crate::card_info::SupplementalCardInfo;
 /// returned. Otherwise, supplemental info for all abilities is returned.
 pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> Option<Box<Node>> {
     let definition = context.definition();
-    let mut result = vec![card_type_line(definition)];
+    let mut result = vec![];
+    if ability_index.is_none() {
+        add_card_type_line(&mut result, definition);
+        add_card_subtype_info(&mut result, definition);
+    } else {
+        result.push("Activated Ability".to_string())
+    }
+
     let mut tokens = vec![];
     for (index, ability) in definition.abilities.iter().enumerate() {
         if matches!(ability_index, Some(i) if i.value() != index) {
@@ -50,7 +58,7 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
     SupplementalCardInfo::new(result).build().map(Box::new)
 }
 
-fn card_type_line(definition: &CardDefinition) -> String {
+fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
     let mut result = String::new();
     result.push_str(match definition.card_type {
         CardType::ChampionSpell => "Spell",
@@ -79,12 +87,24 @@ fn card_type_line(definition: &CardDefinition) -> String {
 
     for subtype in &definition.config.subtypes {
         result.push_str(" • ");
-        result.push_str(match subtype {
-            CardSubtype::Silvered => "Silvered",
-        });
+        result.push_str(&format!("{subtype}").from_case(Case::Pascal).to_case(Case::Title));
     }
 
-    result
+    builder.push(result);
+}
+
+fn add_card_subtype_info(builder: &mut Vec<String>, definition: &CardDefinition) {
+    if definition.config.subtypes.iter().any(|t| CardSubtype::Activated == *t) {
+        builder.push(
+            "<b>Activated Project</b>: Pay its cost to turn this card face up before activating abilities.".to_string(),
+        );
+    }
+
+    if definition.config.subtypes.iter().any(|t| CardSubtype::Triggered == *t) {
+        builder.push(
+            "<b>Triggered Project</b>: You may pay its cost to turn this card face up when it would affect the game".to_string(),
+        );
+    }
 }
 
 fn add_tokens(tokens: &mut Vec<TextTokenKind>, text: &[TextElement]) {
@@ -122,7 +142,7 @@ fn token_description(token: TextTokenKind) -> Option<String> {
         TextTokenKind::Encounter => {
             entry("Encounter", "Triggers when this minion is approached during a raid")
         }
-        TextTokenKind::Unveil => entry("Unveil", "Pay cost and turn face up (if able)"),
+        TextTokenKind::Unveil => entry("Unveil", "Triggers when this card is turned face up"),
         TextTokenKind::StoreMana => {
             entry("Store", format!("Add {} to this card to <b>take</b> later", icons::MANA))
         }

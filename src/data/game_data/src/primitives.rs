@@ -22,6 +22,7 @@ use std::str::FromStr;
 use anyhow::Result;
 use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
+use strum_macros::{Display, EnumString};
 use ulid::Ulid;
 use with_error::fail;
 
@@ -447,8 +448,10 @@ impl CardType {
 }
 
 /// Subtypes of cards
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, EnumString, Serialize, Deserialize)]
 pub enum CardSubtype {
+    Triggered,
+    Activated,
     Silvered,
 }
 
