@@ -20,8 +20,6 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, EventDelegate};
-use game_data::game_actions::GamePrompt;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
@@ -113,14 +111,13 @@ pub fn coinery() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             projects::activated(),
-            Ability {
-                ability_type: AbilityType::Standard,
-                text: trigger_text(Unveil, text![StoreMana(15)]),
-                delegates: vec![when_unveiled(|g, s, _| {
+            simple_ability(
+                trigger_text(Unveil, text![StoreMana(15)]),
+                when_unveiled(|g, s, _| {
                     add_stored_mana(g, s.card_id(), 15);
                     Ok(())
-                })],
-            },
+                }),
+            ),
             Ability {
                 ability_type: activate_for_action(),
                 text: text![TakeMana(3)],
@@ -144,34 +141,17 @@ pub fn leyline() -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![
-            simple_ability(
-                text![],
-                Delegate::Dusk(EventDelegate {
-                    requirement: requirements::can_unveil_project,
-                    mutation: |g, s, _| {
-                        g.player_mut(s.side())
-                            .card_prompt_queue
-                            .push(GamePrompt::unveil_project(s.card_id()));
-                        Ok(())
-                    },
-                }),
-            ),
-            simple_ability(
-                text![],
-                when_unveiled(|g, s, _| {
+        abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
+            text: trigger_text(Dusk, text!["Gain", Mana(1)]),
+            delegates: vec![
+                face_up_or_down::at_dusk(|g, s, _| projects::fire_trigger(g, s)),
+                this::is_triggered(|g, s, _| {
                     mana::gain(g, s.side(), 1);
                     Ok(())
                 }),
-            ),
-            simple_ability(
-                trigger_text(Dusk, text!["Gain", Mana(1)]),
-                in_play::at_dusk(|g, s, _| {
-                    mana::gain(g, s.side(), 1);
-                    Ok(())
-                }),
-            ),
-        ],
+            ],
+        }],
         config: projects::triggered_config(),
     }
 }

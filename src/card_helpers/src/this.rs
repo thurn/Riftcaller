@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::delegates::Scope;
-use game_data::game::GameState;
-use rules::flags;
+use game_data::delegates::{Delegate, EventDelegate, MutationFn};
+use game_data::primitives::CardId;
 
-/// See [flags::can_unveil_project].
-pub fn can_unveil_project<T>(game: &GameState, scope: Scope, _: &T) -> bool {
-    flags::can_unveil_project(game, scope.card_id())
+/// A delegate which fires when a project card's triggered ability fires
+pub fn is_triggered(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::ProjectTriggered(EventDelegate { requirement: crate::this_card, mutation })
 }

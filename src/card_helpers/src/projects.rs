@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use anyhow::Result;
 use game_data::card_definition::{Ability, AbilityType, CardConfig};
-use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
+use game_data::delegates::{Delegate, EventDelegate, ProjectTriggeredEvent, QueryDelegate, Scope};
+use game_data::game::GameState;
+use game_data::game_actions::GamePrompt;
 use game_data::primitives::CardSubtype;
-use rules::{mutations, queries};
+use rules::{dispatch, flags, mutations, queries};
 
 use crate::text;
 
@@ -33,6 +36,22 @@ pub fn activated() -> Ability {
     }
 }
 
+/// Fires a trigger event for a project or prompts the user to unveil it if it
+/// is currently face-down.
+pub fn fire_trigger(game: &mut GameState, scope: Scope) -> Result<()> {
+    let project_id = scope.card_id();
+    if game.card(project_id).is_face_up() && game.card(project_id).position().in_play() {
+        dispatch::invoke_event(game, ProjectTriggeredEvent(project_id))
+    } else if flags::can_unveil_project(game, project_id) {
+        game.player_mut(project_id.side)
+            .card_prompt_queue
+            .push(GamePrompt::unveil_project(project_id));
+        Ok(())
+    } else {
+        Ok(())
+    }
+}
+
 pub fn activated_config() -> CardConfig {
     CardConfig { subtypes: vec![CardSubtype::Activated], ..CardConfig::default() }
 }
@@ -42,7 +61,7 @@ pub fn triggered_config() -> CardConfig {
 }
 
 /// Marks a card's abilities as possible to activate while it is face-down
-pub fn activate_while_face_down() -> Delegate {
+fn activate_while_face_down() -> Delegate {
     Delegate::CanActivateWhileFaceDown(QueryDelegate {
         requirement: crate::this_card,
         transformation: |_g, _, _, current| current.with_override(true),
@@ -51,7 +70,7 @@ pub fn activate_while_face_down() -> Delegate {
 
 /// Makes an ability's mana cost equal to the cost of its parent card while that
 /// card is face-down.
-pub fn face_down_ability_cost() -> Delegate {
+fn face_down_ability_cost() -> Delegate {
     Delegate::AbilityManaCost(QueryDelegate {
         requirement: crate::this_card,
         transformation: |g, s, _, current| {
@@ -67,7 +86,7 @@ pub fn face_down_ability_cost() -> Delegate {
 /// Turns a card face up without paying its mana cost when any ability is
 /// activated. Usually combined with [face_down_ability_cost] to incorporate the
 /// unveil cost into the activation cost.
-pub fn unveil_when_activated() -> Delegate {
+fn unveil_when_activated() -> Delegate {
     Delegate::ActivateAbility(EventDelegate {
         requirement: crate::this_card,
         mutation: |g, s, _| {

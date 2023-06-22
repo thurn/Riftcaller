@@ -419,6 +419,10 @@ pub enum Delegate {
     /// Damage has been dealt to the Champion player (in the form of discarded
     /// cards).
     DealtDamage(EventDelegate<DealtDamage>),
+    /// A project with the 'Triggered' subtype has triggered its effect. This
+    /// happens once when the project is first unveiled (turned face
+    /// up) and subsequently whenever its trigger condition occurs.
+    ProjectTriggered(EventDelegate<CardId>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

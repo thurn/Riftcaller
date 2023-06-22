@@ -29,9 +29,9 @@ use game_data::card_state::CardState;
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegates::{
     CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterPlayEvent,
-    MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidEvent, RaidFailureEvent,
-    RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
-    SummonMinionEvent, UnveilProjectEvent,
+    MoveCardEvent, OverlordScoreCardEvent, ProjectTriggeredEvent, RaidEndEvent, RaidEnded,
+    RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent,
+    StoredManaTakenEvent, SummonMinionEvent, UnveilProjectEvent,
 };
 use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData};
 use game_data::game_actions::{CardPromptAction, GamePrompt};
@@ -484,6 +484,10 @@ pub fn unveil_project(game: &mut GameState, card_id: CardId) -> Result<()> {
 
     game.record_update(|| GameUpdate::UnveilProject(card_id));
     dispatch::invoke_event(game, UnveilProjectEvent(card_id))?;
+
+    // Triggered projects are automatically triggered when first unveiled, and
+    // then should be manually triggered when their trigger condition occurs.
+    dispatch::invoke_event(game, ProjectTriggeredEvent(card_id))?;
 
     Ok(())
 }
