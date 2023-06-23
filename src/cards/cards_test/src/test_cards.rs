@@ -318,27 +318,25 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
         cost: cost(UNVEIL_COST),
         card_type: CardType::Project,
         abilities: vec![
+            projects::store_mana_on_unveil::<MANA_STORED>(),
             Ability {
-                text: text![Unveil, "at", Dusk, ", then", StoreMana(MANA_STORED)],
                 ability_type: AbilityType::Standard,
-                delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<MANA_STORED>()],
-            },
-            Ability {
                 text: trigger_text(Dusk, text![TakeMana(MANA_TAKEN)]),
-                ability_type: AbilityType::Standard,
-                delegates: vec![in_play::at_dusk(|g, s, _| {
-                    mutations::take_stored_mana(
-                        g,
-                        s.card_id(),
-                        MANA_TAKEN,
-                        OnZeroStored::Sacrifice,
-                    )?;
-                    alert(g, s);
-                    Ok(())
-                })],
+                delegates: vec![
+                    projects::trigger_at_dusk(),
+                    this::is_triggered(|g, s, _| {
+                        mutations::take_stored_mana(
+                            g,
+                            s.card_id(),
+                            MANA_TAKEN,
+                            OnZeroStored::Sacrifice,
+                        )?;
+                        Ok(())
+                    }),
+                ],
             },
         ],
-        config: CardConfig::default(),
+        config: projects::triggered_subtype(),
         ..test_overlord_spell()
     }
 }
@@ -373,34 +371,6 @@ pub fn deal_damage_end_raid() -> CardDefinition {
             lineage: Some(Lineage::Infernal),
             ..CardConfig::default()
         },
-        ..test_overlord_spell()
-    }
-}
-
-pub fn test_card_stored_mana() -> CardDefinition {
-    CardDefinition {
-        name: CardName::TestCardStoredMana,
-        cost: cost(4),
-        card_type: CardType::Project,
-        side: Side::Overlord,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            Ability {
-                text: text![Unveil, "at", Dusk, ", then", StoreMana(12)],
-                ability_type: AbilityType::Standard,
-                delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
-            },
-            simple_ability(
-                trigger_text(Dusk, text![TakeMana(3)]),
-                in_play::at_dusk(|g, s, _| {
-                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
-                    alert(g, s);
-                    Ok(())
-                }),
-            ),
-        ],
-        config: CardConfig::default(),
         ..test_overlord_spell()
     }
 }

@@ -79,7 +79,6 @@ pub enum CardName {
     /// Champion spell with a mana cost of 1
     Test1CostChampionSpell,
     TestMinionDealDamageEndRaid,
-    TestCardStoredMana,
     TestAttackWeapon,
 
     // Proof of Concept

@@ -94,6 +94,5 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_0_cost_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_1_cost_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::deal_damage_end_raid);
-    DEFINITIONS.insert(cards_test::test_cards::test_card_stored_mana);
     DEFINITIONS.insert(cards_test::test_cards::test_attack_weapon);
 }

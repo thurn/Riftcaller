@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use cards_test::test_cards::{MANA_STORED, MANA_TAKEN, UNVEIL_COST};
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
 use protos::spelldawn::PlayerName;
@@ -20,14 +21,15 @@ use test_utils::*;
 #[test]
 fn test_card_stored_mana() {
     let mut g = new_game(Side::Overlord, Args::default());
-    let id = g.play_from_hand(CardName::TestCardStoredMana);
+    let id = g.play_from_hand(CardName::TestTriggeredAbilityTakeManaAtDusk);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     assert!(g.dawn());
     assert_eq!(STARTING_MANA, g.me().mana());
     spend_actions_until_turn_over(&mut g, Side::Champion);
+    click_on_unveil(&mut g);
     assert!(g.dusk());
-    assert_eq!(STARTING_MANA - 4 /* cost */ + 3 /* taken */, g.me().mana());
-    assert_eq!("9", g.user.get_card(id).arena_icon());
+    assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.me().mana());
+    assert_eq!((MANA_STORED - MANA_TAKEN).to_string(), g.user.get_card(id).arena_icon());
 }
 
 #[test]

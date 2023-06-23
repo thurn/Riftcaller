@@ -368,16 +368,14 @@ fn activate_ability_take_all_mana() {
 }
 
 #[test]
-fn triggered_ability() {
+fn triggered_unveil_ability() {
     let mut g = new_game(Side::Overlord, Args { actions: 1, ..Args::default() });
     g.play_from_hand(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
     assert_eq!(STARTING_MANA, g.user.this_player.mana());
-    g.perform(Action::GainMana(GainManaAction {}), g.opponent_id());
-    g.perform(Action::GainMana(GainManaAction {}), g.opponent_id());
-    let response = g.perform_action(Action::GainMana(GainManaAction {}), g.opponent_id());
+    spend_actions_until_turn_over(&mut g, Side::Champion);
     assert!(g.dusk());
-    assert_snapshot!(Summary::run(&response));
+    click_on_unveil(&mut g);
     assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.user.this_player.mana());
     assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.opponent.other_player.mana());
 }
@@ -399,10 +397,15 @@ fn triggered_ability_take_all_mana() {
     let mut g = new_game(Side::Overlord, Args { actions: 1, ..Args::default() });
     let id = g.play_from_hand(CardName::TestTriggeredAbilityTakeManaAtDusk);
     let mut taken = 0;
+    let mut unveiled = false;
     while taken < MANA_STORED {
         assert!(g.dawn());
         spend_actions_until_turn_over(&mut g, Side::Champion);
         assert!(g.dusk());
+        if !unveiled {
+            click_on_unveil(&mut g);
+            unveiled = true;
+        }
         taken += MANA_TAKEN;
         spend_actions_until_turn_over(&mut g, Side::Overlord);
     }
