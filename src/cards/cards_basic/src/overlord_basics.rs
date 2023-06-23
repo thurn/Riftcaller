@@ -167,20 +167,26 @@ pub fn ore_refinery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            Ability {
-                ability_type: AbilityType::Standard,
-                text: text![Unveil, "at", Dusk, ", then", StoreMana(12)],
-                delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<12>()],
-            },
             simple_ability(
-                trigger_text(Dusk, text![TakeMana(3)]),
-                in_play::at_dusk(|g, s, _| {
-                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                trigger_text(Unveil, text![StoreMana(12)]),
+                when_unveiled(|g, s, _| {
+                    add_stored_mana(g, s.card_id(), 12);
                     Ok(())
                 }),
             ),
+            Ability {
+                ability_type: AbilityType::Standard,
+                text: trigger_text(Dusk, text![TakeMana(3)]),
+                delegates: vec![
+                    face_up_or_down::at_dusk(|g, s, _| projects::fire_trigger(g, s)),
+                    this::is_triggered(|g, s, _| {
+                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                        Ok(())
+                    }),
+                ],
+            },
         ],
-        config: CardConfig::default(),
+        config: projects::triggered_config(),
     }
 }
 

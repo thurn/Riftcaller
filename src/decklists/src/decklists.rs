@@ -88,7 +88,7 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
         CardName::BridgeTroll => 2,
         CardName::Stormcaller => 2,
         CardName::FireGoblin => 2,
-        CardName::Leyline => 50
+        CardName::OreRefinery => 50
     },
 });
 

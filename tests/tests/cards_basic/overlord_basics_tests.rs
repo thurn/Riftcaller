@@ -85,6 +85,8 @@ fn ore_refinery() {
     let id = g.play_from_hand(CardName::OreRefinery);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
+    assert_eq!(STARTING_MANA, g.me().mana());
+    click_on_unveil(&mut g);
     assert_eq!(STARTING_MANA - card_cost + taken, g.me().mana());
     assert_eq!((stored - taken).to_string(), g.user.get_card(id).arena_icon());
 }
