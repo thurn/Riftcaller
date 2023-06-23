@@ -134,10 +134,6 @@ pub fn map_position(p: TilePosition) -> MapPosition {
     MapPosition { x: p.x, y: p.y }
 }
 
-pub fn tile_position(p: MapPosition) -> TilePosition {
-    TilePosition { x: p.x, y: p.y }
-}
-
 pub fn time_value(milliseconds: Milliseconds) -> TimeValue {
     TimeValue { milliseconds: milliseconds.0 }
 }

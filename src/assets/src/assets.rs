@@ -17,7 +17,7 @@
 pub mod rexard_images;
 
 use core_ui::design::FontColor;
-use game_data::primitives::{CardType, Lineage, Rarity, School, Side, Sprite};
+use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
@@ -121,18 +121,6 @@ pub fn card_frame(school: School, _: CardType) -> SpriteAddress {
     };
 
     SpriteAddress { address: format!("{string}.png") }
-}
-
-pub fn ability_card_frame(side: Side) -> SpriteAddress {
-    SpriteAddress {
-        address: format!(
-            "{}.png",
-            match side {
-                Side::Overlord => "LittleSweetDaemon/TCG_Card_Design/Custom/OverlordFront",
-                Side::Champion => "LittleSweetDaemon/TCG_Card_Design/Custom/ChampionFront",
-            }
-        ),
-    }
 }
 
 /// Title font color to use for a given [Lineage].
@@ -254,24 +242,6 @@ pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
                     }
                 },
             }
-        ),
-    }
-}
-
-pub enum EnvironmentType {
-    CastlesTowersKeeps,
-    DungeonsShrinesAltars,
-}
-
-pub fn environments(environment_type: EnvironmentType, path: &'static str) -> Sprite {
-    Sprite {
-        address: format!(
-            "TPR/EnvironmentsHQ/{}/Images/{}.png",
-            match environment_type {
-                EnvironmentType::CastlesTowersKeeps => "Castles, Towers & Keeps",
-                EnvironmentType::DungeonsShrinesAltars => "Dungeons, Shrines & Altars",
-            },
-            path
         ),
     }
 }

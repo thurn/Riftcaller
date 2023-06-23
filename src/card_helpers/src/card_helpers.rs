@@ -122,11 +122,6 @@ pub fn side_is_champion(_: &GameState, _: Scope, side: &Side) -> bool {
     *side == Side::Champion
 }
 
-/// RequirementFn which checks if the [Side] parameter is [Side::Overlord]
-pub fn side_is_overlord(_: &GameState, _: Scope, side: &Side) -> bool {
-    *side == Side::Overlord
-}
-
 /// RequirementFn which checks if the [RoomId] parameter is [RoomId::Sanctum]
 pub fn room_is_sanctum(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
     *room_id == RoomId::Sanctum
@@ -376,24 +371,11 @@ pub fn unveil_at_dusk() -> Delegate {
     })
 }
 
-/// Ability to attempt to unveil a project each turn at Dusk.
-pub fn unveil_at_dusk_ability() -> Ability {
-    simple_ability(text![Unveil, "at", Dusk], unveil_at_dusk())
-}
-
 /// Delegate to store mana in a card when it is unveiled
 pub fn store_mana_on_unveil<const N: u32>() -> Delegate {
     when_unveiled(|g, s, _| {
         add_stored_mana(g, s.card_id(), N);
         Ok(())
-    })
-}
-
-/// Marks an ability as possible to activate while its card is face-down
-pub fn activate_while_face_down() -> Delegate {
-    Delegate::CanActivateWhileFaceDown(QueryDelegate {
-        requirement: this_ability,
-        transformation: |_g, _, _, current| current.with_override(true),
     })
 }
 

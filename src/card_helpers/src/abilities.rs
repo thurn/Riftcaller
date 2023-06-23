@@ -18,7 +18,7 @@ use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
 use game_data::game::GameState;
-use game_data::primitives::{AbilityId, AttackValue, BoostCount, CardId, DamageAmount, ManaValue};
+use game_data::primitives::{AbilityId, AttackValue, CardId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
 use rules::{mutations, queries};
@@ -33,21 +33,6 @@ pub fn silent_ability(ability: Ability) -> Ability {
 /// The standard weapon ability; applies an attack boost for the duration of a
 /// single encounter.
 pub fn encounter_boost() -> Ability {
-    Ability {
-        ability_type: AbilityType::Encounter,
-        text: encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
-        delegates: vec![
-            Delegate::ActivateBoost(EventDelegate::new(this_card, mutations::write_boost)),
-            Delegate::AttackValue(QueryDelegate::new(this_card, add_boost)),
-            Delegate::EncounterEnd(EventDelegate::new(always, mutations::clear_boost)),
-        ],
-    }
-}
-
-pub fn custom_encounter_boost(
-    _text: Vec<TextElement>,
-    _function: fn(&GameState, CardId, BoostCount) -> AttackValue,
-) -> Ability {
     Ability {
         ability_type: AbilityType::Encounter,
         text: encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),

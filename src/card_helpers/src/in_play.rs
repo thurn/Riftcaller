@@ -18,8 +18,8 @@ use game_data::delegates::{
 };
 use game_data::game::GameState;
 use game_data::primitives::{
-    ActionCount, CardId, HasRoomId, ManaValue, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
-    RoomIdVault, TurnNumber,
+    ActionCount, CardId, HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum, RoomIdVault,
+    TurnNumber,
 };
 
 /// A delegate which triggers at dawn if a card is face up in play
@@ -89,12 +89,6 @@ pub fn vault_access_selected(mutation: MutationFn<RaidEvent>) -> Delegate {
         requirement: in_play_with_room::<RoomIdVault>,
         mutation,
     })
-}
-
-/// A delegate which intercepts queries for the mana costs of cards while its
-/// parent is face up and in play.
-pub fn on_query_mana_cost(transformation: TransformationFn<CardId, Option<ManaValue>>) -> Delegate {
-    Delegate::ManaCost(QueryDelegate { requirement: crate::face_up_in_play, transformation })
 }
 
 /// A delegate which intercepts queries for the action costs of cards while its
