@@ -18,6 +18,7 @@ use game_data::delegates::{Delegate, EventDelegate, ProjectTriggeredEvent, Query
 use game_data::game::GameState;
 use game_data::game_actions::GamePrompt;
 use game_data::primitives::CardSubtype;
+use game_data::text::TextToken;
 use rules::{dispatch, flags, mutations, queries};
 
 use crate::text;
@@ -52,12 +53,38 @@ pub fn fire_trigger(game: &mut GameState, scope: Scope) -> Result<()> {
     }
 }
 
-pub fn activated_config() -> CardConfig {
+pub fn activated_subtype() -> CardConfig {
     CardConfig { subtypes: vec![CardSubtype::Activated], ..CardConfig::default() }
 }
 
-pub fn triggered_config() -> CardConfig {
+pub fn triggered_subtype() -> CardConfig {
     CardConfig { subtypes: vec![CardSubtype::Triggered], ..CardConfig::default() }
+}
+
+/// RequirementFn that this delegate's card is currently in play, either face-up
+/// or face-down.
+pub fn either_face_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
+    game.card(scope.card_id()).position().in_play()
+}
+
+/// Fires a project trigger at dusk, prompting the player to unveil the card if
+/// it is face-down or else immediately invoking its trigger event.
+pub fn trigger_at_dusk() -> Delegate {
+    Delegate::Dusk(EventDelegate {
+        requirement: either_face_in_play,
+        mutation: |g, s, _| fire_trigger(g, s),
+    })
+}
+
+/// Ability to store a fixed amount of mana in a card when it is unveiled.
+pub fn store_mana_on_unveil<const N: u32>() -> Ability {
+    crate::simple_ability(
+        crate::trigger_text(TextToken::Unveil, text![TextToken::StoreMana(N)]),
+        crate::when_unveiled(|g, s, _| {
+            crate::add_stored_mana(g, s.card_id(), N);
+            Ok(())
+        }),
+    )
 }
 
 /// Marks a card's abilities as possible to activate while it is face-down

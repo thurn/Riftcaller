@@ -111,13 +111,7 @@ pub fn coinery() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             projects::activated(),
-            simple_ability(
-                trigger_text(Unveil, text![StoreMana(15)]),
-                when_unveiled(|g, s, _| {
-                    add_stored_mana(g, s.card_id(), 15);
-                    Ok(())
-                }),
-            ),
+            projects::store_mana_on_unveil::<15>(),
             Ability {
                 ability_type: activate_for_action(),
                 text: text![TakeMana(3)],
@@ -127,7 +121,7 @@ pub fn coinery() -> CardDefinition {
                 })],
             },
         ],
-        config: projects::activated_config(),
+        config: projects::activated_subtype(),
     }
 }
 
@@ -145,14 +139,14 @@ pub fn leyline() -> CardDefinition {
             ability_type: AbilityType::Standard,
             text: trigger_text(Dusk, text!["Gain", Mana(1)]),
             delegates: vec![
-                face_up_or_down::at_dusk(|g, s, _| projects::fire_trigger(g, s)),
+                projects::trigger_at_dusk(),
                 this::is_triggered(|g, s, _| {
                     mana::gain(g, s.side(), 1);
                     Ok(())
                 }),
             ],
         }],
-        config: projects::triggered_config(),
+        config: projects::triggered_subtype(),
     }
 }
 
@@ -167,18 +161,12 @@ pub fn ore_refinery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            simple_ability(
-                trigger_text(Unveil, text![StoreMana(12)]),
-                when_unveiled(|g, s, _| {
-                    add_stored_mana(g, s.card_id(), 12);
-                    Ok(())
-                }),
-            ),
+            projects::store_mana_on_unveil::<12>(),
             Ability {
                 ability_type: AbilityType::Standard,
                 text: trigger_text(Dusk, text![TakeMana(3)]),
                 delegates: vec![
-                    face_up_or_down::at_dusk(|g, s, _| projects::fire_trigger(g, s)),
+                    projects::trigger_at_dusk(),
                     this::is_triggered(|g, s, _| {
                         mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                         Ok(())
@@ -186,7 +174,7 @@ pub fn ore_refinery() -> CardDefinition {
                 ],
             },
         ],
-        config: projects::triggered_config(),
+        config: projects::triggered_subtype(),
     }
 }
 

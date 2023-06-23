@@ -17,6 +17,6 @@ mod champion_sigil_tests;
 mod champion_spell_tests;
 mod minion_tests;
 mod overlord_spell_tests;
-mod project_tests;
+mod projects_poc_tests;
 mod scheme_tests;
 mod weapon_tests;

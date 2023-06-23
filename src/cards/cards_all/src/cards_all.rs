@@ -62,8 +62,8 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_poc::overlord_sigils::arcane_sigil);
     DEFINITIONS.insert(cards_poc::overlord_spells::overwhelming_power);
     DEFINITIONS.insert(cards_poc::overlord_spells::forced_march);
-    DEFINITIONS.insert(cards_poc::projects::gemcarver);
-    DEFINITIONS.insert(cards_poc::projects::spike_trap);
+    DEFINITIONS.insert(cards_poc::projects_poc::gemcarver);
+    DEFINITIONS.insert(cards_poc::projects_poc::spike_trap);
     DEFINITIONS.insert(cards_poc::schemes::gold_mine);
     DEFINITIONS.insert(cards_poc::schemes::activate_reinforcements);
     DEFINITIONS.insert(cards_poc::schemes::research_project);

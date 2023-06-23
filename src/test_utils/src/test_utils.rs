@@ -439,6 +439,10 @@ pub fn click_on_unveil(session: &mut TestSession) -> GameResponseOutput {
     session.click_on(session.player_id_for_side(Side::Overlord), "Unveil")
 }
 
+pub fn click_on_do_not_unveil(session: &mut TestSession) {
+    session.click_on(session.player_id_for_side(Side::Overlord), "Continue");
+}
+
 /// Must be invoked during the Champion turn. Performs the following actions:
 ///
 /// - Performs all actions described in [setup_raid_target], creating a minion

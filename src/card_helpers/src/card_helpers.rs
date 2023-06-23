@@ -16,7 +16,6 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
-pub mod face_up_or_down;
 pub mod history;
 pub mod in_play;
 pub mod projects;

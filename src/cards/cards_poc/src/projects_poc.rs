@@ -35,26 +35,27 @@ pub fn gemcarver() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
+            projects::store_mana_on_unveil::<9>(),
             Ability {
                 ability_type: AbilityType::Standard,
-                text: text![Unveil, "at", Dusk, ", then", StoreMana(9)],
-                delegates: vec![unveil_at_dusk(), store_mana_on_unveil::<9>()],
+                text: trigger_text(
+                    Dusk,
+                    text![text![TakeMana(3)], text!["When empty, draw a card"]],
+                ),
+                delegates: vec![
+                    projects::trigger_at_dusk(),
+                    this::is_triggered(|g, s, _| {
+                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                        if g.card(s.card_id()).data.stored_mana == 0 {
+                            mutations::draw_cards(g, s.side(), 1)?;
+                        }
+                        alert(g, s);
+                        Ok(())
+                    }),
+                ],
             },
-            simple_ability(
-                trigger_text(Dusk, text![text![TakeMana(3)], text!["When empty, draw a card"]]),
-                in_play::at_dusk(|g, s, _| {
-                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
-                    if g.card(s.card_id()).data.stored_mana == 0 {
-                        mutations::draw_cards(g, s.side(), 1)?;
-                    }
-
-                    // TODO: Consider not alerting on the first turn to avoid two popups
-                    alert(g, s);
-                    Ok(())
-                }),
-            ),
         ],
-        config: CardConfig::default(),
+        config: projects::triggered_subtype(),
     }
 }
 
