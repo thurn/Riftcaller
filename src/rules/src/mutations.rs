@@ -417,46 +417,6 @@ pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) ->
     Ok(())
 }
 
-/// Attempt to pay a project's cost and turn it face up. Has no effect if the
-/// card is not in play, already face up, or if the cost cannot be paid.
-///
-/// Returns true if the card was unveiled.
-pub fn try_unveil_project(game: &mut GameState, card_id: CardId) -> Result<bool> {
-    let result = if game.card(card_id).is_face_down() && game.card(card_id).position().in_play() {
-        if let Some(custom_cost) = &crate::card_definition(game, card_id).cost.custom_cost {
-            if (custom_cost.can_pay)(game, card_id) {
-                (custom_cost.pay)(game, card_id)?;
-            } else {
-                return Ok(false);
-            }
-        }
-
-        match queries::mana_cost(game, card_id) {
-            None => {
-                game.card_mut(card_id).turn_face_up();
-                true
-            }
-            Some(cost)
-                if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)) =>
-            {
-                mana::spend(game, card_id.side, ManaPurpose::PayForCard(card_id), cost)?;
-                game.card_mut(card_id).turn_face_up();
-                true
-            }
-            _ => false,
-        }
-    } else {
-        false
-    };
-
-    if result {
-        game.record_update(|| GameUpdate::UnveilProject(card_id));
-        dispatch::invoke_event(game, UnveilProjectEvent(card_id))?;
-    }
-
-    Ok(result)
-}
-
 /// Pays a project's cost and turns it face up, returning an error if the
 /// project is already face-up or cannot be unveiled for any other reason.
 pub fn unveil_project(game: &mut GameState, card_id: CardId) -> Result<()> {
@@ -492,7 +452,7 @@ pub fn unveil_project(game: &mut GameState, card_id: CardId) -> Result<()> {
     Ok(())
 }
 
-/// Equivalent function to [try_unveil_project] which ignores costs. Returns
+/// Equivalent function to [unveil_project] which ignores costs. Returns
 /// true if the card was unveiled.
 pub fn unveil_project_ignoring_costs(game: &mut GameState, card_id: CardId) -> Result<bool> {
     let result = if game.card(card_id).is_face_down() && game.card(card_id).position().in_play() {
@@ -505,6 +465,7 @@ pub fn unveil_project_ignoring_costs(game: &mut GameState, card_id: CardId) -> R
     if result {
         game.record_update(|| GameUpdate::UnveilProject(card_id));
         dispatch::invoke_event(game, UnveilProjectEvent(card_id))?;
+        dispatch::invoke_event(game, ProjectTriggeredEvent(card_id))?;
     }
 
     Ok(result)

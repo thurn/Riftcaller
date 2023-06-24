@@ -43,8 +43,8 @@ pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use game_data::utils;
+use rules::mana;
 use rules::mana::ManaPurpose;
-use rules::{mana, mutations, queries};
 
 pub fn trigger_text(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElement> {
     vec![TextElement::NamedTrigger(name, effect)]
@@ -361,37 +361,6 @@ pub fn add_stored_mana(game: &mut GameState, card_id: CardId, amount: ManaValue)
 /// Creates a [SpecialEffects] to fire a given [Projectile].
 pub fn projectile(projectile: Projectile) -> SpecialEffects {
     SpecialEffects { projectile: Some(projectile), additional_hit: None }
-}
-
-/// Delegate to attempt to unveil a project each turn at Dusk.
-pub fn unveil_at_dusk() -> Delegate {
-    Delegate::Dusk(EventDelegate {
-        requirement: face_down_in_play,
-        mutation: |g, s, _| mutations::try_unveil_project(g, s.card_id()).map(|_| ()),
-    })
-}
-
-/// Delegate to store mana in a card when it is unveiled
-pub fn store_mana_on_unveil<const N: u32>() -> Delegate {
-    when_unveiled(|g, s, _| {
-        add_stored_mana(g, s.card_id(), N);
-        Ok(())
-    })
-}
-
-/// Makes an ability's mana cost equal to the cost of its parent card while that
-/// card is face-down.
-pub fn face_down_ability_cost() -> Delegate {
-    Delegate::AbilityManaCost(QueryDelegate {
-        requirement: this_ability,
-        transformation: |g, s, _, current| {
-            if g.card(s.card_id()).is_face_up() {
-                current
-            } else {
-                Some(current.unwrap_or(0) + queries::mana_cost(g, s.card_id())?)
-            }
-        },
-    })
 }
 
 /// A [CardPromptAction] for the `side` player to lose mana
