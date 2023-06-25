@@ -17,7 +17,7 @@ use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game::{GamePhase, GameState, MulliganData, RaidData};
-use game_data::game_actions::CardTarget;
+use game_data::game_actions::{CardTarget, PromptContext};
 use game_data::primitives::{
     AbilityId, CardId, GameObjectId, ItemLocation, RoomId, RoomLocation, Side,
 };
@@ -287,12 +287,25 @@ fn position_override(
     game: &GameState,
     card: &CardState,
 ) -> Result<Option<ObjectPosition>> {
+    if let Some(o) = prompt_position_override(game, card) {
+        return Ok(Some(o));
+    }
+
     match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => {
             Ok(opening_hand_position_override(builder, game, card, mulligans))
         }
         GamePhase::Play => raid_position_override(game, card.id.into()),
         _ => Ok(None),
+    }
+}
+
+fn prompt_position_override(game: &GameState, card: &CardState) -> Option<ObjectPosition> {
+    let prompt = game.player(card.side()).card_prompt_queue.get(0)?;
+    if prompt.context == Some(PromptContext::Card(card.id)) {
+        Some(for_card(card, browser()))
+    } else {
+        None
     }
 }
 

@@ -53,9 +53,10 @@ pub enum AccessPhaseAction {
     EndRaid,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum PromptContext {
-    RaidAdvance,
+    /// Prompt is being shown related to a specific card
+    Card(CardId),
 }
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
@@ -139,7 +140,7 @@ impl GamePrompt {
     /// face up and paying its costs.
     pub fn unveil_project(card_id: CardId) -> Self {
         Self {
-            context: None,
+            context: Some(PromptContext::Card(card_id)),
             responses: vec![
                 PromptAction::UnveilProjectAction(UnveilProjectAction::Unveil(card_id)),
                 PromptAction::UnveilProjectAction(UnveilProjectAction::DoNotUnveil),

@@ -13,11 +13,9 @@
 // limitations under the License.
 
 use anyhow::Result;
-use core_ui::design::FontSize;
 use core_ui::prelude::*;
-use core_ui::text::Text;
 use game_data::game::GameState;
-use game_data::game_actions::{GamePrompt, PromptContext};
+use game_data::game_actions::GamePrompt;
 use game_data::primitives::Side;
 use protos::spelldawn::InterfaceMainControls;
 
@@ -33,10 +31,6 @@ pub fn action_prompt(
     let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
     let mut card_anchor_nodes = vec![];
 
-    if let Some(label) = prompt_context(prompt.context) {
-        main_controls.push(Box::new(Text::new(label).font_size(FontSize::PromptContext)));
-    }
-
     for response in &prompt.responses {
         let button = action_buttons::for_prompt(game, side, *response);
         if button.has_anchor() {
@@ -50,10 +44,4 @@ pub fn action_prompt(
         node: PromptContainer::new().children(main_controls).build(),
         card_anchor_nodes,
     }))
-}
-
-fn prompt_context(context: Option<PromptContext>) -> Option<String> {
-    context.map(|context| match context {
-        PromptContext::RaidAdvance => "Continue?".to_string(),
-    })
 }
