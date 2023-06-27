@@ -210,6 +210,7 @@ fn activate_ability_action(
 
     game.ability_state.entry(ability_id).or_default().currently_resolving = true;
     let card = game.card(ability_id.card_id);
+    let is_face_down = card.is_face_down();
 
     debug!(?card.name, ?user_side, ?ability_id, "Applying activate ability action");
 
@@ -226,6 +227,11 @@ fn activate_ability_action(
     if let Some(custom_cost) = &cost.custom_cost {
         (custom_cost.pay)(game, ability_id)?;
     }
+
+    if is_face_down {
+        mutations::unveil_card_ignoring_costs(game, ability_id.card_id)?;
+    }
+
     game.record_update(|| GameUpdate::AbilityActivated(user_side, ability_id));
     dispatch::invoke_event(game, ActivateAbilityEvent(AbilityActivated { ability_id, target }))?;
 
@@ -276,7 +282,7 @@ fn spend_action_point_action(game: &mut GameState, user_side: Side) -> Result<()
 fn handle_unveil_action(game: &mut GameState, action: UnveilProjectAction) -> Result<()> {
     match action {
         UnveilProjectAction::Unveil(card_id) => {
-            mutations::unveil_project(game, card_id)?;
+            mutations::unveil_card(game, card_id)?;
         }
         UnveilProjectAction::DoNotUnveil => {}
     }

@@ -13,29 +13,15 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::card_definition::{Ability, AbilityType, CardConfig};
-use game_data::delegates::{Delegate, EventDelegate, ProjectTriggeredEvent, QueryDelegate, Scope};
+use game_data::card_definition::{Ability, CardConfig};
+use game_data::delegates::{Delegate, EventDelegate, ProjectTriggeredEvent, Scope};
 use game_data::game::GameState;
 use game_data::game_actions::GamePrompt;
 use game_data::primitives::CardSubtype;
 use game_data::text::TextToken;
-use rules::{dispatch, flags, mutations, queries};
+use rules::{dispatch, flags};
 
 use crate::text;
-
-/// Marks a project as an 'activated project', which must have it unveil cost
-/// paid before it can be turned face up.
-pub fn activated() -> Ability {
-    Ability {
-        ability_type: AbilityType::Standard,
-        text: text![],
-        delegates: vec![
-            activate_while_face_down(),
-            face_down_ability_cost(),
-            unveil_when_activated(),
-        ],
-    }
-}
 
 /// Fires a trigger event for a project or prompts the user to unveil it if it
 /// is currently face-down.
@@ -43,7 +29,7 @@ pub fn fire_trigger(game: &mut GameState, scope: Scope) -> Result<()> {
     let project_id = scope.card_id();
     if game.card(project_id).is_face_up() && game.card(project_id).position().in_play() {
         dispatch::invoke_event(game, ProjectTriggeredEvent(project_id))
-    } else if flags::can_unveil_project(game, project_id) {
+    } else if flags::can_unveil_card(game, project_id) {
         game.player_mut(project_id.side)
             .card_prompt_queue
             .push(GamePrompt::unveil_project(project_id));
@@ -85,40 +71,4 @@ pub fn store_mana_on_unveil<const N: u32>() -> Ability {
             Ok(())
         }),
     )
-}
-
-/// Marks a card's abilities as possible to activate while it is face-down
-fn activate_while_face_down() -> Delegate {
-    Delegate::CanActivateWhileFaceDown(QueryDelegate {
-        requirement: crate::this_card,
-        transformation: |_g, _, _, current| current.with_override(true),
-    })
-}
-
-/// Makes an ability's mana cost equal to the cost of its parent card while that
-/// card is face-down.
-fn face_down_ability_cost() -> Delegate {
-    Delegate::AbilityManaCost(QueryDelegate {
-        requirement: crate::this_card,
-        transformation: |g, s, _, current| {
-            if g.card(s.card_id()).is_face_up() {
-                current
-            } else {
-                Some(current.unwrap_or(0) + queries::mana_cost(g, s.card_id())?)
-            }
-        },
-    })
-}
-
-/// Turns a card face up without paying its mana cost when any ability is
-/// activated. Usually combined with [face_down_ability_cost] to incorporate the
-/// unveil cost into the activation cost.
-fn unveil_when_activated() -> Delegate {
-    Delegate::ActivateAbility(EventDelegate {
-        requirement: crate::this_card,
-        mutation: |g, s, _| {
-            mutations::unveil_project_ignoring_costs(g, s.card_id())?;
-            Ok(())
-        },
-    })
 }

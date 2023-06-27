@@ -31,7 +31,7 @@ use game_data::delegates::{
     CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterPlayEvent,
     MoveCardEvent, OverlordScoreCardEvent, ProjectTriggeredEvent, RaidEndEvent, RaidEnded,
     RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent,
-    StoredManaTakenEvent, SummonMinionEvent, UnveilProjectEvent,
+    StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData};
 use game_data::game_actions::{CardPromptAction, GamePrompt};
@@ -417,9 +417,9 @@ pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) ->
     Ok(())
 }
 
-/// Pays a project's cost and turns it face up, returning an error if the
-/// project is already face-up or cannot be unveiled for any other reason.
-pub fn unveil_project(game: &mut GameState, card_id: CardId) -> Result<()> {
+/// Pays a card's cost and turns it face up, returning an error if the
+/// card is already face-up or cannot be unveiled for any other reason.
+pub fn unveil_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     verify!(game.card(card_id).is_face_down(), "Card is not face-down");
     verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
@@ -442,8 +442,8 @@ pub fn unveil_project(game: &mut GameState, card_id: CardId) -> Result<()> {
         _ => fail!("Insufficient mana available to unveil project"),
     }
 
-    game.record_update(|| GameUpdate::UnveilProject(card_id));
-    dispatch::invoke_event(game, UnveilProjectEvent(card_id))?;
+    game.record_update(|| GameUpdate::UnveilCard(card_id));
+    dispatch::invoke_event(game, UnveilCardEvent(card_id))?;
 
     // Triggered projects are automatically triggered when first unveiled, and
     // then should be manually triggered when their trigger condition occurs.
@@ -452,23 +452,17 @@ pub fn unveil_project(game: &mut GameState, card_id: CardId) -> Result<()> {
     Ok(())
 }
 
-/// Equivalent function to [unveil_project] which ignores costs. Returns
-/// true if the card was unveiled.
-pub fn unveil_project_ignoring_costs(game: &mut GameState, card_id: CardId) -> Result<bool> {
-    let result = if game.card(card_id).is_face_down() && game.card(card_id).position().in_play() {
-        game.card_mut(card_id).turn_face_up();
-        true
-    } else {
-        false
-    };
+/// Equivalent function to [unveil_card] which ignores costs.
+pub fn unveil_card_ignoring_costs(game: &mut GameState, card_id: CardId) -> Result<()> {
+    verify!(game.card(card_id).is_face_down(), "Card is not face-down");
+    verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
-    if result {
-        game.record_update(|| GameUpdate::UnveilProject(card_id));
-        dispatch::invoke_event(game, UnveilProjectEvent(card_id))?;
-        dispatch::invoke_event(game, ProjectTriggeredEvent(card_id))?;
-    }
+    game.card_mut(card_id).turn_face_up();
+    game.record_update(|| GameUpdate::UnveilCard(card_id));
+    dispatch::invoke_event(game, UnveilCardEvent(card_id))?;
+    dispatch::invoke_event(game, ProjectTriggeredEvent(card_id))?;
 
-    Ok(result)
+    Ok(())
 }
 
 /// Starts the turn for the `next_side` player.

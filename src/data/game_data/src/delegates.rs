@@ -366,8 +366,9 @@ pub enum Delegate {
     EnterPlay(EventDelegate<CardId>),
     /// A card ability with a cost is activated
     ActivateAbility(EventDelegate<AbilityActivated>),
-    /// A project card is unveiled (turned face up by paying its cost)
-    UnveilProject(EventDelegate<CardId>),
+    /// A card, typically a Project, is unveiled (turned face up by paying its
+    /// cost)
+    UnveilCard(EventDelegate<CardId>),
     /// A minion card is turned face up.
     SummonMinion(EventDelegate<CardId>),
     /// A card is moved to a new position
@@ -434,8 +435,6 @@ pub enum Delegate {
     CanPlayCard(QueryDelegate<CardId, Flag>),
     /// Query whether a given ability can currently be activated.
     CanActivateAbility(QueryDelegate<AbilityId, Flag>),
-    /// Query whether an ability can be activated while its card is face-down
-    CanActivateWhileFaceDown(QueryDelegate<AbilityId, Flag>),
     /// Can a raid currently be started on the indicated room?
     CanInitiateRaid(QueryDelegate<RoomId, Flag>),
     /// Can the indicated player currently level up the indicated room?

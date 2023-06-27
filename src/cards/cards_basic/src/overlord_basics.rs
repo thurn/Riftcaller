@@ -110,7 +110,6 @@ pub fn coinery() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            projects::activated(),
             projects::store_mana_on_unveil::<15>(),
             Ability {
                 ability_type: activate_for_action(),

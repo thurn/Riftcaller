@@ -51,15 +51,25 @@ pub fn mana_cost(game: &GameState, card_id: CardId) -> Option<ManaValue> {
     )
 }
 
-/// Returns the mana cost for a given ability, if any
+/// Returns the mana cost for a given ability, if any. Includes the cost of the
+/// card itself if it is currently face-down.
 pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<ManaValue> {
-    let cost = if let AbilityType::Activated(cost, _) =
+    let mut cost = if let AbilityType::Activated(cost, _) =
         &crate::get(game.card(ability_id.card_id).name).ability(ability_id.index).ability_type
     {
         cost.mana
     } else {
         None
     };
+
+    if game.card(ability_id.card_id).is_face_down() {
+        cost = match (cost, mana_cost(game, ability_id.card_id)) {
+            (None, None) => None,
+            (Some(x), None) => Some(x),
+            (None, Some(y)) => Some(y),
+            (Some(x), Some(y)) => Some(x + y),
+        };
+    }
 
     dispatch::perform_query(game, AbilityManaCostQuery(ability_id), cost)
 }

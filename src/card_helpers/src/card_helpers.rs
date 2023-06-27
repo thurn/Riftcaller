@@ -204,7 +204,7 @@ pub fn on_activated(mutation: MutationFn<AbilityActivated>) -> Delegate {
 }
 
 pub fn when_unveiled(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::UnveilProject(EventDelegate { requirement: this_card, mutation })
+    Delegate::UnveilCard(EventDelegate { requirement: this_card, mutation })
 }
 
 /// A minion delegate which triggers when it is encountered

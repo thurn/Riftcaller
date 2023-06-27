@@ -49,8 +49,9 @@ pub enum GameUpdate {
     DrawCards(Side, Vec<CardId>),
     /// A player has shuffled cards into their deck
     ShuffleIntoDeck,
-    /// A project card has been turned face-up.
-    UnveilProject(CardId),
+    /// A card has been turned face-up via the unveil mechanic, typically a
+    /// project card
+    UnveilCard(CardId),
     /// A minion card has been turned face-up.
     SummonMinion(CardId),
     /// The Overlord has leveled up a room

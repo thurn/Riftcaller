@@ -18,10 +18,10 @@
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
-    CanActivateAbilityQuery, CanActivateWhileFaceDownQuery, CanDefeatTargetQuery,
-    CanEncounterTargetQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery,
-    CanLevelUpRoomQuery, CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery,
-    CanUseNoWeaponQuery, CardEncounter, Flag,
+    CanActivateAbilityQuery, CanDefeatTargetQuery, CanEncounterTargetQuery,
+    CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery, CanLevelUpRoomQuery,
+    CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
+    CardEncounter, Flag,
 };
 use game_data::game::{GamePhase, GameState};
 use game_data::game_actions::CardTarget;
@@ -72,13 +72,6 @@ pub fn can_take_play_card_action(
     dispatch::perform_query(game, CanPlayCardQuery(card_id), Flag::new(can_play)).into()
 }
 
-/// Whether the `ability_id` ability can be activated while its card is face
-/// down in play.
-pub fn can_activate_while_face_down(game: &GameState, ability_id: AbilityId) -> bool {
-    dispatch::perform_query(game, CanActivateWhileFaceDownQuery(ability_id), Flag::new(false))
-        .into()
-}
-
 /// Whether the `ability_id` ability can currently be activated with the
 /// provided `target`.
 pub fn can_take_activate_ability_action(
@@ -102,8 +95,7 @@ pub fn can_take_activate_ability_action(
     let mut can_activate = in_main_phase(game, side)
         && side == ability_id.card_id.side
         && cost.actions <= game.player(side).actions
-        && card.position().in_play()
-        && (card.is_face_up() || can_activate_while_face_down(game, ability_id));
+        && card.position().in_play();
 
     if let Some(custom_cost) = &cost.custom_cost {
         can_activate &= (custom_cost.can_pay)(game, ability_id);
@@ -316,13 +308,12 @@ pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) 
     dispatch::perform_query(game, CanEndRaidAccessPhaseQuery(raid_id), Flag::new(true)).into()
 }
 
-/// Is the Overlord currently able to unveil the provided project?
+/// Is the Overlord currently able to unveil the provided card?
 ///
 /// This checks the preconditions for a project to be unveiled but does *not*
-/// specifically check that an unveil prompt condition has been met.
-pub fn can_unveil_project(game: &GameState, project_id: CardId) -> bool {
-    game.card(project_id).is_face_down()
-        && game.card(project_id).position().in_play()
-        && crate::card_definition(game, project_id).card_type == CardType::Project
-        && can_pay_card_cost(game, project_id)
+/// specifically check that an unveil trigger condition, if any, has been met.
+pub fn can_unveil_card(game: &GameState, card_id: CardId) -> bool {
+    game.card(card_id).is_face_down()
+        && game.card(card_id).position().in_play()
+        && can_pay_card_cost(game, card_id)
 }

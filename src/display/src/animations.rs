@@ -60,7 +60,7 @@ pub fn render(
         GameUpdate::ShuffleIntoDeck => {
             // No animation, just acts as a snapshot point.
         }
-        GameUpdate::UnveilProject(card_id) => {
+        GameUpdate::UnveilCard(card_id) => {
             if builder.user_side == Side::Champion {
                 show_cards(builder, &vec![*card_id])
             }
