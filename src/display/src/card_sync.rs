@@ -20,7 +20,7 @@ use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::game::GameState;
 use game_data::game_actions::CardTarget;
-use game_data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation};
+use game_data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation, School};
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,
@@ -39,7 +39,11 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result
         card_position: context
             .query_or_ok(None, |game, card| Ok(Some(positions::convert(builder, game, card)?)))?,
         prefab: CardPrefab::Standard.into(),
-        card_back: Some(assets::card_back(context.definition().school)),
+        card_back: Some(assets::card_back(
+            context.query_or(context.definition().school, |game, card| {
+                *game.player(card.side()).schools.get(0).unwrap_or(&School::Neutral)
+            }),
+        )),
         revealed_to_viewer: revealed,
         is_face_up: context.query_or(true, |_, card| card.is_face_up()),
         card_icons: Some(card_icons::build(context, revealed)),

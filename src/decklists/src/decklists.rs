@@ -19,7 +19,7 @@ use std::collections::HashMap;
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::player_name::NamedPlayer;
-use game_data::primitives::Side;
+use game_data::primitives::{School, Side};
 use maplit::hashmap;
 use once_cell::sync::Lazy;
 use user_action_data::NamedDeck;
@@ -69,7 +69,7 @@ pub static TUTORIAL_OVERLORD: Lazy<Deck> =
 /// Standard Overlord deck for use in benchmarks
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
-    schools: vec![],
+    schools: vec![School::Law],
     sigils: vec![CardName::ArcaneSigil],
     cards: hashmap! {
         CardName::GoldMine => 3,
@@ -87,8 +87,7 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
         CardName::SphinxOfWintersBreath => 2,
         CardName::BridgeTroll => 2,
         CardName::Stormcaller => 2,
-        CardName::FireGoblin => 2,
-        CardName::Gemcarver => 50
+        CardName::FireGoblin => 2
     },
 });
 
@@ -137,7 +136,7 @@ pub static TUTORIAL_CHAMPION: Lazy<Deck> =
 /// Standard Champion deck for use in benchmarks
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
-    schools: vec![],
+    schools: vec![School::Primal],
     sigils: vec![CardName::RadiantSigil],
     cards: hashmap! {
         CardName::Meditation => 2,
