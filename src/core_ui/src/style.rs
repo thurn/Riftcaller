@@ -680,6 +680,16 @@ impl Layout {
         self
     }
 
+    pub fn max_height(mut self, height: impl Into<Dimension>) -> Self {
+        self.style = self.style.max_height(height);
+        self
+    }
+
+    pub fn max_width(mut self, width: impl Into<Dimension>) -> Self {
+        self.style = self.style.max_width(width);
+        self
+    }
+
     pub fn to_style(self) -> Style {
         self.style
     }

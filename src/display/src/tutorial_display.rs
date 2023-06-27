@@ -98,6 +98,7 @@ fn make_toast(text: &str) -> Option<Node> {
         )
         .child(
             Text::new(text)
+                .layout(Layout::new().max_width(400.px()))
                 .font_size(FontSize::Toast)
                 .color(FontColor::Toast)
                 .text_align(TextAlign::MiddleLeft)
