@@ -91,6 +91,17 @@ namespace Spelldawn.Game
       public SpriteRenderer Background => _background;
       [SerializeField] TextMeshPro _text = null!;
       public TextMeshPro Text => _text;
+
+      public void SetActive(bool active)
+      {
+        _background.gameObject.SetActive(active);
+        _text.gameObject.SetActive(active);
+      }
+      
+      public void SetContainerActive(bool active)
+      {
+        _background.transform.parent.gameObject.SetActive(active);
+      }      
     }
 
     public Registry Registry { get; set; } = null!;
@@ -198,7 +209,7 @@ namespace Spelldawn.Game
 
     protected override void OnSetGameContext(GameContext oldContext, GameContext newContext)
     {
-      if (newContext.RenderArenaCard())
+      if (newContext.ShouldRenderArenaCard())
       {
         _arenaCardBack.SetActive(!_isRevealed);
         _cardBack.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
@@ -239,8 +250,8 @@ namespace Spelldawn.Game
         _arenaCard.localPosition = new Vector3(0, _arenaCardYOffset, 0);
       }
 
-      UpdateIcons(null, GameContext.RenderArenaCard());
-      UpdateRevealedToOpponent(GameContext.RenderArenaCard());
+      EnableIconsForContext(newContext);
+      UpdateRevealedToOpponent(newContext.ShouldRenderArenaCard());
     }
 
     public override bool CanHandleMouseDown()
@@ -423,8 +434,13 @@ namespace Spelldawn.Game
         RenderHiddenCard();
       }
 
-      UpdateIcons(card.CardIcons, GameContext.RenderArenaCard());
-      UpdateRevealedToOpponent(GameContext.RenderArenaCard());
+      if (card.CardIcons != null)
+      {
+        UpdateIcons(card.CardIcons);
+        EnableIconsForContext(GameContext);
+      }
+      
+      UpdateRevealedToOpponent(inArena: GameContext.ShouldRenderArenaCard());
     }
 
     void RenderRevealedCard(RevealedCardView revealed)
@@ -519,13 +535,23 @@ namespace Spelldawn.Game
       _cardFront.gameObject.SetActive(value: false);
     }
 
-    void UpdateIcons(CardIcons? cardIcons, bool inArena)
+    void UpdateIcons(CardIcons cardIcons)
     {
-      SetCardIcon(_topLeftIcon, cardIcons?.TopLeftIcon, !inArena);
-      SetCardIcon(_topRightIcon, cardIcons?.TopRightIcon, !inArena);
-      SetCardIcon(_bottomRightIcon, cardIcons?.BottomRightIcon, !inArena);
-      SetCardIcon(_bottomLeftIcon, cardIcons?.BottomLeftIcon, !inArena);
-      SetCardIcon(_arenaIcon, cardIcons?.ArenaIcon, inArena);
+      SetCardIcon(_topLeftIcon, cardIcons.TopLeftIcon);
+      SetCardIcon(_topRightIcon, cardIcons.TopRightIcon);
+      SetCardIcon(_bottomRightIcon, cardIcons.BottomRightIcon);
+      SetCardIcon(_bottomLeftIcon, cardIcons.BottomLeftIcon);
+      SetCardIcon(_arenaIcon, cardIcons.ArenaIcon);
+    }
+
+    void EnableIconsForContext(GameContext context)
+    {
+      var inArena = context.ShouldRenderArenaCard();
+      _topLeftIcon.SetContainerActive(!inArena);
+      _topRightIcon.SetContainerActive(!inArena);
+      _bottomLeftIcon.SetContainerActive(!inArena);
+      _bottomRightIcon.SetContainerActive(!inArena);
+      _arenaIcon.SetContainerActive(inArena);
     }
 
     void UpdateRevealedToOpponent(bool inArena)
@@ -542,17 +568,19 @@ namespace Spelldawn.Game
       }
     }
 
-    void SetCardIcon(Icon icon, CardIcon? cardIcon, bool show)
+    void SetCardIcon(Icon icon, CardIcon? cardIcon)
     {
-      var iconContainer = icon.Background.transform.parent;
-      if (cardIcon != null)
+      if (cardIcon == null)
       {
+        icon.SetActive(false);
+      }
+      else 
+      {
+        icon.SetActive(true);
         Registry.AssetService.AssignSprite(icon.Background, cardIcon.Background);
         icon.Background.transform.localScale = (cardIcon.BackgroundScale ?? 1.0f) * Vector3.one;
         icon.Text.text = cardIcon.Text;
       }
-      
-      iconContainer.gameObject.SetActive(show);
     }
 
     public void OnArrowMoved(Vector3 position)
