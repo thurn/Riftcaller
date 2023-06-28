@@ -31,6 +31,8 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] ArrowBubble _arrowBubblePrefab = null!;
+    [SerializeField] Transform _userManaTooltipAnchor = null!;
+    [SerializeField] Transform _opponentManaTooltipAnchor = null!;
 
     [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
     sealed record EffectKey(
@@ -177,7 +179,7 @@ namespace Spelldawn.Services
       ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerDeck => 
         _registry.DeckForPlayer(anchor.PlayerDeck).transform,
       ArrowBubbleAnchor.BubbleAnchorOneofCase.PlayerMana => 
-        _registry.ManaDisplayForPlayer(anchor.PlayerMana).transform,
+        anchor.PlayerMana == PlayerName.User ? _userManaTooltipAnchor : _opponentManaTooltipAnchor,
       _ => throw new ArgumentOutOfRangeException(
         nameof(anchor.BubbleAnchorCase), anchor.BubbleAnchorCase, null)
     };
