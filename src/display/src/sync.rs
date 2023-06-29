@@ -103,6 +103,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
 }
 
 fn skip_sending_to_client(card: &CardState) -> bool {
-    let kind = card.position().kind();
-    kind == CardPositionKind::DeckUnknown
+    let hidden = !(card.is_revealed_to(Side::Champion) || card.is_revealed_to(Side::Overlord));
+    let position = card.position().kind();
+    position == CardPositionKind::DeckUnknown || (position == CardPositionKind::DeckTop && hidden)
 }
