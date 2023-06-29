@@ -377,6 +377,8 @@ namespace Unity.Cloud.UserReporting.Plugin
             webRequest.uploadHandler = new UploadHandlerRaw(content);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", contentType);
+            webRequest.disposeUploadHandlerOnDispose = true;
+            webRequest.disposeDownloadHandlerOnDispose = true;
             webRequest.SendWebRequest();
             UnityUserReportingPlatform.PostOperation postOperation = new UnityUserReportingPlatform.PostOperation();
             postOperation.WebRequest = webRequest;
