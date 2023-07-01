@@ -83,6 +83,7 @@ namespace Spelldawn.Game
     ObjectPosition? _releasePosition;
     Node? _supplementalInfo;
     ArrowService.Type? _arrowOnDrag;
+    bool _showingArrow;
 
     [Serializable]
     public sealed class Icon
@@ -187,7 +188,9 @@ namespace Spelldawn.Game
       }
     }
 
-    bool CanPlay() => _serverCanPlay == true && InHand() && Registry.CapabilityService.CanInitiateAction() &&
+    bool CanPlay() => _serverCanPlay == true && 
+                      InHand() && 
+                      Registry.CapabilityService.CanInitiateAction() &&
                       _isRevealed;
 
     public Card Clone()
@@ -275,7 +278,7 @@ namespace Spelldawn.Game
         Registry.CardService.DisplayInfoZoom(this);
       }
 
-      if (InHand() && CanPlay())
+      if (CanPlay())
       {
         Registry.CardService.CurrentlyDragging = true;
         SetGameContext(GameContext.Dragging);
@@ -314,26 +317,33 @@ namespace Spelldawn.Game
         {
           Registry.ArenaService.ShowRoomSelectorForMousePosition(_validRoomTargets);
         }
-
-        if (_arrowOnDrag is { } arrow)
+        
+        if (!_showingArrow && _arrowOnDrag is { } arrow)
         {
+          _showingArrow = true;
           gameObject.SetActive(false);
           Registry.ArrowService.ShowArrow(arrow, Registry.GameCharacterForPlayer(PlayerName.User).transform, this);
         }
       }
       else
       {
+        if (_showingArrow)
+        {
+          Registry.ArrowService.HideArrows();
+          gameObject.SetActive(true);
+          _showingArrow = false;
+        }
         Registry.ArenaService.HideRoomSelector();
       }
     }
 
     public override void MouseUp()
     {
-      if (_arrowOnDrag != null)
+      if (_showingArrow)
       {
-        // GameObject will be disabled when arrow is being shown 
-        gameObject.SetActive(true);
         Registry.ArrowService.HideArrows();
+        gameObject.SetActive(true);
+        _showingArrow = false;
       }
 
       if (!Registry.CardService.CurrentlyDragging)
@@ -477,6 +487,11 @@ namespace Spelldawn.Game
           _validRoomTargets = null;
           _serverCanPlay = false;
           break;
+      }
+
+      if (_arrowOnDrag != null)
+      {
+        Debug.Log($"RenderRevealedCard {name}: _arrowOnDrag: {_arrowOnDrag}");
       }
 
       if (revealed.OnReleasePosition is { } position)
