@@ -9,21 +9,21 @@
 /out/
 /Library/
 
-ScreenshotTests/
-ServerData/
-screenshots/
+/ScreenshotTests/
+/ServerData/
+/screenshots/
 spelldawn.keystore
 
-UIElementsSchema/
-HostedData/
-Assets/StreamingAssets/
-Assets/EntityCache
-Assets/Plugins/
-Assets/AddressableAssetsData/link.xml
-Assets/AddressableAssetsData/link.xml.meta
-UserSettings/
-db/
-log/
+/UIElementsSchema/
+/HostedData/
+/Assets/StreamingAssets/
+/Assets/EntityCache
+/Assets/Plugins/
+/Assets/AddressableAssetsData/link.xml
+/Assets/AddressableAssetsData/link.xml.meta
+/UserSettings/
+/db/
+/log/
 
 # Visual Studio cache directory
 .vs/jj
@@ -59,12 +59,12 @@ sysinfo.txt
 **/.DS_Store
 .criterion/
 
-Assets/src/.lsp
-Temp
-out_BurstDebugInformation_DoNotShip/
+/Assets/src/.lsp
+/Temp
+/out_BurstDebugInformation_DoNotShip/
 
-proto/bin
-proto/obj
+/proto/bin
+/proto/obj
 !proto/*.csproj
 
 todo.md
