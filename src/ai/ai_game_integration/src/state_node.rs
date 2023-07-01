@@ -50,7 +50,7 @@ impl GameStateNode for SpelldawnState {
         match self.info.phase {
             GamePhase::GameOver { winner } => GameStatus::Completed { winner },
             _ => {
-                if actions::can_take_action(self, Side::Overlord) {
+                if actions::can_take_any_action(self, Side::Overlord) {
                     GameStatus::InProgress { current_turn: Side::Overlord }
                 } else {
                     GameStatus::InProgress { current_turn: Side::Champion }

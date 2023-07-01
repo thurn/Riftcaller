@@ -50,7 +50,7 @@ use with_error::{fail, WithError};
 use crate::game_server;
 use crate::server_data::{ClientData, GameResponse, RequestData};
 
-/// Whether incremenetal updates should be sent to the connected player during
+/// Whether incremental updates should be sent to the connected player during
 /// AI turns.
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum IncrementalUpdates {
@@ -164,7 +164,7 @@ async fn send_snapshot_to_player(
 fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>>)> {
     for side in enum_iterator::all::<Side>() {
         if let PlayerId::Named(name) = game.player(side).id {
-            if actions::can_take_action(game, side) {
+            if actions::can_take_any_action(game, side) {
                 let agent = agents::get(name);
                 if !agent.inactive() {
                     return Some((side, agent));

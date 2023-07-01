@@ -66,7 +66,7 @@ pub fn handle_game_action(
 
 /// Returns true if the indicated player currently has a legal game action
 /// available to them.
-pub fn can_take_action(game: &GameState, side: Side) -> bool {
+pub fn can_take_any_action(game: &GameState, side: Side) -> bool {
     match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => return mulligans.decision(side).is_none(),
         GamePhase::GameOver { .. } => return false,

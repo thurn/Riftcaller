@@ -82,8 +82,8 @@ pub enum DebugAction {
     AddMana(ManaValue),
     AddActionPoints(ActionCount),
     AddScore(PointsValue),
-    SaveState(u128),
-    LoadState(u128),
+    SaveGameState(u128),
+    LoadGameState(u128),
     SetNamedPlayer(Side, NamedPlayer),
 }
 

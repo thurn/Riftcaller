@@ -488,12 +488,7 @@ namespace Spelldawn.Game
           _serverCanPlay = false;
           break;
       }
-
-      if (_arrowOnDrag != null)
-      {
-        Debug.Log($"RenderRevealedCard {name}: _arrowOnDrag: {_arrowOnDrag}");
-      }
-
+      
       if (revealed.OnReleasePosition is { } position)
       {
         _releasePosition = position;

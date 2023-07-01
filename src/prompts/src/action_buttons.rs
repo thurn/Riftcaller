@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::action_builder::ActionBuilder;
 use core_ui::icons;
 use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{
-    AccessPhaseAction, CardPromptAction, EncounterAction, PromptAction, SummonAction,
+    AccessPhaseAction, CardPromptAction, EncounterAction, GameAction, PromptAction, SummonAction,
     UnveilProjectAction,
 };
 use game_data::primitives::Side;
@@ -32,7 +33,7 @@ pub fn for_prompt(game: &GameState, side: Side, action: PromptAction) -> Respons
         PromptAction::UnveilProjectAction(data) => unveil_button(game, data),
         PromptAction::CardAction(data) => card_response_button(side, data),
     }
-    .action(action)
+    .action(ActionBuilder::new().action(GameAction::PromptAction(action)).build())
 }
 
 fn mulligan_button(mulligan: MulliganDecision) -> ResponseButton {

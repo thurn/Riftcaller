@@ -82,14 +82,14 @@ pub async fn handle_debug_action(
             })
             .await
         }
-        DebugAction::SaveState(index) => {
+        DebugAction::SaveGameState(index) => {
             let mut game = requests::fetch_game(database, data.game_id).await?;
             let game_id = GameId::new_from_u128(100 + index);
             game.id = game_id;
             database.write_game(&game).await?;
             Ok(GameResponse::new(ClientData::propagate(data)))
         }
-        DebugAction::LoadState(index) => {
+        DebugAction::LoadGameState(index) => {
             let game_id = data.game_id.with_error(|| "Expected game_id")?;
             let saved_id = GameId::new_from_u128(100 + index);
             let mut game = requests::fetch_game(database, Some(saved_id)).await?;

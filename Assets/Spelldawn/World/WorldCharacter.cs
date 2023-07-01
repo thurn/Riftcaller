@@ -16,20 +16,15 @@
 
 using System;
 using System.Collections.Generic;
+using Spelldawn.Utils;
 using UnityEngine;
 
 namespace Spelldawn.World
 {
   public sealed class WorldCharacter : MonoBehaviour
   {
-    static readonly int SpeedParam = Animator.StringToHash("Speed");
-    static readonly int DirectionParam = Animator.StringToHash("Direction");
-    
-    const float AnimatorUp = 0f;
-    const float AnimatorSide = 1f;
-    const float AnimatorDown = 2f;
-
-    AnimatedCharacter _character = null!;
+    bool _initialized;
+    [SerializeField] AnimatedCharacter _character = null!;
     WorldMap _worldMap = null!;
     float _moveSpeed;
     Action? _onArriveAtDestination;
@@ -38,16 +33,20 @@ namespace Spelldawn.World
 
     public void Initialize(WorldMap worldMap)
     {
-      _character = GetComponent<AnimatedCharacter>();
+      Errors.CheckNotNull(_character);
+      Errors.CheckNotNull(worldMap);
       _character.SetDirection(AnimatedCharacter.Direction.Right);
       _character.SetSpeed(0f);
       _worldMap = worldMap;
+      _initialized = true;
     }
 
     public bool Moving => _targetPositions.Count > 0;
 
     void Update()
     {
+      Errors.CheckState(_initialized, "WorldCharacter not initialized");
+      
       if (_targetPositions.Count > 0)
       {
         var target = _targetPositions.Peek();

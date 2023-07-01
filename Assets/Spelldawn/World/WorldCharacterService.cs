@@ -33,6 +33,7 @@ namespace Spelldawn.World
     {
       _hero = ComponentUtils.Instantiate(_characterPrefab);
       _hero.transform.position = new Vector3(0, 0, 0);
+      Debug.Log($"Start: Initializing with {_worldMap}");
       _hero.Initialize(_worldMap);
     }
 
