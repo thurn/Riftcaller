@@ -202,7 +202,10 @@ namespace Spelldawn.Services
       var commands = Plugin.Connect(request);
       if (commands != null)
       {
-        yield return _registry.CommandService.HandleCommands(commands);
+        yield return _registry.CommandService.HandleCommands(commands, () =>
+        {
+          _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
+        });
       }
     }    
 
