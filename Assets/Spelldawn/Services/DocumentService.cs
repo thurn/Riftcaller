@@ -15,12 +15,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Spelldawn.Common;
 using Spelldawn.Game;
 using Spelldawn.Masonry;
 using static Spelldawn.Masonry.MasonUtil;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -39,7 +41,7 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] UIDocument _document = null!;
-    [SerializeField] Sprite _loadingIndicator = null!;
+    [FormerlySerializedAs("_loadingIndicator")] [SerializeField] Sprite _loadingSprite = null!;
 
     readonly List<InterfacePanelAddress> _openPanels = new();
     readonly Dictionary<InterfacePanelAddress, InterfacePanel> _panelCache = new();
@@ -50,28 +52,16 @@ namespace Spelldawn.Services
     VisualElement _infoZoom = null!;
     VisualElement _panels = null!;
     BottomSheet _bottomSheet = null!;
-    VisualElement? _loading;
+    LoadingSpinner? _loadingSpinner;
     VisualElement _screenOverlay = null!;
     Node? _screenOverlayNode;
     Coroutine? _autoRefresh;
-    float _rotateAngle;
 
     public VisualElement RootVisualElement => _document.rootVisualElement;
 
     public IEnumerable<InterfacePanelAddress> OpenPanels => _openPanels;
 
     public IReadOnlyDictionary<InterfacePanelAddress, InterfacePanel> PanelCache => _panelCache;
-
-    public bool Loading
-    {
-      set
-      {
-        if (_loading != null)
-        {
-          _loading.visible = value;
-        }
-      }
-    }
 
     public void Initialize()
     {
@@ -81,38 +71,24 @@ namespace Spelldawn.Services
       AddRoot("Panels", out _panels);
       _bottomSheet = new BottomSheet(_registry);
       _document.rootVisualElement.Add(_bottomSheet);
-      CreateLoadingSpinner();
+      
+      AddRoot("Loading", out var loadingContainer);
+      _loadingSpinner = new LoadingSpinner();
+      _loadingSpinner.Initialize(loadingContainer, _loadingSprite);
+      
       AddRoot("ScreenOverlay", out _screenOverlay);
       AddRoot("InfoZoom", out _infoZoom);
     }
 
     void Update()
     {
-      if (_loading is { visible: true })
-      {
-        _rotateAngle = (_rotateAngle + (Time.deltaTime * 600)) % 360;
-        _loading.style.rotate = new Rotate(Angle.Degrees(_rotateAngle));
-      }
+      _loadingSpinner?.Update();
     }
 
-    void CreateLoadingSpinner()
-    {
-      AddRoot("Loading", out var loadingContainer);
-      loadingContainer.style.justifyContent = Justify.Center;
-      loadingContainer.style.alignItems = Align.Center;
-      _loading = new Image
-      {
-        sprite = _loadingIndicator,
-        style =
-        {
-          width = 88,
-          height = 88,
-          opacity = 0.5f
-        }
-      };
-      loadingContainer.Add(_loading);
-    }
-
+    public void WaitFor(WaitingFor waitingFor) => _loadingSpinner?.WaitFor(waitingFor);
+    
+    public void EndWaitFor(WaitingFor waitingFor) => _loadingSpinner?.EndWaitFor(waitingFor);    
+    
     public void FetchOpenPanelsOnConnect()
     {
       foreach (var address in _openPanels)
@@ -180,14 +156,14 @@ namespace Spelldawn.Services
               {
                 _panelCache[transition.Open] = new InterfacePanel { Node = _panelCache[transition.Loading].Node };
                 _waitingFor.Add(transition.Open);
-                Loading = true;
+                WaitFor(WaitingFor.PanelFetch);
                 fetch = transition.Open;
               }
               else if (transition.WaitToLoad && transition.Close != null && _panelCache.ContainsKey(transition.Close))
               {
                 _panelCache[transition.Open] = _panelCache[transition.Close];
                 _waitingFor.Add(transition.Open);
-                Loading = true;
+                WaitFor(WaitingFor.PanelFetch);
                 fetch = transition.Open;
               }
               else
@@ -250,7 +226,7 @@ namespace Spelldawn.Services
           _openPanels.Clear();
           _openPanels.Add(_switchTo);
           _switchTo = null;
-          Loading = false;
+          EndWaitFor(WaitingFor.PanelFetch);
         }
 
         _panelCache[panel.Address] = panel;
@@ -258,7 +234,7 @@ namespace Spelldawn.Services
 
       if (_waitingFor.Count == 0)
       {
-        Loading = false;
+        EndWaitFor(WaitingFor.PanelFetch);
       }
 
       RenderPanels();

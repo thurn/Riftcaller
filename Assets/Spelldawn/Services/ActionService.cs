@@ -26,6 +26,7 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using Grpc.Net.Compression;
+using Spelldawn.Common;
 using Spelldawn.Protos;
 using Spelldawn.Tools;
 using Spelldawn.Utils;
@@ -152,7 +153,7 @@ namespace Spelldawn.Services
 
     async void AttemptConnection()
     {
-      _registry.DocumentService.Loading = true;
+      _registry.DocumentService.WaitFor(WaitingFor.Connection);
 
       var request = new ConnectRequest
       {
@@ -173,14 +174,14 @@ namespace Spelldawn.Services
               var commands = call.ResponseStream.Current;
               _attemptReconnect = false;
               StartCoroutine(_registry.CommandService.HandleCommands(commands,
-                () => { _registry.DocumentService.Loading = false; }));
+                () => { _registry.DocumentService.EndWaitFor(WaitingFor.Connection); }));
               _registry.DocumentService.FetchOpenPanelsOnConnect();
             }
           }
         }
         catch (RpcException e)
         {
-          _registry.DocumentService.Loading = true;
+          _registry.DocumentService.WaitFor(WaitingFor.Connection);
           _attemptReconnect = true;
           if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
           {
@@ -255,7 +256,7 @@ namespace Spelldawn.Services
         switch (call.GetStatus().StatusCode)
         {
           case StatusCode.OK:
-            _registry.DocumentService.Loading = false;
+            _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
             _attemptReconnect = false;
             if (LogRpcTime.ShouldLogRpcTime)
             {
@@ -265,7 +266,7 @@ namespace Spelldawn.Services
             yield return _registry.CommandService.HandleCommands(task.GetResult());
             break;
           default:
-            _registry.DocumentService.Loading = true;
+            _registry.DocumentService.WaitFor(WaitingFor.Connection);
             _attemptReconnect = true;
             if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
             {

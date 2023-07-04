@@ -17,6 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Assets;
+using Spelldawn.Common;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -338,10 +339,10 @@ namespace Spelldawn.Services
           break;
         case ClientDebugCommand.DebugCommandOneofCase.ShowFeedbackForm:
           _registry.UserReportingScript.transform.parent.GetComponent<Canvas>().enabled = true;
-          _registry.DocumentService.Loading = true;
+          _registry.DocumentService.WaitFor(WaitingFor.FeedbackForm);
           _registry.UserReportingScript.CreateUserReport(() =>
           {
-            _registry.DocumentService.Loading = false;
+            _registry.DocumentService.EndWaitFor(WaitingFor.FeedbackForm);
           });
           break;
       }

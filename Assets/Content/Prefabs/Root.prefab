@@ -234,10 +234,10 @@ MonoBehaviour:
   _opponentManaDisplay: {fileID: 0}
   _userActionDisplay: {fileID: 0}
   _opponentActionDisplay: {fileID: 0}
-  _userLeaderCardPosition: {fileID: 0}
-  _opponentLeaderCardPosition: {fileID: 0}
-  _userLeaderCard: {fileID: 0}
-  _opponentLeaderCard: {fileID: 0}
+  _userCharacterPosition: {fileID: 0}
+  _opponentCharacterPosition: {fileID: 0}
+  _userGameCharacter: {fileID: 0}
+  _opponentGameCharacter: {fileID: 0}
   _userActiveLight: {fileID: 0}
   _opponentActiveLight: {fileID: 0}
   _graphy: {fileID: 205228966181399124}
@@ -250,6 +250,8 @@ MonoBehaviour:
   _analyticsService: {fileID: 8679095155801471873}
   _userReportingScript: {fileID: 3419366364935352034}
   _studioManager: {fileID: 5046173552731427907}
+  _userSigilDisplay: {fileID: 0}
+  _opponentSigilDisplay: {fileID: 0}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,6 +339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fc51058f0b74ece8e210d1e6c56a92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _registry: {fileID: 205228965686964167}
   _studioRenderTexture: {fileID: 8400000, guid: 7bfc4a7c7b8f645e3a6c465eaa238802, type: 2}
   _developmentAssets: {fileID: 205228965686964221}
 --- !u!114 &205228965686964169
@@ -353,7 +356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
   _document: {fileID: 205228966981538766}
-  _loadingIndicator: {fileID: 21300000, guid: a5e4f11b4ccb64e84b071718459cdaa8, type: 3}
+  _loadingSprite: {fileID: 21300000, guid: a5e4f11b4ccb64e84b071718459cdaa8, type: 3}
 --- !u!114 &205228965686964171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,6 +542,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
   _arrowBubblePrefab: {fileID: 8392308209551879796, guid: c9639fe46e9d64cc884327b1b1d0389b, type: 3}
+  _userManaTooltipAnchor: {fileID: 0}
+  _opponentManaTooltipAnchor: {fileID: 0}
 --- !u!114 &8679095155801471873
 MonoBehaviour:
   m_ObjectHideFlags: 0

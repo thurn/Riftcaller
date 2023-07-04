@@ -17,6 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Assets;
+using Spelldawn.Common;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
@@ -31,6 +32,7 @@ namespace Spelldawn.Services
 {
   public sealed class AssetService : MonoBehaviour
   {
+    [SerializeField] Registry _registry = null!;
     [SerializeField] RenderTexture _studioRenderTexture = null!;
     [SerializeField] DevelopmentAssets _developmentAssets = null!;
     bool _anyCompleted;
@@ -39,10 +41,12 @@ namespace Spelldawn.Services
 
     public Sprite? GetSprite(SpriteAddress address)
     {
-      return UseProductionAssets.ShouldUseProductionAssets ? Get<Sprite>(address.Address) : _developmentAssets.GetSprite(address);
+      return UseProductionAssets.ShouldUseProductionAssets ?
+        Get<Sprite>(address.Address) :
+        _developmentAssets.GetSprite(address);
     }
 
-    public RenderTexture GetRenderTexture(Registry registry, RenderTextureAddress address)
+    public RenderTexture GetRenderTexture(Registry _, RenderTextureAddress address)
     {
       return address.Address switch
       {
@@ -185,10 +189,11 @@ namespace Spelldawn.Services
       yield return WaitForRequests(requests);
     }
 
-    public IEnumerator WaitForRequests(IDictionary<string, AsyncOperationHandle> requests)
+    IEnumerator WaitForRequests(IDictionary<string, AsyncOperationHandle> requests)
     {
       if (requests.Count > 0)
       {
+        _registry.DocumentService.WaitFor(WaitingFor.Assets);
         yield return new WaitUntil(() => requests.Values.All(r => r.Status == AsyncOperationStatus.Succeeded));
 
         foreach (var (address, request) in requests)
@@ -203,6 +208,8 @@ namespace Spelldawn.Services
             LogUtils.LogError($"Null asset for {address}");
           }
         }
+        
+        _registry.DocumentService.EndWaitFor(WaitingFor.Assets);
       }
     }
 
