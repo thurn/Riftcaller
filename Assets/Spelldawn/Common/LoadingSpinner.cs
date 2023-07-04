@@ -34,6 +34,7 @@ namespace Spelldawn.Common
     Image? _loading;
     Label? _label;
     float _rotateAngle;
+    float _lastShowTime;
     
     public void Initialize(VisualElement loadingContainer, Sprite loadingSprite)
     {
@@ -75,6 +76,11 @@ namespace Spelldawn.Common
 
     public void WaitFor(WaitingFor waitingFor)
     {
+      if (_currentlyWaitingFor.Count == 0)
+      {
+        _lastShowTime = Time.time;
+      }
+      
       _currentlyWaitingFor.Add(waitingFor);
     }
 
@@ -85,7 +91,7 @@ namespace Spelldawn.Common
 
     public void Update()
     {
-      if (_loading != null && _label != null && _currentlyWaitingFor.Count > 0)
+      if (_loading != null && _label != null && _currentlyWaitingFor.Count > 0 && (Time.time - _lastShowTime) > 0.2f)
       {
         _loading.visible = true;
         _label.visible = true;
