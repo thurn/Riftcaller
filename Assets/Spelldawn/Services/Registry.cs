@@ -19,8 +19,10 @@ using Google.Protobuf.WellKnownTypes;
 using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Tests;
+using Spelldawn.Utils;
 using Spelldawn.World;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 #nullable enable
@@ -223,6 +225,11 @@ namespace Spelldawn.Services
 
     public SigilDisplay SigilDisplayForPlayer(PlayerName playerName) =>
       playerName == PlayerName.User ? _userSigilDisplay : _opponentSigilDisplay;
+
+    void Awake()
+    {
+      LogUtils.Log($"Starting '{SceneManager.GetActiveScene().name}' Scene");
+    }
 
     IEnumerator Start()
     {

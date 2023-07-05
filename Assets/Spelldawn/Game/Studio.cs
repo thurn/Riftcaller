@@ -38,7 +38,7 @@ namespace Spelldawn.Game
       name = $"Studio {studioNumber}";
       StudioNumber = studioNumber;
       _studioLayer = LayerMask.NameToLayer("Studio");
-      RenderTexture = new RenderTexture(1024, 1024, 32, RenderTextureFormat.ARGB32);
+      RenderTexture = new RenderTexture(1024, 1024, 16, RenderTextureFormat.Default);
       _camera.targetTexture = RenderTexture;
       _initialized = true;
     }

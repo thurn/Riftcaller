@@ -31,6 +31,7 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
     [SerializeField] bool _currentlyHandling;
+    
     readonly Queue<CommandList> _queue = new();
     public bool Active => _currentlyHandling;
     public ClientMetadata ClientMetadata { get; private set; } = new();

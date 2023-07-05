@@ -193,6 +193,7 @@ namespace Spelldawn.Services
     {
       if (requests.Count > 0)
       {
+        LogUtils.Log($"Fetching {requests.Count} Assets");
         _registry.DocumentService.WaitFor(WaitingFor.Assets);
         yield return new WaitUntil(() => requests.Values.All(r => r.Status == AsyncOperationStatus.Succeeded));
 
@@ -209,6 +210,7 @@ namespace Spelldawn.Services
           }
         }
         
+        LogUtils.Log($"Done Fetching {requests.Count} Assets");
         _registry.DocumentService.EndWaitFor(WaitingFor.Assets);
       }
     }
