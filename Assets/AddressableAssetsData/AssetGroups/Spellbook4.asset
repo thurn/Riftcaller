@@ -27,3 +27,4 @@ MonoBehaviour:
     m_Schemas:
     - {fileID: 11400000, guid: c8361c9d1d375415ebbdc21e9d19c3a6, type: 2}
     - {fileID: 11400000, guid: 74e6bdade62ac47acba438b22e4365fa, type: 2}
+    - {fileID: 11400000, guid: f0c6941f8bd444f0bab34af93cbb57ea, type: 2}
