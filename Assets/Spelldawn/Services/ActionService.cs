@@ -173,8 +173,8 @@ namespace Spelldawn.Services
             {
               var commands = call.ResponseStream.Current;
               _attemptReconnect = false;
-              StartCoroutine(_registry.CommandService.HandleCommands(commands,
-                () => { _registry.DocumentService.EndWaitFor(WaitingFor.Connection); }));
+              _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
+              StartCoroutine(_registry.CommandService.HandleCommands(commands));
               _registry.DocumentService.FetchOpenPanelsOnConnect();
             }
           }
@@ -202,10 +202,8 @@ namespace Spelldawn.Services
       var commands = Plugin.Connect(request);
       if (commands != null)
       {
-        yield return _registry.CommandService.HandleCommands(commands, () =>
-        {
-          _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
-        });
+        _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
+        yield return _registry.CommandService.HandleCommands(commands);
       }
     }    
 
