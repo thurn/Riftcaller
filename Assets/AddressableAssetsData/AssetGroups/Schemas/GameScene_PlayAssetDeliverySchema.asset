@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: GameScene_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: d560a4cd88a1e48a18957533340b2b9b, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

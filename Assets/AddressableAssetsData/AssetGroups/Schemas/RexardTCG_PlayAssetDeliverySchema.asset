@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: RexardTCG_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 50fa456dcf5544c6997f1f6486a79f69, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 11400000, guid: 70ab9f895032b44b0b090be08ce3d7f3, type: 2}

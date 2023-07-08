@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MonstersAvatars_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: c59473b759a4843c78edc0496497d071, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: TPR_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: aaa47150608c94c21b90d7ef2ad5e9e9, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

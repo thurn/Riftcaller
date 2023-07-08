@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MiningIcons_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 0d6b3dd65ed254660a28983e7992004c, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

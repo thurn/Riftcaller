@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: JeweleryIcons_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: d5609ff89db4d463e85a5c2286b28e6b, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

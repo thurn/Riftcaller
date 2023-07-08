@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: HovlMagicCircles4_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: a004aa395c234482d844cfeb86a4692c, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

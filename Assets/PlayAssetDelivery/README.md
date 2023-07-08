@@ -18,3 +18,5 @@ Configuration for integrating Play Asset Delivery with unity addressables.
 - .AAB bundle uploads always get rejected unless you are targeting the latest android API version
 - You need to put the keystore password from 1password into Unity every time you launch in order to build the bundle
 - You need to increment the 'android build version code' in player settings every time you do a build
+- Doing development with asset bundles set to "on demand" *does* work
+- It's just "fast follow" that is broken wtih the invalid handle error

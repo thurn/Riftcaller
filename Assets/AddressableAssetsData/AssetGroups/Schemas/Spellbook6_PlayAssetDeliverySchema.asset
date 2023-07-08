@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Spellbook6_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 69d86e50441d8409195c4616fcd9cea0, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

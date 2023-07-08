@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Enixion_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: b478bb4771bcb46f5a407a2423828f3e, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 11400000, guid: 70ab9f895032b44b0b090be08ce3d7f3, type: 2}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: HovlProjectiles1_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: a494b19debf55450fa05c1b305e46360, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: HovlHits_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 4170cdef579e841989ca7f309a3ee44b, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

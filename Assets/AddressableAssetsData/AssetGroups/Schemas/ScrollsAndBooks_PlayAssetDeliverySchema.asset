@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ScrollsAndBooks_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 99c0b5523e0274ca3a4922e3131ae73a, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 0}

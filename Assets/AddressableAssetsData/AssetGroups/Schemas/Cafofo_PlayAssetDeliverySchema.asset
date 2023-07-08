@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Cafofo_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 9d0fe117f064b4042b3339dbb13e3027, type: 2}
-  m_AssetPackIndex: 0
+  m_AssetPackIndex: 2
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 11400000, guid: 70ab9f895032b44b0b090be08ce3d7f3, type: 2}
