@@ -1,5 +1,6 @@
 Configuration for integrating Play Asset Delivery with unity addressables.
 
+- Scene Loading in unity currently freezes forever on Android App Bundle builds if you have too many assets (>500MB?)
 - Unity provides sample code for this, but it is incredibly buggy and broken.
 - They are allegedly going to release a new version eventually that actually works
 - Their code does not create the right directory structure.
