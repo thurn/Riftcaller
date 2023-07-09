@@ -118,7 +118,11 @@ impl Component for Button {
                     .justify_content(FlexJustify::Center)
                     .align_items(FlexAlign::Center)
                     .flex_shrink(0.0)
-                    .flex_grow(if self.width_mode == WidthMode::Constrained { 0.0 } else { 1.0 })
+                    .align_self(if self.width_mode == WidthMode::Constrained {
+                        FlexAlign::Auto
+                    } else {
+                        FlexAlign::Stretch
+                    })
                     .background_image(background)
                     .image_slice(Edge::Horizontal, 16.px()),
             )

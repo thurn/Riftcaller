@@ -26,3 +26,4 @@ pub mod loading_panel;
 pub mod main_menu_panel;
 pub mod set_player_name_panel;
 pub mod settings_panel;
+pub mod side_select_panel;

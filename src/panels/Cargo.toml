@@ -11,6 +11,7 @@ test = false
 
 [dependencies]
 adventure_data = { path = "../data/adventure_data", version = "0.0.0" }
+assets = { path = "../assets", version = "0.0.0" }
 user_action_data = { path = "../data/user_action_data", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
 player_data = { path = "../data/player_data", version = "0.0.0" }

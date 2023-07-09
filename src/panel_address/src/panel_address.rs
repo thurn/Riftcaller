@@ -57,6 +57,7 @@ pub enum StandardPanel {
     MainMenu,
     About,
     Settings,
+    SideSelect,
     Disclaimer,
     DebugPanel(PlayerActivityKind),
     GameMenu,

@@ -23,6 +23,7 @@ pub fn standard_panels() -> Vec<StandardPanel> {
         StandardPanel::MainMenu,
         StandardPanel::About,
         StandardPanel::Settings,
+        StandardPanel::SideSelect,
         StandardPanel::Disclaimer,
         StandardPanel::DebugPanel(PlayerActivityKind::None),
         StandardPanel::DebugPanel(PlayerActivityKind::Adventure),

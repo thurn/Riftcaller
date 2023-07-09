@@ -33,6 +33,7 @@ use panels::loading_panel::LoadingPanel;
 use panels::main_menu_panel::MainMenuPanel;
 use panels::set_player_name_panel::SetPlayerNamePanel;
 use panels::settings_panel::SettingsPanel;
+use panels::side_select_panel::SideSelectPanel;
 use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, UpdatePanelsCommand};
@@ -75,6 +76,7 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         StandardPanel::MainMenu => MainMenuPanel::new().build_panel(),
         StandardPanel::About => AboutPanel::new().build_panel(),
         StandardPanel::Settings => SettingsPanel::new().build_panel(),
+        StandardPanel::SideSelect => SideSelectPanel::new().build_panel(),
         StandardPanel::Disclaimer => DisclaimerPanel::new().build_panel(),
         StandardPanel::DebugPanel(activity) => DebugPanel::new(activity).build_panel(),
         StandardPanel::GameMenu => GameMenuPanel::new().build_panel(),
