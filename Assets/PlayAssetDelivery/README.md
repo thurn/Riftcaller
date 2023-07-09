@@ -19,4 +19,7 @@ Configuration for integrating Play Asset Delivery with unity addressables.
 - You need to put the keystore password from 1password into Unity every time you launch in order to build the bundle
 - You need to increment the 'android build version code' in player settings every time you do a build
 - Doing development with asset bundles set to "on demand" *does* work
-- It's just "fast follow" that is broken wtih the invalid handle error
+- It's just "fast follow" that is broken with the invalid handle error
+- Releases through they play store still do seem to have issues with fetching bundles
+
+- Honestly if Unity hasn't released a non-horrible asset management solution by the end of 2023, just write your own thing directly on top of the Apple and Google APIs and just use the addressables tools to build the asset bundles themselves. It seems like that is what most people are doing.

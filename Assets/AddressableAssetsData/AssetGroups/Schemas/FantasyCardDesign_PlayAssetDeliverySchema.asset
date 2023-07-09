@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FantasyCardDesign_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 2b9b1839e440549699986d4d4d7b05ff, type: 2}
-  m_AssetPackIndex: 2
+  m_AssetPackIndex: 6
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 11400000, guid: 70ab9f895032b44b0b090be08ce3d7f3, type: 2}

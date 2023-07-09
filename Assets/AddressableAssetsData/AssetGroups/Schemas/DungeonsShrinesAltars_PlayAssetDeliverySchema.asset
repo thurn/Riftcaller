@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: DungeonsShrinesAltars_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: c0ceaefa5710f44debb6f1e475985a12, type: 2}
-  m_AssetPackIndex: 2
+  m_AssetPackIndex: 4
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 11400000, guid: 70ab9f895032b44b0b090be08ce3d7f3, type: 2}

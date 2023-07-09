@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ElementalCardDesign_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: df5180762d57343d3b6ae0de28b0037d, type: 2}
-  m_AssetPackIndex: 2
+  m_AssetPackIndex: 5
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 11400000, guid: 70ab9f895032b44b0b090be08ce3d7f3, type: 2}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: TCGCardDesign_PlayAssetDeliverySchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 1ee4dcae0ccb7479d897435c22e127e6, type: 2}
-  m_AssetPackIndex: 2
+  m_AssetPackIndex: 7
   m_IncludeInAssetPack: 1
   m_Settings: {fileID: 11400000, guid: 70ab9f895032b44b0b090be08ce3d7f3, type: 2}

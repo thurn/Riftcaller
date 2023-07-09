@@ -20,12 +20,12 @@ MonoBehaviour:
   - AssetPackName: OnDemand
     DeliveryType: 3
   - AssetPackName: CastlesTowersKeeps
-    DeliveryType: 2
+    DeliveryType: 3
   - AssetPackName: DungeonsShrinesAltars
-    DeliveryType: 2
+    DeliveryType: 3
   - AssetPackName: ElementalCardDesign
-    DeliveryType: 2
+    DeliveryType: 3
   - AssetPackName: FantasyCardDesign
-    DeliveryType: 2
+    DeliveryType: 3
   - AssetPackName: TcgCardDesign
-    DeliveryType: 2
+    DeliveryType: 3
