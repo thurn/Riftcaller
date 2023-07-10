@@ -77,7 +77,7 @@ impl<'a> Panel for DeckEditorPanel<'a> {
     fn screen_overlay(&self) -> Option<Node> {
         ScreenOverlay::new(self.player)
             .show_deck_button(false)
-            .show_close_button(self.address())
+            .show_close_button(Panels::close(self.address()))
             .build()
     }
 }

@@ -17,8 +17,8 @@
 
 pub mod all_panels;
 
+use adventure_display::adventure_over_panel::AdventureOverPanel;
 use adventure_display::adventure_panels;
-use adventure_display::shop_panel::ShopPanel;
 use anyhow::Result;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
@@ -104,31 +104,9 @@ pub fn render_player_panel(
         }
         .build_panel(),
         PlayerPanel::GameOver(data) => GameOverPanel { data }.build_panel(),
-        PlayerPanel::TileLoading(position) => {
-            adventure_panels::render_tile_loading_panel(position, player)?
+        PlayerPanel::AdventureTile(position) => {
+            adventure_panels::tile_entity_panel(player, position)?
         }
-        PlayerPanel::TilePrompt(position) => {
-            adventure_panels::render_tile_prompt_panel(position, player)?
-        }
-        PlayerPanel::DraftCard => render_adventure_choice(player)?,
-        PlayerPanel::AdventureOver => render_adventure_choice(player)?,
-        PlayerPanel::Shop(position) => ShopPanel::new(player, position)?.build_panel(),
+        PlayerPanel::AdventureOver => AdventureOverPanel::new().build_panel(),
     })
-}
-
-fn render_adventure_choice(player: &PlayerState) -> Result<Option<InterfacePanel>> {
-    // It's normal for the client to request screens which aren't always valid,
-    // e.g. refreshing the cached choice screen after it's been removed.
-
-    let Some(adventure) = &player.adventure else {
-        return Ok(None)
-    };
-
-    let Some(choice_screen) = &adventure.choice_screen else {
-        return Ok(None)
-    };
-
-    let rendered = adventure_display::render_adventure_choice_screen(adventure, choice_screen)?;
-
-    Ok(rendered.panel)
 }

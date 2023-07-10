@@ -84,7 +84,6 @@ impl TestAdventure {
                 cards: HashMap::new(),
             }),
             config.collection,
-            config.explore,
             config.draft,
             config.shop,
         );

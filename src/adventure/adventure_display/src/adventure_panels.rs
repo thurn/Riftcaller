@@ -14,64 +14,24 @@
 
 use adventure_data::adventure::{TileEntity, TilePosition};
 use anyhow::Result;
-use core_ui::full_screen_loading::FullScreenLoading;
-use core_ui::prelude::*;
-use panel_address::{Panel, PlayerPanel};
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerState;
 use protos::spelldawn::InterfacePanel;
-use with_error::{fail, WithError};
+use with_error::WithError;
 
-use crate::draft_prompt_panel::DraftPromptPanel;
-use crate::explore_panel::ExplorePanel;
-use crate::shop_prompt_panel::ShopPromptPanel;
+use crate::draft_panel::DraftPanel;
+use crate::shop_panel::ShopPanel;
 
-/// Renders an action prompt panel for the entity at the provided
-/// [TilePosition].
-pub fn render_tile_prompt_panel(
-    position: TilePosition,
+/// Builds an [InterfacePanel] for the adventure world map entity at the
+/// specified position. Returns an error if no such entity exists.
+pub fn tile_entity_panel(
     player: &PlayerState,
+    position: TilePosition,
 ) -> Result<Option<InterfacePanel>> {
-    let Some(adventure) = &player.adventure else {
-        fail!("Expected active adventure");
-    };
-
-    let tile = adventure.tiles.get(&position).with_error(|| "Tile not found")?;
-    let Some(entity) = &tile.entity else {
-        // Entity does not exist, e.g. because it has been cleared after activation. This
-        // is fine, just render nothing.
-        return Ok(None)
-    };
-
-    Ok(match entity {
-        TileEntity::Explore(_, cost) => ExplorePanel { cost: *cost, position }.build_panel(),
-        TileEntity::Draft(cost, _) => DraftPromptPanel { cost: *cost, position }.build_panel(),
-        TileEntity::Shop(_) => ShopPromptPanel { position }.build_panel(),
+    let state = player.adventure()?;
+    let address = PanelAddress::PlayerPanel(PlayerPanel::AdventureTile(position));
+    Ok(match state.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")? {
+        TileEntity::Draft(data) => DraftPanel { address, data }.build_panel(),
+        TileEntity::Shop(data) => ShopPanel { player, address, data }.build_panel(),
     })
-}
-
-/// Renders the loading screen panel for the entity at the provided
-/// [TilePosition], if any.
-pub fn render_tile_loading_panel(
-    position: TilePosition,
-    player: &PlayerState,
-) -> Result<Option<InterfacePanel>> {
-    let node = match player.adventure()?.tile_entity(position)? {
-        TileEntity::Explore { .. } => {
-            FullScreenLoading::new("TPR/InfiniteEnvironments/meadow").build()
-        }
-        TileEntity::Draft { .. } => FullScreenLoading::new(
-            "TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1",
-        )
-        .build(),
-        TileEntity::Shop { .. } => FullScreenLoading::new(
-            "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1",
-        )
-        .build(),
-    };
-
-    Ok(Some(InterfacePanel {
-        address: Some(PlayerPanel::TileLoading(position).into()),
-        node,
-        screen_overlay: None,
-    }))
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
+use adventure_data::adventure::AdventureState;
 use game_data::primitives::{DeckId, Side};
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState};
@@ -38,29 +38,17 @@ pub fn standard_panels() -> Vec<StandardPanel> {
 
 /// Enumerates all player panel addresses
 pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
-    let panels =
-        vec![PlayerPanel::DeckEditorPrompt, PlayerPanel::DraftCard, PlayerPanel::AdventureOver];
+    let panels = vec![PlayerPanel::DeckEditorPrompt, PlayerPanel::AdventureOver];
     if let Some(adventure) = &player.adventure {
         panels
             .into_iter()
             .chain(adventure.tiles.iter().filter_map(|(position, state)| {
-                state.entity.as_ref().map(|_| PlayerPanel::TilePrompt(*position))
+                state.entity.as_ref().map(|_| PlayerPanel::AdventureTile(*position))
             }))
-            .chain(adventure.tiles.iter().filter_map(|(position, state)| {
-                state.entity.as_ref().map(|_| PlayerPanel::TileLoading(*position))
-            }))
-            .chain(adventure.tiles.iter().filter_map(add_shop_panels))
             .chain(add_deck_editor_panels(adventure))
             .collect()
     } else {
         panels
-    }
-}
-
-fn add_shop_panels((position, state): (&TilePosition, &TileState)) -> Option<PlayerPanel> {
-    match &state.entity {
-        Some(TileEntity::Shop { .. }) => Some(PlayerPanel::Shop(*position)),
-        _ => None,
     }
 }
 

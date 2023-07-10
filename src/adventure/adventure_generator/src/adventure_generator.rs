@@ -18,21 +18,18 @@ pub mod card_generator;
 pub mod mock_adventure;
 
 use adventure_data::adventure::{AdventureConfiguration, AdventureState, Coins, TileEntity};
+use game_data::primitives::Side;
 
 pub const STARTING_COINS: Coins = Coins(500);
 
 /// Builds a new random 'adventure' mode world map
 pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
-    let collection = decklists::BASIC_CHAMPION.clone().cards;
-    let explore = TileEntity::Explore(2, Coins(100));
-    let draft = TileEntity::Draft(Coins(25), card_generator::draft_choices(&mut config));
+    let side = config.side;
+    let deck = match side {
+        Side::Overlord => decklists::BASIC_OVERLORD.clone(),
+        Side::Champion => decklists::BASIC_CHAMPION.clone(),
+    };
+    let draft = TileEntity::Draft(card_generator::draft_choices(&mut config));
     let shop = TileEntity::Shop(card_generator::shop_options(&mut config));
-    mock_adventure::create(
-        config,
-        decklists::BASIC_CHAMPION.clone(),
-        collection,
-        Some(explore),
-        Some(draft),
-        Some(shop),
-    )
+    mock_adventure::create(config, deck.clone(), deck.cards, Some(draft), Some(shop))
 }

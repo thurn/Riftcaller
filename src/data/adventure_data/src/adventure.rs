@@ -60,10 +60,10 @@ pub type RegionId = u32;
 )]
 pub struct Coins(pub u32);
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
-pub enum AdventureStatus {
-    InProgress,
-    Completed,
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
+pub enum AdventureOutcome {
+    Victory,
+    Defeat,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -114,7 +114,6 @@ pub struct DraftData {
 /// Data for rendering the shop screen
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct ShopData {
-    pub visited: bool,
     pub choices: Vec<CardChoice>,
 }
 
@@ -122,8 +121,7 @@ pub struct ShopData {
 /// icons
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TileEntity {
-    Explore(RegionId, Coins),
-    Draft(Coins, DraftData),
+    Draft(DraftData),
     Shop(ShopData),
 }
 
@@ -136,21 +134,14 @@ pub struct TileState {
     pub entity: Option<TileEntity>,
 
     pub region_id: RegionId,
+
+    pub visited: bool,
 }
 
 impl TileState {
     pub fn with_sprite(address: impl Into<String>) -> Self {
-        TileState { sprite: address.into(), road: None, entity: None, region_id: 1 }
+        TileState { sprite: address.into(), road: None, entity: None, region_id: 1, visited: false }
     }
-}
-
-/// Represents an active choice screen within an adventure
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum AdventureChoiceScreen {
-    /// Adventure has ended
-    AdventureOver,
-    /// Pick one card of a set of draft options
-    Draft(TilePosition),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -215,8 +206,12 @@ pub struct AdventureState {
     pub side: Side,
     /// Coin count, used to purchase more cards for deck
     pub coins: Coins,
-    /// Currently active mandatory choice screen, if any.
-    pub choice_screen: Option<AdventureChoiceScreen>,
+    /// Current tile entity position on the world map which the player is
+    /// visiting. If not specified, the player is not currently visiting any
+    /// tile.
+    pub visiting_position: Option<TilePosition>,
+    /// Result of the adventure, if it has ended.
+    pub outcome: Option<AdventureOutcome>,
     /// States of world map tiles
     #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub tiles: HashMap<TilePosition, TileState>,
@@ -245,13 +240,31 @@ impl AdventureState {
         self.tiles.get_mut(&position).with_error(|| "Tile not found")
     }
 
-    /// Returns the [TileEntity] for a given tile position, or an error if no
-    /// such tile entity exists.
-    pub fn tile_entity(&self, position: TilePosition) -> Result<&TileEntity> {
-        self.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")
+    /// Returns the [TileEntity] the player is currently visiting, or an error
+    /// if no such tile entity exists.
+    pub fn visiting_tile(&self) -> Result<&TileEntity> {
+        self.tile(self.visited_position()?)?.entity.as_ref().with_error(|| "Expected tile entity")
     }
 
-    pub fn tile_entity_mut(&mut self, position: TilePosition) -> Result<&mut TileEntity> {
-        self.tile_mut(position)?.entity.as_mut().with_error(|| "Expected tile entity")
+    /// Mutable version of [Self::visiting_tile].
+    pub fn visiting_tile_mut(&mut self) -> Result<&mut TileEntity> {
+        self.tile_mut(self.visited_position()?)?
+            .entity
+            .as_mut()
+            .with_error(|| "Expected tile entity")
+    }
+
+    /// Removes the entity from the currently-visited tile and clears the
+    /// visting position.
+    pub fn clear_visited_tile(&mut self) -> Result<()> {
+        self.tile_mut(self.visited_position()?)?.entity = None;
+        self.visiting_position = None;
+        Ok(())
+    }
+
+    /// Returns the tile position currently being visited, or an error if no
+    /// such position exists.
+    fn visited_position(&self) -> Result<TilePosition> {
+        self.visiting_position.with_error(|| "Expected visited tile")
     }
 }

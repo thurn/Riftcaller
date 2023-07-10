@@ -23,14 +23,12 @@ pub enum AdventureAction {
     /// adventure summary screen. Can be followed by
     /// `UserAction::LeaveAdventure` to completely exit the adventure.
     AbandonAdventure,
-    /// Pay costs & explore more map tiles from the given position
-    Explore(TilePosition),
-    /// Start a new draft & pay costs for the given position
-    InitiateDraft(TilePosition),
+    /// Visit the entity at a given adventure tile position
+    VisitTileEntity(TilePosition),
+    /// Stop visiting a tile entity
+    EndVisit,
     /// Draft the card at the indicated index on the draft screen
     DraftCard(usize),
-    /// Visit the shop at the indicated position
-    VisitShop(TilePosition),
-    /// Draft the purchase at the indicated index on a shop screen
-    BuyCard(TilePosition, usize),
+    /// Draft the purchase at the indicated index on the current shop screen
+    BuyCard(usize),
 }

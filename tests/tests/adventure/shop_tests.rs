@@ -26,18 +26,6 @@ const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
 fn test_visit_shop() {
     let mut adventure = TestAdventure::new(Side::Champion, config());
     adventure.visit_tile_with_icon(SHOP_ICON);
-    assert!(adventure.interface.top_panel().has_text("Walking through town"));
-    adventure.click_on("Continue");
-    assert!(adventure.interface.top_panel().has_text(BUY_COST.to_string()));
-}
-
-#[test]
-fn test_visit_shop_twice() {
-    let mut adventure = TestAdventure::new(Side::Champion, config());
-    adventure.visit_tile_with_icon(SHOP_ICON);
-    adventure.click_on("Continue");
-    adventure.click_on_navbar(icons::CLOSE);
-    adventure.visit_tile_with_icon(SHOP_ICON);
     assert!(adventure.interface.top_panel().has_text(BUY_COST.to_string()));
 }
 
@@ -45,7 +33,6 @@ fn test_visit_shop_twice() {
 fn test_buy_card() {
     let mut adventure = TestAdventure::new(Side::Champion, config());
     adventure.visit_tile_with_icon(SHOP_ICON);
-    adventure.click_on("Continue");
 
     assert!(adventure
         .interface
@@ -69,7 +56,6 @@ fn test_buy_card() {
 fn config() -> TestConfig {
     TestConfig {
         draft: Some(TileEntity::Shop(ShopData {
-            visited: false,
             choices: vec![CardChoice {
                 quantity: 2,
                 card: EXAMPLE_CARD,

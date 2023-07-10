@@ -35,7 +35,6 @@ pub fn create(
     config: AdventureConfiguration,
     deck: Deck,
     collection: HashMap<CardName, u32>,
-    explore: Option<TileEntity>,
     draft: Option<TileEntity>,
     shop: Option<TileEntity>,
 ) -> AdventureState {
@@ -47,18 +46,7 @@ pub fn create(
     add_tile(&mut tiles, 0, 2, "hexMarsh00");
     add_tile(&mut tiles, 1, 2, "hexPlainsHalflingVillage00");
     add_tile(&mut tiles, 2, 2, "hexDirtInn00");
-
-    if let Some(e) = explore {
-        add_with_road_and_entity(
-            &mut tiles,
-            3,
-            2,
-            "hexPlains00",
-            road(TOP_RIGHT | BOTTOM_LEFT, 0),
-            e,
-        );
-    }
-
+    add_with_road(&mut tiles, 3, 2, "hexPlains00", road(TOP_RIGHT | BOTTOM_LEFT, 0));
     add_tile(&mut tiles, 4, 2, "hexPlainsSmithy00");
     add_tile(&mut tiles, -4, 1, "hexGrassySandPalms01");
     add_tile(&mut tiles, -3, 1, "hexPlainsFarm02");
@@ -110,7 +98,8 @@ pub fn create(
     AdventureState {
         id: AdventureId::new_from_u128(0),
         side,
-        choice_screen: None,
+        visiting_position: None,
+        outcome: None,
         coins: crate::STARTING_COINS,
         tiles,
         revealed_regions,
@@ -203,23 +192,5 @@ fn add_with_entity(
     map.insert(
         TilePosition { x, y },
         TileState { entity: Some(entity), ..TileState::with_sprite(sprite) },
-    );
-}
-
-fn add_with_road_and_entity(
-    map: &mut HashMap<TilePosition, TileState>,
-    x: i32,
-    y: i32,
-    sprite: &'static str,
-    road: impl Into<String>,
-    entity: TileEntity,
-) {
-    map.insert(
-        TilePosition { x, y },
-        TileState {
-            road: Some(road.into()),
-            entity: Some(entity),
-            ..TileState::with_sprite(sprite)
-        },
     );
 }

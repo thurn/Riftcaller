@@ -17,29 +17,20 @@
 pub mod adventure_over_panel;
 pub mod adventure_panels;
 pub mod draft_panel;
-pub mod draft_prompt_panel;
-pub mod explore_panel;
 pub mod shop_panel;
-pub mod shop_prompt_panel;
 
-use adventure_data::adventure::{
-    AdventureChoiceScreen, AdventureState, TileEntity, TilePosition, TileState,
-};
+use adventure_data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
+use core_ui::design;
 use core_ui::panels::Panels;
-use core_ui::{design, panels};
-use panel_address::{Panel, PanelAddress, PlayerPanel};
+use panel_address::{PanelAddress, PlayerPanel};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
     FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
     WorldMapTile,
 };
-use with_error::fail;
-
-use crate::adventure_over_panel::AdventureOverPanel;
-use crate::draft_panel::DraftPanel;
 
 /// Returns a sequence of game Commands to display the provided
 /// [AdventureState].
@@ -53,12 +44,10 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
             .collect(),
     })];
 
-    if let Some(screen) = &state.choice_screen {
-        let rendered = render_adventure_choice_screen(state, screen)?;
-        if let Some(panel) = rendered.panel {
-            commands.push(panels::update(panel));
-        }
-        commands.push(Panels::open(rendered.address).into());
+    if let Some(_) = &state.outcome {
+        commands.push(Panels::open(PlayerPanel::AdventureOver).into());
+    } else if let Some(position) = state.visiting_position {
+        commands.push(Panels::open(PlayerPanel::AdventureTile(position)).into());
     }
 
     Ok(commands)
@@ -67,30 +56,6 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
 pub struct RenderedChoiceScreen {
     pub panel: Option<InterfacePanel>,
     pub address: PanelAddress,
-}
-
-/// Renders a mandatory choice screen based on the [AdventureChoiceScreen]
-/// contained within the provided state, if any
-pub fn render_adventure_choice_screen(
-    state: &AdventureState,
-    screen: &AdventureChoiceScreen,
-) -> Result<RenderedChoiceScreen> {
-    Ok(match screen {
-        AdventureChoiceScreen::AdventureOver => RenderedChoiceScreen {
-            panel: AdventureOverPanel::new().build_panel(),
-            address: PlayerPanel::AdventureOver.into(),
-        },
-        AdventureChoiceScreen::Draft(position) => {
-            let TileEntity::Draft(_, data) = state.tile_entity(*position)? else {
-                fail!("Expected draft at indicated position")
-            };
-
-            RenderedChoiceScreen {
-                panel: DraftPanel { data }.build_panel(),
-                address: PlayerPanel::DraftCard.into(),
-            }
-        }
-    })
 }
 
 fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
@@ -133,10 +98,11 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
     WorldMapTile {
         sprites,
         position: Some(adapters::map_position(position)),
-        on_visit: tile
-            .entity
-            .as_ref()
-            .map(|entity| visit_action_for_entity(entity, position).build()),
+        on_visit: tile.entity.as_ref().map(|_| {
+            Panels::open(PlayerPanel::AdventureTile(position))
+                .action(AdventureAction::VisitTileEntity(position))
+                .build()
+        }),
         tile_type: if tile.entity.is_some() {
             MapTileType::Visitable.into()
         } else if tile.road.is_some() {
@@ -147,25 +113,11 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
     }
 }
 
-fn visit_action_for_entity(entity: &TileEntity, position: TilePosition) -> Panels {
-    let result = match entity {
-        TileEntity::Shop(data) if data.visited => Panels::open(PlayerPanel::Shop(position)),
-        TileEntity::Shop(_) => Panels::open(PlayerPanel::TilePrompt(position))
-            .action(AdventureAction::VisitShop(position)),
-        _ => Panels::open(PlayerPanel::TilePrompt(position)),
-    };
-
-    result.loading(PlayerPanel::TileLoading(position))
-}
-
 fn sprite_address_for_entity(entity: &TileEntity) -> SpriteAddress {
     SpriteAddress {
         address: match entity {
             TileEntity::Draft { .. } => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png"
-            }
-            TileEntity::Explore { .. } => {
-                "RainbowArt/CleanFlatIcon/png_128/icon/icon_app/icon_app_198.png"
             }
             TileEntity::Shop { .. } => {
                 "RainbowArt/CleanFlatIcon/png_128/icon/icon_architecture/icon_architecture_6.png"

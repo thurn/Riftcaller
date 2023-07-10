@@ -27,7 +27,7 @@ use core_ui::style::Corner;
 use core_ui::text::Text;
 use game_data::primitives::DeckId;
 use game_data::tutorial_data::TutorialMessageKey;
-use panel_address::{DeckEditorData, PanelAddress, PlayerPanel, StandardPanel};
+use panel_address::{DeckEditorData, PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState, PlayerStatus};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
@@ -35,7 +35,7 @@ use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPosition
 
 pub struct ScreenOverlay<'a> {
     player: &'a PlayerState,
-    show_close_button: Option<PanelAddress>,
+    show_close_button: Option<Panels>,
     show_deck_button: bool,
     show_menu_button: bool,
 }
@@ -50,7 +50,7 @@ impl<'a> ScreenOverlay<'a> {
         }
     }
 
-    pub fn show_close_button(mut self, show_close_button: PanelAddress) -> Self {
+    pub fn show_close_button(mut self, show_close_button: Panels) -> Self {
         self.show_close_button = Some(show_close_button);
         self
     }
@@ -78,10 +78,10 @@ impl<'a> Component for ScreenOverlay<'a> {
             .child(
                 Row::new("Left")
                     .style(Style::new().align_items(FlexAlign::Center))
-                    .child(self.show_close_button.map(|address| {
+                    .child(self.show_close_button.map(|panels| {
                         IconButton::new(icons::CLOSE)
                             .button_type(IconButtonType::DestructiveLarge)
-                            .action(Panels::close(address))
+                            .action(panels)
                             .layout(Layout::new().margin(Edge::Left, 16.px()))
                     }))
                     .child(

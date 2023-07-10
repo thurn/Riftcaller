@@ -31,7 +31,6 @@ use deck_card::{CardHeight, DeckCard};
 use element_names::{CurrentDraggable, TargetName};
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
-use game_data::primitives::Side;
 use panel_address::CollectionBrowserFilters;
 use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
@@ -47,10 +46,7 @@ pub fn get_matching_cards(
     collection: &HashMap<CardName, u32>,
     _: CollectionBrowserFilters,
 ) -> impl Iterator<Item = (CardName, u32)> + '_ {
-    collection
-        .iter()
-        .map(|(card_name, count)| (*card_name, *count))
-        .filter(|(name, _)| rules::get(*name).side == Side::Champion)
+    collection.iter().map(|(card_name, count)| (*card_name, *count))
 }
 
 pub struct CollectionBrowser<'a> {

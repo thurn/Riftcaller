@@ -12,51 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{CardChoice, ShopData, TileEntity, TilePosition};
+use adventure_data::adventure::{CardChoice, ShopData};
 use adventure_data::adventure_action::AdventureAction;
-use anyhow::Result;
 use core_ui::action_builder::ActionBuilder;
 use core_ui::animations::{
     self, AnimateStyle, AnimateToElement, CloneElement, DestroyElement, InterfaceAnimation,
 };
 use core_ui::button::Button;
 use core_ui::full_screen_image::FullScreenImage;
+use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::{icons, style};
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use element_names::ElementName;
-use panel_address::{Panel, PanelAddress, PlayerPanel};
+use panel_address::{Panel, PanelAddress};
 use player_data::PlayerState;
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexVector2};
 use screen_overlay::ScreenOverlay;
-use with_error::fail;
 
 pub struct ShopPanel<'a> {
-    position: TilePosition,
-    player: &'a PlayerState,
-    data: &'a ShopData,
-}
-
-impl<'a> ShopPanel<'a> {
-    pub fn new(player: &'a PlayerState, position: TilePosition) -> Result<Self> {
-        let TileEntity::Shop(data) = player.adventure()?.tile_entity(position)? else {
-            fail!("Expected shop entity")
-        };
-
-        Ok(Self { position, player, data })
-    }
+    pub player: &'a PlayerState,
+    pub address: PanelAddress,
+    pub data: &'a ShopData,
 }
 
 impl<'a> Panel for ShopPanel<'a> {
     fn address(&self) -> PanelAddress {
-        PlayerPanel::Shop(self.position).into()
+        self.address
     }
 
     fn screen_overlay(&self) -> Option<Node> {
-        ScreenOverlay::new(self.player).show_close_button(self.address()).build()
+        ScreenOverlay::new(self.player)
+            .show_close_button(Panels::close(self.address()).action(AdventureAction::EndVisit))
+            .build()
     }
 }
 
@@ -71,7 +62,7 @@ fn animate_card_to_deck(card_element: ElementName, pick_button: ElementName) -> 
     ])
 }
 
-fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
+fn shop_row(choices: &[CardChoice]) -> impl Component {
     Row::new("ShopRow")
         .style(
             Style::new()
@@ -109,7 +100,7 @@ fn shop_row(position: TilePosition, choices: &[CardChoice]) -> impl Component {
                         )
                         .action(
                             ActionBuilder::new()
-                                .action(AdventureAction::BuyCard(position, i))
+                                .action(AdventureAction::BuyCard(i))
                                 .update(animate_card_to_deck(card_element, button)),
                         )
                         .build()
@@ -123,7 +114,7 @@ impl<'a> Component for ShopPanel<'a> {
             .image(style::sprite(
                 "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Store/SceneryStore_outside_1",
             ))
-            .content(Column::new("ShopPanel").child(shop_row(self.position, &self.data.choices)))
+            .content(Column::new("ShopPanel").child(shop_row(&self.data.choices)))
             .build()
     }
 }

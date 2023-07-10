@@ -85,10 +85,7 @@ pub enum PlayerPanel {
     DeckEditorPrompt,
     DeckEditor(DeckEditorData),
     GameOver(GameOverData),
-    TileLoading(TilePosition),
-    TilePrompt(TilePosition),
-    DraftCard,
-    Shop(TilePosition),
+    AdventureTile(TilePosition),
     AdventureOver,
 }
 
