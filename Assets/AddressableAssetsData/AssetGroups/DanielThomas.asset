@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: DanielThomas
+  m_EditorClassIdentifier: 
+  m_GroupName: DanielThomas
+  m_Data:
+    m_SerializedData: []
+  m_GUID: c9d14bf6b98234e2396706683a99b7bb
+  m_SerializeEntries:
+  - m_GUID: d57e7483272b6f94a8989e145952bc49
+    m_Address: DanielThomas/2D Customizable Characters/Characters/Female/Data/Equipment
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ef8789d47d1ba7e408881d2b888d1fcd
+    m_Address: DanielThomas/2D Customizable Characters/Characters/Female/Data/Appearance
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 503b74143ea6ae54c8ed86b1dbef17c2
+    m_Address: DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6af41c8ee53b3d645a0db7e655dba1e4
+    m_Address: DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ab6da66cfefc248409375c397357afa2, type: 2}
+    - {fileID: 11400000, guid: eb2dc63ebf26d420b81dd4218cecc175, type: 2}

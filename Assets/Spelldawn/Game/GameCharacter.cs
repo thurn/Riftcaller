@@ -15,6 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CustomizableCharacters;
+using Spelldawn.Common;
 using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
@@ -35,6 +37,7 @@ namespace Spelldawn.Game
     [SerializeField] GameObject _speechBubble = null!;
     [SerializeField] TextMeshPro _speechBubbleText = null!;
     [SerializeField] AnimatedCharacter _character = null!;
+    [SerializeField] CustomizableCharacter _customizableCharacter = null!;
     ISet<RoomIdentifier>? _validRoomsToVisit;
 
     public PlayerSide Side { get; set; }
@@ -87,6 +90,11 @@ namespace Spelldawn.Game
     public void RenderPlayerInfo(PlayerInfo playerInfo)
     {
       _validRoomsToVisit = playerInfo.ValidRoomsToVisit.ToHashSet();
+      if (playerInfo.CharacterAppearance != null)
+      {
+        _customizableCharacter.ApplyPreset(
+          CharacterAppearanceUtil.BuildPreset(_registry.AssetService, playerInfo.CharacterAppearance));
+      }
     }
 
     public void RenderScore(ScoreView scoreView)

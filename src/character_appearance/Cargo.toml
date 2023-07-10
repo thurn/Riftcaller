@@ -1,0 +1,15 @@
+[package]
+name = "character_appearance"
+version = "0.0.0"
+description = "Tools for controlling the appearance of animated characters"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+doctest = false
+test = false
+
+[dependencies]
+protos = { path = "../protos", version = "0.0.0" }
+
+csscolorparser = "0.6.2"
