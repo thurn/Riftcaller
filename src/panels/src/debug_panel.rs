@@ -16,6 +16,7 @@
 //! development. Typically these options should not be available to production
 //! users.
 
+use adventure_data::adventure::Coins;
 use core_ui::actions::InterfaceAction;
 use core_ui::button::Button;
 use core_ui::icons;
@@ -50,6 +51,21 @@ impl DebugPanel {
             ))
     }
 
+    fn adventure_mode_buttons(&self, row: Row) -> Row {
+        let close = Panels::close(self.address());
+        row.child(debug_button(
+            "Show Logs",
+            vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
+        ))
+        .child(debug_button(format!("{} 1", icons::SAVE), DebugAction::SavePlayerState(1)))
+        .child(debug_button(format!("{} 1", icons::RESTORE), DebugAction::LoadPlayerState(1)))
+        .child(debug_button(format!("{} 2", icons::SAVE), DebugAction::SavePlayerState(2)))
+        .child(debug_button(format!("{} 2", icons::RESTORE), DebugAction::LoadPlayerState(2)))
+        .child(debug_button(format!("{} 3", icons::SAVE), DebugAction::SavePlayerState(3)))
+        .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadPlayerState(3)))
+        .child(debug_button(format!("+100{}", icons::COINS), DebugAction::AddCoins(Coins(100))))
+    }
+
     fn game_mode_buttons(&self, row: Row) -> Row {
         let close = Panels::close(self.address());
         row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
@@ -66,8 +82,8 @@ impl DebugPanel {
             .child(debug_button("Flip View", DebugAction::FlipViewpoint))
             .child(debug_button(format!("{} 1", icons::SAVE), DebugAction::SaveGameState(1)))
             .child(debug_button(format!("{} 1", icons::RESTORE), DebugAction::LoadGameState(1)))
-            .child(debug_button(format!("{} 2", icons::SAVE), DebugAction::SaveGameState(1)))
-            .child(debug_button(format!("{} 2", icons::RESTORE), DebugAction::LoadGameState(1)))
+            .child(debug_button(format!("{} 2", icons::SAVE), DebugAction::SaveGameState(2)))
+            .child(debug_button(format!("{} 2", icons::RESTORE), DebugAction::LoadGameState(2)))
             .child(debug_button(format!("{} 3", icons::SAVE), DebugAction::SaveGameState(3)))
             .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadGameState(3)))
             .child(debug_button(
@@ -101,7 +117,7 @@ impl Component for DebugPanel {
         );
         let content = match self.activity {
             PlayerActivityKind::None => self.main_menu_buttons(row),
-            PlayerActivityKind::Adventure => row,
+            PlayerActivityKind::Adventure => self.adventure_mode_buttons(row),
             PlayerActivityKind::PlayingGame => self.game_mode_buttons(row),
         };
 

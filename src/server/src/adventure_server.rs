@@ -77,7 +77,7 @@ pub async fn handle_leave_adventure(
     .await
 }
 
-async fn update_adventure(
+pub async fn update_adventure(
     database: &impl Database,
     data: &RequestData,
     function: impl Fn(&mut AdventureState) -> Result<()>,

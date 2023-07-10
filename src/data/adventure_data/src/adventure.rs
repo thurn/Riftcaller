@@ -45,6 +45,7 @@ pub type RegionId = u32;
     Eq,
     Ord,
     PartialOrd,
+    Hash,
     From,
     Add,
     Sub,

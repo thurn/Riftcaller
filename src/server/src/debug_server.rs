@@ -25,13 +25,14 @@ use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mana;
+use ulid::Ulid;
 use user_action_data::{
     DebugAction, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
 };
 use with_error::WithError;
 
 use crate::server_data::{ClientData, GameResponse, RequestData};
-use crate::{game_server, requests};
+use crate::{adventure_server, game_server, requests};
 
 pub async fn handle_debug_action(
     database: &impl Database,
@@ -98,9 +99,31 @@ pub async fn handle_debug_action(
             database.write_game(&game).await?;
             result
         }
+        DebugAction::SavePlayerState(index) => {
+            let mut player = requests::fetch_player(database, data.player_id).await?;
+            let player_id = PlayerId::Database(Ulid(*index));
+            player.id = player_id;
+            database.write_player(&player).await?;
+            Ok(GameResponse::new(ClientData::propagate(data)))
+        }
+        DebugAction::LoadPlayerState(index) => {
+            let saved_id = PlayerId::Database(Ulid(*index));
+            let mut player = requests::fetch_player(database, saved_id).await?;
+            player.id = data.player_id;
+            let result = reload_world_scene(data);
+            database.write_player(&player).await?;
+            Ok(result)
+        }
         DebugAction::SetNamedPlayer(side, name) => {
             game_server::update_game(database, data, |game, _| {
                 game.player_mut(*side).id = PlayerId::Named(*name);
+                Ok(())
+            })
+            .await
+        }
+        DebugAction::AddCoins(coins) => {
+            adventure_server::update_adventure(database, data, |state| {
+                state.coins += *coins;
                 Ok(())
             })
             .await
@@ -146,4 +169,13 @@ fn reload_scene(data: &RequestData, game: &GameState) -> Result<GameResponse> {
     Ok(GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
         .command(command.clone())
         .opponent_response(opponent_id, vec![command]))
+}
+
+fn reload_world_scene(data: &RequestData) -> GameResponse {
+    let command = Command::LoadScene(LoadSceneCommand {
+        scene_name: "World".to_string(),
+        mode: SceneLoadMode::Single as i32,
+        skip_if_current: false,
+    });
+    GameResponse::new(ClientData::propagate(data)).command(command)
 }

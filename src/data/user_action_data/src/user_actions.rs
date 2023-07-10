@@ -14,6 +14,7 @@
 
 use std::fmt;
 
+use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
 use game_data::card_name::CardName;
 use game_data::game_actions::GameAction;
@@ -85,6 +86,9 @@ pub enum DebugAction {
     SaveGameState(u128),
     LoadGameState(u128),
     SetNamedPlayer(Side, NamedPlayer),
+    SavePlayerState(u128),
+    LoadPlayerState(u128),
+    AddCoins(Coins),
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
