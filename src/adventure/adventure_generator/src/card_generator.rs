@@ -12,16 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{AdventureConfiguration, CardChoice, Coins, DraftData, ShopData};
+use adventure_data::adventure::{
+    AdventureConfiguration, CardChoice, Coins, DraftContext, DraftData, ShopData,
+};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{Rarity, Side};
+use game_data::primitives::{CardType, Rarity, School, Side, STANDARD_SCHOOLS};
 
 /// Generates options for drafting a card during an adventure
 pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
+    draft_data(None, config.choose_multiple(3, common_cards(config.side)))
+}
+
+/// Generates sigil draft options from 3 randomly chosen schools
+pub fn sigil_choices(config: &mut AdventureConfiguration) -> DraftData {
+    let schools = config.choose_multiple(3, STANDARD_SCHOOLS.iter());
+    let cards = schools.into_iter().filter_map(|school| random_sigil(config, config.side, *school));
+    draft_data(Some(DraftContext::StartingSigil), cards.collect())
+}
+
+fn draft_data(context: Option<DraftContext>, cards: Vec<CardName>) -> DraftData {
     DraftData {
-        choices: config
-            .choose_multiple(3, common_cards(config.side))
+        context,
+        choices: cards
             .into_iter()
             .map(|name| CardChoice { quantity: 1, card: name, cost: Coins(0), sold: false })
             .collect(),
@@ -42,6 +55,23 @@ pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
             })
             .collect(),
     }
+}
+
+fn random_sigil(
+    config: &mut AdventureConfiguration,
+    side: Side,
+    school: School,
+) -> Option<CardName> {
+    config.choose(
+        rules::all_cards()
+            .filter(move |definition| {
+                definition.sets.contains(&CardSetName::ProofOfConcept)
+                    && definition.side == side
+                    && definition.school == school
+                    && definition.card_type == CardType::Sigil
+            })
+            .map(|definition| definition.name),
+    )
 }
 
 fn common_cards(side: Side) -> impl Iterator<Item = CardName> {

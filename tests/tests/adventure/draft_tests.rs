@@ -46,6 +46,7 @@ fn test_pick_card() {
 fn config() -> TestConfig {
     TestConfig {
         draft: Some(TileEntity::Draft(DraftData {
+            context: None,
             choices: vec![CardChoice {
                 quantity: 2,
                 card: EXAMPLE_CARD,

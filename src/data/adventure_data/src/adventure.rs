@@ -26,6 +26,7 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::{AdventureId, Side};
 use rand::distributions::uniform::{SampleRange, SampleUniform};
 use rand::prelude::IteratorRandom;
+use rand::seq::SliceRandom;
 use rand::Rng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
@@ -105,9 +106,16 @@ pub struct CardChoice {
     pub sold: bool,
 }
 
+/// Contextual information about why the draft screen is being shown
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum DraftContext {
+    StartingSigil,
+}
+
 /// Data for rendering the draft screen
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct DraftData {
+    pub context: Option<DraftContext>,
     pub choices: Vec<CardChoice>,
 }
 
@@ -177,9 +185,14 @@ impl AdventureConfiguration {
         I: Iterator,
     {
         if self.rng.is_some() {
-            iterator.choose_multiple(self.rng.as_mut().expect("rng"), amount)
+            let rng = self.rng.as_mut().expect("rng");
+            let mut result = iterator.choose_multiple(rng, amount);
+            result.shuffle(rng);
+            result
         } else {
-            iterator.choose_multiple(&mut rand::thread_rng(), amount)
+            let mut result = iterator.choose_multiple(&mut rand::thread_rng(), amount);
+            result.shuffle(&mut rand::thread_rng());
+            result
         }
     }
 
@@ -232,12 +245,12 @@ impl AdventureState {
     /// Returns the [TileState] for a given tile position, or an error if no
     /// such tile position exists.
     pub fn tile(&self, position: TilePosition) -> Result<&TileState> {
-        self.tiles.get(&position).with_error(|| "Tile not found")
+        self.tiles.get(&position).with_error(|| format!("Tile not found {position:?}"))
     }
 
     /// Mutable version of [Self::tile].
     pub fn tile_mut(&mut self, position: TilePosition) -> Result<&mut TileState> {
-        self.tiles.get_mut(&position).with_error(|| "Tile not found")
+        self.tiles.get_mut(&position).with_error(|| format!("Tile not found {position:?}"))
     }
 
     /// Returns the [TileEntity] the player is currently visiting, or an error

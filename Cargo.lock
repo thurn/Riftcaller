@@ -48,6 +48,8 @@ version = "0.0.0"
 dependencies = [
  "adventure_data",
  "anyhow",
+ "game_data",
+ "rules",
  "with_error",
 ]
 

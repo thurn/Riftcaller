@@ -62,16 +62,17 @@ pub struct TestConfig {
     /// Sets the user's card collection to include these cards
     pub collection: HashMap<CardName, u32>,
 
-    pub explore: Option<TileEntity>,
+    pub sigils: Option<TileEntity>,
     pub draft: Option<TileEntity>,
     pub shop: Option<TileEntity>,
+    pub show_starting_sigils: bool,
 }
 
 impl TestAdventure {
     pub fn new(side: Side, config: TestConfig) -> Self {
         cards_all::initialize();
         let (game_id, player_id, _) = crate::generate_ids();
-        let adventure = mock_adventure::create(
+        let mut adventure = mock_adventure::create(
             AdventureConfiguration {
                 player_id,
                 side,
@@ -84,9 +85,14 @@ impl TestAdventure {
                 cards: HashMap::new(),
             }),
             config.collection,
+            config.sigils,
             config.draft,
             config.shop,
         );
+
+        if !config.show_starting_sigils {
+            adventure.visiting_position = None;
+        }
 
         let mut result = Self {
             side,

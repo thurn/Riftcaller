@@ -19,8 +19,7 @@ use crate::component::EmptyComponent;
 use crate::design::BackgroundColor;
 use crate::prelude::*;
 
-/// Renders a full-screen image containing a text prompt and some arbitrary
-/// content.
+/// Renders a full-screen image behind some content
 pub struct FullScreenImage {
     image: SpriteAddress,
     content: Box<dyn ComponentObject>,

@@ -29,7 +29,8 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
         Side::Overlord => decklists::BASIC_OVERLORD.clone(),
         Side::Champion => decklists::BASIC_CHAMPION.clone(),
     };
+    let sigils = TileEntity::Draft(card_generator::sigil_choices(&mut config));
     let draft = TileEntity::Draft(card_generator::draft_choices(&mut config));
     let shop = TileEntity::Shop(card_generator::shop_options(&mut config));
-    mock_adventure::create(config, deck.clone(), deck.cards, Some(draft), Some(shop))
+    mock_adventure::create(config, deck.clone(), deck.cards, Some(sigils), Some(draft), Some(shop))
 }

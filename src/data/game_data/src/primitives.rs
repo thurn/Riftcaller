@@ -326,6 +326,10 @@ pub enum School {
     Neutral,
 }
 
+/// The five standard schoosl of magic, not including [School::Neutral].
+pub static STANDARD_SCHOOLS: &'static [School] =
+    &[School::Law, School::Shadow, School::Primal, School::Pact, School::Beyond];
+
 /// The possible Rooms in which the Overlord player may play their cards.
 #[derive(
     Copy, Clone, Eq, PartialEq, Hash, Debug, Serialize, Deserialize, Sequence, Ord, PartialOrd,
