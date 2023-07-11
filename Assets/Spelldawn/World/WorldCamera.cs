@@ -27,8 +27,9 @@ namespace Spelldawn.World
     [SerializeField] float _panSpeed;
     Vector3? _dragStartScreenPosition;
     Vector3 _dragStartPosition;
+    bool _initialized;
 
-    void Update () {
+    void Update() {
       if (_registry.DocumentService.MouseOverScreenElement() || _registry.DocumentService.IsAnyPanelOpen())
       {
         return;
@@ -55,7 +56,7 @@ namespace Spelldawn.World
 
         _dragStartScreenPosition = null;
       }
-      else if (_registry.CharacterService.Hero.Moving)
+      else if (_registry.CharacterService.Hero && _registry.CharacterService.Hero!.Moving)
       {
         var position = _registry.CharacterService.Hero.gameObject.transform.position;
         var step =  _panSpeed * Time.deltaTime;

@@ -58,6 +58,8 @@ namespace Spelldawn.World
 
     public IEnumerator HandleUpdateWorldMap(UpdateWorldMapCommand command)
     {
+      _registry.CharacterService.InitializeIfNeeded();
+      
       foreach (var tilemap in _tilemaps.Values)
       {
         tilemap.ClearAllTiles();
@@ -128,6 +130,10 @@ namespace Spelldawn.World
         var path = tileType is MapTileType.Visitable
           ? Dijkstra<Vector3Int>.ShortestPathOfDestinations(this, start, FindNeighbors(cellPosition))
           : Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
+        if (path.Count > 0)
+        {
+          PositionStore.StorePosition(_registry, path.Last());
+        }
 
         var worldPath = path.Select(v => ToWorldPosition(new MapPosition
         {
@@ -163,6 +169,8 @@ namespace Spelldawn.World
 
     Vector3Int ToVector3Int(MapPosition position, int z = 0) => new() { x = position.X, y = position.Y, z = z };
 
+    public Vector3 ToWorldPosition(Vector3Int vector) => ToWorldPosition(FromVector3Int(vector));
+    
     public Vector3 ToWorldPosition(MapPosition mapPosition) =>
       GetTilemap(new TileId(mapPosition, 0)).layoutGrid.CellToWorld(new Vector3Int(mapPosition.X, mapPosition.Y, 0));
 

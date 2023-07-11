@@ -18,7 +18,7 @@ pub mod card_generator;
 pub mod mock_adventure;
 
 use adventure_data::adventure::{AdventureConfiguration, AdventureState, Coins, TileEntity};
-use game_data::primitives::Side;
+use game_data::primitives::{AdventureId, Side};
 
 pub const STARTING_COINS: Coins = Coins(500);
 
@@ -32,5 +32,13 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
     let sigils = TileEntity::Draft(card_generator::sigil_choices(&mut config));
     let draft = TileEntity::Draft(card_generator::draft_choices(&mut config));
     let shop = TileEntity::Shop(card_generator::shop_options(&mut config));
-    mock_adventure::create(config, deck.clone(), deck.cards, Some(sigils), Some(draft), Some(shop))
+    mock_adventure::create(
+        AdventureId::generate(),
+        config,
+        deck.clone(),
+        deck.cards,
+        Some(sigils),
+        Some(draft),
+        Some(shop),
+    )
 }

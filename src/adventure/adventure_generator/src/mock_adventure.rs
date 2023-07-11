@@ -32,6 +32,7 @@ const LEFT: u8 = 0b00000001;
 
 /// Builds an 'adventure' mode world map for use in tests
 pub fn create(
+    id: AdventureId,
     config: AdventureConfiguration,
     deck: Deck,
     collection: HashMap<CardName, u32>,
@@ -103,7 +104,7 @@ pub fn create(
     let side = config.side;
 
     AdventureState {
-        id: AdventureId::new_from_u128(0),
+        id,
         side,
         visiting_position: Some(TilePosition { x: 0, y: 0 }),
         outcome: None,

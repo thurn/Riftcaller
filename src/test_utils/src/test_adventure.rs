@@ -21,7 +21,7 @@ use core_ui::actions::InterfaceAction;
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
-use game_data::primitives::Side;
+use game_data::primitives::{AdventureId, Side};
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
 use player_data::PlayerState;
@@ -73,6 +73,7 @@ impl TestAdventure {
         cards_all::initialize();
         let (game_id, player_id, _) = crate::generate_ids();
         let mut adventure = mock_adventure::create(
+            AdventureId::new_from_u128(0),
             AdventureConfiguration {
                 player_id,
                 side,

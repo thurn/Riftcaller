@@ -20,5 +20,6 @@ namespace Spelldawn.Utils
   {
     public const string PlayerId = "SDPlayerId"; 
     public const string MusicVolume = "SDMusicVolume";
+    public const string WorldPosition = "SDWorldPosition";
   }
 }

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Spelldawn.Services;
 using Spelldawn.Utils;
 using UnityEngine;
 
@@ -23,28 +24,44 @@ namespace Spelldawn.World
 {
   public sealed class WorldCharacterService : MonoBehaviour
   {
+    [SerializeField] Registry _registry = null!;
     [SerializeField] WorldCharacter _characterPrefab = null!;
     [SerializeField] WorldMap _worldMap = null!;
-    WorldCharacter _hero = null!;
+    [SerializeField] WorldCamera _worldCamera = null!;
+    
+    WorldCharacter? _hero;
+    bool _initialized;
 
-    public WorldCharacter Hero => _hero;
+    public WorldCharacter? Hero => _hero;
 
-    public void Start()
+    public void InitializeIfNeeded()
     {
+      if (_initialized)
+      {
+        return;
+      }
+      
       _hero = ComponentUtils.Instantiate(_characterPrefab);
-      _hero.transform.position = new Vector3(0, 0, 0);
-      Debug.Log($"Start: Initializing with {_worldMap}");
+      var storedPosition = PositionStore.GetPosition(_registry);
+      _hero.transform.position = storedPosition == null ?
+        Vector3.zero :
+        _worldMap.ToWorldPosition(storedPosition.Value);
+      _worldCamera.transform.position = new Vector3(
+        _hero.transform.position.x,
+        _hero.transform.position.y,
+        _worldCamera.transform.position.z);
       _hero.Initialize(_worldMap);
+      _initialized = true;
     }
 
     public void MoveHero(List<Vector3> path, Action? onArrive = null)
     {
-      _hero.MoveOnPath(path, onArrive);
+      Errors.CheckNotNull(_hero).MoveOnPath(path, onArrive);
     }
 
     public Vector3Int CurrentHeroPosition()
     {
-      var result = _worldMap.FromWorldPosition(_hero.transform.position);
+      var result = _worldMap.FromWorldPosition(Errors.CheckNotNull(_hero).transform.position);
       return new Vector3Int(result.X, result.Y, 0);
     }
   }
