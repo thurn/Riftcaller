@@ -209,10 +209,6 @@ message AudioClipAddress {
     string address = 1;
 }
 
-message CustomizationDataAddress {
-    string address = 1;
-}
-
 message FlexVector2 {
     float x = 1;
     float y = 2;
@@ -903,69 +899,6 @@ enum CardPrefab {
     CARD_PREFAB_FULL_HEIGHT_TOKEN = 4;
 }
 
-// Represents modifications to a specific CustomizationData asset
-// describing part of a character's appearance, e.g. configuring
-// the character's hair, weapon, or armor.
-message CharacterAppearanceCustomization {
-    // Address of the pre-created customization asset.
-    CustomizationDataAddress data = 1;
-
-    // Primary color for the customization sprite. If not specified, will use
-    // the sprite base color.
-    FlexColor color = 2;
-
-    // Some customizations provide a set of different 'detail' sprites
-    // which can be included with the main image, such as different
-    // decorative helmet feather attachments for a single helmet.
-    uint32 detail_sprite_index = 3;
-
-    // Color to use for the detail sprite. If not specified, individual
-    // customizations may choose whether to use 'color' above in this case
-    // or leave the sprite untinted.
-    FlexColor detail_color = 4;
-}
-
-// Possible parts of the character which can be scaled
-enum CharacterScaleGroupName {
-    CHARACTER_SCALE_GROUP_NAME_UNSPECIFIED = 0;
-    CHARACTER_SCALE_GROUP_NAME_BODY = 1;
-    CHARACTER_SCALE_GROUP_NAME_HEAD = 2;
-    CHARACTER_SCALE_GROUP_NAME_ARMS = 3;
-    CHARACTER_SCALE_GROUP_NAME_HANDS = 4;
-    CHARACTER_SCALE_GROUP_NAME_LEGS = 5;
-    CHARACTER_SCALE_GROUP_NAME_FEET = 6;
-    CHARACTER_SCALE_GROUP_NAME_WEAPON = 7;
-    CHARACTER_SCALE_GROUP_NAME_SHIELD = 8;
-}
-
-// Alows parts of a character's appearance to be dynamically resized
-message CharacterAppearanceScaleGroup {
-    // Name of the sprite group to scale
-    CharacterScaleGroupName name = 1;
-
-    // General scale multiplier, 1.0 is unscaled
-    float scale = 2;
-
-    // Width scale multiplier, 1.0 is unscaled
-    float width = 3;
-
-    // Length scale multiplier, 1.0 is unscaled
-    float length = 4;
-}
-
-// Represents the appearance of an animated 2D character.
-message CharacterAppearance {
-    // Main skin color for this character.
-    FlexColor body_color = 1;
-
-    // Custom sprite groups to use to control the character's body parts,
-    // clothing, and equipment.
-    repeated CharacterAppearanceCustomization customizations = 2;
-
-    // Custom scaling behavior to apply to the character's sprite groups.
-    repeated CharacterAppearanceScaleGroup scale_groups = 3;
-}
-
 message CardView {
     CardIdentifier card_id = 1;
 
@@ -1015,9 +948,6 @@ message CardView {
 message PlayerInfo {
     // Rooms which this player can currently visit (raid/level up)
     repeated RoomIdentifier valid_rooms_to_visit = 1;
-
-    // Appearance for the player's in-game avatar.
-    CharacterAppearance character_appearance = 2;
 }
 
 message ManaView {

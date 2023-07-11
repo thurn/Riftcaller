@@ -73,10 +73,6 @@ MonoBehaviour:
     m_Address: Sprites/QuantityBackground.png
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: e88f9b0d2d1054ae99ab6a86e1912e3f
-    m_Address: Rexard/BadgesMegapack
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

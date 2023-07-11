@@ -16,7 +16,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CustomizableCharacters;
 using Spelldawn.Assets;
 using Spelldawn.Common;
 using Spelldawn.Game;
@@ -36,6 +35,7 @@ namespace Spelldawn.Services
     [SerializeField] Registry _registry = null!;
     [SerializeField] RenderTexture _studioRenderTexture = null!;
     [SerializeField] DevelopmentAssets _developmentAssets = null!;
+    bool _anyCompleted;
 
     readonly Dictionary<string, Object> _assets = new();
 
@@ -96,11 +96,6 @@ namespace Spelldawn.Services
     public AudioClip? GetAudioClip(AudioClipAddress address)
     {
       return UseProductionAssets.ShouldUseProductionAssets ? Get<AudioClip>(address.Address) : null;
-    }
-
-    public CustomizationData? GetCustomizationData(CustomizationDataAddress address)
-    {
-      return UseProductionAssets.ShouldUseProductionAssets ? Get<CustomizationData>(address.Address) : null;
     }
 
     public IEnumerator LoadAssets(CommandList commandList)
@@ -342,21 +337,6 @@ namespace Spelldawn.Services
       if (playerView != null)
       {
         LoadDeckViewAssets(requests, playerView.DeckView);
-
-        if (playerView.PlayerInfo is { CharacterAppearance: { } })
-        {
-          LoadCharacterAppearanceAssets(requests, playerView.PlayerInfo.CharacterAppearance);
-        }
-      }
-    }
-
-    void LoadCharacterAppearanceAssets(
-      IDictionary<string, AsyncOperationHandle> requests,
-      CharacterAppearance appearance)
-    {
-      foreach (var customization in appearance.Customizations)
-      {
-        LoadCustomizationData(requests, customization.Data);
       }
     }
 
@@ -490,13 +470,5 @@ namespace Spelldawn.Services
         requests[address.Address] = Addressables.LoadAssetAsync<AudioClip>(address.Address);
       }
     }
-    
-    void LoadCustomizationData(IDictionary<string, AsyncOperationHandle> requests, CustomizationDataAddress? address)
-    {
-      if (!string.IsNullOrWhiteSpace(address?.Address) && !_assets.ContainsKey(address.Address))
-      {
-        requests[address.Address] = Addressables.LoadAssetAsync<CustomizationData>(address.Address);
-      }
-    }    
   }
 }

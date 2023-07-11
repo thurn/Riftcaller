@@ -72,12 +72,6 @@ pub struct AudioClipAddress {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CustomizationDataAddress {
-    #[prost(string, tag = "1")]
-    pub address: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexVector2 {
     #[prost(float, tag = "1")]
     pub x: f32,
@@ -863,62 +857,6 @@ pub struct RevealedCardView {
     #[prost(message, optional, tag = "10")]
     pub image_background: ::core::option::Option<SpriteAddress>,
 }
-/// Represents modifications to a specific CustomizationData asset
-/// describing part of a character's appearance, e.g. configuring
-/// the character's hair, weapon, or armor.
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CharacterAppearanceCustomization {
-    /// Address of the pre-created customization asset.
-    #[prost(message, optional, tag = "1")]
-    pub data: ::core::option::Option<CustomizationDataAddress>,
-    /// Primary color for the customization sprite. If not specified, will use
-    /// the sprite base color.
-    #[prost(message, optional, tag = "2")]
-    pub color: ::core::option::Option<FlexColor>,
-    /// Some customizations provide a set of different 'detail' sprites
-    /// which can be included with the main image, such as different
-    /// decorative helmet feather attachments for a single helmet.
-    #[prost(uint32, tag = "3")]
-    pub detail_sprite_index: u32,
-    /// Color to use for the detail sprite. If not specified, individual
-    /// customizations may choose whether to use 'color' above in this case
-    /// or leave the sprite untinted.
-    #[prost(message, optional, tag = "4")]
-    pub detail_color: ::core::option::Option<FlexColor>,
-}
-/// Alows parts of a character's appearance to be dynamically resized
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CharacterAppearanceScaleGroup {
-    /// Name of the sprite group to scale
-    #[prost(enumeration = "CharacterScaleGroupName", tag = "1")]
-    pub name: i32,
-    /// General scale multiplier, 1.0 is unscaled
-    #[prost(float, tag = "2")]
-    pub scale: f32,
-    /// Width scale multiplier, 1.0 is unscaled
-    #[prost(float, tag = "3")]
-    pub width: f32,
-    /// Length scale multiplier, 1.0 is unscaled
-    #[prost(float, tag = "4")]
-    pub length: f32,
-}
-/// Represents the appearance of an animated 2D character.
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CharacterAppearance {
-    /// Main skin color for this character.
-    #[prost(message, optional, tag = "1")]
-    pub body_color: ::core::option::Option<FlexColor>,
-    /// Custom sprite groups to use to control the character's body parts,
-    /// clothing, and equipment.
-    #[prost(message, repeated, tag = "2")]
-    pub customizations: ::prost::alloc::vec::Vec<CharacterAppearanceCustomization>,
-    /// Custom scaling behavior to apply to the character's sprite groups.
-    #[prost(message, repeated, tag = "3")]
-    pub scale_groups: ::prost::alloc::vec::Vec<CharacterAppearanceScaleGroup>,
-}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CardView {
@@ -974,9 +912,6 @@ pub struct PlayerInfo {
     /// Rooms which this player can currently visit (raid/level up)
     #[prost(enumeration = "RoomIdentifier", repeated, tag = "1")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
-    /// Appearance for the player's in-game avatar.
-    #[prost(message, optional, tag = "2")]
-    pub character_appearance: ::core::option::Option<CharacterAppearance>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -3240,56 +3175,6 @@ impl CardPrefab {
             "CARD_PREFAB_TOKEN_CARD" => Some(Self::TokenCard),
             "CARD_PREFAB_FULL_HEIGHT" => Some(Self::FullHeight),
             "CARD_PREFAB_FULL_HEIGHT_TOKEN" => Some(Self::FullHeightToken),
-            _ => None,
-        }
-    }
-}
-/// Possible parts of the character which can be scaled
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum CharacterScaleGroupName {
-    Unspecified = 0,
-    Body = 1,
-    Head = 2,
-    Arms = 3,
-    Hands = 4,
-    Legs = 5,
-    Feet = 6,
-    Weapon = 7,
-    Shield = 8,
-}
-impl CharacterScaleGroupName {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic
-    /// use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            CharacterScaleGroupName::Unspecified => "CHARACTER_SCALE_GROUP_NAME_UNSPECIFIED",
-            CharacterScaleGroupName::Body => "CHARACTER_SCALE_GROUP_NAME_BODY",
-            CharacterScaleGroupName::Head => "CHARACTER_SCALE_GROUP_NAME_HEAD",
-            CharacterScaleGroupName::Arms => "CHARACTER_SCALE_GROUP_NAME_ARMS",
-            CharacterScaleGroupName::Hands => "CHARACTER_SCALE_GROUP_NAME_HANDS",
-            CharacterScaleGroupName::Legs => "CHARACTER_SCALE_GROUP_NAME_LEGS",
-            CharacterScaleGroupName::Feet => "CHARACTER_SCALE_GROUP_NAME_FEET",
-            CharacterScaleGroupName::Weapon => "CHARACTER_SCALE_GROUP_NAME_WEAPON",
-            CharacterScaleGroupName::Shield => "CHARACTER_SCALE_GROUP_NAME_SHIELD",
-        }
-    }
-
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "CHARACTER_SCALE_GROUP_NAME_UNSPECIFIED" => Some(Self::Unspecified),
-            "CHARACTER_SCALE_GROUP_NAME_BODY" => Some(Self::Body),
-            "CHARACTER_SCALE_GROUP_NAME_HEAD" => Some(Self::Head),
-            "CHARACTER_SCALE_GROUP_NAME_ARMS" => Some(Self::Arms),
-            "CHARACTER_SCALE_GROUP_NAME_HANDS" => Some(Self::Hands),
-            "CHARACTER_SCALE_GROUP_NAME_LEGS" => Some(Self::Legs),
-            "CHARACTER_SCALE_GROUP_NAME_FEET" => Some(Self::Feet),
-            "CHARACTER_SCALE_GROUP_NAME_WEAPON" => Some(Self::Weapon),
-            "CHARACTER_SCALE_GROUP_NAME_SHIELD" => Some(Self::Shield),
             _ => None,
         }
     }
