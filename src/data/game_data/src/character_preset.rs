@@ -12,24 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Data types used to represent game state
-
-pub mod agent_definition;
-pub mod card_definition;
-pub mod card_name;
-pub mod card_set_name;
-pub mod card_state;
-pub mod card_view_context;
-pub mod character_preset;
-pub mod deck;
-pub mod delegates;
-pub mod game;
-pub mod game_actions;
-pub mod player_name;
-pub mod primitives;
-pub mod random;
-pub mod special_effects;
-pub mod text;
-pub mod tutorial_data;
-pub mod updates;
-pub mod utils;
+/// Controls the appearance of animated characters
+pub enum CharacterPreset {
+    Champion,
+    Overlord,
+}

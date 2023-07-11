@@ -9,11 +9,13 @@ edition = "2021"
 doctest = false
 
 [dependencies]
+game_data = { path = "../game_data", version = "0.0.0" }
+with_error = { path = "../../with_error", version = "0.0.0" }
+
 anyhow = "1.0.58"
 derive_more = "0.99.17"
 rand = { version = "0.8.5", features = ["serde1"] }
 rand_xoshiro = { version = "0.6.0", features = ["serde1"] }
 serde = { version = "1.0.138", features = ["derive"] }
 serde_with = "1.14.0"
-game_data = { path = "../game_data", version = "0.0.0" }
-with_error = { path = "../../with_error", version = "0.0.0" }
+

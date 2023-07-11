@@ -70,6 +70,13 @@ pub struct AudioClipAddress {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
+/// Identifies a set of customizations to animated character appearance
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CharacterPresetAddress {
+    #[prost(string, tag = "1")]
+    pub address: ::prost::alloc::string::String,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FlexVector2 {
@@ -912,6 +919,9 @@ pub struct PlayerInfo {
     /// Rooms which this player can currently visit (raid/level up)
     #[prost(enumeration = "RoomIdentifier", repeated, tag = "1")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
+    /// Configuration for appearance of character's avatar
+    #[prost(message, optional, tag = "2")]
+    pub appearance: ::core::option::Option<CharacterPresetAddress>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

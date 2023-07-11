@@ -209,6 +209,11 @@ message AudioClipAddress {
     string address = 1;
 }
 
+// Identifies a set of customizations to animated character appearance
+message CharacterPresetAddress {
+    string address = 1;
+}
+
 message FlexVector2 {
     float x = 1;
     float y = 2;
@@ -948,6 +953,9 @@ message CardView {
 message PlayerInfo {
     // Rooms which this player can currently visit (raid/level up)
     repeated RoomIdentifier valid_rooms_to_visit = 1;
+
+    // Configuration for appearance of character's avatar
+    CharacterPresetAddress appearance = 2;
 }
 
 message ManaView {

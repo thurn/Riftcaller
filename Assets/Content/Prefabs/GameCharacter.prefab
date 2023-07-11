@@ -2032,6 +2032,7 @@ MonoBehaviour:
   _speechBubble: {fileID: 0}
   _speechBubbleText: {fileID: 0}
   _character: {fileID: 7968696948039542462}
+  _customizableCharacter: {fileID: 4926660406842932000}
 --- !u!114 &4926660406842932000
 MonoBehaviour:
   m_ObjectHideFlags: 0

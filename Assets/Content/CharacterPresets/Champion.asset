@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb1436996484437ba088e125e09f1ff0, type: 3}
+  m_Name: Champion
+  m_EditorClassIdentifier: 
+  _bodyColor: {r: 1, g: 1, b: 1, a: 1}
+  _customizations:
+  - _customizationData: {fileID: 11400000, guid: dc5627378d1c82a49bf2d8644012a350, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: b102f0e64b76b9848bbfc8ba69481df9, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: f8e4eb408432543468b10615c80f75c6, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 08d565e1bc928cc4ca2d0ddaa4b29d5c, type: 2}
+    _mainColor: {r: 0.27803493, g: 0.6678738, b: 0.8301887, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: b71a19ec467eb154cbe374df6b2244a2, type: 2}
+    _mainColor: {r: 0.8207547, g: 0.6785191, b: 0.42973477, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 18e65b98fc9169f458d8fb79eae24dcf, type: 2}
+    _mainColor: {r: 0.65882355, g: 0.43137252, b: 0.23921569, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 179e0dcff0edd6340a2852f774df51d6, type: 2}
+    _mainColor: {r: 0.65882355, g: 0.43137252, b: 0.23921569, a: 255}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: ab52945dc25f7bb4e834fa3528d19ab2, type: 2}
+    _mainColor: {r: 0.40392157, g: 0.32156864, b: 0.25490198, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: c2dd6815c1b24fb488157d137fd19c9a, type: 2}
+    _mainColor: {r: 0.33333334, g: 0.7254902, b: 0.24705882, a: 255}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 0.47680876, g: 0.3145209, b: 0.26455492, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: e1a2a9ccfdc20fc44a6b976e2a7bb2c6, type: 2}
+    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 4fecf36f18c2379449ff9ba420fd529a, type: 2}
+    _mainColor: {r: 0.65882355, g: 0.43137252, b: 0.23921569, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: ccef83b70f32cd247a6468757f28f0a3, type: 2}
+    _mainColor: {r: 0.9843137, g: 0.8588235, b: 0.46274504, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  - _customizationData: {fileID: 11400000, guid: 3e851026061cde644b82c025f8fcd57c, type: 2}
+    _mainColor: {r: 0.8784314, g: 0.60784316, b: 0.3764706, a: 1}
+    _detailSpritesIndex: 0
+    _detailColor: {r: 1, g: 1, b: 1, a: 1}
+    _isHidden: 0
+  _scaleGroups:
+  - _groupName: Head
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Body
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Arms
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Hands
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Legs
+    _scale: 1
+    _width: 1
+    _length: 1
+  - _groupName: Feet
+    _scale: 1
+    _width: 1
+    _length: 1

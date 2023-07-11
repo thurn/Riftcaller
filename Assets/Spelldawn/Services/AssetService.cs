@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CustomizableCharacters;
 using Spelldawn.Assets;
 using Spelldawn.Common;
 using Spelldawn.Game;
@@ -98,6 +99,16 @@ namespace Spelldawn.Services
       return UseProductionAssets.ShouldUseProductionAssets ? Get<AudioClip>(address.Address) : null;
     }
 
+    public CharacterPreset? GetCharacterPreset(CharacterPresetAddress? address)
+    {
+      if (address == null)
+      {
+        return null;
+      }
+      
+      return UseProductionAssets.ShouldUseProductionAssets ? Get<CharacterPreset>(address.Address) : null;      
+    }
+    
     public IEnumerator LoadAssets(CommandList commandList)
     {
       if (!UseProductionAssets.ShouldUseProductionAssets)
@@ -337,6 +348,11 @@ namespace Spelldawn.Services
       if (playerView != null)
       {
         LoadDeckViewAssets(requests, playerView.DeckView);
+
+        if (playerView.PlayerInfo?.Appearance is { } appearance)
+        {
+          LoadCharacterPreset(requests, appearance);
+        }
       }
     }
 
@@ -470,5 +486,13 @@ namespace Spelldawn.Services
         requests[address.Address] = Addressables.LoadAssetAsync<AudioClip>(address.Address);
       }
     }
+    
+    void LoadCharacterPreset(IDictionary<string, AsyncOperationHandle> requests, CharacterPresetAddress? address)
+    {
+      if (!string.IsNullOrWhiteSpace(address?.Address) && !_assets.ContainsKey(address.Address))
+      {
+        requests[address.Address] = Addressables.LoadAssetAsync<CharacterPreset>(address.Address);
+      }
+    }    
   }
 }

@@ -17,12 +17,14 @@
 pub mod rexard_images;
 
 use core_ui::design::FontColor;
+use game_data::character_preset::CharacterPreset;
 use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
 use protos::spelldawn::{
-    AudioClipAddress, EffectAddress, FlexColor, ProjectileAddress, SpriteAddress,
+    AudioClipAddress, CharacterPresetAddress, EffectAddress, FlexColor, ProjectileAddress,
+    SpriteAddress,
 };
 
 /// Possible types of icons which can appear on a card
@@ -253,5 +255,15 @@ pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
                 },
             }
         ),
+    }
+}
+
+pub fn character_preset(preset: CharacterPreset) -> CharacterPresetAddress {
+    CharacterPresetAddress {
+        address: match preset {
+            CharacterPreset::Champion => "CharacterPresets/Champion.asset",
+            CharacterPreset::Overlord => "CharacterPresets/Ovelord.asset",
+        }
+        .to_string(),
     }
 }
