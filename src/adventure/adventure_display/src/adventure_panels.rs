@@ -19,6 +19,7 @@ use player_data::PlayerState;
 use protos::spelldawn::InterfacePanel;
 use with_error::WithError;
 
+use crate::battle_panel::BattlePanel;
 use crate::draft_panel::DraftPanel;
 use crate::shop_panel::ShopPanel;
 
@@ -33,5 +34,6 @@ pub fn tile_entity_panel(
     Ok(match state.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")? {
         TileEntity::Draft(data) => DraftPanel { address, data }.build_panel(),
         TileEntity::Shop(data) => ShopPanel { player, address, data }.build_panel(),
+        TileEntity::Battle(data) => BattlePanel { player, address, data }.build_panel(),
     })
 }

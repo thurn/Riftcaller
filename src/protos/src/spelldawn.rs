@@ -1747,6 +1747,17 @@ pub struct WorldMapSprite {
     #[prost(message, optional, tag = "4")]
     pub scale: ::core::option::Option<FlexVector3>,
 }
+/// Represents a character displayed on the world map
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WorldMapCharacter {
+    /// Visual appearance of character
+    #[prost(message, optional, tag = "1")]
+    pub appearance: ::core::option::Option<CharacterPresetAddress>,
+    /// Direction character is facing
+    #[prost(enumeration = "GameCharacterFacingDirection", tag = "2")]
+    pub facing_direction: i32,
+}
 /// Represents the contents of a world map tile.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1765,6 +1776,9 @@ pub struct WorldMapTile {
     /// How can the player character navigate through this tile?
     #[prost(enumeration = "MapTileType", tag = "4")]
     pub tile_type: i32,
+    /// A character to display on this tile
+    #[prost(message, optional, tag = "5")]
+    pub character: ::core::option::Option<WorldMapCharacter>,
 }
 /// Updates the world map tilemap. Only valid in the 'World' scene.
 #[allow(clippy::derive_partial_eq_without_eq)]

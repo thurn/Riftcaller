@@ -65,6 +65,7 @@ pub struct TestConfig {
     pub sigils: Option<TileEntity>,
     pub draft: Option<TileEntity>,
     pub shop: Option<TileEntity>,
+    pub battle: Option<TileEntity>,
     pub show_starting_sigils: bool,
 }
 
@@ -89,6 +90,7 @@ impl TestAdventure {
             config.sigils,
             config.draft,
             config.shop,
+            config.battle,
         );
 
         if !config.show_starting_sigils {

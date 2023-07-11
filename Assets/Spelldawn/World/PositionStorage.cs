@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace Spelldawn.World
 {
-  public static class PositionStore
+  public static class PositionStorage
   {
     public static void StorePosition(Registry registry, Vector3Int position)
     {

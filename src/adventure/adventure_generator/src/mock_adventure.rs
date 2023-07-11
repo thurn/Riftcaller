@@ -39,6 +39,7 @@ pub fn create(
     sigils: Option<TileEntity>,
     draft: Option<TileEntity>,
     shop: Option<TileEntity>,
+    battle: Option<TileEntity>,
 ) -> AdventureState {
     let mut tiles = HashMap::new();
 
@@ -48,7 +49,20 @@ pub fn create(
     add_tile(&mut tiles, 0, 2, "hexMarsh00");
     add_tile(&mut tiles, 1, 2, "hexPlainsHalflingVillage00");
     add_tile(&mut tiles, 2, 2, "hexDirtInn00");
-    add_with_road(&mut tiles, 3, 2, "hexPlains00", road(TOP_RIGHT | BOTTOM_LEFT, 0));
+
+    if let Some(b) = battle {
+        add_with_entity_and_road(
+            &mut tiles,
+            3,
+            2,
+            "hexPlains00",
+            b,
+            road(TOP_RIGHT | BOTTOM_LEFT, 0),
+        );
+    } else {
+        add_with_road(&mut tiles, 3, 2, "hexPlains00", road(TOP_RIGHT | BOTTOM_LEFT, 0));
+    }
+
     add_tile(&mut tiles, 4, 2, "hexPlainsSmithy00");
     add_tile(&mut tiles, -4, 1, "hexGrassySandPalms01");
     add_tile(&mut tiles, -3, 1, "hexPlainsFarm02");

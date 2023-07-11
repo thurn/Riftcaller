@@ -21,6 +21,7 @@ use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
 use game_data::card_name::CardName;
+use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{AdventureId, Side};
@@ -126,12 +127,26 @@ pub struct ShopData {
     pub choices: Vec<CardChoice>,
 }
 
+/// Data for rendering an opponent character to initiate a battle with
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BattleData {
+    /// Deck opponent will use for battle
+    pub opponent_deck: Deck,
+
+    /// Opponent character appearance
+    pub character: CharacterPreset,
+
+    /// Direction character is facing
+    pub character_facing: CharacterFacing,
+}
+
 /// Possible events/actions which can take place on a tile, represented by map
 /// icons
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TileEntity {
     Draft(DraftData),
     Shop(ShopData),
+    Battle(BattleData),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -14,6 +14,7 @@
 
 //! Generates world maps for the 'adventure' game mode
 
+pub mod battle_generator;
 pub mod card_generator;
 pub mod mock_adventure;
 
@@ -32,6 +33,7 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
     let sigils = TileEntity::Draft(card_generator::sigil_choices(&mut config));
     let draft = TileEntity::Draft(card_generator::draft_choices(&mut config));
     let shop = TileEntity::Shop(card_generator::shop_options(&mut config));
+    let battle = TileEntity::Battle(battle_generator::create(side.opponent()));
     mock_adventure::create(
         AdventureId::generate(),
         config,
@@ -40,5 +42,6 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
         Some(sigils),
         Some(draft),
         Some(shop),
+        Some(battle),
     )
 }

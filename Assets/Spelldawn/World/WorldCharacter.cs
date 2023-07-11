@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using CustomizableCharacters;
+using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
 
@@ -23,8 +25,10 @@ namespace Spelldawn.World
 {
   public sealed class WorldCharacter : MonoBehaviour
   {
-    bool _initialized;
     [SerializeField] AnimatedCharacter _character = null!;
+    [SerializeField] CustomizableCharacter _customizableCharacter = null!;
+    
+    bool _initialized;
     WorldMap _worldMap = null!;
     float _moveSpeed;
     Action? _onArriveAtDestination;
@@ -93,6 +97,16 @@ namespace Spelldawn.World
       {
         onArriveAtDestination?.Invoke();
       }
+    }
+    
+    public void SetFacingDirection(GameCharacterFacingDirection direction)
+    {
+      _character.SetFacingDirection(direction);
+    }
+
+    public void ApplyCharacterPreset(CharacterPreset preset)
+    {
+      _customizableCharacter.ApplyPreset(preset);
     }
 
     void SetDirectionForTarget(Vector2 target)

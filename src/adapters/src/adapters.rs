@@ -18,13 +18,14 @@ pub mod response_builder;
 
 use adventure_data::adventure::TilePosition;
 use anyhow::Result;
+use game_data::character_preset::CharacterFacing;
 use game_data::primitives::{
     AbilityId, AbilityIndex, CardId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
 };
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::{
-    CardIdentifier, GameObjectIdentifier, MapPosition, PlayerSide, RoomIdentifier, SpriteAddress,
-    TimeValue,
+    CardIdentifier, GameCharacterFacingDirection, GameObjectIdentifier, MapPosition, PlayerSide,
+    RoomIdentifier, SpriteAddress, TimeValue,
 };
 use with_error::fail;
 
@@ -136,4 +137,14 @@ pub fn map_position(p: TilePosition) -> MapPosition {
 
 pub fn time_value(milliseconds: Milliseconds) -> TimeValue {
     TimeValue { milliseconds: milliseconds.0 }
+}
+
+pub fn game_character_facing_direction(facing: CharacterFacing) -> i32 {
+    match facing {
+        CharacterFacing::Up => GameCharacterFacingDirection::Up,
+        CharacterFacing::Down => GameCharacterFacingDirection::Down,
+        CharacterFacing::Left => GameCharacterFacingDirection::Left,
+        CharacterFacing::Right => GameCharacterFacingDirection::Right,
+    }
+    .into()
 }

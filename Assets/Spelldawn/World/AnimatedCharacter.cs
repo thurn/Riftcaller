@@ -15,6 +15,7 @@
 #nullable enable
 
 using System;
+using Spelldawn.Protos;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -49,6 +50,28 @@ namespace Spelldawn.World
     {
       _animator.SetFloat(SpeedParam, speed);
     }
+    
+    public void SetFacingDirection(GameCharacterFacingDirection direction)
+    {
+      switch (direction)
+      {
+        case GameCharacterFacingDirection.Up:
+          SetDirection(AnimatedCharacter.Direction.Up);
+          break;
+        case GameCharacterFacingDirection.Down:
+          SetDirection(AnimatedCharacter.Direction.Down);          
+          break;
+        case GameCharacterFacingDirection.Left:
+          SetDirection(AnimatedCharacter.Direction.Left);          
+          break;
+        case GameCharacterFacingDirection.Right:
+          SetDirection(AnimatedCharacter.Direction.Right);          
+          break;
+        case GameCharacterFacingDirection.Unspecified:
+        default:
+          throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+      }
+    }    
     
     public void SetDirection(Direction direction)
     {

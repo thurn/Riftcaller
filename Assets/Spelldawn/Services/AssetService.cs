@@ -444,6 +444,11 @@ namespace Spelldawn.Services
         {
           LoadSprite(requests, sprite.SpriteAddress);
         }
+
+        if (tile.Character?.Appearance != null)
+        {
+          LoadCharacterPreset(requests, tile.Character.Appearance);
+        }
       }
     }
     

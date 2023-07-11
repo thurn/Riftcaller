@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using Spelldawn.Protos;
 using Spelldawn.Services;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -42,7 +43,7 @@ namespace Spelldawn.World
       }
       
       _hero = ComponentUtils.Instantiate(_characterPrefab);
-      var storedPosition = PositionStore.GetPosition(_registry);
+      var storedPosition = PositionStorage.GetPosition(_registry);
       _hero.transform.position = storedPosition == null ?
         Vector3.zero :
         _worldMap.ToWorldPosition(storedPosition.Value);
@@ -63,6 +64,19 @@ namespace Spelldawn.World
     {
       var result = _worldMap.FromWorldPosition(Errors.CheckNotNull(_hero).transform.position);
       return new Vector3Int(result.X, result.Y, 0);
+    }
+
+    public void CreateOrUpdateCharacter(MapPosition tilePosition, WorldMapCharacter tileCharacter)
+    {
+      var character = ComponentUtils.Instantiate(_characterPrefab);
+      character.transform.position = _worldMap.ToWorldPosition(tilePosition);
+      character.Initialize(_worldMap);
+      var preset = _registry.AssetService.GetCharacterPreset(tileCharacter.Appearance);
+      if (preset != null)
+      {
+        character.ApplyCharacterPreset(preset);
+      }
+      character.SetFacingDirection(tileCharacter.FacingDirection);
     }
   }
 }

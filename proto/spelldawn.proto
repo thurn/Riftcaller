@@ -1668,6 +1668,15 @@ message WorldMapSprite {
     FlexVector3 scale = 4;
 }
 
+// Represents a character displayed on the world map
+message WorldMapCharacter {
+    // Visual appearance of character
+    CharacterPresetAddress appearance = 1;
+
+    // Direction character is facing
+    GameCharacterFacingDirection facing_direction = 2;
+}
+
 // Represents the contents of a world map tile.
 message WorldMapTile {
     // Images to display on this tile. Will be rendered in z-index order, with
@@ -1683,6 +1692,9 @@ message WorldMapTile {
 
     // How can the player character navigate through this tile?
     MapTileType tile_type = 4;
+
+    // A character to display on this tile
+    WorldMapCharacter character = 5;
 }
 
 // Updates the world map tilemap. Only valid in the 'World' scene.

@@ -12,19 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use serde::{Deserialize, Serialize};
+use adventure_data::adventure::BattleData;
+use game_data::character_preset::{CharacterFacing, CharacterPreset};
+use game_data::primitives::Side;
 
-/// Controls the appearance of animated characters
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum CharacterPreset {
-    Champion,
-    Overlord,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum CharacterFacing {
-    Up,
-    Down,
-    Left,
-    Right,
+pub fn create(side: Side) -> BattleData {
+    BattleData {
+        opponent_deck: decklists::canonical_deck(side),
+        character: CharacterPreset::Overlord,
+        character_facing: CharacterFacing::Down,
+    }
 }

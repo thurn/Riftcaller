@@ -16,6 +16,7 @@
 
 pub mod adventure_over_panel;
 pub mod adventure_panels;
+pub mod battle_panel;
 pub mod draft_panel;
 pub mod shop_panel;
 
@@ -28,8 +29,8 @@ use core_ui::panels::Panels;
 use panel_address::{PanelAddress, PlayerPanel};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
-    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
-    WorldMapTile,
+    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
+    WorldMapCharacter, WorldMapSprite, WorldMapTile,
 };
 
 /// Returns a sequence of game Commands to display the provided
@@ -77,22 +78,34 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
         })
     }
 
+    let mut character = None;
     if let Some(entity) = &tile.entity {
-        sprites.push(WorldMapSprite {
-            sprite_address: Some(SpriteAddress {
-                address: "Sprites/MapIconBackground.png".to_string(),
-            }),
-            color: Some(design::BLACK),
-            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
-            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
-        });
+        if let Some(sprite) = sprite_address_for_entity(entity) {
+            sprites.push(WorldMapSprite {
+                sprite_address: Some(SpriteAddress {
+                    address: "Sprites/MapIconBackground.png".to_string(),
+                }),
+                color: Some(design::BLACK),
+                anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
+                scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+            });
 
-        sprites.push(WorldMapSprite {
-            sprite_address: Some(sprite_address_for_entity(entity)),
-            color: Some(design::WHITE),
-            anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
-            scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
-        });
+            sprites.push(WorldMapSprite {
+                sprite_address: Some(sprite),
+                color: Some(design::WHITE),
+                anchor_offset: Some(FlexVector3 { x: 0.0, y: 1.28, z: 0.0 }),
+                scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
+            });
+        }
+
+        if let TileEntity::Battle(battle) = entity {
+            character = Some(WorldMapCharacter {
+                appearance: Some(assets::character_preset(battle.character)),
+                facing_direction: adapters::game_character_facing_direction(
+                    battle.character_facing,
+                ),
+            });
+        }
     }
 
     WorldMapTile {
@@ -110,19 +123,21 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
         } else {
             MapTileType::Obstacle.into()
         },
+        character,
     }
 }
 
-fn sprite_address_for_entity(entity: &TileEntity) -> SpriteAddress {
-    SpriteAddress {
-        address: match entity {
-            TileEntity::Draft { .. } => {
-                "RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png"
-            }
-            TileEntity::Shop { .. } => {
-                "RainbowArt/CleanFlatIcon/png_128/icon/icon_architecture/icon_architecture_6.png"
-            }
+fn sprite_address_for_entity(entity: &TileEntity) -> Option<SpriteAddress> {
+    let address = match entity {
+        TileEntity::Draft(_) => {
+            Some("RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png".to_string())
         }
-        .to_string(),
-    }
+        TileEntity::Shop(_) => Some(
+            "RainbowArt/CleanFlatIcon/png_128/icon/icon_architecture/icon_architecture_6.png"
+                .to_string(),
+        ),
+        TileEntity::Battle(_) => None,
+    };
+
+    address.map(|a| SpriteAddress { address: a })
 }

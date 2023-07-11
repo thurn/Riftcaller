@@ -101,6 +101,10 @@ namespace Spelldawn.World
           GetTilemap(id).SetTile(new Vector3Int(tile.Position.X, tile.Position.Y, 0), instance);
         }
 
+        if (tile.Character != null)
+        {
+          _registry.CharacterService.CreateOrUpdateCharacter(tile.Position, tile.Character);
+        }
         _tiles[tile.Position] = tile;
       }
 
@@ -132,7 +136,7 @@ namespace Spelldawn.World
           : Dijkstra<Vector3Int>.ShortestPath(this, start, cellPosition);
         if (path.Count > 0)
         {
-          PositionStore.StorePosition(_registry, path.Last());
+          PositionStorage.StorePosition(_registry, path.Last());
         }
 
         var worldPath = path.Select(v => ToWorldPosition(new MapPosition

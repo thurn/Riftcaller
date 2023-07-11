@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CustomizableCharacters;
@@ -60,28 +59,6 @@ namespace Spelldawn.Game
     {
     }
 
-    public void SetFacingDirection(GameCharacterFacingDirection direction)
-    {
-      switch (direction)
-      {
-        case GameCharacterFacingDirection.Up:
-          _character.SetDirection(AnimatedCharacter.Direction.Up);
-          break;
-        case GameCharacterFacingDirection.Down:
-          _character.SetDirection(AnimatedCharacter.Direction.Down);          
-          break;
-        case GameCharacterFacingDirection.Left:
-          _character.SetDirection(AnimatedCharacter.Direction.Left);          
-          break;
-        case GameCharacterFacingDirection.Right:
-          _character.SetDirection(AnimatedCharacter.Direction.Right);          
-          break;
-        case GameCharacterFacingDirection.Unspecified:
-        default:
-          throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-      }
-    }
-
     public void DisableAnimation()
     {
     }
@@ -111,6 +88,11 @@ namespace Spelldawn.Game
     {
       _speechBubble.SetActive(false);
       _speechBubbleText.text = "";      
+    }
+
+    public void SetFacingDirection(GameCharacterFacingDirection direction)
+    {
+      _character.SetFacingDirection(direction);
     }
 
     public override bool CanHandleMouseDown() => !Registry.CapabilityService.AnyOverlayOpen();
