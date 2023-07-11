@@ -82,10 +82,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
                     .map(adapters::room_identifier)
                     .collect(),
             },
-            character_appearance: Some(match side {
-                Side::Overlord => preset_characters::overlord(),
-                Side::Champion => preset_characters::champion(),
-            }),
+            character_appearance: Some(preset_characters::overlord()),
         }),
         score: Some(ScoreView { score: game.player(side).score }),
         mana: Some(ManaView {

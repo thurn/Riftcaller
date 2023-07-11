@@ -24,18 +24,18 @@ pub fn overlord() -> CharacterAppearance {
             customization("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Mouth/Mouth Neutral.asset"),
             customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Iris/Iris 1.asset", "8C8FD6"),
             customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Eyebrows/Eyebrows 1.asset", "A49279"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Female/Data/Equipment/Headwear/Cap 3.asset", "333333", 0, "C62828"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Tops/Layered Tunic.asset", "333333", 0, "FFFFFF"),
+            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Female/Data/Equipment/Headwear/Cap 3.asset", "54C338", 0, "FF8840"),
+            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Tops/Layered Tunic.asset", "54C339", 0, "FFFFFF"),
             customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Belts/Belt 2.asset", "AD7733", 1, "FFFFFF"),
             customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Pants/Cloth Pants.asset", "675241"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Footwear/Open Shoe.asset", "4E342E", 2, "D1D1D1"),
-            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Handwear/Gloves.asset", "333333"),
+            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Footwear/Open Shoe.asset", "B28144", 2, "D1D1D1"),
+            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Handwear/Gloves.asset", "B28144"),
             customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Hair/Headwear Hair Short.asset", "C69455"),
             customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Ears/Ears 2.asset", "FFFFFF", 0, "FFFFFF"),
             customization("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Eyes/Eyes 2.asset"),
             customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Facial Hair/Facial Hair 1.asset", "C69455"),
             customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Weapons/Sword 1.asset", "FFFFFF", 0, "FFFFFF"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Shields/Shield 1.asset", "4E342E", 0, "FFFFFF")
+            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Shields/Shield 1.asset", "E09B60", 0, "FFFFFF")
         ],
         scale_groups: vec![
             scale(CharacterScaleGroupName::Body, 1.024),
@@ -46,36 +46,6 @@ pub fn overlord() -> CharacterAppearance {
             default_scale(CharacterScaleGroupName::Feet),
             scale(CharacterScaleGroupName::Weapon, 0.9367525),
             default_scale(CharacterScaleGroupName::Shield)
-        ]
-    }
-}
-
-pub fn champion() -> CharacterAppearance {
-    CharacterAppearance {
-        body_color: color("FFFFFF"),
-        customizations: vec![
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Ears/Ears 1.asset", "FFFFFF", 0, "FFFFFF"),
-            customization("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Mouth/Mouth Neutral.asset"),
-            customization("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Eyes/Eyes 1.asset"),
-            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Iris/Iris 1.asset", "47AAD4"),
-            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Eyebrows/Eyebrows 1.asset", "D1AD6E"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Belts/Belt 2.asset", "A86E3D", 0, "FFFFFF"),
-            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Footwear/Boots.asset", "A86E3D"),
-            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Pants/Cloth Pants.asset", "675241"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Tops/Shirt.asset", "55B93F", 0, "7A5043"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Weapons/Sword 1.asset", "FFFFFF", 0, "FFFFFF"),
-            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Handwear/Gloves.asset", "A86E3D"),
-            customization_with_color("DanielThomas/2D Customizable Characters/Characters/Male/Data/Appearance/Hair/Hair 3.asset", "FBDB76"),
-            customization_with_details("DanielThomas/2D Customizable Characters/Characters/Male/Data/Equipment/Shields/Shield 1.asset", "E09B60", 0, "FFFFFF")
-
-        ],
-        scale_groups: vec![
-            default_scale(CharacterScaleGroupName::Head),
-            default_scale(CharacterScaleGroupName::Body),
-            default_scale(CharacterScaleGroupName::Arms),
-            default_scale(CharacterScaleGroupName::Hands),
-            default_scale(CharacterScaleGroupName::Legs),
-            default_scale(CharacterScaleGroupName::Feet),
         ]
     }
 }
