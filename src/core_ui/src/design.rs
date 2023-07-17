@@ -92,6 +92,7 @@ pub enum BackgroundColor {
     DeckCardNameOverlay,
     TilePanelOverlay,
     CoinCountOverlay,
+    MediaOverlay,
     Tooltip,
     Toast,
     SpeechBubble,
@@ -109,6 +110,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::DeckCardNameOverlay => BLACK_ALPHA_50,
             BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
             BackgroundColor::CoinCountOverlay => BLACK_ALPHA_50,
+            BackgroundColor::MediaOverlay => BLACK_ALPHA_50,
             BackgroundColor::Tooltip => GREEN_700,
             BackgroundColor::Toast => BLACK,
             BackgroundColor::SpeechBubble => WHITE,
@@ -171,6 +173,7 @@ pub enum FontSize {
     CardCost,
     CoinCount,
     Toast,
+    SchoolLabel,
 }
 
 impl From<FontSize> for Dimension {
@@ -190,6 +193,7 @@ impl From<FontSize> for Dimension {
             FontSize::CardCost => 36,
             FontSize::CoinCount => 54,
             FontSize::Toast => 24,
+            FontSize::SchoolLabel => 32,
         })
         .px()
         .into()

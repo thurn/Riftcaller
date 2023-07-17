@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use element_names::ElementName;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, TextAlign};
+use protos::spelldawn::{Dimension, FlexAlign, FlexJustify, FlexPosition, TextAlign};
 
 use crate::actions::{InterfaceAction, NoAction};
 use crate::design::{Font, FontColor, FontSize};
@@ -46,6 +46,7 @@ pub struct Button {
     two_lines: bool,
     width_mode: WidthMode,
     disabled: bool,
+    min_width: Dimension,
 }
 
 impl Button {
@@ -59,6 +60,7 @@ impl Button {
             two_lines: false,
             width_mode: WidthMode::Constrained,
             disabled: false,
+            min_width: 132.px().into(),
         }
     }
 
@@ -96,6 +98,11 @@ impl Button {
         self.disabled = disabled;
         self
     }
+
+    pub fn min_width(mut self, min_width: impl Into<Dimension>) -> Self {
+        self.min_width = min_width.into();
+        self
+    }
 }
 
 impl Component for Button {
@@ -114,7 +121,7 @@ impl Component for Button {
                 self.layout
                     .to_style()
                     .height(88.px())
-                    .min_width(132.px())
+                    .min_width(self.min_width)
                     .justify_content(FlexJustify::Center)
                     .align_items(FlexAlign::Center)
                     .flex_shrink(0.0)

@@ -326,7 +326,20 @@ pub enum School {
     Neutral,
 }
 
-/// The five standard schoosl of magic, not including [School::Neutral].
+impl School {
+    pub fn displayed_name(&self) -> &'static str {
+        match self {
+            School::Law => "Law",
+            School::Shadow => "Shadow",
+            School::Primal => "Primal",
+            School::Pact => "Pact",
+            School::Beyond => "Beyond",
+            School::Neutral => "Neutral",
+        }
+    }
+}
+
+/// The five standard schools of magic, not including [School::Neutral].
 pub static STANDARD_SCHOOLS: &'static [School] =
     &[School::Law, School::Shadow, School::Primal, School::Pact, School::Beyond];
 

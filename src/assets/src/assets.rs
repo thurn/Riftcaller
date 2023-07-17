@@ -111,7 +111,7 @@ pub fn card_back(school: School) -> SpriteAddress {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardBack"
                 }
                 School::Pact => {
-                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardBack"
+                    "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PactCardBack"
                 }
                 School::Neutral => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardBack"
