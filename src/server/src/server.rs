@@ -231,8 +231,8 @@ async fn handle_standard_action(
         UserAction::GameAction(a) => {
             game_server::handle_game_action(database, data, &a).instrument(span).await
         }
-        UserAction::LeaveGame => {
-            game_server::handle_leave_game(database, data).instrument(span).await
+        UserAction::LeaveGame(o) => {
+            game_server::handle_leave_game(database, data, o).instrument(span).await
         }
         UserAction::DeckEditorAction(a) => {
             player_server::handle_deck_editor_action(database, data, &a).instrument(span).await

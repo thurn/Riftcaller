@@ -23,7 +23,7 @@ use core_ui::style::WidthMode;
 use core_ui::text::Text;
 use panel_address::{Panel, PanelAddress, PlayerPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
-use user_action_data::UserAction;
+use user_action_data::{GameOutcome, UserAction};
 
 #[derive(Debug)]
 pub struct BattleDefeatPanel {}
@@ -53,7 +53,10 @@ impl Component for BattleDefeatPanel {
                     )
                     .child(
                         Button::new("Main Menu")
-                            .action(Panels::close(self.address()).action(UserAction::LeaveGame))
+                            .action(
+                                Panels::close(self.address())
+                                    .action(UserAction::LeaveGame(GameOutcome::Defeat)),
+                            )
                             .button_type(ButtonType::Primary)
                             .width_mode(WidthMode::Flexible)
                             .layout(Layout::new().margin(Edge::All, 16.px())),

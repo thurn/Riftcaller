@@ -26,7 +26,7 @@ use core_ui::text::Text;
 use panel_address::{Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerState;
 use protos::spelldawn::{FlexAlign, FlexJustify};
-use user_action_data::UserAction;
+use user_action_data::{GameOutcome, UserAction};
 
 #[derive(Debug)]
 pub struct BattleVictoryPanel<'a> {
@@ -65,7 +65,10 @@ impl<'a> Component for BattleVictoryPanel<'a> {
                 )
                 .child(
                     Button::new("Continue")
-                        .action(Panels::close(self.address()).action(UserAction::LeaveGame))
+                        .action(
+                            Panels::close(self.address())
+                                .action(UserAction::LeaveGame(GameOutcome::Victory)),
+                        )
                         .button_type(ButtonType::Primary)
                         .width_mode(WidthMode::Flexible)
                         .layout(Layout::new().margin(Edge::All, 16.px())),
@@ -80,7 +83,10 @@ impl<'a> Component for BattleVictoryPanel<'a> {
                 )
                 .child(
                     Button::new("Main Menu")
-                        .action(Panels::close(self.address()).action(UserAction::LeaveGame))
+                        .action(
+                            Panels::close(self.address())
+                                .action(UserAction::LeaveGame(GameOutcome::Victory)),
+                        )
                         .button_type(ButtonType::Primary)
                         .width_mode(WidthMode::Flexible)
                         .layout(Layout::new().margin(Edge::All, 16.px())),

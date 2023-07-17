@@ -107,6 +107,12 @@ impl From<DeckEditorAction> for UserAction {
     }
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub enum GameOutcome {
+    Victory,
+    Defeat,
+}
+
 /// All possible action payloads that can be sent from a client
 #[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum UserAction {
@@ -127,10 +133,11 @@ pub enum UserAction {
     NewGame(NewGameAction),
     /// Perform an action within a game.
     GameAction(GameAction),
+
     /// Leave the game that the player is currently playing in. Typically
     /// invoked from the game over screen, the 'resign' action is used to
     /// end the game itself.
-    LeaveGame,
+    LeaveGame(GameOutcome),
 
     /// Perform an action in the deck editor
     DeckEditorAction(DeckEditorAction),
@@ -157,7 +164,7 @@ impl fmt::Debug for UserAction {
             Self::LeaveAdventure => write!(f, "LeaveAdventure"),
             Self::NewGame(a) => f.debug_tuple("NewGame").field(a).finish(),
             Self::GameAction(a) => write!(f, "{a:?}"),
-            Self::LeaveGame => write!(f, "LeaveGame"),
+            Self::LeaveGame(a) => f.debug_tuple("LeaveGame").field(a).finish(),
             Self::DeckEditorAction(a) => write!(f, "{a:?}"),
         }
     }

@@ -26,6 +26,7 @@ use protos::spelldawn::{
 };
 use tracing::{debug, info};
 use tutorial::tutorial_actions;
+use user_action_data::GameOutcome;
 use with_error::WithError;
 
 use crate::ai_agent_response::IncrementalUpdates;
@@ -55,11 +56,27 @@ pub async fn connect(
 pub async fn handle_leave_game(
     database: &impl Database,
     data: &RequestData,
+    outcome: GameOutcome,
 ) -> Result<GameResponse> {
     requests::with_player(database, data, |player| {
         player.status = None;
+        let reveal_region = player_data::current_battle(player).map(|b| b.region_to_reveal);
+        let scene = if let Some(adventure) = player.adventure.as_mut() {
+            adventure.clear_visited_tile()?;
+            if let Some(r) = reveal_region {
+                adventure.revealed_regions.insert(r);
+            }
+
+            match outcome {
+                GameOutcome::Victory => SceneName::World,
+                GameOutcome::Defeat => SceneName::Main,
+            }
+        } else {
+            SceneName::Main
+        };
+
         Ok(GameResponse::new(ClientData::with_game_id(data, None))
-            .command(requests::load_scene(SceneName::Main)))
+            .command(requests::load_scene(scene)))
     })
     .await
 }

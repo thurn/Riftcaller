@@ -18,7 +18,7 @@ use game_data::primitives::Side;
 use insta::assert_snapshot;
 use test_utils::summarize::Summary;
 use test_utils::*;
-use user_action_data::UserAction;
+use user_action_data::{GameOutcome, UserAction};
 
 #[test]
 fn resign() {
@@ -35,6 +35,7 @@ fn resign() {
 fn leave_game() {
     let mut g = new_game(Side::Overlord, Args::default());
     g.perform(UserAction::GameAction(GameAction::Resign).as_client_action(), g.user_id());
-    let response = g.perform_action(UserAction::LeaveGame.as_client_action(), g.user_id());
+    let response = g
+        .perform_action(UserAction::LeaveGame(GameOutcome::Defeat).as_client_action(), g.user_id());
     assert_snapshot!(Summary::run(&response));
 }

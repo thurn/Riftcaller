@@ -25,5 +25,6 @@ pub fn create(side: Side) -> BattleData {
         reward: Coins(250),
         character: CharacterPreset::Overlord,
         character_facing: CharacterFacing::Down,
+        region_to_reveal: 2,
     }
 }

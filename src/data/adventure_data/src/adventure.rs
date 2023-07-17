@@ -147,6 +147,9 @@ pub struct BattleData {
 
     /// Direction character is facing
     pub character_facing: CharacterFacing,
+
+    /// Map region which should be revealed if the player wins this battle.
+    pub region_to_reveal: RegionId,
 }
 
 /// Possible events/actions which can take place on a tile, represented by map
