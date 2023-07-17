@@ -108,7 +108,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
             BackgroundColor::BottomSheetBackground => ORANGE_900,
             BackgroundColor::DeckCardNameOverlay => BLACK_ALPHA_50,
-            BackgroundColor::TilePanelOverlay => BLACK_ALPHA_75,
+            BackgroundColor::TilePanelOverlay => BLACK_ALPHA_50,
             BackgroundColor::CoinCountOverlay => BLACK_ALPHA_50,
             BackgroundColor::MediaOverlay => BLACK_ALPHA_50,
             BackgroundColor::Tooltip => GREEN_700,

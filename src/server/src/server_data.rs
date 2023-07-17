@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{AdventureId, GameId};
 use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
@@ -152,14 +152,14 @@ fn parse_ulid(s: &str) -> anyhow::Result<Ulid> {
 /// Describes player data for an oppposing player in a game.
 pub enum OpponentData {
     HumanPlayer(Box<PlayerState>),
-    NamedPlayer(NamedPlayer),
+    NamedPlayer(AIPlayer),
 }
 
 impl OpponentData {
     pub fn id(&self) -> PlayerId {
         match self {
             Self::HumanPlayer(p) => p.id,
-            OpponentData::NamedPlayer(n) => PlayerId::Named(*n),
+            OpponentData::NamedPlayer(n) => PlayerId::AI(*n),
         }
     }
 }

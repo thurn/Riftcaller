@@ -12,13 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::BattleData;
+use adventure_data::adventure::{BattleData, Coins};
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
+use game_data::player_name::AIPlayer;
 use game_data::primitives::Side;
 
 pub fn create(side: Side) -> BattleData {
     BattleData {
+        opponent_id: AIPlayer::TestAlphaBetaHeuristics,
         opponent_deck: decklists::canonical_deck(side),
+        opponent_name: "Cloaked Bandit".to_string(),
+        reward: Coins(250),
         character: CharacterPreset::Overlord,
         character_facing: CharacterFacing::Down,
     }

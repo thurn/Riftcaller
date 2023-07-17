@@ -18,7 +18,7 @@ use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use database::Database;
 use game_data::game::GameState;
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
 use player_data::PlayerStatus;
 use protos::spelldawn::client_debug_command::DebugCommand;
@@ -116,7 +116,7 @@ pub async fn handle_debug_action(
         }
         DebugAction::SetNamedPlayer(side, name) => {
             game_server::update_game(database, data, |game, _| {
-                game.player_mut(*side).id = PlayerId::Named(*name);
+                game.player_mut(*side).id = PlayerId::AI(*name);
                 Ok(())
             })
             .await
@@ -137,9 +137,9 @@ fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
             debug_command: Some(DebugCommand::InvokeAction(ClientAction {
                 action: Some(
                     UserAction::NewGame(NewGameAction {
-                        opponent: PlayerId::Named(match side {
-                            Side::Overlord => NamedPlayer::DebugChampion,
-                            Side::Champion => NamedPlayer::DebugOverlord,
+                        opponent: PlayerId::AI(match side {
+                            Side::Overlord => AIPlayer::DebugChampion,
+                            Side::Champion => AIPlayer::DebugOverlord,
                         }),
                         deck: match side {
                             Side::Overlord => NewGameDeck::NamedDeck(NamedDeck::CanonicalOverlord),

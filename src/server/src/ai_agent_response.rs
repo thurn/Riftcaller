@@ -163,7 +163,7 @@ async fn send_snapshot_to_player(
 /// this game, if one exists.
 fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>>)> {
     for side in enum_iterator::all::<Side>() {
-        if let PlayerId::Named(name) = game.player(side).id {
+        if let PlayerId::AI(name) = game.player(side).id {
             if actions::can_take_any_action(game, side) {
                 let agent = agents::get(name);
                 if !agent.inactive() {

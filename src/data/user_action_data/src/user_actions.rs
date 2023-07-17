@@ -18,7 +18,7 @@ use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
 use game_data::card_name::CardName;
 use game_data::game_actions::GameAction;
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
 use serde::{Deserialize, Serialize};
 
@@ -30,7 +30,7 @@ pub struct NewGameDebugOptions {
     pub override_game_id: Option<GameId>,
 }
 
-/// Canonical decklists which canb e used in new games
+/// Canonical decklists which can be used in new games
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub enum NamedDeck {
     EmptyChampion,
@@ -85,7 +85,7 @@ pub enum DebugAction {
     AddScore(PointsValue),
     SaveGameState(u128),
     LoadGameState(u128),
-    SetNamedPlayer(Side, NamedPlayer),
+    SetNamedPlayer(Side, AIPlayer),
     SavePlayerState(u128),
     LoadPlayerState(u128),
     AddCoins(Coins),

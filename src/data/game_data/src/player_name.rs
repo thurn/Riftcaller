@@ -27,9 +27,7 @@ pub enum PlayerId {
     /// ID stored in the database, i.e. a human player
     Database(Ulid),
     /// Known player, i.e. an AI agent.
-    ///
-    /// In the future these might be characters in a single-player story?
-    Named(NamedPlayer),
+    AI(AIPlayer),
 }
 
 impl PlayerId {
@@ -43,7 +41,7 @@ impl PlayerId {
 
     pub fn is_named_player(&self) -> bool {
         match self {
-            Self::Named(_) => true,
+            Self::AI(_) => true,
             _ => false,
         }
     }
@@ -53,7 +51,7 @@ impl fmt::Debug for PlayerId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             PlayerId::Database(id) => write!(f, "{}", id.to_string()),
-            PlayerId::Named(name) => write!(f, "{}", name),
+            PlayerId::AI(name) => write!(f, "{}", name),
         }
     }
 }
@@ -62,7 +60,7 @@ impl fmt::Display for PlayerId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             PlayerId::Database(id) => write!(f, "{}", id.to_string()),
-            PlayerId::Named(name) => write!(f, "{}", name),
+            PlayerId::AI(name) => write!(f, "{}", name),
         }
     }
 }
@@ -71,7 +69,7 @@ impl fmt::Display for PlayerId {
 #[derive(
     PartialEq, Eq, Hash, Debug, Display, Copy, Clone, Serialize, Deserialize, ArgEnum, Sequence,
 )]
-pub enum NamedPlayer {
+pub enum AIPlayer {
     NoAction,
     DebugOverlord,
     DebugChampion,
@@ -83,7 +81,7 @@ pub enum NamedPlayer {
     TestUct1,
 }
 
-impl NamedPlayer {
+impl AIPlayer {
     pub fn displayed_name(&self) -> String {
         format!("{self}").from_case(Case::Pascal).to_case(Case::Title)
     }

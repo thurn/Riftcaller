@@ -21,7 +21,7 @@ use ai_game_integration::state_node::SpelldawnState;
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
 use game_data::game::{GameConfiguration, GameState};
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};
 
@@ -36,9 +36,9 @@ pub enum Verbosity {
 #[clap(author, version, about, long_about = None)]
 pub struct Args {
     #[clap(arg_enum, value_parser)]
-    pub overlord: NamedPlayer,
+    pub overlord: AIPlayer,
     #[clap(arg_enum, value_parser)]
-    pub champion: NamedPlayer,
+    pub champion: AIPlayer,
     #[clap(long, value_parser, default_value_t = 5)]
     /// Maximum time in seconds for each agent to use for moves.
     pub move_time: u64,
@@ -71,9 +71,9 @@ pub fn run(args: Args) -> Result<()> {
         }
         let mut game = GameState::new(
             GameId::new_from_u128(0),
-            PlayerId::Named(args.overlord),
+            PlayerId::AI(args.overlord),
             decklists::deck_for_player(args.overlord, Side::Overlord),
-            PlayerId::Named(args.champion),
+            PlayerId::AI(args.champion),
             decklists::deck_for_player(args.champion, Side::Champion),
             GameConfiguration {
                 deterministic: args.deterministic,

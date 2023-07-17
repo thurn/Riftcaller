@@ -23,7 +23,7 @@ use derive_more::{
 use game_data::card_name::CardName;
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::deck::Deck;
-use game_data::player_name::PlayerId;
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{AdventureId, Side};
 use rand::distributions::uniform::{SampleRange, SampleUniform};
 use rand::prelude::IteratorRandom;
@@ -130,8 +130,17 @@ pub struct ShopData {
 /// Data for rendering an opponent character to initiate a battle with
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BattleData {
+    /// Identifies the AI to use for this battle
+    pub opponent_id: AIPlayer,
+
     /// Deck opponent will use for battle
     pub opponent_deck: Deck,
+
+    /// Name displayed in the battle panel
+    pub opponent_name: String,
+
+    /// Coins earned for winning this battle
+    pub reward: Coins,
 
     /// Opponent character appearance
     pub character: CharacterPreset,

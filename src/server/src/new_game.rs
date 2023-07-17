@@ -16,7 +16,7 @@ use anyhow::Result;
 use database::Database;
 use game_data::deck::Deck;
 use game_data::game::{GameConfiguration, GameState};
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::Side;
 use player_data::{PlayerState, PlayerStatus};
 use rules::{dispatch, mutations};
@@ -113,7 +113,7 @@ async fn find_opponent(database: &impl Database, opponent_id: PlayerId) -> Resul
             let opponent = requests::fetch_player(database, opponent_id).await?;
             Ok(OpponentData::HumanPlayer(Box::new(opponent)))
         }
-        PlayerId::Named(name) => Ok(OpponentData::NamedPlayer(name)),
+        PlayerId::AI(name) => Ok(OpponentData::NamedPlayer(name)),
     }
 }
 
@@ -125,9 +125,9 @@ fn requested_deck(opponent: &OpponentData, side: Side) -> Result<Option<Deck>> {
         },
         // TODO: Each named player should have their own decklist
         OpponentData::NamedPlayer(name) => match name {
-            NamedPlayer::TutorialOpponent => Some(decklists::TUTORIAL_OVERLORD.clone()),
-            NamedPlayer::DebugChampion => Some(decklists::CANONICAL_CHAMPION.clone()),
-            NamedPlayer::DebugOverlord => Some(decklists::CANONICAL_OVERLORD.clone()),
+            AIPlayer::TutorialOpponent => Some(decklists::TUTORIAL_OVERLORD.clone()),
+            AIPlayer::DebugChampion => Some(decklists::CANONICAL_CHAMPION.clone()),
+            AIPlayer::DebugOverlord => Some(decklists::CANONICAL_OVERLORD.clone()),
             _ => Some(decklists::basic_deck(side)),
         },
     })

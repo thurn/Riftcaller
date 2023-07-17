@@ -21,7 +21,7 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
@@ -60,7 +60,7 @@ impl Component for MainMenuPanel {
                         "Tutorial",
                         self.close().action(UserAction::NewGame(NewGameAction {
                             deck: NewGameDeck::NamedDeck(NamedDeck::TutorialChampion),
-                            opponent: PlayerId::Named(NamedPlayer::TutorialOpponent),
+                            opponent: PlayerId::AI(AIPlayer::TutorialOpponent),
                             tutorial: true,
                             debug_options: None,
                         })),

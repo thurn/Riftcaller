@@ -14,21 +14,22 @@
 
 use adventure_data::adventure::BattleData;
 use adventure_data::adventure_action::AdventureAction;
-use core_ui::button::{Button, ButtonType};
+use core_ui::button::Button;
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::icons;
-use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use core_ui::style::{self, sprite, Corner, WidthMode};
+use core_ui::style::{self, Corner};
 use core_ui::text::Text;
 use deck_card::CARD_ASPECT_RATIO;
-use game_data::primitives::School;
+use game_data::player_name::PlayerId;
+use game_data::primitives::{DeckId, School};
 use panel_address::{Panel, PanelAddress};
 use player_data::PlayerState;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, WhiteSpace};
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 use screen_overlay::ScreenOverlay;
+use user_action_data::{NewGameAction, NewGameDeck, UserAction};
 
 pub struct BattlePanel<'a> {
     pub player: &'a PlayerState,
@@ -62,21 +63,39 @@ impl<'a> Component for BattlePanel<'a> {
                             .align_items(FlexAlign::Center)
                             .margin(Edge::Bottom, 16.px()),
                     )
-                    .child(Text::new("Battle vs. Cloaked Bandit").font_size(FontSize::Headline))
                     .child(
-                        Text::new(format!("Reward: 250 <color=yellow>{}</color>", icons::COINS))
-                            .font_size(FontSize::Body),
+                        Text::new(format!("Battle vs. {}", self.data.opponent_name))
+                            .font_size(FontSize::Headline),
+                    )
+                    .child(
+                        Text::new(format!(
+                            "Reward: {} <color=yellow>{}</color>",
+                            self.data.reward,
+                            icons::COINS
+                        ))
+                        .font_size(FontSize::Body),
                     )
                     .child(
                         Row::new("Schools")
                             .style(Style::new().margin(Edge::All, 16.px()))
-                            .child(school_image(School::Primal))
-                            .child(school_image(School::Pact)),
+                            .children(
+                                self.data
+                                    .opponent_deck
+                                    .schools
+                                    .iter()
+                                    .map(|school| school_image(*school)),
+                            ),
                     )
                     .child(
                         Button::new("Start Battle")
                             .layout(Layout::new().margin(Edge::All, 20.px()))
-                            .min_width(400.px()),
+                            .min_width(400.px())
+                            .action(UserAction::NewGame(NewGameAction {
+                                deck: NewGameDeck::DeckId(DeckId::Adventure),
+                                opponent: PlayerId::AI(self.data.opponent_id),
+                                tutorial: false,
+                                debug_options: None,
+                            })),
                     ),
             )
             .build()

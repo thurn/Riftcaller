@@ -128,7 +128,7 @@ pub fn card_frame(school: School, _: CardType) -> SpriteAddress {
         School::Shadow => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame",
         School::Primal => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame",
         School::Beyond => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame",
-        School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BloodCardFrame",
+        School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PactCardFrame",
         School::Neutral => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame",
     };
 

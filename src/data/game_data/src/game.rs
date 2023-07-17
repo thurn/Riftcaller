@@ -648,7 +648,7 @@ mod tests {
 
     use super::*;
     use crate::card_name::CardName;
-    use crate::player_name::NamedPlayer;
+    use crate::player_name::AIPlayer;
 
     #[test]
     fn insert_at_index() {
@@ -700,14 +700,14 @@ mod tests {
     fn test_game(overlord: Vec<CardName>, champion: Vec<CardName>) -> GameState {
         GameState::new(
             GameId::new(0),
-            PlayerId::Named(NamedPlayer::NoAction),
+            PlayerId::AI(AIPlayer::NoAction),
             Deck {
                 side: Side::Overlord,
                 schools: vec![School::Law],
                 sigils: vec![],
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
-            PlayerId::Named(NamedPlayer::NoAction),
+            PlayerId::AI(AIPlayer::NoAction),
             Deck {
                 side: Side::Champion,
                 schools: vec![School::Law],

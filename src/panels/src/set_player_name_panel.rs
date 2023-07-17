@@ -17,7 +17,7 @@ use core_ui::list_cell::ListCell;
 use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
-use game_data::player_name::NamedPlayer;
+use game_data::player_name::AIPlayer;
 use game_data::primitives::Side;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use user_action_data::DebugAction;
@@ -47,7 +47,7 @@ impl Component for SetPlayerNamePanel {
             .content(
                 ScrollView::new("Opponent List")
                     .style(Style::new().margin(Edge::Vertical, 16.px()).flex_grow(1.0))
-                    .children(enum_iterator::all::<NamedPlayer>().map(|n| {
+                    .children(enum_iterator::all::<AIPlayer>().map(|n| {
                         ListCell::new(n.displayed_name()).button(
                             Button::new("Use").action(DebugAction::SetNamedPlayer(self.side, n)),
                         )

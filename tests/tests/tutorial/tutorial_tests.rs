@@ -14,7 +14,7 @@
 
 use core_ui::actions::InterfaceAction;
 use game_data::card_name::CardName;
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::RoomId;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{
@@ -24,7 +24,7 @@ use protos::spelldawn::{
 use test_utils::client::TestSession;
 use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
-static OPPONENT: PlayerId = PlayerId::Named(NamedPlayer::TutorialOpponent);
+static OPPONENT: PlayerId = PlayerId::AI(AIPlayer::TutorialOpponent);
 
 #[test]
 fn set_up_tutorial() {

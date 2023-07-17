@@ -29,7 +29,7 @@ use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
 use game_data::game::{GameConfiguration, GameState, MulliganDecision};
 use game_data::game_actions::{GameAction, PromptAction};
-use game_data::player_name::{NamedPlayer, PlayerId};
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};
 
@@ -56,8 +56,8 @@ pub fn run_matchup(c: &mut Criterion) {
     group.bench_function("run_matchup", |b| {
         b.iter(|| {
             let _result = run_matchup_impl::run(Args {
-                overlord: NamedPlayer::BenchmarkAlphaBetaDepth3,
-                champion: NamedPlayer::BenchmarkAlphaBetaDepth3,
+                overlord: AIPlayer::BenchmarkAlphaBetaDepth3,
+                champion: AIPlayer::BenchmarkAlphaBetaDepth3,
                 move_time: 3600,
                 matches: 1,
                 verbosity: Verbosity::None,
@@ -175,9 +175,9 @@ pub fn alpha_beta_search(c: &mut Criterion) {
 fn create_canonical_game() -> Result<GameState> {
     let mut game = GameState::new(
         GameId::new_from_u128(0),
-        PlayerId::Named(NamedPlayer::NoAction),
+        PlayerId::AI(AIPlayer::NoAction),
         decklists::CANONICAL_OVERLORD.clone(),
-        PlayerId::Named(NamedPlayer::NoAction),
+        PlayerId::AI(AIPlayer::NoAction),
         decklists::CANONICAL_CHAMPION.clone(),
         GameConfiguration { deterministic: true, simulation: true, scripted_tutorial: false },
     );

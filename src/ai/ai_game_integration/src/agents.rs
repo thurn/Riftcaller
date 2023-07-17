@@ -20,7 +20,7 @@ use ai_tree_search::alpha_beta::AlphaBetaAlgorithm;
 use ai_tree_search::minimax::MinimaxAlgorithm;
 use anyhow::Result;
 use game_data::game_actions::GameAction;
-use game_data::player_name::NamedPlayer;
+use game_data::player_name::AIPlayer;
 use with_error::fail;
 
 use crate::evaluators::{
@@ -29,32 +29,32 @@ use crate::evaluators::{
 };
 use crate::state_node::SpelldawnState;
 
-pub fn get(name: NamedPlayer) -> Box<dyn Agent<SpelldawnState>> {
+pub fn get(name: AIPlayer) -> Box<dyn Agent<SpelldawnState>> {
     match name {
-        NamedPlayer::NoAction => Box::new(NoActionAgent {}),
-        NamedPlayer::TutorialOpponent => Box::new(AgentData::omniscient(
+        AIPlayer::NoAction => Box::new(NoActionAgent {}),
+        AIPlayer::TutorialOpponent => Box::new(AgentData::omniscient(
             "TUTORIAL",
             MinimaxAlgorithm { search_depth: 4 },
             ScoreEvaluator {},
         )),
-        NamedPlayer::DebugChampion => Box::new(NoActionAgent {}),
-        NamedPlayer::DebugOverlord => Box::new(NoActionAgent {}),
-        NamedPlayer::TestMinimax => Box::new(AgentData::omniscient(
+        AIPlayer::DebugChampion => Box::new(NoActionAgent {}),
+        AIPlayer::DebugOverlord => Box::new(NoActionAgent {}),
+        AIPlayer::TestMinimax => Box::new(AgentData::omniscient(
             "MINIMAX",
             MinimaxAlgorithm { search_depth: 4 },
             ScoreEvaluator {},
         )),
-        NamedPlayer::TestAlphaBetaScores => Box::new(AgentData::omniscient(
+        AIPlayer::TestAlphaBetaScores => Box::new(AgentData::omniscient(
             "ALPHA_BETA_SCORES",
             AlphaBetaAlgorithm { search_depth: 4 },
             CompoundEvaluator { evaluators: vec![(1, Box::new(ScoreEvaluator {}))] },
         )),
-        NamedPlayer::BenchmarkAlphaBetaDepth3 => Box::new(AgentData::omniscient(
+        AIPlayer::BenchmarkAlphaBetaDepth3 => Box::new(AgentData::omniscient(
             "ALPHA_BETA_DEPTH_3",
             AlphaBetaAlgorithm { search_depth: 3 },
             CompoundEvaluator { evaluators: vec![(1, Box::new(ScoreEvaluator {}))] },
         )),
-        NamedPlayer::TestAlphaBetaHeuristics => Box::new(AgentData::omniscient(
+        AIPlayer::TestAlphaBetaHeuristics => Box::new(AgentData::omniscient(
             "ALPHA_BETA_HEURISTICS",
             AlphaBetaAlgorithm { search_depth: 4 },
             CompoundEvaluator {
@@ -67,7 +67,7 @@ pub fn get(name: NamedPlayer) -> Box<dyn Agent<SpelldawnState>> {
                 ],
             },
         )),
-        NamedPlayer::TestUct1 => Box::new(AgentData::omniscient(
+        AIPlayer::TestUct1 => Box::new(AgentData::omniscient(
             "UCT1",
             MonteCarloAlgorithm { child_score_algorithm: Uct1 {} },
             RandomPlayoutEvaluator {},
