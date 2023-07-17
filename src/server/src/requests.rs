@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt::{self, Display};
+
 use anyhow::Result;
 use core_ui::prelude::*;
 use database::Database;
@@ -89,18 +91,34 @@ pub fn update_screen_overlay(player: &PlayerState) -> Command {
     })
 }
 
+pub enum SceneName {
+    Game,
+    World,
+    Main,
+}
+
+impl Display for SceneName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            SceneName::Game => write!(f, "Game"),
+            SceneName::World => write!(f, "World"),
+            SceneName::Main => write!(f, "Main"),
+        }
+    }
+}
+
 /// Requests to switch to a new scene if it's not currently being displayed
-pub fn load_scene(name: impl Into<String>) -> Command {
+pub fn load_scene(name: SceneName) -> Command {
     Command::LoadScene(LoadSceneCommand {
-        scene_name: name.into(),
+        scene_name: name.to_string(),
         mode: SceneLoadMode::Single.into(),
         skip_if_current: true,
     })
 }
 
-pub fn force_load_scene(name: impl Into<String>) -> Command {
+pub fn force_load_scene(name: SceneName) -> Command {
     Command::LoadScene(LoadSceneCommand {
-        scene_name: name.into(),
+        scene_name: name.to_string(),
         mode: SceneLoadMode::Single.into(),
         skip_if_current: false,
     })

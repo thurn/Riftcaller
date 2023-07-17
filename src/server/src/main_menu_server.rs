@@ -19,12 +19,12 @@ use panel_address::StandardPanel;
 use player_data::PlayerState;
 use tracing::info;
 
-use crate::requests;
+use crate::requests::{self, SceneName};
 use crate::server_data::{ClientData, GameResponse};
 
 pub async fn connect(database: &impl Database, player: &PlayerState) -> Result<GameResponse> {
     info!(?player.id, "Connected");
-    let mut commands = vec![requests::load_scene("Main")];
+    let mut commands = vec![requests::load_scene(SceneName::Main)];
     commands.push(Panels::open(StandardPanel::MainMenu).into());
     let client_data = ClientData { adventure_id: None, game_id: None };
     let mut result = GameResponse::new(client_data).commands(commands);

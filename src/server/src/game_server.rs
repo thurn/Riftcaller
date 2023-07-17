@@ -29,6 +29,7 @@ use tutorial::tutorial_actions;
 use with_error::WithError;
 
 use crate::ai_agent_response::IncrementalUpdates;
+use crate::requests::SceneName;
 use crate::server_data::{ClientData, GameResponse, RequestData};
 use crate::{ai_agent_response, requests};
 
@@ -40,7 +41,7 @@ pub async fn connect(
     let game = requests::fetch_game(database, Some(game_id)).await?;
     info!(?player.id, ?game.id, "Connected to game");
     let side = game.player_side(player.id)?;
-    let mut commands = vec![requests::load_scene("Game")];
+    let mut commands = vec![requests::load_scene(SceneName::Game)];
     commands.append(&mut render::connect(&game, side)?);
     let client_data = ClientData {
         adventure_id: player.adventure.as_ref().map(|a| a.id),
@@ -58,7 +59,7 @@ pub async fn handle_leave_game(
     requests::with_player(database, data, |player| {
         player.status = None;
         Ok(GameResponse::new(ClientData::with_game_id(data, None))
-            .command(requests::load_scene("Main")))
+            .command(requests::load_scene(SceneName::Main)))
     })
     .await
 }

@@ -21,7 +21,7 @@ use player_data::PlayerState;
 use tracing::info;
 use with_error::WithError;
 
-use crate::requests;
+use crate::requests::{self, SceneName};
 use crate::server_data::{ClientData, GameResponse, RequestData};
 
 pub async fn connect(
@@ -30,7 +30,7 @@ pub async fn connect(
     adventure: &AdventureState,
 ) -> Result<GameResponse> {
     info!(?player.id, ?adventure.id, "Connected to adventure");
-    let mut commands = vec![requests::load_scene("World")];
+    let mut commands = vec![requests::load_scene(SceneName::World)];
     commands.append(&mut adventure_display::render(adventure)?);
     let client_data = ClientData { adventure_id: Some(adventure.id), game_id: None };
     let mut result = GameResponse::new(client_data).commands(commands);
@@ -49,7 +49,7 @@ pub async fn handle_new_adventure(
         let id = adventure.id;
         player.adventure = Some(adventure);
         Ok(GameResponse::new(ClientData::with_adventure_id(data, Some(id)))
-            .command(requests::load_scene("World")))
+            .command(requests::load_scene(SceneName::World)))
     })
     .await
 }
@@ -72,7 +72,7 @@ pub async fn handle_leave_adventure(
     requests::with_player(database, data, |player| {
         player.adventure = None;
         Ok(GameResponse::new(ClientData::with_adventure_id(data, None))
-            .command(requests::load_scene("Main")))
+            .command(requests::load_scene(SceneName::Main)))
     })
     .await
 }

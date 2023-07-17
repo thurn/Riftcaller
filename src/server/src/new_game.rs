@@ -26,6 +26,7 @@ use user_action_data::{NewGameAction, NewGameDeck};
 use with_error::fail;
 
 use crate::ai_agent_response::IncrementalUpdates;
+use crate::requests::SceneName;
 use crate::server_data::{ClientData, GameResponse, OpponentData, RequestData};
 use crate::{ai_agent_response, requests};
 
@@ -94,8 +95,8 @@ pub async fn create(
     ai_agent_response::maybe_run_ai(data, &mut game, IncrementalUpdates::Skip).await?;
 
     let result = Ok(GameResponse::new(ClientData::with_game_id(data, Some(game_id)))
-        .command(requests::force_load_scene("Game"))
-        .opponent_response(opponent_id, vec![requests::force_load_scene("Game")]));
+        .command(requests::force_load_scene(SceneName::Game))
+        .opponent_response(opponent_id, vec![requests::force_load_scene(SceneName::Game)]));
 
     database.write_game(&game).await?;
     database.write_player(&player).await?;
