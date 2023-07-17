@@ -113,19 +113,19 @@ pub async fn add_panels(
     response: &mut GameResponse,
 ) -> Result<()> {
     // Currently we unconditionally include all panels with every response. This
-    // is something to revisit in the future if the payload size becomes too large.
-    let panels = if let Some(p) = player {
-        all_panels::player_panels(p)
-            .into_iter()
-            .map(PanelAddress::PlayerPanel)
-            .chain(all_panels::standard_panels().into_iter().map(PanelAddress::StandardPanel))
-            .collect::<Vec<PanelAddress>>()
-    } else {
-        all_panels::standard_panels()
+    // is something to revisit in the future if the payload size becomes too
+    // large.
+    let panels = fetch_player_if_needed(database, player_id, player, |player_data| {
+        Ok(all_panels::standard_panels()
             .into_iter()
             .map(PanelAddress::StandardPanel)
-            .collect::<Vec<PanelAddress>>()
-    };
+            .chain(
+                all_panels::player_panels(player_data).into_iter().map(PanelAddress::PlayerPanel),
+            )
+            .collect::<Vec<PanelAddress>>())
+    })
+    .await?;
+
     if let Some(command) = fetch_panels(database, player_id, player, &panels).await? {
         response.insert_command(0, command);
     }
@@ -176,12 +176,12 @@ pub async fn fetch_panels(
 
 /// Fetches information for the current player if it is not already populated in
 /// `player`.
-async fn fetch_player_if_needed(
+async fn fetch_player_if_needed<T>(
     database: &impl Database,
     player_id: PlayerId,
     player: Option<&PlayerState>,
-    mut fun: impl FnMut(&PlayerState) -> Result<()>,
-) -> Result<()> {
+    mut fun: impl FnMut(&PlayerState) -> Result<T>,
+) -> Result<T> {
     match player {
         Some(p) => fun(p),
         None => {

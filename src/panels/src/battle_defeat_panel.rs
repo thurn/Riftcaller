@@ -15,28 +15,29 @@
 //! Panel shown at the end of a game summarizing the result
 
 use core_ui::button::{Button, ButtonType};
+use core_ui::design::FontSize;
 use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use panel_address::{GameOverData, Panel, PanelAddress, PlayerPanel};
-use protos::spelldawn::{FlexAlign, FlexJustify};
+use core_ui::text::Text;
+use panel_address::{Panel, PanelAddress, PlayerPanel};
+use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
 use user_action_data::UserAction;
 
 #[derive(Debug)]
-pub struct GameOverPanel {
-    pub data: GameOverData,
-}
+pub struct BattleDefeatPanel {}
 
-impl Panel for GameOverPanel {
+impl Panel for BattleDefeatPanel {
     fn address(&self) -> PanelAddress {
-        PlayerPanel::GameOver(self.data).into()
+        PlayerPanel::BattleDefeat.into()
     }
 }
 
-impl Component for GameOverPanel {
+impl Component for BattleDefeatPanel {
     fn build(self) -> Option<Node> {
         PanelWindow::new(self.address(), 512.px(), 350.px())
+            .title("Game Over")
             .content(
                 Column::new("Buttons")
                     .style(
@@ -44,6 +45,11 @@ impl Component for GameOverPanel {
                             .width(100.pct())
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center),
+                    )
+                    .child(
+                        Text::new("Your adventure ends here, wanderer.")
+                            .white_space(WhiteSpace::Normal)
+                            .font_size(FontSize::Headline),
                     )
                     .child(
                         Button::new("Main Menu")

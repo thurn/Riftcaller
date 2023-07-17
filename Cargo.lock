@@ -1799,6 +1799,7 @@ name = "panels"
 version = "0.0.0"
 dependencies = [
  "adventure_data",
+ "anyhow",
  "assets",
  "core_ui",
  "enum-iterator",
@@ -1807,6 +1808,7 @@ dependencies = [
  "player_data",
  "protos",
  "user_action_data",
+ "with_error",
 ]
 
 [[package]]

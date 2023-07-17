@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::AdventureState;
+use adventure_data::adventure::{AdventureState, BattleData, TileEntity};
 use anyhow::Result;
 use enum_kinds::EnumKind;
 use game_data::deck::Deck;
@@ -121,5 +121,15 @@ pub fn current_game_id(data: Option<PlayerState>) -> Option<GameId> {
     match data.as_ref().and_then(|player| player.status.as_ref()) {
         Some(PlayerStatus::Playing(id)) => Some(*id),
         _ => None,
+    }
+}
+
+/// Returns the battle tile the player is currently visiting, or None if
+/// they are not currently visiting a battle tile.
+pub fn current_battle(player: &PlayerState) -> Option<&BattleData> {
+    if let TileEntity::Battle(data) = player.adventure.as_ref()?.visiting_tile().ok()? {
+        Some(data)
+    } else {
+        None
     }
 }

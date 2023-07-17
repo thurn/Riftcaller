@@ -25,10 +25,11 @@ use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
 use panel_address::{Panel, PanelAddress, PlayerPanel, StandardPanel};
 use panels::about_panel::AboutPanel;
 use panels::adventure_menu::AdventureMenu;
+use panels::battle_defeat_panel::BattleDefeatPanel;
+use panels::battle_victory_panel::BattleVictoryPanel;
 use panels::debug_panel::DebugPanel;
 use panels::disclaimer_panel::DisclaimerPanel;
 use panels::game_menu_panel::GameMenuPanel;
-use panels::game_over_panel::GameOverPanel;
 use panels::loading_panel::LoadingPanel;
 use panels::main_menu_panel::MainMenuPanel;
 use panels::set_player_name_panel::SetPlayerNamePanel;
@@ -103,7 +104,8 @@ pub fn render_player_panel(
             collection: &player.adventure()?.collection,
         }
         .build_panel(),
-        PlayerPanel::GameOver(data) => GameOverPanel { data }.build_panel(),
+        PlayerPanel::BattleVictory => BattleVictoryPanel::new(player).build_panel(),
+        PlayerPanel::BattleDefeat => BattleDefeatPanel {}.build_panel(),
         PlayerPanel::AdventureTile(position) => {
             adventure_panels::tile_entity_panel(player, position)?
         }

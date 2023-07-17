@@ -24,7 +24,7 @@ mod summon;
 
 use anyhow::Result;
 use game_data::game::{
-    GameState, HistoryEntry, HistoryEvent, InternalRaidPhase, RaidData, RaidJumpRequest,
+    GamePhase, GameState, HistoryEntry, HistoryEvent, InternalRaidPhase, RaidData, RaidJumpRequest,
 };
 use game_data::game_actions::{GamePrompt, PromptAction};
 use game_data::primitives::{RaidId, RoomId, Side};
@@ -126,6 +126,10 @@ pub fn handle_action(game: &mut GameState, user_side: Side, action: PromptAction
 /// Returns a list of the user actions which are possible in the current raid
 /// state for the `side` player, or `None` if no such actions are possible.
 pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<PromptAction>>> {
+    if game.info.phase != GamePhase::Play {
+        return Ok(None);
+    }
+
     if let Some(raid) = &game.info.raid {
         if raid.phase().active_side() == user_side {
             let prompts = raid.phase().prompts(game)?;

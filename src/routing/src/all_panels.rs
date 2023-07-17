@@ -46,6 +46,7 @@ pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
                 state.entity.as_ref().map(|_| PlayerPanel::AdventureTile(*position))
             }))
             .chain(add_deck_editor_panels(adventure))
+            .chain(vec![PlayerPanel::BattleVictory, PlayerPanel::BattleDefeat])
             .collect()
     } else {
         panels

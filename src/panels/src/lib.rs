@@ -17,11 +17,12 @@
 
 pub mod about_panel;
 pub mod adventure_menu;
+pub mod battle_defeat_panel;
+pub mod battle_victory_panel;
 pub mod button_menu;
 pub mod debug_panel;
 pub mod disclaimer_panel;
 pub mod game_menu_panel;
-pub mod game_over_panel;
 pub mod loading_panel;
 pub mod main_menu_panel;
 pub mod set_player_name_panel;

@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use ::panels::game_over_panel::GameOverPanel;
 use adapters::response_builder::ResponseBuilder;
-use core_ui::panels::{self, Panels};
+use core_ui::panels::Panels;
 use game_data::game::{GamePhase, GameState};
-use panel_address::{GameOverData, Panel, PlayerPanel};
+use panel_address::PlayerPanel;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};
 
@@ -35,10 +34,13 @@ pub fn check_game_over(builder: &mut ResponseBuilder, game: &GameState) {
             .into(),
         }));
 
-        let data = GameOverData { game_id: game.id, winner };
-        if let Some(panel) = (GameOverPanel { data }.build_panel()) {
-            builder.push(panels::update(panel));
-        }
-        builder.push(Panels::open(PlayerPanel::GameOver(data)).into())
+        builder.push(
+            Panels::open(if winner == builder.user_side {
+                PlayerPanel::BattleVictory
+            } else {
+                PlayerPanel::BattleDefeat
+            })
+            .into(),
+        )
     }
 }

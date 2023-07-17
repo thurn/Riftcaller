@@ -24,7 +24,7 @@ use player_data::PlayerStatus;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
-use rules::mana;
+use rules::{mana, mutations};
 use ulid::Ulid;
 use user_action_data::{
     DebugAction, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
@@ -78,7 +78,7 @@ pub async fn handle_debug_action(
         }
         DebugAction::AddScore(amount) => {
             game_server::update_game(database, data, |game, user_side| {
-                game.player_mut(user_side).score += amount;
+                mutations::score_points(game, user_side, *amount)?;
                 Ok(())
             })
             .await

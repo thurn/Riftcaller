@@ -78,7 +78,7 @@ impl DebugPanel {
             ))
             .child(debug_button(format!("+10{}", icons::MANA), DebugAction::AddMana(10)))
             .child(debug_button(format!("+{}", icons::ACTION), DebugAction::AddActionPoints(1)))
-            .child(debug_button("+ Point", DebugAction::AddScore(1)))
+            .child(debug_button("+15p", DebugAction::AddScore(15)))
             .child(debug_button("Flip View", DebugAction::FlipViewpoint))
             .child(debug_button(format!("{} 1", icons::SAVE), DebugAction::SaveGameState(1)))
             .child(debug_button(format!("{} 1", icons::RESTORE), DebugAction::LoadGameState(1)))

@@ -37,6 +37,7 @@ pub struct ScreenOverlay<'a> {
     player: &'a PlayerState,
     show_close_button: Option<Panels>,
     show_deck_button: bool,
+    show_coin_count: bool,
     show_menu_button: bool,
 }
 
@@ -46,6 +47,7 @@ impl<'a> ScreenOverlay<'a> {
             player,
             show_close_button: None,
             show_deck_button: player.current_activity().kind() == PlayerActivityKind::Adventure,
+            show_coin_count: player.current_activity().kind() == PlayerActivityKind::Adventure,
             show_menu_button: player.current_activity().kind() != PlayerActivityKind::None,
         }
     }
@@ -100,26 +102,28 @@ impl<'a> Component for ScreenOverlay<'a> {
                             })
                             .long_press_action(Panels::open(StandardPanel::DebugPanel(activity))),
                     )
-                    .child(self.player.adventure.as_ref().map(|adventure| {
-                        Row::new("CoinCount")
-                            .style(
-                                Style::new()
-                                    .margin(Edge::Horizontal, 12.px())
-                                    .padding(Edge::Horizontal, 8.px())
-                                    .height(80.px())
-                                    .background_color(BackgroundColor::CoinCountOverlay)
-                                    .border_radius(Corner::All, 12.px())
-                                    .border_color(Edge::All, COIN_COUNT_BORDER)
-                                    .border_width(Edge::All, 1.px()),
-                            )
-                            .child(
-                                Text::new(format!(
-                                    "{} <color=yellow>{}</color>",
-                                    adventure.coins,
-                                    icons::COINS
-                                ))
-                                .font_size(FontSize::CoinCount),
-                            )
+                    .child(self.show_coin_count.then(|| {
+                        self.player.adventure.as_ref().map(|adventure| {
+                            Row::new("CoinCount")
+                                .style(
+                                    Style::new()
+                                        .margin(Edge::Horizontal, 12.px())
+                                        .padding(Edge::Horizontal, 8.px())
+                                        .height(80.px())
+                                        .background_color(BackgroundColor::CoinCountOverlay)
+                                        .border_radius(Corner::All, 12.px())
+                                        .border_color(Edge::All, COIN_COUNT_BORDER)
+                                        .border_width(Edge::All, 1.px()),
+                                )
+                                .child(
+                                    Text::new(format!(
+                                        "{} <color=yellow>{}</color>",
+                                        adventure.coins,
+                                        icons::COINS
+                                    ))
+                                    .font_size(FontSize::CoinCount),
+                                )
+                        })
                     })),
             )
             .child(

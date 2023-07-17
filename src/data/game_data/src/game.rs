@@ -165,7 +165,7 @@ pub enum MulliganDecision {
 }
 
 /// [MulliganDecision]s for both players.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, Eq, PartialEq)]
 pub struct MulliganData {
     /// The mulligan decision for the Overlord player, or None if no decision
     /// has been made.
@@ -195,7 +195,7 @@ pub struct TurnData {
 }
 
 /// High level status of a game, including e.g. whose turn it is
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub enum GamePhase {
     ResolveMulligans(MulliganData),
     Play,
