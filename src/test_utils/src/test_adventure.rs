@@ -49,6 +49,7 @@ pub struct TestAdventure {
     pub interface: ClientInterface,
     pub map: TestWorldMap,
     pub database: FakeDatabase,
+    pub current_scene: Option<String>,
 }
 
 #[derive(Default)]
@@ -115,6 +116,7 @@ impl TestAdventure {
                     }
                 }),
             },
+            current_scene: None,
         };
 
         result.connect();
@@ -195,6 +197,19 @@ impl TestAdventure {
         self.perform_client_action(action.clone())
     }
 
+    /// Looks for a tile containing a world map character and then invokes its
+    /// 'on visit' action.
+    pub fn visit_tile_with_character(&mut self) -> GameResponseOutput {
+        let tile = self
+            .map
+            .tiles
+            .values()
+            .find(|t| t.tile.character.is_some())
+            .expect("No tile with character found");
+        let action = tile.tile.on_visit.as_ref().expect("No visit action found");
+        self.perform_client_action(action.clone())
+    }
+
     /// Invokes the event handlers for a node with the provided text on the top
     /// currently-open interface panel.
     pub fn click_on(&mut self, text: impl Into<String>) -> GameResponseOutput {
@@ -211,6 +226,10 @@ impl TestAdventure {
         self.perform_client_action(action)
     }
 
+    pub fn current_scene(&self) -> &str {
+        self.current_scene.as_ref().expect("No LoadSceneCommand received")
+    }
+
     fn handle_commands(&mut self, list: CommandList) -> Vec<ClientAction> {
         let mut actions = vec![];
         if let Some(m) = list.metadata {
@@ -219,7 +238,11 @@ impl TestAdventure {
         for c in list.commands {
             let command = c.command.expect("Command");
             actions.extend(self.interface.update(command.clone()));
-            self.map.update(command);
+            self.map.update(command.clone());
+
+            if let Command::LoadScene(s) = command {
+                self.current_scene = Some(s.scene_name);
+            }
         }
 
         actions
