@@ -33,7 +33,7 @@ use test_utils::*;
 #[test]
 fn initiate_raid() {
     let mut g = new_game(Side::Champion, Args::default());
-    let weapon_id = g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    let weapon_id = g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
 
     let response = g.initiate_raid(ROOM_ID);
@@ -137,7 +137,7 @@ fn do_not_summon_minion() {
 #[test]
 fn use_weapon() {
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
 
     g.initiate_raid(ROOM_ID);
@@ -178,7 +178,7 @@ fn use_weapon() {
 #[test]
 fn minion_with_shield() {
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     setup_raid_target(&mut g, CardName::TestMinionEndRaid);
     g.initiate_raid(ROOM_ID);
     click_on_summon(&mut g);
@@ -190,7 +190,7 @@ fn minion_with_shield() {
 #[test]
 fn fire_combat_ability() {
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
 
     g.initiate_raid(ROOM_ID);
@@ -236,7 +236,7 @@ fn fire_combat_ability() {
 #[test]
 fn score_scheme_card() {
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, _) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
     g.initiate_raid(ROOM_ID);
     click_on_summon(&mut g);
@@ -288,7 +288,7 @@ fn complete_raid() {
     let (scheme_id, _) = setup_raid_target(&mut g, CardName::TestMinionEndRaid);
 
     // Set up the raid to be the last action of a turn
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.perform(Action::SpendActionPoint(SpendActionPointAction {}), g.user_id());
     g.initiate_raid(ROOM_ID);
     click_on_summon(&mut g);
@@ -327,10 +327,10 @@ fn cannot_activate() {
         Args { turn: Some(Side::Overlord), actions: 2, opponent_mana: 0, ..Args::default() },
     );
 
-    g.play_from_hand(CardName::TestScheme3_15);
-    g.play_from_hand(CardName::TestMinionEndRaid);
+    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestMinionEndRaid);
 
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let response = g.initiate_raid(ROOM_ID);
     assert!(g.user.interface.controls().has_text("Score"));
     assert!(g.user.interface.controls().has_text("End Raid"));
@@ -340,7 +340,7 @@ fn cannot_activate() {
 #[test]
 fn destroy_project() {
     let mut g = new_game(Side::Champion, Args { turn: Some(Side::Overlord), ..Args::default() });
-    let project_id = g.play_from_hand(CardName::TestProject2Cost);
+    let project_id = g.create_and_play(CardName::TestProject2Cost);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     g.initiate_raid(ROOM_ID);
 
@@ -375,7 +375,7 @@ fn raid_vault() {
     );
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     click_on_summon(&mut g);
     let response = g.click_on(g.user_id(), "Test Weapon");
@@ -392,7 +392,7 @@ fn raid_sanctum() {
 
     g.add_to_hand(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Sanctum);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Sanctum);
     click_on_summon(&mut g);
 
@@ -415,7 +415,7 @@ fn raid_crypts() {
 
     g.add_to_hand(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Crypts);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Crypts);
     click_on_summon(&mut g);
 
@@ -437,7 +437,7 @@ fn raid_vault_twice() {
     );
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     click_on_summon(&mut g);
     g.click_on(g.user_id(), "Test Weapon");
@@ -470,7 +470,7 @@ fn raid_no_defenders() {
         Args { turn: Some(Side::Overlord), actions: 1, ..Args::default() },
     );
 
-    g.play_from_hand(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_15);
     let response = g.initiate_raid(ROOM_ID);
     // Should immediately jump to the Score action
     assert!(g.user.interface.controls().has_text("Score"));
@@ -498,8 +498,8 @@ fn raid_no_occupants() {
         Args { turn: Some(Side::Overlord), actions: 1, ..Args::default() },
     );
 
-    g.play_from_hand(CardName::TestMinionEndRaid);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestMinionEndRaid);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let result = g.perform_action(
         Action::InitiateRaid(InitiateRaidAction { room_id: CLIENT_ROOM_ID.into() }),
         g.user_id(),
@@ -533,7 +533,7 @@ fn raid_two_defenders() {
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     click_on_summon(&mut g);
     let response = g.click_on(g.user_id(), "Test Weapon");
@@ -557,7 +557,7 @@ fn raid_two_defenders_full_raid() {
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     click_on_summon(&mut g);
     g.click_on(g.user_id(), "Test Weapon");
@@ -603,7 +603,7 @@ fn raid_two_defenders_cannot_afford_second() {
 
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     click_on_summon(&mut g);
     g.click_on(g.user_id(), "Test Weapon");
@@ -620,8 +620,8 @@ fn raid_add_defender() {
         Args { turn: Some(Side::Overlord), actions: 2, ..Args::default() },
     );
 
-    g.play_from_hand(CardName::TestMinionEndRaid);
-    g.play_from_hand(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestMinionEndRaid);
+    g.create_and_play(CardName::TestScheme3_15);
     assert!(g.dawn());
 
     // Raid 1
@@ -630,7 +630,7 @@ fn raid_add_defender() {
     g.click_on(g.user_id(), "Continue");
     assert!(!g.user.data.raid_active());
 
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
 
     // Raid 2, no summon
     g.initiate_raid(ROOM_ID);
@@ -641,8 +641,8 @@ fn raid_add_defender() {
 
     // Opponent Turn
     assert!(g.dusk());
-    g.play_from_hand(CardName::TestMinionDealDamage);
-    g.play_from_hand(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestMinionDealDamage);
+    g.create_and_play(CardName::TestScheme3_15);
     g.perform(Action::GainMana(GainManaAction {}), g.opponent_id());
 
     // User Turn, Raid 3

@@ -22,7 +22,7 @@ fn test_attack_weapon() {
     let card_cost = 3;
     let ability_cost = 1;
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::TestAttackWeapon);
+    g.create_and_play(CardName::TestAttackWeapon);
     fire_weapon_combat_abilities(&mut g, Lineage::Infernal, CardName::TestAttackWeapon);
     assert_eq!(STARTING_MANA - card_cost - ability_cost, g.me().mana());
     assert!(g.user.data.raid_active());
@@ -46,7 +46,7 @@ fn marauders_axe() {
 fn keen_halberd() {
     let (card_cost, activation_cost) = (3, 2);
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::KeenHalberd);
+    g.create_and_play(CardName::KeenHalberd);
     setup_raid_target(&mut g, CardName::TestMinionShield2Abyssal);
     g.initiate_raid(ROOM_ID);
     click_on_summon(&mut g);
@@ -61,8 +61,8 @@ fn keen_halberd() {
 fn bow_of_the_alliance() {
     let (card_cost, activation_cost) = (3, 1);
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::BowOfTheAlliance);
-    g.play_from_hand(CardName::BowOfTheAlliance);
+    g.create_and_play(CardName::BowOfTheAlliance);
+    g.create_and_play(CardName::BowOfTheAlliance);
     fire_weapon_combat_abilities(&mut g, Lineage::Mortal, CardName::BowOfTheAlliance);
     assert_eq!(STARTING_MANA - (2 * card_cost) - (2 * activation_cost), g.me().mana());
 }

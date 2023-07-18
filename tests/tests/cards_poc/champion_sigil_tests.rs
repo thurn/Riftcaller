@@ -38,7 +38,7 @@ fn aris_fey_the_radiant_sun() {
     );
 
     spend_actions_until_turn_over(&mut g, Side::Champion);
-    g.play_from_hand(CardName::TestMinionDealDamage);
+    g.create_and_play(CardName::TestMinionDealDamage);
     set_up_minion_combat(&mut g);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
@@ -86,10 +86,10 @@ fn ubras_efaris_time_shaper() {
         new_game(Side::Champion, Args { sigils: vec![CardName::ArcaneSigil], ..Args::default() });
 
     assert_eq!(3, g.me().actions());
-    g.play_from_hand(CardName::TestChampionSpell);
+    g.create_and_play(CardName::TestChampionSpell);
     assert_eq!(2, g.me().actions());
-    g.play_from_hand(CardName::TestChampionSpell);
+    g.create_and_play(CardName::TestChampionSpell);
     assert_eq!(2, g.me().actions());
-    g.play_from_hand(CardName::TestChampionSpell);
+    g.create_and_play(CardName::TestChampionSpell);
     assert_eq!(1, g.me().actions());
 }

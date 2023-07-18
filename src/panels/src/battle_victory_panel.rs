@@ -94,7 +94,7 @@ impl<'a> Component for BattleVictoryPanel<'a> {
         };
 
         PanelWindow::new(self.address(), 512.px(), 350.px())
-            .title(if self.data.is_some() { "Rewards" } else { "Game Over" })
+            .title(if self.data.is_some() { "Rewards" } else { "You Win!" })
             .content(content)
             .build()
     }

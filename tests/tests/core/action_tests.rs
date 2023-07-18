@@ -228,7 +228,7 @@ fn cannot_gain_mana_during_raid() {
 #[test]
 fn level_up_room() {
     let mut g = new_game(Side::Overlord, Args { mana: 10, ..Args::default() });
-    g.play_from_hand(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_15);
     let response = g.perform_action(
         Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() }),
         g.user_id(),
@@ -242,12 +242,12 @@ fn level_up_room() {
 #[test]
 fn minion_limit() {
     let mut g = new_game(Side::Overlord, Args { actions: 6, ..Args::default() });
-    g.play_from_hand(CardName::TestMinionEndRaid);
-    g.play_from_hand(CardName::TestInfernalMinion);
-    g.play_from_hand(CardName::TestAbyssalMinion);
-    g.play_from_hand(CardName::TestMortalMinion);
+    g.create_and_play(CardName::TestMinionEndRaid);
+    g.create_and_play(CardName::TestInfernalMinion);
+    g.create_and_play(CardName::TestAbyssalMinion);
+    g.create_and_play(CardName::TestMortalMinion);
     assert_eq!(g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Front).len(), 4);
-    g.play_from_hand(CardName::TestMinionDealDamage);
+    g.create_and_play(CardName::TestMinionDealDamage);
     assert_eq!(g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Front).len(), 4);
     assert_eq!(g.user.cards.discard_pile(PlayerName::User), vec!["Test Minion End Raid"]);
 }
@@ -255,7 +255,7 @@ fn minion_limit() {
 #[test]
 fn score_overlord_card() {
     let mut g = new_game(Side::Overlord, Args { mana: 10, actions: 5, ..Args::default() });
-    let scheme_id = g.play_from_hand(CardName::TestScheme3_15);
+    let scheme_id = g.create_and_play(CardName::TestScheme3_15);
     let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
     g.perform(level_up.clone(), g.user_id());
@@ -273,7 +273,7 @@ fn score_overlord_card() {
 fn overlord_win_game() {
     let mut g =
         new_game(Side::Overlord, Args { mana: 10, score: 90, actions: 5, ..Args::default() });
-    g.play_from_hand(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_15);
     let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
     g.perform(level_up.clone(), g.user_id());
@@ -307,7 +307,7 @@ fn switch_turn() {
 #[test]
 fn activate_ability() {
     let mut g = new_game(Side::Champion, Args { actions: 3, ..Args::default() });
-    g.play_from_hand(CardName::TestActivatedAbilityTakeMana);
+    g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     let ability_card_id = g
         .user
         .cards
@@ -332,7 +332,7 @@ fn activate_ability() {
 #[test]
 fn activate_ability_take_all_mana() {
     let mut g = new_game(Side::Champion, Args { actions: 3, ..Args::default() });
-    let id = g.play_from_hand(CardName::TestActivatedAbilityTakeMana);
+    let id = g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     let ability_card_id = g
         .user
         .cards
@@ -370,7 +370,7 @@ fn activate_ability_take_all_mana() {
 #[test]
 fn triggered_unveil_ability() {
     let mut g = new_game(Side::Overlord, Args { actions: 1, ..Args::default() });
-    g.play_from_hand(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
     assert_eq!(STARTING_MANA, g.user.this_player.mana());
     spend_actions_until_turn_over(&mut g, Side::Champion);
@@ -383,7 +383,7 @@ fn triggered_unveil_ability() {
 #[test]
 fn triggered_ability_cannot_unveil() {
     let mut g = new_game(Side::Overlord, Args { actions: 1, mana: 0, ..Args::default() });
-    g.play_from_hand(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
     assert_eq!(0, g.user.this_player.mana());
     spend_actions_until_turn_over(&mut g, Side::Champion);
@@ -395,7 +395,7 @@ fn triggered_ability_cannot_unveil() {
 #[test]
 fn triggered_ability_take_all_mana() {
     let mut g = new_game(Side::Overlord, Args { actions: 1, ..Args::default() });
-    let id = g.play_from_hand(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     let mut taken = 0;
     let mut unveiled = false;
     while taken < MANA_STORED {
@@ -465,7 +465,7 @@ fn legal_actions() {
 #[test]
 fn legal_actions_level_up_room() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_15);
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![GameAction::GainMana, GameAction::DrawCard, GameAction::LevelUpRoom(RoomId::RoomA)],

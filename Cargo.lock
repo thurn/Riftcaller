@@ -2847,6 +2847,7 @@ dependencies = [
  "cards_all",
  "core_ui",
  "database",
+ "decklists",
  "game_data",
  "maplit",
  "player_data",

@@ -22,7 +22,7 @@ use test_utils::*;
 #[test]
 fn gold_mine() {
     let mut g = new_game(Side::Overlord, Args::default());
-    let id = g.play_from_hand(CardName::GoldMine);
+    let id = g.create_and_play(CardName::GoldMine);
     level_up_room(&mut g, 4);
     assert_eq!(g.me().score(), 30);
     assert_eq!(STARTING_MANA - 4 /* level cost */ + 7 /* gained */, g.me().mana());
@@ -35,8 +35,8 @@ fn gold_mine() {
 #[test]
 fn activate_reinforcements() {
     let mut g = new_game(Side::Overlord, Args::default());
-    let id = g.play_from_hand(CardName::ActivateReinforcements);
-    let minion = g.play_from_hand(CardName::TestMinionEndRaid);
+    let id = g.create_and_play(CardName::ActivateReinforcements);
+    let minion = g.create_and_play(CardName::TestMinionEndRaid);
     assert!(!g.user.get_card(minion).is_face_up());
     level_up_room(&mut g, 5);
     assert_eq!(g.me().score(), 45);
@@ -51,7 +51,7 @@ fn activate_reinforcements() {
 #[test]
 fn research_project() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::ResearchProject);
+    g.create_and_play(CardName::ResearchProject);
     level_up_room(&mut g, 2);
     spend_actions_until_turn_over(&mut g, Side::Champion);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());

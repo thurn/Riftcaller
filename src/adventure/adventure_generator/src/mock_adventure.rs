@@ -30,6 +30,8 @@ const BOTTOM_RIGHT: u8 = 0b00000100;
 const BOTTOM_LEFT: u8 = 0b00000010;
 const LEFT: u8 = 0b00000001;
 
+pub const BATTLE_POSITION: TilePosition = TilePosition { x: 3, y: 2 };
+
 /// Builds an 'adventure' mode world map for use in tests
 pub fn create(
     id: AdventureId,
@@ -60,7 +62,13 @@ pub fn create(
             road(TOP_RIGHT | BOTTOM_LEFT, 0),
         );
     } else {
-        add_with_road(&mut tiles, 3, 2, "hexPlains00", road(TOP_RIGHT | BOTTOM_LEFT, 0));
+        add_with_road(
+            &mut tiles,
+            BATTLE_POSITION.x,
+            BATTLE_POSITION.y,
+            "hexPlains00",
+            road(TOP_RIGHT | BOTTOM_LEFT, 0),
+        );
     }
 
     add_tile(&mut tiles, 4, 2, "hexPlainsSmithy00");

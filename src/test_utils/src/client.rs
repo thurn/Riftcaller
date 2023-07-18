@@ -19,6 +19,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use actions::legal_actions;
+use adventure_data::adventure::Coins;
 use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::card_state::{CardPosition, CardState};
@@ -37,10 +38,10 @@ use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
     card_target, ArrowTargetRoom, CardIdentifier, CardTarget, CardView, ClientAction,
     ClientItemLocation, ClientMetadata, ClientRoomLocation, CommandList, GameMessageType,
-    GameObjectIdentifier, GameRequest, InitiateRaidAction, NoTargeting, ObjectPosition,
-    ObjectPositionBrowser, ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem,
-    ObjectPositionRevealedCards, ObjectPositionRoom, PlayCardAction, PlayInRoom, PlayerName,
-    PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
+    GameObjectIdentifier, GameRequest, InitiateRaidAction, LevelUpRoomAction, NoTargeting,
+    ObjectPosition, ObjectPositionBrowser, ObjectPositionDiscardPile, ObjectPositionHand,
+    ObjectPositionItem, ObjectPositionRevealedCards, ObjectPositionRoom, PlayCardAction,
+    PlayInRoom, PlayerName, PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
 use server::ai_agent_response;
@@ -202,6 +203,16 @@ impl TestSession {
         .expect("Server Error")
     }
 
+    /// Helper function to invoke [Self::perform] to level up the
+    /// provided `room_id`.
+    pub fn level_up_room(&mut self, room_id: RoomId) -> GameResponseOutput {
+        self.perform_action(
+            Action::LevelUpRoom(LevelUpRoomAction { room_id: adapters::room_identifier(room_id) }),
+            self.player_id_for_side(Side::Overlord),
+        )
+        .expect("Server Error")
+    }
+
     /// Adds a named card to its owner's hand.
     ///
     /// This function operates by locating a test card in the owner's deck and
@@ -250,7 +261,7 @@ impl TestSession {
     /// is returned.
     ///
     /// Panics if the server returns an error for playing this card.
-    pub fn play_from_hand(&mut self, card_name: CardName) -> CardIdentifier {
+    pub fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier {
         self.play_impl(
             card_name,
             match rules::get(card_name).card_type {
@@ -260,7 +271,7 @@ impl TestSession {
         )
     }
 
-    /// Equivalent method to [Self::play_from_hand] which specifies
+    /// Equivalent method to [Self::create_and_play] which specifies
     /// a target room to use.
     pub fn play_with_target_room(
         &mut self,
@@ -303,6 +314,19 @@ impl TestSession {
     pub fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
         let (_, player, _) = self.opponent_local_remote(player_id);
         let handlers = player.interface.controls().find_handlers(text);
+        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
+        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
+    }
+
+    /// Equivalent to 'click on' for the topmost visible panel.
+    pub fn click_on_in_panel(
+        &mut self,
+        player_id: PlayerId,
+        text: impl Into<String>,
+    ) -> GameResponseOutput {
+        let (_, player, _) = self.opponent_local_remote(player_id);
+        eprintln!("Got text: {:?}", player.interface.top_panel().all_text());
+        let handlers = player.interface.top_panel().find_handlers(text);
         let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
         self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
     }
@@ -389,6 +413,14 @@ impl TestSession {
         ai_agent_response::run_agent_loop_for_tests(&self.database, game_id, user_id)
             .await
             .expect("Error running agent loop");
+    }
+
+    /// Returns the number of Coins the current player has in their active
+    /// adventure
+    pub fn current_coins(&self) -> Coins {
+        let db = self.database.players.lock().unwrap();
+        let player = db.get(&self.user_id());
+        player.unwrap().adventure.as_ref().unwrap().coins
     }
 
     fn activate_ability_impl(

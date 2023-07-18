@@ -23,10 +23,10 @@ use test_utils::*;
 fn meditation() {
     let mut g = new_game(Side::Champion, Args { mana: 5, ..Args::default() });
     assert_eq!(3, g.me().actions());
-    g.play_from_hand(CardName::Meditation);
+    g.create_and_play(CardName::Meditation);
     assert_eq!(9, g.me().mana());
     assert_eq!(1, g.me().actions());
-    g.play_from_hand(CardName::Meditation);
+    g.create_and_play(CardName::Meditation);
     assert_eq!(13, g.me().mana());
     assert!(g.dusk());
 }
@@ -53,7 +53,7 @@ fn coup_de_grace_invalid_room() {
 fn charged_strike() {
     let mut g = new_game(Side::Champion, Args::default());
     setup_raid_target(&mut g, minion_for_lineage(TEST_LINEAGE));
-    g.play_from_hand(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     assert_eq!(STARTING_MANA - 3, g.me().mana());
     g.play_with_target_room(CardName::ChargedStrike, ROOM_ID);
     assert!(g.user.data.raid_active());
@@ -82,10 +82,10 @@ fn stealth_mission() {
 fn preparation() {
     let mut g = new_game(Side::Champion, Args { mana: 5, ..Args::default() });
     assert_eq!(3, g.me().actions());
-    g.play_from_hand(CardName::Preparation);
+    g.create_and_play(CardName::Preparation);
     assert_eq!(4, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(1, g.me().actions());
-    g.play_from_hand(CardName::Preparation);
+    g.create_and_play(CardName::Preparation);
     assert_eq!(7, g.user.cards.hand(PlayerName::User).len()); // One discarded to hand size
     assert!(g.dusk());
 }

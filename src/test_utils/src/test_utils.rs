@@ -22,9 +22,8 @@ pub mod client_interface;
 pub mod fake_database;
 pub mod summarize;
 pub mod test_adventure;
-pub mod test_games;
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Debug;
 use std::fs;
 use std::hash::Hash;
@@ -32,17 +31,22 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Mutex;
 
 use adapters::ServerCardId;
+use adventure_data::adventure::{
+    AdventureConfiguration, AdventureState, BattleData, Coins, TileEntity,
+};
+use adventure_generator::mock_adventure;
 use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::card_state::{CardPosition, CardPositionKind};
+use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::deck::Deck;
 use game_data::game::{
     GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData,
 };
-use game_data::player_name::PlayerId;
+use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{
-    ActionCount, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue, PointsValue, RaidId,
-    RoomId, Side,
+    ActionCount, AdventureId, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue,
+    PointsValue, RaidId, RoomId, Side,
 };
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
@@ -53,6 +57,8 @@ use protos::spelldawn::{
     CardIdentifier, CommandList, GameCommand, LevelUpRoomAction, RoomIdentifier,
     SpendActionPointAction,
 };
+use rand_xoshiro::rand_core::SeedableRng;
+use rand_xoshiro::Xoshiro256StarStar;
 use rules::{dispatch, mana};
 use server::server_data::GameResponseOutput;
 use ulid::Ulid;
@@ -143,6 +149,16 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
         })
     }
 
+    let (overlord_adventure, champion_adventure) = if let Some(adventure_args) = args.adventure {
+        let adventure = create_mock_adventure(user_id, user_side, adventure_args);
+        match user_side {
+            Side::Overlord => (Some(adventure), None),
+            Side::Champion => (None, Some(adventure)),
+        }
+    } else {
+        (None, None)
+    };
+
     let database = FakeDatabase {
         generated_game_id: None,
         game: Mutex::new(Some(game)),
@@ -150,13 +166,13 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
             overlord_user => PlayerState {
                 id: overlord_user,
                 status: Some(PlayerStatus::Playing(game_id)),
-                adventure: None,
+                adventure: overlord_adventure,
                 tutorial: TutorialData::default()
             },
             champion_user => PlayerState {
                 id: champion_user,
                 status: Some(PlayerStatus::Playing(game_id)),
-                adventure: None,
+                adventure: champion_adventure,
                 tutorial: TutorialData::default()
             }
         }),
@@ -190,6 +206,14 @@ pub fn generate_ids() -> (GameId, PlayerId, PlayerId) {
         PlayerId::Database(Ulid(next_id as u128)),
         PlayerId::Database(Ulid(next_id as u128 + 1)),
     )
+}
+
+#[derive(Clone, Debug)]
+pub struct AdventureArgs {
+    /// Coins the player currently has in this adventure
+    pub current_coins: Coins,
+    /// Coins the player will receive if they win this battle
+    pub reward: Coins,
 }
 
 /// Arguments to [new_game]
@@ -241,6 +265,8 @@ pub struct Args {
     pub connect: bool,
     /// If true, will configure the created game in scripted tutorial mode.
     pub tutorial: bool,
+    /// Add an ongoing adventure to the database for this player
+    pub adventure: Option<AdventureArgs>,
 }
 
 impl Default for Args {
@@ -263,6 +289,7 @@ impl Default for Args {
             add_raid: false,
             connect: true,
             tutorial: false,
+            adventure: None,
         }
     }
 }
@@ -374,7 +401,7 @@ pub fn set_up_minion_combat_with_action(
     session: &mut TestSession,
     action: impl FnOnce(&mut TestSession),
 ) {
-    session.play_from_hand(CardName::TestScheme3_15);
+    session.create_and_play(CardName::TestScheme3_15);
     spend_actions_until_turn_over(session, Side::Overlord);
     assert!(session.dawn());
     action(session);
@@ -408,8 +435,8 @@ pub fn setup_raid_target(
 ) -> (CardIdentifier, CardIdentifier) {
     spend_actions_until_turn_over(session, Side::Champion);
     assert!(session.dusk());
-    let scheme_id = session.play_from_hand(CardName::TestScheme3_15);
-    let minion_id = session.play_from_hand(card_name);
+    let scheme_id = session.create_and_play(CardName::TestScheme3_15);
+    let minion_id = session.create_and_play(card_name);
     spend_actions_until_turn_over(session, Side::Overlord);
     assert!(session.dawn());
     (scheme_id, minion_id)
@@ -536,4 +563,33 @@ pub fn record_output_for_side(session: &TestSession, name: String, side: Side) -
     fs::write(format!("../Assets/Resources/TestRecordings/test_{name}.bytes"), encoded)?;
 
     Ok(())
+}
+
+fn create_mock_adventure(player_id: PlayerId, side: Side, args: AdventureArgs) -> AdventureState {
+    let battle = TileEntity::Battle(BattleData {
+        opponent_id: AIPlayer::NoAction,
+        opponent_deck: decklists::canonical_deck(side.opponent()),
+        opponent_name: "Opponent Name".to_string(),
+        reward: args.reward,
+        character: CharacterPreset::Overlord,
+        character_facing: CharacterFacing::Down,
+        region_to_reveal: 2,
+    });
+    let mut adventure = mock_adventure::create(
+        AdventureId::new_from_u128(0),
+        AdventureConfiguration {
+            player_id,
+            side,
+            rng: Some(Xoshiro256StarStar::seed_from_u64(314159265358979323)),
+        },
+        decklists::canonical_deck(side),
+        HashMap::new(),
+        None,
+        None,
+        None,
+        Some(battle),
+    );
+    adventure.visiting_position = Some(mock_adventure::BATTLE_POSITION);
+    adventure.coins = args.current_coins;
+    adventure
 }

@@ -20,7 +20,7 @@ use test_utils::*;
 #[test]
 fn conspire() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Conspire);
+    g.create_and_play(CardName::Conspire);
     level_up_room(&mut g, 3);
     assert_eq!(g.me().score(), 15);
 }
@@ -28,7 +28,7 @@ fn conspire() {
 #[test]
 fn devise() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Devise);
+    g.create_and_play(CardName::Devise);
     level_up_room(&mut g, 4);
     assert_eq!(g.me().score(), 30);
 }
@@ -36,7 +36,7 @@ fn devise() {
 #[test]
 fn machinate() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Machinate);
+    g.create_and_play(CardName::Machinate);
     level_up_room(&mut g, 5);
     assert_eq!(g.me().score(), 45);
 }
@@ -45,7 +45,7 @@ fn machinate() {
 fn gathering_dark() {
     let (cost, gained) = (5, 9);
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::GatheringDark);
+    g.create_and_play(CardName::GatheringDark);
     assert_eq!(STARTING_MANA - cost + gained, g.me().mana());
 }
 
@@ -53,7 +53,7 @@ fn gathering_dark() {
 fn coinery() {
     let (card_cost, taken) = (2, 3);
     let mut g = new_game(Side::Overlord, Args::default());
-    let id = g.play_from_hand(CardName::Coinery);
+    let id = g.create_and_play(CardName::Coinery);
     g.activate_ability(id, 1);
     assert_eq!(STARTING_MANA - card_cost + taken, g.me().mana());
     assert!(g.user.get_card(id).is_face_up());
@@ -65,7 +65,7 @@ fn coinery() {
 fn leyline() {
     let (card_cost, gained) = (2, 1);
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Leyline);
+    g.create_and_play(CardName::Leyline);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
     click_on_unveil(&mut g);
@@ -82,7 +82,7 @@ fn leyline() {
 fn ore_refinery() {
     let (card_cost, stored, taken) = (4, 12, 3);
     let mut g = new_game(Side::Overlord, Args::default());
-    let id = g.play_from_hand(CardName::OreRefinery);
+    let id = g.create_and_play(CardName::OreRefinery);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
     assert_eq!(STARTING_MANA, g.me().mana());
@@ -94,7 +94,7 @@ fn ore_refinery() {
 #[test]
 fn crab() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Crab);
+    g.create_and_play(CardName::Crab);
     set_up_minion_combat(&mut g);
     click_on_continue(&mut g);
     assert!(!g.user.data.raid_active());
@@ -104,7 +104,7 @@ fn crab() {
 fn fire_goblin() {
     let (cost, gained) = (1, 1);
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::FireGoblin);
+    g.create_and_play(CardName::FireGoblin);
     set_up_minion_combat(&mut g);
     assert_eq!(STARTING_MANA - cost, g.me().mana());
     click_on_continue(&mut g);
@@ -115,7 +115,7 @@ fn fire_goblin() {
 #[test]
 fn toucan() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Toucan);
+    g.create_and_play(CardName::Toucan);
     set_up_minion_combat(&mut g);
     click_on_continue(&mut g);
     assert!(!g.user.data.raid_active());
@@ -124,7 +124,7 @@ fn toucan() {
 #[test]
 fn frog() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Frog);
+    g.create_and_play(CardName::Frog);
     set_up_minion_combat(&mut g);
     click_on_continue(&mut g);
     assert!(!g.user.data.raid_active());
@@ -133,7 +133,7 @@ fn frog() {
 #[test]
 fn captain() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Captain);
+    g.create_and_play(CardName::Captain);
     set_up_minion_combat(&mut g);
     click_on_continue(&mut g);
     assert!(!g.user.data.raid_active());
@@ -143,7 +143,7 @@ fn captain() {
 #[test]
 fn scout() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Scout);
+    g.create_and_play(CardName::Scout);
     set_up_minion_combat(&mut g);
     click_on_continue(&mut g);
     assert!(!g.user.data.raid_active());

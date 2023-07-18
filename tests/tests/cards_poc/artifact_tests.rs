@@ -25,7 +25,7 @@ fn invisibility_ring() {
     g.add_to_hand(CardName::TestScheme3_15);
     g.add_to_hand(CardName::TestScheme3_15);
 
-    g.play_from_hand(CardName::InvisibilityRing);
+    g.create_and_play(CardName::InvisibilityRing);
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(2, g.user.interface.card_anchor_nodes().len());
     assert_eq!(vec!["Score!"], g.user.interface.card_anchor_nodes()[0].get_text());
@@ -40,7 +40,7 @@ fn invisibility_ring() {
 fn accumulator() {
     let card_cost = 3;
     let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::Accumulator);
+    let id = g.create_and_play(CardName::Accumulator);
     g.initiate_raid(RoomId::Crypts);
     click_on_end_raid(&mut g);
     assert_eq!("1", g.user.get_card(id).arena_icon());
@@ -52,7 +52,7 @@ fn accumulator() {
 fn mage_gloves() {
     let card_cost = 5;
     let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::MageGloves);
+    let id = g.create_and_play(CardName::MageGloves);
     assert_eq!("12", g.user.get_card(id).arena_icon());
     assert_eq!(
         vec![RoomIdentifier::Vault, RoomIdentifier::Sanctum, RoomIdentifier::Crypts],
@@ -86,7 +86,7 @@ fn mage_gloves_play_after_raid() {
 #[should_panic]
 fn mage_gloves_repeat_panic() {
     let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::MageGloves);
+    let id = g.create_and_play(CardName::MageGloves);
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
     click_on_end_raid(&mut g);
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
@@ -96,7 +96,7 @@ fn mage_gloves_repeat_panic() {
 fn magical_resonator() {
     let card_cost = 1;
     let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::MagicalResonator);
+    let id = g.create_and_play(CardName::MagicalResonator);
     g.activate_ability(id, 1);
     assert_eq!(STARTING_MANA - card_cost + 3, g.me().mana());
     assert_eq!("6", g.user.get_card(id).arena_icon());
@@ -106,7 +106,7 @@ fn magical_resonator() {
 #[should_panic]
 fn magical_resonator_cannot_activate_twice() {
     let mut g = new_game(Side::Champion, Args::default());
-    let id = g.play_from_hand(CardName::MagicalResonator);
+    let id = g.create_and_play(CardName::MagicalResonator);
     g.activate_ability(id, 1);
     g.activate_ability(id, 1);
 }
@@ -114,7 +114,7 @@ fn magical_resonator_cannot_activate_twice() {
 #[test]
 fn dark_grimoire() {
     let mut g = new_game(Side::Champion, Args::default());
-    g.play_from_hand(CardName::DarkGrimoire);
+    g.create_and_play(CardName::DarkGrimoire);
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     assert_eq!(2, g.user.cards.hand(PlayerName::User).len());

@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::Coins;
 use core_ui::actions::InterfaceAction;
+use game_data::card_name::CardName;
 use game_data::game_actions::GameAction;
 use game_data::primitives::Side;
 use insta::assert_snapshot;
@@ -38,4 +40,25 @@ fn leave_game() {
     let response = g
         .perform_action(UserAction::LeaveGame(GameOutcome::Defeat).as_client_action(), g.user_id());
     assert_snapshot!(Summary::run(&response));
+}
+
+#[test]
+fn win_game() {
+    let mut g = new_game(
+        Side::Overlord,
+        Args {
+            score: 95,
+            adventure: Some(AdventureArgs { current_coins: Coins(500), reward: Coins(250) }),
+            ..Args::default()
+        },
+    );
+    g.create_and_play(CardName::TestScheme3_15);
+    g.level_up_room(ROOM_ID);
+    g.level_up_room(ROOM_ID);
+    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.level_up_room(ROOM_ID);
+    assert!(g.is_victory_for_player(Side::Overlord));
+    assert_eq!(Coins(500), g.current_coins());
+    g.click_on_in_panel(g.user_id(), "Continue");
+    assert_eq!(Coins(750), g.current_coins());
 }

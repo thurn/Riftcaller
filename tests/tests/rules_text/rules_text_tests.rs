@@ -20,7 +20,7 @@ use test_utils::*;
 #[test]
 fn test_keyword_aggregation() {
     let mut g = new_game(Side::Overlord, Args::default());
-    let id = g.play_from_hand(CardName::TestMinionDealDamageEndRaid);
+    let id = g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     assert_eq!(
         format!("{}<b>Combat:</b> Deal 1 damage. End the raid.", icons::TRIGGER),
         g.user.cards.get(id).rules_text()

@@ -14,5 +14,5 @@
 
 mod action_tests;
 mod create_game_tests;
-mod leave_game_tests;
+mod game_over_tests;
 mod raid_tests;

@@ -21,7 +21,7 @@ use test_utils::*;
 #[test]
 fn test_card_stored_mana() {
     let mut g = new_game(Side::Overlord, Args::default());
-    let id = g.play_from_hand(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     assert!(g.dawn());
     assert_eq!(STARTING_MANA, g.me().mana());
@@ -36,7 +36,7 @@ fn test_card_stored_mana() {
 fn gemcarver() {
     let (card_cost, taken) = (2, 3);
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::Gemcarver);
+    g.create_and_play(CardName::Gemcarver);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
     click_on_unveil(&mut g);
@@ -54,7 +54,7 @@ fn gemcarver() {
 #[test]
 fn spike_trap() {
     let mut g = new_game(Side::Overlord, Args { opponent_hand_size: 5, ..Args::default() });
-    g.play_from_hand(CardName::SpikeTrap);
+    g.create_and_play(CardName::SpikeTrap);
     level_up_room(&mut g, 2);
     assert!(g.dawn());
     assert_eq!(6, g.user.cards.hand(PlayerName::Opponent).len());
@@ -65,7 +65,7 @@ fn spike_trap() {
 #[test]
 fn spike_trap_no_counters() {
     let mut g = new_game(Side::Overlord, Args { opponent_hand_size: 5, ..Args::default() });
-    g.play_from_hand(CardName::SpikeTrap);
+    g.create_and_play(CardName::SpikeTrap);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     assert!(g.dawn());
     assert_eq!(6, g.user.cards.hand(PlayerName::Opponent).len());
@@ -76,7 +76,7 @@ fn spike_trap_no_counters() {
 #[test]
 fn spike_trap_victory() {
     let mut g = new_game(Side::Overlord, Args::default());
-    g.play_from_hand(CardName::SpikeTrap);
+    g.create_and_play(CardName::SpikeTrap);
     level_up_room(&mut g, 2);
     assert!(g.dawn());
     g.initiate_raid(ROOM_ID);
