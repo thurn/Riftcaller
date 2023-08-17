@@ -26,11 +26,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::card_name::CardName;
-use game_data::primitives::{ActionCount, ManaValue, PointsValue, Side};
+use std::sync::Mutex;
 
-use crate::test_session::TestSession;
-use crate::{AdventureArgs, Args, STARTING_MANA};
+use game_data::card_name::CardName;
+use game_data::card_state::{CardPosition, CardPositionKind};
+use game_data::deck::Deck;
+use game_data::game::{
+    GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData,
+};
+use game_data::primitives::{ActionCount, ManaValue, PointsValue, Side};
+use game_data::tutorial_data::TutorialData;
+use maplit::hashmap;
+use player_data::{PlayerState, PlayerStatus};
+use rules::{dispatch, mana};
+
+use crate::fake_database::FakeDatabase;
+use crate::test_session::{self, TestSession};
+use crate::{test_helpers, RAID_ID, ROOM_ID, STARTING_MANA};
 
 pub struct TestGame {
     current_turn: Side,
@@ -40,7 +52,6 @@ pub struct TestGame {
     opponent_side: TestSide,
     tutorial_mode: bool,
     connect: bool,
-    adventure: Option<AdventureArgs>,
 }
 
 impl TestGame {
@@ -59,7 +70,6 @@ impl TestGame {
             opponent_side: TestSide::new(opponent),
             tutorial_mode: false,
             connect: true,
-            adventure: None,
         }
     }
 
@@ -69,7 +79,7 @@ impl TestGame {
         self
     }
 
-    /// Actions points for the player whose turn it is. Defaults to 3.
+    /// Action points for the player whose turn it is. Defaults to 3.
     pub fn actions(mut self, actions: ActionCount) -> Self {
         self.actions = actions;
         self
@@ -95,34 +105,104 @@ impl TestGame {
         self
     }
 
-    pub fn adventure(mut self, adventure: AdventureArgs) -> Self {
-        self.adventure = Some(adventure);
-        self
-    }
+    /// Creates a new game with the user playing as the `user_side` player.
+    ///
+    /// By default, this creates a new game with both player's decks populated
+    /// with blank test cards and all other game zones empty (no cards are
+    /// drawn). The game is advanced to the user's first turn. See the other
+    /// methods on this struct for information about the default configuration
+    /// options and how to modify them.
+    pub fn build(self) -> TestSession {
+        cards_all::initialize();
+        let (game_id, user_id, opponent_id) = test_helpers::generate_ids();
+        let (overlord_user, champion_user) = match self.user_side.side {
+            Side::Overlord => (user_id, opponent_id),
+            Side::Champion => (opponent_id, user_id),
+        };
 
-    #[allow(clippy::all)]
-    pub fn build(&self) -> TestSession {
-        let mut args = Args::default();
-        args.turn = Some(self.current_turn);
-        args.mana = self.user_side.mana;
-        args.opponent_mana = self.opponent_side.mana;
-        args.actions = self.actions;
-        args.score = self.user_side.score;
-        args.opponent_score = self.opponent_side.score;
-        args.hand_size = self.user_side.hand_size;
-        args.opponent_hand_size = self.opponent_side.hand_size;
-        args.deck_top = self.user_side.deck_top.clone();
-        args.opponent_deck_top = self.opponent_side.deck_top.clone();
-        args.discard = self.user_side.get_discard();
-        args.opponent_discard = self.opponent_side.get_discard();
-        args.sigils = self.user_side.sigils.clone();
-        args.opponent_sigils = self.opponent_side.sigils.clone();
-        args.add_raid = self.raid.is_some();
-        args.tutorial = self.tutorial_mode;
-        args.connect = self.connect;
-        args.adventure = self.adventure.clone();
+        let (overlord_sigils, champion_sigils) = match self.user_side.side {
+            Side::Overlord => (self.user_side.sigils.clone(), self.opponent_side.sigils.clone()),
+            Side::Champion => (self.opponent_side.sigils.clone(), self.user_side.sigils.clone()),
+        };
 
-        crate::new_game(self.user_side.side, args)
+        let overlord_deck = Deck {
+            side: Side::Overlord,
+            schools: vec![],
+            sigils: overlord_sigils,
+            cards: hashmap! {CardName::TestOverlordSpell => 45},
+        };
+        let champion_deck = Deck {
+            side: Side::Champion,
+            schools: vec![],
+            sigils: champion_sigils,
+            cards: hashmap! {CardName::TestChampionSpell => 45},
+        };
+
+        let mut game = GameState::new(
+            game_id,
+            overlord_user,
+            overlord_deck,
+            champion_user,
+            champion_deck,
+            GameConfiguration {
+                deterministic: true,
+                scripted_tutorial: self.tutorial_mode,
+                ..GameConfiguration::default()
+            },
+        );
+
+        dispatch::populate_delegate_cache(&mut game);
+
+        game.info.phase = GamePhase::Play;
+        game.info.turn = TurnData { side: self.current_turn, turn_number: 0 };
+
+        self.user_side.apply_to(&mut game);
+        self.opponent_side.apply_to(&mut game);
+        game.player_mut(self.current_turn).actions = self.actions;
+
+        if let Some(r) = self.raid {
+            r.apply_to(&mut game);
+        }
+
+        let database = FakeDatabase {
+            generated_game_id: None,
+            game: Mutex::new(Some(game)),
+            players: Mutex::new(hashmap! {
+                overlord_user => PlayerState {
+                    id: overlord_user,
+                    status: Some(PlayerStatus::Playing(game_id)),
+                    adventure: None,
+                    tutorial: TutorialData::default()
+                },
+                champion_user => PlayerState {
+                    id: champion_user,
+                    status: Some(PlayerStatus::Playing(game_id)),
+                    adventure: None,
+                    tutorial: TutorialData::default()
+                }
+            }),
+        };
+
+        let mut session = TestSession::new(database, user_id, opponent_id);
+        let (user_hand_card, opponent_hand_card) = if self.user_side.side == Side::Overlord {
+            (CardName::TestOverlordSpell, CardName::TestChampionSpell)
+        } else {
+            (CardName::TestChampionSpell, CardName::TestOverlordSpell)
+        };
+
+        for _ in 0..self.user_side.hand_size {
+            session.add_to_hand(user_hand_card);
+        }
+        for _ in 0..self.opponent_side.hand_size {
+            session.add_to_hand(opponent_hand_card);
+        }
+
+        if self.connect {
+            session.connect(user_id).expect("Connection failed");
+            session.connect(opponent_id).expect("Connection failed");
+        }
+
+        session
     }
 }
 
@@ -131,6 +211,17 @@ pub struct TestRaid {}
 impl TestRaid {
     pub fn new() -> Self {
         Self {}
+    }
+
+    pub fn apply_to(self, game: &mut GameState) {
+        game.info.raid = Some(RaidData {
+            raid_id: RAID_ID,
+            target: ROOM_ID,
+            internal_phase: InternalRaidPhase::Begin,
+            encounter: None,
+            accessed: vec![],
+            jump_request: None,
+        })
     }
 }
 
@@ -211,5 +302,46 @@ impl TestSide {
     pub fn hand_size(mut self, hand_size: u64) -> Self {
         self.hand_size = hand_size;
         self
+    }
+
+    pub fn apply_to(&self, game: &mut GameState) {
+        mana::set(game, self.side, self.mana);
+        game.player_mut(self.side).score = self.score;
+
+        overwrite_positions(game, self.side, &self.deck_top, CardPosition::DeckTop(self.side));
+        set_discard_pile(game, self.side, self.get_discard());
+    }
+}
+
+fn overwrite_positions(
+    game: &mut GameState,
+    side: Side,
+    cards: &[CardName],
+    position: CardPosition,
+) {
+    for card in cards {
+        let target_id = game
+            .cards(side)
+            .iter()
+            .find(|c| c.position().kind() == CardPositionKind::DeckUnknown)
+            .expect("No cards in deck")
+            .id;
+        test_session::overwrite_card(game, target_id, *card);
+        game.move_card_internal(target_id, position)
+    }
+}
+
+fn set_discard_pile(game: &mut GameState, side: Side, discard: Option<CardName>) {
+    if let Some(discard) = discard {
+        let target_id = game
+            .cards(side)
+            .iter()
+            .filter(|c| c.position().kind() == CardPositionKind::DeckUnknown)
+            .last() // Take last to avoid overwriting deck top
+            .expect("No cards in deck")
+            .id;
+        test_session::overwrite_card(game, target_id, discard);
+        game.move_card_internal(target_id, CardPosition::DiscardPile(side));
+        game.card_mut(target_id).turn_face_down();
     }
 }
