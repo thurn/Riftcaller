@@ -22,31 +22,20 @@ use protos::spelldawn::{
 };
 use server::server_data::GameResponseOutput;
 
-use crate::client_interface::HasText;
-use crate::test_game_client::{ClientPlayer, TestClient};
+use crate::test_game_client::{ClientPlayer, TestGameClient};
 use crate::test_session::TestSession;
-use crate::{test_game_client, CLIENT_ROOM_ID, ROOM_ID};
-
-pub enum Buttons {
-    Summon,
-    NoSummon,
-    NoWeapon,
-    Score,
-    EndRaid,
-    Unveil,
-    NoUnveil,
-}
+use crate::{test_game_client, Buttons, TestInterfaceHelpers, CLIENT_ROOM_ID, ROOM_ID};
 
 pub trait TestSessionHelpers {
     fn user_id(&self) -> PlayerId;
 
     fn opponent_id(&self) -> PlayerId;
 
-    /// Returns the [TestClient] for a given player in the game.
-    fn player(&self, player_id: PlayerId) -> &TestClient;
+    /// Returns the [TestGameClient] for a given player in the game.
+    fn player(&self, player_id: PlayerId) -> &TestGameClient;
 
-    /// Returns the [TestClient] for the [Side] player in the game.
-    fn player_for_side(&self, side: Side) -> &TestClient;
+    /// Returns the [TestGameClient] for the [Side] player in the game.
+    fn player_for_side(&self, side: Side) -> &TestGameClient;
 
     /// Returns the user player state for the user client, (i.e. the user's
     /// state from *their own* perspective).
@@ -112,20 +101,6 @@ pub trait TestSessionHelpers {
     /// no action points remaining.
     fn spend_actions_until_turn_over(&mut self, side: Side);
 
-    /// Look for a button in the user interface and invoke its action.
-    fn click(&mut self, buttons: Buttons) -> GameResponseOutput;
-
-    /// Locate a button containing the provided `text` in the provided player's
-    /// interface controls and invoke its registered action.
-    fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput;
-
-    /// Equivalent to 'click on' for the topmost visible panel.
-    fn click_on_in_panel(
-        &mut self,
-        player_id: PlayerId,
-        text: impl Into<String>,
-    ) -> GameResponseOutput;
-
     /// Returns true if the last-received Game Message was 'Dawn'.
     fn dawn(&self) -> bool;
 
@@ -188,7 +163,7 @@ impl TestSessionHelpers for TestSession {
         self.opponent.id
     }
 
-    fn player(&self, player_id: PlayerId) -> &TestClient {
+    fn player(&self, player_id: PlayerId) -> &TestGameClient {
         match () {
             _ if player_id == self.user.id => &self.user,
             _ if player_id == self.opponent.id => &self.opponent,
@@ -196,7 +171,7 @@ impl TestSessionHelpers for TestSession {
         }
     }
 
-    fn player_for_side(&self, side: Side) -> &TestClient {
+    fn player_for_side(&self, side: Side) -> &TestGameClient {
         self.player(self.player_id_for_side(side))
     }
 
@@ -298,39 +273,6 @@ impl TestSessionHelpers for TestSession {
         while self.player(id).this_player.actions() > 0 {
             self.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
         }
-    }
-
-    fn click(&mut self, buttons: Buttons) -> GameResponseOutput {
-        let (text, side) = match buttons {
-            Buttons::Summon => ("Summon", Side::Overlord),
-            Buttons::NoSummon => ("Pass", Side::Overlord),
-            Buttons::NoWeapon => ("Continue", Side::Champion),
-            Buttons::Score => ("Score", Side::Champion),
-            Buttons::EndRaid => ("End Raid", Side::Champion),
-            Buttons::Unveil => ("Unveil", Side::Overlord),
-            Buttons::NoUnveil => ("Continue", Side::Overlord),
-        };
-
-        self.click_on(self.player_id_for_side(side), text)
-    }
-
-    fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
-        let player = self.player(player_id);
-        let handlers = player.interface.controls().find_handlers(text);
-        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
-        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
-    }
-
-    fn click_on_in_panel(
-        &mut self,
-        player_id: PlayerId,
-        text: impl Into<String>,
-    ) -> GameResponseOutput {
-        let player = self.player(player_id);
-        eprintln!("Got text: {:?}", player.interface.top_panel().all_text());
-        let handlers = player.interface.top_panel().find_handlers(text);
-        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
-        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
     }
 
     fn dawn(&self) -> bool {

@@ -16,7 +16,7 @@
 //! [TestSession].
 
 use actions::legal_actions;
-use adventure_data::adventure::Coins;
+use adventure_data::adventure::{Coins, TilePosition, TileState};
 use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::card_state::CardPosition;
@@ -28,12 +28,12 @@ use game_data::primitives::{GameId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{CardIdentifier, ClientAction, ClientMetadata, CommandList, GameRequest};
 use server::ai_agent_response;
-use server::server_data::GameResponseOutput;
+use server::server_data::{ClientData, GameResponse, GameResponseOutput};
 use with_error::WithError;
 use {adapters, tokio};
 
 use crate::fake_database::FakeDatabase;
-use crate::test_game_client::{self, TestClient};
+use crate::test_game_client::{self, TestGameClient};
 use crate::{fake_database, TestSessionHelpers};
 
 /// A helper for interacting with a database and server calls during testing.
@@ -45,15 +45,16 @@ use crate::{fake_database, TestSessionHelpers};
 ///
 /// There are actually two perspectives on an ongoing game: each player has
 /// their own view of the state of the game, which differs due to hidden
-/// information. This struct has two different [TestClient]s which get updated
-/// based on server responses, representing what the two players are seeing.
+/// information. This struct has two different [TestGameClient]s which get
+/// updated based on server responses, representing what the two players are
+/// seeing.
 pub struct TestSession {
     /// This is the perspective of the player identified by the `user_id`
     /// parameter to [Self::new].
-    pub user: TestClient,
+    pub user: TestGameClient,
     /// This is the perspective of the player identified by the `opponent_id`
     /// parameter to [Self::new].
-    pub opponent: TestClient,
+    pub opponent: TestGameClient,
 
     metadata: ClientMetadata,
     database: FakeDatabase,
@@ -68,8 +69,8 @@ impl TestSession {
         connect: bool,
     ) -> Self {
         let mut result = Self {
-            user: TestClient::new(user_id),
-            opponent: TestClient::new(opponent_id),
+            user: TestGameClient::new(user_id),
+            opponent: TestGameClient::new(opponent_id),
             metadata: ClientMetadata::default(),
             database,
         };
@@ -99,7 +100,7 @@ impl TestSession {
         };
 
         // Clear all previous state
-        *to_update = TestClient::new(user_id);
+        *to_update = TestGameClient::new(user_id);
 
         if let Some(m) = result.user_response.metadata.clone() {
             self.metadata = m;
@@ -124,6 +125,19 @@ impl TestSession {
         player_id: PlayerId,
     ) -> Result<GameResponseOutput> {
         let metadata = self.metadata.clone();
+
+        if let Action::StandardAction(standard) = &action {
+            if let Some(update) = &standard.update {
+                // Handle optimistic update
+                self.user.handle_command_list(update.clone());
+            }
+
+            if standard.payload.is_empty() {
+                // Do not send empty payload to server
+                return Ok(GameResponse::new(ClientData::default()).build());
+            }
+        }
+
         let response = server::handle_action(
             &self.database,
             player_id,
@@ -140,15 +154,19 @@ impl TestSession {
         if let Some(m) = response.user_response.metadata.clone() {
             self.metadata = m;
         }
+
         let (opponent_id, local, remote) = self.opponent_local_remote(player_id);
+
         for command in &response.user_response.commands {
-            local.handle_command(command.command.as_ref().expect("Empty command"));
+            let c = command.command.as_ref().with_error(|| "command")?;
+            local.handle_command(c);
         }
 
         if let Some((channel_user_id, list)) = &response.opponent_response {
             assert_eq!(*channel_user_id, opponent_id);
             for command in &list.commands {
-                remote.handle_command(command.command.as_ref().expect("Empty command"));
+                let c = command.command.as_ref().with_error(|| "command")?;
+                remote.handle_command(c);
             }
         }
 
@@ -189,6 +207,21 @@ impl TestSession {
         self.connect(self.opponent.id).expect("Opponent connection error");
 
         adapters::card_identifier(card_id)
+    }
+
+    /// Inserts an adventure tile in the indicated tile `position`. Panics if
+    /// there is no currently-active adventure in the database.
+    pub fn overwrite_adventure_tile(&mut self, position: TilePosition, state: TileState) {
+        self.database.mutate_player(self.user.id, |player| {
+            player
+                .adventure
+                .as_mut()
+                .expect("No active adventure")
+                .tiles
+                .insert(position, state.clone());
+        });
+
+        self.connect(self.user.id).expect("User connection error");
     }
 
     /// Looks up the [PlayerId] for the [Side] player.
@@ -238,7 +271,7 @@ impl TestSession {
     fn opponent_local_remote(
         &mut self,
         player_id: PlayerId,
-    ) -> (PlayerId, &mut TestClient, &mut TestClient) {
+    ) -> (PlayerId, &mut TestGameClient, &mut TestGameClient) {
         match () {
             _ if player_id == self.user.id => {
                 (self.opponent.id, &mut self.user, &mut self.opponent)

@@ -13,47 +13,45 @@
 // limitations under the License.
 
 use adventure_data::adventure::{CardChoice, Coins, DraftData, TileEntity};
-use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
-use test_utils::client_interface::{self, HasText};
-use test_utils::test_adventure::{TestAdventure, TestConfig, DRAFT_ICON};
+use test_utils::client_interface::{self};
+use test_utils::test_adventure::TestAdventure;
+use test_utils::*;
 
 const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
 
 #[test]
 fn test_initiate_draft() {
-    let mut adventure = TestAdventure::new(Side::Champion, config());
-    adventure.visit_tile_with_icon(DRAFT_ICON);
-    assert!(adventure.interface.top_panel().has_text("Pick"));
+    let mut adventure = TestAdventure::new(Side::Champion).build();
+
+    let draft = adventure.insert_tile(TileEntity::Draft(DraftData {
+        context: None,
+        choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: Coins(0), sold: false }],
+    }));
+
+    adventure.visit_tile(draft);
+
+    assert!(adventure.has_button(Buttons::DraftPick));
 }
 
 #[test]
 fn test_pick_card() {
-    let mut adventure = TestAdventure::new(Side::Champion, config());
+    let mut adventure = TestAdventure::new(Side::Champion).build();
 
-    adventure.visit_tile_with_icon(DRAFT_ICON);
-    adventure.click_on("Pick");
-    assert_eq!(adventure.interface.panel_count(), 0);
-    adventure.click_on_navbar(icons::DECK);
+    let draft = adventure.insert_tile(TileEntity::Draft(DraftData {
+        context: None,
+        choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: Coins(0), sold: false }],
+    }));
+
+    adventure.visit_tile(draft);
+    adventure.click(Buttons::DraftPick);
+    assert_eq!(adventure.open_panel_count(), 0);
+    adventure.click(Buttons::ShowDeck);
+    assert_eq!(adventure.open_panel_count(), 1);
 
     client_interface::assert_has_element_name(
-        adventure.interface.top_panel(),
+        adventure.user.interface.top_panel(),
         element_names::deck_card(EXAMPLE_CARD),
     );
-}
-
-fn config() -> TestConfig {
-    TestConfig {
-        draft: Some(TileEntity::Draft(DraftData {
-            context: None,
-            choices: vec![CardChoice {
-                quantity: 2,
-                card: EXAMPLE_CARD,
-                cost: Coins(0),
-                sold: false,
-            }],
-        })),
-        ..TestConfig::default()
-    }
 }

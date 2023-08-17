@@ -60,26 +60,49 @@ impl ClientInterface {
 
     /// Returns the contents of the topmost currently-open panel
     pub fn top_panel(&self) -> &Node {
-        let address = self.open_panels.last().expect("No open panel");
-        self.panels
-            .get(address)
-            .unwrap_or_else(|| panic!("Panel not found: {:?}", address.debug_string))
-            .node
-            .as_ref()
-            .expect("Node")
+        self.top_panel_option().expect("No panel found")
+    }
+
+    pub fn top_panel_option(&self) -> Option<&Node> {
+        if let Some(address) = self.open_panels.last() {
+            self.panels
+                .get(address)
+                .unwrap_or_else(|| panic!("Panel not found: {:?}", address.debug_string))
+                .node
+                .as_ref()
+        } else {
+            None
+        }
     }
 
     pub fn screen_overlay(&self) -> &Node {
+        self.screen_overlay_option().expect("Screen overlay not found")
+    }
+
+    pub fn screen_overlay_option(&self) -> Option<&Node> {
         if let Some(overlay) = self
             .open_panels
             .iter()
             .rev()
             .find_map(|address| self.panels.get(address)?.screen_overlay.as_ref())
         {
-            overlay
+            Some(overlay)
         } else {
-            self.screen_overlay.as_ref().expect("ScreenOverlayNode")
+            self.screen_overlay.as_ref()
         }
+    }
+
+    pub fn all_active_nodes(&self) -> Vec<&Node> {
+        let mut result =
+            vec![self.main_controls.as_ref()].into_iter().flatten().collect::<Vec<_>>();
+        result.extend(self.card_anchor_nodes());
+        if let Some(panel) = self.top_panel_option() {
+            result.push(panel);
+        }
+        if let Some(overlay) = self.screen_overlay_option() {
+            result.push(overlay);
+        }
+        result
     }
 
     pub fn panel_count(&self) -> usize {

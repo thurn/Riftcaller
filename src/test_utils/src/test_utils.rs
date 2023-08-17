@@ -21,16 +21,22 @@ pub mod client_interface;
 pub mod fake_database;
 pub mod summarize;
 pub mod test_adventure;
+pub mod test_adventure_helpers;
 pub mod test_game;
 pub mod test_game_client;
 pub mod test_helpers;
+pub mod test_interface_helpers;
 pub mod test_session;
 pub mod test_session_builder;
 pub mod test_session_helpers;
+pub mod test_world_map;
 
+use adventure_data::adventure::Coins;
 use game_data::primitives::{ManaValue, RaidId, RoomId};
 use protos::spelldawn::RoomIdentifier;
-pub use test_session_helpers::{Buttons, TestSessionHelpers};
+pub use test_adventure_helpers::TestAdventureHelpers;
+pub use test_interface_helpers::{Buttons, TestInterfaceHelpers};
+pub use test_session_helpers::TestSessionHelpers;
 
 /// The title returned for hidden cards
 pub const HIDDEN_CARD: &str = "Hidden Card";
@@ -42,6 +48,8 @@ pub const CLIENT_ROOM_ID: RoomIdentifier = RoomIdentifier::RoomA;
 pub const RAID_ID: RaidId = RaidId(1);
 /// Default mana for players in a test game if not otherwise specified
 pub const STARTING_MANA: ManaValue = 999;
+
+pub const STARTING_COINS: Coins = Coins(999);
 
 // fn create_mock_adventure(player_id: PlayerId, side: Side, args:
 // AdventureArgs) -> AdventureState {     let battle =

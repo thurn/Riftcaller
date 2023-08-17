@@ -21,12 +21,14 @@ use maplit::hashmap;
 use player_data::{PlayerState, PlayerStatus};
 
 use crate::fake_database::FakeDatabase;
+use crate::test_adventure::TestAdventure;
 use crate::test_game::TestGame;
 use crate::test_helpers;
 use crate::test_session::TestSession;
 
 pub struct TestSessionBuilder {
     game: Option<TestGame>,
+    adventure: Option<TestAdventure>,
     do_not_connect: bool,
     game_id: GameId,
     user_id: PlayerId,
@@ -36,11 +38,16 @@ pub struct TestSessionBuilder {
 impl TestSessionBuilder {
     pub fn new() -> Self {
         let (game_id, user_id, opponent_id) = test_helpers::generate_ids();
-        Self { game: None, do_not_connect: false, game_id, user_id, opponent_id }
+        Self { game: None, adventure: None, do_not_connect: false, game_id, user_id, opponent_id }
     }
 
     pub fn game(mut self, game: TestGame) -> Self {
         self.game = Some(game);
+        self
+    }
+
+    pub fn adventure(mut self, adventure: TestAdventure) -> Self {
+        self.adventure = Some(adventure);
         self
     }
 
@@ -67,6 +74,8 @@ impl TestSessionBuilder {
     pub fn build(self) -> TestSession {
         cards_all::initialize();
 
+        let adventure = self.adventure.map(|a| a.build_adventure_state_internal(self.user_id));
+
         if let Some(game) = self.game {
             let database = FakeDatabase {
                 generated_game_id: None,
@@ -79,8 +88,8 @@ impl TestSessionBuilder {
                     self.user_id => PlayerState {
                         id: self.user_id,
                         status: Some(PlayerStatus::Playing(self.game_id)),
-                        adventure: None,
-                        tutorial: TutorialData::default()
+                        adventure,
+                        tutorial: TutorialData::new().skip_all(true)
                     },
                     self.opponent_id => PlayerState {
                         id: self.opponent_id,
@@ -100,8 +109,8 @@ impl TestSessionBuilder {
                     self.user_id => PlayerState {
                         id: self.user_id,
                         status: None,
-                        adventure: None,
-                        tutorial: TutorialData::default()
+                        adventure,
+                        tutorial: TutorialData::new().skip_all(true)
                     },
                     self.opponent_id => PlayerState {
                         id: self.opponent_id,

@@ -12,44 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_ui::icons;
 use core_ui::prelude::Node;
 use element_names::ElementName;
 use game_data::card_name::CardName;
-use game_data::deck::Deck;
 use game_data::primitives::Side;
-use maplit::hashmap;
 use test_utils::client_interface::{self, find_card_view, HasText};
-use test_utils::test_adventure::{TestAdventure, TestConfig};
+use test_utils::test_adventure::TestAdventure;
+use test_utils::test_session::TestSession;
+use test_utils::*;
 
 const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
 
 #[test]
-fn test_deck_editor_tutorial_prompt() {
-    let mut adventure =
-        TestAdventure::new(Side::Champion, TestConfig { show_tutorial: true, ..config() });
-    adventure.click_on_navbar(icons::DECK);
-    assert!(&adventure.interface.top_panel().has_text("Retiring to the library"));
-}
-
-#[test]
 fn test_open_deck_editor() {
-    let mut adventure = TestAdventure::new(Side::Champion, config());
-    adventure.click_on_navbar(icons::DECK);
+    let mut adventure = TestAdventure::new(Side::Champion).build();
+    adventure.click(Buttons::ShowDeck);
+
     client_interface::assert_has_element_name(
-        adventure.interface.top_panel(),
+        adventure.user.interface.top_panel(),
         element_names::COLLECTION_BROWSER,
     );
     client_interface::assert_has_element_name(
-        adventure.interface.top_panel(),
+        adventure.user.interface.top_panel(),
         element_names::CARD_LIST,
     );
 }
 
 #[test]
 fn test_remove_from_deck() {
-    let mut adventure = TestAdventure::new(Side::Champion, config());
-    adventure.click_on_navbar(icons::DECK);
+    let mut adventure = TestAdventure::new(Side::Champion)
+        .deck_card(EXAMPLE_CARD, 2)
+        .collection_card(EXAMPLE_CARD, 3)
+        .build();
+    adventure.click(Buttons::ShowDeck);
 
     let quantity1 = find_card_node(&adventure, element_names::card_list_card_quantity);
     assert_eq!("2x", quantity1.all_text());
@@ -59,7 +54,11 @@ fn test_remove_from_deck() {
         element_names::card_list_card_name,
     ))
     .expect("Draggable node");
-    adventure.perform_client_action(draggable.on_drop.clone().expect("Drop action"));
+
+    adventure.perform(
+        draggable.on_drop.clone().expect("Drop action").action.expect("action"),
+        adventure.user_id(),
+    );
 
     let quantity2 = find_card_node(&adventure, element_names::card_list_card_quantity);
     assert_eq!("1x", quantity2.get_text().join(""));
@@ -71,8 +70,11 @@ fn test_remove_from_deck() {
 
 #[test]
 fn test_add_to_deck() {
-    let mut adventure = TestAdventure::new(Side::Champion, config());
-    adventure.click_on_navbar(icons::DECK);
+    let mut adventure = TestAdventure::new(Side::Champion)
+        .deck_card(EXAMPLE_CARD, 2)
+        .collection_card(EXAMPLE_CARD, 3)
+        .build();
+    adventure.click(Buttons::ShowDeck);
 
     let quantity1 = find_card_node(&adventure, element_names::card_list_card_quantity);
     assert_eq!("2x", quantity1.all_text());
@@ -80,7 +82,11 @@ fn test_add_to_deck() {
     let draggable =
         client_interface::find_draggable(find_card_node(&adventure, element_names::deck_card_slot))
             .expect("Draggable node");
-    adventure.perform_client_action(draggable.on_drop.clone().expect("Drop action"));
+
+    adventure.perform(
+        draggable.on_drop.clone().expect("Drop action").action.expect("action"),
+        adventure.user_id(),
+    );
 
     let quantity2 = find_card_node(&adventure, element_names::card_list_card_quantity);
     assert_eq!("3x", quantity2.all_text());
@@ -97,20 +103,7 @@ fn find_card_quantity(node: &Node) -> Option<&String> {
     view.card_icons.as_ref()?.top_right_icon.as_ref()?.text.as_ref()
 }
 
-fn config() -> TestConfig {
-    TestConfig {
-        deck: Some(Deck {
-            side: Side::Champion,
-            schools: vec![],
-            sigils: vec![],
-            cards: hashmap! { EXAMPLE_CARD => 2 },
-        }),
-        collection: hashmap! { EXAMPLE_CARD => 3},
-        ..TestConfig::default()
-    }
-}
-
-fn find_card_node(adventure: &TestAdventure, f: impl Fn(CardName) -> ElementName) -> &Node {
-    client_interface::find_element_name(adventure.interface.top_panel(), f(EXAMPLE_CARD))
-        .expect("Node")
+fn find_card_node(adventure: &TestSession, f: impl Fn(CardName) -> ElementName) -> &Node {
+    client_interface::find_element_name(adventure.user.interface.top_panel(), f(EXAMPLE_CARD))
+        .expect("Node not found")
 }

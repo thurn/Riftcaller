@@ -287,6 +287,10 @@ impl AdventureState {
         self.tile(self.visited_position()?)?.entity.as_ref().with_error(|| "Expected tile entity")
     }
 
+    pub fn visiting_tile_option(&self) -> Option<&TileEntity> {
+        self.tiles.get(&self.visiting_position?)?.entity.as_ref()
+    }
+
     /// Mutable version of [Self::visiting_tile].
     pub fn visiting_tile_mut(&mut self) -> Result<&mut TileEntity> {
         self.tile_mut(self.visited_position()?)?

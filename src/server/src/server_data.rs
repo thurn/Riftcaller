@@ -67,7 +67,9 @@ impl GameResponse {
     }
 
     pub fn opponent_response(mut self, opponent_id: PlayerId, commands: Vec<Command>) -> Self {
-        self.opponent_response = Some((opponent_id, commands));
+        if !opponent_id.is_ai_player() {
+            self.opponent_response = Some((opponent_id, commands));
+        }
         self
     }
 

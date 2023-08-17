@@ -27,7 +27,7 @@ use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
-    ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation,
+    ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation, CommandList,
     GameMessageType, GameObjectIdentifier, NoTargeting, ObjectPosition, ObjectPositionBrowser,
     ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem, ObjectPositionRevealedCards,
     ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView, RevealedCardView,
@@ -36,6 +36,7 @@ use protos::spelldawn::{
 use rules::dispatch;
 
 use crate::client_interface::{ClientInterface, HasText};
+use crate::test_world_map::TestWorldMap;
 
 /// Overwrites the card with ID `card_id` in `game` to be a new card with the
 /// provided `card_name`.
@@ -57,7 +58,7 @@ pub fn side_for_card_name(name: CardName) -> Side {
 
 /// Represents a user client connected to a test game
 #[derive(Clone)]
-pub struct TestClient {
+pub struct TestGameClient {
     pub id: PlayerId,
     pub data: ClientGameData,
     /// A player's view of *their own* player state.
@@ -67,9 +68,11 @@ pub struct TestClient {
     pub interface: ClientInterface,
     pub cards: ClientCards,
     pub history: Vec<Command>,
+    pub map: TestWorldMap,
+    current_scene: Option<String>,
 }
 
-impl TestClient {
+impl TestGameClient {
     pub fn new(id: PlayerId) -> Self {
         Self {
             id,
@@ -79,11 +82,24 @@ impl TestClient {
             interface: ClientInterface::default(),
             cards: ClientCards { player_id: id, card_map: HashMap::default() },
             history: vec![],
+            map: TestWorldMap::default(),
+            current_scene: None,
         }
     }
 
     pub fn get_card(&self, id: CardIdentifier) -> &ClientCard {
         self.cards.get(id)
+    }
+
+    pub fn current_scene(&self) -> &str {
+        self.current_scene.as_ref().expect("No LoadSceneCommand received")
+    }
+
+    pub fn handle_command_list(&mut self, list: CommandList) {
+        for command in &list.commands {
+            let c = command.command.as_ref().expect("command");
+            self.handle_command(c);
+        }
     }
 
     pub fn handle_command(&mut self, command: &Command) {
@@ -93,6 +109,11 @@ impl TestClient {
         self.interface.update(command.clone());
         self.cards.update(command.clone());
         self.history.push(command.clone());
+        self.map.update(command.clone());
+
+        if let Command::LoadScene(s) = command {
+            self.current_scene = Some(s.scene_name.clone());
+        }
     }
 }
 

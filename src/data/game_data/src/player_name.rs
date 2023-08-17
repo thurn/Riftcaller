@@ -39,7 +39,7 @@ impl PlayerId {
         Self::Database(ulid)
     }
 
-    pub fn is_named_player(&self) -> bool {
+    pub fn is_ai_player(&self) -> bool {
         match self {
             Self::AI(_) => true,
             _ => false,

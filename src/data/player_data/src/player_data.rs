@@ -127,7 +127,7 @@ pub fn current_game_id(data: Option<PlayerState>) -> Option<GameId> {
 /// Returns the battle tile the player is currently visiting, or None if
 /// they are not currently visiting a battle tile.
 pub fn current_battle(player: &PlayerState) -> Option<&BattleData> {
-    if let TileEntity::Battle(data) = player.adventure.as_ref()?.visiting_tile().ok()? {
+    if let TileEntity::Battle(data) = player.adventure.as_ref()?.visiting_tile_option()? {
         Some(data)
     } else {
         None

@@ -18,7 +18,6 @@ use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{ObjectPositionBrowser, PlayerName};
 use test_utils::test_game::{TestGame, TestSide};
-use test_utils::test_session_helpers::Buttons;
 use test_utils::*;
 
 #[test]

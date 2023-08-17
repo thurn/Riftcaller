@@ -261,7 +261,7 @@ async fn handle_fetch_panel(
 /// server.
 pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
     if let Some((player_id, commands)) = response {
-        if player_id.is_named_player() {
+        if player_id.is_ai_player() {
             // Don't need to send updates to AI players
             return;
         }

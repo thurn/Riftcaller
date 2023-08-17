@@ -40,6 +40,11 @@ impl FakeDatabase {
         let mut game = self.game.lock().unwrap();
         fun(game.as_mut().expect("game"))
     }
+
+    pub fn mutate_player(&self, id: PlayerId, mut fun: impl FnMut(&mut PlayerState)) {
+        let mut players = self.players.lock().unwrap();
+        fun(players.get_mut(&id).expect("game"))
+    }
 }
 
 #[async_trait]
