@@ -17,11 +17,12 @@ use game_data::primitives::Side;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{DrawCardAction, ObjectPositionCharacter, PlayerName};
+use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
 fn gold_mine() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::GoldMine);
     level_up_room(&mut g, 4);
     assert_eq!(g.me().score(), 30);
@@ -34,7 +35,7 @@ fn gold_mine() {
 
 #[test]
 fn activate_reinforcements() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::ActivateReinforcements);
     let minion = g.create_and_play(CardName::TestMinionEndRaid);
     assert!(!g.user.get_card(minion).is_face_up());
@@ -50,7 +51,7 @@ fn activate_reinforcements() {
 
 #[test]
 fn research_project() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::ResearchProject);
     level_up_room(&mut g, 2);
     spend_actions_until_turn_over(&mut g, Side::Champion);

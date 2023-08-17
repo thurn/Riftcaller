@@ -25,25 +25,22 @@ use protos::spelldawn::{
     LevelUpRoomAction, ObjectPositionDiscardPile, PlayCardAction, PlayerName,
 };
 use test_utils::summarize::Summary;
+use test_utils::test_game::{TestGame, TestRaid, TestSide};
 use test_utils::*;
 
 #[test]
 fn connect() {
-    let mut g = new_game(Side::Overlord, Args { connect: false, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).connect(false).build();
     let response = g.connect(g.user_id());
     assert_snapshot!(Summary::run(&response));
 }
 
 #[test]
 fn connect_to_ongoing() {
-    let mut g = new_game(
-        Side::Overlord,
-        Args {
-            actions: 3,
-            deck_top: vec![CardName::TestMinionDealDamageEndRaid],
-            ..Args::default()
-        },
-    );
+    let mut g = TestGame::new(
+        TestSide::new(Side::Overlord).deck_top(CardName::TestMinionDealDamageEndRaid),
+    )
+    .build();
     let r1 = g.connect(g.user_id());
     assert_ok(&r1);
     let r2 = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
@@ -59,14 +56,10 @@ fn connect_to_ongoing() {
 
 #[test]
 fn draw_card() {
-    let mut g = new_game(
-        Side::Overlord,
-        Args {
-            actions: 3,
-            deck_top: vec![CardName::TestMinionDealDamageEndRaid],
-            ..Args::default()
-        },
-    );
+    let mut g = TestGame::new(
+        TestSide::new(Side::Overlord).deck_top(CardName::TestMinionDealDamageEndRaid),
+    )
+    .build();
     let response = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
     assert_snapshot!(Summary::run(&response));
 
@@ -81,28 +74,27 @@ fn draw_card() {
 
 #[test]
 fn cannot_draw_card_on_opponent_turn() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.opponent_id()));
 }
 
 #[test]
 fn cannot_draw_when_out_of_action_points() {
-    let mut g = new_game(Side::Overlord, Args { actions: 0, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(0).build();
     assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
 }
 
 #[test]
 fn cannot_draw_during_raid() {
-    let mut g = new_game(Side::Overlord, Args { add_raid: true, ..Args::default() });
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord)).actions(0).raid(TestRaid::new()).build();
     assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
 }
 
 #[test]
 fn maximum_hand_size() {
-    let mut g = new_game(
-        Side::Overlord,
-        Args { deck_top: vec![CardName::TestMinionEndRaid], ..Args::default() },
-    );
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).deck_top(CardName::TestMinionEndRaid)).build();
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
@@ -119,7 +111,7 @@ fn maximum_hand_size() {
 
 #[test]
 fn play_card() {
-    let mut g = new_game(Side::Champion, Args { actions: 3, mana: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     let response = g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -140,7 +132,7 @@ fn play_card() {
 
 #[test]
 fn play_hidden_card() {
-    let mut g = new_game(Side::Overlord, Args { actions: 3, mana: 0, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0)).build();
     let card_id = g.add_to_hand(CardName::GoldMine);
     let response = g.perform_action(
         Action::PlayCard(PlayCardAction {
@@ -166,7 +158,7 @@ fn play_hidden_card() {
 
 #[test]
 fn cannot_play_card_on_opponent_turn() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -176,7 +168,7 @@ fn cannot_play_card_on_opponent_turn() {
 
 #[test]
 fn cannot_play_card_when_out_of_action_points() {
-    let mut g = new_game(Side::Champion, Args { actions: 0, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(0).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -186,7 +178,7 @@ fn cannot_play_card_when_out_of_action_points() {
 
 #[test]
 fn cannot_play_card_during_raid() {
-    let mut g = new_game(Side::Champion, Args { add_raid: true, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).raid(TestRaid::new()).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -196,7 +188,7 @@ fn cannot_play_card_during_raid() {
 
 #[test]
 fn gain_mana() {
-    let mut g = new_game(Side::Overlord, Args { actions: 3, mana: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(5)).build();
     let response = g.perform_action(Action::GainMana(GainManaAction {}), g.user_id());
 
     assert_eq!(2, g.me().actions());
@@ -209,25 +201,25 @@ fn gain_mana() {
 
 #[test]
 fn cannot_gain_mana_on_opponent_turn() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.opponent_id()));
 }
 
 #[test]
 fn cannot_gain_mana_when_out_of_action_points() {
-    let mut g = new_game(Side::Overlord, Args { actions: 0, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(0).build();
     assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
 }
 
 #[test]
 fn cannot_gain_mana_during_raid() {
-    let mut g = new_game(Side::Overlord, Args { add_raid: true, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).raid(TestRaid::new()).build();
     assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
 }
 
 #[test]
 fn level_up_room() {
-    let mut g = new_game(Side::Overlord, Args { mana: 10, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).build();
     g.create_and_play(CardName::TestScheme3_15);
     let response = g.perform_action(
         Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() }),
@@ -241,7 +233,7 @@ fn level_up_room() {
 
 #[test]
 fn minion_limit() {
-    let mut g = new_game(Side::Overlord, Args { actions: 6, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestInfernalMinion);
     g.create_and_play(CardName::TestAbyssalMinion);
@@ -254,7 +246,7 @@ fn minion_limit() {
 
 #[test]
 fn score_overlord_card() {
-    let mut g = new_game(Side::Overlord, Args { mana: 10, actions: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).actions(5).build();
     let scheme_id = g.create_and_play(CardName::TestScheme3_15);
     let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
@@ -271,8 +263,7 @@ fn score_overlord_card() {
 
 #[test]
 fn overlord_win_game() {
-    let mut g =
-        new_game(Side::Overlord, Args { mana: 10, score: 90, actions: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10).score(90)).actions(5).build();
     g.create_and_play(CardName::TestScheme3_15);
     let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
@@ -286,7 +277,7 @@ fn overlord_win_game() {
 
 #[test]
 fn switch_turn() {
-    let mut g = new_game(Side::Overlord, Args { actions: 3, mana: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(5)).actions(3).build();
     g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()).unwrap();
     g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()).unwrap();
     let response = g.perform_action(Action::GainMana(GainManaAction {}), g.user_id());
@@ -306,7 +297,7 @@ fn switch_turn() {
 
 #[test]
 fn activate_ability() {
-    let mut g = new_game(Side::Champion, Args { actions: 3, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(3).build();
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     let ability_card_id = g
         .user
@@ -331,7 +322,7 @@ fn activate_ability() {
 
 #[test]
 fn activate_ability_take_all_mana() {
-    let mut g = new_game(Side::Champion, Args { actions: 3, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(3).build();
     let id = g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     let ability_card_id = g
         .user
@@ -369,7 +360,7 @@ fn activate_ability_take_all_mana() {
 
 #[test]
 fn triggered_unveil_ability() {
-    let mut g = new_game(Side::Overlord, Args { actions: 1, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
     g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
     assert_eq!(STARTING_MANA, g.user.this_player.mana());
@@ -382,7 +373,7 @@ fn triggered_unveil_ability() {
 
 #[test]
 fn triggered_ability_cannot_unveil() {
-    let mut g = new_game(Side::Overlord, Args { actions: 1, mana: 0, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0)).actions(1).build();
     g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
     assert_eq!(0, g.user.this_player.mana());
@@ -394,7 +385,7 @@ fn triggered_ability_cannot_unveil() {
 
 #[test]
 fn triggered_ability_take_all_mana() {
-    let mut g = new_game(Side::Overlord, Args { actions: 1, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     let mut taken = 0;
     let mut unveiled = false;
@@ -424,7 +415,7 @@ fn triggered_ability_take_all_mana() {
 
 #[test]
 fn legal_actions() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert!(g.legal_actions_result(Side::Champion).is_err());
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
@@ -464,7 +455,7 @@ fn legal_actions() {
 
 #[test]
 fn legal_actions_level_up_room() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestScheme3_15);
     assert_contents_equal(
         g.legal_actions(Side::Overlord),
@@ -474,7 +465,7 @@ fn legal_actions_level_up_room() {
 
 #[test]
 fn champion_legal_actions() {
-    let g = new_game(Side::Champion, Args::default());
+    let g = TestGame::new(TestSide::new(Side::Champion)).build();
     assert!(g.legal_actions_result(Side::Overlord).is_err());
     assert_contents_equal(
         g.legal_actions(Side::Champion),

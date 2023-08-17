@@ -22,6 +22,7 @@ pub mod client_interface;
 pub mod fake_database;
 pub mod summarize;
 pub mod test_adventure;
+pub mod test_game;
 
 use std::collections::{HashMap, HashSet};
 use std::fmt::Debug;

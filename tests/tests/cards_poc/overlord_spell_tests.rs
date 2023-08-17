@@ -14,19 +14,20 @@
 
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
+use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
 fn overwhelming_power() {
     let (cost, gained) = (10, 15);
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::OverwhelmingPower);
     assert_eq!(STARTING_MANA - cost + gained, g.me().mana());
 }
 
 #[test]
 fn forced_march() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let scheme = g.create_and_play(CardName::TestScheme3_15);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
@@ -37,7 +38,7 @@ fn forced_march() {
 #[test]
 #[should_panic]
 fn forced_march_same_turn_panic() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::ForcedMarch, ROOM_ID);
 }

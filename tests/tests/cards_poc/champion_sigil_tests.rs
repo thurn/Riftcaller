@@ -15,13 +15,13 @@
 use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::PlayerName;
+use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
 fn ennera_imris_blood_bound() {
     let gained = 1;
-    let mut g =
-        new_game(Side::Champion, Args { sigils: vec![CardName::RadiantSigil], ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion).sigil(CardName::RadiantSigil)).build();
 
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     spend_actions_until_turn_over(&mut g, Side::Champion);
@@ -32,10 +32,8 @@ fn ennera_imris_blood_bound() {
 
 #[test]
 fn aris_fey_the_radiant_sun() {
-    let mut g = new_game(
-        Side::Champion,
-        Args { sigils: vec![CardName::RestorationSigil], ..Args::default() },
-    );
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).sigil(CardName::RestorationSigil)).build();
 
     spend_actions_until_turn_over(&mut g, Side::Champion);
     g.create_and_play(CardName::TestMinionDealDamage);
@@ -49,8 +47,7 @@ fn aris_fey_the_radiant_sun() {
 
 #[test]
 fn telantes_dugoth_earthbreaker() {
-    let mut g =
-        new_game(Side::Champion, Args { sigils: vec![CardName::ForgeSigil], ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion).sigil(CardName::ForgeSigil)).build();
 
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::Opponent).len());
@@ -60,20 +57,16 @@ fn telantes_dugoth_earthbreaker() {
 
 #[test]
 fn andvari_est_nights_warden() {
-    let mut g = new_game(
-        Side::Champion,
-        Args {
-            sigils: vec![CardName::CrabSigil],
-            opponent_deck_top: vec![
-                CardName::TestChampionSpell,
-                CardName::TestChampionSpell,
-                CardName::TestScheme3_15,
-                CardName::TestChampionSpell,
-                CardName::TestChampionSpell,
-            ],
-            ..Args::default()
-        },
-    );
+    let mut g = TestGame::new(TestSide::new(Side::Champion).sigil(CardName::CrabSigil))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .deck_top(CardName::TestChampionSpell)
+                .deck_top(CardName::TestChampionSpell)
+                .deck_top(CardName::TestScheme3_15)
+                .deck_top(CardName::TestChampionSpell)
+                .deck_top(CardName::TestChampionSpell),
+        )
+        .build();
 
     g.initiate_raid(RoomId::Vault);
     click_on_score(&mut g);
@@ -82,8 +75,7 @@ fn andvari_est_nights_warden() {
 
 #[test]
 fn ubras_efaris_time_shaper() {
-    let mut g =
-        new_game(Side::Champion, Args { sigils: vec![CardName::ArcaneSigil], ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion).sigil(CardName::ArcaneSigil)).build();
 
     assert_eq!(3, g.me().actions());
     g.create_and_play(CardName::TestChampionSpell);

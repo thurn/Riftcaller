@@ -15,11 +15,11 @@
 use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
-use test_utils::*;
+use test_utils::test_game::{TestGame, TestSide};
 
 #[test]
 fn test_keyword_aggregation() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     assert_eq!(
         format!("{}<b>Combat:</b> Deal 1 damage. End the raid.", icons::TRIGGER),

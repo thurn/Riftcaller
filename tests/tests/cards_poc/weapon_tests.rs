@@ -15,13 +15,14 @@
 use game_data::card_name::CardName;
 use game_data::primitives::{Lineage, RoomId, Side};
 use test_utils::client_interface::HasText;
+use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
 fn test_attack_weapon() {
     let card_cost = 3;
     let ability_cost = 1;
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::TestAttackWeapon);
     fire_weapon_combat_abilities(&mut g, Lineage::Infernal, CardName::TestAttackWeapon);
     assert_eq!(STARTING_MANA - card_cost - ability_cost, g.me().mana());
@@ -32,7 +33,7 @@ fn test_attack_weapon() {
 #[test]
 fn marauders_axe() {
     let card_cost = 5;
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.add_to_hand(CardName::MaraudersAxe);
     assert_eq!(card_cost.to_string(), g.user.cards.get(id).top_left_icon());
     g.initiate_raid(RoomId::Crypts);
@@ -45,7 +46,7 @@ fn marauders_axe() {
 #[test]
 fn keen_halberd() {
     let (card_cost, activation_cost) = (3, 2);
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::KeenHalberd);
     setup_raid_target(&mut g, CardName::TestMinionShield2Abyssal);
     g.initiate_raid(ROOM_ID);
@@ -60,7 +61,7 @@ fn keen_halberd() {
 #[test]
 fn bow_of_the_alliance() {
     let (card_cost, activation_cost) = (3, 1);
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::BowOfTheAlliance);
     g.create_and_play(CardName::BowOfTheAlliance);
     fire_weapon_combat_abilities(&mut g, Lineage::Mortal, CardName::BowOfTheAlliance);

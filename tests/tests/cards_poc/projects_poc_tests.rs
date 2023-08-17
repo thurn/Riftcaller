@@ -16,11 +16,12 @@ use cards_test::test_cards::{MANA_STORED, MANA_TAKEN, UNVEIL_COST};
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
 use protos::spelldawn::PlayerName;
+use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
 fn test_card_stored_mana() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     assert!(g.dawn());
@@ -35,7 +36,7 @@ fn test_card_stored_mana() {
 #[test]
 fn gemcarver() {
     let (card_cost, taken) = (2, 3);
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Gemcarver);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     spend_actions_until_turn_over(&mut g, Side::Champion);
@@ -53,7 +54,9 @@ fn gemcarver() {
 
 #[test]
 fn spike_trap() {
-    let mut g = new_game(Side::Overlord, Args { opponent_hand_size: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord))
+        .opponent(TestSide::new(Side::Champion).hand_size(5))
+        .build();
     g.create_and_play(CardName::SpikeTrap);
     level_up_room(&mut g, 2);
     assert!(g.dawn());
@@ -64,7 +67,9 @@ fn spike_trap() {
 
 #[test]
 fn spike_trap_no_counters() {
-    let mut g = new_game(Side::Overlord, Args { opponent_hand_size: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Overlord))
+        .opponent(TestSide::new(Side::Champion).hand_size(5))
+        .build();
     g.create_and_play(CardName::SpikeTrap);
     spend_actions_until_turn_over(&mut g, Side::Overlord);
     assert!(g.dawn());
@@ -75,7 +80,9 @@ fn spike_trap_no_counters() {
 
 #[test]
 fn spike_trap_victory() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord))
+        .opponent(TestSide::new(Side::Champion).hand_size(0))
+        .build();
     g.create_and_play(CardName::SpikeTrap);
     level_up_room(&mut g, 2);
     assert!(g.dawn());

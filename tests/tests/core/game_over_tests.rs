@@ -19,12 +19,13 @@ use game_data::game_actions::GameAction;
 use game_data::primitives::Side;
 use insta::assert_snapshot;
 use test_utils::summarize::Summary;
+use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 use user_action_data::{GameOutcome, UserAction};
 
 #[test]
 fn resign() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let response = g
         .perform_action(UserAction::GameAction(GameAction::Resign).as_client_action(), g.user_id());
     assert!(!g.user.this_player.can_take_action());
@@ -35,7 +36,7 @@ fn resign() {
 
 #[test]
 fn leave_game() {
-    let mut g = new_game(Side::Overlord, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.perform(UserAction::GameAction(GameAction::Resign).as_client_action(), g.user_id());
     let response = g
         .perform_action(UserAction::LeaveGame(GameOutcome::Defeat).as_client_action(), g.user_id());
@@ -44,14 +45,10 @@ fn leave_game() {
 
 #[test]
 fn win_game() {
-    let mut g = new_game(
-        Side::Overlord,
-        Args {
-            score: 95,
-            adventure: Some(AdventureArgs { current_coins: Coins(500), reward: Coins(250) }),
-            ..Args::default()
-        },
-    );
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).score(95))
+        .adventure(AdventureArgs { current_coins: Coins(500), reward: Coins(250) })
+        .build();
+
     g.create_and_play(CardName::TestScheme3_15);
     g.level_up_room(ROOM_ID);
     g.level_up_room(ROOM_ID);

@@ -17,11 +17,12 @@ use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{ObjectPositionBrowser, PlayerName};
+use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
 fn meditation() {
-    let mut g = new_game(Side::Champion, Args { mana: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
     assert_eq!(3, g.me().actions());
     g.create_and_play(CardName::Meditation);
     assert_eq!(9, g.me().mana());
@@ -33,7 +34,7 @@ fn meditation() {
 
 #[test]
 fn coup_de_grace() {
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.play_with_target_room(CardName::CoupDeGrace, RoomId::Vault);
     assert!(g.user.data.raid_active());
     assert_eq!(2, g.user.cards.in_position(Position::Browser(ObjectPositionBrowser {})).count());
@@ -45,13 +46,13 @@ fn coup_de_grace() {
 #[test]
 #[should_panic]
 fn coup_de_grace_invalid_room() {
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.play_with_target_room(CardName::CoupDeGrace, ROOM_ID);
 }
 
 #[test]
 fn charged_strike() {
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     setup_raid_target(&mut g, minion_for_lineage(TEST_LINEAGE));
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     assert_eq!(STARTING_MANA - 3, g.me().mana());
@@ -70,7 +71,7 @@ fn charged_strike() {
 
 #[test]
 fn stealth_mission() {
-    let mut g = new_game(Side::Champion, Args::default());
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     setup_raid_target(&mut g, minion_for_lineage(TEST_LINEAGE));
     assert_eq!(STARTING_MANA, g.opponent.this_player.mana());
     g.play_with_target_room(CardName::StealthMission, ROOM_ID);
@@ -80,7 +81,7 @@ fn stealth_mission() {
 
 #[test]
 fn preparation() {
-    let mut g = new_game(Side::Champion, Args { mana: 5, ..Args::default() });
+    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
     assert_eq!(3, g.me().actions());
     g.create_and_play(CardName::Preparation);
     assert_eq!(4, g.user.cards.hand(PlayerName::User).len());
