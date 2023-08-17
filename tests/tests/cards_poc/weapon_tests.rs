@@ -24,7 +24,7 @@ fn test_attack_weapon() {
     let ability_cost = 1;
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::TestAttackWeapon);
-    fire_weapon_combat_abilities(&mut g, Lineage::Infernal, CardName::TestAttackWeapon);
+    g.fire_weapon_combat_abilities(Lineage::Infernal, CardName::TestAttackWeapon);
     assert_eq!(STARTING_MANA - card_cost - ability_cost, g.me().mana());
     assert!(g.user.data.raid_active());
     assert!(g.user.interface.controls().has_text("End Raid"));
@@ -37,7 +37,7 @@ fn marauders_axe() {
     let id = g.add_to_hand(CardName::MaraudersAxe);
     assert_eq!(card_cost.to_string(), g.user.cards.get(id).top_left_icon());
     g.initiate_raid(RoomId::Crypts);
-    click_on_end_raid(&mut g);
+    g.click(Buttons::EndRaid);
     assert_eq!((card_cost - 2).to_string(), g.user.cards.get(id).top_left_icon());
     g.play_card(id, g.user_id(), None);
     assert_eq!(STARTING_MANA - card_cost + 2, g.me().mana());
@@ -48,9 +48,9 @@ fn keen_halberd() {
     let (card_cost, activation_cost) = (3, 2);
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::KeenHalberd);
-    setup_raid_target(&mut g, CardName::TestMinionShield2Abyssal);
+    g.setup_raid_target(CardName::TestMinionShield2Abyssal);
     g.initiate_raid(ROOM_ID);
-    click_on_summon(&mut g);
+    g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Keen Halberd");
     assert_eq!(
         STARTING_MANA - card_cost - (2 * activation_cost) - 1, /* remaining shield */
@@ -64,6 +64,6 @@ fn bow_of_the_alliance() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::BowOfTheAlliance);
     g.create_and_play(CardName::BowOfTheAlliance);
-    fire_weapon_combat_abilities(&mut g, Lineage::Mortal, CardName::BowOfTheAlliance);
+    g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::BowOfTheAlliance);
     assert_eq!(STARTING_MANA - (2 * card_cost) - (2 * activation_cost), g.me().mana());
 }

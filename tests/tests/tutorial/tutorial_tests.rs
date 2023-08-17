@@ -21,14 +21,14 @@ use protos::spelldawn::{
     ClientRoomLocation, DrawCardAction, GainManaAction, InitiateRaidAction, PlayerName,
     RoomIdentifier,
 };
-use test_utils::client::TestSession;
+use test_utils::test_session::TestSession;
 use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
 static OPPONENT: PlayerId = PlayerId::AI(AIPlayer::TutorialOpponent);
 
 #[test]
 fn set_up_tutorial() {
-    let (game_id, user_id, _) = generate_ids();
+    let (game_id, user_id, _) = test_helpers::generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
     start_tutorial(&mut session);
 
@@ -45,7 +45,7 @@ fn set_up_tutorial() {
 
 #[test]
 fn tutorial_turn_one() {
-    let (game_id, user_id, _) = generate_ids();
+    let (game_id, user_id, _) = test_helpers::generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
     run_tutorial_turn_one(&mut session, user_id);
 }
@@ -72,8 +72,8 @@ fn run_tutorial_turn_one(session: &mut TestSession, user_id: PlayerId) {
     session.click_on(user_id, CardName::SimpleAxe.displayed_name());
     assert!(session.user.data.toast().contains("You have accessed the room"));
 
-    click_on_score(session);
-    click_on_end_raid(session);
+    session.click(Buttons::Score);
+    session.click(Buttons::EndRaid);
 
     session.run_agent_loop();
     session.connect(session.user_id()).expect("Error reconnecting to session");
@@ -84,7 +84,7 @@ fn run_tutorial_turn_one(session: &mut TestSession, user_id: PlayerId) {
 
 #[test]
 fn tutorial_cannot_raid_vault() {
-    let (game_id, user_id, _) = generate_ids();
+    let (game_id, user_id, _) = test_helpers::generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
     start_tutorial(&mut session);
     let result = session.perform_action(
@@ -97,7 +97,7 @@ fn tutorial_cannot_raid_vault() {
 
 #[test]
 fn tutorial_cannot_raid_sanctum() {
-    let (game_id, user_id, _) = generate_ids();
+    let (game_id, user_id, _) = test_helpers::generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
     start_tutorial(&mut session);
     let result = session.perform_action(
@@ -110,7 +110,7 @@ fn tutorial_cannot_raid_sanctum() {
 
 #[test]
 fn tutorial_turn_two() {
-    let (game_id, user_id, _) = generate_ids();
+    let (game_id, user_id, _) = test_helpers::generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
     run_tutorial_turn_one(&mut session, user_id);
     run_tutorial_turn_two(&mut session, user_id);
@@ -132,7 +132,7 @@ fn run_tutorial_turn_two(session: &mut TestSession, user_id: PlayerId) {
 
 #[test]
 fn tutorial_turn_three() {
-    let (game_id, user_id, _) = generate_ids();
+    let (game_id, user_id, _) = test_helpers::generate_ids();
     let mut session = new_session(game_id, user_id, OPPONENT);
     run_tutorial_turn_one(&mut session, user_id);
     run_tutorial_turn_two(&mut session, user_id);
@@ -146,10 +146,10 @@ fn run_tutorial_turn_three(session: &mut TestSession, user_id: PlayerId) {
     session.run_agent_loop();
     session.connect(session.user_id()).expect("Error reconnecting to session");
 
-    click_on_continue(session);
+    session.click(Buttons::NoWeapon);
     session.initiate_raid(RoomId::Vault);
-    click_on_score(session);
-    click_on_end_raid(session);
+    session.click(Buttons::Score);
+    session.click(Buttons::EndRaid);
     session.perform(Action::DrawCard(DrawCardAction {}), user_id);
 
     session.run_agent_loop();

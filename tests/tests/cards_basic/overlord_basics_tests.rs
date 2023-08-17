@@ -16,13 +16,14 @@ use game_data::card_name::CardName;
 use game_data::primitives::Side;
 use protos::spelldawn::PlayerName;
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_session_helpers::TestSessionHelpers;
 use test_utils::*;
 
 #[test]
 fn conspire() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Conspire);
-    level_up_room(&mut g, 3);
+    g.level_up_room_times(3);
     assert_eq!(g.me().score(), 15);
 }
 
@@ -30,7 +31,7 @@ fn conspire() {
 fn devise() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Devise);
-    level_up_room(&mut g, 4);
+    g.level_up_room_times(4);
     assert_eq!(g.me().score(), 30);
 }
 
@@ -38,7 +39,7 @@ fn devise() {
 fn machinate() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Machinate);
-    level_up_room(&mut g, 5);
+    g.level_up_room_times(5);
     assert_eq!(g.me().score(), 45);
 }
 
@@ -67,15 +68,15 @@ fn leyline() {
     let (card_cost, gained) = (2, 1);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Leyline);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
-    click_on_unveil(&mut g);
+    g.spend_actions_until_turn_over(Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Champion);
+    g.click(Buttons::Unveil);
     assert_eq!(STARTING_MANA - card_cost + gained, g.me().mana());
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(STARTING_MANA - card_cost + gained * 2, g.me().mana());
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(STARTING_MANA - card_cost + gained * 3, g.me().mana());
 }
 
@@ -84,10 +85,10 @@ fn ore_refinery() {
     let (card_cost, stored, taken) = (4, 12, 3);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::OreRefinery);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(STARTING_MANA, g.me().mana());
-    click_on_unveil(&mut g);
+    g.click(Buttons::Unveil);
     assert_eq!(STARTING_MANA - card_cost + taken, g.me().mana());
     assert_eq!((stored - taken).to_string(), g.user.get_card(id).arena_icon());
 }
@@ -96,8 +97,8 @@ fn ore_refinery() {
 fn crab() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Crab);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
 }
 
@@ -106,9 +107,9 @@ fn fire_goblin() {
     let (cost, gained) = (1, 1);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::FireGoblin);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     assert_eq!(STARTING_MANA - cost, g.me().mana());
-    click_on_continue(&mut g);
+    g.click(Buttons::NoWeapon);
     assert_eq!(STARTING_MANA - cost + gained, g.me().mana());
     assert_eq!(1, g.opponent.cards.discard_pile(PlayerName::User).len());
 }
@@ -117,8 +118,8 @@ fn fire_goblin() {
 fn toucan() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Toucan);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
 }
 
@@ -126,8 +127,8 @@ fn toucan() {
 fn frog() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Frog);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
 }
 
@@ -135,8 +136,8 @@ fn frog() {
 fn captain() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Captain);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(1, g.opponent.this_player.actions());
 }
@@ -145,8 +146,8 @@ fn captain() {
 fn scout() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Scout);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(2, g.opponent.this_player.actions());
 }

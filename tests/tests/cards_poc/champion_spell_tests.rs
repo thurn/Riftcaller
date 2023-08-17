@@ -18,6 +18,7 @@ use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{ObjectPositionBrowser, PlayerName};
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_session_helpers::Buttons;
 use test_utils::*;
 
 #[test]
@@ -53,7 +54,7 @@ fn coup_de_grace_invalid_room() {
 #[test]
 fn charged_strike() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    setup_raid_target(&mut g, minion_for_lineage(TEST_LINEAGE));
+    g.setup_raid_target(test_helpers::minion_for_lineage(TEST_LINEAGE));
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     assert_eq!(STARTING_MANA - 3, g.me().mana());
     g.play_with_target_room(CardName::ChargedStrike, ROOM_ID);
@@ -62,7 +63,7 @@ fn charged_strike() {
     assert_eq!(5, g.user.this_player.bonus_mana());
     assert_eq!(5, g.opponent.other_player.bonus_mana());
 
-    click_on_summon(&mut g);
+    g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Test Weapon");
     assert_eq!(STARTING_MANA - 4, g.me().mana());
     assert_eq!(4, g.user.this_player.bonus_mana());
@@ -72,10 +73,10 @@ fn charged_strike() {
 #[test]
 fn stealth_mission() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    setup_raid_target(&mut g, minion_for_lineage(TEST_LINEAGE));
+    g.setup_raid_target(test_helpers::minion_for_lineage(TEST_LINEAGE));
     assert_eq!(STARTING_MANA, g.opponent.this_player.mana());
     g.play_with_target_room(CardName::StealthMission, ROOM_ID);
-    click_on_summon(&mut g);
+    g.click(Buttons::Summon);
     assert_eq!(STARTING_MANA - MINION_COST - 3, g.opponent.this_player.mana());
 }
 

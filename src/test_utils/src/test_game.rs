@@ -29,7 +29,7 @@
 use game_data::card_name::CardName;
 use game_data::primitives::{ActionCount, ManaValue, PointsValue, Side};
 
-use crate::client::TestSession;
+use crate::test_session::TestSession;
 use crate::{AdventureArgs, Args, STARTING_MANA};
 
 pub struct TestGame {

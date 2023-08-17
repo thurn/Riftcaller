@@ -24,8 +24,8 @@ fn ennera_imris_blood_bound() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).sigil(CardName::RadiantSigil)).build();
 
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Champion);
+    g.spend_actions_until_turn_over(Side::Overlord);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(STARTING_MANA + gained, g.me().mana());
 }
@@ -35,12 +35,12 @@ fn aris_fey_the_radiant_sun() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).sigil(CardName::RestorationSigil)).build();
 
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     g.create_and_play(CardName::TestMinionDealDamage);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
-    click_on_continue(&mut g);
+    g.click(Buttons::NoWeapon);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
 }
@@ -51,7 +51,7 @@ fn telantes_dugoth_earthbreaker() {
 
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::Opponent).len());
-    click_on_end_raid(&mut g);
+    g.click(Buttons::EndRaid);
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
 }
 
@@ -69,7 +69,7 @@ fn andvari_est_nights_warden() {
         .build();
 
     g.initiate_raid(RoomId::Vault);
-    click_on_score(&mut g);
+    g.click(Buttons::Score);
     assert_eq!(15, g.me().score())
 }
 

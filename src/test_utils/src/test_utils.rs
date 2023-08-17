@@ -17,26 +17,24 @@
 
 #![allow(clippy::unwrap_in_result)]
 
-pub mod client;
 pub mod client_interface;
 pub mod fake_database;
 pub mod summarize;
 pub mod test_adventure;
 pub mod test_game;
+pub mod test_helpers;
+pub mod test_session;
+pub mod test_session_helpers;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fmt::Debug;
-use std::fs;
-use std::hash::Hash;
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::AtomicU64;
 use std::sync::Mutex;
 
-use adapters::ServerCardId;
 use adventure_data::adventure::{
     AdventureConfiguration, AdventureState, BattleData, Coins, TileEntity,
 };
 use adventure_generator::mock_adventure;
-use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::card_state::{CardPosition, CardPositionKind};
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
@@ -46,26 +44,19 @@ use game_data::game::{
 };
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{
-    ActionCount, AdventureId, AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue,
-    PointsValue, RaidId, RoomId, Side,
+    ActionCount, AdventureId, GameId, ManaValue, PointsValue, RaidId, RoomId, Side,
 };
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
 use player_data::{PlayerState, PlayerStatus};
-use prost::Message;
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::{
-    CardIdentifier, CommandList, GameCommand, LevelUpRoomAction, RoomIdentifier,
-    SpendActionPointAction,
-};
+use protos::spelldawn::RoomIdentifier;
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use rules::{dispatch, mana};
-use server::server_data::GameResponseOutput;
-use ulid::Ulid;
+pub use test_session_helpers::{Buttons, TestSessionHelpers};
 
-use crate::client::TestSession;
 use crate::fake_database::FakeDatabase;
+use crate::test_session::TestSession;
 
 pub static NEXT_ID: AtomicU64 = AtomicU64::new(1_000_000);
 /// The title returned for hidden cards
@@ -87,7 +78,7 @@ pub const STARTING_MANA: ManaValue = 999;
 /// the default configuration options and how to modify them.
 pub fn new_game(user_side: Side, args: Args) -> TestSession {
     cards_all::initialize();
-    let (game_id, user_id, opponent_id) = generate_ids();
+    let (game_id, user_id, opponent_id) = test_helpers::generate_ids();
     let (overlord_user, champion_user) = match user_side {
         Side::Overlord => (user_id, opponent_id),
         Side::Champion => (opponent_id, user_id),
@@ -200,15 +191,6 @@ pub fn new_game(user_side: Side, args: Args) -> TestSession {
     session
 }
 
-pub fn generate_ids() -> (GameId, PlayerId, PlayerId) {
-    let next_id = NEXT_ID.fetch_add(2, Ordering::SeqCst);
-    (
-        GameId::new_from_u128(next_id as u128),
-        PlayerId::Database(Ulid(next_id as u128)),
-        PlayerId::Database(Ulid(next_id as u128 + 1)),
-    )
-}
-
 #[derive(Clone, Debug)]
 pub struct AdventureArgs {
     /// Coins the player currently has in this adventure
@@ -303,7 +285,7 @@ fn set_deck_top(game: &mut GameState, side: Side, deck_top: Vec<CardName>) {
             .find(|c| c.position().kind() == CardPositionKind::DeckUnknown)
             .expect("No cards in deck")
             .id;
-        client::overwrite_card(game, target_id, card);
+        test_session::overwrite_card(game, target_id, card);
         game.move_card_internal(target_id, CardPosition::DeckTop(side))
     }
 }
@@ -317,7 +299,7 @@ fn set_discard_pile(game: &mut GameState, side: Side, discard: Option<CardName>)
             .last() // Take last to avoid overwriting deck top
             .expect("No cards in deck")
             .id;
-        client::overwrite_card(game, target_id, discard);
+        test_session::overwrite_card(game, target_id, discard);
         game.move_card_internal(target_id, CardPosition::DiscardPile(side));
         game.card_mut(target_id).turn_face_down();
     }
@@ -349,221 +331,6 @@ pub fn new_session(game_id: GameId, user_id: PlayerId, opponent_id: PlayerId) ->
     };
 
     TestSession::new(database, user_id, opponent_id)
-}
-
-pub fn spend_actions_until_turn_over(session: &mut TestSession, side: Side) {
-    let id = session.player_id_for_side(side);
-    while session.player(id).this_player.actions() > 0 {
-        session.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
-    }
-}
-
-/// Levels up the [CLIENT_ROOM_ID] room a specified number of `times`. If this
-/// requires multiple turns, spends the Champion turns doing nothing.
-///
-/// NOTE that this may cause the Champion to draw cards for their turn.
-pub fn level_up_room(session: &mut TestSession, times: u32) {
-    let mut levels = 0;
-    let overlord_id = session.player_id_for_side(Side::Overlord);
-
-    loop {
-        while session.player(overlord_id).this_player.actions() > 0 {
-            session.perform(
-                Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() }),
-                overlord_id,
-            );
-            levels += 1;
-
-            if levels == times {
-                return;
-            }
-        }
-
-        assert!(session.dawn());
-        spend_actions_until_turn_over(session, Side::Champion);
-        assert!(session.dusk());
-    }
-}
-
-/// Must be invoked during the Overlord turn. Performs the following actions:
-/// - Plays a test Scheme card
-/// - Ends the Overlord turn
-/// - Initiates a raid on the [ROOM_ID] room
-/// - Summons the minion in the room
-///
-/// NOTE: This causes the Champion player to draw a card for their turn!
-pub fn set_up_minion_combat(session: &mut TestSession) {
-    set_up_minion_combat_with_action(session, |_| {});
-}
-
-/// Equivalent to [set_up_minion_combat] which invokes an `action` function at
-/// the start of the Champion's turn.
-pub fn set_up_minion_combat_with_action(
-    session: &mut TestSession,
-    action: impl FnOnce(&mut TestSession),
-) {
-    session.create_and_play(CardName::TestScheme3_15);
-    spend_actions_until_turn_over(session, Side::Overlord);
-    assert!(session.dawn());
-    action(session);
-    session.initiate_raid(ROOM_ID);
-    click_on_summon(session);
-}
-
-pub fn minion_for_lineage(lineage: Lineage) -> CardName {
-    match lineage {
-        Lineage::Mortal => CardName::TestMortalMinion,
-        Lineage::Abyssal => CardName::TestAbyssalMinion,
-        Lineage::Infernal => CardName::TestInfernalMinion,
-        _ => panic!("Unsupported"),
-    }
-}
-
-/// Must be invoked during the Champion turn. Performs the following actions:
-///
-/// - Ends the Champion turn
-/// - Plays a 3-1 scheme in the [ROOM_ID] room.
-/// - Plays the provided `card_name` minion into that room.
-/// - Plays the selected minion in the [ROOM_ID] room.
-/// - Ends the Overlord turn.
-///
-/// Returns a tuple of (scheme_id, minion_id).
-///
-/// WARNING: This causes both players to draw cards for their turns!
-pub fn setup_raid_target(
-    session: &mut TestSession,
-    card_name: CardName,
-) -> (CardIdentifier, CardIdentifier) {
-    spend_actions_until_turn_over(session, Side::Champion);
-    assert!(session.dusk());
-    let scheme_id = session.create_and_play(CardName::TestScheme3_15);
-    let minion_id = session.create_and_play(card_name);
-    spend_actions_until_turn_over(session, Side::Overlord);
-    assert!(session.dawn());
-    (scheme_id, minion_id)
-}
-
-pub fn click_on_summon(session: &mut TestSession) -> GameResponseOutput {
-    session.click_on(session.player_id_for_side(Side::Overlord), "Summon")
-}
-
-pub fn click_on_pass(session: &mut TestSession) -> GameResponseOutput {
-    session.click_on(session.player_id_for_side(Side::Overlord), "Pass")
-}
-
-pub fn click_on_continue(session: &mut TestSession) {
-    session.click_on(session.player_id_for_side(Side::Champion), "Continue");
-}
-
-pub fn click_on_score(session: &mut TestSession) {
-    session.click_on(session.player_id_for_side(Side::Champion), "Score");
-}
-
-pub fn click_on_end_raid(session: &mut TestSession) {
-    session.click_on(session.player_id_for_side(Side::Champion), "End Raid");
-}
-
-pub fn click_on_unveil(session: &mut TestSession) -> GameResponseOutput {
-    session.click_on(session.player_id_for_side(Side::Overlord), "Unveil")
-}
-
-pub fn click_on_do_not_unveil(session: &mut TestSession) {
-    session.click_on(session.player_id_for_side(Side::Overlord), "Continue");
-}
-
-/// Must be invoked during the Champion turn. Performs the following actions:
-///
-/// - Performs all actions described in [setup_raid_target], creating a minion
-///   of the indicated [Lineage] with `MINION_HEALTH` health.
-/// - Initiates a raid on the [ROOM_ID] room.
-/// - Summons the minion
-/// - Clicks on the button with text matching `name` in order to fire weapon
-///   abilities.
-///
-/// WARNING: This causes both players to draw cards for their turns!
-pub fn fire_weapon_combat_abilities(session: &mut TestSession, lineage: Lineage, name: CardName) {
-    setup_raid_target(session, minion_for_lineage(lineage));
-    session.initiate_raid(ROOM_ID);
-    click_on_summon(session);
-    session.click_on(session.player_id_for_side(Side::Champion), name.displayed_name());
-}
-
-/// Numbers which determine the boost requirement for a weapon
-pub struct WeaponStats {
-    pub cost: ManaValue,
-    pub attack: AttackValue,
-    pub boost_cost: ManaValue,
-    pub boost: AttackValue,
-}
-
-/// Returns the basic mana cost to play a card with the stats in [WeaponStats]
-/// and defeat a minion with `minion_health` health
-pub fn cost_to_play_and_defeat(stats: WeaponStats, minion_health: HealthValue) -> ManaValue {
-    (((minion_health - stats.attack) / stats.boost) * stats.boost_cost) + stats.cost
-}
-
-/// Asserts that the display names of the provided vector of [CardName]s are
-/// precisely identical to the provided vector of strings.
-pub fn assert_identical(expected: Vec<CardName>, actual: Vec<String>) {
-    let set = expected.iter().map(CardName::displayed_name).collect::<Vec<_>>();
-    assert_eq!(set, actual);
-}
-
-/// Asserts two vectors contain the same elements in any order
-pub fn assert_contents_equal<T: Eq + Hash + Debug>(left: Vec<T>, right: Vec<T>) {
-    let left_count = left.len();
-    let right_count = right.len();
-    let left_set: HashSet<T> = left.into_iter().collect();
-    let right_set: HashSet<T> = right.into_iter().collect();
-    assert_eq!(left_set.len(), left_count);
-    assert_eq!(right_set.len(), right_count);
-    assert_eq!(left_set, right_set);
-}
-
-/// Asserts that a [Result] is not an error
-pub fn assert_ok<T: Debug, E: Debug>(result: &Result<T, E>) {
-    assert!(result.is_ok(), "Unexpected error, got {result:?}")
-}
-
-/// Asserts that a [Result] is an error
-pub fn assert_error<T: Debug, E: Debug>(result: Result<T, E>) {
-    assert!(result.is_err(), "Expected an error, got {result:?}")
-}
-
-/// Creates a [CardIdentifier] representing the ability with the provided
-/// `index` of this `card_id`.
-pub fn ability_id(card_id: CardIdentifier, ability: u32) -> CardIdentifier {
-    CardIdentifier { ability_id: Some(ability), ..card_id }
-}
-
-/// Converts a [CardIdentifier] into a [CardId].
-pub fn server_card_id(card_id: CardIdentifier) -> CardId {
-    match adapters::server_card_id(card_id) {
-        Ok(ServerCardId::CardId(id)) => id,
-        _ => panic!("Expected server card id"),
-    }
-}
-
-pub fn create_test_recording(session: &TestSession, name: &str) {
-    record_output_for_side(session, format!("{name}_overlord"), Side::Overlord).unwrap();
-    record_output_for_side(session, format!("{name}_champion"), Side::Champion).unwrap();
-}
-
-pub fn record_output_for_side(session: &TestSession, name: String, side: Side) -> Result<()> {
-    let commands = CommandList {
-        logging_metadata: vec![],
-        commands: session
-            .player_for_side(side)
-            .history
-            .iter()
-            .map(|c| GameCommand { command: Some(c.clone()) })
-            .collect(),
-        metadata: None,
-    };
-    let encoded = commands.encode_length_delimited_to_vec();
-    fs::write(format!("../Assets/Resources/TestRecordings/test_{name}.bytes"), encoded)?;
-
-    Ok(())
 }
 
 fn create_mock_adventure(player_id: PlayerId, side: Side, args: AdventureArgs) -> AdventureState {

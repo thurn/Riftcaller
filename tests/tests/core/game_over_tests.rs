@@ -52,7 +52,7 @@ fn win_game() {
     g.create_and_play(CardName::TestScheme3_15);
     g.level_up_room(ROOM_ID);
     g.level_up_room(ROOM_ID);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     g.level_up_room(ROOM_ID);
     assert!(g.is_victory_for_player(Side::Overlord));
     assert_eq!(Coins(500), g.current_coins());

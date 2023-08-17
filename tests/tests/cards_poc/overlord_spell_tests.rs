@@ -29,8 +29,8 @@ fn overwhelming_power() {
 fn forced_march() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let scheme = g.create_and_play(CardName::TestScheme3_15);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Champion);
     g.play_with_target_room(CardName::ForcedMarch, ROOM_ID);
     assert_eq!("2", g.user.get_card(scheme).arena_icon());
 }

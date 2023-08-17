@@ -24,7 +24,7 @@ use test_utils::*;
 fn gold_mine() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::GoldMine);
-    level_up_room(&mut g, 4);
+    g.level_up_room_times(4);
     assert_eq!(g.me().score(), 30);
     assert_eq!(STARTING_MANA - 4 /* level cost */ + 7 /* gained */, g.me().mana());
     assert_eq!(
@@ -39,7 +39,7 @@ fn activate_reinforcements() {
     let id = g.create_and_play(CardName::ActivateReinforcements);
     let minion = g.create_and_play(CardName::TestMinionEndRaid);
     assert!(!g.user.get_card(minion).is_face_up());
-    level_up_room(&mut g, 5);
+    g.level_up_room_times(5);
     assert_eq!(g.me().score(), 45);
     assert!(g.user.get_card(minion).is_face_up());
     assert_eq!(STARTING_MANA - 5, g.me().mana());
@@ -53,19 +53,19 @@ fn activate_reinforcements() {
 fn research_project() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::ResearchProject);
-    level_up_room(&mut g, 2);
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.level_up_room_times(2);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
-    level_up_room(&mut g, 1);
+    g.level_up_room_times(1);
     assert_eq!(3, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(6, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(10, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());

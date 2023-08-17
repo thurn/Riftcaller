@@ -27,8 +27,8 @@ fn test_minion_deal_damage_end_raid() {
         .opponent(TestSide::new(Side::Champion).hand_size(5))
         .build();
     g.create_and_play(CardName::TestMinionDealDamageEndRaid);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
     assert_eq!(5, g.user.cards.hand(PlayerName::Opponent).len()); // Card is drawn for turn!
@@ -38,7 +38,7 @@ fn test_minion_deal_damage_end_raid() {
 fn time_golem_pay_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TimeGolem);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     assert!(g.opponent.interface.controls().has_text("End Raid"));
     assert!(g.opponent.interface.controls().has_text(format!("Pay 5{}", icons::MANA)));
     assert!(g.opponent.interface.controls().has_text(format!("Pay 2{}", icons::ACTION)));
@@ -52,10 +52,10 @@ fn time_golem_defeat() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TimeGolem);
     g.create_and_play(CardName::TestScheme3_15);
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Overlord);
     g.create_and_play(CardName::TestWeapon5Attack);
     g.initiate_raid(ROOM_ID);
-    click_on_summon(&mut g);
+    g.click(Buttons::Summon);
     g.click_on(g.opponent_id(), format!("Pay 5{}", icons::MANA));
     g.click_on(g.opponent_id(), "Test Weapon");
     assert_eq!(vec!["Time Golem"], g.user.cards.discard_pile(PlayerName::User));
@@ -65,12 +65,12 @@ fn time_golem_defeat() {
 fn time_golem_pay_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TimeGolem);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
     assert_eq!(0, g.opponent.this_player.actions());
-    click_on_continue(&mut g);
-    click_on_score(&mut g);
-    click_on_end_raid(&mut g);
+    g.click(Buttons::NoWeapon);
+    g.click(Buttons::Score);
+    g.click(Buttons::EndRaid);
     assert!(g.dusk());
 }
 
@@ -78,7 +78,7 @@ fn time_golem_pay_actions() {
 fn time_golem_end_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TimeGolem);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     g.click_on(g.opponent_id(), "End Raid");
     assert_eq!(2, g.opponent.this_player.actions());
     assert!(!g.user.data.raid_active());
@@ -89,7 +89,7 @@ fn temporal_stalker_end_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.add_to_hand(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TemporalStalker);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     g.click_on(g.opponent_id(), "End Raid");
     assert!(!g.user.data.raid_active());
@@ -106,7 +106,7 @@ fn temporal_stalker_pay_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.add_to_hand(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TemporalStalker);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
     assert_eq!(0, g.opponent.this_player.actions());
     assert!(g.user.data.raid_active());
@@ -127,7 +127,7 @@ fn temporal_stalker_defeat() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.add_to_hand(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TemporalStalker);
-    set_up_minion_combat_with_action(&mut g, |g| {
+    g.set_up_minion_combat_with_action(|g| {
         g.create_and_play(CardName::TestWeaponAbyssal);
     });
     g.click_on(g.opponent_id(), "Test Weapon");
@@ -146,7 +146,7 @@ fn shadow_lurker_outer_room() {
     assert_eq!("2", g.user.get_card(id).bottom_right_icon());
     let id = g.create_and_play(CardName::ShadowLurker);
     assert_eq!("4", g.user.get_card(id).bottom_right_icon());
-    set_up_minion_combat_with_action(&mut g, |g| {
+    g.set_up_minion_combat_with_action(|g| {
         g.create_and_play(CardName::TestWeaponAbyssal);
     });
     g.click_on(g.opponent_id(), "Test Weapon");
@@ -167,10 +167,10 @@ fn sphinx_of_winters_breath_discard_even() {
         .build();
 
     g.create_and_play(CardName::SphinxOfWintersBreath);
-    set_up_minion_combat_with_action(&mut g, |g| {
+    g.set_up_minion_combat_with_action(|g| {
         g.add_to_hand(CardName::Test0CostChampionSpell);
     });
-    click_on_continue(&mut g);
+    g.click(Buttons::NoWeapon);
     assert_eq!(vec!["Test 0 Cost Champion Spell"], g.opponent.cards.discard_pile(PlayerName::User));
     assert!(g.user.data.raid_active());
 }
@@ -182,10 +182,10 @@ fn sphinx_of_winters_breath_discard_odd() {
         .build();
 
     g.create_and_play(CardName::SphinxOfWintersBreath);
-    set_up_minion_combat_with_action(&mut g, |g| {
+    g.set_up_minion_combat_with_action(|g| {
         g.add_to_hand(CardName::Test1CostChampionSpell);
     });
-    click_on_continue(&mut g);
+    g.click(Buttons::NoWeapon);
     assert_eq!(vec!["Test 1 Cost Champion Spell"], g.opponent.cards.discard_pile(PlayerName::User));
     assert!(!g.user.data.raid_active());
 }
@@ -194,8 +194,8 @@ fn sphinx_of_winters_breath_discard_odd() {
 fn bridge_troll_continue() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::BridgeTroll);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(g.user.data.raid_active());
     assert_eq!(STARTING_MANA - 3, g.opponent.this_player.mana());
 }
@@ -206,8 +206,8 @@ fn bridge_troll_end_raid() {
         .opponent(TestSide::new(Side::Champion).mana(2))
         .build();
     g.create_and_play(CardName::BridgeTroll);
-    set_up_minion_combat(&mut g);
-    click_on_continue(&mut g);
+    g.set_up_minion_combat();
+    g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(0, g.opponent.this_player.mana());
 }
@@ -218,7 +218,7 @@ fn stormcaller_take_2() {
         .opponent(TestSide::new(Side::Champion).hand_size(5))
         .build();
     g.create_and_play(CardName::Stormcaller);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     g.click_on(g.opponent_id(), "Take 2");
     assert!(!g.user.data.raid_active());
     assert_eq!(2, g.opponent.cards.discard_pile(PlayerName::User).len());
@@ -230,7 +230,7 @@ fn stormcaller_take_4() {
         .opponent(TestSide::new(Side::Champion).hand_size(5))
         .build();
     g.create_and_play(CardName::Stormcaller);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     g.click_on(g.opponent_id(), "Take 4");
     assert!(g.user.data.raid_active());
     assert_eq!(4, g.opponent.cards.discard_pile(PlayerName::User).len());
@@ -242,7 +242,7 @@ fn stormcaller_take_2_game_over() {
         .opponent(TestSide::new(Side::Champion).hand_size(0))
         .build();
     g.create_and_play(CardName::Stormcaller);
-    set_up_minion_combat(&mut g);
+    g.set_up_minion_combat();
     assert!(!g.opponent.interface.controls().has_text("Take 4"));
     g.click_on(g.opponent_id(), "Take 2");
     assert!(g.is_victory_for_player(Side::Overlord));

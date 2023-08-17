@@ -18,9 +18,9 @@ use game_data::game_actions::{GameAction, PromptAction};
 use game_data::primitives::Side;
 use insta::assert_snapshot;
 use protos::spelldawn::PlayerName;
-use test_utils::client::TestSession;
 use test_utils::client_interface::HasText;
 use test_utils::summarize::Summary;
+use test_utils::test_session::TestSession;
 use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction};
 
@@ -29,7 +29,7 @@ static CHAMPION_DECK: NewGameDeck = NewGameDeck::NamedDeck(NamedDeck::ChampionTe
 
 #[test]
 fn create_new_game() {
-    let (game_id, overlord_id, champion_id) = generate_ids();
+    let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
     let mut session = new_session(game_id, overlord_id, champion_id);
     let response = session.perform_action(
         UserAction::NewGame(NewGameAction {
@@ -49,7 +49,7 @@ fn create_new_game() {
 
 #[test]
 fn connect_to_new_game() {
-    let (game_id, overlord_id, champion_id) = generate_ids();
+    let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
     let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
@@ -64,18 +64,18 @@ fn connect_to_new_game() {
 
 #[test]
 fn mulligan_legal_actions() {
-    let (game_id, overlord_id, champion_id) = generate_ids();
+    let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
     let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         session.legal_actions(Side::Overlord),
         vec![
             GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
             GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
         ],
     );
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         session.legal_actions(Side::Champion),
         vec![
             GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
@@ -85,7 +85,7 @@ fn mulligan_legal_actions() {
 
     session.click_on(overlord_id, "Keep");
     assert!(session.legal_actions_result(Side::Overlord).is_err());
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         session.legal_actions(Side::Champion),
         vec![
             GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
@@ -96,7 +96,7 @@ fn mulligan_legal_actions() {
 
 #[test]
 fn keep_opening_hand() {
-    let (game_id, overlord_id, champion_id) = generate_ids();
+    let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
     let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
@@ -114,7 +114,7 @@ fn keep_opening_hand() {
 
 #[test]
 fn mulligan_opening_hand() {
-    let (game_id, overlord_id, champion_id) = generate_ids();
+    let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
     let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 
@@ -132,7 +132,7 @@ fn mulligan_opening_hand() {
 
 #[test]
 fn both_keep_opening_hands() {
-    let (game_id, overlord_id, champion_id) = generate_ids();
+    let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
     let mut session = new_session(game_id, overlord_id, champion_id);
     initiate_game(&mut session);
 

@@ -42,13 +42,13 @@ fn connect_to_ongoing() {
     )
     .build();
     let r1 = g.connect(g.user_id());
-    assert_ok(&r1);
+    test_helpers::assert_ok(&r1);
     let r2 = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
-    assert_identical(
+    test_helpers::assert_identical(
         vec![CardName::TestMinionDealDamageEndRaid],
         g.user.cards.hand(PlayerName::User),
     );
-    assert_ok(&r2);
+    test_helpers::assert_ok(&r2);
     let r3 = g.connect(g.opponent_id());
 
     assert_snapshot!(Summary::run(&r3));
@@ -63,7 +63,7 @@ fn draw_card() {
     let response = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
     assert_snapshot!(Summary::run(&response));
 
-    assert_identical(
+    test_helpers::assert_identical(
         vec![CardName::TestMinionDealDamageEndRaid],
         g.user.cards.hand(PlayerName::User),
     );
@@ -75,20 +75,22 @@ fn draw_card() {
 #[test]
 fn cannot_draw_card_on_opponent_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.opponent_id()));
+    test_helpers::assert_error(
+        g.perform_action(Action::DrawCard(DrawCardAction {}), g.opponent_id()),
+    );
 }
 
 #[test]
 fn cannot_draw_when_out_of_action_points() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(0).build();
-    assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
+    test_helpers::assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
 }
 
 #[test]
 fn cannot_draw_during_raid() {
     let mut g =
         TestGame::new(TestSide::new(Side::Overlord)).actions(0).raid(TestRaid::new()).build();
-    assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
+    test_helpers::assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
 }
 
 #[test]
@@ -98,14 +100,14 @@ fn maximum_hand_size() {
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(4, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert_eq!(8, g.user.cards.hand(PlayerName::User).len());
-    spend_actions_until_turn_over(&mut g, Side::Overlord);
+    g.spend_actions_until_turn_over(Side::Overlord);
     assert_eq!(vec!["Test Minion End Raid"], g.user.cards.discard_pile(PlayerName::User));
 }
 
@@ -123,8 +125,11 @@ fn play_card() {
     assert_eq!(2, g.opponent.other_player.actions());
     assert_eq!(9, g.me().mana());
     assert_eq!(9, g.opponent.other_player.mana());
-    assert_identical(vec![CardName::ArcaneRecovery], g.user.cards.discard_pile(PlayerName::User));
-    assert_identical(
+    test_helpers::assert_identical(
+        vec![CardName::ArcaneRecovery],
+        g.user.cards.discard_pile(PlayerName::User),
+    );
+    test_helpers::assert_identical(
         vec![CardName::ArcaneRecovery],
         g.opponent.cards.discard_pile(PlayerName::Opponent),
     );
@@ -149,7 +154,7 @@ fn play_hidden_card() {
     assert_eq!(2, g.opponent.other_player.actions());
     assert_eq!(0, g.me().mana());
     assert_eq!(0, g.opponent.other_player.mana());
-    assert_identical(
+    test_helpers::assert_identical(
         vec![CardName::GoldMine],
         g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Back),
     );
@@ -160,7 +165,7 @@ fn play_hidden_card() {
 fn cannot_play_card_on_opponent_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
-    assert_error(g.perform_action(
+    test_helpers::assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
         g.user_id(),
     ));
@@ -170,7 +175,7 @@ fn cannot_play_card_on_opponent_turn() {
 fn cannot_play_card_when_out_of_action_points() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(0).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
-    assert_error(g.perform_action(
+    test_helpers::assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
         g.user_id(),
     ));
@@ -180,7 +185,7 @@ fn cannot_play_card_when_out_of_action_points() {
 fn cannot_play_card_during_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).raid(TestRaid::new()).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
-    assert_error(g.perform_action(
+    test_helpers::assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
         g.user_id(),
     ));
@@ -202,19 +207,21 @@ fn gain_mana() {
 #[test]
 fn cannot_gain_mana_on_opponent_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.opponent_id()));
+    test_helpers::assert_error(
+        g.perform_action(Action::GainMana(GainManaAction {}), g.opponent_id()),
+    );
 }
 
 #[test]
 fn cannot_gain_mana_when_out_of_action_points() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(0).build();
-    assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
+    test_helpers::assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
 }
 
 #[test]
 fn cannot_gain_mana_during_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).raid(TestRaid::new()).build();
-    assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
+    test_helpers::assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
 }
 
 #[test]
@@ -340,9 +347,9 @@ fn activate_ability_take_all_mana() {
         );
         taken += MANA_TAKEN;
 
-        spend_actions_until_turn_over(&mut g, Side::Champion);
+        g.spend_actions_until_turn_over(Side::Champion);
         assert!(g.dusk());
-        spend_actions_until_turn_over(&mut g, Side::Overlord);
+        g.spend_actions_until_turn_over(Side::Overlord);
         assert!(g.dawn());
     }
 
@@ -364,9 +371,9 @@ fn triggered_unveil_ability() {
     g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
     assert_eq!(STARTING_MANA, g.user.this_player.mana());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert!(g.dusk());
-    click_on_unveil(&mut g);
+    g.click(Buttons::Unveil);
     assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.user.this_player.mana());
     assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.opponent.other_player.mana());
 }
@@ -377,7 +384,7 @@ fn triggered_ability_cannot_unveil() {
     g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
     assert_eq!(0, g.user.this_player.mana());
-    spend_actions_until_turn_over(&mut g, Side::Champion);
+    g.spend_actions_until_turn_over(Side::Champion);
     assert!(g.dusk());
     assert_eq!(0, g.user.this_player.mana());
     assert_eq!(0, g.opponent.other_player.mana());
@@ -391,14 +398,14 @@ fn triggered_ability_take_all_mana() {
     let mut unveiled = false;
     while taken < MANA_STORED {
         assert!(g.dawn());
-        spend_actions_until_turn_over(&mut g, Side::Champion);
+        g.spend_actions_until_turn_over(Side::Champion);
         assert!(g.dusk());
         if !unveiled {
-            click_on_unveil(&mut g);
+            g.click(Buttons::Unveil);
             unveiled = true;
         }
         taken += MANA_TAKEN;
-        spend_actions_until_turn_over(&mut g, Side::Overlord);
+        g.spend_actions_until_turn_over(Side::Overlord);
     }
 
     assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_STORED, g.user.this_player.mana());
@@ -417,14 +424,14 @@ fn triggered_ability_take_all_mana() {
 fn legal_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert!(g.legal_actions_result(Side::Champion).is_err());
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![GameAction::GainMana, GameAction::DrawCard],
     );
 
-    let spell_id = server_card_id(g.add_to_hand(CardName::TestOverlordSpell));
+    let spell_id = test_helpers::server_card_id(g.add_to_hand(CardName::TestOverlordSpell));
 
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![
             GameAction::GainMana,
@@ -433,9 +440,9 @@ fn legal_actions() {
         ],
     );
 
-    let minion_id = server_card_id(g.add_to_hand(CardName::TestMinionEndRaid));
+    let minion_id = test_helpers::server_card_id(g.add_to_hand(CardName::TestMinionEndRaid));
 
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![
             GameAction::GainMana,
@@ -457,7 +464,7 @@ fn legal_actions() {
 fn legal_actions_level_up_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestScheme3_15);
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![GameAction::GainMana, GameAction::DrawCard, GameAction::LevelUpRoom(RoomId::RoomA)],
     );
@@ -467,7 +474,7 @@ fn legal_actions_level_up_room() {
 fn champion_legal_actions() {
     let g = TestGame::new(TestSide::new(Side::Champion)).build();
     assert!(g.legal_actions_result(Side::Overlord).is_err());
-    assert_contents_equal(
+    test_helpers::assert_contents_equal(
         g.legal_actions(Side::Champion),
         vec![
             GameAction::GainMana,

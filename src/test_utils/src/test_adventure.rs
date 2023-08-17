@@ -35,8 +35,8 @@ use tokio;
 use user_action_data::UserAction;
 
 use crate::client_interface::{ClientInterface, HasText};
-use crate::fake_database;
 use crate::fake_database::FakeDatabase;
+use crate::{fake_database, test_helpers};
 
 pub const EXPLORE_ICON: &str = "icon_app_198";
 pub const DRAFT_ICON: &str = "icon_store_167";
@@ -73,7 +73,7 @@ pub struct TestConfig {
 impl TestAdventure {
     pub fn new(side: Side, config: TestConfig) -> Self {
         cards_all::initialize();
-        let (game_id, player_id, _) = crate::generate_ids();
+        let (game_id, player_id, _) = test_helpers::generate_ids();
         let mut adventure = mock_adventure::create(
             AdventureId::new_from_u128(0),
             AdventureConfiguration {
