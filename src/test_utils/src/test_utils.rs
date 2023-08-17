@@ -22,18 +22,16 @@ pub mod fake_database;
 pub mod summarize;
 pub mod test_adventure;
 pub mod test_game;
+pub mod test_game_client;
 pub mod test_helpers;
 pub mod test_session;
 pub mod test_session_builder;
 pub mod test_session_helpers;
 
-use std::sync::atomic::AtomicU64;
-
 use game_data::primitives::{ManaValue, RaidId, RoomId};
 use protos::spelldawn::RoomIdentifier;
 pub use test_session_helpers::{Buttons, TestSessionHelpers};
 
-pub static NEXT_ID: AtomicU64 = AtomicU64::new(1_000_000);
 /// The title returned for hidden cards
 pub const HIDDEN_CARD: &str = "Hidden Card";
 /// [RoomId] used by default for targeting

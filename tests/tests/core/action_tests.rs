@@ -26,11 +26,15 @@ use protos::spelldawn::{
 };
 use test_utils::summarize::Summary;
 use test_utils::test_game::{TestGame, TestRaid, TestSide};
+use test_utils::test_session_builder::TestSessionBuilder;
 use test_utils::*;
 
 #[test]
 fn connect() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).connect(false).build();
+    let mut g = TestSessionBuilder::new()
+        .do_not_connect(true)
+        .game(TestGame::new(TestSide::new(Side::Overlord)))
+        .build();
     let response = g.connect(g.user_id());
     assert_snapshot!(Summary::run(&response));
 }

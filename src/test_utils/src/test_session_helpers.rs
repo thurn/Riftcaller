@@ -23,8 +23,9 @@ use protos::spelldawn::{
 use server::server_data::GameResponseOutput;
 
 use crate::client_interface::HasText;
-use crate::test_session::{self, ClientPlayer, TestClient, TestSession};
-use crate::{CLIENT_ROOM_ID, ROOM_ID};
+use crate::test_game_client::{ClientPlayer, TestClient};
+use crate::test_session::TestSession;
+use crate::{test_game_client, CLIENT_ROOM_ID, ROOM_ID};
 
 pub enum Buttons {
     Summon,
@@ -391,7 +392,7 @@ fn play_impl(
 
     session.play_card(
         card_id,
-        session.player_id_for_side(test_session::side_for_card_name(card_name)),
+        session.player_id_for_side(test_game_client::side_for_card_name(card_name)),
         target,
     );
 

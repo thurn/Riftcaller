@@ -39,9 +39,9 @@ use game_data::primitives::{ActionCount, GameId, ManaValue, PointsValue, Side};
 use maplit::hashmap;
 use rules::{dispatch, mana};
 
-use crate::test_session::{self, TestSession};
+use crate::test_session::TestSession;
 use crate::test_session_builder::TestSessionBuilder;
-use crate::{RAID_ID, ROOM_ID, STARTING_MANA};
+use crate::{test_game_client, RAID_ID, ROOM_ID, STARTING_MANA};
 
 pub struct TestGame {
     current_turn: Side,
@@ -50,7 +50,6 @@ pub struct TestGame {
     user_side: TestSide,
     opponent_side: TestSide,
     tutorial_mode: bool,
-    connect: bool,
 }
 
 impl TestGame {
@@ -68,7 +67,6 @@ impl TestGame {
             user_side,
             opponent_side: TestSide::new(opponent),
             tutorial_mode: false,
-            connect: true,
         }
     }
 
@@ -96,11 +94,6 @@ impl TestGame {
 
     pub fn tutorial_mode(mut self, tutorial_mode: bool) -> Self {
         self.tutorial_mode = tutorial_mode;
-        self
-    }
-
-    pub fn connect(mut self, connect: bool) -> Self {
-        self.connect = connect;
         self
     }
 
@@ -322,7 +315,7 @@ fn overwrite_positions(
             .find(|c| c.position().kind() == CardPositionKind::DeckUnknown)
             .expect("No cards in deck")
             .id;
-        test_session::overwrite_card(game, target_id, *card);
+        test_game_client::overwrite_card(game, target_id, *card);
         game.move_card_internal(target_id, position);
 
         if turn_face_up {
