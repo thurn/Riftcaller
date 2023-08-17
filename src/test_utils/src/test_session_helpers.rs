@@ -13,12 +13,17 @@
 // limitations under the License.
 
 use game_data::card_name::CardName;
-use game_data::primitives::{Lineage, Side};
+use game_data::player_name::PlayerId;
+use game_data::primitives::{CardType, Lineage, RoomId, Side};
 use protos::spelldawn::client_action::Action;
-use protos::spelldawn::{CardIdentifier, LevelUpRoomAction, SpendActionPointAction};
+use protos::spelldawn::{
+    card_target, CardIdentifier, CardTarget, GameMessageType, InitiateRaidAction,
+    LevelUpRoomAction, PlayCardAction, SpendActionPointAction,
+};
 use server::server_data::GameResponseOutput;
 
-use crate::test_session::TestSession;
+use crate::client_interface::HasText;
+use crate::test_session::{self, ClientPlayer, TestClient, TestSession};
 use crate::{CLIENT_ROOM_ID, ROOM_ID};
 
 pub enum Buttons {
@@ -32,9 +37,35 @@ pub enum Buttons {
 }
 
 pub trait TestSessionHelpers {
-    /// Spends the `side` player's action points with no effect until they have
-    /// no action points remaining.
-    fn spend_actions_until_turn_over(&mut self, side: Side);
+    fn user_id(&self) -> PlayerId;
+
+    fn opponent_id(&self) -> PlayerId;
+
+    /// Returns the [TestClient] for a given player in the game.
+    fn player(&self, player_id: PlayerId) -> &TestClient;
+
+    /// Returns the [TestClient] for the [Side] player in the game.
+    fn player_for_side(&self, side: Side) -> &TestClient;
+
+    /// Returns the user player state for the user client, (i.e. the user's
+    /// state from *their own* perspective).
+    fn me(&self) -> &ClientPlayer;
+
+    /// Returns the opponent player state for the opponent client (i.e. the
+    /// opponent's state from their perspective).
+    fn you(&self) -> &ClientPlayer;
+
+    /// Equivalent function to [TestSession::perform_action] which does not
+    /// return the action result.
+    fn perform(&mut self, action: Action, user_id: PlayerId);
+
+    /// Helper function to perform an action to initiate a raid on the provided
+    /// `room_id`.
+    fn initiate_raid(&mut self, room_id: RoomId) -> GameResponseOutput;
+
+    /// Helper function to perform an action to level up the
+    /// provided `room_id`.
+    fn level_up_room(&mut self, room_id: RoomId) -> GameResponseOutput;
 
     /// Levels up the [CLIENT_ROOM_ID] room a specified number of `times`. If
     /// this requires multiple turns, spends the Champion turns doing
@@ -42,6 +73,67 @@ pub trait TestSessionHelpers {
     ///
     /// NOTE that this may cause the Champion to draw cards for their turn.
     fn level_up_room_times(&mut self, times: u32);
+
+    /// Helper to take the [PlayCardAction] with a given card ID.
+    fn play_card(
+        &mut self,
+        card_id: CardIdentifier,
+        player_id: PlayerId,
+        target: Option<CardTarget>,
+    );
+
+    /// Creates and then plays a named card as the user who owns this card.
+    ///
+    /// This function first adds a copy of the requested card to the user's hand
+    /// via [TestSession::add_to_hand]. The card is then played via the standard
+    /// [PlayCardAction]. Action points and mana must be available and are spent
+    /// as normal.
+    ///
+    /// If the card is a minion, project, or scheme card, it is played
+    /// into the [crate::ROOM_ID] room. The [CardIdentifier] for the played card
+    /// is returned.
+    ///
+    /// Panics if the server returns an error for playing this card.
+    fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier;
+
+    /// Equivalent method to [Self::create_and_play] which specifies
+    /// a target room to use.
+    fn play_with_target_room(&mut self, card_name: CardName, room_id: RoomId) -> CardIdentifier;
+
+    /// Activates an ability of a card owned by the user based on its ability
+    /// index.
+    fn activate_ability(&mut self, card_id: CardIdentifier, index: u32);
+
+    /// Activates an ability of a card with a target room
+    fn activate_ability_with_target(&mut self, card_id: CardIdentifier, index: u32, target: RoomId);
+
+    /// Spends the `side` player's action points with no effect until they have
+    /// no action points remaining.
+    fn spend_actions_until_turn_over(&mut self, side: Side);
+
+    /// Look for a button in the user interface and invoke its action.
+    fn click(&mut self, buttons: Buttons) -> GameResponseOutput;
+
+    /// Locate a button containing the provided `text` in the provided player's
+    /// interface controls and invoke its registered action.
+    fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput;
+
+    /// Equivalent to 'click on' for the topmost visible panel.
+    fn click_on_in_panel(
+        &mut self,
+        player_id: PlayerId,
+        text: impl Into<String>,
+    ) -> GameResponseOutput;
+
+    /// Returns true if the last-received Game Message was 'Dawn'.
+    fn dawn(&self) -> bool;
+
+    /// Returns true if the last-received Game Message was 'Dusk'.
+    fn dusk(&self) -> bool;
+
+    /// Returns true if the last-received Game Messages indicated the `winner`
+    /// player won the game
+    fn is_victory_for_player(&self, winner: Side) -> bool;
 
     /// Must be invoked during the Overlord turn. Performs the following
     /// actions:
@@ -72,9 +164,6 @@ pub trait TestSessionHelpers {
     /// WARNING: This causes both players to draw cards for their turns!
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier);
 
-    /// Look for a button in the user interface and invoke its action.
-    fn click(&mut self, buttons: Buttons) -> GameResponseOutput;
-
     /// Must be invoked during the Champion turn. Performs the following
     /// actions:
     ///
@@ -90,11 +179,54 @@ pub trait TestSessionHelpers {
 }
 
 impl TestSessionHelpers for TestSession {
-    fn spend_actions_until_turn_over(&mut self, side: Side) {
-        let id = self.player_id_for_side(side);
-        while self.player(id).this_player.actions() > 0 {
-            self.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
+    fn user_id(&self) -> PlayerId {
+        self.user.id
+    }
+
+    fn opponent_id(&self) -> PlayerId {
+        self.opponent.id
+    }
+
+    fn player(&self, player_id: PlayerId) -> &TestClient {
+        match () {
+            _ if player_id == self.user.id => &self.user,
+            _ if player_id == self.opponent.id => &self.opponent,
+            _ => panic!("Unknown player id: {player_id:?}"),
         }
+    }
+
+    fn player_for_side(&self, side: Side) -> &TestClient {
+        self.player(self.player_id_for_side(side))
+    }
+
+    fn me(&self) -> &ClientPlayer {
+        &self.user.this_player
+    }
+
+    fn you(&self) -> &ClientPlayer {
+        &self.opponent.this_player
+    }
+
+    fn perform(&mut self, action: Action, user_id: PlayerId) {
+        self.perform_action(action, user_id).expect("Request failed");
+    }
+
+    fn initiate_raid(&mut self, room_id: RoomId) -> GameResponseOutput {
+        self.perform_action(
+            Action::InitiateRaid(InitiateRaidAction {
+                room_id: adapters::room_identifier(room_id),
+            }),
+            self.player_id_for_side(Side::Champion),
+        )
+        .expect("Server Error")
+    }
+
+    fn level_up_room(&mut self, room_id: RoomId) -> GameResponseOutput {
+        self.perform_action(
+            Action::LevelUpRoom(LevelUpRoomAction { room_id: adapters::room_identifier(room_id) }),
+            self.player_id_for_side(Side::Overlord),
+        )
+        .expect("Server Error")
     }
 
     fn level_up_room_times(&mut self, times: u32) {
@@ -120,6 +252,102 @@ impl TestSessionHelpers for TestSession {
         }
     }
 
+    fn play_card(
+        &mut self,
+        card_id: CardIdentifier,
+        player_id: PlayerId,
+        target: Option<CardTarget>,
+    ) {
+        self.perform(
+            Action::PlayCard(PlayCardAction { card_id: Some(card_id), target }),
+            player_id,
+        );
+    }
+
+    fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier {
+        play_impl(
+            self,
+            card_name,
+            match rules::get(card_name).card_type {
+                CardType::Minion | CardType::Project | CardType::Scheme => Some(ROOM_ID),
+                _ => None,
+            },
+        )
+    }
+
+    fn play_with_target_room(&mut self, card_name: CardName, room_id: RoomId) -> CardIdentifier {
+        play_impl(self, card_name, Some(room_id))
+    }
+
+    fn activate_ability(&mut self, card_id: CardIdentifier, index: u32) {
+        activate_ability_impl(self, card_id, index, None)
+    }
+
+    fn activate_ability_with_target(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+        target: RoomId,
+    ) {
+        activate_ability_impl(self, card_id, index, Some(target))
+    }
+
+    fn spend_actions_until_turn_over(&mut self, side: Side) {
+        let id = self.player_id_for_side(side);
+        while self.player(id).this_player.actions() > 0 {
+            self.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
+        }
+    }
+
+    fn click(&mut self, buttons: Buttons) -> GameResponseOutput {
+        let (text, side) = match buttons {
+            Buttons::Summon => ("Summon", Side::Overlord),
+            Buttons::NoSummon => ("Pass", Side::Overlord),
+            Buttons::NoWeapon => ("Continue", Side::Champion),
+            Buttons::Score => ("Score", Side::Champion),
+            Buttons::EndRaid => ("End Raid", Side::Champion),
+            Buttons::Unveil => ("Unveil", Side::Overlord),
+            Buttons::NoUnveil => ("Continue", Side::Overlord),
+        };
+
+        self.click_on(self.player_id_for_side(side), text)
+    }
+
+    fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
+        let player = self.player(player_id);
+        let handlers = player.interface.controls().find_handlers(text);
+        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
+        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
+    }
+
+    fn click_on_in_panel(
+        &mut self,
+        player_id: PlayerId,
+        text: impl Into<String>,
+    ) -> GameResponseOutput {
+        let player = self.player(player_id);
+        eprintln!("Got text: {:?}", player.interface.top_panel().all_text());
+        let handlers = player.interface.top_panel().find_handlers(text);
+        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
+        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
+    }
+
+    fn dawn(&self) -> bool {
+        assert_eq!(self.user.data.last_message(), self.opponent.data.last_message());
+        self.user.data.last_message() == GameMessageType::Dawn
+    }
+
+    fn dusk(&self) -> bool {
+        assert_eq!(self.user.data.last_message(), self.opponent.data.last_message());
+        self.user.data.last_message() == GameMessageType::Dusk
+    }
+
+    fn is_victory_for_player(&self, winner: Side) -> bool {
+        self.player_for_side(winner).data.last_message() == GameMessageType::Victory
+            && self.player_for_side(winner.opponent()).data.last_message()
+                == GameMessageType::Defeat
+    }
+
     fn set_up_minion_combat(&mut self) {
         self.set_up_minion_combat_with_action(|_| {});
     }
@@ -143,24 +371,48 @@ impl TestSessionHelpers for TestSession {
         (scheme_id, minion_id)
     }
 
-    fn click(&mut self, buttons: Buttons) -> GameResponseOutput {
-        let (text, side) = match buttons {
-            Buttons::Summon => ("Summon", Side::Overlord),
-            Buttons::NoSummon => ("Pass", Side::Overlord),
-            Buttons::NoWeapon => ("Continue", Side::Champion),
-            Buttons::Score => ("Score", Side::Champion),
-            Buttons::EndRaid => ("End Raid", Side::Champion),
-            Buttons::Unveil => ("Unveil", Side::Overlord),
-            Buttons::NoUnveil => ("Continue", Side::Overlord),
-        };
-
-        self.click_on(self.player_id_for_side(side), text)
-    }
-
     fn fire_weapon_combat_abilities(&mut self, lineage: Lineage, name: CardName) {
         self.setup_raid_target(crate::test_helpers::minion_for_lineage(lineage));
         self.initiate_raid(ROOM_ID);
         self.click(Buttons::Summon);
         self.click_on(self.player_id_for_side(Side::Champion), name.displayed_name());
     }
+}
+
+fn play_impl(
+    session: &mut TestSession,
+    card_name: CardName,
+    room_id: Option<RoomId>,
+) -> CardIdentifier {
+    let card_id = session.add_to_hand(card_name);
+    let target = room_id.map(|room_id| CardTarget {
+        card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(room_id))),
+    });
+
+    session.play_card(
+        card_id,
+        session.player_id_for_side(test_session::side_for_card_name(card_name)),
+        target,
+    );
+
+    card_id
+}
+
+fn activate_ability_impl(
+    session: &mut TestSession,
+    card_id: CardIdentifier,
+    index: u32,
+    target: Option<RoomId>,
+) {
+    session.perform(
+        Action::PlayCard(PlayCardAction {
+            card_id: Some(CardIdentifier { ability_id: Some(index), ..card_id }),
+            target: target.map(|room_id| CardTarget {
+                card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(
+                    room_id,
+                ))),
+            }),
+        }),
+        session.user_id(),
+    );
 }

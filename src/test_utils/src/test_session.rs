@@ -26,9 +26,7 @@ use game_data::card_state::{CardPosition, CardState};
 use game_data::game::GameState;
 use game_data::game_actions::GameAction;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{
-    ActionCount, CardId, CardType, GameId, ManaValue, PointsValue, RoomId, Side,
-};
+use game_data::primitives::{ActionCount, CardId, GameId, ManaValue, PointsValue, RoomId, Side};
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
@@ -36,11 +34,10 @@ use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
-    card_target, ArrowTargetRoom, CardIdentifier, CardTarget, CardView, ClientAction,
-    ClientItemLocation, ClientMetadata, ClientRoomLocation, CommandList, GameMessageType,
-    GameObjectIdentifier, GameRequest, InitiateRaidAction, LevelUpRoomAction, NoTargeting,
-    ObjectPosition, ObjectPositionBrowser, ObjectPositionDiscardPile, ObjectPositionHand,
-    ObjectPositionItem, ObjectPositionRevealedCards, ObjectPositionRoom, PlayCardAction,
+    ArrowTargetRoom, CardIdentifier, CardView, ClientAction, ClientItemLocation, ClientMetadata,
+    ClientRoomLocation, CommandList, GameMessageType, GameObjectIdentifier, GameRequest,
+    NoTargeting, ObjectPosition, ObjectPositionBrowser, ObjectPositionDiscardPile,
+    ObjectPositionHand, ObjectPositionItem, ObjectPositionRevealedCards, ObjectPositionRoom,
     PlayInRoom, PlayerName, PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
@@ -51,7 +48,7 @@ use {adapters, tokio};
 
 use crate::client_interface::{ClientInterface, HasText};
 use crate::fake_database::FakeDatabase;
-use crate::{fake_database, ROOM_ID};
+use crate::{fake_database, TestSessionHelpers};
 
 /// A helper for interacting with a database and server calls during testing.
 ///
@@ -94,26 +91,6 @@ impl TestSession {
 
     pub fn game_id(&self) -> GameId {
         self.database.game().id
-    }
-
-    pub fn user_id(&self) -> PlayerId {
-        self.user.id
-    }
-
-    pub fn opponent_id(&self) -> PlayerId {
-        self.opponent.id
-    }
-
-    /// Returns the user player state for the user client, (i.e. the user's
-    /// state from *their own* perspective).
-    pub fn me(&self) -> &ClientPlayer {
-        &self.user.this_player
-    }
-
-    /// Returns the opponent player state for the opponent client (i.e. the
-    /// opponent's state from their perspective).
-    pub fn you(&self) -> &ClientPlayer {
-        &self.opponent.this_player
     }
 
     /// Simulates a client connecting to the server.
@@ -185,34 +162,6 @@ impl TestSession {
         Ok(response)
     }
 
-    /// Equivalent function to [Self::perform_action] which does not return the
-    /// action result.
-    pub fn perform(&mut self, action: Action, user_id: PlayerId) {
-        self.perform_action(action, user_id).expect("Request failed");
-    }
-
-    /// Helper function to invoke [Self::perform] to initiate a raid on the
-    /// provided `room_id`.
-    pub fn initiate_raid(&mut self, room_id: RoomId) -> GameResponseOutput {
-        self.perform_action(
-            Action::InitiateRaid(InitiateRaidAction {
-                room_id: adapters::room_identifier(room_id),
-            }),
-            self.player_id_for_side(Side::Champion),
-        )
-        .expect("Server Error")
-    }
-
-    /// Helper function to invoke [Self::perform] to level up the
-    /// provided `room_id`.
-    pub fn level_up_room(&mut self, room_id: RoomId) -> GameResponseOutput {
-        self.perform_action(
-            Action::LevelUpRoom(LevelUpRoomAction { room_id: adapters::room_identifier(room_id) }),
-            self.player_id_for_side(Side::Overlord),
-        )
-        .expect("Server Error")
-    }
-
     /// Adds a named card to its owner's hand.
     ///
     /// This function operates by locating a test card in the owner's deck and
@@ -249,122 +198,6 @@ impl TestSession {
         adapters::card_identifier(card_id)
     }
 
-    /// Creates and then plays a named card as the user who owns this card.
-    ///
-    /// This function first adds a copy of the requested card to the user's hand
-    /// via [Self::add_to_hand]. The card is then played via the standard
-    /// [PlayCardAction]. Action points and mana must be available and are spent
-    /// as normal.
-    ///
-    /// If the card is a minion, project, or scheme card, it is played
-    /// into the [crate::ROOM_ID] room. The [CardIdentifier] for the played card
-    /// is returned.
-    ///
-    /// Panics if the server returns an error for playing this card.
-    pub fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier {
-        self.play_impl(
-            card_name,
-            match rules::get(card_name).card_type {
-                CardType::Minion | CardType::Project | CardType::Scheme => Some(ROOM_ID),
-                _ => None,
-            },
-        )
-    }
-
-    /// Equivalent method to [Self::create_and_play] which specifies
-    /// a target room to use.
-    pub fn play_with_target_room(
-        &mut self,
-        card_name: CardName,
-        room_id: RoomId,
-    ) -> CardIdentifier {
-        self.play_impl(card_name, Some(room_id))
-    }
-
-    fn play_impl(&mut self, card_name: CardName, room_id: Option<RoomId>) -> CardIdentifier {
-        let card_id = self.add_to_hand(card_name);
-        let target = room_id.map(|room_id| CardTarget {
-            card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(room_id))),
-        });
-
-        self.play_card(
-            card_id,
-            self.database.game().player(side_for_card_name(card_name)).id,
-            target,
-        );
-
-        card_id
-    }
-
-    /// Helper to take the [PlayCardAction] with a given card ID.
-    pub fn play_card(
-        &mut self,
-        card_id: CardIdentifier,
-        player_id: PlayerId,
-        target: Option<CardTarget>,
-    ) {
-        self.perform(
-            Action::PlayCard(PlayCardAction { card_id: Some(card_id), target }),
-            player_id,
-        );
-    }
-
-    /// Locate a button containing the provided `text` in the provided player's
-    /// interface controls and invoke its registered action.
-    pub fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
-        let (_, player, _) = self.opponent_local_remote(player_id);
-        let handlers = player.interface.controls().find_handlers(text);
-        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
-        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
-    }
-
-    /// Equivalent to 'click on' for the topmost visible panel.
-    pub fn click_on_in_panel(
-        &mut self,
-        player_id: PlayerId,
-        text: impl Into<String>,
-    ) -> GameResponseOutput {
-        let (_, player, _) = self.opponent_local_remote(player_id);
-        eprintln!("Got text: {:?}", player.interface.top_panel().all_text());
-        let handlers = player.interface.top_panel().find_handlers(text);
-        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
-        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
-    }
-
-    /// Returns true if the last-received Game Message was 'Dawn'.
-    pub fn dawn(&self) -> bool {
-        assert_eq!(self.user.data.last_message(), self.opponent.data.last_message());
-        self.user.data.last_message() == GameMessageType::Dawn
-    }
-
-    /// Returns true if the last-received Game Message was 'Dusk'.
-    pub fn dusk(&self) -> bool {
-        assert_eq!(self.user.data.last_message(), self.opponent.data.last_message());
-        self.user.data.last_message() == GameMessageType::Dusk
-    }
-
-    /// Returns true if the last-received Game Messages indicated the `winner`
-    /// player won the game
-    pub fn is_victory_for_player(&self, winner: Side) -> bool {
-        self.player_for_side(winner).data.last_message() == GameMessageType::Victory
-            && self.player_for_side(winner.opponent()).data.last_message()
-                == GameMessageType::Defeat
-    }
-
-    /// Returns the [TestClient] for a given player in the game.
-    pub fn player(&self, player_id: PlayerId) -> &TestClient {
-        match () {
-            _ if player_id == self.user.id => &self.user,
-            _ if player_id == self.opponent.id => &self.opponent,
-            _ => panic!("Unknown player id: {player_id:?}"),
-        }
-    }
-
-    /// Returns the [TestClient] for the [Side] player in the game.
-    pub fn player_for_side(&self, side: Side) -> &TestClient {
-        self.player(self.player_id_for_side(side))
-    }
-
     /// Looks up the [PlayerId] for the [Side] player.
     pub fn player_id_for_side(&self, side: Side) -> PlayerId {
         if self.database.game().player(side).id == self.user.id {
@@ -374,22 +207,6 @@ impl TestSession {
         } else {
             panic!("Cannot find PlayerId for side {side:?}")
         }
-    }
-
-    /// Activates an ability of a card owned by the user based on its ability
-    /// index.
-    pub fn activate_ability(&mut self, card_id: CardIdentifier, index: u32) {
-        self.activate_ability_impl(card_id, index, None)
-    }
-
-    /// Activates an ability of a card with a target room
-    pub fn activate_ability_with_target(
-        &mut self,
-        card_id: CardIdentifier,
-        index: u32,
-        target: RoomId,
-    ) {
-        self.activate_ability_impl(card_id, index, Some(target))
     }
 
     /// Equivalent to [legal_actions] but returns a [Result] instead of panic on
@@ -421,25 +238,6 @@ impl TestSession {
         let db = self.database.players.lock().unwrap();
         let player = db.get(&self.user_id());
         player.unwrap().adventure.as_ref().unwrap().coins
-    }
-
-    fn activate_ability_impl(
-        &mut self,
-        card_id: CardIdentifier,
-        index: u32,
-        target: Option<RoomId>,
-    ) {
-        self.perform(
-            Action::PlayCard(PlayCardAction {
-                card_id: Some(CardIdentifier { ability_id: Some(index), ..card_id }),
-                target: target.map(|room_id| CardTarget {
-                    card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(
-                        room_id,
-                    ))),
-                }),
-            }),
-            self.user_id(),
-        );
     }
 
     /// Returns a triple of (opponent_id, local_client, remote_client) for the
@@ -474,7 +272,7 @@ pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_name: CardName
 }
 
 /// Returns the [Side] player who owns the [CardName] card
-fn side_for_card_name(name: CardName) -> Side {
+pub fn side_for_card_name(name: CardName) -> Side {
     rules::get(name).side
 }
 

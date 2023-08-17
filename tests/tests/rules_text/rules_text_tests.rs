@@ -16,6 +16,7 @@ use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::*;
 
 #[test]
 fn test_keyword_aggregation() {
