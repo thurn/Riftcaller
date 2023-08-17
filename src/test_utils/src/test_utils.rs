@@ -24,21 +24,14 @@ pub mod test_adventure;
 pub mod test_game;
 pub mod test_helpers;
 pub mod test_session;
+pub mod test_session_builder;
 pub mod test_session_helpers;
 
 use std::sync::atomic::AtomicU64;
-use std::sync::Mutex;
 
-use game_data::player_name::PlayerId;
-use game_data::primitives::{GameId, ManaValue, RaidId, RoomId};
-use game_data::tutorial_data::TutorialData;
-use maplit::hashmap;
-use player_data::PlayerState;
+use game_data::primitives::{ManaValue, RaidId, RoomId};
 use protos::spelldawn::RoomIdentifier;
 pub use test_session_helpers::{Buttons, TestSessionHelpers};
-
-use crate::fake_database::FakeDatabase;
-use crate::test_session::TestSession;
 
 pub static NEXT_ID: AtomicU64 = AtomicU64::new(1_000_000);
 /// The title returned for hidden cards
@@ -51,34 +44,6 @@ pub const CLIENT_ROOM_ID: RoomIdentifier = RoomIdentifier::RoomA;
 pub const RAID_ID: RaidId = RaidId(1);
 /// Default mana for players in a test game if not otherwise specified
 pub const STARTING_MANA: ManaValue = 999;
-
-/// Creates an empty [TestSession]. Both provided [PlayerId]s are mapped to
-/// empty data. If a game is requested for the session, it will receive the
-/// provided [GameId].
-pub fn new_session(game_id: GameId, user_id: PlayerId, opponent_id: PlayerId) -> TestSession {
-    cards_all::initialize();
-
-    let database = FakeDatabase {
-        generated_game_id: Some(game_id),
-        game: Mutex::new(None),
-        players: Mutex::new(hashmap! {
-            user_id => PlayerState {
-                id: user_id,
-                status: None,
-                adventure: None,
-                tutorial: TutorialData::default()
-            },
-            opponent_id => PlayerState {
-                id: opponent_id,
-                status: None,
-                adventure: None,
-                tutorial: TutorialData::default()
-            }
-        }),
-    };
-
-    TestSession::new(database, user_id, opponent_id, false)
-}
 
 // fn create_mock_adventure(player_id: PlayerId, side: Side, args:
 // AdventureArgs) -> AdventureState {     let battle =

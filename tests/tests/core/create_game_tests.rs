@@ -21,6 +21,7 @@ use protos::spelldawn::PlayerName;
 use test_utils::client_interface::HasText;
 use test_utils::summarize::Summary;
 use test_utils::test_session::TestSession;
+use test_utils::test_session_builder::TestSessionBuilder;
 use test_utils::*;
 use user_action_data::{NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction};
 
@@ -30,7 +31,12 @@ static CHAMPION_DECK: NewGameDeck = NewGameDeck::NamedDeck(NamedDeck::ChampionTe
 #[test]
 fn create_new_game() {
     let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
-    let mut session = new_session(game_id, overlord_id, champion_id);
+    let mut session = TestSessionBuilder::new()
+        .game_id(game_id)
+        .user_id(overlord_id)
+        .opponent_id(champion_id)
+        .do_not_connect(true)
+        .build();
     let response = session.perform_action(
         UserAction::NewGame(NewGameAction {
             deck: OVERLORD_DECK,
@@ -50,7 +56,12 @@ fn create_new_game() {
 #[test]
 fn connect_to_new_game() {
     let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
-    let mut session = new_session(game_id, overlord_id, champion_id);
+    let mut session = TestSessionBuilder::new()
+        .game_id(game_id)
+        .user_id(overlord_id)
+        .opponent_id(champion_id)
+        .do_not_connect(true)
+        .build();
     initiate_game(&mut session);
 
     let response = session.connect(overlord_id);
@@ -65,7 +76,12 @@ fn connect_to_new_game() {
 #[test]
 fn mulligan_legal_actions() {
     let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
-    let mut session = new_session(game_id, overlord_id, champion_id);
+    let mut session = TestSessionBuilder::new()
+        .game_id(game_id)
+        .user_id(overlord_id)
+        .opponent_id(champion_id)
+        .do_not_connect(true)
+        .build();
     initiate_game(&mut session);
 
     test_helpers::assert_contents_equal(
@@ -97,7 +113,12 @@ fn mulligan_legal_actions() {
 #[test]
 fn keep_opening_hand() {
     let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
-    let mut session = new_session(game_id, overlord_id, champion_id);
+    let mut session = TestSessionBuilder::new()
+        .game_id(game_id)
+        .user_id(overlord_id)
+        .opponent_id(champion_id)
+        .do_not_connect(true)
+        .build();
     initiate_game(&mut session);
 
     let response = session.click_on(overlord_id, "Keep");
@@ -115,7 +136,12 @@ fn keep_opening_hand() {
 #[test]
 fn mulligan_opening_hand() {
     let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
-    let mut session = new_session(game_id, overlord_id, champion_id);
+    let mut session = TestSessionBuilder::new()
+        .game_id(game_id)
+        .user_id(overlord_id)
+        .opponent_id(champion_id)
+        .do_not_connect(true)
+        .build();
     initiate_game(&mut session);
 
     let response = session.click_on(overlord_id, "Mulligan");
@@ -133,7 +159,12 @@ fn mulligan_opening_hand() {
 #[test]
 fn both_keep_opening_hands() {
     let (game_id, overlord_id, champion_id) = test_helpers::generate_ids();
-    let mut session = new_session(game_id, overlord_id, champion_id);
+    let mut session = TestSessionBuilder::new()
+        .game_id(game_id)
+        .user_id(overlord_id)
+        .opponent_id(champion_id)
+        .do_not_connect(true)
+        .build();
     initiate_game(&mut session);
 
     session.click_on(overlord_id, "Keep");

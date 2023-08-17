@@ -27,7 +27,6 @@
 // limitations under the License.
 
 use std::iter;
-use std::sync::Mutex;
 
 use game_data::card_name::CardName;
 use game_data::card_state::{CardPosition, CardPositionKind};
@@ -35,15 +34,14 @@ use game_data::deck::Deck;
 use game_data::game::{
     GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData,
 };
-use game_data::primitives::{ActionCount, ManaValue, PointsValue, Side};
-use game_data::tutorial_data::TutorialData;
+use game_data::player_name::PlayerId;
+use game_data::primitives::{ActionCount, GameId, ManaValue, PointsValue, Side};
 use maplit::hashmap;
-use player_data::{PlayerState, PlayerStatus};
 use rules::{dispatch, mana};
 
-use crate::fake_database::FakeDatabase;
 use crate::test_session::{self, TestSession};
-use crate::{test_helpers, RAID_ID, ROOM_ID, STARTING_MANA};
+use crate::test_session_builder::TestSessionBuilder;
+use crate::{RAID_ID, ROOM_ID, STARTING_MANA};
 
 pub struct TestGame {
     current_turn: Side,
@@ -114,8 +112,15 @@ impl TestGame {
     /// methods on this struct for information about the default configuration
     /// options and how to modify them.
     pub fn build(self) -> TestSession {
-        cards_all::initialize();
-        let (game_id, user_id, opponent_id) = test_helpers::generate_ids();
+        TestSessionBuilder::new().game(self).build()
+    }
+
+    pub fn build_game_state_internal(
+        self,
+        game_id: GameId,
+        user_id: PlayerId,
+        opponent_id: PlayerId,
+    ) -> GameState {
         let (overlord_user, champion_user) = match self.user_side.side {
             Side::Overlord => (user_id, opponent_id),
             Side::Champion => (opponent_id, user_id),
@@ -165,26 +170,7 @@ impl TestGame {
             r.apply_to(&mut game);
         }
 
-        let database = FakeDatabase {
-            generated_game_id: None,
-            game: Mutex::new(Some(game)),
-            players: Mutex::new(hashmap! {
-                overlord_user => PlayerState {
-                    id: overlord_user,
-                    status: Some(PlayerStatus::Playing(game_id)),
-                    adventure: None,
-                    tutorial: TutorialData::default()
-                },
-                champion_user => PlayerState {
-                    id: champion_user,
-                    status: Some(PlayerStatus::Playing(game_id)),
-                    adventure: None,
-                    tutorial: TutorialData::default()
-                }
-            }),
-        };
-
-        TestSession::new(database, user_id, opponent_id, self.connect)
+        game
     }
 }
 
