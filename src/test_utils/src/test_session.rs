@@ -80,13 +80,25 @@ impl TestSession {
     /// state via the action methods on this struct instead of putting a bunch
     /// of information into the [GameState] here, because this helps avoid
     /// coupling tests to the specific implementation details of [GameState].
-    pub fn new(database: FakeDatabase, user_id: PlayerId, opponent_id: PlayerId) -> Self {
-        Self {
+    pub fn new(
+        database: FakeDatabase,
+        user_id: PlayerId,
+        opponent_id: PlayerId,
+        connect: bool,
+    ) -> Self {
+        let mut result = Self {
             user: TestClient::new(user_id),
             opponent: TestClient::new(opponent_id),
             metadata: ClientMetadata::default(),
             database,
+        };
+
+        if connect {
+            result.connect(user_id).expect("Connection failed");
+            result.connect(opponent_id).expect("Connection failed");
         }
+
+        result
     }
 
     pub fn game_id(&self) -> GameId {

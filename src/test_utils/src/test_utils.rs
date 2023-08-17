@@ -77,7 +77,7 @@ pub fn new_session(game_id: GameId, user_id: PlayerId, opponent_id: PlayerId) ->
         }),
     };
 
-    TestSession::new(database, user_id, opponent_id)
+    TestSession::new(database, user_id, opponent_id, false)
 }
 
 // fn create_mock_adventure(player_id: PlayerId, side: Side, args:

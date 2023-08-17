@@ -26,6 +26,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::iter;
 use std::sync::Mutex;
 
 use game_data::card_name::CardName;
@@ -183,26 +184,7 @@ impl TestGame {
             }),
         };
 
-        let mut session = TestSession::new(database, user_id, opponent_id);
-        let (user_hand_card, opponent_hand_card) = if self.user_side.side == Side::Overlord {
-            (CardName::TestOverlordSpell, CardName::TestChampionSpell)
-        } else {
-            (CardName::TestChampionSpell, CardName::TestOverlordSpell)
-        };
-
-        for _ in 0..self.user_side.hand_size {
-            session.add_to_hand(user_hand_card);
-        }
-        for _ in 0..self.opponent_side.hand_size {
-            session.add_to_hand(opponent_hand_card);
-        }
-
-        if self.connect {
-            session.connect(user_id).expect("Connection failed");
-            session.connect(opponent_id).expect("Connection failed");
-        }
-
-        session
+        TestSession::new(database, user_id, opponent_id, self.connect)
     }
 }
 
@@ -232,13 +214,14 @@ impl Default for TestRaid {
 }
 
 pub struct TestSide {
-    pub side: Side,
-    pub mana: ManaValue,
-    pub score: PointsValue,
-    pub hand_size: u64,
-    pub deck_top: Vec<CardName>,
-    pub discard: Vec<CardName>,
-    pub sigils: Vec<CardName>,
+    side: Side,
+    mana: ManaValue,
+    score: PointsValue,
+    hand_size: usize,
+    deck_top: Vec<CardName>,
+    in_discard_face_down: Vec<CardName>,
+    in_discard_face_up: Vec<CardName>,
+    sigils: Vec<CardName>,
 }
 
 impl TestSide {
@@ -249,7 +232,8 @@ impl TestSide {
             score: 0,
             hand_size: 0,
             deck_top: vec![],
-            discard: vec![],
+            in_discard_face_down: vec![],
+            in_discard_face_up: vec![],
             sigils: vec![],
         }
     }
@@ -276,18 +260,16 @@ impl TestSide {
         self
     }
 
-    /// Card to be inserted into the player's discard pile.
-    pub fn discard(mut self, card: CardName) -> Self {
-        self.discard.push(card);
+    /// Card to be inserted face-down into the player's discard pile.
+    pub fn in_discard_face_down(mut self, card: CardName) -> Self {
+        self.in_discard_face_down.push(card);
         self
     }
 
-    pub fn get_discard(&self) -> Option<CardName> {
-        if self.discard.is_empty() {
-            None
-        } else {
-            Some(self.discard[0])
-        }
+    /// Card to be inserted face-up into the player's discard pile.
+    pub fn in_discard_face_up(mut self, card: CardName) -> Self {
+        self.in_discard_face_up.push(card);
+        self
     }
 
     /// Sigils which start in play for this player.
@@ -299,7 +281,7 @@ impl TestSide {
     /// Starting size for this player's hand, draw from the top of
     /// their deck. Hand will consist entirely of 'test spell' cards.
     /// Defaults to 0.
-    pub fn hand_size(mut self, hand_size: u64) -> Self {
+    pub fn hand_size(mut self, hand_size: usize) -> Self {
         self.hand_size = hand_size;
         self
     }
@@ -308,8 +290,35 @@ impl TestSide {
         mana::set(game, self.side, self.mana);
         game.player_mut(self.side).score = self.score;
 
-        overwrite_positions(game, self.side, &self.deck_top, CardPosition::DeckTop(self.side));
-        set_discard_pile(game, self.side, self.get_discard());
+        overwrite_positions(
+            game,
+            self.side,
+            &self.deck_top,
+            CardPosition::DeckTop(self.side),
+            false,
+        );
+        overwrite_positions(
+            game,
+            self.side,
+            &self.in_discard_face_down,
+            CardPosition::DiscardPile(self.side),
+            false,
+        );
+        overwrite_positions(
+            game,
+            self.side,
+            &self.in_discard_face_up,
+            CardPosition::DiscardPile(self.side),
+            true,
+        );
+
+        let hand_card = if self.side == Side::Overlord {
+            CardName::TestOverlordSpell
+        } else {
+            CardName::TestChampionSpell
+        };
+        let hand = iter::repeat(hand_card).take(self.hand_size).collect::<Vec<_>>();
+        overwrite_positions(game, self.side, &hand, CardPosition::Hand(self.side), false);
     }
 }
 
@@ -318,6 +327,7 @@ fn overwrite_positions(
     side: Side,
     cards: &[CardName],
     position: CardPosition,
+    turn_face_up: bool,
 ) {
     for card in cards {
         let target_id = game
@@ -327,21 +337,12 @@ fn overwrite_positions(
             .expect("No cards in deck")
             .id;
         test_session::overwrite_card(game, target_id, *card);
-        game.move_card_internal(target_id, position)
-    }
-}
+        game.move_card_internal(target_id, position);
 
-fn set_discard_pile(game: &mut GameState, side: Side, discard: Option<CardName>) {
-    if let Some(discard) = discard {
-        let target_id = game
-            .cards(side)
-            .iter()
-            .filter(|c| c.position().kind() == CardPositionKind::DeckUnknown)
-            .last() // Take last to avoid overwriting deck top
-            .expect("No cards in deck")
-            .id;
-        test_session::overwrite_card(game, target_id, discard);
-        game.move_card_internal(target_id, CardPosition::DiscardPile(side));
-        game.card_mut(target_id).turn_face_down();
+        if turn_face_up {
+            game.card_mut(target_id).turn_face_up();
+        } else {
+            game.card_mut(target_id).turn_face_down();
+        }
     }
 }

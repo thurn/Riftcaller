@@ -404,10 +404,9 @@ fn raid_crypts() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(1)
-        .opponent(TestSide::new(Side::Overlord).discard(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).in_discard_face_down(CardName::TestScheme3_15))
         .build();
 
-    g.add_to_hand(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Crypts);
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Crypts);
