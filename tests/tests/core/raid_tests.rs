@@ -37,7 +37,7 @@ fn initiate_raid() {
     let weapon_id = g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
-    let response = g.initiate_raid(ROOM_ID);
+    let response = g.initiate_raid(test_constants::ROOM_ID);
 
     g.click(Buttons::Summon);
 
@@ -99,7 +99,7 @@ fn summon_minion() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let (_, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
 
     assert!(!g.user.this_player.can_take_action());
     assert!(g.user.other_player.can_take_action());
@@ -107,12 +107,12 @@ fn summon_minion() {
     assert!(g.opponent.this_player.can_take_action());
 
     assert!(!g.user.cards.get(minion_id).is_face_up());
-    assert_eq!(g.user.other_player.mana(), STARTING_MANA);
+    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA);
 
     g.click(Buttons::Summon);
 
     assert!(g.user.cards.get(minion_id).is_face_up());
-    assert_eq!(g.user.other_player.mana(), STARTING_MANA - MINION_COST);
+    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA - MINION_COST);
     assert!(g.user.this_player.can_take_action());
     assert!(!g.user.other_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
@@ -124,11 +124,11 @@ fn do_not_summon_minion() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let (_, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::NoSummon);
 
     assert!(!g.user.cards.get(minion_id).is_face_up());
-    assert_eq!(g.user.other_player.mana(), STARTING_MANA);
+    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA);
     assert!(g.user.this_player.can_take_action());
     assert!(!g.user.other_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
@@ -141,7 +141,7 @@ fn use_weapon() {
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
 
     assert_eq!(g.user.this_player.mana(), 996); // Minion costs 3 to summon
@@ -162,7 +162,7 @@ fn use_weapon() {
     assert_eq!(
         g.user.data.object_position(Id::CardId(minion_id)),
         Position::Room(ObjectPositionRoom {
-            room_id: CLIENT_ROOM_ID.into(),
+            room_id: test_constants::CLIENT_ROOM_ID.into(),
             room_location: ClientRoomLocation::Front.into()
         })
     );
@@ -181,11 +181,11 @@ fn minion_with_shield() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.setup_raid_target(CardName::TestMinionEndRaid);
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
-    assert_eq!(g.user.this_player.mana(), STARTING_MANA - WEAPON_COST);
+    assert_eq!(g.user.this_player.mana(), test_constants::STARTING_MANA - WEAPON_COST);
     g.click_on(g.user_id(), "Test Weapon");
-    assert_eq!(g.user.this_player.mana(), STARTING_MANA - WEAPON_COST - 1);
+    assert_eq!(g.user.this_player.mana(), test_constants::STARTING_MANA - WEAPON_COST - 1);
 }
 
 #[test]
@@ -194,7 +194,7 @@ fn fire_combat_ability() {
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
 
     assert_eq!(g.user.this_player.mana(), 996); // Minion costs 3 to summon
@@ -213,14 +213,14 @@ fn fire_combat_ability() {
     assert_eq!(
         g.user.data.object_position(Id::CardId(minion_id)),
         Position::Room(ObjectPositionRoom {
-            room_id: CLIENT_ROOM_ID.into(),
+            room_id: test_constants::CLIENT_ROOM_ID.into(),
             room_location: ClientRoomLocation::Front.into()
         })
     );
     assert_eq!(
         g.user.data.object_position(Id::CardId(scheme_id)),
         Position::Room(ObjectPositionRoom {
-            room_id: CLIENT_ROOM_ID.into(),
+            room_id: test_constants::CLIENT_ROOM_ID.into(),
             room_location: ClientRoomLocation::Back.into()
         })
     );
@@ -239,7 +239,7 @@ fn score_scheme_card() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, _) = g.setup_raid_target(CardName::TestMinionEndRaid);
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
 
     g.click_on(g.user_id(), "Test Weapon");
@@ -291,7 +291,7 @@ fn complete_raid() {
     // Set up the raid to be the last action of a turn
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.perform(Action::SpendActionPoint(SpendActionPointAction {}), g.user_id());
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
 
     g.click_on(g.user_id(), "Test Weapon");
@@ -333,7 +333,7 @@ fn cannot_activate() {
     g.create_and_play(CardName::TestMinionEndRaid);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
-    let response = g.initiate_raid(ROOM_ID);
+    let response = g.initiate_raid(test_constants::ROOM_ID);
     assert!(g.user.interface.controls().has_text("Score"));
     assert!(g.user.interface.controls().has_text("End Raid"));
     assert_snapshot!(Summary::summarize(&response));
@@ -344,7 +344,7 @@ fn destroy_project() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
     let project_id = g.create_and_play(CardName::TestProject2Cost);
     g.spend_actions_until_turn_over(Side::Overlord);
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
 
     assert!(g.user.interface.controls().has_text("Destroy"));
     assert!(g.user.interface.controls().has_text(format!("2{}", icons::MANA)));
@@ -358,7 +358,7 @@ fn destroy_project() {
         g.opponent.data.object_position(Id::CardId(project_id)),
         Position::DiscardPile(ObjectPositionDiscardPile { owner: PlayerName::User.into() })
     );
-    assert_eq!(g.me().mana(), STARTING_MANA - 2);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 2);
     assert!(g.user.interface.controls().has_text("End Raid"));
 
     assert_snapshot!(Summary::summarize(&response));
@@ -437,15 +437,15 @@ fn raid_vault_twice() {
 
     // Champion spent mana on playing + using weapon, overlord on summoning
     // minion
-    assert_eq!(g.me().mana(), STARTING_MANA - 4);
-    assert_eq!(g.you().mana(), STARTING_MANA - 3);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 4);
+    assert_eq!(g.you().mana(), test_constants::STARTING_MANA - 3);
 
     assert!(g.user.interface.controls().has_text("Test Weapon"));
     g.click_on(g.user_id(), "Test Weapon");
 
     // Champion spends mana again to use weapon, Overlord mana is unchanged.
-    assert_eq!(g.me().mana(), STARTING_MANA - 5);
-    assert_eq!(g.you().mana(), STARTING_MANA - 3);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 5);
+    assert_eq!(g.you().mana(), test_constants::STARTING_MANA - 3);
 
     // Scheme should not longer be on top for second raid
     assert!(g.user.interface.controls().has_text("End Raid"));
@@ -460,7 +460,7 @@ fn raid_no_defenders() {
         .build();
 
     g.create_and_play(CardName::TestScheme3_15);
-    let response = g.initiate_raid(ROOM_ID);
+    let response = g.initiate_raid(test_constants::ROOM_ID);
     // Should immediately jump to the Score action
     assert!(g.user.interface.controls().has_text("Score"));
     assert!(g.user.interface.controls().has_text("End Raid"));
@@ -489,7 +489,7 @@ fn raid_no_occupants() {
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let result = g.perform_action(
-        Action::InitiateRaid(InitiateRaidAction { room_id: CLIENT_ROOM_ID.into() }),
+        Action::InitiateRaid(InitiateRaidAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
         g.user_id(),
     );
     test_helpers::assert_error(result);
@@ -500,7 +500,7 @@ fn raid_no_occupants_or_defenders() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
 
     let response = g.perform_action(
-        Action::InitiateRaid(InitiateRaidAction { room_id: CLIENT_ROOM_ID.into() }),
+        Action::InitiateRaid(InitiateRaidAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
         g.user_id(),
     );
 
@@ -544,8 +544,8 @@ fn raid_two_defenders_full_raid() {
     g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Test Weapon");
     let response = g.click_on(g.user_id(), "Score");
-    assert_eq!(g.me().mana(), STARTING_MANA - 5);
-    assert_eq!(g.you().mana(), STARTING_MANA - 4);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 5);
+    assert_eq!(g.you().mana(), test_constants::STARTING_MANA - 4);
     assert_snapshot!(Summary::summarize(&response));
 }
 
@@ -584,7 +584,7 @@ fn raid_two_defenders_cannot_afford_second() {
     g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Test Weapon");
     let response = g.click_on(g.user_id(), "Score");
-    assert_eq!(g.me().mana(), STARTING_MANA - 4);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 4);
     assert_eq!(g.you().mana(), 0);
     assert_snapshot!(Summary::summarize(&response));
 }
@@ -601,7 +601,7 @@ fn raid_add_defender() {
     assert!(g.dawn());
 
     // Raid 1
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Continue");
     assert!(!g.user.data.raid_active());
@@ -609,7 +609,7 @@ fn raid_add_defender() {
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
 
     // Raid 2, no summon
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click_on(g.user_id(), "Test Weapon");
     g.click_on(g.user_id(), "Score");
     g.click_on(g.user_id(), "End Raid");
@@ -623,7 +623,7 @@ fn raid_add_defender() {
 
     // User Turn, Raid 3
     assert!(g.dawn());
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Test Weapon");
     let response = g.click_on(g.user_id(), "Test Weapon");

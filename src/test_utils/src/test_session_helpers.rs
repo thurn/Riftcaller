@@ -24,7 +24,7 @@ use server::server_data::GameResponseOutput;
 
 use crate::test_game_client::{ClientPlayer, TestGameClient};
 use crate::test_session::TestSession;
-use crate::{test_game_client, Buttons, TestInterfaceHelpers, CLIENT_ROOM_ID, ROOM_ID};
+use crate::{test_game_client, Buttons, TestInterfaceHelpers};
 
 pub trait TestSessionHelpers {
     fn user_id(&self) -> PlayerId;
@@ -57,9 +57,9 @@ pub trait TestSessionHelpers {
     /// provided `room_id`.
     fn level_up_room(&mut self, room_id: RoomId) -> GameResponseOutput;
 
-    /// Levels up the [CLIENT_ROOM_ID] room a specified number of `times`. If
-    /// this requires multiple turns, spends the Champion turns doing
-    /// nothing.
+    /// Levels up the [test_constants::CLIENT_ROOM_ID] room a specified number
+    /// of `times`. If this requires multiple turns, spends the Champion turns
+    /// doing nothing.
     ///
     /// NOTE that this may cause the Champion to draw cards for their turn.
     fn level_up_room_times(&mut self, times: u32);
@@ -80,8 +80,8 @@ pub trait TestSessionHelpers {
     /// as normal.
     ///
     /// If the card is a minion, project, or scheme card, it is played
-    /// into the [crate::ROOM_ID] room. The [CardIdentifier] for the played card
-    /// is returned.
+    /// into the [test_constants::ROOM_ID] room. The [CardIdentifier] for the
+    /// played card is returned.
     ///
     /// Panics if the server returns an error for playing this card.
     fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier;
@@ -115,7 +115,7 @@ pub trait TestSessionHelpers {
     /// actions:
     /// - Plays a test Scheme card
     /// - Ends the Overlord turn
-    /// - Initiates a raid on the [ROOM_ID] room
+    /// - Initiates a raid on the [test_constants::ROOM_ID] room
     /// - Summons the minion in the room
     ///
     /// NOTE: This causes the Champion player to draw a card for their turn!
@@ -130,9 +130,9 @@ pub trait TestSessionHelpers {
     /// actions:
     ///
     /// - Ends the Champion turn
-    /// - Plays a 3-1 scheme in the [ROOM_ID] room.
+    /// - Plays a 3-1 scheme in the [test_constants::ROOM_ID] room.
     /// - Plays the provided `card_name` minion into that room.
-    /// - Plays the selected minion in the [ROOM_ID] room.
+    /// - Plays the selected minion in the [test_constants::ROOM_ID] room.
     /// - Ends the Overlord turn.
     ///
     /// Returns a tuple of (scheme_id, minion_id).
@@ -145,7 +145,7 @@ pub trait TestSessionHelpers {
     ///
     /// - Performs all actions described in [Self::setup_raid_target], creating
     ///   a minion of the indicated [Lineage] with `MINION_HEALTH` health.
-    /// - Initiates a raid on the [ROOM_ID] room.
+    /// - Initiates a raid on the [test_constants::ROOM_ID] room.
     /// - Summons the minion
     /// - Clicks on the button with text matching `name` in order to fire weapon
     ///   abilities.
@@ -212,7 +212,9 @@ impl TestSessionHelpers for TestSession {
         loop {
             while self.player(overlord_id).this_player.actions() > 0 {
                 self.perform(
-                    Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() }),
+                    Action::LevelUpRoom(LevelUpRoomAction {
+                        room_id: test_constants::CLIENT_ROOM_ID.into(),
+                    }),
                     overlord_id,
                 );
                 levels += 1;
@@ -245,7 +247,9 @@ impl TestSessionHelpers for TestSession {
             self,
             card_name,
             match rules::get(card_name).card_type {
-                CardType::Minion | CardType::Project | CardType::Scheme => Some(ROOM_ID),
+                CardType::Minion | CardType::Project | CardType::Scheme => {
+                    Some(test_constants::ROOM_ID)
+                }
                 _ => None,
             },
         )
@@ -300,7 +304,7 @@ impl TestSessionHelpers for TestSession {
         self.spend_actions_until_turn_over(Side::Overlord);
         assert!(self.dawn());
         action(self);
-        self.initiate_raid(ROOM_ID);
+        self.initiate_raid(test_constants::ROOM_ID);
         self.click(Buttons::Summon);
     }
 
@@ -316,7 +320,7 @@ impl TestSessionHelpers for TestSession {
 
     fn fire_weapon_combat_abilities(&mut self, lineage: Lineage, name: CardName) {
         self.setup_raid_target(crate::test_helpers::minion_for_lineage(lineage));
-        self.initiate_raid(ROOM_ID);
+        self.initiate_raid(test_constants::ROOM_ID);
         self.click(Buttons::Summon);
         self.click_on(self.player_id_for_side(Side::Champion), name.displayed_name());
     }

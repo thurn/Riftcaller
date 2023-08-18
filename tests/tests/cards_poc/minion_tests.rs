@@ -44,7 +44,7 @@ fn time_golem_pay_mana() {
     assert!(g.opponent.interface.controls().has_text(format!("Pay 2{}", icons::ACTION)));
     g.click_on(g.opponent_id(), format!("Pay 5{}", icons::MANA));
     assert!(g.opponent.interface.controls().has_text("Continue"));
-    assert_eq!(STARTING_MANA - 5, g.opponent.this_player.mana());
+    assert_eq!(test_constants::STARTING_MANA - 5, g.opponent.this_player.mana());
 }
 
 #[test]
@@ -54,7 +54,7 @@ fn time_golem_defeat() {
     g.create_and_play(CardName::TestScheme3_15);
     g.spend_actions_until_turn_over(Side::Overlord);
     g.create_and_play(CardName::TestWeapon5Attack);
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
     g.click_on(g.opponent_id(), format!("Pay 5{}", icons::MANA));
     g.click_on(g.opponent_id(), "Test Weapon");
@@ -95,7 +95,7 @@ fn temporal_stalker_end_raid() {
     assert!(!g.user.data.raid_active());
     assert_eq!(
         vec!["Temporal Stalker", "Test Minion End Raid"],
-        g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Front)
+        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front)
     );
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(2, g.opponent.this_player.actions());
@@ -116,7 +116,7 @@ fn temporal_stalker_pay_actions() {
     );
     assert_eq!(
         vec!["Temporal Stalker"],
-        g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Front)
+        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front)
     );
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     assert!(g.opponent.interface.controls().has_text("Continue"));
@@ -134,7 +134,7 @@ fn temporal_stalker_defeat() {
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(
         vec!["Temporal Stalker"],
-        g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Front)
+        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front)
     );
     assert!(g.opponent.interface.controls().has_text("Score"));
 }
@@ -150,7 +150,7 @@ fn shadow_lurker_outer_room() {
         g.create_and_play(CardName::TestWeaponAbyssal);
     });
     g.click_on(g.opponent_id(), "Test Weapon");
-    assert_eq!(STARTING_MANA - 5, g.opponent.this_player.mana());
+    assert_eq!(test_constants::STARTING_MANA - 5, g.opponent.this_player.mana());
 }
 
 #[test]
@@ -197,7 +197,7 @@ fn bridge_troll_continue() {
     g.set_up_minion_combat();
     g.click(Buttons::NoWeapon);
     assert!(g.user.data.raid_active());
-    assert_eq!(STARTING_MANA - 3, g.opponent.this_player.mana());
+    assert_eq!(test_constants::STARTING_MANA - 3, g.opponent.this_player.mana());
 }
 
 #[test]

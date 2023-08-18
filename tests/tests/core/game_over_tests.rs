@@ -68,10 +68,10 @@ fn win_game() {
     );
 
     session.create_and_play(CardName::TestScheme3_15);
-    session.level_up_room(ROOM_ID);
-    session.level_up_room(ROOM_ID);
+    session.level_up_room(test_constants::ROOM_ID);
+    session.level_up_room(test_constants::ROOM_ID);
     session.spend_actions_until_turn_over(Side::Champion);
-    session.level_up_room(ROOM_ID);
+    session.level_up_room(test_constants::ROOM_ID);
     assert!(session.is_victory_for_player(Side::Overlord));
     assert_eq!(Coins(500), session.current_coins());
     session.click_on(session.user_id(), "Continue");

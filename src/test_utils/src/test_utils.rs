@@ -15,8 +15,6 @@
 //! Tools to facilitate testing. Should be included via wildcard import in all
 //! tests.
 
-#![allow(clippy::unwrap_in_result)]
-
 pub mod client_interface;
 pub mod fake_database;
 pub mod summarize;
@@ -31,22 +29,6 @@ pub mod test_session_builder;
 pub mod test_session_helpers;
 pub mod test_world_map;
 
-use adventure_data::adventure::Coins;
-use game_data::primitives::{ManaValue, RaidId, RoomId};
-use protos::spelldawn::RoomIdentifier;
 pub use test_adventure_helpers::TestAdventureHelpers;
 pub use test_interface_helpers::{Buttons, TestInterfaceHelpers};
 pub use test_session_helpers::TestSessionHelpers;
-
-/// The title returned for hidden cards
-pub const HIDDEN_CARD: &str = "Hidden Card";
-/// [RoomId] used by default for targeting
-pub const ROOM_ID: RoomId = RoomId::RoomA;
-/// Client equivalent of [ROOM_ID].
-pub const CLIENT_ROOM_ID: RoomIdentifier = RoomIdentifier::RoomA;
-/// Default Raid ID to use during testing
-pub const RAID_ID: RaidId = RaidId(1);
-/// Default mana for players in a test game if not otherwise specified
-pub const STARTING_MANA: ManaValue = 999;
-
-pub const STARTING_COINS: Coins = Coins(999);

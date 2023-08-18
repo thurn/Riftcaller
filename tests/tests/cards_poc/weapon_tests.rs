@@ -25,7 +25,7 @@ fn test_attack_weapon() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::TestAttackWeapon);
     g.fire_weapon_combat_abilities(Lineage::Infernal, CardName::TestAttackWeapon);
-    assert_eq!(STARTING_MANA - card_cost - ability_cost, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost - ability_cost, g.me().mana());
     assert!(g.user.data.raid_active());
     assert!(g.user.interface.controls().has_text("End Raid"));
 }
@@ -40,7 +40,7 @@ fn marauders_axe() {
     g.click(Buttons::EndRaid);
     assert_eq!((card_cost - 2).to_string(), g.user.cards.get(id).top_left_icon());
     g.play_card(id, g.user_id(), None);
-    assert_eq!(STARTING_MANA - card_cost + 2, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + 2, g.me().mana());
 }
 
 #[test]
@@ -49,11 +49,11 @@ fn keen_halberd() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::KeenHalberd);
     g.setup_raid_target(CardName::TestMinionShield2Abyssal);
-    g.initiate_raid(ROOM_ID);
+    g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Keen Halberd");
     assert_eq!(
-        STARTING_MANA - card_cost - (2 * activation_cost) - 1, /* remaining shield */
+        test_constants::STARTING_MANA - card_cost - (2 * activation_cost) - 1, /* remaining shield */
         g.me().mana()
     );
 }
@@ -65,5 +65,8 @@ fn bow_of_the_alliance() {
     g.create_and_play(CardName::BowOfTheAlliance);
     g.create_and_play(CardName::BowOfTheAlliance);
     g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::BowOfTheAlliance);
-    assert_eq!(STARTING_MANA - (2 * card_cost) - (2 * activation_cost), g.me().mana());
+    assert_eq!(
+        test_constants::STARTING_MANA - (2 * card_cost) - (2 * activation_cost),
+        g.me().mana()
+    );
 }

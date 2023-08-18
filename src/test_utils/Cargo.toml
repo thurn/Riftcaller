@@ -24,6 +24,7 @@ player_data = { path = "../data/player_data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 server = { path = "../server", version = "0.0.0" }
+test_constants = { path = "../test_constants", version = "0.0.0" }
 user_action_data = { path = "../data/user_action_data", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
 

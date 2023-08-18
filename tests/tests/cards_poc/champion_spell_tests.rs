@@ -47,7 +47,7 @@ fn coup_de_grace() {
 #[should_panic]
 fn coup_de_grace_invalid_room() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.play_with_target_room(CardName::CoupDeGrace, ROOM_ID);
+    g.play_with_target_room(CardName::CoupDeGrace, test_constants::ROOM_ID);
 }
 
 #[test]
@@ -55,16 +55,16 @@ fn charged_strike() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.setup_raid_target(test_helpers::minion_for_lineage(TEST_LINEAGE));
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
-    assert_eq!(STARTING_MANA - 3, g.me().mana());
-    g.play_with_target_room(CardName::ChargedStrike, ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA - 3, g.me().mana());
+    g.play_with_target_room(CardName::ChargedStrike, test_constants::ROOM_ID);
     assert!(g.user.data.raid_active());
-    assert_eq!(STARTING_MANA - 4, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - 4, g.me().mana());
     assert_eq!(5, g.user.this_player.bonus_mana());
     assert_eq!(5, g.opponent.other_player.bonus_mana());
 
     g.click(Buttons::Summon);
     g.click_on(g.user_id(), "Test Weapon");
-    assert_eq!(STARTING_MANA - 4, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - 4, g.me().mana());
     assert_eq!(4, g.user.this_player.bonus_mana());
     assert_eq!(4, g.opponent.other_player.bonus_mana());
 }
@@ -73,10 +73,10 @@ fn charged_strike() {
 fn stealth_mission() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.setup_raid_target(test_helpers::minion_for_lineage(TEST_LINEAGE));
-    assert_eq!(STARTING_MANA, g.opponent.this_player.mana());
-    g.play_with_target_room(CardName::StealthMission, ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA, g.opponent.this_player.mana());
+    g.play_with_target_room(CardName::StealthMission, test_constants::ROOM_ID);
     g.click(Buttons::Summon);
-    assert_eq!(STARTING_MANA - MINION_COST - 3, g.opponent.this_player.mana());
+    assert_eq!(test_constants::STARTING_MANA - MINION_COST - 3, g.opponent.this_player.mana());
 }
 
 #[test]

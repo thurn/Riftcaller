@@ -48,7 +48,7 @@ fn gathering_dark() {
     let (cost, gained) = (5, 9);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::GatheringDark);
-    assert_eq!(STARTING_MANA - cost + gained, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - cost + gained, g.me().mana());
 }
 
 #[test]
@@ -57,10 +57,10 @@ fn coinery() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::Coinery);
     g.activate_ability(id, 1);
-    assert_eq!(STARTING_MANA - card_cost + taken, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     assert!(g.user.get_card(id).is_face_up());
     g.activate_ability(id, 1);
-    assert_eq!(STARTING_MANA - card_cost + (taken * 2), g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + (taken * 2), g.me().mana());
 }
 
 #[test]
@@ -71,13 +71,13 @@ fn leyline() {
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
     g.click(Buttons::Unveil);
-    assert_eq!(STARTING_MANA - card_cost + gained, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + gained, g.me().mana());
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
-    assert_eq!(STARTING_MANA - card_cost + gained * 2, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + gained * 2, g.me().mana());
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
-    assert_eq!(STARTING_MANA - card_cost + gained * 3, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + gained * 3, g.me().mana());
 }
 
 #[test]
@@ -87,9 +87,9 @@ fn ore_refinery() {
     let id = g.create_and_play(CardName::OreRefinery);
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
-    assert_eq!(STARTING_MANA, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA, g.me().mana());
     g.click(Buttons::Unveil);
-    assert_eq!(STARTING_MANA - card_cost + taken, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     assert_eq!((stored - taken).to_string(), g.user.get_card(id).arena_icon());
 }
 
@@ -108,9 +108,9 @@ fn fire_goblin() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::FireGoblin);
     g.set_up_minion_combat();
-    assert_eq!(STARTING_MANA - cost, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - cost, g.me().mana());
     g.click(Buttons::NoWeapon);
-    assert_eq!(STARTING_MANA - cost + gained, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - cost + gained, g.me().mana());
     assert_eq!(1, g.opponent.cards.discard_pile(PlayerName::User).len());
 }
 

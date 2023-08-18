@@ -1,0 +1,17 @@
+[package]
+name = "test_constants"
+version = "0.0.0"
+description = "Standard values used in unit tests"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+path = "src/test_constants.rs"
+test = false
+doctest = false
+
+[dependencies]
+adventure_data = { path = "../data/adventure_data", version = "0.0.0" }
+game_data = { path = "../data/game_data", version = "0.0.0" }
+player_data = { path = "../data/player_data", version = "0.0.0" }
+protos = { path = "../protos", version = "0.0.0" }

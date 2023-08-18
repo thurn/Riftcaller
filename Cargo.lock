@@ -2835,6 +2835,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_constants"
+version = "0.0.0"
+dependencies = [
+ "adventure_data",
+ "game_data",
+ "player_data",
+ "protos",
+]
+
+[[package]]
 name = "test_utils"
 version = "0.0.0"
 dependencies = [
@@ -2856,6 +2866,7 @@ dependencies = [
  "rand_xoshiro",
  "rules",
  "server",
+ "test_constants",
  "tokio",
  "ulid",
  "user_action_data",
@@ -2887,6 +2898,7 @@ dependencies = [
  "protos",
  "rules",
  "rusty-hook",
+ "test_constants",
  "test_utils",
  "tokio",
  "user_action_data",

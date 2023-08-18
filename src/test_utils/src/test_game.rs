@@ -39,9 +39,9 @@ use game_data::primitives::{ActionCount, GameId, ManaValue, PointsValue, Side};
 use maplit::hashmap;
 use rules::{dispatch, mana};
 
+use crate::test_game_client;
 use crate::test_session::TestSession;
 use crate::test_session_builder::TestSessionBuilder;
-use crate::{test_game_client, RAID_ID, ROOM_ID, STARTING_MANA};
 
 pub struct TestGame {
     current_turn: Side,
@@ -176,8 +176,8 @@ impl TestRaid {
 
     pub fn apply_to(self, game: &mut GameState) {
         game.info.raid = Some(RaidData {
-            raid_id: RAID_ID,
-            target: ROOM_ID,
+            raid_id: test_constants::RAID_ID,
+            target: test_constants::ROOM_ID,
             internal_phase: InternalRaidPhase::Begin,
             encounter: None,
             accessed: vec![],
@@ -207,7 +207,7 @@ impl TestSide {
     pub fn new(side: Side) -> Self {
         TestSide {
             side,
-            mana: STARTING_MANA,
+            mana: test_constants::STARTING_MANA,
             score: 0,
             hand_size: 0,
             deck_top: vec![],

@@ -22,7 +22,7 @@ fn overwhelming_power() {
     let (cost, gained) = (10, 15);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::OverwhelmingPower);
-    assert_eq!(STARTING_MANA - cost + gained, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - cost + gained, g.me().mana());
 }
 
 #[test]
@@ -31,7 +31,7 @@ fn forced_march() {
     let scheme = g.create_and_play(CardName::TestScheme3_15);
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
-    g.play_with_target_room(CardName::ForcedMarch, ROOM_ID);
+    g.play_with_target_room(CardName::ForcedMarch, test_constants::ROOM_ID);
     assert_eq!("2", g.user.get_card(scheme).arena_icon());
 }
 
@@ -40,5 +40,5 @@ fn forced_march() {
 fn forced_march_same_turn_panic() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestScheme3_15);
-    g.play_with_target_room(CardName::ForcedMarch, ROOM_ID);
+    g.play_with_target_room(CardName::ForcedMarch, test_constants::ROOM_ID);
 }

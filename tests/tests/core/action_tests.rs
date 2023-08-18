@@ -71,7 +71,7 @@ fn draw_card() {
         vec![CardName::TestMinionDealDamageEndRaid],
         g.user.cards.hand(PlayerName::User),
     );
-    assert_eq!(vec![HIDDEN_CARD], g.opponent.cards.hand(PlayerName::Opponent));
+    assert_eq!(vec![test_constants::HIDDEN_CARD], g.opponent.cards.hand(PlayerName::Opponent));
     assert_eq!(2, g.me().actions());
     assert_eq!(2, g.opponent.other_player.actions());
 }
@@ -147,7 +147,9 @@ fn play_hidden_card() {
         Action::PlayCard(PlayCardAction {
             card_id: Some(card_id),
             target: Some(CardTarget {
-                card_target: Some(card_target::CardTarget::RoomId(CLIENT_ROOM_ID.into())),
+                card_target: Some(card_target::CardTarget::RoomId(
+                    test_constants::CLIENT_ROOM_ID.into(),
+                )),
             }),
         }),
         g.user_id(),
@@ -160,9 +162,12 @@ fn play_hidden_card() {
     assert_eq!(0, g.opponent.other_player.mana());
     test_helpers::assert_identical(
         vec![CardName::GoldMine],
-        g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Back),
+        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Back),
     );
-    assert_eq!(vec![HIDDEN_CARD], g.opponent.cards.room_cards(ROOM_ID, ClientRoomLocation::Back));
+    assert_eq!(
+        vec![test_constants::HIDDEN_CARD],
+        g.opponent.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Back)
+    );
 }
 
 #[test]
@@ -233,7 +238,7 @@ fn level_up_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).build();
     g.create_and_play(CardName::TestScheme3_15);
     let response = g.perform_action(
-        Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() }),
+        Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
         g.user_id(),
     );
 
@@ -249,9 +254,15 @@ fn minion_limit() {
     g.create_and_play(CardName::TestInfernalMinion);
     g.create_and_play(CardName::TestAbyssalMinion);
     g.create_and_play(CardName::TestMortalMinion);
-    assert_eq!(g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Front).len(), 4);
+    assert_eq!(
+        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front).len(),
+        4
+    );
     g.create_and_play(CardName::TestMinionDealDamage);
-    assert_eq!(g.user.cards.room_cards(ROOM_ID, ClientRoomLocation::Front).len(), 4);
+    assert_eq!(
+        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front).len(),
+        4
+    );
     assert_eq!(g.user.cards.discard_pile(PlayerName::User), vec!["Test Minion End Raid"]);
 }
 
@@ -259,7 +270,8 @@ fn minion_limit() {
 fn score_overlord_card() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).actions(5).build();
     let scheme_id = g.create_and_play(CardName::TestScheme3_15);
-    let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
+    let level_up =
+        Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
     g.perform(level_up.clone(), g.user_id());
     let response = g.perform_action(level_up, g.user_id());
@@ -276,7 +288,8 @@ fn score_overlord_card() {
 fn overlord_win_game() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10).score(90)).actions(5).build();
     g.create_and_play(CardName::TestScheme3_15);
-    let level_up = Action::LevelUpRoom(LevelUpRoomAction { room_id: CLIENT_ROOM_ID.into() });
+    let level_up =
+        Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
     g.perform(level_up.clone(), g.user_id());
     let response = g.perform_action(level_up, g.user_id());
@@ -318,7 +331,7 @@ fn activate_ability() {
         .expect("ability card")
         .id();
 
-    assert_eq!(STARTING_MANA - ARTIFACT_COST, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - ARTIFACT_COST, g.me().mana());
     assert_eq!(2, g.me().actions());
 
     let response = g.perform_action(
@@ -327,7 +340,7 @@ fn activate_ability() {
     );
 
     assert_snapshot!(Summary::run(&response));
-    assert_eq!(STARTING_MANA - ARTIFACT_COST + MANA_TAKEN, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - ARTIFACT_COST + MANA_TAKEN, g.me().mana());
     assert_eq!(1, g.me().actions());
 }
 
@@ -357,8 +370,14 @@ fn activate_ability_take_all_mana() {
         assert!(g.dawn());
     }
 
-    assert_eq!(STARTING_MANA - ARTIFACT_COST + MANA_STORED, g.user.this_player.mana());
-    assert_eq!(STARTING_MANA - ARTIFACT_COST + MANA_STORED, g.opponent.other_player.mana());
+    assert_eq!(
+        test_constants::STARTING_MANA - ARTIFACT_COST + MANA_STORED,
+        g.user.this_player.mana()
+    );
+    assert_eq!(
+        test_constants::STARTING_MANA - ARTIFACT_COST + MANA_STORED,
+        g.opponent.other_player.mana()
+    );
     assert_eq!(
         Position::DiscardPile(ObjectPositionDiscardPile { owner: PlayerName::User.into() }),
         g.user.cards.get(id).position()
@@ -374,12 +393,15 @@ fn triggered_unveil_ability() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
     g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert!(g.dawn());
-    assert_eq!(STARTING_MANA, g.user.this_player.mana());
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
     g.spend_actions_until_turn_over(Side::Champion);
     assert!(g.dusk());
     g.click(Buttons::Unveil);
-    assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.user.this_player.mana());
-    assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.opponent.other_player.mana());
+    assert_eq!(test_constants::STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.user.this_player.mana());
+    assert_eq!(
+        test_constants::STARTING_MANA - UNVEIL_COST + MANA_TAKEN,
+        g.opponent.other_player.mana()
+    );
 }
 
 #[test]
@@ -412,8 +434,14 @@ fn triggered_ability_take_all_mana() {
         g.spend_actions_until_turn_over(Side::Overlord);
     }
 
-    assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_STORED, g.user.this_player.mana());
-    assert_eq!(STARTING_MANA - UNVEIL_COST + MANA_STORED, g.opponent.other_player.mana());
+    assert_eq!(
+        test_constants::STARTING_MANA - UNVEIL_COST + MANA_STORED,
+        g.user.this_player.mana()
+    );
+    assert_eq!(
+        test_constants::STARTING_MANA - UNVEIL_COST + MANA_STORED,
+        g.opponent.other_player.mana()
+    );
     assert_eq!(
         Position::DiscardPile(ObjectPositionDiscardPile { owner: PlayerName::User.into() }),
         g.user.cards.get(id).position()

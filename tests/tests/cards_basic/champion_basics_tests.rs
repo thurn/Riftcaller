@@ -42,7 +42,7 @@ fn lodestone() {
     let id = g.create_and_play(CardName::Lodestone);
     assert_eq!("12", g.user.get_card(id).arena_icon());
     g.activate_ability(id, 1);
-    assert_eq!(STARTING_MANA - 1 + 2, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - 1 + 2, g.me().mana());
     assert_eq!(1, g.me().actions());
     assert_eq!("10", g.user.get_card(id).arena_icon());
 }
@@ -56,16 +56,16 @@ fn mana_battery() {
     g.spend_actions_until_turn_over(Side::Champion);
     g.spend_actions_until_turn_over(Side::Overlord);
     assert!(g.dawn());
-    assert_eq!(STARTING_MANA - card_cost + 1, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + 1, g.me().mana());
     g.spend_actions_until_turn_over(Side::Champion);
     g.spend_actions_until_turn_over(Side::Overlord);
-    assert_eq!(STARTING_MANA - card_cost + 2, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + 2, g.me().mana());
     g.spend_actions_until_turn_over(Side::Champion);
     g.spend_actions_until_turn_over(Side::Overlord);
-    assert_eq!(STARTING_MANA - card_cost + 3, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
     g.spend_actions_until_turn_over(Side::Champion);
     g.spend_actions_until_turn_over(Side::Overlord);
-    assert_eq!(STARTING_MANA - card_cost + 3, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
 }
 
 #[test]
@@ -74,7 +74,7 @@ fn contemplate() {
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     g.create_and_play(CardName::Contemplate);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
-    assert_eq!(STARTING_MANA + 2, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA + 2, g.me().mana());
 }
 
 #[test]
@@ -83,7 +83,7 @@ fn ancestral_knowledge() {
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     g.create_and_play(CardName::AncestralKnowledge);
     assert_eq!(3, g.user.cards.hand(PlayerName::User).len());
-    assert_eq!(STARTING_MANA - 1, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - 1, g.me().mana());
 }
 
 #[test]
@@ -93,7 +93,7 @@ fn simple_blade() {
     g.create_and_play(CardName::SimpleBlade);
     g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::SimpleBlade);
     assert_eq!(
-        STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -105,7 +105,7 @@ fn simple_axe() {
     g.create_and_play(CardName::SimpleAxe);
     g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::SimpleAxe);
     assert_eq!(
-        STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -117,7 +117,7 @@ fn simple_bow() {
     g.create_and_play(CardName::SimpleBow);
     g.fire_weapon_combat_abilities(Lineage::Abyssal, CardName::SimpleBow);
     assert_eq!(
-        STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -129,7 +129,7 @@ fn simple_club() {
     g.create_and_play(CardName::SimpleClub);
     g.fire_weapon_combat_abilities(Lineage::Abyssal, CardName::SimpleClub);
     assert_eq!(
-        STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -141,7 +141,7 @@ fn simple_hammer() {
     g.create_and_play(CardName::SimpleHammer);
     g.fire_weapon_combat_abilities(Lineage::Infernal, CardName::SimpleHammer);
     assert_eq!(
-        STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -153,7 +153,7 @@ fn simple_spear() {
     g.create_and_play(CardName::SimpleSpear);
     g.fire_weapon_combat_abilities(Lineage::Infernal, CardName::SimpleSpear);
     assert_eq!(
-        STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -164,7 +164,7 @@ fn ethereal_blade() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::EtherealBlade);
     g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::EtherealBlade);
-    assert_eq!(STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
     g.click(Buttons::Score);
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
     assert_eq!(1, g.user.cards.left_items().len());

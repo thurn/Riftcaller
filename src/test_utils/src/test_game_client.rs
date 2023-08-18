@@ -325,8 +325,8 @@ impl ClientCards {
 
     /// Returns a vec containing the titles of all of the cards in the provided
     /// player's hand from the perspective of the this client, or
-    /// [crate::HIDDEN_CARD] if the card's title is unknown. Titles will be
-    /// ordered by their sorting key.
+    /// [test_constants::HIDDEN_CARD] if the card's title is unknown. Titles
+    /// will be ordered by their sorting key.
     pub fn hand(&self, player: PlayerName) -> Vec<String> {
         self.names_in_position(Position::Hand(ObjectPositionHand { owner: player.into() }))
     }
@@ -400,13 +400,13 @@ impl ClientCards {
     }
 
     /// Returns a list of the titles of cards in the provided `position`, or the
-    /// string [crate::HIDDEN_CARD] if no title is available. Cards are
+    /// string [test_constants::HIDDEN_CARD] if no title is available. Cards are
     /// sorted in position order based on their `sorting_key` with ties being
     /// broken arbitrarily.
     pub fn names_in_position(&self, position: Position) -> Vec<String> {
         let mut result = self
             .in_position(position)
-            .map(|c| c.title_option().unwrap_or_else(|| crate::HIDDEN_CARD.to_string()))
+            .map(|c| c.title_option().unwrap_or_else(|| test_constants::HIDDEN_CARD.to_string()))
             .collect::<Vec<_>>();
         result.sort();
         result

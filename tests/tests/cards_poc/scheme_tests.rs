@@ -26,7 +26,10 @@ fn gold_mine() {
     let id = g.create_and_play(CardName::GoldMine);
     g.level_up_room_times(4);
     assert_eq!(g.me().score(), 30);
-    assert_eq!(STARTING_MANA - 4 /* level cost */ + 7 /* gained */, g.me().mana());
+    assert_eq!(
+        test_constants::STARTING_MANA - 4 /* level cost */ + 7, /* gained */
+        g.me().mana()
+    );
     assert_eq!(
         g.user.get_card(id).position(),
         Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })
@@ -42,7 +45,7 @@ fn activate_reinforcements() {
     g.level_up_room_times(5);
     assert_eq!(g.me().score(), 45);
     assert!(g.user.get_card(minion).is_face_up());
-    assert_eq!(STARTING_MANA - 5, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - 5, g.me().mana());
     assert_eq!(
         g.user.get_card(id).position(),
         Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })

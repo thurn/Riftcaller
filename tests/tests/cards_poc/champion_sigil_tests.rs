@@ -27,7 +27,7 @@ fn ennera_imris_blood_bound() {
     g.spend_actions_until_turn_over(Side::Champion);
     g.spend_actions_until_turn_over(Side::Overlord);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
-    assert_eq!(STARTING_MANA + gained, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA + gained, g.me().mana());
 }
 
 #[test]

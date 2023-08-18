@@ -46,7 +46,7 @@ fn accumulator() {
     g.click(Buttons::EndRaid);
     assert_eq!("1", g.user.get_card(id).arena_icon());
     g.activate_ability(id, 1);
-    assert_eq!(STARTING_MANA + 2 - card_cost, g.me().mana())
+    assert_eq!(test_constants::STARTING_MANA + 2 - card_cost, g.me().mana())
 }
 
 #[test]
@@ -61,7 +61,7 @@ fn mage_gloves() {
     );
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
     g.click(Buttons::EndRaid);
-    assert_eq!(STARTING_MANA + 3 - card_cost, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA + 3 - card_cost, g.me().mana());
     assert_eq!("9", g.user.get_card(id).arena_icon());
     assert_eq!(
         vec![RoomIdentifier::Vault, RoomIdentifier::Sanctum],
@@ -99,7 +99,7 @@ fn magical_resonator() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::MagicalResonator);
     g.activate_ability(id, 1);
-    assert_eq!(STARTING_MANA - card_cost + 3, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
     assert_eq!("6", g.user.get_card(id).arena_icon());
 }
 

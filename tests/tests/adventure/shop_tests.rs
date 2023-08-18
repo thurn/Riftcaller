@@ -45,9 +45,9 @@ fn test_buy_card() {
 
     adventure.visit_tile(shop);
 
-    assert!(adventure.has_text(STARTING_COINS.to_string()));
+    assert!(adventure.has_text(test_constants::STARTING_COINS.to_string()));
     adventure.click_on(adventure.user_id(), BUY_COST.to_string());
-    assert!(adventure.has_text((STARTING_COINS - BUY_COST).to_string()));
+    assert!(adventure.has_text((test_constants::STARTING_COINS - BUY_COST).to_string()));
 
     adventure.click(Buttons::CloseIcon);
     adventure.click(Buttons::ShowDeck);

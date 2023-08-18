@@ -28,6 +28,7 @@ game_data = { path = "../src/data/game_data", version = "0.0.0" }
 protos = { path = "../src/protos", version = "0.0.0" }
 rules = { path = "../src/rules", version = "0.0.0" }
 test_utils = { path = "../src/test_utils", version = "0.0.0" }
+test_constants = { path = "../src/test_constants", version = "0.0.0" }
 user_action_data = { path = "../src/data/user_action_data", version = "0.0.0" }
 
 tokio = { version = "1.25.0", features = ["macros", "rt-multi-thread", "sync", "time"] }
