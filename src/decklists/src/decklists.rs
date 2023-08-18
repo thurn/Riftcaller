@@ -18,7 +18,6 @@ use std::collections::HashMap;
 
 use game_data::card_name::CardName;
 use game_data::deck::Deck;
-use game_data::player_name::AIPlayer;
 use game_data::primitives::{School, Side};
 use maplit::hashmap;
 use once_cell::sync::Lazy;
@@ -174,12 +173,6 @@ pub fn canonical_deck(side: Side) -> Deck {
     } else {
         CANONICAL_OVERLORD.clone()
     }
-}
-
-/// Looks up the [Deck] for a named player.
-pub fn deck_for_player(_: AIPlayer, side: Side) -> Deck {
-    // (Eventually different named players will have different decks)
-    canonical_deck(side)
 }
 
 /// Returns a canonical deck associated with the given [NamedDeck].

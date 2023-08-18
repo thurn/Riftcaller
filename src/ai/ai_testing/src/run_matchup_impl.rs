@@ -72,9 +72,9 @@ pub fn run(args: Args) -> Result<()> {
         let mut game = GameState::new(
             GameId::new_from_u128(0),
             PlayerId::AI(args.overlord),
-            decklists::deck_for_player(args.overlord, Side::Overlord),
+            decklists::canonical_deck(Side::Overlord),
             PlayerId::AI(args.champion),
-            decklists::deck_for_player(args.champion, Side::Champion),
+            decklists::canonical_deck(Side::Champion),
             GameConfiguration {
                 deterministic: args.deterministic,
                 simulation: true,
