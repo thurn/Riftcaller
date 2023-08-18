@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::test_cards::MINION_HEALTH;
 use game_data::card_name::CardName;
 use game_data::primitives::{Lineage, Side};
 use protos::spelldawn::PlayerName;
@@ -93,7 +92,8 @@ fn simple_blade() {
     g.create_and_play(CardName::SimpleBlade);
     g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::SimpleBlade);
     assert_eq!(
-        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA
+            - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -105,7 +105,8 @@ fn simple_axe() {
     g.create_and_play(CardName::SimpleAxe);
     g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::SimpleAxe);
     assert_eq!(
-        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA
+            - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -117,7 +118,8 @@ fn simple_bow() {
     g.create_and_play(CardName::SimpleBow);
     g.fire_weapon_combat_abilities(Lineage::Abyssal, CardName::SimpleBow);
     assert_eq!(
-        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA
+            - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -129,7 +131,8 @@ fn simple_club() {
     g.create_and_play(CardName::SimpleClub);
     g.fire_weapon_combat_abilities(Lineage::Abyssal, CardName::SimpleClub);
     assert_eq!(
-        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA
+            - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -141,7 +144,8 @@ fn simple_hammer() {
     g.create_and_play(CardName::SimpleHammer);
     g.fire_weapon_combat_abilities(Lineage::Infernal, CardName::SimpleHammer);
     assert_eq!(
-        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA
+            - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
         g.me().mana()
     );
 }
@@ -153,7 +157,8 @@ fn simple_spear() {
     g.create_and_play(CardName::SimpleSpear);
     g.fire_weapon_combat_abilities(Lineage::Infernal, CardName::SimpleSpear);
     assert_eq!(
-        test_constants::STARTING_MANA - test_helpers::cost_to_play_and_defeat(stats, MINION_HEALTH),
+        test_constants::STARTING_MANA
+            - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
         g.me().mana()
     );
 }

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::test_cards::{ARTIFACT_COST, MANA_STORED, MANA_TAKEN, UNVEIL_COST};
 use game_data::card_name::CardName;
 use game_data::game_actions;
 use game_data::game_actions::GameAction;
@@ -331,7 +330,7 @@ fn activate_ability() {
         .expect("ability card")
         .id();
 
-    assert_eq!(test_constants::STARTING_MANA - ARTIFACT_COST, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - test_constants::ARTIFACT_COST, g.me().mana());
     assert_eq!(2, g.me().actions());
 
     let response = g.perform_action(
@@ -340,7 +339,10 @@ fn activate_ability() {
     );
 
     assert_snapshot!(Summary::run(&response));
-    assert_eq!(test_constants::STARTING_MANA - ARTIFACT_COST + MANA_TAKEN, g.me().mana());
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::ARTIFACT_COST + test_constants::MANA_TAKEN,
+        g.me().mana()
+    );
     assert_eq!(1, g.me().actions());
 }
 
@@ -357,12 +359,12 @@ fn activate_ability_take_all_mana() {
         .id();
 
     let mut taken = 0;
-    while taken < MANA_STORED {
+    while taken < test_constants::MANA_STORED {
         g.perform(
             Action::PlayCard(PlayCardAction { card_id: Some(ability_card_id), target: None }),
             g.user_id(),
         );
-        taken += MANA_TAKEN;
+        taken += test_constants::MANA_TAKEN;
 
         g.spend_actions_until_turn_over(Side::Champion);
         assert!(g.dusk());
@@ -371,11 +373,11 @@ fn activate_ability_take_all_mana() {
     }
 
     assert_eq!(
-        test_constants::STARTING_MANA - ARTIFACT_COST + MANA_STORED,
+        test_constants::STARTING_MANA - test_constants::ARTIFACT_COST + test_constants::MANA_STORED,
         g.user.this_player.mana()
     );
     assert_eq!(
-        test_constants::STARTING_MANA - ARTIFACT_COST + MANA_STORED,
+        test_constants::STARTING_MANA - test_constants::ARTIFACT_COST + test_constants::MANA_STORED,
         g.opponent.other_player.mana()
     );
     assert_eq!(
@@ -397,9 +399,12 @@ fn triggered_unveil_ability() {
     g.spend_actions_until_turn_over(Side::Champion);
     assert!(g.dusk());
     g.click(Buttons::Unveil);
-    assert_eq!(test_constants::STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.user.this_player.mana());
     assert_eq!(
-        test_constants::STARTING_MANA - UNVEIL_COST + MANA_TAKEN,
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
+        g.user.this_player.mana()
+    );
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
         g.opponent.other_player.mana()
     );
 }
@@ -422,7 +427,7 @@ fn triggered_ability_take_all_mana() {
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     let mut taken = 0;
     let mut unveiled = false;
-    while taken < MANA_STORED {
+    while taken < test_constants::MANA_STORED {
         assert!(g.dawn());
         g.spend_actions_until_turn_over(Side::Champion);
         assert!(g.dusk());
@@ -430,16 +435,16 @@ fn triggered_ability_take_all_mana() {
             g.click(Buttons::Unveil);
             unveiled = true;
         }
-        taken += MANA_TAKEN;
+        taken += test_constants::MANA_TAKEN;
         g.spend_actions_until_turn_over(Side::Overlord);
     }
 
     assert_eq!(
-        test_constants::STARTING_MANA - UNVEIL_COST + MANA_STORED,
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_STORED,
         g.user.this_player.mana()
     );
     assert_eq!(
-        test_constants::STARTING_MANA - UNVEIL_COST + MANA_STORED,
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_STORED,
         g.opponent.other_player.mana()
     );
     assert_eq!(

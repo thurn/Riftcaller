@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::test_cards::{MANA_STORED, MANA_TAKEN, UNVEIL_COST};
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
 use protos::spelldawn::PlayerName;
@@ -29,8 +28,14 @@ fn test_card_stored_mana() {
     g.spend_actions_until_turn_over(Side::Champion);
     g.click(Buttons::Unveil);
     assert!(g.dusk());
-    assert_eq!(test_constants::STARTING_MANA - UNVEIL_COST + MANA_TAKEN, g.me().mana());
-    assert_eq!((MANA_STORED - MANA_TAKEN).to_string(), g.user.get_card(id).arena_icon());
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
+        g.me().mana()
+    );
+    assert_eq!(
+        (test_constants::MANA_STORED - test_constants::MANA_TAKEN).to_string(),
+        g.user.get_card(id).arena_icon()
+    );
 }
 
 #[test]

@@ -431,6 +431,7 @@ dependencies = [
  "card_helpers",
  "game_data",
  "rules",
+ "test_constants",
 ]
 
 [[package]]

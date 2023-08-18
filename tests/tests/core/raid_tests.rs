@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::test_cards::{MINION_COST, WEAPON_COST};
 use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
@@ -112,7 +111,10 @@ fn summon_minion() {
     g.click(Buttons::Summon);
 
     assert!(g.user.cards.get(minion_id).is_face_up());
-    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA - MINION_COST);
+    assert_eq!(
+        g.user.other_player.mana(),
+        test_constants::STARTING_MANA - test_constants::MINION_COST
+    );
     assert!(g.user.this_player.can_take_action());
     assert!(!g.user.other_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
@@ -183,9 +185,15 @@ fn minion_with_shield() {
     g.setup_raid_target(CardName::TestMinionEndRaid);
     g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
-    assert_eq!(g.user.this_player.mana(), test_constants::STARTING_MANA - WEAPON_COST);
+    assert_eq!(
+        g.user.this_player.mana(),
+        test_constants::STARTING_MANA - test_constants::WEAPON_COST
+    );
     g.click_on(g.user_id(), "Test Weapon");
-    assert_eq!(g.user.this_player.mana(), test_constants::STARTING_MANA - WEAPON_COST - 1);
+    assert_eq!(
+        g.user.this_player.mana(),
+        test_constants::STARTING_MANA - test_constants::WEAPON_COST - 1
+    );
 }
 
 #[test]

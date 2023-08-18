@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cards_test::test_cards::{MINION_COST, TEST_LINEAGE};
 use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::object_position::Position;
@@ -53,7 +52,7 @@ fn coup_de_grace_invalid_room() {
 #[test]
 fn charged_strike() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.setup_raid_target(test_helpers::minion_for_lineage(TEST_LINEAGE));
+    g.setup_raid_target(test_helpers::minion_for_lineage(test_constants::TEST_LINEAGE));
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     assert_eq!(test_constants::STARTING_MANA - 3, g.me().mana());
     g.play_with_target_room(CardName::ChargedStrike, test_constants::ROOM_ID);
@@ -72,11 +71,14 @@ fn charged_strike() {
 #[test]
 fn stealth_mission() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.setup_raid_target(test_helpers::minion_for_lineage(TEST_LINEAGE));
+    g.setup_raid_target(test_helpers::minion_for_lineage(test_constants::TEST_LINEAGE));
     assert_eq!(test_constants::STARTING_MANA, g.opponent.this_player.mana());
     g.play_with_target_room(CardName::StealthMission, test_constants::ROOM_ID);
     g.click(Buttons::Summon);
-    assert_eq!(test_constants::STARTING_MANA - MINION_COST - 3, g.opponent.this_player.mana());
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::MINION_COST - 3,
+        g.opponent.this_player.mana()
+    );
 }
 
 #[test]

@@ -15,18 +15,38 @@
 //! Standard values used in unit tests.
 
 use adventure_data::adventure::Coins;
-use game_data::primitives::{ManaValue, RaidId, RoomId};
+use game_data::primitives::{HealthValue, Lineage, ManaValue, RaidId, RoomId};
 use protos::spelldawn::RoomIdentifier;
 
 /// The title returned for hidden cards
 pub const HIDDEN_CARD: &str = "Hidden Card";
+
 /// [RoomId] used by default for targeting
 pub const ROOM_ID: RoomId = RoomId::RoomA;
+
 /// Client equivalent of [ROOM_ID].
 pub const CLIENT_ROOM_ID: RoomIdentifier = RoomIdentifier::RoomA;
+
 /// Default Raid ID to use during testing
 pub const RAID_ID: RaidId = RaidId(1);
+
 /// Default mana for players in a test game if not otherwise specified
 pub const STARTING_MANA: ManaValue = 999;
 
 pub const STARTING_COINS: Coins = Coins(999);
+
+pub const MINION_COST: ManaValue = 3;
+
+pub const WEAPON_COST: ManaValue = 3;
+
+pub const ARTIFACT_COST: ManaValue = 1;
+
+pub const UNVEIL_COST: ManaValue = 3;
+
+pub const MANA_STORED: ManaValue = 10;
+
+pub const MANA_TAKEN: ManaValue = 2;
+
+pub const MINION_HEALTH: HealthValue = 5;
+
+pub const TEST_LINEAGE: Lineage = Lineage::Infernal;
