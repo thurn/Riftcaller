@@ -20,7 +20,7 @@ use strum_macros::Display;
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, Serialize, Deserialize, Sequence)]
 pub enum CardSetName {
     Test,
-    ProofOfConcept,
     TutorialEffects,
     Basics,
+    Amethyst,
 }

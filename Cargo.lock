@@ -377,11 +377,22 @@ dependencies = [
 name = "cards_all"
 version = "0.0.0"
 dependencies = [
+ "cards_amethyst",
  "cards_basic",
  "cards_game_modifier",
- "cards_poc",
  "cards_test",
  "rules",
+]
+
+[[package]]
+name = "cards_amethyst"
+version = "0.0.0"
+dependencies = [
+ "assets",
+ "card_helpers",
+ "game_data",
+ "rules",
+ "with_error",
 ]
 
 [[package]]
@@ -411,17 +422,6 @@ dependencies = [
  "card_helpers",
  "game_data",
  "rules",
-]
-
-[[package]]
-name = "cards_poc"
-version = "0.0.0"
-dependencies = [
- "assets",
- "card_helpers",
- "game_data",
- "rules",
- "with_error",
 ]
 
 [[package]]

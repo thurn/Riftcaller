@@ -25,7 +25,7 @@ use rules::{flags, mana, mutations};
 pub fn overwhelming_power() -> CardDefinition {
     CardDefinition {
         name: CardName::OverwhelmingPower,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(10),
         image: rexard_images::spell(1, "SpellBook01_92"),
         card_type: CardType::OverlordSpell,
@@ -46,7 +46,7 @@ pub fn overwhelming_power() -> CardDefinition {
 pub fn forced_march() -> CardDefinition {
     CardDefinition {
         name: CardName::ForcedMarch,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(1),
         image: rexard_images::spell(3, "SpellBook03_04"),
         card_type: CardType::OverlordSpell,

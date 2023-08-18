@@ -23,7 +23,7 @@ use rules::{mana, mutations};
 pub fn radiant_sigil() -> CardDefinition {
     CardDefinition {
         name: CardName::RadiantSigil,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: sigil_cost(),
         image: rexard_images::spell(8, "SpellBook08_09"),
         card_type: CardType::Sigil,
@@ -47,7 +47,7 @@ pub fn radiant_sigil() -> CardDefinition {
 pub fn restoration_sigil() -> CardDefinition {
     CardDefinition {
         name: CardName::RestorationSigil,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: sigil_cost(),
         image: rexard_images::spell(8, "SpellBook08_73"),
         card_type: CardType::Sigil,
@@ -71,7 +71,7 @@ pub fn restoration_sigil() -> CardDefinition {
 pub fn forge_sigil() -> CardDefinition {
     CardDefinition {
         name: CardName::ForgeSigil,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: sigil_cost(),
         image: rexard_images::spell(8, "SpellBook08_76"),
         card_type: CardType::Sigil,
@@ -92,7 +92,7 @@ pub fn forge_sigil() -> CardDefinition {
 pub fn andvari_est_nights_warden() -> CardDefinition {
     CardDefinition {
         name: CardName::CrabSigil,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: sigil_cost(),
         image: rexard_images::spell(8, "SpellBook08_119"),
         card_type: CardType::Sigil,

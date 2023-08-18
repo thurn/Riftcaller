@@ -65,7 +65,7 @@ fn random_sigil(
     config.choose(
         rules::all_cards()
             .filter(move |definition| {
-                definition.sets.contains(&CardSetName::ProofOfConcept)
+                definition.sets.contains(&CardSetName::Amethyst)
                     && definition.side == side
                     && definition.school == school
                     && definition.card_type == CardType::Sigil
@@ -77,7 +77,7 @@ fn random_sigil(
 fn common_cards(side: Side) -> impl Iterator<Item = CardName> {
     rules::all_cards()
         .filter(move |definition| {
-            definition.sets.contains(&CardSetName::ProofOfConcept)
+            definition.sets.contains(&CardSetName::Amethyst)
                 && definition.rarity == Rarity::Common
                 && definition.side == side
         })

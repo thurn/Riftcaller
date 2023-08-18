@@ -28,7 +28,7 @@ use rules::{flags, mana, mutations};
 pub fn meditation() -> CardDefinition {
     CardDefinition {
         name: CardName::Meditation,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_98"),
         card_type: CardType::ChampionSpell,
@@ -49,7 +49,7 @@ pub fn meditation() -> CardDefinition {
 pub fn coup_de_grace() -> CardDefinition {
     CardDefinition {
         name: CardName::CoupDeGrace,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(0),
         image: rexard_images::spell(1, "SpellBook01_76"),
         card_type: CardType::ChampionSpell,
@@ -84,7 +84,7 @@ pub fn coup_de_grace() -> CardDefinition {
 pub fn charged_strike() -> CardDefinition {
     CardDefinition {
         name: CardName::ChargedStrike,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_67"),
         card_type: CardType::ChampionSpell,
@@ -111,7 +111,7 @@ pub fn charged_strike() -> CardDefinition {
 pub fn stealth_mission() -> CardDefinition {
     CardDefinition {
         name: CardName::StealthMission,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_89"),
         card_type: CardType::ChampionSpell,
@@ -150,7 +150,7 @@ pub fn stealth_mission() -> CardDefinition {
 pub fn preparation() -> CardDefinition {
     CardDefinition {
         name: CardName::Preparation,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(1),
         image: rexard_images::spell(1, "SpellBook01_79"),
         card_type: CardType::ChampionSpell,

@@ -30,7 +30,7 @@ use rules::mutations::OnZeroStored;
 pub fn invisibility_ring() -> CardDefinition {
     CardDefinition {
         name: CardName::InvisibilityRing,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(2),
         image: rexard_images::get(RexardPack::JeweleryRings, "rn_b_03"),
         card_type: CardType::Artifact,
@@ -58,7 +58,7 @@ pub fn invisibility_ring() -> CardDefinition {
 pub fn accumulator() -> CardDefinition {
     CardDefinition {
         name: CardName::Accumulator,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(3),
         image: rexard_images::get(RexardPack::JeweleryNecklaces, "07_ob"),
         card_type: CardType::Artifact,
@@ -96,7 +96,7 @@ pub fn accumulator() -> CardDefinition {
 pub fn mage_gloves() -> CardDefinition {
     CardDefinition {
         name: CardName::MageGloves,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(5),
         image: rexard_images::artifact(RexardArtifactType::Gloves, "gloves_20"),
         card_type: CardType::Artifact,
@@ -133,7 +133,7 @@ pub fn mage_gloves() -> CardDefinition {
 pub fn magical_resonator() -> CardDefinition {
     CardDefinition {
         name: CardName::MagicalResonator,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(1),
         image: rexard_images::artifact(RexardArtifactType::Bracers, "bracers_2"),
         card_type: CardType::Artifact,
@@ -161,7 +161,7 @@ pub fn magical_resonator() -> CardDefinition {
 pub fn dark_grimoire() -> CardDefinition {
     CardDefinition {
         name: CardName::DarkGrimoire,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(3),
         image: rexard_images::get(RexardPack::MagicItems, "book_06_b"),
         card_type: CardType::Artifact,

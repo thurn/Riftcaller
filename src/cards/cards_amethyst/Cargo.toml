@@ -1,12 +1,12 @@
 [package]
-name = "cards_poc"
+name = "cards_amethyst"
 version = "0.0.0"
 description = "Proof-of-concept cards"
 license = "Apache-2.0"
 edition = "2021"
 
 [lib]
-path = "src/cards_poc.rs"
+path = "src/cards_amethyst.rs"
 test = false
 doctest = false
 

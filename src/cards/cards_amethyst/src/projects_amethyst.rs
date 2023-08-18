@@ -27,7 +27,7 @@ use rules::mutations::OnZeroStored;
 pub fn gemcarver() -> CardDefinition {
     CardDefinition {
         name: CardName::Gemcarver,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_30_b"),
         card_type: CardType::Project,
@@ -62,7 +62,7 @@ pub fn gemcarver() -> CardDefinition {
 pub fn spike_trap() -> CardDefinition {
     CardDefinition {
         name: CardName::SpikeTrap,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(2),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_45_b"),
         card_type: CardType::Project,

@@ -14,5 +14,5 @@ doctest = false
 cards_basic = { path = "../cards_basic", version = "0.0.0" }
 cards_game_modifier = { path = "../cards_game_modifier", version = "0.0.0" }
 cards_test = { path = "../cards_test", version = "0.0.0" }
-cards_poc = { path = "../cards_poc", version = "0.0.0" }
+cards_amethyst = { path = "../cards_amethyst", version = "0.0.0" }
 rules = { path = "../../rules", version = "0.0.0" }

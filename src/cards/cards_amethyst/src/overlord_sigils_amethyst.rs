@@ -22,7 +22,7 @@ use game_data::primitives::{CardType, Rarity, School, Side};
 pub fn arcane_sigil() -> CardDefinition {
     CardDefinition {
         name: CardName::ArcaneSigil,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: sigil_cost(),
         image: rexard_images::spell(8, "SpellBook08_22"),
         card_type: CardType::Sigil,

@@ -29,7 +29,7 @@ use game_data::special_effects::{Projectile, TimedEffect};
 pub fn marauders_axe() -> CardDefinition {
     CardDefinition {
         name: CardName::MaraudersAxe,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(5),
         image: rexard_images::weapon(RexardWeaponType::Axes, "a_n_b_01"),
         card_type: CardType::Weapon,
@@ -72,7 +72,7 @@ pub fn marauders_axe() -> CardDefinition {
 pub fn keen_halberd() -> CardDefinition {
     CardDefinition {
         name: CardName::KeenHalberd,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(3),
         image: rexard_images::weapon(RexardWeaponType::Polearms, "sp_b_04"),
         card_type: CardType::Weapon,
@@ -97,7 +97,7 @@ pub fn keen_halberd() -> CardDefinition {
 pub fn bow_of_the_alliance() -> CardDefinition {
     CardDefinition {
         name: CardName::BowOfTheAlliance,
-        sets: vec![CardSetName::ProofOfConcept],
+        sets: vec![CardSetName::Amethyst],
         cost: cost(3),
         image: rexard_images::weapon(RexardWeaponType::Bows, "b_b_01"),
         card_type: CardType::Weapon,
