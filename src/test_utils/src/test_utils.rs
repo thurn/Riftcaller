@@ -50,32 +50,3 @@ pub const RAID_ID: RaidId = RaidId(1);
 pub const STARTING_MANA: ManaValue = 999;
 
 pub const STARTING_COINS: Coins = Coins(999);
-
-// fn create_mock_adventure(player_id: PlayerId, side: Side, args:
-// AdventureArgs) -> AdventureState {     let battle =
-// TileEntity::Battle(BattleData {         opponent_id: AIPlayer::NoAction,
-//         opponent_deck: decklists::canonical_deck(side.opponent()),
-//         opponent_name: "Opponent Name".to_string(),
-//         reward: args.reward,
-//         character: CharacterPreset::Overlord,
-//         character_facing: CharacterFacing::Down,
-//         region_to_reveal: 2,
-//     });
-//     let mut adventure = mock_adventure::create(
-//         AdventureId::new_from_u128(0),
-//         AdventureConfiguration {
-//             player_id,
-//             side,
-//             rng: Some(Xoshiro256StarStar::seed_from_u64(314159265358979323)),
-//         },
-//         decklists::canonical_deck(side),
-//         HashMap::new(),
-//         None,
-//         None,
-//         None,
-//         Some(battle),
-//     );
-//     adventure.visiting_position = Some(mock_adventure::BATTLE_POSITION);
-//     adventure.coins = args.current_coins;
-//     adventure
-// }

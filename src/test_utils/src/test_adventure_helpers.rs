@@ -24,12 +24,19 @@ pub static NEXT_X_POSITION: AtomicI32 = AtomicI32::new(1);
 pub trait TestAdventureHelpers {
     fn insert_tile(&mut self, entity: TileEntity) -> TilePosition;
 
+    fn insert_tile_at_position(&mut self, entity: TileEntity, position: TilePosition);
+
     fn visit_tile(&mut self, position: TilePosition);
 }
 
 impl TestAdventureHelpers for TestSession {
     fn insert_tile(&mut self, entity: TileEntity) -> TilePosition {
         let position = TilePosition::new(NEXT_X_POSITION.fetch_add(1, Ordering::SeqCst), 1);
+        self.insert_tile_at_position(entity, position);
+        position
+    }
+
+    fn insert_tile_at_position(&mut self, entity: TileEntity, position: TilePosition) {
         self.overwrite_adventure_tile(
             position,
             TileState {
@@ -40,7 +47,6 @@ impl TestAdventureHelpers for TestSession {
                 visited: false,
             },
         );
-        position
     }
 
     fn visit_tile(&mut self, position: TilePosition) {
