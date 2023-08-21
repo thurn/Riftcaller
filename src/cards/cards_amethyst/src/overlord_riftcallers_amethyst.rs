@@ -19,13 +19,13 @@ use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 
-pub fn arcane_sigil() -> CardDefinition {
+pub fn ubras_efaris_time_shaper() -> CardDefinition {
     CardDefinition {
-        name: CardName::ArcaneSigil,
+        name: CardName::UbrasEfarisTimeShaper,
         sets: vec![CardSetName::Amethyst],
-        cost: sigil_cost(),
+        cost: riftcaller_cost(),
         image: rexard_images::spell(8, "SpellBook08_22"),
-        card_type: CardType::Sigil,
+        card_type: CardType::Riftcaller,
         side: Side::Overlord,
         school: School::Shadow,
         rarity: Rarity::Exalted,

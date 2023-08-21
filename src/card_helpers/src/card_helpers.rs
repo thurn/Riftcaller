@@ -82,8 +82,8 @@ pub fn scheme_cost() -> Cost<CardId> {
     Cost { mana: None, actions: 1, custom_cost: None }
 }
 
-/// [Cost] for a sigil card
-pub fn sigil_cost() -> Cost<CardId> {
+/// [Cost] for a riftcaller card
+pub fn riftcaller_cost() -> Cost<CardId> {
     Cost { mana: None, actions: 0, custom_cost: None }
 }
 

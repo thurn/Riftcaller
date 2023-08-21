@@ -29,8 +29,8 @@ use protos::spelldawn::{
     ObjectPositionCharacterContainer, ObjectPositionDeck, ObjectPositionDeckContainer,
     ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer, ObjectPositionHand,
     ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid,
-    ObjectPositionRevealedCards, ObjectPositionRoom, ObjectPositionSigil, ObjectPositionStaging,
-    RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
+    ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::traits::RaidDisplayState;
 use raids::RaidDataExt;
@@ -117,8 +117,8 @@ pub fn character(builder: &ResponseBuilder, side: Side) -> Position {
     Position::Character(ObjectPositionCharacter { owner: builder.to_player_name(side) })
 }
 
-pub fn sigil(builder: &ResponseBuilder, side: Side) -> Position {
-    Position::Sigil(ObjectPositionSigil { owner: builder.to_player_name(side) })
+pub fn riftcaller(builder: &ResponseBuilder, side: Side) -> Position {
+    Position::Riftcaller(ObjectPositionRiftcallers { owner: builder.to_player_name(side) })
 }
 
 pub fn character_container(builder: &ResponseBuilder, side: Side) -> Position {
@@ -185,7 +185,7 @@ fn adapt_position(
         CardPosition::DeckTop(side) => deck(builder, side),
         CardPosition::DiscardPile(side) => discard(builder, side),
         CardPosition::Scored(side) => character(builder, side),
-        CardPosition::Sigil(side) => sigil(builder, side),
+        CardPosition::Riftcaller(side) => riftcaller(builder, side),
         CardPosition::Scoring => staging(),
         CardPosition::Played(side, target) => {
             played_position(builder, game, side, card_id, target)?

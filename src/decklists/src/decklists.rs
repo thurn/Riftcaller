@@ -27,7 +27,7 @@ use user_action_data::NamedDeck;
 pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![],
-    sigils: vec![],
+    riftcallers: vec![],
     cards: HashMap::new(),
 });
 
@@ -35,7 +35,7 @@ pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![],
-    sigils: vec![],
+    riftcallers: vec![],
     cards: hashmap! {CardName::TestOverlordSpell => 45},
 });
 
@@ -43,7 +43,7 @@ pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
 pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![],
-    sigils: vec![],
+    riftcallers: vec![],
     cards: hashmap! {
         CardName::Conspire => 3,
         CardName::Devise => 3,
@@ -63,13 +63,13 @@ pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Basic Champion starter deck in adventure mode
 pub static TUTORIAL_OVERLORD: Lazy<Deck> =
-    Lazy::new(|| Deck { sigils: vec![], ..BASIC_OVERLORD.clone() });
+    Lazy::new(|| Deck { riftcallers: vec![], ..BASIC_OVERLORD.clone() });
 
 /// Standard Overlord deck for use in benchmarks
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![School::Law],
-    sigils: vec![CardName::ArcaneSigil],
+    riftcallers: vec![CardName::UbrasEfarisTimeShaper],
     cards: hashmap! {
         CardName::GoldMine => 3,
         CardName::ActivateReinforcements => 2,
@@ -94,7 +94,7 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
 pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![],
-    sigils: vec![],
+    riftcallers: vec![],
     cards: HashMap::new(),
 });
 
@@ -102,7 +102,7 @@ pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![],
-    sigils: vec![],
+    riftcallers: vec![],
     cards: hashmap! {CardName::TestChampionSpell => 45},
 });
 
@@ -110,7 +110,7 @@ pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
 pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![],
-    sigils: vec![],
+    riftcallers: vec![],
     cards: hashmap! {
         CardName::ArcaneRecovery => 3,
         CardName::EldritchSurge => 3,
@@ -130,13 +130,13 @@ pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Basic Champion starter deck in adventure mode
 pub static TUTORIAL_CHAMPION: Lazy<Deck> =
-    Lazy::new(|| Deck { sigils: vec![], ..BASIC_CHAMPION.clone() });
+    Lazy::new(|| Deck { riftcallers: vec![], ..BASIC_CHAMPION.clone() });
 
 /// Standard Champion deck for use in benchmarks
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![School::Primal],
-    sigils: vec![CardName::RadiantSigil],
+    riftcallers: vec![CardName::EnneraImrisBloodBound],
     cards: hashmap! {
         CardName::Meditation => 2,
         CardName::CoupDeGrace => 3,

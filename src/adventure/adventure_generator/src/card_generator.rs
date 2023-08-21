@@ -24,11 +24,12 @@ pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
     draft_data(None, config.choose_multiple(3, common_cards(config.side)))
 }
 
-/// Generates sigil draft options from 3 randomly chosen schools
-pub fn sigil_choices(config: &mut AdventureConfiguration) -> DraftData {
+/// Generates riftcaller draft options from 3 randomly chosen schools
+pub fn riftcaller_choices(config: &mut AdventureConfiguration) -> DraftData {
     let schools = config.choose_multiple(3, STANDARD_SCHOOLS.iter());
-    let cards = schools.into_iter().filter_map(|school| random_sigil(config, config.side, *school));
-    draft_data(Some(DraftContext::StartingSigil), cards.collect())
+    let cards =
+        schools.into_iter().filter_map(|school| random_riftcaller(config, config.side, *school));
+    draft_data(Some(DraftContext::StartingRiftcaller), cards.collect())
 }
 
 fn draft_data(context: Option<DraftContext>, cards: Vec<CardName>) -> DraftData {
@@ -57,7 +58,7 @@ pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
     }
 }
 
-fn random_sigil(
+fn random_riftcaller(
     config: &mut AdventureConfiguration,
     side: Side,
     school: School,
@@ -68,7 +69,7 @@ fn random_sigil(
                 definition.sets.contains(&CardSetName::Amethyst)
                     && definition.side == side
                     && definition.school == school
-                    && definition.card_type == CardType::Sigil
+                    && definition.card_type == CardType::Riftcaller
             })
             .map(|definition| definition.name),
     )

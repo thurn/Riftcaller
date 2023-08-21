@@ -33,10 +33,10 @@ pub struct Deck {
     /// school is often called the 'primary' school for a deck and is e.g. used
     /// to determine the card backs shown for this player.
     pub schools: Vec<School>,
-    /// Sigil cards for this deck, which start the game in play and provide
+    /// Riftcaller cards for this deck, which start the game in play and provide
     /// global effects.
-    pub sigils: Vec<CardName>,
-    /// How many (non-sigil) cards with each name are present in this deck?
+    pub riftcallers: Vec<CardName>,
+    /// How many (non-riftcaller) cards with each name are present in this deck?
     #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub cards: HashMap<CardName, u32>,
 }
@@ -44,7 +44,7 @@ pub struct Deck {
 impl Deck {
     /// Returns a vector which repeats each [CardName] in [Self::cards] in
     /// alphabetical order a number of times equal to its deck count. Note: The
-    /// returned vector does *not* contain sigils.
+    /// returned vector does *not* contain riftcallers.
     pub fn card_names(&self) -> Vec<CardName> {
         let mut result = self
             .cards

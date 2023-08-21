@@ -220,11 +220,11 @@ namespace Spelldawn.Services
     [SerializeField] StudioManager _studioManager = null!;
     public StudioManager StudioManager => _studioManager;
 
-    [SerializeField] SigilDisplay _userSigilDisplay = null!;
-    [SerializeField] SigilDisplay _opponentSigilDisplay = null!;
+    [FormerlySerializedAs("_userSigilDisplay")] [SerializeField] RiftcallerDisplay _userRiftcallerDisplay = null!;
+    [FormerlySerializedAs("_opponentSigilDisplay")] [SerializeField] RiftcallerDisplay _opponentRiftcallerDisplay = null!;
 
-    public SigilDisplay SigilDisplayForPlayer(PlayerName playerName) =>
-      playerName == PlayerName.User ? _userSigilDisplay : _opponentSigilDisplay;
+    public RiftcallerDisplay RiftcallerDisplayForPlayer(PlayerName playerName) =>
+      playerName == PlayerName.User ? _userRiftcallerDisplay : _opponentRiftcallerDisplay;
 
     void Awake()
     {

@@ -73,7 +73,7 @@ impl TestAdventure {
         let id = AdventureId::generate();
         let mut revealed_regions = HashSet::new();
         revealed_regions.insert(1);
-        let deck = Deck { side: self.side, schools: vec![], sigils: vec![], cards: self.deck };
+        let deck = Deck { side: self.side, schools: vec![], riftcallers: vec![], cards: self.deck };
         let config = AdventureConfiguration {
             player_id,
             side: self.side,

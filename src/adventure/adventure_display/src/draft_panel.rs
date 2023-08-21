@@ -44,7 +44,7 @@ impl<'a> Panel for DraftPanel<'a> {
 fn draft_title(data: &DraftData) -> Option<String> {
     Some(
         match data.context.as_ref()? {
-            DraftContext::StartingSigil => "Pick a starting Sigil:",
+            DraftContext::StartingRiftcaller => "Pick a starting Riftcaller:",
         }
         .to_string(),
     )
@@ -53,7 +53,7 @@ fn draft_title(data: &DraftData) -> Option<String> {
 fn custom_button_label(data: &DraftData) -> Option<String> {
     Some(
         match data.context.as_ref()? {
-            DraftContext::StartingSigil => "Start",
+            DraftContext::StartingRiftcaller => "Start",
         }
         .to_string(),
     )

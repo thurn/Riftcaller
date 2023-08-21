@@ -38,7 +38,7 @@ pub fn create(
     config: AdventureConfiguration,
     deck: Deck,
     collection: HashMap<CardName, u32>,
-    sigils: Option<TileEntity>,
+    riftcallers: Option<TileEntity>,
     draft: Option<TileEntity>,
     shop: Option<TileEntity>,
     battle: Option<TileEntity>,
@@ -84,7 +84,7 @@ pub fn create(
     add_with_road(&mut tiles, -2, 0, "hexPlains00", road(RIGHT | BOTTOM_LEFT, 0));
     add_with_road(&mut tiles, -1, 0, "hexPlains02", road(RIGHT | LEFT, 1));
 
-    if let Some(s) = sigils {
+    if let Some(s) = riftcallers {
         add_with_entity_and_road(&mut tiles, 0, 0, "hexScrublands01", s, road(RIGHT | LEFT, 0));
     } else {
         add_with_road(&mut tiles, 0, 0, "hexScrublands01", road(RIGHT | LEFT, 0));

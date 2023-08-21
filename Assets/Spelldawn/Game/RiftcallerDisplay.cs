@@ -19,7 +19,7 @@ using UnityEngine;
 
 namespace Spelldawn.Game
 {
-  public sealed class SigilDisplay : LinearObjectDisplay
+  public sealed class RiftcallerDisplay : LinearObjectDisplay
   {
     public override bool CanHandleMouseDown() => !Registry.CapabilityService.AnyOverlayOpen();
 

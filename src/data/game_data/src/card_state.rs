@@ -60,8 +60,8 @@ pub enum CardPosition {
     /// A card has been played by the [Side] player and is in the process of
     /// resolving with the provided target
     Played(Side, CardTarget),
-    /// A sigil card owned by a player in the game.
-    Sigil(Side),
+    /// A riftcaller card owned by a player in the game.
+    Riftcaller(Side),
     /// Global modifier cards which change the rules of the game
     GameModifier,
 }
@@ -72,12 +72,12 @@ impl CardPosition {
         self.into()
     }
 
-    /// Returns true if this card is a sigil, is in a room, or has been played
-    /// as an item.
+    /// Returns true if this card is a riftcaller, is in a room, or has been
+    /// played as an item.
     pub fn in_play(&self) -> bool {
         matches!(
             self.kind(),
-            CardPositionKind::Sigil | CardPositionKind::Room | CardPositionKind::ArenaItem
+            CardPositionKind::Riftcaller | CardPositionKind::Room | CardPositionKind::ArenaItem
         )
     }
 

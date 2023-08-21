@@ -73,11 +73,11 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
     let choice = data.choices[index];
 
     let definition = rules::get(choice.card);
-    if definition.card_type == CardType::Sigil {
+    if definition.card_type == CardType::Riftcaller {
         if !state.deck.schools.contains(&definition.school) {
             state.deck.schools.push(definition.school);
         }
-        state.deck.sigils.push(definition.name);
+        state.deck.riftcallers.push(definition.name);
     } else {
         state
             .collection

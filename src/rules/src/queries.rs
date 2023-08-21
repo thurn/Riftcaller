@@ -259,7 +259,7 @@ pub fn played_position(
         CardType::Project | CardType::Scheme => {
             CardPosition::Room(target.room_id()?, RoomLocation::Occupant)
         }
-        CardType::Sigil => CardPosition::Sigil(side),
+        CardType::Riftcaller => CardPosition::Riftcaller(side),
         CardType::GameModifier => CardPosition::GameModifier,
     })
 }

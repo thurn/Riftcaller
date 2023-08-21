@@ -200,8 +200,8 @@ namespace Spelldawn.Services
           RevealedCardsBrowserSize.Large => _registry.RevealedCardsBrowserLarge,
           _ => throw new ArgumentOutOfRangeException()
         },
-        ObjectPosition.PositionOneofCase.Sigil => 
-          _registry.SigilDisplayForPlayer(position.Sigil.Owner),
+        ObjectPosition.PositionOneofCase.Riftcaller => 
+          _registry.RiftcallerDisplayForPlayer(position.Riftcaller.Owner),
         _ => throw new ArgumentOutOfRangeException()
       };
     }

@@ -111,7 +111,7 @@ pub struct CardChoice {
 /// Contextual information about why the draft screen is being shown
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DraftContext {
-    StartingSigil,
+    StartingRiftcaller,
 }
 
 /// Data for rendering the draft screen

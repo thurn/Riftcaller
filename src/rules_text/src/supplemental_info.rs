@@ -68,7 +68,7 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
         CardType::Minion => "Minion",
         CardType::Project => "Project",
         CardType::Scheme => "Scheme",
-        CardType::Sigil => "Sigil",
+        CardType::Riftcaller => "Riftcaller",
         CardType::GameModifier => "Modifier",
     });
 

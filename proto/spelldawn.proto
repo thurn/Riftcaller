@@ -832,8 +832,8 @@ message ObjectPositionRevealedCards {
     RevealedCardsBrowserSize size = 1;
 }
 
-/// Position in which active sigils are displayed during gameplay
-message ObjectPositionSigil {
+/// Position in which active riftcallers are displayed during gameplay
+message ObjectPositionRiftcallers {
     PlayerName owner = 1;
 }
 
@@ -866,7 +866,7 @@ message ObjectPosition {
         ObjectPositionCharacterContainer character_container = 16;
         ObjectPositionIntoCard into_card = 17;
         ObjectPositionRevealedCards revealed = 18;
-        ObjectPositionSigil sigil = 19;
+        ObjectPositionRiftcallers riftcaller = 19;
     }
 }
 

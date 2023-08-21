@@ -764,10 +764,10 @@ pub struct ObjectPositionRevealedCards {
     #[prost(enumeration = "RevealedCardsBrowserSize", tag = "1")]
     pub size: i32,
 }
-/// / Position in which active sigils are displayed during gameplay
+/// / Position in which active riftcallers are displayed during gameplay
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ObjectPositionSigil {
+pub struct ObjectPositionRiftcallers {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
@@ -828,7 +828,7 @@ pub mod object_position {
         #[prost(message, tag = "18")]
         Revealed(super::ObjectPositionRevealedCards),
         #[prost(message, tag = "19")]
-        Sigil(super::ObjectPositionSigil),
+        Riftcaller(super::ObjectPositionRiftcallers),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

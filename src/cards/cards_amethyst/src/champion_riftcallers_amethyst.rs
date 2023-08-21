@@ -20,13 +20,13 @@ use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::{mana, mutations};
 
-pub fn radiant_sigil() -> CardDefinition {
+pub fn ennera_imris() -> CardDefinition {
     CardDefinition {
-        name: CardName::RadiantSigil,
+        name: CardName::EnneraImrisBloodBound,
         sets: vec![CardSetName::Amethyst],
-        cost: sigil_cost(),
+        cost: riftcaller_cost(),
         image: rexard_images::spell(8, "SpellBook08_09"),
-        card_type: CardType::Sigil,
+        card_type: CardType::Riftcaller,
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Exalted,
@@ -44,13 +44,13 @@ pub fn radiant_sigil() -> CardDefinition {
     }
 }
 
-pub fn restoration_sigil() -> CardDefinition {
+pub fn aris_fey() -> CardDefinition {
     CardDefinition {
-        name: CardName::RestorationSigil,
+        name: CardName::ArisFeyTheRadiantSun,
         sets: vec![CardSetName::Amethyst],
-        cost: sigil_cost(),
+        cost: riftcaller_cost(),
         image: rexard_images::spell(8, "SpellBook08_73"),
-        card_type: CardType::Sigil,
+        card_type: CardType::Riftcaller,
         side: Side::Champion,
         school: School::Pact,
         rarity: Rarity::Exalted,
@@ -68,13 +68,13 @@ pub fn restoration_sigil() -> CardDefinition {
     }
 }
 
-pub fn forge_sigil() -> CardDefinition {
+pub fn telantes_dugoth() -> CardDefinition {
     CardDefinition {
-        name: CardName::ForgeSigil,
+        name: CardName::TelantesDugothEarthbreaker,
         sets: vec![CardSetName::Amethyst],
-        cost: sigil_cost(),
+        cost: riftcaller_cost(),
         image: rexard_images::spell(8, "SpellBook08_76"),
-        card_type: CardType::Sigil,
+        card_type: CardType::Riftcaller,
         side: Side::Champion,
         school: School::Primal,
         rarity: Rarity::Exalted,
@@ -89,13 +89,13 @@ pub fn forge_sigil() -> CardDefinition {
     }
 }
 
-pub fn andvari_est_nights_warden() -> CardDefinition {
+pub fn andvari_est() -> CardDefinition {
     CardDefinition {
-        name: CardName::CrabSigil,
+        name: CardName::AndvariEstNightsWarden,
         sets: vec![CardSetName::Amethyst],
-        cost: sigil_cost(),
+        cost: riftcaller_cost(),
         image: rexard_images::spell(8, "SpellBook08_119"),
-        card_type: CardType::Sigil,
+        card_type: CardType::Riftcaller,
         side: Side::Champion,
         school: School::Shadow,
         rarity: Rarity::Exalted,

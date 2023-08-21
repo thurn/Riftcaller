@@ -119,21 +119,25 @@ impl TestGame {
             Side::Champion => (opponent_id, user_id),
         };
 
-        let (overlord_sigils, champion_sigils) = match self.user_side.side {
-            Side::Overlord => (self.user_side.sigils.clone(), self.opponent_side.sigils.clone()),
-            Side::Champion => (self.opponent_side.sigils.clone(), self.user_side.sigils.clone()),
+        let (overlord_riftcallers, champion_riftcallers) = match self.user_side.side {
+            Side::Overlord => {
+                (self.user_side.riftcallers.clone(), self.opponent_side.riftcallers.clone())
+            }
+            Side::Champion => {
+                (self.opponent_side.riftcallers.clone(), self.user_side.riftcallers.clone())
+            }
         };
 
         let overlord_deck = Deck {
             side: Side::Overlord,
             schools: vec![],
-            sigils: overlord_sigils,
+            riftcallers: overlord_riftcallers,
             cards: hashmap! {CardName::TestOverlordSpell => 45},
         };
         let champion_deck = Deck {
             side: Side::Champion,
             schools: vec![],
-            sigils: champion_sigils,
+            riftcallers: champion_riftcallers,
             cards: hashmap! {CardName::TestChampionSpell => 45},
         };
 
@@ -200,7 +204,7 @@ pub struct TestSide {
     deck_top: Vec<CardName>,
     in_discard_face_down: Vec<CardName>,
     in_discard_face_up: Vec<CardName>,
-    sigils: Vec<CardName>,
+    riftcallers: Vec<CardName>,
 }
 
 impl TestSide {
@@ -213,7 +217,7 @@ impl TestSide {
             deck_top: vec![],
             in_discard_face_down: vec![],
             in_discard_face_up: vec![],
-            sigils: vec![],
+            riftcallers: vec![],
         }
     }
 
@@ -251,9 +255,9 @@ impl TestSide {
         self
     }
 
-    /// Sigils which start in play for this player.
-    pub fn sigil(mut self, card: CardName) -> Self {
-        self.sigils.push(card);
+    /// Riftcallers which start in play for this player.
+    pub fn riftcaller(mut self, card: CardName) -> Self {
+        self.riftcallers.push(card);
         self
     }
 

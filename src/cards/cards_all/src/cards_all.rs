@@ -8,10 +8,10 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::mage_gloves);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::magical_resonator);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::dark_grimoire);
-    DEFINITIONS.insert(cards_amethyst::champion_sigils_amethyst::radiant_sigil);
-    DEFINITIONS.insert(cards_amethyst::champion_sigils_amethyst::restoration_sigil);
-    DEFINITIONS.insert(cards_amethyst::champion_sigils_amethyst::forge_sigil);
-    DEFINITIONS.insert(cards_amethyst::champion_sigils_amethyst::andvari_est_nights_warden);
+    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::andvari_est);
+    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::aris_fey);
+    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::ennera_imris);
+    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::telantes_dugoth);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::meditation);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::coup_de_grace);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::charged_strike);
@@ -23,7 +23,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::sphinx_of_winters_breath);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::bridge_troll);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::stormcaller);
-    DEFINITIONS.insert(cards_amethyst::overlord_sigils_amethyst::arcane_sigil);
+    DEFINITIONS.insert(cards_amethyst::overlord_riftcallers_amethyst::ubras_efaris_time_shaper);
     DEFINITIONS.insert(cards_amethyst::overlord_spells_amethyst::overwhelming_power);
     DEFINITIONS.insert(cards_amethyst::overlord_spells_amethyst::forced_march);
     DEFINITIONS.insert(cards_amethyst::projects_amethyst::gemcarver);

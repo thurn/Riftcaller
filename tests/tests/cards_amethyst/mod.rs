@@ -13,7 +13,7 @@
 // limitations under the License.
 
 mod artifacts_amethyst_tests;
-mod champion_sigils_amethyst_tests;
+mod champion_riftcallers_amethyst_tests;
 mod champion_spells_amethyst_tests;
 mod minions_amethyst_tests;
 mod overlord_spells_amethyst_tests;

@@ -447,7 +447,7 @@ pub enum Rarity {
 /// Possible types of cards
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum CardType {
-    Sigil,
+    Riftcaller,
     GameModifier,
     ChampionSpell,
     Weapon,

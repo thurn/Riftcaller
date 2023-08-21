@@ -108,11 +108,11 @@ pub enum CardName {
     SphinxOfWintersBreath,
     BridgeTroll,
     Stormcaller,
-    RadiantSigil,
-    RestorationSigil,
-    ForgeSigil,
-    CrabSigil,
-    ArcaneSigil,
+    EnneraImrisBloodBound,
+    ArisFeyTheRadiantSun,
+    TelantesDugothEarthbreaker,
+    AndvariEstNightsWarden,
+    UbrasEfarisTimeShaper,
 
     // Modifier card which has no effect
     OverlordEmptyModifier,

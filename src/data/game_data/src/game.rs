@@ -622,10 +622,10 @@ impl GameState {
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
         let mut result = vec![];
 
-        for (i, sigil) in deck.sigils.iter().enumerate() {
-            // Put all sigil cards into play face up
-            let mut card = CardState::new(CardId::new(side, i), *sigil);
-            card.set_position_internal(i as u32, CardPosition::Sigil(side));
+        for (i, riftcaller) in deck.riftcallers.iter().enumerate() {
+            // Put all riftcaller cards into play face up
+            let mut card = CardState::new(CardId::new(side, i), *riftcaller);
+            card.set_position_internal(i as u32, CardPosition::Riftcaller(side));
             card.turn_face_up();
             result.push(card);
         }
@@ -704,14 +704,14 @@ mod tests {
             Deck {
                 side: Side::Overlord,
                 schools: vec![School::Law],
-                sigils: vec![],
+                riftcallers: vec![],
                 cards: overlord.into_iter().map(|name| (name, 1)).collect(),
             },
             PlayerId::AI(AIPlayer::NoAction),
             Deck {
                 side: Side::Champion,
                 schools: vec![School::Law],
-                sigils: vec![],
+                riftcallers: vec![],
                 cards: champion.into_iter().map(|name| (name, 1)).collect(),
             },
             GameConfiguration { deterministic: true, ..GameConfiguration::default() },

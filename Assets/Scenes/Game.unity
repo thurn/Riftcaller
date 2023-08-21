@@ -8862,7 +8862,7 @@ GameObject:
   - component: {fileID: 1514898871}
   - component: {fileID: 1514898872}
   m_Layer: 0
-  m_Name: UserSigilDisplay
+  m_Name: UserRiftcallerDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9247,7 +9247,7 @@ GameObject:
   - component: {fileID: 1586361739}
   - component: {fileID: 1586361741}
   m_Layer: 0
-  m_Name: OpponentSigilDisplay
+  m_Name: OpponentRiftcallerDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11426,6 +11426,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 670489383}
     - target: {fileID: 205228965686964167, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
+      propertyPath: _userRiftcallerDisplay
+      value: 
+      objectReference: {fileID: 1514898871}
+    - target: {fileID: 205228965686964167, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
       propertyPath: _userLeaderCardPosition
       value: 
       objectReference: {fileID: 670489383}
@@ -11441,6 +11445,10 @@ PrefabInstance:
       propertyPath: _opponentCharacterPosition
       value: 
       objectReference: {fileID: 297690460}
+    - target: {fileID: 205228965686964167, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
+      propertyPath: _opponentRiftcallerDisplay
+      value: 
+      objectReference: {fileID: 1586361739}
     - target: {fileID: 205228965686964167, guid: 69b97eb5efcfe424d9eb614525af1bbf, type: 3}
       propertyPath: _revealedCardsBrowserLarge
       value: 
