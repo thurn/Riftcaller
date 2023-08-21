@@ -974,7 +974,11 @@ message ScoreView {
 }
 
 message ActionTrackerView {
+    // Number of actions this player currently has available.
     uint32 available_action_count = 1;
+
+    // Default number of actions this player gets for their turn.
+    uint32 default_action_count = 2;
 }
 
 message DeckView {

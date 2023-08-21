@@ -172,11 +172,12 @@ pub fn cost_to_defeat_target(
 /// Look up the number of action points a player receives at the start of their
 /// turn
 pub fn start_of_turn_action_count(game: &GameState, side: Side) -> ActionCount {
-    dispatch::perform_query(
-        game,
-        StartOfTurnActionsQuery(side),
-        game_constants::START_OF_TURN_ACTIONS,
-    )
+    let default = match side {
+        Side::Overlord => game_constants::OVERLORD_START_OF_TURN_ACTIONS,
+        Side::Champion => game_constants::CHAMPION_START_OF_TURN_ACTIONS,
+    };
+
+    dispatch::perform_query(game, StartOfTurnActionsQuery(side), default)
 }
 
 /// Look up the number of cards the Champion player can access from the Vault

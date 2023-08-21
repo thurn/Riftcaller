@@ -38,7 +38,12 @@ pub fn standard_panels() -> Vec<StandardPanel> {
 
 /// Enumerates all player panel addresses
 pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
-    let panels = vec![PlayerPanel::DeckEditorPrompt, PlayerPanel::AdventureOver];
+    let panels = vec![
+        PlayerPanel::DeckEditorPrompt,
+        PlayerPanel::AdventureOver,
+        PlayerPanel::BattleVictory,
+        PlayerPanel::BattleDefeat,
+    ];
     if let Some(adventure) = &player.adventure {
         panels
             .into_iter()
@@ -46,7 +51,6 @@ pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
                 state.entity.as_ref().map(|_| PlayerPanel::AdventureTile(*position))
             }))
             .chain(add_deck_editor_panels(adventure))
-            .chain(vec![PlayerPanel::BattleVictory, PlayerPanel::BattleDefeat])
             .collect()
     } else {
         panels

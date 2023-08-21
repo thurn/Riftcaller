@@ -16,6 +16,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
+use constants::game_constants;
 use game_data::card_state::{CardPositionKind, CardState};
 use game_data::card_view_context::CardViewContext;
 use game_data::character_preset::CharacterPreset;
@@ -95,6 +96,10 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
         }),
         action_tracker: Some(ActionTrackerView {
             available_action_count: game.player(side).actions,
+            default_action_count: match side {
+                Side::Overlord => game_constants::OVERLORD_START_OF_TURN_ACTIONS,
+                Side::Champion => game_constants::CHAMPION_START_OF_TURN_ACTIONS,
+            },
         }),
         deck_view: Some(DeckView {
             card_back: Some(assets::card_back(

@@ -479,7 +479,11 @@ fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber) ->
         dispatch::invoke_event(game, DawnEvent(turn_number))?;
     }
     game.player_mut(next_side).actions = queries::start_of_turn_action_count(game, next_side);
-    draw_cards(game, next_side, 1)?;
+
+    if next_side == Side::Overlord {
+        draw_cards(game, next_side, 1)?;
+    }
+
     Ok(())
 }
 

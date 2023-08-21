@@ -888,6 +888,7 @@ dependencies = [
  "adapters",
  "anyhow",
  "assets",
+ "constants",
  "core_ui",
  "enum-iterator",
  "game_data",
