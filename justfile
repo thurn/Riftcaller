@@ -158,7 +158,7 @@ record: finish-screenshots
     mkdir -p ScreenshotTests
     cp "{{screenshot_path}}"/*.png ScreenshotTests/
 
-plugin_out := "Assets/Plugins"
+plugin_out := "Assets/Plugins/MacOS"
 target_arm := "aarch64-apple-darwin"
 target_x86 := "x86_64-apple-darwin"
 
