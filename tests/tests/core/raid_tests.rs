@@ -40,7 +40,7 @@ fn initiate_raid() {
 
     g.click(Buttons::Summon);
 
-    assert_eq!(2, g.me().actions());
+    assert_eq!(3, g.me().actions());
 
     assert!(g.user.this_player.can_take_action());
     assert!(!g.user.other_player.can_take_action());
@@ -299,6 +299,8 @@ fn complete_raid() {
     // Set up the raid to be the last action of a turn
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.perform(Action::SpendActionPoint(SpendActionPointAction {}), g.user_id());
+    g.perform(Action::SpendActionPoint(SpendActionPointAction {}), g.user_id());
+
     g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
 
@@ -561,16 +563,11 @@ fn raid_two_defenders_full_raid() {
 fn raid_deal_damage_game_over() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
 
-    // Two 'deal 1 damage' defenders are needed because the Champion draws a card
-    // for turn
-    g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
     g.spend_actions_until_turn_over(Side::Overlord);
     assert!(g.dawn());
 
     g.initiate_raid(RoomId::Vault);
-    g.click(Buttons::Summon);
-    g.click_on(g.opponent_id(), "Continue");
     g.click(Buttons::Summon);
     g.click_on(g.opponent_id(), "Continue");
 
@@ -607,6 +604,9 @@ fn raid_add_defender() {
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestScheme3_15);
     assert!(g.dawn());
+
+    // Skip one action point.
+    g.spend_action_point(Side::Champion);
 
     // Raid 1
     g.initiate_raid(test_constants::ROOM_ID);

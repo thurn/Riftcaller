@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/raid_tests.rs
-assertion_line: 267
+assertion_line: 331
 expression: "Summary::summarize(&response)"
 ---
 
@@ -89,25 +89,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -167,13 +148,13 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O9
+        card_id: O10
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: O10
+        card_id: O24
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
@@ -219,25 +200,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -296,13 +258,13 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O9
+        card_id: O10
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
-        card_id: O10
+        card_id: O24
         revealed_to_viewer: false
         is_face_up: false
         card_icons: 
@@ -348,25 +310,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -485,12 +428,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -550,25 +487,6 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O9
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: O10
         revealed_to_viewer: true
         is_face_up: false
@@ -585,6 +503,25 @@ channel_response:
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
+            on_release_position: 
+                sorting_key: 101
+                position: ObjectPositionStaging
+        card_id: O24
+        revealed_to_viewer: true
+        is_face_up: false
+        card_icons: 
+            top_left_icon: "1"
+        arena_frame: "<SpriteAddress>"
+        owning_player: User
+        revealed_card: 
+            card_frame: "<SpriteAddress>"
+            title_background: "<SpriteAddress>"
+            jewel: "<SpriteAddress>"
+            image: "<SpriteAddress>"
+            title: "Test Overlord Spell"
+            rules_text: "<RulesText>"
+            targeting: 
+                can_play: false
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
@@ -628,12 +565,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -655,7 +586,7 @@ channel_response:
                 sorting_key: 101
                 position: ObjectPositionItem { item_location: Left }
     MoveGameObjects: 
-        id: O9
+        id: O24
         position: 
             sorting_key: 1
             position: ObjectPositionRevealedCards { size: Small }
@@ -697,7 +628,7 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: O9
+        card_id: O10
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -716,7 +647,7 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionStaging
-        card_id: O10
+        card_id: O24
         revealed_to_viewer: true
         is_face_up: false
         card_icons: 
@@ -775,12 +706,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true

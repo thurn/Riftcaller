@@ -310,8 +310,8 @@ fn switch_turn() {
     assert_eq!(8, g.opponent.other_player.mana());
     assert_eq!(0, g.me().actions());
     assert_eq!(0, g.opponent.other_player.actions());
-    assert_eq!(3, g.user.other_player.actions());
-    assert_eq!(3, g.opponent.this_player.actions());
+    assert_eq!(4, g.user.other_player.actions());
+    assert_eq!(4, g.opponent.this_player.actions());
     assert!(!g.user.this_player.can_take_action());
     assert!(g.user.other_player.can_take_action());
     assert!(g.opponent.this_player.can_take_action());

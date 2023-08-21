@@ -65,9 +65,9 @@ fn spike_trap() {
     g.create_and_play(CardName::SpikeTrap);
     g.level_up_room_times(2);
     assert!(g.dawn());
-    assert_eq!(6, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(5, g.user.cards.hand(PlayerName::Opponent).len());
     g.initiate_raid(test_constants::ROOM_ID);
-    assert_eq!(2, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(1, g.user.cards.hand(PlayerName::Opponent).len());
 }
 
 #[test]
@@ -78,9 +78,9 @@ fn spike_trap_no_counters() {
     g.create_and_play(CardName::SpikeTrap);
     g.spend_actions_until_turn_over(Side::Overlord);
     assert!(g.dawn());
-    assert_eq!(6, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(5, g.user.cards.hand(PlayerName::Opponent).len());
     g.initiate_raid(test_constants::ROOM_ID);
-    assert_eq!(4, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(3, g.user.cards.hand(PlayerName::Opponent).len());
 }
 
 #[test]

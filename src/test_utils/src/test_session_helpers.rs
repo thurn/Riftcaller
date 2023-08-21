@@ -97,6 +97,9 @@ pub trait TestSessionHelpers {
     /// Activates an ability of a card with a target room
     fn activate_ability_with_target(&mut self, card_id: CardIdentifier, index: u32, target: RoomId);
 
+    /// Spends one of the `side` player's action points with no effect
+    fn spend_action_point(&mut self, side: Side);
+
     /// Spends the `side` player's action points with no effect until they have
     /// no action points remaining.
     fn spend_actions_until_turn_over(&mut self, side: Side);
@@ -117,8 +120,6 @@ pub trait TestSessionHelpers {
     /// - Ends the Overlord turn
     /// - Initiates a raid on the [test_constants::ROOM_ID] room
     /// - Summons the minion in the room
-    ///
-    /// NOTE: This causes the Champion player to draw a card for their turn!
     fn set_up_minion_combat(&mut self);
 
     /// Equivalent to [Self::set_up_minion_combat] which invokes an `action`
@@ -137,7 +138,7 @@ pub trait TestSessionHelpers {
     ///
     /// Returns a tuple of (scheme_id, minion_id).
     ///
-    /// WARNING: This causes both players to draw cards for their turns!
+    /// WARNING: This causes the Overlord player to draw for their turn.
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier);
 
     /// Must be invoked during the Champion turn. Performs the following
@@ -150,7 +151,7 @@ pub trait TestSessionHelpers {
     /// - Clicks on the button with text matching `name` in order to fire weapon
     ///   abilities.
     ///
-    /// WARNING: This causes both players to draw cards for their turns!
+    /// WARNING: This causes the Overlord play to draw for their turn.
     fn fire_weapon_combat_abilities(&mut self, lineage: Lineage, name: CardName);
 }
 
@@ -272,10 +273,15 @@ impl TestSessionHelpers for TestSession {
         activate_ability_impl(self, card_id, index, Some(target))
     }
 
+    fn spend_action_point(&mut self, side: Side) {
+        let id = self.player_id_for_side(side);
+        self.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
+    }
+
     fn spend_actions_until_turn_over(&mut self, side: Side) {
         let id = self.player_id_for_side(side);
         while self.player(id).this_player.actions() > 0 {
-            self.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
+            self.spend_action_point(side);
         }
     }
 

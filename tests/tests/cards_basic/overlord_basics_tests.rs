@@ -105,7 +105,9 @@ fn crab() {
 #[test]
 fn fire_goblin() {
     let (cost, gained) = (1, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Overlord))
+        .opponent(TestSide::new(Side::Champion).hand_size(1))
+        .build();
     g.create_and_play(CardName::FireGoblin);
     g.set_up_minion_combat();
     assert_eq!(test_constants::STARTING_MANA - cost, g.me().mana());
@@ -139,7 +141,7 @@ fn captain() {
     g.set_up_minion_combat();
     g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
-    assert_eq!(1, g.opponent.this_player.actions());
+    assert_eq!(2, g.opponent.this_player.actions());
 }
 
 #[test]
@@ -149,5 +151,5 @@ fn scout() {
     g.set_up_minion_combat();
     g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
-    assert_eq!(2, g.opponent.this_player.actions());
+    assert_eq!(3, g.opponent.this_player.actions());
 }

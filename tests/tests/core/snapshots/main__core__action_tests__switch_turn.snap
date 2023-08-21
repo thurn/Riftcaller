@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/action_tests.rs
-assertion_line: 293
+assertion_line: 307
 expression: "Summary::run(&response)"
 ---
 
@@ -58,7 +58,7 @@ command_list:
             player_info: 
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 999
-            action_tracker: 3
+            action_tracker: 4
             score: 0
             can_take_action: true
         raid_active: false
@@ -82,56 +82,6 @@ command_list:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C10
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
-    UpdateGameView: 
-        user: 
-            side: Overlord
-            player_info: 
-            valid_rooms_to_visit: 
-            mana: 8
-            action_tracker: 0
-            score: 0
-            can_take_action: false
-        opponent: 
-            side: Champion
-            player_info: 
-            valid_rooms_to_visit: VaultSanctumCrypts
-            mana: 999
-            action_tracker: 3
-            score: 0
-            can_take_action: true
-        raid_active: false
-        game_object_positions: 
-            user_deck: 
-                sorting_key: 1
-                position: ObjectPositionDeckContainer { owner: User }
-            opponent_deck: 
-                sorting_key: 1
-                position: ObjectPositionDeckContainer { owner: Opponent }
-            user_character: 
-                sorting_key: 1
-                position: ObjectPositionCharacterContainer { owner: User }
-            opponent_character: 
-                sorting_key: 1
-                position: ObjectPositionCharacterContainer { owner: Opponent }
-            user_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: User }
-            opponent_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: Opponent }
-    cards: 
-        card_id: C10
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
 channel_response: 
     UpdateGameView: 
         user: 
@@ -178,7 +128,7 @@ channel_response:
             player_info: 
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 999
-            action_tracker: 3
+            action_tracker: 4
             score: 0
             can_take_action: true
         opponent: 
@@ -210,84 +160,3 @@ channel_response:
                 sorting_key: 1
                 position: ObjectPositionDiscardPileContainer { owner: Opponent }
     cards: 
-        card_id: C10
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
-    MoveGameObjects: 
-        id: C10
-        position: 
-            sorting_key: 1
-            position: ObjectPositionRevealedCards { size: Small }
-    UpdateGameView: 
-        user: 
-            side: Champion
-            player_info: 
-            valid_rooms_to_visit: VaultSanctumCrypts
-            mana: 999
-            action_tracker: 3
-            score: 0
-            can_take_action: true
-        opponent: 
-            side: Overlord
-            player_info: 
-            valid_rooms_to_visit: 
-            mana: 8
-            action_tracker: 0
-            score: 0
-            can_take_action: false
-        raid_active: false
-        game_object_positions: 
-            user_deck: 
-                sorting_key: 1
-                position: ObjectPositionDeckContainer { owner: User }
-            opponent_deck: 
-                sorting_key: 1
-                position: ObjectPositionDeckContainer { owner: Opponent }
-            user_character: 
-                sorting_key: 1
-                position: ObjectPositionCharacterContainer { owner: User }
-            opponent_character: 
-                sorting_key: 1
-                position: ObjectPositionCharacterContainer { owner: Opponent }
-            user_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: User }
-            opponent_discard: 
-                sorting_key: 1
-                position: ObjectPositionDiscardPileContainer { owner: Opponent }
-    cards: 
-        card_id: C10
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: true
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging

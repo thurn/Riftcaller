@@ -26,14 +26,15 @@ fn ennera_imris_blood_bound() {
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     g.spend_actions_until_turn_over(Side::Champion);
     g.spend_actions_until_turn_over(Side::Overlord);
-    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(test_constants::STARTING_MANA + gained, g.me().mana());
 }
 
 #[test]
 fn aris_fey_the_radiant_sun() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).sigil(CardName::RestorationSigil)).build();
+        TestGame::new(TestSide::new(Side::Champion).hand_size(1).sigil(CardName::RestorationSigil))
+            .build();
 
     g.spend_actions_until_turn_over(Side::Champion);
     g.create_and_play(CardName::TestMinionDealDamage);

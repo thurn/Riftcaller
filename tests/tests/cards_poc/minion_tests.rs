@@ -31,7 +31,7 @@ fn test_minion_deal_damage_end_raid() {
     g.click(Buttons::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
-    assert_eq!(5, g.user.cards.hand(PlayerName::Opponent).len()); // Card is drawn for turn!
+    assert_eq!(4, g.user.cards.hand(PlayerName::Opponent).len());
 }
 
 #[test]
@@ -67,11 +67,10 @@ fn time_golem_pay_actions() {
     g.create_and_play(CardName::TimeGolem);
     g.set_up_minion_combat();
     g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
-    assert_eq!(0, g.opponent.this_player.actions());
+    assert_eq!(1, g.opponent.this_player.actions());
     g.click(Buttons::NoWeapon);
     g.click(Buttons::Score);
     g.click(Buttons::EndRaid);
-    assert!(g.dusk());
 }
 
 #[test]
@@ -80,7 +79,7 @@ fn time_golem_end_raid() {
     g.create_and_play(CardName::TimeGolem);
     g.set_up_minion_combat();
     g.click_on(g.opponent_id(), "End Raid");
-    assert_eq!(2, g.opponent.this_player.actions());
+    assert_eq!(3, g.opponent.this_player.actions());
     assert!(!g.user.data.raid_active());
 }
 
@@ -98,7 +97,7 @@ fn temporal_stalker_end_raid() {
         g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front)
     );
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
-    assert_eq!(2, g.opponent.this_player.actions());
+    assert_eq!(3, g.opponent.this_player.actions());
 }
 
 #[test]
@@ -108,7 +107,7 @@ fn temporal_stalker_pay_actions() {
     g.create_and_play(CardName::TemporalStalker);
     g.set_up_minion_combat();
     g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
-    assert_eq!(0, g.opponent.this_player.actions());
+    assert_eq!(1, g.opponent.this_player.actions());
     assert!(g.user.data.raid_active());
     assert_eq!(
         vec!["Test Minion End Raid", "Test Scheme 3_15"],

@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/raid_tests.rs
-assertion_line: 230
+assertion_line: 291
 expression: "Summary::summarize(&response)"
 ---
 
@@ -11,7 +11,7 @@ command_list:
             player_info: 
             valid_rooms_to_visit: 
             mana: 995
-            action_tracker: 2
+            action_tracker: 3
             score: 0
             can_take_action: true
         opponent: 
@@ -89,25 +89,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -149,7 +130,7 @@ command_list:
             player_info: 
             valid_rooms_to_visit: 
             mana: 995
-            action_tracker: 2
+            action_tracker: 3
             score: 15
             can_take_action: true
         opponent: 
@@ -231,25 +212,6 @@ command_list:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: true
-        is_face_up: false
-        card_icons: 
-            top_left_icon: "1"
-        arena_frame: "<SpriteAddress>"
-        owning_player: User
-        revealed_card: 
-            card_frame: "<SpriteAddress>"
-            title_background: "<SpriteAddress>"
-            jewel: "<SpriteAddress>"
-            image: "<SpriteAddress>"
-            title: "Test Champion Spell"
-            rules_text: "<RulesText>"
-            targeting: 
-                can_play: false
-            on_release_position: 
-                sorting_key: 101
-                position: ObjectPositionStaging
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -285,7 +247,7 @@ channel_response:
             player_info: 
             valid_rooms_to_visit: 
             mana: 995
-            action_tracker: 2
+            action_tracker: 3
             score: 0
             can_take_action: true
         raid_active: true
@@ -368,12 +330,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
@@ -423,7 +379,7 @@ channel_response:
             player_info: 
             valid_rooms_to_visit: 
             mana: 995
-            action_tracker: 2
+            action_tracker: 3
             score: 15
             can_take_action: true
         raid_active: true
@@ -506,12 +462,6 @@ channel_response:
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Back }
-        card_id: C23
-        revealed_to_viewer: false
-        is_face_up: false
-        card_icons: 
-        arena_frame: "<SpriteAddress>"
-        owning_player: Opponent
         card_id: C44
         revealed_to_viewer: true
         is_face_up: true
