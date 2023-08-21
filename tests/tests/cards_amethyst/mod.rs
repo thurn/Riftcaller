@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod artifact_tests;
-mod champion_sigil_tests;
-mod champion_spell_tests;
-mod minion_tests;
-mod overlord_spell_tests;
-mod projects_poc_tests;
-mod scheme_tests;
-mod weapon_tests;
+mod artifacts_amethyst_tests;
+mod champion_sigils_amethyst_tests;
+mod champion_spells_amethyst_tests;
+mod minions_amethyst_tests;
+mod overlord_spells_amethyst_tests;
+mod projects_amethyst_tests;
+mod schemes_amethyst_tests;
+mod weapons_amethyst_tests;

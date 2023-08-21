@@ -14,7 +14,7 @@
 
 mod adventure;
 mod ai;
+mod cards_amethyst;
 mod cards_basic;
-mod cards_poc;
 mod core;
 mod rules_text;
