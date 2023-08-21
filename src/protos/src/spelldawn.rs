@@ -213,9 +213,7 @@ pub struct FlexStyle {
     #[prost(message, optional, tag = "4")]
     pub background_color: ::core::option::Option<FlexColor>,
     #[prost(message, optional, boxed, tag = "5")]
-    pub background_image: ::core::option::Option<
-        ::prost::alloc::boxed::Box<NodeBackground>,
-    >,
+    pub background_image: ::core::option::Option<::prost::alloc::boxed::Box<NodeBackground>>,
     #[prost(message, optional, tag = "6")]
     pub border_color: ::core::option::Option<BorderColor>,
     #[prost(message, optional, tag = "7")]
@@ -346,9 +344,7 @@ pub struct ScrollViewNode {
     pub horizontal_page_size: ::core::option::Option<f32>,
     /// Horizontal scrollbar
     #[prost(message, optional, boxed, tag = "3")]
-    pub horizontal_scroll_bar: ::core::option::Option<
-        ::prost::alloc::boxed::Box<ScrollBar>,
-    >,
+    pub horizontal_scroll_bar: ::core::option::Option<::prost::alloc::boxed::Box<ScrollBar>>,
     /// Specifies whether the horizontal scroll bar is visible.
     #[prost(enumeration = "ScrollBarVisibility", tag = "4")]
     pub horizontal_scroll_bar_visibility: i32,
@@ -365,9 +361,7 @@ pub struct ScrollViewNode {
     pub vertical_page_size: ::core::option::Option<f32>,
     /// Vertical scrollbar
     #[prost(message, optional, boxed, tag = "8")]
-    pub vertical_scroll_bar: ::core::option::Option<
-        ::prost::alloc::boxed::Box<ScrollBar>,
-    >,
+    pub vertical_scroll_bar: ::core::option::Option<::prost::alloc::boxed::Box<ScrollBar>>,
     /// Specifies whether the vertical scroll bar is visible.
     #[prost(enumeration = "ScrollBarVisibility", tag = "9")]
     pub vertical_scroll_bar_visibility: i32,
@@ -378,9 +372,7 @@ pub struct DraggableNode {
     /// Identifiers of DropTargetNodes that are valid drop targets for this
     /// draggable.
     #[prost(string, repeated, tag = "1")]
-    pub drop_target_identifiers: ::prost::alloc::vec::Vec<
-        ::prost::alloc::string::String,
-    >,
+    pub drop_target_identifiers: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     /// Node to change the drag indicator to when this draggable is over a
     /// valid target.
     #[prost(message, optional, boxed, tag = "2")]
@@ -401,11 +393,9 @@ pub struct DraggableNode {
     /// Identifiers of children of this Draggable which should be hidden in the
     /// drag indicator element.
     #[prost(string, repeated, tag = "6")]
-    pub hide_indicator_children: ::prost::alloc::vec::Vec<
-        ::prost::alloc::string::String,
-    >,
-    /// Optionally, a UI element to use for the drag indicator instead of cloning
-    /// this element directly.
+    pub hide_indicator_children: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// Optionally, a UI element to use for the drag indicator instead of
+    /// cloning this element directly.
     #[prost(message, optional, boxed, tag = "7")]
     pub custom_drag_indicator: ::core::option::Option<::prost::alloc::boxed::Box<Node>>,
     /// Action to invoke when a gesture has been confirmed as a drag, i.e. the
@@ -419,8 +409,8 @@ pub struct DropTargetNode {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TextFieldNode {
-    /// Globally unique identifier for this text field, used to avoid overwriting
-    /// user input. Cannot be the empty string.
+    /// Globally unique identifier for this text field, used to avoid
+    /// overwriting user input. Cannot be the empty string.
     ///
     /// An initial value will only be set once on the TextField for a given
     /// identifier.
@@ -491,17 +481,13 @@ pub struct SliderNode {
     #[prost(message, optional, boxed, tag = "10")]
     pub label_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
     #[prost(message, optional, boxed, tag = "11")]
-    pub drag_container_style: ::core::option::Option<
-        ::prost::alloc::boxed::Box<FlexStyle>,
-    >,
+    pub drag_container_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
     #[prost(message, optional, boxed, tag = "12")]
     pub tracker_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
     #[prost(message, optional, boxed, tag = "13")]
     pub dragger_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
     #[prost(message, optional, boxed, tag = "14")]
-    pub dragger_border_style: ::core::option::Option<
-        ::prost::alloc::boxed::Box<FlexStyle>,
-    >,
+    pub dragger_border_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -892,7 +878,8 @@ pub struct CardView {
     /// Image shown as the back of this card
     #[prost(message, optional, tag = "4")]
     pub card_back: ::core::option::Option<SpriteAddress>,
-    /// Whether the viewer (current player) is able to see the front of this card.
+    /// Whether the viewer (current player) is able to see the front of this
+    /// card.
     #[prost(bool, tag = "5")]
     pub revealed_to_viewer: bool,
     /// Whether the card is in the 'face up' state in the arena. Has no effect
@@ -912,9 +899,7 @@ pub struct CardView {
     pub owning_player: i32,
     /// Card information which is only present on revealed cards.
     #[prost(message, optional, boxed, tag = "11")]
-    pub revealed_card: ::core::option::Option<
-        ::prost::alloc::boxed::Box<RevealedCardView>,
-    >,
+    pub revealed_card: ::core::option::Option<::prost::alloc::boxed::Box<RevealedCardView>>,
     /// Optionally, a position at which to create this card.
     ///
     /// If this card does not already exist, it will be created at this position
@@ -1103,9 +1088,7 @@ pub struct ShowToast {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TutorialEffect {
     #[prost(oneof = "tutorial_effect::TutorialEffectType", tags = "1, 2")]
-    pub tutorial_effect_type: ::core::option::Option<
-        tutorial_effect::TutorialEffectType,
-    >,
+    pub tutorial_effect_type: ::core::option::Option<tutorial_effect::TutorialEffectType>,
 }
 /// Nested message and enum types in `TutorialEffect`.
 pub mod tutorial_effect {
@@ -1209,10 +1192,8 @@ pub struct StandardAction {
     /// By convention, field names should be mapped to the empty string when
     /// initially returned from the server.
     #[prost(map = "string, string", tag = "3")]
-    pub request_fields: ::std::collections::HashMap<
-        ::prost::alloc::string::String,
-        ::prost::alloc::string::String,
-    >,
+    pub request_fields:
+        ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
 /// Spend an action to gain 1 mana.
 /// Optimistic: Mana is added immediately.
@@ -1536,9 +1517,9 @@ pub struct VisitRoomCommand {
 /// Creates a new token card.
 ///
 /// This command is typically used to create short-lived 'token' cards to
-/// represent things like abilities firing, but this isn't specifically required.
-/// If a matching CardIdentifier already exists, that card will be updated
-/// instead.
+/// represent things like abilities firing, but this isn't specifically
+/// required. If a matching CardIdentifier already exists, that card will be
+/// updated instead.
 ///
 /// Note that the created card will always be deleted by the next
 /// UpdateGameViewCommand if its ID is not present in that update.
@@ -1729,7 +1710,7 @@ pub mod client_debug_command {
 /// Right" convention, with values increasing moving up and right.
 ///
 /// ```text
-///
+/// 
 ///        /  \    / \
 ///      /     \ /     \
 ///     |  0,2  |  1,2  |
@@ -1744,7 +1725,6 @@ pub mod client_debug_command {
 ///     |       |       |
 ///      \     / \     /
 ///        \ /     \ /
-///
 /// ```
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1872,9 +1852,9 @@ pub struct AnimateToPosition {
     pub disable_width_half_offset: bool,
 }
 /// Creates a cloned invisible 'target' element at a given child index position
-/// of a parent element. The target starts at 1x1 size and animates its width and
-/// height to match the size of the source element. After reaching full size, it
-/// becomes visible.
+/// of a parent element. The target starts at 1x1 size and animates its width
+/// and height to match the size of the source element. After reaching full
+/// size, it becomes visible.
 ///
 /// The target can be retrieved via the 'target' element selector using the
 /// provided target_name. These element names only need to be unique among
@@ -2112,7 +2092,8 @@ impl FlexAlign {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexAlign::Unspecified => "FLEX_ALIGN_UNSPECIFIED",
@@ -2123,6 +2104,7 @@ impl FlexAlign {
             FlexAlign::Stretch => "FLEX_ALIGN_STRETCH",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2147,7 +2129,8 @@ impl FlexDisplayStyle {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexDisplayStyle::Unspecified => "FLEX_DISPLAY_STYLE_UNSPECIFIED",
@@ -2155,6 +2138,7 @@ impl FlexDisplayStyle {
             FlexDisplayStyle::None => "FLEX_DISPLAY_STYLE_NONE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2178,7 +2162,8 @@ impl FlexDirection {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexDirection::Unspecified => "FLEX_DIRECTION_UNSPECIFIED",
@@ -2188,6 +2173,7 @@ impl FlexDirection {
             FlexDirection::RowReverse => "FLEX_DIRECTION_ROW_REVERSE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2212,7 +2198,8 @@ impl FlexWrap {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexWrap::Unspecified => "FLEX_WRAP_UNSPECIFIED",
@@ -2221,6 +2208,7 @@ impl FlexWrap {
             FlexWrap::WrapReverse => "FLEX_WRAP_WRAP_REVERSE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2246,7 +2234,8 @@ impl FlexJustify {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexJustify::Unspecified => "FLEX_JUSTIFY_UNSPECIFIED",
@@ -2257,6 +2246,7 @@ impl FlexJustify {
             FlexJustify::SpaceAround => "FLEX_JUSTIFY_SPACE_AROUND",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2281,7 +2271,8 @@ impl FlexOverflow {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexOverflow::Unspecified => "FLEX_OVERFLOW_UNSPECIFIED",
@@ -2289,6 +2280,7 @@ impl FlexOverflow {
             FlexOverflow::Hidden => "FLEX_OVERFLOW_HIDDEN",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2310,7 +2302,8 @@ impl FlexPosition {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexPosition::Unspecified => "FLEX_POSITION_UNSPECIFIED",
@@ -2318,6 +2311,7 @@ impl FlexPosition {
             FlexPosition::Absolute => "FLEX_POSITION_ABSOLUTE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2339,7 +2333,8 @@ impl TextOverflow {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             TextOverflow::Unspecified => "TEXT_OVERFLOW_UNSPECIFIED",
@@ -2347,6 +2342,7 @@ impl TextOverflow {
             TextOverflow::Ellipsis => "TEXT_OVERFLOW_ELLIPSIS",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2389,7 +2385,8 @@ impl EasingMode {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             EasingMode::Unspecified => "EASING_MODE_UNSPECIFIED",
@@ -2418,6 +2415,7 @@ impl EasingMode {
             EasingMode::EaseInOutBounce => "EASING_MODE_EASE_IN_OUT_BOUNCE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2461,7 +2459,8 @@ impl ImageScaleMode {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             ImageScaleMode::Unspecified => "IMAGE_SCALE_MODE_UNSPECIFIED",
@@ -2470,6 +2469,7 @@ impl ImageScaleMode {
             ImageScaleMode::ScaleToFit => "IMAGE_SCALE_MODE_SCALE_TO_FIT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2494,7 +2494,8 @@ impl FontStyle {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FontStyle::Unspecified => "FONT_STYLE_UNSPECIFIED",
@@ -2504,6 +2505,7 @@ impl FontStyle {
             FontStyle::BoldAndItalic => "FONT_STYLE_BOLD_AND_ITALIC",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2527,7 +2529,8 @@ impl OverflowClipBox {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             OverflowClipBox::Unspecified => "OVERFLOW_CLIP_BOX_UNSPECIFIED",
@@ -2535,6 +2538,7 @@ impl OverflowClipBox {
             OverflowClipBox::ContentBox => "OVERFLOW_CLIP_BOX_CONTENT_BOX",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2563,7 +2567,8 @@ impl TextAlign {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             TextAlign::Unspecified => "TEXT_ALIGN_UNSPECIFIED",
@@ -2578,6 +2583,7 @@ impl TextAlign {
             TextAlign::LowerRight => "TEXT_ALIGN_LOWER_RIGHT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2607,7 +2613,8 @@ impl TextOverflowPosition {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             TextOverflowPosition::Unspecified => "TEXT_OVERFLOW_POSITION_UNSPECIFIED",
@@ -2616,6 +2623,7 @@ impl TextOverflowPosition {
             TextOverflowPosition::Middle => "TEXT_OVERFLOW_POSITION_MIDDLE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2638,7 +2646,8 @@ impl FlexVisibility {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexVisibility::Unspecified => "FLEX_VISIBILITY_UNSPECIFIED",
@@ -2646,6 +2655,7 @@ impl FlexVisibility {
             FlexVisibility::Hidden => "FLEX_VISIBILITY_HIDDEN",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2667,7 +2677,8 @@ impl WhiteSpace {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             WhiteSpace::Unspecified => "WHITE_SPACE_UNSPECIFIED",
@@ -2675,6 +2686,7 @@ impl WhiteSpace {
             WhiteSpace::NoWrap => "WHITE_SPACE_NO_WRAP",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2711,7 +2723,8 @@ impl DimensionUnit {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             DimensionUnit::Unspecified => "DIMENSION_UNIT_UNSPECIFIED",
@@ -2725,6 +2738,7 @@ impl DimensionUnit {
             DimensionUnit::SafeAreaLeft => "DIMENSION_UNIT_SAFE_AREA_LEFT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2756,7 +2770,8 @@ impl FlexPickingMode {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             FlexPickingMode::Unspecified => "FLEX_PICKING_MODE_UNSPECIFIED",
@@ -2764,6 +2779,7 @@ impl FlexPickingMode {
             FlexPickingMode::Ignore => "FLEX_PICKING_MODE_IGNORE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2789,18 +2805,16 @@ impl BackgroundImageAutoSize {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            BackgroundImageAutoSize::Unspecified => {
-                "BACKGROUND_IMAGE_AUTO_SIZE_UNSPECIFIED"
-            }
+            BackgroundImageAutoSize::Unspecified => "BACKGROUND_IMAGE_AUTO_SIZE_UNSPECIFIED",
             BackgroundImageAutoSize::FromWidth => "BACKGROUND_IMAGE_AUTO_SIZE_FROM_WIDTH",
-            BackgroundImageAutoSize::FromHeight => {
-                "BACKGROUND_IMAGE_AUTO_SIZE_FROM_HEIGHT"
-            }
+            BackgroundImageAutoSize::FromHeight => "BACKGROUND_IMAGE_AUTO_SIZE_FROM_HEIGHT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2827,7 +2841,8 @@ impl ScrollBarVisibility {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             ScrollBarVisibility::Unspecified => "SCROLL_BAR_VISIBILITY_UNSPECIFIED",
@@ -2836,6 +2851,7 @@ impl ScrollBarVisibility {
             ScrollBarVisibility::Hidden => "SCROLL_BAR_VISIBILITY_HIDDEN",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2863,7 +2879,8 @@ impl TouchScrollBehavior {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             TouchScrollBehavior::Unspecified => "TOUCH_SCROLL_BEHAVIOR_UNSPECIFIED",
@@ -2872,6 +2889,7 @@ impl TouchScrollBehavior {
             TouchScrollBehavior::Clamped => "TOUCH_SCROLL_BEHAVIOR_CLAMPED",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2894,7 +2912,8 @@ impl SliderDirection {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             SliderDirection::Unspecified => "SLIDER_DIRECTION_UNSPECIFIED",
@@ -2902,6 +2921,7 @@ impl SliderDirection {
             SliderDirection::Vertical => "SLIDER_DIRECTION_VERTICAL",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2923,7 +2943,8 @@ impl PlayerSide {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             PlayerSide::Unspecified => "PLAYER_SIDE_UNSPECIFIED",
@@ -2931,6 +2952,7 @@ impl PlayerSide {
             PlayerSide::Champion => "PLAYER_SIDE_CHAMPION",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2952,7 +2974,8 @@ impl PlayerName {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             PlayerName::Unspecified => "PLAYER_NAME_UNSPECIFIED",
@@ -2960,6 +2983,7 @@ impl PlayerName {
             PlayerName::Opponent => "PLAYER_NAME_OPPONENT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -2987,7 +3011,8 @@ impl RoomIdentifier {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             RoomIdentifier::Unspecified => "ROOM_IDENTIFIER_UNSPECIFIED",
@@ -3001,6 +3026,7 @@ impl RoomIdentifier {
             RoomIdentifier::RoomE => "ROOM_IDENTIFIER_ROOM_E",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3029,7 +3055,8 @@ impl TargetingArrow {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             TargetingArrow::Unspecified => "TARGETING_ARROW_UNSPECIFIED",
@@ -3038,6 +3065,7 @@ impl TargetingArrow {
             TargetingArrow::Green => "TARGETING_ARROW_GREEN",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3060,7 +3088,8 @@ impl ClientRoomLocation {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             ClientRoomLocation::Unspecified => "CLIENT_ROOM_LOCATION_UNSPECIFIED",
@@ -3068,6 +3097,7 @@ impl ClientRoomLocation {
             ClientRoomLocation::Front => "CLIENT_ROOM_LOCATION_FRONT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3089,7 +3119,8 @@ impl ClientItemLocation {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             ClientItemLocation::Unspecified => "CLIENT_ITEM_LOCATION_UNSPECIFIED",
@@ -3097,6 +3128,7 @@ impl ClientItemLocation {
             ClientItemLocation::Right => "CLIENT_ITEM_LOCATION_RIGHT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3118,16 +3150,16 @@ impl RevealedCardsBrowserSize {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            RevealedCardsBrowserSize::Unspecified => {
-                "REVEALED_CARDS_BROWSER_SIZE_UNSPECIFIED"
-            }
+            RevealedCardsBrowserSize::Unspecified => "REVEALED_CARDS_BROWSER_SIZE_UNSPECIFIED",
             RevealedCardsBrowserSize::Small => "REVEALED_CARDS_BROWSER_SIZE_SMALL",
             RevealedCardsBrowserSize::Large => "REVEALED_CARDS_BROWSER_SIZE_LARGE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3151,7 +3183,8 @@ impl CardPrefab {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             CardPrefab::Unspecified => "CARD_PREFAB_UNSPECIFIED",
@@ -3161,6 +3194,7 @@ impl CardPrefab {
             CardPrefab::FullHeightToken => "CARD_PREFAB_FULL_HEIGHT_TOKEN",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3186,7 +3220,8 @@ impl GameCharacterFacingDirection {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             GameCharacterFacingDirection::Unspecified => {
@@ -3195,11 +3230,10 @@ impl GameCharacterFacingDirection {
             GameCharacterFacingDirection::Up => "GAME_CHARACTER_FACING_DIRECTION_UP",
             GameCharacterFacingDirection::Down => "GAME_CHARACTER_FACING_DIRECTION_DOWN",
             GameCharacterFacingDirection::Left => "GAME_CHARACTER_FACING_DIRECTION_LEFT",
-            GameCharacterFacingDirection::Right => {
-                "GAME_CHARACTER_FACING_DIRECTION_RIGHT"
-            }
+            GameCharacterFacingDirection::Right => "GAME_CHARACTER_FACING_DIRECTION_RIGHT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3223,7 +3257,8 @@ impl ArrowBubbleCorner {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             ArrowBubbleCorner::Unspecified => "ARROW_BUBBLE_CORNER_UNSPECIFIED",
@@ -3231,6 +3266,7 @@ impl ArrowBubbleCorner {
             ArrowBubbleCorner::BottomRight => "ARROW_BUBBLE_CORNER_BOTTOM_RIGHT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3255,7 +3291,8 @@ impl AnchorCorner {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             AnchorCorner::Unspecified => "ANCHOR_CORNER_UNSPECIFIED",
@@ -3265,6 +3302,7 @@ impl AnchorCorner {
             AnchorCorner::BottomRight => "ANCHOR_CORNER_BOTTOM_RIGHT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3288,7 +3326,8 @@ impl RoomVisitType {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             RoomVisitType::Unspecified => "ROOM_VISIT_TYPE_UNSPECIFIED",
@@ -3296,6 +3335,7 @@ impl RoomVisitType {
             RoomVisitType::LevelUpRoom => "ROOM_VISIT_TYPE_LEVEL_UP_ROOM",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3320,16 +3360,16 @@ impl CardCreationAnimation {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             CardCreationAnimation::Unspecified => "CARD_CREATION_ANIMATION_UNSPECIFIED",
             CardCreationAnimation::DrawCard => "CARD_CREATION_ANIMATION_DRAW_CARD",
-            CardCreationAnimation::FromParentCard => {
-                "CARD_CREATION_ANIMATION_FROM_PARENT_CARD"
-            }
+            CardCreationAnimation::FromParentCard => "CARD_CREATION_ANIMATION_FROM_PARENT_CARD",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3353,7 +3393,8 @@ impl MusicState {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             MusicState::Unspecified => "MUSIC_STATE_UNSPECIFIED",
@@ -3363,6 +3404,7 @@ impl MusicState {
             MusicState::MainMenu => "MUSIC_STATE_MAIN_MENU",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3388,7 +3430,8 @@ impl GameMessageType {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             GameMessageType::Unspecified => "GAME_MESSAGE_TYPE_UNSPECIFIED",
@@ -3398,6 +3441,7 @@ impl GameMessageType {
             GameMessageType::Defeat => "GAME_MESSAGE_TYPE_DEFEAT",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3423,7 +3467,8 @@ impl SceneLoadMode {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             SceneLoadMode::Unspecified => "SCENE_LOAD_MODE_UNSPECIFIED",
@@ -3431,6 +3476,7 @@ impl SceneLoadMode {
             SceneLoadMode::Additive => "SCENE_LOAD_MODE_ADDITIVE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3454,7 +3500,8 @@ impl LogMessageLevel {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             LogMessageLevel::Unspecified => "LOG_MESSAGE_LEVEL_UNSPECIFIED",
@@ -3463,6 +3510,7 @@ impl LogMessageLevel {
             LogMessageLevel::Error => "LOG_MESSAGE_LEVEL_ERROR",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3489,7 +3537,8 @@ impl MapTileType {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
             MapTileType::Unspecified => "MAP_TILE_TYPE_UNSPECIFIED",
@@ -3498,6 +3547,7 @@ impl MapTileType {
             MapTileType::Visitable => "MAP_TILE_TYPE_VISITABLE",
         }
     }
+
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
@@ -3513,13 +3563,12 @@ impl MapTileType {
 pub mod spelldawn_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with SpelldawnServer.
+    /// Generated trait containing gRPC methods that should be implemented for
+    /// use with SpelldawnServer.
     #[async_trait]
     pub trait Spelldawn: Send + Sync + 'static {
         /// Server streaming response type for the Connect method.
-        type ConnectStream: futures_core::Stream<
-                Item = Result<super::CommandList, tonic::Status>,
-            >
+        type ConnectStream: futures_core::Stream<Item = Result<super::CommandList, tonic::Status>>
             + Send
             + 'static;
         /// Initiate a new server connection.
@@ -3544,6 +3593,7 @@ pub mod spelldawn_server {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
+
         pub fn from_arc(inner: Arc<T>) -> Self {
             let inner = _Inner(inner);
             Self {
@@ -3552,22 +3602,23 @@ pub mod spelldawn_server {
                 send_compression_encodings: Default::default(),
             }
         }
-        pub fn with_interceptor<F>(
-            inner: T,
-            interceptor: F,
-        ) -> InterceptedService<Self, F>
+
+        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
         }
+
         /// Enable decompressing requests with the given encoding.
         #[must_use]
         pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
             self.accept_compression_encodings.enable(encoding);
             self
         }
-        /// Compress responses with the given encoding, if the client supports it.
+
+        /// Compress responses with the given encoding, if the client supports
+        /// it.
         #[must_use]
         pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
             self.send_compression_encodings.enable(encoding);
@@ -3580,31 +3631,26 @@ pub mod spelldawn_server {
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
-        type Response = http::Response<tonic::body::BoxBody>;
         type Error = std::convert::Infallible;
         type Future = BoxFuture<Self::Response, Self::Error>;
-        fn poll_ready(
-            &mut self,
-            _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        type Response = http::Response<tonic::body::BoxBody>;
+
+        fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
+
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
                 "/spelldawn.Spelldawn/Connect" => {
                     #[allow(non_camel_case_types)]
                     struct ConnectSvc<T: Spelldawn>(pub Arc<T>);
-                    impl<
-                        T: Spelldawn,
-                    > tonic::server::ServerStreamingService<super::ConnectRequest>
-                    for ConnectSvc<T> {
+                    impl<T: Spelldawn> tonic::server::ServerStreamingService<super::ConnectRequest> for ConnectSvc<T> {
+                        type Future =
+                            BoxFuture<tonic::Response<Self::ResponseStream>, tonic::Status>;
                         type Response = super::CommandList;
                         type ResponseStream = T::ConnectStream;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::ResponseStream>,
-                            tonic::Status,
-                        >;
+
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ConnectRequest>,
@@ -3621,11 +3667,10 @@ pub mod spelldawn_server {
                         let inner = inner.0;
                         let method = ConnectSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            );
+                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
+                            accept_compression_encodings,
+                            send_compression_encodings,
+                        );
                         let res = grpc.server_streaming(method, req).await;
                         Ok(res)
                     };
@@ -3634,21 +3679,16 @@ pub mod spelldawn_server {
                 "/spelldawn.Spelldawn/PerformAction" => {
                     #[allow(non_camel_case_types)]
                     struct PerformActionSvc<T: Spelldawn>(pub Arc<T>);
-                    impl<T: Spelldawn> tonic::server::UnaryService<super::GameRequest>
-                    for PerformActionSvc<T> {
+                    impl<T: Spelldawn> tonic::server::UnaryService<super::GameRequest> for PerformActionSvc<T> {
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         type Response = super::CommandList;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
+
                         fn call(
                             &mut self,
                             request: tonic::Request<super::GameRequest>,
                         ) -> Self::Future {
                             let inner = self.0.clone();
-                            let fut = async move {
-                                (*inner).perform_action(request).await
-                            };
+                            let fut = async move { (*inner).perform_action(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -3659,28 +3699,23 @@ pub mod spelldawn_server {
                         let inner = inner.0;
                         let method = PerformActionSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            );
+                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
+                            accept_compression_encodings,
+                            send_compression_encodings,
+                        );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)
                 }
-                _ => {
-                    Box::pin(async move {
-                        Ok(
-                            http::Response::builder()
-                                .status(200)
-                                .header("grpc-status", "12")
-                                .header("content-type", "application/grpc")
-                                .body(empty_body())
-                                .unwrap(),
-                        )
-                    })
-                }
+                _ => Box::pin(async move {
+                    Ok(http::Response::builder()
+                        .status(200)
+                        .header("grpc-status", "12")
+                        .header("content-type", "application/grpc")
+                        .body(empty_body())
+                        .unwrap())
+                }),
             }
         }
     }

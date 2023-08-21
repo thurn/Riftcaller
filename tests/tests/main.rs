@@ -18,4 +18,3 @@ mod cards_basic;
 mod cards_poc;
 mod core;
 mod rules_text;
-mod tutorial;
