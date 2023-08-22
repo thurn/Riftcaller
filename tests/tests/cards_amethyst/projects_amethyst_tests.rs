@@ -22,11 +22,11 @@ use test_utils::*;
 fn test_card_stored_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    g.unveil_card(id);
     g.spend_actions_until_turn_over(Side::Overlord);
     assert!(g.dawn());
-    assert_eq!(test_constants::STARTING_MANA, g.me().mana());
+    assert_eq!(test_constants::STARTING_MANA - test_constants::UNVEIL_COST, g.me().mana());
     g.spend_actions_until_turn_over(Side::Champion);
-    g.click(Buttons::Unveil);
     assert!(g.dusk());
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
@@ -42,10 +42,10 @@ fn test_card_stored_mana() {
 fn gemcarver() {
     let (card_cost, taken) = (2, 3);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    g.create_and_play(CardName::Gemcarver);
+    let id = g.create_and_play(CardName::Gemcarver);
+    g.unveil_card(id);
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
-    g.click(Buttons::Unveil);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);

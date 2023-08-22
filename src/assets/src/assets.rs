@@ -272,3 +272,10 @@ pub fn character_preset(preset: CharacterPreset) -> CharacterPresetAddress {
         .to_string(),
     }
 }
+
+pub fn ability_title_background() -> SpriteAddress {
+    SpriteAddress {
+        address: "LittleSweetDaemon/TCG_Card_Design/Custom/Title/TokenTitleBackground.png"
+            .to_string(),
+    }
+}

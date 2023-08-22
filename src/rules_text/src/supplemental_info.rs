@@ -18,7 +18,7 @@ use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::card_view_context::CardViewContext;
-use game_data::primitives::{AbilityIndex, CardSubtype, CardType, Lineage};
+use game_data::primitives::{AbilityIndex, CardType, Lineage};
 use game_data::text::{TextElement, TextTokenKind};
 
 use crate::card_info::SupplementalCardInfo;
@@ -33,7 +33,6 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
     let mut result = vec![];
     if ability_index.is_none() {
         add_card_type_line(&mut result, definition);
-        add_card_subtype_info(&mut result, definition);
     } else {
         result.push("Activated Ability".to_string())
     }
@@ -91,20 +90,6 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
     }
 
     builder.push(result);
-}
-
-fn add_card_subtype_info(builder: &mut Vec<String>, definition: &CardDefinition) {
-    if definition.config.subtypes.iter().any(|t| CardSubtype::Activated == *t) {
-        builder.push(
-            "<b>Activated Project</b>: Pay this card's cost to turn it face up before activating abilities.".to_string(),
-        );
-    }
-
-    if definition.config.subtypes.iter().any(|t| CardSubtype::Triggered == *t) {
-        builder.push(
-            "<b>Triggered Project</b>: You may pay this card's cost to turn it face up when it would trigger".to_string(),
-        );
-    }
 }
 
 fn add_tokens(tokens: &mut Vec<TextTokenKind>, text: &[TextElement]) {

@@ -63,7 +63,6 @@ namespace Spelldawn.Game
 
     public void SetAvailableActions(uint availableActions)
     {
-      Debug.Log($"SetAvailableActions: {availableActions} from {name}");
       _availableActions = availableActions;
       _number.gameObject.SetActive(false);
 

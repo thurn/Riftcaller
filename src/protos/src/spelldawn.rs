@@ -563,6 +563,10 @@ pub struct CardIdentifier {
     /// is represented by this displayed card.
     #[prost(message, optional, tag = "3")]
     pub ability_id: ::core::option::Option<u32>,
+    /// If true, this card represents the implicit 'unveil' ability to turn
+    /// project cards face up.
+    #[prost(bool, tag = "4")]
+    pub is_unveil: bool,
 }
 #[derive(Eq, Hash, Copy, Ord, PartialOrd)]
 #[allow(clippy::derive_partial_eq_without_eq)]

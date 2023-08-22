@@ -140,13 +140,10 @@ pub fn leyline() -> CardDefinition {
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
             text: trigger_text(Dusk, text!["Gain", Mana(1)]),
-            delegates: vec![
-                projects::trigger_at_dusk(),
-                this::is_triggered(|g, s, _| {
-                    mana::gain(g, s.side(), 1);
-                    Ok(())
-                }),
-            ],
+            delegates: vec![in_play::at_dusk(|g, s, _| {
+                mana::gain(g, s.side(), 1);
+                Ok(())
+            })],
         }],
         config: CardConfig {
             stats: CardStats { raze_cost: Some(4), ..CardStats::default() },
@@ -170,13 +167,10 @@ pub fn ore_refinery() -> CardDefinition {
             Ability {
                 ability_type: AbilityType::Standard,
                 text: trigger_text(Dusk, text![TakeMana(3)]),
-                delegates: vec![
-                    projects::trigger_at_dusk(),
-                    this::is_triggered(|g, s, _| {
-                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
-                        Ok(())
-                    }),
-                ],
+                delegates: vec![in_play::at_dusk(|g, s, _| {
+                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                    Ok(())
+                })],
             },
         ],
         config: CardConfig {

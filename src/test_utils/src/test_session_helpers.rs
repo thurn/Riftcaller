@@ -97,6 +97,9 @@ pub trait TestSessionHelpers {
     /// Activates an ability of a card with a target room
     fn activate_ability_with_target(&mut self, card_id: CardIdentifier, index: u32, target: RoomId);
 
+    /// Unveils a card in play, paying its mana cost and turning it face up.
+    fn unveil_card(&mut self, card_id: CardIdentifier);
+
     /// Spends one of the `side` player's action points with no effect
     fn spend_action_point(&mut self, side: Side);
 
@@ -271,6 +274,14 @@ impl TestSessionHelpers for TestSession {
         target: RoomId,
     ) {
         activate_ability_impl(self, card_id, index, Some(target))
+    }
+
+    fn unveil_card(&mut self, card_id: CardIdentifier) {
+        let id = CardIdentifier { is_unveil: true, ..card_id };
+        self.perform(
+            Action::PlayCard(PlayCardAction { card_id: Some(id), target: None }),
+            self.player_id_for_side(adapters::side(id.side).expect("Invalid Side")),
+        );
     }
 
     fn spend_action_point(&mut self, side: Side) {

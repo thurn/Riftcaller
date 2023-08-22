@@ -468,8 +468,8 @@ impl CardType {
 /// Subtypes of cards
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, EnumString, Serialize, Deserialize)]
 pub enum CardSubtype {
-    Triggered,
-    Activated,
+    /// Cards with the "Trap" subtype never show an unveil option.
+    Trap,
     Silvered,
 }
 

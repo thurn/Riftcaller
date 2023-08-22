@@ -37,6 +37,7 @@ pub fn card_identifier(card_id: CardId) -> CardIdentifier {
         side: player_side(card_id.side),
         index: card_id.index as u32,
         ability_id: None,
+        is_unveil: false,
     }
 }
 
@@ -62,22 +63,36 @@ pub fn ability_card_identifier(ability_id: AbilityId) -> CardIdentifier {
     }
 }
 
+/// Identifier for a card which provides the ability to unveil a project in
+/// play.
+pub fn unveil_card_identifier(card_id: CardId) -> CardIdentifier {
+    CardIdentifier { is_unveil: true, ..card_identifier(card_id) }
+}
+
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ServerCardId {
+    /// Standard card
     CardId(CardId),
+    /// Card representing an ability
     AbilityId(AbilityId),
+    /// Card representing the implicit ability to unveil a project
+    UnveilCard(CardId),
 }
 
 /// Converts a client [CardIdentifier] into a server [CardId] or [AbilityId].
 pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
     let result = CardId { side: side(card_id.side)?, index: card_id.index as usize };
 
-    card_id.ability_id.map_or(Ok(ServerCardId::CardId(result)), |index| {
-        Ok(ServerCardId::AbilityId(AbilityId {
-            card_id: result,
-            index: AbilityIndex(index as usize),
-        }))
-    })
+    if card_id.is_unveil {
+        Ok(ServerCardId::UnveilCard(result))
+    } else {
+        card_id.ability_id.map_or(Ok(ServerCardId::CardId(result)), |index| {
+            Ok(ServerCardId::AbilityId(AbilityId {
+                card_id: result,
+                index: AbilityIndex(index as usize),
+            }))
+        })
+    }
 }
 
 pub fn player_side(side: Side) -> i32 {

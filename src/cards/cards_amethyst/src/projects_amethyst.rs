@@ -20,7 +20,7 @@ use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardType, Rarity, School, Side};
+use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
@@ -42,17 +42,14 @@ pub fn gemcarver() -> CardDefinition {
                     Dusk,
                     text![text![TakeMana(3)], text!["When empty, draw a card"]],
                 ),
-                delegates: vec![
-                    projects::trigger_at_dusk(),
-                    this::is_triggered(|g, s, _| {
-                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
-                        if g.card(s.card_id()).data.stored_mana == 0 {
-                            mutations::draw_cards(g, s.side(), 1)?;
-                        }
-                        alert(g, s);
-                        Ok(())
-                    }),
-                ],
+                delegates: vec![in_play::at_dusk(|g, s, _| {
+                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
+                    if g.card(s.card_id()).data.stored_mana == 0 {
+                        mutations::draw_cards(g, s.side(), 1)?;
+                    }
+                    alert(g, s);
+                    Ok(())
+                })],
             },
         ],
         config: CardConfig {
@@ -91,6 +88,7 @@ pub fn spike_trap() -> CardDefinition {
         ],
         config: CardConfig {
             stats: CardStats { raze_cost: Some(2), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Trap],
             ..CardConfig::default()
         },
     }

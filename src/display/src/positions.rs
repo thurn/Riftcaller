@@ -19,7 +19,7 @@ use game_data::card_state::{CardPosition, CardState};
 use game_data::game::{GamePhase, GameState, MulliganData, RaidData};
 use game_data::game_actions::{CardTarget, PromptContext};
 use game_data::primitives::{
-    AbilityId, CardId, GameObjectId, ItemLocation, RoomId, RoomLocation, Side,
+    AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
 };
 use game_data::utils;
 use protos::spelldawn::object_position::Position;
@@ -47,11 +47,19 @@ pub fn for_card(card: &CardState, position: Position) -> ObjectPosition {
     }
 }
 
+pub fn for_unveil_card(card: &CardState, position: Position) -> ObjectPosition {
+    ObjectPosition {
+        position: Some(position),
+        sorting_key: 1 + card.sorting_key,
+        sorting_subkey: 1,
+    }
+}
+
 pub fn for_ability(game: &GameState, ability_id: AbilityId, position: Position) -> ObjectPosition {
     ObjectPosition {
         position: Some(position),
         sorting_key: 1 + game.card(ability_id.card_id).sorting_key,
-        sorting_subkey: 1 + (ability_id.index.value() as u32),
+        sorting_subkey: 2 + (ability_id.index.value() as u32),
     }
 }
 
@@ -150,9 +158,9 @@ pub fn raid() -> Position {
     Position::Raid(ObjectPositionRaid {})
 }
 
-pub fn parent_card(ability_id: AbilityId) -> Position {
+pub fn parent_card(identifier: impl HasCardId) -> Position {
     Position::IntoCard(ObjectPositionIntoCard {
-        card_id: Some(adapters::card_identifier(ability_id.card_id)),
+        card_id: Some(adapters::card_identifier(identifier.card_id())),
     })
 }
 

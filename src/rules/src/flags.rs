@@ -106,6 +106,7 @@ pub fn can_take_activate_ability_action(
     let mut can_activate = in_main_phase(game, side)
         && side == ability_id.card_id.side
         && cost.actions <= game.player(side).actions
+        && card.is_face_up()
         && card.position().in_play();
 
     if let Some(custom_cost) = &cost.custom_cost {
@@ -319,12 +320,10 @@ pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) 
     dispatch::perform_query(game, CanEndRaidAccessPhaseQuery(raid_id), Flag::new(true)).into()
 }
 
-/// Is the Overlord currently able to unveil the provided card?
-///
-/// This checks the preconditions for a project to be unveiled but does *not*
-/// specifically check that an unveil trigger condition, if any, has been met.
-pub fn can_unveil_card(game: &GameState, card_id: CardId) -> bool {
-    game.card(card_id).is_face_down()
+/// Is the `side` player currently able to unveil the provided card?
+pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId) -> bool {
+    side == Side::Overlord
+        && game.card(card_id).is_face_down()
         && game.card(card_id).position().in_play()
         && can_pay_card_cost(game, card_id)
 }

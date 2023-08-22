@@ -154,6 +154,7 @@ pub async fn handle_play_card(
         ServerCardId::AbilityId(ability_id) => {
             GameAction::ActivateAbility(ability_id, card_target(&action.target))
         }
+        ServerCardId::UnveilCard(card_id) => GameAction::UnveilCard(card_id),
     };
     handle_game_action(database, data, &action).await
 }

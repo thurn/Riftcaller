@@ -56,6 +56,7 @@ fn coinery() {
     let (card_cost, taken) = (2, 3);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::Coinery);
+    g.unveil_card(id);
     g.activate_ability(id, 1);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     assert!(g.user.get_card(id).is_face_up());
@@ -67,10 +68,10 @@ fn coinery() {
 fn leyline() {
     let (card_cost, gained) = (2, 1);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    g.create_and_play(CardName::Leyline);
+    let id = g.create_and_play(CardName::Leyline);
+    g.unveil_card(id);
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
-    g.click(Buttons::Unveil);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained, g.me().mana());
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
@@ -85,10 +86,11 @@ fn ore_refinery() {
     let (card_cost, stored, taken) = (4, 12, 3);
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::OreRefinery);
+    assert_eq!(test_constants::STARTING_MANA, g.me().mana());
+    g.unveil_card(id);
+    assert_eq!(test_constants::STARTING_MANA - card_cost, g.me().mana());
     g.spend_actions_until_turn_over(Side::Overlord);
     g.spend_actions_until_turn_over(Side::Champion);
-    assert_eq!(test_constants::STARTING_MANA, g.me().mana());
-    g.click(Buttons::Unveil);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     assert_eq!((stored - taken).to_string(), g.user.get_card(id).arena_icon());
 }

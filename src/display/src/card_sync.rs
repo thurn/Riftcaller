@@ -20,11 +20,13 @@ use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::game::GameState;
 use game_data::game_actions::CardTarget;
-use game_data::primitives::{AbilityId, CardType, ItemLocation, RoomId, RoomLocation, School};
+use game_data::primitives::{
+    AbilityId, CardId, CardSubtype, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
+};
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,
-    PlayInRoom, RevealedCardView, RulesText, SpriteAddress, TargetingArrow,
+    PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
 };
 use rules::{flags, queries};
 use rules_text::{card_icons, supplemental_info};
@@ -78,7 +80,20 @@ pub fn activated_ability_cards(
         return result;
     }
 
-    for (ability_index, ability) in rules::get(card.name).abilities.iter().enumerate() {
+    let definition = rules::get(card.name);
+
+    if card.is_face_down() {
+        if builder.user_side == Side::Overlord
+            && definition.card_type == CardType::Project
+            && !definition.config.subtypes.contains(&CardSubtype::Trap)
+        {
+            result.push(Ok(unveil_card_view(builder, game, card.id)));
+        }
+
+        return result;
+    }
+
+    for (ability_index, ability) in definition.abilities.iter().enumerate() {
         if let AbilityType::Activated(_, target_requirement) = &ability.ability_type {
             let ability_id = AbilityId::new(card.id, ability_index);
             result.push(Ok(ability_card_view(builder, game, ability_id, Some(target_requirement))));
@@ -123,6 +138,38 @@ pub fn ability_card_view(
             ability_id,
             positions::parent_card(ability_id),
         )),
+    }
+}
+
+pub fn unveil_card_view(builder: &ResponseBuilder, game: &GameState, card_id: CardId) -> CardView {
+    let card = game.card(card_id);
+    let definition = rules::get(card.name);
+    let context = CardViewContext::Game(definition, game, card);
+
+    CardView {
+        card_id: Some(adapters::unveil_card_identifier(card_id)),
+        card_position: Some(positions::for_unveil_card(
+            card,
+            positions::hand(builder, card_id.side),
+        )),
+        prefab: CardPrefab::TokenCard.into(),
+        card_back: Some(assets::card_back(context.definition().school)),
+        revealed_to_viewer: true,
+        is_face_up: false,
+        card_icons: Some(CardIcons {
+            top_left_icon: queries::mana_cost(game, card_id).map(card_icons::mana_card_icon),
+            ..CardIcons::default()
+        }),
+        arena_frame: None,
+        face_down_arena_frame: None,
+        owning_player: builder.to_player_name(card_id.side),
+        revealed_card: Some(revealed_unveil_card_view(&context, card_id)),
+        create_position: if builder.state.animate {
+            Some(positions::for_unveil_card(card, positions::parent_card(card_id)))
+        } else {
+            None
+        },
+        destroy_position: Some(positions::for_unveil_card(card, positions::parent_card(card_id))),
     }
 }
 
@@ -176,10 +223,7 @@ fn revealed_ability_card_view(
     let ability = definition.ability(ability_id.index);
     Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
-        title_background: Some(SpriteAddress {
-            address: "LittleSweetDaemon/TCG_Card_Design/Custom/Title/TokenTitleBackground.png"
-                .to_string(),
-        }),
+        title_background: Some(assets::ability_title_background()),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),
         image_background: definition.config.image_background.as_ref().map(adapters::sprite),
@@ -202,6 +246,31 @@ fn revealed_ability_card_view(
             positions::for_ability(game, ability_id, positions::staging())
         }),
         supplemental_info: supplemental_info::build(context, Some(ability_id.index)),
+    })
+}
+
+fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<RevealedCardView> {
+    let definition = context.definition();
+    let no_target: Option<&TargetRequirement<()>> = None;
+    Box::new(RevealedCardView {
+        card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
+        title_background: Some(assets::ability_title_background()),
+        jewel: Some(assets::jewel(definition.rarity)),
+        image: Some(adapters::sprite(&definition.image)),
+        image_background: definition.config.image_background.as_ref().map(adapters::sprite),
+        title: Some(CardTitle {
+            text: format!("Unveil {}", definition.name.displayed_name()),
+            text_color: Some(assets::title_color(None)),
+        }),
+        rules_text: Some(rules_text::build(context)),
+        targeting: context.query_or_none(|game, _| {
+            card_targeting(no_target, false, |_| {
+                flags::can_take_unveil_card_action(game, Side::Overlord, card_id)
+            })
+        }),
+        on_release_position: context
+            .query_or_none(|_, card| positions::for_unveil_card(card, positions::staging())),
+        supplemental_info: supplemental_info::build(context, None),
     })
 }
 

@@ -11,11 +11,3 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-use game_data::delegates::{Delegate, EventDelegate, MutationFn};
-use game_data::primitives::CardId;
-
-/// A delegate which fires when a project card's triggered ability fires
-pub fn is_triggered(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::ProjectTriggered(EventDelegate { requirement: crate::this_card, mutation })
-}

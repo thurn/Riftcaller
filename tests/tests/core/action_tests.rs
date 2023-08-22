@@ -392,13 +392,18 @@ fn activate_ability_take_all_mana() {
 
 #[test]
 fn triggered_unveil_ability() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
-    g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
-    assert!(g.dawn());
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    g.unveil_card(id);
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
+        g.user.this_player.mana()
+    );
+    g.spend_actions_until_turn_over(Side::Overlord);
+    assert!(g.dawn());
     g.spend_actions_until_turn_over(Side::Champion);
     assert!(g.dusk());
-    g.click(Buttons::Unveil);
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
         g.user.this_player.mana()
@@ -425,16 +430,12 @@ fn triggered_ability_cannot_unveil() {
 fn triggered_ability_take_all_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    g.unveil_card(id);
     let mut taken = 0;
-    let mut unveiled = false;
     while taken < test_constants::MANA_STORED {
         assert!(g.dawn());
         g.spend_actions_until_turn_over(Side::Champion);
         assert!(g.dusk());
-        if !unveiled {
-            g.click(Buttons::Unveil);
-            unveiled = true;
-        }
         taken += test_constants::MANA_TAKEN;
         g.spend_actions_until_turn_over(Side::Overlord);
     }

@@ -25,7 +25,7 @@ use game_data::delegates::{
     AbilityActivated, ActivateAbilityEvent, CardPlayed, CastCardEvent, DrawCardActionEvent,
 };
 use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent, MulliganDecision};
-use game_data::game_actions::{CardTarget, GameAction, PromptAction, UnveilProjectAction};
+use game_data::game_actions::{CardTarget, GameAction, PromptAction};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use raids::RaidDataExt;
@@ -54,6 +54,7 @@ pub fn handle_game_action(
         GameAction::ActivateAbility(ability_id, target) => {
             activate_ability_action(game, user_side, *ability_id, *target)
         }
+        GameAction::UnveilCard(card_id) => unveil_action(game, user_side, *card_id),
         GameAction::InitiateRaid(room_id) => {
             raids::handle_initiate_action(game, user_side, *room_id)
         }
@@ -210,7 +211,6 @@ fn activate_ability_action(
 
     game.ability_state.entry(ability_id).or_default().currently_resolving = true;
     let card = game.card(ability_id.card_id);
-    let is_face_down = card.is_face_down();
 
     debug!(?card.name, ?user_side, ?ability_id, "Applying activate ability action");
 
@@ -228,15 +228,24 @@ fn activate_ability_action(
         (custom_cost.pay)(game, ability_id)?;
     }
 
-    if is_face_down {
-        mutations::unveil_card_ignoring_costs(game, ability_id.card_id)?;
-    }
-
     game.record_update(|| GameUpdate::AbilityActivated(user_side, ability_id));
     dispatch::invoke_event(game, ActivateAbilityEvent(AbilityActivated { ability_id, target }))?;
 
     game.ability_state.entry(ability_id).or_default().currently_resolving = false;
     mutations::check_end_turn(game)?;
+    Ok(())
+}
+
+/// The basic game action to unveil a project card in play.
+#[instrument(skip(game))]
+fn unveil_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
+    verify!(
+        flags::can_take_unveil_card_action(game, user_side, card_id),
+        "Cannot unveil card {:?}",
+        card_id
+    );
+
+    mutations::unveil_card(game, card_id)?;
     Ok(())
 }
 
@@ -279,16 +288,6 @@ fn spend_action_point_action(game: &mut GameState, user_side: Side) -> Result<()
     Ok(())
 }
 
-fn handle_unveil_action(game: &mut GameState, action: UnveilProjectAction) -> Result<()> {
-    match action {
-        UnveilProjectAction::Unveil(card_id) => {
-            mutations::unveil_card(game, card_id)?;
-        }
-        UnveilProjectAction::DoNotUnveil => {}
-    }
-    Ok(())
-}
-
 /// Handles a [PromptAction] for the `user_side` player and then removes it from
 /// the queue.
 fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
@@ -300,7 +299,7 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         );
 
         game.player_mut(user_side).card_prompt_queue.remove(0);
-    } else if matches!(action, PromptAction::CardAction(_) | PromptAction::UnveilProjectAction(_)) {
+    } else if matches!(action, PromptAction::CardAction(_)) {
         fail!("Received action with no matching prompt {:?}", action);
     }
 
@@ -312,8 +311,5 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         | PromptAction::EncounterAction(_)
         | PromptAction::AccessPhaseAction(_) => raids::handle_action(game, user_side, action),
         PromptAction::CardAction(card_action) => card_prompt::handle(game, user_side, card_action),
-        PromptAction::UnveilProjectAction(unveil_action) => {
-            handle_unveil_action(game, unveil_action)
-        }
     }
 }
