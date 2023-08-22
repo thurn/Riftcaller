@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/create_game_tests.rs
-assertion_line: 62
+assertion_line: 73
 expression: "Summary::run(&response)"
 ---
 
@@ -23,7 +23,7 @@ expression: "Summary::run(&response)"
             mana: 0
             action_tracker: 0
             score: 0
-            can_take_action: true
+            can_take_action: false
         raid_active: false
         controls: 
             node: 

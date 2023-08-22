@@ -18,6 +18,7 @@ use game_data::game_actions::{GamePrompt, PromptAction};
 use game_data::primitives::Side;
 use prompts::prompts;
 use protos::spelldawn::InterfaceMainControls;
+use rules::flags;
 
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
@@ -26,8 +27,8 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
         return prompts::action_prompt(game, side, prompt);
     } else if let Some(prompt) = raids::current_prompt(game, side)? {
         return prompts::action_prompt(game, side, &prompt);
-    } else if let GamePhase::ResolveMulligans(data) = &game.info.phase {
-        if data.decision(side).is_none() {
+    } else if let GamePhase::ResolveMulligans(_) = &game.info.phase {
+        if flags::can_make_mulligan_decision(game, side) {
             return prompts::action_prompt(
                 game,
                 side,

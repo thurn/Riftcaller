@@ -32,9 +32,20 @@ use crate::{dispatch, mana, queries};
 
 /// Returns whether a player can currently make a mulligan decision
 pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
-    matches!(
-        &game.info.phase, GamePhase::ResolveMulligans(mulligan) if mulligan.decision(side).is_none()
-    )
+    match &game.info.phase {
+        GamePhase::ResolveMulligans(mulligans) => {
+            if mulligans.decision(side).is_none() {
+                match side {
+                    // Overlord resolves mulligans first
+                    Side::Overlord => true,
+                    Side::Champion => mulligans.decision(Side::Overlord).is_some(),
+                }
+            } else {
+                false
+            }
+        }
+        _ => false,
+    }
 }
 
 /// Returns true if the owner of the `card_id` card can currently pay its cost.
