@@ -27,13 +27,23 @@ namespace Spelldawn.Services
     public PlayerName CurrentPriority { get; set; }
 
     /// <summary>
-    /// Can the user *start* performing an action such as dragging a card out of their hand or dragging a raid arrow.
+    /// Can the user *start* performing a character arrow action such as dragging a raid arrow.
+    /// </summary>
+    /// 
     /// This is allowed more leniently than actually *performing* an action as defined by
     /// <see cref="CanExecuteAction"/> below.
-    /// </summary>
-    public bool CanInitiateAction() => !_registry.CardService.CurrentlyDragging &&
+    /// 
+    public bool CanDragCharacterArrow() => !_registry.CardService.CurrentlyDragging &&
                                        !AnyOverlayOpen() &&
                                        !_registry.DocumentService.IsAnyPanelOpen();
+    
+    /// <summary>
+    ///  Can the user currently play cards that are otherwise legal to play according to the game rules? 
+    /// </summary>
+    public bool CanPlayCards() => !_registry.CardService.CurrentlyDragging && 
+                                  !_registry.InterfaceOverlay.Enabled &&
+                                  !_registry.LongPressOverlay.Enabled &&
+                                  !_registry.DocumentService.IsAnyPanelOpen();
 
     public bool AnyOverlayOpen() => _registry.RaidOverlay.Enabled ||
                                     _registry.InterfaceOverlay.Enabled ||
@@ -86,7 +96,7 @@ namespace Spelldawn.Services
       ClientAction.ActionOneofCase.FetchPanel => true,
       ClientAction.ActionOneofCase.GainMana => CanAct(),
       ClientAction.ActionOneofCase.DrawCard => CanAct(),
-      ClientAction.ActionOneofCase.PlayCard => CanAct(actionPointRequired: false),
+      ClientAction.ActionOneofCase.PlayCard => CanPlayCards(),
       ClientAction.ActionOneofCase.LevelUpRoom => CanAct(),
       ClientAction.ActionOneofCase.InitiateRaid => CanAct(),
       _ => false

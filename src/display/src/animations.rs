@@ -43,7 +43,7 @@ pub fn render(
         GameUpdate::StartTurn(side) => start_turn(builder, *side),
         GameUpdate::PlayCardFaceUp(side, card_id) => {
             if builder.user_side == side.opponent() {
-                show_cards(builder, &vec![*card_id])
+                show_cards(builder, &vec![*card_id], false)
             }
         }
         GameUpdate::AbilityActivated(side, ability_id) => {
@@ -54,16 +54,16 @@ pub fn render(
         GameUpdate::AbilityTriggered(ability_id) => show_ability(builder, snapshot, *ability_id),
         GameUpdate::DrawCards(side, cards) => {
             if builder.user_side == *side {
-                show_cards(builder, cards)
+                show_cards(builder, cards, false)
             }
         }
         GameUpdate::ShuffleIntoDeck => {
             // No animation, just acts as a snapshot point.
         }
-        GameUpdate::UnveilCard(card_id) => show_cards(builder, &vec![*card_id]),
+        GameUpdate::UnveilCard(card_id) => show_cards(builder, &vec![*card_id], true),
         GameUpdate::SummonMinion(card_id) => {
             if builder.user_side == Side::Champion {
-                show_cards(builder, &vec![*card_id])
+                show_cards(builder, &vec![*card_id], true)
             }
         }
         GameUpdate::LevelUpRoom(room_id, initiated_by) => {
@@ -98,13 +98,13 @@ fn start_turn(builder: &mut ResponseBuilder, side: Side) {
     }))
 }
 
-fn show_cards(builder: &mut ResponseBuilder, cards: &Vec<CardId>) {
+fn show_cards(builder: &mut ResponseBuilder, cards: &Vec<CardId>, show_if_prominent: bool) {
     let is_large = cards.len() >= 4;
     builder.push(Command::MoveGameObjects(MoveGameObjectsCommand {
         moves: cards
             .iter()
             // Skip animation for cards that are already in a prominent interface position
-            .filter(|card_id| !in_display_position(builder, **card_id))
+            .filter(|card_id| !in_display_position(builder, **card_id) || show_if_prominent)
             .enumerate()
             .map(|(i, card_id)| GameObjectMove {
                 id: Some(adapters::game_object_identifier(builder, *card_id)),

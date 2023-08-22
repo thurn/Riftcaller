@@ -361,7 +361,7 @@ namespace Spelldawn.Services
         {
           Left = Px(0),
           Right = Px(0),
-          Bottom = Px(160)
+          Bottom = Px(220)
         }
       }, content);
 

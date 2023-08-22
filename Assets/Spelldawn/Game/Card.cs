@@ -190,7 +190,7 @@ namespace Spelldawn.Game
 
     bool CanPlay() => _serverCanPlay == true && 
                       InHand() && 
-                      Registry.CapabilityService.CanInitiateAction() &&
+                      Registry.CapabilityService.CanPlayCards() &&
                       _isRevealed;
 
     public Card Clone()
