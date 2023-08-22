@@ -76,11 +76,8 @@ pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<Mana
 
 /// Returns the action point cost for a given card
 pub fn action_cost(game: &GameState, card_id: CardId) -> ActionCount {
-    dispatch::perform_query(
-        game,
-        ActionCostQuery(card_id),
-        crate::get(game.card(card_id).name).cost.actions,
-    )
+    let actions = crate::get(game.card(card_id).name).cost.actions;
+    dispatch::perform_query(game, ActionCostQuery(card_id), actions)
 }
 
 /// Returns the attack power value for a given card, or 0 by default.

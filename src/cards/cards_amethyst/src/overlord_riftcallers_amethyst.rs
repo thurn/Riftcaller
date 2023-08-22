@@ -31,13 +31,15 @@ pub fn ubras_efaris_time_shaper() -> CardDefinition {
         rarity: Rarity::Exalted,
         abilities: vec![simple_ability(
             text!["The second spell you cast each turn does not cost", ActionSymbol],
-            in_play::on_query_action_cost(|g, _, _, actions| {
-                let cards = history::cards_played_this_turn(g);
-                if cards.filter(|id| rules::card_definition(g, *id).is_spell()).count() == 1 {
-                    0
-                } else {
-                    actions
+            in_play::on_query_action_cost(|g, _, card_id, actions| {
+                if rules::card_definition(g, *card_id).is_spell() {
+                    let cards = history::cards_played_this_turn(g);
+                    if cards.filter(|id| rules::card_definition(g, *id).is_spell()).count() == 1 {
+                        return 0;
+                    }
                 }
+
+                actions
             }),
         )],
         config: CardConfig::default(),

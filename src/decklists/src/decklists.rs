@@ -69,7 +69,7 @@ pub static TUTORIAL_OVERLORD: Lazy<Deck> =
 pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![School::Law],
-    riftcallers: vec![CardName::UbrasEfarisTimeShaper],
+    riftcallers: vec![],
     cards: hashmap! {
         CardName::GoldMine => 3,
         CardName::ActivateReinforcements => 2,
@@ -136,7 +136,7 @@ pub static TUTORIAL_CHAMPION: Lazy<Deck> =
 pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![School::Primal],
-    riftcallers: vec![CardName::EnneraImrisBloodBound],
+    riftcallers: vec![],
     cards: hashmap! {
         CardName::Meditation => 2,
         CardName::CoupDeGrace => 3,
