@@ -37,8 +37,16 @@ namespace Spelldawn.Services
     public float Left { get; init; }
   }
 
+  public enum ScreenMode
+  {
+    ConstantPhysicalSize,
+    ReferenceWidth1920
+  }  
+  
   public sealed class DocumentService : MonoBehaviour
   {
+    public const ScreenMode DEFAULT_SCREEN_MODE = ScreenMode.ReferenceWidth1920;
+    
     [SerializeField] Registry _registry = null!;
     [SerializeField] UIDocument _document = null!;
     [FormerlySerializedAs("_loadingIndicator")] [SerializeField] Sprite _loadingSprite = null!;
@@ -103,23 +111,28 @@ namespace Spelldawn.Services
       }
     }
 
-    public float ScreenPxToElementPx(float value) => value * _document.panelSettings.referenceDpi / Screen.dpi;
+    public float ScreenPxToElementPx(ScreenMode mode, float value) => mode switch
+    {
+      ScreenMode.ConstantPhysicalSize => value * _document.panelSettings.referenceDpi / Screen.dpi,
+      ScreenMode.ReferenceWidth1920 => value * (1920f / Screen.width),
+      _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+    };
 
     /// <summary>
     /// Returns an ElementPosition in interface coordinates corresponding to a screen position.
     /// </summary>
-    public ElementPosition ScreenPositionToElementPosition(Vector3 screenPosition) =>
+    public ElementPosition ScreenPositionToElementPosition(ScreenMode mode, Vector3 screenPosition) =>
       new()
       {
-        Top = ScreenPxToElementPx(Screen.height - screenPosition.y),
-        Right = ScreenPxToElementPx(Screen.width - screenPosition.x),
-        Bottom = ScreenPxToElementPx(screenPosition.y),
-        Left = ScreenPxToElementPx(screenPosition.x)
+        Top = ScreenPxToElementPx(mode, Screen.height - screenPosition.y),
+        Right = ScreenPxToElementPx(mode, Screen.width - screenPosition.x),
+        Bottom = ScreenPxToElementPx(mode, screenPosition.y),
+        Left = ScreenPxToElementPx(mode, screenPosition.x)
       };
 
     public Vector2 ElementMousePosition()
     {
-      var position = ScreenPositionToElementPosition(Input.mousePosition);
+      var position = ScreenPositionToElementPosition(DEFAULT_SCREEN_MODE, Input.mousePosition);
       return new Vector2(position.Left, position.Top);
     }
 
@@ -134,7 +147,7 @@ namespace Spelldawn.Services
     /// provided transform.
     /// </summary>
     public ElementPosition TransformPositionToElementPosition(Transform t)
-      => ScreenPositionToElementPosition(_registry.MainCamera.WorldToScreenPoint(t.position));
+      => ScreenPositionToElementPosition(DEFAULT_SCREEN_MODE, _registry.MainCamera.WorldToScreenPoint(t.position));
 
     public void TogglePanel(TogglePanelCommand command)
     {
