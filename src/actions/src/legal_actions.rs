@@ -65,6 +65,10 @@ pub fn evaluate<'a>(
                 .filter(move |room_id| flags::can_take_initiate_raid_action(game, side, *room_id))
                 .map(GameAction::InitiateRaid)
                 .chain(
+                    flags::can_take_end_turn_action(game, side)
+                        .then_some(GameAction::PromptAction(PromptAction::EndTurnAction)),
+                )
+                .chain(
                     enum_iterator::all::<RoomId>()
                         .filter(move |room_id| {
                             flags::can_take_level_up_room_action(game, side, *room_id)
@@ -77,6 +81,10 @@ pub fn evaluate<'a>(
                     flags::can_take_gain_mana_action(game, side).then_some(GameAction::GainMana),
                 ),
         ))
+    } else if flags::can_take_end_turn_action(game, side) {
+        Ok(Box::new(iter::once(GameAction::PromptAction(PromptAction::EndTurnAction))))
+    } else if flags::can_take_start_turn_action(game, side) {
+        Ok(Box::new(iter::once(GameAction::PromptAction(PromptAction::StartTurnAction))))
     } else {
         fail!("Error: player cannot currently act")
     }
