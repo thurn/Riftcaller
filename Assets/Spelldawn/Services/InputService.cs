@@ -267,7 +267,7 @@ namespace Spelldawn.Services
       }
       
       var position = _registry.DocumentService.ScreenPositionToElementPosition(
-        DocumentService.DEFAULT_SCREEN_MODE, Input.mousePosition);
+        DocumentService.DefaultScreenMode, Input.mousePosition);
       return new Vector2(
         position.Left - (element.layout.width / 2),
         position.Top - (element.layout.height / 2));

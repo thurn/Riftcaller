@@ -215,11 +215,11 @@ namespace Spelldawn.Masonry
       DimensionUnit.Percentage => Length.Percent(dimension.Value),
       DimensionUnit.ViewportWidth => new Length(
         registry.DocumentService.ScreenPxToElementPx(
-          DocumentService.DEFAULT_SCREEN_MODE,
+          DocumentService.DefaultScreenMode,
           (dimension.Value / 100) * Screen.safeArea.width)),
       DimensionUnit.ViewportHeight => new Length(
         registry.DocumentService.ScreenPxToElementPx(
-          DocumentService.DEFAULT_SCREEN_MODE,
+          DocumentService.DefaultScreenMode,
           (dimension.Value / 100) * Screen.safeArea.height)),
       DimensionUnit.SafeAreaTop => new Length(registry.DocumentService.GetSafeArea().Top.Value * dimension.Value),
       DimensionUnit.SafeAreaRight => new Length(registry.DocumentService.GetSafeArea().Right.Value * dimension.Value),

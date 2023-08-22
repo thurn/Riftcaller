@@ -45,7 +45,7 @@ namespace Spelldawn.Services
   
   public sealed class DocumentService : MonoBehaviour
   {
-    public const ScreenMode DEFAULT_SCREEN_MODE = ScreenMode.ReferenceWidth1920;
+    public const ScreenMode DefaultScreenMode = ScreenMode.ReferenceWidth1920;
     
     [SerializeField] Registry _registry = null!;
     [SerializeField] UIDocument _document = null!;
@@ -132,7 +132,7 @@ namespace Spelldawn.Services
 
     public Vector2 ElementMousePosition()
     {
-      var position = ScreenPositionToElementPosition(DEFAULT_SCREEN_MODE, Input.mousePosition);
+      var position = ScreenPositionToElementPosition(DefaultScreenMode, Input.mousePosition);
       return new Vector2(position.Left, position.Top);
     }
 
@@ -147,7 +147,7 @@ namespace Spelldawn.Services
     /// provided transform.
     /// </summary>
     public ElementPosition TransformPositionToElementPosition(Transform t)
-      => ScreenPositionToElementPosition(DEFAULT_SCREEN_MODE, _registry.MainCamera.WorldToScreenPoint(t.position));
+      => ScreenPositionToElementPosition(DefaultScreenMode, _registry.MainCamera.WorldToScreenPoint(t.position));
 
     public void TogglePanel(TogglePanelCommand command)
     {
