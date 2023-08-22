@@ -250,8 +250,8 @@ MonoBehaviour:
   _analyticsService: {fileID: 8679095155801471873}
   _userReportingScript: {fileID: 3419366364935352034}
   _studioManager: {fileID: 5046173552731427907}
-  _userSigilDisplay: {fileID: 0}
-  _opponentSigilDisplay: {fileID: 0}
+  _userRiftcallerDisplay: {fileID: 0}
+  _opponentRiftcallerDisplay: {fileID: 0}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,6 +342,8 @@ MonoBehaviour:
   _registry: {fileID: 205228965686964167}
   _studioRenderTexture: {fileID: 8400000, guid: 7bfc4a7c7b8f645e3a6c465eaa238802, type: 2}
   _developmentAssets: {fileID: 205228965686964221}
+  _championPreset: {fileID: 11400000, guid: b469bf1b5ef184f6ead11b1d866a00e9, type: 2}
+  _overlordPreset: {fileID: 11400000, guid: 7fa3b849ce0c4420f9b8459ce9f132cf, type: 2}
 --- !u!114 &205228965686964169
 MonoBehaviour:
   m_ObjectHideFlags: 0

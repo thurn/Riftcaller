@@ -18,14 +18,14 @@ using UnityEditor;
 
 namespace Spelldawn.Tools
 {
-  public static class UseProductionServer
+  public static class UseDevelopmentServer
   {
-    const string MenuName = "Tools/Use Production Server";
-    public const string SettingName = "UseProductionServer";
-    public const string DefineName = "USE_PRODUCTION_SERVER";
+    const string MenuName = "Tools/Use Development Server";
+    public const string SettingName = "UseDevelopmentServer";
+    public const string DefineName = "USE_DEVELOPMENT_SERVER";
     
 #if UNITY_EDITOR 
-    public static bool ShouldUseProductionServer
+    public static bool ShouldUseDevelopmentServerInEditor
     {
       get => EditorPrefs.GetBool(SettingName, false);
       set => EditorPrefs.SetBool(SettingName, value);
@@ -34,21 +34,21 @@ namespace Spelldawn.Tools
     [MenuItem(MenuName)]
     static void ToggleAction()
     {
-      ShouldUseProductionServer = !ShouldUseProductionServer;
+      ShouldUseDevelopmentServerInEditor = !ShouldUseDevelopmentServerInEditor;
     }
   
     [MenuItem(MenuName, true)]
     static bool ToggleActionValidate()
     {
-      Menu.SetChecked(MenuName, ShouldUseProductionServer);
+      Menu.SetChecked(MenuName, ShouldUseDevelopmentServerInEditor);
       ScriptingDefineSymbols.Update();
       return true;
     }
     
-#elif USE_PRODUCTION_SERVER
-    public static bool ShouldUseProductionServer => true;
+#elif USE_DEVELOPMENT_SERVER
+    public static bool ShouldUseDevelopmentServer => true;
 #else
-    public static bool ShouldUseProductionServer => false;
+    public static bool ShouldUseDevelopmentServer => false;
 #endif
   }
 }

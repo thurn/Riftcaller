@@ -45,6 +45,8 @@ impl DebugPanel {
         let close = Panels::close(self.address());
         row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
             .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Champion)))
+            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Overlord)))
+            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Champion)))
             .child(debug_button(
                 "Show Logs",
                 vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],

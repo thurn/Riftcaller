@@ -28,9 +28,9 @@ namespace Spelldawn.Tools
     {
 #if UNITY_EDITOR
       var defines = new List<string>();
-      if (EditorPrefs.GetBool(UseProductionServer.SettingName))
+      if (EditorPrefs.GetBool(UseDevelopmentServer.SettingName))
       {
-        defines.Add(UseProductionServer.DefineName);
+        defines.Add(UseDevelopmentServer.DefineName);
       }
       
       PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Android, defines.ToArray());

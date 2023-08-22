@@ -38,26 +38,23 @@ namespace Spelldawn.Services
 {
   public sealed class ActionService : MonoBehaviour
   {
-    const string LocalServerAddress = "http://localhost";
-    const string ProductionServerAddress = "https://trunk.spelldawn.com";
+    const string DevelopmentServerAddress = "http://localhost";
     
 #if UNITY_EDITOR    
-    public bool DevelopmentMode { get; set; } = true;
-#else    
-    public bool DevelopmentMode { get; set; } = false;
+    public bool DevelopmentMode() => UseDevelopmentServer.ShouldUseDevelopmentServerInEditor;
+#elif USE_DEVELOPMENT_SERVER
+    public bool DevelopmentMode() => true;
+#else
+    public bool DevelopmentMode() => false;
 #endif
-
-    static string ServerAddress() =>
-      UseProductionServer.ShouldUseProductionServer ? ProductionServerAddress : LocalServerAddress;
     
     readonly Lazy<Protos.Spelldawn.SpelldawnClient> _client = new(() => new Protos.Spelldawn.SpelldawnClient(
       GrpcChannel.ForAddress(
-        ServerAddress(),
+        DevelopmentServerAddress,
         new GrpcChannelOptions
         {
           HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
-          Credentials = UseProductionServer.ShouldUseProductionServer ? 
-            ChannelCredentials.SecureSsl : ChannelCredentials.Insecure,
+          Credentials = ChannelCredentials.Insecure,
           CompressionProviders = new List<ICompressionProvider>
           {
             new GzipCompressionProvider(CompressionLevel.Optimal)
@@ -124,7 +121,7 @@ namespace Spelldawn.Services
         StartCoroutine(HandleActionAsync(next));
       }
 
-      if (!DevelopmentMode)
+      if (!DevelopmentMode())
       {
         var pollCommands = Plugin.Poll(new PollRequest
         {
@@ -160,9 +157,9 @@ namespace Spelldawn.Services
         PlayerId = Errors.CheckNotNull(_playerIdentifier),
       };
 
-      if (DevelopmentMode)
+      if (DevelopmentMode())
       {
-        LogUtils.Log($"Connecting to {ServerAddress()}");
+        LogUtils.Log($"Connecting to {DevelopmentServerAddress}");
         using var call = _client.Value.Connect(request);
 
         try
@@ -231,7 +228,7 @@ namespace Spelldawn.Services
       };
       request.OpenPanels.AddRange(_registry.DocumentService.OpenPanels);
 
-      if (DevelopmentMode)
+      if (DevelopmentMode())
       {
         float startTime = 0;
         if (LogRpcTime.ShouldLogRpcTime)
@@ -245,7 +242,7 @@ namespace Spelldawn.Services
         {
           yield return new WaitForSeconds(5f);
         }
-        else if (!NoNetworkDelay.ShouldRemoveNetworkDelay && !UseProductionServer.ShouldUseProductionServer)
+        else if (!NoNetworkDelay.ShouldRemoveNetworkDelay && DevelopmentMode())
         {
           yield return new WaitForSeconds(Random.Range(0.25f, 0.75f));
         }
@@ -271,7 +268,7 @@ namespace Spelldawn.Services
             _attemptReconnect = true;
             if (!DoNotLogRpcErrors.ShouldSkipLoggingRpcErrors)
             {
-              LogUtils.Log($"Error connecting to {LocalServerAddress}: {call.GetStatus().Detail}");
+              LogUtils.Log($"Error connecting to {DevelopmentServerAddress}: {call.GetStatus().Detail}");
             }
 
             break;

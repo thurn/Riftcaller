@@ -36,6 +36,8 @@ namespace Spelldawn.Services
     [SerializeField] Registry _registry = null!;
     [SerializeField] RenderTexture _studioRenderTexture = null!;
     [SerializeField] DevelopmentAssets _developmentAssets = null!;
+    [SerializeField] CharacterPreset _championPreset = null!;
+    [SerializeField] CharacterPreset _overlordPreset = null!; 
     bool _anyCompleted;
 
     readonly Dictionary<string, Object> _assets = new();
@@ -105,8 +107,15 @@ namespace Spelldawn.Services
       {
         return null;
       }
-      
-      return UseProductionAssets.ShouldUseProductionAssets ? Get<CharacterPreset>(address.Address) : null;      
+
+      if (address.Address.Contains("Champion"))
+      {
+        return _championPreset;
+      }
+      else
+      {
+        return _overlordPreset;
+      }
     }
     
     public IEnumerator LoadAssets(CommandList commandList)
