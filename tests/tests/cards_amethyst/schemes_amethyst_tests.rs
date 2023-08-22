@@ -57,21 +57,24 @@ fn research_project() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::ResearchProject);
     g.level_up_room_times(2);
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     g.level_up_room_times(1);
     assert_eq!(3, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(6, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(10, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    assert_eq!(9, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(13, g.user.cards.hand(PlayerName::User).len());
 }

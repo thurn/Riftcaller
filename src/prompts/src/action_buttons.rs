@@ -27,6 +27,8 @@ use crate::response_button::ResponseButton;
 pub fn for_prompt(game: &GameState, side: Side, action: PromptAction) -> ResponseButton {
     match action {
         PromptAction::MulliganDecision(data) => mulligan_button(data),
+        PromptAction::StartTurnAction => ResponseButton::new("Start Turn"),
+        PromptAction::EndTurnAction => ResponseButton::new("End Turn"),
         PromptAction::SummonAction(data) => summon_button(game, data),
         PromptAction::EncounterAction(data) => encounter_action_button(game, side, data),
         PromptAction::AccessPhaseAction(data) => access_button(data),

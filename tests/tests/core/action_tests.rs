@@ -103,14 +103,16 @@ fn maximum_hand_size() {
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(4, g.user.cards.hand(PlayerName::User).len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(8, g.user.cards.hand(PlayerName::User).len());
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Overlord);
     assert_eq!(vec!["Test Minion End Raid"], g.user.cards.discard_pile(PlayerName::User));
 }
 
@@ -301,10 +303,11 @@ fn overlord_win_game() {
 #[test]
 fn switch_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(5)).actions(3).build();
-    g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()).unwrap();
-    g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()).unwrap();
-    let response = g.perform_action(Action::GainMana(GainManaAction {}), g.user_id());
-    assert_snapshot!(Summary::run(&response));
+    g.perform(Action::GainMana(GainManaAction {}), g.user_id());
+    g.perform(Action::GainMana(GainManaAction {}), g.user_id());
+    g.perform(Action::GainMana(GainManaAction {}), g.user_id());
+    g.click_on(g.user_id(), "End Turn");
+    g.click_on(g.opponent_id(), "Start Turn");
 
     assert_eq!(8, g.me().mana());
     assert_eq!(8, g.opponent.other_player.mana());
@@ -366,9 +369,9 @@ fn activate_ability_take_all_mana() {
         );
         taken += test_constants::MANA_TAKEN;
 
-        g.spend_actions_until_turn_over(Side::Champion);
+        g.end_turn(Side::Champion);
         assert!(g.dusk());
-        g.spend_actions_until_turn_over(Side::Overlord);
+        g.end_turn(Side::Overlord);
         assert!(g.dawn());
     }
 
@@ -400,9 +403,9 @@ fn triggered_unveil_ability() {
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
         g.user.this_player.mana()
     );
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Overlord);
     assert!(g.dawn());
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Champion);
     assert!(g.dusk());
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
@@ -418,9 +421,10 @@ fn triggered_unveil_ability() {
 fn triggered_ability_cannot_unveil() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0)).actions(1).build();
     g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    g.end_turn(Side::Overlord);
     assert!(g.dawn());
     assert_eq!(0, g.user.this_player.mana());
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Champion);
     assert!(g.dusk());
     assert_eq!(0, g.user.this_player.mana());
     assert_eq!(0, g.opponent.other_player.mana());
@@ -431,13 +435,15 @@ fn triggered_ability_take_all_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
     g.unveil_card(id);
+    g.end_turn(Side::Overlord);
+
     let mut taken = 0;
     while taken < test_constants::MANA_STORED {
         assert!(g.dawn());
-        g.spend_actions_until_turn_over(Side::Champion);
+        g.end_turn(Side::Champion);
         assert!(g.dusk());
         taken += test_constants::MANA_TAKEN;
-        g.spend_actions_until_turn_over(Side::Overlord);
+        g.end_turn(Side::Overlord);
     }
 
     assert_eq!(

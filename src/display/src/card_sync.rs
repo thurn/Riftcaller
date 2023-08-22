@@ -268,8 +268,9 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
                 flags::can_take_unveil_card_action(game, Side::Overlord, card_id)
             })
         }),
-        on_release_position: context
-            .query_or_none(|_, card| positions::for_unveil_card(card, positions::staging())),
+        on_release_position: context.query_or_none(|_, card| {
+            positions::for_unveil_card(card, positions::parent_card(card_id))
+        }),
         supplemental_info: supplemental_info::build(context, None),
     })
 }

@@ -28,7 +28,7 @@ fn meditation() {
     assert_eq!(1, g.me().actions());
     g.create_and_play(CardName::Meditation);
     assert_eq!(13, g.me().mana());
-    assert!(g.dusk());
+    assert!(g.has_button(Buttons::EndTurn));
 }
 
 #[test]
@@ -89,6 +89,6 @@ fn preparation() {
     assert_eq!(4, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(1, g.me().actions());
     g.create_and_play(CardName::Preparation);
-    assert_eq!(7, g.user.cards.hand(PlayerName::User).len()); // One discarded to hand size
-    assert!(g.dusk());
+    assert_eq!(8, g.user.cards.hand(PlayerName::User).len());
+    assert!(g.has_button(Buttons::EndTurn));
 }

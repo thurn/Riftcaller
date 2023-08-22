@@ -23,7 +23,7 @@ use game_data::delegates::{
     CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
     CardEncounter, Flag,
 };
-use game_data::game::{GamePhase, GameState};
+use game_data::game::{GamePhase, GameState, TurnState};
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{AbilityId, CardId, CardType, Lineage, RaidId, RoomId, Side};
 
@@ -70,7 +70,7 @@ pub fn can_take_play_card_action(
     card_id: CardId,
     target: CardTarget,
 ) -> bool {
-    let mut can_play = in_main_phase(game, side)
+    let mut can_play = in_main_phase_with_action_point(game, side)
         && side == card_id.side
         && game.card(card_id).position() == CardPosition::Hand(side)
         && is_valid_target(game, card_id, target)
@@ -103,7 +103,7 @@ pub fn can_take_activate_ability_action(
         return false;
     }
 
-    let mut can_activate = in_main_phase(game, side)
+    let mut can_activate = in_main_phase_with_action_point(game, side)
         && side == ability_id.card_id.side
         && cost.actions <= game.player(side).actions
         && card.is_face_up()
@@ -205,14 +205,14 @@ pub fn enters_play_in_room(game: &GameState, card_id: CardId) -> bool {
 /// Returns whether the indicated player can currently take the basic game
 /// action to draw a card.
 pub fn can_take_draw_card_action(game: &GameState, side: Side) -> bool {
-    let can_draw = in_main_phase(game, side) && game.deck(side).next().is_some();
+    let can_draw = in_main_phase_with_action_point(game, side) && game.deck(side).next().is_some();
     dispatch::perform_query(game, CanTakeDrawCardActionQuery(side), Flag::new(can_draw)).into()
 }
 
 /// Returns whether the indicated player can currently take the basic game
 /// action to gain one mana.
 pub fn can_take_gain_mana_action(game: &GameState, side: Side) -> bool {
-    let can_gain_mana = in_main_phase(game, side);
+    let can_gain_mana = in_main_phase_with_action_point(game, side);
     dispatch::perform_query(game, CanTakeGainManaActionQuery(side), Flag::new(can_gain_mana)).into()
 }
 
@@ -223,7 +223,7 @@ pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: Room
     let can_initiate = non_empty
         && side == Side::Champion
         && game.info.raid.is_none()
-        && in_main_phase(game, side);
+        && in_main_phase_with_action_point(game, side);
     dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(can_initiate)).into()
 }
 
@@ -237,7 +237,7 @@ pub fn can_take_level_up_room_action(game: &GameState, side: Side, room_id: Room
     let can_level_up = has_level_card
         && side == Side::Overlord
         && mana::get(game, side, ManaPurpose::LevelUpRoom(room_id)) > 0
-        && in_main_phase(game, side);
+        && in_main_phase_with_action_point(game, side);
     dispatch::perform_query(game, CanLevelUpRoomQuery(room_id), Flag::new(can_level_up)).into()
 }
 
@@ -297,13 +297,26 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
     .into()
 }
 
+/// Returns true if the `side` player is in their main phase as described in
+/// [in_main_phase] and they have more than zero action points available.
+pub fn in_main_phase_with_action_point(game: &GameState, side: Side) -> bool {
+    in_main_phase(game, side) && game.player(side).actions > 0
+}
+
 /// Returns true if the provided `side` player is currently in their Main phase
 /// with no pending prompt responses, and thus can take a primary game action.
 pub fn in_main_phase(game: &GameState, side: Side) -> bool {
-    game.player(side).actions > 0
-        && matches!(&game.info.phase, GamePhase::Play)
+    can_take_game_actions(game)
         && game.info.turn.side == side
+        && game.info.turn_state != TurnState::Ended
         && game.info.raid.is_none()
+}
+
+/// Returns true if either player can currently take game standard game actions
+/// This generally means the game is currently in progress and neither player is
+/// facing a card prompt.
+pub fn can_take_game_actions(game: &GameState) -> bool {
+    game.info.phase.is_playing()
         && game.overlord.card_prompt_queue.is_empty()
         && game.champion.card_prompt_queue.is_empty()
 }
@@ -311,19 +324,42 @@ pub fn in_main_phase(game: &GameState, side: Side) -> bool {
 /// Can the Champion choose to not use a weapon ability when encountering
 /// the indicated minion card?
 pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool {
-    dispatch::perform_query(game, CanUseNoWeaponQuery(card_id), Flag::new(true)).into()
+    dispatch::perform_query(
+        game,
+        CanUseNoWeaponQuery(card_id),
+        Flag::new(can_take_game_actions(game)),
+    )
+    .into()
 }
 
 /// Can the Champion choose to use the 'End Raid' button to end the access
 /// phase of a raid?
 pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) -> bool {
-    dispatch::perform_query(game, CanEndRaidAccessPhaseQuery(raid_id), Flag::new(true)).into()
+    dispatch::perform_query(
+        game,
+        CanEndRaidAccessPhaseQuery(raid_id),
+        Flag::new(can_take_game_actions(game)),
+    )
+    .into()
 }
 
 /// Is the `side` player currently able to unveil the provided card?
 pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId) -> bool {
-    side == Side::Overlord
+    can_take_game_actions(game)
+        && side == Side::Overlord
         && game.card(card_id).is_face_down()
         && game.card(card_id).position().in_play()
         && can_pay_card_cost(game, card_id)
+}
+
+/// Returns whether a player can currently take the 'end turn' action.
+pub fn can_take_end_turn_action(game: &GameState, side: Side) -> bool {
+    in_main_phase(game, side) && game.player(side).actions == 0
+}
+
+/// Returns whether a player can currently take the 'start turn' action.
+pub fn can_take_start_turn_action(game: &GameState, side: Side) -> bool {
+    can_take_game_actions(game)
+        && game.info.turn.side == side.opponent()
+        && game.info.turn_state == TurnState::Ended
 }

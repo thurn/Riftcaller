@@ -41,6 +41,18 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
                 },
             );
         }
+    } else if flags::can_take_start_turn_action(game, side) {
+        return prompts::action_prompt(
+            game,
+            side,
+            &GamePrompt { context: None, responses: vec![PromptAction::StartTurnAction] },
+        );
+    } else if flags::can_take_end_turn_action(game, side) {
+        return prompts::action_prompt(
+            game,
+            side,
+            &GamePrompt { context: None, responses: vec![PromptAction::EndTurnAction] },
+        );
     }
 
     Ok(None)

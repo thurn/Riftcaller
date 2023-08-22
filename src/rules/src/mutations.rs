@@ -33,7 +33,7 @@ use game_data::delegates::{
     RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
     SummonMinionEvent, UnveilCardEvent,
 };
-use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData};
+use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData, TurnState};
 use game_data::game_actions::{CardPromptAction, GamePrompt};
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
@@ -261,7 +261,6 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
     }
     dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;
     game.info.raid = None;
-    check_end_turn(game)?;
     Ok(())
 }
 
@@ -331,39 +330,6 @@ fn check_minion_limit(game: &mut GameState, room_id: RoomId) -> Result<()> {
         let first = game.defender_list(room_id)[0];
         move_card(game, first, CardPosition::DiscardPile(Side::Overlord))?;
     }
-    Ok(())
-}
-
-/// Invoked after taking a game action to check if the turn should be switched
-/// for the provided player.
-pub fn check_end_turn(game: &mut GameState) -> Result<()> {
-    if !matches!(game.info.phase, GamePhase::Play) {
-        return Ok(());
-    }
-
-    let turn = game.info.turn;
-    let side = turn.side;
-
-    if game.player(side).actions == 0 && game.info.raid.is_none() {
-        let max_hand_size = queries::maximum_hand_size(game, side) as usize;
-        let hand = game.card_list_for_position(side, CardPosition::Hand(side));
-
-        if hand.len() > max_hand_size {
-            // Discard to hand size
-            let count = hand.len() - max_hand_size;
-            for card_id in hand.iter().take(count) {
-                move_card(game, *card_id, CardPosition::DiscardPile(side))?;
-            }
-        }
-
-        let turn_number = match side {
-            Side::Overlord => turn.turn_number,
-            Side::Champion => turn.turn_number + 1,
-        };
-        let next_side = side.opponent();
-        start_turn(game, next_side, turn_number)?;
-    }
-
     Ok(())
 }
 
@@ -461,9 +427,10 @@ pub fn unveil_card_ignoring_costs(game: &mut GameState, card_id: CardId) -> Resu
 }
 
 /// Starts the turn for the `next_side` player.
-fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber) -> Result<()> {
+pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber) -> Result<()> {
     game.info.phase = GamePhase::Play;
     game.info.turn = TurnData { side: next_side, turn_number };
+    game.info.turn_state = TurnState::Active;
 
     debug!(?next_side, "Starting player turn");
     game.record_update(|| GameUpdate::StartTurn(next_side));

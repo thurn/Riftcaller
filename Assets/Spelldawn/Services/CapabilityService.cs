@@ -86,7 +86,7 @@ namespace Spelldawn.Services
       ClientAction.ActionOneofCase.FetchPanel => true,
       ClientAction.ActionOneofCase.GainMana => CanAct(),
       ClientAction.ActionOneofCase.DrawCard => CanAct(),
-      ClientAction.ActionOneofCase.PlayCard => CanAct(),
+      ClientAction.ActionOneofCase.PlayCard => CanAct(actionPointRequired: false),
       ClientAction.ActionOneofCase.LevelUpRoom => CanAct(),
       ClientAction.ActionOneofCase.InitiateRaid => CanAct(),
       _ => false

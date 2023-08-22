@@ -24,7 +24,9 @@ use game_data::card_state::CardPosition;
 use game_data::delegates::{
     AbilityActivated, ActivateAbilityEvent, CardPlayed, CastCardEvent, DrawCardActionEvent,
 };
-use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent, MulliganDecision};
+use game_data::game::{
+    GamePhase, GameState, HistoryEntry, HistoryEvent, MulliganDecision, TurnState,
+};
 use game_data::game_actions::{CardTarget, GameAction, PromptAction};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
@@ -68,16 +70,21 @@ pub fn handle_game_action(
 /// Returns true if the indicated player currently has a legal game action
 /// available to them.
 pub fn has_priority(game: &GameState, side: Side) -> bool {
+    if !game.player(side).card_prompt_queue.is_empty() {
+        return true;
+    }
+
     match &game.info.phase {
         GamePhase::ResolveMulligans(_) => return flags::can_make_mulligan_decision(game, side),
         GamePhase::GameOver { .. } => return false,
         _ => {}
     };
 
-    match &game.info.raid {
-        Some(raid) => side == raid.phase().active_side(),
-        None => side == game.info.turn.side,
+    if let Some(raid) = &game.info.raid {
+        return side == raid.phase().active_side();
     }
+
+    flags::in_main_phase(game, side) || flags::can_take_start_turn_action(game, side)
 }
 
 fn handle_resign_action(game: &mut GameState, side: Side) -> Result<()> {
@@ -85,43 +92,6 @@ fn handle_resign_action(game: &mut GameState, side: Side) -> Result<()> {
     if !matches!(game.info.phase, GamePhase::GameOver { .. }) {
         mutations::game_over(game, side.opponent())?;
     }
-    Ok(())
-}
-
-/// Handles a choice to keep or mulligan an opening hand
-fn handle_mulligan_decision(
-    game: &mut GameState,
-    user_side: Side,
-    decision: MulliganDecision,
-) -> Result<()> {
-    verify!(
-        flags::can_make_mulligan_decision(game, user_side),
-        "Cannot make mulligan decision for {:?}",
-        user_side
-    );
-
-    debug!(?user_side, ?decision, "Applying mulligan action");
-    let mut mulligans = match &mut game.info.phase {
-        GamePhase::ResolveMulligans(mulligans) => mulligans,
-        _ => fail!("Incorrect game phase"),
-    };
-
-    match user_side {
-        Side::Overlord => mulligans.overlord = Some(decision),
-        Side::Champion => mulligans.champion = Some(decision),
-    }
-
-    let hand = game.card_list_for_position(user_side, CardPosition::Hand(user_side));
-    match decision {
-        MulliganDecision::Keep => {}
-        MulliganDecision::Mulligan => {
-            mutations::shuffle_into_deck(game, user_side, &hand)?;
-            mutations::draw_cards(game, user_side, 5)?;
-        }
-    }
-
-    mutations::check_start_game(game)?;
-
     Ok(())
 }
 
@@ -142,7 +112,6 @@ fn draw_card_action(game: &mut GameState, user_side: Side) -> Result<()> {
         dispatch::invoke_event(game, DrawCardActionEvent(*card_id))?;
     }
 
-    mutations::check_end_turn(game)?;
     Ok(())
 }
 
@@ -191,7 +160,6 @@ fn play_card_action(
 
     game.history
         .push(HistoryEntry { turn: game.info.turn, event: HistoryEvent::PlayedCard(card_id) });
-    mutations::check_end_turn(game)?;
     Ok(())
 }
 
@@ -232,7 +200,6 @@ fn activate_ability_action(
     dispatch::invoke_event(game, ActivateAbilityEvent(AbilityActivated { ability_id, target }))?;
 
     game.ability_state.entry(ability_id).or_default().currently_resolving = false;
-    mutations::check_end_turn(game)?;
     Ok(())
 }
 
@@ -262,7 +229,6 @@ fn gain_mana_action(game: &mut GameState, user_side: Side) -> Result<()> {
     debug!(?user_side, "Applying gain mana action");
     mutations::spend_action_points(game, user_side, 1)?;
     mana::gain(game, user_side, 1);
-    mutations::check_end_turn(game)?;
     Ok(())
 }
 
@@ -277,14 +243,16 @@ fn level_up_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) 
     mana::spend(game, user_side, ManaPurpose::LevelUpRoom(room_id), 1)?;
     game.record_update(|| GameUpdate::LevelUpRoom(room_id, InitiatedBy::GameAction));
     mutations::level_up_room(game, room_id)?;
-    mutations::check_end_turn(game)?;
     Ok(())
 }
 
 fn spend_action_point_action(game: &mut GameState, user_side: Side) -> Result<()> {
-    verify!(flags::in_main_phase(game, user_side), "Cannot spend action point for {:?}", user_side);
+    verify!(
+        flags::in_main_phase_with_action_point(game, user_side),
+        "Cannot spend action point for {:?}",
+        user_side
+    );
     mutations::spend_action_points(game, user_side, 1)?;
-    mutations::check_end_turn(game)?;
     Ok(())
 }
 
@@ -307,9 +275,84 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         PromptAction::MulliganDecision(mulligan) => {
             handle_mulligan_decision(game, user_side, mulligan)
         }
+        PromptAction::StartTurnAction => handle_start_turn_action(game, user_side),
+        PromptAction::EndTurnAction => handle_end_turn_action(game, user_side),
         PromptAction::SummonAction(_)
         | PromptAction::EncounterAction(_)
         | PromptAction::AccessPhaseAction(_) => raids::handle_action(game, user_side, action),
         PromptAction::CardAction(card_action) => card_prompt::handle(game, user_side, card_action),
     }
+}
+
+/// Handles a choice to keep or mulligan an opening hand
+fn handle_mulligan_decision(
+    game: &mut GameState,
+    user_side: Side,
+    decision: MulliganDecision,
+) -> Result<()> {
+    verify!(
+        flags::can_make_mulligan_decision(game, user_side),
+        "Cannot make mulligan decision for {:?}",
+        user_side
+    );
+
+    debug!(?user_side, ?decision, "Applying mulligan action");
+    let mut mulligans = match &mut game.info.phase {
+        GamePhase::ResolveMulligans(mulligans) => mulligans,
+        _ => fail!("Incorrect game phase"),
+    };
+
+    match user_side {
+        Side::Overlord => mulligans.overlord = Some(decision),
+        Side::Champion => mulligans.champion = Some(decision),
+    }
+
+    let hand = game.card_list_for_position(user_side, CardPosition::Hand(user_side));
+    match decision {
+        MulliganDecision::Keep => {}
+        MulliganDecision::Mulligan => {
+            mutations::shuffle_into_deck(game, user_side, &hand)?;
+            mutations::draw_cards(game, user_side, 5)?;
+        }
+    }
+
+    mutations::check_start_game(game)?;
+
+    Ok(())
+}
+
+fn handle_start_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
+    verify!(flags::can_take_start_turn_action(game, user_side), "Cannot start turn");
+
+    let turn = game.info.turn;
+    let side = turn.side;
+
+    let turn_number = match side {
+        Side::Overlord => turn.turn_number,
+        Side::Champion => turn.turn_number + 1,
+    };
+
+    let next_side = side.opponent();
+    mutations::start_turn(game, next_side, turn_number)
+}
+
+fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
+    verify!(flags::can_take_end_turn_action(game, user_side), "Cannot end turn");
+
+    let turn = game.info.turn;
+    let side = turn.side;
+
+    let max_hand_size = queries::maximum_hand_size(game, side) as usize;
+    let hand = game.card_list_for_position(side, CardPosition::Hand(side));
+
+    if hand.len() > max_hand_size {
+        // Discard to hand size
+        let count = hand.len() - max_hand_size;
+        for card_id in hand.iter().take(count) {
+            mutations::move_card(game, *card_id, CardPosition::DiscardPile(side))?;
+        }
+    }
+
+    game.info.turn_state = TurnState::Ended;
+    Ok(())
 }

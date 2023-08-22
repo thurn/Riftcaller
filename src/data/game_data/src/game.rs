@@ -185,21 +185,38 @@ impl MulliganData {
     }
 }
 
-/// Identifies the player whose turn it is
+/// Identifies a turn within the game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct TurnData {
-    /// Current player whose turn it is
+    /// Player whose turn it was.
     pub side: Side,
     /// Turn number for that player
     pub turn_number: TurnNumber,
 }
 
-/// High level status of a game, including e.g. whose turn it is
+/// High level status of a game
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub enum GamePhase {
     ResolveMulligans(MulliganData),
     Play,
     GameOver { winner: Side },
+}
+
+impl GamePhase {
+    /// Returns true if the current game phase is [GamePhase::Play].
+    pub fn is_playing(&self) -> bool {
+        *self == GamePhase::Play
+    }
+}
+
+/// Information about the state of the current turn.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum TurnState {
+    /// The active player is playing their turn
+    Active,
+    /// The active player has ended their turn, their opponent can now elect to
+    /// use effects or start their own turn.
+    Ended,
 }
 
 /// Information about the overall game, including whose turn it is and whether a
@@ -210,6 +227,8 @@ pub struct GameInfo {
     pub phase: GamePhase,
     /// Identifies current game turn
     pub turn: TurnData,
+    /// State of the current turn
+    pub turn_state: TurnState,
     /// Data about an ongoing raid, if any
     pub raid: Option<RaidData>,
     /// Counter to create unique IDs for raids within this game
@@ -309,6 +328,7 @@ impl GameState {
             info: GameInfo {
                 phase: GamePhase::ResolveMulligans(MulliganData::default()),
                 turn: TurnData { side: Side::Overlord, turn_number: 0 },
+                turn_state: TurnState::Active,
                 raid: None,
                 next_raid_id: 1,
                 tutorial_state: GameTutorialState::default(),

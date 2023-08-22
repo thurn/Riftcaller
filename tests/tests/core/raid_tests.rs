@@ -23,7 +23,7 @@ use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     ClientRoomLocation, GainManaAction, InitiateRaidAction, ObjectPositionBrowser,
     ObjectPositionCharacter, ObjectPositionCharacterContainer, ObjectPositionDiscardPile,
-    ObjectPositionRaid, ObjectPositionRoom, PlayerName, SpendActionPointAction,
+    ObjectPositionRaid, ObjectPositionRoom, PlayerName,
 };
 use test_utils::client_interface::HasText;
 use test_utils::summarize::Summary;
@@ -298,8 +298,8 @@ fn complete_raid() {
 
     // Set up the raid to be the last action of a turn
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
-    g.perform(Action::SpendActionPoint(SpendActionPointAction {}), g.user_id());
-    g.perform(Action::SpendActionPoint(SpendActionPointAction {}), g.user_id());
+    g.spend_action_point(Side::Champion);
+    g.spend_action_point(Side::Champion);
 
     g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);
@@ -310,10 +310,9 @@ fn complete_raid() {
 
     assert_eq!(g.user.this_player.score(), 15);
     assert_eq!(g.opponent.other_player.score(), 15);
-    assert!(g.user.other_player.can_take_action());
-    assert!(g.opponent.this_player.can_take_action());
-    assert_eq!(g.opponent.interface.main_controls_option(), None);
-    assert_eq!(g.user.interface.main_controls_option(), None);
+    assert!(g.user.this_player.can_take_action());
+    assert!(g.opponent.other_player.can_take_action());
+    assert!(g.has_text("End Turn"));
     assert!(!g.user.data.raid_active()); // Raid no longer active
     assert!(!g.opponent.data.raid_active());
 
@@ -341,6 +340,7 @@ fn cannot_activate() {
 
     g.create_and_play(CardName::TestScheme3_15);
     g.create_and_play(CardName::TestMinionEndRaid);
+    g.end_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let response = g.initiate_raid(test_constants::ROOM_ID);
@@ -353,7 +353,7 @@ fn cannot_activate() {
 fn raze_project() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
     let project_id = g.create_and_play(CardName::TestProject2Cost3Raze);
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Overlord);
     g.initiate_raid(test_constants::ROOM_ID);
 
     assert!(g.user.interface.controls().has_text("Destroy"));
@@ -383,6 +383,8 @@ fn raid_vault() {
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     g.click(Buttons::Summon);
@@ -400,6 +402,8 @@ fn raid_sanctum() {
 
     g.add_to_hand(CardName::TestScheme3_15);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Sanctum);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Sanctum);
     g.click(Buttons::Summon);
@@ -418,6 +422,8 @@ fn raid_crypts() {
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Crypts);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Crypts);
     g.click(Buttons::Summon);
@@ -436,6 +442,8 @@ fn raid_vault_twice() {
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     g.click(Buttons::Summon);
@@ -470,6 +478,8 @@ fn raid_no_defenders() {
         .build();
 
     g.create_and_play(CardName::TestScheme3_15);
+    g.end_turn(Side::Overlord);
+
     let response = g.initiate_raid(test_constants::ROOM_ID);
     // Should immediately jump to the Score action
     assert!(g.user.interface.controls().has_text("Score"));
@@ -497,6 +507,8 @@ fn raid_no_occupants() {
         .build();
 
     g.create_and_play(CardName::TestMinionEndRaid);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let result = g.perform_action(
         Action::InitiateRaid(InitiateRaidAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
@@ -527,6 +539,8 @@ fn raid_two_defenders() {
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     g.click(Buttons::Summon);
@@ -547,6 +561,8 @@ fn raid_two_defenders_full_raid() {
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     g.click(Buttons::Summon);
@@ -564,7 +580,7 @@ fn raid_deal_damage_game_over() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
 
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Overlord);
     assert!(g.dawn());
 
     g.initiate_raid(RoomId::Vault);
@@ -584,6 +600,8 @@ fn raid_two_defenders_cannot_afford_second() {
 
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.end_turn(Side::Overlord);
+
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
     g.click(Buttons::Summon);
@@ -603,6 +621,7 @@ fn raid_add_defender() {
 
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestScheme3_15);
+    g.end_turn(Side::Overlord);
     assert!(g.dawn());
 
     // Skip one action point.
@@ -622,12 +641,14 @@ fn raid_add_defender() {
     g.click_on(g.user_id(), "Score");
     g.click_on(g.user_id(), "End Raid");
     assert!(!g.user.data.raid_active());
+    g.end_turn(Side::Champion);
 
     // Opponent Turn
     assert!(g.dusk());
     g.create_and_play(CardName::TestMinionDealDamage);
     g.create_and_play(CardName::TestScheme3_15);
     g.perform(Action::GainMana(GainManaAction {}), g.opponent_id());
+    g.end_turn(Side::Overlord);
 
     // User Turn, Raid 3
     assert!(g.dawn());

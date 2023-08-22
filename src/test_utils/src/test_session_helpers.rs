@@ -60,8 +60,6 @@ pub trait TestSessionHelpers {
     /// Levels up the [test_constants::CLIENT_ROOM_ID] room a specified number
     /// of `times`. If this requires multiple turns, spends the Champion turns
     /// doing nothing.
-    ///
-    /// NOTE that this may cause the Champion to draw cards for their turn.
     fn level_up_room_times(&mut self, times: u32);
 
     /// Helper to take the [PlayCardAction] with a given card ID.
@@ -104,8 +102,8 @@ pub trait TestSessionHelpers {
     fn spend_action_point(&mut self, side: Side);
 
     /// Spends the `side` player's action points with no effect until they have
-    /// no action points remaining.
-    fn spend_actions_until_turn_over(&mut self, side: Side);
+    /// no action points remaining, then starts their opponent's next turn.
+    fn end_turn(&mut self, side: Side);
 
     /// Returns true if the last-received Game Message was 'Dawn'.
     fn dawn(&self) -> bool;
@@ -228,8 +226,9 @@ impl TestSessionHelpers for TestSession {
                 }
             }
 
+            self.end_turn(Side::Overlord);
             assert!(self.dawn());
-            self.spend_actions_until_turn_over(Side::Champion);
+            self.end_turn(Side::Champion);
             assert!(self.dusk());
         }
     }
@@ -289,11 +288,16 @@ impl TestSessionHelpers for TestSession {
         self.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
     }
 
-    fn spend_actions_until_turn_over(&mut self, side: Side) {
+    fn end_turn(&mut self, side: Side) {
         let id = self.player_id_for_side(side);
         while self.player(id).this_player.actions() > 0 {
             self.spend_action_point(side);
         }
+
+        self.click_on(id, "End Turn");
+
+        let opponent_id = self.player_id_for_side(side.opponent());
+        self.click_on(opponent_id, "Start Turn");
     }
 
     fn dawn(&self) -> bool {
@@ -318,7 +322,7 @@ impl TestSessionHelpers for TestSession {
 
     fn set_up_minion_combat_with_action(&mut self, action: impl FnOnce(&mut TestSession)) {
         self.create_and_play(CardName::TestScheme3_15);
-        self.spend_actions_until_turn_over(Side::Overlord);
+        self.end_turn(Side::Overlord);
         assert!(self.dawn());
         action(self);
         self.initiate_raid(test_constants::ROOM_ID);
@@ -326,11 +330,11 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier) {
-        self.spend_actions_until_turn_over(Side::Champion);
+        self.end_turn(Side::Champion);
         assert!(self.dusk());
         let scheme_id = self.create_and_play(CardName::TestScheme3_15);
         let minion_id = self.create_and_play(card_name);
-        self.spend_actions_until_turn_over(Side::Overlord);
+        self.end_turn(Side::Overlord);
         assert!(self.dawn());
         (scheme_id, minion_id)
     }

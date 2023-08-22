@@ -91,6 +91,10 @@ pub enum CardPromptAction {
 pub enum PromptAction {
     /// Action to keep or mulligan opening hand
     MulliganDecision(MulliganDecision),
+    /// Action for a player to end their turn.
+    EndTurnAction,
+    /// Action for a player to begin their next turn.
+    StartTurnAction,
     /// Overlord action during a raid to decide whether to summon a defending
     /// minion.
     SummonAction(SummonAction),
@@ -106,6 +110,8 @@ impl fmt::Debug for PromptAction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::MulliganDecision(d) => write!(f, "{d:?}"),
+            Self::StartTurnAction => write!(f, "StartTurn"),
+            Self::EndTurnAction => write!(f, "EndTurn"),
             Self::SummonAction(a) => write!(f, "{a:?}"),
             Self::EncounterAction(a) => write!(f, "{a:?}"),
             Self::AccessPhaseAction(a) => write!(f, "{a:?}"),

@@ -52,18 +52,18 @@ fn mana_battery() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::ManaBattery);
     g.activate_ability(id, 1);
-    g.spend_actions_until_turn_over(Side::Champion);
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Champion);
+    g.end_turn(Side::Overlord);
     assert!(g.dawn());
     assert_eq!(test_constants::STARTING_MANA - card_cost + 1, g.me().mana());
-    g.spend_actions_until_turn_over(Side::Champion);
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Champion);
+    g.end_turn(Side::Overlord);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 2, g.me().mana());
-    g.spend_actions_until_turn_over(Side::Champion);
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Champion);
+    g.end_turn(Side::Overlord);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
-    g.spend_actions_until_turn_over(Side::Champion);
-    g.spend_actions_until_turn_over(Side::Overlord);
+    g.end_turn(Side::Champion);
+    g.end_turn(Side::Overlord);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
 }
 

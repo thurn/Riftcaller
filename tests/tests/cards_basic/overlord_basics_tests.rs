@@ -70,14 +70,14 @@ fn leyline() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::Leyline);
     g.unveil_card(id);
-    g.spend_actions_until_turn_over(Side::Overlord);
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained, g.me().mana());
-    g.spend_actions_until_turn_over(Side::Overlord);
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained * 2, g.me().mana());
-    g.spend_actions_until_turn_over(Side::Overlord);
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained * 3, g.me().mana());
 }
 
@@ -89,8 +89,8 @@ fn ore_refinery() {
     assert_eq!(test_constants::STARTING_MANA, g.me().mana());
     g.unveil_card(id);
     assert_eq!(test_constants::STARTING_MANA - card_cost, g.me().mana());
-    g.spend_actions_until_turn_over(Side::Overlord);
-    g.spend_actions_until_turn_over(Side::Champion);
+    g.end_turn(Side::Overlord);
+    g.end_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     assert_eq!((stored - taken).to_string(), g.user.get_card(id).arena_icon());
 }

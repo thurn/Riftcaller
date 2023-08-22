@@ -59,7 +59,7 @@ pub fn evaluate<'a>(
         return Ok(Box::new(actions.into_iter().map(GameAction::PromptAction)));
     }
 
-    if flags::in_main_phase(game, side) {
+    if flags::in_main_phase_with_action_point(game, side) {
         Ok(Box::new(
             enum_iterator::all::<RoomId>()
                 .filter(move |room_id| flags::can_take_initiate_raid_action(game, side, *room_id))
