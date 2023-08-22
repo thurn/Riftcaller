@@ -14,7 +14,7 @@
 
 use std::ops::{Deref, DerefMut};
 
-use actions::legal_actions;
+use actions::{action_flags, legal_actions};
 use ai_core::game_state_node::{GameStateNode, GameStatus};
 use anyhow::Result;
 use game_data::game::{GamePhase, GameState};
@@ -50,7 +50,7 @@ impl GameStateNode for SpelldawnState {
         match self.info.phase {
             GamePhase::GameOver { winner } => GameStatus::Completed { winner },
             _ => {
-                if actions::has_priority(self, Side::Overlord) {
+                if action_flags::has_priority(self, Side::Overlord) {
                     GameStatus::InProgress { current_turn: Side::Overlord }
                 } else {
                     GameStatus::InProgress { current_turn: Side::Champion }

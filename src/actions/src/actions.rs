@@ -16,6 +16,7 @@
 //! from the client. The `handle_user_action` function is the primary
 //! entry-point into the rules engine.
 
+pub mod action_flags;
 pub mod legal_actions;
 
 use anyhow::Result;
@@ -30,7 +31,6 @@ use game_data::game::{
 use game_data::game_actions::{CardTarget, GameAction, PromptAction};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
-use raids::RaidDataExt;
 use rules::mana::ManaPurpose;
 use rules::{card_prompt, dispatch, flags, mana, mutations, queries};
 use tracing::{debug, instrument};
@@ -65,26 +65,6 @@ pub fn handle_game_action(
     }?;
 
     Ok(())
-}
-
-/// Returns true if the indicated player currently has a legal game action
-/// available to them.
-pub fn has_priority(game: &GameState, side: Side) -> bool {
-    if !game.player(side).card_prompt_queue.is_empty() {
-        return true;
-    }
-
-    match &game.info.phase {
-        GamePhase::ResolveMulligans(_) => return flags::can_make_mulligan_decision(game, side),
-        GamePhase::GameOver { .. } => return false,
-        _ => {}
-    };
-
-    if let Some(raid) = &game.info.raid {
-        return side == raid.phase().active_side();
-    }
-
-    flags::in_main_phase(game, side) || flags::can_take_start_turn_action(game, side)
 }
 
 fn handle_resign_action(game: &mut GameState, side: Side) -> Result<()> {
@@ -207,7 +187,7 @@ fn activate_ability_action(
 #[instrument(skip(game))]
 fn unveil_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
     verify!(
-        flags::can_take_unveil_card_action(game, user_side, card_id),
+        action_flags::can_take_unveil_card_action(game, user_side, card_id),
         "Cannot unveil card {:?}",
         card_id
     );

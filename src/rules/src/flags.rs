@@ -52,7 +52,7 @@ pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
 ///
 /// See [can_take_play_card_action] for a function which checks all factors
 /// related to playing a card.
-fn can_pay_card_cost(game: &GameState, card_id: CardId) -> bool {
+pub fn can_pay_card_cost(game: &GameState, card_id: CardId) -> bool {
     let mut can_pay = matches!(queries::mana_cost(game, card_id), Some(cost)
                              if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)));
     if let Some(custom_cost) = &crate::card_definition(game, card_id).cost.custom_cost {
@@ -341,15 +341,6 @@ pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) 
         Flag::new(can_take_game_actions(game)),
     )
     .into()
-}
-
-/// Is the `side` player currently able to unveil the provided card?
-pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId) -> bool {
-    can_take_game_actions(game)
-        && side == Side::Overlord
-        && game.card(card_id).is_face_down()
-        && game.card(card_id).position().in_play()
-        && can_pay_card_cost(game, card_id)
 }
 
 /// Returns whether a player can currently take the 'end turn' action.

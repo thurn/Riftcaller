@@ -30,6 +30,7 @@
 
 use std::time::Instant;
 
+use actions::action_flags;
 use ai_core::agent::{Agent, AgentConfig};
 use ai_game_integration::agents;
 use ai_game_integration::state_node::SpelldawnState;
@@ -164,7 +165,7 @@ async fn send_snapshot_to_player(
 fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>>)> {
     for side in enum_iterator::all::<Side>() {
         if let PlayerId::AI(name) = game.player(side).id {
-            if actions::has_priority(game, side) {
+            if action_flags::has_priority(game, side) {
                 let agent = agents::get(name);
                 if !agent.inactive() {
                     return Some((side, agent));

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use actions::action_flags;
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use core_ui::icons;
@@ -265,7 +266,7 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
         rules_text: Some(rules_text::build(context)),
         targeting: context.query_or_none(|game, _| {
             card_targeting(no_target, false, |_| {
-                flags::can_take_unveil_card_action(game, Side::Overlord, card_id)
+                action_flags::can_take_unveil_card_action(game, Side::Overlord, card_id)
             })
         }),
         on_release_position: context.query_or_none(|_, card| {
