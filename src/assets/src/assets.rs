@@ -36,18 +36,7 @@ pub enum CardIconType {
     Shield,
     LevelRequirement,
     Points,
-}
-
-/// Returns the background scale multiplier to use for a [CardIconType]
-pub fn background_scale(icon_type: CardIconType) -> Option<f32> {
-    Some(match icon_type {
-        CardIconType::Health => 1.5,
-        CardIconType::Attack => 1.75,
-        CardIconType::Shield => 1.1,
-        CardIconType::LevelRequirement => 0.9,
-        CardIconType::Points => 0.35,
-        _ => 1.0,
-    })
+    Raze,
 }
 
 pub fn side_badge(side: Side) -> SpriteAddress {
@@ -58,6 +47,19 @@ pub fn side_badge(side: Side) -> SpriteAddress {
         }
         .to_string(),
     }
+}
+
+/// Returns the background scale multiplier to use for a [CardIconType]
+pub fn icon_background_scale(icon_type: CardIconType) -> Option<f32> {
+    Some(match icon_type {
+        CardIconType::Health => 1.5,
+        CardIconType::Attack => 1.75,
+        CardIconType::Shield => 1.1,
+        CardIconType::LevelRequirement => 0.9,
+        CardIconType::Points => 0.35,
+        CardIconType::Raze => 1.5,
+        _ => 1.0,
+    })
 }
 
 /// Address for a given [CardIconType]
@@ -86,6 +88,9 @@ pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
                 }
                 CardIconType::Points => {
                     "LittleSweetDaemon/TCG_Card_Elemental_Design/Card_Color_07/Back_Card_Color_07/Back_Card_Color_07_Logo_Crystal"
+                }
+                CardIconType::Raze => {
+                    "Sprites/Raze"
                 }
             }
         ),

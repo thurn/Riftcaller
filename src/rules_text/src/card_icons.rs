@@ -28,7 +28,7 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
             icons.arena_icon = Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::LevelCounter)),
                 text: Some(data.card_level.to_string()),
-                background_scale: assets::background_scale(CardIconType::LevelCounter),
+                background_scale: assets::icon_background_scale(CardIconType::LevelCounter),
             })
         }
         _ => {}
@@ -39,7 +39,7 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
             icons.arena_icon = Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Mana)),
                 text: Some(data.stored_mana.to_string()),
-                background_scale: assets::background_scale(CardIconType::Mana),
+                background_scale: assets::icon_background_scale(CardIconType::Mana),
             })
         }
         _ => {}
@@ -54,7 +54,7 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
             definition.config.stats.scheme_points.map(|points| CardIcon {
                 background: Some(assets::card_icon(CardIconType::LevelRequirement)),
                 text: Some(points.level_requirement.to_string()),
-                background_scale: assets::background_scale(CardIconType::LevelRequirement),
+                background_scale: assets::icon_background_scale(CardIconType::LevelRequirement),
             })
         };
 
@@ -62,19 +62,25 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Attack)),
                 text: Some(context.query_id_or(attack, queries::attack).to_string()),
-                background_scale: assets::background_scale(CardIconType::Attack),
+                background_scale: assets::icon_background_scale(CardIconType::Attack),
             })
         } else if let Some(health) = definition.config.stats.health {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Health)),
                 text: Some(context.query_id_or(health, queries::health).to_string()),
-                background_scale: assets::background_scale(CardIconType::Health),
+                background_scale: assets::icon_background_scale(CardIconType::Health),
+            })
+        } else if let Some(raze) = definition.config.stats.raze_cost {
+            Some(CardIcon {
+                background: Some(assets::card_icon(CardIconType::Raze)),
+                text: Some(context.query_id_or(raze, queries::raze_cost).to_string()),
+                background_scale: assets::icon_background_scale(CardIconType::Raze),
             })
         } else {
             definition.config.stats.scheme_points.map(|points| CardIcon {
                 background: Some(assets::card_icon(CardIconType::Points)),
                 text: Some(points.points.to_string()),
-                background_scale: assets::background_scale(CardIconType::Points),
+                background_scale: assets::icon_background_scale(CardIconType::Points),
             })
         };
 
@@ -84,7 +90,7 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Shield)),
                 text: Some(shield.to_string()),
-                background_scale: assets::background_scale(CardIconType::Shield),
+                background_scale: assets::icon_background_scale(CardIconType::Shield),
             })
         } else {
             None
@@ -98,6 +104,6 @@ pub fn mana_card_icon(value: ManaValue) -> CardIcon {
     CardIcon {
         background: Some(assets::card_icon(CardIconType::Mana)),
         text: Some(value.to_string()),
-        background_scale: assets::background_scale(CardIconType::Mana),
+        background_scale: assets::icon_background_scale(CardIconType::Mana),
     }
 }

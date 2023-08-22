@@ -69,12 +69,15 @@ pub fn test_scheme_315() -> CardDefinition {
     }
 }
 
-pub fn test_project_2_cost() -> CardDefinition {
+pub fn test_project_2_cost_3_raze() -> CardDefinition {
     CardDefinition {
-        name: CardName::TestProject2Cost,
+        name: CardName::TestProject2Cost3Raze,
         cost: cost(2),
         card_type: CardType::Project,
-        config: CardConfig::default(),
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(3), ..CardStats::default() },
+            ..CardConfig::default()
+        },
         ..test_overlord_spell()
     }
 }
@@ -325,7 +328,10 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
                 ],
             },
         ],
-        config: projects::triggered_subtype(),
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
+            ..CardConfig::default()
+        },
         ..test_overlord_spell()
     }
 }

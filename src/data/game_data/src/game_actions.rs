@@ -47,9 +47,17 @@ pub enum EncounterAction {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub enum RazeCardActionType {
+    /// Raze a card in play
+    Destroy,
+    /// Raze a card in the sanctum or vault
+    Discard,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum AccessPhaseAction {
     ScoreCard(CardId),
-    DestroyCard(CardId, ManaValue),
+    RazeCard(CardId, RazeCardActionType, ManaValue),
     EndRaid,
 }
 

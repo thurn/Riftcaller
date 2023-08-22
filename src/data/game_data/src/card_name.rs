@@ -34,7 +34,7 @@ pub enum CardName {
     /// Scheme requiring 3 levels to score 15 points
     TestScheme3_15,
     /// Blank project with a mana cost of 2
-    TestProject2Cost,
+    TestProject2Cost3Raze,
     /// Minion with 5 health, 3 mana cost, and an "end the raid" ability.
     TestMinionEndRaid,
     /// Equivalent to `TestMinionEndRaid` with 1 shield point.

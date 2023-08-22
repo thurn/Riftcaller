@@ -19,7 +19,7 @@ use game_data::delegates::{
     RaidEvent, RaidOutcome, ScoreCard, ScoreCardEvent,
 };
 use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::{AccessPhaseAction, PromptAction};
+use game_data::game_actions::{AccessPhaseAction, PromptAction, RazeCardActionType};
 use game_data::primitives::{CardId, CardType, RoomId, Side};
 use game_data::random;
 use game_data::updates::GameUpdate;
@@ -93,7 +93,7 @@ impl RaidPhaseImpl for AccessPhase {
     ) -> Result<Option<InternalRaidPhase>> {
         match action {
             AccessPhaseAction::ScoreCard(card_id) => handle_score_card(game, card_id),
-            AccessPhaseAction::DestroyCard(card_id, _) => handle_destroy_card(game, card_id),
+            AccessPhaseAction::RazeCard(card_id, _, _) => handle_raze_card(game, card_id),
             AccessPhaseAction::EndRaid => mutations::end_raid(game, RaidOutcome::Success),
         }?;
 
@@ -147,9 +147,14 @@ fn access_action_for_card(game: &GameState, card_id: CardId) -> Option<AccessPha
         CardType::Scheme if can_score_card(game, card_id) => {
             Some(AccessPhaseAction::ScoreCard(card_id))
         }
-        CardType::Project if can_destroy_card(game, card_id) => Some(
-            AccessPhaseAction::DestroyCard(card_id, queries::mana_cost(game, card_id).unwrap_or(0)),
-        ),
+        CardType::Project if can_raze_project(game, card_id) => {
+            let raze_type = if game.card(card_id).position().in_play() {
+                RazeCardActionType::Destroy
+            } else {
+                RazeCardActionType::Discard
+            };
+            Some(AccessPhaseAction::RazeCard(card_id, raze_type, queries::raze_cost(game, card_id)))
+        }
         _ => None,
     }
 }
@@ -166,12 +171,12 @@ fn can_score_card(game: &GameState, card_id: CardId) -> bool {
         && rules::card_definition(game, card_id).config.stats.scheme_points.is_some()
 }
 
-/// Can the Champion player destroy the `card_id` card when accessed during a
+/// Can the Champion player raze the `card_id` project when accessed during a
 /// raid?
-fn can_destroy_card(game: &GameState, card_id: CardId) -> bool {
+fn can_raze_project(game: &GameState, card_id: CardId) -> bool {
     !game.card(card_id).position().in_discard_pile()
-        && queries::mana_cost(game, card_id).unwrap_or(0)
-            <= mana::get(game, Side::Champion, ManaPurpose::DestroyCard(card_id))
+        && queries::raze_cost(game, card_id)
+            <= mana::get(game, Side::Champion, ManaPurpose::RazeCard(card_id))
 }
 
 fn handle_score_card(game: &mut GameState, card_id: CardId) -> Result<()> {
@@ -195,12 +200,12 @@ fn handle_score_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     Ok(())
 }
 
-fn handle_destroy_card(game: &mut GameState, card_id: CardId) -> Result<()> {
+fn handle_raze_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     mana::spend(
         game,
         Side::Champion,
-        ManaPurpose::DestroyCard(card_id),
-        queries::mana_cost(game, card_id).unwrap_or(0),
+        ManaPurpose::RazeCard(card_id),
+        queries::raze_cost(game, card_id),
     )?;
     mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
     game.raid_mut()?.accessed.retain(|c| *c != card_id);

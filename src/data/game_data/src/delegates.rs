@@ -475,6 +475,9 @@ pub enum Delegate {
     /// Queries the current breach value of a card. Invoked with
     /// [CardStats::breach] or 0.
     BreachValue(QueryDelegate<CardId, BreachValue>),
+    /// Queries the current raze cost of a card. Invoked with
+    /// [CardStats::raze_cost] or 0.
+    RazeCost(QueryDelegate<CardId, BreachValue>),
     /// Gets the current [AttackBoost] of a card. Invoked with
     /// [CardStats::attack_boost] if one is present.
     AttackBoost(QueryDelegate<CardId, AttackBoost>),

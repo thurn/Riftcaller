@@ -17,7 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
-use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
@@ -55,7 +55,10 @@ pub fn gemcarver() -> CardDefinition {
                 ],
             },
         ],
-        config: projects::triggered_subtype(),
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(2), ..CardStats::default() },
+            ..CardConfig::default()
+        },
     }
 }
 
@@ -63,7 +66,7 @@ pub fn spike_trap() -> CardDefinition {
     CardDefinition {
         name: CardName::SpikeTrap,
         sets: vec![CardSetName::Amethyst],
-        cost: cost(2),
+        cost: cost(0),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_45_b"),
         card_type: CardType::Project,
         side: Side::Overlord,
@@ -86,6 +89,9 @@ pub fn spike_trap() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfig::default(),
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(2), ..CardStats::default() },
+            ..CardConfig::default()
+        },
     }
 }

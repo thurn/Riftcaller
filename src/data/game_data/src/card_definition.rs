@@ -29,8 +29,8 @@ use crate::delegates::Delegate;
 use crate::game::GameState;
 use crate::primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
-    HealthValue, LevelValue, Lineage, ManaValue, PointsValue, Rarity, RoomId, School, ShieldValue,
-    Side, Sprite,
+    HealthValue, LevelValue, Lineage, ManaValue, PointsValue, Rarity, RazeCost, RoomId, School,
+    ShieldValue, Side, Sprite,
 };
 use crate::special_effects::{Projectile, TimedEffect};
 use crate::text::TextElement;
@@ -104,6 +104,8 @@ pub struct CardStats {
     pub shield: Option<ShieldValue>,
     /// Allows a weapon to bypass some amount of shield points.
     pub breach: Option<BreachValue>,
+    /// Cost that must be paid to discard/destroy this card when accessed.
+    pub raze_cost: Option<RazeCost>,
     /// Base damage dealt by this card during an encounter
     pub base_attack: Option<AttackValue>,
     /// An increase in base attack damage for a fixed cost which an ability can

@@ -20,14 +20,14 @@ use game_data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequ
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegates::{
     AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, AttackValueQuery, BoostCountQuery,
-    BreachValueQuery, HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery,
+    BreachValueQuery, HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery,
     SanctumAccessCountQuery, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
 use game_data::game::GameState;
 use game_data::game_actions::{CardTarget, CardTargetKind};
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BreachValue, CardId, CardType, HealthValue,
-    ItemLocation, ManaValue, RoomId, RoomLocation, ShieldValue, Side,
+    ItemLocation, ManaValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
 
 use crate::dispatch;
@@ -116,6 +116,16 @@ pub fn breach(game: &GameState, card_id: CardId) -> BreachValue {
         game,
         BreachValueQuery(card_id),
         stats(game, card_id).breach.unwrap_or(0),
+    )
+}
+
+/// Returns the raze cost (cost to destroy/discard when accessed) for a given
+/// card, or 0 by default.
+pub fn raze_cost(game: &GameState, card_id: CardId) -> RazeCost {
+    dispatch::perform_query(
+        game,
+        RazeCostQuery(card_id),
+        stats(game, card_id).raze_cost.unwrap_or(0),
     )
 }
 

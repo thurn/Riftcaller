@@ -16,8 +16,8 @@ use core_ui::action_builder::ActionBuilder;
 use core_ui::icons;
 use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{
-    AccessPhaseAction, CardPromptAction, EncounterAction, GameAction, PromptAction, SummonAction,
-    UnveilProjectAction,
+    AccessPhaseAction, CardPromptAction, EncounterAction, GameAction, PromptAction,
+    RazeCardActionType, SummonAction, UnveilProjectAction,
 };
 use game_data::primitives::Side;
 use rules::queries;
@@ -88,10 +88,12 @@ fn encounter_action_button(
 fn access_button(access: AccessPhaseAction) -> ResponseButton {
     match access {
         AccessPhaseAction::ScoreCard(card_id) => ResponseButton::new("Score!").anchor_to(card_id),
-        AccessPhaseAction::DestroyCard(card_id, mana) => {
-            ResponseButton::new(format!("Destroy\n{}{}", mana, icons::MANA))
-                .two_lines(true)
-                .anchor_to(card_id)
+        AccessPhaseAction::RazeCard(card_id, action, mana) => {
+            let label = match action {
+                RazeCardActionType::Destroy => format!("Destroy\n{}{}", mana, icons::MANA),
+                RazeCardActionType::Discard => format!("Discard\n{}{}", mana, icons::MANA),
+            };
+            ResponseButton::new(label).two_lines(true).anchor_to(card_id)
         }
         AccessPhaseAction::EndRaid => {
             ResponseButton::new("End Raid").primary(false).shift_down(true)

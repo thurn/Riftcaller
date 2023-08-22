@@ -120,7 +120,10 @@ pub fn coinery() -> CardDefinition {
                 })],
             },
         ],
-        config: projects::activated_subtype(),
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(3), ..CardStats::default() },
+            ..CardConfig::default()
+        },
     }
 }
 
@@ -145,7 +148,10 @@ pub fn leyline() -> CardDefinition {
                 }),
             ],
         }],
-        config: projects::triggered_subtype(),
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(4), ..CardStats::default() },
+            ..CardConfig::default()
+        },
     }
 }
 
@@ -173,7 +179,10 @@ pub fn ore_refinery() -> CardDefinition {
                 ],
             },
         ],
-        config: projects::triggered_subtype(),
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(4), ..CardStats::default() },
+            ..CardConfig::default()
+        },
     }
 }
 

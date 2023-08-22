@@ -350,14 +350,14 @@ fn cannot_activate() {
 }
 
 #[test]
-fn destroy_project() {
+fn raze_project() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
-    let project_id = g.create_and_play(CardName::TestProject2Cost);
+    let project_id = g.create_and_play(CardName::TestProject2Cost3Raze);
     g.spend_actions_until_turn_over(Side::Overlord);
     g.initiate_raid(test_constants::ROOM_ID);
 
     assert!(g.user.interface.controls().has_text("Destroy"));
-    assert!(g.user.interface.controls().has_text(format!("2{}", icons::MANA)));
+    assert!(g.user.interface.controls().has_text(format!("3{}", icons::MANA)));
 
     let response = g.click_on(g.user_id(), "Destroy");
     assert_eq!(
@@ -368,7 +368,7 @@ fn destroy_project() {
         g.opponent.data.object_position(Id::CardId(project_id)),
         Position::DiscardPile(ObjectPositionDiscardPile { owner: PlayerName::User.into() })
     );
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 2);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 3);
     assert!(g.user.interface.controls().has_text("End Raid"));
 
     assert_snapshot!(Summary::summarize(&response));

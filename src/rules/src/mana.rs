@@ -30,7 +30,7 @@ pub enum ManaPurpose {
     BaseMana,
     BonusForDisplay,
     PayForCard(CardId),
-    DestroyCard(CardId),
+    RazeCard(CardId),
     UseWeapon(CardId),
     ActivateAbility(AbilityId),
     LevelUpRoom(RoomId),

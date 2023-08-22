@@ -29,3 +29,4 @@ pub const BULLET: &str = "\u{2022}";
 pub const BUG: &str = "\u{f188}";
 pub const BARS: &str = "\u{f0c9}";
 pub const DECK: &str = "\u{f02d}";
+pub const RAZE: &str = "\u{f0a3}";

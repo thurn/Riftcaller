@@ -9060,6 +9060,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7270925544137377073, guid: aef59b3cda62d4105b28dfc4b9483723, type: 3}
+      propertyPath: _owner
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7270925544137377073, guid: aef59b3cda62d4105b28dfc4b9483723, type: 3}
+      propertyPath: _registry
+      value: 
+      objectReference: {fileID: 1445473048}
     - target: {fileID: 7270925544137377074, guid: aef59b3cda62d4105b28dfc4b9483723, type: 3}
       propertyPath: m_Name
       value: OpponentMana
