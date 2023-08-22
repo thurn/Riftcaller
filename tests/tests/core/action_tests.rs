@@ -394,18 +394,21 @@ fn activate_ability_take_all_mana() {
 }
 
 #[test]
-fn triggered_unveil_ability() {
+fn unveil_at_end_of_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    g.end_turn(Side::Overlord);
+    assert!(g.dawn());
+    g.spend_all_action_points(Side::Champion);
+    g.click_button(g.opponent_id(), Buttons::EndTurn);
     assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
     g.unveil_card(id);
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
         g.user.this_player.mana()
     );
-    g.end_turn(Side::Overlord);
-    assert!(g.dawn());
-    g.end_turn(Side::Champion);
+    g.click_button(g.user_id(), Buttons::StartTurn);
     assert!(g.dusk());
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
@@ -414,6 +417,32 @@ fn triggered_unveil_ability() {
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
         g.opponent.other_player.mana()
+    );
+}
+
+#[test]
+fn unveil_during_minion_summon_decision() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::TestMinionEndRaid);
+    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    g.end_turn(Side::Overlord);
+
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    g.unveil_card(id);
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
+        g.user.this_player.mana()
+    );
+    g.click_button(g.user_id(), Buttons::NoSummon);
+    g.click_button(g.opponent_id(), Buttons::EndRaid);
+
+    g.end_turn(Side::Champion);
+
+    assert!(g.dusk());
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
+        g.user.this_player.mana()
     );
 }
 

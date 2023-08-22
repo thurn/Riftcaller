@@ -28,6 +28,7 @@ pub enum Buttons {
     Score,
     EndRaid,
     EndTurn,
+    StartTurn,
     DraftPick,
     ShowDeck,
     CloseIcon,
@@ -41,6 +42,10 @@ pub trait TestInterfaceHelpers {
     /// Locate a button containing the provided `text` in the provided player's
     /// interface controls and invoke its registered action.
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput;
+
+    /// Locate a button containing the provided `text` in the provided player's
+    /// interface controls and invoke its registered action.
+    fn click_button(&mut self, player_id: PlayerId, button: Buttons) -> GameResponseOutput;
 
     /// Returns true if the matching button can be found anywhere in the user
     /// interface.
@@ -71,6 +76,11 @@ impl TestInterfaceHelpers for TestSession {
         self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
     }
 
+    fn click_button(&mut self, player_id: PlayerId, button: Buttons) -> GameResponseOutput {
+        let (text, _) = resolve_button(button);
+        self.click_on(player_id, text)
+    }
+
     fn has_button(&self, button: Buttons) -> bool {
         let (text, side) = resolve_button(button);
         if let Some(s) = side {
@@ -98,6 +108,7 @@ fn resolve_button(button: Buttons) -> (String, Option<Side>) {
         Buttons::Score => ("Score".to_string(), Some(Side::Champion)),
         Buttons::EndRaid => ("End Raid".to_string(), Some(Side::Champion)),
         Buttons::EndTurn => ("End Turn".to_string(), None),
+        Buttons::StartTurn => ("Start Turn".to_string(), None),
         Buttons::DraftPick => ("Pick".to_string(), None),
         Buttons::ShowDeck => (icons::DECK.to_string(), None),
         Buttons::CloseIcon => (icons::CLOSE.to_string(), None),

@@ -101,6 +101,9 @@ pub trait TestSessionHelpers {
     /// Spends one of the `side` player's action points with no effect
     fn spend_action_point(&mut self, side: Side);
 
+    /// Spends all of the `side` player's action points with no effect
+    fn spend_all_action_points(&mut self, side: Side);
+
     /// Spends the `side` player's action points with no effect until they have
     /// no action points remaining, then starts their opponent's next turn.
     fn end_turn(&mut self, side: Side);
@@ -288,14 +291,17 @@ impl TestSessionHelpers for TestSession {
         self.perform(Action::SpendActionPoint(SpendActionPointAction {}), id);
     }
 
-    fn end_turn(&mut self, side: Side) {
+    fn spend_all_action_points(&mut self, side: Side) {
         let id = self.player_id_for_side(side);
         while self.player(id).this_player.actions() > 0 {
             self.spend_action_point(side);
         }
+    }
 
+    fn end_turn(&mut self, side: Side) {
+        let id = self.player_id_for_side(side);
+        self.spend_all_action_points(side);
         self.click_on(id, "End Turn");
-
         let opponent_id = self.player_id_for_side(side.opponent());
         self.click_on(opponent_id, "Start Turn");
     }
