@@ -46,7 +46,7 @@ fn gemcarver() {
     g.pass_turn(Side::Overlord);
     g.to_end_step(Side::Champion);
     g.unveil_card(id);
-    g.click_button(g.user_id(), Buttons::StartTurn);
+    g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);

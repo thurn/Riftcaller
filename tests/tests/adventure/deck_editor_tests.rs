@@ -26,7 +26,7 @@ const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
 #[test]
 fn test_open_deck_editor() {
     let mut adventure = TestAdventure::new(Side::Champion).build();
-    adventure.click(Buttons::ShowDeck);
+    adventure.click(Button::ShowDeck);
 
     client_interface::assert_has_element_name(
         adventure.user.interface.top_panel(),
@@ -44,7 +44,7 @@ fn test_remove_from_deck() {
         .deck_card(EXAMPLE_CARD, 2)
         .collection_card(EXAMPLE_CARD, 3)
         .build();
-    adventure.click(Buttons::ShowDeck);
+    adventure.click(Button::ShowDeck);
 
     let quantity1 = find_card_node(&adventure, element_names::card_list_card_quantity);
     assert_eq!("2x", quantity1.all_text());
@@ -74,7 +74,7 @@ fn test_add_to_deck() {
         .deck_card(EXAMPLE_CARD, 2)
         .collection_card(EXAMPLE_CARD, 3)
         .build();
-    adventure.click(Buttons::ShowDeck);
+    adventure.click(Button::ShowDeck);
 
     let quantity1 = find_card_node(&adventure, element_names::card_list_card_quantity);
     assert_eq!("2x", quantity1.all_text());

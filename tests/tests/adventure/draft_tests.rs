@@ -32,7 +32,7 @@ fn test_initiate_draft() {
 
     adventure.visit_tile(draft);
 
-    assert!(adventure.has_button(Buttons::DraftPick));
+    assert!(adventure.has(Button::DraftPick));
 }
 
 #[test]
@@ -45,9 +45,9 @@ fn test_pick_card() {
     }));
 
     adventure.visit_tile(draft);
-    adventure.click(Buttons::DraftPick);
+    adventure.click(Button::DraftPick);
     assert_eq!(adventure.open_panel_count(), 0);
-    adventure.click(Buttons::ShowDeck);
+    adventure.click(Button::ShowDeck);
     assert_eq!(adventure.open_panel_count(), 1);
 
     client_interface::assert_has_element_name(

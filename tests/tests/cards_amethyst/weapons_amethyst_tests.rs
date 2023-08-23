@@ -37,7 +37,7 @@ fn marauders_axe() {
     let id = g.add_to_hand(CardName::MaraudersAxe);
     assert_eq!(card_cost.to_string(), g.user.cards.get(id).top_left_icon());
     g.initiate_raid(RoomId::Crypts);
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     assert_eq!((card_cost - 2).to_string(), g.user.cards.get(id).top_left_icon());
     g.play_card(id, g.user_id(), None);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 2, g.me().mana());
@@ -50,7 +50,7 @@ fn keen_halberd() {
     g.create_and_play(CardName::KeenHalberd);
     g.setup_raid_target(CardName::TestMinionShield2Abyssal);
     g.initiate_raid(test_constants::ROOM_ID);
-    g.click(Buttons::Summon);
+    g.opponent_click(Button::Summon);
     g.click_on(g.user_id(), "Keen Halberd");
     assert_eq!(
         test_constants::STARTING_MANA - card_cost - (2 * activation_cost) - 1, /* remaining shield */

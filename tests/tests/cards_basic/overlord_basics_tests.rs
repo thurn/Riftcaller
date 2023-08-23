@@ -72,7 +72,7 @@ fn leyline() {
     g.pass_turn(Side::Overlord);
     g.to_end_step(Side::Champion);
     g.unveil_card(id);
-    g.click_button(g.user_id(), Buttons::StartTurn);
+    g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained, g.me().mana());
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
@@ -92,7 +92,7 @@ fn ore_refinery() {
     g.to_end_step(Side::Champion);
     g.unveil_card(id);
     assert_eq!(test_constants::STARTING_MANA - card_cost, g.me().mana());
-    g.click_button(g.user_id(), Buttons::StartTurn);
+    g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     assert_eq!((stored - taken).to_string(), g.user.get_card(id).arena_icon());
 }
@@ -102,7 +102,7 @@ fn crab() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Crab);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
 }
 
@@ -115,7 +115,7 @@ fn fire_goblin() {
     g.create_and_play(CardName::FireGoblin);
     g.set_up_minion_combat();
     assert_eq!(test_constants::STARTING_MANA - cost, g.me().mana());
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert_eq!(test_constants::STARTING_MANA - cost + gained, g.me().mana());
     assert_eq!(1, g.opponent.cards.discard_pile(PlayerName::User).len());
 }
@@ -125,7 +125,7 @@ fn toucan() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Toucan);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
 }
 
@@ -134,7 +134,7 @@ fn frog() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Frog);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
 }
 
@@ -143,7 +143,7 @@ fn captain() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Captain);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(2, g.opponent.this_player.actions());
 }
@@ -153,7 +153,7 @@ fn scout() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Scout);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(3, g.opponent.this_player.actions());
 }

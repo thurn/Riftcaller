@@ -44,7 +44,7 @@ fn aris_fey_the_radiant_sun() {
     g.set_up_minion_combat();
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
-    g.click(Buttons::NoWeapon);
+    g.click(Button::NoWeapon);
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
 }
@@ -58,7 +58,7 @@ fn telantes_dugoth_earthbreaker() {
 
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::Opponent).len());
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
 }
 
@@ -77,7 +77,7 @@ fn andvari_est_nights_warden() {
             .build();
 
     g.initiate_raid(RoomId::Vault);
-    g.click(Buttons::Score);
+    g.click(Button::Score);
     assert_eq!(15, g.me().score())
 }
 

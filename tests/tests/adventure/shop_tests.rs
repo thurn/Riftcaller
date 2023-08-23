@@ -49,8 +49,8 @@ fn test_buy_card() {
     adventure.click_on(adventure.user_id(), BUY_COST.to_string());
     assert!(adventure.has_text((test_constants::STARTING_COINS - BUY_COST).to_string()));
 
-    adventure.click(Buttons::CloseIcon);
-    adventure.click(Buttons::ShowDeck);
+    adventure.click(Button::CloseIcon);
+    adventure.click(Button::ShowDeck);
 
     client_interface::assert_has_element_name(
         adventure.user.interface.top_panel(),

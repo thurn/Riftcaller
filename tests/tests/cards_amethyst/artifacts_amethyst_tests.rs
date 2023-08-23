@@ -31,7 +31,7 @@ fn invisibility_ring() {
     assert_eq!(2, g.user.interface.card_anchor_nodes().len());
     assert_eq!(vec!["Score!"], g.user.interface.card_anchor_nodes()[0].get_text());
     assert_eq!(vec!["Score!"], g.user.interface.card_anchor_nodes()[1].get_text());
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(1, g.user.interface.card_anchor_nodes().len());
     assert_eq!(vec!["Score!"], g.user.interface.card_anchor_nodes()[0].get_text());
@@ -43,7 +43,7 @@ fn accumulator() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::Accumulator);
     g.initiate_raid(RoomId::Crypts);
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     assert_eq!("1", g.user.get_card(id).arena_icon());
     g.activate_ability(id, 1);
     assert_eq!(test_constants::STARTING_MANA + 2 - card_cost, g.me().mana())
@@ -60,7 +60,7 @@ fn mage_gloves() {
         g.user.cards.get(test_helpers::ability_id(id, 1)).valid_rooms()
     );
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     assert_eq!(test_constants::STARTING_MANA + 3 - card_cost, g.me().mana());
     assert_eq!("9", g.user.get_card(id).arena_icon());
     assert_eq!(
@@ -74,7 +74,7 @@ fn mage_gloves_play_after_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.add_to_hand(CardName::MageGloves);
     g.initiate_raid(RoomId::Sanctum);
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     g.play_card(id, g.user_id(), None);
     assert_eq!("12", g.user.get_card(id).arena_icon());
     assert_eq!(
@@ -89,7 +89,7 @@ fn mage_gloves_repeat_panic() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::MageGloves);
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     g.activate_ability_with_target(id, 1, RoomId::Crypts);
 }
 

@@ -170,10 +170,10 @@ fn ethereal_blade() {
     g.create_and_play(CardName::EtherealBlade);
     g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::EtherealBlade);
     assert_eq!(test_constants::STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
-    g.click(Buttons::Score);
+    g.click(Button::Score);
     assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
     assert_eq!(1, g.user.cards.left_items().len());
-    g.click(Buttons::EndRaid);
+    g.click(Button::EndRaid);
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
     assert_eq!(0, g.user.cards.left_items().len());
 }

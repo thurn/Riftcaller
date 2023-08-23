@@ -24,7 +24,7 @@ use server::server_data::GameResponseOutput;
 
 use crate::test_game_client::{ClientPlayer, TestGameClient};
 use crate::test_session::TestSession;
-use crate::{test_game_client, Buttons, TestInterfaceHelpers};
+use crate::{test_game_client, Button, TestInterfaceHelpers};
 
 pub trait TestSessionHelpers {
     fn user_id(&self) -> PlayerId;
@@ -341,7 +341,7 @@ impl TestSessionHelpers for TestSession {
         assert!(self.dawn());
         action(self);
         self.initiate_raid(test_constants::ROOM_ID);
-        self.click(Buttons::Summon);
+        self.click_as_side(Button::Summon, Side::Overlord);
     }
 
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier) {
@@ -357,7 +357,7 @@ impl TestSessionHelpers for TestSession {
     fn fire_weapon_combat_abilities(&mut self, lineage: Lineage, name: CardName) {
         self.setup_raid_target(crate::test_helpers::minion_for_lineage(lineage));
         self.initiate_raid(test_constants::ROOM_ID);
-        self.click(Buttons::Summon);
+        self.click_as_side(Button::Summon, Side::Overlord);
         self.click_on(self.player_id_for_side(Side::Champion), name.displayed_name());
     }
 }

@@ -401,14 +401,14 @@ fn unveil_at_end_of_turn() {
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
     g.spend_all_action_points(Side::Champion);
-    g.click_button(g.opponent_id(), Buttons::EndTurn);
+    g.opponent_click(Button::EndTurn);
     assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
     g.unveil_card(id);
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
         g.user.this_player.mana()
     );
-    g.click_button(g.user_id(), Buttons::StartTurn);
+    g.click(Button::StartTurn);
     assert!(g.dusk());
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
@@ -434,8 +434,8 @@ fn unveil_during_minion_summon_decision() {
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
         g.user.this_player.mana()
     );
-    g.click_button(g.user_id(), Buttons::NoSummon);
-    g.click_button(g.opponent_id(), Buttons::EndRaid);
+    g.click(Button::NoSummon);
+    g.opponent_click(Button::EndRaid);
 
     g.pass_turn(Side::Champion);
 

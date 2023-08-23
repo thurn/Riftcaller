@@ -28,7 +28,7 @@ fn test_minion_deal_damage_end_raid() {
         .build();
     g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
     assert_eq!(4, g.user.cards.hand(PlayerName::Opponent).len());
@@ -55,7 +55,7 @@ fn time_golem_defeat() {
     g.pass_turn(Side::Overlord);
     g.create_and_play(CardName::TestWeapon5Attack);
     g.initiate_raid(test_constants::ROOM_ID);
-    g.click(Buttons::Summon);
+    g.click(Button::Summon);
     g.click_on(g.opponent_id(), format!("Pay 5{}", icons::MANA));
     g.click_on(g.opponent_id(), "Test Weapon");
     assert_eq!(vec!["Time Golem"], g.user.cards.discard_pile(PlayerName::User));
@@ -68,9 +68,9 @@ fn time_golem_pay_actions() {
     g.set_up_minion_combat();
     g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
     assert_eq!(1, g.opponent.this_player.actions());
-    g.click(Buttons::NoWeapon);
-    g.click(Buttons::Score);
-    g.click(Buttons::EndRaid);
+    g.opponent_click(Button::NoWeapon);
+    g.opponent_click(Button::Score);
+    g.opponent_click(Button::EndRaid);
 }
 
 #[test]
@@ -169,7 +169,7 @@ fn sphinx_of_winters_breath_discard_even() {
     g.set_up_minion_combat_with_action(|g| {
         g.add_to_hand(CardName::Test0CostChampionSpell);
     });
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert_eq!(vec!["Test 0 Cost Champion Spell"], g.opponent.cards.discard_pile(PlayerName::User));
     assert!(g.user.data.raid_active());
 }
@@ -184,7 +184,7 @@ fn sphinx_of_winters_breath_discard_odd() {
     g.set_up_minion_combat_with_action(|g| {
         g.add_to_hand(CardName::Test1CostChampionSpell);
     });
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert_eq!(vec!["Test 1 Cost Champion Spell"], g.opponent.cards.discard_pile(PlayerName::User));
     assert!(!g.user.data.raid_active());
 }
@@ -194,7 +194,7 @@ fn bridge_troll_continue() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::BridgeTroll);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(g.user.data.raid_active());
     assert_eq!(test_constants::STARTING_MANA - 3, g.opponent.this_player.mana());
 }
@@ -206,7 +206,7 @@ fn bridge_troll_end_raid() {
         .build();
     g.create_and_play(CardName::BridgeTroll);
     g.set_up_minion_combat();
-    g.click(Buttons::NoWeapon);
+    g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
     assert_eq!(0, g.opponent.this_player.mana());
 }

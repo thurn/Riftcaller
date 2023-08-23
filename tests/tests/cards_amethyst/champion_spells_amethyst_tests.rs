@@ -28,7 +28,7 @@ fn meditation() {
     assert_eq!(1, g.me().actions());
     g.create_and_play(CardName::Meditation);
     assert_eq!(13, g.me().mana());
-    assert!(g.has_button(Buttons::EndTurn));
+    assert!(g.has(Button::EndTurn));
 }
 
 #[test]
@@ -61,7 +61,7 @@ fn charged_strike() {
     assert_eq!(5, g.user.this_player.bonus_mana());
     assert_eq!(5, g.opponent.other_player.bonus_mana());
 
-    g.click(Buttons::Summon);
+    g.opponent_click(Button::Summon);
     g.click_on(g.user_id(), "Test Weapon");
     assert_eq!(test_constants::STARTING_MANA - 4, g.me().mana());
     assert_eq!(4, g.user.this_player.bonus_mana());
@@ -74,7 +74,7 @@ fn stealth_mission() {
     g.setup_raid_target(test_helpers::minion_for_lineage(test_constants::TEST_LINEAGE));
     assert_eq!(test_constants::STARTING_MANA, g.opponent.this_player.mana());
     g.play_with_target_room(CardName::StealthMission, test_constants::ROOM_ID);
-    g.click(Buttons::Summon);
+    g.opponent_click(Button::Summon);
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::MINION_COST - 3,
         g.opponent.this_player.mana()
@@ -90,5 +90,5 @@ fn preparation() {
     assert_eq!(1, g.me().actions());
     g.create_and_play(CardName::Preparation);
     assert_eq!(8, g.user.cards.hand(PlayerName::User).len());
-    assert!(g.has_button(Buttons::EndTurn));
+    assert!(g.has(Button::EndTurn));
 }

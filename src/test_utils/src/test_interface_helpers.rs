@@ -21,7 +21,7 @@ use crate::client_interface::HasText;
 use crate::test_session::TestSession;
 use crate::TestSessionHelpers;
 
-pub enum Buttons {
+pub enum Button {
     Summon,
     NoSummon,
     NoWeapon,
@@ -37,20 +37,24 @@ pub enum Buttons {
 }
 
 pub trait TestInterfaceHelpers {
-    /// Look for a button in the user interface and invoke its action.
-    fn click(&mut self, button: Buttons) -> GameResponseOutput;
+    /// Look for a button in the user interface and invoke its action as the
+    /// current user.
+    fn click(&mut self, button: Button) -> GameResponseOutput;
+
+    /// Look for a button in the user interface and invoke its action as the
+    /// opponent of the current user.
+    fn opponent_click(&mut self, button: Button) -> GameResponseOutput;
+
+    /// Clicks on a button in the user interface as the `side` player.
+    fn click_as_side(&mut self, button: Button, side: Side) -> GameResponseOutput;
+
+    /// Returns true if the matching button can be found anywhere in the user
+    /// interface for the current user.
+    fn has(&self, button: Button) -> bool;
 
     /// Locate a button containing the provided `text` in the provided player's
     /// interface controls and invoke its registered action.
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput;
-
-    /// Locate a button containing the provided `text` in the provided player's
-    /// interface controls and invoke its registered action.
-    fn click_button(&mut self, player_id: PlayerId, button: Buttons) -> GameResponseOutput;
-
-    /// Returns true if the matching button can be found anywhere in the user
-    /// interface.
-    fn has_button(&self, button: Buttons) -> bool;
 
     /// Returns true if the provided text can be found anywhere in the user
     /// interface.
@@ -61,15 +65,6 @@ pub trait TestInterfaceHelpers {
 }
 
 impl TestInterfaceHelpers for TestSession {
-    fn click(&mut self, button: Buttons) -> GameResponseOutput {
-        let (text, side) = resolve_button(button);
-        if let Some(s) = side {
-            self.click_on(self.player_id_for_side(s), text)
-        } else {
-            self.click_on(self.user.id, text)
-        }
-    }
-
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
         let player = self.player(player_id);
         let handlers = player.interface.all_active_nodes().find_handlers(text);
@@ -77,19 +72,28 @@ impl TestInterfaceHelpers for TestSession {
         self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
     }
 
-    fn click_button(&mut self, player_id: PlayerId, button: Buttons) -> GameResponseOutput {
-        let (text, _) = resolve_button(button);
-        self.click_on(player_id, text)
+    fn click(&mut self, button: Button) -> GameResponseOutput {
+        let text = resolve_button(button);
+        self.click_on(self.user_id(), text)
     }
 
-    fn has_button(&self, button: Buttons) -> bool {
-        let (text, side) = resolve_button(button);
-        if let Some(s) = side {
-            let player = self.player_for_side(s);
-            player.interface.all_active_nodes().has_text(text)
+    fn click_as_side(&mut self, button: Button, side: Side) -> GameResponseOutput {
+        let id = self.player_id_for_side(side);
+        if id == self.user_id() {
+            self.click(button)
         } else {
-            self.user.interface.all_active_nodes().has_text(text)
+            self.opponent_click(button)
         }
+    }
+
+    fn opponent_click(&mut self, button: Button) -> GameResponseOutput {
+        let text = resolve_button(button);
+        self.click_on(self.opponent_id(), text)
+    }
+
+    fn has(&self, button: Button) -> bool {
+        let text = resolve_button(button);
+        self.user.interface.all_active_nodes().has_text(text)
     }
 
     fn has_text(&self, text: impl Into<String>) -> bool {
@@ -101,19 +105,20 @@ impl TestInterfaceHelpers for TestSession {
     }
 }
 
-fn resolve_button(button: Buttons) -> (String, Option<Side>) {
+fn resolve_button(button: Button) -> String {
     match button {
-        Buttons::Summon => ("Summon".to_string(), Some(Side::Overlord)),
-        Buttons::NoSummon => ("Pass".to_string(), Some(Side::Overlord)),
-        Buttons::NoWeapon => ("Continue".to_string(), Some(Side::Champion)),
-        Buttons::ProceedToAccess => ("Proceed".to_string(), None),
-        Buttons::Score => ("Score".to_string(), Some(Side::Champion)),
-        Buttons::EndRaid => ("End Raid".to_string(), Some(Side::Champion)),
-        Buttons::EndTurn => ("End Turn".to_string(), None),
-        Buttons::StartTurn => ("Start Turn".to_string(), None),
-        Buttons::DraftPick => ("Pick".to_string(), None),
-        Buttons::ShowDeck => (icons::DECK.to_string(), None),
-        Buttons::CloseIcon => (icons::CLOSE.to_string(), None),
-        Buttons::StartBattle => ("Start".to_string(), None),
+        Button::Summon => "Summon",
+        Button::NoSummon => "Pass",
+        Button::NoWeapon => "Continue",
+        Button::ProceedToAccess => "Proceed",
+        Button::Score => "Score",
+        Button::EndRaid => "End Raid",
+        Button::EndTurn => "End Turn",
+        Button::StartTurn => "Start Turn",
+        Button::DraftPick => "Pick",
+        Button::ShowDeck => icons::DECK,
+        Button::CloseIcon => icons::CLOSE,
+        Button::StartBattle => "Start",
     }
+    .to_string()
 }
