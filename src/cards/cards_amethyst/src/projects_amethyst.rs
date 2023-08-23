@@ -31,6 +31,7 @@ pub fn gemcarver() -> CardDefinition {
         cost: cost(2),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_30_b"),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound],
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
@@ -52,7 +53,7 @@ pub fn gemcarver() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfigBuilder::new().raze_cost(2).subtype(CardSubtype::Duskbound).build(),
+        config: CardConfigBuilder::new().raze_cost(2).build(),
     }
 }
 
@@ -63,6 +64,7 @@ pub fn spike_trap() -> CardDefinition {
         cost: cost(0),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_45_b"),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Trap],
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
@@ -83,6 +85,6 @@ pub fn spike_trap() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfigBuilder::new().raze_cost(2).subtype(CardSubtype::Trap).build(),
+        config: CardConfigBuilder::new().raze_cost(2).build(),
     }
 }

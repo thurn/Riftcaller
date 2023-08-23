@@ -26,6 +26,7 @@ pub fn ubras_efaris_time_shaper() -> CardDefinition {
         cost: riftcaller_cost(),
         image: rexard_images::spell(8, "SpellBook08_22"),
         card_type: CardType::Riftcaller,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Shadow,
         rarity: Rarity::Exalted,

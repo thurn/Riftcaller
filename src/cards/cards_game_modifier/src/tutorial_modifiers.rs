@@ -27,6 +27,7 @@ fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
         cost: Cost::default(),
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::GameModifier,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,

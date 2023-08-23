@@ -31,6 +31,7 @@ pub fn conspire() -> CardDefinition {
         cost: scheme_cost(),
         image: rexard_images::spell(2, "SpellBook02_17"),
         card_type: CardType::Scheme,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -48,6 +49,7 @@ pub fn devise() -> CardDefinition {
         cost: scheme_cost(),
         image: rexard_images::spell(2, "SpellBook02_27"),
         card_type: CardType::Scheme,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -65,6 +67,7 @@ pub fn machinate() -> CardDefinition {
         cost: scheme_cost(),
         image: rexard_images::spell(2, "SpellBook02_29"),
         card_type: CardType::Scheme,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -82,6 +85,7 @@ pub fn gathering_dark() -> CardDefinition {
         cost: cost(5),
         image: rexard_images::spell(1, "SpellBook01_88"),
         card_type: CardType::OverlordSpell,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -103,6 +107,7 @@ pub fn coinery() -> CardDefinition {
         cost: cost(2),
         image: rexard_images::get(RexardPack::LootIcons, "coins_b_03"),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Nightbound],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -117,7 +122,7 @@ pub fn coinery() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfigBuilder::new().raze_cost(3).subtype(CardSubtype::Nightbound).build(),
+        config: CardConfigBuilder::new().raze_cost(3).build(),
     }
 }
 
@@ -128,6 +133,7 @@ pub fn leyline() -> CardDefinition {
         cost: cost(2),
         image: rexard_images::spell(2, "SpellBook02_78"),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -139,7 +145,7 @@ pub fn leyline() -> CardDefinition {
                 Ok(())
             })],
         }],
-        config: CardConfigBuilder::new().raze_cost(4).subtype(CardSubtype::Duskbound).build(),
+        config: CardConfigBuilder::new().raze_cost(4).build(),
     }
 }
 
@@ -150,6 +156,7 @@ pub fn ore_refinery() -> CardDefinition {
         cost: cost(4),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_06_b"),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -164,7 +171,7 @@ pub fn ore_refinery() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfigBuilder::new().raze_cost(4).subtype(CardSubtype::Duskbound).build(),
+        config: CardConfigBuilder::new().raze_cost(4).build(),
     }
 }
 
@@ -175,6 +182,7 @@ pub fn crab() -> CardDefinition {
         cost: cost(4),
         image: rexard_images::get(RexardPack::MonstersAvatars, "64"),
         card_type: CardType::Minion,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -190,6 +198,7 @@ pub fn fire_goblin() -> CardDefinition {
         cost: cost(1),
         image: rexard_images::get(RexardPack::MonstersAvatars, "70"),
         card_type: CardType::Minion,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -205,6 +214,7 @@ pub fn toucan() -> CardDefinition {
         cost: cost(3),
         image: rexard_images::get(RexardPack::MonstersAvatars, "65"),
         card_type: CardType::Minion,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -220,6 +230,7 @@ pub fn frog() -> CardDefinition {
         cost: cost(4),
         image: rexard_images::get(RexardPack::MonstersAvatars, "66"),
         card_type: CardType::Minion,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -235,6 +246,7 @@ pub fn captain() -> CardDefinition {
         cost: cost(3),
         image: rexard_images::get(RexardPack::MonstersAvatars, "103"),
         card_type: CardType::Minion,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
@@ -250,6 +262,7 @@ pub fn scout() -> CardDefinition {
         cost: cost(5),
         image: rexard_images::get(RexardPack::MonstersAvatars, "19"),
         card_type: CardType::Minion,
+        subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,

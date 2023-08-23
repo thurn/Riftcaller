@@ -412,7 +412,7 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
 /// solely based on its subtypes. Use [can_take_unveil_card_action] instead to
 /// check whether a card can currently be unveiled.
 pub fn can_unveil_for_subtypes(game: &GameState, card_id: CardId) -> bool {
-    let subtypes = &crate::card_definition(game, card_id).config.subtypes;
+    let subtypes = &crate::card_definition(game, card_id).subtypes;
     if subtypes.contains(&CardSubtype::Trap) {
         false
     } else if subtypes.contains(&CardSubtype::Duskbound) {

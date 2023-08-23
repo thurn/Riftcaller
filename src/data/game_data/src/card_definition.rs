@@ -177,7 +177,6 @@ pub struct SpecialEffects {
 pub struct CardConfig {
     pub stats: CardStats,
     pub lineage: Option<Lineage>,
-    pub subtypes: Vec<CardSubtype>,
     pub custom_targeting: Option<TargetRequirement<CardId>>,
     pub special_effects: SpecialEffects,
 
@@ -242,11 +241,6 @@ impl CardConfigBuilder {
         self
     }
 
-    pub fn subtype(mut self, subtype: CardSubtype) -> Self {
-        self.config.subtypes.push(subtype);
-        self
-    }
-
     pub fn custom_targeting(mut self, targeting: TargetRequirement<CardId>) -> Self {
         self.config.custom_targeting = Some(targeting);
         self
@@ -269,6 +263,7 @@ pub struct CardDefinition {
     pub cost: Cost<CardId>,
     pub image: Sprite,
     pub card_type: CardType,
+    pub subtypes: Vec<CardSubtype>,
     pub side: Side,
     pub school: School,
     pub rarity: Rarity,

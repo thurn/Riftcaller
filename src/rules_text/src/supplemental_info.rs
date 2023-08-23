@@ -84,7 +84,7 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
         result.push_str(&string);
     }
 
-    for subtype in &definition.config.subtypes {
+    for subtype in &definition.subtypes {
         result.push_str(" • ");
         result.push_str(&format!("{subtype}").from_case(Case::Pascal).to_case(Case::Title));
     }

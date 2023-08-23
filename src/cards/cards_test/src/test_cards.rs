@@ -31,6 +31,7 @@ pub fn test_overlord_spell() -> CardDefinition {
         name: CardName::TestOverlordSpell,
         cost: cost(1),
         card_type: CardType::OverlordSpell,
+        subtypes: vec![],
         sets: vec![CardSetName::Test],
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/3.png"),
         side: Side::Overlord,
@@ -46,6 +47,7 @@ pub fn test_champion_spell() -> CardDefinition {
         name: CardName::TestChampionSpell,
         cost: cost(1),
         card_type: CardType::ChampionSpell,
+        subtypes: vec![],
         sets: vec![CardSetName::Test],
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/2.png"),
         side: Side::Champion,
@@ -316,11 +318,9 @@ pub fn duskbound_project() -> CardDefinition {
         name: CardName::TestDuskboundProject,
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound],
         abilities: vec![],
-        config: CardConfigBuilder::new()
-            .raze_cost(test_constants::RAZE_COST)
-            .subtype(CardSubtype::Duskbound)
-            .build(),
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
         ..test_overlord_spell()
     }
 }
@@ -330,11 +330,9 @@ pub fn nightbound_project() -> CardDefinition {
         name: CardName::TestNightboundProject,
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Nightbound],
         abilities: vec![],
-        config: CardConfigBuilder::new()
-            .raze_cost(test_constants::RAZE_COST)
-            .subtype(CardSubtype::Nightbound)
-            .build(),
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
         ..test_overlord_spell()
     }
 }
@@ -344,11 +342,9 @@ pub fn trap_project() -> CardDefinition {
         name: CardName::TestTrapProject,
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Trap],
         abilities: vec![],
-        config: CardConfigBuilder::new()
-            .raze_cost(test_constants::RAZE_COST)
-            .subtype(CardSubtype::Trap)
-            .build(),
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
         ..test_overlord_spell()
     }
 }
