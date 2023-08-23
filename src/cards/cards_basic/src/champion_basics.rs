@@ -20,7 +20,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
+use game_data::primitives::{CardType, Rarity, Resonance, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
@@ -182,7 +182,7 @@ pub fn simple_blade() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
-            .lineage(Lineage::Mortal)
+            .resonance(Resonance::Mortal)
             .special_effects(projectile(Projectile::Hovl(2)))
             .build(),
     }
@@ -203,7 +203,7 @@ pub fn simple_axe() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 3, bonus: 1 })
-            .lineage(Lineage::Mortal)
+            .resonance(Resonance::Mortal)
             .special_effects(SpecialEffects {
                 projectile: Some(Projectile::Hovl(8)),
                 additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
@@ -227,7 +227,7 @@ pub fn simple_bow() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
-            .lineage(Lineage::Abyssal)
+            .resonance(Resonance::Abyssal)
             .special_effects(projectile(Projectile::Hovl(3)))
             .build(),
     }
@@ -248,7 +248,7 @@ pub fn simple_club() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
-            .lineage(Lineage::Abyssal)
+            .resonance(Resonance::Abyssal)
             .special_effects(projectile(Projectile::Hovl(3)))
             .build(),
     }
@@ -269,7 +269,7 @@ pub fn simple_hammer() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
-            .lineage(Lineage::Infernal)
+            .resonance(Resonance::Infernal)
             .special_effects(projectile(Projectile::Hovl(4)))
             .build(),
     }
@@ -290,7 +290,7 @@ pub fn simple_spear() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(0)
             .attack_boost(AttackBoost { cost: 3, bonus: 5 })
-            .lineage(Lineage::Infernal)
+            .resonance(Resonance::Infernal)
             .special_effects(projectile(Projectile::Hovl(4)))
             .build(),
     }
@@ -328,7 +328,7 @@ pub fn ethereal_blade() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
-            .lineage(Lineage::Prismatic)
+            .resonance(Resonance::Prismatic)
             .special_effects(projectile(Projectile::Hovl(3)))
             .build(),
     }

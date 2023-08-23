@@ -303,17 +303,7 @@ fn handle_mulligan_decision(
 
 fn handle_start_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
     verify!(flags::can_take_start_turn_action(game, user_side), "Cannot start turn");
-
-    let turn = game.info.turn;
-    let side = turn.side;
-
-    let turn_number = match side {
-        Side::Overlord => turn.turn_number,
-        Side::Champion => turn.turn_number + 1,
-    };
-
-    let next_side = side.opponent();
-    mutations::start_turn(game, next_side, turn_number)
+    start_next_turn(game)
 }
 
 fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
@@ -334,5 +324,22 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
     }
 
     game.info.turn_state = TurnState::Ended;
-    Ok(())
+
+    if !flags::has_instant_speed_effects(game, side.opponent()) {
+        start_next_turn(game)
+    } else {
+        Ok(())
+    }
+}
+
+fn start_next_turn(game: &mut GameState) -> Result<()> {
+    let current_side = game.info.turn.side;
+    mutations::start_turn(
+        game,
+        current_side.opponent(),
+        match current_side {
+            Side::Overlord => game.info.turn.turn_number,
+            Side::Champion => game.info.turn.turn_number + 1,
+        },
+    )
 }

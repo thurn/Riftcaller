@@ -26,7 +26,7 @@ use game_data::delegates::{
 use game_data::game::{GamePhase, GameState, TurnState};
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{
-    AbilityId, CardId, CardSubtype, CardType, Lineage, RaidId, RoomId, Side,
+    AbilityId, CardId, CardSubtype, CardType, RaidId, Resonance, RoomId, Side,
 };
 
 use crate::mana::ManaPurpose;
@@ -295,17 +295,17 @@ pub fn entered_play_this_turn(game: &GameState, card_id: CardId) -> bool {
 
 /// Whether the provided `source` card is able to target the `target` card with
 /// an encounter action. Typically used to determine whether a weapon can target
-/// a minion, e.g. based on lineage.
+/// a minion, e.g. based on resonance.
 pub fn can_encounter_target(game: &GameState, source: CardId, target: CardId) -> bool {
     let can_encounter = matches!(
         (
-            crate::card_definition(game, source).config.lineage,
-            crate::card_definition(game, target).config.lineage
+            crate::card_definition(game, source).config.resonance,
+            crate::card_definition(game, target).config.resonance
         ),
-        (Some(source_lineage), Some(target_lineage))
-        if source_lineage == Lineage::Prismatic ||
-            target_lineage == Lineage::Construct ||
-            source_lineage == target_lineage
+        (Some(source_resonance), Some(target_resonance))
+        if source_resonance == Resonance::Prismatic ||
+            target_resonance == Resonance::Construct ||
+            source_resonance == target_resonance
     );
 
     dispatch::perform_query(
@@ -406,6 +406,17 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
         && definition.card_type == CardType::Project
         && can_unveil_for_subtypes(game, card_id)
         && can_pay_card_cost(game, card_id)
+}
+
+/// Returns true if the indicated player currently has access to an effect they
+/// can activate outside of their normal main phase actions
+pub fn has_instant_speed_effects(game: &GameState, side: Side) -> bool {
+    match side {
+        Side::Overlord => {
+            game.occupants_in_all_rooms().any(|c| can_take_unveil_card_action(game, side, c.id))
+        }
+        Side::Champion => false,
+    }
 }
 
 /// Checks whether a project card is currently in its assigned unveil window

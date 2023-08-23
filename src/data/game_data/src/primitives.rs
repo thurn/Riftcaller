@@ -421,10 +421,10 @@ pub enum ItemLocation {
     Artifacts,
 }
 
-/// The Possible lineages of weapons and minions. Minions can only be
-/// damaged by weapons from the same lineage, or by Prismatic weapons.
+/// The Possible resonances of weapons and minions. Minions can only be
+/// damaged by weapons from the same resonance, or by Prismatic weapons.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
-pub enum Lineage {
+pub enum Resonance {
     Mortal,
     Infernal,
     Abyssal,

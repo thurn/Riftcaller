@@ -52,6 +52,10 @@ pub trait TestInterfaceHelpers {
     /// interface for the current user.
     fn has(&self, button: Button) -> bool;
 
+    /// Returns true if the matching button can be found anywhere in the user
+    /// interface for the `side` user.
+    fn side_has(&self, button: Button, side: Side) -> bool;
+
     /// Locate a button containing the provided `text` in the provided player's
     /// interface controls and invoke its registered action.
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput;
@@ -94,6 +98,16 @@ impl TestInterfaceHelpers for TestSession {
     fn has(&self, button: Button) -> bool {
         let text = resolve_button(button);
         self.user.interface.all_active_nodes().has_text(text)
+    }
+
+    fn side_has(&self, button: Button, side: Side) -> bool {
+        let id = self.player_id_for_side(side);
+        let text = resolve_button(button);
+        if id == self.user_id() {
+            self.user.interface.all_active_nodes().has_text(text)
+        } else {
+            self.opponent.interface.all_active_nodes().has_text(text)
+        }
     }
 
     fn has_text(&self, text: impl Into<String>) -> bool {

@@ -15,7 +15,7 @@
 use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{CardType, Lineage, RoomId, Side};
+use game_data::primitives::{CardType, Resonance, RoomId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{
     card_target, CardIdentifier, CardTarget, GameMessageType, InitiateRaidAction,
@@ -114,7 +114,7 @@ pub trait TestSessionHelpers {
 
     /// Spends the `side` player's action points with no effect until they have
     /// no action points remaining, clicks on "End Turn", and then starts the
-    /// next player's turn.
+    /// next player's turn (clicking the "Start Turn" button if it appears).
     fn pass_turn(&mut self, side: Side);
 
     /// Returns true if the last-received Game Message was 'Dawn'.
@@ -158,14 +158,14 @@ pub trait TestSessionHelpers {
     /// actions:
     ///
     /// - Performs all actions described in [Self::setup_raid_target], creating
-    ///   a minion of the indicated [Lineage] with `MINION_HEALTH` health.
+    ///   a minion of the indicated [Resonance] with `MINION_HEALTH` health.
     /// - Initiates a raid on the [test_constants::ROOM_ID] room.
     /// - Summons the minion
     /// - Clicks on the button with text matching `name` in order to fire weapon
     ///   abilities.
     ///
     /// WARNING: This causes the Overlord play to draw for their turn.
-    fn fire_weapon_combat_abilities(&mut self, lineage: Lineage, name: CardName);
+    fn fire_weapon_combat_abilities(&mut self, resonance: Resonance, name: CardName);
 }
 
 impl TestSessionHelpers for TestSession {
@@ -312,15 +312,16 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn to_end_step(&mut self, side: Side) {
-        let id = self.player_id_for_side(side);
         self.spend_all_action_points(side);
-        self.click_on(id, "End Turn");
+        self.click_as_side(Button::EndTurn, side);
     }
 
     fn pass_turn(&mut self, side: Side) {
         self.to_end_step(side);
-        let opponent_id = self.player_id_for_side(side.opponent());
-        self.click_on(opponent_id, "Start Turn");
+
+        if self.side_has(Button::StartTurn, side.opponent()) {
+            self.click_as_side(Button::StartTurn, side.opponent());
+        }
     }
 
     fn dawn(&self) -> bool {
@@ -362,8 +363,8 @@ impl TestSessionHelpers for TestSession {
         (scheme_id, minion_id)
     }
 
-    fn fire_weapon_combat_abilities(&mut self, lineage: Lineage, name: CardName) {
-        self.setup_raid_target(crate::test_helpers::minion_for_lineage(lineage));
+    fn fire_weapon_combat_abilities(&mut self, resonance: Resonance, name: CardName) {
+        self.setup_raid_target(crate::test_helpers::minion_for_resonance(resonance));
         self.initiate_raid(test_constants::ROOM_ID);
         self.click_as_side(Button::Summon, Side::Overlord);
         self.click_on(self.player_id_for_side(Side::Champion), name.displayed_name());

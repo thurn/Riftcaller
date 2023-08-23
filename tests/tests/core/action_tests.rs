@@ -306,8 +306,7 @@ fn switch_turn() {
     g.perform(Action::GainMana(GainManaAction {}), g.user_id());
     g.perform(Action::GainMana(GainManaAction {}), g.user_id());
     g.perform(Action::GainMana(GainManaAction {}), g.user_id());
-    g.click_on(g.user_id(), "End Turn");
-    g.click_on(g.opponent_id(), "Start Turn");
+    g.click(Button::EndTurn);
 
     assert_eq!(8, g.me().mana());
     assert_eq!(8, g.opponent.other_player.mana());
@@ -522,25 +521,27 @@ fn unveil_duskbound_at_end_of_turn() {
     let id = g.create_and_play(CardName::TestDuskboundProject);
     g.pass_turn(Side::Overlord);
     g.to_end_step(Side::Champion);
+    assert!(g.dawn()); // Game should pause on end step
+    assert!(g.side_has(Button::StartTurn, Side::Overlord));
     assert!(g.unveil_card_with_result(id).is_ok());
 }
 
 #[test]
 fn cannot_unveil_nightbound_at_end_of_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    let id = g.create_and_play(CardName::TestNightboundProject);
+    g.create_and_play(CardName::TestNightboundProject);
     g.pass_turn(Side::Overlord);
     g.to_end_step(Side::Champion);
-    assert!(g.unveil_card_with_result(id).is_err());
+    assert!(g.dusk()); // Game should *not* pause on end step
 }
 
 #[test]
 fn cannot_unveil_trap_at_end_of_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    let id = g.create_and_play(CardName::TestTrapProject);
+    g.create_and_play(CardName::TestTrapProject);
     g.pass_turn(Side::Overlord);
     g.to_end_step(Side::Champion);
-    assert!(g.unveil_card_with_result(id).is_err());
+    assert!(g.dusk()); // Game should *not* pause on end step
 }
 
 #[test]

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::card_name::CardName;
-use game_data::primitives::{Lineage, RoomId, Side};
+use game_data::primitives::{Resonance, RoomId, Side};
 use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
@@ -24,7 +24,7 @@ fn test_attack_weapon() {
     let ability_cost = 1;
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::TestAttackWeapon);
-    g.fire_weapon_combat_abilities(Lineage::Infernal, CardName::TestAttackWeapon);
+    g.fire_weapon_combat_abilities(Resonance::Infernal, CardName::TestAttackWeapon);
     assert_eq!(test_constants::STARTING_MANA - card_cost - ability_cost, g.me().mana());
     assert!(g.user.data.raid_active());
     assert!(g.user.interface.controls().has_text("End Raid"));
@@ -64,7 +64,7 @@ fn bow_of_the_alliance() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::BowOfTheAlliance);
     g.create_and_play(CardName::BowOfTheAlliance);
-    g.fire_weapon_combat_abilities(Lineage::Mortal, CardName::BowOfTheAlliance);
+    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::BowOfTheAlliance);
     assert_eq!(
         test_constants::STARTING_MANA - (2 * card_cost) - (2 * activation_cost),
         g.me().mana()

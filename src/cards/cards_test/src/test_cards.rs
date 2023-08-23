@@ -21,7 +21,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardSubtype, CardType, Lineage, Rarity, School, Side, Sprite};
+use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{Projectile, TimedEffect};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
@@ -88,7 +88,7 @@ pub fn test_minion_end_raid() -> CardDefinition {
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_overlord_spell()
     }
@@ -103,7 +103,7 @@ pub fn test_minion_shield_1() -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .shield(1)
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_overlord_spell()
     }
@@ -118,7 +118,7 @@ pub fn test_minion_shield_2_abyssal() -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .shield(2)
-            .lineage(Lineage::Abyssal)
+            .resonance(Resonance::Abyssal)
             .build(),
         ..test_overlord_spell()
     }
@@ -132,7 +132,7 @@ pub fn test_minion_deal_damage() -> CardDefinition {
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_overlord_spell()
     }
@@ -143,7 +143,7 @@ pub fn test_minion_infernal() -> CardDefinition {
         name: CardName::TestInfernalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .lineage(Lineage::Infernal)
+            .resonance(Resonance::Infernal)
             .build(),
         ..test_minion_end_raid()
     }
@@ -154,7 +154,7 @@ pub fn test_minion_abyssal() -> CardDefinition {
         name: CardName::TestAbyssalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .lineage(Lineage::Abyssal)
+            .resonance(Resonance::Abyssal)
             .build(),
         ..test_minion_end_raid()
     }
@@ -165,7 +165,7 @@ pub fn test_minion_mortal() -> CardDefinition {
         name: CardName::TestMortalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .lineage(Lineage::Mortal)
+            .resonance(Resonance::Mortal)
             .build(),
         ..test_minion_end_raid()
     }
@@ -178,7 +178,7 @@ pub fn test_weapon_2_attack() -> CardDefinition {
         card_type: CardType::Weapon,
         config: CardConfigBuilder::new()
             .base_attack(2)
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_champion_spell()
     }
@@ -191,7 +191,7 @@ pub fn test_weapon_2_attack_12_boost() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_weapon_2_attack()
     }
@@ -204,7 +204,7 @@ pub fn test_weapon_3_attack_12_boost() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_weapon_2_attack()
     }
@@ -217,7 +217,7 @@ pub fn test_weapon_4_attack_12_boost() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(4)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_weapon_2_attack()
     }
@@ -230,7 +230,7 @@ pub fn test_weapon_abyssal() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .lineage(Lineage::Abyssal)
+            .resonance(Resonance::Abyssal)
             .build(),
         ..test_weapon_2_attack()
     }
@@ -243,7 +243,7 @@ pub fn test_weapon_infernal() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .lineage(Lineage::Infernal)
+            .resonance(Resonance::Infernal)
             .build(),
         ..test_weapon_2_attack()
     }
@@ -256,7 +256,7 @@ pub fn test_weapon_mortal() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .lineage(Lineage::Mortal)
+            .resonance(Resonance::Mortal)
             .build(),
         ..test_weapon_2_attack()
     }
@@ -267,7 +267,7 @@ pub fn test_weapon_5_attack() -> CardDefinition {
         name: CardName::TestWeapon5Attack,
         config: CardConfigBuilder::new()
             .base_attack(5)
-            .lineage(test_constants::TEST_LINEAGE)
+            .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_weapon_2_attack()
     }
@@ -374,7 +374,7 @@ pub fn deal_damage_end_raid() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_end_raid()],
-        config: CardConfigBuilder::new().health(5).shield(1).lineage(Lineage::Infernal).build(),
+        config: CardConfigBuilder::new().health(5).shield(1).resonance(Resonance::Infernal).build(),
         ..test_overlord_spell()
     }
 }
@@ -391,7 +391,7 @@ pub fn test_attack_weapon() -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .lineage(Lineage::Infernal)
+            .resonance(Resonance::Infernal)
             .special_effects(SpecialEffects {
                 projectile: Some(Projectile::Hovl(8)),
                 additional_hit: Some(TimedEffect::HovlSwordSlash(1)),

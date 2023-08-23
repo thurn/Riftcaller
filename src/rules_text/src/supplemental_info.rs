@@ -18,7 +18,7 @@ use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::card_view_context::CardViewContext;
-use game_data::primitives::{AbilityIndex, CardType, Lineage};
+use game_data::primitives::{AbilityIndex, CardType, Resonance};
 use game_data::text::{TextElement, TextTokenKind};
 
 use crate::card_info::SupplementalCardInfo;
@@ -71,16 +71,16 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
         CardType::GameModifier => "Modifier",
     });
 
-    if let Some(lineage) = definition.config.lineage {
+    if let Some(resonance) = definition.config.resonance {
         result.push_str(" • ");
-        let (lineage, color) = match lineage {
-            Lineage::Prismatic => ("Prismatic", FontColor::PrismaticCardTitle),
-            Lineage::Construct => ("Construct", FontColor::ConstructCardTitle),
-            Lineage::Mortal => ("Mortal", FontColor::MortalCardTitle),
-            Lineage::Abyssal => ("Abyssal", FontColor::AbyssalCardTitle),
-            Lineage::Infernal => ("Infernal", FontColor::InfernalCardTitle),
+        let (resonance, color) = match resonance {
+            Resonance::Prismatic => ("Prismatic", FontColor::PrismaticCardTitle),
+            Resonance::Construct => ("Construct", FontColor::ConstructCardTitle),
+            Resonance::Mortal => ("Mortal", FontColor::MortalCardTitle),
+            Resonance::Abyssal => ("Abyssal", FontColor::AbyssalCardTitle),
+            Resonance::Infernal => ("Infernal", FontColor::InfernalCardTitle),
         };
-        let string = format!("<color={}>{}</color>", design::as_hex(color), lineage);
+        let string = format!("<color={}>{}</color>", design::as_hex(color), resonance);
         result.push_str(&string);
     }
 

@@ -29,7 +29,7 @@ use crate::delegates::Delegate;
 use crate::game::GameState;
 use crate::primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
-    HealthValue, LevelValue, Lineage, ManaValue, PointsValue, Rarity, RazeCost, RoomId, School,
+    HealthValue, LevelValue, ManaValue, PointsValue, Rarity, RazeCost, Resonance, RoomId, School,
     ShieldValue, Side, Sprite,
 };
 use crate::special_effects::{Projectile, TimedEffect};
@@ -176,7 +176,7 @@ pub struct SpecialEffects {
 #[derive(Debug, Default)]
 pub struct CardConfig {
     pub stats: CardStats,
-    pub lineage: Option<Lineage>,
+    pub resonance: Option<Resonance>,
     pub custom_targeting: Option<TargetRequirement<CardId>>,
     pub special_effects: SpecialEffects,
 
@@ -236,8 +236,8 @@ impl CardConfigBuilder {
         self
     }
 
-    pub fn lineage(mut self, lineage: Lineage) -> Self {
-        self.config.lineage = Some(lineage);
+    pub fn resonance(mut self, resonance: Resonance) -> Self {
+        self.config.resonance = Some(resonance);
         self
     }
 

@@ -52,7 +52,7 @@ fn coup_de_grace_invalid_room() {
 #[test]
 fn charged_strike() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.setup_raid_target(test_helpers::minion_for_lineage(test_constants::TEST_LINEAGE));
+    g.setup_raid_target(test_helpers::minion_for_resonance(test_constants::TEST_RESONANCE));
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     assert_eq!(test_constants::STARTING_MANA - 3, g.me().mana());
     g.play_with_target_room(CardName::ChargedStrike, test_constants::ROOM_ID);
@@ -71,7 +71,7 @@ fn charged_strike() {
 #[test]
 fn stealth_mission() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.setup_raid_target(test_helpers::minion_for_lineage(test_constants::TEST_LINEAGE));
+    g.setup_raid_target(test_helpers::minion_for_resonance(test_constants::TEST_RESONANCE));
     assert_eq!(test_constants::STARTING_MANA, g.opponent.this_player.mana());
     g.play_with_target_room(CardName::StealthMission, test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);

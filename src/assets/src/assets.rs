@@ -18,7 +18,7 @@ pub mod rexard_images;
 
 use core_ui::design::FontColor;
 use game_data::character_preset::CharacterPreset;
-use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
+use game_data::primitives::{CardType, Rarity, Resonance, School, Side};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
@@ -140,22 +140,22 @@ pub fn card_frame(school: School, _: CardType) -> SpriteAddress {
     SpriteAddress { address: format!("{string}.png") }
 }
 
-/// Title font color to use for a given [Lineage].
-pub fn title_color(lineage: Option<Lineage>) -> FlexColor {
-    match lineage {
+/// Title font color to use for a given [Resonance].
+pub fn title_color(resonance: Option<Resonance>) -> FlexColor {
+    match resonance {
         None => FontColor::NormalCardTitle,
-        Some(Lineage::Mortal) => FontColor::MortalCardTitle,
-        Some(Lineage::Infernal) => FontColor::InfernalCardTitle,
-        Some(Lineage::Abyssal) => FontColor::AbyssalCardTitle,
-        Some(Lineage::Prismatic) => FontColor::PrismaticCardTitle,
-        Some(Lineage::Construct) => FontColor::ConstructCardTitle,
+        Some(Resonance::Mortal) => FontColor::MortalCardTitle,
+        Some(Resonance::Infernal) => FontColor::InfernalCardTitle,
+        Some(Resonance::Abyssal) => FontColor::AbyssalCardTitle,
+        Some(Resonance::Prismatic) => FontColor::PrismaticCardTitle,
+        Some(Resonance::Construct) => FontColor::ConstructCardTitle,
     }
     .into()
 }
 
 /// Address for an image to display as a background for a card of the given
-/// [Lineage].
-pub fn title_background(_: Option<Lineage>) -> SpriteAddress {
+/// [Resonance].
+pub fn title_background(_: Option<Resonance>) -> SpriteAddress {
     SpriteAddress {
         address: "LittleSweetDaemon/TCG_Card_Design/Custom/Title/BlackWhiteFaceTape.png"
             .to_string(),
@@ -163,16 +163,16 @@ pub fn title_background(_: Option<Lineage>) -> SpriteAddress {
 }
 
 /// Address for the frame of a card in the arena
-pub fn arena_frame(side: Side, card_type: CardType, lineage: Option<Lineage>) -> SpriteAddress {
+pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>) -> SpriteAddress {
     SpriteAddress {
         address: format!(
             "{}.png",
-            match lineage {
-                Some(Lineage::Mortal) => "SpriteWay/Icons/Clean Frames/9048",
-                Some(Lineage::Infernal) => "SpriteWay/Icons/Clean Frames/9054",
-                Some(Lineage::Abyssal) => "SpriteWay/Icons/Clean Frames/9020",
-                Some(Lineage::Prismatic) => "SpriteWay/Icons/Clean Frames/9047",
-                Some(Lineage::Construct) => "SpriteWay/Icons/Clean Frames/9003",
+            match resonance {
+                Some(Resonance::Mortal) => "SpriteWay/Icons/Clean Frames/9048",
+                Some(Resonance::Infernal) => "SpriteWay/Icons/Clean Frames/9054",
+                Some(Resonance::Abyssal) => "SpriteWay/Icons/Clean Frames/9020",
+                Some(Resonance::Prismatic) => "SpriteWay/Icons/Clean Frames/9047",
+                Some(Resonance::Construct) => "SpriteWay/Icons/Clean Frames/9003",
                 None => match card_type {
                     CardType::Artifact => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",

@@ -42,13 +42,11 @@ impl RaidPhaseImpl for ApproachRoomPhase {
     }
 
     fn enter(self, g: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-        if g.occupants_in_all_rooms()
-            .any(|c| flags::can_take_unveil_card_action(g, Side::Overlord, c.id))
-        {
-            Ok(None)
+        Ok(if flags::has_instant_speed_effects(g, Side::Overlord) {
+            None
         } else {
-            Ok(Some(InternalRaidPhase::Access))
-        }
+            Some(InternalRaidPhase::Access)
+        })
     }
 
     fn actions(self, _: &GameState) -> Result<Vec<Self::Action>> {
@@ -58,9 +56,11 @@ impl RaidPhaseImpl for ApproachRoomPhase {
     fn handle_action(
         self,
         _: &mut GameState,
-        _: Self::Action,
+        action: Self::Action,
     ) -> Result<Option<InternalRaidPhase>> {
-        Ok(Some(InternalRaidPhase::Access))
+        match action {
+            ApproachRoomAction::Proceed => Ok(Some(InternalRaidPhase::Access)),
+        }
     }
 
     fn display_state(self, _: &GameState) -> Result<RaidDisplayState> {

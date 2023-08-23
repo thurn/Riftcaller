@@ -24,7 +24,7 @@ use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game::RaidJumpRequest;
 use game_data::game_actions::CardPromptAction;
-use game_data::primitives::{CardType, Lineage, Rarity, RoomLocation, School, Side};
+use game_data::primitives::{CardType, Rarity, Resonance, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
@@ -61,7 +61,7 @@ pub fn time_golem() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfigBuilder::new().health(3).lineage(Lineage::Construct).build(),
+        config: CardConfigBuilder::new().health(3).resonance(Resonance::Construct).build(),
     }
 }
 
@@ -111,7 +111,7 @@ pub fn temporal_stalker() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfigBuilder::new().health(6).shield(3).lineage(Lineage::Abyssal).build(),
+        config: CardConfigBuilder::new().health(6).shield(3).resonance(Resonance::Abyssal).build(),
     }
 }
 
@@ -136,7 +136,7 @@ pub fn shadow_lurker() -> CardDefinition {
             ),
             abilities::combat_end_raid(),
         ],
-        config: CardConfigBuilder::new().health(2).shield(1).lineage(Lineage::Abyssal).build(),
+        config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::Abyssal).build(),
     }
 }
 
@@ -173,7 +173,7 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
                 }),
             ],
         }],
-        config: CardConfigBuilder::new().health(3).shield(1).lineage(Lineage::Mortal).build(),
+        config: CardConfigBuilder::new().health(3).shield(1).resonance(Resonance::Mortal).build(),
     }
 }
 
@@ -204,7 +204,7 @@ pub fn bridge_troll() -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfigBuilder::new().health(0).shield(2).lineage(Lineage::Mortal).build(),
+        config: CardConfigBuilder::new().health(0).shield(2).resonance(Resonance::Mortal).build(),
     }
 }
 
@@ -232,6 +232,6 @@ pub fn stormcaller() -> CardDefinition {
                 ]
             }),
         )],
-        config: CardConfigBuilder::new().health(3).shield(2).lineage(Lineage::Infernal).build(),
+        config: CardConfigBuilder::new().health(3).shield(2).resonance(Resonance::Infernal).build(),
     }
 }

@@ -20,7 +20,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardSubtype, CardType, Lineage, Rarity, School, Side};
+use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -187,7 +187,7 @@ pub fn crab() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfigBuilder::new().health(2).lineage(Lineage::Infernal).build(),
+        config: CardConfigBuilder::new().health(2).resonance(Resonance::Infernal).build(),
     }
 }
 
@@ -203,7 +203,7 @@ pub fn fire_goblin() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_gain_mana::<1>()],
-        config: CardConfigBuilder::new().health(1).shield(2).lineage(Lineage::Infernal).build(),
+        config: CardConfigBuilder::new().health(1).shield(2).resonance(Resonance::Infernal).build(),
     }
 }
 
@@ -219,7 +219,7 @@ pub fn toucan() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfigBuilder::new().health(3).lineage(Lineage::Abyssal).build(),
+        config: CardConfigBuilder::new().health(3).resonance(Resonance::Abyssal).build(),
     }
 }
 
@@ -235,7 +235,7 @@ pub fn frog() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfigBuilder::new().health(4).lineage(Lineage::Abyssal).build(),
+        config: CardConfigBuilder::new().health(4).resonance(Resonance::Abyssal).build(),
     }
 }
 
@@ -251,7 +251,7 @@ pub fn captain() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid(), abilities::remove_actions_if_able::<1>()],
-        config: CardConfigBuilder::new().health(2).lineage(Lineage::Mortal).build(),
+        config: CardConfigBuilder::new().health(2).resonance(Resonance::Mortal).build(),
     }
 }
 
@@ -267,6 +267,6 @@ pub fn scout() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfigBuilder::new().health(4).lineage(Lineage::Mortal).build(),
+        config: CardConfigBuilder::new().health(4).resonance(Resonance::Mortal).build(),
     }
 }

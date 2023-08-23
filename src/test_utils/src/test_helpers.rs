@@ -20,7 +20,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use adapters::ServerCardId;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, Lineage, ManaValue};
+use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue, Resonance};
 use protos::spelldawn::CardIdentifier;
 use ulid::Ulid;
 
@@ -35,12 +35,12 @@ pub fn generate_ids() -> (GameId, PlayerId, PlayerId) {
     )
 }
 
-/// Looks up the test minion to use for a given lineage type.
-pub fn minion_for_lineage(lineage: Lineage) -> CardName {
-    match lineage {
-        Lineage::Mortal => CardName::TestMortalMinion,
-        Lineage::Abyssal => CardName::TestAbyssalMinion,
-        Lineage::Infernal => CardName::TestInfernalMinion,
+/// Looks up the test minion to use for a given resonance type.
+pub fn minion_for_resonance(resonance: Resonance) -> CardName {
+    match resonance {
+        Resonance::Mortal => CardName::TestMortalMinion,
+        Resonance::Abyssal => CardName::TestAbyssalMinion,
+        Resonance::Infernal => CardName::TestInfernalMinion,
         _ => panic!("Unsupported"),
     }
 }

@@ -52,7 +52,7 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result
         arena_frame: Some(assets::arena_frame(
             context.definition().side,
             context.definition().card_type,
-            context.definition().config.lineage,
+            context.definition().config.resonance,
         )),
         face_down_arena_frame: Some(assets::face_down_arena_frame()),
         owning_player: builder.to_player_name(context.definition().side),
@@ -180,13 +180,13 @@ fn revealed_card_view(
     let definition = context.definition();
     Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
-        title_background: Some(assets::title_background(definition.config.lineage)),
+        title_background: Some(assets::title_background(definition.config.resonance)),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),
         image_background: definition.config.image_background.as_ref().map(adapters::sprite),
         title: Some(CardTitle {
             text: definition.name.displayed_name(),
-            text_color: Some(assets::title_color(definition.config.lineage)),
+            text_color: Some(assets::title_color(definition.config.resonance)),
         }),
         rules_text: Some(rules_text::build(context)),
         targeting: context.query_or_none(|game, card| {
