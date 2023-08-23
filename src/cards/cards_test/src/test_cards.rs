@@ -21,7 +21,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardType, Lineage, Rarity, School, Side, Sprite};
+use game_data::primitives::{CardSubtype, CardType, Lineage, Rarity, School, Side, Sprite};
 use game_data::special_effects::{Projectile, TimedEffect};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
@@ -327,6 +327,51 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
         ],
         config: CardConfig {
             stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
+            ..CardConfig::default()
+        },
+        ..test_overlord_spell()
+    }
+}
+
+pub fn duskbound_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestDuskboundProject,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        abilities: vec![],
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Duskbound],
+            ..CardConfig::default()
+        },
+        ..test_overlord_spell()
+    }
+}
+
+pub fn nightbound_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestNightboundProject,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        abilities: vec![],
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Nightbound],
+            ..CardConfig::default()
+        },
+        ..test_overlord_spell()
+    }
+}
+
+pub fn trap_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestTrapProject,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        abilities: vec![],
+        config: CardConfig {
+            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Trap],
             ..CardConfig::default()
         },
         ..test_overlord_spell()

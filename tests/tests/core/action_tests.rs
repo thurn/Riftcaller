@@ -447,6 +447,42 @@ fn unveil_during_minion_summon_decision() {
 }
 
 #[test]
+fn cannot_unveil_duskbound_during_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::TestMinionEndRaid);
+    let id = g.create_and_play(CardName::TestDuskboundProject);
+    g.pass_turn(Side::Overlord);
+
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    assert!(g.unveil_card_with_result(id).is_err());
+}
+
+#[test]
+fn cannot_unveil_nightbound_during_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::TestMinionEndRaid);
+    let id = g.create_and_play(CardName::TestNightboundProject);
+    g.pass_turn(Side::Overlord);
+
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    assert!(g.unveil_card_with_result(id).is_err());
+}
+
+#[test]
+fn cannot_unveil_trap_during_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::TestMinionEndRaid);
+    let id = g.create_and_play(CardName::TestTrapProject);
+    g.pass_turn(Side::Overlord);
+
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    assert!(g.unveil_card_with_result(id).is_err());
+}
+
+#[test]
 fn triggered_ability_cannot_unveil() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0)).actions(1).build();
     g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
@@ -457,6 +493,54 @@ fn triggered_ability_cannot_unveil() {
     assert!(g.dusk());
     assert_eq!(0, g.user.this_player.mana());
     assert_eq!(0, g.opponent.other_player.mana());
+}
+
+#[test]
+fn cannot_unveil_duskbound_immediately() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestDuskboundProject);
+    assert!(g.unveil_card_with_result(id).is_err());
+}
+
+#[test]
+fn cannot_unveil_trap_immediately() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestTrapProject);
+    assert!(g.unveil_card_with_result(id).is_err());
+}
+
+#[test]
+fn unveil_nightbound_immediately() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestNightboundProject);
+    assert!(g.unveil_card_with_result(id).is_ok());
+}
+
+#[test]
+fn unveil_duskbound_at_end_of_turn() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestDuskboundProject);
+    g.pass_turn(Side::Overlord);
+    g.to_end_step(Side::Champion);
+    assert!(g.unveil_card_with_result(id).is_ok());
+}
+
+#[test]
+fn cannot_unveil_nightbound_at_end_of_turn() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestNightboundProject);
+    g.pass_turn(Side::Overlord);
+    g.to_end_step(Side::Champion);
+    assert!(g.unveil_card_with_result(id).is_err());
+}
+
+#[test]
+fn cannot_unveil_trap_at_end_of_turn() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestTrapProject);
+    g.pass_turn(Side::Overlord);
+    g.to_end_step(Side::Champion);
+    assert!(g.unveil_card_with_result(id).is_err());
 }
 
 #[test]

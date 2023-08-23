@@ -8,10 +8,10 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::mage_gloves);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::magical_resonator);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::dark_grimoire);
-    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::andvari_est);
-    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::aris_fey);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::ennera_imris);
+    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::aris_fey);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::telantes_dugoth);
+    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::andvari_est);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::meditation);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::coup_de_grace);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::charged_strike);
@@ -91,6 +91,9 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_5_attack);
     DEFINITIONS.insert(cards_test::test_cards::activated_ability_take_mana);
     DEFINITIONS.insert(cards_test::test_cards::triggered_ability_take_mana);
+    DEFINITIONS.insert(cards_test::test_cards::duskbound_project);
+    DEFINITIONS.insert(cards_test::test_cards::nightbound_project);
+    DEFINITIONS.insert(cards_test::test_cards::trap_project);
     DEFINITIONS.insert(cards_test::test_cards::test_0_cost_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_1_cost_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::deal_damage_end_raid);

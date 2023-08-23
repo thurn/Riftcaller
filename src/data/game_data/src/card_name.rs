@@ -74,6 +74,12 @@ pub enum CardName {
     /// Project which stores mana on unveil, with a triggered ability to take
     /// mana at dusk.
     TestTriggeredAbilityTakeManaAtDusk,
+    /// Project with the "Duskbound" subtype
+    TestDuskboundProject,
+    /// Project with the "Nightbound" subtype
+    TestNightboundProject,
+    /// Project with the "Trap" subtype
+    TestTrapProject,
     /// Champion spell with a mana cost of 0
     Test0CostChampionSpell,
     /// Champion spell with a mana cost of 1
