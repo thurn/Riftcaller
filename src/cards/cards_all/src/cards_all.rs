@@ -2,6 +2,7 @@
 
 use rules::DEFINITIONS;
 
+
 pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::invisibility_ring);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::accumulator);
@@ -91,6 +92,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_5_attack);
     DEFINITIONS.insert(cards_test::test_cards::activated_ability_take_mana);
     DEFINITIONS.insert(cards_test::test_cards::triggered_ability_take_mana);
+    DEFINITIONS.insert(cards_test::test_cards::no_subtype_project);
     DEFINITIONS.insert(cards_test::test_cards::duskbound_project);
     DEFINITIONS.insert(cards_test::test_cards::nightbound_project);
     DEFINITIONS.insert(cards_test::test_cards::trap_project);

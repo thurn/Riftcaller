@@ -75,6 +75,8 @@ pub enum CardName {
     /// Project which stores mana on unveil, with a triggered ability to take
     /// mana at dusk.
     TestTriggeredAbilityTakeManaAtDusk,
+    /// Project with no subtypes
+    TestNoSubtypeProject,
     /// Project with the "Duskbound" subtype
     TestDuskboundProject,
     /// Project with the "Nightbound" subtype

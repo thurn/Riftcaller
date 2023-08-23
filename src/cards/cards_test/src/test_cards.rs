@@ -313,6 +313,18 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
     }
 }
 
+pub fn no_subtype_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestNoSubtypeProject,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        subtypes: vec![],
+        abilities: vec![],
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
+        ..test_overlord_spell()
+    }
+}
+
 pub fn duskbound_project() -> CardDefinition {
     CardDefinition {
         name: CardName::TestDuskboundProject,

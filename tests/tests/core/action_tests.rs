@@ -446,6 +446,22 @@ fn unveil_during_minion_summon_decision() {
 }
 
 #[test]
+fn unveil_during_room_approach() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestNoSubtypeProject);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    g.unveil_card(id);
+    assert_eq!(
+        test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
+        g.user.this_player.mana()
+    );
+    g.click(Button::ProceedToAccess);
+    g.opponent_click(Button::EndRaid);
+}
+
+#[test]
 fn cannot_unveil_duskbound_during_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestMinionEndRaid);
