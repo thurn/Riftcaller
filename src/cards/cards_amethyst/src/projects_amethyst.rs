@@ -54,6 +54,7 @@ pub fn gemcarver() -> CardDefinition {
         ],
         config: CardConfig {
             stats: CardStats { raze_cost: Some(2), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Duskbound],
             ..CardConfig::default()
         },
     }

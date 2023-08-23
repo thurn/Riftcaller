@@ -14,12 +14,13 @@
 
 use std::ops::{Deref, DerefMut};
 
-use actions::{action_flags, legal_actions};
+use actions::legal_actions;
 use ai_core::game_state_node::{GameStateNode, GameStatus};
 use anyhow::Result;
 use game_data::game::{GamePhase, GameState};
 use game_data::game_actions::GameAction;
 use game_data::primitives::Side;
+use rules::flags;
 
 /// Wrapper over [GameState] to allow trait to be implemented in this crate.
 pub struct SpelldawnState(pub GameState);
@@ -50,7 +51,7 @@ impl GameStateNode for SpelldawnState {
         match self.info.phase {
             GamePhase::GameOver { winner } => GameStatus::Completed { winner },
             _ => {
-                if action_flags::has_priority(self, Side::Overlord) {
+                if flags::has_priority(self, Side::Overlord) {
                     GameStatus::InProgress { current_turn: Side::Overlord }
                 } else {
                     GameStatus::InProgress { current_turn: Side::Champion }

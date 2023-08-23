@@ -14,7 +14,6 @@
 
 //! Converts a GameState into GameView updates
 
-use actions::action_flags;
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use constants::game_constants;
@@ -109,7 +108,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
             card_count: game.deck(side).count() as u32,
             can_take_draw_card_action: flags::can_take_draw_card_action(game, side),
         }),
-        can_take_action: action_flags::has_priority(game, side),
+        can_take_action: flags::has_priority(game, side),
     })
 }
 

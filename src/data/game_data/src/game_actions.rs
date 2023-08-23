@@ -46,6 +46,12 @@ pub enum EncounterAction {
     CardAction(CardPromptAction),
 }
 
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+pub enum ApproachRoomAction {
+    /// Continue to the room acces phase.
+    Proceed,
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum RazeCardActionType {
     /// Raze a card in play
@@ -100,6 +106,7 @@ pub enum PromptAction {
     SummonAction(SummonAction),
     /// Champion action in response to a raid encounter
     EncounterAction(EncounterAction),
+    ApproachRoomAction(ApproachRoomAction),
     /// Action to target & destroy an accessed card
     AccessPhaseAction(AccessPhaseAction),
     /// Action to take as part of a card ability
@@ -114,6 +121,7 @@ impl fmt::Debug for PromptAction {
             Self::EndTurnAction => write!(f, "EndTurn"),
             Self::SummonAction(a) => write!(f, "{a:?}"),
             Self::EncounterAction(a) => write!(f, "{a:?}"),
+            Self::ApproachRoomAction(a) => write!(f, "{a:?}"),
             Self::AccessPhaseAction(a) => write!(f, "{a:?}"),
             Self::CardAction(a) => write!(f, "{a:?}"),
         }

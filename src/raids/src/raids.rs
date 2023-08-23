@@ -17,6 +17,7 @@
 pub mod traits;
 
 mod access;
+pub mod approach_room;
 mod begin;
 mod defenders;
 mod encounter;
@@ -34,6 +35,7 @@ use tracing::info;
 use with_error::{verify, WithError};
 
 use crate::access::AccessPhase;
+use crate::approach_room::ApproachRoomPhase;
 use crate::begin::BeginPhase;
 use crate::encounter::EncounterPhase;
 use crate::summon::SummonPhase;
@@ -51,6 +53,7 @@ impl RaidDataExt for RaidData {
             InternalRaidPhase::Begin => Box::new(BeginPhase {}),
             InternalRaidPhase::Summon => Box::new(SummonPhase {}),
             InternalRaidPhase::Encounter => Box::new(EncounterPhase {}),
+            InternalRaidPhase::ApproachRoom => Box::new(ApproachRoomPhase {}),
             InternalRaidPhase::Access => Box::new(AccessPhase {}),
         }
     }
@@ -108,8 +111,9 @@ pub fn initiate(
 /// if no raid is currently active or if this action was not expected from this
 /// player.
 pub fn handle_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
-    let phase = game.raid()?.phase();
-    verify!(phase.active_side() == user_side, "Unexpected side");
+    let raid = game.raid()?;
+    let phase = raid.phase();
+    verify!(raid.internal_phase.active_side() == user_side, "Unexpected side");
     verify!(phase.prompts(game)?.iter().any(|c| c == &action), "Unexpected action");
 
     info!(?user_side, ?action, "Handling raid action");
@@ -131,7 +135,7 @@ pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<P
     }
 
     if let Some(raid) = &game.info.raid {
-        if raid.phase().active_side() == user_side {
+        if raid.internal_phase.active_side() == user_side {
             let prompts = raid.phase().prompts(game)?;
             if !prompts.is_empty() {
                 return Ok(Some(prompts));

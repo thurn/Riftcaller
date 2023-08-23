@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use actions::action_flags;
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use core_ui::icons;
@@ -22,7 +21,7 @@ use game_data::card_view_context::CardViewContext;
 use game_data::game::GameState;
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{
-    AbilityId, CardId, CardSubtype, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
+    AbilityId, CardId, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
 };
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
@@ -86,7 +85,7 @@ pub fn activated_ability_cards(
     if card.is_face_down() {
         if builder.user_side == Side::Overlord
             && definition.card_type == CardType::Project
-            && !definition.config.subtypes.contains(&CardSubtype::Trap)
+            && flags::can_unveil_for_subtypes(game, card.id)
         {
             result.push(Ok(unveil_card_view(builder, game, card.id)));
         }
@@ -266,7 +265,7 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
         rules_text: Some(rules_text::build(context)),
         targeting: context.query_or_none(|game, _| {
             card_targeting(no_target, false, |_| {
-                action_flags::can_take_unveil_card_action(game, Side::Overlord, card_id)
+                flags::can_take_unveil_card_action(game, Side::Overlord, card_id)
             })
         }),
         on_release_position: context.query_or_none(|_, card| {

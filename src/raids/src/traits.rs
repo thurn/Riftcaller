@@ -16,7 +16,7 @@ use anyhow::Result;
 use fallible_iterator::FallibleIterator;
 use game_data::game::{GameState, InternalRaidPhase};
 use game_data::game_actions::{PromptAction, PromptContext};
-use game_data::primitives::{CardId, Side};
+use game_data::primitives::CardId;
 use game_data::utils;
 
 /// Represents how the current state of a raid should be represented in the user
@@ -38,13 +38,6 @@ pub trait RaidPhase {
     /// may return a new [InternalRaidPhase] to immediately transition to, if no
     /// action is required.
     fn enter(&self, game: &mut GameState) -> Result<Option<InternalRaidPhase>>;
-
-    /// Identifies the player who can act in the current raid phase.
-    ///
-    /// At time of writing, the Overlord player can never act during a raid,
-    /// making this largely irrelevant. Keeping it around for now in case that
-    /// changes.
-    fn active_side(&self) -> Side;
 
     /// Describes how the current phase should be represented in the UI.
     fn display_state(&self, game: &GameState) -> Result<RaidDisplayState>;
@@ -94,8 +87,6 @@ pub trait RaidPhaseImpl: RaidPhase + Sized + Copy {
         action: Self::Action,
     ) -> Result<Option<InternalRaidPhase>>;
 
-    fn active_side(self) -> Side;
-
     fn display_state(self, game: &GameState) -> Result<RaidDisplayState>;
 
     fn prompt_context(self) -> Option<PromptContext> {
@@ -118,10 +109,6 @@ pub trait RaidPhaseImpl: RaidPhase + Sized + Copy {
 impl<T: RaidPhaseImpl> RaidPhase for T {
     fn enter(&self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
         RaidPhaseImpl::enter(*self, game)
-    }
-
-    fn active_side(&self) -> Side {
-        RaidPhaseImpl::active_side(*self)
     }
 
     fn display_state(&self, game: &GameState) -> Result<RaidDisplayState> {

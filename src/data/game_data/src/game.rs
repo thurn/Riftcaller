@@ -103,9 +103,22 @@ pub enum InternalRaidPhase {
     ///
     /// Note that defenders are encountered in decreasing position order.
     Encounter,
+    /// The Champion has bypassed all of the defenders for this room and the
+    /// Overlord has one final opportunity to take actions before cards are
+    /// accessed.
+    ApproachRoom,
     /// The Champion has bypassed all of the defenders for this room and is now
     /// accessing its contents
     Access,
+}
+
+impl InternalRaidPhase {
+    pub fn active_side(&self) -> Side {
+        match self {
+            Self::Begin | Self::Encounter | Self::Access => Side::Champion,
+            Self::Summon | Self::ApproachRoom => Side::Overlord,
+        }
+    }
 }
 
 /// Some card abilities completely change the state of a Raid, for example to
@@ -543,6 +556,14 @@ impl GameState {
     /// Overlord cards in a given room (not defenders), in an unspecified order
     pub fn occupants(&self, room_id: RoomId) -> impl Iterator<Item = &CardState> {
         self.cards_in_position(Side::Overlord, CardPosition::Room(room_id, RoomLocation::Occupant))
+    }
+
+    /// All overlord cards which occupy rooms (not defenders), in an unspecified
+    /// order
+    pub fn occupants_in_all_rooms(&self) -> impl Iterator<Item = &CardState> {
+        self.cards(Side::Overlord)
+            .iter()
+            .filter(move |c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Occupant)))
     }
 
     /// All Overlord cards located within a given room, defenders and occupants,

@@ -25,10 +25,50 @@ use game_data::delegates::{
 };
 use game_data::game::{GamePhase, GameState, TurnState};
 use game_data::game_actions::CardTarget;
-use game_data::primitives::{AbilityId, CardId, CardType, Lineage, RaidId, RoomId, Side};
+use game_data::primitives::{
+    AbilityId, CardId, CardSubtype, CardType, Lineage, RaidId, RoomId, Side,
+};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, mana, queries};
+
+/// Returns the player that is currently able to take actions in the provided
+/// game. If no player can act because the game has ended, returns None.
+pub fn current_priority(game: &GameState) -> Option<Side> {
+    match &game.info.phase {
+        GamePhase::ResolveMulligans(_) => {
+            if can_make_mulligan_decision(game, Side::Overlord) {
+                Some(Side::Overlord)
+            } else {
+                assert!(
+                    can_make_mulligan_decision(game, Side::Champion),
+                    "No player has mulligan decision"
+                );
+                Some(Side::Champion)
+            }
+        }
+        GamePhase::Play => {
+            if !game.overlord.card_prompt_queue.is_empty() {
+                Some(Side::Overlord)
+            } else if !game.champion.card_prompt_queue.is_empty() {
+                Some(Side::Champion)
+            } else if let Some(raid) = &game.info.raid {
+                Some(raid.internal_phase.active_side())
+            } else if game.info.turn_state == TurnState::Active {
+                Some(game.info.turn.side)
+            } else {
+                Some(game.info.turn.side.opponent())
+            }
+        }
+        GamePhase::GameOver { .. } => None,
+    }
+}
+
+/// Returns true if the `side` player currently has priority as described by
+/// [current_priority].
+pub fn has_priority(game: &GameState, side: Side) -> bool {
+    current_priority(game) == Some(side)
+}
 
 /// Returns whether a player can currently make a mulligan decision
 pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
@@ -353,4 +393,33 @@ pub fn can_take_start_turn_action(game: &GameState, side: Side) -> bool {
     can_take_game_actions(game)
         && game.info.turn.side == side.opponent()
         && game.info.turn_state == TurnState::Ended
+}
+
+/// Is the `side` player currently able to unveil the provided card?
+pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId) -> bool {
+    let definition = &crate::card_definition(game, card_id);
+    can_take_game_actions(game)
+        && side == Side::Overlord
+        && has_priority(game, side)
+        && game.card(card_id).is_face_down()
+        && game.card(card_id).position().in_play()
+        && definition.card_type == CardType::Project
+        && can_unveil_for_subtypes(game, card_id)
+        && can_pay_card_cost(game, card_id)
+}
+
+/// Checks whether a project card is currently in its assigned unveil window
+/// solely based on its subtypes. Use [can_take_unveil_card_action] instead to
+/// check whether a card can currently be unveiled.
+pub fn can_unveil_for_subtypes(game: &GameState, card_id: CardId) -> bool {
+    let subtypes = &crate::card_definition(game, card_id).config.subtypes;
+    if subtypes.contains(&CardSubtype::Trap) {
+        false
+    } else if subtypes.contains(&CardSubtype::Duskbound) {
+        game.info.turn.side == Side::Champion && game.info.turn_state == TurnState::Ended
+    } else if subtypes.contains(&CardSubtype::Nightbound) {
+        game.info.turn.side == Side::Overlord && game.info.turn_state != TurnState::Ended
+    } else {
+        true
+    }
 }

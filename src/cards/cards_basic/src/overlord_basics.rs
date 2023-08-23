@@ -20,7 +20,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardType, Lineage, Rarity, School, Side};
+use game_data::primitives::{CardSubtype, CardType, Lineage, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
@@ -122,6 +122,7 @@ pub fn coinery() -> CardDefinition {
         ],
         config: CardConfig {
             stats: CardStats { raze_cost: Some(3), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Nightbound],
             ..CardConfig::default()
         },
     }
@@ -147,6 +148,7 @@ pub fn leyline() -> CardDefinition {
         }],
         config: CardConfig {
             stats: CardStats { raze_cost: Some(4), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Duskbound],
             ..CardConfig::default()
         },
     }
@@ -175,6 +177,7 @@ pub fn ore_refinery() -> CardDefinition {
         ],
         config: CardConfig {
             stats: CardStats { raze_cost: Some(4), ..CardStats::default() },
+            subtypes: vec![CardSubtype::Duskbound],
             ..CardConfig::default()
         },
     }

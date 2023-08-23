@@ -30,7 +30,6 @@
 
 use std::time::Instant;
 
-use actions::action_flags;
 use ai_core::agent::{Agent, AgentConfig};
 use ai_game_integration::agents;
 use ai_game_integration::state_node::SpelldawnState;
@@ -44,6 +43,7 @@ use game_data::primitives::{GameId, Milliseconds, Side};
 use game_data::updates::{UpdateTracker, Updates};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::DelayCommand;
+use rules::flags;
 use tracing::{debug, info, info_span, subscriber, Instrument, Level};
 use tutorial::tutorial_actions;
 use with_error::{fail, WithError};
@@ -165,7 +165,7 @@ async fn send_snapshot_to_player(
 fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>>)> {
     for side in enum_iterator::all::<Side>() {
         if let PlayerId::AI(name) = game.player(side).id {
-            if action_flags::has_priority(game, side) {
+            if flags::has_priority(game, side) {
                 let agent = agents::get(name);
                 if !agent.inactive() {
                     return Some((side, agent));

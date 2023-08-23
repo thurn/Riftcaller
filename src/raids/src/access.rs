@@ -100,10 +100,6 @@ impl RaidPhaseImpl for AccessPhase {
         Ok(None)
     }
 
-    fn active_side(self) -> Side {
-        Side::Champion
-    }
-
     fn display_state(self, _: &GameState) -> Result<RaidDisplayState> {
         Ok(RaidDisplayState::Access)
     }

@@ -105,8 +105,13 @@ pub trait TestSessionHelpers {
     fn spend_all_action_points(&mut self, side: Side);
 
     /// Spends the `side` player's action points with no effect until they have
-    /// no action points remaining, then starts their opponent's next turn.
-    fn end_turn(&mut self, side: Side);
+    /// no action points remaining and then clicks the "End Turn" button.
+    fn to_end_step(&mut self, side: Side);
+
+    /// Spends the `side` player's action points with no effect until they have
+    /// no action points remaining, clicks on "End Turn", and then starts the
+    /// next player's turn.
+    fn pass_turn(&mut self, side: Side);
 
     /// Returns true if the last-received Game Message was 'Dawn'.
     fn dawn(&self) -> bool;
@@ -229,9 +234,9 @@ impl TestSessionHelpers for TestSession {
                 }
             }
 
-            self.end_turn(Side::Overlord);
+            self.pass_turn(Side::Overlord);
             assert!(self.dawn());
-            self.end_turn(Side::Champion);
+            self.pass_turn(Side::Champion);
             assert!(self.dusk());
         }
     }
@@ -298,10 +303,14 @@ impl TestSessionHelpers for TestSession {
         }
     }
 
-    fn end_turn(&mut self, side: Side) {
+    fn to_end_step(&mut self, side: Side) {
         let id = self.player_id_for_side(side);
         self.spend_all_action_points(side);
         self.click_on(id, "End Turn");
+    }
+
+    fn pass_turn(&mut self, side: Side) {
+        self.to_end_step(side);
         let opponent_id = self.player_id_for_side(side.opponent());
         self.click_on(opponent_id, "Start Turn");
     }
@@ -328,7 +337,7 @@ impl TestSessionHelpers for TestSession {
 
     fn set_up_minion_combat_with_action(&mut self, action: impl FnOnce(&mut TestSession)) {
         self.create_and_play(CardName::TestScheme3_15);
-        self.end_turn(Side::Overlord);
+        self.pass_turn(Side::Overlord);
         assert!(self.dawn());
         action(self);
         self.initiate_raid(test_constants::ROOM_ID);
@@ -336,11 +345,11 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier) {
-        self.end_turn(Side::Champion);
+        self.pass_turn(Side::Champion);
         assert!(self.dusk());
         let scheme_id = self.create_and_play(CardName::TestScheme3_15);
         let minion_id = self.create_and_play(card_name);
-        self.end_turn(Side::Overlord);
+        self.pass_turn(Side::Overlord);
         assert!(self.dawn());
         (scheme_id, minion_id)
     }

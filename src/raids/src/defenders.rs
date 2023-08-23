@@ -66,7 +66,7 @@ pub fn advance_to_next_encounter(game: &mut GameState) -> Result<Option<Internal
             Some(InternalRaidPhase::Encounter)
         }
     } else {
-        Some(InternalRaidPhase::Access)
+        Some(InternalRaidPhase::ApproachRoom)
     })
 }
 

@@ -16,7 +16,6 @@ use anyhow::Result;
 use game_data::delegates::{RaidEvent, RaidStartEvent};
 use game_data::game::{GameState, InternalRaidPhase};
 use game_data::game_actions::PromptAction;
-use game_data::primitives::Side;
 use rules::dispatch;
 use with_error::fail;
 
@@ -57,10 +56,6 @@ impl RaidPhaseImpl for BeginPhase {
 
     fn handle_action(self, _: &mut GameState, _: ()) -> Result<Option<InternalRaidPhase>> {
         fail!("No actions for Begin Phase")
-    }
-
-    fn active_side(self) -> Side {
-        Side::Champion
     }
 
     fn display_state(self, _: &GameState) -> Result<RaidDisplayState> {

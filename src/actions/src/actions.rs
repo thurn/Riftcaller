@@ -16,7 +16,6 @@
 //! from the client. The `handle_user_action` function is the primary
 //! entry-point into the rules engine.
 
-pub mod action_flags;
 pub mod legal_actions;
 
 use anyhow::Result;
@@ -187,7 +186,7 @@ fn activate_ability_action(
 #[instrument(skip(game))]
 fn unveil_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
     verify!(
-        action_flags::can_take_unveil_card_action(game, user_side, card_id),
+        flags::can_take_unveil_card_action(game, user_side, card_id),
         "Cannot unveil card {:?}",
         card_id
     );
@@ -259,6 +258,7 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         PromptAction::EndTurnAction => handle_end_turn_action(game, user_side),
         PromptAction::SummonAction(_)
         | PromptAction::EncounterAction(_)
+        | PromptAction::ApproachRoomAction(_)
         | PromptAction::AccessPhaseAction(_) => raids::handle_action(game, user_side, action),
         PromptAction::CardAction(card_action) => card_prompt::handle(game, user_side, card_action),
     }

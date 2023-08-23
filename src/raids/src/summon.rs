@@ -15,7 +15,6 @@
 use anyhow::Result;
 use game_data::game::{GameState, InternalRaidPhase};
 use game_data::game_actions::{PromptAction, SummonAction};
-use game_data::primitives::Side;
 use rules::mutations;
 use with_error::{fail, verify};
 
@@ -70,10 +69,6 @@ impl RaidPhaseImpl for SummonPhase {
             }
             SummonAction::DoNotSummmon => defenders::advance_to_next_encounter(game),
         }
-    }
-
-    fn active_side(self) -> Side {
-        Side::Overlord
     }
 
     fn display_state(self, game: &GameState) -> Result<RaidDisplayState> {

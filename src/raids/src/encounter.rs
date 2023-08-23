@@ -110,10 +110,6 @@ impl RaidPhaseImpl for EncounterPhase {
         defenders::advance_to_next_encounter(game)
     }
 
-    fn active_side(self) -> Side {
-        Side::Champion
-    }
-
     fn display_state(self, game: &GameState) -> Result<RaidDisplayState> {
         defenders::defender_list_display_state(game)
     }

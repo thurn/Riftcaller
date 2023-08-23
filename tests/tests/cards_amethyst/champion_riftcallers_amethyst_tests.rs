@@ -26,8 +26,8 @@ fn ennera_imris_blood_bound() {
             .build();
 
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
-    g.end_turn(Side::Champion);
-    g.end_turn(Side::Overlord);
+    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Overlord);
     assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
     assert_eq!(test_constants::STARTING_MANA + gained, g.me().mana());
 }
@@ -39,7 +39,7 @@ fn aris_fey_the_radiant_sun() {
     )
     .build();
 
-    g.end_turn(Side::Champion);
+    g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestMinionDealDamage);
     g.set_up_minion_combat();
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());

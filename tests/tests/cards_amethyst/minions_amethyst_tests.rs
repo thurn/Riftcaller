@@ -52,7 +52,7 @@ fn time_golem_defeat() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TimeGolem);
     g.create_and_play(CardName::TestScheme3_15);
-    g.end_turn(Side::Overlord);
+    g.pass_turn(Side::Overlord);
     g.create_and_play(CardName::TestWeapon5Attack);
     g.initiate_raid(test_constants::ROOM_ID);
     g.click(Buttons::Summon);

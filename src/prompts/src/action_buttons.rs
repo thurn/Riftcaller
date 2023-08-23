@@ -16,8 +16,8 @@ use core_ui::action_builder::ActionBuilder;
 use core_ui::icons;
 use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{
-    AccessPhaseAction, CardPromptAction, EncounterAction, GameAction, PromptAction,
-    RazeCardActionType, SummonAction,
+    AccessPhaseAction, ApproachRoomAction, CardPromptAction, EncounterAction, GameAction,
+    PromptAction, RazeCardActionType, SummonAction,
 };
 use game_data::primitives::Side;
 use rules::queries;
@@ -31,6 +31,7 @@ pub fn for_prompt(game: &GameState, side: Side, action: PromptAction) -> Respons
         PromptAction::EndTurnAction => ResponseButton::new("End Turn"),
         PromptAction::SummonAction(data) => summon_button(game, data),
         PromptAction::EncounterAction(data) => encounter_action_button(game, side, data),
+        PromptAction::ApproachRoomAction(data) => approach_room_button(data),
         PromptAction::AccessPhaseAction(data) => access_button(data),
         PromptAction::CardAction(data) => card_response_button(side, data),
     }
@@ -83,6 +84,12 @@ fn encounter_action_button(
         }
         EncounterAction::NoWeapon => ResponseButton::new("Continue").primary(false),
         EncounterAction::CardAction(action) => card_response_button(side, action),
+    }
+}
+
+fn approach_room_button(action: ApproachRoomAction) -> ResponseButton {
+    match action {
+        ApproachRoomAction::Proceed => ResponseButton::new("Proceed to Access"),
     }
 }
 

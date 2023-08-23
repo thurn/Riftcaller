@@ -468,8 +468,14 @@ impl CardType {
 /// Subtypes of cards
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, EnumString, Serialize, Deserialize)]
 pub enum CardSubtype {
-    /// Cards with the "Trap" subtype never show an unveil option.
+    /// Cards with the "Trap" subtype cannot be unveiled
     Trap,
+    /// Cards with the "Duskbound" subtype can only be unveiled at the end of
+    /// the Champion's turn.
+    Duskbound,
+    /// Cards with the "Nightbound" subtype can only be unveiled during the
+    /// Overlord's turn.
+    Nightbound,
     Silvered,
 }
 
