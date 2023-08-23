@@ -11,7 +11,7 @@ test = false
 doctest = false
 
 [dependencies]
-anyhow = "1.0.69"
+anyhow = { features = ["backtrace"], version = "1.0.75" }
 
 game_data = { path = "../data/game_data", version = "0.0.0" }
 raids = { path = "../raids", version = "0.0.0" }

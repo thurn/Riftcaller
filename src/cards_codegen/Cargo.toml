@@ -11,6 +11,6 @@ path = "src/cards_codegen.rs"
 test = false
 
 [dependencies]
-anyhow = "1.0.69"
+anyhow = { features = ["backtrace"], version = "1.0.75" }
 regex = "1.7.1"
 walkdir = "2.3.2"

@@ -28,7 +28,7 @@ test_constants = { path = "../test_constants", version = "0.0.0" }
 user_action_data = { path = "../data/user_action_data", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
 
-anyhow = "1.0.69"
+anyhow = { features = ["backtrace"], version = "1.0.75" }
 async-trait = "0.1.64"
 maplit = "1.0.2"
 prost = "0.11.6"

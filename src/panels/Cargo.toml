@@ -20,5 +20,5 @@ protos = { path = "../protos", version = "0.0.0" }
 user_action_data = { path = "../data/user_action_data", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
 
-anyhow = "1.0.69"
+anyhow = { features = ["backtrace"], version = "1.0.75" }
 enum-iterator = "1.3.0"

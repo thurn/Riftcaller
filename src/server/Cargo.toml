@@ -11,7 +11,7 @@ doctest = false
 test = false
 
 [dependencies]
-anyhow = "1.0.69"
+anyhow = { features = ["backtrace"], version = "1.0.75" }
 dashmap = "5.4.0"
 concurrent-queue = "2.2.0"
 enum-iterator = "1.3.0"
