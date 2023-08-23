@@ -16,7 +16,7 @@
 
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SchemePoints,
+    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
     SpecialEffects,
 };
 use game_data::card_name::CardName;
@@ -61,10 +61,9 @@ pub fn test_scheme_315() -> CardDefinition {
         name: CardName::TestScheme3_15,
         cost: scheme_cost(),
         card_type: CardType::Scheme,
-        config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 3, points: 15 }),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { level_requirement: 3, points: 15 })
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -74,10 +73,7 @@ pub fn test_project_2_cost_3_raze() -> CardDefinition {
         name: CardName::TestProject2Cost3Raze,
         cost: cost(2),
         card_type: CardType::Project,
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(3), ..CardStats::default() },
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().raze_cost(3).build(),
         ..test_overlord_spell()
     }
 }
@@ -88,11 +84,10 @@ pub fn test_minion_end_raid() -> CardDefinition {
         cost: cost(test_constants::MINION_COST),
         abilities: vec![abilities::combat_end_raid()],
         card_type: CardType::Minion,
-        config: CardConfig {
-            stats: health(test_constants::MINION_HEALTH),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -103,15 +98,11 @@ pub fn test_minion_shield_1() -> CardDefinition {
         cost: cost(test_constants::MINION_COST),
         abilities: vec![abilities::combat_end_raid()],
         card_type: CardType::Minion,
-        config: CardConfig {
-            stats: CardStats {
-                health: Some(test_constants::MINION_HEALTH),
-                shield: Some(1),
-                ..CardStats::default()
-            },
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .shield(1)
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -122,15 +113,11 @@ pub fn test_minion_shield_2_abyssal() -> CardDefinition {
         cost: cost(test_constants::MINION_COST),
         abilities: vec![abilities::combat_end_raid()],
         card_type: CardType::Minion,
-        config: CardConfig {
-            stats: CardStats {
-                health: Some(test_constants::MINION_HEALTH),
-                shield: Some(2),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Abyssal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .shield(2)
+            .lineage(Lineage::Abyssal)
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -141,11 +128,10 @@ pub fn test_minion_deal_damage() -> CardDefinition {
         cost: cost(1),
         abilities: vec![abilities::combat_deal_damage::<1>()],
         card_type: CardType::Minion,
-        config: CardConfig {
-            stats: health(test_constants::MINION_HEALTH),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -153,11 +139,10 @@ pub fn test_minion_deal_damage() -> CardDefinition {
 pub fn test_minion_infernal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestInfernalMinion,
-        config: CardConfig {
-            stats: health(test_constants::MINION_HEALTH),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .lineage(Lineage::Infernal)
+            .build(),
         ..test_minion_end_raid()
     }
 }
@@ -165,11 +150,10 @@ pub fn test_minion_infernal() -> CardDefinition {
 pub fn test_minion_abyssal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestAbyssalMinion,
-        config: CardConfig {
-            stats: health(test_constants::MINION_HEALTH),
-            lineage: Some(Lineage::Abyssal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .lineage(Lineage::Abyssal)
+            .build(),
         ..test_minion_end_raid()
     }
 }
@@ -177,11 +161,10 @@ pub fn test_minion_abyssal() -> CardDefinition {
 pub fn test_minion_mortal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestMortalMinion,
-        config: CardConfig {
-            stats: health(test_constants::MINION_HEALTH),
-            lineage: Some(Lineage::Mortal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .lineage(Lineage::Mortal)
+            .build(),
         ..test_minion_end_raid()
     }
 }
@@ -191,11 +174,10 @@ pub fn test_weapon_2_attack() -> CardDefinition {
         name: CardName::TestWeapon2Attack,
         cost: cost(test_constants::WEAPON_COST),
         card_type: CardType::Weapon,
-        config: CardConfig {
-            stats: base_attack(2),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_champion_spell()
     }
 }
@@ -204,11 +186,11 @@ pub fn test_weapon_2_attack_12_boost() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon2Attack12Boost,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: attack(2, AttackBoost { cost: 1, bonus: 2 }),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_weapon_2_attack()
     }
 }
@@ -217,11 +199,11 @@ pub fn test_weapon_3_attack_12_boost() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon3Attack12Boost3Cost,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: attack(3, AttackBoost { cost: 1, bonus: 2 }),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_weapon_2_attack()
     }
 }
@@ -230,11 +212,11 @@ pub fn test_weapon_4_attack_12_boost() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon4Attack12Boost,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: attack(4, AttackBoost { cost: 1, bonus: 2 }),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(4)
+            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_weapon_2_attack()
     }
 }
@@ -243,11 +225,11 @@ pub fn test_weapon_abyssal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponAbyssal,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: attack(3, AttackBoost { cost: 1, bonus: 2 }),
-            lineage: Some(Lineage::Abyssal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .lineage(Lineage::Abyssal)
+            .build(),
         ..test_weapon_2_attack()
     }
 }
@@ -256,11 +238,11 @@ pub fn test_weapon_infernal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponInfernal,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: attack(3, AttackBoost { cost: 1, bonus: 2 }),
-            lineage: Some(Lineage::Infernal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .lineage(Lineage::Infernal)
+            .build(),
         ..test_weapon_2_attack()
     }
 }
@@ -269,11 +251,11 @@ pub fn test_weapon_mortal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponMortal,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: attack(3, AttackBoost { cost: 1, bonus: 2 }),
-            lineage: Some(Lineage::Mortal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .lineage(Lineage::Mortal)
+            .build(),
         ..test_weapon_2_attack()
     }
 }
@@ -281,11 +263,10 @@ pub fn test_weapon_mortal() -> CardDefinition {
 pub fn test_weapon_5_attack() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon5Attack,
-        config: CardConfig {
-            stats: base_attack(5),
-            lineage: Some(test_constants::TEST_LINEAGE),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(5)
+            .lineage(test_constants::TEST_LINEAGE)
+            .build(),
         ..test_weapon_2_attack()
     }
 }
@@ -325,10 +306,7 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
         ..test_overlord_spell()
     }
 }
@@ -339,11 +317,10 @@ pub fn duskbound_project() -> CardDefinition {
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
         abilities: vec![],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Duskbound],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .raze_cost(test_constants::RAZE_COST)
+            .subtype(CardSubtype::Duskbound)
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -354,11 +331,10 @@ pub fn nightbound_project() -> CardDefinition {
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
         abilities: vec![],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Nightbound],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .raze_cost(test_constants::RAZE_COST)
+            .subtype(CardSubtype::Nightbound)
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -369,11 +345,10 @@ pub fn trap_project() -> CardDefinition {
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
         abilities: vec![],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(test_constants::RAZE_COST), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Trap],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .raze_cost(test_constants::RAZE_COST)
+            .subtype(CardSubtype::Trap)
+            .build(),
         ..test_overlord_spell()
     }
 }
@@ -403,11 +378,7 @@ pub fn deal_damage_end_raid() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_end_raid()],
-        config: CardConfig {
-            stats: CardStats { health: Some(5), shield: Some(1), ..CardStats::default() },
-            lineage: Some(Lineage::Infernal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(5).shield(1).lineage(Lineage::Infernal).build(),
         ..test_overlord_spell()
     }
 }
@@ -421,15 +392,15 @@ pub fn test_attack_weapon() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: attack(3, AttackBoost { cost: 1, bonus: 2 }),
-            lineage: Some(Lineage::Infernal),
-            special_effects: SpecialEffects {
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .lineage(Lineage::Infernal)
+            .special_effects(SpecialEffects {
                 projectile: Some(Projectile::Hovl(8)),
                 additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
-            },
-            ..CardConfig::default()
-        },
+            })
+            .build(),
         ..test_champion_spell()
     }
 }

@@ -18,7 +18,7 @@ use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
+    Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, SpecialEffects,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -57,15 +57,15 @@ pub fn marauders_axe() -> CardDefinition {
             },
             abilities::encounter_boost(),
         ],
-        config: CardConfig {
-            stats: attack(2, AttackBoost { cost: 2, bonus: 3 }),
-            lineage: Some(Lineage::Infernal),
-            special_effects: SpecialEffects {
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .attack_boost(AttackBoost { cost: 2, bonus: 3 })
+            .lineage(Lineage::Infernal)
+            .special_effects(SpecialEffects {
                 projectile: Some(Projectile::Hovl(8)),
                 additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
-            },
-            ..CardConfig::default()
-        },
+            })
+            .build(),
     }
 }
 
@@ -80,17 +80,13 @@ pub fn keen_halberd() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: CardStats {
-                base_attack: Some(3),
-                attack_boost: Some(AttackBoost { cost: 2, bonus: 1 }),
-                breach: Some(1),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Abyssal),
-            special_effects: projectile(Projectile::Hovl(2)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 2, bonus: 1 })
+            .breach(1)
+            .lineage(Lineage::Abyssal)
+            .special_effects(projectile(Projectile::Hovl(2)))
+            .build(),
     }
 }
 
@@ -120,11 +116,11 @@ pub fn bow_of_the_alliance() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfig {
-            stats: attack(1, AttackBoost { cost: 1, bonus: 0 }),
-            lineage: Some(Lineage::Mortal),
-            special_effects: projectile(Projectile::Hovl(4)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(1)
+            .attack_boost(AttackBoost { cost: 1, bonus: 0 })
+            .lineage(Lineage::Mortal)
+            .special_effects(projectile(Projectile::Hovl(4)))
+            .build(),
     }
 }

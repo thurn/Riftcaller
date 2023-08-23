@@ -16,7 +16,7 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::*;
 use game_data::card_definition::{
-    Ability, AbilityType, CardConfig, CardDefinition, CardStats, SchemePoints,
+    Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -35,10 +35,9 @@ pub fn conspire() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![],
-        config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 3, points: 15 }),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { level_requirement: 3, points: 15 })
+            .build(),
     }
 }
 
@@ -53,10 +52,9 @@ pub fn devise() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![],
-        config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 4, points: 30 }),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { level_requirement: 4, points: 30 })
+            .build(),
     }
 }
 
@@ -71,10 +69,9 @@ pub fn machinate() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![],
-        config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 5, points: 45 }),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { level_requirement: 5, points: 45 })
+            .build(),
     }
 }
 
@@ -120,11 +117,7 @@ pub fn coinery() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(3), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Nightbound],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().raze_cost(3).subtype(CardSubtype::Nightbound).build(),
     }
 }
 
@@ -146,11 +139,7 @@ pub fn leyline() -> CardDefinition {
                 Ok(())
             })],
         }],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(4), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Duskbound],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().raze_cost(4).subtype(CardSubtype::Duskbound).build(),
     }
 }
 
@@ -175,11 +164,7 @@ pub fn ore_refinery() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(4), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Duskbound],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().raze_cost(4).subtype(CardSubtype::Duskbound).build(),
     }
 }
 
@@ -194,11 +179,7 @@ pub fn crab() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfig {
-            stats: CardStats { health: Some(2), ..CardStats::default() },
-            lineage: Some(Lineage::Infernal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(2).lineage(Lineage::Infernal).build(),
     }
 }
 
@@ -213,11 +194,7 @@ pub fn fire_goblin() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_gain_mana::<1>()],
-        config: CardConfig {
-            stats: CardStats { health: Some(1), shield: Some(2), ..CardStats::default() },
-            lineage: Some(Lineage::Infernal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(1).shield(2).lineage(Lineage::Infernal).build(),
     }
 }
 
@@ -232,11 +209,7 @@ pub fn toucan() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfig {
-            stats: CardStats { health: Some(3), ..CardStats::default() },
-            lineage: Some(Lineage::Abyssal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(3).lineage(Lineage::Abyssal).build(),
     }
 }
 
@@ -251,11 +224,7 @@ pub fn frog() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfig {
-            stats: CardStats { health: Some(4), ..CardStats::default() },
-            lineage: Some(Lineage::Abyssal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(4).lineage(Lineage::Abyssal).build(),
     }
 }
 
@@ -270,11 +239,7 @@ pub fn captain() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid(), abilities::remove_actions_if_able::<1>()],
-        config: CardConfig {
-            stats: CardStats { health: Some(2), ..CardStats::default() },
-            lineage: Some(Lineage::Mortal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(2).lineage(Lineage::Mortal).build(),
     }
 }
 
@@ -289,10 +254,6 @@ pub fn scout() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfig {
-            stats: CardStats { health: Some(4), ..CardStats::default() },
-            lineage: Some(Lineage::Mortal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(4).lineage(Lineage::Mortal).build(),
     }
 }

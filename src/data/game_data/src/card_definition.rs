@@ -188,6 +188,76 @@ pub struct CardConfig {
     pub image_background: Option<Sprite>,
 }
 
+#[derive(Debug, Default)]
+pub struct CardConfigBuilder {
+    config: CardConfig,
+}
+
+impl CardConfigBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn build(self) -> CardConfig {
+        self.config
+    }
+
+    pub fn health(mut self, value: HealthValue) -> Self {
+        self.config.stats.health = Some(value);
+        self
+    }
+
+    pub fn shield(mut self, value: ShieldValue) -> Self {
+        self.config.stats.shield = Some(value);
+        self
+    }
+
+    pub fn breach(mut self, value: BreachValue) -> Self {
+        self.config.stats.breach = Some(value);
+        self
+    }
+
+    pub fn raze_cost(mut self, value: RazeCost) -> Self {
+        self.config.stats.raze_cost = Some(value);
+        self
+    }
+
+    pub fn base_attack(mut self, value: AttackValue) -> Self {
+        self.config.stats.base_attack = Some(value);
+        self
+    }
+
+    pub fn attack_boost(mut self, value: AttackBoost) -> Self {
+        self.config.stats.attack_boost = Some(value);
+        self
+    }
+
+    pub fn scheme_points(mut self, value: SchemePoints) -> Self {
+        self.config.stats.scheme_points = Some(value);
+        self
+    }
+
+    pub fn lineage(mut self, lineage: Lineage) -> Self {
+        self.config.lineage = Some(lineage);
+        self
+    }
+
+    pub fn subtype(mut self, subtype: CardSubtype) -> Self {
+        self.config.subtypes.push(subtype);
+        self
+    }
+
+    pub fn custom_targeting(mut self, targeting: TargetRequirement<CardId>) -> Self {
+        self.config.custom_targeting = Some(targeting);
+        self
+    }
+
+    pub fn special_effects(mut self, effects: SpecialEffects) -> Self {
+        self.config.special_effects = effects;
+        self
+    }
+}
+
 /// The fundamental object defining the behavior of a given card in Spelldawn
 ///
 /// This struct's top-level fields should be universal properties which need to

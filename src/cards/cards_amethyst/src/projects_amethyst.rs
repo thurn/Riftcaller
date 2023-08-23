@@ -17,7 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
-use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
+use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
@@ -52,11 +52,7 @@ pub fn gemcarver() -> CardDefinition {
                 })],
             },
         ],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(2), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Duskbound],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().raze_cost(2).subtype(CardSubtype::Duskbound).build(),
     }
 }
 
@@ -87,10 +83,6 @@ pub fn spike_trap() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfig {
-            stats: CardStats { raze_cost: Some(2), ..CardStats::default() },
-            subtypes: vec![CardSubtype::Trap],
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().raze_cost(2).subtype(CardSubtype::Trap).build(),
     }
 }

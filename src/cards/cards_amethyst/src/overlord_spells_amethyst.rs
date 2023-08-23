@@ -16,7 +16,9 @@
 
 use assets::rexard_images;
 use card_helpers::{text, *};
-use game_data::card_definition::{CardConfig, CardDefinition, TargetRequirement};
+use game_data::card_definition::{
+    CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
+};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
@@ -73,14 +75,12 @@ pub fn forced_march() -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfig {
-            custom_targeting: Some(TargetRequirement::TargetRoom(|game, _, room_id| {
+        config: CardConfigBuilder::new().custom_targeting(
+            TargetRequirement::TargetRoom(|game, _, room_id| {
                 game.defenders_and_occupants(room_id).any(|card| {
                     flags::can_level_up_card(game, card.id)
                         && !flags::entered_play_this_turn(game, card.id)
                 })
-            })),
-            ..CardConfig::default()
-        },
+            })).build()
     }
 }

@@ -17,7 +17,9 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{text, *};
-use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, SchemePoints};
+use game_data::card_definition::{
+    Ability, AbilityType, CardConfigBuilder, CardDefinition, SchemePoints,
+};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
@@ -43,10 +45,9 @@ pub fn gold_mine() -> CardDefinition {
                 Ok(())
             })],
         }],
-        config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 4, points: 30 }),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { level_requirement: 4, points: 30 })
+            .build(),
     }
 }
 
@@ -77,10 +78,9 @@ pub fn activate_reinforcements() -> CardDefinition {
                 },
             })],
         }],
-        config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 5, points: 45 }),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { level_requirement: 5, points: 45 })
+            .build(),
     }
 }
 
@@ -114,9 +114,8 @@ pub fn research_project() -> CardDefinition {
                 }),
             ],
         }],
-        config: CardConfig {
-            stats: scheme_points(SchemePoints { level_requirement: 3, points: 15 }),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { level_requirement: 3, points: 15 })
+            .build(),
     }
 }

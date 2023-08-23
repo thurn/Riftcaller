@@ -15,7 +15,8 @@
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use card_helpers::*;
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardDefinition, CardStats, SpecialEffects,
+    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
+    SpecialEffects,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -171,16 +172,12 @@ pub fn simple_blade() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: CardStats {
-                base_attack: Some(2),
-                attack_boost: Some(AttackBoost { cost: 1, bonus: 1 }),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Mortal),
-            special_effects: projectile(Projectile::Hovl(2)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .lineage(Lineage::Mortal)
+            .special_effects(projectile(Projectile::Hovl(2)))
+            .build(),
     }
 }
 
@@ -195,19 +192,15 @@ pub fn simple_axe() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: CardStats {
-                base_attack: Some(3),
-                attack_boost: Some(AttackBoost { cost: 3, bonus: 1 }),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Mortal),
-            special_effects: SpecialEffects {
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 3, bonus: 1 })
+            .lineage(Lineage::Mortal)
+            .special_effects(SpecialEffects {
                 projectile: Some(Projectile::Hovl(8)),
                 additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
-            },
-            ..CardConfig::default()
-        },
+            })
+            .build(),
     }
 }
 
@@ -222,16 +215,12 @@ pub fn simple_bow() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: CardStats {
-                base_attack: Some(1),
-                attack_boost: Some(AttackBoost { cost: 2, bonus: 1 }),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Abyssal),
-            special_effects: projectile(Projectile::Hovl(3)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(1)
+            .attack_boost(AttackBoost { cost: 2, bonus: 1 })
+            .lineage(Lineage::Abyssal)
+            .special_effects(projectile(Projectile::Hovl(3)))
+            .build(),
     }
 }
 
@@ -246,16 +235,12 @@ pub fn simple_club() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: CardStats {
-                base_attack: Some(2),
-                attack_boost: Some(AttackBoost { cost: 1, bonus: 1 }),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Abyssal),
-            special_effects: projectile(Projectile::Hovl(3)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .lineage(Lineage::Abyssal)
+            .special_effects(projectile(Projectile::Hovl(3)))
+            .build(),
     }
 }
 
@@ -270,16 +255,12 @@ pub fn simple_hammer() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: CardStats {
-                base_attack: Some(1),
-                attack_boost: Some(AttackBoost { cost: 1, bonus: 1 }),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Infernal),
-            special_effects: projectile(Projectile::Hovl(4)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(1)
+            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .lineage(Lineage::Infernal)
+            .special_effects(projectile(Projectile::Hovl(4)))
+            .build(),
     }
 }
 
@@ -294,16 +275,12 @@ pub fn simple_spear() -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
-        config: CardConfig {
-            stats: CardStats {
-                base_attack: Some(0),
-                attack_boost: Some(AttackBoost { cost: 3, bonus: 5 }),
-                ..CardStats::default()
-            },
-            lineage: Some(Lineage::Infernal),
-            special_effects: projectile(Projectile::Hovl(4)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(0)
+            .attack_boost(AttackBoost { cost: 3, bonus: 5 })
+            .lineage(Lineage::Infernal)
+            .special_effects(projectile(Projectile::Hovl(4)))
+            .build(),
     }
 }
 
@@ -335,11 +312,11 @@ pub fn ethereal_blade() -> CardDefinition {
                 ],
             },
         ],
-        config: CardConfig {
-            stats: attack(1, AttackBoost { cost: 1, bonus: 1 }),
-            lineage: Some(Lineage::Prismatic),
-            special_effects: projectile(Projectile::Hovl(3)),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new()
+            .base_attack(1)
+            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .lineage(Lineage::Prismatic)
+            .special_effects(projectile(Projectile::Hovl(3)))
+            .build(),
     }
 }

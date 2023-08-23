@@ -17,7 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
-use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition, CardStats};
+use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
@@ -60,11 +60,7 @@ pub fn time_golem() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfig {
-            stats: health(3),
-            lineage: Some(Lineage::Construct),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(3).lineage(Lineage::Construct).build(),
     }
 }
 
@@ -113,11 +109,7 @@ pub fn temporal_stalker() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfig {
-            stats: CardStats { health: Some(6), shield: Some(3), ..CardStats::default() },
-            lineage: Some(Lineage::Abyssal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(6).shield(3).lineage(Lineage::Abyssal).build(),
     }
 }
 
@@ -141,11 +133,7 @@ pub fn shadow_lurker() -> CardDefinition {
             ),
             abilities::combat_end_raid(),
         ],
-        config: CardConfig {
-            stats: CardStats { health: Some(2), shield: Some(1), ..CardStats::default() },
-            lineage: Some(Lineage::Abyssal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(2).shield(1).lineage(Lineage::Abyssal).build(),
     }
 }
 
@@ -181,11 +169,7 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
                 }),
             ],
         }],
-        config: CardConfig {
-            stats: CardStats { health: Some(3), shield: Some(1), ..CardStats::default() },
-            lineage: Some(Lineage::Mortal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(3).shield(1).lineage(Lineage::Mortal).build(),
     }
 }
 
@@ -215,11 +199,7 @@ pub fn bridge_troll() -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfig {
-            stats: CardStats { health: Some(0), shield: Some(2), ..CardStats::default() },
-            lineage: Some(Lineage::Mortal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(0).shield(2).lineage(Lineage::Mortal).build(),
     }
 }
 
@@ -246,10 +226,6 @@ pub fn stormcaller() -> CardDefinition {
                 ]
             }),
         )],
-        config: CardConfig {
-            stats: CardStats { health: Some(3), shield: Some(2), ..CardStats::default() },
-            lineage: Some(Lineage::Infernal),
-            ..CardConfig::default()
-        },
+        config: CardConfigBuilder::new().health(3).shield(2).lineage(Lineage::Infernal).build(),
     }
 }

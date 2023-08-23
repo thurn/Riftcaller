@@ -17,7 +17,7 @@
 use assets::rexard_images;
 use card_helpers::{text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement,
+    Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -71,13 +71,12 @@ pub fn coup_de_grace() -> CardDefinition {
                 }),
             ],
         }],
-        config: CardConfig {
-            custom_targeting: Some(TargetRequirement::TargetRoom(|game, _, room_id| {
+        config: CardConfigBuilder::new()
+            .custom_targeting(TargetRequirement::TargetRoom(|game, _, room_id| {
                 flags::can_take_initiate_raid_action(game, Side::Champion, room_id)
                     && (room_id == RoomId::Sanctum || room_id == RoomId::Vault)
-            })),
-            ..CardConfig::default()
-        },
+            }))
+            .build(),
     }
 }
 
@@ -99,12 +98,11 @@ pub fn charged_strike() -> CardDefinition {
                 })
             }),
         )],
-        config: CardConfig {
-            custom_targeting: Some(TargetRequirement::TargetRoom(|game, _, room_id| {
+        config: CardConfigBuilder::new()
+            .custom_targeting(TargetRequirement::TargetRoom(|game, _, room_id| {
                 flags::can_take_initiate_raid_action(game, Side::Champion, room_id)
-            })),
-            ..CardConfig::default()
-        },
+            }))
+            .build(),
     }
 }
 
@@ -138,12 +136,11 @@ pub fn stealth_mission() -> CardDefinition {
                 }),
             ],
         }],
-        config: CardConfig {
-            custom_targeting: Some(TargetRequirement::TargetRoom(|game, _, room_id| {
+        config: CardConfigBuilder::new()
+            .custom_targeting(TargetRequirement::TargetRoom(|game, _, room_id| {
                 flags::can_take_initiate_raid_action(game, Side::Champion, room_id)
-            })),
-            ..CardConfig::default()
-        },
+            }))
+            .build(),
     }
 }
 
