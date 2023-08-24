@@ -89,7 +89,15 @@ fn aggregate_named_triggers(abilities: &[Ability]) -> Vec<Vec<TextElement>> {
 /// Builds the rules text for a single [Ability], not including its cost (if
 /// any).
 pub fn ability_text(context: &CardViewContext, ability: &Ability) -> String {
-    build_text(context, &ability.text, true)
+    if let AbilityType::Activated(cost, _) = &ability.ability_type {
+        let text = vec![TextElement::Activated {
+            cost: ability_cost_string(cost),
+            effect: ability.text.clone(),
+        }];
+        build_text(context, &text, true)
+    } else {
+        build_text(context, &ability.text, true)
+    }
 }
 
 fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<TextElement> {
@@ -101,8 +109,17 @@ fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<TextElement> {
 
     if let Some(mana) = cost.mana {
         if mana > 0 {
-            result.push(TextElement::Token(TextToken::Mana(mana)))
+            result.push(TextElement::Token(TextToken::Mana(mana)));
         }
+    }
+
+    if let Some(description) =
+        cost.custom_cost.as_ref().and_then(|custom| custom.description.as_ref())
+    {
+        if !result.is_empty() {
+            result.push(TextElement::Literal(", ".to_string()));
+        }
+        result.push(description.clone());
     }
 
     result

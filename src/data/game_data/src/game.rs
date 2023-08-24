@@ -593,6 +593,13 @@ impl GameState {
         self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
     }
 
+    /// All Champion cards which are currently in play.
+    pub fn all_champion_permanents(&self) -> impl Iterator<Item = &CardState> {
+        self.cards(Side::Champion)
+            .iter()
+            .filter(move |c| matches!(c.position(), CardPosition::ArenaItem(_)))
+    }
+
     /// All global game modifier cards, in an unspecified order
     pub fn game_modifiers(&self, side: Side) -> impl Iterator<Item = &CardState> {
         self.cards_in_position(side, CardPosition::GameModifier)

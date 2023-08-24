@@ -16,8 +16,8 @@
 
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
-    SpecialEffects,
+    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Cost,
+    SchemePoints, SpecialEffects, TargetRequirement,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -409,6 +409,24 @@ pub fn test_attack_weapon() -> CardDefinition {
                 additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
             })
             .build(),
+        ..test_champion_spell()
+    }
+}
+
+pub fn test_sacrifice_draw_card_artifact() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestSacrificeDrawCardArtifact,
+        cost: cost(test_constants::ARTIFACT_COST),
+        card_type: CardType::Artifact,
+        abilities: vec![Ability {
+            ability_type: abilities::sacrifice_this(),
+            text: text!["Draw a card"],
+            delegates: vec![on_activated(|g, s, _| {
+                mutations::draw_cards(g, s.side(), 1)?;
+                Ok(())
+            })],
+        }],
+        config: CardConfig::default(),
         ..test_champion_spell()
     }
 }

@@ -143,11 +143,13 @@ pub fn can_take_activate_ability_action(
         return false;
     }
 
-    let mut can_activate = in_main_phase_with_action_point(game, side)
-        && side == ability_id.card_id.side
-        && cost.actions <= game.player(side).actions
+    let mut can_activate = can_take_game_actions(game)
+        && side == ability_id.side()
+        && has_priority(game, side)
         && card.is_face_up()
-        && card.position().in_play();
+        && card.position().in_play()
+        // Abilities with an action point cost cannot be activated at instant speed
+        && (cost.actions == 0 || in_main_phase_with_action_point(game, side));
 
     if let Some(custom_cost) = &cost.custom_cost {
         can_activate &= (custom_cost.can_pay)(game, ability_id);
@@ -408,15 +410,10 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
         && can_pay_card_cost(game, card_id)
 }
 
-/// Returns true if the indicated player currently has access to an effect they
-/// can activate outside of their normal main phase actions
-pub fn has_instant_speed_effects(game: &GameState, side: Side) -> bool {
-    match side {
-        Side::Overlord => {
-            game.occupants_in_all_rooms().any(|c| can_take_unveil_card_action(game, side, c.id))
-        }
-        Side::Champion => false,
-    }
+/// Returns true if the Overlord player currently has access to an effect they
+/// can activate outside of their normal main phase actions.
+pub fn overlord_has_unveil_actions(game: &GameState) -> bool {
+    game.occupants_in_all_rooms().any(|c| can_take_unveil_card_action(game, Side::Overlord, c.id))
 }
 
 /// Checks whether a project card is currently in its assigned unveil window

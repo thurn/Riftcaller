@@ -16,6 +16,7 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
+pub mod costs;
 pub mod history;
 pub mod in_play;
 pub mod projects;
@@ -99,6 +100,7 @@ pub fn once_per_turn_cost() -> Option<CustomCost<AbilityId>> {
             game.ability_state_mut(ability_id).turn = Some(game.info.turn);
             Ok(())
         },
+        description: None,
     })
 }
 

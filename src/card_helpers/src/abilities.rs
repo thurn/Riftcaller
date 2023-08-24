@@ -155,3 +155,11 @@ pub fn construct() -> Ability {
         })],
     }
 }
+
+/// An [AbilityType] for an ability with "Sacrifice:" as its only cost.
+pub fn sacrifice_this() -> AbilityType {
+    AbilityType::Activated(
+        Cost { mana: None, actions: 0, custom_cost: costs::sacrifice_cost() },
+        TargetRequirement::None,
+    )
+}

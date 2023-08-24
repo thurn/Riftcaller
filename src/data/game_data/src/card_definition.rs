@@ -50,6 +50,10 @@ pub struct CustomCost<T> {
     /// Mutate the game to pay this cost. Should fail if `can_pay` would return
     /// false.
     pub pay: fn(&mut GameState, T) -> Result<()>,
+
+    /// Optionally, a description of this cost to include before the ':'
+    /// character.
+    pub description: Option<TextElement>,
 }
 
 impl<T> Debug for CustomCost<T> {

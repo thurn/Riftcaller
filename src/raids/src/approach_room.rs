@@ -15,7 +15,6 @@
 use anyhow::Result;
 use game_data::game::{GameState, InternalRaidPhase};
 use game_data::game_actions::{ApproachRoomAction, PromptAction};
-use game_data::primitives::Side;
 use rules::flags;
 use with_error::fail;
 
@@ -42,7 +41,8 @@ impl RaidPhaseImpl for ApproachRoomPhase {
     }
 
     fn enter(self, g: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-        Ok(if flags::has_instant_speed_effects(g, Side::Overlord) {
+        Ok(if flags::overlord_has_unveil_actions(g) {
+            // Pause for the Overlord to unveil a project, if one exists.
             None
         } else {
             Some(InternalRaidPhase::Access)

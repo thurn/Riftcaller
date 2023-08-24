@@ -89,6 +89,7 @@ pub enum CardName {
     Test1CostChampionSpell,
     TestMinionDealDamageEndRaid,
     TestAttackWeapon,
+    TestSacrificeDrawCardArtifact,
 
     // Proof of Concept
     GoldMine,

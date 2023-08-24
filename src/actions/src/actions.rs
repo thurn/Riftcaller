@@ -325,7 +325,9 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
 
     game.info.turn_state = TurnState::Ended;
 
-    if !flags::has_instant_speed_effects(game, side.opponent()) {
+    // Next turn immediately starts unless the current player is the Champion
+    // and the Overlord can unveil a Duskbound project.
+    if user_side == Side::Overlord || !flags::overlord_has_unveil_actions(game) {
         start_next_turn(game)
     } else {
         Ok(())
