@@ -635,6 +635,45 @@ fn cannot_use_action_artifact_during_raid() {
 }
 
 #[test]
+fn use_project_ability_during_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestProjectSacrificeToEndRaid);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.unveil_card(id);
+    g.activate_ability(id, 0);
+    assert!(!g.user.data.raid_active());
+}
+
+#[test]
+fn use_project_ability_during_subsequent_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestProjectSacrificeToEndRaid);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.unveil_card(id);
+    g.click(Button::ProceedToAccess);
+    g.opponent_click(Button::EndRaid);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.activate_ability(id, 0);
+    assert!(!g.user.data.raid_active());
+}
+
+#[test]
+fn cannot_use_project_ability_during_turn() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestProjectSacrificeToEndRaid);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.unveil_card(id);
+    g.click(Button::ProceedToAccess);
+    g.opponent_click(Button::EndRaid);
+    g.pass_turn(Side::Champion);
+    assert!(g.dusk());
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+}
+
+#[test]
 fn legal_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert!(g.legal_actions_result(Side::Champion).is_err());

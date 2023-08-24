@@ -469,6 +469,6 @@ pub fn test_sacrifice_end_raid_project() -> CardDefinition {
             delegates: vec![on_activated(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
         }],
         config: CardConfig::default(),
-        ..test_champion_spell()
+        ..test_overlord_spell()
     }
 }
