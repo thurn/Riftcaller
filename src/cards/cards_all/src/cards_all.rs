@@ -92,9 +92,11 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_5_attack);
     DEFINITIONS.insert(cards_test::test_cards::activated_ability_take_mana);
     DEFINITIONS.insert(cards_test::test_cards::triggered_ability_take_mana);
-    DEFINITIONS.insert(cards_test::test_cards::no_subtype_project);
     DEFINITIONS.insert(cards_test::test_cards::duskbound_project);
+    DEFINITIONS.insert(cards_test::test_cards::roombound_project);
+    DEFINITIONS.insert(cards_test::test_cards::summonbound_project);
     DEFINITIONS.insert(cards_test::test_cards::nightbound_project);
+    DEFINITIONS.insert(cards_test::test_cards::dusk_and_nightbound_project);
     DEFINITIONS.insert(cards_test::test_cards::trap_project);
     DEFINITIONS.insert(cards_test::test_cards::test_0_cost_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_1_cost_champion_spell);

@@ -44,14 +44,14 @@ static CARDS: Lazy<HashMap<CardName, CardDefinition>> = Lazy::new(|| {
 
 /// Returns an iterator over all known card definitions in an undefined order
 pub fn all_cards() -> impl Iterator<Item = &'static CardDefinition> {
-    assert!(CARDS.len() > 0, "Must call initialize() first!");
+    assert!(CARDS.len() > 0, "Card not found. Call initialize() or update cards?");
     CARDS.values()
 }
 
 /// Looks up the definition for a [CardName]. Panics if no such card is defined.
 /// If this panics, you are probably not calling initialize::run();
 pub fn get(name: CardName) -> &'static CardDefinition {
-    CARDS.get(&name).unwrap_or_else(|| panic!("Must call initialize() first!"))
+    CARDS.get(&name).unwrap_or_else(|| panic!("Card not found. Call initialize() or update cards?"))
 }
 
 pub fn card_definition(game: &GameState, card_id: CardId) -> &'static CardDefinition {

@@ -423,7 +423,7 @@ fn unveil_at_end_of_turn() {
 fn unveil_during_minion_summon_decision() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestMinionEndRaid);
-    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    let id = g.create_and_play(CardName::TestSummonboundProject);
     g.pass_turn(Side::Overlord);
 
     g.initiate_raid(test_constants::ROOM_ID);
@@ -433,22 +433,22 @@ fn unveil_during_minion_summon_decision() {
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST,
         g.user.this_player.mana()
     );
-    g.click(Button::NoSummon);
-    g.opponent_click(Button::EndRaid);
+}
 
-    g.pass_turn(Side::Champion);
-
-    assert!(g.dusk());
-    assert_eq!(
-        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
-        g.user.this_player.mana()
-    );
+#[test]
+fn cannot_unveil_duskbound_during_minion_summon_decision() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::TestMinionEndRaid);
+    let id = g.create_and_play(CardName::TestDuskboundProject);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert!(g.unveil_card_with_result(id).is_err());
 }
 
 #[test]
 fn unveil_during_room_approach() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    let id = g.create_and_play(CardName::TestNoSubtypeProject);
+    let id = g.create_and_play(CardName::TestRoomboundProject);
     g.pass_turn(Side::Overlord);
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
@@ -459,6 +459,16 @@ fn unveil_during_room_approach() {
     );
     g.click(Button::ProceedToAccess);
     g.opponent_click(Button::EndRaid);
+}
+
+#[test]
+fn cannot_unveil_summonbound_during_room_approach() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::TestSummonboundProject);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
+    assert!(g.unveil_card_with_result(id).is_err());
 }
 
 #[test]
@@ -564,16 +574,18 @@ fn cannot_unveil_trap_at_end_of_turn() {
 fn triggered_ability_take_all_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
-    g.unveil_card(id);
     g.pass_turn(Side::Overlord);
+    g.to_end_step(Side::Champion);
+    g.unveil_card(id);
+    g.click(Button::StartTurn);
 
     let mut taken = 0;
     while taken < test_constants::MANA_STORED {
-        assert!(g.dawn());
-        g.pass_turn(Side::Champion);
         assert!(g.dusk());
         taken += test_constants::MANA_TAKEN;
         g.pass_turn(Side::Overlord);
+        assert!(g.dawn());
+        g.pass_turn(Side::Champion);
     }
 
     assert_eq!(

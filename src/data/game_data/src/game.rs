@@ -223,7 +223,7 @@ impl GamePhase {
 }
 
 /// Information about the state of the current turn.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum TurnState {
     /// The active player is playing their turn
     Active,
@@ -591,13 +591,6 @@ impl GameState {
     /// order
     pub fn artifacts(&self) -> impl Iterator<Item = &CardState> {
         self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
-    }
-
-    /// All Champion cards which are currently in play.
-    pub fn all_champion_permanents(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Champion)
-            .iter()
-            .filter(move |c| matches!(c.position(), CardPosition::ArenaItem(_)))
     }
 
     /// All global game modifier cards, in an unspecified order

@@ -17,7 +17,7 @@
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
-    SpecialEffects, TargetRequirement,
+    SpecialEffects,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
@@ -292,6 +292,7 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
         name: CardName::TestTriggeredAbilityTakeManaAtDusk,
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound],
         abilities: vec![
             projects::store_mana_on_unveil::<{ test_constants::MANA_STORED }>(),
             Ability {
@@ -313,18 +314,6 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
     }
 }
 
-pub fn no_subtype_project() -> CardDefinition {
-    CardDefinition {
-        name: CardName::TestNoSubtypeProject,
-        cost: cost(test_constants::UNVEIL_COST),
-        card_type: CardType::Project,
-        subtypes: vec![],
-        abilities: vec![],
-        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
-    }
-}
-
 pub fn duskbound_project() -> CardDefinition {
     CardDefinition {
         name: CardName::TestDuskboundProject,
@@ -337,12 +326,48 @@ pub fn duskbound_project() -> CardDefinition {
     }
 }
 
+pub fn roombound_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestRoomboundProject,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Roombound],
+        abilities: vec![],
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
+        ..test_overlord_spell()
+    }
+}
+
+pub fn summonbound_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestSummonboundProject,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Summonbound],
+        abilities: vec![],
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
+        ..test_overlord_spell()
+    }
+}
+
 pub fn nightbound_project() -> CardDefinition {
     CardDefinition {
         name: CardName::TestNightboundProject,
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Nightbound],
+        abilities: vec![],
+        config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
+        ..test_overlord_spell()
+    }
+}
+
+pub fn dusk_and_nightbound_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestDuskAndNightboundProject,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound, CardSubtype::Nightbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
         ..test_overlord_spell()

@@ -355,7 +355,6 @@ fn raze_project() {
     let project_id = g.create_and_play(CardName::TestProject2Cost3Raze);
     g.pass_turn(Side::Overlord);
     g.initiate_raid(test_constants::ROOM_ID);
-    g.opponent_click(Button::ProceedToAccess);
 
     assert!(g.user.interface.controls().has_text("Destroy"));
     assert!(g.user.interface.controls().has_text(format!("3{}", icons::MANA)));

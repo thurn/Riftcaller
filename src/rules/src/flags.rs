@@ -23,11 +23,12 @@ use game_data::delegates::{
     CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
     CardEncounter, Flag,
 };
-use game_data::game::{GamePhase, GameState, TurnState};
+use game_data::game::{GamePhase, GameState, InternalRaidPhase, TurnState};
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, Resonance, RoomId, Side,
 };
+use game_data::utils;
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, mana, queries};
@@ -148,7 +149,7 @@ pub fn can_take_activate_ability_action(
         && has_priority(game, side)
         && card.is_face_up()
         && card.position().in_play()
-        // Abilities with an action point cost cannot be activated at instant speed
+    // Abilities with an action point cost cannot be activated at instant speed
         && (cost.actions == 0 || in_main_phase_with_action_point(game, side));
 
     if let Some(custom_cost) = &cost.custom_cost {
@@ -412,7 +413,7 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
 
 /// Returns true if the Overlord player currently has access to an effect they
 /// can activate outside of their normal main phase actions.
-pub fn overlord_has_unveil_actions(game: &GameState) -> bool {
+pub fn overlord_has_instant_speed_actions(game: &GameState) -> bool {
     game.occupants_in_all_rooms().any(|c| can_take_unveil_card_action(game, Side::Overlord, c.id))
 }
 
@@ -421,13 +422,25 @@ pub fn overlord_has_unveil_actions(game: &GameState) -> bool {
 /// check whether a card can currently be unveiled.
 pub fn can_unveil_for_subtypes(game: &GameState, card_id: CardId) -> bool {
     let subtypes = &crate::card_definition(game, card_id).subtypes;
-    if subtypes.contains(&CardSubtype::Trap) {
-        false
-    } else if subtypes.contains(&CardSubtype::Duskbound) {
-        game.info.turn.side == Side::Champion && game.info.turn_state == TurnState::Ended
-    } else if subtypes.contains(&CardSubtype::Nightbound) {
-        game.info.turn.side == Side::Overlord && game.info.turn_state != TurnState::Ended
-    } else {
-        true
-    }
+    let current_turn = game.info.turn.side;
+    let turn_state = game.info.turn_state;
+
+    let duskbound = subtypes.contains(&CardSubtype::Duskbound)
+        && current_turn == Side::Champion
+        && turn_state == TurnState::Ended;
+    let nightbound = subtypes.contains(&CardSubtype::Nightbound)
+        && current_turn == Side::Overlord
+        && turn_state != TurnState::Ended;
+    let summonbound = subtypes.contains(&CardSubtype::Summonbound)
+        && current_turn == Side::Champion
+        && utils::is_true(|| {
+            Some(game.info.raid.as_ref()?.internal_phase == InternalRaidPhase::Summon)
+        });
+    let roombound = subtypes.contains(&CardSubtype::Roombound)
+        && current_turn == Side::Champion
+        && utils::is_true(|| {
+            Some(game.info.raid.as_ref()?.internal_phase == InternalRaidPhase::ApproachRoom)
+        });
+
+    duskbound || nightbound || summonbound || roombound
 }

@@ -470,12 +470,19 @@ impl CardType {
 pub enum CardSubtype {
     /// Cards with the "Trap" subtype cannot be unveiled
     Trap,
-    /// Cards with the "Duskbound" subtype can only be unveiled at the end of
-    /// the Champion's turn.
+    /// Cards with the "Duskbound" subtype can be unveiled at the end of the
+    /// Champion's turn.
     Duskbound,
-    /// Cards with the "Nightbound" subtype can only be unveiled during the
+    /// Cards with the "Nightbound" subtype can be unveiled during the
     /// Overlord's turn.
     Nightbound,
+    /// Cards with the "Roombound" subtype can be unveiled when a room is
+    /// approached by the Champion.
+    Roombound,
+    /// Cardswith the "Summonbound" subtype can be unveiled when a face-down
+    /// minion is approached.
+    Summonbound,
+
     Silvered,
 }
 

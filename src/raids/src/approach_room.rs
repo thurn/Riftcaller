@@ -41,7 +41,7 @@ impl RaidPhaseImpl for ApproachRoomPhase {
     }
 
     fn enter(self, g: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-        Ok(if flags::overlord_has_unveil_actions(g) {
+        Ok(if flags::overlord_has_instant_speed_actions(g) {
             // Pause for the Overlord to unveil a project, if one exists.
             None
         } else {

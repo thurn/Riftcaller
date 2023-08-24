@@ -22,11 +22,13 @@ use test_utils::*;
 fn test_card_stored_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
-    g.unveil_card(id);
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
+    assert_eq!(test_constants::STARTING_MANA, g.me().mana());
+    g.to_end_step(Side::Champion);
+    g.unveil_card(id);
     assert_eq!(test_constants::STARTING_MANA - test_constants::UNVEIL_COST, g.me().mana());
-    g.pass_turn(Side::Champion);
+    g.click(Button::StartTurn);
     assert!(g.dusk());
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
