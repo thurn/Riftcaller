@@ -24,7 +24,7 @@ fn conspire() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Conspire);
     g.level_up_room_times(3);
-    assert_eq!(g.me().score(), 15);
+    assert_eq!(g.me().score(), 10);
 }
 
 #[test]
@@ -32,7 +32,7 @@ fn devise() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Devise);
     g.level_up_room_times(4);
-    assert_eq!(g.me().score(), 30);
+    assert_eq!(g.me().score(), 20);
 }
 
 #[test]
@@ -40,7 +40,7 @@ fn machinate() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::Machinate);
     g.level_up_room_times(5);
-    assert_eq!(g.me().score(), 45);
+    assert_eq!(g.me().score(), 30);
 }
 
 #[test]

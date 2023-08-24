@@ -121,7 +121,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::Display(vec![
                 permanent_toast(
-                    "You have accessed the room and can now <b>score</b> this card for 45 points.",
+                    "You have accessed the room and can now <b>score</b> this card for 30 points.",
                     Milliseconds(0),
                 ),
             ]),
@@ -133,7 +133,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             ]),
             TutorialStep::Display(vec![
                 permanent_toast(
-                    "Scoring <b>scheme</b> cards in rooms gives you points. The first player to reach 100 points wins!",
+                    "Scoring <b>scheme</b> cards in rooms gives you points. The first player to reach 60 points wins!",
                     Milliseconds(0),
                 ),
             ]),

@@ -25,7 +25,7 @@ fn gold_mine() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::GoldMine);
     g.level_up_room_times(4);
-    assert_eq!(g.me().score(), 30);
+    assert_eq!(g.me().score(), 20);
     assert_eq!(
         test_constants::STARTING_MANA - 4 /* level cost */ + 7, /* gained */
         g.me().mana()
@@ -43,7 +43,7 @@ fn activate_reinforcements() {
     let minion = g.create_and_play(CardName::TestMinionEndRaid);
     assert!(!g.user.get_card(minion).is_face_up());
     g.level_up_room_times(5);
-    assert_eq!(g.me().score(), 45);
+    assert_eq!(g.me().score(), 30);
     assert!(g.user.get_card(minion).is_face_up());
     assert_eq!(test_constants::STARTING_MANA - 5, g.me().mana());
     assert_eq!(

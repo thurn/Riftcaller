@@ -37,7 +37,7 @@ pub fn conspire() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 3, points: 15 })
+            .scheme_points(SchemePoints { level_requirement: 3, points: 10 })
             .build(),
     }
 }
@@ -55,7 +55,7 @@ pub fn devise() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 4, points: 30 })
+            .scheme_points(SchemePoints { level_requirement: 4, points: 20 })
             .build(),
     }
 }
@@ -73,7 +73,7 @@ pub fn machinate() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 5, points: 45 })
+            .scheme_points(SchemePoints { level_requirement: 5, points: 30 })
             .build(),
     }
 }

@@ -47,7 +47,7 @@ pub fn gold_mine() -> CardDefinition {
             })],
         }],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 4, points: 30 })
+            .scheme_points(SchemePoints { level_requirement: 4, points: 20 })
             .build(),
     }
 }
@@ -81,7 +81,7 @@ pub fn activate_reinforcements() -> CardDefinition {
             })],
         }],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 5, points: 45 })
+            .scheme_points(SchemePoints { level_requirement: 5, points: 30 })
             .build(),
     }
 }
@@ -118,7 +118,7 @@ pub fn research_project() -> CardDefinition {
             ],
         }],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 3, points: 15 })
+            .scheme_points(SchemePoints { level_requirement: 3, points: 10 })
             .build(),
     }
 }
