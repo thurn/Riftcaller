@@ -412,6 +412,29 @@ impl ClientCards {
         result
     }
 
+    pub fn real_cards_in_hand_count(&self) -> usize {
+        let position = Position::Hand(ObjectPositionHand { owner: PlayerName::User.into() });
+        self.card_map
+            .values()
+            .filter(move |c| {
+                c.position() == position
+                    && c.id.expect("id").ability_id.is_none()
+                    && !c.id.expect("id").is_unveil
+            })
+            .count()
+    }
+
+    pub fn ability_cards_in_hand_count(&self) -> usize {
+        let position = Position::Hand(ObjectPositionHand { owner: PlayerName::User.into() });
+        self.card_map
+            .values()
+            .filter(move |c| {
+                c.position() == position
+                    && (c.id.expect("id").ability_id.is_some() || c.id.expect("id").is_unveil)
+            })
+            .count()
+    }
+
     fn update(&mut self, command: Command) {
         match command {
             Command::UpdateGameView(update_game) => {

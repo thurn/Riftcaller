@@ -595,6 +595,34 @@ fn triggered_ability_take_all_mana() {
 }
 
 #[test]
+fn use_artifact_during_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
+    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestMinionEndRaid);
+    g.pass_turn(Side::Overlord);
+    let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.opponent_click(Button::Summon);
+    assert_eq!(g.user.cards.real_cards_in_hand_count(), 0);
+    assert_eq!(g.user.cards.ability_cards_in_hand_count(), 1);
+    g.activate_ability(id, 0);
+    assert_eq!(g.user.cards.real_cards_in_hand_count(), 1);
+    assert_eq!(g.user.cards.ability_cards_in_hand_count(), 0);
+}
+
+#[test]
+fn cannot_use_action_artifact_during_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
+    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestMinionEndRaid);
+    g.pass_turn(Side::Overlord);
+    let id = g.create_and_play(CardName::TestActivatedAbilityTakeMana);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.opponent_click(Button::Summon);
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+}
+
+#[test]
 fn legal_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert!(g.legal_actions_result(Side::Champion).is_err());

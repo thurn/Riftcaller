@@ -93,6 +93,13 @@ pub trait TestSessionHelpers {
     /// index.
     fn activate_ability(&mut self, card_id: CardIdentifier, index: u32);
 
+    /// Equivalent to [Self::activate_ability] which returns the result.
+    fn activate_ability_with_result(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+    ) -> Result<GameResponseOutput>;
+
     /// Activates an ability of a card with a target room
     fn activate_ability_with_target(&mut self, card_id: CardIdentifier, index: u32, target: RoomId);
 
@@ -275,6 +282,14 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn activate_ability(&mut self, card_id: CardIdentifier, index: u32) {
+        activate_ability_impl(self, card_id, index, None).expect("Error activating ability");
+    }
+
+    fn activate_ability_with_result(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+    ) -> Result<GameResponseOutput> {
         activate_ability_impl(self, card_id, index, None)
     }
 
@@ -285,6 +300,7 @@ impl TestSessionHelpers for TestSession {
         target: RoomId,
     ) {
         activate_ability_impl(self, card_id, index, Some(target))
+            .expect("Error activating ability");
     }
 
     fn unveil_card(&mut self, card_id: CardIdentifier) {
@@ -395,8 +411,8 @@ fn activate_ability_impl(
     card_id: CardIdentifier,
     index: u32,
     target: Option<RoomId>,
-) {
-    session.perform(
+) -> Result<GameResponseOutput> {
+    session.perform_action(
         Action::PlayCard(PlayCardAction {
             card_id: Some(CardIdentifier { ability_id: Some(index), ..card_id }),
             target: target.map(|room_id| CardTarget {
@@ -406,5 +422,5 @@ fn activate_ability_impl(
             }),
         }),
         session.user_id(),
-    );
+    )
 }

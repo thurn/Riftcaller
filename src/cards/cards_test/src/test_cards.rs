@@ -16,8 +16,8 @@
 
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Cost,
-    SchemePoints, SpecialEffects, TargetRequirement,
+    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
+    SpecialEffects, TargetRequirement,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
