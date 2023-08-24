@@ -85,7 +85,7 @@ pub fn activated_ability_cards(
     if card.is_face_down() {
         if builder.user_side == Side::Overlord
             && definition.card_type == CardType::Project
-            && flags::can_unveil_for_subtypes(game, card.id)
+            && flags::can_activate_for_subtypes(game, card.id)
         {
             result.push(Ok(unveil_card_view(builder, game, card.id)));
         }
@@ -96,7 +96,14 @@ pub fn activated_ability_cards(
     for (ability_index, ability) in definition.abilities.iter().enumerate() {
         if let AbilityType::Activated(_, target_requirement) = &ability.ability_type {
             let ability_id = AbilityId::new(card.id, ability_index);
-            result.push(Ok(ability_card_view(builder, game, ability_id, Some(target_requirement))));
+            if flags::activated_ability_has_valid_targets(game, builder.user_side, ability_id) {
+                result.push(Ok(ability_card_view(
+                    builder,
+                    game,
+                    ability_id,
+                    Some(target_requirement),
+                )));
+            }
         }
     }
     result

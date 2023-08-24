@@ -21,7 +21,7 @@ use test_utils::*;
 #[test]
 fn test_card_stored_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    let id = g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
     assert_eq!(test_constants::STARTING_MANA, g.me().mana());

@@ -103,4 +103,5 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::deal_damage_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_attack_weapon);
     DEFINITIONS.insert(cards_test::test_cards::test_sacrifice_draw_card_artifact);
+    DEFINITIONS.insert(cards_test::test_cards::test_sacrifice_end_raid_project);
 }

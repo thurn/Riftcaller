@@ -74,7 +74,9 @@ pub enum CardName {
     TestActivatedAbilityTakeMana,
     /// Project which stores mana on unveil, with a triggered ability to take
     /// mana at dusk.
-    TestTriggeredAbilityTakeManaAtDusk,
+    TestProjectTriggeredAbilityTakeManaAtDusk,
+    /// Project which can be unveiled & sacrificed to end the current raid.
+    TestProjectSacrificeToEndRaid,
     /// Project with two subtypes
     TestDuskAndNightboundProject,
     /// Project with the "Duskbound" subtype

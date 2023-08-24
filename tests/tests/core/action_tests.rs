@@ -395,7 +395,7 @@ fn activate_ability_take_all_mana() {
 #[test]
 fn unveil_at_end_of_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    let id = g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
     assert_eq!(test_constants::STARTING_MANA, g.user.this_player.mana());
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
@@ -510,7 +510,7 @@ fn cannot_unveil_trap_during_raid() {
 #[test]
 fn triggered_ability_cannot_unveil() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0)).actions(1).build();
-    g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
     assert_eq!(0, g.user.this_player.mana());
@@ -573,7 +573,7 @@ fn cannot_unveil_trap_at_end_of_turn() {
 #[test]
 fn triggered_ability_take_all_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
-    let id = g.create_and_play(CardName::TestTriggeredAbilityTakeManaAtDusk);
+    let id = g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
     g.pass_turn(Side::Overlord);
     g.to_end_step(Side::Champion);
     g.unveil_card(id);

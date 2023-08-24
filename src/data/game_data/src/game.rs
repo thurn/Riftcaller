@@ -574,6 +574,11 @@ impl GameState {
             .filter(move |c| matches!(c.position(), CardPosition::Room(r, _) if r == room_id))
     }
 
+    /// All cards in play for the given side.
+    pub fn all_permanents(&self, side: Side) -> impl Iterator<Item = &CardState> {
+        self.cards(side).iter().filter(move |c| c.position().in_play())
+    }
+
     /// All overlord defenders in play, whether face-up or face-down.
     pub fn minions(&self) -> impl Iterator<Item = &CardState> {
         self.cards(Side::Overlord)

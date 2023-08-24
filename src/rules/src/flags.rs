@@ -149,8 +149,16 @@ pub fn can_take_activate_ability_action(
         && has_priority(game, side)
         && card.is_face_up()
         && card.position().in_play()
-    // Abilities with an action point cost cannot be activated at instant speed
+        // Abilities with an action point cost cannot be activated at instant
+        // speed
         && (cost.actions == 0 || in_main_phase_with_action_point(game, side));
+
+    if side == Side::Overlord && cost.actions == 0 {
+        // Overlord abilities with no action point cost can only be activated
+        // when their activation window is open, as determined by their
+        // subtypes.
+        can_activate &= can_activate_for_subtypes(game, ability_id.card_id)
+    }
 
     if let Some(custom_cost) = &cost.custom_cost {
         can_activate &= (custom_cost.can_pay)(game, ability_id);
@@ -182,6 +190,15 @@ pub fn activated_ability_has_valid_targets(
         },
         _ => false,
     }
+}
+
+/// Returns true if the provided card has any activated ability that can
+/// currently be used.
+fn can_use_any_card_ability(game: &GameState, card_id: CardId) -> bool {
+    let definition = crate::card_definition(game, card_id);
+    definition
+        .ability_ids(card_id)
+        .any(|ability_id| activated_ability_has_valid_targets(game, card_id.side, ability_id))
 }
 
 fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> bool {
@@ -407,7 +424,7 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
         && game.card(card_id).is_face_down()
         && game.card(card_id).position().in_play()
         && definition.card_type == CardType::Project
-        && can_unveil_for_subtypes(game, card_id)
+        && can_activate_for_subtypes(game, card_id)
         && can_pay_card_cost(game, card_id)
 }
 
@@ -415,12 +432,14 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
 /// can activate outside of their normal main phase actions.
 pub fn overlord_has_instant_speed_actions(game: &GameState) -> bool {
     game.occupants_in_all_rooms().any(|c| can_take_unveil_card_action(game, Side::Overlord, c.id))
+        || game.all_permanents(Side::Overlord).any(|c| can_use_any_card_ability(game, c.id))
 }
 
-/// Checks whether a project card is currently in its assigned unveil window
-/// solely based on its subtypes. Use [can_take_unveil_card_action] instead to
-/// check whether a card can currently be unveiled.
-pub fn can_unveil_for_subtypes(game: &GameState, card_id: CardId) -> bool {
+/// Checks whether an Overlord card is currently in its assigned activation
+/// window based on its subtypes and can thus be unveiled or activated.
+///
+/// Does not check legality of activation beyond the card's subtypes.
+pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {
     let subtypes = &crate::card_definition(game, card_id).subtypes;
     let current_turn = game.info.turn.side;
     let turn_state = game.info.turn_state;

@@ -21,6 +21,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
+use game_data::delegates::RaidOutcome;
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{Projectile, TimedEffect};
 use rules::mutations;
@@ -289,7 +290,7 @@ pub fn activated_ability_take_mana() -> CardDefinition {
 
 pub fn triggered_ability_take_mana() -> CardDefinition {
     CardDefinition {
-        name: CardName::TestTriggeredAbilityTakeManaAtDusk,
+        name: CardName::TestProjectTriggeredAbilityTakeManaAtDusk,
         cost: cost(test_constants::UNVEIL_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Duskbound],
@@ -450,6 +451,22 @@ pub fn test_sacrifice_draw_card_artifact() -> CardDefinition {
                 mutations::draw_cards(g, s.side(), 1)?;
                 Ok(())
             })],
+        }],
+        config: CardConfig::default(),
+        ..test_champion_spell()
+    }
+}
+
+pub fn test_sacrifice_end_raid_project() -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestProjectSacrificeToEndRaid,
+        cost: cost(test_constants::UNVEIL_COST),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Roombound],
+        abilities: vec![Ability {
+            ability_type: abilities::sacrifice_this(),
+            text: text!["End the raid"],
+            delegates: vec![on_activated(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
         }],
         config: CardConfig::default(),
         ..test_champion_spell()
