@@ -50,6 +50,7 @@ pub struct TestGame {
     user_side: TestSide,
     opponent_side: TestSide,
     tutorial_mode: bool,
+    deck_sizes: u32,
 }
 
 impl TestGame {
@@ -67,6 +68,7 @@ impl TestGame {
             user_side,
             opponent_side: TestSide::new(opponent),
             tutorial_mode: false,
+            deck_sizes: 45,
         }
     }
 
@@ -94,6 +96,11 @@ impl TestGame {
 
     pub fn tutorial_mode(mut self, tutorial_mode: bool) -> Self {
         self.tutorial_mode = tutorial_mode;
+        self
+    }
+
+    pub fn deck_sizes(mut self, deck_sizes: u32) -> Self {
+        self.deck_sizes = deck_sizes;
         self
     }
 
@@ -132,13 +139,13 @@ impl TestGame {
             side: Side::Overlord,
             schools: vec![],
             riftcallers: overlord_riftcallers,
-            cards: hashmap! {CardName::TestOverlordSpell => 45},
+            cards: hashmap! {CardName::TestOverlordSpell => self.deck_sizes},
         };
         let champion_deck = Deck {
             side: Side::Champion,
             schools: vec![],
             riftcallers: champion_riftcallers,
-            cards: hashmap! {CardName::TestChampionSpell => 45},
+            cards: hashmap! {CardName::TestChampionSpell => self.deck_sizes},
         };
 
         let mut game = GameState::new(

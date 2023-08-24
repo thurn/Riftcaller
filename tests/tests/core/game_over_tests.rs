@@ -20,6 +20,8 @@ use game_data::game_actions::GameAction;
 use game_data::player_name::AIPlayer;
 use game_data::primitives::Side;
 use insta::assert_snapshot;
+use protos::spelldawn::client_action::Action;
+use protos::spelldawn::{DrawCardAction, PlayerName};
 use test_utils::summarize::Summary;
 use test_utils::test_adventure::TestAdventure;
 use test_utils::test_game::{TestGame, TestSide};
@@ -45,6 +47,24 @@ fn leave_game() {
     let response = g
         .perform_action(UserAction::LeaveGame(GameOutcome::Defeat).as_client_action(), g.user_id());
     assert_snapshot!(Summary::run(&response));
+}
+
+#[test]
+fn draw_all_overlord_cards() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).deck_sizes(3).build();
+    g.pass_turn(Side::Overlord);
+
+    loop {
+        g.pass_turn(Side::Champion);
+        if g.user.cards.real_cards_in_hand_count() == 0 {
+            assert!(g.is_victory_for_player(Side::Champion));
+            break;
+        }
+
+        let card_id = g.user.cards.cards_in_hand(PlayerName::User).next().expect("card").id();
+        g.play_card(card_id, g.user_id(), None);
+        g.pass_turn(Side::Overlord);
+    }
 }
 
 #[test]

@@ -120,15 +120,19 @@ pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
 }
 
 /// Helper function to draw `count` cards from the top of a player's deck and
-/// place them into their hand. If there are insufficient cards available, the
-/// `side` player loses the game and no cards are returned.
+/// place them into their hand.
 ///
-/// Cards are set as revealed to the `side` player. Returns a vector of the
+/// If there are insufficient cards available:
+///  - If `side == Overlord`, the Overlord player loses the game and no cards
+///    are returned.
+///  - If `side == Champion`, all remaining cards are returned.
+///
+/// Cards are marked as revealed to the `side` player. Returns a vector of the
 /// newly-drawn [CardId]s.
 pub fn draw_cards(game: &mut GameState, side: Side, count: u32) -> Result<Vec<CardId>> {
     let card_ids = realize_top_of_deck(game, side, count)?;
 
-    if card_ids.len() != count as usize {
+    if card_ids.len() != count as usize && side == Side::Overlord {
         game_over(game, side.opponent())?;
         return Ok(vec![]);
     }
@@ -298,8 +302,8 @@ pub fn check_start_game(game: &mut GameState) -> Result<()> {
 ///
 /// Selects randomly unless cards are already known to be in this position.
 /// If insufficient cards are present in the deck, returns all available
-/// cards. Cards are moved to their new positions via [move_card], meaning that
-/// subsequent calls to this function will see the same results.
+/// cards. Cards are moved to the DeckTop position via [move_card],
+/// meaning that subsequent calls to this function will see the same results.
 ///
 /// Does not change the 'revealed' state of cards.
 pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Result<Vec<CardId>> {
