@@ -27,7 +27,10 @@ use game_data::delegates::{
 use game_data::game::{
     GamePhase, GameState, HistoryEntry, HistoryEvent, MulliganDecision, TurnState,
 };
-use game_data::game_actions::{CardTarget, GameAction, PromptAction};
+use game_data::game_actions::{
+    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
+    CardTarget, GameAction, GamePrompt, PromptAction, PromptContext,
+};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use rules::mana::ManaPurpose;
@@ -61,6 +64,10 @@ pub fn handle_game_action(
         }
         GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
+        GameAction::MoveCard(card_id) => move_card_action(game, user_side, *card_id),
+        GameAction::BrowserPromptAction(browser_action) => {
+            handle_card_browser_action(game, user_side, *browser_action)
+        }
     }?;
 
     Ok(())
@@ -235,17 +242,36 @@ fn spend_action_point_action(game: &mut GameState, user_side: Side) -> Result<()
     Ok(())
 }
 
+#[instrument(skip(game))]
+fn move_card_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
+    let Some(GamePrompt::CardBrowserPrompt(prompt)) =
+        game.player_mut(user_side).prompt_queue.get_mut(0) else {
+        fail!("Expected active CardBrowserPrompt");
+    };
+
+    if let Some(position) = prompt.chosen_subjects.iter().position(|id| *id == card_id) {
+        prompt.chosen_subjects.remove(position);
+        prompt.unchosen_subjects.push(card_id);
+    } else if let Some(position) = prompt.unchosen_subjects.iter().position(|id| *id == card_id) {
+        prompt.unchosen_subjects.remove(position);
+        prompt.chosen_subjects.push(card_id);
+    } else {
+        fail!("Expected card to be a subject of the active browser");
+    }
+    Ok(())
+}
+
 /// Handles a [PromptAction] for the `user_side` player and then removes it from
 /// the queue.
 fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
-    if let Some(prompt) = &game.player(user_side).card_prompt_queue.get(0) {
+    if let Some(prompt) = &game.player(user_side).prompt_queue.get(0) {
         verify!(
-            prompt.responses.iter().any(|p| *p == action),
+            prompt.as_button_prompt()?.responses.iter().any(|p| *p == action),
             "Unexpected action {:?} received",
             action
         );
 
-        game.player_mut(user_side).card_prompt_queue.remove(0);
+        game.player_mut(user_side).prompt_queue.remove(0);
     } else if matches!(action, PromptAction::CardAction(_)) {
         fail!("Received action with no matching prompt {:?}", action);
     }
@@ -316,21 +342,29 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
     let hand = game.card_list_for_position(side, CardPosition::Hand(side));
 
     if hand.len() > max_hand_size {
-        // Discard to hand size
-        let count = hand.len() - max_hand_size;
-        for card_id in hand.iter().take(count) {
-            mutations::move_card(game, *card_id, CardPosition::DiscardPile(side))?;
-        }
-    }
-
-    game.info.turn_state = TurnState::Ended;
-
-    // Next turn immediately starts unless the current player is the Champion
-    // and the Overlord can unveil a Duskbound project.
-    if user_side == Side::Overlord || !flags::overlord_has_instant_speed_actions(game) {
-        start_next_turn(game)
-    } else {
+        // Must discard to hand size
+        let discard = hand.len() - max_hand_size;
+        game.player_mut(user_side).prompt_queue.push(GamePrompt::CardBrowserPrompt(
+            CardBrowserPrompt {
+                context: Some(PromptContext::DiscardToHandSize(max_hand_size)),
+                unchosen_subjects: hand,
+                chosen_subjects: vec![],
+                target: BrowserPromptTarget::DiscardPile,
+                validation: BrowserPromptValidation::ExactlyCount(discard),
+                action: BrowserPromptAction::DiscardCards,
+            },
+        ));
         Ok(())
+    } else {
+        game.info.turn_state = TurnState::Ended;
+
+        // Next turn immediately starts unless the current player is the Champion
+        // and the Overlord can unveil a Duskbound project.
+        if user_side == Side::Overlord || !flags::overlord_has_instant_speed_actions(game) {
+            start_next_turn(game)
+        } else {
+            Ok(())
+        }
     }
 }
 
@@ -344,4 +378,29 @@ fn start_next_turn(game: &mut GameState) -> Result<()> {
             Side::Champion => game.info.turn.turn_number + 1,
         },
     )
+}
+
+fn handle_card_browser_action(
+    game: &mut GameState,
+    user_side: Side,
+    browser_action: BrowserPromptAction,
+) -> Result<()> {
+    let Some(GamePrompt::CardBrowserPrompt(prompt2)) =
+        game.player(user_side).prompt_queue.get(0) else {
+        fail!("Expected active CardBrowserPrompt");
+    };
+    let prompt = prompt2.clone();
+
+    match browser_action {
+        BrowserPromptAction::DiscardCards => {
+            let subjects = prompt.chosen_subjects;
+            for card_id in subjects {
+                mutations::move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
+            }
+        }
+    }
+
+    game.player_mut(user_side).prompt_queue.remove(0);
+
+    Ok(())
 }

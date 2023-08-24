@@ -226,6 +226,9 @@ namespace Spelldawn.Services
     public RiftcallerDisplay RiftcallerDisplayForPlayer(PlayerName playerName) =>
       playerName == PlayerName.User ? _userRiftcallerDisplay : _opponentRiftcallerDisplay;
 
+    [SerializeField] CardBrowser _browserDragTarget = null!;
+    public CardBrowser BrowserDragTarget => _browserDragTarget;
+
     void Awake()
     {
       LogUtils.Log($"Starting '{SceneManager.GetActiveScene().name}' Scene");

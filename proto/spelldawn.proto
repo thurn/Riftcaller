@@ -841,6 +841,11 @@ message ObjectPositionRiftcallers {
     PlayerName owner = 1;
 }
 
+/// Position to which cards are dragged during the card browser drag flow (e.g.
+/// when discarding to hand size).
+message ObjectPositionBrowserDragTarget {
+}
+
 message ObjectPosition {
     // A key by which to sort this object -- objects with higher sorting keys
     // should be displayed 'on top of' or 'in front of' objects with lower
@@ -871,6 +876,7 @@ message ObjectPosition {
         ObjectPositionIntoCard into_card = 17;
         ObjectPositionRevealedCards revealed = 18;
         ObjectPositionRiftcallers riftcaller = 19;
+        ObjectPositionBrowserDragTarget browser_drag_target = 20;
     }
 }
 
@@ -898,6 +904,15 @@ message RevealedCardView {
 
     // Content to display behind the main image
     SpriteAddress image_background = 10;
+
+    // Target for this card to be moved to. If provided, the user will be able
+    // to drag the card in the interface and it will animate to this position
+    // when released and send a MoveCardAction. This is distinct from *playing*
+    // a card and is used for operations like discarding from hand.
+    //
+    // Card targeting is disabled in this case, i.e. is impossible to play
+    // a card with a move target.
+    ObjectPosition card_move_target = 11;
 }
 
 enum CardPrefab {
@@ -1185,17 +1200,20 @@ message StandardAction {
 }
 
 // Spend an action to gain 1 mana.
+//
 // Optimistic: Mana is added immediately.
 message GainManaAction {
 }
 
 // Spend an action to draw a card.
+//
 // Optimistic: Face-down card animates to reveal area.
 message DrawCardAction {
 }
 
 
 // Spend an action to level up a room.
+//
 // Optimistic: Room visit animation plays
 message LevelUpRoomAction {
     RoomIdentifier room_id = 1;
@@ -1208,6 +1226,7 @@ message CardTarget {
 }
 
 // Spend an action to play a card from hand.
+//
 // Optimistic:
 //   - Card animates to its 'on_release' position. If the RoomIdentifier is
 //     unspecified for a room position, the targeted room is used.
@@ -1217,6 +1236,7 @@ message PlayCardAction {
 }
 
 // Spend an action to initiate a raid on one of the overlord's rooms
+//
 // Optimistic: Room visit animation plays
 message InitiateRaidAction {
     RoomIdentifier room_id = 1;
@@ -1230,6 +1250,15 @@ message FetchPanelAction {
 // Spend an action point with no other effect, typically used for
 // tests
 message SpendActionPointAction {}
+
+// Move a card to a new position. This is distinct from *playing* a card and is
+// used for operations like discarding cards from hand.
+//
+// Optimistic:
+//   - Card animates to its 'card_move_target' position.
+message MoveCardAction {
+    CardIdentifier card_id = 1;
+}
 
 // Possible game actions taken by the user.
 //
@@ -1246,6 +1275,7 @@ message ClientAction {
         LevelUpRoomAction level_up_room = 6;
         InitiateRaidAction initiate_raid = 7;
         SpendActionPointAction spend_action_point = 8;
+        MoveCardAction move_card = 9;
     }
 }
 
@@ -1350,6 +1380,10 @@ message CardAnchorNode {
 message InterfaceMainControls {
     // Main controls area
     Node node = 1;
+
+    // Main controls full-screen overlay, used for displaying instructional
+    // rules text to the player such as "you must discard to hand size".
+    Node overlay = 2;
 
     // Controls for specific cards
     repeated CardAnchorNode card_anchor_nodes = 3;

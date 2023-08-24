@@ -19,7 +19,7 @@ use std::iter;
 use anyhow::Result;
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::game::{GamePhase, GameState, MulliganDecision};
-use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, PromptAction};
+use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, GamePrompt, PromptAction};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::{flags, queries};
 use with_error::fail;
@@ -49,10 +49,14 @@ pub fn evaluate<'a>(
         GamePhase::GameOver { .. } => fail!("Game has ended"),
     }
 
-    if let Some(prompt) = &game.player(side).card_prompt_queue.get(0) {
-        return Ok(Box::new(
-            prompt.responses.iter().map(|prompt| GameAction::PromptAction(*prompt)),
-        ));
+    if let Some(prompt) = &game.player(side).prompt_queue.get(0) {
+        if let GamePrompt::ButtonPrompt(buttons) = prompt {
+            return Ok(Box::new(
+                buttons.responses.iter().map(|prompt| GameAction::PromptAction(*prompt)),
+            ));
+        } else {
+            todo!("Implement support for browser prompts");
+        }
     }
 
     if let Some(actions) = raids::current_actions(game, side).expect("Current Actions") {

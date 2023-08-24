@@ -17,7 +17,7 @@ use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game::{GamePhase, GameState, MulliganData, RaidData};
-use game_data::game_actions::{CardTarget, PromptContext};
+use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt, PromptContext};
 use game_data::primitives::{
     AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
 };
@@ -25,11 +25,11 @@ use game_data::utils;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     ClientItemLocation, ClientRoomLocation, GameCharacterFacingDirection, GameObjectPositions,
-    ObjectPosition, ObjectPositionBrowser, ObjectPositionCharacter,
-    ObjectPositionCharacterContainer, ObjectPositionDeck, ObjectPositionDeckContainer,
-    ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer, ObjectPositionHand,
-    ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid,
-    ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
+    ObjectPosition, ObjectPositionBrowser, ObjectPositionBrowserDragTarget,
+    ObjectPositionCharacter, ObjectPositionCharacterContainer, ObjectPositionDeck,
+    ObjectPositionDeckContainer, ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer,
+    ObjectPositionHand, ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen,
+    ObjectPositionRaid, ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
     ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::traits::RaidDisplayState;
@@ -139,7 +139,7 @@ pub fn staging() -> Position {
     Position::Staging(ObjectPositionStaging {})
 }
 
-pub fn browser() -> Position {
+pub fn accessed_browser() -> Position {
     Position::Browser(ObjectPositionBrowser {})
 }
 
@@ -164,7 +164,13 @@ pub fn parent_card(identifier: impl HasCardId) -> Position {
     })
 }
 
-pub fn convert(
+/// The target position for the cards shown in a `CardBrowserPrompt`.
+pub fn card_browser_target_position() -> Position {
+    Position::BrowserDragTarget(ObjectPositionBrowserDragTarget {})
+}
+
+/// Calculates the game position in which the provided card should be displayed.
+pub fn calculate(
     builder: &ResponseBuilder,
     game: &GameState,
     card: &CardState,
@@ -278,7 +284,7 @@ fn non_card(
     game: &GameState,
     id: GameObjectId,
 ) -> Result<ObjectPosition> {
-    Ok(if let Some(position_override) = raid_position_override(game, id)? {
+    Ok(if let Some(position_override) = non_card_position_override(builder, game, id)? {
         position_override
     } else {
         match id {
@@ -309,12 +315,46 @@ fn position_override(
 }
 
 fn prompt_position_override(game: &GameState, card: &CardState) -> Option<ObjectPosition> {
-    let prompt = game.player(card.side()).card_prompt_queue.get(0)?;
-    if prompt.context == Some(PromptContext::Card(card.id)) {
-        Some(for_card(card, browser()))
-    } else {
-        None
+    let current_prompt = game.player(card.side()).prompt_queue.get(0)?;
+
+    match current_prompt {
+        GamePrompt::ButtonPrompt(prompt) => {
+            if prompt.context == Some(PromptContext::Card(card.id)) {
+                return Some(for_card(card, accessed_browser()));
+            }
+        }
+        GamePrompt::CardBrowserPrompt(browser) => {
+            if browser.unchosen_subjects.contains(&card.id) {
+                return Some(for_card(card, revealed_cards(true)));
+            } else if browser.chosen_subjects.contains(&card.id) {
+                return Some(for_card(card, card_browser_target_position()));
+            }
+        }
     }
+
+    None
+}
+
+fn non_card_position_override(
+    builder: &ResponseBuilder,
+    game: &GameState,
+    id: GameObjectId,
+) -> Result<Option<ObjectPosition>> {
+    let current_prompt = game.player(builder.user_side).prompt_queue.get(0);
+    if let Some(GamePrompt::CardBrowserPrompt(browser)) = current_prompt {
+        let target = match browser.target {
+            BrowserPromptTarget::DiscardPile => GameObjectId::DiscardPile(builder.user_side),
+            BrowserPromptTarget::Deck => GameObjectId::Deck(builder.user_side),
+        };
+        if id == target {
+            return Ok(Some(for_sorting_key(
+                0,
+                Position::BrowserDragTarget(ObjectPositionBrowserDragTarget {}),
+            )));
+        }
+    }
+
+    raid_position_override(game, id)
 }
 
 fn raid_position_override(game: &GameState, id: GameObjectId) -> Result<Option<ObjectPosition>> {
@@ -325,7 +365,7 @@ fn raid_position_override(game: &GameState, id: GameObjectId) -> Result<Option<O
                 browser_position(id, raid(), raid_browser(game, raid_data, defenders))
             }
             RaidDisplayState::Access => {
-                browser_position(id, browser(), raid_access_browser(game, raid_data))
+                browser_position(id, accessed_browser(), raid_access_browser(game, raid_data))
             }
         }
     } else {

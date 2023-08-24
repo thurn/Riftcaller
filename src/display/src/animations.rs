@@ -85,6 +85,7 @@ pub fn render(
         }
         GameUpdate::ScoreCard(_, card_id) => score_card(builder, *card_id),
         GameUpdate::GameOver(_) => {}
+        GameUpdate::BrowserSubmitted => {}
     }
     Ok(())
 }

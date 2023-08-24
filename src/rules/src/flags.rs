@@ -49,9 +49,9 @@ pub fn current_priority(game: &GameState) -> Option<Side> {
             }
         }
         GamePhase::Play => {
-            if !game.overlord.card_prompt_queue.is_empty() {
+            if !game.overlord.prompt_queue.is_empty() {
                 Some(Side::Overlord)
-            } else if !game.champion.card_prompt_queue.is_empty() {
+            } else if !game.champion.prompt_queue.is_empty() {
                 Some(Side::Champion)
             } else if let Some(raid) = &game.info.raid {
                 Some(raid.internal_phase.active_side())
@@ -377,8 +377,8 @@ pub fn in_main_phase(game: &GameState, side: Side) -> bool {
 /// facing a card prompt.
 pub fn can_take_game_actions(game: &GameState) -> bool {
     game.info.phase.is_playing()
-        && game.overlord.card_prompt_queue.is_empty()
-        && game.champion.card_prompt_queue.is_empty()
+        && game.overlord.prompt_queue.is_empty()
+        && game.champion.prompt_queue.is_empty()
 }
 
 /// Can the Champion choose to not use a weapon ability when encountering

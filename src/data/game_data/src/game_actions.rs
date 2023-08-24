@@ -21,6 +21,7 @@ use std::fmt;
 use anyhow::{anyhow, Result};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
+use with_error::fail;
 
 use crate::game::MulliganDecision;
 use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, RoomId, Side};
@@ -71,6 +72,10 @@ pub enum AccessPhaseAction {
 pub enum PromptContext {
     /// Prompt is being shown related to a specific card
     Card(CardId),
+    /// Prompt is being show to discard cards due to exceeding the hand size
+    /// limit, player must discard until they have the provided number of cards
+    /// in hand.
+    DiscardToHandSize(usize),
 }
 
 /// A choice which can be made as part of an ability of an individual card
@@ -130,7 +135,7 @@ impl fmt::Debug for PromptAction {
 
 /// Presents a choice to a user, typically communicated via a series of buttons
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GamePrompt {
+pub struct ButtonPrompt {
     /// Identifies the context for this prompt, i.e. why it is being shown to
     /// the user
     pub context: Option<PromptContext>,
@@ -138,11 +143,81 @@ pub struct GamePrompt {
     pub responses: Vec<PromptAction>,
 }
 
-impl GamePrompt {
+impl ButtonPrompt {
     pub fn card_actions(actions: Vec<CardPromptAction>) -> Self {
         Self {
             context: None,
             responses: actions.into_iter().map(PromptAction::CardAction).collect(),
+        }
+    }
+}
+
+/// Target game object for a [CardBrowserPrompt] to which cards must be dragged.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum BrowserPromptTarget {
+    DiscardPile,
+    Deck,
+}
+
+/// Describes which configurations of subjects for a [CardBrowserPrompt] are
+/// valid and should allow the prompt to be exited.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum BrowserPromptValidation {
+    /// User must select an exact quantity of cards.
+    ExactlyCount(usize),
+}
+
+/// Describes the action which should be performed for a [CardBrowserPrompt] on
+/// the `chosen_subjects` cards once the user submits their final choice.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
+pub enum BrowserPromptAction {
+    /// Move the chosen subjects to the discard pile.
+    DiscardCards,
+}
+
+/// A prompt which displays a selection of cards to the user and requests that
+/// they drag cards to a target, e.g. in order to discard them from hand or
+/// shuffle cards from their discard pile into their deck.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CardBrowserPrompt {
+    /// Identifies the context for this prompt, i.e. why it is being shown to
+    /// the user
+    pub context: Option<PromptContext>,
+    /// Cards which should be displayed in the browser and which have not
+    /// been selected by dragging them to the target. Initially, this should
+    /// contain all subject cards. As cards are dragged in the UI, they will be
+    /// removed from this list and added to `chosen_subjects`.
+    ///
+    /// For example, this would contain cards that should be kept in hand during
+    /// the 'discard to hand size' flow.
+    pub unchosen_subjects: Vec<CardId>,
+    /// Cards which have been selected, e.g. the cards that should be discarded
+    /// when performing the 'discard to hand size' flow. This should initially
+    /// be empty.
+    pub chosen_subjects: Vec<CardId>,
+    /// Target game object to which cards must be dragged.
+    pub target: BrowserPromptTarget,
+    /// Describes which configurations of subjects are valid and should allow
+    /// the prompt to be exited.
+    pub validation: BrowserPromptValidation,
+    /// Describes the action which should be performed on the `chosen_subjects`
+    /// cards once the user submits their final choice.
+    pub action: BrowserPromptAction,
+}
+
+/// Possible types of prompts which might be displayed to a user during the
+/// game.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum GamePrompt {
+    ButtonPrompt(ButtonPrompt),
+    CardBrowserPrompt(CardBrowserPrompt),
+}
+
+impl GamePrompt {
+    pub fn as_button_prompt(&self) -> Result<&ButtonPrompt> {
+        match self {
+            GamePrompt::ButtonPrompt(p) => Ok(p),
+            GamePrompt::CardBrowserPrompt(_) => fail!("Expecting a button prompt!"),
         }
     }
 }
@@ -183,6 +258,8 @@ pub enum GameAction {
     InitiateRaid(RoomId),
     LevelUpRoom(RoomId),
     SpendActionPoint,
+    MoveCard(CardId),
+    BrowserPromptAction(BrowserPromptAction),
 }
 
 impl fmt::Debug for GameAction {
@@ -202,6 +279,8 @@ impl fmt::Debug for GameAction {
             Self::InitiateRaid(arg0) => f.debug_tuple("@InitiateRaid").field(arg0).finish(),
             Self::LevelUpRoom(arg0) => f.debug_tuple("@LevelUpRoom").field(arg0).finish(),
             Self::SpendActionPoint => write!(f, "@SpendActionPoint"),
+            Self::MoveCard(id) => f.debug_tuple("@MoveCard").field(id).finish(),
+            Self::BrowserPromptAction(prompt) => write!(f, "@{prompt:?}"),
         }
     }
 }

@@ -273,7 +273,7 @@ namespace Spelldawn.Services
     /// </summary>
     Card InfoCopy(Card card)
     {
-      var zoomed = card.Clone();
+      var zoomed = card.CloneForDisplay();
       zoomed.Parent = null;
       zoomed.transform.position = Vector3.zero;
       zoomed.transform.localScale = new Vector3(Card.CardScale, Card.CardScale, 1f);

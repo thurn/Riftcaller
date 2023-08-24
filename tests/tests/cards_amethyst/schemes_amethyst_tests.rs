@@ -67,14 +67,4 @@ fn research_project() {
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
     assert_eq!(6, g.user.cards.hand(PlayerName::User).len());
-    g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
-    assert_eq!(10, g.user.cards.hand(PlayerName::User).len());
-    g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    assert_eq!(13, g.user.cards.hand(PlayerName::User).len());
 }

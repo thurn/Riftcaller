@@ -65,12 +65,12 @@ pub struct GamePlayerData {
     pub actions: ActionCount,
     pub score: PointsValue,
 
-    /// A queue of choices this player is facing related to card abilities.
+    /// A queue of choices this player is facing related to game choices.
     ///
     /// Choices are resolved in a first-in, first-out manner, i.e. the prompt at
     /// index 0 is presented to the user first. All prompts here take precedence
     /// over choices deriving from game rules such as raid actions.
-    pub card_prompt_queue: Vec<GamePrompt>,
+    pub prompt_queue: Vec<GamePrompt>,
 }
 
 impl GamePlayerData {
@@ -82,7 +82,7 @@ impl GamePlayerData {
             mana_state: ManaState::default(),
             actions: 0,
             score: 0,
-            card_prompt_queue: vec![],
+            prompt_queue: vec![],
         }
     }
 }

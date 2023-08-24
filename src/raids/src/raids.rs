@@ -27,7 +27,7 @@ use anyhow::Result;
 use game_data::game::{
     GamePhase, GameState, HistoryEntry, HistoryEvent, InternalRaidPhase, RaidData, RaidJumpRequest,
 };
-use game_data::game_actions::{GamePrompt, PromptAction};
+use game_data::game_actions::{ButtonPrompt, PromptAction};
 use game_data::primitives::{RaidId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use rules::{flags, mutations, queries};
@@ -146,11 +146,14 @@ pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<P
     Ok(None)
 }
 
-/// Builds a [GamePrompt] representing the possible actions for the `side` user,
-/// as determined by the [current_actions] function.
-pub fn current_prompt(game: &GameState, user_side: Side) -> Result<Option<GamePrompt>> {
+/// Builds a [ButtonPrompt] representing the possible actions for the `side`
+/// user, as determined by the [current_actions] function.
+pub fn current_prompt(game: &GameState, user_side: Side) -> Result<Option<ButtonPrompt>> {
     if let Some(actions) = current_actions(game, user_side)? {
-        Ok(Some(GamePrompt { context: game.raid()?.phase().prompt_context(), responses: actions }))
+        Ok(Some(ButtonPrompt {
+            context: game.raid()?.phase().prompt_context(),
+            responses: actions,
+        }))
     } else {
         Ok(None)
     }

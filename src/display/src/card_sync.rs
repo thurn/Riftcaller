@@ -32,14 +32,14 @@ use rules::{flags, queries};
 use rules_text::{card_icons, supplemental_info};
 use {adapters, assets, rules_text};
 
-use crate::positions;
+use crate::{card_browser, positions};
 
 pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result<CardView> {
     let revealed = context.query_or(true, |_, card| card.is_revealed_to(builder.user_side));
     Ok(CardView {
         card_id: context.query_or_none(|_, card| adapters::card_identifier(card.id)),
         card_position: context
-            .query_or_ok(None, |game, card| Ok(Some(positions::convert(builder, game, card)?)))?,
+            .query_or_ok(None, |game, card| Ok(Some(positions::calculate(builder, game, card)?)))?,
         prefab: CardPrefab::Standard.into(),
         card_back: Some(assets::card_back(
             context.query_or(context.definition().school, |game, card| {
@@ -218,6 +218,8 @@ fn revealed_card_view(
             },
         )),
         supplemental_info: supplemental_info::build(context, None),
+        card_move_target: context
+            .query_or(None, |game, card| card_browser::move_target(builder, game, card)),
     })
 }
 
@@ -253,6 +255,7 @@ fn revealed_ability_card_view(
             positions::for_ability(game, ability_id, positions::staging())
         }),
         supplemental_info: supplemental_info::build(context, Some(ability_id.index)),
+        card_move_target: None,
     })
 }
 
@@ -279,6 +282,7 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
             positions::for_unveil_card(card, positions::parent_card(card_id))
         }),
         supplemental_info: supplemental_info::build(context, None),
+        card_move_target: None,
     })
 }
 

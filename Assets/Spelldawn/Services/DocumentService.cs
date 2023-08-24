@@ -55,6 +55,7 @@ namespace Spelldawn.Services
     readonly Dictionary<InterfacePanelAddress, InterfacePanel> _panelCache = new();
     readonly HashSet<InterfacePanelAddress> _waitingFor = new();
     InterfacePanelAddress? _switchTo;
+    VisualElement _mainOverlay = null!;
     VisualElement _mainControls = null!;
     VisualElement _cardControls = null!;
     VisualElement _infoZoom = null!;
@@ -74,6 +75,7 @@ namespace Spelldawn.Services
     public void Initialize()
     {
       _document.rootVisualElement.Clear();
+      AddRoot("Main Overlay", out _mainOverlay);
       AddRoot("Main Controls", out _mainControls);
       AddRoot("Card Controls", out _cardControls);
       AddRoot("Panels", out _panels);
@@ -138,7 +140,10 @@ namespace Spelldawn.Services
 
     public bool MouseOverScreenElement()
     {
-      return _panels.Children().Concat(_screenOverlay.Children()).Concat(_mainControls.Children())
+      return _panels.Children()
+        .Concat(_screenOverlay.Children())
+        .Concat(_mainControls.Children())
+        .Concat(_mainOverlay.Children())
         .Any(c => c.ContainsPoint(c.WorldToLocal(ElementMousePosition())));
     }
 
@@ -255,14 +260,20 @@ namespace Spelldawn.Services
 
     public void RenderMainControls(InterfaceMainControls? mainControls)
     {
-      Reconcile(
-        ref _mainControls,
-        MainControls(mainControls?.Node));
+      Reconcile(ref _mainOverlay, MainOverlay(mainControls?.Overlay));
+      
+      Reconcile(ref _mainControls, MainControls(mainControls?.Node));
 
       Reconcile(
         ref _cardControls,
         CardAnchors(mainControls?.CardAnchorNodes ?? Enumerable.Empty<CardAnchorNode>()));
     }
+    
+    public void ClearMainControls()
+    {
+      Reconcile(ref _mainControls, MainControls(null));
+      Reconcile(ref _cardControls, CardAnchors(Enumerable.Empty<CardAnchorNode>()));
+    }    
 
     public void AddRequestFields(StandardAction action)
     {
@@ -351,6 +362,13 @@ namespace Spelldawn.Services
         Position = FlexPosition.Absolute,
         Inset = AllDip(0),
       }, children);
+    
+    static Node MainOverlay(Node? content) =>
+      Row("MainOverlay", new FlexStyle
+      {
+        Position = FlexPosition.Absolute,
+        Inset = AllDip(0),
+      }, content);    
 
     static Node MainControls(Node? content) =>
       Row("MainControls", new FlexStyle

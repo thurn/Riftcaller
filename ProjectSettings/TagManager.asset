@@ -45,7 +45,7 @@ TagManager:
   - name: Hidden
     uniqueID: 1670812453
     locked: 0
-  - name: Sigils
+  - name: Riftcallers
     uniqueID: 3809635539
     locked: 0
   - name: Arena
@@ -80,6 +80,9 @@ TagManager:
     locked: 0
   - name: RevealedCardsBrowser
     uniqueID: 1041461123
+    locked: 0
+  - name: BrowserDragTarget
+    uniqueID: 1252646997
     locked: 0
   - name: Scored
     uniqueID: 1408845761

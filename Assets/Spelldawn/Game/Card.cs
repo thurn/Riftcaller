@@ -79,11 +79,13 @@ namespace Spelldawn.Game
     CardIdentifier? _cardId;
     bool? _serverCanPlay;
     bool? _serverRevealedInArena;
+    ObjectPosition? _moveTargetPosition;
     ISet<RoomIdentifier>? _validRoomTargets;
     ObjectPosition? _releasePosition;
     Node? _supplementalInfo;
     ArrowService.Type? _arrowOnDrag;
     bool _showingArrow;
+    bool _isMove;
 
     [Serializable]
     public sealed class Icon
@@ -118,6 +120,8 @@ namespace Spelldawn.Game
     public ObjectPosition? ReleasePosition => _releasePosition;
 
     public ObjectPosition? DestroyPosition { get; private set; }
+    
+    public ObjectPosition? MoveTargetPosition => _moveTargetPosition;
 
     public Transform TopLeftAnchor => _topLeftAnchor;
 
@@ -190,15 +194,19 @@ namespace Spelldawn.Game
 
     bool CanPlay() => _serverCanPlay == true && 
                       InHand() && 
-                      Registry.CapabilityService.CanPlayCards() &&
+                      Registry.CapabilityService.CanMoveCards() &&
                       _isRevealed;
 
-    public Card Clone()
+    bool CanMove() => _moveTargetPosition != null &&
+                      Registry.CapabilityService.CanMoveCards();
+
+    public Card CloneForDisplay()
     {
       var result = ComponentUtils.GetComponent<Card>(Instantiate(gameObject));
       result._cardId = _cardId;
       result._outline.enabled = false;
-      result._serverCanPlay = _serverCanPlay;
+      result._serverCanPlay = false;
+      result._moveTargetPosition = null;
       result._serverRevealedInArena = _serverRevealedInArena;
       result._validRoomTargets = _validRoomTargets;
       result._releasePosition = _releasePosition;
@@ -264,7 +272,7 @@ namespace Spelldawn.Game
         return true;
       }
 
-      return InHand() && CanPlay();
+      return CanPlay() || CanMove();
     }
 
     // I originally did all of this using Unity's OnMouseDown events, but they were not reliable
@@ -278,7 +286,10 @@ namespace Spelldawn.Game
         Registry.CardService.DisplayInfoZoom(this);
       }
 
-      if (CanPlay())
+      var canPlay = CanPlay();
+      _isMove = !canPlay && CanMove();
+      
+      if (canPlay || _isMove)
       {
         Registry.CardService.CurrentlyDragging = true;
         SetGameContext(GameContext.Dragging);
@@ -318,7 +329,7 @@ namespace Spelldawn.Game
           Registry.ArenaService.ShowRoomSelectorForMousePosition(_validRoomTargets);
         }
         
-        if (!_showingArrow && _arrowOnDrag is { } arrow)
+        if (!_showingArrow && _arrowOnDrag is { } arrow && !_isMove)
         {
           _showingArrow = true;
           gameObject.SetActive(false);
@@ -354,7 +365,7 @@ namespace Spelldawn.Game
 
       Registry.CardService.CurrentlyDragging = false;
 
-      if (ShouldReturnToHandOnRelease())
+      if (ShouldReturnToPreviousParentOnRelease())
       {
         Registry.StaticAssets.PlayCardSound();
         StartCoroutine(_previousParent!.AddObject(this, animate: true));
@@ -362,43 +373,58 @@ namespace Spelldawn.Game
         return;
       }
 
-      var action = new PlayCardAction
+      if (_moveTargetPosition != null)
       {
-        CardId = Errors.CheckNotNull(_cardId)
-      };
-
-      if (_validRoomTargets != null)
-      {
-        var roomId = Errors.CheckNotDefault(Errors.CheckNotNull(Registry.ArenaService.CurrentRoomSelector).RoomId);
-        Errors.CheckState(_validRoomTargets.Contains(roomId), "Invalid Room selected");
-        action.Target = new CardTarget
+        Registry.ActionService.HandleAction(new ClientAction
         {
-          RoomId = roomId
-        };
+          MoveCard = new MoveCardAction
+          {
+            CardId = Errors.CheckNotNull(_cardId)
+          }
+        });
       }
-
-      Registry.ArenaService.HideRoomSelector();
-
-      Registry.ActionService.HandleAction(new ClientAction
+      else
       {
-        PlayCard = action
-      });
+        var action = new PlayCardAction
+        {
+          CardId = Errors.CheckNotNull(_cardId)
+        };
+
+        if (_validRoomTargets != null)
+        {
+          var roomId = Errors.CheckNotDefault(Errors.CheckNotNull(Registry.ArenaService.CurrentRoomSelector).RoomId);
+          Errors.CheckState(_validRoomTargets.Contains(roomId), "Invalid Room selected");
+          action.Target = new CardTarget
+          {
+            RoomId = roomId
+          };
+        }
+
+        Registry.ArenaService.HideRoomSelector();
+
+        Registry.ActionService.HandleAction(new ClientAction
+        {
+          PlayCard = action
+        });        
+      }
     }
 
     static Vector3 WorldMousePosition(Registry registry, float dragStartScreenZ) =>
       registry.MainCamera.ScreenToWorldPoint(
         new Vector3(Input.mousePosition.x, Input.mousePosition.y, dragStartScreenZ));
 
-    bool ShouldReturnToHandOnRelease()
+    bool ShouldReturnToPreviousParentOnRelease()
     {
-      if (!Registry.CapabilityService.CanExecuteAction(ClientAction.ActionOneofCase.PlayCard))
+      if (!(Registry.CapabilityService.CanMoveCards()))
       {
         return true;
       }
 
-      if (_validRoomTargets == null)
+      if (_validRoomTargets == null || _moveTargetPosition != null)
       {
-        return !Registry.CardService.IsMouseOverPlayCardArea();
+        var mousePosition = WorldMousePosition(Registry, _dragStartScreenZ);
+        var distanceDraggedZ = Mathf.Abs(mousePosition.z - _dragStartPosition.z);
+        return distanceDraggedZ < 2.0f;
       }
       else
       {
@@ -460,6 +486,7 @@ namespace Spelldawn.Game
       gameObject.name = revealed.Title.Text + IdString();
       _validRoomTargets = null;
       _serverCanPlay = false;
+      _moveTargetPosition = revealed.CardMoveTarget;
       _arrowOnDrag = null;
 
       switch (revealed.Targeting?.TargetingCase)

@@ -77,7 +77,7 @@ namespace Spelldawn.Services
       if (commandList.Commands.Any(c => c.CommandCase == GameCommand.CommandOneofCase.UpdateGameView))
       {
         // Clear UI during animations
-        _registry.DocumentService.RenderMainControls(null);
+        _registry.DocumentService.ClearMainControls();
       }
 
       yield return _registry.AssetService.LoadAssets(commandList);

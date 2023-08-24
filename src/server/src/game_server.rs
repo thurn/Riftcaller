@@ -22,8 +22,8 @@ use game_data::game_actions::{self, GameAction};
 use game_data::primitives::{GameId, Side};
 use player_data::PlayerState;
 use protos::spelldawn::{
-    DrawCardAction, GainManaAction, InitiateRaidAction, LevelUpRoomAction, PlayCardAction,
-    SpendActionPointAction,
+    DrawCardAction, GainManaAction, InitiateRaidAction, LevelUpRoomAction, MoveCardAction,
+    PlayCardAction, SpendActionPointAction,
 };
 use tracing::{debug, info};
 use tutorial::tutorial_actions;
@@ -186,6 +186,20 @@ pub async fn handle_spend_action_point(
 ) -> Result<GameResponse> {
     info!(?data.player_id, "Spend Action Point");
     handle_game_action(database, data, &GameAction::SpendActionPoint).await
+}
+
+pub async fn handle_move_card(
+    database: &impl Database,
+    data: &RequestData,
+    action: &MoveCardAction,
+) -> Result<GameResponse> {
+    info!(?data.player_id, "Move Card");
+    let card_id = match adapters::server_card_id(action.card_id.with_error(|| "CardID expected")?)?
+    {
+        ServerCardId::CardId(card_id) => card_id,
+        _ => fail!("Expected standard CardId"),
+    };
+    handle_game_action(database, data, &GameAction::MoveCard(card_id)).await
 }
 
 /// Applies a game mutation and produces a snapshot of the resulting game state

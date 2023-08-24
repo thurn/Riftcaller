@@ -775,6 +775,11 @@ pub struct ObjectPositionRiftcallers {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
+/// / Position to which cards are dragged during the card browser drag flow
+/// (e.g. / when discarding to hand size).
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ObjectPositionBrowserDragTarget {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPosition {
@@ -792,7 +797,7 @@ pub struct ObjectPosition {
     pub sorting_subkey: u32,
     #[prost(
         oneof = "object_position::Position",
-        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19"
+        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20"
     )]
     pub position: ::core::option::Option<object_position::Position>,
 }
@@ -833,6 +838,8 @@ pub mod object_position {
         Revealed(super::ObjectPositionRevealedCards),
         #[prost(message, tag = "19")]
         Riftcaller(super::ObjectPositionRiftcallers),
+        #[prost(message, tag = "20")]
+        BrowserDragTarget(super::ObjectPositionBrowserDragTarget),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -867,6 +874,12 @@ pub struct RevealedCardView {
     /// Content to display behind the main image
     #[prost(message, optional, tag = "10")]
     pub image_background: ::core::option::Option<SpriteAddress>,
+    /// Target for this card to be moved to. If provided, the user will be able
+    /// to drag the card in the interface and it will animate to this position
+    /// when released and send a MoveCardAction. This is distinct from *playing*
+    /// a card and is used for operations like discarding from hand.
+    #[prost(message, optional, tag = "11")]
+    pub card_move_target: ::core::option::Option<ObjectPosition>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1200,16 +1213,19 @@ pub struct StandardAction {
         ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
 /// Spend an action to gain 1 mana.
+///
 /// Optimistic: Mana is added immediately.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GainManaAction {}
 /// Spend an action to draw a card.
+///
 /// Optimistic: Face-down card animates to reveal area.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DrawCardAction {}
 /// Spend an action to level up a room.
+///
 /// Optimistic: Room visit animation plays
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1233,6 +1249,7 @@ pub mod card_target {
     }
 }
 /// Spend an action to play a card from hand.
+///
 /// Optimistic:
 ///    - Card animates to its 'on_release' position. If the RoomIdentifier is
 ///      unspecified for a room position, the targeted room is used.
@@ -1245,6 +1262,7 @@ pub struct PlayCardAction {
     pub target: ::core::option::Option<CardTarget>,
 }
 /// Spend an action to initiate a raid on one of the overlord's rooms
+///
 /// Optimistic: Room visit animation plays
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1264,6 +1282,17 @@ pub struct FetchPanelAction {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SpendActionPointAction {}
+/// Move a card to a new position. This is distinct from *playing* a card and is
+/// used for operations like discarding cards from hand.
+///
+/// Optimistic:
+///    - Card animates to its 'card_move_target' position.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MoveCardAction {
+    #[prost(message, optional, tag = "1")]
+    pub card_id: ::core::option::Option<CardIdentifier>,
+}
 /// Possible game actions taken by the user.
 ///
 /// Actions have an associated 'optimistic' behavior to display while waiting
@@ -1272,7 +1301,7 @@ pub struct SpendActionPointAction {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientAction {
-    #[prost(oneof = "client_action::Action", tags = "1, 2, 3, 4, 5, 6, 7, 8")]
+    #[prost(oneof = "client_action::Action", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9")]
     pub action: ::core::option::Option<client_action::Action>,
 }
 /// Nested message and enum types in `ClientAction`.
@@ -1296,6 +1325,8 @@ pub mod client_action {
         InitiateRaid(super::InitiateRaidAction),
         #[prost(message, tag = "8")]
         SpendActionPoint(super::SpendActionPointAction),
+        #[prost(message, tag = "9")]
+        MoveCard(super::MoveCardAction),
     }
 }
 /// Client state values included with the server response which must be
@@ -1414,6 +1445,10 @@ pub struct InterfaceMainControls {
     /// Main controls area
     #[prost(message, optional, tag = "1")]
     pub node: ::core::option::Option<Node>,
+    /// Main controls full-screen overlay, used for displaying instructional
+    /// rules text to the player such as "you must discard to hand size".
+    #[prost(message, optional, tag = "2")]
+    pub overlay: ::core::option::Option<Node>,
     /// Controls for specific cards
     #[prost(message, repeated, tag = "3")]
     pub card_anchor_nodes: ::prost::alloc::vec::Vec<CardAnchorNode>,

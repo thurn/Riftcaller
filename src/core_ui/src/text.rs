@@ -39,6 +39,7 @@ pub struct Text {
     remove_padding: bool,
     shadow: Option<TextShadow>,
     overflow: TextOverflow,
+    flex_shrink: f32,
 }
 
 impl Text {
@@ -59,6 +60,7 @@ impl Text {
             remove_padding: false,
             shadow: None,
             overflow: TextOverflow::Ellipsis,
+            flex_shrink: 0.0,
         }
     }
 
@@ -142,6 +144,11 @@ impl Text {
         self.overflow = overflow;
         self
     }
+
+    pub fn flex_shrink(mut self, flex_shrink: f32) -> Self {
+        self.flex_shrink = flex_shrink;
+        self
+    }
 }
 
 impl Component for Text {
@@ -166,7 +173,8 @@ impl Component for Text {
                     .overflow(FlexOverflow::Hidden)
                     .text_outline_color(self.outline_color)
                     .text_outline_width(self.outline_width)
-                    .text_shadow(self.shadow),
+                    .text_shadow(self.shadow)
+                    .flex_shrink(self.flex_shrink),
             )
             .build()
     }

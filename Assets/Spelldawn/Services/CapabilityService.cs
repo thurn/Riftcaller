@@ -40,8 +40,7 @@ namespace Spelldawn.Services
     /// <summary>
     ///  Can the user currently play cards that are otherwise legal to play according to the game rules? 
     /// </summary>
-    public bool CanPlayCards() => !_registry.CardService.CurrentlyDragging && 
-                                  !_registry.InterfaceOverlay.Enabled &&
+    public bool CanMoveCards() => !_registry.CardService.CurrentlyDragging && 
                                   !_registry.LongPressOverlay.Enabled &&
                                   !_registry.DocumentService.IsAnyPanelOpen();
 
@@ -77,7 +76,7 @@ namespace Spelldawn.Services
           return true;
         case GameContext.Deck:
         case GameContext.DiscardPile:
-        case GameContext.Sigils:  
+        case GameContext.Riftcallers:  
           return false;
         default:
           return !AnyOverlayOpen();
@@ -96,9 +95,10 @@ namespace Spelldawn.Services
       ClientAction.ActionOneofCase.FetchPanel => true,
       ClientAction.ActionOneofCase.GainMana => CanAct(),
       ClientAction.ActionOneofCase.DrawCard => CanAct(),
-      ClientAction.ActionOneofCase.PlayCard => CanPlayCards(),
+      ClientAction.ActionOneofCase.PlayCard => CanMoveCards(),
       ClientAction.ActionOneofCase.LevelUpRoom => CanAct(),
       ClientAction.ActionOneofCase.InitiateRaid => CanAct(),
+      ClientAction.ActionOneofCase.MoveCard => CanMoveCards(),
       _ => false
     };
 

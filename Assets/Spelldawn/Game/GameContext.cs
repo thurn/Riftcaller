@@ -19,16 +19,16 @@ using System;
 namespace Spelldawn.Game
 {
   /// <summary>
-  /// Represents the current location and z position of a GameObject. Maps to sorting layers in
-  /// Unity, keep in sync with those.
+  /// Represents the current location and z position of a GameObject.
   /// </summary>
   public enum GameContext
   {
     // Note: Enum numbers are serialized by Unity and cannot be changed.
     //
-    // Keep in sync with 'SortOrder' below.
+    // Keep in sync with 'SortOrder' below and with the 'Layers' tab in Unity
     Unspecified = 0,
     Hidden = 17,
+    Riftcallers = 21,
     Arena = 1,
     Deck = 2,
     DiscardPile = 3,
@@ -40,6 +40,7 @@ namespace Spelldawn.Game
     Browser = 12,
     Staging = 7,
     RevealedCardsBrowser = 18,
+    BrowserDragTarget = 22,
     Scored = 11,
     Effects = 8,
     Dragging = 9,
@@ -48,7 +49,6 @@ namespace Spelldawn.Game
     RewardBrowser = 14,
     InfoZoom = 15,
     SplashScreen = 20,
-    Sigils = 21 
   }
 
   public static class GameContextUtil
@@ -57,7 +57,7 @@ namespace Spelldawn.Game
     {
       GameContext.Unspecified => 0,
       GameContext.Hidden => 1,
-      GameContext.Sigils => 2,
+      GameContext.Riftcallers => 2,
       GameContext.Arena => 3,
       GameContext.Deck => 4,
       GameContext.DiscardPile => 5,
@@ -69,14 +69,15 @@ namespace Spelldawn.Game
       GameContext.Browser => 11,
       GameContext.Staging => 12,
       GameContext.RevealedCardsBrowser => 13,
-      GameContext.Scored => 14,
-      GameContext.Effects => 15,
-      GameContext.Dragging => 16,
-      GameContext.UserMessage => 17,
-      GameContext.LongPressBrowser => 18,
-      GameContext.RewardBrowser => 19,
-      GameContext.InfoZoom => 20,
-      GameContext.SplashScreen => 21,
+      GameContext.BrowserDragTarget => 14,
+      GameContext.Scored => 15,
+      GameContext.Effects => 16,
+      GameContext.Dragging => 17,
+      GameContext.UserMessage => 18,
+      GameContext.LongPressBrowser => 19,
+      GameContext.RewardBrowser => 20,
+      GameContext.InfoZoom => 21,
+      GameContext.SplashScreen => 22,
       _ => throw new ArgumentOutOfRangeException(nameof(gameContext), gameContext, null)
     };
 
@@ -84,7 +85,7 @@ namespace Spelldawn.Game
     {
       GameContext.Arena => true,
       GameContext.ArenaRaidParticipant => true,
-      GameContext.Sigils => true,
+      GameContext.Riftcallers => true,
       _ => false
     };
   }

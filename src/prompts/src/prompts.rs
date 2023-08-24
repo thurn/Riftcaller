@@ -15,18 +15,18 @@
 use anyhow::Result;
 use core_ui::prelude::*;
 use game_data::game::GameState;
-use game_data::game_actions::GamePrompt;
+use game_data::game_actions::ButtonPrompt;
 use game_data::primitives::Side;
 use protos::spelldawn::InterfaceMainControls;
 
 use crate::action_buttons;
 use crate::prompt_container::PromptContainer;
 
-/// Builds UI elements to display a [GamePrompt] for the `side` player.
+/// Builds UI elements to display a [ButtonPrompt] for the `side` player.
 pub fn action_prompt(
     game: &GameState,
     side: Side,
-    prompt: &GamePrompt,
+    prompt: &ButtonPrompt,
 ) -> Result<Option<InterfaceMainControls>> {
     let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
     let mut card_anchor_nodes = vec![];
@@ -42,6 +42,7 @@ pub fn action_prompt(
 
     Ok(Some(InterfaceMainControls {
         node: PromptContainer::new().children(main_controls).build(),
+        overlay: None,
         card_anchor_nodes,
     }))
 }

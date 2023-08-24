@@ -64,6 +64,7 @@ pub enum GameUpdate {
     ScoreCard(Side, CardId),
     /// The game has ended and the indicated player has won
     GameOver(Side),
+    BrowserSubmitted,
 }
 
 /// A step in the animation process

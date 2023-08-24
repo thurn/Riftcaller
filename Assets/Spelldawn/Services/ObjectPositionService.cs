@@ -202,6 +202,8 @@ namespace Spelldawn.Services
         },
         ObjectPosition.PositionOneofCase.Riftcaller => 
           _registry.RiftcallerDisplayForPlayer(position.Riftcaller.Owner),
+        ObjectPosition.PositionOneofCase.BrowserDragTarget =>
+          _registry.BrowserDragTarget,
         _ => throw new ArgumentOutOfRangeException()
       };
     }

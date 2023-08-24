@@ -28,10 +28,13 @@ namespace Spelldawn.Game
 
     public void Enable(bool translucent)
     {
-      SortingOrder.Create(_gameContext, -1).ApplyTo(_renderer);
-      _renderer.enabled = true;
-      _renderer.color = Color.clear;
-      _renderer.DOBlendableColor(translucent ? new Color(0, 0, 0, 0.5f) : Color.black, 0.3f);
+      if (!Enabled)
+      {
+        SortingOrder.Create(_gameContext, -1).ApplyTo(_renderer);
+        _renderer.enabled = true;
+        _renderer.color = Color.clear;
+        _renderer.DOBlendableColor(translucent ? new Color(0, 0, 0, 0.5f) : Color.black, 0.3f);
+      }
     }
 
     public void Disable()

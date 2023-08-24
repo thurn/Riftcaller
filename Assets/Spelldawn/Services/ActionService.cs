@@ -361,6 +361,9 @@ namespace Spelldawn.Services
             }
           });
           break;
+        case ClientAction.ActionOneofCase.MoveCard:
+          yield return HandleMoveCard(action.MoveCard);
+          break;
         default:
           yield break;
       }
@@ -390,6 +393,17 @@ namespace Spelldawn.Services
 
       yield return _registry.ObjectPositionService.MoveGameObject(card, position);
     }
+
+    IEnumerator HandleMoveCard(MoveCardAction action)
+    {
+      var card = _registry.CardService.FindCard(action.CardId);
+      _registry.StaticAssets.PlayWhooshSound();
+      if (card.MoveTargetPosition == null)
+      {
+        yield break;
+      }
+      yield return _registry.ObjectPositionService.MoveGameObject(card, card.MoveTargetPosition);
+    }    
   }
 
   /// <summary>

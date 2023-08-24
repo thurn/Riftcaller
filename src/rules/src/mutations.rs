@@ -34,7 +34,7 @@ use game_data::delegates::{
     SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData, TurnState};
-use game_data::game_actions::{CardPromptAction, GamePrompt};
+use game_data::game_actions::{ButtonPrompt, CardPromptAction, GamePrompt};
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
     Side, TurnNumber,
@@ -242,9 +242,9 @@ pub fn add_card_prompt(
     side: Side,
     actions: Vec<Option<CardPromptAction>>,
 ) -> Result<()> {
-    game.player_mut(side)
-        .card_prompt_queue
-        .push(GamePrompt::card_actions(actions.into_iter().flatten().collect()));
+    game.player_mut(side).prompt_queue.push(GamePrompt::ButtonPrompt(ButtonPrompt::card_actions(
+        actions.into_iter().flatten().collect(),
+    )));
     Ok(())
 }
 

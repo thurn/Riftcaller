@@ -49,7 +49,7 @@ namespace Spelldawn.Game
         child.Parent = this;
       }
     }
-
+    
     void Update()
     {
       if (_updateRequired && !_animationRunning)
@@ -89,7 +89,7 @@ namespace Spelldawn.Game
       {
         Insert(displayable, animate: true);
       }
-      
+
       MarkUpdateRequired(animate: true);
       yield return WaitUntilIdle();
     }
@@ -192,6 +192,9 @@ namespace Spelldawn.Game
       {
         _animationRunning = true;
         sequence = TweenUtils.Sequence($"{gameObject.name} MoveObjectsToPosition").SetEase(Ease.InOutSine);
+        
+        // Each tween should have its own request for animation attached to it.
+        _animateNextUpdate = false;
       }
 
       const float duration = TweenUtils.MoveAnimationDurationSeconds;
@@ -252,7 +255,6 @@ namespace Spelldawn.Game
         sequence.InsertCallback(duration, () =>
         {
           _animationRunning = false;
-          _animateNextUpdate = false;
         });
       }
     }

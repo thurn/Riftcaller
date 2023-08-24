@@ -96,6 +96,7 @@ pub enum BackgroundColor {
     Tooltip,
     Toast,
     SpeechBubble,
+    GameInstructionsBackground,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -114,6 +115,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::Tooltip => GREEN_700,
             BackgroundColor::Toast => BLACK,
             BackgroundColor::SpeechBubble => WHITE,
+            BackgroundColor::GameInstructionsBackground => BLACK_ALPHA_75,
         }
     }
 }
@@ -174,6 +176,8 @@ pub enum FontSize {
     CoinCount,
     Toast,
     SchoolLabel,
+    GameInstructionsText,
+    GameInstructionsMetaText,
 }
 
 impl From<FontSize> for Dimension {
@@ -194,6 +198,8 @@ impl From<FontSize> for Dimension {
             FontSize::CoinCount => 54,
             FontSize::Toast => 24,
             FontSize::SchoolLabel => 32,
+            FontSize::GameInstructionsText => 36,
+            FontSize::GameInstructionsMetaText => 28,
         })
         .px()
         .into()

@@ -16,6 +16,7 @@
 //! understand
 
 pub mod animations;
+pub mod card_browser;
 pub mod card_sync;
 pub mod game_over;
 pub mod interface;

@@ -201,6 +201,9 @@ pub async fn handle_action(
         Action::SpendActionPoint(a) => {
             game_server::handle_spend_action_point(database, &data, a).instrument(span).await
         }
+        Action::MoveCard(a) => {
+            game_server::handle_move_card(database, &data, a).instrument(span).await
+        }
     }
 }
 

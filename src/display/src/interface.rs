@@ -14,17 +14,22 @@
 
 use anyhow::Result;
 use game_data::game::{GamePhase, GameState, MulliganDecision};
-use game_data::game_actions::{GamePrompt, PromptAction};
+use game_data::game_actions::{ButtonPrompt, GamePrompt, PromptAction};
 use game_data::primitives::Side;
 use prompts::prompts;
 use protos::spelldawn::InterfaceMainControls;
 use rules::flags;
 
+use crate::card_browser;
+
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
 pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainControls>> {
-    if let Some(prompt) = &game.player(side).card_prompt_queue.get(0) {
+    let current_prompt = &game.player(side).prompt_queue.get(0);
+    if let Some(GamePrompt::ButtonPrompt(prompt)) = current_prompt {
         return prompts::action_prompt(game, side, prompt);
+    } else if let Some(GamePrompt::CardBrowserPrompt(prompt)) = current_prompt {
+        return Ok(card_browser::controls(prompt));
     } else if let Some(prompt) = raids::current_prompt(game, side)? {
         return prompts::action_prompt(game, side, &prompt);
     } else if let GamePhase::ResolveMulligans(_) = &game.info.phase {
@@ -32,7 +37,7 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
             return prompts::action_prompt(
                 game,
                 side,
-                &GamePrompt {
+                &ButtonPrompt {
                     context: None,
                     responses: vec![
                         PromptAction::MulliganDecision(MulliganDecision::Keep),
@@ -45,13 +50,13 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
         return prompts::action_prompt(
             game,
             side,
-            &GamePrompt { context: None, responses: vec![PromptAction::StartTurnAction] },
+            &ButtonPrompt { context: None, responses: vec![PromptAction::StartTurnAction] },
         );
     } else if flags::can_take_end_turn_action(game, side) {
         return prompts::action_prompt(
             game,
             side,
-            &GamePrompt { context: None, responses: vec![PromptAction::EndTurnAction] },
+            &ButtonPrompt { context: None, responses: vec![PromptAction::EndTurnAction] },
         );
     }
 
