@@ -25,6 +25,9 @@ use crate::{mana, mutations};
 
 pub fn handle(game: &mut GameState, _side: Side, action: CardPromptAction) -> Result<()> {
     match action {
+        CardPromptAction::Sacrifice(card_id) => {
+            mutations::sacrifice_card(game, card_id)?;
+        }
         CardPromptAction::LoseMana(side, amount) => {
             mana::spend(game, side, ManaPurpose::PayForTriggeredAbility, amount)?;
         }

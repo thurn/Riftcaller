@@ -36,30 +36,36 @@ impl GameInstructions {
 
 impl Component for GameInstructions {
     fn build(self) -> Option<Node> {
-        Column::new("GameInstructions")
+        Row::new("GameInstructionsContainer")
             .style(
                 Style::new()
                     .position_type(FlexPosition::Absolute)
                     .position(Edge::Top, 8.px())
                     .position(Edge::Left, 50.pct())
-                    .translate((-50).pct(), 0.px())
-                    .background_color(BackgroundColor::GameInstructionsBackground)
-                    .padding(Edge::All, 16.px())
-                    .max_width(50.pct())
-                    .border_radius(Corner::All, 16.px()),
+                    .max_width(40.pct())
+                    .translate((-50).pct(), 0.px()),
             )
             .child(
-                Text::new(self.text)
-                    .font_size(FontSize::GameInstructionsText)
-                    .white_space(WhiteSpace::Normal)
-                    .flex_shrink(1.0),
+                Column::new("GameInstructions")
+                    .style(
+                        Style::new()
+                            .background_color(BackgroundColor::GameInstructionsBackground)
+                            .padding(Edge::All, 16.px())
+                            .border_radius(Corner::All, 16.px()),
+                    )
+                    .child(
+                        Text::new(self.text)
+                            .font_size(FontSize::GameInstructionsText)
+                            .white_space(WhiteSpace::Normal)
+                            .flex_shrink(1.0),
+                    )
+                    .child(self.metatext.map(|t| {
+                        Text::new(t)
+                            .font_size(FontSize::GameInstructionsMetaText)
+                            .white_space(WhiteSpace::Normal)
+                            .flex_shrink(1.0)
+                    })),
             )
-            .child(self.metatext.map(|t| {
-                Text::new(t)
-                    .font_size(FontSize::GameInstructionsMetaText)
-                    .white_space(WhiteSpace::Normal)
-                    .flex_shrink(1.0)
-            }))
             .build()
     }
 }

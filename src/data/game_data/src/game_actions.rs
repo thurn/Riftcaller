@@ -76,6 +76,10 @@ pub enum PromptContext {
     /// limit, player must discard until they have the provided number of cards
     /// in hand.
     DiscardToHandSize(usize),
+    /// Prompt is being shown to sacrifice minions due to exceeding the minion
+    /// limit in a room, player must sacrifice until they have the provided
+    /// number of minions in the room.
+    MinionRoomLimit(usize),
 }
 
 /// A choice which can be made as part of an ability of an individual card
@@ -83,6 +87,9 @@ pub enum PromptContext {
 /// Maybe switch this to a trait someday?
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum CardPromptAction {
+    /// Sacrifice the indicated permanent, moving it to its owner's discard
+    /// pile.
+    Sacrifice(CardId),
     /// A player loses mana
     LoseMana(Side, ManaValue),
     /// A player loses action points
@@ -205,19 +212,45 @@ pub struct CardBrowserPrompt {
     pub action: BrowserPromptAction,
 }
 
+/// A specific card choice shown in a [CardButtonPrompt].
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CardButtonPromptAction {
+    pub card_id: CardId,
+    pub action: CardPromptAction,
+}
+
+impl CardButtonPromptAction {
+    pub fn new(card_id: CardId, action: CardPromptAction) -> Self {
+        Self { card_id, action }
+    }
+}
+
+/// Presents a choice to a user presented via buttons attached to specific cards
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CardButtonPrompt {
+    /// Identifies the context for this prompt, i.e. why it is being shown to
+    /// the user.
+    pub context: Option<PromptContext>,
+    /// Card actions for this prompt
+    pub choices: Vec<CardButtonPromptAction>,
+    /// Optionally, a game action to invoke once this choice is resolved.
+    pub continue_action: Option<GameAction>,
+}
+
 /// Possible types of prompts which might be displayed to a user during the
 /// game.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GamePrompt {
     ButtonPrompt(ButtonPrompt),
     CardBrowserPrompt(CardBrowserPrompt),
+    CardButtonPrompt(CardButtonPrompt),
 }
 
 impl GamePrompt {
     pub fn as_button_prompt(&self) -> Result<&ButtonPrompt> {
         match self {
             GamePrompt::ButtonPrompt(p) => Ok(p),
-            GamePrompt::CardBrowserPrompt(_) => fail!("Expecting a button prompt!"),
+            _ => fail!("Expecting a button prompt!"),
         }
     }
 }

@@ -294,4 +294,8 @@ impl CardDefinition {
     pub fn is_scheme(&self) -> bool {
         self.card_type == CardType::Scheme
     }
+
+    pub fn is_minion(&self) -> bool {
+        self.card_type == CardType::Minion
+    }
 }

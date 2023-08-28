@@ -775,11 +775,16 @@ pub struct ObjectPositionRiftcallers {
     #[prost(enumeration = "PlayerName", tag = "1")]
     pub owner: i32,
 }
-/// / Position to which cards are dragged during the card browser drag flow
-/// (e.g. / when discarding to hand size).
+/// Position to which cards are dragged during the card browser drag flow (e.g.
+/// when discarding to hand size).
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionBrowserDragTarget {}
+/// Position in at which cards are shown when one card is being selected out of
+/// a group of cards.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ObjectPositionCardChoiceBrowser {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPosition {
@@ -797,7 +802,7 @@ pub struct ObjectPosition {
     pub sorting_subkey: u32,
     #[prost(
         oneof = "object_position::Position",
-        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20"
+        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21"
     )]
     pub position: ::core::option::Option<object_position::Position>,
 }
@@ -840,6 +845,8 @@ pub mod object_position {
         Riftcaller(super::ObjectPositionRiftcallers),
         #[prost(message, tag = "20")]
         BrowserDragTarget(super::ObjectPositionBrowserDragTarget),
+        #[prost(message, tag = "21")]
+        CardChoiceBrowser(super::ObjectPositionCardChoiceBrowser),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -878,6 +885,9 @@ pub struct RevealedCardView {
     /// to drag the card in the interface and it will animate to this position
     /// when released and send a MoveCardAction. This is distinct from *playing*
     /// a card and is used for operations like discarding from hand.
+    ///
+    /// Card targeting is disabled in this case, i.e. is impossible to play
+    /// a card with a move target.
     #[prost(message, optional, tag = "11")]
     pub card_move_target: ::core::option::Option<ObjectPosition>,
 }

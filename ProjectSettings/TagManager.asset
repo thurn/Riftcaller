@@ -81,6 +81,9 @@ TagManager:
   - name: RevealedCardsBrowser
     uniqueID: 1041461123
     locked: 0
+  - name: CardChoiceBrowser
+    uniqueID: 1880721311
+    locked: 0
   - name: BrowserDragTarget
     uniqueID: 1252646997
     locked: 0

@@ -26,11 +26,12 @@ use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     ClientItemLocation, ClientRoomLocation, GameCharacterFacingDirection, GameObjectPositions,
     ObjectPosition, ObjectPositionBrowser, ObjectPositionBrowserDragTarget,
-    ObjectPositionCharacter, ObjectPositionCharacterContainer, ObjectPositionDeck,
-    ObjectPositionDeckContainer, ObjectPositionDiscardPile, ObjectPositionDiscardPileContainer,
-    ObjectPositionHand, ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen,
-    ObjectPositionRaid, ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
-    ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionCardChoiceBrowser, ObjectPositionCharacter, ObjectPositionCharacterContainer,
+    ObjectPositionDeck, ObjectPositionDeckContainer, ObjectPositionDiscardPile,
+    ObjectPositionDiscardPileContainer, ObjectPositionHand, ObjectPositionIntoCard,
+    ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid, ObjectPositionRevealedCards,
+    ObjectPositionRiftcallers, ObjectPositionRoom, ObjectPositionStaging, RevealedCardsBrowserSize,
+    RoomIdentifier,
 };
 use raids::traits::RaidDisplayState;
 use raids::RaidDataExt;
@@ -152,6 +153,10 @@ pub fn revealed_cards(large: bool) -> Position {
         size: if large { RevealedCardsBrowserSize::Large } else { RevealedCardsBrowserSize::Small }
             as i32,
     })
+}
+
+pub fn card_choice_browser() -> Position {
+    Position::CardChoiceBrowser(ObjectPositionCardChoiceBrowser {})
 }
 
 pub fn raid() -> Position {
@@ -328,6 +333,11 @@ fn prompt_position_override(game: &GameState, card: &CardState) -> Option<Object
                 return Some(for_card(card, revealed_cards(true)));
             } else if browser.chosen_subjects.contains(&card.id) {
                 return Some(for_card(card, card_browser_target_position()));
+            }
+        }
+        GamePrompt::CardButtonPrompt(prompt) => {
+            if prompt.choices.iter().any(|choice| choice.card_id == card.id) {
+                return Some(for_card(card, card_choice_browser()));
             }
         }
     }

@@ -18,8 +18,11 @@
 
 pub mod legal_actions;
 
+use std::iter;
+
 use anyhow::Result;
-use game_data::card_definition::AbilityType;
+use constants::game_constants;
+use game_data::card_definition::{AbilityType, CardDefinition};
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
     AbilityActivated, ActivateAbilityEvent, CardPlayed, CastCardEvent, DrawCardActionEvent,
@@ -29,7 +32,8 @@ use game_data::game::{
 };
 use game_data::game_actions::{
     BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
-    CardTarget, GameAction, GamePrompt, PromptAction, PromptContext,
+    CardButtonPrompt, CardButtonPromptAction, CardPromptAction, CardTarget, GameAction, GamePrompt,
+    PromptAction, PromptContext,
 };
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
@@ -124,6 +128,11 @@ fn play_card_action(
     let definition = rules::get(card.name);
     mutations::move_card(game, card_id, CardPosition::Played(user_side, target))?;
 
+    if check_play_card_prompts(game, user_side, definition, card_id, target) {
+        // User needs to make a choice before this card can be played.
+        return Ok(());
+    }
+
     let actions = queries::action_cost(game, card_id);
     mutations::spend_action_points(game, user_side, actions)?;
 
@@ -147,6 +156,45 @@ fn play_card_action(
     game.history
         .push(HistoryEntry { turn: game.info.turn, event: HistoryEvent::PlayedCard(card_id) });
     Ok(())
+}
+
+/// Checks whether there are outstanding user choices required by the
+/// `user_side` player in order to play the `card_id` card with the provided
+/// target. If such a choice needs to be made, writes a UI prompt to `game` and
+/// returns `true`. Otherwise, returns `false`.
+fn check_play_card_prompts(
+    game: &mut GameState,
+    user_side: Side,
+    definition: &CardDefinition,
+    card_id: CardId,
+    target: CardTarget,
+) -> bool {
+    match target {
+        CardTarget::None => {}
+        CardTarget::Room(room_id) => {
+            if definition.is_minion()
+                && game.defenders_unordered(room_id).count()
+                    >= game_constants::MAXIMUM_MINIONS_IN_ROOM
+            {
+                let prompt = GamePrompt::CardButtonPrompt(CardButtonPrompt {
+                    context: Some(PromptContext::MinionRoomLimit(
+                        game_constants::MAXIMUM_MINIONS_IN_ROOM,
+                    )),
+                    choices: game
+                        .defenders_unordered(room_id)
+                        .map(|card| card.id)
+                        .chain(iter::once(card_id))
+                        .map(|id| CardButtonPromptAction::new(id, CardPromptAction::Sacrifice(id)))
+                        .collect(),
+                    continue_action: Some(GameAction::PlayCard(card_id, target)),
+                });
+                game.player_mut(user_side).prompt_queue.push(prompt);
+                return true;
+            }
+        }
+    }
+
+    false
 }
 
 /// The basic game action to activate an ability of a card in play.

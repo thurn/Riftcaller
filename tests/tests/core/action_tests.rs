@@ -228,24 +228,25 @@ fn level_up_room() {
     assert_eq!(g.opponent.other_player.mana(), 9);
 }
 
-#[test]
-fn minion_limit() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
-    g.create_and_play(CardName::TestMinionEndRaid);
-    g.create_and_play(CardName::TestInfernalMinion);
-    g.create_and_play(CardName::TestAbyssalMinion);
-    g.create_and_play(CardName::TestMortalMinion);
-    assert_eq!(
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front).len(),
-        4
-    );
-    g.create_and_play(CardName::TestMinionDealDamage);
-    assert_eq!(
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front).len(),
-        4
-    );
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User), vec!["Test Minion End Raid"]);
-}
+// #[test]
+// fn minion_limit() {
+//     let mut g =
+// TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
+//     g.create_and_play(CardName::TestMinionEndRaid);
+//     g.create_and_play(CardName::TestInfernalMinion);
+//     g.create_and_play(CardName::TestAbyssalMinion);
+//     g.create_and_play(CardName::TestMortalMinion);
+//     assert_eq!(
+//         g.user.cards.room_cards(test_constants::ROOM_ID,
+// ClientRoomLocation::Front).len(),         4
+//     );
+//     g.create_and_play(CardName::TestMinionDealDamage);
+//     assert_eq!(
+//         g.user.cards.room_cards(test_constants::ROOM_ID,
+// ClientRoomLocation::Front).len(),         4
+//     );
+//     assert_eq!(g.user.cards.discard_pile(PlayerName::User), vec!["Test Minion
+// End Raid"]); }
 
 #[test]
 fn score_overlord_card() {

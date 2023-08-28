@@ -100,7 +100,10 @@ namespace Spelldawn.Services
     public CurveObjectDisplay RevealedCardsBrowserSmall => _revealedCardsBrowserSmall;
     
     [SerializeField] CurveObjectDisplay _revealedCardsBrowserLarge = null!;
-    public CurveObjectDisplay RevealedCardsBrowserLarge => _revealedCardsBrowserLarge;    
+    public CurveObjectDisplay RevealedCardsBrowserLarge => _revealedCardsBrowserLarge;
+    
+    [SerializeField] CurveObjectDisplay _cardChoiceBrowser = null!;
+    public CurveObjectDisplay CardChoiceBrowser => _cardChoiceBrowser;        
 
     [SerializeField] CardBrowser _cardBrowser = null!;
     public CardBrowser CardBrowser => _cardBrowser;

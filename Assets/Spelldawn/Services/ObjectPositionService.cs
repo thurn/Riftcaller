@@ -200,6 +200,7 @@ namespace Spelldawn.Services
           RevealedCardsBrowserSize.Large => _registry.RevealedCardsBrowserLarge,
           _ => throw new ArgumentOutOfRangeException()
         },
+        ObjectPosition.PositionOneofCase.CardChoiceBrowser => _registry.CardChoiceBrowser,
         ObjectPosition.PositionOneofCase.Riftcaller => 
           _registry.RiftcallerDisplayForPlayer(position.Riftcaller.Owner),
         ObjectPosition.PositionOneofCase.BrowserDragTarget =>

@@ -841,9 +841,14 @@ message ObjectPositionRiftcallers {
     PlayerName owner = 1;
 }
 
-/// Position to which cards are dragged during the card browser drag flow (e.g.
-/// when discarding to hand size).
+// Position to which cards are dragged during the card browser drag flow (e.g.
+// when discarding to hand size).
 message ObjectPositionBrowserDragTarget {
+}
+
+// Position in which cards are shown when one card is being selected out of
+// a group of cards.
+message ObjectPositionCardChoiceBrowser {
 }
 
 message ObjectPosition {
@@ -877,6 +882,7 @@ message ObjectPosition {
         ObjectPositionRevealedCards revealed = 18;
         ObjectPositionRiftcallers riftcaller = 19;
         ObjectPositionBrowserDragTarget browser_drag_target = 20;
+        ObjectPositionCardChoiceBrowser card_choice_browser = 21;
     }
 }
 

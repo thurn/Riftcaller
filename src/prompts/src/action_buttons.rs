@@ -109,8 +109,9 @@ fn access_button(access: AccessPhaseAction) -> ResponseButton {
     }
 }
 
-fn card_response_button(user_side: Side, action: CardPromptAction) -> ResponseButton {
+pub fn card_response_button(user_side: Side, action: CardPromptAction) -> ResponseButton {
     let label = match action {
+        CardPromptAction::Sacrifice(_) => "Sacrifice".to_string(),
         CardPromptAction::LoseMana(side, amount) => {
             format!("{} {}{}", lose_text(user_side, side), amount, icons::MANA)
         }
@@ -126,7 +127,11 @@ fn card_response_button(user_side: Side, action: CardPromptAction) -> ResponseBu
         CardPromptAction::TakeDamageEndRaid(_, amount) => format!("End Raid, Take {amount}"),
     };
 
-    ResponseButton::new(label)
+    let button = ResponseButton::new(label);
+    match action {
+        CardPromptAction::Sacrifice(card_id) => button.anchor_to(card_id),
+        _ => button,
+    }
 }
 
 fn lose_text(user_side: Side, target_side: Side) -> &'static str {

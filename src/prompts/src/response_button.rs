@@ -13,13 +13,11 @@
 // limitations under the License.
 
 use adapters;
-use anyhow::Result;
 use core_ui::actions::{InterfaceAction, NoAction};
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
 use game_data::primitives::CardId;
 use protos::spelldawn::{AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify};
-use with_error::WithError;
 
 pub struct ResponseButton {
     label: String,
@@ -81,11 +79,11 @@ impl ResponseButton {
         self
     }
 
-    pub fn render_to_card_anchor_node(self) -> Result<CardAnchorNode> {
-        Ok(CardAnchorNode {
-            card_id: Some(adapters::card_identifier(
-                self.anchor_to.with_error(|| "Anchor not found")?,
-            )),
+    /// Turns this button into a [CardAnchorNode] bsaed on its [Self::anchor_to]
+    /// value. Panics if no anchor ID has be supplied.
+    pub fn render_to_card_anchor_node(self) -> CardAnchorNode {
+        CardAnchorNode {
+            card_id: Some(adapters::card_identifier(self.anchor_to.expect("Anchor not found"))),
             node: Row::new("CardAnchorButton")
                 .style(
                     Style::new()
@@ -105,7 +103,7 @@ impl ResponseButton {
                     card_corner: AnchorCorner::BottomRight as i32,
                 },
             ],
-        })
+        }
     }
 }
 
