@@ -18,8 +18,8 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::{CardType, Resonance, RoomId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{
-    card_target, CardIdentifier, CardTarget, GameMessageType, InitiateRaidAction,
-    LevelUpRoomAction, PlayCardAction, SpendActionPointAction,
+    card_target, CardIdentifier, CardTarget, DrawCardAction, GameMessageType, InitiateRaidAction,
+    LevelUpRoomAction, MoveCardAction, PlayCardAction, SpendActionPointAction,
 };
 use server::server_data::GameResponseOutput;
 
@@ -49,6 +49,13 @@ pub trait TestSessionHelpers {
     /// Equivalent function to [TestSession::perform_action] which does not
     /// return the action result.
     fn perform(&mut self, action: Action, user_id: PlayerId);
+
+    /// Helper to perform the standard draw card actio
+    fn draw_card(&mut self);
+
+    /// Equivalent function to [Self::draw_card_with_result] which returns the
+    /// result
+    fn draw_card_with_result(&mut self) -> Result<GameResponseOutput>;
 
     /// Helper function to perform an action to initiate a raid on the provided
     /// `room_id`.
@@ -106,7 +113,7 @@ pub trait TestSessionHelpers {
     /// Unveils a card in play, paying its mana cost and turning it face up.
     fn unveil_card(&mut self, card_id: CardIdentifier);
 
-    /// Equivalent to [Self::unveil_card] which returns the result.
+    /// Equivalent function to [Self::unveil_card] which returns the result.
     fn unveil_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput>;
 
     /// Spends one of the `side` player's action points with no effect
@@ -114,6 +121,12 @@ pub trait TestSessionHelpers {
 
     /// Spends all of the `side` player's action points with no effect
     fn spend_all_action_points(&mut self, side: Side);
+
+    /// Performs the move card action, selecting a card to e.g. be discarded.
+    fn move_card(&mut self, card_id: CardIdentifier);
+
+    /// Equivalent function to [Self::move_card] which returns the result
+    fn move_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput>;
 
     /// Spends the `side` player's action points with no effect until they have
     /// no action points remaining and then clicks the "End Turn" button.
@@ -206,6 +219,14 @@ impl TestSessionHelpers for TestSession {
 
     fn perform(&mut self, action: Action, user_id: PlayerId) {
         self.perform_action(action, user_id).expect("Request failed");
+    }
+
+    fn draw_card(&mut self) {
+        self.draw_card_with_result().expect("Error performing draw card action");
+    }
+
+    fn draw_card_with_result(&mut self) -> Result<GameResponseOutput> {
+        self.perform_action(Action::DrawCard(DrawCardAction {}), self.user_id())
     }
 
     fn initiate_raid(&mut self, room_id: RoomId) -> GameResponseOutput {
@@ -325,6 +346,18 @@ impl TestSessionHelpers for TestSession {
         while self.player(id).this_player.actions() > 0 {
             self.spend_action_point(side);
         }
+    }
+
+    fn move_card(&mut self, card_id: CardIdentifier) {
+        self.move_card_with_result(card_id)
+            .unwrap_or_else(|_| panic!("Error moving card {card_id:?}"));
+    }
+
+    fn move_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput> {
+        self.perform_action(
+            Action::MoveCard(MoveCardAction { card_id: Some(card_id) }),
+            self.user_id(),
+        )
     }
 
     fn to_end_step(&mut self, side: Side) {

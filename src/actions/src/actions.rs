@@ -340,6 +340,7 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
 
     let max_hand_size = queries::maximum_hand_size(game, side) as usize;
     let hand = game.card_list_for_position(side, CardPosition::Hand(side));
+    game.info.turn_state = TurnState::Ended;
 
     if hand.len() > max_hand_size {
         // Must discard to hand size
@@ -356,15 +357,20 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
         ));
         Ok(())
     } else {
-        game.info.turn_state = TurnState::Ended;
+        check_start_next_turn(game)
+    }
+}
 
-        // Next turn immediately starts unless the current player is the Champion
-        // and the Overlord can unveil a Duskbound project.
-        if user_side == Side::Overlord || !flags::overlord_has_instant_speed_actions(game) {
-            start_next_turn(game)
-        } else {
-            Ok(())
-        }
+fn check_start_next_turn(game: &mut GameState) -> Result<()> {
+    let side = game.info.turn.side;
+    let ended = game.player(side).actions == 0;
+
+    // Next turn immediately starts unless the current player is the Champion
+    // and the Overlord can unveil a Duskbound project.
+    if ended && (side == Side::Overlord || !flags::overlord_has_instant_speed_actions(game)) {
+        start_next_turn(game)
+    } else {
+        Ok(())
     }
 }
 
@@ -385,15 +391,15 @@ fn handle_card_browser_action(
     user_side: Side,
     browser_action: BrowserPromptAction,
 ) -> Result<()> {
-    let Some(GamePrompt::CardBrowserPrompt(prompt2)) =
+    let Some(GamePrompt::CardBrowserPrompt(prompt)) =
         game.player(user_side).prompt_queue.get(0) else {
         fail!("Expected active CardBrowserPrompt");
     };
-    let prompt = prompt2.clone();
+
+    let subjects = prompt.chosen_subjects.clone();
 
     match browser_action {
         BrowserPromptAction::DiscardCards => {
-            let subjects = prompt.chosen_subjects;
             for card_id in subjects {
                 mutations::move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
             }
@@ -402,5 +408,5 @@ fn handle_card_browser_action(
 
     game.player_mut(user_side).prompt_queue.remove(0);
 
-    Ok(())
+    check_start_next_turn(game)
 }

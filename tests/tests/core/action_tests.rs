@@ -654,6 +654,49 @@ fn cannot_use_project_ability_during_turn() {
 }
 
 #[test]
+fn discard_to_hand_size() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
+    g.draw_card();
+    let discard_id =
+        g.user.cards.cards_in_hand(PlayerName::User).next().expect("Card in hand").id();
+
+    assert_eq!(g.user.cards.real_cards_in_hand_count(), 6);
+    g.to_end_step(Side::Overlord);
+
+    g.move_card(discard_id);
+    g.click(Button::SubmitDiscard);
+
+    assert_eq!(g.user.cards.real_cards_in_hand_count(), 5);
+    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 1);
+    assert!(g.dawn());
+}
+
+#[test]
+fn cannot_discard_extra_to_hand_size() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
+    g.draw_card();
+    let hand = g.user.cards.cards_in_hand(PlayerName::User).collect::<Vec<_>>();
+    let d1 = hand[0].id();
+    let d2 = hand[1].id();
+
+    assert_eq!(g.user.cards.real_cards_in_hand_count(), 6);
+    g.to_end_step(Side::Overlord);
+
+    g.move_card(d1);
+    g.move_card(d2);
+    assert!(g.click_with_result(Button::SubmitDiscard).is_err());
+}
+
+#[test]
+fn cannot_discard_too_few_to_hand_size() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
+    g.draw_card();
+    assert_eq!(g.user.cards.real_cards_in_hand_count(), 6);
+    g.to_end_step(Side::Overlord);
+    assert!(g.click_with_result(Button::SubmitDiscard).is_err());
+}
+
+#[test]
 fn legal_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert!(g.legal_actions_result(Side::Champion).is_err());

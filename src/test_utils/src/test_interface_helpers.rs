@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use anyhow::Result;
 use core_ui::icons;
 use game_data::player_name::PlayerId;
 use game_data::primitives::Side;
 use server::server_data::GameResponseOutput;
+use with_error::WithError;
 
 use crate::client_interface::HasText;
 use crate::test_session::TestSession;
@@ -29,6 +31,7 @@ pub enum Button {
     Score,
     EndRaid,
     EndTurn,
+    SubmitDiscard,
     StartTurn,
     DraftPick,
     ShowDeck,
@@ -40,6 +43,8 @@ pub trait TestInterfaceHelpers {
     /// Look for a button in the user interface and invoke its action as the
     /// current user.
     fn click(&mut self, button: Button) -> GameResponseOutput;
+
+    fn click_with_result(&mut self, button: Button) -> Result<GameResponseOutput>;
 
     /// Look for a button in the user interface and invoke its action as the
     /// opponent of the current user.
@@ -60,6 +65,12 @@ pub trait TestInterfaceHelpers {
     /// interface controls and invoke its registered action.
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput;
 
+    fn click_on_with_result(
+        &mut self,
+        player_id: PlayerId,
+        text: impl Into<String>,
+    ) -> Result<GameResponseOutput>;
+
     /// Returns true if the provided text can be found anywhere in the user
     /// interface.
     fn has_text(&self, text: impl Into<String>) -> bool;
@@ -70,15 +81,33 @@ pub trait TestInterfaceHelpers {
 
 impl TestInterfaceHelpers for TestSession {
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
+        let string = text.into();
+        self.click_on_with_result(player_id, string.clone())
+            .unwrap_or_else(|e| panic!("Error clicking on {string}.\n{e:?}"))
+    }
+
+    fn click_on_with_result(
+        &mut self,
+        player_id: PlayerId,
+        text: impl Into<String>,
+    ) -> Result<GameResponseOutput> {
         let player = self.player(player_id);
         let handlers = player.interface.all_active_nodes().find_handlers(text);
-        let action = handlers.expect("Button not found").on_click.expect("OnClick not found");
-        self.perform_action(action.action.expect("Action"), player_id).expect("Server Error")
+        let action = handlers
+            .with_error(|| "Button not found")?
+            .on_click
+            .with_error(|| "OnClick not found")?;
+        self.perform_action(action.action.expect("Action"), player_id)
     }
 
     fn click(&mut self, button: Button) -> GameResponseOutput {
         let text = resolve_button(button);
         self.click_on(self.user_id(), text)
+    }
+
+    fn click_with_result(&mut self, button: Button) -> Result<GameResponseOutput> {
+        let text = resolve_button(button);
+        self.click_on_with_result(self.user_id(), text)
     }
 
     fn click_as_side(&mut self, button: Button, side: Side) -> GameResponseOutput {
@@ -128,6 +157,7 @@ fn resolve_button(button: Button) -> String {
         Button::Score => "Score",
         Button::EndRaid => "End Raid",
         Button::EndTurn => "End Turn",
+        Button::SubmitDiscard => "Submit",
         Button::StartTurn => "Start Turn",
         Button::DraftPick => "Pick",
         Button::ShowDeck => icons::DECK,
