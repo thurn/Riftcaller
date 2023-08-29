@@ -174,7 +174,7 @@ pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>
                 Some(Resonance::Prismatic) => "SpriteWay/Icons/Clean Frames/9047",
                 Some(Resonance::Construct) => "SpriteWay/Icons/Clean Frames/9003",
                 None => match card_type {
-                    CardType::Artifact => "SpriteWay/Icons/Clean Frames/9013",
+                    CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
                     CardType::Riftcaller =>

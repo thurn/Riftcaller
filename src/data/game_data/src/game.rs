@@ -592,13 +592,13 @@ impl GameState {
     /// Champion cards which have been played as weapons, in an unspecified
     /// order
     pub fn weapons(&self) -> impl Iterator<Item = &CardState> {
-        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Weapons))
+        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
     }
 
     /// Champion cards which have been played as artifacts, in an unspecified
     /// order
     pub fn artifacts(&self) -> impl Iterator<Item = &CardState> {
-        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
+        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Evocations))
     }
 
     /// All global game modifier cards, in an unspecified order

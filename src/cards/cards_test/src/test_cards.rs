@@ -176,7 +176,7 @@ pub fn test_weapon_2_attack() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon2Attack,
         cost: cost(test_constants::WEAPON_COST),
-        card_type: CardType::Weapon,
+        card_type: CardType::Artifact,
         config: CardConfigBuilder::new()
             .base_attack(2)
             .resonance(test_constants::TEST_RESONANCE)
@@ -278,7 +278,7 @@ pub fn activated_ability_take_mana() -> CardDefinition {
     CardDefinition {
         name: CardName::TestActivatedAbilityTakeMana,
         cost: cost(test_constants::ARTIFACT_COST),
-        card_type: CardType::Artifact,
+        card_type: CardType::Evocation,
         abilities: vec![
             abilities::store_mana_on_play::<{ test_constants::MANA_STORED }>(),
             abilities::activated_take_mana::<{ test_constants::MANA_TAKEN }>(actions(1)),
@@ -421,7 +421,7 @@ pub fn test_attack_weapon() -> CardDefinition {
     CardDefinition {
         name: CardName::TestAttackWeapon,
         cost: cost(3),
-        card_type: CardType::Weapon,
+        card_type: CardType::Artifact,
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
@@ -443,7 +443,7 @@ pub fn test_sacrifice_draw_card_artifact() -> CardDefinition {
     CardDefinition {
         name: CardName::TestSacrificeDrawCardArtifact,
         cost: cost(test_constants::ARTIFACT_COST),
-        card_type: CardType::Artifact,
+        card_type: CardType::Evocation,
         abilities: vec![Ability {
             ability_type: abilities::sacrifice_this(),
             text: text!["Draw a card"],

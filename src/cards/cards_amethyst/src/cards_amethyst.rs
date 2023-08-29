@@ -17,9 +17,9 @@
 pub mod artifacts_amethyst;
 pub mod champion_riftcallers_amethyst;
 pub mod champion_spells_amethyst;
+pub mod evocations_amethyst;
 pub mod minions_amethyst;
 pub mod overlord_riftcallers_amethyst;
 pub mod overlord_spells_amethyst;
 pub mod projects_amethyst;
 pub mod schemes_amethyst;
-pub mod weapons_amethyst;

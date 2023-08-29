@@ -93,8 +93,9 @@ pub fn unspecified_room(location: RoomLocation) -> Position {
 pub fn item(location: ItemLocation) -> Position {
     Position::Item(ObjectPositionItem {
         item_location: match location {
-            ItemLocation::Weapons => ClientItemLocation::Left,
-            ItemLocation::Artifacts => ClientItemLocation::Right,
+            ItemLocation::Artifacts => ClientItemLocation::Left,
+            ItemLocation::Evocations => ClientItemLocation::Right,
+            ItemLocation::Allies => ClientItemLocation::Right,
         }
         .into(),
     })

@@ -216,8 +216,9 @@ fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> boo
 
     match definition.card_type {
         CardType::ChampionSpell
-        | CardType::Weapon
         | CardType::Artifact
+        | CardType::Evocation
+        | CardType::Ally
         | CardType::OverlordSpell => target == CardTarget::None,
         CardType::Minion => matches!(target, CardTarget::Room(_)),
         CardType::Project | CardType::Scheme => {

@@ -206,8 +206,9 @@ fn revealed_card_view(
         on_release_position: Some(positions::for_sorting_key(
             positions::RELEASE_SORTING_KEY,
             match definition.card_type {
-                CardType::Weapon => positions::item(ItemLocation::Weapons),
                 CardType::Artifact => positions::item(ItemLocation::Artifacts),
+                CardType::Evocation => positions::item(ItemLocation::Evocations),
+                CardType::Ally => positions::item(ItemLocation::Allies),
                 CardType::OverlordSpell => positions::staging(),
                 CardType::ChampionSpell => positions::staging(),
                 CardType::Minion => positions::unspecified_room(RoomLocation::Defender),

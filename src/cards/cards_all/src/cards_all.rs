@@ -2,13 +2,12 @@
 
 use rules::DEFINITIONS;
 
-
 pub fn initialize() {
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::invisibility_ring);
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::accumulator);
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::mage_gloves);
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::magical_resonator);
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::dark_grimoire);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::invisibility_ring);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::accumulator);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::mage_gloves);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::magical_resonator);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::dark_grimoire);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::ennera_imris);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::aris_fey);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::telantes_dugoth);
@@ -32,9 +31,9 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::gold_mine);
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::activate_reinforcements);
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::research_project);
-    DEFINITIONS.insert(cards_amethyst::weapons_amethyst::marauders_axe);
-    DEFINITIONS.insert(cards_amethyst::weapons_amethyst::keen_halberd);
-    DEFINITIONS.insert(cards_amethyst::weapons_amethyst::bow_of_the_alliance);
+    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::marauders_axe);
+    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::keen_halberd);
+    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::bow_of_the_alliance);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
     DEFINITIONS.insert(cards_basic::champion_basics::eldritch_surge);
     DEFINITIONS.insert(cards_basic::champion_basics::lodestone);

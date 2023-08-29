@@ -87,9 +87,7 @@ fn check_play_card_prompts(
                     >= game_constants::MAXIMUM_MINIONS_IN_ROOM
             {
                 let prompt = GamePrompt::ButtonPrompt(ButtonPrompt {
-                    context: Some(PromptContext::MinionRoomLimit(
-                        game_constants::MAXIMUM_MINIONS_IN_ROOM,
-                    )),
+                    context: Some(PromptContext::MinionRoomLimit),
                     choices: game
                         .defenders_unordered(room_id)
                         .map(|existing| PromptChoice {

@@ -15,176 +15,115 @@
 //! Card definitions for the Weapon card type
 
 use assets::rexard_images;
-use assets::rexard_images::{RexardArtifactType, RexardPack};
+use assets::rexard_images::RexardWeaponType;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
+    Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, SpecialEffects,
 };
 use game_data::card_name::CardName;
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, EventDelegate};
-use game_data::primitives::{CardType, Rarity, School, Side};
-use rules::mutations;
-use rules::mutations::OnZeroStored;
+use game_data::delegates::{Delegate, QueryDelegate};
+use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
+use game_data::special_effects::{Projectile, TimedEffect};
 
-pub fn invisibility_ring() -> CardDefinition {
+pub fn marauders_axe() -> CardDefinition {
     CardDefinition {
-        name: CardName::InvisibilityRing,
-        sets: vec![CardSetName::Amethyst],
-        cost: cost(2),
-        image: rexard_images::get(RexardPack::JeweleryRings, "rn_b_03"),
-        card_type: CardType::Artifact,
-        subtypes: vec![],
-        side: Side::Champion,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![Ability {
-            ability_type: AbilityType::Standard,
-            text: text![
-                "The first time each turn you access the Sanctum, access",
-                1,
-                "additional card"
-            ],
-            delegates: vec![
-                in_play::on_raid_access_start(|g, s, raid_id| {
-                    once_per_turn(g, s, raid_id, save_raid_id)
-                }),
-                add_sanctum_access::<1>(matching_raid),
-            ],
-        }],
-        config: CardConfig::default(),
-    }
-}
-
-pub fn accumulator() -> CardDefinition {
-    CardDefinition {
-        name: CardName::Accumulator,
-        sets: vec![CardSetName::Amethyst],
-        cost: cost(3),
-        image: rexard_images::get(RexardPack::JeweleryNecklaces, "07_ob"),
-        card_type: CardType::Artifact,
-        subtypes: vec![],
-        side: Side::Champion,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            simple_ability(
-                text!["When you access a room", StoreMana(1)],
-                in_play::after_room_accessed(|g, s, _| {
-                    alert(g, s);
-                    add_stored_mana(g, s.card_id(), 1);
-                    Ok(())
-                }),
-            ),
-            Ability {
-                ability_type: activate_for_action(),
-                text: text![StoreMana(1), ", then take all stored", ManaSymbol],
-                delegates: vec![on_activated(|g, s, activated| {
-                    let mana = add_stored_mana(g, s.card_id(), 1);
-                    mutations::take_stored_mana(
-                        g,
-                        activated.card_id(),
-                        mana,
-                        OnZeroStored::Ignore,
-                    )?;
-                    Ok(())
-                })],
-            },
-        ],
-        config: CardConfig::default(),
-    }
-}
-
-pub fn mage_gloves() -> CardDefinition {
-    CardDefinition {
-        name: CardName::MageGloves,
+        name: CardName::MaraudersAxe,
         sets: vec![CardSetName::Amethyst],
         cost: cost(5),
-        image: rexard_images::artifact(RexardArtifactType::Gloves, "gloves_20"),
+        image: rexard_images::weapon(RexardWeaponType::Axes, "a_n_b_01"),
         card_type: CardType::Artifact,
-        subtypes: vec![],
+        subtypes: vec![CardSubtype::Weapon],
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::store_mana_on_play::<12>(),
             Ability {
-                ability_type: AbilityType::Activated(
-                    actions(1),
-                    TargetRequirement::TargetRoom(|g, _, room_id| {
-                        is_inner_room(room_id)
-                            && history::rooms_raided_this_turn(g).all(|r| r != room_id)
-                    }),
-                ),
+                ability_type: AbilityType::Standard,
                 text: text![
-                    text!["Raid an", InnerRoom, "you have not raided this turn"],
-                    text!["If successful,", TakeMana(3)]
+                    "When you access a room, this weapon costs",
+                    ManaMinus(2),
+                    "to play this turn"
                 ],
-                delegates: vec![
-                    on_activated(|g, s, activated| initiate_raid(g, s, activated.target)),
-                    on_raid_success(matching_raid, |g, s, _| {
-                        mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
-                        Ok(())
-                    }),
-                ],
-            },
-        ],
-        config: CardConfig::default(),
-    }
-}
-
-pub fn magical_resonator() -> CardDefinition {
-    CardDefinition {
-        name: CardName::MagicalResonator,
-        sets: vec![CardSetName::Amethyst],
-        cost: cost(1),
-        image: rexard_images::artifact(RexardArtifactType::Bracers, "bracers_2"),
-        card_type: CardType::Artifact,
-        subtypes: vec![],
-        side: Side::Champion,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            abilities::store_mana_on_play::<9>(),
-            Ability {
-                ability_type: AbilityType::Activated(
-                    Cost { mana: None, actions: 1, custom_cost: once_per_turn_cost() },
-                    TargetRequirement::None,
-                ),
-                text: text![text![TakeMana(3)], text!["Use this ability once per turn"]],
-                delegates: vec![on_activated(|g, s, _| {
-                    mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
-                    Ok(())
+                delegates: vec![Delegate::ManaCost(QueryDelegate {
+                    requirement: this_card,
+                    transformation: |g, _, _, value| {
+                        if history::raid_accesses_this_turn(g).count() > 0 {
+                            value.map(|v| v.saturating_sub(2))
+                        } else {
+                            value
+                        }
+                    },
                 })],
             },
+            abilities::encounter_boost(),
         ],
-        config: CardConfig::default(),
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .attack_boost(AttackBoost { cost: 2, bonus: 3 })
+            .resonance(Resonance::Infernal)
+            .special_effects(SpecialEffects {
+                projectile: Some(Projectile::Hovl(8)),
+                additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
+            })
+            .build(),
     }
 }
 
-pub fn dark_grimoire() -> CardDefinition {
+pub fn keen_halberd() -> CardDefinition {
     CardDefinition {
-        name: CardName::DarkGrimoire,
+        name: CardName::KeenHalberd,
         sets: vec![CardSetName::Amethyst],
         cost: cost(3),
-        image: rexard_images::get(RexardPack::MagicItems, "book_06_b"),
+        image: rexard_images::weapon(RexardWeaponType::Polearms, "sp_b_04"),
         card_type: CardType::Artifact,
-        subtypes: vec![],
+        subtypes: vec![CardSubtype::Weapon],
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
-            text!["The first time each turn you take the 'draw card' action, draw another card"],
-            Delegate::DrawCardAction(EventDelegate {
-                requirement: face_up_in_play,
-                mutation: |g, s, _| {
-                    once_per_turn(g, s, &(), |g, s, _| {
-                        mutations::draw_cards(g, s.side(), 1)?;
-                        Ok(())
-                    })
-                },
-            }),
-        )],
-        config: CardConfig::default(),
+        abilities: vec![abilities::encounter_boost()],
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost { cost: 2, bonus: 1 })
+            .breach(1)
+            .resonance(Resonance::Abyssal)
+            .special_effects(projectile(Projectile::Hovl(2)))
+            .build(),
+    }
+}
+
+pub fn bow_of_the_alliance() -> CardDefinition {
+    CardDefinition {
+        name: CardName::BowOfTheAlliance,
+        sets: vec![CardSetName::Amethyst],
+        cost: cost(3),
+        image: rexard_images::weapon(RexardWeaponType::Bows, "b_b_01"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::silent_ability(abilities::encounter_boost()),
+            simple_ability(
+                encounter_ability_text(
+                    text![EncounterBoostCost],
+                    text![Plus(1), Attack, "per weapon you control"],
+                ),
+                Delegate::AttackBoost(QueryDelegate {
+                    requirement: this_card,
+                    transformation: |g, _s, _, boost| AttackBoost {
+                        bonus: g.weapons().count() as u32,
+                        ..boost
+                    },
+                }),
+            ),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(1)
+            .attack_boost(AttackBoost { cost: 1, bonus: 0 })
+            .resonance(Resonance::Mortal)
+            .special_effects(projectile(Projectile::Hovl(4)))
+            .build(),
     }
 }

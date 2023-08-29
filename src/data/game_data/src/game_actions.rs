@@ -79,7 +79,7 @@ pub enum PromptContext {
     /// Prompt is being shown to sacrifice minions due to exceeding the minion
     /// limit in a room, player must sacrifice until they have the provided
     /// number of minions in the room.
-    MinionRoomLimit(usize),
+    MinionRoomLimit,
 }
 
 /// An action which can be taken in the user interface as a result of the game

@@ -260,8 +260,9 @@ pub fn played_position(
 ) -> Result<CardPosition> {
     Ok(match crate::card_definition(game, card_id).card_type {
         CardType::ChampionSpell | CardType::OverlordSpell => CardPosition::DiscardPile(side),
-        CardType::Weapon => CardPosition::ArenaItem(ItemLocation::Weapons),
         CardType::Artifact => CardPosition::ArenaItem(ItemLocation::Artifacts),
+        CardType::Ally => CardPosition::ArenaItem(ItemLocation::Evocations),
+        CardType::Evocation => CardPosition::ArenaItem(ItemLocation::Evocations),
         CardType::Minion => CardPosition::Room(target.room_id()?, RoomLocation::Defender),
         CardType::Project | CardType::Scheme => {
             CardPosition::Room(target.room_id()?, RoomLocation::Occupant)

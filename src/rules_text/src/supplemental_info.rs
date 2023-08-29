@@ -61,8 +61,9 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
     let mut result = String::new();
     result.push_str(match definition.card_type {
         CardType::ChampionSpell => "Spell",
-        CardType::Weapon => "Weapon",
         CardType::Artifact => "Artifact",
+        CardType::Evocation => "Evocation",
+        CardType::Ally => "Ally",
         CardType::OverlordSpell => "Spell",
         CardType::Minion => "Minion",
         CardType::Project => "Project",

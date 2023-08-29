@@ -22,7 +22,7 @@ use protos::spelldawn::InterfaceMainControls;
 
 pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainControls> {
     let context = match prompt.context {
-        Some(PromptContext::MinionRoomLimit(_)) => GameInstructions::new(
+        Some(PromptContext::MinionRoomLimit) => GameInstructions::new(
             "Minion limit exceeded. You must sacrifice a minion in this room.".to_string(),
         )
         .build(),

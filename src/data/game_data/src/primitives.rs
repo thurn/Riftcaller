@@ -417,8 +417,9 @@ pub enum RoomLocation {
 /// Used to control where an item is rendered within the Champion's item display
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum ItemLocation {
-    Weapons,
     Artifacts,
+    Evocations,
+    Allies,
 }
 
 /// The Possible resonances of weapons and minions. Minions can only be
@@ -451,8 +452,9 @@ pub enum CardType {
     Riftcaller,
     GameModifier,
     ChampionSpell,
-    Weapon,
     Artifact,
+    Evocation,
+    Ally,
     Scheme,
     OverlordSpell,
     Project,
@@ -479,10 +481,11 @@ pub enum CardSubtype {
     /// Cards with the "Roombound" subtype can be unveiled when a room is
     /// approached by the Champion.
     Roombound,
-    /// Cardswith the "Summonbound" subtype can be unveiled when a face-down
+    /// Cards with the "Summonbound" subtype can be unveiled when a face-down
     /// minion is approached.
     Summonbound,
 
+    Weapon,
     Silvered,
 }
 
