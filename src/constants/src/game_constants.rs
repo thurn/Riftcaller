@@ -22,8 +22,16 @@ pub const CHAMPION_START_OF_TURN_ACTIONS: u32 = 4;
 
 pub const STARTING_MAXIMUM_HAND_SIZE: u32 = 5;
 
-pub const MAXIMUM_MINIONS_IN_ROOM: usize = 4;
-
 pub const POINTS_TO_WIN_GAME: u32 = 60;
 
+pub const MAXIMUM_MINIONS_IN_ROOM: usize = 4;
+
+pub const MAXIMUM_OCCUPANTS_IN_ROOM: usize = 1;
+
 pub const MAXIMUM_WEAPONS_IN_PLAY: usize = 4;
+
+pub const MAXIMUM_ARTIFACTS_IN_PLAY: usize = 10;
+
+pub const MAXIMUM_EVOCATIONS_IN_PLAY: usize = 5;
+
+pub const MAXIMUM_ALLIES_IN_PLAY: usize = 5;

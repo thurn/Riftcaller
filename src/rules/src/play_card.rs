@@ -17,14 +17,14 @@ use std::iter;
 use anyhow::Result;
 use constants::game_constants;
 use game_data::card_definition::CardDefinition;
-use game_data::card_state::CardPosition;
+use game_data::card_state::{CardPosition, CardState};
 use game_data::delegates::{CardPlayed, CastCardEvent};
 use game_data::game::{GameState, HistoryEntry, HistoryEvent};
 use game_data::game_actions::{
     ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
 };
 use game_data::game_effect::GameEffect;
-use game_data::primitives::{CardId, Side};
+use game_data::primitives::{CardId, CardSubtype, CardType, Side};
 use game_data::updates::GameUpdate;
 use with_error::WithError;
 
@@ -79,33 +79,107 @@ fn check_play_card_prompts(
     card_id: CardId,
     target: CardTarget,
 ) -> bool {
-    match target {
-        CardTarget::None => {}
-        CardTarget::Room(room_id) => {
-            if definition.is_minion()
-                && game.defenders_unordered(room_id).count()
-                    >= game_constants::MAXIMUM_MINIONS_IN_ROOM
+    let prompt = match target {
+        CardTarget::None => match definition.card_type {
+            CardType::Artifact
+                if definition.subtypes.contains(&CardSubtype::Weapon)
+                    && game_weapons(game).count() >= game_constants::MAXIMUM_WEAPONS_IN_PLAY =>
             {
-                let prompt = GamePrompt::ButtonPrompt(ButtonPrompt {
-                    context: Some(PromptContext::MinionRoomLimit),
-                    choices: game
-                        .defenders_unordered(room_id)
-                        .map(|existing| PromptChoice {
-                            effects: vec![
-                                GameEffect::SacrificeCard(existing.id),
-                                GameEffect::PlayCard(card_id, target),
-                            ],
-                            anchor_card: Some(existing.id),
-                            custom_label: Some(PromptChoiceLabel::Sacrifice),
-                        })
-                        .chain(iter::once(PromptChoice::from_effect(GameEffect::Cancel)))
-                        .collect(),
-                });
-                game.player_mut(user_side).prompt_queue.push(prompt);
-                return true;
+                Some(card_limit_prompt(
+                    game_weapons(game),
+                    card_id,
+                    target,
+                    PromptContext::CardLimit(CardType::Artifact, Some(CardSubtype::Weapon)),
+                ))
             }
-        }
-    }
+            CardType::Artifact
+                if game.artifacts().count() >= game_constants::MAXIMUM_ARTIFACTS_IN_PLAY =>
+            {
+                Some(card_limit_prompt(
+                    game.artifacts(),
+                    card_id,
+                    target,
+                    PromptContext::CardLimit(CardType::Artifact, None),
+                ))
+            }
+            CardType::Evocation
+                if game.evocations().count() >= game_constants::MAXIMUM_EVOCATIONS_IN_PLAY =>
+            {
+                Some(card_limit_prompt(
+                    game.evocations(),
+                    card_id,
+                    target,
+                    PromptContext::CardLimit(CardType::Artifact, None),
+                ))
+            }
+            CardType::Ally if game.allies().count() >= game_constants::MAXIMUM_ALLIES_IN_PLAY => {
+                Some(card_limit_prompt(
+                    game.allies(),
+                    card_id,
+                    target,
+                    PromptContext::CardLimit(CardType::Artifact, None),
+                ))
+            }
+            _ => None,
+        },
+        CardTarget::Room(room_id) => match definition.card_type {
+            CardType::Minion
+                if game.defenders_unordered(room_id).count()
+                    >= game_constants::MAXIMUM_MINIONS_IN_ROOM =>
+            {
+                Some(card_limit_prompt(
+                    game.defenders_unordered(room_id),
+                    card_id,
+                    target,
+                    PromptContext::CardLimit(CardType::Minion, None),
+                ))
+            }
+            CardType::Project | CardType::Scheme
+                if game.occupants(room_id).count() >= game_constants::MAXIMUM_OCCUPANTS_IN_ROOM =>
+            {
+                Some(card_limit_prompt(
+                    game.occupants(room_id),
+                    card_id,
+                    target,
+                    PromptContext::CardLimit(CardType::Artifact, None),
+                ))
+            }
+            _ => None,
+        },
+    };
 
-    false
+    if let Some(p) = prompt {
+        game.player_mut(user_side).prompt_queue.push(p);
+        true
+    } else {
+        false
+    }
+}
+
+fn game_weapons(game: &GameState) -> impl Iterator<Item = &CardState> {
+    game.artifacts().filter(|card| {
+        crate::card_definition(game, card.id).subtypes.contains(&CardSubtype::Weapon)
+    })
+}
+
+fn card_limit_prompt<'a>(
+    cards: impl Iterator<Item = &'a CardState>,
+    card_id: CardId,
+    target: CardTarget,
+    context: PromptContext,
+) -> GamePrompt {
+    GamePrompt::ButtonPrompt(ButtonPrompt {
+        context: Some(context),
+        choices: cards
+            .map(|existing| PromptChoice {
+                effects: vec![
+                    GameEffect::SacrificeCard(existing.id),
+                    GameEffect::PlayCard(card_id, target),
+                ],
+                anchor_card: Some(existing.id),
+                custom_label: Some(PromptChoiceLabel::Sacrifice),
+            })
+            .chain(iter::once(PromptChoice::from_effect(GameEffect::Cancel)))
+            .collect(),
+    })
 }

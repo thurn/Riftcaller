@@ -14,21 +14,13 @@
 
 use core_ui::prelude::*;
 use game_data::game_actions::{ButtonPrompt, PromptContext};
-use game_data::primitives::Side;
+use game_data::primitives::{CardSubtype, CardType, Side};
 use prompts::effect_prompts;
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
 use protos::spelldawn::InterfaceMainControls;
 
 pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainControls> {
-    let context = match prompt.context {
-        Some(PromptContext::MinionRoomLimit) => GameInstructions::new(
-            "Minion limit exceeded. You must sacrifice a minion in this room.".to_string(),
-        )
-        .build(),
-        _ => None,
-    };
-
     let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
     let mut card_anchor_nodes = vec![];
 
@@ -43,7 +35,31 @@ pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainC
 
     Some(InterfaceMainControls {
         node: PromptContainer::new().children(main_controls).build(),
-        overlay: context,
+        overlay: prompt_context(prompt.context),
         card_anchor_nodes,
     })
+}
+
+fn prompt_context(context: Option<PromptContext>) -> Option<Node> {
+    match context {
+        Some(PromptContext::CardLimit(card_type, subtype)) => match card_type {
+            CardType::Minion => GameInstructions::new(
+                "Minion limit exceeded. You must sacrifice a minion in this room.".to_string(),
+            ),
+            CardType::Artifact if subtype == Some(CardSubtype::Weapon) => GameInstructions::new(
+                "Weapon limit exceeded. You must sacrifice a Weapon card in play.".to_string(),
+            ),
+            _ => GameInstructions::new(format!(
+                "{} limit exceeded. You must sacrifice {} {} card in play.",
+                card_type,
+                match card_type {
+                    CardType::Ally | CardType::Artifact | CardType::Evocation => "an",
+                    _ => "a",
+                },
+                card_type
+            )),
+        }
+        .build(),
+        _ => None,
+    }
 }

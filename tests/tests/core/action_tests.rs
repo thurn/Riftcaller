@@ -277,6 +277,33 @@ fn minion_limit_cancel_playing() {
 }
 
 #[test]
+fn weapon_limit() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(6).build();
+    g.create_and_play(CardName::TestWeapon2Attack);
+    g.create_and_play(CardName::TestWeapon2Attack);
+    g.create_and_play(CardName::TestWeapon2Attack);
+    g.create_and_play(CardName::TestWeapon2Attack);
+    g.create_and_play(CardName::TestWeapon2Attack);
+    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 0);
+    g.click(Button::Sacrifice);
+    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 1);
+}
+
+#[test]
+fn evocation_limit() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(6).build();
+    g.create_and_play(CardName::TestActivatedAbilityTakeMana);
+    g.create_and_play(CardName::TestActivatedAbilityTakeMana);
+    g.create_and_play(CardName::TestActivatedAbilityTakeMana);
+    g.create_and_play(CardName::TestActivatedAbilityTakeMana);
+    g.create_and_play(CardName::TestActivatedAbilityTakeMana);
+    g.create_and_play(CardName::TestActivatedAbilityTakeMana);
+    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 0);
+    g.click(Button::Sacrifice);
+    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 1);
+}
+
+#[test]
 fn score_overlord_card() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).actions(5).build();
     let scheme_id = g.create_and_play(CardName::TestScheme3_15);

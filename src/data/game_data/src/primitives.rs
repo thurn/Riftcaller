@@ -467,6 +467,23 @@ impl CardType {
     }
 }
 
+impl Display for CardType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            CardType::ChampionSpell => write!(f, "Spell"),
+            CardType::Artifact => write!(f, "Artifact"),
+            CardType::Evocation => write!(f, "Evocation"),
+            CardType::Ally => write!(f, "Ally"),
+            CardType::OverlordSpell => write!(f, "Spell"),
+            CardType::Minion => write!(f, "Minion"),
+            CardType::Project => write!(f, "Project"),
+            CardType::Scheme => write!(f, "Scheme"),
+            CardType::Riftcaller => write!(f, "Riftcaller"),
+            CardType::GameModifier => write!(f, "Modifier"),
+        }
+    }
+}
+
 /// Subtypes of cards
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, EnumString, Serialize, Deserialize)]
 pub enum CardSubtype {

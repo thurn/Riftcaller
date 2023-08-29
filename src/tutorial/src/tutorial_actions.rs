@@ -231,7 +231,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
         }
         TutorialOpponentAction::UseWeapon { weapon, target } => {
             let weapon = game
-                .weapons()
+                .artifacts()
                 .find(|c| c.name == *weapon)
                 .with_error(|| format!("Weapon not found {weapon})"))?;
             let target = game

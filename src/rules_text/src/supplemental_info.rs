@@ -18,7 +18,7 @@ use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::card_view_context::CardViewContext;
-use game_data::primitives::{AbilityIndex, CardType, Resonance};
+use game_data::primitives::{AbilityIndex, Resonance};
 use game_data::text::{TextElement, TextTokenKind};
 
 use crate::card_info::SupplementalCardInfo;
@@ -59,18 +59,7 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
 
 fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
     let mut result = String::new();
-    result.push_str(match definition.card_type {
-        CardType::ChampionSpell => "Spell",
-        CardType::Artifact => "Artifact",
-        CardType::Evocation => "Evocation",
-        CardType::Ally => "Ally",
-        CardType::OverlordSpell => "Spell",
-        CardType::Minion => "Minion",
-        CardType::Project => "Project",
-        CardType::Scheme => "Scheme",
-        CardType::Riftcaller => "Riftcaller",
-        CardType::GameModifier => "Modifier",
-    });
+    result.push_str(&definition.card_type.to_string());
 
     if let Some(resonance) = definition.config.resonance {
         result.push_str(" • ");

@@ -113,7 +113,7 @@ pub fn bow_of_the_alliance() -> CardDefinition {
                 Delegate::AttackBoost(QueryDelegate {
                     requirement: this_card,
                     transformation: |g, _s, _, boost| AttackBoost {
-                        bonus: g.weapons().count() as u32,
+                        bonus: g.artifacts().count() as u32,
                         ..boost
                     },
                 }),

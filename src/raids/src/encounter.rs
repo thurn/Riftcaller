@@ -62,7 +62,7 @@ impl RaidPhaseImpl for EncounterPhase {
     fn actions(self, game: &GameState) -> Result<Vec<EncounterAction>> {
         let defender_id = game.raid_defender()?;
         Ok(game
-            .weapons()
+            .artifacts()
             .filter(|weapon| flags::can_defeat_target(game, weapon.id, defender_id))
             .map(|weapon| EncounterAction::UseWeaponAbility(weapon.id, defender_id))
             .chain(minion_combat_actions(game, game.raid()?, defender_id))

@@ -589,16 +589,22 @@ impl GameState {
             .filter(move |c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Defender)))
     }
 
-    /// Champion cards which have been played as weapons, in an unspecified
-    /// order
-    pub fn weapons(&self) -> impl Iterator<Item = &CardState> {
+    /// Champion cards which have been played as artifacts, in an unspecified
+    /// order.
+    pub fn artifacts(&self) -> impl Iterator<Item = &CardState> {
         self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
     }
 
-    /// Champion cards which have been played as artifacts, in an unspecified
-    /// order
-    pub fn artifacts(&self) -> impl Iterator<Item = &CardState> {
+    /// Champion cards which have been played as evocations, in an unspecified
+    /// order.
+    pub fn evocations(&self) -> impl Iterator<Item = &CardState> {
         self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Evocations))
+    }
+
+    /// Champion cards which have been played as allies, in an unspecified
+    /// order.
+    pub fn allies(&self) -> impl Iterator<Item = &CardState> {
+        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Allies))
     }
 
     /// All global game modifier cards, in an unspecified order

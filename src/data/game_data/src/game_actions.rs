@@ -24,7 +24,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::game::MulliganDecision;
 use crate::game_effect::GameEffect;
-use crate::primitives::{AbilityId, CardId, ManaValue, RoomId};
+use crate::primitives::{AbilityId, CardId, CardSubtype, CardType, ManaValue, RoomId};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum SummonAction {
@@ -76,10 +76,10 @@ pub enum PromptContext {
     /// limit, player must discard until they have the provided number of cards
     /// in hand.
     DiscardToHandSize(usize),
-    /// Prompt is being shown to sacrifice minions due to exceeding the minion
-    /// limit in a room, player must sacrifice until they have the provided
-    /// number of minions in the room.
-    MinionRoomLimit,
+    /// Prompt is being shown to sacrifice cards due to exceeding the
+    /// limit for cards in play of this type. Player must sacrifice until they
+    /// have the provided number of minions in the room.
+    CardLimit(CardType, Option<CardSubtype>),
 }
 
 /// An action which can be taken in the user interface as a result of the game

@@ -175,6 +175,7 @@ pub fn test_minion_mortal() -> CardDefinition {
 pub fn test_weapon_2_attack() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon2Attack,
+        subtypes: vec![CardSubtype::Weapon],
         cost: cost(test_constants::WEAPON_COST),
         card_type: CardType::Artifact,
         config: CardConfigBuilder::new()
@@ -188,6 +189,7 @@ pub fn test_weapon_2_attack() -> CardDefinition {
 pub fn test_weapon_2_attack_12_boost() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon2Attack12Boost,
+        subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(2)
@@ -201,6 +203,7 @@ pub fn test_weapon_2_attack_12_boost() -> CardDefinition {
 pub fn test_weapon_3_attack_12_boost() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon3Attack12Boost3Cost,
+        subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
@@ -214,6 +217,7 @@ pub fn test_weapon_3_attack_12_boost() -> CardDefinition {
 pub fn test_weapon_4_attack_12_boost() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon4Attack12Boost,
+        subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(4)
@@ -227,6 +231,7 @@ pub fn test_weapon_4_attack_12_boost() -> CardDefinition {
 pub fn test_weapon_abyssal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponAbyssal,
+        subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
@@ -240,6 +245,7 @@ pub fn test_weapon_abyssal() -> CardDefinition {
 pub fn test_weapon_infernal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponInfernal,
+        subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
@@ -253,6 +259,7 @@ pub fn test_weapon_infernal() -> CardDefinition {
 pub fn test_weapon_mortal() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponMortal,
+        subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
@@ -266,6 +273,7 @@ pub fn test_weapon_mortal() -> CardDefinition {
 pub fn test_weapon_5_attack() -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon5Attack,
+        subtypes: vec![CardSubtype::Weapon],
         config: CardConfigBuilder::new()
             .base_attack(5)
             .resonance(test_constants::TEST_RESONANCE)
