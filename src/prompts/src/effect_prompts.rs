@@ -27,7 +27,9 @@ pub fn button(user_side: Side, index: usize, choice: &PromptChoice) -> ResponseB
     if let Some(card_id) = choice.anchor_card {
         result = result.anchor_to(card_id);
     }
-    result.action(GameAction::PromptAction(PromptAction::ButtonPromptSelect(index)))
+    result
+        .action(GameAction::PromptAction(PromptAction::ButtonPromptSelect(index)))
+        .primary(is_primary(choice))
 }
 
 /// Helper to build a button label describing a series of [GameEffect]s.
@@ -37,6 +39,7 @@ pub fn label(user_side: Side, effects: &[GameEffect]) -> String {
 
 fn effect_label(user_side: Side, effect: &GameEffect) -> String {
     match effect {
+        GameEffect::Cancel => "Cancel".to_string(),
         GameEffect::PlayCard(_, _) => "Play".to_string(),
         GameEffect::SacrificeCard(_) => "Sacrifice".to_string(),
         GameEffect::LoseMana(side, amount) => {
@@ -52,6 +55,10 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::EndRaid => "End Raid".to_string(),
         GameEffect::TakeDamage(_, amount) => format!("Take {amount}"),
     }
+}
+
+fn is_primary(choice: &PromptChoice) -> bool {
+    !choice.effects.contains(&GameEffect::Cancel)
 }
 
 fn custom_label(label: PromptChoiceLabel) -> String {

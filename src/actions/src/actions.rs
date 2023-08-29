@@ -19,25 +19,18 @@
 pub mod legal_actions;
 
 use anyhow::Result;
-use constants::game_constants;
-use game_data::card_definition::{AbilityType, CardDefinition};
+use game_data::card_definition::AbilityType;
 use game_data::card_state::CardPosition;
-use game_data::delegates::{
-    AbilityActivated, ActivateAbilityEvent, CardPlayed, CastCardEvent, DrawCardActionEvent,
-};
-use game_data::game::{
-    GamePhase, GameState, HistoryEntry, HistoryEvent, MulliganDecision, TurnState,
-};
+use game_data::delegates::{AbilityActivated, ActivateAbilityEvent, DrawCardActionEvent};
+use game_data::game::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::game_actions::{
-    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt,
-    CardBrowserPrompt, CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction,
-    PromptChoice, PromptChoiceLabel, PromptContext,
+    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
+    CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction, PromptContext,
 };
-use game_data::game_effect::GameEffect;
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use rules::mana::ManaPurpose;
-use rules::{dispatch, flags, game_effect_actions, mana, mutations, queries};
+use rules::{dispatch, flags, game_effect_actions, mana, mutations, play_card, queries};
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
 
@@ -117,85 +110,7 @@ fn play_card_action(
         card_id
     );
 
-    let card = game.card(card_id);
-    debug!(?card.name, ?user_side, ?card_id, ?target, "Applying play card action");
-
-    let definition = rules::get(card.name);
-    mutations::move_card(game, card_id, CardPosition::Played(user_side, target))?;
-
-    if check_play_card_prompts(game, user_side, definition, card_id, target) {
-        // User needs to make a choice before this card can be played.
-        return Ok(());
-    }
-
-    let actions = queries::action_cost(game, card_id);
-    mutations::spend_action_points(game, user_side, actions)?;
-
-    if flags::enters_play_face_up(game, card_id) {
-        let amount = queries::mana_cost(game, card_id).with_error(|| "Card has no mana cost")?;
-        mana::spend(game, user_side, ManaPurpose::PayForCard(card_id), amount)?;
-        if let Some(custom_cost) = &definition.cost.custom_cost {
-            (custom_cost.pay)(game, card_id)?;
-        }
-        game.card_mut(card_id).turn_face_up();
-        game.record_update(|| GameUpdate::PlayCardFaceUp(user_side, card_id));
-    }
-
-    dispatch::invoke_event(game, CastCardEvent(CardPlayed { card_id, target }))?;
-    mutations::move_card(
-        game,
-        card_id,
-        queries::played_position(game, user_side, card_id, target)?,
-    )?;
-
-    game.history
-        .push(HistoryEntry { turn: game.info.turn, event: HistoryEvent::PlayedCard(card_id) });
-    Ok(())
-}
-
-/// Checks whether there are outstanding user choices required by the
-/// `user_side` player in order to play the `card_id` card with the provided
-/// target. If such a choice needs to be made, writes a UI prompt to `game` and
-/// returns `true`. Otherwise, returns `false`.
-fn check_play_card_prompts(
-    game: &mut GameState,
-    user_side: Side,
-    definition: &CardDefinition,
-    card_id: CardId,
-    target: CardTarget,
-) -> bool {
-    match target {
-        CardTarget::None => {}
-        CardTarget::Room(room_id) => {
-            if definition.is_minion()
-                && game.defenders_unordered(room_id).count()
-                    >= game_constants::MAXIMUM_MINIONS_IN_ROOM
-            {
-                let prompt = GamePrompt::ButtonPrompt(ButtonPrompt {
-                    context: Some(PromptContext::MinionRoomLimit(
-                        game_constants::MAXIMUM_MINIONS_IN_ROOM,
-                    )),
-                    choices: game
-                        .defenders_unordered(room_id)
-                        .map(|card| card.id)
-                        // .chain(iter::once(card_id))
-                        .map(|id| PromptChoice {
-                            effects: vec![
-                                GameEffect::SacrificeCard(id),
-                                GameEffect::PlayCard(card_id, target),
-                            ],
-                            anchor_card: Some(id),
-                            custom_label: Some(PromptChoiceLabel::Sacrifice),
-                        })
-                        .collect(),
-                });
-                game.player_mut(user_side).prompt_queue.push(prompt);
-                return true;
-            }
-        }
-    }
-
-    false
+    play_card::run(game, card_id, target)
 }
 
 /// The basic game action to activate an ability of a card in play.
