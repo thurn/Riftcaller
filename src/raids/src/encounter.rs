@@ -17,12 +17,12 @@ use game_data::delegates::{
     EncounterMinionEvent, MinionCombatAbilityEvent, MinionCombatActionsQuery, MinionDefeatedEvent,
     UsedWeapon, UsedWeaponEvent,
 };
-use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::{EncounterAction, PromptAction};
+use game_data::game::{GameState, InternalRaidPhase, RaidData};
+use game_data::game_actions::{EncounterAction, GameStateAction};
 use game_data::primitives::{CardId, GameObjectId, Side};
 use game_data::updates::{GameUpdate, TargetedInteraction};
 use rules::mana::ManaPurpose;
-use rules::{card_prompt, dispatch, flags, mana, queries};
+use rules::{dispatch, flags, game_effect_actions, mana, queries};
 use with_error::{fail, WithError};
 
 use crate::defenders;
@@ -36,19 +36,26 @@ pub struct EncounterPhase {}
 impl RaidPhaseImpl for EncounterPhase {
     type Action = EncounterAction;
 
-    fn unwrap(action: PromptAction) -> Result<EncounterAction> {
+    fn unwrap(action: GameStateAction) -> Result<EncounterAction> {
         match action {
-            PromptAction::EncounterAction(action) => Ok(action),
+            GameStateAction::EncounterAction(action) => Ok(action),
             _ => fail!("Expected EncounterAction"),
         }
     }
 
-    fn wrap(action: EncounterAction) -> Result<PromptAction> {
-        Ok(PromptAction::EncounterAction(action))
+    fn wrap(action: EncounterAction) -> Result<GameStateAction> {
+        Ok(GameStateAction::EncounterAction(action))
     }
 
     fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-        dispatch::invoke_event(game, EncounterMinionEvent(game.raid_defender()?))?;
+        let defender_id = game.raid_defender()?;
+        dispatch::invoke_event(game, EncounterMinionEvent(defender_id))?;
+        let additional_actions =
+            dispatch::perform_query(game, MinionCombatActionsQuery(defender_id), vec![])
+                .into_iter()
+                .flatten()
+                .collect();
+        game.raid_mut()?.additional_actions = additional_actions;
         Ok(None)
     }
 
@@ -58,7 +65,7 @@ impl RaidPhaseImpl for EncounterPhase {
             .weapons()
             .filter(|weapon| flags::can_defeat_target(game, weapon.id, defender_id))
             .map(|weapon| EncounterAction::UseWeaponAbility(weapon.id, defender_id))
-            .chain(minion_combat_actions(game, defender_id))
+            .chain(minion_combat_actions(game, game.raid()?, defender_id))
             .collect())
     }
 
@@ -91,7 +98,7 @@ impl RaidPhaseImpl for EncounterPhase {
                 )?;
                 dispatch::invoke_event(game, MinionDefeatedEvent(target_id))?;
             }
-            EncounterAction::NoWeapon | EncounterAction::CardAction(_) => {
+            EncounterAction::NoWeapon | EncounterAction::AdditionalAction(_) => {
                 let defender_id = game.raid_defender()?;
                 game.record_update(|| {
                     GameUpdate::TargetedInteraction(TargetedInteraction {
@@ -103,8 +110,11 @@ impl RaidPhaseImpl for EncounterPhase {
             }
         }
 
-        if let EncounterAction::CardAction(card_action) = action {
-            card_prompt::handle(game, Side::Champion, card_action)?;
+        if let EncounterAction::AdditionalAction(index) = action {
+            let actions = game.raid()?.additional_actions.clone();
+            for effect in &actions.get(index).with_error(|| "Index out of bounds")?.effects {
+                game_effect_actions::handle(game, *effect)?;
+            }
         }
 
         defenders::advance_to_next_encounter(game)
@@ -117,11 +127,16 @@ impl RaidPhaseImpl for EncounterPhase {
 
 /// Actions to present when a minion is encountered in combat in addition to
 /// weapon abilities.
-fn minion_combat_actions(game: &GameState, minion_id: CardId) -> Vec<EncounterAction> {
-    let result = dispatch::perform_query(game, MinionCombatActionsQuery(minion_id), vec![])
-        .into_iter()
-        .flatten()
-        .map(EncounterAction::CardAction)
+fn minion_combat_actions(
+    game: &GameState,
+    raid: &RaidData,
+    minion_id: CardId,
+) -> Vec<EncounterAction> {
+    let result = raid
+        .additional_actions
+        .iter()
+        .enumerate()
+        .map(|(i, _)| EncounterAction::AdditionalAction(i))
         .collect::<Vec<_>>();
     if result.is_empty() {
         if flags::can_take_use_no_weapon_action(game, minion_id) {

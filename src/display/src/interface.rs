@@ -14,13 +14,13 @@
 
 use anyhow::Result;
 use game_data::game::{GamePhase, GameState, MulliganDecision};
-use game_data::game_actions::{ButtonPrompt, GamePrompt, PromptAction};
+use game_data::game_actions::{ActionButtons, GamePrompt, GameStateAction};
 use game_data::primitives::Side;
 use prompts::prompts;
 use protos::spelldawn::InterfaceMainControls;
 use rules::flags;
 
-use crate::{card_browser, card_button_prompt};
+use crate::{button_prompt, card_browser};
 
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
@@ -29,12 +29,9 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
     if let Some(current) = current_prompt {
         match current {
             GamePrompt::ButtonPrompt(prompt) => {
-                return Ok(prompts::action_prompt(game, side, prompt));
+                return Ok(button_prompt::controls(side, prompt));
             }
             GamePrompt::CardBrowserPrompt(prompt) => return Ok(card_browser::controls(prompt)),
-            GamePrompt::CardButtonPrompt(prompt) => {
-                return Ok(card_button_prompt::controls(side, prompt));
-            }
         }
     } else if let Some(prompt) = raids::current_prompt(game, side)? {
         return Ok(prompts::action_prompt(game, side, &prompt));
@@ -43,11 +40,11 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
             return Ok(prompts::action_prompt(
                 game,
                 side,
-                &ButtonPrompt {
+                &ActionButtons {
                     context: None,
                     responses: vec![
-                        PromptAction::MulliganDecision(MulliganDecision::Keep),
-                        PromptAction::MulliganDecision(MulliganDecision::Mulligan),
+                        GameStateAction::MulliganDecision(MulliganDecision::Keep),
+                        GameStateAction::MulliganDecision(MulliganDecision::Mulligan),
                     ],
                 },
             ));
@@ -56,13 +53,13 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
         return Ok(prompts::action_prompt(
             game,
             side,
-            &ButtonPrompt { context: None, responses: vec![PromptAction::StartTurnAction] },
+            &ActionButtons { context: None, responses: vec![GameStateAction::StartTurnAction] },
         ));
     } else if flags::can_take_end_turn_action(game, side) {
         return Ok(prompts::action_prompt(
             game,
             side,
-            &ButtonPrompt { context: None, responses: vec![PromptAction::EndTurnAction] },
+            &ActionButtons { context: None, responses: vec![GameStateAction::EndTurnAction] },
         ));
     }
 

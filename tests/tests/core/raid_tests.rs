@@ -14,7 +14,7 @@
 
 use core_ui::icons;
 use game_data::card_name::CardName;
-use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, PromptAction};
+use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, GameStateAction};
 use game_data::primitives::{RoomId, Side};
 use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
@@ -80,13 +80,15 @@ fn initiate_raid() {
     assert_eq!(
         g.legal_actions(Side::Champion),
         vec![
-            GameAction::PromptAction(PromptAction::EncounterAction(
+            GameAction::GameStateAction(GameStateAction::EncounterAction(
                 EncounterAction::UseWeaponAbility(
                     test_helpers::server_card_id(weapon_id),
                     test_helpers::server_card_id(minion_id)
                 )
             )),
-            GameAction::PromptAction(PromptAction::EncounterAction(EncounterAction::NoWeapon))
+            GameAction::GameStateAction(GameStateAction::EncounterAction(
+                EncounterAction::NoWeapon
+            ))
         ]
     );
 
@@ -255,10 +257,12 @@ fn score_scheme_card() {
     assert_eq!(
         g.legal_actions(Side::Champion),
         vec![
-            GameAction::PromptAction(PromptAction::AccessPhaseAction(
+            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
                 AccessPhaseAction::ScoreCard(test_helpers::server_card_id(scheme_id))
             )),
-            GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))
+            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
+                AccessPhaseAction::EndRaid
+            ))
         ]
     );
 
@@ -285,7 +289,9 @@ fn score_scheme_card() {
 
     assert_eq!(
         g.legal_actions(Side::Champion),
-        vec![GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))]
+        vec![GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
+            AccessPhaseAction::EndRaid
+        ))]
     );
 
     assert_snapshot!(Summary::summarize(&response));

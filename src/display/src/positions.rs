@@ -327,17 +327,15 @@ fn prompt_position_override(game: &GameState, card: &CardState) -> Option<Object
             if prompt.context == Some(PromptContext::Card(card.id)) {
                 return Some(for_card(card, accessed_browser()));
             }
+            if prompt.choices.iter().any(|choice| choice.anchor_card == Some(card.id)) {
+                return Some(for_card(card, card_choice_browser()));
+            }
         }
         GamePrompt::CardBrowserPrompt(browser) => {
             if browser.unchosen_subjects.contains(&card.id) {
                 return Some(for_card(card, revealed_cards(true)));
             } else if browser.chosen_subjects.contains(&card.id) {
                 return Some(for_card(card, card_browser_target_position()));
-            }
-        }
-        GamePrompt::CardButtonPrompt(prompt) => {
-            if prompt.choices.iter().any(|choice| choice.card_id == card.id) {
-                return Some(for_card(card, card_choice_browser()));
             }
         }
     }

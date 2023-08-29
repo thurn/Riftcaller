@@ -19,7 +19,9 @@ use std::iter;
 use anyhow::Result;
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::game::{GamePhase, GameState, MulliganDecision};
-use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, GamePrompt, PromptAction};
+use game_data::game_actions::{
+    CardTarget, CardTargetKind, GameAction, GamePrompt, GameStateAction, PromptAction,
+};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::{flags, queries};
 use with_error::fail;
@@ -36,11 +38,11 @@ pub fn evaluate<'a>(
                 fail!("Error: Mulligan decision already submitted")
             } else {
                 Box::new(
-                    iter::once(GameAction::PromptAction(PromptAction::MulliganDecision(
+                    iter::once(GameAction::GameStateAction(GameStateAction::MulliganDecision(
                         MulliganDecision::Keep,
                     )))
-                    .chain(iter::once(GameAction::PromptAction(
-                        PromptAction::MulliganDecision(MulliganDecision::Mulligan),
+                    .chain(iter::once(GameAction::GameStateAction(
+                        GameStateAction::MulliganDecision(MulliganDecision::Mulligan),
                     ))),
                 )
             });
@@ -52,7 +54,11 @@ pub fn evaluate<'a>(
     if let Some(prompt) = &game.player(side).prompt_queue.get(0) {
         if let GamePrompt::ButtonPrompt(buttons) = prompt {
             return Ok(Box::new(
-                buttons.responses.iter().map(|prompt| GameAction::PromptAction(*prompt)),
+                buttons
+                    .choices
+                    .iter()
+                    .enumerate()
+                    .map(|(i, _)| GameAction::PromptAction(PromptAction::ButtonPromptSelect(i))),
             ));
         } else {
             todo!("Implement support for browser prompts");
@@ -60,7 +66,7 @@ pub fn evaluate<'a>(
     }
 
     if let Some(actions) = raids::current_actions(game, side).expect("Current Actions") {
-        return Ok(Box::new(actions.into_iter().map(GameAction::PromptAction)));
+        return Ok(Box::new(actions.into_iter().map(GameAction::GameStateAction)));
     }
 
     if flags::in_main_phase_with_action_point(game, side) {
@@ -70,7 +76,7 @@ pub fn evaluate<'a>(
                 .map(GameAction::InitiateRaid)
                 .chain(
                     flags::can_take_end_turn_action(game, side)
-                        .then_some(GameAction::PromptAction(PromptAction::EndTurnAction)),
+                        .then_some(GameAction::GameStateAction(GameStateAction::EndTurnAction)),
                 )
                 .chain(
                     enum_iterator::all::<RoomId>()
@@ -86,9 +92,9 @@ pub fn evaluate<'a>(
                 ),
         ))
     } else if flags::can_take_end_turn_action(game, side) {
-        Ok(Box::new(iter::once(GameAction::PromptAction(PromptAction::EndTurnAction))))
+        Ok(Box::new(iter::once(GameAction::GameStateAction(GameStateAction::EndTurnAction))))
     } else if flags::can_take_start_turn_action(game, side) {
-        Ok(Box::new(iter::once(GameAction::PromptAction(PromptAction::StartTurnAction))))
+        Ok(Box::new(iter::once(GameAction::GameStateAction(GameStateAction::StartTurnAction))))
     } else {
         fail!("Error: player cannot currently act")
     }

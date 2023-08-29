@@ -34,7 +34,8 @@ use game_data::delegates::{
     RaidEvent, RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game::GameState;
-use game_data::game_actions::{CardPromptAction, CardTarget};
+use game_data::game_actions::{CardTarget, PromptChoice};
+use game_data::game_effect::GameEffect;
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue,
     RaidId, RoomId, Side,
@@ -216,7 +217,7 @@ pub fn on_encountered(mutation: MutationFn<CardId>) -> Delegate {
 
 /// Delegate to supply supplemental minion actions when encountered.
 pub fn minion_combat_actions(
-    transformation: TransformationFn<CardId, Vec<Option<CardPromptAction>>>,
+    transformation: TransformationFn<CardId, Vec<Option<PromptChoice>>>,
 ) -> Delegate {
     Delegate::MinionCombatActions(QueryDelegate { requirement: this_card, transformation })
 }
@@ -365,41 +366,42 @@ pub fn projectile(projectile: Projectile) -> SpecialEffects {
     SpecialEffects { projectile: Some(projectile), additional_hit: None }
 }
 
-/// A [CardPromptAction] for the `side` player to lose mana
-pub fn lose_mana_prompt(
-    game: &GameState,
-    side: Side,
-    amount: ActionCount,
-) -> Option<CardPromptAction> {
+/// A [PromptChoice] to end the current raid.
+pub fn end_raid_prompt(_: &GameState) -> Option<PromptChoice> {
+    Some(PromptChoice::from_effect(GameEffect::EndRaid))
+}
+
+/// A [PromptChoice] for the `side` player to lose mana
+pub fn lose_mana_prompt(game: &GameState, side: Side, amount: ActionCount) -> Option<PromptChoice> {
     if mana::get(game, side, ManaPurpose::PayForTriggeredAbility) >= amount {
-        Some(CardPromptAction::LoseMana(side, amount))
+        Some(PromptChoice::from_effect(GameEffect::LoseMana(side, amount)))
     } else {
         None
     }
 }
 
-/// A [CardPromptAction] for the `side` player to lose action points.
+/// A [PromptChoice] for the `side` player to lose action points.
 pub fn lose_actions_prompt(
     game: &GameState,
     side: Side,
     amount: ActionCount,
-) -> Option<CardPromptAction> {
+) -> Option<PromptChoice> {
     if game.player(side).actions >= amount {
-        Some(CardPromptAction::LoseActions(side, amount))
+        Some(PromptChoice::from_effect(GameEffect::LoseActions(side, amount)))
     } else {
         None
     }
 }
 
-/// A [CardPromptAction] for the `side` player to take damage if they are able
+/// A [PromptChoice] for the Champion player to take damage if they are able
 /// to without losing the game
 pub fn take_damage_prompt(
     game: &GameState,
     ability_id: impl HasAbilityId,
     amount: u32,
-) -> Option<CardPromptAction> {
+) -> Option<PromptChoice> {
     if game.hand(Side::Champion).count() >= amount as usize {
-        Some(CardPromptAction::TakeDamage(ability_id.ability_id(), amount))
+        Some(PromptChoice::from_effect(GameEffect::TakeDamage(ability_id.ability_id(), amount)))
     } else {
         None
     }

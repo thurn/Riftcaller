@@ -28,7 +28,7 @@ use anyhow::Result;
 use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
 use game_data::game::{GameConfiguration, GameState, MulliganDecision};
-use game_data::game_actions::{GameAction, PromptAction};
+use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};
@@ -187,12 +187,12 @@ fn create_canonical_game() -> Result<GameState> {
     actions::handle_game_action(
         &mut game,
         Side::Overlord,
-        &GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
     actions::handle_game_action(
         &mut game,
         Side::Champion,
-        &GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
 
     Ok(game)

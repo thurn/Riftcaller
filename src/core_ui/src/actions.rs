@@ -16,7 +16,7 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 
 use adventure_data::adventure_action::AdventureAction;
-use game_data::game_actions::{GameAction, PromptAction};
+use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::primitives::ResponseContext;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
@@ -88,10 +88,10 @@ impl InterfaceAction for GameAction {
     }
 }
 
-impl InterfaceAction for PromptAction {
+impl InterfaceAction for GameStateAction {
     fn as_client_action(&self) -> Action {
         Action::StandardAction(StandardAction {
-            payload: payload(UserAction::GameAction(GameAction::PromptAction(*self))),
+            payload: payload(UserAction::GameAction(GameAction::GameStateAction(*self))),
             update: None,
             request_fields: HashMap::new(),
         })

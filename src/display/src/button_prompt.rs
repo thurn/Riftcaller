@@ -13,13 +13,14 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use game_data::game_actions::{CardButtonPrompt, PromptAction, PromptContext};
+use game_data::game_actions::{ButtonPrompt, PromptContext};
 use game_data::primitives::Side;
-use prompts::action_buttons;
+use prompts::effect_prompts;
 use prompts::game_instructions::GameInstructions;
+use prompts::prompt_container::PromptContainer;
 use protos::spelldawn::InterfaceMainControls;
 
-pub fn controls(user_side: Side, prompt: &CardButtonPrompt) -> Option<InterfaceMainControls> {
+pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainControls> {
     let context = match prompt.context {
         Some(PromptContext::MinionRoomLimit(_)) => GameInstructions::new(
             "Minion limit exceeded, you must sacrifice a minion in this room.".to_string(),
@@ -28,17 +29,21 @@ pub fn controls(user_side: Side, prompt: &CardButtonPrompt) -> Option<InterfaceM
         _ => None,
     };
 
+    let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
+    let mut card_anchor_nodes = vec![];
+
+    for (i, choice) in prompt.choices.iter().enumerate() {
+        let button = effect_prompts::button(user_side, i, choice);
+        if button.has_anchor() {
+            card_anchor_nodes.push(button.render_to_card_anchor_node());
+        } else {
+            main_controls.push(Box::new(button));
+        }
+    }
+
     Some(InterfaceMainControls {
-        node: None,
+        node: PromptContainer::new().children(main_controls).build(),
         overlay: context,
-        card_anchor_nodes: prompt
-            .choices
-            .iter()
-            .map(|choice| {
-                action_buttons::card_response_button(user_side, choice.action)
-                    .action(PromptAction::CardAction(choice.action))
-                    .render_to_card_anchor_node()
-            })
-            .collect(),
+        card_anchor_nodes,
     })
 }

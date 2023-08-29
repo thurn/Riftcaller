@@ -27,7 +27,7 @@ use anyhow::Result;
 use game_data::game::{
     GamePhase, GameState, HistoryEntry, HistoryEvent, InternalRaidPhase, RaidData, RaidJumpRequest,
 };
-use game_data::game_actions::{ButtonPrompt, PromptAction};
+use game_data::game_actions::{ActionButtons, GameStateAction};
 use game_data::primitives::{RaidId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use rules::{flags, mutations, queries};
@@ -94,6 +94,7 @@ pub fn initiate(
         encounter: None,
         accessed: vec![],
         jump_request: None,
+        additional_actions: vec![],
     };
 
     game.info.next_raid_id += 1;
@@ -107,10 +108,10 @@ pub fn initiate(
     Ok(())
 }
 
-/// Handles a [PromptAction] supplied by a user during a raid. Returns an error
-/// if no raid is currently active or if this action was not expected from this
-/// player.
-pub fn handle_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
+/// Handles a [GameStateAction] supplied by a user during a raid. Returns an
+/// error if no raid is currently active or if this action was not expected from
+/// this player.
+pub fn handle_action(game: &mut GameState, user_side: Side, action: GameStateAction) -> Result<()> {
     let raid = game.raid()?;
     let phase = raid.phase();
     verify!(raid.internal_phase.active_side() == user_side, "Unexpected side");
@@ -129,7 +130,7 @@ pub fn handle_action(game: &mut GameState, user_side: Side, action: PromptAction
 
 /// Returns a list of the user actions which are possible in the current raid
 /// state for the `side` player, or `None` if no such actions are possible.
-pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<PromptAction>>> {
+pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<GameStateAction>>> {
     if game.info.phase != GamePhase::Play {
         return Ok(None);
     }
@@ -146,11 +147,11 @@ pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<P
     Ok(None)
 }
 
-/// Builds a [ButtonPrompt] representing the possible actions for the `side`
+/// Builds an [ActionButtons] representing the possible actions for the `side`
 /// user, as determined by the [current_actions] function.
-pub fn current_prompt(game: &GameState, user_side: Side) -> Result<Option<ButtonPrompt>> {
+pub fn current_prompt(game: &GameState, user_side: Side) -> Result<Option<ActionButtons>> {
     if let Some(actions) = current_actions(game, user_side)? {
-        Ok(Some(ButtonPrompt {
+        Ok(Some(ActionButtons {
             context: game.raid()?.phase().prompt_context(),
             responses: actions,
         }))

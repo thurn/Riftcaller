@@ -14,7 +14,7 @@
 
 use core_ui::actions::InterfaceAction;
 use game_data::game::MulliganDecision;
-use game_data::game_actions::{GameAction, PromptAction};
+use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::primitives::Side;
 use insta::assert_snapshot;
 use protos::spelldawn::PlayerName;
@@ -87,15 +87,19 @@ fn mulligan_legal_actions() {
     test_helpers::assert_contents_equal(
         session.legal_actions(Side::Overlord),
         vec![
-            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
-            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+            GameAction::GameStateAction(GameStateAction::MulliganDecision(
+                MulliganDecision::Mulligan,
+            )),
+            GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
         ],
     );
     test_helpers::assert_contents_equal(
         session.legal_actions(Side::Champion),
         vec![
-            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
-            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+            GameAction::GameStateAction(GameStateAction::MulliganDecision(
+                MulliganDecision::Mulligan,
+            )),
+            GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
         ],
     );
 
@@ -104,8 +108,10 @@ fn mulligan_legal_actions() {
     test_helpers::assert_contents_equal(
         session.legal_actions(Side::Champion),
         vec![
-            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Mulligan)),
-            GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+            GameAction::GameStateAction(GameStateAction::MulliganDecision(
+                MulliganDecision::Mulligan,
+            )),
+            GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
         ],
     );
 }

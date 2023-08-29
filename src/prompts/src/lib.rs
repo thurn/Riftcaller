@@ -15,6 +15,7 @@
 //! Renders UI elements displayed during card game sessions
 
 pub mod action_buttons;
+pub mod effect_prompts;
 pub mod game_instructions;
 pub mod prompt_container;
 pub mod prompts;

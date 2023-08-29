@@ -34,7 +34,7 @@ use game_data::delegates::{
     SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData, TurnState};
-use game_data::game_actions::{ButtonPrompt, CardPromptAction, GamePrompt};
+use game_data::game_actions::{ButtonPrompt, GamePrompt, PromptChoice};
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
     Side, TurnNumber,
@@ -236,15 +236,16 @@ pub fn clear_boost<T>(game: &mut GameState, scope: Scope, _: &T) -> Result<()> {
 }
 
 /// Ads the a prompt for the `side` player containing the non-`None`
-/// card actions in `actions`.
+/// actions in `actions`.
 pub fn add_card_prompt(
     game: &mut GameState,
     side: Side,
-    actions: Vec<Option<CardPromptAction>>,
+    actions: Vec<Option<PromptChoice>>,
 ) -> Result<()> {
-    game.player_mut(side).prompt_queue.push(GamePrompt::ButtonPrompt(ButtonPrompt::card_actions(
-        actions.into_iter().flatten().collect(),
-    )));
+    game.player_mut(side).prompt_queue.push(GamePrompt::ButtonPrompt(ButtonPrompt {
+        context: None,
+        choices: actions.into_iter().flatten().collect(),
+    }));
     Ok(())
 }
 

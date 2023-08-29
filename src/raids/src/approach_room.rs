@@ -14,7 +14,7 @@
 
 use anyhow::Result;
 use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::{ApproachRoomAction, PromptAction};
+use game_data::game_actions::{ApproachRoomAction, GameStateAction};
 use rules::flags;
 use with_error::fail;
 
@@ -29,15 +29,15 @@ pub struct ApproachRoomPhase {}
 impl RaidPhaseImpl for ApproachRoomPhase {
     type Action = ApproachRoomAction;
 
-    fn unwrap(action: PromptAction) -> Result<Self::Action> {
+    fn unwrap(action: GameStateAction) -> Result<Self::Action> {
         match action {
-            PromptAction::ApproachRoomAction(action) => Ok(action),
+            GameStateAction::ApproachRoomAction(action) => Ok(action),
             _ => fail!("Expected ApproachRoomAction"),
         }
     }
 
-    fn wrap(action: Self::Action) -> Result<PromptAction> {
-        Ok(PromptAction::ApproachRoomAction(action))
+    fn wrap(action: Self::Action) -> Result<GameStateAction> {
+        Ok(GameStateAction::ApproachRoomAction(action))
     }
 
     fn enter(self, g: &mut GameState) -> Result<Option<InternalRaidPhase>> {

@@ -23,9 +23,9 @@ use game_data::game::GameState;
 use game_data::primitives::{AbilityId, CardId};
 use once_cell::sync::Lazy;
 
-pub mod card_prompt;
 pub mod dispatch;
 pub mod flags;
+pub mod game_effect_actions;
 pub mod mana;
 pub mod mutations;
 pub mod queries;

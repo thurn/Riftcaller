@@ -193,6 +193,7 @@ impl TestRaid {
             encounter: None,
             accessed: vec![],
             jump_request: None,
+            additional_actions: vec![],
         })
     }
 }

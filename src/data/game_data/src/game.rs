@@ -28,7 +28,7 @@ use with_error::{fail, WithError};
 use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
-use crate::game_actions::GamePrompt;
+use crate::game_actions::{GamePrompt, PromptChoice};
 use crate::player_name::PlayerId;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
@@ -152,6 +152,9 @@ pub struct RaidData {
     pub accessed: Vec<CardId>,
     /// Requested new state for this raid. See [RaidJumpRequest] for details.
     pub jump_request: Option<RaidJumpRequest>,
+    /// Additional game actions that can be taken in the current raid state
+    /// beyond those supported by the standard game rules.
+    pub additional_actions: Vec<PromptChoice>,
 }
 
 /// Describes options for this game & the set of rules it is using.

@@ -25,6 +25,7 @@ pub mod deck;
 pub mod delegates;
 pub mod game;
 pub mod game_actions;
+pub mod game_effect;
 pub mod player_name;
 pub mod primitives;
 pub mod random;

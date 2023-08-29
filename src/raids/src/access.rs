@@ -19,7 +19,7 @@ use game_data::delegates::{
     RaidEvent, RaidOutcome, ScoreCard, ScoreCardEvent,
 };
 use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::{AccessPhaseAction, PromptAction, RazeCardActionType};
+use game_data::game_actions::{AccessPhaseAction, GameStateAction, RazeCardActionType};
 use game_data::primitives::{CardId, CardType, RoomId, Side};
 use game_data::random;
 use game_data::updates::GameUpdate;
@@ -36,15 +36,15 @@ pub struct AccessPhase {}
 impl RaidPhaseImpl for AccessPhase {
     type Action = AccessPhaseAction;
 
-    fn unwrap(action: PromptAction) -> Result<AccessPhaseAction> {
+    fn unwrap(action: GameStateAction) -> Result<AccessPhaseAction> {
         match action {
-            PromptAction::AccessPhaseAction(action) => Ok(action),
+            GameStateAction::AccessPhaseAction(action) => Ok(action),
             _ => fail!("Expected AccessPhaseAction"),
         }
     }
 
-    fn wrap(action: AccessPhaseAction) -> Result<PromptAction> {
-        Ok(PromptAction::AccessPhaseAction(action))
+    fn wrap(action: AccessPhaseAction) -> Result<GameStateAction> {
+        Ok(GameStateAction::AccessPhaseAction(action))
     }
 
     fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {

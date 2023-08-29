@@ -14,7 +14,7 @@
 
 use anyhow::Result;
 use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::{PromptAction, SummonAction};
+use game_data::game_actions::{GameStateAction, SummonAction};
 use rules::mutations;
 use with_error::{fail, verify};
 
@@ -30,15 +30,15 @@ pub struct SummonPhase {}
 impl RaidPhaseImpl for SummonPhase {
     type Action = SummonAction;
 
-    fn unwrap(action: PromptAction) -> Result<Self::Action> {
+    fn unwrap(action: GameStateAction) -> Result<Self::Action> {
         match action {
-            PromptAction::SummonAction(action) => Ok(action),
+            GameStateAction::SummonAction(action) => Ok(action),
             _ => fail!("Expected SummonAction"),
         }
     }
 
-    fn wrap(action: Self::Action) -> Result<PromptAction> {
-        Ok(PromptAction::SummonAction(action))
+    fn wrap(action: Self::Action) -> Result<GameStateAction> {
+        Ok(GameStateAction::SummonAction(action))
     }
 
     fn enter(self, _game: &mut GameState) -> Result<Option<InternalRaidPhase>> {

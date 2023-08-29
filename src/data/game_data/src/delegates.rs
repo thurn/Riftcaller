@@ -76,7 +76,7 @@ use crate::card_definition::Cost;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
 use crate::game::GameState;
-use crate::game_actions::{CardPromptAction, CardTarget, PromptAction};
+use crate::game_actions::{CardTarget, GameStateAction, PromptChoice};
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BoostData, BreachValue, CardId, HasAbilityId,
     HasCardId, HasRoomId, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
@@ -338,7 +338,7 @@ impl HasAbilityId for DealtDamage {
 #[derive(Clone, Debug)]
 pub struct MinionCombatPrompt {
     /// Combat actions to show the Champion
-    pub actions: Vec<PromptAction>,
+    pub actions: Vec<GameStateAction>,
     /// Whether to show the default continue/don't use a weapon option
     pub include_no_action: bool,
 }
@@ -494,7 +494,7 @@ pub enum Delegate {
     /// Actions to present when a minion is encountered in combat in addition to
     /// weapon abilities. Invoked with the empty vector. If no actions are
     /// returned, a default 'continue' action is shown.
-    MinionCombatActions(QueryDelegate<CardId, Vec<Option<CardPromptAction>>>),
+    MinionCombatActions(QueryDelegate<CardId, Vec<Option<PromptChoice>>>),
 }
 
 impl Delegate {

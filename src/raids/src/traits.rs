@@ -15,7 +15,7 @@
 use anyhow::Result;
 use fallible_iterator::FallibleIterator;
 use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::{PromptAction, PromptContext};
+use game_data::game_actions::{GameStateAction, PromptContext};
 use game_data::primitives::CardId;
 use game_data::utils;
 
@@ -53,12 +53,12 @@ pub trait RaidPhase {
     fn handle_prompt(
         &self,
         game: &mut GameState,
-        action: PromptAction,
+        action: GameStateAction,
     ) -> Result<Option<InternalRaidPhase>>;
 
     /// Provides a list of possible user actions for the `active_side` player in
     /// the current phase.
-    fn prompts(&self, game: &GameState) -> Result<Vec<PromptAction>>;
+    fn prompts(&self, game: &GameState) -> Result<Vec<GameStateAction>>;
 }
 
 /// Strongly-typed implementation trait for [RaidPhase] which specified the type
@@ -69,11 +69,11 @@ pub trait RaidPhase {
 pub trait RaidPhaseImpl: RaidPhase + Sized + Copy {
     type Action;
 
-    /// Convert a [PromptAction] into this phase's action type.
-    fn unwrap(action: PromptAction) -> Result<Self::Action>;
+    /// Convert a [GameStateAction] into this phase's action type.
+    fn unwrap(action: GameStateAction) -> Result<Self::Action>;
 
-    /// Convert this phase's action type in a [PromptAction].
-    fn wrap(action: Self::Action) -> Result<PromptAction>;
+    /// Convert this phase's action type in a [GameStateAction].
+    fn wrap(action: Self::Action) -> Result<GameStateAction>;
 
     fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>>;
 
@@ -96,12 +96,12 @@ pub trait RaidPhaseImpl: RaidPhase + Sized + Copy {
     fn handle_prompt(
         self,
         game: &mut GameState,
-        action: PromptAction,
+        action: GameStateAction,
     ) -> Result<Option<InternalRaidPhase>> {
         self.handle_action(game, Self::unwrap(action)?)
     }
 
-    fn prompts(self, game: &GameState) -> Result<Vec<PromptAction>> {
+    fn prompts(self, game: &GameState) -> Result<Vec<GameStateAction>> {
         utils::fallible(self.actions(game)?.into_iter()).map(Self::wrap).collect()
     }
 }
@@ -122,12 +122,12 @@ impl<T: RaidPhaseImpl> RaidPhase for T {
     fn handle_prompt(
         &self,
         game: &mut GameState,
-        action: PromptAction,
+        action: GameStateAction,
     ) -> Result<Option<InternalRaidPhase>> {
         RaidPhaseImpl::handle_prompt(*self, game, action)
     }
 
-    fn prompts(&self, game: &GameState) -> Result<Vec<PromptAction>> {
+    fn prompts(&self, game: &GameState) -> Result<Vec<GameStateAction>> {
         RaidPhaseImpl::prompts(*self, game)
     }
 }

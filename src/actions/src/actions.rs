@@ -18,8 +18,6 @@
 
 pub mod legal_actions;
 
-use std::iter;
-
 use anyhow::Result;
 use constants::game_constants;
 use game_data::card_definition::{AbilityType, CardDefinition};
@@ -31,14 +29,15 @@ use game_data::game::{
     GamePhase, GameState, HistoryEntry, HistoryEvent, MulliganDecision, TurnState,
 };
 use game_data::game_actions::{
-    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
-    CardButtonPrompt, CardButtonPromptAction, CardPromptAction, CardTarget, GameAction, GamePrompt,
-    PromptAction, PromptContext,
+    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt,
+    CardBrowserPrompt, CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction,
+    PromptChoice, PromptChoiceLabel, PromptContext,
 };
+use game_data::game_effect::GameEffect;
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::updates::{GameUpdate, InitiatedBy};
 use rules::mana::ManaPurpose;
-use rules::{card_prompt, dispatch, flags, mana, mutations, queries};
+use rules::{dispatch, flags, game_effect_actions, mana, mutations, queries};
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
 
@@ -50,9 +49,7 @@ pub fn handle_game_action(
     action: &GameAction,
 ) -> Result<()> {
     match action {
-        GameAction::PromptAction(prompt_action) => {
-            handle_prompt_action(game, user_side, *prompt_action)
-        }
+        GameAction::GameStateAction(action) => handle_game_state_action(game, user_side, *action),
         GameAction::Resign => handle_resign_action(game, user_side),
         GameAction::GainMana => gain_mana_action(game, user_side),
         GameAction::DrawCard => draw_card_action(game, user_side),
@@ -69,9 +66,7 @@ pub fn handle_game_action(
         GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
         GameAction::MoveCard(card_id) => move_card_action(game, user_side, *card_id),
-        GameAction::BrowserPromptAction(browser_action) => {
-            handle_card_browser_action(game, user_side, *browser_action)
-        }
+        GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
     }?;
 
     Ok(())
@@ -176,17 +171,23 @@ fn check_play_card_prompts(
                 && game.defenders_unordered(room_id).count()
                     >= game_constants::MAXIMUM_MINIONS_IN_ROOM
             {
-                let prompt = GamePrompt::CardButtonPrompt(CardButtonPrompt {
+                let prompt = GamePrompt::ButtonPrompt(ButtonPrompt {
                     context: Some(PromptContext::MinionRoomLimit(
                         game_constants::MAXIMUM_MINIONS_IN_ROOM,
                     )),
                     choices: game
                         .defenders_unordered(room_id)
                         .map(|card| card.id)
-                        .chain(iter::once(card_id))
-                        .map(|id| CardButtonPromptAction::new(id, CardPromptAction::Sacrifice(id)))
+                        // .chain(iter::once(card_id))
+                        .map(|id| PromptChoice {
+                            effects: vec![
+                                GameEffect::SacrificeCard(id),
+                                GameEffect::PlayCard(card_id, target),
+                            ],
+                            anchor_card: Some(id),
+                            custom_label: Some(PromptChoiceLabel::Sacrifice),
+                        })
                         .collect(),
-                    continue_action: Some(GameAction::PlayCard(card_id, target)),
                 });
                 game.player_mut(user_side).prompt_queue.push(prompt);
                 return true;
@@ -309,32 +310,24 @@ fn move_card_action(game: &mut GameState, user_side: Side, card_id: CardId) -> R
     Ok(())
 }
 
-/// Handles a [PromptAction] for the `user_side` player and then removes it from
-/// the queue.
-fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
-    if let Some(prompt) = &game.player(user_side).prompt_queue.get(0) {
-        verify!(
-            prompt.as_button_prompt()?.responses.iter().any(|p| *p == action),
-            "Unexpected action {:?} received",
-            action
-        );
-
-        game.player_mut(user_side).prompt_queue.remove(0);
-    } else if matches!(action, PromptAction::CardAction(_)) {
-        fail!("Received action with no matching prompt {:?}", action);
-    }
-
+/// Handles a [GameStateAction] for the `user_side` player and then removes it
+/// from the queue.
+fn handle_game_state_action(
+    game: &mut GameState,
+    user_side: Side,
+    action: GameStateAction,
+) -> Result<()> {
+    verify!(flags::can_take_game_state_actions(game, user_side), "Cannot currently act");
     match action {
-        PromptAction::MulliganDecision(mulligan) => {
+        GameStateAction::MulliganDecision(mulligan) => {
             handle_mulligan_decision(game, user_side, mulligan)
         }
-        PromptAction::StartTurnAction => handle_start_turn_action(game, user_side),
-        PromptAction::EndTurnAction => handle_end_turn_action(game, user_side),
-        PromptAction::SummonAction(_)
-        | PromptAction::EncounterAction(_)
-        | PromptAction::ApproachRoomAction(_)
-        | PromptAction::AccessPhaseAction(_) => raids::handle_action(game, user_side, action),
-        PromptAction::CardAction(card_action) => card_prompt::handle(game, user_side, card_action),
+        GameStateAction::StartTurnAction => handle_start_turn_action(game, user_side),
+        GameStateAction::EndTurnAction => handle_end_turn_action(game, user_side),
+        GameStateAction::SummonAction(_)
+        | GameStateAction::EncounterAction(_)
+        | GameStateAction::ApproachRoomAction(_)
+        | GameStateAction::AccessPhaseAction(_) => raids::handle_action(game, user_side, action),
     }
 }
 
@@ -434,19 +427,43 @@ fn start_next_turn(game: &mut GameState) -> Result<()> {
     )
 }
 
-fn handle_card_browser_action(
-    game: &mut GameState,
-    user_side: Side,
-    browser_action: BrowserPromptAction,
-) -> Result<()> {
-    let Some(GamePrompt::CardBrowserPrompt(prompt)) =
-        game.player(user_side).prompt_queue.get(0) else {
-        fail!("Expected active CardBrowserPrompt");
+fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
+    let Some(prompt) = game.player(user_side).prompt_queue.get(0) else {
+        fail!("Expected active GamePrompt");
     };
 
-    let subjects = prompt.chosen_subjects.clone();
+    match (prompt, action) {
+        (GamePrompt::ButtonPrompt(buttons), PromptAction::ButtonPromptSelect(index)) => {
+            let choice =
+                buttons.choices.get(index).with_error(|| format!("Index out of bounds {index}"))?;
 
-    match browser_action {
+            let effects = choice.effects.clone();
+            for effect in effects {
+                game_effect_actions::handle(game, effect)?;
+            }
+
+            game.player_mut(user_side).prompt_queue.remove(0);
+            Ok(())
+        }
+        (GamePrompt::CardBrowserPrompt(browser), PromptAction::CardBrowserPromptSubmit) => {
+            handle_card_browser_submit_action(
+                game,
+                user_side,
+                browser.chosen_subjects.clone(),
+                browser.action,
+            )
+        }
+        _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
+    }
+}
+
+fn handle_card_browser_submit_action(
+    game: &mut GameState,
+    user_side: Side,
+    subjects: Vec<CardId>,
+    action: BrowserPromptAction,
+) -> Result<()> {
+    match action {
         BrowserPromptAction::DiscardCards => {
             for card_id in subjects {
                 mutations::move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
@@ -455,6 +472,5 @@ fn handle_card_browser_action(
     }
 
     game.player_mut(user_side).prompt_queue.remove(0);
-
     check_start_next_turn(game)
 }

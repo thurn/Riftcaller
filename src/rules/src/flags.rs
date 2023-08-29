@@ -308,6 +308,12 @@ pub fn can_level_up_card(game: &GameState, card_id: CardId) -> bool {
     dispatch::perform_query(game, CanLevelUpCardQuery(card_id), Flag::new(can_level_up)).into()
 }
 
+/// Whether the indicated player can currently take any type of game state
+/// actions.
+pub fn can_take_game_state_actions(game: &GameState, user_side: Side) -> bool {
+    game.player(user_side).prompt_queue.is_empty() && current_priority(game) == Some(user_side)
+}
+
 /// Whether the indicated card entered play this turn
 pub fn entered_play_this_turn(game: &GameState, card_id: CardId) -> bool {
     game.card(card_id).data.last_entered_play == Some(game.info.turn)

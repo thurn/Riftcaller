@@ -15,7 +15,7 @@
 use anyhow::Result;
 use game_data::delegates::{RaidEvent, RaidStartEvent};
 use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::PromptAction;
+use game_data::game_actions::GameStateAction;
 use rules::dispatch;
 use with_error::fail;
 
@@ -30,11 +30,11 @@ pub struct BeginPhase {}
 impl RaidPhaseImpl for BeginPhase {
     type Action = ();
 
-    fn unwrap(_: PromptAction) -> Result<()> {
+    fn unwrap(_: GameStateAction) -> Result<()> {
         fail!("No actions for Begin Phase")
     }
 
-    fn wrap(_: ()) -> Result<PromptAction> {
+    fn wrap(_: ()) -> Result<GameStateAction> {
         fail!("No actions for Begin Phase")
     }
 

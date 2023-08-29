@@ -16,26 +16,26 @@ use core_ui::action_builder::ActionBuilder;
 use core_ui::icons;
 use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{
-    AccessPhaseAction, ApproachRoomAction, CardPromptAction, EncounterAction, GameAction,
-    PromptAction, RazeCardActionType, SummonAction,
+    AccessPhaseAction, ApproachRoomAction, EncounterAction, GameAction, GameStateAction,
+    RazeCardActionType, SummonAction,
 };
 use game_data::primitives::Side;
 use rules::queries;
 
+use crate::effect_prompts;
 use crate::response_button::ResponseButton;
 
-pub fn for_prompt(game: &GameState, side: Side, action: PromptAction) -> ResponseButton {
+pub fn for_prompt(game: &GameState, side: Side, action: GameStateAction) -> ResponseButton {
     match action {
-        PromptAction::MulliganDecision(data) => mulligan_button(data),
-        PromptAction::StartTurnAction => ResponseButton::new("Start Turn"),
-        PromptAction::EndTurnAction => ResponseButton::new("End Turn"),
-        PromptAction::SummonAction(data) => summon_button(game, data),
-        PromptAction::EncounterAction(data) => encounter_action_button(game, side, data),
-        PromptAction::ApproachRoomAction(data) => approach_room_button(data),
-        PromptAction::AccessPhaseAction(data) => access_button(data),
-        PromptAction::CardAction(data) => card_response_button(side, data),
+        GameStateAction::MulliganDecision(data) => mulligan_button(data),
+        GameStateAction::StartTurnAction => ResponseButton::new("Start Turn"),
+        GameStateAction::EndTurnAction => ResponseButton::new("End Turn"),
+        GameStateAction::SummonAction(data) => summon_button(game, data),
+        GameStateAction::EncounterAction(data) => encounter_action_button(game, side, data),
+        GameStateAction::ApproachRoomAction(data) => approach_room_button(data),
+        GameStateAction::AccessPhaseAction(data) => access_button(data),
     }
-    .action(ActionBuilder::new().action(GameAction::PromptAction(action)).build())
+    .action(ActionBuilder::new().action(GameAction::GameStateAction(action)).build())
 }
 
 fn mulligan_button(mulligan: MulliganDecision) -> ResponseButton {
@@ -83,13 +83,16 @@ fn encounter_action_button(
             ResponseButton::new(label)
         }
         EncounterAction::NoWeapon => ResponseButton::new("Continue").primary(false),
-        EncounterAction::CardAction(action) => card_response_button(side, action),
+        EncounterAction::AdditionalAction(index) => {
+            let choice = &game.raid().expect("Active Raid").additional_actions[index];
+            ResponseButton::new(effect_prompts::label(side, &choice.effects))
+        }
     }
 }
 
 fn approach_room_button(action: ApproachRoomAction) -> ResponseButton {
     match action {
-        ApproachRoomAction::Proceed => ResponseButton::new("Proceed to Access"),
+        ApproachRoomAction::Proceed => ResponseButton::new("Proceed} to Access"),
     }
 }
 
@@ -106,38 +109,5 @@ fn access_button(access: AccessPhaseAction) -> ResponseButton {
         AccessPhaseAction::EndRaid => {
             ResponseButton::new("End Raid").primary(false).shift_down(true)
         }
-    }
-}
-
-pub fn card_response_button(user_side: Side, action: CardPromptAction) -> ResponseButton {
-    let label = match action {
-        CardPromptAction::Sacrifice(_) => "Sacrifice".to_string(),
-        CardPromptAction::LoseMana(side, amount) => {
-            format!("{} {}{}", lose_text(user_side, side), amount, icons::MANA)
-        }
-        CardPromptAction::LoseActions(side, amount) => {
-            if amount > 1 {
-                format!("{} {}{}", lose_text(user_side, side), amount, icons::ACTION)
-            } else {
-                format!("{} {}", lose_text(user_side, side), icons::ACTION)
-            }
-        }
-        CardPromptAction::EndRaid => "End Raid".to_string(),
-        CardPromptAction::TakeDamage(_, amount) => format!("Take {amount}"),
-        CardPromptAction::TakeDamageEndRaid(_, amount) => format!("End Raid, Take {amount}"),
-    };
-
-    let button = ResponseButton::new(label);
-    match action {
-        CardPromptAction::Sacrifice(card_id) => button.anchor_to(card_id),
-        _ => button,
-    }
-}
-
-fn lose_text(user_side: Side, target_side: Side) -> &'static str {
-    if user_side == target_side {
-        "Pay"
-    } else {
-        "Lose"
     }
 }

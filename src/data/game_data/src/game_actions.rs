@@ -21,10 +21,10 @@ use std::fmt;
 use anyhow::{anyhow, Result};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
-use with_error::fail;
 
 use crate::game::MulliganDecision;
-use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, RoomId, Side};
+use crate::game_effect::GameEffect;
+use crate::primitives::{AbilityId, CardId, ManaValue, RoomId};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum SummonAction {
@@ -42,9 +42,9 @@ pub enum EncounterAction {
     UseWeaponAbility(CardId, CardId),
     /// Do not use a weapon and apply minion combat effects
     NoWeapon,
-    /// Custom card action, resolved and then treated equivalently to 'no
-    /// weapon'
-    CardAction(CardPromptAction),
+    /// Invoke an additional custom action associated with this minion at the
+    /// provided index in its additional actions list.
+    AdditionalAction(usize),
 }
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
@@ -82,31 +82,10 @@ pub enum PromptContext {
     MinionRoomLimit(usize),
 }
 
-/// A choice which can be made as part of an ability of an individual card
-///
-/// Maybe switch this to a trait someday?
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub enum CardPromptAction {
-    /// Sacrifice the indicated permanent, moving it to its owner's discard
-    /// pile.
-    Sacrifice(CardId),
-    /// A player loses mana
-    LoseMana(Side, ManaValue),
-    /// A player loses action points
-    LoseActions(Side, ActionCount),
-    /// End the current raid in failure.
-    EndRaid,
-    /// Deal damage to the Champion
-    TakeDamage(AbilityId, u32),
-    /// Deal damage and end the current raid
-    TakeDamageEndRaid(AbilityId, u32),
-}
-
-/// An action which can be taken in the user interface, typically embedded
-/// inside the `GameAction::StandardAction` protobuf message type when sent to
-/// the client.
+/// An action which can be taken in the user interface as a result of the game
+/// rules (current game state) and not because of any particular cards in play.
 #[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub enum PromptAction {
+pub enum GameStateAction {
     /// Action to keep or mulligan opening hand
     MulliganDecision(MulliganDecision),
     /// Action for a player to end their turn.
@@ -121,11 +100,9 @@ pub enum PromptAction {
     ApproachRoomAction(ApproachRoomAction),
     /// Action to target & destroy an accessed card
     AccessPhaseAction(AccessPhaseAction),
-    /// Action to take as part of a card ability
-    CardAction(CardPromptAction),
 }
 
-impl fmt::Debug for PromptAction {
+impl fmt::Debug for GameStateAction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::MulliganDecision(d) => write!(f, "{d:?}"),
@@ -135,26 +112,6 @@ impl fmt::Debug for PromptAction {
             Self::EncounterAction(a) => write!(f, "{a:?}"),
             Self::ApproachRoomAction(a) => write!(f, "{a:?}"),
             Self::AccessPhaseAction(a) => write!(f, "{a:?}"),
-            Self::CardAction(a) => write!(f, "{a:?}"),
-        }
-    }
-}
-
-/// Presents a choice to a user, typically communicated via a series of buttons
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ButtonPrompt {
-    /// Identifies the context for this prompt, i.e. why it is being shown to
-    /// the user
-    pub context: Option<PromptContext>,
-    /// Possible responses to this prompt
-    pub responses: Vec<PromptAction>,
-}
-
-impl ButtonPrompt {
-    pub fn card_actions(actions: Vec<CardPromptAction>) -> Self {
-        Self {
-            context: None,
-            responses: actions.into_iter().map(PromptAction::CardAction).collect(),
         }
     }
 }
@@ -212,29 +169,40 @@ pub struct CardBrowserPrompt {
     pub action: BrowserPromptAction,
 }
 
-/// A specific card choice shown in a [CardButtonPrompt].
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CardButtonPromptAction {
-    pub card_id: CardId,
-    pub action: CardPromptAction,
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum PromptChoiceLabel {
+    Sacrifice,
 }
 
-impl CardButtonPromptAction {
-    pub fn new(card_id: CardId, action: CardPromptAction) -> Self {
-        Self { card_id, action }
+/// A specific card choice shown in a [ButtonPrompt].
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PromptChoice {
+    /// Effects of selecting this option
+    pub effects: Vec<GameEffect>,
+    /// Optionally, an anchor card for this prompt. If provided, the button will
+    /// be rendered attached to this card in the game interface.
+    pub anchor_card: Option<CardId>,
+    /// A custom button label to associate with this choice. If not provided,
+    /// the button's label will be derived from each of the [GameEffect]s
+    /// concatenated using ", ".
+    pub custom_label: Option<PromptChoiceLabel>,
+}
+
+impl PromptChoice {
+    /// Create a new [PromptChoice] referencing a single [GameEffect].
+    pub fn from_effect(effect: GameEffect) -> Self {
+        Self { effects: vec![effect], anchor_card: None, custom_label: None }
     }
 }
 
 /// Presents a choice to a user presented via buttons attached to specific cards
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CardButtonPrompt {
+pub struct ButtonPrompt {
     /// Identifies the context for this prompt, i.e. why it is being shown to
     /// the user.
     pub context: Option<PromptContext>,
     /// Card actions for this prompt
-    pub choices: Vec<CardButtonPromptAction>,
-    /// Optionally, a game action to invoke once this choice is resolved.
-    pub continue_action: Option<GameAction>,
+    pub choices: Vec<PromptChoice>,
 }
 
 /// Possible types of prompts which might be displayed to a user during the
@@ -243,16 +211,26 @@ pub struct CardButtonPrompt {
 pub enum GamePrompt {
     ButtonPrompt(ButtonPrompt),
     CardBrowserPrompt(CardBrowserPrompt),
-    CardButtonPrompt(CardButtonPrompt),
 }
 
-impl GamePrompt {
-    pub fn as_button_prompt(&self) -> Result<&ButtonPrompt> {
-        match self {
-            GamePrompt::ButtonPrompt(p) => Ok(p),
-            _ => fail!("Expecting a button prompt!"),
-        }
-    }
+/// Possible actions in response to the [GamePrompt] currently being shown to a
+/// user
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
+pub enum PromptAction {
+    /// Select the option at the provided index in the current [ButtonPrompt].
+    ButtonPromptSelect(usize),
+    /// Submit the current selection in the current [CardBrowserPrompt].
+    CardBrowserPromptSubmit,
+}
+
+/// Presents a choice to a user, typically communicated via a series of buttons
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ActionButtons {
+    /// Identifies the context for this prompt, i.e. why it is being shown to
+    /// the user
+    pub context: Option<PromptContext>,
+    /// Possible responses to this prompt
+    pub responses: Vec<GameStateAction>,
 }
 
 /// Possible targets for the 'play card' action. Note that many types of targets
@@ -281,7 +259,7 @@ impl CardTarget {
 /// Possible actions a player can take to mutate a GameState
 #[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum GameAction {
-    PromptAction(PromptAction),
+    GameStateAction(GameStateAction),
     Resign,
     GainMana,
     DrawCard,
@@ -292,13 +270,13 @@ pub enum GameAction {
     LevelUpRoom(RoomId),
     SpendActionPoint,
     MoveCard(CardId),
-    BrowserPromptAction(BrowserPromptAction),
+    PromptAction(PromptAction),
 }
 
 impl fmt::Debug for GameAction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::PromptAction(prompt) => write!(f, "@{prompt:?}"),
+            Self::GameStateAction(action) => write!(f, "@{action:?}"),
             Self::Resign => write!(f, "@Resign"),
             Self::GainMana => write!(f, "@GainMana"),
             Self::DrawCard => write!(f, "@DrawCard"),
@@ -313,7 +291,7 @@ impl fmt::Debug for GameAction {
             Self::LevelUpRoom(arg0) => f.debug_tuple("@LevelUpRoom").field(arg0).finish(),
             Self::SpendActionPoint => write!(f, "@SpendActionPoint"),
             Self::MoveCard(id) => f.debug_tuple("@MoveCard").field(id).finish(),
-            Self::BrowserPromptAction(prompt) => write!(f, "@{prompt:?}"),
+            Self::PromptAction(prompt) => write!(f, "@{prompt:?}"),
         }
     }
 }

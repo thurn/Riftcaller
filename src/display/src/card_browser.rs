@@ -17,7 +17,7 @@ use core_ui::prelude::*;
 use game_data::card_state::CardState;
 use game_data::game::GameState;
 use game_data::game_actions::{
-    BrowserPromptValidation, CardBrowserPrompt, GameAction, GamePrompt, PromptContext,
+    BrowserPromptValidation, CardBrowserPrompt, GameAction, GamePrompt, PromptAction, PromptContext,
 };
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
@@ -63,7 +63,8 @@ pub fn move_target(
 fn button_prompt(prompt: &CardBrowserPrompt) -> PromptContainer {
     let show_submit = is_valid(prompt);
     PromptContainer::new().child(show_submit.then(|| {
-        ResponseButton::new("Submit").action(GameAction::BrowserPromptAction(prompt.action))
+        ResponseButton::new("Submit")
+            .action(GameAction::PromptAction(PromptAction::CardBrowserPromptSubmit))
     }))
 }
 

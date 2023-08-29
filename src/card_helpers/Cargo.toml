@@ -13,6 +13,7 @@ doctest = false
 [dependencies]
 anyhow = { features = ["backtrace"], version = "1.0.75" }
 
+prompts = { path = "../prompts", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
 raids = { path = "../raids", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }

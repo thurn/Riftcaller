@@ -17,7 +17,7 @@ use game_data::card_name::CardName;
 use game_data::card_state::CardPosition;
 use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{
-    AccessPhaseAction, EncounterAction, GameAction, PromptAction, SummonAction,
+    AccessPhaseAction, EncounterAction, GameAction, GameStateAction, SummonAction,
 };
 use game_data::primitives::{CardId, RoomLocation, Side};
 use game_data::tutorial_data::{
@@ -178,7 +178,7 @@ fn keep_opening_hand(game: &mut GameState, side: Side) -> Result<()> {
     actions::handle_game_action(
         game,
         side,
-        &GameAction::PromptAction(PromptAction::MulliganDecision(MulliganDecision::Keep)),
+        &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
     )
 }
 
@@ -225,7 +225,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
                 .minions()
                 .find(|c| c.name == *minion_name)
                 .with_error(|| format!("Minion not found {minion_name})"))?;
-            GameAction::PromptAction(PromptAction::SummonAction(SummonAction::SummonMinion(
+            GameAction::GameStateAction(GameStateAction::SummonAction(SummonAction::SummonMinion(
                 minion.id,
             )))
         }
@@ -239,7 +239,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
                 .find(|c| c.name == *target)
                 .with_error(|| format!("Target not found {target}"))?;
 
-            GameAction::PromptAction(PromptAction::EncounterAction(
+            GameAction::GameStateAction(GameStateAction::EncounterAction(
                 EncounterAction::UseWeaponAbility(weapon.id, target.id),
             ))
         }
@@ -251,13 +251,13 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
                 .find(|c| c.name == *name)
                 .with_error(|| format!("Scheme not found {name}"))?
                 .id;
-            GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::ScoreCard(
-                id,
-            )))
+            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
+                AccessPhaseAction::ScoreCard(id),
+            ))
         }
-        TutorialOpponentAction::EndRaid => {
-            GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid))
-        }
+        TutorialOpponentAction::EndRaid => GameAction::GameStateAction(
+            GameStateAction::AccessPhaseAction(AccessPhaseAction::EndRaid),
+        ),
     })
 }
 
@@ -322,29 +322,33 @@ fn trigger_matches(
         (TutorialTrigger::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
         (
             TutorialTrigger::SummonMinion(minion),
-            GameAction::PromptAction(PromptAction::SummonAction(SummonAction::SummonMinion(
+            GameAction::GameStateAction(GameStateAction::SummonAction(SummonAction::SummonMinion(
                 minion_id,
             ))),
         ) => game.card(*minion_id).name == *minion,
         (
             TutorialTrigger::UseWeapon { weapon, target },
-            GameAction::PromptAction(PromptAction::EncounterAction(
+            GameAction::GameStateAction(GameStateAction::EncounterAction(
                 EncounterAction::UseWeaponAbility(source_id, target_id),
             )),
         ) => game.card(*source_id).name == *weapon && game.card(*target_id).name == *target,
         (
             TutorialTrigger::UseNoWeapon,
-            GameAction::PromptAction(PromptAction::EncounterAction(EncounterAction::NoWeapon)),
+            GameAction::GameStateAction(GameStateAction::EncounterAction(
+                EncounterAction::NoWeapon,
+            )),
         ) => true,
         (
             TutorialTrigger::ScoreAccessedCard(name),
-            GameAction::PromptAction(PromptAction::AccessPhaseAction(
+            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
                 AccessPhaseAction::ScoreCard(card_id),
             )),
         ) => game.card(*card_id).name == *name,
         (
             TutorialTrigger::SuccessfullyEndRaid,
-            GameAction::PromptAction(PromptAction::AccessPhaseAction(AccessPhaseAction::EndRaid)),
+            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
+                AccessPhaseAction::EndRaid,
+            )),
         ) => true,
         _ => false,
     })

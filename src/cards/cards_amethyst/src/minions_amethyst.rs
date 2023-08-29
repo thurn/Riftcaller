@@ -23,7 +23,8 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game::RaidJumpRequest;
-use game_data::game_actions::CardPromptAction;
+use game_data::game_actions::PromptChoice;
+use game_data::game_effect::GameEffect;
 use game_data::primitives::{CardType, Rarity, Resonance, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
@@ -53,7 +54,7 @@ pub fn time_golem() -> CardDefinition {
                         g,
                         Side::Champion,
                         vec![
-                            Some(CardPromptAction::EndRaid),
+                            end_raid_prompt(g),
                             lose_mana_prompt(g, Side::Champion, 5),
                             lose_actions_prompt(g, Side::Champion, 2),
                         ],
@@ -80,7 +81,7 @@ pub fn temporal_stalker() -> CardDefinition {
             simple_ability(
                 trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
                 minion_combat_actions(|g, _, _, _| {
-                    vec![Some(CardPromptAction::EndRaid), lose_actions_prompt(g, Side::Champion, 2)]
+                    vec![end_raid_prompt(g), lose_actions_prompt(g, Side::Champion, 2)]
                 }),
             ),
             simple_ability(
@@ -222,12 +223,23 @@ pub fn stormcaller() -> CardDefinition {
         abilities: vec![simple_ability(
             trigger_text(
                 Combat,
-                text!["The Champion must end the raid and", TakeDamage(2), "or", TakeDamage(4)],
+                text![
+                    text![DealDamage(2)],
+                    text!["The Champion must end the raid or take 2 more damage"]
+                ],
             ),
             minion_combat_actions(|g, s, _, _| {
                 vec![
-                    // don't use helper, must take this action even if it ends the game
-                    Some(CardPromptAction::TakeDamageEndRaid(s.ability_id(), 2)),
+                    // Don't use helper, must take this action even if it ends
+                    // the game
+                    Some(PromptChoice {
+                        effects: vec![
+                            GameEffect::TakeDamage(s.ability_id(), 2),
+                            GameEffect::EndRaid,
+                        ],
+                        anchor_card: None,
+                        custom_label: None,
+                    }),
                     take_damage_prompt(g, s, 4),
                 ]
             }),
