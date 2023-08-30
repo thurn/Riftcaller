@@ -202,13 +202,6 @@ fn can_use_any_card_ability(game: &GameState, card_id: CardId) -> bool {
 }
 
 fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> bool {
-    fn room_can_add(game: &GameState, room_id: RoomId, card_types: Vec<CardType>) -> bool {
-        !room_id.is_inner_room()
-            && !game
-                .occupants(room_id)
-                .any(|card| card_types.contains(&crate::get(card.name).card_type))
-    }
-
     let definition = crate::get(game.card(card_id).name);
     if let Some(targeting) = &definition.config.custom_targeting {
         return matching_targeting(game, targeting, card_id, target);
@@ -222,8 +215,7 @@ fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> boo
         | CardType::OverlordSpell => target == CardTarget::None,
         CardType::Minion => matches!(target, CardTarget::Room(_)),
         CardType::Project | CardType::Scheme => {
-            matches!(target, CardTarget::Room(room_id)
-                if room_can_add(game, room_id, vec![CardType::Project, CardType::Scheme]))
+            matches!(target, CardTarget::Room(room_id) if room_id.is_outer_room())
         }
         CardType::GameModifier | CardType::Riftcaller => false,
     }

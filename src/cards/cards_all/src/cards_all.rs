@@ -72,7 +72,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_force_sanctum_score);
     DEFINITIONS.insert(cards_test::test_cards::test_overlord_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_champion_spell);
-    DEFINITIONS.insert(cards_test::test_cards::test_scheme_315);
+    DEFINITIONS.insert(cards_test::test_cards::test_scheme_310);
     DEFINITIONS.insert(cards_test::test_cards::test_project_2_cost_3_raze);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_1);

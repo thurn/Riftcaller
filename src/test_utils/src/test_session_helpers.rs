@@ -394,7 +394,7 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn set_up_minion_combat_with_action(&mut self, action: impl FnOnce(&mut TestSession)) {
-        self.create_and_play(CardName::TestScheme3_15);
+        self.create_and_play(CardName::TestScheme3_10);
         self.pass_turn(Side::Overlord);
         assert!(self.dawn());
         action(self);
@@ -405,7 +405,7 @@ impl TestSessionHelpers for TestSession {
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier) {
         self.pass_turn(Side::Champion);
         assert!(self.dusk());
-        let scheme_id = self.create_and_play(CardName::TestScheme3_15);
+        let scheme_id = self.create_and_play(CardName::TestScheme3_10);
         let minion_id = self.create_and_play(card_name);
         self.pass_turn(Side::Overlord);
         assert!(self.dawn());

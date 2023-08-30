@@ -59,13 +59,13 @@ pub fn test_champion_spell() -> CardDefinition {
     }
 }
 
-pub fn test_scheme_315() -> CardDefinition {
+pub fn test_scheme_310() -> CardDefinition {
     CardDefinition {
-        name: CardName::TestScheme3_15,
+        name: CardName::TestScheme3_10,
         cost: scheme_cost(),
         card_type: CardType::Scheme,
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 3, points: 15 })
+            .scheme_points(SchemePoints { level_requirement: 3, points: 10 })
             .build(),
         ..test_overlord_spell()
     }

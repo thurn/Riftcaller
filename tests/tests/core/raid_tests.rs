@@ -268,8 +268,8 @@ fn score_scheme_card() {
 
     let response = g.click_on(g.user_id(), "Score");
 
-    assert_eq!(g.user.this_player.score(), 15);
-    assert_eq!(g.opponent.other_player.score(), 15);
+    assert_eq!(g.user.this_player.score(), 10);
+    assert_eq!(g.opponent.other_player.score(), 10);
     assert!(g.user.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
     assert!(g.user.data.raid_active()); // Raid still active
@@ -314,8 +314,8 @@ fn complete_raid() {
     g.click_on(g.user_id(), "Score");
     let response = g.click_on(g.user_id(), "End Raid");
 
-    assert_eq!(g.user.this_player.score(), 15);
-    assert_eq!(g.opponent.other_player.score(), 15);
+    assert_eq!(g.user.this_player.score(), 10);
+    assert_eq!(g.opponent.other_player.score(), 10);
     assert!(g.user.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
     assert!(g.has_text("End Turn"));
@@ -344,7 +344,7 @@ fn cannot_activate() {
         .opponent(TestSide::new(Side::Overlord).mana(0))
         .build();
 
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestMinionEndRaid);
     g.pass_turn(Side::Overlord);
 
@@ -385,7 +385,7 @@ fn raid_vault() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(1)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
@@ -406,7 +406,7 @@ fn raid_sanctum() {
         .actions(1)
         .build();
 
-    g.add_to_hand(CardName::TestScheme3_15);
+    g.add_to_hand(CardName::TestScheme3_10);
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Sanctum);
     g.pass_turn(Side::Overlord);
 
@@ -424,7 +424,7 @@ fn raid_crypts() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(1)
-        .opponent(TestSide::new(Side::Overlord).in_discard_face_down(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).in_discard_face_down(CardName::TestScheme3_10))
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Crypts);
@@ -444,7 +444,7 @@ fn raid_vault_twice() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(1)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
@@ -483,7 +483,7 @@ fn raid_no_defenders() {
         .actions(1)
         .build();
 
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     g.pass_turn(Side::Overlord);
 
     let response = g.initiate_raid(test_constants::ROOM_ID);
@@ -496,7 +496,7 @@ fn raid_no_defenders() {
 #[test]
 fn raid_vault_no_defenders() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.initiate_raid(RoomId::Vault);
@@ -540,7 +540,7 @@ fn raid_two_defenders() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(2)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
@@ -562,7 +562,7 @@ fn raid_two_defenders_full_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(2)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
@@ -601,7 +601,7 @@ fn raid_two_defenders_cannot_afford_second() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(2)
-        .opponent(TestSide::new(Side::Overlord).mana(1).deck_top(CardName::TestScheme3_15))
+        .opponent(TestSide::new(Side::Overlord).mana(1).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
@@ -626,7 +626,7 @@ fn raid_add_defender() {
         .build();
 
     g.create_and_play(CardName::TestMinionEndRaid);
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
 
@@ -652,7 +652,7 @@ fn raid_add_defender() {
     // Opponent Turn
     assert!(g.dusk());
     g.create_and_play(CardName::TestMinionDealDamage);
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     g.perform(Action::GainMana(GainManaAction {}), g.opponent_id());
     g.pass_turn(Side::Overlord);
 

@@ -217,7 +217,7 @@ fn cannot_gain_mana_during_raid() {
 #[test]
 fn level_up_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).build();
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     let response = g.perform_action(
         Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
         g.user_id(),
@@ -304,9 +304,19 @@ fn evocation_limit() {
 }
 
 #[test]
+fn sacrifice_existing_project() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::TestScheme3_10);
+    g.create_and_play(CardName::TestProject2Cost3Raze);
+    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 0);
+    g.click(Button::Sacrifice);
+    assert_eq!(g.user.cards.discard_pile(PlayerName::User), vec!["Test Scheme 3_10"]);
+}
+
+#[test]
 fn score_overlord_card() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).actions(5).build();
-    let scheme_id = g.create_and_play(CardName::TestScheme3_15);
+    let scheme_id = g.create_and_play(CardName::TestScheme3_10);
     let level_up =
         Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
@@ -317,14 +327,14 @@ fn score_overlord_card() {
     assert!(g.opponent.cards.get(scheme_id).revealed_to_me());
     assert_eq!(g.user.this_player.mana(), 7);
     assert_eq!(g.opponent.other_player.mana(), 7);
-    assert_eq!(g.user.this_player.score(), 15);
-    assert_eq!(g.opponent.other_player.score(), 15);
+    assert_eq!(g.user.this_player.score(), 10);
+    assert_eq!(g.opponent.other_player.score(), 10);
 }
 
 #[test]
 fn overlord_win_game() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10).score(90)).actions(5).build();
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     let level_up =
         Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
     g.perform(level_up.clone(), g.user_id());
@@ -645,7 +655,7 @@ fn triggered_ability_take_all_mana() {
 #[test]
 fn use_artifact_during_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestMinionEndRaid);
     g.pass_turn(Side::Overlord);
     let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
@@ -661,7 +671,7 @@ fn use_artifact_during_raid() {
 #[test]
 fn cannot_use_action_artifact_during_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestMinionEndRaid);
     g.pass_turn(Side::Overlord);
     let id = g.create_and_play(CardName::TestActivatedAbilityTakeMana);
@@ -795,7 +805,7 @@ fn legal_actions() {
 #[test]
 fn legal_actions_level_up_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     test_helpers::assert_contents_equal(
         g.legal_actions(Side::Overlord),
         vec![GameAction::GainMana, GameAction::DrawCard, GameAction::LevelUpRoom(RoomId::RoomA)],

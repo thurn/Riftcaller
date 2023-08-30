@@ -49,6 +49,9 @@ fn prompt_context(context: Option<PromptContext>) -> Option<Node> {
             CardType::Artifact if subtype == Some(CardSubtype::Weapon) => GameInstructions::new(
                 "Weapon limit exceeded. You must sacrifice a Weapon card in play.".to_string(),
             ),
+            CardType::Project | CardType::Scheme => GameInstructions::new(
+                "Sacrifice the existing card occupying this room?".to_string(),
+            ),
             _ => GameInstructions::new(format!(
                 "{} limit exceeded. You must sacrifice {} {} card in play.",
                 card_type,

@@ -109,7 +109,7 @@ fn check_play_card_prompts(
                     game.evocations(),
                     card_id,
                     target,
-                    PromptContext::CardLimit(CardType::Artifact, None),
+                    PromptContext::CardLimit(CardType::Evocation, None),
                 ))
             }
             CardType::Ally if game.allies().count() >= game_constants::MAXIMUM_ALLIES_IN_PLAY => {
@@ -117,7 +117,7 @@ fn check_play_card_prompts(
                     game.allies(),
                     card_id,
                     target,
-                    PromptContext::CardLimit(CardType::Artifact, None),
+                    PromptContext::CardLimit(CardType::Ally, None),
                 ))
             }
             _ => None,
@@ -141,7 +141,7 @@ fn check_play_card_prompts(
                     game.occupants(room_id),
                     card_id,
                     target,
-                    PromptContext::CardLimit(CardType::Artifact, None),
+                    PromptContext::CardLimit(definition.card_type, None),
                 ))
             }
             _ => None,

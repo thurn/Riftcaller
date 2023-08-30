@@ -51,7 +51,7 @@ fn time_golem_pay_mana() {
 fn time_golem_defeat() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TimeGolem);
-    g.create_and_play(CardName::TestScheme3_15);
+    g.create_and_play(CardName::TestScheme3_10);
     g.pass_turn(Side::Overlord);
     g.create_and_play(CardName::TestWeapon5Attack);
     g.initiate_raid(test_constants::ROOM_ID);
@@ -110,7 +110,7 @@ fn temporal_stalker_pay_actions() {
     assert_eq!(1, g.opponent.this_player.actions());
     assert!(g.user.data.raid_active());
     assert_eq!(
-        vec!["Test Minion End Raid", "Test Scheme 3_15"],
+        vec!["Test Minion End Raid", "Test Scheme 3_10"],
         g.user.cards.names_in_position(Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(

@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/raid_tests.rs
-assertion_line: 638
+assertion_line: 665
 expression: "Summary::summarize(&response)"
 ---
 
@@ -12,7 +12,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 3
-            score: 15
+            score: 10
             can_take_action: true
         opponent: 
             side: Overlord
@@ -80,7 +80,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "15"
+            bottom_right_icon: "10"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -88,7 +88,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 3_15"
+            title: "Test Scheme 3_10"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 
@@ -148,7 +148,7 @@ command_list:
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 3
-            score: 15
+            score: 10
             can_take_action: true
         opponent: 
             side: Overlord
@@ -202,7 +202,7 @@ command_list:
         is_face_up: false
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "15"
+            bottom_right_icon: "10"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -210,7 +210,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 3_15"
+            title: "Test Scheme 3_10"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 
@@ -242,7 +242,7 @@ command_list:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "15"
+            bottom_right_icon: "10"
         arena_frame: "<SpriteAddress>"
         owning_player: Opponent
         revealed_card: 
@@ -250,7 +250,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 3_15"
+            title: "Test Scheme 3_10"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 
@@ -313,7 +313,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 3
-            score: 15
+            score: 10
             can_take_action: true
         raid_active: true
         game_object_positions: 
@@ -360,7 +360,7 @@ channel_response:
         is_face_up: false
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "15"
+            bottom_right_icon: "10"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -368,7 +368,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 3_15"
+            title: "Test Scheme 3_10"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 
@@ -400,7 +400,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "15"
+            bottom_right_icon: "10"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -408,7 +408,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 3_15"
+            title: "Test Scheme 3_10"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 
@@ -476,7 +476,7 @@ channel_response:
             valid_rooms_to_visit: 
             mana: 993
             action_tracker: 3
-            score: 15
+            score: 10
             can_take_action: true
         raid_active: true
         game_object_positions: 
@@ -523,7 +523,7 @@ channel_response:
         is_face_up: false
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "15"
+            bottom_right_icon: "10"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -531,7 +531,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 3_15"
+            title: "Test Scheme 3_10"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 
@@ -563,7 +563,7 @@ channel_response:
         is_face_up: true
         card_icons: 
             top_left_icon: "3"
-            bottom_right_icon: "15"
+            bottom_right_icon: "10"
         arena_frame: "<SpriteAddress>"
         owning_player: User
         revealed_card: 
@@ -571,7 +571,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Scheme 3_15"
+            title: "Test Scheme 3_10"
             rules_text: "<RulesText>"
             targeting: 
             valid_rooms: 

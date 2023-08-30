@@ -23,8 +23,8 @@ use test_utils::*;
 #[test]
 fn invisibility_ring() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.add_to_hand(CardName::TestScheme3_15);
-    g.add_to_hand(CardName::TestScheme3_15);
+    g.add_to_hand(CardName::TestScheme3_10);
+    g.add_to_hand(CardName::TestScheme3_10);
 
     g.create_and_play(CardName::InvisibilityRing);
     g.initiate_raid(RoomId::Sanctum);

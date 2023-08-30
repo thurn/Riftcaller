@@ -86,7 +86,7 @@ fn win_game() {
         position,
     );
 
-    session.create_and_play(CardName::TestScheme3_15);
+    session.create_and_play(CardName::TestScheme3_10);
     session.level_up_room(test_constants::ROOM_ID);
     session.level_up_room(test_constants::ROOM_ID);
     session.pass_turn(Side::Overlord);

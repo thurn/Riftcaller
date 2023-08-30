@@ -70,7 +70,7 @@ fn andvari_est_nights_warden() {
                 TestSide::new(Side::Overlord)
                     .deck_top(CardName::TestChampionSpell)
                     .deck_top(CardName::TestChampionSpell)
-                    .deck_top(CardName::TestScheme3_15)
+                    .deck_top(CardName::TestScheme3_10)
                     .deck_top(CardName::TestChampionSpell)
                     .deck_top(CardName::TestChampionSpell),
             )
@@ -78,7 +78,7 @@ fn andvari_est_nights_warden() {
 
     g.initiate_raid(RoomId::Vault);
     g.click(Button::Score);
-    assert_eq!(15, g.me().score())
+    assert_eq!(10, g.me().score())
 }
 
 #[test]
