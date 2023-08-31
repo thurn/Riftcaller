@@ -14,7 +14,6 @@
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use with_error::WithError;
 
 use crate::game::RaidJumpRequest;
 use crate::game_actions::RazeCardActionType;
@@ -70,20 +69,6 @@ pub enum RaidStep {
     StartRazingCard(CardId, ManaValue),
     RazeCard(CardId, ManaValue),
     FinishRaid,
-}
-
-/// A subset of raid information that can be conveniently passed around.
-#[derive(Debug, Clone, Copy)]
-pub struct RaidInfo {
-    pub raid_id: RaidId,
-    pub target: RoomId,
-    pub encounter: Option<usize>,
-}
-
-impl RaidInfo {
-    pub fn encounter(self) -> Result<usize> {
-        self.encounter.with_error(|| "Expected active raid encounter")
-    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -161,6 +146,14 @@ impl RaidState {
     }
 }
 
+/// A subset of raid information that can be conveniently passed around.
+#[derive(Debug, Clone, Copy)]
+pub struct RaidInfo {
+    pub raid_id: RaidId,
+    pub target: RoomId,
+    pub encounter: usize,
+}
+
 /// Data about an active raid
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RaidData {
@@ -171,8 +164,8 @@ pub struct RaidData {
     /// Current state of this raid. Use the functions in the  `raids` crate
     /// instead of directly inspecting this value.
     pub state: RaidState,
-    /// Current encounter position within this raid, if any
-    pub encounter: Option<usize>,
+    /// Current encounter position within this raid
+    pub encounter: usize,
     /// Cards which have been accessed as part of this raid's Access phase.
     pub accessed: Vec<CardId>,
     /// Requested new state for this raid. See [RaidJumpRequest] for details.

@@ -33,5 +33,5 @@ pub fn build(game: &GameState) -> RaidDisplayState {
 
 fn defenders(game: &GameState, raid: &RaidData) -> RaidDisplayState {
     let defenders = game.defender_list(raid.target);
-    RaidDisplayState::Defenders(defenders[0..=raid.encounter.unwrap_or_default()].to_vec())
+    RaidDisplayState::Defenders(defenders[0..=raid.encounter].to_vec())
 }

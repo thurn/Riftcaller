@@ -595,7 +595,7 @@ impl GameState {
     pub fn raid_defender(&self) -> Result<CardId> {
         Ok(*self
             .defender_list(self.raid()?.target)
-            .get(self.raid()?.encounter.with_error(|| "Expected active encounter")?)
+            .get(self.raid()?.encounter)
             .with_error(|| "Defender Not Found")?)
     }
 

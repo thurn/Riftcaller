@@ -40,7 +40,7 @@ pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> bool {
 
 pub fn defender_list_display_state(game: &GameState, info: RaidInfo) -> Result<RaidDisplayState> {
     let defenders = game.defender_list(info.target);
-    Ok(RaidDisplayState::Defenders(defenders[0..=info.encounter()?].to_vec()))
+    Ok(RaidDisplayState::Defenders(defenders[0..=info.encounter].to_vec()))
 }
 
 /// Mutates the provided game to update the current raid encounter to the next
@@ -49,7 +49,7 @@ pub fn defender_list_display_state(game: &GameState, info: RaidInfo) -> Result<R
 /// encounter was found.
 pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> {
     Ok(if let Some(encounter) = next_defender(game, info, info.encounter) {
-        game.raid_mut()?.encounter = Some(encounter);
+        game.raid_mut()?.encounter = encounter;
         let defender = game.raid_defender()?;
         if game.card(defender).is_face_down() {
             RaidStep::PopulateSummonPrompt(defender)
@@ -68,11 +68,11 @@ pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> 
 ///
 /// An 'eligible' defender is either one which is face up, or one which *can* be
 /// turned face up by paying its costs.
-fn next_defender(game: &GameState, info: RaidInfo, less_than: Option<usize>) -> Option<usize> {
+fn next_defender(game: &GameState, info: RaidInfo, less_than: usize) -> Option<usize> {
     let target = info.target;
     let defenders = game.defender_list(target);
     let found = defenders.iter().enumerate().rev().find(|(index, card_id)| {
-        let in_range = less_than.map_or(true, |less_than| *index < less_than);
+        let in_range = *index < less_than;
         in_range && (game.card(**card_id).is_face_up() || can_summon_defender(game, **card_id))
     });
 

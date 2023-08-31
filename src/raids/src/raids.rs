@@ -69,7 +69,7 @@ pub fn initiate(
         target: target_room,
         raid_id,
         state: RaidState::Step(RaidStep::Begin),
-        encounter: None,
+        encounter: game.defenders_unordered(target_room).count(),
         accessed: vec![],
         jump_request: None,
     };
@@ -147,7 +147,7 @@ fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
             debug!(?index, ?card_id, ?room_id, "Handling RaidJumpRequest::EncounterMinion");
             let raid = game.raid_mut()?;
             raid.target = room_id;
-            raid.encounter = Some(index);
+            raid.encounter = index;
             raid.jump_request = None;
             raid.state = RaidState::Step(RaidStep::EncounterMinion(card_id));
         }
