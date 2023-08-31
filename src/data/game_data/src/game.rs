@@ -28,7 +28,7 @@ use with_error::{fail, WithError};
 use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
-use crate::game_actions::{GamePrompt, PromptChoice};
+use crate::game_actions::GamePrompt;
 use crate::player_name::PlayerId;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,

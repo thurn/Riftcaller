@@ -76,7 +76,7 @@ use crate::card_definition::Cost;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
 use crate::game::GameState;
-use crate::game_actions::{CardTarget, GameStateAction, PromptChoice};
+use crate::game_actions::{CardTarget, GameStateAction};
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BoostData, BreachValue, CardId, HasAbilityId,
     HasCardId, HasRoomId, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,

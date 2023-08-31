@@ -14,7 +14,7 @@
 
 use anyhow::Result;
 use game_data::game::GameState;
-use game_data::primitives::{CardId, RoomId, Side};
+use game_data::primitives::{CardId, Side};
 use game_data::raid_data::{RaidDisplayState, RaidInfo, RaidStep};
 use rules::mana::ManaPurpose;
 use rules::{mana, queries};
@@ -71,21 +71,10 @@ pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> 
 fn next_defender(game: &GameState, info: RaidInfo, less_than: Option<usize>) -> Option<usize> {
     let target = info.target;
     let defenders = game.defender_list(target);
-    let mut reversed = defenders.iter().enumerate().rev();
-    let found = reversed.find(|(index, card_id)| {
+    let found = defenders.iter().enumerate().rev().find(|(index, card_id)| {
         let in_range = less_than.map_or(true, |less_than| *index < less_than);
-        let defender_id = find_defender(game, target, *index);
-        let can_encounter =
-            game.card(**card_id).is_face_up() || can_summon_defender(game, defender_id);
-        in_range && can_encounter
+        in_range && (game.card(**card_id).is_face_up() || can_summon_defender(game, **card_id))
     });
 
     found.map(|(index, _)| index)
-}
-
-fn find_defender(game: &GameState, room_id: RoomId, index: usize) -> CardId {
-    *game
-        .defender_list(room_id)
-        .get(index)
-        .unwrap_or_else(|| panic!("Defender at position {index} not found in {room_id:?}"))
 }
