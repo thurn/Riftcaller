@@ -31,7 +31,7 @@ impl WeaponInteraction {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct ScoredCard {
     pub id: CardId,
 }
@@ -42,7 +42,7 @@ impl ScoredCard {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum RaidStep {
     Begin,
     NextEncounter,

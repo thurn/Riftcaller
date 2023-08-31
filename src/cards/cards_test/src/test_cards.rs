@@ -272,7 +272,7 @@ pub fn test_weapon_mortal() -> CardDefinition {
 
 pub fn test_weapon_5_attack() -> CardDefinition {
     CardDefinition {
-        name: CardName::TestWeapon5Attack,
+        name: CardName::TestWeapon5AttackInfernal,
         subtypes: vec![CardSubtype::Weapon],
         config: CardConfigBuilder::new()
             .base_attack(5)

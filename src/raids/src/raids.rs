@@ -109,7 +109,7 @@ pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
             let info = raid.info();
             match (&raid.state, action) {
                 (RaidState::Step(step), _) => {
-                    let state = evaluate_raid_step(game, info, step.clone())?;
+                    let state = evaluate_raid_step(game, info, *step)?;
                     if let Some(raid) = &mut game.raid {
                         raid.state = state;
                     }

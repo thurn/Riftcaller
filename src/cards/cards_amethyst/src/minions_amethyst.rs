@@ -60,7 +60,7 @@ pub fn time_golem() -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfigBuilder::new().health(3).resonance(Resonance::Construct).build(),
+        config: CardConfigBuilder::new().health(3).resonance(Resonance::Infernal).build(),
     }
 }
 

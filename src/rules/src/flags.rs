@@ -326,9 +326,7 @@ pub fn can_encounter_target(game: &GameState, source: CardId, target: CardId) ->
             crate::card_definition(game, target).config.resonance
         ),
         (Some(source_resonance), Some(target_resonance))
-        if source_resonance == Resonance::Prismatic ||
-            target_resonance == Resonance::Construct ||
-            source_resonance == target_resonance
+        if source_resonance == Resonance::Prismatic || source_resonance == target_resonance
     );
 
     dispatch::perform_query(

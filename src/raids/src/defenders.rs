@@ -15,7 +15,7 @@
 use anyhow::Result;
 use game_data::game::GameState;
 use game_data::primitives::{CardId, Side};
-use game_data::raid_data::{RaidDisplayState, RaidInfo, RaidStep};
+use game_data::raid_data::{RaidInfo, RaidStep};
 use rules::mana::ManaPurpose;
 use rules::{mana, queries};
 
@@ -36,11 +36,6 @@ pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> bool {
     }
 
     can_summon
-}
-
-pub fn defender_list_display_state(game: &GameState, info: RaidInfo) -> Result<RaidDisplayState> {
-    let defenders = game.defender_list(info.target);
-    Ok(RaidDisplayState::Defenders(defenders[0..=info.encounter].to_vec()))
 }
 
 /// Mutates the provided game to update the current raid encounter to the next

@@ -53,7 +53,7 @@ fn time_golem_defeat() {
     g.create_and_play(CardName::TimeGolem);
     g.create_and_play(CardName::TestScheme3_10);
     g.pass_turn(Side::Overlord);
-    g.create_and_play(CardName::TestWeapon5Attack);
+    g.create_and_play(CardName::TestWeapon5AttackInfernal);
     g.initiate_raid(test_constants::ROOM_ID);
     g.click(Button::Summon);
     g.click_on(g.opponent_id(), format!("Pay 5{}", icons::MANA));

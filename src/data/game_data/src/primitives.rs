@@ -430,7 +430,6 @@ pub enum Resonance {
     Infernal,
     Abyssal,
     Prismatic,
-    Construct,
 }
 
 /// Rarity of a card, used to determine how likely it is to appear in randomized
