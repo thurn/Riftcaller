@@ -3,6 +3,7 @@ cargo-features = ["named-profiles"]
 [workspace]
 members = ["src/*", "src/cards/*", "src/ai/*", "src/adventure/*", "src/data/*", "tests"]
 exclude = ["src/cards", "src/ai", "src/adventure", "src/data"]
+resolver = "2"
 
 [profile.dev]
 split-debuginfo = "unpacked"

@@ -342,11 +342,7 @@ fn populate_access_prompt(game: &mut GameState, info: RaidInfo) -> Result<RaidSt
             .accessed
             .iter()
             .filter_map(|card_id| access::access_action_for_card(game, *card_id))
-            .chain(
-                can_end
-                    .then_some(RaidChoice::new(RaidLabel::EndRaid, RaidStep::FinishRaid))
-                    .into_iter(),
-            )
+            .chain(can_end.then_some(RaidChoice::new(RaidLabel::EndRaid, RaidStep::FinishRaid)))
             .collect(),
     )
 }

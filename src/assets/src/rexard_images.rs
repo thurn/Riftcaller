@@ -19,7 +19,7 @@ use game_data::primitives::Sprite;
 /// Builds a sprite URL for a given card image
 pub fn get(pack: RexardPack, name: impl Into<String>) -> Sprite {
     Sprite {
-        address: format!("{}.png", vec!["Rexard".to_string(), pack.path(), name.into()].join("/")),
+        address: format!("{}.png", ["Rexard".to_string(), pack.path(), name.into()].join("/")),
     }
 }
 
@@ -27,10 +27,10 @@ pub fn weapon(weapon_type: RexardWeaponType, name: impl Into<String>) -> Sprite 
     Sprite {
         address: format!(
             "{}.png",
-            vec![
+            [
                 "Rexard/FantasyIconsMegaPack/WeaponsIcons/WeaponsIcons_png/black".to_string(),
                 weapon_type.path(),
-                name.into(),
+                name.into()
             ]
             .join("/")
         ),
@@ -41,10 +41,10 @@ pub fn artifact(armor_type: RexardArtifactType, name: impl Into<String>) -> Spri
     Sprite {
         address: format!(
             "{}.png",
-            vec![
+            [
                 "Rexard/FantasyIconsMegaPack/ArmorIcons/ArmorIcons_png/black".to_string(),
                 armor_type.path(),
-                name.into(),
+                name.into()
             ]
             .join("/")
         ),

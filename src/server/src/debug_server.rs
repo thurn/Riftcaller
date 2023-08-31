@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use std::mem;
+use std::sync::{Mutex, OnceLock};
 
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
@@ -34,6 +35,11 @@ use with_error::WithError;
 use crate::server_data::{ClientData, GameResponse, RequestData};
 use crate::{adventure_server, game_server, requests};
 
+fn current_game_id() -> &'static Mutex<Option<GameId>> {
+    static GAME_ID: OnceLock<Mutex<Option<GameId>>> = OnceLock::new();
+    GAME_ID.get_or_init(|| Mutex::new(None))
+}
+
 pub async fn handle_debug_action(
     database: &impl Database,
     data: &RequestData,
@@ -42,7 +48,7 @@ pub async fn handle_debug_action(
     match action {
         DebugAction::NewGame(side) => create_debug_game(data, *side),
         DebugAction::JoinGame(side) => {
-            let game_id = GameId::new_from_u128(0);
+            let game_id = current_game_id().lock().unwrap().expect("game_id");
             let mut game = requests::fetch_game(database, Some(game_id)).await?;
             match side {
                 Side::Overlord => game.overlord.id = data.player_id,
@@ -132,6 +138,8 @@ pub async fn handle_debug_action(
 }
 
 fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
+    let id = GameId::new(Ulid::new());
+    let _ = current_game_id().lock().unwrap().insert(id);
     Ok(GameResponse::new(ClientData::propagate(data)).commands(vec![Command::Debug(
         ClientDebugCommand {
             debug_command: Some(DebugCommand::InvokeAction(ClientAction {
@@ -147,7 +155,7 @@ fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
                         },
                         debug_options: Some(NewGameDebugOptions {
                             deterministic: false,
-                            override_game_id: Some(GameId::new_from_u128(0)),
+                            override_game_id: Some(id),
                         }),
                         tutorial: false,
                     })

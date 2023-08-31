@@ -210,7 +210,8 @@ fn spend_action_point_action(game: &mut GameState, user_side: Side) -> Result<()
 #[instrument(skip(game))]
 fn move_card_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
     let Some(GamePrompt::CardBrowserPrompt(prompt)) =
-        game.player_mut(user_side).prompt_queue.get_mut(0) else {
+        game.player_mut(user_side).prompt_queue.get_mut(0)
+    else {
         fail!("Expected active CardBrowserPrompt");
     };
 
@@ -256,7 +257,7 @@ fn handle_mulligan_decision(
     );
 
     debug!(?user_side, ?decision, "Applying mulligan action");
-    let mut mulligans = match &mut game.info.phase {
+    let mulligans = match &mut game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => mulligans,
         _ => fail!("Incorrect game phase"),
     };
