@@ -161,7 +161,7 @@ pub struct RaidData {
     pub raid_id: RaidId,
     /// Room being targeted by this raid
     pub target: RoomId,
-    /// Current state of this raid. Use the functions in the  `raids` crate
+    /// Current state of this raid. Use the functions in the `raids` crate
     /// instead of directly inspecting this value.
     pub state: RaidState,
     /// Current encounter position within this raid

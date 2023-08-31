@@ -3432,6 +3432,7 @@ dependencies = [
  "core_ui",
  "game_data",
  "once_cell",
+ "raids",
  "rules",
  "tracing",
  "with_error",

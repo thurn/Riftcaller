@@ -17,7 +17,10 @@ use core_ui::prelude::*;
 use game_data::game::GameState;
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
 use game_data::primitives::{CardId, Side};
-use game_data::raid_data::{RaidChoice, RaidLabel, RaidPrompt, RaidState, WeaponInteraction};
+use game_data::raid_data::{
+    RaidChoice, RaidLabel, RaidPrompt, RaidState, RaidStep, WeaponInteraction,
+};
+use game_data::tutorial_data::TutorialTrigger;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;
 use protos::spelldawn::InterfaceMainControls;
@@ -47,17 +50,6 @@ pub fn build(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
     })
 }
 
-/// Returns the current raid prompt for the `side` user, if any.
-fn current_prompt(game: &GameState, side: Side) -> Option<&RaidPrompt> {
-    if let Some(RaidState::Prompt(prompt)) = game.raid.as_ref().map(|r| &r.state) {
-        if prompt.status.side() == side {
-            return Some(prompt);
-        }
-    }
-
-    None
-}
-
 /// Returns a vector of the [GameAction]s that are currently available for the
 /// `side` player to take in the current raid state.
 pub fn legal_actions(game: &GameState, side: Side) -> Vec<GameAction> {
@@ -69,6 +61,49 @@ pub fn legal_actions(game: &GameState, side: Side) -> Vec<GameAction> {
             .map(|(i, _)| GameAction::RaidAction(RaidAction { index: i }))
             .collect()
     })
+}
+
+/// Returns the current raid prompt for the `side` user, if any.
+fn current_prompt(game: &GameState, side: Side) -> Option<&RaidPrompt> {
+    if let Some(RaidState::Prompt(prompt)) = game.raid.as_ref().map(|r| &r.state) {
+        if prompt.status.side() == side {
+            return Some(prompt);
+        }
+    }
+
+    None
+}
+
+/// Checks whether the provided [RaidAction] corresponds to the effect for a
+/// [TutorialTrigger].
+pub fn matches_tutorial_trigger(
+    game: &GameState,
+    raid_action: RaidAction,
+    trigger: &TutorialTrigger,
+) -> bool {
+    let Some(RaidState::Prompt(prompt)) = &game.raid.as_ref().map(|r| &r.state) else {
+        return false;
+    };
+
+    let Some(choice) = prompt.choices.get(raid_action.index) else {
+        return false;
+    };
+
+    match (trigger, &choice.step) {
+        (TutorialTrigger::SummonMinion(name), RaidStep::SummonMinion(id)) => {
+            game.card(*id).name == *name
+        }
+        (TutorialTrigger::UseWeapon { weapon, target }, RaidStep::UseWeapon(interaction)) => {
+            game.card(interaction.weapon_id).name == *weapon
+                && game.card(interaction.defender_id).name == *target
+        }
+        (TutorialTrigger::UseNoWeapon, RaidStep::FireMinionCombatAbility(_)) => true,
+        (TutorialTrigger::ScoreAccessedCard(name), RaidStep::StartScoringCard(card)) => {
+            game.card(card.id).name == *name
+        }
+        (TutorialTrigger::SuccessfullyEndRaid, RaidStep::FinishRaid) => true,
+        _ => false,
+    }
 }
 
 fn render_button(game: &GameState, index: usize, choice: &RaidChoice) -> ResponseButton {

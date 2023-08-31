@@ -22,6 +22,7 @@ use game_data::tutorial_data::{
     TutorialDisplay, TutorialGameStateTrigger, TutorialOpponentAction, TutorialStep,
     TutorialTrigger,
 };
+use raids::raid_prompt;
 use rules::mutations;
 use tracing::{debug, debug_span, info};
 use with_error::{fail, WithError};
@@ -293,57 +294,28 @@ fn await_player_actions(
 }
 
 fn trigger_matches(
-    _game: &GameState,
-    _tutorial_action: &TutorialTrigger,
-    _user_action: Option<&GameAction>,
+    game: &GameState,
+    trigger: &TutorialTrigger,
+    user_action: Option<&GameAction>,
 ) -> Result<bool> {
-    Ok(false)
+    let Some(action) = user_action else {
+        return Ok(false);
+    };
 
-    // let Some(action) = user_action else {
-    //     return Ok(false);
-    // };
-
-    // Ok(match (tutorial_action, action) {
-    //     (TutorialTrigger::DrawCardAction, GameAction::DrawCard) => true,
-    //     (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
-    //     (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2))
-    // => {         game.card(*id).name == *name && t1 == t2
-    //     }
-    //     (TutorialTrigger::GainManaAction, GameAction::GainMana) => true,
-    //     (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) =>
-    // r1 == r2,     (TutorialTrigger::LevelUpRoom(r1),
-    // GameAction::LevelUpRoom(r2)) => r1 == r2,     (
-    //         TutorialTrigger::SummonMinion(minion),
-    //         GameAction::GameStateAction(GameStateAction::SummonAction(SummonAction::SummonMinion(
-    //             minion_id,
-    //         ))),
-    //     ) => game.card(*minion_id).name == *minion,
-    //     (
-    //         TutorialTrigger::UseWeapon { weapon, target },
-    //         GameAction::GameStateAction(GameStateAction::EncounterAction(
-    //             EncounterAction::UseWeaponAbility(source_id, target_id),
-    //         )),
-    //     ) => game.card(*source_id).name == *weapon &&
-    // game.card(*target_id).name == *target,     (
-    //         TutorialTrigger::UseNoWeapon,
-    //         GameAction::GameStateAction(GameStateAction::EncounterAction(
-    //             EncounterAction::NoWeapon,
-    //         )),
-    //     ) => true,
-    //     (
-    //         TutorialTrigger::ScoreAccessedCard(name),
-    //         GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-    //             AccessPhaseAction::ScoreCard(card_id),
-    //         )),
-    //     ) => game.card(*card_id).name == *name,
-    //     (
-    //         TutorialTrigger::SuccessfullyEndRaid,
-    //         GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-    //             AccessPhaseAction::EndRaid,
-    //         )),
-    //     ) => true,
-    //     _ => false,
-    // })
+    Ok(match (trigger, action) {
+        (TutorialTrigger::DrawCardAction, GameAction::DrawCard) => true,
+        (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
+        (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
+            game.card(*id).name == *name && t1 == t2
+        }
+        (TutorialTrigger::GainManaAction, GameAction::GainMana) => true,
+        (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
+        (TutorialTrigger::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
+        (_, GameAction::RaidAction(raid_action)) => {
+            raid_prompt::matches_tutorial_trigger(game, *raid_action, trigger)
+        }
+        _ => false,
+    })
 }
 
 fn game_state_matches(game: &GameState, trigger: &TutorialGameStateTrigger) -> bool {
