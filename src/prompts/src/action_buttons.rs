@@ -13,27 +13,16 @@
 // limitations under the License.
 
 use core_ui::action_builder::ActionBuilder;
-use core_ui::icons;
-use game_data::game::{GameState, MulliganDecision};
-use game_data::game_actions::{
-    AccessPhaseAction, ApproachRoomAction, EncounterAction, GameAction, GameStateAction,
-    RazeCardActionType, SummonAction,
-};
-use game_data::primitives::Side;
-use rules::queries;
+use game_data::game::MulliganDecision;
+use game_data::game_actions::{GameAction, GameStateAction};
 
-use crate::effect_prompts;
 use crate::response_button::ResponseButton;
 
-pub fn for_prompt(game: &GameState, side: Side, action: GameStateAction) -> ResponseButton {
+pub fn for_prompt(action: GameStateAction) -> ResponseButton {
     match action {
         GameStateAction::MulliganDecision(data) => mulligan_button(data),
         GameStateAction::StartTurnAction => ResponseButton::new("Start Turn"),
         GameStateAction::EndTurnAction => ResponseButton::new("End Turn"),
-        GameStateAction::SummonAction(data) => summon_button(game, data),
-        GameStateAction::EncounterAction(data) => encounter_action_button(game, side, data),
-        GameStateAction::ApproachRoomAction(data) => approach_room_button(data),
-        GameStateAction::AccessPhaseAction(data) => access_button(data),
     }
     .action(ActionBuilder::new().action(GameAction::GameStateAction(action)).build())
 }
@@ -42,72 +31,5 @@ fn mulligan_button(mulligan: MulliganDecision) -> ResponseButton {
     match mulligan {
         MulliganDecision::Keep => ResponseButton::new("Keep"),
         MulliganDecision::Mulligan => ResponseButton::new("Mulligan").primary(false),
-    }
-}
-
-fn summon_button(game: &GameState, summon_action: SummonAction) -> ResponseButton {
-    match summon_action {
-        SummonAction::SummonMinion(minion_id) => {
-            let label = rules::card_definition(game, minion_id).name.displayed_name();
-            if let Some(cost) = queries::mana_cost(game, minion_id) {
-                if cost > 0 {
-                    return ResponseButton::new(format!(
-                        "Summon {}\n{}{}",
-                        label,
-                        cost,
-                        icons::MANA
-                    ))
-                    .two_lines(true);
-                }
-            }
-            ResponseButton::new(format!("Summon {label}"))
-        }
-        SummonAction::DoNotSummmon => ResponseButton::new("Pass").primary(false),
-    }
-}
-
-fn encounter_action_button(
-    game: &GameState,
-    side: Side,
-    encounter_action: EncounterAction,
-) -> ResponseButton {
-    match encounter_action {
-        EncounterAction::UseWeaponAbility(source_id, target_id) => {
-            let label = rules::card_definition(game, source_id).name.displayed_name();
-            if let Some(cost) = queries::cost_to_defeat_target(game, source_id, target_id) {
-                if cost > 0 {
-                    return ResponseButton::new(format!("{}\n{}{}", label, cost, icons::MANA))
-                        .two_lines(true);
-                }
-            }
-            ResponseButton::new(label)
-        }
-        EncounterAction::NoWeapon => ResponseButton::new("Continue").primary(false),
-        EncounterAction::AdditionalAction(index) => {
-            let choice = &game.raid().expect("Active Raid").additional_actions[index];
-            ResponseButton::new(effect_prompts::label(side, &choice.effects))
-        }
-    }
-}
-
-fn approach_room_button(action: ApproachRoomAction) -> ResponseButton {
-    match action {
-        ApproachRoomAction::Proceed => ResponseButton::new("Proceed} to Access"),
-    }
-}
-
-fn access_button(access: AccessPhaseAction) -> ResponseButton {
-    match access {
-        AccessPhaseAction::ScoreCard(card_id) => ResponseButton::new("Score!").anchor_to(card_id),
-        AccessPhaseAction::RazeCard(card_id, action, mana) => {
-            let label = match action {
-                RazeCardActionType::Destroy => format!("Destroy\n{}{}", mana, icons::MANA),
-                RazeCardActionType::Discard => format!("Discard\n{}{}", mana, icons::MANA),
-            };
-            ResponseButton::new(label).two_lines(true).anchor_to(card_id)
-        }
-        AccessPhaseAction::EndRaid => {
-            ResponseButton::new("End Raid").primary(false).shift_down(true)
-        }
     }
 }

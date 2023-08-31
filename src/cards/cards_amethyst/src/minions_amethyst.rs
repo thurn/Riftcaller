@@ -23,8 +23,6 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game::RaidJumpRequest;
-use game_data::game_actions::PromptChoice;
-use game_data::game_effect::GameEffect;
 use game_data::primitives::{CardType, Rarity, Resonance, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
@@ -54,7 +52,7 @@ pub fn time_golem() -> CardDefinition {
                         g,
                         Side::Champion,
                         vec![
-                            end_raid_prompt(g),
+                            end_raid_prompt(),
                             lose_mana_prompt(g, Side::Champion, 5),
                             lose_actions_prompt(g, Side::Champion, 2),
                         ],
@@ -78,12 +76,6 @@ pub fn temporal_stalker() -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            simple_ability(
-                trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
-                minion_combat_actions(|g, _, _, _| {
-                    vec![end_raid_prompt(g), lose_actions_prompt(g, Side::Champion, 2)]
-                }),
-            ),
             simple_ability(
                 trigger_text(
                     Combat,
@@ -109,6 +101,16 @@ pub fn temporal_stalker() -> CardDefinition {
                             Some(RaidJumpRequest::EncounterMinion(minion_id));
                     }
                     Ok(())
+                }),
+            ),
+            simple_ability(
+                trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
+                combat(|g, _, _| {
+                    mutations::add_card_prompt(
+                        g,
+                        Side::Champion,
+                        vec![end_raid_prompt(), lose_actions_prompt(g, Side::Champion, 2)],
+                    )
                 }),
             ),
         ],
@@ -228,20 +230,13 @@ pub fn stormcaller() -> CardDefinition {
                     text!["The Champion must end the raid or take 2 more damage"]
                 ],
             ),
-            minion_combat_actions(|g, s, _, _| {
-                vec![
-                    // Don't use helper, must take this action even if it ends
-                    // the game
-                    Some(PromptChoice {
-                        effects: vec![
-                            GameEffect::TakeDamage(s.ability_id(), 2),
-                            GameEffect::EndRaid,
-                        ],
-                        anchor_card: None,
-                        custom_label: None,
-                    }),
-                    take_damage_prompt(g, s, 4),
-                ]
+            combat(|g, s, _| {
+                mutations::deal_damage(g, s, 2)?;
+                mutations::add_card_prompt(
+                    g,
+                    Side::Champion,
+                    vec![take_damage_prompt(g, s, 2), end_raid_prompt()],
+                )
             }),
         )],
         config: CardConfigBuilder::new().health(3).shield(2).resonance(Resonance::Infernal).build(),

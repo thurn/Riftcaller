@@ -92,14 +92,6 @@ pub enum GameStateAction {
     EndTurnAction,
     /// Action for a player to begin their next turn.
     StartTurnAction,
-    /// Overlord action during a raid to decide whether to summon a defending
-    /// minion.
-    SummonAction(SummonAction),
-    /// Champion action in response to a raid encounter
-    EncounterAction(EncounterAction),
-    ApproachRoomAction(ApproachRoomAction),
-    /// Action to target & destroy an accessed card
-    AccessPhaseAction(AccessPhaseAction),
 }
 
 impl fmt::Debug for GameStateAction {
@@ -108,10 +100,6 @@ impl fmt::Debug for GameStateAction {
             Self::MulliganDecision(d) => write!(f, "{d:?}"),
             Self::StartTurnAction => write!(f, "StartTurn"),
             Self::EndTurnAction => write!(f, "EndTurn"),
-            Self::SummonAction(a) => write!(f, "{a:?}"),
-            Self::EncounterAction(a) => write!(f, "{a:?}"),
-            Self::ApproachRoomAction(a) => write!(f, "{a:?}"),
-            Self::AccessPhaseAction(a) => write!(f, "{a:?}"),
         }
     }
 }
@@ -256,6 +244,12 @@ impl CardTarget {
     }
 }
 
+#[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub struct RaidAction {
+    /// Index position of the action to take in the current `RaidStep`.
+    pub index: usize,
+}
+
 /// Possible actions a player can take to mutate a GameState
 #[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum GameAction {
@@ -270,6 +264,7 @@ pub enum GameAction {
     LevelUpRoom(RoomId),
     SpendActionPoint,
     MoveCard(CardId),
+    RaidAction(RaidAction),
     PromptAction(PromptAction),
 }
 
@@ -291,6 +286,7 @@ impl fmt::Debug for GameAction {
             Self::LevelUpRoom(arg0) => f.debug_tuple("@LevelUpRoom").field(arg0).finish(),
             Self::SpendActionPoint => write!(f, "@SpendActionPoint"),
             Self::MoveCard(id) => f.debug_tuple("@MoveCard").field(id).finish(),
+            Self::RaidAction(action) => f.debug_tuple("@RaidAction").field(&action.index).finish(),
             Self::PromptAction(prompt) => write!(f, "@{prompt:?}"),
         }
     }

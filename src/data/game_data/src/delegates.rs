@@ -379,6 +379,8 @@ pub enum Delegate {
     ChampionScoreCard(EventDelegate<CardId>),
     /// Either player scores a card
     ScoreCard(EventDelegate<ScoreCard>),
+    /// A card is razed (discarded by paying its raze cost) by the Champion
+    RazeCard(EventDelegate<CardId>),
     /// A Raid is initiated
     RaidStart(EventDelegate<RaidEvent>),
     /// A minion is encountered during a raid
@@ -491,10 +493,6 @@ pub enum Delegate {
     /// Queries the maximum hand size of a player. Invoked with the default
     /// maximum hand size.
     MaximumHandSize(QueryDelegate<Side, u32>),
-    /// Actions to present when a minion is encountered in combat in addition to
-    /// weapon abilities. Invoked with the empty vector. If no actions are
-    /// returned, a default 'continue' action is shown.
-    MinionCombatActions(QueryDelegate<CardId, Vec<Option<PromptChoice>>>),
 }
 
 impl Delegate {

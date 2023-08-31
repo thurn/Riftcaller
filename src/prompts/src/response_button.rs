@@ -52,6 +52,11 @@ impl ResponseButton {
         self
     }
 
+    pub fn anchor_to_optional(mut self, anchor_to: Option<CardId>) -> Self {
+        self.anchor_to = anchor_to;
+        self
+    }
+
     /// Returns true if this button has been given a [CardId] to anchor to via
     /// [Self::anchor_to] and thus should be rendered using
     /// [Self::render_to_card_anchor_node].

@@ -23,6 +23,7 @@ use game_data::game_actions::{
     CardTarget, CardTargetKind, GameAction, GamePrompt, GameStateAction, PromptAction,
 };
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
+use raids::raid_prompt;
 use rules::{flags, queries};
 use with_error::fail;
 
@@ -65,8 +66,8 @@ pub fn evaluate<'a>(
         }
     }
 
-    if let Some(actions) = raids::current_actions(game, side).expect("Current Actions") {
-        return Ok(Box::new(actions.into_iter().map(GameAction::GameStateAction)));
+    if game.raid.is_some() {
+        return Ok(Box::new(raid_prompt::legal_actions(game, side).into_iter()));
     }
 
     if flags::in_main_phase_with_action_point(game, side) {

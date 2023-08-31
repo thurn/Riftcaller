@@ -45,7 +45,7 @@ pub enum ManaPurpose {
 pub fn get(game: &GameState, side: Side, purpose: ManaPurpose) -> ManaValue {
     let base_mana = game.player(side).mana_state.base_mana;
     let mut result = game.player(side).mana_state.base_mana;
-    match (&game.info.raid, &game.player(side).mana_state.specific_raid_mana) {
+    match (&game.raid, &game.player(side).mana_state.specific_raid_mana) {
         (Some(raid_data), Some(raid_mana)) if raid_data.raid_id == raid_mana.raid_id => {
             result += raid_mana.mana;
         }
@@ -76,7 +76,7 @@ pub fn spend(
     verify!(get(game, side, purpose) >= amount);
     let mut to_spend = amount;
 
-    match (&game.info.raid, &game.player(side).mana_state.specific_raid_mana) {
+    match (&game.raid, &game.player(side).mana_state.specific_raid_mana) {
         (Some(raid_data), Some(raid_mana)) if raid_data.raid_id == raid_mana.raid_id => {
             to_spend = try_spend(
                 &mut game

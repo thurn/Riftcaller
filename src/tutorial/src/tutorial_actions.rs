@@ -16,9 +16,7 @@ use anyhow::Result;
 use game_data::card_name::CardName;
 use game_data::card_state::CardPosition;
 use game_data::game::{GameState, MulliganDecision};
-use game_data::game_actions::{
-    AccessPhaseAction, EncounterAction, GameAction, GameStateAction, SummonAction,
-};
+use game_data::game_actions::{GameAction, GameStateAction, RaidAction};
 use game_data::primitives::{CardId, RoomLocation, Side};
 use game_data::tutorial_data::{
     TutorialDisplay, TutorialGameStateTrigger, TutorialOpponentAction, TutorialStep,
@@ -221,43 +219,35 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
         TutorialOpponentAction::InitiateRaid(room_id) => GameAction::InitiateRaid(*room_id),
         TutorialOpponentAction::LevelUpRoom(room_id) => GameAction::LevelUpRoom(*room_id),
         TutorialOpponentAction::SummonMinion(minion_name) => {
-            let minion = game
+            let _minion = game
                 .minions()
                 .find(|c| c.name == *minion_name)
                 .with_error(|| format!("Minion not found {minion_name})"))?;
-            GameAction::GameStateAction(GameStateAction::SummonAction(SummonAction::SummonMinion(
-                minion.id,
-            )))
+            GameAction::RaidAction(RaidAction { index: 0 })
         }
         TutorialOpponentAction::UseWeapon { weapon, target } => {
-            let weapon = game
+            let _weapon = game
                 .artifacts()
                 .find(|c| c.name == *weapon)
                 .with_error(|| format!("Weapon not found {weapon})"))?;
-            let target = game
+            let _target = game
                 .minions()
                 .find(|c| c.name == *target)
                 .with_error(|| format!("Target not found {target}"))?;
 
-            GameAction::GameStateAction(GameStateAction::EncounterAction(
-                EncounterAction::UseWeaponAbility(weapon.id, target.id),
-            ))
+            GameAction::RaidAction(RaidAction { index: 0 })
         }
         TutorialOpponentAction::ScoreAccessedCard(name) => {
-            let id = game
+            let _id = game
                 .cards(crate::OPPONENT_SIDE)
                 .iter()
                 .filter(|c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Occupant)))
                 .find(|c| c.name == *name)
                 .with_error(|| format!("Scheme not found {name}"))?
                 .id;
-            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-                AccessPhaseAction::ScoreCard(id),
-            ))
+            GameAction::RaidAction(RaidAction { index: 0 })
         }
-        TutorialOpponentAction::EndRaid => GameAction::GameStateAction(
-            GameStateAction::AccessPhaseAction(AccessPhaseAction::EndRaid),
-        ),
+        TutorialOpponentAction::EndRaid => GameAction::RaidAction(RaidAction { index: 0 }),
     })
 }
 
@@ -303,55 +293,57 @@ fn await_player_actions(
 }
 
 fn trigger_matches(
-    game: &GameState,
-    tutorial_action: &TutorialTrigger,
-    user_action: Option<&GameAction>,
+    _game: &GameState,
+    _tutorial_action: &TutorialTrigger,
+    _user_action: Option<&GameAction>,
 ) -> Result<bool> {
-    let Some(action) = user_action else {
-        return Ok(false);
-    };
+    Ok(false)
 
-    Ok(match (tutorial_action, action) {
-        (TutorialTrigger::DrawCardAction, GameAction::DrawCard) => true,
-        (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
-        (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
-            game.card(*id).name == *name && t1 == t2
-        }
-        (TutorialTrigger::GainManaAction, GameAction::GainMana) => true,
-        (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
-        (TutorialTrigger::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
-        (
-            TutorialTrigger::SummonMinion(minion),
-            GameAction::GameStateAction(GameStateAction::SummonAction(SummonAction::SummonMinion(
-                minion_id,
-            ))),
-        ) => game.card(*minion_id).name == *minion,
-        (
-            TutorialTrigger::UseWeapon { weapon, target },
-            GameAction::GameStateAction(GameStateAction::EncounterAction(
-                EncounterAction::UseWeaponAbility(source_id, target_id),
-            )),
-        ) => game.card(*source_id).name == *weapon && game.card(*target_id).name == *target,
-        (
-            TutorialTrigger::UseNoWeapon,
-            GameAction::GameStateAction(GameStateAction::EncounterAction(
-                EncounterAction::NoWeapon,
-            )),
-        ) => true,
-        (
-            TutorialTrigger::ScoreAccessedCard(name),
-            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-                AccessPhaseAction::ScoreCard(card_id),
-            )),
-        ) => game.card(*card_id).name == *name,
-        (
-            TutorialTrigger::SuccessfullyEndRaid,
-            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-                AccessPhaseAction::EndRaid,
-            )),
-        ) => true,
-        _ => false,
-    })
+    // let Some(action) = user_action else {
+    //     return Ok(false);
+    // };
+
+    // Ok(match (tutorial_action, action) {
+    //     (TutorialTrigger::DrawCardAction, GameAction::DrawCard) => true,
+    //     (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
+    //     (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2))
+    // => {         game.card(*id).name == *name && t1 == t2
+    //     }
+    //     (TutorialTrigger::GainManaAction, GameAction::GainMana) => true,
+    //     (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) =>
+    // r1 == r2,     (TutorialTrigger::LevelUpRoom(r1),
+    // GameAction::LevelUpRoom(r2)) => r1 == r2,     (
+    //         TutorialTrigger::SummonMinion(minion),
+    //         GameAction::GameStateAction(GameStateAction::SummonAction(SummonAction::SummonMinion(
+    //             minion_id,
+    //         ))),
+    //     ) => game.card(*minion_id).name == *minion,
+    //     (
+    //         TutorialTrigger::UseWeapon { weapon, target },
+    //         GameAction::GameStateAction(GameStateAction::EncounterAction(
+    //             EncounterAction::UseWeaponAbility(source_id, target_id),
+    //         )),
+    //     ) => game.card(*source_id).name == *weapon &&
+    // game.card(*target_id).name == *target,     (
+    //         TutorialTrigger::UseNoWeapon,
+    //         GameAction::GameStateAction(GameStateAction::EncounterAction(
+    //             EncounterAction::NoWeapon,
+    //         )),
+    //     ) => true,
+    //     (
+    //         TutorialTrigger::ScoreAccessedCard(name),
+    //         GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
+    //             AccessPhaseAction::ScoreCard(card_id),
+    //         )),
+    //     ) => game.card(*card_id).name == *name,
+    //     (
+    //         TutorialTrigger::SuccessfullyEndRaid,
+    //         GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
+    //             AccessPhaseAction::EndRaid,
+    //         )),
+    //     ) => true,
+    //     _ => false,
+    // })
 }
 
 fn game_state_matches(game: &GameState, trigger: &TutorialGameStateTrigger) -> bool {

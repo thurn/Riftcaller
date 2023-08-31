@@ -28,6 +28,7 @@ pub mod game_actions;
 pub mod game_effect;
 pub mod player_name;
 pub mod primitives;
+pub mod raid_data;
 pub mod random;
 pub mod special_effects;
 pub mod text;

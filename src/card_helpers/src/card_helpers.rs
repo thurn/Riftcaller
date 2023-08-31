@@ -174,7 +174,7 @@ pub fn this_ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilit
 /// [RaidId] for this `scope`.
 pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     utils::is_true(|| {
-        Some(game.ability_state(scope.ability_id())?.raid_id? == game.info.raid.as_ref()?.raid_id)
+        Some(game.ability_state(scope.ability_id())?.raid_id? == game.raid.as_ref()?.raid_id)
     })
 }
 
@@ -213,13 +213,6 @@ pub fn when_unveiled(mutation: MutationFn<CardId>) -> Delegate {
 /// A minion delegate which triggers when it is encountered
 pub fn on_encountered(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::EncounterMinion(EventDelegate { requirement: this_card, mutation })
-}
-
-/// Delegate to supply supplemental minion actions when encountered.
-pub fn minion_combat_actions(
-    transformation: TransformationFn<CardId, Vec<Option<PromptChoice>>>,
-) -> Delegate {
-    Delegate::MinionCombatActions(QueryDelegate { requirement: this_card, transformation })
 }
 
 /// A minion combat delegate
@@ -367,7 +360,7 @@ pub fn projectile(projectile: Projectile) -> SpecialEffects {
 }
 
 /// A [PromptChoice] to end the current raid.
-pub fn end_raid_prompt(_: &GameState) -> Option<PromptChoice> {
+pub fn end_raid_prompt() -> Option<PromptChoice> {
     Some(PromptChoice::from_effect(GameEffect::EndRaid))
 }
 

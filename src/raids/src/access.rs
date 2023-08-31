@@ -14,101 +14,18 @@
 
 use anyhow::Result;
 use game_data::card_state::CardPosition;
-use game_data::delegates::{
-    CardAccessEvent, ChampionScoreCardEvent, RaidAccessSelectedEvent, RaidAccessStartEvent,
-    RaidEvent, RaidOutcome, ScoreCard, ScoreCardEvent,
-};
-use game_data::game::{GameState, InternalRaidPhase};
-use game_data::game_actions::{AccessPhaseAction, GameStateAction, RazeCardActionType};
+use game_data::game::GameState;
+use game_data::game_actions::RazeCardActionType;
 use game_data::primitives::{CardId, CardType, RoomId, Side};
+use game_data::raid_data::{RaidChoice, RaidInfo, RaidLabel, RaidStep, ScoredCard};
 use game_data::random;
-use game_data::updates::GameUpdate;
 use rules::mana::ManaPurpose;
-use rules::{dispatch, flags, mana, mutations, queries};
-use with_error::{fail, WithError};
-
-use crate::traits::{RaidDisplayState, RaidPhaseImpl};
-
-/// Final step of a raid, in which cards are accessed by the Champion
-#[derive(Debug, Clone, Copy)]
-pub struct AccessPhase {}
-
-impl RaidPhaseImpl for AccessPhase {
-    type Action = AccessPhaseAction;
-
-    fn unwrap(action: GameStateAction) -> Result<AccessPhaseAction> {
-        match action {
-            GameStateAction::AccessPhaseAction(action) => Ok(action),
-            _ => fail!("Expected AccessPhaseAction"),
-        }
-    }
-
-    fn wrap(action: AccessPhaseAction) -> Result<GameStateAction> {
-        Ok(GameStateAction::AccessPhaseAction(action))
-    }
-
-    fn enter(self, game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-        dispatch::invoke_event(game, RaidAccessStartEvent(game.raid()?.raid_id))?;
-        if game.info.raid.is_none() {
-            return Ok(None);
-        }
-
-        game.raid_mut()?.accessed = select_accessed_cards(game)?;
-
-        dispatch::invoke_event(
-            game,
-            RaidAccessSelectedEvent(RaidEvent {
-                raid_id: game.raid()?.raid_id,
-                target: game.raid()?.target,
-            }),
-        )?;
-
-        let accessed = game.raid()?.accessed.clone();
-        for card_id in &accessed {
-            game.card_mut(*card_id).set_revealed_to(Side::Champion, true);
-        }
-
-        for card_id in &accessed {
-            dispatch::invoke_event(game, CardAccessEvent(*card_id))?;
-        }
-
-        Ok(None)
-    }
-
-    fn actions(self, game: &GameState) -> Result<Vec<AccessPhaseAction>> {
-        let raid = game.raid()?;
-        let can_end = flags::can_take_end_raid_access_phase_action(game, raid.raid_id);
-        Ok(raid
-            .accessed
-            .iter()
-            .filter_map(|card_id| access_action_for_card(game, *card_id))
-            .chain(can_end.then_some(AccessPhaseAction::EndRaid).into_iter())
-            .collect())
-    }
-
-    fn handle_action(
-        self,
-        game: &mut GameState,
-        action: AccessPhaseAction,
-    ) -> Result<Option<InternalRaidPhase>> {
-        match action {
-            AccessPhaseAction::ScoreCard(card_id) => handle_score_card(game, card_id),
-            AccessPhaseAction::RazeCard(card_id, _, _) => handle_raze_card(game, card_id),
-            AccessPhaseAction::EndRaid => mutations::end_raid(game, RaidOutcome::Success),
-        }?;
-
-        Ok(None)
-    }
-
-    fn display_state(self, _: &GameState) -> Result<RaidDisplayState> {
-        Ok(RaidDisplayState::Access)
-    }
-}
+use rules::{mana, mutations, queries};
 
 /// Returns a vector of the cards accessed for the current raid target, mutating
 /// the [GameState] to store the results of random zone selections.
-fn select_accessed_cards(game: &mut GameState) -> Result<Vec<CardId>> {
-    let target = game.raid()?.target;
+pub fn select_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<Vec<CardId>> {
+    let target = info.target;
 
     let accessed = match target {
         RoomId::Vault => mutations::realize_top_of_deck(
@@ -135,21 +52,25 @@ fn select_accessed_cards(game: &mut GameState) -> Result<Vec<CardId>> {
     Ok(accessed)
 }
 
-/// Returns an [AccessPhaseAction] for the Champion to access the provided
+/// Returns a [RaidChoice] for the Champion to access the provided
 /// `card_id`, if any action can be taken.
-fn access_action_for_card(game: &GameState, card_id: CardId) -> Option<AccessPhaseAction> {
+pub fn access_action_for_card(game: &GameState, card_id: CardId) -> Option<RaidChoice> {
     let definition = rules::card_definition(game, card_id);
     match definition.card_type {
-        CardType::Scheme if can_score_card(game, card_id) => {
-            Some(AccessPhaseAction::ScoreCard(card_id))
-        }
+        CardType::Scheme if can_score_card(game, card_id) => Some(RaidChoice::new(
+            RaidLabel::ScoreCard(card_id),
+            RaidStep::StartScoringCard(ScoredCard { id: card_id }),
+        )),
         CardType::Project if can_raze_project(game, card_id) => {
             let raze_type = if game.card(card_id).position().in_play() {
                 RazeCardActionType::Destroy
             } else {
                 RazeCardActionType::Discard
             };
-            Some(AccessPhaseAction::RazeCard(card_id, raze_type, queries::raze_cost(game, card_id)))
+            Some(RaidChoice::new(
+                RaidLabel::RazeCard(card_id, raze_type),
+                RaidStep::StartRazingCard(card_id, queries::raze_cost(game, card_id)),
+            ))
         }
         _ => None,
     }
@@ -158,9 +79,8 @@ fn access_action_for_card(game: &GameState, card_id: CardId) -> Option<AccessPha
 /// Can the Champion player score the `card_id` card when accessed during a
 /// raid?
 fn can_score_card(game: &GameState, card_id: CardId) -> bool {
-    let raid = match &game.info.raid {
-        Some(r) => r,
-        None => return false,
+    let Some(raid) = &game.raid else {
+        return false;
     };
 
     raid.accessed.contains(&card_id)
@@ -173,37 +93,4 @@ fn can_raze_project(game: &GameState, card_id: CardId) -> bool {
     !game.card(card_id).position().in_discard_pile()
         && queries::raze_cost(game, card_id)
             <= mana::get(game, Side::Champion, ManaPurpose::RazeCard(card_id))
-}
-
-fn handle_score_card(game: &mut GameState, card_id: CardId) -> Result<()> {
-    game.card_mut(card_id).turn_face_up();
-    mutations::move_card(game, card_id, CardPosition::Scoring)?;
-    game.raid_mut()?.accessed.retain(|c| *c != card_id);
-
-    game.record_update(|| GameUpdate::ScoreCard(Side::Champion, card_id));
-
-    dispatch::invoke_event(game, ChampionScoreCardEvent(card_id))?;
-    dispatch::invoke_event(game, ScoreCardEvent(ScoreCard { player: Side::Champion, card_id }))?;
-
-    let scheme_points = rules::card_definition(game, card_id)
-        .config
-        .stats
-        .scheme_points
-        .with_error(|| format!("Expected SchemePoints for {card_id:?}"))?;
-    mutations::score_points(game, Side::Champion, scheme_points.points)?;
-
-    mutations::move_card(game, card_id, CardPosition::Scored(Side::Champion))?;
-    Ok(())
-}
-
-fn handle_raze_card(game: &mut GameState, card_id: CardId) -> Result<()> {
-    mana::spend(
-        game,
-        Side::Champion,
-        ManaPurpose::RazeCard(card_id),
-        queries::raze_cost(game, card_id),
-    )?;
-    mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
-    game.raid_mut()?.accessed.retain(|c| *c != card_id);
-    Ok(())
 }

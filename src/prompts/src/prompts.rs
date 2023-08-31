@@ -13,25 +13,19 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use game_data::game::GameState;
 use game_data::game_actions::ActionButtons;
-use game_data::primitives::Side;
 use protos::spelldawn::InterfaceMainControls;
 
 use crate::action_buttons;
 use crate::prompt_container::PromptContainer;
 
 /// Builds UI elements to display an [ActionButtons] for the `side` player.
-pub fn action_prompt(
-    game: &GameState,
-    side: Side,
-    prompt: &ActionButtons,
-) -> Option<InterfaceMainControls> {
+pub fn action_prompt(prompt: &ActionButtons) -> Option<InterfaceMainControls> {
     let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
     let mut card_anchor_nodes = vec![];
 
     for response in &prompt.responses {
-        let button = action_buttons::for_prompt(game, side, *response);
+        let button = action_buttons::for_prompt(*response);
         if button.has_anchor() {
             card_anchor_nodes.push(button.render_to_card_anchor_node());
         } else {

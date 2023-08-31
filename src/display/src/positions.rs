@@ -16,11 +16,12 @@ use adapters;
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::card_state::{CardPosition, CardState};
-use game_data::game::{GamePhase, GameState, MulliganData, RaidData};
+use game_data::game::{GamePhase, GameState, MulliganData};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt, PromptContext};
 use game_data::primitives::{
     AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
 };
+use game_data::raid_data::{RaidData, RaidDisplayState};
 use game_data::utils;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
@@ -33,8 +34,7 @@ use protos::spelldawn::{
     ObjectPositionRiftcallers, ObjectPositionRoom, ObjectPositionStaging, RevealedCardsBrowserSize,
     RoomIdentifier,
 };
-use raids::traits::RaidDisplayState;
-use raids::RaidDataExt;
+use raids::raid_display_state;
 use rules::queries;
 use with_error::fail;
 
@@ -367,8 +367,8 @@ fn non_card_position_override(
 }
 
 fn raid_position_override(game: &GameState, id: GameObjectId) -> Result<Option<ObjectPosition>> {
-    Ok(if let Some(raid_data) = &game.info.raid {
-        match raid_data.phase().display_state(game)? {
+    Ok(if let Some(raid_data) = &game.raid {
+        match raid_display_state::build(game) {
             RaidDisplayState::None => None,
             RaidDisplayState::Defenders(defenders) => {
                 browser_position(id, raid(), raid_browser(game, raid_data, defenders))
@@ -448,8 +448,8 @@ fn character_facing_direction_for_side(
     game: &GameState,
     side: Side,
 ) -> Result<GameCharacterFacingDirection> {
-    if let Some(raid) = &game.info.raid {
-        if matches!(raid.phase().display_state(game)?, RaidDisplayState::Defenders(_)) {
+    if let Some(raid) = &game.raid {
+        if matches!(raid_display_state::build(game), RaidDisplayState::Defenders(_)) {
             if side == Side::Champion {
                 return Ok(GameCharacterFacingDirection::Right);
             }

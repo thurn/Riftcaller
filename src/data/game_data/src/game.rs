@@ -34,6 +34,7 @@ use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
     RaidId, RoomId, RoomLocation, School, Side, TurnNumber,
 };
+use crate::raid_data::RaidData;
 use crate::tutorial_data::GameTutorialState;
 use crate::updates::{GameUpdate, UpdateStep, UpdateTracker, Updates};
 
@@ -87,40 +88,6 @@ impl GamePlayerData {
     }
 }
 
-/// Current internal state of the raid state machine.
-///
-/// Use the methods of the `RaidPhase` trait to interact with an ongoing raid
-/// instead of referencing these directly.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
-pub enum InternalRaidPhase {
-    /// Raid has been created
-    Begin,
-    /// The Overlord is currently deciding whether to summon the face-down
-    /// defender with the `encounter` index position.
-    Summon,
-    /// The defender with the `encounter` index position is currently being
-    /// encountered. The Champion is deciding which weapons, if any, to employ.
-    ///
-    /// Note that defenders are encountered in decreasing position order.
-    Encounter,
-    /// The Champion has bypassed all of the defenders for this room and the
-    /// Overlord has one final opportunity to take actions before cards are
-    /// accessed.
-    ApproachRoom,
-    /// The Champion has bypassed all of the defenders for this room and is now
-    /// accessing its contents
-    Access,
-}
-
-impl InternalRaidPhase {
-    pub fn active_side(&self) -> Side {
-        match self {
-            Self::Begin | Self::Encounter | Self::Access => Side::Champion,
-            Self::Summon | Self::ApproachRoom => Side::Overlord,
-        }
-    }
-}
-
 /// Some card abilities completely change the state of a Raid, for example to
 /// target a different room or encounter a different minion. Setting a jump
 /// request on the [RaidData] asks the raid system to execute the related
@@ -134,27 +101,6 @@ impl InternalRaidPhase {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum RaidJumpRequest {
     EncounterMinion(CardId),
-}
-
-/// Data about an active raid
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RaidData {
-    /// Unique ID for this raid
-    pub raid_id: RaidId,
-    /// Room being targeted by this raid
-    pub target: RoomId,
-    /// Current state of this raid. Please use the `.phase()` method of the
-    /// `RaidDataExt` trait instead of examining this directly.
-    pub internal_phase: InternalRaidPhase,
-    /// Current encounter position within this raid, if any
-    pub encounter: Option<usize>,
-    /// Cards which have been accessed as part of this raid's Access phase.
-    pub accessed: Vec<CardId>,
-    /// Requested new state for this raid. See [RaidJumpRequest] for details.
-    pub jump_request: Option<RaidJumpRequest>,
-    /// Additional game actions that can be taken in the current raid state
-    /// beyond those supported by the standard game rules.
-    pub additional_actions: Vec<PromptChoice>,
 }
 
 /// Describes options for this game & the set of rules it is using.
@@ -245,8 +191,6 @@ pub struct GameInfo {
     pub turn: TurnData,
     /// State of the current turn
     pub turn_state: TurnState,
-    /// Data about an ongoing raid, if any
-    pub raid: Option<RaidData>,
     /// Counter to create unique IDs for raids within this game
     pub next_raid_id: u32,
     /// Position within the game tutorial, if any
@@ -290,6 +234,8 @@ pub struct GameState {
     pub id: GameId,
     /// General game state & configuration
     pub info: GameInfo,
+    /// State of the ongoing raid in this game, if any
+    pub raid: Option<RaidData>,
     /// Used to track changes to game state in order to update the client. See
     /// [UpdateTracker] for more information.
     #[serde(skip)]
@@ -345,11 +291,11 @@ impl GameState {
                 phase: GamePhase::ResolveMulligans(MulliganData::default()),
                 turn: TurnData { side: Side::Overlord, turn_number: 0 },
                 turn_state: TurnState::Active,
-                raid: None,
                 next_raid_id: 1,
                 tutorial_state: GameTutorialState::default(),
                 config,
             },
+            raid: None,
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
             overlord: GamePlayerData::new(overlord, overlord_deck.schools),
@@ -378,6 +324,7 @@ impl GameState {
             let clone = Self {
                 id: self.id,
                 info: self.info.clone(),
+                raid: self.raid.clone(),
                 updates: UpdateTracker::new(Updates::Ignore),
                 overlord_cards: self.overlord_cards.clone(),
                 champion_cards: self.champion_cards.clone(),
@@ -400,6 +347,7 @@ impl GameState {
         Self {
             id: self.id,
             info: self.info.clone(),
+            raid: self.raid.clone(),
             updates: UpdateTracker::default(),
             overlord_cards: self.overlord_cards.clone(),
             champion_cards: self.champion_cards.clone(),
@@ -633,18 +581,12 @@ impl GameState {
     /// Helper method to return the current [RaidData] or an error when one is
     /// expected to exist.
     pub fn raid(&self) -> Result<&RaidData> {
-        self.info.raid.as_ref().with_error(|| "Expected Raid")
+        self.raid.as_ref().with_error(|| "Expected Raid")
     }
 
     /// Mutable version of [Self::raid].
     pub fn raid_mut(&mut self) -> Result<&mut RaidData> {
-        self.info.raid.as_mut().with_error(|| "Expected Raid")
-    }
-
-    /// Helper method to return the current raid encounter position or an error
-    /// when one is expected to exist.
-    pub fn raid_encounter(&self) -> Result<usize> {
-        self.raid()?.encounter.with_error(|| "Expected Active Encounter")
+        self.raid.as_mut().with_error(|| "Expected Raid")
     }
 
     /// Helper method to return the defender currently being encountered during
@@ -653,7 +595,7 @@ impl GameState {
     pub fn raid_defender(&self) -> Result<CardId> {
         Ok(*self
             .defender_list(self.raid()?.target)
-            .get(self.raid_encounter()?)
+            .get(self.raid()?.encounter.with_error(|| "Expected active encounter")?)
             .with_error(|| "Defender Not Found")?)
     }
 

@@ -265,7 +265,7 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
         }
     }
     dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;
-    game.info.raid = None;
+    game.raid = None;
     Ok(())
 }
 

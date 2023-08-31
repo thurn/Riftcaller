@@ -31,11 +31,10 @@ use std::iter;
 use game_data::card_name::CardName;
 use game_data::card_state::{CardPosition, CardPositionKind};
 use game_data::deck::Deck;
-use game_data::game::{
-    GameConfiguration, GamePhase, GameState, InternalRaidPhase, RaidData, TurnData,
-};
+use game_data::game::{GameConfiguration, GamePhase, GameState, TurnData};
 use game_data::player_name::PlayerId;
 use game_data::primitives::{ActionCount, GameId, ManaValue, PointsValue, Side};
+use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use maplit::hashmap;
 use rules::{dispatch, mana};
 
@@ -186,14 +185,13 @@ impl TestRaid {
     }
 
     pub fn apply_to(self, game: &mut GameState) {
-        game.info.raid = Some(RaidData {
+        game.raid = Some(RaidData {
             raid_id: test_constants::RAID_ID,
             target: test_constants::ROOM_ID,
-            internal_phase: InternalRaidPhase::Begin,
+            state: RaidState::Step(RaidStep::Begin),
             encounter: None,
             accessed: vec![],
             jump_request: None,
-            additional_actions: vec![],
         })
     }
 }

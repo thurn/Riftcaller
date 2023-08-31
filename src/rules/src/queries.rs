@@ -29,6 +29,7 @@ use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BreachValue, CardId, CardType, HealthValue,
     ItemLocation, ManaValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
+use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
 use crate::dispatch;
 
@@ -270,4 +271,38 @@ pub fn played_position(
         CardType::Riftcaller => CardPosition::Riftcaller(side),
         CardType::GameModifier => CardPosition::GameModifier,
     })
+}
+
+/// Returns a [RaidStatus] describing the high-level state of this `raid`.
+pub fn raid_status(raid: &RaidData) -> RaidStatus {
+    match &raid.state {
+        RaidState::Step(step) => match step {
+            RaidStep::Begin => RaidStatus::Begin,
+            RaidStep::PopulateSummonPrompt(_)
+            | RaidStep::SummonMinion(_)
+            | RaidStep::DoNotSummon(_) => RaidStatus::Summon,
+            RaidStep::NextEncounter
+            | RaidStep::EncounterMinion(_)
+            | RaidStep::PopulateEncounterPrompt(_)
+            | RaidStep::UseWeapon(_)
+            | RaidStep::MinionDefeated(_)
+            | RaidStep::FireMinionCombatAbility(_) => RaidStatus::Encounter,
+            RaidStep::PopulateApproachPrompt => RaidStatus::ApproachRoom,
+            RaidStep::AccessStart
+            | RaidStep::BuildAccessSet
+            | RaidStep::AccessSetBuilt
+            | RaidStep::RevealAccessedCards
+            | RaidStep::AccessCards
+            | RaidStep::PopulateAccessPrompt
+            | RaidStep::StartScoringCard(_)
+            | RaidStep::ChampionScoreEvent(_)
+            | RaidStep::ScoreEvent(_)
+            | RaidStep::ScorePointsForCard(_)
+            | RaidStep::MoveToScoredPosition(_)
+            | RaidStep::StartRazingCard(_, _)
+            | RaidStep::RazeCard(_, _)
+            | RaidStep::FinishRaid => RaidStatus::Access,
+        },
+        RaidState::Prompt(prompt) => prompt.status,
+    }
 }

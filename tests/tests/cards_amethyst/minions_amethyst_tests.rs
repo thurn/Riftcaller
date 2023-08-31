@@ -90,6 +90,7 @@ fn temporal_stalker_end_raid() {
     g.create_and_play(CardName::TemporalStalker);
     g.set_up_minion_combat();
     assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    g.opponent_click(Button::NoWeapon);
     g.click_on(g.opponent_id(), "End Raid");
     assert!(!g.user.data.raid_active());
     assert_eq!(
@@ -106,6 +107,7 @@ fn temporal_stalker_pay_actions() {
     g.add_to_hand(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TemporalStalker);
     g.set_up_minion_combat();
+    g.opponent_click(Button::NoWeapon);
     g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
     assert_eq!(1, g.opponent.this_player.actions());
     assert!(g.user.data.raid_active());
@@ -218,7 +220,8 @@ fn stormcaller_take_2() {
         .build();
     g.create_and_play(CardName::Stormcaller);
     g.set_up_minion_combat();
-    g.click_on(g.opponent_id(), "Take 2");
+    g.opponent_click(Button::NoWeapon);
+    g.click_on(g.opponent_id(), "End Raid");
     assert!(!g.user.data.raid_active());
     assert_eq!(2, g.opponent.cards.discard_pile(PlayerName::User).len());
 }
@@ -230,7 +233,8 @@ fn stormcaller_take_4() {
         .build();
     g.create_and_play(CardName::Stormcaller);
     g.set_up_minion_combat();
-    g.click_on(g.opponent_id(), "Take 4");
+    g.opponent_click(Button::NoWeapon);
+    g.click_on(g.opponent_id(), "Take 2");
     assert!(g.user.data.raid_active());
     assert_eq!(4, g.opponent.cards.discard_pile(PlayerName::User).len());
 }
@@ -242,7 +246,6 @@ fn stormcaller_take_2_game_over() {
         .build();
     g.create_and_play(CardName::Stormcaller);
     g.set_up_minion_combat();
-    assert!(!g.opponent.interface.controls().has_text("Take 4"));
-    g.click_on(g.opponent_id(), "Take 2");
+    g.opponent_click(Button::NoWeapon);
     assert!(g.is_victory_for_player(Side::Overlord));
 }

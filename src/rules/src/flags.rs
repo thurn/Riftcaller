@@ -23,29 +23,28 @@ use game_data::delegates::{
     CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
     CardEncounter, Flag,
 };
-use game_data::game::{GamePhase, GameState, InternalRaidPhase, TurnState};
+use game_data::game::{GamePhase, GameState, TurnState};
 use game_data::game_actions::CardTarget;
 use game_data::primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, Resonance, RoomId, Side,
 };
+use game_data::raid_data::RaidStatus;
 use game_data::utils;
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, mana, queries};
 
 /// Returns the player that is currently able to take actions in the provided
-/// game. If no player can act because the game has ended, returns None.
+/// game. If no player can act, e.g. because the game has ended, returns None.
 pub fn current_priority(game: &GameState) -> Option<Side> {
     match &game.info.phase {
         GamePhase::ResolveMulligans(_) => {
             if can_make_mulligan_decision(game, Side::Overlord) {
                 Some(Side::Overlord)
-            } else {
-                assert!(
-                    can_make_mulligan_decision(game, Side::Champion),
-                    "No player has mulligan decision"
-                );
+            } else if can_make_mulligan_decision(game, Side::Champion) {
                 Some(Side::Champion)
+            } else {
+                None
             }
         }
         GamePhase::Play => {
@@ -53,8 +52,13 @@ pub fn current_priority(game: &GameState) -> Option<Side> {
                 Some(Side::Overlord)
             } else if !game.champion.prompt_queue.is_empty() {
                 Some(Side::Champion)
-            } else if let Some(raid) = &game.info.raid {
-                Some(raid.internal_phase.active_side())
+            } else if let Some(raid) = &game.raid {
+                Some(match queries::raid_status(raid) {
+                    RaidStatus::Begin | RaidStatus::Encounter | RaidStatus::Access => {
+                        Side::Champion
+                    }
+                    RaidStatus::Summon | RaidStatus::ApproachRoom => Side::Overlord,
+                })
             } else if game.info.turn_state == TurnState::Active {
                 Some(game.info.turn.side)
             } else {
@@ -275,7 +279,7 @@ pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: Room
     let non_empty = room_id.is_inner_room() || game.occupants(room_id).next().is_some();
     let can_initiate = non_empty
         && side == Side::Champion
-        && game.info.raid.is_none()
+        && game.raid.is_none()
         && in_main_phase_with_action_point(game, side);
     dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(can_initiate)).into()
 }
@@ -338,8 +342,6 @@ pub fn can_encounter_target(game: &GameState, source: CardId, target: CardId) ->
 /// Can the `source` card defeat the `target` card in an encounter by paying its
 /// shield cost and dealing enough damage to equal its health (potentially after
 /// paying mana & applying boosts), or via some other game mechanism?
-///
-/// This requires [can_encounter_target] to be true.
 pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bool {
     let can_defeat = can_encounter_target(game, source, target)
         && matches!(
@@ -368,7 +370,7 @@ pub fn in_main_phase(game: &GameState, side: Side) -> bool {
     can_take_game_actions(game)
         && game.info.turn.side == side
         && game.info.turn_state != TurnState::Ended
-        && game.info.raid.is_none()
+        && game.raid.is_none()
 }
 
 /// Returns true if either player can currently take game standard game actions
@@ -451,13 +453,11 @@ pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {
         && turn_state != TurnState::Ended;
     let summonbound = subtypes.contains(&CardSubtype::Summonbound)
         && current_turn == Side::Champion
-        && utils::is_true(|| {
-            Some(game.info.raid.as_ref()?.internal_phase == InternalRaidPhase::Summon)
-        });
+        && utils::is_true(|| Some(queries::raid_status(game.raid.as_ref()?) == RaidStatus::Summon));
     let roombound = subtypes.contains(&CardSubtype::Roombound)
         && current_turn == Side::Champion
         && utils::is_true(|| {
-            Some(game.info.raid.as_ref()?.internal_phase == InternalRaidPhase::ApproachRoom)
+            Some(queries::raid_status(game.raid.as_ref()?) == RaidStatus::ApproachRoom)
         });
 
     duskbound || nightbound || summonbound || roombound

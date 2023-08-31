@@ -59,6 +59,7 @@ pub fn handle_game_action(
         GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
         GameAction::MoveCard(card_id) => move_card_action(game, user_side, *card_id),
+        GameAction::RaidAction(action) => raids::run(game, Some(*action)),
         GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
     }?;
 
@@ -239,10 +240,6 @@ fn handle_game_state_action(
         }
         GameStateAction::StartTurnAction => handle_start_turn_action(game, user_side),
         GameStateAction::EndTurnAction => handle_end_turn_action(game, user_side),
-        GameStateAction::SummonAction(_)
-        | GameStateAction::EncounterAction(_)
-        | GameStateAction::ApproachRoomAction(_)
-        | GameStateAction::AccessPhaseAction(_) => raids::handle_action(game, user_side, action),
     }
 }
 
@@ -358,7 +355,6 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
             }
 
             game.player_mut(user_side).prompt_queue.remove(0);
-            Ok(())
         }
         (GamePrompt::CardBrowserPrompt(browser), PromptAction::CardBrowserPromptSubmit) => {
             handle_card_browser_submit_action(
@@ -366,10 +362,13 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
                 user_side,
                 browser.chosen_subjects.clone(),
                 browser.action,
-            )
+            )?;
         }
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
+
+    // Try to resume the raid state machine, in case this prompt caused it to pause.
+    raids::run(game, None)
 }
 
 fn handle_card_browser_submit_action(

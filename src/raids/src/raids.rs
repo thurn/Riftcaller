@@ -12,52 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Implements state machine model for handling raids"
-
-pub mod traits;
-
-mod access;
-pub mod approach_room;
-mod begin;
-mod defenders;
-mod encounter;
-mod summon;
+pub mod access;
+pub mod defenders;
+pub mod raid_display_state;
+pub mod raid_prompt;
 
 use anyhow::Result;
-use game_data::game::{
-    GamePhase, GameState, HistoryEntry, HistoryEvent, InternalRaidPhase, RaidData, RaidJumpRequest,
+use game_data::card_state::CardPosition;
+use game_data::delegates::{
+    CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, MinionCombatAbilityEvent,
+    MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome,
+    RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
-use game_data::game_actions::{ActionButtons, GameStateAction};
-use game_data::primitives::{RaidId, RoomId, Side};
-use game_data::updates::{GameUpdate, InitiatedBy};
-use rules::{flags, mutations, queries};
-use tracing::info;
+use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent, RaidJumpRequest};
+use game_data::game_actions::RaidAction;
+use game_data::primitives::{CardId, GameObjectId, RaidId, RoomId, Side};
+use game_data::raid_data::{
+    RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus, RaidStep, ScoredCard,
+    WeaponInteraction,
+};
+use game_data::updates::{GameUpdate, InitiatedBy, TargetedInteraction};
+use rules::mana::ManaPurpose;
+use rules::mutations::SummonMinion;
+use rules::{dispatch, flags, mana, mutations, queries};
+use tracing::debug;
 use with_error::{verify, WithError};
-
-use crate::access::AccessPhase;
-use crate::approach_room::ApproachRoomPhase;
-use crate::begin::BeginPhase;
-use crate::encounter::EncounterPhase;
-use crate::summon::SummonPhase;
-use crate::traits::RaidPhase;
-
-/// Extension trait to add the `phase` method to [RaidData] without introducing
-/// cyclical crate dependencies.
-pub trait RaidDataExt {
-    fn phase(&self) -> Box<dyn RaidPhase>;
-}
-
-impl RaidDataExt for RaidData {
-    fn phase(&self) -> Box<dyn RaidPhase> {
-        match self.internal_phase {
-            InternalRaidPhase::Begin => Box::new(BeginPhase {}),
-            InternalRaidPhase::Summon => Box::new(SummonPhase {}),
-            InternalRaidPhase::Encounter => Box::new(EncounterPhase {}),
-            InternalRaidPhase::ApproachRoom => Box::new(ApproachRoomPhase {}),
-            InternalRaidPhase::Access => Box::new(AccessPhase {}),
-        }
-    }
-}
 
 /// Handle a client request to initiate a new raid. Deducts action points and
 /// then invokes [initiate].
@@ -86,107 +65,341 @@ pub fn initiate(
     on_begin: impl Fn(&mut GameState, RaidId),
 ) -> Result<()> {
     let raid_id = RaidId(game.info.next_raid_id);
-    let phase = InternalRaidPhase::Begin;
     let raid = RaidData {
         target: target_room,
         raid_id,
-        internal_phase: phase,
+        state: RaidState::Step(RaidStep::Begin),
         encounter: None,
         accessed: vec![],
         jump_request: None,
-        additional_actions: vec![],
     };
 
     game.info.next_raid_id += 1;
-    game.info.raid = Some(raid);
+    game.raid = Some(raid);
     on_begin(game, raid_id);
     game.record_update(|| GameUpdate::InitiateRaid(target_room, initiated_by));
-    enter_phase(game, Some(phase))?;
     game.history
         .push(HistoryEntry { turn: game.info.turn, event: HistoryEvent::RaidBegan(target_room) });
 
-    Ok(())
+    run(game, None)
 }
 
-/// Handles a [GameStateAction] supplied by a user during a raid. Returns an
-/// error if no raid is currently active or if this action was not expected from
-/// this player.
-pub fn handle_action(game: &mut GameState, user_side: Side, action: GameStateAction) -> Result<()> {
-    let raid = game.raid()?;
-    let phase = raid.phase();
-    verify!(raid.internal_phase.active_side() == user_side, "Unexpected side");
-    verify!(phase.prompts(game)?.iter().any(|c| c == &action), "Unexpected action");
-
-    info!(?user_side, ?action, "Handling raid action");
-    let mut new_state = phase.handle_prompt(game, action)?;
-    new_state = apply_jump(game)?.or(new_state);
-
-    if game.info.raid.is_some() {
-        enter_phase(game, new_state)
-    } else {
-        Ok(())
-    }
-}
-
-/// Returns a list of the user actions which are possible in the current raid
-/// state for the `side` player, or `None` if no such actions are possible.
-pub fn current_actions(game: &GameState, user_side: Side) -> Result<Option<Vec<GameStateAction>>> {
-    if game.info.phase != GamePhase::Play {
-        return Ok(None);
-    }
-
-    if let Some(raid) = &game.info.raid {
-        if raid.internal_phase.active_side() == user_side {
-            let prompts = raid.phase().prompts(game)?;
-            if !prompts.is_empty() {
-                return Ok(Some(prompts));
-            }
-        }
-    }
-
-    Ok(None)
-}
-
-/// Builds an [ActionButtons] representing the possible actions for the `side`
-/// user, as determined by the [current_actions] function.
-pub fn current_prompt(game: &GameState, user_side: Side) -> Result<Option<ActionButtons>> {
-    if let Some(actions) = current_actions(game, user_side)? {
-        Ok(Some(ActionButtons {
-            context: game.raid()?.phase().prompt_context(),
-            responses: actions,
-        }))
-    } else {
-        Ok(None)
-    }
-}
-
-/// Sets the game to a new raid phase and invokes callbacks as needed.
-fn enter_phase(game: &mut GameState, mut phase: Option<InternalRaidPhase>) -> Result<()> {
+/// Run the raid state machine, if needed.
+///
+/// This will advance the raid state machine through its steps, optionally
+/// incorporating a user action choice provided via the `action` parameter.
+///
+/// The state machine pauses if a player is presented with a prompt to respond
+/// to, and aborts if the raid is ended. If no raid is currently active or the
+/// state machine cannot currently advance, this function silently ignores the
+/// run request.
+pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
     loop {
-        if let Some(s) = phase {
-            game.raid_mut()?.internal_phase = s;
-            phase = game.raid()?.phase().enter(game)?;
-            phase = apply_jump(game)?.or(phase);
+        if !(game.overlord.prompt_queue.is_empty() && game.champion.prompt_queue.is_empty()) {
+            break;
+        }
+
+        if game.info.phase != GamePhase::Play {
+            break;
+        }
+
+        apply_jump_request_if_needed(game)?;
+
+        if let Some(raid) = &game.raid {
+            let info = raid.info();
+            match (&raid.state, action) {
+                (RaidState::Step(step), _) => {
+                    let state = evaluate_raid_step(game, info, step.clone())?;
+                    if let Some(raid) = &mut game.raid {
+                        raid.state = state;
+                    }
+                }
+                (RaidState::Prompt(prompt), Some(raid_action)) => {
+                    let choice = prompt
+                        .choices
+                        .get(raid_action.index)
+                        .with_error(|| "Index out of bounds")?
+                        .clone();
+                    let state = evaluate_raid_step(game, info, choice.step)?;
+                    if let Some(raid) = &mut game.raid {
+                        raid.state = state;
+                    }
+                    action = None;
+                }
+                _ => {
+                    break;
+                }
+            }
         } else {
-            return Ok(());
+            break;
         }
     }
+    Ok(())
 }
 
 /// Implements a [RaidJumpRequest], if one has been specified for the current
 /// raid.
-fn apply_jump(game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-    if let Some(raid) = &game.info.raid {
+fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
+    if let Some(raid) = &game.raid {
         if let Some(RaidJumpRequest::EncounterMinion(card_id)) = raid.jump_request {
             let (room_id, index) =
                 queries::minion_position(game, card_id).with_error(|| "Minion not found")?;
+            debug!(?index, ?card_id, ?room_id, "Handling RaidJumpRequest::EncounterMinion");
             let raid = game.raid_mut()?;
             raid.target = room_id;
             raid.encounter = Some(index);
             raid.jump_request = None;
-            return Ok(Some(InternalRaidPhase::Encounter));
+            raid.state = RaidState::Step(RaidStep::EncounterMinion(card_id));
         }
     }
 
-    Ok(None)
+    Ok(())
+}
+
+fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> Result<RaidState> {
+    debug!(?step, ?info.target, ?info.raid_id, ?info.encounter, "Evaluating raid step");
+    match step {
+        RaidStep::Begin => begin_raid(game, info),
+        RaidStep::NextEncounter => RaidState::step(defenders::next_encounter(game, info)?),
+        RaidStep::PopulateSummonPrompt(minion_id) => populate_summon_prompt(minion_id),
+        RaidStep::SummonMinion(minion_id) => summon_minion(game, minion_id),
+        RaidStep::DoNotSummon(_) => RaidState::step(RaidStep::NextEncounter),
+        RaidStep::EncounterMinion(minion_id) => encounter_minion(game, minion_id),
+        RaidStep::PopulateEncounterPrompt(minion_id) => populate_encounter_prompt(game, minion_id),
+        RaidStep::UseWeapon(interaction) => use_weapon(game, info, interaction),
+        RaidStep::MinionDefeated(interaction) => minion_defeated(game, interaction),
+        RaidStep::FireMinionCombatAbility(minion_id) => fire_minion_combat_ability(game, minion_id),
+        RaidStep::PopulateApproachPrompt => populate_approach_prompt(game),
+        RaidStep::AccessStart => access_start(game, info),
+        RaidStep::BuildAccessSet => build_access_set(game, info),
+        RaidStep::AccessSetBuilt => access_set_built(game, info),
+        RaidStep::RevealAccessedCards => reveal_accessed_cards(game),
+        RaidStep::AccessCards => access_cards(game),
+        RaidStep::PopulateAccessPrompt => populate_access_prompt(game, info),
+        RaidStep::StartScoringCard(scored) => start_scoring_card(game, scored),
+        RaidStep::ChampionScoreEvent(scored) => champion_score_event(game, scored),
+        RaidStep::ScoreEvent(scored) => score_event(game, scored),
+        RaidStep::ScorePointsForCard(scored) => score_points_for_card(game, scored),
+        RaidStep::MoveToScoredPosition(scored) => move_to_scored_position(game, scored),
+        RaidStep::StartRazingCard(card_id, cost) => start_razing_card(game, card_id, cost),
+        RaidStep::RazeCard(card_id, cost) => raze_card(game, card_id, cost),
+        RaidStep::FinishRaid => finish_raid(game),
+    }
+}
+
+fn begin_raid(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    dispatch::invoke_event(
+        game,
+        RaidStartEvent(RaidEvent { raid_id: info.raid_id, target: info.target }),
+    )?;
+
+    RaidState::step(RaidStep::NextEncounter)
+}
+
+fn populate_summon_prompt(minion_id: CardId) -> Result<RaidState> {
+    RaidState::prompt(
+        RaidStatus::Summon,
+        vec![
+            RaidChoice::new(RaidLabel::SummonMinion(minion_id), RaidStep::SummonMinion(minion_id)),
+            RaidChoice::new(RaidLabel::DoNotSummonMinion, RaidStep::DoNotSummon(minion_id)),
+        ],
+    )
+}
+
+fn summon_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
+    verify!(defenders::can_summon_defender(game, minion_id), "Cannot summon minion");
+    mutations::summon_minion(game, minion_id, SummonMinion::PayCosts)?;
+    RaidState::step(RaidStep::EncounterMinion(minion_id))
+}
+
+fn encounter_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
+    dispatch::invoke_event(game, EncounterMinionEvent(minion_id))?;
+    RaidState::step(RaidStep::PopulateEncounterPrompt(minion_id))
+}
+
+fn populate_encounter_prompt(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
+    RaidState::prompt(
+        RaidStatus::Encounter,
+        game.artifacts()
+            .filter(|weapon| flags::can_defeat_target(game, weapon.id, minion_id))
+            .map(|weapon| {
+                let interaction = WeaponInteraction::new(weapon.id, minion_id);
+                RaidChoice::new(RaidLabel::UseWeapon(interaction), RaidStep::UseWeapon(interaction))
+            })
+            .chain(flags::can_take_use_no_weapon_action(game, minion_id).then(|| {
+                RaidChoice::new(
+                    RaidLabel::DoNotUseWeapon,
+                    RaidStep::FireMinionCombatAbility(minion_id),
+                )
+            }))
+            .collect(),
+    )
+}
+
+fn use_weapon(
+    game: &mut GameState,
+    info: RaidInfo,
+    interaction: WeaponInteraction,
+) -> Result<RaidState> {
+    let cost = queries::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
+        .with_error(|| {
+            format!(
+                "{:?} cannot defeat target: {:?}",
+                interaction.weapon_id, interaction.defender_id
+            )
+        })?;
+    mana::spend(game, Side::Champion, ManaPurpose::UseWeapon(interaction.weapon_id), cost)?;
+
+    game.record_update(|| {
+        GameUpdate::TargetedInteraction(TargetedInteraction {
+            source: GameObjectId::CardId(interaction.weapon_id),
+            target: GameObjectId::CardId(interaction.defender_id),
+        })
+    });
+
+    dispatch::invoke_event(
+        game,
+        UsedWeaponEvent(UsedWeapon {
+            raid_id: info.raid_id,
+            weapon_id: interaction.weapon_id,
+            target_id: interaction.defender_id,
+            mana_spent: cost,
+        }),
+    )?;
+
+    RaidState::step(RaidStep::MinionDefeated(interaction))
+}
+
+fn minion_defeated(game: &mut GameState, interaction: WeaponInteraction) -> Result<RaidState> {
+    dispatch::invoke_event(game, MinionDefeatedEvent(interaction.defender_id))?;
+    RaidState::step(RaidStep::NextEncounter)
+}
+
+fn fire_minion_combat_ability(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
+    game.record_update(|| {
+        GameUpdate::TargetedInteraction(TargetedInteraction {
+            source: GameObjectId::CardId(minion_id),
+            target: GameObjectId::Character(Side::Champion),
+        })
+    });
+
+    dispatch::invoke_event(game, MinionCombatAbilityEvent(minion_id))?;
+    RaidState::step(RaidStep::NextEncounter)
+}
+
+fn populate_approach_prompt(game: &mut GameState) -> Result<RaidState> {
+    if flags::overlord_has_instant_speed_actions(game) {
+        RaidState::prompt(
+            RaidStatus::ApproachRoom,
+            vec![RaidChoice::new(RaidLabel::ProceedToAccess, RaidStep::AccessStart)],
+        )
+    } else {
+        RaidState::step(RaidStep::AccessStart)
+    }
+}
+
+fn access_start(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    dispatch::invoke_event(game, RaidAccessStartEvent(info.raid_id))?;
+    RaidState::step(RaidStep::BuildAccessSet)
+}
+
+fn build_access_set(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    game.raid_mut()?.accessed = access::select_accessed_cards(game, info)?;
+    RaidState::step(RaidStep::AccessSetBuilt)
+}
+
+fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    dispatch::invoke_event(
+        game,
+        RaidAccessSelectedEvent(RaidEvent { raid_id: info.raid_id, target: info.target }),
+    )?;
+    RaidState::step(RaidStep::RevealAccessedCards)
+}
+
+fn reveal_accessed_cards(game: &mut GameState) -> Result<RaidState> {
+    let accessed = game.raid()?.accessed.clone();
+    for card_id in &accessed {
+        game.card_mut(*card_id).set_revealed_to(Side::Champion, true);
+    }
+
+    RaidState::step(RaidStep::AccessCards)
+}
+
+fn access_cards(game: &mut GameState) -> Result<RaidState> {
+    let accessed = game.raid()?.accessed.clone();
+    for card_id in &accessed {
+        dispatch::invoke_event(game, CardAccessEvent(*card_id))?;
+    }
+
+    RaidState::step(RaidStep::PopulateAccessPrompt)
+}
+
+fn populate_access_prompt(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    let can_end = flags::can_take_end_raid_access_phase_action(game, info.raid_id);
+    RaidState::prompt(
+        RaidStatus::Access,
+        game.raid()?
+            .accessed
+            .iter()
+            .filter_map(|card_id| access::access_action_for_card(game, *card_id))
+            .chain(
+                can_end
+                    .then_some(RaidChoice::new(RaidLabel::EndRaid, RaidStep::FinishRaid))
+                    .into_iter(),
+            )
+            .collect(),
+    )
+}
+
+fn start_scoring_card(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+    game.card_mut(scored.id).turn_face_up();
+    mutations::move_card(game, scored.id, CardPosition::Scoring)?;
+    game.raid_mut()?.accessed.retain(|c| *c != scored.id);
+    game.record_update(|| GameUpdate::ScoreCard(Side::Champion, scored.id));
+    RaidState::step(RaidStep::ChampionScoreEvent(scored))
+}
+
+fn champion_score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+    dispatch::invoke_event(game, ChampionScoreCardEvent(scored.id))?;
+    RaidState::step(RaidStep::ScoreEvent(scored))
+}
+
+fn score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+    dispatch::invoke_event(
+        game,
+        ScoreCardEvent(ScoreCard { player: Side::Champion, card_id: scored.id }),
+    )?;
+    RaidState::step(RaidStep::ScorePointsForCard(scored))
+}
+
+fn score_points_for_card(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+    let scheme_points = rules::card_definition(game, scored.id)
+        .config
+        .stats
+        .scheme_points
+        .with_error(|| format!("Expected SchemePoints for {:?}", scored.id))?;
+    mutations::score_points(game, Side::Champion, scheme_points.points)?;
+    RaidState::step(RaidStep::MoveToScoredPosition(scored))
+}
+
+fn move_to_scored_position(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+    mutations::move_card(game, scored.id, CardPosition::Scored(Side::Champion))?;
+    RaidState::step(RaidStep::PopulateAccessPrompt)
+}
+
+fn start_razing_card(game: &mut GameState, card_id: CardId, cost: u32) -> Result<RaidState> {
+    game.raid_mut()?.accessed.retain(|c| *c != card_id);
+    dispatch::invoke_event(game, RazeCardEvent(card_id))?;
+    RaidState::step(RaidStep::RazeCard(card_id, cost))
+}
+
+fn raze_card(game: &mut GameState, card_id: CardId, cost: u32) -> Result<RaidState> {
+    mana::spend(game, Side::Champion, ManaPurpose::RazeCard(card_id), cost)?;
+    mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
+    RaidState::step(RaidStep::PopulateAccessPrompt)
+}
+
+fn finish_raid(game: &mut GameState) -> Result<RaidState> {
+    mutations::end_raid(game, RaidOutcome::Success)?;
+    RaidState::step(RaidStep::FinishRaid)
 }

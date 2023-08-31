@@ -13,22 +13,18 @@
 // limitations under the License.
 
 use anyhow::Result;
-use fallible_iterator::FallibleIterator;
-use game_data::game::{GameState, InternalRaidPhase};
+use game_data::game::GameState;
 use game_data::primitives::{CardId, RoomId, Side};
-use game_data::utils;
+use game_data::raid_data::{RaidDisplayState, RaidInfo, RaidStep};
 use rules::mana::ManaPurpose;
 use rules::{mana, queries};
-use with_error::WithError;
-
-use crate::traits::RaidDisplayState;
 
 /// Returns true if the raid `defender_id` is currently face down and could be
 /// turned face up automatically by paying its mana cost.
 ///
 /// Returns an error if there is no active raid or if this is an invalid
 /// defender.
-pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> Result<bool> {
+pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> bool {
     let mut can_summon = game.card(defender_id).is_face_down();
 
     if let Some(cost) = queries::mana_cost(game, defender_id) {
@@ -39,34 +35,29 @@ pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> Result<bool
         can_summon &= (custom_cost.can_pay)(game, defender_id);
     }
 
-    Ok(can_summon)
+    can_summon
 }
 
-pub fn defender_list_display_state(game: &GameState) -> Result<RaidDisplayState> {
-    let defenders = game.defender_list(game.raid()?.target);
-    Ok(RaidDisplayState::Defenders(defenders[0..=game.raid_encounter()?].to_vec()))
+pub fn defender_list_display_state(game: &GameState, info: RaidInfo) -> Result<RaidDisplayState> {
+    let defenders = game.defender_list(info.target);
+    Ok(RaidDisplayState::Defenders(defenders[0..=info.encounter()?].to_vec()))
 }
 
 /// Mutates the provided game to update the current raid encounter to the next
 /// available encounter number, if one is available. Returns the next
-/// [InternalRaidPhase] which should be entered, based on whether a suitable
+/// [RaidStep] which should be entered, based on whether a suitable
 /// encounter was found.
-pub fn advance_to_next_encounter(game: &mut GameState) -> Result<Option<InternalRaidPhase>> {
-    if game.info.raid.is_none() {
-        // Abilities may have ended the raid
-        return Ok(None);
-    }
-
-    let current_position = game.info.raid.as_ref().and_then(|r| r.encounter);
-    Ok(if let Some(encounter) = next_encounter(game, current_position)? {
+pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> {
+    Ok(if let Some(encounter) = next_defender(game, info, info.encounter) {
         game.raid_mut()?.encounter = Some(encounter);
-        if game.card(game.raid_defender()?).is_face_down() {
-            Some(InternalRaidPhase::Summon)
+        let defender = game.raid_defender()?;
+        if game.card(defender).is_face_down() {
+            RaidStep::PopulateSummonPrompt(defender)
         } else {
-            Some(InternalRaidPhase::Encounter)
+            RaidStep::EncounterMinion(defender)
         }
     } else {
-        Some(InternalRaidPhase::ApproachRoom)
+        RaidStep::PopulateApproachPrompt
     })
 }
 
@@ -77,21 +68,24 @@ pub fn advance_to_next_encounter(game: &mut GameState) -> Result<Option<Internal
 ///
 /// An 'eligible' defender is either one which is face up, or one which *can* be
 /// turned face up by paying its costs.
-fn next_encounter(game: &GameState, less_than: Option<usize>) -> Result<Option<usize>> {
-    let target = game.raid()?.target;
+fn next_defender(game: &GameState, info: RaidInfo, less_than: Option<usize>) -> Option<usize> {
+    let target = info.target;
     let defenders = game.defender_list(target);
-    let mut reversed = utils::fallible(defenders.iter().enumerate().rev());
+    let mut reversed = defenders.iter().enumerate().rev();
     let found = reversed.find(|(index, card_id)| {
         let in_range = less_than.map_or(true, |less_than| *index < less_than);
-        let defender_id = find_defender(game, target, *index)?;
+        let defender_id = find_defender(game, target, *index);
         let can_encounter =
-            game.card(**card_id).is_face_up() || can_summon_defender(game, defender_id)?;
-        Ok(in_range && can_encounter)
-    })?;
+            game.card(**card_id).is_face_up() || can_summon_defender(game, defender_id);
+        in_range && can_encounter
+    });
 
-    Ok(found.map(|(index, _)| index))
+    found.map(|(index, _)| index)
 }
 
-fn find_defender(game: &GameState, room_id: RoomId, index: usize) -> Result<CardId> {
-    Ok(*game.defender_list(room_id).get(index).with_error(|| "Defender Not Found")?)
+fn find_defender(game: &GameState, room_id: RoomId, index: usize) -> CardId {
+    *game
+        .defender_list(room_id)
+        .get(index)
+        .unwrap_or_else(|| panic!("Defender at position {index} not found in {room_id:?}"))
 }

@@ -2183,8 +2183,11 @@ name = "raids"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "core_ui",
  "fallible-iterator",
  "game_data",
+ "prompts",
+ "protos",
  "rules",
  "tracing",
  "with_error",

@@ -14,7 +14,7 @@
 
 use core_ui::icons;
 use game_data::card_name::CardName;
-use game_data::game_actions::{AccessPhaseAction, EncounterAction, GameAction, GameStateAction};
+use game_data::game_actions::{GameAction, RaidAction};
 use game_data::primitives::{RoomId, Side};
 use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
@@ -33,7 +33,7 @@ use test_utils::*;
 #[test]
 fn initiate_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    let weapon_id = g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
+    g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
     let response = g.initiate_raid(test_constants::ROOM_ID);
@@ -80,15 +80,8 @@ fn initiate_raid() {
     assert_eq!(
         g.legal_actions(Side::Champion),
         vec![
-            GameAction::GameStateAction(GameStateAction::EncounterAction(
-                EncounterAction::UseWeaponAbility(
-                    test_helpers::server_card_id(weapon_id),
-                    test_helpers::server_card_id(minion_id)
-                )
-            )),
-            GameAction::GameStateAction(GameStateAction::EncounterAction(
-                EncounterAction::NoWeapon
-            ))
+            GameAction::RaidAction(RaidAction { index: 0 }),
+            GameAction::RaidAction(RaidAction { index: 1 }),
         ]
     );
 
@@ -257,12 +250,8 @@ fn score_scheme_card() {
     assert_eq!(
         g.legal_actions(Side::Champion),
         vec![
-            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-                AccessPhaseAction::ScoreCard(test_helpers::server_card_id(scheme_id))
-            )),
-            GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-                AccessPhaseAction::EndRaid
-            ))
+            GameAction::RaidAction(RaidAction { index: 0 }),
+            GameAction::RaidAction(RaidAction { index: 1 })
         ]
     );
 
@@ -289,9 +278,7 @@ fn score_scheme_card() {
 
     assert_eq!(
         g.legal_actions(Side::Champion),
-        vec![GameAction::GameStateAction(GameStateAction::AccessPhaseAction(
-            AccessPhaseAction::EndRaid
-        ))]
+        vec![GameAction::RaidAction(RaidAction { index: 0 })]
     );
 
     assert_snapshot!(Summary::summarize(&response));
