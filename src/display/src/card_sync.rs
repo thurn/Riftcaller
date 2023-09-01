@@ -221,6 +221,7 @@ fn revealed_card_view(
         supplemental_info: supplemental_info::build(context, None),
         card_move_target: context
             .query_or(None, |game, card| card_browser::move_target(builder, game, card)),
+        point_to_parent: None,
     })
 }
 
@@ -257,6 +258,7 @@ fn revealed_ability_card_view(
         }),
         supplemental_info: supplemental_info::build(context, Some(ability_id.index)),
         card_move_target: None,
+        point_to_parent: Some(adapters::card_identifier(ability_id.card_id)),
     })
 }
 
@@ -284,6 +286,7 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
         }),
         supplemental_info: supplemental_info::build(context, None),
         card_move_target: None,
+        point_to_parent: Some(adapters::card_identifier(card_id)),
     })
 }
 

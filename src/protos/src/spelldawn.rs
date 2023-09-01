@@ -780,7 +780,7 @@ pub struct ObjectPositionRiftcallers {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionBrowserDragTarget {}
-/// Position in at which cards are shown when one card is being selected out of
+/// Position in which cards are shown when one card is being selected out of
 /// a group of cards.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -890,6 +890,11 @@ pub struct RevealedCardView {
     /// a card with a move target.
     #[prost(message, optional, tag = "11")]
     pub card_move_target: ::core::option::Option<ObjectPosition>,
+    /// If provided, identifes a parent card for this card. An arrow will be
+    /// rendered from this card to its parent while it is being dragged,
+    /// indicating the relationship between these two cards.
+    #[prost(message, optional, tag = "12")]
+    pub point_to_parent: ::core::option::Option<CardIdentifier>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

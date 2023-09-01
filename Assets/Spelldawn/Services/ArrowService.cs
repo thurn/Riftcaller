@@ -30,6 +30,39 @@ namespace Spelldawn.Services
       Blue
     }
 
+    public interface IArrowAnchor
+    {
+      Vector3 GetPosition();
+    }
+
+    public sealed class MouseAnchor : IArrowAnchor
+    {
+      readonly Registry _registry;
+      readonly float _dragStartScreenZ;
+
+      public MouseAnchor(Registry registry, float dragStartScreenZ)
+      {
+        _registry = registry;
+        _dragStartScreenZ = dragStartScreenZ;
+      }
+      
+      public Vector3 GetPosition() =>
+        _registry.MainCamera.ScreenToWorldPoint(
+          new Vector3(Input.mousePosition.x, Input.mousePosition.y, _dragStartScreenZ));
+    }
+
+    public sealed class TransformAnchor : IArrowAnchor
+    {
+      readonly Transform _anchorTo;
+      
+      public TransformAnchor(Transform anchorTo)
+      {
+        _anchorTo = anchorTo;
+      }
+
+      public Vector3 GetPosition() => _anchorTo.position;
+    }    
+    
     public interface IArrowDelegate
     {
       void OnArrowMoved(Vector3 position);
@@ -43,11 +76,13 @@ namespace Spelldawn.Services
     [SerializeField] Arrow _blueArrow = null!;
 
     [SerializeField] Arrow? _currentArrow;
-    [SerializeField] Vector3 _startPosition;
-    [SerializeField] float _dragStartScreenZ;
+    //[SerializeField] Vector3 _startPosition;
+    //[SerializeField] float _dragStartScreenZ;
     [SerializeField] GameObject _placeholderHeadPrefab = null!;
     [SerializeField] GameObject _placeholderPiecePrefab = null!;
     IArrowDelegate? _delegate;
+    IArrowAnchor? _source;
+    IArrowAnchor? _target;
 
     void Start()
     {
@@ -62,41 +97,50 @@ namespace Spelldawn.Services
       }
     }
 
-    public void ShowArrow(Type type, Transform start, IArrowDelegate arrowDelegate)
+    public void ShowMouseArrow(Type type, Transform source, IArrowDelegate? arrowDelegate)
     {
       HideArrows();
       _currentArrow = ArrowForType(type);
-      _startPosition = start.position;
       _delegate = arrowDelegate;
-      _dragStartScreenZ = _registry.MainCamera.WorldToScreenPoint(start.position).z;
+      var dragStartScreenZ = _registry.MainCamera.WorldToScreenPoint(source.position).z;
+      _source = new TransformAnchor(source);
+      _target = new MouseAnchor(_registry, dragStartScreenZ);
     }
 
+    public void ShowArrow(Type type, IArrowAnchor source, IArrowAnchor target)
+    {
+      HideArrows();
+      _currentArrow = ArrowForType(type);
+      _source = source;
+      _target = target;
+    }    
+    
     void Update()
     {
-      if (_currentArrow && _currentArrow != null)
+      if (_currentArrow && _currentArrow != null && _source is {} source && _target is {} target)
       {
-        var mousePosition = _registry.MainCamera.ScreenToWorldPoint(
-          new Vector3(Input.mousePosition.x, Input.mousePosition.y, _dragStartScreenZ));
+        var sourcePosition = source.GetPosition();
+        var targetPosition = target.GetPosition();
 
         if (Input.GetMouseButton(0))
         {
-          if (Vector3.Distance(_startPosition, mousePosition) < 3.0f)
+          if (Vector3.Distance(sourcePosition, targetPosition) < 3.0f)
           {
             _currentArrow.gameObject.SetActive(false);
           }
           else
           {
             _currentArrow.gameObject.SetActive(true);
-            _currentArrow.Source = _startPosition;
-            _currentArrow.Target = mousePosition;
-            _delegate?.OnArrowMoved(mousePosition);
+            _currentArrow.Source = sourcePosition;
+            _currentArrow.Target = targetPosition;
+            _delegate?.OnArrowMoved(targetPosition);
           }
         }
         else
         {
           _currentArrow.gameObject.SetActive(false);
           _currentArrow = null;
-          _delegate?.OnArrowReleased(mousePosition);
+          _delegate?.OnArrowReleased(targetPosition);
         }
       }
     }

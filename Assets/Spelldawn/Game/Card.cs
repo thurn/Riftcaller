@@ -84,6 +84,7 @@ namespace Spelldawn.Game
     ObjectPosition? _releasePosition;
     Node? _supplementalInfo;
     ArrowService.Type? _arrowOnDrag;
+    CardIdentifier? _pointToParent;
     bool _showingArrow;
     bool _isMove;
 
@@ -333,10 +334,19 @@ namespace Spelldawn.Game
         {
           _showingArrow = true;
           gameObject.SetActive(false);
-          Registry.ArrowService.ShowArrow(arrow, Registry.GameCharacterForPlayer(PlayerName.User).transform, this);
+          Registry.ArrowService.ShowMouseArrow(arrow, Registry.GameCharacterForPlayer(PlayerName.User).transform, this);
+        } 
+        else if (!_showingArrow && _pointToParent is {} pointToParent)
+        {
+          var pointTo = Registry.CardService.FindCard(pointToParent);
+          _showingArrow = true;
+          Registry.ArrowService.ShowArrow(
+            ArrowService.Type.Blue,
+            new ArrowService.TransformAnchor(transform),
+            new ArrowService.TransformAnchor(pointTo.transform));
         }
       }
-      else
+      else if (_pointToParent == null)
       {
         if (_showingArrow)
         {
@@ -550,6 +560,8 @@ namespace Spelldawn.Game
       {
         Registry.AssetService.AssignSprite(_jewel!, revealed.Jewel);
       }
+
+      _pointToParent = revealed.PointToParent;
     }
 
     void SetTitle(string title)
@@ -622,7 +634,7 @@ namespace Spelldawn.Game
 
     public void OnArrowMoved(Vector3 position)
     {
-      if (!Registry.CardService.IsMouseOverPlayCardArea())
+      if (!Registry.CardService.IsMouseOverPlayCardArea() && _pointToParent == null)
       {
         Registry.ArrowService.HideArrows();
         gameObject.SetActive(true);

@@ -107,10 +107,10 @@ namespace Spelldawn.Game
         switch (Side)
         {
           case PlayerSide.Champion:
-            _registry.ArrowService.ShowArrow(ArrowService.Type.Red, transform, this);
+            _registry.ArrowService.ShowMouseArrow(ArrowService.Type.Red, transform, this);
             break;
           case PlayerSide.Overlord:
-            _registry.ArrowService.ShowArrow(ArrowService.Type.Green, transform, this);
+            _registry.ArrowService.ShowMouseArrow(ArrowService.Type.Green, transform, this);
             break;
         }
       }

@@ -9165,8 +9165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17af30ea5f6345b4a533a3e5ecdc139b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pieceSize: 0.5
-  _pieceFadeDistance: 0.35
+  _pieceSize: 1.5
+  _pieceFadeDistance: 1
   _headPrefab: {fileID: 1125102575994816, guid: abccd1539dd924c9faf729c2a48d5381, type: 3}
   _piecePrefab: {fileID: 1609189630421558, guid: 0d61da43ae7394e4abfa0cb737559af5, type: 3}
 --- !u!1 &1514898868
@@ -10470,6 +10470,7 @@ MonoBehaviour:
   _dragStartScreenZ: 0
   _placeholderHeadPrefab: {fileID: 2314902358441965082, guid: 827c2e8fcb80b47498bedbfc71821bf4, type: 3}
   _placeholderPiecePrefab: {fileID: 7485048309002168430, guid: ef347997665164601af1a119a8ebdf5d, type: 3}
+  _mouseIsSource: 0
 --- !u!4 &1936599911 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5875982806262253908, guid: 2957de4c508df47ecadbf26b568c3355, type: 3}

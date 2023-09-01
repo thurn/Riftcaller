@@ -919,6 +919,11 @@ message RevealedCardView {
     // Card targeting is disabled in this case, i.e. is impossible to play
     // a card with a move target.
     ObjectPosition card_move_target = 11;
+
+    // If provided, identifes a parent card for this card. An arrow will be
+    // rendered from this card to its parent while it is being dragged,
+    // indicating the relationship between these two cards.
+    CardIdentifier point_to_parent = 12;
 }
 
 enum CardPrefab {
