@@ -63,6 +63,7 @@ pub enum StandardPanel {
     GameMenu,
     AdventureMenu,
     SetPlayerName(Side),
+    AddToHand,
     DeckEditorLoading,
 }
 

@@ -16,6 +16,7 @@
 //! be opened or closed by the user, such as a game menu or window.
 
 pub mod about_panel;
+pub mod add_to_hand_panel;
 pub mod adventure_menu;
 pub mod battle_defeat_panel;
 pub mod battle_victory_panel;

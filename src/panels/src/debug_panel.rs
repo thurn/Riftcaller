@@ -89,6 +89,10 @@ impl DebugPanel {
             .child(debug_button(format!("{} 3", icons::SAVE), DebugAction::SaveGameState(3)))
             .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadGameState(3)))
             .child(debug_button(
+                "Card...",
+                Panels::open(StandardPanel::AddToHand).wait_to_load(true).and_close(self.address()),
+            ))
+            .child(debug_button(
                 "Overlord AI",
                 Panels::open(StandardPanel::SetPlayerName(Side::Overlord))
                     .wait_to_load(true)
@@ -123,7 +127,7 @@ impl Component for DebugPanel {
             PlayerActivityKind::PlayingGame => self.game_mode_buttons(row),
         };
 
-        PanelWindow::new(self.address(), 1024.px(), 600.px())
+        PanelWindow::new(self.address(), 1200.px(), 900.px())
             .title("Debug Controls")
             .show_close_button(true)
             .content(content)

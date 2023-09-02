@@ -24,6 +24,7 @@ use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
 use panel_address::{Panel, PanelAddress, PlayerPanel, StandardPanel};
 use panels::about_panel::AboutPanel;
+use panels::add_to_hand_panel::AddToHandPanel;
 use panels::adventure_menu::AdventureMenu;
 use panels::battle_defeat_panel::BattleDefeatPanel;
 use panels::battle_victory_panel::BattleVictoryPanel;
@@ -40,27 +41,6 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, UpdatePanelsCommand};
 use serde_json::de;
 use with_error::WithError;
-
-pub fn render_panels(
-    commands: &mut Vec<Command>,
-    player: &PlayerState,
-    addresses: Vec<PanelAddress>,
-) -> Result<()> {
-    for address in addresses {
-        commands.push(Command::UpdatePanels(render_panel(player, address.into())?));
-    }
-    Ok(())
-}
-
-pub fn render_panel(
-    player: &PlayerState,
-    client_address: InterfacePanelAddress,
-) -> Result<UpdatePanelsCommand> {
-    let server_address =
-        de::from_slice(&client_address.serialized).with_error(|| "deserialization failed")?;
-    let panel = render_server_panel(player, server_address)?;
-    Ok(UpdatePanelsCommand { panels: panel.map_or_else(Vec::new, |p| vec![p]) })
-}
 
 fn render_server_panel(
     player: &PlayerState,
@@ -83,6 +63,7 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         StandardPanel::GameMenu => GameMenuPanel::new().build_panel(),
         StandardPanel::AdventureMenu => AdventureMenu::new().build_panel(),
         StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
+        StandardPanel::AddToHand => AddToHandPanel::new().build_panel(),
         StandardPanel::DeckEditorLoading => LoadingPanel::new(
             panel.into(),
             "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",

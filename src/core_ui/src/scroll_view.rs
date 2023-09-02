@@ -49,6 +49,11 @@ impl ScrollView {
         self
     }
 
+    pub fn vertical_page_size(mut self, size: f32) -> Self {
+        self.scroll_node.vertical_page_size = Some(size);
+        self
+    }
+
     pub fn touch_scroll_behavior(mut self, behavior: TouchScrollBehavior) -> Self {
         self.scroll_node.set_touch_scroll_behavior(behavior);
         self
