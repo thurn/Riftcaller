@@ -156,6 +156,7 @@ namespace Spelldawn.Masonry
 
         SetCallback(registry, callbacks, node.EventHandlers?.OnClick, Callbacks.Event.Click);
         SetCallback(registry, callbacks, node.EventHandlers?.OnLongPress, Callbacks.Event.LongPress);
+        SetCallback(registry, callbacks, node.EventHandlers?.OnFieldChanged, Callbacks.Event.FieldChanged);
 
         if (node.PressedStyle != null || node.HoverStyle != null || node.EventHandlers != null)
         {

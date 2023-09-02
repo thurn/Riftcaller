@@ -73,13 +73,10 @@ pub enum DebugAction {
     /// playing against an opponent who will take no actions. Overwrites the
     /// current player's player data with the canonical decklists.
     NewGame(Side),
-
     /// Adds the current player to the game with ID 0 with the given side.
     JoinGame(Side),
-
     /// Swaps which side the current player is playing as in their current game.
     FlipViewpoint,
-
     AddMana(ManaValue),
     AddActionPoints(ActionCount),
     AddScore(PointsValue),
@@ -89,6 +86,9 @@ pub enum DebugAction {
     SavePlayerState(u128),
     LoadPlayerState(u128),
     AddCoins(Coins),
+    /// Reads text in the card list search field and shows matching cards
+    FilterCardList,
+    AddToHand(CardName),
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

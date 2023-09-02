@@ -57,7 +57,8 @@ namespace Spelldawn.Masonry
       MouseEnter,
       MouseLeave,
       LongPress,
-      Change
+      Change,
+      FieldChanged
     }
 
     readonly HashSet<Event> _registered = new();
@@ -92,13 +93,17 @@ namespace Spelldawn.Masonry
           e.RegisterCallback<MouseLeaveEvent>(OnMouseLeave);
           break;
         case Event.MouseDown:
-        case Event.MouseUp:
         case Event.LongPress:
           e.RegisterCallback<MouseDownEvent>(OnMouseDown);
-          e.RegisterCallback<MouseUpEvent>(OnMouseUp);          
-          break;        
+          break;
+        case Event.MouseUp:
+          e.RegisterCallback<MouseUpEvent>(OnMouseUp);
+          break;              
         case Event.Change:
           e.RegisterCallback<ChangeEvent<float>>(OnChange);
+          break;
+        case Event.FieldChanged:
+          e.RegisterCallback<ChangeEvent<string>>(OnFieldChange);
           break;
         default:
           throw new ArgumentOutOfRangeException(nameof(eventType), eventType, "Unknown event type");
@@ -148,6 +153,11 @@ namespace Spelldawn.Masonry
     void OnChange(ChangeEvent<float> evt)
     {
       _actions.GetValueOrDefault(Event.Change)?.Invoke();
+    }
+    
+    void OnFieldChange(ChangeEvent<string> evt)
+    {
+      _actions.GetValueOrDefault(Event.FieldChanged)?.Invoke();
     }
   }
 

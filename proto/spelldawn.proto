@@ -610,6 +610,8 @@ message EventHandlers {
     ClientAction on_mouse_down = 3;
 
     ClientAction on_mouse_up = 4;
+
+    ClientAction on_field_changed = 5;
 }
 
 message Node {
@@ -1205,8 +1207,9 @@ message StandardAction {
     // If this map is not empty, the client will look for fields in the UI with
     // names matching the keys of this map and set the contents of those fields
     // as the values of this map when sending the action payload to the server.
-    // By convention, field names should be mapped to the empty string when
-    // initially returned from the server.
+    //
+    // Field names should be mapped to the empty string when the action is
+    // returned from the server.
     map<string, string> request_fields = 3;
 }
 

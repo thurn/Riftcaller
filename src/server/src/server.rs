@@ -219,7 +219,9 @@ async fn handle_standard_action(
 
     match action {
         UserAction::Debug(a) => {
-            debug_server::handle_debug_action(database, data, &a).instrument(span).await
+            debug_server::handle_debug_action(database, data, &a, &input.request_fields)
+                .instrument(span)
+                .await
         }
         UserAction::NewAdventure(side) => {
             adventure_server::handle_new_adventure(database, data, side).instrument(span).await

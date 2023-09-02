@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
 use std::mem;
 use std::sync::{Mutex, OnceLock};
 
+use ::panels::add_to_hand_panel::AddToHandPanel;
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
+use core_ui::panels;
 use database::Database;
 use game_data::game::GameState;
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
+use panel_address::Panel;
 use player_data::PlayerStatus;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
@@ -44,6 +48,7 @@ pub async fn handle_debug_action(
     database: &impl Database,
     data: &RequestData,
     action: &DebugAction,
+    request_fields: &HashMap<String, String>,
 ) -> Result<GameResponse> {
     match action {
         DebugAction::NewGame(side) => create_debug_game(data, *side),
@@ -130,6 +135,23 @@ pub async fn handle_debug_action(
         DebugAction::AddCoins(coins) => {
             adventure_server::update_adventure(database, data, |state| {
                 state.coins += *coins;
+                Ok(())
+            })
+            .await
+        }
+        DebugAction::FilterCardList => {
+            let input = request_fields.get("CardName").with_error(|| "Expected CardName")?;
+            Ok(GameResponse::new(ClientData::propagate(data))
+                .command(panels::update(AddToHandPanel::new(input).build_panel().unwrap())))
+        }
+        DebugAction::AddToHand(card_name) => {
+            game_server::update_game(database, data, |game, user_side| {
+                if let Some(top_of_deck) =
+                    mutations::realize_top_of_deck(game, user_side, 1)?.get(0)
+                {
+                    mutations::overwrite_card(game, *top_of_deck, *card_name)?;
+                    mutations::draw_cards(game, user_side, 1)?;
+                }
                 Ok(())
             })
             .await

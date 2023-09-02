@@ -150,6 +150,14 @@ pub fn with_optimistic_update(
     })
 }
 
+pub fn with_request_fields(action: impl Into<UserAction>, fields: Vec<String>) -> Action {
+    Action::StandardAction(StandardAction {
+        payload: payload(action.into()),
+        update: None,
+        request_fields: fields.into_iter().map(|name| (name, String::new())).collect(),
+    })
+}
+
 pub fn payload(action: UserAction) -> Vec<u8> {
     ser::to_vec(&action).expect("Serialization failed")
 }

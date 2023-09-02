@@ -136,6 +136,15 @@ pub trait HasRenderNode: Sized {
             Some(action.build());
         self
     }
+
+    /// Action to invoke when a text field's content changes
+    fn on_field_changed(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.render_node()
+            .event_handlers
+            .get_or_insert(EventHandlers::default())
+            .on_field_changed = Some(action.build());
+        self
+    }
 }
 
 pub trait HasNodeChildren: HasRenderNode {

@@ -525,6 +525,8 @@ pub struct EventHandlers {
     pub on_mouse_down: ::core::option::Option<ClientAction>,
     #[prost(message, optional, tag = "4")]
     pub on_mouse_up: ::core::option::Option<ClientAction>,
+    #[prost(message, optional, tag = "5")]
+    pub on_field_changed: ::core::option::Option<ClientAction>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1221,8 +1223,9 @@ pub struct StandardAction {
     /// If this map is not empty, the client will look for fields in the UI with
     /// names matching the keys of this map and set the contents of those fields
     /// as the values of this map when sending the action payload to the server.
-    /// By convention, field names should be mapped to the empty string when
-    /// initially returned from the server.
+    ///
+    /// Field names should be mapped to the empty string when the action is
+    /// returned from the server.
     #[prost(map = "string, string", tag = "3")]
     pub request_fields:
         ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
