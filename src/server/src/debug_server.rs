@@ -21,18 +21,22 @@ use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use core_ui::panels;
 use database::Database;
+use game_data::card_name::CardName;
+use game_data::card_state::CardPosition;
 use game_data::game::GameState;
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{GameId, Side};
+use game_data::primitives::{CardId, GameId, RoomId, RoomLocation, Side};
 use panel_address::Panel;
 use player_data::PlayerStatus;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
+use rules::mutations::SummonMinion;
 use rules::{mana, mutations};
 use ulid::Ulid;
 use user_action_data::{
-    DebugAction, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck, UserAction,
+    DebugAction, DebugScenario, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck,
+    UserAction,
 };
 use with_error::WithError;
 
@@ -156,6 +160,12 @@ pub async fn handle_debug_action(
             })
             .await
         }
+        DebugAction::ApplyScenario(scenario) => {
+            game_server::update_game(database, data, |game, side| {
+                apply_scenario(*scenario, game, side)
+            })
+            .await
+        }
     }
 }
 
@@ -208,4 +218,40 @@ fn reload_world_scene(data: &RequestData) -> GameResponse {
         skip_if_current: false,
     });
     GameResponse::new(ClientData::propagate(data)).command(command)
+}
+
+fn apply_scenario(scenario: DebugScenario, game: &mut GameState, side: Side) -> Result<()> {
+    mutations::start_turn(game, side, 1)?;
+    mana::gain(game, side, 50);
+    mana::gain(game, side.opponent(), 50);
+
+    match scenario {
+        DebugScenario::OpponentInfernalMinionAndScheme => {
+            create_at_position(
+                game,
+                CardName::TestScheme3_10,
+                CardPosition::Room(RoomId::RoomE, RoomLocation::Occupant),
+            )?;
+            let minion_id = create_at_position(
+                game,
+                CardName::TestInfernalMinion,
+                CardPosition::Room(RoomId::RoomE, RoomLocation::Defender),
+            )?;
+            mutations::summon_minion(game, minion_id, SummonMinion::IgnoreCosts)?;
+        }
+    }
+    Ok(())
+}
+
+fn create_at_position(
+    game: &mut GameState,
+    card: CardName,
+    position: CardPosition,
+) -> Result<CardId> {
+    let side = rules::get(card).side;
+    let card_id =
+        *mutations::realize_top_of_deck(game, side, 1)?.get(0).with_error(|| "Deck is empty")?;
+    mutations::overwrite_card(game, card_id, card)?;
+    mutations::move_card(game, card_id, position)?;
+    Ok(card_id)
 }

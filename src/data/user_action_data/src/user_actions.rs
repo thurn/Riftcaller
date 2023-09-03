@@ -16,6 +16,7 @@ use std::fmt;
 
 use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
+use enum_iterator::Sequence;
 use game_data::card_name::CardName;
 use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
@@ -65,6 +66,11 @@ pub struct NewGameAction {
     pub debug_options: Option<NewGameDebugOptions>,
 }
 
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Sequence)]
+pub enum DebugScenario {
+    OpponentInfernalMinionAndScheme,
+}
+
 /// Actions that can be taken from the debug panel, should not be exposed in
 /// production.
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
@@ -89,6 +95,7 @@ pub enum DebugAction {
     /// Reads text in the card list search field and shows matching cards
     FilterCardList,
     AddToHand(CardName),
+    ApplyScenario(DebugScenario),
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

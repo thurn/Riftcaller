@@ -62,9 +62,10 @@ pub enum StandardPanel {
     DebugPanel(PlayerActivityKind),
     GameMenu,
     AdventureMenu,
+    DeckEditorLoading,
     SetPlayerName(Side),
     AddToHand,
-    DeckEditorLoading,
+    ApplyScenario,
 }
 
 impl From<StandardPanel> for PanelAddress {

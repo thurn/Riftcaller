@@ -18,6 +18,7 @@
 pub mod about_panel;
 pub mod add_to_hand_panel;
 pub mod adventure_menu;
+pub mod apply_scenario_panel;
 pub mod battle_defeat_panel;
 pub mod battle_victory_panel;
 pub mod button_menu;

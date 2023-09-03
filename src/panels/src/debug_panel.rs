@@ -93,6 +93,12 @@ impl DebugPanel {
                 Panels::open(StandardPanel::AddToHand).wait_to_load(true).and_close(self.address()),
             ))
             .child(debug_button(
+                "Scenario...",
+                Panels::open(StandardPanel::ApplyScenario)
+                    .wait_to_load(true)
+                    .and_close(self.address()),
+            ))
+            .child(debug_button(
                 "Overlord AI",
                 Panels::open(StandardPanel::SetPlayerName(Side::Overlord))
                     .wait_to_load(true)

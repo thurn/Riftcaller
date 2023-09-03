@@ -3519,6 +3519,7 @@ name = "user_action_data"
 version = "0.0.0"
 dependencies = [
  "adventure_data",
+ "enum-iterator",
  "game_data",
  "serde",
 ]

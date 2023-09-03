@@ -26,6 +26,7 @@ use panel_address::{Panel, PlayerPanel, StandardPanel};
 use panels::about_panel::AboutPanel;
 use panels::add_to_hand_panel::AddToHandPanel;
 use panels::adventure_menu::AdventureMenu;
+use panels::apply_scenario_panel::ApplyScenarioPanel;
 use panels::battle_defeat_panel::BattleDefeatPanel;
 use panels::battle_victory_panel::BattleVictoryPanel;
 use panels::debug_panel::DebugPanel;
@@ -49,13 +50,14 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         StandardPanel::DebugPanel(activity) => DebugPanel::new(activity).build_panel(),
         StandardPanel::GameMenu => GameMenuPanel::new().build_panel(),
         StandardPanel::AdventureMenu => AdventureMenu::new().build_panel(),
-        StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
-        StandardPanel::AddToHand => AddToHandPanel::new("").build_panel(),
         StandardPanel::DeckEditorLoading => LoadingPanel::new(
             panel.into(),
             "TPR/EnvironmentsHQ/Castles, Towers & Keeps/Images/Library/SceneryLibrary_inside_1",
         )
         .build_panel(),
+        StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
+        StandardPanel::AddToHand => AddToHandPanel::new("").build_panel(),
+        StandardPanel::ApplyScenario => ApplyScenarioPanel::new().build_panel(),
     })
 }
 
