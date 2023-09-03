@@ -19,7 +19,7 @@ use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
     SpecialEffects,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::RaidOutcome;
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
@@ -27,7 +27,7 @@ use game_data::special_effects::{Projectile, TimedEffect};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
-pub fn test_overlord_spell() -> CardDefinition {
+pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestOverlordSpell,
         cost: cost(1),
@@ -43,7 +43,7 @@ pub fn test_overlord_spell() -> CardDefinition {
     }
 }
 
-pub fn test_champion_spell() -> CardDefinition {
+pub fn test_champion_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestChampionSpell,
         cost: cost(1),
@@ -59,7 +59,7 @@ pub fn test_champion_spell() -> CardDefinition {
     }
 }
 
-pub fn test_scheme_310() -> CardDefinition {
+pub fn test_scheme_310(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestScheme3_10,
         cost: scheme_cost(),
@@ -67,21 +67,21 @@ pub fn test_scheme_310() -> CardDefinition {
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { level_requirement: 3, points: 10 })
             .build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_project_2_cost_3_raze() -> CardDefinition {
+pub fn test_project_2_cost_3_raze(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestProject2Cost3Raze,
         cost: cost(2),
         card_type: CardType::Project,
         config: CardConfigBuilder::new().raze_cost(3).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_minion_end_raid() -> CardDefinition {
+pub fn test_minion_end_raid(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionEndRaid,
         cost: cost(test_constants::MINION_COST),
@@ -91,11 +91,11 @@ pub fn test_minion_end_raid() -> CardDefinition {
             .health(test_constants::MINION_HEALTH)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_minion_shield_1() -> CardDefinition {
+pub fn test_minion_shield_1(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield1Infernal,
         cost: cost(test_constants::MINION_COST),
@@ -106,11 +106,11 @@ pub fn test_minion_shield_1() -> CardDefinition {
             .shield(1)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_minion_shield_2_abyssal() -> CardDefinition {
+pub fn test_minion_shield_2_abyssal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield2Abyssal,
         cost: cost(test_constants::MINION_COST),
@@ -121,11 +121,11 @@ pub fn test_minion_shield_2_abyssal() -> CardDefinition {
             .shield(2)
             .resonance(Resonance::Abyssal)
             .build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_minion_deal_damage() -> CardDefinition {
+pub fn test_minion_deal_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionDealDamage,
         cost: cost(1),
@@ -135,44 +135,44 @@ pub fn test_minion_deal_damage() -> CardDefinition {
             .health(test_constants::MINION_HEALTH)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_minion_infernal() -> CardDefinition {
+pub fn test_minion_infernal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestInfernalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .resonance(Resonance::Infernal)
             .build(),
-        ..test_minion_end_raid()
+        ..test_minion_end_raid(metadata)
     }
 }
 
-pub fn test_minion_abyssal() -> CardDefinition {
+pub fn test_minion_abyssal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestAbyssalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .resonance(Resonance::Abyssal)
             .build(),
-        ..test_minion_end_raid()
+        ..test_minion_end_raid(metadata)
     }
 }
 
-pub fn test_minion_mortal() -> CardDefinition {
+pub fn test_minion_mortal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMortalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .resonance(Resonance::Mortal)
             .build(),
-        ..test_minion_end_raid()
+        ..test_minion_end_raid(metadata)
     }
 }
 
-pub fn test_weapon_2_attack() -> CardDefinition {
+pub fn test_weapon_2_attack(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon2Attack,
         subtypes: vec![CardSubtype::Weapon],
@@ -182,11 +182,11 @@ pub fn test_weapon_2_attack() -> CardDefinition {
             .base_attack(2)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_champion_spell()
+        ..test_champion_spell(metadata)
     }
 }
 
-pub fn test_weapon_2_attack_12_boost() -> CardDefinition {
+pub fn test_weapon_2_attack_12_boost(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon2Attack12Boost,
         subtypes: vec![CardSubtype::Weapon],
@@ -196,11 +196,11 @@ pub fn test_weapon_2_attack_12_boost() -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_weapon_2_attack()
+        ..test_weapon_2_attack(metadata)
     }
 }
 
-pub fn test_weapon_3_attack_12_boost() -> CardDefinition {
+pub fn test_weapon_3_attack_12_boost(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon3Attack12Boost3Cost,
         subtypes: vec![CardSubtype::Weapon],
@@ -210,11 +210,11 @@ pub fn test_weapon_3_attack_12_boost() -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_weapon_2_attack()
+        ..test_weapon_2_attack(metadata)
     }
 }
 
-pub fn test_weapon_4_attack_12_boost() -> CardDefinition {
+pub fn test_weapon_4_attack_12_boost(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon4Attack12Boost,
         subtypes: vec![CardSubtype::Weapon],
@@ -224,11 +224,11 @@ pub fn test_weapon_4_attack_12_boost() -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_weapon_2_attack()
+        ..test_weapon_2_attack(metadata)
     }
 }
 
-pub fn test_weapon_abyssal() -> CardDefinition {
+pub fn test_weapon_abyssal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponAbyssal,
         subtypes: vec![CardSubtype::Weapon],
@@ -238,11 +238,11 @@ pub fn test_weapon_abyssal() -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(Resonance::Abyssal)
             .build(),
-        ..test_weapon_2_attack()
+        ..test_weapon_2_attack(metadata)
     }
 }
 
-pub fn test_weapon_infernal() -> CardDefinition {
+pub fn test_weapon_infernal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponInfernal,
         subtypes: vec![CardSubtype::Weapon],
@@ -252,11 +252,11 @@ pub fn test_weapon_infernal() -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(Resonance::Infernal)
             .build(),
-        ..test_weapon_2_attack()
+        ..test_weapon_2_attack(metadata)
     }
 }
 
-pub fn test_weapon_mortal() -> CardDefinition {
+pub fn test_weapon_mortal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeaponMortal,
         subtypes: vec![CardSubtype::Weapon],
@@ -266,11 +266,11 @@ pub fn test_weapon_mortal() -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(Resonance::Mortal)
             .build(),
-        ..test_weapon_2_attack()
+        ..test_weapon_2_attack(metadata)
     }
 }
 
-pub fn test_weapon_5_attack() -> CardDefinition {
+pub fn test_weapon_5_attack(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon5AttackInfernal,
         subtypes: vec![CardSubtype::Weapon],
@@ -278,11 +278,11 @@ pub fn test_weapon_5_attack() -> CardDefinition {
             .base_attack(5)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_weapon_2_attack()
+        ..test_weapon_2_attack(metadata)
     }
 }
 
-pub fn activated_ability_take_mana() -> CardDefinition {
+pub fn activated_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestActivatedAbilityTakeMana,
         cost: cost(test_constants::ARTIFACT_COST),
@@ -292,11 +292,11 @@ pub fn activated_ability_take_mana() -> CardDefinition {
             abilities::activated_take_mana::<{ test_constants::MANA_TAKEN }>(actions(1)),
         ],
         config: CardConfig::default(),
-        ..test_champion_spell()
+        ..test_champion_spell(metadata)
     }
 }
 
-pub fn triggered_ability_take_mana() -> CardDefinition {
+pub fn triggered_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestProjectTriggeredAbilityTakeManaAtDusk,
         cost: cost(test_constants::UNVEIL_COST),
@@ -319,11 +319,11 @@ pub fn triggered_ability_take_mana() -> CardDefinition {
             },
         ],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn duskbound_project() -> CardDefinition {
+pub fn duskbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestDuskboundProject,
         cost: cost(test_constants::UNVEIL_COST),
@@ -331,11 +331,11 @@ pub fn duskbound_project() -> CardDefinition {
         subtypes: vec![CardSubtype::Duskbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn roombound_project() -> CardDefinition {
+pub fn roombound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestRoomboundProject,
         cost: cost(test_constants::UNVEIL_COST),
@@ -343,11 +343,11 @@ pub fn roombound_project() -> CardDefinition {
         subtypes: vec![CardSubtype::Roombound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn summonbound_project() -> CardDefinition {
+pub fn summonbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSummonboundProject,
         cost: cost(test_constants::UNVEIL_COST),
@@ -355,11 +355,11 @@ pub fn summonbound_project() -> CardDefinition {
         subtypes: vec![CardSubtype::Summonbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn nightbound_project() -> CardDefinition {
+pub fn nightbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestNightboundProject,
         cost: cost(test_constants::UNVEIL_COST),
@@ -367,11 +367,11 @@ pub fn nightbound_project() -> CardDefinition {
         subtypes: vec![CardSubtype::Nightbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn dusk_and_nightbound_project() -> CardDefinition {
+pub fn dusk_and_nightbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestDuskAndNightboundProject,
         cost: cost(test_constants::UNVEIL_COST),
@@ -379,11 +379,11 @@ pub fn dusk_and_nightbound_project() -> CardDefinition {
         subtypes: vec![CardSubtype::Duskbound, CardSubtype::Nightbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn trap_project() -> CardDefinition {
+pub fn trap_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestTrapProject,
         cost: cost(test_constants::UNVEIL_COST),
@@ -391,27 +391,27 @@ pub fn trap_project() -> CardDefinition {
         subtypes: vec![CardSubtype::Trap],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_0_cost_champion_spell() -> CardDefinition {
+pub fn test_0_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Test0CostChampionSpell,
         cost: cost(0),
-        ..test_champion_spell()
+        ..test_champion_spell(metadata)
     }
 }
 
-pub fn test_1_cost_champion_spell() -> CardDefinition {
+pub fn test_1_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Test1CostChampionSpell,
         cost: cost(1),
-        ..test_champion_spell()
+        ..test_champion_spell(metadata)
     }
 }
 
-pub fn deal_damage_end_raid() -> CardDefinition {
+pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionDealDamageEndRaid,
         cost: cost(3),
@@ -421,11 +421,11 @@ pub fn deal_damage_end_raid() -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_end_raid()],
         config: CardConfigBuilder::new().health(5).shield(1).resonance(Resonance::Infernal).build(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }
 
-pub fn test_attack_weapon() -> CardDefinition {
+pub fn test_attack_weapon(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestAttackWeapon,
         cost: cost(3),
@@ -443,11 +443,11 @@ pub fn test_attack_weapon() -> CardDefinition {
                 additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
             })
             .build(),
-        ..test_champion_spell()
+        ..test_champion_spell(metadata)
     }
 }
 
-pub fn test_sacrifice_draw_card_artifact() -> CardDefinition {
+pub fn test_sacrifice_draw_card_artifact(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSacrificeDrawCardArtifact,
         cost: cost(test_constants::ARTIFACT_COST),
@@ -461,11 +461,11 @@ pub fn test_sacrifice_draw_card_artifact() -> CardDefinition {
             })],
         }],
         config: CardConfig::default(),
-        ..test_champion_spell()
+        ..test_champion_spell(metadata)
     }
 }
 
-pub fn test_sacrifice_end_raid_project() -> CardDefinition {
+pub fn test_sacrifice_end_raid_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestProjectSacrificeToEndRaid,
         cost: cost(test_constants::UNVEIL_COST),
@@ -477,6 +477,6 @@ pub fn test_sacrifice_end_raid_project() -> CardDefinition {
             delegates: vec![on_activated(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
         }],
         config: CardConfig::default(),
-        ..test_overlord_spell()
+        ..test_overlord_spell(metadata)
     }
 }

@@ -18,13 +18,13 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
-pub fn gemcarver() -> CardDefinition {
+pub fn gemcarver(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Gemcarver,
         sets: vec![CardSetName::Amethyst],
@@ -57,7 +57,7 @@ pub fn gemcarver() -> CardDefinition {
     }
 }
 
-pub fn spike_trap() -> CardDefinition {
+pub fn spike_trap(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SpikeTrap,
         sets: vec![CardSetName::Amethyst],

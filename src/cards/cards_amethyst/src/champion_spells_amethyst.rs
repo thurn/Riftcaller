@@ -19,13 +19,13 @@ use card_helpers::{text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
 use rules::{flags, mana, mutations};
 
-pub fn meditation() -> CardDefinition {
+pub fn meditation(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Meditation,
         sets: vec![CardSetName::Amethyst],
@@ -47,7 +47,7 @@ pub fn meditation() -> CardDefinition {
     }
 }
 
-pub fn coup_de_grace() -> CardDefinition {
+pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::CoupDeGrace,
         sets: vec![CardSetName::Amethyst],
@@ -82,7 +82,7 @@ pub fn coup_de_grace() -> CardDefinition {
     }
 }
 
-pub fn charged_strike() -> CardDefinition {
+pub fn charged_strike(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ChargedStrike,
         sets: vec![CardSetName::Amethyst],
@@ -109,7 +109,7 @@ pub fn charged_strike() -> CardDefinition {
     }
 }
 
-pub fn stealth_mission() -> CardDefinition {
+pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::StealthMission,
         sets: vec![CardSetName::Amethyst],
@@ -148,7 +148,7 @@ pub fn stealth_mission() -> CardDefinition {
     }
 }
 
-pub fn preparation() -> CardDefinition {
+pub fn preparation(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Preparation,
         sets: vec![CardSetName::Amethyst],

@@ -20,14 +20,14 @@ use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
-pub fn invisibility_ring() -> CardDefinition {
+pub fn invisibility_ring(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::InvisibilityRing,
         sets: vec![CardSetName::Amethyst],
@@ -56,7 +56,7 @@ pub fn invisibility_ring() -> CardDefinition {
     }
 }
 
-pub fn accumulator() -> CardDefinition {
+pub fn accumulator(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Accumulator,
         sets: vec![CardSetName::Amethyst],
@@ -95,7 +95,7 @@ pub fn accumulator() -> CardDefinition {
     }
 }
 
-pub fn mage_gloves() -> CardDefinition {
+pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::MageGloves,
         sets: vec![CardSetName::Amethyst],
@@ -133,7 +133,7 @@ pub fn mage_gloves() -> CardDefinition {
     }
 }
 
-pub fn magical_resonator() -> CardDefinition {
+pub fn magical_resonator(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::MagicalResonator,
         sets: vec![CardSetName::Amethyst],
@@ -162,7 +162,7 @@ pub fn magical_resonator() -> CardDefinition {
     }
 }
 
-pub fn dark_grimoire() -> CardDefinition {
+pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::DarkGrimoire,
         sets: vec![CardSetName::Amethyst],

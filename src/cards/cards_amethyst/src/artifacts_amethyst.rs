@@ -20,13 +20,13 @@ use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, SpecialEffects,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 
-pub fn marauders_axe() -> CardDefinition {
+pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::MaraudersAxe,
         sets: vec![CardSetName::Amethyst],
@@ -70,7 +70,7 @@ pub fn marauders_axe() -> CardDefinition {
     }
 }
 
-pub fn keen_halberd() -> CardDefinition {
+pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::KeenHalberd,
         sets: vec![CardSetName::Amethyst],
@@ -92,7 +92,7 @@ pub fn keen_halberd() -> CardDefinition {
     }
 }
 
-pub fn bow_of_the_alliance() -> CardDefinition {
+pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::BowOfTheAlliance,
         sets: vec![CardSetName::Amethyst],

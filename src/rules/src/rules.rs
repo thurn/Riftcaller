@@ -18,7 +18,7 @@ use std::collections::HashMap;
 
 use dashmap::DashSet;
 use game_data::card_definition::{Ability, CardDefinition};
-use game_data::card_name::CardVariant;
+use game_data::card_name::{CardMetadata, CardVariant};
 use game_data::game::GameState;
 use game_data::primitives::{AbilityId, CardId};
 use once_cell::sync::Lazy;
@@ -31,16 +31,23 @@ pub mod mutations;
 pub mod play_card;
 pub mod queries;
 
-pub static DEFINITIONS: Lazy<DashSet<fn() -> CardDefinition>> = Lazy::new(DashSet::new);
+pub type CardFn = fn(CardMetadata) -> CardDefinition;
+
+pub static DEFINITIONS: Lazy<DashSet<CardFn>> = Lazy::new(DashSet::new);
 
 /// Contains [CardDefinition]s for all known cards, keyed by [CardVariant]
 static CARDS: Lazy<HashMap<CardVariant, CardDefinition>> = Lazy::new(|| {
     let mut map = HashMap::new();
     for card_fn in DEFINITIONS.iter() {
-        let mut card = card_fn();
-        let variant = CardVariant::standard(card.name);
-        card.config.variant = Some(variant);
-        map.insert(variant, card);
+        for upgraded in [false, true] {
+            for full_art in [false, true] {
+                let metadata = CardMetadata { upgraded, full_art };
+                let mut card = card_fn(metadata);
+                card.config.metadata = metadata;
+                let variant = CardVariant { name: card.name, metadata };
+                map.insert(variant, card);
+            }
+        }
     }
     map
 });

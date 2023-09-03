@@ -19,8 +19,7 @@ use test_utils::client_interface::{self};
 use test_utils::test_adventure::TestAdventure;
 use test_utils::*;
 
-const EXAMPLE_CARD: CardVariant =
-    CardVariant { name: CardName::TestChampionSpell, upgraded: false, full_art: false };
+const EXAMPLE_CARD: CardVariant = CardVariant::standard(CardName::TestChampionSpell);
 
 #[test]
 fn test_initiate_draft() {

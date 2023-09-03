@@ -15,12 +15,12 @@
 use assets::rexard_images;
 use card_helpers::*;
 use game_data::card_definition::{CardConfig, CardDefinition};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::{mana, mutations};
 
-pub fn ennera_imris() -> CardDefinition {
+pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::EnneraImrisBloodBound,
         sets: vec![CardSetName::Amethyst],
@@ -45,7 +45,7 @@ pub fn ennera_imris() -> CardDefinition {
     }
 }
 
-pub fn aris_fey() -> CardDefinition {
+pub fn aris_fey(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ArisFeyTheRadiantSun,
         sets: vec![CardSetName::Amethyst],
@@ -70,7 +70,7 @@ pub fn aris_fey() -> CardDefinition {
     }
 }
 
-pub fn telantes_dugoth() -> CardDefinition {
+pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TelantesDugothEarthbreaker,
         sets: vec![CardSetName::Amethyst],
@@ -92,7 +92,7 @@ pub fn telantes_dugoth() -> CardDefinition {
     }
 }
 
-pub fn andvari_est() -> CardDefinition {
+pub fn andvari_est(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::AndvariEstNightsWarden,
         sets: vec![CardSetName::Amethyst],

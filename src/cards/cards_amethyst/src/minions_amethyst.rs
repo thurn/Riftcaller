@@ -18,7 +18,7 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
@@ -29,7 +29,7 @@ use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 use with_error::WithError;
 
-pub fn time_golem() -> CardDefinition {
+pub fn time_golem(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TimeGolem,
         sets: vec![CardSetName::Amethyst],
@@ -64,7 +64,7 @@ pub fn time_golem() -> CardDefinition {
     }
 }
 
-pub fn temporal_stalker() -> CardDefinition {
+pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TemporalStalker,
         sets: vec![CardSetName::Amethyst],
@@ -118,7 +118,7 @@ pub fn temporal_stalker() -> CardDefinition {
     }
 }
 
-pub fn shadow_lurker() -> CardDefinition {
+pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ShadowLurker,
         sets: vec![CardSetName::Amethyst],
@@ -143,7 +143,7 @@ pub fn shadow_lurker() -> CardDefinition {
     }
 }
 
-pub fn sphinx_of_winters_breath() -> CardDefinition {
+pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SphinxOfWintersBreath,
         sets: vec![CardSetName::Amethyst],
@@ -180,7 +180,7 @@ pub fn sphinx_of_winters_breath() -> CardDefinition {
     }
 }
 
-pub fn bridge_troll() -> CardDefinition {
+pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::BridgeTroll,
         sets: vec![CardSetName::Amethyst],
@@ -211,7 +211,7 @@ pub fn bridge_troll() -> CardDefinition {
     }
 }
 
-pub fn stormcaller() -> CardDefinition {
+pub fn stormcaller(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Stormcaller,
         sets: vec![CardSetName::Amethyst],

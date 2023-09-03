@@ -18,13 +18,13 @@ use card_helpers::*;
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
-pub fn conspire() -> CardDefinition {
+pub fn conspire(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Conspire,
         sets: vec![CardSetName::Basics],
@@ -42,7 +42,7 @@ pub fn conspire() -> CardDefinition {
     }
 }
 
-pub fn devise() -> CardDefinition {
+pub fn devise(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Devise,
         sets: vec![CardSetName::Basics],
@@ -60,7 +60,7 @@ pub fn devise() -> CardDefinition {
     }
 }
 
-pub fn machinate() -> CardDefinition {
+pub fn machinate(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Machinate,
         sets: vec![CardSetName::Basics],
@@ -78,7 +78,7 @@ pub fn machinate() -> CardDefinition {
     }
 }
 
-pub fn gathering_dark() -> CardDefinition {
+pub fn gathering_dark(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::GatheringDark,
         sets: vec![CardSetName::Basics],
@@ -100,7 +100,7 @@ pub fn gathering_dark() -> CardDefinition {
     }
 }
 
-pub fn coinery() -> CardDefinition {
+pub fn coinery(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Coinery,
         sets: vec![CardSetName::Basics],
@@ -126,7 +126,7 @@ pub fn coinery() -> CardDefinition {
     }
 }
 
-pub fn leyline() -> CardDefinition {
+pub fn leyline(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Leyline,
         sets: vec![CardSetName::Basics],
@@ -149,7 +149,7 @@ pub fn leyline() -> CardDefinition {
     }
 }
 
-pub fn ore_refinery() -> CardDefinition {
+pub fn ore_refinery(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::OreRefinery,
         sets: vec![CardSetName::Basics],
@@ -175,7 +175,7 @@ pub fn ore_refinery() -> CardDefinition {
     }
 }
 
-pub fn crab() -> CardDefinition {
+pub fn crab(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Crab,
         sets: vec![CardSetName::Basics],
@@ -191,7 +191,7 @@ pub fn crab() -> CardDefinition {
     }
 }
 
-pub fn fire_goblin() -> CardDefinition {
+pub fn fire_goblin(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::FireGoblin,
         sets: vec![CardSetName::Basics],
@@ -207,7 +207,7 @@ pub fn fire_goblin() -> CardDefinition {
     }
 }
 
-pub fn toucan() -> CardDefinition {
+pub fn toucan(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Toucan,
         sets: vec![CardSetName::Basics],
@@ -223,7 +223,7 @@ pub fn toucan() -> CardDefinition {
     }
 }
 
-pub fn frog() -> CardDefinition {
+pub fn frog(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Frog,
         sets: vec![CardSetName::Basics],
@@ -239,7 +239,7 @@ pub fn frog() -> CardDefinition {
     }
 }
 
-pub fn captain() -> CardDefinition {
+pub fn captain(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Captain,
         sets: vec![CardSetName::Basics],
@@ -255,7 +255,7 @@ pub fn captain() -> CardDefinition {
     }
 }
 
-pub fn scout() -> CardDefinition {
+pub fn scout(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Scout,
         sets: vec![CardSetName::Basics],

@@ -15,7 +15,7 @@
 use assets::rexard_images;
 use card_helpers::{text, *};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
@@ -36,11 +36,11 @@ fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
     }
 }
 
-pub fn overlord_empty_modifier() -> CardDefinition {
+pub fn overlord_empty_modifier(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(CardName::OverlordEmptyModifier, text_only_ability(text!["No effect"]))
 }
 
-pub fn tutorial_disable_draw_action() -> CardDefinition {
+pub fn tutorial_disable_draw_action(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableDrawAction,
         simple_ability(
@@ -53,7 +53,7 @@ pub fn tutorial_disable_draw_action() -> CardDefinition {
     )
 }
 
-pub fn tutorial_disable_gain_mana() -> CardDefinition {
+pub fn tutorial_disable_gain_mana(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableGainMana,
         simple_ability(
@@ -66,7 +66,7 @@ pub fn tutorial_disable_gain_mana() -> CardDefinition {
     )
 }
 
-pub fn tutorial_disable_raid_sanctum() -> CardDefinition {
+pub fn tutorial_disable_raid_sanctum(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidSanctum,
         simple_ability(
@@ -79,7 +79,7 @@ pub fn tutorial_disable_raid_sanctum() -> CardDefinition {
     )
 }
 
-pub fn tutorial_disable_raid_vault() -> CardDefinition {
+pub fn tutorial_disable_raid_vault(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidVault,
         simple_ability(
@@ -92,7 +92,7 @@ pub fn tutorial_disable_raid_vault() -> CardDefinition {
     )
 }
 
-pub fn tutorial_disable_raid_crypts() -> CardDefinition {
+pub fn tutorial_disable_raid_crypts(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidCrypts,
         simple_ability(
@@ -105,7 +105,7 @@ pub fn tutorial_disable_raid_crypts() -> CardDefinition {
     )
 }
 
-pub fn tutorial_disable_raid_outer() -> CardDefinition {
+pub fn tutorial_disable_raid_outer(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidOuter,
         simple_ability(
@@ -118,7 +118,7 @@ pub fn tutorial_disable_raid_outer() -> CardDefinition {
     )
 }
 
-pub fn tutorial_disable_raid_continue() -> CardDefinition {
+pub fn tutorial_disable_raid_continue(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidContinue,
         simple_ability(
@@ -131,7 +131,7 @@ pub fn tutorial_disable_raid_continue() -> CardDefinition {
     )
 }
 
-pub fn tutorial_disable_end_raid() -> CardDefinition {
+pub fn tutorial_disable_end_raid(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableEndRaid,
         simple_ability(
@@ -144,7 +144,7 @@ pub fn tutorial_disable_end_raid() -> CardDefinition {
     )
 }
 
-pub fn tutorial_force_sanctum_score() -> CardDefinition {
+pub fn tutorial_force_sanctum_score(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialForceSanctumScore,
         simple_ability(

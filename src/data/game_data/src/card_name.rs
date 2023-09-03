@@ -21,27 +21,35 @@ use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 
+/// Describes function & cosmetic differences for a card with a given name.
+#[derive(
+    PartialEq, Eq, Hash, Default, Debug, Copy, Clone, Serialize, Deserialize, PartialOrd, Ord,
+)]
+pub struct CardMetadata {
+    pub upgraded: bool,
+    pub full_art: bool,
+}
+
 /// Identifies a specific card version within cards with the same name, covering
 /// both cosmetic and functional distinctions. Cards with the same variant are
 /// visually and functionally identical under the rules of the game.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct CardVariant {
     pub name: CardName,
-    pub upgraded: bool,
-    pub full_art: bool,
+    pub metadata: CardMetadata,
 }
 
 impl CardVariant {
     /// Base card variant with no upgrades or cosmetic modifications.
-    pub fn standard(name: CardName) -> Self {
-        Self { name, upgraded: false, full_art: false }
+    pub const fn standard(name: CardName) -> Self {
+        Self { name, metadata: CardMetadata { upgraded: false, full_art: false } }
     }
 
     /// Returns an integer which uniquely identifies this variant among all
     /// other variants.
     pub fn as_ident(&self) -> u64 {
         let result = self.name as u64;
-        match (self.upgraded, self.full_art) {
+        match (self.metadata.upgraded, self.metadata.full_art) {
             (true, true) => result + 3_000_000,
             (true, false) => result + 2_000_000,
             (false, true) => result + 1_000_000,

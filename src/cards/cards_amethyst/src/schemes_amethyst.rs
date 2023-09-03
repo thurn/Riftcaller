@@ -20,14 +20,14 @@ use card_helpers::{text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, SchemePoints,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 
-pub fn gold_mine() -> CardDefinition {
+pub fn gold_mine(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::GoldMine,
         sets: vec![CardSetName::Amethyst],
@@ -52,7 +52,7 @@ pub fn gold_mine() -> CardDefinition {
     }
 }
 
-pub fn activate_reinforcements() -> CardDefinition {
+pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ActivateReinforcements,
         sets: vec![CardSetName::Amethyst],
@@ -86,7 +86,7 @@ pub fn activate_reinforcements() -> CardDefinition {
     }
 }
 
-pub fn research_project() -> CardDefinition {
+pub fn research_project(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ResearchProject,
         sets: vec![CardSetName::Amethyst],

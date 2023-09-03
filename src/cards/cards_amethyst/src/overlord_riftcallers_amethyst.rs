@@ -15,11 +15,11 @@
 use assets::rexard_images;
 use card_helpers::{history, *};
 use game_data::card_definition::{CardConfig, CardDefinition};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 
-pub fn ubras_efaris_time_shaper() -> CardDefinition {
+pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::UbrasEfarisTimeShaper,
         sets: vec![CardSetName::Amethyst],

@@ -18,14 +18,14 @@ use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
     SpecialEffects,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 
-pub fn arcane_recovery() -> CardDefinition {
+pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ArcaneRecovery,
         sets: vec![CardSetName::Basics],
@@ -47,7 +47,7 @@ pub fn arcane_recovery() -> CardDefinition {
     }
 }
 
-pub fn eldritch_surge() -> CardDefinition {
+pub fn eldritch_surge(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::EldritchSurge,
         sets: vec![CardSetName::Basics],
@@ -69,7 +69,7 @@ pub fn eldritch_surge() -> CardDefinition {
     }
 }
 
-pub fn lodestone() -> CardDefinition {
+pub fn lodestone(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Lodestone,
         sets: vec![CardSetName::Basics],
@@ -88,7 +88,7 @@ pub fn lodestone() -> CardDefinition {
     }
 }
 
-pub fn mana_battery() -> CardDefinition {
+pub fn mana_battery(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ManaBattery,
         sets: vec![CardSetName::Basics],
@@ -122,7 +122,7 @@ pub fn mana_battery() -> CardDefinition {
     }
 }
 
-pub fn contemplate() -> CardDefinition {
+pub fn contemplate(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Contemplate,
         sets: vec![CardSetName::Basics],
@@ -145,7 +145,7 @@ pub fn contemplate() -> CardDefinition {
     }
 }
 
-pub fn ancestral_knowledge() -> CardDefinition {
+pub fn ancestral_knowledge(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::AncestralKnowledge,
         sets: vec![CardSetName::Basics],
@@ -167,7 +167,7 @@ pub fn ancestral_knowledge() -> CardDefinition {
     }
 }
 
-pub fn simple_blade() -> CardDefinition {
+pub fn simple_blade(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleBlade,
         sets: vec![CardSetName::Basics],
@@ -188,7 +188,7 @@ pub fn simple_blade() -> CardDefinition {
     }
 }
 
-pub fn simple_axe() -> CardDefinition {
+pub fn simple_axe(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleAxe,
         sets: vec![CardSetName::Basics],
@@ -212,7 +212,7 @@ pub fn simple_axe() -> CardDefinition {
     }
 }
 
-pub fn simple_bow() -> CardDefinition {
+pub fn simple_bow(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleBow,
         sets: vec![CardSetName::Basics],
@@ -233,7 +233,7 @@ pub fn simple_bow() -> CardDefinition {
     }
 }
 
-pub fn simple_club() -> CardDefinition {
+pub fn simple_club(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleClub,
         sets: vec![CardSetName::Basics],
@@ -254,7 +254,7 @@ pub fn simple_club() -> CardDefinition {
     }
 }
 
-pub fn simple_hammer() -> CardDefinition {
+pub fn simple_hammer(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleHammer,
         sets: vec![CardSetName::Basics],
@@ -275,7 +275,7 @@ pub fn simple_hammer() -> CardDefinition {
     }
 }
 
-pub fn simple_spear() -> CardDefinition {
+pub fn simple_spear(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::SimpleSpear,
         sets: vec![CardSetName::Basics],
@@ -296,7 +296,7 @@ pub fn simple_spear() -> CardDefinition {
     }
 }
 
-pub fn ethereal_blade() -> CardDefinition {
+pub fn ethereal_blade(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::EtherealBlade,
         sets: vec![CardSetName::Basics],

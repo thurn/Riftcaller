@@ -19,12 +19,12 @@ use card_helpers::{text, *};
 use game_data::card_definition::{
     CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::{flags, mana, mutations};
 
-pub fn overwhelming_power() -> CardDefinition {
+pub fn overwhelming_power(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::OverwhelmingPower,
         sets: vec![CardSetName::Amethyst],
@@ -46,7 +46,7 @@ pub fn overwhelming_power() -> CardDefinition {
     }
 }
 
-pub fn forced_march() -> CardDefinition {
+pub fn forced_march(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ForcedMarch,
         sets: vec![CardSetName::Amethyst],
