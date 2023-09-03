@@ -23,7 +23,7 @@ use std::fmt::{Debug, Formatter};
 use anyhow::Result;
 use enum_kinds::EnumKind;
 
-use crate::card_name::CardName;
+use crate::card_name::{CardName, CardVariant};
 use crate::card_set_name::CardSetName;
 use crate::delegates::Delegate;
 use crate::game::GameState;
@@ -189,6 +189,14 @@ pub struct CardConfig {
 
     // Content to display behind the main image
     pub image_background: Option<Sprite>,
+
+    // Which card variant does this definition correspond to?
+    //
+    // It is never necessary to specify this value when building a card
+    // definition, we automatically write the correct variant to each definition
+    // after construction. A value of 'None' is treated identically to the
+    // standard variant.
+    pub variant: Option<CardVariant>,
 }
 
 #[derive(Debug, Default)]
@@ -276,6 +284,10 @@ pub struct CardDefinition {
 }
 
 impl CardDefinition {
+    pub fn variant(&self) -> CardVariant {
+        self.config.variant.unwrap_or_else(|| CardVariant::standard(self.name))
+    }
+
     /// Returns the ability at the given index. Panics if no ability with this
     /// index exists.
     pub fn ability(&self, index: AbilityIndex) -> &Ability {

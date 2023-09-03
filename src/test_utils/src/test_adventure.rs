@@ -15,7 +15,7 @@
 use std::collections::{HashMap, HashSet};
 
 use adventure_data::adventure::{AdventureConfiguration, AdventureState, Coins, TilePosition};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{AdventureId, Side};
@@ -29,8 +29,8 @@ pub struct TestAdventure {
     side: Side,
     coins: Coins,
     visiting_position: Option<TilePosition>,
-    deck: HashMap<CardName, u32>,
-    collection: HashMap<CardName, u32>,
+    deck: HashMap<CardVariant, u32>,
+    collection: HashMap<CardVariant, u32>,
 }
 
 impl TestAdventure {
@@ -55,12 +55,12 @@ impl TestAdventure {
     }
 
     pub fn deck_card(mut self, card: CardName, quantity: u32) -> Self {
-        self.deck.insert(card, quantity);
+        self.deck.insert(CardVariant::standard(card), quantity);
         self
     }
 
     pub fn collection_card(mut self, card: CardName, quantity: u32) -> Self {
-        self.collection.insert(card, quantity);
+        self.collection.insert(CardVariant::standard(card), quantity);
         self
     }
 

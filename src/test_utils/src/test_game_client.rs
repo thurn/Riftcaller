@@ -16,7 +16,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use adapters;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardState;
 use game_data::game::GameState;
 use game_data::player_name::PlayerId;
@@ -42,7 +42,7 @@ use crate::test_world_map::TestWorldMap;
 /// provided `card_name`.
 pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_name: CardName) {
     let card = game.card(card_id);
-    let mut state = CardState::new(card_id, card_name);
+    let mut state = CardState::new(card_id, CardVariant::standard(card_name));
     state.set_position_internal(card.sorting_key, card.position());
     *game.card_mut(card_id) = state;
 
@@ -53,7 +53,7 @@ pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_name: CardName
 
 /// Returns the [Side] player who owns the [CardName] card
 pub fn side_for_card_name(name: CardName) -> Side {
-    rules::get(name).side
+    rules::get(CardVariant::standard(name)).side
 }
 
 /// Represents a user client connected to a test game
@@ -392,7 +392,7 @@ impl ClientCards {
 
     /// Looks for the ID of card in the user's hand with a given name. Panics if
     /// no such card can be found.
-    pub fn find_in_user_hand(&self, card: CardName) -> CardIdentifier {
+    pub fn find_in_user_hand(&self, card: CardVariant) -> CardIdentifier {
         self.cards_in_hand(PlayerName::User)
             .find(|c| c.title() == card.displayed_name())
             .expect("Card in hand")

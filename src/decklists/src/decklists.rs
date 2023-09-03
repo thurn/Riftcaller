@@ -16,7 +16,7 @@
 
 use std::collections::HashMap;
 
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::deck::Deck;
 use game_data::primitives::{School, Side};
 use maplit::hashmap;
@@ -36,7 +36,7 @@ pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![],
     riftcallers: vec![],
-    cards: hashmap! {CardName::TestOverlordSpell => 45},
+    cards: hashmap! {CardVariant::standard(CardName::TestOverlordSpell) => 45},
 });
 
 /// Basic Overlord starter deck in adventure mode
@@ -45,19 +45,19 @@ pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     schools: vec![],
     riftcallers: vec![],
     cards: hashmap! {
-        CardName::Conspire => 3,
-        CardName::Devise => 3,
-        CardName::Machinate => 3,
-        CardName::GatheringDark => 3,
-        CardName::Coinery => 3,
-        CardName::Leyline => 3,
-        CardName::OreRefinery => 3,
-        CardName::Crab => 3,
-        CardName::FireGoblin => 3,
-        CardName::Toucan => 3,
-        CardName::Frog => 3,
-        CardName::Scout => 3,
-        CardName::Captain => 3
+        CardVariant::standard(CardName::Conspire) => 3,
+        CardVariant::standard(CardName::Devise) => 3,
+        CardVariant::standard(CardName::Machinate) => 3,
+        CardVariant::standard(CardName::GatheringDark) => 3,
+        CardVariant::standard(CardName::Coinery) => 3,
+        CardVariant::standard(CardName::Leyline) => 3,
+        CardVariant::standard(CardName::OreRefinery) => 3,
+        CardVariant::standard(CardName::Crab) => 3,
+        CardVariant::standard(CardName::FireGoblin) => 3,
+        CardVariant::standard(CardName::Toucan) => 3,
+        CardVariant::standard(CardName::Frog) => 3,
+        CardVariant::standard(CardName::Scout) => 3,
+        CardVariant::standard(CardName::Captain) => 3
     },
 });
 
@@ -71,22 +71,22 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     schools: vec![School::Law],
     riftcallers: vec![],
     cards: hashmap! {
-        CardName::GoldMine => 3,
-        CardName::ActivateReinforcements => 2,
-        CardName::ResearchProject => 2,
-        CardName::Gemcarver => 2,
-        CardName::Coinery => 2,
-        CardName::SpikeTrap => 2,
-        CardName::OverwhelmingPower => 2,
-        CardName::GatheringDark => 3,
-        CardName::ForcedMarch => 2,
-        CardName::TimeGolem => 1,
-        CardName::TemporalStalker => 2,
-        CardName::ShadowLurker => 3,
-        CardName::SphinxOfWintersBreath => 2,
-        CardName::BridgeTroll => 2,
-        CardName::Stormcaller => 2,
-        CardName::FireGoblin => 2
+        CardVariant::standard(CardName::GoldMine) => 3,
+        CardVariant::standard(CardName::ActivateReinforcements) => 2,
+        CardVariant::standard(CardName::ResearchProject) => 2,
+        CardVariant::standard(CardName::Gemcarver) => 2,
+        CardVariant::standard(CardName::Coinery) => 2,
+        CardVariant::standard(CardName::SpikeTrap) => 2,
+        CardVariant::standard(CardName::OverwhelmingPower) => 2,
+        CardVariant::standard(CardName::GatheringDark) => 3,
+        CardVariant::standard(CardName::ForcedMarch) => 2,
+        CardVariant::standard(CardName::TimeGolem) => 1,
+        CardVariant::standard(CardName::TemporalStalker) => 2,
+        CardVariant::standard(CardName::ShadowLurker) => 3,
+        CardVariant::standard(CardName::SphinxOfWintersBreath) => 2,
+        CardVariant::standard(CardName::BridgeTroll) => 2,
+        CardVariant::standard(CardName::Stormcaller) => 2,
+        CardVariant::standard(CardName::FireGoblin) => 2
     },
 });
 
@@ -103,7 +103,7 @@ pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![],
     riftcallers: vec![],
-    cards: hashmap! {CardName::TestChampionSpell => 45},
+    cards: hashmap! {CardVariant::standard(CardName::TestChampionSpell) => 45},
 });
 
 /// Basic Champion starter deck in adventure mode
@@ -112,19 +112,19 @@ pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     schools: vec![],
     riftcallers: vec![],
     cards: hashmap! {
-        CardName::ArcaneRecovery => 3,
-        CardName::EldritchSurge => 3,
-        CardName::Lodestone => 3,
-        CardName::ManaBattery => 3,
-        CardName::Contemplate => 3,
-        CardName::AncestralKnowledge => 3,
-        CardName::SimpleBlade => 3,
-        CardName::SimpleAxe => 3,
-        CardName::SimpleBow => 3,
-        CardName::SimpleClub => 3,
-        CardName::SimpleHammer => 3,
-        CardName::SimpleSpear => 3,
-        CardName::EtherealBlade => 3,
+        CardVariant::standard(CardName::ArcaneRecovery) => 3,
+        CardVariant::standard(CardName::EldritchSurge) => 3,
+        CardVariant::standard(CardName::Lodestone) => 3,
+        CardVariant::standard(CardName::ManaBattery) => 3,
+        CardVariant::standard(CardName::Contemplate) => 3,
+        CardVariant::standard(CardName::AncestralKnowledge) => 3,
+        CardVariant::standard(CardName::SimpleBlade) => 3,
+        CardVariant::standard(CardName::SimpleAxe) => 3,
+        CardVariant::standard(CardName::SimpleBow) => 3,
+        CardVariant::standard(CardName::SimpleClub) => 3,
+        CardVariant::standard(CardName::SimpleHammer) => 3,
+        CardVariant::standard(CardName::SimpleSpear) => 3,
+        CardVariant::standard(CardName::EtherealBlade) => 3,
     },
 });
 
@@ -138,22 +138,22 @@ pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     schools: vec![School::Primal],
     riftcallers: vec![],
     cards: hashmap! {
-        CardName::Meditation => 2,
-        CardName::CoupDeGrace => 3,
-        CardName::ChargedStrike => 2,
-        CardName::ArcaneRecovery => 3,
-        CardName::StealthMission => 2,
-        CardName::Preparation => 2,
-        CardName::InvisibilityRing => 1,
-        CardName::Accumulator => 1,
-        CardName::MageGloves => 1,
-        CardName::ManaBattery => 2,
-        CardName::MagicalResonator => 2,
-        CardName::DarkGrimoire => 1,
-        CardName::MaraudersAxe => 2,
-        CardName::KeenHalberd => 2,
-        CardName::EtherealBlade => 2,
-        CardName::BowOfTheAlliance => 2,
+        CardVariant::standard(CardName::Meditation) => 2,
+        CardVariant::standard(CardName::CoupDeGrace) => 3,
+        CardVariant::standard(CardName::ChargedStrike) => 2,
+        CardVariant::standard(CardName::ArcaneRecovery) => 3,
+        CardVariant::standard(CardName::StealthMission) => 2,
+        CardVariant::standard(CardName::Preparation) => 2,
+        CardVariant::standard(CardName::InvisibilityRing) => 1,
+        CardVariant::standard(CardName::Accumulator) => 1,
+        CardVariant::standard(CardName::MageGloves) => 1,
+        CardVariant::standard(CardName::ManaBattery) => 2,
+        CardVariant::standard(CardName::MagicalResonator) => 2,
+        CardVariant::standard(CardName::DarkGrimoire) => 1,
+        CardVariant::standard(CardName::MaraudersAxe) => 2,
+        CardVariant::standard(CardName::KeenHalberd) => 2,
+        CardVariant::standard(CardName::EtherealBlade) => 2,
+        CardVariant::standard(CardName::BowOfTheAlliance) => 2,
     },
 });
 

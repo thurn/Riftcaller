@@ -91,15 +91,15 @@ pub fn matches_tutorial_trigger(
 
     match (trigger, &choice.step) {
         (TutorialTrigger::SummonMinion(name), RaidStep::SummonMinion(id)) => {
-            game.card(*id).name == *name
+            game.card(*id).variant.name == *name
         }
         (TutorialTrigger::UseWeapon { weapon, target }, RaidStep::UseWeapon(interaction)) => {
-            game.card(interaction.weapon_id).name == *weapon
-                && game.card(interaction.defender_id).name == *target
+            game.card(interaction.weapon_id).variant.name == *weapon
+                && game.card(interaction.defender_id).variant.name == *target
         }
         (TutorialTrigger::UseNoWeapon, RaidStep::FireMinionCombatAbility(_)) => true,
         (TutorialTrigger::ScoreAccessedCard(name), RaidStep::StartScoringCard(card)) => {
-            game.card(card.id).name == *name
+            game.card(card.id).variant.name == *name
         }
         (TutorialTrigger::SuccessfullyEndRaid, RaidStep::FinishRaid) => true,
         _ => false,

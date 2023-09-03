@@ -21,7 +21,7 @@ use std::cmp::Ordering;
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 
-use crate::card_name::CardName;
+use crate::card_name::CardVariant;
 use crate::game::TurnData;
 use crate::game_actions::CardTarget;
 use crate::primitives::{
@@ -152,8 +152,11 @@ pub struct CardData {
 pub struct CardState {
     /// ID for this card.
     pub id: CardId,
-    /// Card name, can be used to look up this card's definition
-    pub name: CardName,
+    /// Identifies this card within the game rules, using its card name and
+    /// other properties.
+    ///
+    /// Used to look up this card's definition.
+    pub variant: CardVariant,
     /// Optional state for this card
     pub data: CardData,
     /// Opaque value identifying this card's sort order within its CardPosition.
@@ -165,10 +168,10 @@ pub struct CardState {
 impl CardState {
     /// Creates a new card state, placing the card into the `side` player's
     /// deck.
-    pub fn new(id: CardId, name: CardName) -> Self {
+    pub fn new(id: CardId, name: CardVariant) -> Self {
         Self {
             id,
-            name,
+            variant: name,
             position: CardPosition::DeckUnknown(id.side),
             sorting_key: 0,
             data: CardData {
@@ -183,14 +186,14 @@ impl CardState {
     /// Creates a new [CardState] with a given position and face-up state.
     pub fn new_with_position(
         id: CardId,
-        name: CardName,
+        name: CardVariant,
         position: CardPosition,
         sorting_key: u32,
         is_face_up: bool,
     ) -> Self {
         Self {
             id,
-            name,
+            variant: name,
             position,
             sorting_key,
             data: CardData {

@@ -39,7 +39,7 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
             let mut cards = card_sync::activated_ability_cards(builder, game, c);
             cards.push(card_sync::card_view(
                 builder,
-                &CardViewContext::Game(rules::get(c.name), game, c),
+                &CardViewContext::Game(rules::get(c.variant), game, c),
             ));
             cards
         })

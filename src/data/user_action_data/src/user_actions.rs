@@ -17,7 +17,7 @@ use std::fmt;
 use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
 use enum_iterator::Sequence;
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
@@ -94,7 +94,7 @@ pub enum DebugAction {
     AddCoins(Coins),
     /// Reads text in the card list search field and shows matching cards
     FilterCardList,
-    AddToHand(CardName),
+    AddToHand(CardVariant),
     ApplyScenario(DebugScenario),
 }
 
@@ -103,9 +103,9 @@ pub enum DeckEditorAction {
     /// Mark the user as having seen the prompt screen
     ViewedPrompt,
     /// Add one copy of a card to a deck
-    AddToDeck(CardName),
+    AddToDeck(CardVariant),
     /// Remove one copy of a card from a deck
-    RemoveFromDeck(CardName),
+    RemoveFromDeck(CardVariant),
 }
 
 impl From<DeckEditorAction> for UserAction {

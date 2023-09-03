@@ -21,7 +21,7 @@ use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
 use deck_card::DeckCard;
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use protos::spelldawn::{
     BackgroundImageAutoSize, FlexAlign, FlexDirection, FlexJustify, FlexPosition, ImageScaleMode,
 };
@@ -30,14 +30,14 @@ use crate::deck_editor_panel::EDITOR_COLUMN_WIDTH;
 
 pub struct CardListCardName {
     layout: Layout,
-    card_name: CardName,
+    variant: CardVariant,
     on_drop: Option<ActionBuilder>,
     count: Option<u32>,
 }
 
 impl CardListCardName {
-    pub fn new(card_name: CardName) -> Self {
-        Self { card_name, layout: Layout::default(), on_drop: None, count: None }
+    pub fn new(variant: CardVariant) -> Self {
+        Self { variant, layout: Layout::default(), on_drop: None, count: None }
     }
 
     pub fn layout(mut self, layout: Layout) -> Self {
@@ -58,7 +58,7 @@ impl CardListCardName {
 
 impl Component for CardListCardName {
     fn build(self) -> Option<Node> {
-        let definition = rules::get(self.card_name);
+        let definition = rules::get(self.variant);
         let cost = match (definition.cost.mana, definition.config.stats.scheme_points) {
             (Some(mana), _) => Some((mana.to_string(), CardIconType::Mana)),
             (_, Some(scheme_points)) => {
@@ -67,13 +67,13 @@ impl Component for CardListCardName {
             _ => None,
         };
 
-        Draggable::new(element_names::card_list_card_name(self.card_name))
+        Draggable::new(element_names::card_list_card_name(self.variant))
             .drop_target(element_names::COLLECTION_BROWSER)
-            .over_target_indicator(move || DeckCard::new(self.card_name).build())
+            .over_target_indicator(move || DeckCard::new(self.variant).build())
             .on_drop(self.on_drop)
             .horizontal_drag_start_distance(100)
             .remove_original(if let Some(v) = self.count { v <= 1 } else { false })
-            .hide_indicator_children(vec![element_names::card_list_card_quantity(self.card_name)])
+            .hide_indicator_children(vec![element_names::card_list_card_quantity(self.variant)])
             .style(
                 Style::new()
                     .height(72.px())
@@ -100,7 +100,7 @@ impl Component for CardListCardName {
                     Style::new()
                         .position_type(FlexPosition::Absolute)
                         .position(Edge::All, 4.px())
-                        .background_color(BackgroundColor::DeckCardNameOverlay)
+                        .background_color(BackgroundColor::DeckCardVariantOverlay)
                         .border_radius(Corner::All, 8.px())
                         .border_color(Edge::All, OVERLAY_BORDER)
                         .border_width(Edge::All, 2.px()),
@@ -138,13 +138,13 @@ impl Component for CardListCardName {
                             .align_items(FlexAlign::FlexStart),
                     )
                     .child(
-                        Text::new(self.card_name.displayed_name())
-                            .font_size(FontSize::CardName)
+                        Text::new(self.variant.displayed_name())
+                            .font_size(FontSize::CardVariant)
                             .layout(Layout::new().margin(Edge::All, 0.px())),
                     ),
             )
             .child(self.count.map(|c| {
-                Column::new(element_names::card_list_card_quantity(self.card_name))
+                Column::new(element_names::card_list_card_quantity(self.variant))
                     .style(
                         Style::new()
                             .background_color(BackgroundColor::CardCount)

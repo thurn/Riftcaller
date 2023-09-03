@@ -14,7 +14,7 @@
 
 //! Unique identifiers for UI elements
 
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use protos::spelldawn::element_selector::Selector;
 use protos::spelldawn::ElementSelector;
 
@@ -75,30 +75,30 @@ pub static CARD_LIST: ElementName = global("CardList");
 
 pub static COLLECTION_BROWSER: ElementName = global("CollectionBrowser");
 
-pub fn deck_card(name: CardName) -> ElementName {
-    ElementName { tag: "DeckCard", count: name as u64 }
+pub fn deck_card(variant: CardVariant) -> ElementName {
+    ElementName { tag: "DeckCard", count: variant.as_ident() }
 }
 
-pub fn deck_card_slot(name: CardName) -> ElementName {
-    ElementName { tag: "DeckCardSlot", count: name as u64 }
+pub fn deck_card_slot(variant: CardVariant) -> ElementName {
+    ElementName { tag: "DeckCardSlot", count: variant.as_ident() }
 }
 
-pub fn deck_card_slot_overlay(name: CardName) -> ElementName {
-    ElementName { tag: "DeckCardSlotOverlay", count: name as u64 }
+pub fn deck_card_slot_overlay(variant: CardVariant) -> ElementName {
+    ElementName { tag: "DeckCardSlotOverlay", count: variant.as_ident() }
 }
 
-pub fn card_list_card_name(name: CardName) -> ElementName {
-    ElementName { tag: "CardListCardName", count: name as u64 }
+pub fn card_list_card_name(variant: CardVariant) -> ElementName {
+    ElementName { tag: "CardListCardVariant", count: variant.as_ident() }
 }
 
-pub fn card_list_card_quantity(name: CardName) -> ElementName {
-    ElementName { tag: "CardListCardQuantity", count: name as u64 }
+pub fn card_list_card_quantity(variant: CardVariant) -> ElementName {
+    ElementName { tag: "CardListCardQuantity", count: variant.as_ident() }
 }
 
-pub fn buy_card(name: CardName) -> ElementName {
-    ElementName { tag: "BuyCard", count: name as u64 }
+pub fn buy_card(variant: CardVariant) -> ElementName {
+    ElementName { tag: "BuyCard", count: variant.as_ident() }
 }
 
-pub fn draft_card(name: CardName) -> ElementName {
-    ElementName { tag: "DraftCard", count: name as u64 }
+pub fn draft_card(variant: CardVariant) -> ElementName {
+    ElementName { tag: "DraftCard", count: variant.as_ident() }
 }

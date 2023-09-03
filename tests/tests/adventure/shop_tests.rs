@@ -13,14 +13,15 @@
 // limitations under the License.
 
 use adventure_data::adventure::{CardChoice, Coins, ShopData, TileEntity};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::primitives::Side;
 use test_utils::client_interface::{self};
 use test_utils::test_adventure::TestAdventure;
 use test_utils::*;
 
 const BUY_COST: Coins = Coins(75);
-const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
+const EXAMPLE_CARD: CardVariant =
+    CardVariant { name: CardName::TestChampionSpell, upgraded: false, full_art: false };
 
 #[test]
 fn test_visit_shop() {

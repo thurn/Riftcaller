@@ -20,7 +20,7 @@ use anyhow::Result;
 use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::deck::Deck;
 use game_data::player_name::{AIPlayer, PlayerId};
@@ -103,7 +103,7 @@ impl TilePosition {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardChoice {
     pub quantity: u32,
-    pub card: CardName,
+    pub card: CardVariant,
     pub cost: Coins,
     pub sold: bool,
 }
@@ -263,8 +263,8 @@ pub struct AdventureState {
     pub deck: Deck,
     /// Cards collected by this player during this adventure, inclusive of cards
     /// in `deck` and cards not currently being used.
-    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    pub collection: HashMap<CardName, u32>,
+    #[serde_as(as = "Vec<(_, _)>")]
+    pub collection: HashMap<CardVariant, u32>,
     /// Customization options for this adventure
     pub config: AdventureConfiguration,
 }

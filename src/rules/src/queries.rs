@@ -35,7 +35,7 @@ use crate::dispatch;
 
 /// Obtain the [CardStats] for a given card
 pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
-    &crate::get(game.card(card_id).name).config.stats
+    &crate::get(game.card(card_id).variant).config.stats
 }
 
 /// Returns the mana cost for a given card.
@@ -48,7 +48,7 @@ pub fn mana_cost(game: &GameState, card_id: CardId) -> Option<ManaValue> {
     dispatch::perform_query(
         game,
         ManaCostQuery(card_id),
-        crate::get(game.card(card_id).name).cost.mana,
+        crate::get(game.card(card_id).variant).cost.mana,
     )
 }
 
@@ -56,7 +56,7 @@ pub fn mana_cost(game: &GameState, card_id: CardId) -> Option<ManaValue> {
 /// card itself if it is currently face-down.
 pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<ManaValue> {
     let mut cost = if let AbilityType::Activated(cost, _) =
-        &crate::get(game.card(ability_id.card_id).name).ability(ability_id.index).ability_type
+        &crate::get(game.card(ability_id.card_id).variant).ability(ability_id.index).ability_type
     {
         cost.mana
     } else {
@@ -77,7 +77,7 @@ pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<Mana
 
 /// Returns the action point cost for a given card
 pub fn action_cost(game: &GameState, card_id: CardId) -> ActionCount {
-    let actions = crate::get(game.card(card_id).name).cost.actions;
+    let actions = crate::get(game.card(card_id).variant).cost.actions;
     dispatch::perform_query(game, ActionCostQuery(card_id), actions)
 }
 
@@ -223,9 +223,9 @@ pub fn card_target_kind(game: &GameState, card_id: CardId) -> CardTargetKind {
 /// such card.
 pub fn highest_cost<'a>(card_iterator: impl Iterator<Item = &'a CardState>) -> Option<CardId> {
     let cards = card_iterator.collect::<Vec<_>>();
-    let max = cards.iter().filter_map(|c| crate::get(c.name).cost.mana).max();
+    let max = cards.iter().filter_map(|c| crate::get(c.variant).cost.mana).max();
     let mut filtered =
-        cards.into_iter().filter(|c| crate::get(c.name).cost.mana == max).collect::<Vec<_>>();
+        cards.into_iter().filter(|c| crate::get(c.variant).cost.mana == max).collect::<Vec<_>>();
     filtered.sort();
     filtered.first().map(|c| c.id)
 }

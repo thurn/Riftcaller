@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game::{GameState, MulliganDecision};
 use game_data::game_actions::{GameAction, GameStateAction, RaidAction};
@@ -138,7 +138,11 @@ pub fn current_opponent_action(game: &GameState) -> Result<GameAction> {
 
 fn add_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
     for card_name in card_names {
-        mutations::create_and_add_card(game, *card_name, CardPosition::GameModifier)?;
+        mutations::create_and_add_card(
+            game,
+            CardVariant::standard(*card_name),
+            CardPosition::GameModifier,
+        )?;
     }
 
     Ok(())
@@ -146,13 +150,17 @@ fn add_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<(
 
 fn remove_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
     for card_name in card_names {
-        let side = rules::get(*card_name).side;
+        let side = rules::get(CardVariant::standard(*card_name)).side;
         let card_id = game
             .game_modifiers(side)
-            .find(|c| c.name == *card_name)
+            .find(|c| c.variant.name == *card_name)
             .with_error(|| "Card not found")?
             .id;
-        mutations::overwrite_card(game, card_id, CardName::OverlordEmptyModifier)?;
+        mutations::overwrite_card(
+            game,
+            card_id,
+            CardVariant::standard(CardName::OverlordEmptyModifier),
+        )?;
     }
 
     Ok(())
@@ -211,7 +219,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
         TutorialOpponentAction::PlayCard(name, target) => {
             let card_id = game
                 .hand(crate::OPPONENT_SIDE)
-                .find(|c| c.name == *name)
+                .find(|c| c.variant.name == *name)
                 .with_error(|| format!("Card not found {name}"))?
                 .id;
             GameAction::PlayCard(card_id, *target)
@@ -222,18 +230,18 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
         TutorialOpponentAction::SummonMinion(minion_name) => {
             let _minion = game
                 .minions()
-                .find(|c| c.name == *minion_name)
+                .find(|c| c.variant.name == *minion_name)
                 .with_error(|| format!("Minion not found {minion_name})"))?;
             GameAction::RaidAction(RaidAction { index: 0 })
         }
         TutorialOpponentAction::UseWeapon { weapon, target } => {
             let _weapon = game
                 .artifacts()
-                .find(|c| c.name == *weapon)
+                .find(|c| c.variant.name == *weapon)
                 .with_error(|| format!("Weapon not found {weapon})"))?;
             let _target = game
                 .minions()
-                .find(|c| c.name == *target)
+                .find(|c| c.variant.name == *target)
                 .with_error(|| format!("Target not found {target}"))?;
 
             GameAction::RaidAction(RaidAction { index: 0 })
@@ -243,7 +251,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
                 .cards(crate::OPPONENT_SIDE)
                 .iter()
                 .filter(|c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Occupant)))
-                .find(|c| c.name == *name)
+                .find(|c| c.variant.name == *name)
                 .with_error(|| format!("Scheme not found {name}"))?
                 .id;
             GameAction::RaidAction(RaidAction { index: 0 })
@@ -306,7 +314,7 @@ fn trigger_matches(
         (TutorialTrigger::DrawCardAction, GameAction::DrawCard) => true,
         (TutorialTrigger::PlayAnyCard, GameAction::PlayCard(_, _)) => true,
         (TutorialTrigger::PlayCard(name, t1), GameAction::PlayCard(id, t2)) => {
-            game.card(*id).name == *name && t1 == t2
+            game.card(*id).variant.name == *name && t1 == t2
         }
         (TutorialTrigger::GainManaAction, GameAction::GainMana) => true,
         (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
@@ -321,7 +329,7 @@ fn trigger_matches(
 fn game_state_matches(game: &GameState, trigger: &TutorialGameStateTrigger) -> bool {
     match trigger {
         TutorialGameStateTrigger::HandContainsCard(side, card_name) => {
-            game.hand(*side).any(|c| c.name == *card_name)
+            game.hand(*side).any(|c| c.variant.name == *card_name)
         }
     }
 }
@@ -355,5 +363,5 @@ fn display(game: &mut GameState, mut displays: Vec<TutorialDisplay>) -> Result<(
 /// an error if no such card exists.
 fn find_in_deck(game: &mut GameState, side: Side, name: CardName) -> Result<CardId> {
     let mut deck = game.cards(side).iter().filter(|c| c.position().in_deck_unknown());
-    Ok(deck.find(|c| c.name == name).with_error(|| "Card not found")?.id)
+    Ok(deck.find(|c| c.variant.name == name).with_error(|| "Card not found")?.id)
 }

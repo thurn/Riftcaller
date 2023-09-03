@@ -193,7 +193,7 @@ impl TestSession {
             .database
             .game()
             .cards_in_position(side, CardPosition::DeckUnknown(side))
-            .filter(|c| c.name.is_test_card())
+            .filter(|c| c.variant.name.is_test_card())
             .last() // Use last to avoid overwriting 'next draw' configuration
             .unwrap()
             .id;

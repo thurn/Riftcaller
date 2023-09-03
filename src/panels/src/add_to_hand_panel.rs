@@ -22,7 +22,7 @@ use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
 use core_ui::text_field::TextField;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use user_action_data::{DebugAction, UserAction};
 
@@ -68,10 +68,10 @@ impl Component for AddToHandPanel {
                             .padding(Edge::Vertical, 16.px()),
                     )
                     .child(Text::new("Filter:").font_size(FontSize::Body))
-                    .child(TextField::new("CardName").on_field_changed(
+                    .child(TextField::new("CardVariant").on_field_changed(
                         actions::with_request_fields(
                             UserAction::Debug(DebugAction::FilterCardList),
-                            vec!["CardName".to_string()],
+                            vec!["CardVariant".to_string()],
                         ),
                     )),
             );
@@ -81,7 +81,9 @@ impl Component for AddToHandPanel {
                 ListCell::new(n.displayed_name()).button(
                     Button::new("Add").action(
                         ActionBuilder::new()
-                            .action(UserAction::Debug(DebugAction::AddToHand(n)))
+                            .action(UserAction::Debug(DebugAction::AddToHand(
+                                CardVariant::standard(n),
+                            )))
                             .update(self.close()),
                     ),
                 )

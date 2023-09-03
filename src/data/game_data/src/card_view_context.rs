@@ -15,7 +15,6 @@
 use anyhow::Result;
 
 use crate::card_definition::CardDefinition;
-use crate::card_name::CardName;
 use crate::card_state::{CardData, CardState};
 use crate::game::GameState;
 use crate::primitives::CardId;
@@ -33,10 +32,6 @@ impl<'a> CardViewContext<'a> {
             Self::Default(d) => d,
             Self::Game(d, _, _) => d,
         }
-    }
-
-    pub fn card_name(&self) -> CardName {
-        self.definition().name
     }
 
     pub fn card_data(&self) -> Option<&CardData> {

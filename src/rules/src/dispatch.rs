@@ -27,7 +27,7 @@ use game_data::primitives::{AbilityId, CardId};
 pub fn populate_delegate_cache(game: &mut GameState) {
     let mut result = DelegateCache::default();
     for card_id in game.all_card_ids() {
-        let definition = crate::get(game.card(card_id).name);
+        let definition = crate::get(game.card(card_id).variant);
         add_card_to_delegate_cache(&mut result, definition, card_id);
     }
     game.delegate_cache = result;

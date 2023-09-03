@@ -21,6 +21,45 @@ use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 
+/// Identifies a specific card version within cards with the same name, covering
+/// both cosmetic and functional distinctions. Cards with the same variant are
+/// visually and functionally identical under the rules of the game.
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, PartialOrd, Ord)]
+pub struct CardVariant {
+    pub name: CardName,
+    pub upgraded: bool,
+    pub full_art: bool,
+}
+
+impl CardVariant {
+    /// Base card variant with no upgrades or cosmetic modifications.
+    pub fn standard(name: CardName) -> Self {
+        Self { name, upgraded: false, full_art: false }
+    }
+
+    /// Returns an integer which uniquely identifies this variant among all
+    /// other variants.
+    pub fn as_ident(&self) -> u64 {
+        let result = self.name as u64;
+        match (self.upgraded, self.full_art) {
+            (true, true) => result + 3_000_000,
+            (true, false) => result + 2_000_000,
+            (false, true) => result + 1_000_000,
+            (false, false) => result,
+        }
+    }
+
+    pub fn displayed_name(&self) -> String {
+        self.name.displayed_name()
+    }
+}
+
+impl From<CardVariant> for CardName {
+    fn from(value: CardVariant) -> Self {
+        value.name
+    }
+}
+
 /// Possible names of cards.
 ///
 /// This enum is used to connect the state of a card to its game rules.

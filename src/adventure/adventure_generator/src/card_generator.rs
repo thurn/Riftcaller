@@ -15,7 +15,7 @@
 use adventure_data::adventure::{
     AdventureConfiguration, CardChoice, Coins, DraftContext, DraftData, ShopData,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side, STANDARD_SCHOOLS};
 
@@ -32,7 +32,7 @@ pub fn riftcaller_choices(config: &mut AdventureConfiguration) -> DraftData {
     draft_data(Some(DraftContext::StartingRiftcaller), cards.collect())
 }
 
-fn draft_data(context: Option<DraftContext>, cards: Vec<CardName>) -> DraftData {
+fn draft_data(context: Option<DraftContext>, cards: Vec<CardVariant>) -> DraftData {
     DraftData {
         context,
         choices: cards
@@ -62,7 +62,7 @@ fn random_riftcaller(
     config: &mut AdventureConfiguration,
     side: Side,
     school: School,
-) -> Option<CardName> {
+) -> Option<CardVariant> {
     config.choose(
         rules::all_cards()
             .filter(move |definition| {
@@ -71,16 +71,16 @@ fn random_riftcaller(
                     && definition.school == school
                     && definition.card_type == CardType::Riftcaller
             })
-            .map(|definition| definition.name),
+            .map(|definition| definition.variant()),
     )
 }
 
-fn common_cards(side: Side) -> impl Iterator<Item = CardName> {
+fn common_cards(side: Side) -> impl Iterator<Item = CardVariant> {
     rules::all_cards()
         .filter(move |definition| {
             definition.sets.contains(&CardSetName::Amethyst)
                 && definition.rarity == Rarity::Common
                 && definition.side == side
         })
-        .map(|definition| definition.name)
+        .map(|definition| definition.variant())
 }

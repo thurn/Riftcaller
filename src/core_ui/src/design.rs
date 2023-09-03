@@ -89,7 +89,7 @@ pub enum BackgroundColor {
     SafeAreaOverlay,
     BottomSheetOverlay,
     BottomSheetBackground,
-    DeckCardNameOverlay,
+    DeckCardVariantOverlay,
     TilePanelOverlay,
     CoinCountOverlay,
     MediaOverlay,
@@ -108,7 +108,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::SafeAreaOverlay => BLACK,
             BackgroundColor::BottomSheetOverlay => BLACK_ALPHA_75,
             BackgroundColor::BottomSheetBackground => ORANGE_900,
-            BackgroundColor::DeckCardNameOverlay => BLACK_ALPHA_50,
+            BackgroundColor::DeckCardVariantOverlay => BLACK_ALPHA_50,
             BackgroundColor::TilePanelOverlay => BLACK_ALPHA_50,
             BackgroundColor::CoinCountOverlay => BLACK_ALPHA_50,
             BackgroundColor::MediaOverlay => BLACK_ALPHA_50,
@@ -168,7 +168,7 @@ pub enum FontSize {
     Headline,
     Body,
     Meta,
-    CardName,
+    CardVariant,
     CardCount,
     CardCost,
     CoinCount,
@@ -190,7 +190,7 @@ impl From<FontSize> for Dimension {
             FontSize::Headline => 36,
             FontSize::Body => 28,
             FontSize::Meta => 20,
-            FontSize::CardName => 28,
+            FontSize::CardVariant => 28,
             FontSize::CardCount => 24,
             FontSize::CardCost => 36,
             FontSize::CoinCount => 54,
@@ -226,7 +226,7 @@ pub enum Font {
     PanelTitle,
     ButtonLabel,
     CardIcon,
-    CardName,
+    CardVariant,
 }
 
 impl From<Font> for FontAddress {
@@ -236,7 +236,7 @@ impl From<Font> for FontAddress {
             Font::PanelTitle => bluu_next(),
             Font::ButtonLabel => roboto(),
             Font::CardIcon => impact(),
-            Font::CardName => bona_nova(),
+            Font::CardVariant => bona_nova(),
         }
     }
 }

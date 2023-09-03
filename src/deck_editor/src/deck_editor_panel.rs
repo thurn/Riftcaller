@@ -19,7 +19,7 @@ use core_ui::full_screen_image::FullScreenImage;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::{icons, style};
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
 use game_data::primitives::DeckId;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress, PlayerPanel};
@@ -36,7 +36,7 @@ pub struct DeckEditorPanel<'a> {
     pub player: &'a PlayerState,
     pub data: DeckEditorData,
     pub deck: &'a Deck,
-    pub collection: &'a HashMap<CardName, u32>,
+    pub collection: &'a HashMap<CardVariant, u32>,
 }
 
 impl<'a> DeckEditorPanel<'a> {

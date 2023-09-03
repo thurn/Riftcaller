@@ -29,7 +29,7 @@ use core_ui::text::Text;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use element_names::{CurrentDraggable, TargetName};
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
 use panel_address::CollectionBrowserFilters;
 use player_data::PlayerState;
@@ -43,21 +43,21 @@ use crate::card_list_card_name::CardListCardName;
 /// Returns an iterator over cards in 'collection' which match a given
 /// [CollectionBrowserFilters]
 pub fn get_matching_cards(
-    collection: &HashMap<CardName, u32>,
+    collection: &HashMap<CardVariant, u32>,
     _: CollectionBrowserFilters,
-) -> impl Iterator<Item = (CardName, u32)> + '_ {
+) -> impl Iterator<Item = (CardVariant, u32)> + '_ {
     collection.iter().map(|(card_name, count)| (*card_name, *count))
 }
 
 pub struct CollectionBrowser<'a> {
     pub player: &'a PlayerState,
     pub deck: &'a Deck,
-    pub collection: &'a HashMap<CardName, u32>,
+    pub collection: &'a HashMap<CardVariant, u32>,
     pub filters: CollectionBrowserFilters,
 }
 
 impl<'a> CollectionBrowser<'a> {
-    fn card_row(&self, cards: Vec<&(CardName, u32)>) -> impl Component {
+    fn card_row(&self, cards: Vec<&(CardVariant, u32)>) -> impl Component {
         let empty_slots = if cards.len() < 4 { 4 - cards.len() } else { 0 };
         Row::new("CardRow")
             .style(
@@ -73,28 +73,28 @@ impl<'a> CollectionBrowser<'a> {
             }))
     }
 
-    fn collection_card(&self, card_name: CardName, quantity: u32) -> Option<Node> {
-        let in_deck = quantity == *self.deck.cards.get(&card_name).unwrap_or(&0);
+    fn collection_card(&self, variant: CardVariant, quantity: u32) -> Option<Node> {
+        let in_deck = quantity == *self.deck.cards.get(&variant).unwrap_or(&0);
 
         let slot = DeckCardSlot::new(CardHeight::vh(36.0))
             .layout(Layout::new().margin(Edge::All, 16.px()))
-            .card(Some(DeckCard::new(card_name).quantity(Some(quantity)).draggable(
+            .card(Some(DeckCard::new(variant).quantity(Some(quantity)).draggable(
                 (!in_deck).then(|| {
-                    Draggable::new(card_name.to_string())
+                    Draggable::new(variant.displayed_name())
                         .drop_target(element_names::CARD_LIST)
-                        .over_target_indicator(move || CardListCardName::new(card_name).build())
-                        .on_drop(Some(self.drop_action(card_name)))
+                        .over_target_indicator(move || CardListCardName::new(variant).build())
+                        .on_drop(Some(self.drop_action(variant)))
                         .on_drag_detected(Some(Command::InfoZoom(InfoZoomCommand {
                             show: false,
                             card: None,
                         })))
                         .horizontal_drag_start_distance(25)
-                        .custom_drag_indicator(DeckCard::new(card_name).build())
+                        .custom_drag_indicator(DeckCard::new(variant).build())
                 }),
             )));
 
         if in_deck {
-            Column::new(element_names::deck_card_slot_overlay(card_name))
+            Column::new(element_names::deck_card_slot_overlay(variant))
                 .style(
                     Style::new()
                         .justify_content(FlexJustify::Center)
@@ -123,7 +123,7 @@ impl<'a> CollectionBrowser<'a> {
         }
     }
 
-    fn drop_action(&self, name: CardName) -> ActionBuilder {
+    fn drop_action(&self, name: CardVariant) -> ActionBuilder {
         let element_name = element_names::card_list_card_name(name);
         let target_name = TargetName(element_name);
         ActionBuilder::new().action(DeckEditorAction::AddToDeck(name)).update(
@@ -153,7 +153,7 @@ impl<'a> CollectionBrowser<'a> {
         )
     }
 
-    fn sort_cards(&self, cards: &mut [(CardName, u32)]) {
+    fn sort_cards(&self, cards: &mut [(CardVariant, u32)]) {
         cards.sort_by_key(|(name, _)| {
             let definition = rules::get(*name);
             let cost = definition.cost.mana.unwrap_or_default();

@@ -23,7 +23,7 @@ use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
 use display::card_sync;
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::card_view_context::CardViewContext;
 use game_data::primitives::{Milliseconds, Side};
 use protos::spelldawn::game_command::Command;
@@ -52,7 +52,7 @@ impl CardHeight {
 }
 
 pub struct DeckCard {
-    name: CardName,
+    name: CardVariant,
     height: CardHeight,
     quantity: Option<u32>,
     layout: Layout,
@@ -61,9 +61,9 @@ pub struct DeckCard {
 }
 
 impl DeckCard {
-    pub fn new(name: CardName) -> Self {
+    pub fn new(variant: CardVariant) -> Self {
         Self {
-            name,
+            name: variant,
             height: CardHeight::vh(36.0),
             quantity: None,
             layout: Layout::default(),

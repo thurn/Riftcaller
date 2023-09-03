@@ -14,7 +14,7 @@
 
 use core_ui::prelude::Node;
 use element_names::ElementName;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::primitives::Side;
 use test_utils::client_interface::{self, find_card_view, HasText};
 use test_utils::test_adventure::TestAdventure;
@@ -103,7 +103,10 @@ fn find_card_quantity(node: &Node) -> Option<&String> {
     view.card_icons.as_ref()?.top_right_icon.as_ref()?.text.as_ref()
 }
 
-fn find_card_node(adventure: &TestSession, f: impl Fn(CardName) -> ElementName) -> &Node {
-    client_interface::find_element_name(adventure.user.interface.top_panel(), f(EXAMPLE_CARD))
-        .expect("Node not found")
+fn find_card_node(adventure: &TestSession, f: impl Fn(CardVariant) -> ElementName) -> &Node {
+    client_interface::find_element_name(
+        adventure.user.interface.top_panel(),
+        f(CardVariant::standard(EXAMPLE_CARD)),
+    )
+    .expect("Node not found")
 }

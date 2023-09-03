@@ -28,7 +28,7 @@
 
 use std::iter;
 
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::{CardPosition, CardPositionKind};
 use game_data::deck::Deck;
 use game_data::game::{GameConfiguration, GamePhase, GameState, TurnData};
@@ -137,14 +137,14 @@ impl TestGame {
         let overlord_deck = Deck {
             side: Side::Overlord,
             schools: vec![],
-            riftcallers: overlord_riftcallers,
-            cards: hashmap! {CardName::TestOverlordSpell => self.deck_sizes},
+            riftcallers: overlord_riftcallers.into_iter().map(CardVariant::standard).collect(),
+            cards: hashmap! {CardVariant::standard(CardName::TestOverlordSpell) => self.deck_sizes},
         };
         let champion_deck = Deck {
             side: Side::Champion,
             schools: vec![],
-            riftcallers: champion_riftcallers,
-            cards: hashmap! {CardName::TestChampionSpell => self.deck_sizes},
+            riftcallers: champion_riftcallers.into_iter().map(CardVariant::standard).collect(),
+            cards: hashmap! {CardVariant::standard(CardName::TestChampionSpell) => self.deck_sizes},
         };
 
         let mut game = GameState::new(

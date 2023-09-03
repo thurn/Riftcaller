@@ -131,9 +131,9 @@ fn activate_ability_action(
     game.ability_state.entry(ability_id).or_default().currently_resolving = true;
     let card = game.card(ability_id.card_id);
 
-    debug!(?card.name, ?user_side, ?ability_id, "Applying activate ability action");
+    debug!(?card.variant, ?user_side, ?ability_id, "Applying activate ability action");
 
-    let cost = match &rules::get(card.name).ability(ability_id.index).ability_type {
+    let cost = match &rules::get(card.variant).ability(ability_id.index).ability_type {
         AbilityType::Activated(cost, _) => cost,
         _ => fail!("Ability is not an activated ability"),
     };

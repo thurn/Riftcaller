@@ -77,7 +77,7 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
         if !state.deck.schools.contains(&definition.school) {
             state.deck.schools.push(definition.school);
         }
-        state.deck.riftcallers.push(definition.name);
+        state.deck.riftcallers.push(definition.variant());
     } else {
         state
             .collection

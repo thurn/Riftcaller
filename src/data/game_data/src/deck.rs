@@ -18,16 +18,16 @@ use std::collections::HashMap;
 use std::iter;
 
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
+use serde_with::serde_as;
 
-use crate::card_name::CardName;
+use crate::card_name::CardVariant;
 use crate::primitives::{School, Side};
 
 /// Represents a player deck outside of an active game
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Deck {
-    /// Identifies which side this deck plays as.
+    /// Identifies which side this  deck plays as.
     pub side: Side,
     /// The schools associated with this deck, in order of selection. The first
     /// school is often called the 'primary' school for a deck and is e.g. used
@@ -35,17 +35,17 @@ pub struct Deck {
     pub schools: Vec<School>,
     /// Riftcaller cards for this deck, which start the game in play and provide
     /// global effects.
-    pub riftcallers: Vec<CardName>,
+    pub riftcallers: Vec<CardVariant>,
     /// How many (non-riftcaller) cards with each name are present in this deck?
-    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    pub cards: HashMap<CardName, u32>,
+    #[serde_as(as = "Vec<(_, _)>")]
+    pub cards: HashMap<CardVariant, u32>,
 }
 
 impl Deck {
-    /// Returns a vector which repeats each [CardName] in [Self::cards] in
+    /// Returns a vector which repeats each [CardVariant] in [Self::cards] in
     /// alphabetical order a number of times equal to its deck count. Note: The
     /// returned vector does *not* contain riftcallers.
-    pub fn card_names(&self) -> Vec<CardName> {
+    pub fn card_names(&self) -> Vec<CardVariant> {
         let mut result = self
             .cards
             .iter()

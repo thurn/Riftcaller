@@ -23,7 +23,7 @@ use std::cmp;
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::card_state::CardState;
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
@@ -56,7 +56,7 @@ use crate::{dispatch, flags, mana, queries};
 /// of the card, the caller is responsible for updating that when the card moves
 /// to a new game zone.
 pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPosition) -> Result<()> {
-    let name = game.card(card_id).name;
+    let name = game.card(card_id).variant;
     debug!(?name, ?card_id, ?new_position, "Moving card");
     let old_position = game.card(card_id).position();
     game.move_card_internal(card_id, new_position);
@@ -370,7 +370,7 @@ pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) ->
     verify!(flags::can_level_up_card(game, card_id));
     game.card_mut(card_id).data.card_level += amount;
     let card = game.card(card_id);
-    if let Some(scheme_points) = crate::get(card.name).config.stats.scheme_points {
+    if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {
         if card.data.card_level >= scheme_points.level_requirement {
             game.card_mut(card_id).turn_face_up();
             move_card(game, card_id, CardPosition::Scoring)?;
@@ -529,30 +529,30 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
 /// `position`.
 pub fn create_and_add_card(
     game: &mut GameState,
-    name: CardName,
+    variant: CardVariant,
     position: CardPosition,
 ) -> Result<()> {
-    let definition = crate::get(name);
+    let definition = crate::get(variant);
     let side = definition.side;
     let card_id = CardId::new(side, game.cards(side).len());
     let state = CardState::new_with_position(
         card_id,
-        name,
+        variant,
         position,
         game.next_sorting_key(),
         true, /* is_face_up */
     );
     game.cards_mut(side).push(state);
     dispatch::add_card_to_delegate_cache(&mut game.delegate_cache, definition, card_id);
-    debug!(?name, ?card_id, ?position, "Created new external card");
+    debug!(?variant, ?card_id, ?position, "Created new external card");
     Ok(())
 }
 
 /// Overwrites an existing card with a completely new card from outside the
 /// game, face-down in the same position as the current card. All existing card
 /// state is discarded.
-pub fn overwrite_card(game: &mut GameState, card_id: CardId, new: CardName) -> Result<()> {
-    let old_definition = crate::get(game.card(card_id).name);
+pub fn overwrite_card(game: &mut GameState, card_id: CardId, new: CardVariant) -> Result<()> {
+    let old_definition = crate::get(game.card(card_id).variant);
     let position = game.card(card_id).position();
     let sorting_key = game.card(card_id).sorting_key;
     *game.card_mut(card_id) =

@@ -154,7 +154,7 @@ pub fn tutorial_force_sanctum_score() -> CardDefinition {
                 mutation: |g, _, _| {
                     let scheme = g
                         .hand(Side::Overlord)
-                        .find(|card| rules::get(card.name).card_type == CardType::Scheme)
+                        .find(|card| rules::get(card.variant).card_type == CardType::Scheme)
                         .map(|c| c.id);
                     if let Some(id) = scheme {
                         g.raid_mut()?.accessed = vec![id];

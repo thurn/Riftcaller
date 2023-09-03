@@ -20,7 +20,7 @@ use core_ui::conditional::Conditional;
 use core_ui::drop_target::DropTarget;
 use core_ui::prelude::*;
 use element_names::CurrentDraggable;
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::{FlexAlign, FlexDirection, FlexVector2};
@@ -37,14 +37,14 @@ pub struct CardList<'a> {
 }
 
 /// Standard sorted display order for a deck.
-pub fn sorted_deck(deck: &Deck) -> Vec<(&CardName, &u32)> {
+pub fn sorted_deck(deck: &Deck) -> Vec<(&CardVariant, &u32)> {
     let mut cards = deck.cards.iter().collect::<Vec<_>>();
     sort_cards(&mut cards);
     cards
 }
 
 /// Returns the sort position 'card_name' would occupy in 'deck'.
-pub fn position_for_card(deck: &Deck, card_name: CardName) -> usize {
+pub fn position_for_card(deck: &Deck, card_name: CardVariant) -> usize {
     let mut cards = deck.cards.iter().collect::<Vec<_>>();
     if !deck.cards.contains_key(&card_name) {
         cards.push((&card_name, &1));
@@ -53,7 +53,7 @@ pub fn position_for_card(deck: &Deck, card_name: CardName) -> usize {
     cards.iter().position(|(n, _)| **n == card_name).expect("card position")
 }
 
-fn sort_cards(cards: &mut [(&CardName, &u32)]) {
+fn sort_cards(cards: &mut [(&CardVariant, &u32)]) {
     cards.sort_by_key(|(name, _)| {
         let definition = rules::get(**name);
         let cost = definition.cost.mana.unwrap_or_default();
@@ -84,12 +84,15 @@ impl<'a> Component for CardList<'a> {
     }
 }
 
-fn drop_action(name: CardName) -> ActionBuilder {
-    ActionBuilder::new().action(DeckEditorAction::RemoveFromDeck(name)).update(
-        Conditional::if_exists(element_names::deck_card(name))
+fn drop_action(variant: CardVariant) -> ActionBuilder {
+    ActionBuilder::new().action(DeckEditorAction::RemoveFromDeck(variant)).update(
+        Conditional::if_exists(element_names::deck_card(variant))
             .then(
                 InterfaceAnimation::new()
-                    .start(CurrentDraggable, AnimateToElement::new(element_names::deck_card(name)))
+                    .start(
+                        CurrentDraggable,
+                        AnimateToElement::new(element_names::deck_card(variant)),
+                    )
                     .insert(animations::default_duration(), CurrentDraggable, DestroyElement),
             )
             .or_else(

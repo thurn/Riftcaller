@@ -21,7 +21,7 @@ use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use core_ui::panels;
 use database::Database;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game::GameState;
 use game_data::player_name::{AIPlayer, PlayerId};
@@ -144,7 +144,7 @@ pub async fn handle_debug_action(
             .await
         }
         DebugAction::FilterCardList => {
-            let input = request_fields.get("CardName").with_error(|| "Expected CardName")?;
+            let input = request_fields.get("CardVariant").with_error(|| "Expected CardVariant")?;
             Ok(GameResponse::new(ClientData::propagate(data))
                 .command(panels::update(AddToHandPanel::new(input).build_panel().unwrap())))
         }
@@ -248,10 +248,10 @@ fn create_at_position(
     card: CardName,
     position: CardPosition,
 ) -> Result<CardId> {
-    let side = rules::get(card).side;
+    let side = rules::get(CardVariant::standard(card)).side;
     let card_id =
         *mutations::realize_top_of_deck(game, side, 1)?.get(0).with_error(|| "Deck is empty")?;
-    mutations::overwrite_card(game, card_id, card)?;
+    mutations::overwrite_card(game, card_id, CardVariant::standard(card))?;
     mutations::move_card(game, card_id, position)?;
     Ok(card_id)
 }

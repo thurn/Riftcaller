@@ -80,7 +80,7 @@ pub fn activated_ability_cards(
         return result;
     }
 
-    let definition = rules::get(card.name);
+    let definition = rules::get(card.variant);
 
     if card.is_face_down() {
         if builder.user_side == Side::Overlord
@@ -116,7 +116,7 @@ pub fn ability_card_view(
     target_requirement: Option<&TargetRequirement<AbilityId>>,
 ) -> CardView {
     let card = game.card(ability_id.card_id);
-    let definition = rules::get(card.name);
+    let definition = rules::get(card.variant);
     let context = CardViewContext::Game(definition, game, card);
 
     CardView {
@@ -150,7 +150,7 @@ pub fn ability_card_view(
 
 pub fn unveil_card_view(builder: &ResponseBuilder, game: &GameState, card_id: CardId) -> CardView {
     let card = game.card(card_id);
-    let definition = rules::get(card.name);
+    let definition = rules::get(card.variant);
     let context = CardViewContext::Game(definition, game, card);
 
     CardView {

@@ -644,7 +644,7 @@ mod tests {
     use std::collections::HashSet;
 
     use super::*;
-    use crate::card_name::CardName;
+    use crate::card_name::CardVariant;
     use crate::player_name::AIPlayer;
 
     #[test]
@@ -694,7 +694,7 @@ mod tests {
         assert_eq!(vec![mortal, infernal, abyssal], hand(&g));
     }
 
-    fn test_game(overlord: Vec<CardName>, champion: Vec<CardName>) -> GameState {
+    fn test_game(overlord: Vec<CardVariant>, champion: Vec<CardVariant>) -> GameState {
         GameState::new(
             GameId::new(0),
             PlayerId::AI(AIPlayer::NoAction),

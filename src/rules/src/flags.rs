@@ -206,7 +206,7 @@ fn can_use_any_card_ability(game: &GameState, card_id: CardId) -> bool {
 }
 
 fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> bool {
-    let definition = crate::get(game.card(card_id).name);
+    let definition = crate::get(game.card(card_id).variant);
     if let Some(targeting) = &definition.config.custom_targeting {
         return matching_targeting(game, targeting, card_id, target);
     }
@@ -246,7 +246,7 @@ fn matching_targeting<T>(
 /// and is expected to pay its costs immediately.
 pub fn enters_play_face_up(game: &GameState, card_id: CardId) -> bool {
     !matches!(
-        crate::get(game.card(card_id).name).card_type,
+        crate::get(game.card(card_id).variant).card_type,
         CardType::Minion | CardType::Scheme | CardType::Project
     )
 }
@@ -254,7 +254,7 @@ pub fn enters_play_face_up(game: &GameState, card_id: CardId) -> bool {
 /// Returns true if the indicated card should enter play in a room
 pub fn enters_play_in_room(game: &GameState, card_id: CardId) -> bool {
     matches!(
-        crate::get(game.card(card_id).name).card_type,
+        crate::get(game.card(card_id).variant).card_type,
         CardType::Minion | CardType::Scheme | CardType::Project
     )
 }

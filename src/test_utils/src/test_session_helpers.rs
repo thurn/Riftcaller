@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::player_name::PlayerId;
 use game_data::primitives::{CardType, Resonance, RoomId, Side};
 use protos::spelldawn::client_action::Action;
@@ -289,7 +289,7 @@ impl TestSessionHelpers for TestSession {
         play_impl(
             self,
             card_name,
-            match rules::get(card_name).card_type {
+            match rules::get(CardVariant::standard(card_name)).card_type {
                 CardType::Minion | CardType::Project | CardType::Scheme => {
                     Some(test_constants::ROOM_ID)
                 }

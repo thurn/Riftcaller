@@ -19,7 +19,7 @@ use std::collections::{HashMap, HashSet};
 use adventure_data::adventure::{
     AdventureConfiguration, AdventureState, RegionId, TileEntity, TilePosition, TileState,
 };
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
 use game_data::primitives::AdventureId;
 
@@ -37,7 +37,7 @@ pub fn create(
     id: AdventureId,
     config: AdventureConfiguration,
     deck: Deck,
-    collection: HashMap<CardName, u32>,
+    collection: HashMap<CardVariant, u32>,
     riftcallers: Option<TileEntity>,
     draft: Option<TileEntity>,
     shop: Option<TileEntity>,

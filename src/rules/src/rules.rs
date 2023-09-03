@@ -18,7 +18,7 @@ use std::collections::HashMap;
 
 use dashmap::DashSet;
 use game_data::card_definition::{Ability, CardDefinition};
-use game_data::card_name::CardName;
+use game_data::card_name::CardVariant;
 use game_data::game::GameState;
 use game_data::primitives::{AbilityId, CardId};
 use once_cell::sync::Lazy;
@@ -33,12 +33,14 @@ pub mod queries;
 
 pub static DEFINITIONS: Lazy<DashSet<fn() -> CardDefinition>> = Lazy::new(DashSet::new);
 
-/// Contains [CardDefinition]s for all known cards, keyed by [CardName]
-static CARDS: Lazy<HashMap<CardName, CardDefinition>> = Lazy::new(|| {
+/// Contains [CardDefinition]s for all known cards, keyed by [CardVariant]
+static CARDS: Lazy<HashMap<CardVariant, CardDefinition>> = Lazy::new(|| {
     let mut map = HashMap::new();
     for card_fn in DEFINITIONS.iter() {
-        let card = card_fn();
-        map.insert(card.name, card);
+        let mut card = card_fn();
+        let variant = CardVariant::standard(card.name);
+        card.config.variant = Some(variant);
+        map.insert(variant, card);
     }
     map
 });
@@ -49,14 +51,16 @@ pub fn all_cards() -> impl Iterator<Item = &'static CardDefinition> {
     CARDS.values()
 }
 
-/// Looks up the definition for a [CardName]. Panics if no such card is defined.
-/// If this panics, you are probably not calling initialize::run();
-pub fn get(name: CardName) -> &'static CardDefinition {
-    CARDS.get(&name).unwrap_or_else(|| panic!("Card not found. Call initialize() or update cards?"))
+/// Looks up the definition for a [CardVariant]. Panics if no such card is
+/// defined. If this panics, you are probably not calling initialize::run();
+pub fn get(variant: CardVariant) -> &'static CardDefinition {
+    CARDS
+        .get(&variant)
+        .unwrap_or_else(|| panic!("Card not found. Call initialize() or update cards?"))
 }
 
 pub fn card_definition(game: &GameState, card_id: CardId) -> &'static CardDefinition {
-    get(game.card(card_id).name)
+    get(game.card(card_id).variant)
 }
 
 pub fn ability_definition(game: &GameState, ability_id: AbilityId) -> &'static Ability {
