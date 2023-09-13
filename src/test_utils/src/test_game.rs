@@ -71,6 +71,10 @@ impl TestGame {
         }
     }
 
+    pub fn user_side(&self) -> Side {
+        self.user_side.side
+    }
+
     /// Player whose turn it should be. Defaults to the `user_side` player.
     pub fn current_turn(mut self, side: Side) -> Self {
         self.current_turn = side;

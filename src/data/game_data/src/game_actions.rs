@@ -80,6 +80,8 @@ pub enum PromptContext {
     /// limit for cards in play of this type. Player must sacrifice until they
     /// have the provided number of minions in the room.
     CardLimit(CardType, Option<CardSubtype>),
+    /// Play a card of a given type the discard pile
+    PlayFromDiscard(CardType),
 }
 
 /// An action which can be taken in the user interface as a result of the game
@@ -157,6 +159,17 @@ pub struct CardBrowserPrompt {
     pub action: BrowserPromptAction,
 }
 
+/// A browser shown to the user to allow them to play one or more cards from a
+/// set of cards.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PlayCardBrowser {
+    /// Identifies the context for this prompt, i.e. why it is being shown to
+    /// the user
+    pub context: Option<PromptContext>,
+    /// Identifies the choices of cards that the user can possibly play.
+    pub cards: Vec<CardId>,
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PromptChoiceLabel {
     Sacrifice,
@@ -199,6 +212,7 @@ pub struct ButtonPrompt {
 pub enum GamePrompt {
     ButtonPrompt(ButtonPrompt),
     CardBrowserPrompt(CardBrowserPrompt),
+    PlayCardBrowser(PlayCardBrowser),
 }
 
 /// Possible actions in response to the [GamePrompt] currently being shown to a

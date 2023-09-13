@@ -18,6 +18,7 @@ use adventure_data::adventure::TilePosition;
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
 use enum_kinds::EnumKind;
+use game_data::card_state::CardPosition;
 use game_data::primitives::{DeckId, Side};
 use player_data::PlayerActivityKind;
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
@@ -59,12 +60,12 @@ pub enum StandardPanel {
     Settings,
     SideSelect,
     Disclaimer,
-    DebugPanel(PlayerActivityKind),
+    DebugPanel(PlayerActivityKind, Option<Side>),
     GameMenu,
     AdventureMenu,
     DeckEditorLoading,
     SetPlayerName(Side),
-    AddToHand,
+    AddToZone(CardPosition),
     ApplyScenario,
 }
 

@@ -17,7 +17,7 @@ use anyhow::Result;
 use enum_kinds::EnumKind;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{DeckId, GameId};
+use game_data::primitives::{DeckId, GameId, Side};
 use game_data::tutorial_data::TutorialData;
 use serde::{Deserialize, Serialize};
 use user_action_data::NewGameAction;
@@ -28,8 +28,9 @@ use with_error::{fail, WithError};
 pub enum PlayerStatus {
     /// The player has initiated a request to create a game
     RequestedGame(NewGameAction),
-    /// The player is currently playing in the [GameId] game.
-    Playing(GameId),
+    /// The player is currently playing in the [GameId] game as the [Side]
+    /// player.
+    Playing(GameId, Side),
 }
 
 /// Identifies the current major activity this player is doing in the game.
@@ -38,12 +39,19 @@ pub enum PlayerStatus {
 pub enum PlayerActivity<'a> {
     None,
     Adventure(&'a AdventureState),
-    PlayingGame(GameId),
+    PlayingGame(GameId, Side),
 }
 
 impl<'a> PlayerActivity<'a> {
     pub fn kind(&self) -> PlayerActivityKind {
         self.into()
+    }
+
+    pub fn side(&self) -> Option<Side> {
+        match self {
+            Self::PlayingGame(_, side) => Some(*side),
+            _ => None,
+        }
     }
 }
 
@@ -69,8 +77,8 @@ impl PlayerState {
 
     /// Returns what this player is currently doing within the game.
     pub fn current_activity(&self) -> PlayerActivity {
-        if let Some(PlayerStatus::Playing(game_id)) = self.status {
-            return PlayerActivity::PlayingGame(game_id);
+        if let Some(PlayerStatus::Playing(game_id, side)) = self.status {
+            return PlayerActivity::PlayingGame(game_id, side);
         }
 
         if let Some(adventure) = &self.adventure {
@@ -83,7 +91,7 @@ impl PlayerState {
     /// Returns the current game this player is playing in, or an error if there
     /// is no such game.
     pub fn current_game_id(&self) -> Result<GameId> {
-        if let Some(PlayerStatus::Playing(game_id)) = self.status {
+        if let Some(PlayerStatus::Playing(game_id, _)) = self.status {
             Ok(game_id)
         } else {
             fail!("Player {} is not currently playing in a game", self.id)
@@ -119,7 +127,7 @@ impl PlayerState {
 /// any.
 pub fn current_game_id(data: Option<PlayerState>) -> Option<GameId> {
     match data.as_ref().and_then(|player| player.status.as_ref()) {
-        Some(PlayerStatus::Playing(id)) => Some(*id),
+        Some(PlayerStatus::Playing(id, _)) => Some(*id),
         _ => None,
     }
 }

@@ -150,7 +150,7 @@ pub async fn handle_connect(database: &impl Database, player_id: PlayerId) -> Re
         player_data::PlayerActivity::Adventure(adventure) => {
             adventure_server::connect(database, &player, adventure).await
         }
-        player_data::PlayerActivity::PlayingGame(game_id) => {
+        player_data::PlayerActivity::PlayingGame(game_id, _) => {
             game_server::connect(database, &player, game_id).await
         }
     }?;

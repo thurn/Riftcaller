@@ -69,6 +69,9 @@ TagManager:
   - name: Hand
     uniqueID: 4258681941
     locked: 0
+  - name: HandStorage
+    uniqueID: 4222849977
+    locked: 0
   - name: Interface
     uniqueID: 2048004209
     locked: 0

@@ -16,7 +16,7 @@ use std::collections::HashMap;
 use std::mem;
 use std::sync::{Mutex, OnceLock};
 
-use ::panels::add_to_hand_panel::AddToHandPanel;
+use ::panels::add_to_zone_panel::AddToZonePanel;
 use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use core_ui::panels;
@@ -66,16 +66,28 @@ pub async fn handle_debug_action(
             let result = reload_scene(data, &game);
             database.write_game(&game).await?;
             let mut player = requests::fetch_player(database, data.player_id).await?;
-            player.status = Some(PlayerStatus::Playing(game_id));
+            player.status = Some(PlayerStatus::Playing(game_id, *side));
             database.write_player(&player).await?;
             result
         }
         DebugAction::FlipViewpoint => {
-            requests::with_game(database, data, |game| {
-                mem::swap(&mut game.champion.id, &mut game.overlord.id);
-                reload_scene(data, game)
-            })
-            .await
+            let mut game = requests::fetch_game(
+                database,
+                Some(data.game_id.with_error(|| "Expected game id")?),
+            )
+            .await?;
+            let mut player = requests::fetch_player(database, data.player_id).await?;
+            if data.player_id == game.overlord.id {
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Champion));
+                database.write_player(&player).await?;
+            } else {
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Overlord));
+                database.write_player(&player).await?;
+            }
+            mem::swap(&mut game.champion.id, &mut game.overlord.id);
+            database.write_game(&game).await?;
+
+            reload_scene(data, &game)
         }
         DebugAction::AddMana(amount) => {
             game_server::update_game(database, data, |game, user_side| {
@@ -143,18 +155,25 @@ pub async fn handle_debug_action(
             })
             .await
         }
-        DebugAction::FilterCardList => {
+        DebugAction::FilterCardList(position) => {
             let input = request_fields.get("CardVariant").with_error(|| "Expected CardVariant")?;
-            Ok(GameResponse::new(ClientData::propagate(data))
-                .command(panels::update(AddToHandPanel::new(input).build_panel().unwrap())))
+            Ok(GameResponse::new(ClientData::propagate(data)).command(panels::update(
+                AddToZonePanel::new(input, *position).build_panel().unwrap(),
+            )))
         }
-        DebugAction::AddToHand(card_name) => {
+        DebugAction::AddToZone(card_name, position) => {
             game_server::update_game(database, data, |game, user_side| {
                 if let Some(top_of_deck) =
                     mutations::realize_top_of_deck(game, user_side, 1)?.get(0)
                 {
                     mutations::overwrite_card(game, *top_of_deck, *card_name)?;
-                    mutations::draw_cards(game, user_side, 1)?;
+                    if matches!(position, CardPosition::Hand(s) if *s == user_side) {
+                        mutations::draw_cards(game, user_side, 1)?;
+                    } else if matches!(position, CardPosition::DiscardPile(_)) {
+                        mutations::discard_card(game, *top_of_deck)?;
+                    } else {
+                        mutations::move_card(game, *top_of_deck, *position)?;
+                    }
                 }
                 Ok(())
             })

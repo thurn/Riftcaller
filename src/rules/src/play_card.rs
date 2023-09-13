@@ -26,7 +26,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::primitives::{CardId, CardSubtype, CardType, Side};
 use game_data::updates::GameUpdate;
-use with_error::WithError;
+use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, flags, mana, mutations, queries};
@@ -45,6 +45,13 @@ pub fn run(game: &mut GameState, card_id: CardId, target: CardTarget) -> Result<
 
     let actions = queries::action_cost(game, card_id);
     mutations::spend_action_points(game, card_id.side, actions)?;
+
+    if let Some(GamePrompt::PlayCardBrowser(prompt)) = game.player(card_id.side).prompt_queue.get(0)
+    {
+        // Clear the current 'play card' prompt if one is present.
+        verify!(prompt.cards.contains(&card_id), "Unexpected prompt card");
+        game.player_mut(card_id.side).prompt_queue.remove(0);
+    }
 
     if flags::enters_play_face_up(game, card_id) {
         let amount = queries::mana_cost(game, card_id).with_error(|| "Card has no mana cost")?;

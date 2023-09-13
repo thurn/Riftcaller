@@ -549,6 +549,7 @@ impl Summarize for Position {
             Self::Riftcaller(v) => summary.primitive(v),
             Self::BrowserDragTarget(v) => summary.primitive(v),
             Self::CardChoiceBrowser(v) => summary.primitive(v),
+            Self::HandStorage(v) => summary.primitive(v),
         }
     }
 }

@@ -89,7 +89,7 @@ pub async fn create(
         tutorial_actions::handle_sequence_game_action(&mut game, None)?;
     }
 
-    player.status = Some(PlayerStatus::Playing(game_id));
+    player.status = Some(PlayerStatus::Playing(game_id, user_side));
 
     // Handle mulligan decision if AI is first to act.
     ai_agent_response::maybe_run_ai(data, &mut game, IncrementalUpdates::Skip).await?;
@@ -101,7 +101,7 @@ pub async fn create(
     database.write_game(&game).await?;
     database.write_player(&player).await?;
     if let OpponentData::HumanPlayer(mut o) = opponent {
-        o.status = Some(PlayerStatus::Playing(game_id));
+        o.status = Some(PlayerStatus::Playing(game_id, opponent_side));
         database.write_player(&o).await?;
     }
 

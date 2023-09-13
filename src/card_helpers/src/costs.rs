@@ -12,11 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::card_definition::CustomCost;
+use game_data::card_definition::{Cost, CustomCost};
 use game_data::card_state::CardPosition;
-use game_data::primitives::AbilityId;
+use game_data::primitives::{AbilityId, CardId, ManaValue};
 use game_data::text::TextElement;
 use rules::mutations;
+
+/// Provides the cost for a card, with 1 action point required and `mana` mana
+/// points
+pub fn mana(mana: ManaValue) -> Cost<CardId> {
+    Cost { mana: Some(mana), actions: 1, custom_cost: None }
+}
 
 /// A [CustomCost] which allows an ability to be activated by sacrificing the
 /// card.

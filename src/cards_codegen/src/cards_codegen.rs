@@ -73,7 +73,7 @@ fn main() -> Result<()> {
 
 fn find_functions(path: impl AsRef<Path>) -> Result<Vec<String>> {
     let mut result = vec![];
-    let re = Regex::new(r"pub fn (?P<name>\w+)\(\) -> CardDefinition")?;
+    let re = Regex::new(r"pub fn (?P<name>\w+)\(.*\) -> CardDefinition")?;
     for l in BufReader::new(File::open(path)?).lines() {
         let line = l?;
         if let Some(captures) = re.captures(&line) {

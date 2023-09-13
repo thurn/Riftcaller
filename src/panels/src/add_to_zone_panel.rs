@@ -23,17 +23,19 @@ use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
 use core_ui::text_field::TextField;
 use game_data::card_name::{CardName, CardVariant};
+use game_data::card_state::CardPosition;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use user_action_data::{DebugAction, UserAction};
 
 #[derive(Debug)]
-pub struct AddToHandPanel {
+pub struct AddToZonePanel {
     filter_string: String,
+    position: CardPosition,
 }
 
-impl AddToHandPanel {
-    pub fn new(filter_string: impl Into<String>) -> Self {
-        Self { filter_string: filter_string.into() }
+impl AddToZonePanel {
+    pub fn new(filter_string: impl Into<String>, position: CardPosition) -> Self {
+        Self { filter_string: filter_string.into(), position }
     }
 
     fn matches(&self, name: CardName) -> bool {
@@ -47,13 +49,13 @@ impl AddToHandPanel {
     }
 }
 
-impl Panel for AddToHandPanel {
+impl Panel for AddToZonePanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::StandardPanel(StandardPanel::AddToHand)
+        PanelAddress::StandardPanel(StandardPanel::AddToZone(self.position))
     }
 }
 
-impl Component for AddToHandPanel {
+impl Component for AddToZonePanel {
     fn build(self) -> Option<Node> {
         let mut names =
             enum_iterator::all::<CardName>().filter(|n| self.matches(*n)).collect::<Vec<_>>();
@@ -70,7 +72,7 @@ impl Component for AddToHandPanel {
                     .child(Text::new("Filter:").font_size(FontSize::Body))
                     .child(TextField::new("CardVariant").on_field_changed(
                         actions::with_request_fields(
-                            UserAction::Debug(DebugAction::FilterCardList),
+                            UserAction::Debug(DebugAction::FilterCardList(self.position)),
                             vec!["CardVariant".to_string()],
                         ),
                     )),
@@ -81,8 +83,9 @@ impl Component for AddToHandPanel {
                 ListCell::new(n.displayed_name()).button(
                     Button::new("Add").action(
                         ActionBuilder::new()
-                            .action(UserAction::Debug(DebugAction::AddToHand(
+                            .action(UserAction::Debug(DebugAction::AddToZone(
                                 CardVariant::standard(n),
+                                self.position,
                             )))
                             .update(self.close()),
                     ),

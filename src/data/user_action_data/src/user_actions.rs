@@ -18,6 +18,7 @@ use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
 use enum_iterator::Sequence;
 use game_data::card_name::CardVariant;
+use game_data::card_state::CardPosition;
 use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
@@ -93,8 +94,8 @@ pub enum DebugAction {
     LoadPlayerState(u128),
     AddCoins(Coins),
     /// Reads text in the card list search field and shows matching cards
-    FilterCardList,
-    AddToHand(CardVariant),
+    FilterCardList(CardPosition),
+    AddToZone(CardVariant, CardPosition),
     ApplyScenario(DebugScenario),
 }
 

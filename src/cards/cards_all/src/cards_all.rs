@@ -3,11 +3,9 @@
 use rules::DEFINITIONS;
 
 pub fn initialize() {
-    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::invisibility_ring);
-    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::accumulator);
-    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::mage_gloves);
-    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::magical_resonator);
-    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::dark_grimoire);
+    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::marauders_axe);
+    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::keen_halberd);
+    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::bow_of_the_alliance);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::ennera_imris);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::aris_fey);
     DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::telantes_dugoth);
@@ -17,6 +15,11 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::charged_strike);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::stealth_mission);
     DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::preparation);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::invisibility_ring);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::accumulator);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::mage_gloves);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::magical_resonator);
+    DEFINITIONS.insert(cards_amethyst::evocations_amethyst::dark_grimoire);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::time_golem);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::temporal_stalker);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::shadow_lurker);
@@ -31,9 +34,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::gold_mine);
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::activate_reinforcements);
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::research_project);
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::marauders_axe);
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::keen_halberd);
-    DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::bow_of_the_alliance);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
     DEFINITIONS.insert(cards_basic::champion_basics::eldritch_surge);
     DEFINITIONS.insert(cards_basic::champion_basics::lodestone);
@@ -60,6 +60,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_basic::overlord_basics::frog);
     DEFINITIONS.insert(cards_basic::overlord_basics::captain);
     DEFINITIONS.insert(cards_basic::overlord_basics::scout);
+    DEFINITIONS.insert(cards_beryl::champion_spells_beryl::restoration);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);

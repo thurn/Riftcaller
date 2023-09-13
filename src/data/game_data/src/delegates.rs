@@ -79,7 +79,8 @@ use crate::game::GameState;
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BoostData, BreachValue, CardId, HasAbilityId,
-    HasCardId, HasRoomId, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
+    HasCardId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side,
+    TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -120,6 +121,12 @@ impl fmt::Debug for Scope {
 impl HasAbilityId for Scope {
     fn ability_id(&self) -> AbilityId {
         self.ability_id
+    }
+}
+
+impl HasSide for Scope {
+    fn side(&self) -> Side {
+        self.ability_id.card_id.side
     }
 }
 

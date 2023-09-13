@@ -65,7 +65,7 @@ impl<'a> ScreenOverlay<'a> {
 
 impl<'a> Component for ScreenOverlay<'a> {
     fn build(self) -> Option<Node> {
-        let activity = self.player.current_activity().kind();
+        let activity = self.player.current_activity();
         Row::new("Navbar")
             .style(
                 Style::new()
@@ -92,7 +92,11 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .button_type(IconButtonType::NavBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .action(if cfg!(debug_assertions) {
-                                Panels::open(StandardPanel::DebugPanel(activity)).as_client_action()
+                                Panels::open(StandardPanel::DebugPanel(
+                                    activity.kind(),
+                                    activity.side(),
+                                ))
+                                .as_client_action()
                             } else {
                                 ActionBuilder::new()
                                     .update(Command::Debug(ClientDebugCommand {
@@ -100,7 +104,10 @@ impl<'a> Component for ScreenOverlay<'a> {
                                     }))
                                     .as_client_action()
                             })
-                            .long_press_action(Panels::open(StandardPanel::DebugPanel(activity))),
+                            .long_press_action(Panels::open(StandardPanel::DebugPanel(
+                                activity.kind(),
+                                activity.side(),
+                            ))),
                     )
                     .child(self.show_coin_count.then(|| {
                         self.player.adventure.as_ref().map(|adventure| {
@@ -151,7 +158,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                             .button_type(IconButtonType::NavBrown)
                             .action(Panels::open(
-                                if matches!(self.player.status, Some(PlayerStatus::Playing(_))) {
+                                if matches!(self.player.status, Some(PlayerStatus::Playing(_, _))) {
                                     StandardPanel::GameMenu
                                 } else {
                                     StandardPanel::AdventureMenu

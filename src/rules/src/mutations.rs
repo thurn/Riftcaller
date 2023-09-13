@@ -34,7 +34,6 @@ use game_data::delegates::{
     SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData, TurnState};
-use game_data::game_actions::{ButtonPrompt, GamePrompt, PromptChoice};
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
     Side, TurnNumber,
@@ -54,7 +53,7 @@ use crate::{dispatch, flags, mana, queries};
 ///
 /// This function does *not* handle changing the 'revealed' or 'face down' state
 /// of the card, the caller is responsible for updating that when the card moves
-/// to a new game zone.
+/// to a new game zone
 pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPosition) -> Result<()> {
     let name = game.card(card_id).variant;
     debug!(?name, ?card_id, ?new_position, "Moving card");
@@ -70,6 +69,10 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     if !old_position.in_play() && new_position.in_play() {
         game.card_mut(card_id).data.last_entered_play = Some(game.info.turn);
         dispatch::invoke_event(game, EnterPlayEvent(card_id))?;
+    }
+
+    if new_position.in_discard_pile() && card_id.side == Side::Champion {
+        game.card_mut(card_id).turn_face_up();
     }
 
     if !new_position.in_play() {
@@ -94,7 +97,22 @@ pub fn move_cards(game: &mut GameState, cards: &[CardId], to_position: CardPosit
 /// Move a card to the discard pile. This should specifically be used when a
 /// player's *own* effect causes their card to be discarded.
 pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
-    move_card(game, card_id, CardPosition::DiscardPile(card_id.side))
+    move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
+    if card_id.side == Side::Champion {
+        game.card_mut(card_id).turn_face_up();
+    }
+    Ok(())
+}
+
+/// Moves a card to the discard pile. This is identical to calling [move_card]
+/// for the discard pile position, except that the card is turned face up if it
+/// is owned by the Champion.
+pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
+    move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
+    if card_id.side == Side::Champion {
+        game.card_mut(card_id).turn_face_up();
+    }
+    Ok(())
 }
 
 // Shuffles the provided `cards` into the `side` player's deck, clearing their
@@ -232,20 +250,6 @@ pub fn write_boost(game: &mut GameState, scope: Scope, data: &BoostData) -> Resu
 pub fn clear_boost<T>(game: &mut GameState, scope: Scope, _: &T) -> Result<()> {
     debug!(?scope, "Clearing boost");
     game.card_mut(scope.card_id()).data.boost_count = 0;
-    Ok(())
-}
-
-/// Ads the a prompt for the `side` player containing the non-`None`
-/// actions in `actions`.
-pub fn add_card_prompt(
-    game: &mut GameState,
-    side: Side,
-    actions: Vec<Option<PromptChoice>>,
-) -> Result<()> {
-    game.player_mut(side).prompt_queue.push(GamePrompt::ButtonPrompt(ButtonPrompt {
-        context: None,
-        choices: actions.into_iter().flatten().collect(),
-    }));
     Ok(())
 }
 

@@ -11,3 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+use game_data::delegates::{CardPlayed, Delegate, EventDelegate, MutationFn, Scope};
+use game_data::game::GameState;
+use game_data::primitives::HasCardId;
+
+/// A RequirementFn which restricts delegates to only listen to events for their
+/// own card.
+pub fn card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
+    scope.card_id() == card_id.card_id()
+}
+
+/// A delegate which triggers when a card is cast
+pub fn on_cast(mutation: MutationFn<CardPlayed>) -> Delegate {
+    Delegate::CastCard(EventDelegate { requirement: card, mutation })
+}

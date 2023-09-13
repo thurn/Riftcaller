@@ -36,6 +36,7 @@ namespace Spelldawn.Game
     ArenaRaidParticipant = 10,
     RaidParticipant = 4,
     Hand = 5,
+    HandStorage = 24,    
     Interface = 6,
     Browser = 12,
     Staging = 7,
@@ -50,6 +51,7 @@ namespace Spelldawn.Game
     RewardBrowser = 14,
     InfoZoom = 15,
     SplashScreen = 20,
+
   }
 
   public static class GameContextUtil
@@ -66,20 +68,21 @@ namespace Spelldawn.Game
       GameContext.ArenaRaidParticipant => 7,
       GameContext.RaidParticipant => 8,
       GameContext.Hand => 9,
-      GameContext.Interface => 10,
-      GameContext.Browser => 11,
-      GameContext.Staging => 12,
-      GameContext.RevealedCardsBrowser => 13,
-      GameContext.CardChoiceBrowser => 14,
-      GameContext.BrowserDragTarget => 15,
-      GameContext.Scored => 16,
-      GameContext.Effects => 17,
-      GameContext.Dragging => 18,
-      GameContext.UserMessage => 19,
-      GameContext.LongPressBrowser => 20,
-      GameContext.RewardBrowser => 21,
-      GameContext.InfoZoom => 22,
-      GameContext.SplashScreen => 23,
+      GameContext.HandStorage => 10,
+      GameContext.Interface => 11,
+      GameContext.Browser => 12,
+      GameContext.Staging => 13,
+      GameContext.RevealedCardsBrowser => 14,
+      GameContext.CardChoiceBrowser => 15,
+      GameContext.BrowserDragTarget => 16,
+      GameContext.Scored => 17,
+      GameContext.Effects => 18,
+      GameContext.Dragging => 19,
+      GameContext.UserMessage => 20,
+      GameContext.LongPressBrowser => 21,
+      GameContext.RewardBrowser => 22,
+      GameContext.InfoZoom => 23,
+      GameContext.SplashScreen => 24,
       _ => throw new ArgumentOutOfRangeException(nameof(gameContext), gameContext, null)
     };
 

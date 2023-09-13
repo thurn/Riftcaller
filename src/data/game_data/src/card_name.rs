@@ -222,6 +222,9 @@ pub enum CardName {
     Frog,
     Scout,
     Captain,
+
+    // Spelldawn: Beryl
+    Restoration,
 }
 
 impl CardName {

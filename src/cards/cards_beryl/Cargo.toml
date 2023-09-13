@@ -1,0 +1,18 @@
+[package]
+name = "cards_beryl"
+version = "0.0.0"
+description = "Beryl: A complete draftable card-set"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+path = "src/cards_beryl.rs"
+test = false
+doctest = false
+
+[dependencies]
+assets = { path = "../../assets", version = "0.0.0" }
+card_helpers = { path = "../../card_helpers", version = "0.0.0" }
+game_data = { path = "../../data/game_data", version = "0.0.0" }
+rules = { path = "../../rules", version = "0.0.0" }
+with_error = { path = "../../with_error", version = "0.0.0" }

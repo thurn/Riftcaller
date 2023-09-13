@@ -24,7 +24,7 @@ use game_data::delegates::{
     CardEncounter, Flag,
 };
 use game_data::game::{GamePhase, GameState, TurnState};
-use game_data::game_actions::CardTarget;
+use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
 use game_data::primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, Resonance, RoomId, Side,
 };
@@ -115,11 +115,39 @@ pub fn can_take_play_card_action(
     card_id: CardId,
     target: CardTarget,
 ) -> bool {
+    if let Some(GamePrompt::PlayCardBrowser(browser)) =
+        game.player(card_id.side).prompt_queue.get(0)
+    {
+        return can_play_from_browser(game, card_id, target, browser);
+    }
+
     let mut can_play = in_main_phase_with_action_point(game, side)
         && side == card_id.side
         && game.card(card_id).position() == CardPosition::Hand(side)
         && is_valid_target(game, card_id, target)
         && queries::action_cost(game, card_id) <= game.player(side).actions;
+
+    if enters_play_face_up(game, card_id) {
+        can_play &= can_pay_card_cost(game, card_id);
+    }
+
+    dispatch::perform_query(game, CanPlayCardQuery(card_id), Flag::new(can_play)).into()
+}
+
+/// Checks whether a card can be played from a [PlayCardBrowser].
+///
+/// Cards in the browser are assumed to bypass normal positional checks for
+/// legality.
+fn can_play_from_browser(
+    game: &GameState,
+    card_id: CardId,
+    target: CardTarget,
+    browser: &PlayCardBrowser,
+) -> bool {
+    let mut can_play = browser.cards.contains(&card_id)
+        && is_valid_target(game, card_id, target)
+        // Cards from the play browser implicitly cost 1 action point fewer
+        && queries::action_cost(game, card_id) <= (game.player(card_id.side).actions + 1);
 
     if enters_play_face_up(game, card_id) {
         can_play &= can_pay_card_cost(game, card_id);

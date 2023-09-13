@@ -16,10 +16,12 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
+pub mod card_predicates;
 pub mod costs;
 pub mod history;
 pub mod in_play;
 pub mod projects;
+pub mod show_prompt;
 pub mod text_macro;
 pub mod this;
 

@@ -18,7 +18,7 @@ pub mod rexard_images;
 
 use core_ui::design::FontColor;
 use game_data::character_preset::CharacterPreset;
-use game_data::primitives::{CardType, Rarity, Resonance, School, Side};
+use game_data::primitives::{CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
@@ -201,13 +201,13 @@ pub fn jewel(rarity: Rarity) -> SpriteAddress {
                 Rarity::Common | Rarity::None => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Jewels/Jewel_Elf_Color_01"
                 }
-                Rarity::Rare => {
+                Rarity::Uncommon => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Jewels/Jewel_Steampunk_Color_01"
                 }
-                Rarity::Exalted => {
+                Rarity::Rare => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Jewels/Jewel_Elf_Color_02"
                 }
-                Rarity::Epic => {
+                Rarity::Riftcaller => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Jewels/Jewel_Steampunk_Color_02"
                 }
             }
@@ -276,4 +276,8 @@ pub fn ability_title_background() -> SpriteAddress {
         address: "LittleSweetDaemon/TCG_Card_Design/Custom/Title/TokenTitleBackground.png"
             .to_string(),
     }
+}
+
+pub fn champion_card(name: impl Into<String>) -> Sprite {
+    Sprite { address: format!("Cards/Champion/{}.png", name.into()) }
 }

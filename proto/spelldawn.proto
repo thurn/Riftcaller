@@ -853,6 +853,11 @@ message ObjectPositionBrowserDragTarget {
 message ObjectPositionCardChoiceBrowser {
 }
 
+// Position in which cards in the hand are moved when some other option is being
+// shown in the primary hand location (e.g. the Play Card browser).
+message ObjectPositionHandStorage {
+}
+
 message ObjectPosition {
     // A key by which to sort this object -- objects with higher sorting keys
     // should be displayed 'on top of' or 'in front of' objects with lower
@@ -885,6 +890,7 @@ message ObjectPosition {
         ObjectPositionRiftcallers riftcaller = 19;
         ObjectPositionBrowserDragTarget browser_drag_target = 20;
         ObjectPositionCardChoiceBrowser card_choice_browser = 21;
+        ObjectPositionHandStorage hand_storage = 22;
     }
 }
 

@@ -43,7 +43,7 @@ pub fn render(
         GameUpdate::StartTurn(side) => start_turn(builder, *side),
         GameUpdate::PlayCardFaceUp(side, card_id) => {
             if builder.user_side == side.opponent() {
-                show_cards(builder, &vec![*card_id], false)
+                show_cards(builder, &vec![*card_id], ShowCards::default())
             }
         }
         GameUpdate::AbilityActivated(side, ability_id) => {
@@ -54,16 +54,24 @@ pub fn render(
         GameUpdate::AbilityTriggered(ability_id) => show_ability(builder, snapshot, *ability_id),
         GameUpdate::DrawCards(side, cards) => {
             if builder.user_side == *side {
-                show_cards(builder, cards, false)
+                show_cards(builder, cards, ShowCards::default())
             }
         }
         GameUpdate::ShuffleIntoDeck => {
             // No animation, just acts as a snapshot point.
         }
-        GameUpdate::UnveilCard(card_id) => show_cards(builder, &vec![*card_id], true),
+        GameUpdate::UnveilCard(card_id) => show_cards(
+            builder,
+            &vec![*card_id],
+            ShowCards { show_if_prominent: true, ..ShowCards::default() },
+        ),
         GameUpdate::SummonMinion(card_id) => {
             if builder.user_side == Side::Champion {
-                show_cards(builder, &vec![*card_id], true)
+                show_cards(
+                    builder,
+                    &vec![*card_id],
+                    ShowCards { show_if_prominent: true, ..ShowCards::default() },
+                )
             }
         }
         GameUpdate::LevelUpRoom(room_id, initiated_by) => {
@@ -86,6 +94,11 @@ pub fn render(
         GameUpdate::ScoreCard(_, card_id) => score_card(builder, *card_id),
         GameUpdate::GameOver(_) => {}
         GameUpdate::BrowserSubmitted => {}
+        GameUpdate::ShowPlayCardBrowser(cards) => show_cards(
+            builder,
+            cards,
+            ShowCards { show_if_prominent: false, milliseconds: Some(500), large_browser: true },
+        ),
     }
     Ok(())
 }
@@ -99,24 +112,45 @@ fn start_turn(builder: &mut ResponseBuilder, side: Side) {
     }))
 }
 
-fn show_cards(builder: &mut ResponseBuilder, cards: &Vec<CardId>, show_if_prominent: bool) {
+#[derive(Default)]
+struct ShowCards {
+    /// If `show_if_prominent` is false, the cards will be skipped if they're
+    /// already party of prominent center-screen browser like the raid
+    /// display.
+    show_if_prominent: bool,
+    /// How long to show the cards for. If not specified, cards are shown for
+    /// 2000ms if there are >= 4 and 1000ms otherwise.
+    milliseconds: Option<u32>,
+    /// Whether to always use the large revealed card browser. If false, this
+    /// browser is only used if >= 4 cards are dhown.
+    large_browser: bool,
+}
+
+/// An animation to place the indicated cards center-screen.
+fn show_cards(builder: &mut ResponseBuilder, cards: &Vec<CardId>, options: ShowCards) {
     let is_large = cards.len() >= 4;
     builder.push(Command::MoveGameObjects(MoveGameObjectsCommand {
         moves: cards
             .iter()
             // Skip animation for cards that are already in a prominent interface position
-            .filter(|card_id| !in_display_position(builder, **card_id) || show_if_prominent)
+            .filter(|card_id| !in_display_position(builder, **card_id) || options.show_if_prominent)
             .enumerate()
             .map(|(i, card_id)| GameObjectMove {
                 id: Some(adapters::game_object_identifier(builder, *card_id)),
                 position: Some(positions::for_sorting_key(
                     i as u32,
-                    positions::revealed_cards(is_large),
+                    positions::revealed_cards(options.large_browser || is_large),
                 )),
             })
             .collect(),
         disable_animation: !builder.state.animate,
-        delay: Some(adapters::milliseconds(if is_large { 2000 } else { 1000 })),
+        delay: Some(adapters::milliseconds(options.milliseconds.unwrap_or({
+            if is_large {
+                2000
+            } else {
+                1000
+            }
+        }))),
     }))
 }
 

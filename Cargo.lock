@@ -408,6 +408,7 @@ version = "0.0.0"
 dependencies = [
  "cards_amethyst",
  "cards_basic",
+ "cards_beryl",
  "cards_game_modifier",
  "cards_test",
  "rules",
@@ -432,6 +433,17 @@ dependencies = [
  "card_helpers",
  "game_data",
  "rules",
+]
+
+[[package]]
+name = "cards_beryl"
+version = "0.0.0"
+dependencies = [
+ "assets",
+ "card_helpers",
+ "game_data",
+ "rules",
+ "with_error",
 ]
 
 [[package]]

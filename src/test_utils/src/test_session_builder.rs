@@ -77,6 +77,7 @@ impl TestSessionBuilder {
         let adventure = self.adventure.map(|a| a.build_adventure_state_internal(self.user_id));
 
         if let Some(game) = self.game {
+            let user_side = game.user_side();
             let database = FakeDatabase {
                 generated_game_id: None,
                 game: Mutex::new(Some(game.build_game_state_internal(
@@ -87,13 +88,13 @@ impl TestSessionBuilder {
                 players: Mutex::new(hashmap! {
                     self.user_id => PlayerState {
                         id: self.user_id,
-                        status: Some(PlayerStatus::Playing(self.game_id)),
+                        status: Some(PlayerStatus::Playing(self.game_id, user_side)),
                         adventure,
                         tutorial: TutorialData::new().skip_all(true)
                     },
                     self.opponent_id => PlayerState {
                         id: self.opponent_id,
-                        status: Some(PlayerStatus::Playing(self.game_id)),
+                        status: Some(PlayerStatus::Playing(self.game_id, user_side.opponent())),
                         adventure: None,
                         tutorial: TutorialData::default()
                     }

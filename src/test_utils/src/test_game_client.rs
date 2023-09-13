@@ -362,7 +362,7 @@ impl ClientCards {
         }))
     }
 
-    /// Returns left items in play
+    /// Returns right items in play
     pub fn right_items(&self) -> Vec<String> {
         self.names_in_position(Position::Item(ObjectPositionItem {
             item_location: ClientItemLocation::Right as i32,

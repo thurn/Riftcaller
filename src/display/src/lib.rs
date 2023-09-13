@@ -21,6 +21,7 @@ pub mod card_browser;
 pub mod card_sync;
 pub mod game_over;
 pub mod interface;
+pub mod play_card_browser;
 pub mod positions;
 pub mod render;
 pub mod sync;

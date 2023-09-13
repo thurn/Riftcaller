@@ -24,7 +24,7 @@ use deck_editor::deck_editor_panel::DeckEditorPanel;
 use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
 use panel_address::{Panel, PlayerPanel, StandardPanel};
 use panels::about_panel::AboutPanel;
-use panels::add_to_hand_panel::AddToHandPanel;
+use panels::add_to_zone_panel::AddToZonePanel;
 use panels::adventure_menu::AdventureMenu;
 use panels::apply_scenario_panel::ApplyScenarioPanel;
 use panels::battle_defeat_panel::BattleDefeatPanel;
@@ -47,7 +47,7 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         StandardPanel::Settings => SettingsPanel::new().build_panel(),
         StandardPanel::SideSelect => SideSelectPanel::new().build_panel(),
         StandardPanel::Disclaimer => DisclaimerPanel::new().build_panel(),
-        StandardPanel::DebugPanel(activity) => DebugPanel::new(activity).build_panel(),
+        StandardPanel::DebugPanel(activity, side) => DebugPanel::new(activity, side).build_panel(),
         StandardPanel::GameMenu => GameMenuPanel::new().build_panel(),
         StandardPanel::AdventureMenu => AdventureMenu::new().build_panel(),
         StandardPanel::DeckEditorLoading => LoadingPanel::new(
@@ -56,7 +56,7 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         )
         .build_panel(),
         StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
-        StandardPanel::AddToHand => AddToHandPanel::new("").build_panel(),
+        StandardPanel::AddToZone(position) => AddToZonePanel::new("", position).build_panel(),
         StandardPanel::ApplyScenario => ApplyScenarioPanel::new().build_panel(),
     })
 }

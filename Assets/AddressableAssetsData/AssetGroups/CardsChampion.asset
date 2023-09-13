@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: CardsChampion
+  m_EditorClassIdentifier: 
+  m_GroupName: CardsChampion
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 7cae46d5144e84f8ebde69691b87c8ba
+  m_SerializeEntries:
+  - m_GUID: 5e9ea4097d1764d0d9dfbc89397dbcf0
+    m_Address: Cards/Champion
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: de9bc628098c84f57856a51e56848bf1, type: 2}
+    - {fileID: 11400000, guid: fcf131dabf2bc42d9a112662e435a6bd, type: 2}

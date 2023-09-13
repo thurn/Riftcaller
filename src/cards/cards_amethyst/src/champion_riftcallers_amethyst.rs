@@ -30,7 +30,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Champion,
         school: School::Law,
-        rarity: Rarity::Exalted,
+        rarity: Rarity::Rare,
         abilities: vec![simple_ability(
             trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
             in_play::at_dawn(|g, s, _| {
@@ -55,7 +55,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Champion,
         school: School::Pact,
-        rarity: Rarity::Exalted,
+        rarity: Rarity::Riftcaller,
         abilities: vec![simple_ability(
             text!["The first time you take damage each turn, draw a card"],
             in_play::on_damage(|g, s, _| {
@@ -80,7 +80,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Champion,
         school: School::Primal,
-        rarity: Rarity::Exalted,
+        rarity: Rarity::Riftcaller,
         abilities: vec![simple_ability(
             text!["After you access the", Sanctum, ", discard the top card of the", Vault],
             in_play::after_sanctum_accessed(|g, s, _| {
@@ -102,7 +102,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Champion,
         school: School::Shadow,
-        rarity: Rarity::Exalted,
+        rarity: Rarity::Riftcaller,
         abilities: vec![simple_ability(
             text![
                 "When you access the",

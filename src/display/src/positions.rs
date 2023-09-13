@@ -29,10 +29,10 @@ use protos::spelldawn::{
     ObjectPosition, ObjectPositionBrowser, ObjectPositionBrowserDragTarget,
     ObjectPositionCardChoiceBrowser, ObjectPositionCharacter, ObjectPositionCharacterContainer,
     ObjectPositionDeck, ObjectPositionDeckContainer, ObjectPositionDiscardPile,
-    ObjectPositionDiscardPileContainer, ObjectPositionHand, ObjectPositionIntoCard,
-    ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid, ObjectPositionRevealedCards,
-    ObjectPositionRiftcallers, ObjectPositionRoom, ObjectPositionStaging, RevealedCardsBrowserSize,
-    RoomIdentifier,
+    ObjectPositionDiscardPileContainer, ObjectPositionHand, ObjectPositionHandStorage,
+    ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid,
+    ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
+    ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::raid_display_state;
 use rules::queries;
@@ -158,6 +158,10 @@ pub fn revealed_cards(large: bool) -> Position {
 
 pub fn card_choice_browser() -> Position {
     Position::CardChoiceBrowser(ObjectPositionCardChoiceBrowser {})
+}
+
+pub fn hand_storage() -> Position {
+    Position::HandStorage(ObjectPositionHandStorage {})
 }
 
 pub fn raid() -> Position {
@@ -307,7 +311,7 @@ fn position_override(
     game: &GameState,
     card: &CardState,
 ) -> Result<Option<ObjectPosition>> {
-    if let Some(o) = prompt_position_override(game, card) {
+    if let Some(o) = prompt_position_override(builder, game, card) {
         return Ok(Some(o));
     }
 
@@ -320,7 +324,11 @@ fn position_override(
     }
 }
 
-fn prompt_position_override(game: &GameState, card: &CardState) -> Option<ObjectPosition> {
+fn prompt_position_override(
+    builder: &ResponseBuilder,
+    game: &GameState,
+    card: &CardState,
+) -> Option<ObjectPosition> {
     let current_prompt = game.player(card.side()).prompt_queue.get(0)?;
 
     match current_prompt {
@@ -337,6 +345,13 @@ fn prompt_position_override(game: &GameState, card: &CardState) -> Option<Object
                 return Some(for_card(card, revealed_cards(true)));
             } else if browser.chosen_subjects.contains(&card.id) {
                 return Some(for_card(card, card_browser_target_position()));
+            }
+        }
+        GamePrompt::PlayCardBrowser(play_card) => {
+            if play_card.cards.contains(&card.id) {
+                return Some(for_card(card, hand(builder, builder.user_side)));
+            } else if card.position().in_hand() {
+                return Some(for_card(card, hand_storage()));
             }
         }
     }

@@ -160,9 +160,15 @@ impl fmt::Debug for Side {
     }
 }
 
-/// Identifies a struct that is 1:1 associated with a given [CardId].
-pub trait HasCardId {
-    fn card_id(&self) -> CardId;
+/// Identifies a struct that is 1:1 associated with a given [Side].
+pub trait HasSide {
+    fn side(&self) -> Side;
+}
+
+impl HasSide for Side {
+    fn side(&self) -> Side {
+        *self
+    }
 }
 
 /// Identifies a card in an ongoing game
@@ -178,11 +184,22 @@ impl CardId {
     }
 }
 
+/// Identifies a struct that is 1:1 associated with a given [CardId].
+pub trait HasCardId {
+    fn card_id(&self) -> CardId;
+}
+
 impl HasCardId for CardId {
     fn card_id(&self) -> CardId {
         // I know this is the same as Into, I just find it less annoying to have
         // explicit types :)
         *self
+    }
+}
+
+impl HasSide for CardId {
+    fn side(&self) -> Side {
+        self.side
     }
 }
 
@@ -437,9 +454,9 @@ pub enum Resonance {
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum Rarity {
     Common,
+    Uncommon,
     Rare,
-    Exalted,
-    Epic,
+    Riftcaller,
 
     /// Card cannot be obtained via random rewards
     None,
@@ -463,6 +480,20 @@ pub enum CardType {
 impl CardType {
     pub fn is_spell(&self) -> bool {
         matches!(self, CardType::ChampionSpell | CardType::OverlordSpell)
+    }
+
+    /// Returns the english article 'a' or 'an' appropriate for this card type.
+    pub fn article(&self) -> &'static str {
+        match self {
+            Self::ChampionSpell
+            | Self::OverlordSpell
+            | Self::Minion
+            | Self::Project
+            | Self::Scheme
+            | Self::Riftcaller
+            | Self::GameModifier => "a",
+            Self::Artifact | Self::Evocation | Self::Ally => "an",
+        }
     }
 }
 
@@ -503,6 +534,7 @@ pub enum CardSubtype {
 
     Weapon,
     Silvered,
+    Conjuration,
 }
 
 /// Describes a boost ability activation

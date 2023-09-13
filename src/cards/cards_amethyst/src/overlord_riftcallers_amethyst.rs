@@ -29,7 +29,7 @@ pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Overlord,
         school: School::Shadow,
-        rarity: Rarity::Exalted,
+        rarity: Rarity::Riftcaller,
         abilities: vec![simple_ability(
             text!["The second spell you cast each turn does not cost", ActionSymbol],
             in_play::on_query_action_cost(|g, _, card_id, actions| {

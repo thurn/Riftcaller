@@ -12,10 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod adventure;
-mod ai;
-mod cards_amethyst;
-mod cards_basic;
-mod cards_beryl;
-mod core;
-mod rules_text;
+use game_data::card_state::CardState;
+use game_data::primitives::CardType;
+
+pub type CardPredicate = fn(&&CardState) -> bool;
+
+pub fn is_type(card: &&CardState, card_type: CardType) -> bool {
+    rules::get(card.variant).card_type == card_type
+}
+
+pub fn artifact(card: &&CardState) -> bool {
+    is_type(card, CardType::Artifact)
+}

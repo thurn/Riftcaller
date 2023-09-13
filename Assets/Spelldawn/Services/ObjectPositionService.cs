@@ -203,8 +203,8 @@ namespace Spelldawn.Services
         ObjectPosition.PositionOneofCase.CardChoiceBrowser => _registry.CardChoiceBrowser,
         ObjectPosition.PositionOneofCase.Riftcaller => 
           _registry.RiftcallerDisplayForPlayer(position.Riftcaller.Owner),
-        ObjectPosition.PositionOneofCase.BrowserDragTarget =>
-          _registry.BrowserDragTarget,
+        ObjectPosition.PositionOneofCase.BrowserDragTarget => _registry.BrowserDragTarget,
+        ObjectPosition.PositionOneofCase.HandStorage => _registry.HandStorage,
         _ => throw new ArgumentOutOfRangeException()
       };
     }

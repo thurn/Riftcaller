@@ -231,6 +231,9 @@ namespace Spelldawn.Services
 
     [SerializeField] CardBrowser _browserDragTarget = null!;
     public CardBrowser BrowserDragTarget => _browserDragTarget;
+    
+    [FormerlySerializedAs("_playCardBrowser")] [SerializeField] CurveObjectDisplay _handStorage = null!;
+    public CurveObjectDisplay HandStorage => _handStorage;
 
     void Awake()
     {
