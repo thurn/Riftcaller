@@ -3531,9 +3531,11 @@ name = "user_action_data"
 version = "0.0.0"
 dependencies = [
  "adventure_data",
+ "convert_case 0.5.0",
  "enum-iterator",
  "game_data",
  "serde",
+ "strum_macros",
 ]
 
 [[package]]

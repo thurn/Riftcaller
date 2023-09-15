@@ -16,6 +16,7 @@ use std::fmt;
 
 use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
+use convert_case::{Case, Casing};
 use enum_iterator::Sequence;
 use game_data::card_name::CardVariant;
 use game_data::card_state::CardPosition;
@@ -23,6 +24,7 @@ use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
 use serde::{Deserialize, Serialize};
+use strum_macros::Display;
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Default, Serialize, Deserialize)]
 pub struct NewGameDebugOptions {
@@ -67,9 +69,25 @@ pub struct NewGameAction {
     pub debug_options: Option<NewGameDebugOptions>,
 }
 
-#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Sequence)]
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Sequence, Display)]
 pub enum DebugScenario {
-    OpponentInfernalMinionAndScheme,
+    NewGameOverlord,
+    NewGameChampion,
+    VsInfernalMinionAndScheme,
+}
+
+impl DebugScenario {
+    pub fn side(&self) -> Side {
+        match self {
+            DebugScenario::NewGameOverlord => Side::Overlord,
+            DebugScenario::NewGameChampion => Side::Champion,
+            DebugScenario::VsInfernalMinionAndScheme => Side::Champion,
+        }
+    }
+
+    pub fn displayed_name(&self) -> String {
+        format!("{self}").from_case(Case::Pascal).to_case(Case::Title)
+    }
 }
 
 /// Actions that can be taken from the debug panel, should not be exposed in

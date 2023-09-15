@@ -45,7 +45,7 @@ impl Component for ApplyScenarioPanel {
                 ScrollView::new("Scenario List")
                     .style(Style::new().margin(Edge::Vertical, 16.px()).flex_grow(1.0))
                     .children(enum_iterator::all::<DebugScenario>().map(|scenario| {
-                        ListCell::new(format!("{:?}", scenario)).button(
+                        ListCell::new(scenario.displayed_name()).button(
                             Button::new("Apply").action(
                                 ActionBuilder::new()
                                     .action(UserAction::Debug(DebugAction::ApplyScenario(scenario)))

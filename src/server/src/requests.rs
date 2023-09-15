@@ -71,7 +71,7 @@ pub async fn fetch_player(database: &impl Database, player_id: PlayerId) -> Resu
 }
 
 /// Looks up a player by ID in the database. Prefer to use [with_game] if
-/// possible.
+/// possible. Returns an error if `game_id` is `None`.
 pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Result<GameState> {
     let id = game_id.with_error(|| "Expected GameId to be included with client request")?;
     let mut game = database.fetch_game(id).await?.with_error(|| format!("Game not found {id}"))?;

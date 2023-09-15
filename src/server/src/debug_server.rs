@@ -23,7 +23,8 @@ use core_ui::panels;
 use database::Database;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
-use game_data::game::GameState;
+use game_data::game::{GameState, MulliganDecision};
+use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{CardId, GameId, RoomId, RoomLocation, Side};
 use panel_address::Panel;
@@ -32,7 +33,7 @@ use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mutations::SummonMinion;
-use rules::{mana, mutations};
+use rules::{dispatch, mana, mutations};
 use ulid::Ulid;
 use user_action_data::{
     DebugAction, DebugScenario, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck,
@@ -180,10 +181,16 @@ pub async fn handle_debug_action(
             .await
         }
         DebugAction::ApplyScenario(scenario) => {
-            game_server::update_game(database, data, |game, side| {
-                apply_scenario(*scenario, game, side)
+            game_server::update_game(database, data, |game, _| {
+                apply_scenario(*scenario, data, game)
             })
-            .await
+            .await?;
+
+            let game = requests::fetch_game(database, data.game_id).await?;
+            let mut player = requests::fetch_player(database, data.player_id).await?;
+            player.status = Some(PlayerStatus::Playing(game.id, scenario.side()));
+            database.write_player(&player).await?;
+            reload_scene(data, &game)
         }
     }
 }
@@ -239,13 +246,13 @@ fn reload_world_scene(data: &RequestData) -> GameResponse {
     GameResponse::new(ClientData::propagate(data)).command(command)
 }
 
-fn apply_scenario(scenario: DebugScenario, game: &mut GameState, side: Side) -> Result<()> {
-    mutations::start_turn(game, side, 1)?;
-    mana::gain(game, side, 50);
-    mana::gain(game, side.opponent(), 50);
+fn apply_scenario(scenario: DebugScenario, data: &RequestData, game: &mut GameState) -> Result<()> {
+    *game = scenario_game(game, data, scenario.side())?;
 
     match scenario {
-        DebugScenario::OpponentInfernalMinionAndScheme => {
+        DebugScenario::NewGameOverlord => {}
+        DebugScenario::NewGameChampion => {}
+        DebugScenario::VsInfernalMinionAndScheme => {
             create_at_position(
                 game,
                 CardName::TestScheme3_10,
@@ -260,6 +267,46 @@ fn apply_scenario(scenario: DebugScenario, game: &mut GameState, side: Side) -> 
         }
     }
     Ok(())
+}
+
+fn scenario_game(game: &GameState, data: &RequestData, side: Side) -> Result<GameState> {
+    let mut result = GameState::new(
+        game.id,
+        if side == Side::Overlord { data.player_id } else { PlayerId::AI(AIPlayer::NoAction) },
+        decklists::CANONICAL_OVERLORD.clone(),
+        if side == Side::Champion { data.player_id } else { PlayerId::AI(AIPlayer::NoAction) },
+        decklists::CANONICAL_CHAMPION.clone(),
+        game.info.config,
+    );
+    dispatch::populate_delegate_cache(&mut result);
+    actions::handle_game_action(
+        &mut result,
+        Side::Overlord,
+        &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
+    )?;
+    actions::handle_game_action(
+        &mut result,
+        Side::Champion,
+        &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
+    )?;
+
+    if side == Side::Champion {
+        for _ in 0..3 {
+            actions::handle_game_action(
+                &mut result,
+                Side::Overlord,
+                &GameAction::SpendActionPoint,
+            )?;
+        }
+
+        actions::handle_game_action(
+            &mut result,
+            Side::Overlord,
+            &GameAction::GameStateAction(GameStateAction::EndTurnAction),
+        )?;
+    }
+
+    Ok(result)
 }
 
 fn create_at_position(
