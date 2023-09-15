@@ -14,16 +14,13 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::game_actions::CardTarget;
 use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, Side};
 
 /// An arbitrary modification to the state of an ongoing game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum GameEffect {
-    /// Close the current prompt with no effect.
-    Cancel,
-    /// Put the indicated card into play
-    PlayCard(CardId, CardTarget),
+    /// Stop the current game action
+    AbortCurrentGameAction,
     /// Sacrifice the indicated permanent, moving it to its owner's discard
     /// pile.
     SacrificeCard(CardId),

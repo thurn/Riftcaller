@@ -18,12 +18,11 @@ use game_data::game::GameState;
 use game_data::game_effect::GameEffect;
 
 use crate::mana::ManaPurpose;
-use crate::{mana, mutations, play_card};
+use crate::{mana, mutations};
 
 pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
     match effect {
-        GameEffect::Cancel => {}
-        GameEffect::PlayCard(card_id, target) => play_card::run(game, card_id, target)?,
+        GameEffect::AbortCurrentGameAction => mutations::abort_current_game_action(game),
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
         GameEffect::LoseMana(side, amount) => {
             mana::spend(game, side, ManaPurpose::PayForTriggeredAbility, amount)?

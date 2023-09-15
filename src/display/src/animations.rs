@@ -94,11 +94,7 @@ pub fn render(
         GameUpdate::ScoreCard(_, card_id) => score_card(builder, *card_id),
         GameUpdate::GameOver(_) => {}
         GameUpdate::BrowserSubmitted => {}
-        GameUpdate::ShowPlayCardBrowser(cards) => show_cards(
-            builder,
-            cards,
-            ShowCards { show_if_prominent: false, milliseconds: Some(500), large_browser: true },
-        ),
+        GameUpdate::ShowPlayCardBrowser(_) => {}
     }
     Ok(())
 }

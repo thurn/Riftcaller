@@ -146,8 +146,7 @@ fn can_play_from_browser(
 ) -> bool {
     let mut can_play = browser.cards.contains(&card_id)
         && is_valid_target(game, card_id, target)
-        // Cards from the play browser implicitly cost 1 action point fewer
-        && queries::action_cost(game, card_id) <= (game.player(card_id.side).actions + 1);
+        && queries::action_cost(game, card_id) <= game.player(card_id.side).actions;
 
     if enters_play_face_up(game, card_id) {
         can_play &= can_pay_card_cost(game, card_id);

@@ -111,7 +111,7 @@ fn play_card_action(
         card_id
     );
 
-    play_card::run(game, card_id, target)
+    play_card::initiate(game, card_id, target)
 }
 
 /// The basic game action to activate an ability of a card in play.
@@ -368,8 +368,9 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
 
-    // Try to resume the raid state machine, in case this prompt caused it to pause.
-    raids::run(game, None)
+    // Try to resume state machines, in case this prompt caused them to pause.
+    raids::run(game, None)?;
+    play_card::run(game)
 }
 
 fn handle_card_browser_submit_action(

@@ -39,8 +39,7 @@ pub fn label(user_side: Side, effects: &[GameEffect]) -> String {
 
 fn effect_label(user_side: Side, effect: &GameEffect) -> String {
     match effect {
-        GameEffect::Cancel => "Cancel".to_string(),
-        GameEffect::PlayCard(_, _) => "Play".to_string(),
+        GameEffect::AbortCurrentGameAction => "Cancel".to_string(),
         GameEffect::SacrificeCard(_) => "Sacrifice".to_string(),
         GameEffect::LoseMana(side, amount) => {
             format!("{} {}{}", lose_text(user_side, *side), amount, icons::MANA)
@@ -58,7 +57,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
 }
 
 fn is_primary(choice: &PromptChoice) -> bool {
-    !choice.effects.contains(&GameEffect::Cancel)
+    !choice.effects.contains(&GameEffect::AbortCurrentGameAction)
 }
 
 fn custom_label(label: PromptChoiceLabel) -> String {

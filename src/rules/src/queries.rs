@@ -24,7 +24,7 @@ use game_data::delegates::{
     SanctumAccessCountQuery, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
 use game_data::game::GameState;
-use game_data::game_actions::{CardTarget, CardTargetKind};
+use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BreachValue, CardId, CardType, HealthValue,
     ItemLocation, ManaValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
@@ -77,7 +77,15 @@ pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<Mana
 
 /// Returns the action point cost for a given card
 pub fn action_cost(game: &GameState, card_id: CardId) -> ActionCount {
-    let actions = crate::get(game.card(card_id).variant).cost.actions;
+    let mut actions = crate::get(game.card(card_id).variant).cost.actions;
+    if let Some(GamePrompt::PlayCardBrowser(browser)) =
+        game.player(card_id.side).prompt_queue.get(0)
+    {
+        if browser.cards.contains(&card_id) {
+            // Cards played from play browser implicitly cost 1 action point fewer
+            actions = actions.saturating_sub(1);
+        }
+    }
     dispatch::perform_query(game, ActionCostQuery(card_id), actions)
 }
 

@@ -529,6 +529,13 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
     Ok(())
 }
 
+/// Stops the currently-active game action.
+///
+/// If there is no `current_action`, this function has no effect.
+pub fn abort_current_game_action(game: &mut GameState) {
+    game.current_action = None;
+}
+
 /// Creates an entirely new card from outside the game face-up in the indicated
 /// `position`.
 pub fn create_and_add_card(

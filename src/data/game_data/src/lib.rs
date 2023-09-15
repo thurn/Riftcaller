@@ -14,6 +14,7 @@
 
 //! Data types used to represent game state
 
+pub mod action_data;
 pub mod agent_definition;
 pub mod card_definition;
 pub mod card_name;

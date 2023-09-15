@@ -25,6 +25,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DisplayFromStr};
 use with_error::{fail, WithError};
 
+use crate::action_data::ActionData;
 use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
@@ -234,6 +235,8 @@ pub struct GameState {
     pub id: GameId,
     /// General game state & configuration
     pub info: GameInfo,
+    /// User action currently in the process of being resolved.
+    pub current_action: Option<ActionData>,
     /// State of the ongoing raid in this game, if any
     pub raid: Option<RaidData>,
     /// Used to track changes to game state in order to update the client. See
@@ -295,6 +298,7 @@ impl GameState {
                 tutorial_state: GameTutorialState::default(),
                 config,
             },
+            current_action: None,
             raid: None,
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
@@ -324,6 +328,7 @@ impl GameState {
             let clone = Self {
                 id: self.id,
                 info: self.info.clone(),
+                current_action: self.current_action.clone(),
                 raid: self.raid.clone(),
                 updates: UpdateTracker::new(Updates::Ignore),
                 overlord_cards: self.overlord_cards.clone(),
@@ -347,6 +352,7 @@ impl GameState {
         Self {
             id: self.id,
             info: self.info.clone(),
+            current_action: self.current_action.clone(),
             raid: self.raid.clone(),
             updates: UpdateTracker::default(),
             overlord_cards: self.overlord_cards.clone(),
