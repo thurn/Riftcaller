@@ -15,10 +15,9 @@
 use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
-use protos::spelldawn::object_position::Position;
-use protos::spelldawn::{ClientRoomLocation, ObjectPositionRaid, PlayerName};
 use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_game_client::CardNames;
 use test_utils::*;
 
 #[test]
@@ -30,8 +29,8 @@ fn test_minion_deal_damage_end_raid() {
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
     assert!(!g.user.data.raid_active());
-    assert_eq!(1, g.user.cards.discard_pile(PlayerName::Opponent).len());
-    assert_eq!(4, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(1, g.user.cards.opponent_discard_pile().len());
+    assert_eq!(4, g.user.cards.opponent_hand().len());
 }
 
 #[test]
@@ -58,7 +57,7 @@ fn time_golem_defeat() {
     g.click(Button::Summon);
     g.click_on(g.opponent_id(), format!("Pay 5{}", icons::MANA));
     g.click_on(g.opponent_id(), "Test Weapon");
-    assert_eq!(vec!["Time Golem"], g.user.cards.discard_pile(PlayerName::User));
+    assert_eq!(vec!["Time Golem"], g.user.cards.discard_pile().names());
 }
 
 #[test]
@@ -89,15 +88,15 @@ fn temporal_stalker_end_raid() {
     g.add_to_hand(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TemporalStalker);
     g.set_up_minion_combat();
-    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(1, g.user.cards.hand().len());
     g.opponent_click(Button::NoWeapon);
     g.click_on(g.opponent_id(), "End Raid");
     assert!(!g.user.data.raid_active());
     assert_eq!(
         vec!["Temporal Stalker", "Test Minion End Raid"],
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front)
+        g.user.cards.room_defenders(test_constants::ROOM_ID).names()
     );
-    assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(0, g.user.cards.hand().len());
     assert_eq!(3, g.opponent.this_player.actions());
 }
 
@@ -113,13 +112,13 @@ fn temporal_stalker_pay_actions() {
     assert!(g.user.data.raid_active());
     assert_eq!(
         vec!["Test Minion End Raid", "Test Scheme 3_10"],
-        g.user.cards.names_in_position(Position::Raid(ObjectPositionRaid {}))
+        g.user.cards.raid_display().names()
     );
     assert_eq!(
         vec!["Temporal Stalker"],
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front)
+        g.user.cards.room_defenders(test_constants::ROOM_ID).names()
     );
-    assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(0, g.user.cards.hand().len());
     assert!(g.opponent.interface.controls().has_text("Continue"));
 }
 
@@ -132,10 +131,10 @@ fn temporal_stalker_defeat() {
         g.create_and_play(CardName::TestWeaponAbyssal);
     });
     g.click_on(g.opponent_id(), "Test Weapon");
-    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(1, g.user.cards.hand().len());
     assert_eq!(
         vec!["Temporal Stalker"],
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front)
+        g.user.cards.room_defenders(test_constants::ROOM_ID).names()
     );
     assert!(g.opponent.interface.controls().has_text("Score"));
 }
@@ -172,7 +171,7 @@ fn sphinx_of_winters_breath_discard_even() {
         g.add_to_hand(CardName::Test0CostChampionSpell);
     });
     g.opponent_click(Button::NoWeapon);
-    assert_eq!(vec!["Test 0 Cost Champion Spell"], g.opponent.cards.discard_pile(PlayerName::User));
+    assert_eq!(vec!["Test 0 Cost Champion Spell"], g.opponent.cards.discard_pile().names());
     assert!(g.user.data.raid_active());
 }
 
@@ -187,7 +186,7 @@ fn sphinx_of_winters_breath_discard_odd() {
         g.add_to_hand(CardName::Test1CostChampionSpell);
     });
     g.opponent_click(Button::NoWeapon);
-    assert_eq!(vec!["Test 1 Cost Champion Spell"], g.opponent.cards.discard_pile(PlayerName::User));
+    assert_eq!(vec!["Test 1 Cost Champion Spell"], g.opponent.cards.discard_pile().names());
     assert!(!g.user.data.raid_active());
 }
 
@@ -223,7 +222,7 @@ fn stormcaller_take_2() {
     g.opponent_click(Button::NoWeapon);
     g.click_on(g.opponent_id(), "End Raid");
     assert!(!g.user.data.raid_active());
-    assert_eq!(2, g.opponent.cards.discard_pile(PlayerName::User).len());
+    assert_eq!(2, g.opponent.cards.discard_pile().len());
 }
 
 #[test]
@@ -236,7 +235,7 @@ fn stormcaller_take_4() {
     g.opponent_click(Button::NoWeapon);
     g.click_on(g.opponent_id(), "Take 2");
     assert!(g.user.data.raid_active());
-    assert_eq!(4, g.opponent.cards.discard_pile(PlayerName::User).len());
+    assert_eq!(4, g.opponent.cards.discard_pile().len());
 }
 
 #[test]

@@ -14,8 +14,8 @@
 
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
-use protos::spelldawn::PlayerName;
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_game_client::CardNames;
 use test_utils::TestSessionHelpers;
 
 #[test]
@@ -27,10 +27,10 @@ fn restoration() {
     .build();
     assert!(g.user.cards.left_items().is_empty());
     g.create_and_play(CardName::Restoration);
-    assert_eq!(g.user.cards.hand(PlayerName::User), vec!["Test Weapon Abyssal"]);
-    let id = g.user.cards.cards_in_hand(PlayerName::User).next().unwrap().id();
+    assert_eq!(g.user.cards.hand().names(), vec!["Test Weapon Abyssal"]);
+    let id = g.user.cards.hand()[0].id();
     g.play_card(id, g.user_id(), None);
-    assert!(g.user.cards.hand(PlayerName::User).is_empty());
-    assert_eq!(g.user.cards.left_items(), vec!["Test Weapon Abyssal"]);
+    assert!(g.user.cards.hand().is_empty());
+    assert_eq!(g.user.cards.left_items().names(), vec!["Test Weapon Abyssal"]);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST);
 }

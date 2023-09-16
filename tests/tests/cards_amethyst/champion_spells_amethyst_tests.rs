@@ -14,8 +14,6 @@
 
 use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
-use protos::spelldawn::object_position::Position;
-use protos::spelldawn::{ObjectPositionBrowser, PlayerName};
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
@@ -36,10 +34,10 @@ fn coup_de_grace() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.play_with_target_room(CardName::CoupDeGrace, RoomId::Vault);
     assert!(g.user.data.raid_active());
-    assert_eq!(2, g.user.cards.in_position(Position::Browser(ObjectPositionBrowser {})).count());
-    assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(2, g.user.cards.browser().len());
+    assert_eq!(0, g.user.cards.hand().len());
     g.click_on(g.user_id(), "End Raid");
-    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(1, g.user.cards.hand().len());
 }
 
 #[test]
@@ -86,9 +84,9 @@ fn preparation() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
     assert_eq!(3, g.me().actions());
     g.create_and_play(CardName::Preparation);
-    assert_eq!(4, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(4, g.user.cards.hand().len());
     assert_eq!(1, g.me().actions());
     g.create_and_play(CardName::Preparation);
-    assert_eq!(8, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(8, g.user.cards.hand().len());
     assert!(g.has(Button::EndTurn));
 }

@@ -130,7 +130,7 @@ pub trait TestSessionHelpers {
 
     /// Spends the `side` player's action points with no effect until they have
     /// no action points remaining and then clicks the "End Turn" button.
-    fn to_end_step(&mut self, side: Side);
+    fn move_to_end_step(&mut self, side: Side);
 
     /// Spends the `side` player's action points with no effect until they have
     /// no action points remaining, clicks on "End Turn", and then starts the
@@ -360,13 +360,13 @@ impl TestSessionHelpers for TestSession {
         )
     }
 
-    fn to_end_step(&mut self, side: Side) {
+    fn move_to_end_step(&mut self, side: Side) {
         self.spend_all_action_points(side);
         self.click_as_side(Button::EndTurn, side);
     }
 
     fn pass_turn(&mut self, side: Side) {
-        self.to_end_step(side);
+        self.move_to_end_step(side);
 
         if self.side_has(Button::StartTurn, side.opponent()) {
             self.click_as_side(Button::StartTurn, side.opponent());

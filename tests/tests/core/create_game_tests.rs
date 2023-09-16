@@ -17,7 +17,6 @@ use game_data::game::MulliganDecision;
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::primitives::Side;
 use insta::assert_snapshot;
-use protos::spelldawn::PlayerName;
 use test_utils::client_interface::HasText;
 use test_utils::summarize::Summary;
 use test_utils::test_session::TestSession;
@@ -67,8 +66,8 @@ fn connect_to_new_game() {
     let response = session.connect(overlord_id);
     assert!(session.user.interface.controls().has_text("Keep"));
     assert!(session.user.interface.controls().has_text("Mulligan"));
-    assert_eq!(5, session.user.cards.revealed_cards().len());
-    assert_eq!(5, session.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(5, session.user.cards.revealed_cards_browser().len());
+    assert_eq!(5, session.user.cards.opponent_hand().len());
 
     assert_snapshot!(Summary::run(&response));
 }
@@ -128,13 +127,13 @@ fn keep_opening_hand() {
     initiate_game(&mut session);
 
     let response = session.click_on(overlord_id, "Keep");
-    assert_eq!(0, session.user.cards.revealed_cards().len());
-    assert_eq!(5, session.user.cards.hand(PlayerName::User).len());
-    assert_eq!(5, session.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(0, session.user.cards.revealed_cards_browser().len());
+    assert_eq!(5, session.user.cards.hand().len());
+    assert_eq!(5, session.user.cards.opponent_hand().len());
 
-    assert_eq!(0, session.opponent.cards.hand(PlayerName::User).len());
-    assert_eq!(5, session.opponent.cards.hand(PlayerName::Opponent).len());
-    assert_eq!(5, session.opponent.cards.revealed_cards().len());
+    assert_eq!(0, session.opponent.cards.hand().len());
+    assert_eq!(5, session.opponent.cards.opponent_hand().len());
+    assert_eq!(5, session.opponent.cards.revealed_cards_browser().len());
 
     assert_snapshot!(Summary::summarize(&response));
 }
@@ -153,13 +152,13 @@ fn mulligan_opening_hand() {
     let response = session.click_on(overlord_id, "Mulligan");
     assert_snapshot!(Summary::summarize(&response));
 
-    assert_eq!(0, session.user.cards.revealed_cards().len());
-    assert_eq!(5, session.user.cards.hand(PlayerName::User).len());
-    assert_eq!(5, session.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(0, session.user.cards.revealed_cards_browser().len());
+    assert_eq!(5, session.user.cards.hand().len());
+    assert_eq!(5, session.user.cards.opponent_hand().len());
 
-    assert_eq!(0, session.opponent.cards.hand(PlayerName::User).len());
-    assert_eq!(5, session.opponent.cards.hand(PlayerName::Opponent).len());
-    assert_eq!(5, session.opponent.cards.revealed_cards().len());
+    assert_eq!(0, session.opponent.cards.hand().len());
+    assert_eq!(5, session.opponent.cards.opponent_hand().len());
+    assert_eq!(5, session.opponent.cards.revealed_cards_browser().len());
 }
 
 #[test]
@@ -187,10 +186,10 @@ fn both_keep_opening_hands() {
     assert_eq!(0, session.opponent.this_player.actions());
     assert_eq!(3, session.opponent.other_player.actions());
 
-    assert_eq!(6, session.user.cards.hand(PlayerName::User).len());
-    assert_eq!(5, session.user.cards.hand(PlayerName::Opponent).len());
-    assert_eq!(5, session.opponent.cards.hand(PlayerName::User).len());
-    assert_eq!(6, session.opponent.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(6, session.user.cards.hand().len());
+    assert_eq!(5, session.user.cards.opponent_hand().len());
+    assert_eq!(5, session.opponent.cards.hand().len());
+    assert_eq!(6, session.opponent.cards.opponent_hand().len());
 
     assert!(session.dusk());
 }

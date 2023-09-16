@@ -29,9 +29,9 @@ use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation, CommandList,
     GameMessageType, GameObjectIdentifier, NoTargeting, ObjectPosition, ObjectPositionBrowser,
-    ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem, ObjectPositionRevealedCards,
-    ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView, RevealedCardView,
-    RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem, ObjectPositionRaid,
+    ObjectPositionRevealedCards, ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView,
+    RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
 
@@ -311,6 +311,39 @@ impl ClientPlayer {
     }
 }
 
+pub trait CardNames {
+    fn names(&self) -> Vec<String>;
+
+    fn real_cards(&self) -> Self;
+
+    fn token_cards(&self) -> Self;
+}
+
+impl CardNames for Vec<&ClientCard> {
+    fn names(&self) -> Vec<String> {
+        let mut result = self
+            .iter()
+            .map(|c| c.title_option().unwrap_or_else(|| test_constants::HIDDEN_CARD.to_string()))
+            .collect::<Vec<_>>();
+        result.sort();
+        result
+    }
+
+    fn real_cards(&self) -> Self {
+        self.clone()
+            .into_iter()
+            .filter(move |c| c.id.expect("id").ability_id.is_none() && !c.id.expect("id").is_unveil)
+            .collect()
+    }
+
+    fn token_cards(&self) -> Self {
+        self.clone()
+            .into_iter()
+            .filter(move |c| c.id.expect("id").ability_id.is_some() || c.id.expect("id").is_unveil)
+            .collect()
+    }
+}
+
 /// Simulated card state in an ongoing TestSession
 #[derive(Debug, Clone)]
 pub struct ClientCards {
@@ -323,116 +356,91 @@ impl ClientCards {
         self.card_map.get(&card_id).unwrap_or_else(|| panic!("Card not found: {card_id:?}"))
     }
 
-    /// Returns a vec containing the titles of all of the cards in the provided
-    /// player's hand from the perspective of the this client, or
-    /// [test_constants::HIDDEN_CARD] if the card's title is unknown. Titles
-    /// will be ordered by their sorting key.
-    pub fn hand(&self, player: PlayerName) -> Vec<String> {
-        self.names_in_position(Position::Hand(ObjectPositionHand { owner: player.into() }))
+    pub fn in_position_iterator(&self, position: Position) -> impl Iterator<Item = &ClientCard> {
+        self.card_map.values().filter(move |c| c.position() == position)
     }
 
-    /// Returns a vec of card names currently displayed in the card browser
-    pub fn browser(&self) -> Vec<String> {
-        self.names_in_position(Position::Browser(ObjectPositionBrowser {}))
+    /// Returns an iterator over the cards in a given [Position] in an arbitrary
+    /// order.
+    fn in_position(&self, position: Position) -> Vec<&ClientCard> {
+        self.in_position_iterator(position).collect()
     }
 
-    /// Returns a vec of card names currently displayed in the revealed cards
-    /// area
-    pub fn revealed_cards(&self) -> Vec<String> {
-        let mut result = self.names_in_position(Position::Revealed(ObjectPositionRevealedCards {
+    pub fn hand(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Hand(ObjectPositionHand { owner: PlayerName::User.into() }))
+    }
+
+    pub fn opponent_hand(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Hand(ObjectPositionHand { owner: PlayerName::Opponent.into() }))
+    }
+
+    pub fn browser(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Browser(ObjectPositionBrowser {}))
+    }
+
+    pub fn raid_display(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Raid(ObjectPositionRaid {}))
+    }
+
+    /// Returns cards currently displayed in the revealed cards area
+    pub fn revealed_cards_browser(&self) -> Vec<&ClientCard> {
+        self.in_position_iterator(Position::Revealed(ObjectPositionRevealedCards {
             size: RevealedCardsBrowserSize::Small as i32,
-        }));
-        result.append(&mut self.names_in_position(Position::Revealed(
-            ObjectPositionRevealedCards { size: RevealedCardsBrowserSize::Large as i32 },
-        )));
-        result
+        }))
+        .chain(self.in_position_iterator(Position::Revealed(ObjectPositionRevealedCards {
+            size: RevealedCardsBrowserSize::Large as i32,
+        })))
+        .collect()
     }
 
-    /// Returns a player's discard pile in the same manner as [Self::hand]
-    pub fn discard_pile(&self, player: PlayerName) -> Vec<String> {
-        self.names_in_position(Position::DiscardPile(ObjectPositionDiscardPile {
-            owner: player.into(),
+    pub fn discard_pile(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::DiscardPile(ObjectPositionDiscardPile {
+            owner: PlayerName::User.into(),
+        }))
+    }
+
+    pub fn opponent_discard_pile(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::DiscardPile(ObjectPositionDiscardPile {
+            owner: PlayerName::Opponent.into(),
         }))
     }
 
     /// Returns left items in play
-    pub fn left_items(&self) -> Vec<String> {
-        self.names_in_position(Position::Item(ObjectPositionItem {
+    pub fn left_items(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Item(ObjectPositionItem {
             item_location: ClientItemLocation::Left.into(),
         }))
     }
 
     /// Returns right items in play
-    pub fn right_items(&self) -> Vec<String> {
-        self.names_in_position(Position::Item(ObjectPositionItem {
+    pub fn right_items(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Item(ObjectPositionItem {
             item_location: ClientItemLocation::Right as i32,
         }))
     }
 
-    /// Returns a vector containing the card titles in the provided `location`
-    /// of a given room, Titles are structured in the same manner described
-    /// in [Self::hand].
-    pub fn room_cards(&self, room_id: RoomId, location: ClientRoomLocation) -> Vec<String> {
-        self.names_in_position(Position::Room(ObjectPositionRoom {
+    pub fn room_defenders(&self, room_id: RoomId) -> Vec<&ClientCard> {
+        self.in_position(Position::Room(ObjectPositionRoom {
             room_id: adapters::room_identifier(room_id),
-            room_location: location.into(),
+            room_location: ClientRoomLocation::Front.into(),
         }))
     }
 
-    /// Returns an iterator over the cards in a given [Position] in an arbitrary
-    /// order.
-    pub fn in_position(&self, position: Position) -> impl Iterator<Item = &ClientCard> {
-        self.card_map.values().filter(move |c| c.position() == position)
-    }
-
-    /// Iterator over cards in a player's hand
-    pub fn cards_in_hand(&self, player: PlayerName) -> impl Iterator<Item = &ClientCard> {
-        self.in_position(Position::Hand(ObjectPositionHand { owner: player.into() }))
+    pub fn room_occupants(&self, room_id: RoomId) -> Vec<&ClientCard> {
+        self.in_position(Position::Room(ObjectPositionRoom {
+            room_id: adapters::room_identifier(room_id),
+            room_location: ClientRoomLocation::Back.into(),
+        }))
     }
 
     /// Looks for the ID of card in the user's hand with a given name. Panics if
     /// no such card can be found.
-    pub fn find_in_user_hand(&self, card: CardVariant) -> CardIdentifier {
-        self.cards_in_hand(PlayerName::User)
+    pub fn find_in_hand(&self, card: CardVariant) -> CardIdentifier {
+        self.hand()
+            .into_iter()
             .find(|c| c.title() == card.displayed_name())
             .expect("Card in hand")
             .id()
-    }
-
-    /// Returns a list of the titles of cards in the provided `position`, or the
-    /// string [test_constants::HIDDEN_CARD] if no title is available. Cards are
-    /// sorted in position order based on their `sorting_key` with ties being
-    /// broken arbitrarily.
-    pub fn names_in_position(&self, position: Position) -> Vec<String> {
-        let mut result = self
-            .in_position(position)
-            .map(|c| c.title_option().unwrap_or_else(|| test_constants::HIDDEN_CARD.to_string()))
-            .collect::<Vec<_>>();
-        result.sort();
-        result
-    }
-
-    pub fn real_cards_in_hand_count(&self) -> usize {
-        let position = Position::Hand(ObjectPositionHand { owner: PlayerName::User.into() });
-        self.card_map
-            .values()
-            .filter(move |c| {
-                c.position() == position
-                    && c.id.expect("id").ability_id.is_none()
-                    && !c.id.expect("id").is_unveil
-            })
-            .count()
-    }
-
-    pub fn ability_cards_in_hand_count(&self) -> usize {
-        let position = Position::Hand(ObjectPositionHand { owner: PlayerName::User.into() });
-        self.card_map
-            .values()
-            .filter(move |c| {
-                c.position() == position
-                    && (c.id.expect("id").ability_id.is_some() || c.id.expect("id").is_unveil)
-            })
-            .count()
     }
 
     fn update(&mut self, command: Command) {
@@ -606,3 +614,153 @@ impl PartialOrd for ClientCard {
         self.position.as_ref()?.sorting_key.partial_cmp(&other.position.as_ref()?.sorting_key)
     }
 }
+
+/*
+
+
+impl ClientCards {
+    pub fn get(&self, card_id: CardIdentifier) -> &ClientCard {
+        self.card_map.get(&card_id).unwrap_or_else(|| panic!("Card not found: {card_id:?}"))
+    }
+
+    /// Returns a vec containing the titles of all of the cards in the provided
+    /// player's hand from the perspective of the this client, or
+    /// [test_constants::HIDDEN_CARD] if the card's title is unknown. Titles
+    /// will be ordered by their sorting key.
+    pub fn hand(&self, player: PlayerName) -> Vec<String> {
+        self.names_in_position(Position::Hand(ObjectPositionHand { owner: player.into() }))
+    }
+
+    /// Returns a vec of card names currently displayed in the card browser
+    pub fn browser(&self) -> Vec<String> {
+        self.names_in_position(Position::Browser(ObjectPositionBrowser {}))
+    }
+
+    /// Returns a vec of card names currently displayed in the revealed cards
+    /// area
+    pub fn revealed_cards(&self) -> Vec<String> {
+        let mut result = self.names_in_position(Position::Revealed(ObjectPositionRevealedCards {
+            size: RevealedCardsBrowserSize::Small as i32,
+        }));
+        result.append(&mut self.names_in_position(Position::Revealed(
+            ObjectPositionRevealedCards { size: RevealedCardsBrowserSize::Large as i32 },
+        )));
+        result
+    }
+
+    /// Returns a player's discard pile in the same manner as [Self::hand]
+    pub fn discard_pile(&self, player: PlayerName) -> Vec<String> {
+        self.names_in_position(Position::DiscardPile(ObjectPositionDiscardPile {
+            owner: player.into(),
+        }))
+    }
+
+    /// Returns left items in play
+    pub fn left_items(&self) -> Vec<String> {
+        self.names_in_position(Position::Item(ObjectPositionItem {
+            item_location: ClientItemLocation::Left.into(),
+        }))
+    }
+
+    /// Returns right items in play
+    pub fn right_items(&self) -> Vec<String> {
+        self.names_in_position(Position::Item(ObjectPositionItem {
+            item_location: ClientItemLocation::Right as i32,
+        }))
+    }
+
+    /// Returns a vector containing the card titles in the provided `location`
+    /// of a given room, Titles are structured in the same manner described
+    /// in [Self::hand].
+    pub fn room_cards(&self, room_id: RoomId, location: ClientRoomLocation) -> Vec<String> {
+        self.names_in_position(Position::Room(ObjectPositionRoom {
+            room_id: adapters::room_identifier(room_id),
+            room_location: location.into(),
+        }))
+    }
+
+    /// Returns an iterator over the cards in a given [Position] in an arbitrary
+    /// order.
+    pub fn in_position(&self, position: Position) -> impl Iterator<Item = &ClientCard> {
+        self.card_map.values().filter(move |c| c.position() == position)
+    }
+
+    /// Iterator over cards in a player's hand
+    pub fn cards_in_hand(&self, player: PlayerName) -> impl Iterator<Item = &ClientCard> {
+        self.in_position(Position::Hand(ObjectPositionHand { owner: player.into() }))
+    }
+
+    /// Looks for the ID of card in the user's hand with a given name. Panics if
+    /// no such card can be found.
+    pub fn find_in_user_hand(&self, card: CardVariant) -> CardIdentifier {
+        self.cards_in_hand(PlayerName::User)
+            .find(|c| c.title() == card.displayed_name())
+            .expect("Card in hand")
+            .id()
+    }
+
+    /// Returns a list of the titles of cards in the provided `position`, or the
+    /// string [test_constants::HIDDEN_CARD] if no title is available. Cards are
+    /// sorted in position order based on their `sorting_key` with ties being
+    /// broken arbitrarily.
+    pub fn names_in_position(&self, position: Position) -> Vec<String> {
+        let mut result = self
+            .in_position(position)
+            .map(|c| c.title_option().unwrap_or_else(|| test_constants::HIDDEN_CARD.to_string()))
+            .collect::<Vec<_>>();
+        result.sort();
+        result
+    }
+
+    pub fn real_cards_in_hand_count(&self) -> usize {
+        let position = Position::Hand(ObjectPositionHand { owner: PlayerName::User.into() });
+        self.card_map
+            .values()
+            .filter(move |c| {
+                c.position() == position
+                    && c.id.expect("id").ability_id.is_none()
+                    && !c.id.expect("id").is_unveil
+            })
+            .count()
+    }
+
+    pub fn ability_cards_in_hand_count(&self) -> usize {
+        let position = Position::Hand(ObjectPositionHand { owner: PlayerName::User.into() });
+        self.card_map
+            .values()
+            .filter(move |c| {
+                c.position() == position
+                    && (c.id.expect("id").ability_id.is_some() || c.id.expect("id").is_unveil)
+            })
+            .count()
+    }
+
+    fn update(&mut self, command: Command) {
+        match command {
+            Command::UpdateGameView(update_game) => {
+                let game = update_game.game.as_ref().unwrap();
+                self.card_map.clear();
+                for card in &game.cards {
+                    self.card_map.insert(card.card_id.expect("card_id"), ClientCard::new(card));
+                }
+            }
+            Command::MoveGameObjects(move_objects) => {
+                for move_object in move_objects.moves {
+                    let p = move_object.position.as_ref().expect("ObjectPosition").clone();
+                    let id = match move_object.id.expect("id").id.expect("id") {
+                        Id::CardId(identifier) => identifier,
+                        _ => panic!("Expected CardId"),
+                    };
+                    self.card_map.get_mut(&id).unwrap().set_position(p);
+                }
+            }
+            Command::CreateTokenCard(create_token) => {
+                let card = create_token.card.as_ref().expect("card");
+                self.card_map.insert(card.card_id.expect("card_id"), ClientCard::new(card));
+            }
+            _ => {}
+        }
+    }
+}
+
+*/

@@ -59,12 +59,12 @@ fn research_project() {
     g.level_up_room_times(2);
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
-    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(1, g.user.cards.hand().len());
     g.level_up_room_times(1);
-    assert_eq!(3, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(3, g.user.cards.hand().len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
-    assert_eq!(6, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(6, g.user.cards.hand().len());
 }

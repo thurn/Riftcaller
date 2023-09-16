@@ -14,7 +14,6 @@
 
 use game_data::card_name::CardName;
 use game_data::primitives::{Resonance, Side};
-use protos::spelldawn::PlayerName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_helpers::WeaponStats;
 use test_utils::*;
@@ -70,18 +69,18 @@ fn mana_battery() {
 #[test]
 fn contemplate() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(0, g.user.cards.hand().len());
     g.create_and_play(CardName::Contemplate);
-    assert_eq!(1, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(1, g.user.cards.hand().len());
     assert_eq!(test_constants::STARTING_MANA + 2, g.me().mana());
 }
 
 #[test]
 fn ancestral_knowledge() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    assert_eq!(0, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(0, g.user.cards.hand().len());
     g.create_and_play(CardName::AncestralKnowledge);
-    assert_eq!(3, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(3, g.user.cards.hand().len());
     assert_eq!(test_constants::STARTING_MANA - 1, g.me().mana());
 }
 
@@ -171,9 +170,9 @@ fn ethereal_blade() {
     g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::EtherealBlade);
     assert_eq!(test_constants::STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
     g.click(Button::Score);
-    assert_eq!(0, g.user.cards.discard_pile(PlayerName::User).len());
+    assert_eq!(0, g.user.cards.discard_pile().len());
     assert_eq!(1, g.user.cards.left_items().len());
     g.click(Button::EndRaid);
-    assert_eq!(1, g.user.cards.discard_pile(PlayerName::User).len());
+    assert_eq!(1, g.user.cards.discard_pile().len());
     assert_eq!(0, g.user.cards.left_items().len());
 }

@@ -14,7 +14,6 @@
 
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
-use protos::spelldawn::PlayerName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
@@ -25,7 +24,7 @@ fn test_card_stored_mana() {
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
     assert_eq!(test_constants::STARTING_MANA, g.me().mana());
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     g.unveil_card(id);
     assert_eq!(test_constants::STARTING_MANA - test_constants::UNVEIL_COST, g.me().mana());
     g.click(Button::StartTurn);
@@ -46,18 +45,18 @@ fn gemcarver() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::Gemcarver);
     g.pass_turn(Side::Overlord);
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     g.unveil_card(id);
     g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken * 2, g.me().mana());
-    assert_eq!(2, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(2, g.user.cards.hand().len());
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken * 3, g.me().mana());
-    assert_eq!(4, g.user.cards.hand(PlayerName::User).len());
+    assert_eq!(4, g.user.cards.hand().len());
 }
 
 #[test]
@@ -70,9 +69,9 @@ fn spike_trap() {
     g.pass_turn(Side::Overlord);
 
     assert!(g.dawn());
-    assert_eq!(5, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(5, g.user.cards.opponent_hand().len());
     g.initiate_raid(test_constants::ROOM_ID);
-    assert_eq!(1, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(1, g.user.cards.opponent_hand().len());
 }
 
 #[test]
@@ -83,9 +82,9 @@ fn spike_trap_no_counters() {
     g.create_and_play(CardName::SpikeTrap);
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
-    assert_eq!(5, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(5, g.user.cards.opponent_hand().len());
     g.initiate_raid(test_constants::ROOM_ID);
-    assert_eq!(3, g.user.cards.hand(PlayerName::Opponent).len());
+    assert_eq!(3, g.user.cards.opponent_hand().len());
 }
 
 #[test]

@@ -20,10 +20,10 @@ use game_data::game_actions::GameAction;
 use game_data::player_name::AIPlayer;
 use game_data::primitives::Side;
 use insta::assert_snapshot;
-use protos::spelldawn::PlayerName;
 use test_utils::summarize::Summary;
 use test_utils::test_adventure::TestAdventure;
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_game_client::CardNames;
 use test_utils::test_session_builder::TestSessionBuilder;
 use test_utils::*;
 use user_action_data::{GameOutcome, UserAction};
@@ -55,12 +55,12 @@ fn draw_all_overlord_cards() {
 
     loop {
         g.pass_turn(Side::Champion);
-        if g.user.cards.real_cards_in_hand_count() == 0 {
+        if g.user.cards.hand().real_cards().len() == 0 {
             assert!(g.is_victory_for_player(Side::Champion));
             break;
         }
 
-        let card_id = g.user.cards.cards_in_hand(PlayerName::User).next().expect("card").id();
+        let card_id = g.user.cards.hand()[0].id();
         g.play_card(card_id, g.user_id(), None);
         g.pass_turn(Side::Overlord);
     }

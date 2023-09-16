@@ -20,11 +20,12 @@ use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
-    card_target, CardTarget, ClientRoomLocation, DrawCardAction, GainManaAction, GameMessageType,
-    LevelUpRoomAction, ObjectPositionDiscardPile, PlayCardAction, PlayerName,
+    card_target, CardTarget, DrawCardAction, GainManaAction, GameMessageType, LevelUpRoomAction,
+    ObjectPositionDiscardPile, PlayCardAction, PlayerName,
 };
 use test_utils::summarize::Summary;
 use test_utils::test_game::{TestGame, TestRaid, TestSide};
+use test_utils::test_game_client::CardNames;
 use test_utils::test_session_builder::TestSessionBuilder;
 use test_utils::*;
 
@@ -49,7 +50,7 @@ fn connect_to_ongoing() {
     let r2 = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
     test_helpers::assert_identical(
         vec![CardName::TestMinionDealDamageEndRaid],
-        g.user.cards.hand(PlayerName::User),
+        g.user.cards.hand().names(),
     );
     test_helpers::assert_ok(&r2);
     let r3 = g.connect(g.opponent_id());
@@ -68,9 +69,9 @@ fn draw_card() {
 
     test_helpers::assert_identical(
         vec![CardName::TestMinionDealDamageEndRaid],
-        g.user.cards.hand(PlayerName::User),
+        g.user.cards.hand().names(),
     );
-    assert_eq!(vec![test_constants::HIDDEN_CARD], g.opponent.cards.hand(PlayerName::Opponent));
+    assert_eq!(vec![test_constants::HIDDEN_CARD], g.opponent.cards.opponent_hand().names());
     assert_eq!(2, g.me().actions());
     assert_eq!(2, g.opponent.other_player.actions());
 }
@@ -112,11 +113,11 @@ fn play_card() {
     assert_eq!(9, g.opponent.other_player.mana());
     test_helpers::assert_identical(
         vec![CardName::ArcaneRecovery],
-        g.user.cards.discard_pile(PlayerName::User),
+        g.user.cards.discard_pile().names(),
     );
     test_helpers::assert_identical(
         vec![CardName::ArcaneRecovery],
-        g.opponent.cards.discard_pile(PlayerName::Opponent),
+        g.opponent.cards.opponent_discard_pile().names(),
     );
 }
 
@@ -143,11 +144,11 @@ fn play_hidden_card() {
     assert_eq!(0, g.opponent.other_player.mana());
     test_helpers::assert_identical(
         vec![CardName::GoldMine],
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Back),
+        g.user.cards.room_occupants(test_constants::ROOM_ID).names(),
     );
     assert_eq!(
         vec![test_constants::HIDDEN_CARD],
-        g.opponent.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Back)
+        g.opponent.cards.room_occupants(test_constants::ROOM_ID).names()
     );
 }
 
@@ -235,17 +236,11 @@ fn minion_limit() {
     g.create_and_play(CardName::TestInfernalMinion);
     g.create_and_play(CardName::TestAbyssalMinion);
     g.create_and_play(CardName::TestMortalMinion);
-    assert_eq!(
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front).len(),
-        4
-    );
+    assert_eq!(g.user.cards.room_defenders(test_constants::ROOM_ID).len(), 4);
     g.create_and_play(CardName::TestMinionDealDamage);
     g.click(Button::Sacrifice);
-    assert_eq!(
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front).len(),
-        4
-    );
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 1);
+    assert_eq!(g.user.cards.room_defenders(test_constants::ROOM_ID).len(), 4);
+    assert_eq!(g.user.cards.discard_pile().len(), 1);
 }
 
 #[test]
@@ -268,11 +263,8 @@ fn minion_limit_cancel_playing() {
     g.create_and_play(CardName::TestMortalMinion);
     g.create_and_play(CardName::TestMinionDealDamage);
     g.click(Button::CancelPlayingCard);
-    assert_eq!(
-        g.user.cards.room_cards(test_constants::ROOM_ID, ClientRoomLocation::Front).len(),
-        4
-    );
-    assert_eq!(g.user.cards.real_cards_in_hand_count(), 1);
+    assert_eq!(g.user.cards.room_defenders(test_constants::ROOM_ID).len(), 4);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 1);
     assert!(g.draw_card_with_result().is_ok());
 }
 
@@ -284,9 +276,9 @@ fn weapon_limit() {
     g.create_and_play(CardName::TestWeapon2Attack);
     g.create_and_play(CardName::TestWeapon2Attack);
     g.create_and_play(CardName::TestWeapon2Attack);
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 0);
+    assert_eq!(g.user.cards.discard_pile().len(), 0);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 1);
+    assert_eq!(g.user.cards.discard_pile().len(), 1);
 }
 
 #[test]
@@ -298,9 +290,9 @@ fn evocation_limit() {
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 0);
+    assert_eq!(g.user.cards.discard_pile().len(), 0);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 1);
+    assert_eq!(g.user.cards.discard_pile().len(), 1);
 }
 
 #[test]
@@ -308,9 +300,9 @@ fn sacrifice_existing_project() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestProject2Cost3Raze);
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 0);
+    assert_eq!(g.user.cards.discard_pile().len(), 0);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User), vec!["Test Scheme 3_10"]);
+    assert_eq!(g.user.cards.discard_pile().names(), vec!["Test Scheme 3_10"]);
 }
 
 #[test]
@@ -373,7 +365,8 @@ fn activate_ability() {
     let ability_card_id = g
         .user
         .cards
-        .cards_in_hand(PlayerName::User)
+        .hand()
+        .into_iter()
         .find(|c| c.id().ability_id.is_some())
         .expect("ability card")
         .id();
@@ -401,7 +394,8 @@ fn activate_ability_take_all_mana() {
     let ability_card_id = g
         .user
         .cards
-        .cards_in_hand(PlayerName::User)
+        .hand()
+        .into_iter()
         .find(|c| c.id().ability_id.is_some())
         .expect("ability card")
         .id();
@@ -592,7 +586,7 @@ fn unveil_duskbound_at_end_of_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::TestDuskboundProject);
     g.pass_turn(Side::Overlord);
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     assert!(g.dawn()); // Game should pause on end step
     assert!(g.side_has(Button::StartTurn, Side::Overlord));
     assert!(g.unveil_card_with_result(id).is_ok());
@@ -603,7 +597,7 @@ fn cannot_unveil_nightbound_at_end_of_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestNightboundProject);
     g.pass_turn(Side::Overlord);
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     assert!(g.dusk()); // Game should *not* pause on end step
 }
 
@@ -612,7 +606,7 @@ fn cannot_unveil_trap_at_end_of_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestTrapProject);
     g.pass_turn(Side::Overlord);
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     assert!(g.dusk()); // Game should *not* pause on end step
 }
 
@@ -621,7 +615,7 @@ fn triggered_ability_take_all_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
     let id = g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
     g.pass_turn(Side::Overlord);
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     g.unveil_card(id);
     g.click(Button::StartTurn);
 
@@ -661,11 +655,11 @@ fn use_artifact_during_raid() {
     let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
-    assert_eq!(g.user.cards.real_cards_in_hand_count(), 0);
-    assert_eq!(g.user.cards.ability_cards_in_hand_count(), 1);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 0);
+    assert_eq!(g.user.cards.hand().token_cards().len(), 1);
     g.activate_ability(id, 0);
-    assert_eq!(g.user.cards.real_cards_in_hand_count(), 1);
-    assert_eq!(g.user.cards.ability_cards_in_hand_count(), 0);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 1);
+    assert_eq!(g.user.cards.hand().token_cards().len(), 0);
 }
 
 #[test]
@@ -723,17 +717,16 @@ fn cannot_use_project_ability_during_turn() {
 fn discard_to_hand_size() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
     g.draw_card();
-    let discard_id =
-        g.user.cards.cards_in_hand(PlayerName::User).next().expect("Card in hand").id();
+    let discard_id = g.user.cards.hand()[0].id();
 
-    assert_eq!(g.user.cards.real_cards_in_hand_count(), 6);
-    g.to_end_step(Side::Overlord);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 6);
+    g.move_to_end_step(Side::Overlord);
 
     g.move_card(discard_id);
     g.click(Button::SubmitDiscard);
 
-    assert_eq!(g.user.cards.real_cards_in_hand_count(), 5);
-    assert_eq!(g.user.cards.discard_pile(PlayerName::User).len(), 1);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 5);
+    assert_eq!(g.user.cards.discard_pile().len(), 1);
     assert!(g.dawn());
 }
 
@@ -741,12 +734,12 @@ fn discard_to_hand_size() {
 fn cannot_discard_extra_to_hand_size() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
     g.draw_card();
-    let hand = g.user.cards.cards_in_hand(PlayerName::User).collect::<Vec<_>>();
+    let hand = g.user.cards.hand();
     let d1 = hand[0].id();
     let d2 = hand[1].id();
 
-    assert_eq!(g.user.cards.real_cards_in_hand_count(), 6);
-    g.to_end_step(Side::Overlord);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 6);
+    g.move_to_end_step(Side::Overlord);
 
     g.move_card(d1);
     g.move_card(d2);
@@ -757,8 +750,8 @@ fn cannot_discard_extra_to_hand_size() {
 fn cannot_discard_too_few_to_hand_size() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
     g.draw_card();
-    assert_eq!(g.user.cards.real_cards_in_hand_count(), 6);
-    g.to_end_step(Side::Overlord);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 6);
+    g.move_to_end_step(Side::Overlord);
     assert!(g.click_with_result(Button::SubmitDiscard).is_err());
 }
 

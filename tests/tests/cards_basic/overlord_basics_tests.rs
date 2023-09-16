@@ -14,7 +14,6 @@
 
 use game_data::card_name::CardName;
 use game_data::primitives::Side;
-use protos::spelldawn::PlayerName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_session_helpers::TestSessionHelpers;
 use test_utils::*;
@@ -70,7 +69,7 @@ fn leyline() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::Leyline);
     g.pass_turn(Side::Overlord);
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     g.unveil_card(id);
     g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained, g.me().mana());
@@ -89,7 +88,7 @@ fn ore_refinery() {
     let id = g.create_and_play(CardName::OreRefinery);
     assert_eq!(test_constants::STARTING_MANA, g.me().mana());
     g.pass_turn(Side::Overlord);
-    g.to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Champion);
     g.unveil_card(id);
     assert_eq!(test_constants::STARTING_MANA - card_cost, g.me().mana());
     g.click(Button::StartTurn);
@@ -117,7 +116,7 @@ fn fire_goblin() {
     assert_eq!(test_constants::STARTING_MANA - cost, g.me().mana());
     g.opponent_click(Button::NoWeapon);
     assert_eq!(test_constants::STARTING_MANA - cost + gained, g.me().mana());
-    assert_eq!(1, g.opponent.cards.discard_pile(PlayerName::User).len());
+    assert_eq!(1, g.opponent.cards.discard_pile().len());
 }
 
 #[test]
