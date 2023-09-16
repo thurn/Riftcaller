@@ -23,7 +23,6 @@ use insta::assert_snapshot;
 use test_utils::summarize::Summary;
 use test_utils::test_adventure::TestAdventure;
 use test_utils::test_game::{TestGame, TestSide};
-use test_utils::test_game_client::CardNames;
 use test_utils::test_session_builder::TestSessionBuilder;
 use test_utils::*;
 use user_action_data::{GameOutcome, UserAction};

@@ -30,5 +30,6 @@ pub mod test_session_helpers;
 pub mod test_world_map;
 
 pub use test_adventure_helpers::TestAdventureHelpers;
+pub use test_game_client::CardNamesExt;
 pub use test_interface_helpers::{Button, TestInterfaceHelpers};
 pub use test_session_helpers::TestSessionHelpers;

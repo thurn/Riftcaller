@@ -17,7 +17,6 @@ use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
 use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
-use test_utils::test_game_client::CardNames;
 use test_utils::*;
 
 #[test]

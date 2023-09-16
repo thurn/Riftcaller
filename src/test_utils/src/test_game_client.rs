@@ -311,15 +311,17 @@ impl ClientPlayer {
     }
 }
 
-pub trait CardNames {
+pub trait CardNamesExt {
     fn names(&self) -> Vec<String>;
 
     fn real_cards(&self) -> Self;
 
     fn token_cards(&self) -> Self;
+
+    fn find_card(&self, name: CardName) -> CardIdentifier;
 }
 
-impl CardNames for Vec<&ClientCard> {
+impl CardNamesExt for Vec<&ClientCard> {
     fn names(&self) -> Vec<String> {
         let mut result = self
             .iter()
@@ -341,6 +343,13 @@ impl CardNames for Vec<&ClientCard> {
             .into_iter()
             .filter(move |c| c.id.expect("id").ability_id.is_some() || c.id.expect("id").is_unveil)
             .collect()
+    }
+
+    fn find_card(&self, name: CardName) -> CardIdentifier {
+        self.iter()
+            .find(|c| c.title() == name.displayed_name())
+            .map(|c| c.id())
+            .expect("Card not found")
     }
 }
 

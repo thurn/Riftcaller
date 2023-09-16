@@ -25,7 +25,6 @@ use protos::spelldawn::{
 };
 use test_utils::summarize::Summary;
 use test_utils::test_game::{TestGame, TestRaid, TestSide};
-use test_utils::test_game_client::CardNames;
 use test_utils::test_session_builder::TestSessionBuilder;
 use test_utils::*;
 
@@ -48,9 +47,9 @@ fn connect_to_ongoing() {
     let r1 = g.connect(g.user_id());
     test_helpers::assert_ok(&r1);
     let r2 = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
-    test_helpers::assert_identical(
+    test_helpers::assert_cards_match(
+        g.user.cards.hand(),
         vec![CardName::TestMinionDealDamageEndRaid],
-        g.user.cards.hand().names(),
     );
     test_helpers::assert_ok(&r2);
     let r3 = g.connect(g.opponent_id());
@@ -67,9 +66,9 @@ fn draw_card() {
     let response = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
     assert_snapshot!(Summary::run(&response));
 
-    test_helpers::assert_identical(
+    test_helpers::assert_cards_match(
+        g.user.cards.hand(),
         vec![CardName::TestMinionDealDamageEndRaid],
-        g.user.cards.hand().names(),
     );
     assert_eq!(vec![test_constants::HIDDEN_CARD], g.opponent.cards.opponent_hand().names());
     assert_eq!(2, g.me().actions());
@@ -111,13 +110,10 @@ fn play_card() {
     assert_eq!(2, g.opponent.other_player.actions());
     assert_eq!(9, g.me().mana());
     assert_eq!(9, g.opponent.other_player.mana());
-    test_helpers::assert_identical(
+    test_helpers::assert_cards_match(g.user.cards.discard_pile(), vec![CardName::ArcaneRecovery]);
+    test_helpers::assert_cards_match(
+        g.opponent.cards.opponent_discard_pile(),
         vec![CardName::ArcaneRecovery],
-        g.user.cards.discard_pile().names(),
-    );
-    test_helpers::assert_identical(
-        vec![CardName::ArcaneRecovery],
-        g.opponent.cards.opponent_discard_pile().names(),
     );
 }
 
@@ -142,9 +138,9 @@ fn play_hidden_card() {
     assert_eq!(2, g.opponent.other_player.actions());
     assert_eq!(0, g.me().mana());
     assert_eq!(0, g.opponent.other_player.mana());
-    test_helpers::assert_identical(
+    test_helpers::assert_cards_match(
+        g.user.cards.room_occupants(test_constants::ROOM_ID),
         vec![CardName::GoldMine],
-        g.user.cards.room_occupants(test_constants::ROOM_ID).names(),
     );
     assert_eq!(
         vec![test_constants::HIDDEN_CARD],

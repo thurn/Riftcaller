@@ -24,6 +24,9 @@ use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue,
 use protos::spelldawn::CardIdentifier;
 use ulid::Ulid;
 
+use crate::test_game_client::ClientCard;
+use crate::CardNamesExt;
+
 pub static NEXT_ID: AtomicU64 = AtomicU64::new(1_000_000);
 
 pub fn generate_ids() -> (GameId, PlayerId, PlayerId) {
@@ -60,10 +63,10 @@ pub fn cost_to_play_and_defeat(stats: WeaponStats, minion_health: HealthValue) -
 }
 
 /// Asserts that the display names of the provided vector of [CardName]s are
-/// precisely identical to the provided vector of strings.
-pub fn assert_identical(expected: Vec<CardName>, actual: Vec<String>) {
+/// precisely identical to the provided vector of card structs.
+pub fn assert_cards_match(actual: Vec<&ClientCard>, expected: Vec<CardName>) {
     let set = expected.iter().map(CardName::displayed_name).collect::<Vec<_>>();
-    assert_eq!(set, actual);
+    assert_eq!(set, actual.names());
 }
 
 /// Asserts two vectors contain the same elements in any order

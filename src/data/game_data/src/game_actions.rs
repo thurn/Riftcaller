@@ -223,6 +223,8 @@ pub enum PromptAction {
     ButtonPromptSelect(usize),
     /// Submit the current selection in the current [CardBrowserPrompt].
     CardBrowserPromptSubmit,
+    /// Button to avoid playing a card when shown a 'Play Card' browser
+    SkipPlayingCard,
 }
 
 /// Presents a choice to a user, typically communicated via a series of buttons

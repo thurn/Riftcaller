@@ -13,22 +13,32 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use game_data::game_actions::{PlayCardBrowser, PromptContext};
+use game_data::game_actions::{GameAction, PlayCardBrowser, PromptAction, PromptContext};
 use prompts::game_instructions::GameInstructions;
+use prompts::prompt_container::PromptContainer;
+use prompts::response_button::ResponseButton;
 use protos::spelldawn::InterfaceMainControls;
 
 pub fn controls(prompt: &PlayCardBrowser) -> Option<InterfaceMainControls> {
     match prompt.context {
         Some(PromptContext::PlayFromDiscard(card_type)) => Some(InterfaceMainControls {
-            node: None,
+            node: buttons().build(),
             overlay: GameInstructions::new(format!(
                 "Play {} {} from your discard pile.",
                 card_type.article(),
-                card_type
+                card_type.to_string().to_lowercase()
             ))
             .build(),
             card_anchor_nodes: vec![],
         }),
         _ => None,
     }
+}
+
+fn buttons() -> PromptContainer {
+    PromptContainer::new().child(
+        ResponseButton::new("Skip")
+            .primary(false)
+            .action(GameAction::PromptAction(PromptAction::SkipPlayingCard)),
+    )
 }

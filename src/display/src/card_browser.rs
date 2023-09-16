@@ -29,7 +29,7 @@ use crate::positions;
 pub fn controls(prompt: &CardBrowserPrompt) -> Option<InterfaceMainControls> {
     match prompt.context {
         Some(PromptContext::DiscardToHandSize(amount)) => Some(InterfaceMainControls {
-            node: button_prompt(prompt).build(),
+            node: buttons(prompt).build(),
             overlay: GameInstructions::new(format!(
                 "You must discard until you have {amount} cards in hand."
             ))
@@ -61,7 +61,7 @@ pub fn move_target(
     }
 }
 
-fn button_prompt(prompt: &CardBrowserPrompt) -> PromptContainer {
+fn buttons(prompt: &CardBrowserPrompt) -> PromptContainer {
     let show_submit = is_valid(prompt);
     PromptContainer::new().child(show_submit.then(|| {
         ResponseButton::new("Submit")

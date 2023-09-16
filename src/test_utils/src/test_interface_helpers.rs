@@ -35,6 +35,7 @@ pub enum Button {
     StartTurn,
     Sacrifice,
     CancelPlayingCard,
+    SkipPlayingCard,
     DraftPick,
     ShowDeck,
     CloseIcon,
@@ -82,6 +83,45 @@ pub trait TestInterfaceHelpers {
 }
 
 impl TestInterfaceHelpers for TestSession {
+    fn click(&mut self, button: Button) -> GameResponseOutput {
+        let text = resolve_button(button);
+        self.click_on(self.user_id(), text)
+    }
+
+    fn click_with_result(&mut self, button: Button) -> Result<GameResponseOutput> {
+        let text = resolve_button(button);
+        self.click_on_with_result(self.user_id(), text)
+    }
+
+    fn opponent_click(&mut self, button: Button) -> GameResponseOutput {
+        let text = resolve_button(button);
+        self.click_on(self.opponent_id(), text)
+    }
+
+    fn click_as_side(&mut self, button: Button, side: Side) -> GameResponseOutput {
+        let id = self.player_id_for_side(side);
+        if id == self.user_id() {
+            self.click(button)
+        } else {
+            self.opponent_click(button)
+        }
+    }
+
+    fn has(&self, button: Button) -> bool {
+        let text = resolve_button(button);
+        self.user.interface.all_active_nodes().has_text(text)
+    }
+
+    fn side_has(&self, button: Button, side: Side) -> bool {
+        let id = self.player_id_for_side(side);
+        let text = resolve_button(button);
+        if id == self.user_id() {
+            self.user.interface.all_active_nodes().has_text(text)
+        } else {
+            self.opponent.interface.all_active_nodes().has_text(text)
+        }
+    }
+
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
         let string = text.into();
         self.click_on_with_result(player_id, string.clone())
@@ -100,45 +140,6 @@ impl TestInterfaceHelpers for TestSession {
             .on_click
             .with_error(|| "OnClick not found")?;
         self.perform_action(action.action.expect("Action"), player_id)
-    }
-
-    fn click(&mut self, button: Button) -> GameResponseOutput {
-        let text = resolve_button(button);
-        self.click_on(self.user_id(), text)
-    }
-
-    fn click_with_result(&mut self, button: Button) -> Result<GameResponseOutput> {
-        let text = resolve_button(button);
-        self.click_on_with_result(self.user_id(), text)
-    }
-
-    fn click_as_side(&mut self, button: Button, side: Side) -> GameResponseOutput {
-        let id = self.player_id_for_side(side);
-        if id == self.user_id() {
-            self.click(button)
-        } else {
-            self.opponent_click(button)
-        }
-    }
-
-    fn opponent_click(&mut self, button: Button) -> GameResponseOutput {
-        let text = resolve_button(button);
-        self.click_on(self.opponent_id(), text)
-    }
-
-    fn has(&self, button: Button) -> bool {
-        let text = resolve_button(button);
-        self.user.interface.all_active_nodes().has_text(text)
-    }
-
-    fn side_has(&self, button: Button, side: Side) -> bool {
-        let id = self.player_id_for_side(side);
-        let text = resolve_button(button);
-        if id == self.user_id() {
-            self.user.interface.all_active_nodes().has_text(text)
-        } else {
-            self.opponent.interface.all_active_nodes().has_text(text)
-        }
     }
 
     fn has_text(&self, text: impl Into<String>) -> bool {
@@ -163,6 +164,7 @@ fn resolve_button(button: Button) -> String {
         Button::StartTurn => "Start Turn",
         Button::Sacrifice => "Sacrifice",
         Button::CancelPlayingCard => "Cancel",
+        Button::SkipPlayingCard => "Skip",
         Button::DraftPick => "Pick",
         Button::ShowDeck => icons::DECK,
         Button::CloseIcon => icons::CLOSE,
