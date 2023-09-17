@@ -30,3 +30,5 @@ pub const BUG: &str = "\u{f188}";
 pub const BARS: &str = "\u{f0c9}";
 pub const DECK: &str = "\u{f02d}";
 pub const RAZE: &str = "\u{f0a3}";
+pub const UNDO: &str = "\u{f0e2}";
+pub const REDO: &str = "\u{f01e}";

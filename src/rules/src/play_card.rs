@@ -223,7 +223,7 @@ fn pay_custom_cost(game: &mut GameState, play_card: PlayCardData) -> Result<Play
 }
 
 fn turn_face_up(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    game.card_mut(play_card.card_id).turn_face_up();
+    mutations::turn_face_up(game, play_card.card_id);
     game.record_update(|| GameUpdate::PlayCardFaceUp(play_card.card_id.side, play_card.card_id));
     Ok(PlayCardStep::MoveToTargetPosition)
 }

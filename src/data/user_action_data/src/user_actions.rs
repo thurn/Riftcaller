@@ -115,6 +115,7 @@ pub enum DebugAction {
     FilterCardList(CardPosition),
     AddToZone(CardVariant, CardPosition),
     ApplyScenario(DebugScenario),
+    DebugUndo,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

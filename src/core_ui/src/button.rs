@@ -18,9 +18,9 @@ use protos::spelldawn::{Dimension, FlexAlign, FlexJustify, FlexPosition, TextAli
 use crate::actions::{InterfaceAction, NoAction};
 use crate::design::{Font, FontColor, FontSize};
 use crate::prelude::*;
-use crate::style;
 use crate::style::WidthMode;
 use crate::text::Text;
+use crate::{design, style};
 
 #[derive(Debug, Clone, Copy)]
 pub enum ButtonType {
@@ -173,6 +173,7 @@ pub struct IconButton {
     action: Box<dyn InterfaceAction>,
     long_press_action: Box<dyn InterfaceAction>,
     show_frame: bool,
+    disabled: bool,
 }
 
 impl IconButton {
@@ -185,6 +186,7 @@ impl IconButton {
             action: Box::new(NoAction {}),
             long_press_action: Box::new(NoAction {}),
             show_frame: false,
+            disabled: false,
         }
     }
 
@@ -210,6 +212,11 @@ impl IconButton {
 
     pub fn long_press_action(mut self, action: impl InterfaceAction + 'static) -> Self {
         self.long_press_action = Box::new(action);
+        self
+    }
+
+    pub fn disabled(mut self, disabled: bool) -> Self {
+        self.disabled = disabled;
         self
     }
 
@@ -283,13 +290,22 @@ impl Component for IconButton {
                         .position(Edge::All, position_offset.px())
                         .height(background_size.px())
                         .width(background_size.px())
-                        .background_image(background),
+                        .background_image(background)
+                        .background_image_tint_color(if self.disabled {
+                            design::DISABLED_BUTTON_TINT
+                        } else {
+                            design::WHITE
+                        }),
                 ),
             )
             .child(
                 Text::new(self.icon)
                     .font_size(FontSize::ButtonIcon)
-                    .color(FontColor::ButtonLabel)
+                    .color(if self.disabled {
+                        FontColor::ButtonLabelDisabled
+                    } else {
+                        FontColor::ButtonLabel
+                    })
                     .font(Font::ButtonLabel)
                     .text_align(TextAlign::MiddleCenter),
             )

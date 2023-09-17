@@ -319,7 +319,7 @@ fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 fn reveal_accessed_cards(game: &mut GameState) -> Result<RaidState> {
     let accessed = game.raid()?.accessed.clone();
     for card_id in &accessed {
-        game.card_mut(*card_id).set_revealed_to(Side::Champion, true);
+        mutations::set_revealed_to(game, *card_id, Side::Champion, true);
     }
 
     RaidState::step(RaidStep::AccessCards)
@@ -348,7 +348,7 @@ fn populate_access_prompt(game: &mut GameState, info: RaidInfo) -> Result<RaidSt
 }
 
 fn start_scoring_card(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
-    game.card_mut(scored.id).turn_face_up();
+    mutations::turn_face_up(game, scored.id);
     mutations::move_card(game, scored.id, CardPosition::Scoring)?;
     game.raid_mut()?.accessed.retain(|c| *c != scored.id);
     game.record_update(|| GameUpdate::ScoreCard(Side::Champion, scored.id));

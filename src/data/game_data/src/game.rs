@@ -37,6 +37,7 @@ use crate::primitives::{
 };
 use crate::raid_data::RaidData;
 use crate::tutorial_data::GameTutorialState;
+use crate::undo_tracker::UndoTracker;
 use crate::updates::{GameUpdate, UpdateStep, UpdateTracker, Updates};
 
 /// Mana to be spent only during the `raid_id` raid
@@ -272,6 +273,8 @@ pub struct GameState {
     /// order to improve performance
     #[serde(skip)]
     pub delegate_cache: DelegateCache,
+    /// Handles state tracking for the 'undo' and 'redo' game actions.
+    pub undo_tracker: Option<UndoTracker>,
 }
 
 impl GameState {
@@ -318,6 +321,7 @@ impl GameState {
             } else {
                 None
             },
+            undo_tracker: Some(UndoTracker::default()),
         }
     }
 
@@ -340,6 +344,7 @@ impl GameState {
                 next_sorting_key: self.next_sorting_key,
                 rng: None,
                 delegate_cache: DelegateCache::default(),
+                undo_tracker: None,
             };
 
             self.updates.steps.push(UpdateStep { snapshot: clone, update: update() });
@@ -347,8 +352,8 @@ impl GameState {
     }
 
     /// Makes a clone of the game state without including the [UpdateTracker]
-    /// data.
-    pub fn clone_without_updates(&self) -> Self {
+    /// or [UndoTracker] data.
+    pub fn clone_for_simulation(&self) -> Self {
         Self {
             id: self.id,
             info: self.info.clone(),
@@ -364,6 +369,7 @@ impl GameState {
             next_sorting_key: self.next_sorting_key,
             rng: self.rng.clone(),
             delegate_cache: self.delegate_cache.clone(),
+            undo_tracker: None,
         }
     }
 
@@ -629,7 +635,7 @@ impl GameState {
             // Put all riftcaller cards into play face up
             let mut card = CardState::new(CardId::new(side, i), *riftcaller);
             card.set_position_internal(i as u32, CardPosition::Riftcaller(side));
-            card.turn_face_up();
+            card.internal_turn_face_up();
             result.push(card);
         }
 

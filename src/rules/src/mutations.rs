@@ -38,13 +38,37 @@ use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
     Side, TurnNumber,
 };
-use game_data::random;
 use game_data::updates::GameUpdate;
+use game_data::{random, undo_tracker};
 use tracing::{debug, instrument};
 use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, flags, mana, queries};
+
+/// Change a card to the 'face up' state and makes the card revealed to both
+/// players.
+pub fn turn_face_up(game: &mut GameState, card_id: CardId) {
+    undo_tracker::track_revealed_state(game, card_id, |game| {
+        game.card_mut(card_id).internal_turn_face_up()
+    })
+}
+
+/// Change a card to the 'face down' state, but does *not* change its
+/// revealed state for either player.
+pub fn turn_face_down(game: &mut GameState, card_id: CardId) {
+    game.card_mut(card_id).internal_turn_face_down();
+}
+
+/// Updates the 'revealed' state of a card to be visible to the indicated
+/// `side` player. Note that this is *not* the same as turning a card
+/// face-up, a card can be revealed to both players without being
+/// face-up
+pub fn set_revealed_to(game: &mut GameState, card_id: CardId, side: Side, revealed: bool) {
+    undo_tracker::track_revealed_state(game, card_id, |game| {
+        game.card_mut(card_id).internal_set_revealed_to(side, revealed);
+    })
+}
 
 /// Move a card to a new position. Detects cases like drawing cards, playing
 /// cards, and shuffling cards back into the deck and fires events
@@ -72,7 +96,7 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     }
 
     if new_position.in_discard_pile() && card_id.side == Side::Champion {
-        game.card_mut(card_id).turn_face_up();
+        turn_face_up(game, card_id);
     }
 
     if !new_position.in_play() {
@@ -99,7 +123,7 @@ pub fn move_cards(game: &mut GameState, cards: &[CardId], to_position: CardPosit
 pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
     if card_id.side == Side::Champion {
-        game.card_mut(card_id).turn_face_up();
+        turn_face_up(game, card_id);
     }
     Ok(())
 }
@@ -110,7 +134,7 @@ pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
 pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
     if card_id.side == Side::Champion {
-        game.card_mut(card_id).turn_face_up();
+        turn_face_up(game, card_id);
     }
     Ok(())
 }
@@ -120,9 +144,9 @@ pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
 pub fn shuffle_into_deck(game: &mut GameState, side: Side, cards: &[CardId]) -> Result<()> {
     move_cards(game, cards, CardPosition::DeckUnknown(side))?;
     for card_id in cards {
-        game.card_mut(*card_id).turn_face_down();
-        game.card_mut(*card_id).set_revealed_to(Side::Overlord, false);
-        game.card_mut(*card_id).set_revealed_to(Side::Champion, false);
+        turn_face_down(game, *card_id);
+        set_revealed_to(game, *card_id, Side::Overlord, false);
+        set_revealed_to(game, *card_id, Side::Champion, false);
     }
     shuffle_deck(game, side)?;
     game.record_update(|| GameUpdate::ShuffleIntoDeck);
@@ -156,7 +180,7 @@ pub fn draw_cards(game: &mut GameState, side: Side, count: u32) -> Result<Vec<Ca
     }
 
     for card_id in &card_ids {
-        game.card_mut(*card_id).set_revealed_to(side, true);
+        set_revealed_to(game, *card_id, side, true);
     }
 
     game.record_update(|| GameUpdate::DrawCards(side, card_ids.clone()));
@@ -376,7 +400,7 @@ pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) ->
     let card = game.card(card_id);
     if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {
         if card.data.card_level >= scheme_points.level_requirement {
-            game.card_mut(card_id).turn_face_up();
+            turn_face_up(game, card_id);
             move_card(game, card_id, CardPosition::Scoring)?;
             game.record_update(|| GameUpdate::ScoreCard(Side::Overlord, card_id));
             dispatch::invoke_event(game, OverlordScoreCardEvent(card_id))?;
@@ -408,11 +432,11 @@ pub fn unveil_card(game: &mut GameState, card_id: CardId) -> Result<()> {
 
     match queries::mana_cost(game, card_id) {
         None => {
-            game.card_mut(card_id).turn_face_up();
+            turn_face_up(game, card_id);
         }
         Some(cost) if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)) => {
             mana::spend(game, card_id.side, ManaPurpose::PayForCard(card_id), cost)?;
-            game.card_mut(card_id).turn_face_up();
+            turn_face_up(game, card_id);
         }
         _ => fail!("Insufficient mana available to unveil project"),
     }
@@ -428,7 +452,7 @@ pub fn unveil_card_ignoring_costs(game: &mut GameState, card_id: CardId) -> Resu
     verify!(game.card(card_id).is_face_down(), "Card is not face-down");
     verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
-    game.card_mut(card_id).turn_face_up();
+    turn_face_up(game, card_id);
     game.record_update(|| GameUpdate::UnveilCard(card_id));
     dispatch::invoke_event(game, UnveilCardEvent(card_id))?;
 
@@ -491,7 +515,7 @@ pub fn summon_minion(game: &mut GameState, card_id: CardId, costs: SummonMinion)
     }
 
     dispatch::invoke_event(game, SummonMinionEvent(card_id))?;
-    game.card_mut(card_id).turn_face_up();
+    turn_face_up(game, card_id);
     game.record_update(|| GameUpdate::SummonMinion(card_id));
     Ok(())
 }

@@ -27,6 +27,7 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{CardIdentifier, ClientAction, ClientMetadata, CommandList, GameRequest};
+use rules::mutations;
 use server::ai_agent_response;
 use server::server_data::{ClientData, GameResponse, GameResponseOutput};
 use with_error::WithError;
@@ -200,7 +201,7 @@ impl TestSession {
         self.database.mutate_game(|game| {
             test_game_client::overwrite_card(game, card_id, card_name);
             game.move_card_internal(card_id, CardPosition::Hand(side));
-            game.card_mut(card_id).set_revealed_to(card_id.side, true);
+            mutations::set_revealed_to(game, card_id, card_id.side, true);
         });
 
         self.connect(self.user.id).expect("User connection error");

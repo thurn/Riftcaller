@@ -20,12 +20,15 @@ use crate::primitives::{CardId, Side};
 
 /// Return a randomly-selected [CardId] of cards owned by the `side` player in
 /// the given [CardPosition], or None if no such card exists.
-#[allow(clippy::needless_collect)] // Invalid clippy warning
 pub fn card_in_position(
     game: &mut GameState,
     side: Side,
     position: CardPosition,
 ) -> Option<CardId> {
+    if let Some(undo_tracker) = &mut game.undo_tracker {
+        undo_tracker.random = true;
+    }
+
     if game.rng.is_some() {
         let cards = game.cards_in_position(side, position).map(|c| c.id).collect::<Vec<_>>();
         cards.into_iter().choose(game.rng.as_mut().expect("rng"))
@@ -36,7 +39,6 @@ pub fn card_in_position(
 
 /// Return a vector of up to `count` randomly-selected [CardId]s of cards owned
 /// by the `side` player in the given [CardPosition].
-#[allow(clippy::needless_collect)] // Invalid clippy warning
 pub fn cards_in_position(
     game: &mut GameState,
     side: Side,

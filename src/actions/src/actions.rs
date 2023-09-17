@@ -41,6 +41,16 @@ pub fn handle_game_action(
     user_side: Side,
     action: &GameAction,
 ) -> Result<()> {
+    if action != &GameAction::Undo && game.undo_tracker.is_some() {
+        let clone = game.clone();
+        if let Some(undo_tracker) = &mut game.undo_tracker {
+            undo_tracker.undo = Some(Box::new(clone));
+            undo_tracker.side = Some(user_side);
+            undo_tracker.random = false;
+            undo_tracker.revealed = false;
+        }
+    }
+
     match action {
         GameAction::GameStateAction(action) => handle_game_state_action(game, user_side, *action),
         GameAction::Resign => handle_resign_action(game, user_side),
@@ -61,6 +71,7 @@ pub fn handle_game_action(
         GameAction::MoveCard(card_id) => move_card_action(game, user_side, *card_id),
         GameAction::RaidAction(action) => raids::run(game, Some(*action)),
         GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
+        GameAction::Undo => handle_undo_action(game, user_side),
     }?;
 
     Ok(())
@@ -392,4 +403,17 @@ fn handle_card_browser_submit_action(
 
     game.player_mut(user_side).prompt_queue.remove(0);
     check_start_next_turn(game)
+}
+
+fn handle_undo_action(game: &mut GameState, user_side: Side) -> Result<()> {
+    verify!(flags::can_take_undo_action(game, user_side), "Cannot currently take undo action");
+    let new_state = game
+        .undo_tracker
+        .as_mut()
+        .with_error(|| "Expected undo_tracker")?
+        .undo
+        .take()
+        .with_error(|| "Expected undo state")?;
+    *game = *new_state;
+    Ok(())
 }

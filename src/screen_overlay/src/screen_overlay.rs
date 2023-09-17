@@ -25,31 +25,41 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use game_data::primitives::DeckId;
+use game_data::game::GameState;
+use game_data::game_actions::GameAction;
+use game_data::primitives::{DeckId, Side};
 use game_data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState, PlayerStatus};
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPosition};
+use rules::flags;
 
-pub struct ScreenOverlay<'a> {
+pub struct ScreenOverlay<'a, 'b> {
     player: &'a PlayerState,
+    game: Option<&'b GameState>,
     show_close_button: Option<Panels>,
     show_deck_button: bool,
     show_coin_count: bool,
     show_menu_button: bool,
 }
 
-impl<'a> ScreenOverlay<'a> {
+impl<'a, 'b> ScreenOverlay<'a, 'b> {
     pub fn new(player: &'a PlayerState) -> Self {
         Self {
             player,
+            game: None,
             show_close_button: None,
             show_deck_button: player.current_activity().kind() == PlayerActivityKind::Adventure,
             show_coin_count: player.current_activity().kind() == PlayerActivityKind::Adventure,
             show_menu_button: player.current_activity().kind() != PlayerActivityKind::None,
         }
+    }
+
+    pub fn game(mut self, game: Option<&'b GameState>) -> Self {
+        self.game = game;
+        self
     }
 
     pub fn show_close_button(mut self, show_close_button: Panels) -> Self {
@@ -63,7 +73,7 @@ impl<'a> ScreenOverlay<'a> {
     }
 }
 
-impl<'a> Component for ScreenOverlay<'a> {
+impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
     fn build(self) -> Option<Node> {
         let activity = self.player.current_activity();
         Row::new("Navbar")
@@ -109,6 +119,7 @@ impl<'a> Component for ScreenOverlay<'a> {
                                 activity.side(),
                             ))),
                     )
+                    .child(self.game.map(|g| undo_button(g, activity.side())))
                     .child(self.show_coin_count.then(|| {
                         self.player.adventure.as_ref().map(|adventure| {
                             Row::new("CoinCount")
@@ -167,5 +178,19 @@ impl<'a> Component for ScreenOverlay<'a> {
                     })),
             )
             .build()
+    }
+}
+
+fn undo_button(game: &GameState, side: Option<Side>) -> impl Component {
+    let disabled = side.map_or(false, |s| !flags::can_take_undo_action(game, s));
+    let result = IconButton::new(icons::UNDO)
+        .name(&element_names::UNDO_BUTTON)
+        .button_type(IconButtonType::NavBlue)
+        .layout(Layout::new().margin(Edge::All, 12.px()))
+        .disabled(disabled);
+    if !disabled {
+        result.action(GameAction::Undo)
+    } else {
+        result
     }
 }

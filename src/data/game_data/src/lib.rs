@@ -34,5 +34,6 @@ pub mod random;
 pub mod special_effects;
 pub mod text;
 pub mod tutorial_data;
+pub mod undo_tracker;
 pub mod updates;
 pub mod utils;

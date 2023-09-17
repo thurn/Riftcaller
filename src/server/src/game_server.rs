@@ -50,7 +50,7 @@ pub async fn connect(
         game_id: Some(game.id),
     };
     let mut result = GameResponse::new(client_data).commands(commands);
-    requests::add_panels(database, player.id, None, &mut result).await?;
+    requests::add_standard_ui(&mut result, player, Some(&game)).await?;
     Ok(result)
 }
 
@@ -110,7 +110,8 @@ pub async fn handle_game_action(
         let mut result = GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
             .commands(user_result)
             .opponent_response(opponent_id, opponent_commands);
-        requests::add_panels(database, data.player_id, None, &mut result).await?;
+        let player = requests::fetch_player(database, data.player_id).await?;
+        requests::add_standard_ui(&mut result, &player, Some(&game)).await?;
         result
     };
 
@@ -200,28 +201,6 @@ pub async fn handle_move_card(
         _ => fail!("Expected standard CardId"),
     };
     handle_game_action(database, data, &GameAction::MoveCard(card_id)).await
-}
-
-/// Applies a game mutation and produces a snapshot of the resulting game state
-/// to send to both players.
-pub async fn update_game(
-    database: &impl Database,
-    data: &RequestData,
-    function: impl Fn(&mut GameState, Side) -> Result<()>,
-) -> Result<GameResponse> {
-    requests::with_game(database, data, |game| {
-        let user_side = game.player_side(data.player_id)?;
-        function(game, user_side)?;
-
-        let user_result = render::render_updates(game, user_side)?;
-        let opponent_id = game.player(user_side.opponent()).id;
-        let opponent_commands = render::render_updates(game, user_side.opponent())?;
-
-        Ok(GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
-            .commands(user_result)
-            .opponent_response(opponent_id, opponent_commands))
-    })
-    .await
 }
 
 fn card_target(target: &Option<protos::spelldawn::CardTarget>) -> game_actions::CardTarget {

@@ -333,9 +333,9 @@ fn overwrite_positions(
         game.move_card_internal(target_id, position);
 
         if turn_face_up {
-            game.card_mut(target_id).turn_face_up();
+            game.card_mut(target_id).internal_turn_face_up();
         } else {
-            game.card_mut(target_id).turn_face_down();
+            game.card_mut(target_id).internal_turn_face_down();
         }
     }
 }

@@ -16,8 +16,9 @@ use anyhow::Result;
 use core_ui::icons;
 use game_data::player_name::PlayerId;
 use game_data::primitives::Side;
+use protos::spelldawn::client_action::Action;
 use server::server_data::GameResponseOutput;
-use with_error::WithError;
+use with_error::{verify, WithError};
 
 use crate::client_interface::HasText;
 use crate::test_session::TestSession;
@@ -36,6 +37,7 @@ pub enum Button {
     Sacrifice,
     CancelPlayingCard,
     SkipPlayingCard,
+    Undo,
     DraftPick,
     ShowDeck,
     CloseIcon,
@@ -138,8 +140,16 @@ impl TestInterfaceHelpers for TestSession {
         let action = handlers
             .with_error(|| "Button not found")?
             .on_click
-            .with_error(|| "OnClick not found")?;
-        self.perform_action(action.action.expect("Action"), player_id)
+            .with_error(|| "OnClick not found")?
+            .action
+            .with_error(|| "Action not found")?;
+        if let Action::StandardAction(a) = &action {
+            verify!(
+                !(a.payload.is_empty() && a.update.is_none()),
+                "Attempted to invoke empty action"
+            );
+        }
+        self.perform_action(action, player_id)
     }
 
     fn has_text(&self, text: impl Into<String>) -> bool {
@@ -165,6 +175,7 @@ fn resolve_button(button: Button) -> String {
         Button::Sacrifice => "Sacrifice",
         Button::CancelPlayingCard => "Cancel",
         Button::SkipPlayingCard => "Skip",
+        Button::Undo => icons::UNDO,
         Button::DraftPick => "Pick",
         Button::ShowDeck => icons::DECK,
         Button::CloseIcon => icons::CLOSE,

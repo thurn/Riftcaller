@@ -120,6 +120,7 @@ impl DebugPanel {
                     .wait_to_load(true)
                     .and_close(self.address()),
             ))
+            .child(debug_button(format!("{}{}", icons::BUG, icons::UNDO), DebugAction::DebugUndo))
     }
 }
 

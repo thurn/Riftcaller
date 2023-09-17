@@ -44,7 +44,7 @@ impl GameStateNode for SpelldawnState {
     type PlayerName = Side;
 
     fn make_copy(&self) -> Self {
-        Self(self.clone_without_updates())
+        Self(self.clone_for_simulation())
     }
 
     fn status(&self) -> GameStatus<Side> {

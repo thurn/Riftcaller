@@ -2558,6 +2558,7 @@ dependencies = [
  "panel_address",
  "player_data",
  "protos",
+ "rules",
 ]
 
 [[package]]

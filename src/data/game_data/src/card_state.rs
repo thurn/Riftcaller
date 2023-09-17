@@ -226,35 +226,9 @@ impl CardState {
         self.data.is_face_up
     }
 
-    /// Whether this card is not in the 'face up' state.
+    /// Whether this card is in the 'face down' state.
     pub fn is_face_down(&self) -> bool {
         !self.data.is_face_up
-    }
-
-    /// Change a card to the 'face up' state and makes the card revealed to both
-    /// players.
-    pub fn turn_face_up(&mut self) {
-        self.data.is_face_up = true;
-        self.set_revealed_to(Side::Overlord, true);
-        self.set_revealed_to(Side::Champion, true);
-    }
-
-    /// Change a card to the 'face down' state, but does *not* change its
-    /// revealed state for either player.
-    pub fn turn_face_down(&mut self) {
-        self.data.is_face_up = false;
-    }
-
-    /// Updates the 'revealed' state of a card to be visible to the indicated
-    /// `side` player. Note that this is *not* the same as turning a card
-    /// face-up, a card can be revealed to both players without being
-    /// face-up
-    pub fn set_revealed_to(&mut self, side: Side, revealed: bool) {
-        if self.id.side == side {
-            self.data.revealed_to_owner = revealed
-        } else {
-            self.data.revealed_to_opponent = revealed
-        }
     }
 
     /// Returns true if this card is currently revealed to the indicated user
@@ -266,6 +240,32 @@ impl CardState {
             self.data.revealed_to_owner
         } else {
             self.data.revealed_to_opponent
+        }
+    }
+
+    /// Change a card to the 'face up' state and makes the card revealed to both
+    /// players.
+    pub fn internal_turn_face_up(&mut self) {
+        self.data.is_face_up = true;
+        self.internal_set_revealed_to(Side::Overlord, true);
+        self.internal_set_revealed_to(Side::Champion, true);
+    }
+
+    /// Change a card to the 'face down' state, but does *not* change its
+    /// revealed state for either player.
+    pub fn internal_turn_face_down(&mut self) {
+        self.data.is_face_up = false;
+    }
+
+    /// Updates the 'revealed' state of a card to be visible to the indicated
+    /// `side` player. Note that this is *not* the same as turning a card
+    /// face-up, a card can be revealed to both players without being
+    /// face-up
+    pub fn internal_set_revealed_to(&mut self, side: Side, revealed: bool) {
+        if self.id.side == side {
+            self.data.revealed_to_owner = revealed
+        } else {
+            self.data.revealed_to_opponent = revealed
         }
     }
 }

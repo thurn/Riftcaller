@@ -56,6 +56,7 @@ pub const GRAY_900: FlexColor = color(0.13, 0.13, 0.13, 1.0);
 pub const TEXT_OUTLINE: FlexColor = BLACK;
 pub const OVERLAY_BORDER: FlexColor = BLACK;
 pub const COIN_COUNT_BORDER: FlexColor = GRAY_500;
+pub const DISABLED_BUTTON_TINT: FlexColor = BLACK_ALPHA_50;
 
 /// Converts a [FlexColor] into a hex code representation.
 pub fn as_hex(input: impl Into<FlexColor>) -> String {
@@ -124,6 +125,7 @@ impl From<BackgroundColor> for FlexColor {
 pub enum FontColor {
     PrimaryText,
     ButtonLabel,
+    ButtonLabelDisabled,
     PanelTitle,
     NormalCardTitle,
     MortalCardTitle,
@@ -142,6 +144,7 @@ impl From<FontColor> for FlexColor {
         match color {
             FontColor::PrimaryText => WHITE,
             FontColor::ButtonLabel => WHITE,
+            FontColor::ButtonLabelDisabled => GRAY_500,
             FontColor::PanelTitle => WHITE,
             FontColor::NormalCardTitle => BLACK,
             FontColor::MortalCardTitle => BLUE_700,

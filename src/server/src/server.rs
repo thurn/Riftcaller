@@ -145,7 +145,7 @@ pub fn plugin_poll(player_id: PlayerId) -> Result<Option<CommandList>> {
 
 pub async fn handle_connect(database: &impl Database, player_id: PlayerId) -> Result<GameResponse> {
     let player = fetch_or_create_player(database, player_id).await?;
-    let mut result = match player.current_activity() {
+    let result = match player.current_activity() {
         player_data::PlayerActivity::None => main_menu_server::connect(database, &player).await,
         player_data::PlayerActivity::Adventure(adventure) => {
             adventure_server::connect(database, &player, adventure).await
@@ -155,7 +155,6 @@ pub async fn handle_connect(database: &impl Database, player_id: PlayerId) -> Re
         }
     }?;
 
-    result.push_command(requests::update_screen_overlay(&player));
     Ok(result)
 }
 
@@ -255,8 +254,9 @@ async fn handle_fetch_panel(
     )
     .with_error(|| "deserialization failed")?;
     warn!(?address, ?data.player_id, "Fetch Panel");
+    let player = requests::fetch_player(database, data.player_id).await?;
     Ok(GameResponse::new(ClientData::propagate(data)).command(
-        requests::fetch_panels(database, data.player_id, None, &[address])
+        requests::render_panels(&player, &[address])
             .await?
             .with_error(|| "Panels should be nonempty")?,
     ))

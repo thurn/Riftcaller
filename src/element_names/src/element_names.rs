@@ -71,6 +71,10 @@ pub static MENU_BUTTON: ElementName = global("MenuButton");
 
 pub static FEEDBACK_BUTTON: ElementName = global("FeedbackButton");
 
+pub static UNDO_BUTTON: ElementName = global("UndoButton");
+
+pub static REDO_BUTTON: ElementName = global("RedoButton");
+
 pub static CARD_LIST: ElementName = global("CardList");
 
 pub static COLLECTION_BROWSER: ElementName = global("CollectionBrowser");

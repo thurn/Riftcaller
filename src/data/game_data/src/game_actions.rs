@@ -282,6 +282,7 @@ pub enum GameAction {
     MoveCard(CardId),
     RaidAction(RaidAction),
     PromptAction(PromptAction),
+    Undo,
 }
 
 impl fmt::Debug for GameAction {
@@ -304,6 +305,7 @@ impl fmt::Debug for GameAction {
             Self::MoveCard(id) => f.debug_tuple("@MoveCard").field(id).finish(),
             Self::RaidAction(action) => f.debug_tuple("@RaidAction").field(&action.index).finish(),
             Self::PromptAction(prompt) => write!(f, "@{prompt:?}"),
+            Self::Undo => write!(f, "@Undo"),
         }
     }
 }

@@ -32,7 +32,6 @@ use rules::dispatch;
 use screen_overlay::ScreenOverlay;
 use with_error::WithError;
 
-use crate::requests;
 use crate::server_data::{GameResponse, RequestData};
 
 /// Fetches the current state of the current game from the database, applies a
@@ -42,9 +41,13 @@ pub async fn with_game(
     data: &RequestData,
     mut fun: impl FnMut(&mut GameState) -> Result<GameResponse>,
 ) -> Result<GameResponse> {
+    // Currently we unconditionally fetch the player every time and include all
+    // panels with every response. This is something to revisit in the future if
+    // the payload size/database queries become a problem.
     let mut game = fetch_game(database, data.game_id).await?;
     let mut result = fun(&mut game)?;
-    add_panels(database, data.player_id, None, &mut result).await?;
+    let player = fetch_player(database, data.player_id).await?;
+    add_standard_ui(&mut result, &player, Some(&game)).await?;
     database.write_game(&game).await?;
     Ok(result)
 }
@@ -58,8 +61,7 @@ pub async fn with_player(
 ) -> Result<GameResponse> {
     let mut player = fetch_player(database, data.player_id).await?;
     let mut result = fun(&mut player)?;
-    add_panels(database, data.player_id, Some(&player), &mut result).await?;
-    result.push_command(requests::update_screen_overlay(&player));
+    add_standard_ui(&mut result, &player, None).await?;
     database.write_player(&player).await?;
     Ok(result)
 }
@@ -70,8 +72,8 @@ pub async fn fetch_player(database: &impl Database, player_id: PlayerId) -> Resu
     database.fetch_player(player_id).await?.with_error(|| format!("Player not found {player_id}"))
 }
 
-/// Looks up a player by ID in the database. Prefer to use [with_game] if
-/// possible. Returns an error if `game_id` is `None`.
+/// Looks up a player by ID in the database. Returns an error if `game_id` is
+/// `None`.
 pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Result<GameState> {
     let id = game_id.with_error(|| "Expected GameId to be included with client request")?;
     let mut game = database.fetch_game(id).await?.with_error(|| format!("Game not found {id}"))?;
@@ -82,13 +84,6 @@ pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Re
         Updates::Push
     });
     Ok(game)
-}
-
-/// Builds a command to update the screen overlay (UI chrome)
-pub fn update_screen_overlay(player: &PlayerState) -> Command {
-    Command::RenderScreenOverlay(RenderScreenOverlayCommand {
-        node: ScreenOverlay::new(player).build(),
-    })
 }
 
 pub enum SceneName {
@@ -124,37 +119,33 @@ pub fn force_load_scene(name: SceneName) -> Command {
     })
 }
 
-pub async fn add_panels(
-    database: &impl Database,
-    player_id: PlayerId,
-    player: Option<&PlayerState>,
+pub async fn add_standard_ui(
     response: &mut GameResponse,
+    player: &PlayerState,
+    game: Option<&GameState>,
 ) -> Result<()> {
-    // Currently we unconditionally include all panels with every response. This
-    // is something to revisit in the future if the payload size becomes too
-    // large.
-    let panels = fetch_player_if_needed(database, player_id, player, |player_data| {
-        Ok(all_panels::standard_panels()
-            .into_iter()
-            .map(PanelAddress::StandardPanel)
-            .chain(
-                all_panels::player_panels(player_data).into_iter().map(PanelAddress::PlayerPanel),
-            )
-            .collect::<Vec<PanelAddress>>())
-    })
-    .await?;
+    response.insert_command(
+        0,
+        Command::RenderScreenOverlay(RenderScreenOverlayCommand {
+            node: ScreenOverlay::new(player).game(game).build(),
+        }),
+    );
 
-    if let Some(command) = fetch_panels(database, player_id, player, &panels).await? {
+    let panels = all_panels::standard_panels()
+        .into_iter()
+        .map(PanelAddress::StandardPanel)
+        .chain(all_panels::player_panels(player).into_iter().map(PanelAddress::PlayerPanel))
+        .collect::<Vec<PanelAddress>>();
+
+    if let Some(command) = render_panels(player, &panels).await? {
         response.insert_command(0, command);
     }
     Ok(())
 }
 
 /// Fetches the rendered version of the panels provided in the `panels` slice.
-pub async fn fetch_panels(
-    database: &impl Database,
-    player_id: PlayerId,
-    player: Option<&PlayerState>,
+pub async fn render_panels(
+    player: &PlayerState,
     panels: &[PanelAddress],
 ) -> Result<Option<Command>> {
     if panels.is_empty() {
@@ -178,33 +169,12 @@ pub async fn fetch_panels(
     }
 
     if !player_panels.is_empty() {
-        fetch_player_if_needed(database, player_id, player, |player_data| {
-            for panel in &player_panels {
-                if let Some(p) = routing::render_player_panel(player_data, **panel)? {
-                    panels.push(p);
-                }
+        for panel in &player_panels {
+            if let Some(p) = routing::render_player_panel(player, **panel)? {
+                panels.push(p);
             }
-            Ok(())
-        })
-        .await?;
+        }
     }
 
     Ok(Some(Command::UpdatePanels(UpdatePanelsCommand { panels })))
-}
-
-/// Fetches information for the current player if it is not already populated in
-/// `player`.
-async fn fetch_player_if_needed<T>(
-    database: &impl Database,
-    player_id: PlayerId,
-    player: Option<&PlayerState>,
-    mut fun: impl FnMut(&PlayerState) -> Result<T>,
-) -> Result<T> {
-    match player {
-        Some(p) => fun(p),
-        None => {
-            let player = fetch_player(database, player_id).await?;
-            fun(&player)
-        }
-    }
 }

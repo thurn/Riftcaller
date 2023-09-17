@@ -196,7 +196,7 @@ fn set_hand(game: &mut GameState, side: Side, cards: &[CardName]) -> Result<()> 
     for name in cards {
         let card_id = find_in_deck(game, side, *name)?;
         mutations::move_card(game, card_id, CardPosition::Hand(side))?;
-        game.card_mut(card_id).set_revealed_to(side, true);
+        mutations::set_revealed_to(game, card_id, side, true);
     }
 
     // Ignore game update caused by reshuffling

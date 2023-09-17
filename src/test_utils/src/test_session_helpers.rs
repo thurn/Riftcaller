@@ -18,8 +18,8 @@ use game_data::player_name::PlayerId;
 use game_data::primitives::{CardType, Resonance, RoomId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{
-    card_target, CardIdentifier, CardTarget, DrawCardAction, GameMessageType, InitiateRaidAction,
-    LevelUpRoomAction, MoveCardAction, PlayCardAction, SpendActionPointAction,
+    card_target, CardIdentifier, CardTarget, DrawCardAction, GainManaAction, GameMessageType,
+    InitiateRaidAction, LevelUpRoomAction, MoveCardAction, PlayCardAction, SpendActionPointAction,
 };
 use server::server_data::GameResponseOutput;
 
@@ -50,12 +50,17 @@ pub trait TestSessionHelpers {
     /// return the action result.
     fn perform(&mut self, action: Action, user_id: PlayerId);
 
-    /// Helper to perform the standard draw card actio
+    /// Helper to perform the standard draw card action
     fn draw_card(&mut self);
 
-    /// Equivalent function to [Self::draw_card_with_result] which returns the
-    /// result
+    /// Equivalent function to [Self::draw_card] which returns the result
     fn draw_card_with_result(&mut self) -> Result<GameResponseOutput>;
+
+    /// Helper to perform the standard gain mana action
+    fn gain_mana(&mut self);
+
+    /// Equivalent function to [Self::gain_mana] which returns the result
+    fn gain_mana_with_result(&mut self) -> Result<GameResponseOutput>;
 
     /// Helper function to perform an action to initiate a raid on the provided
     /// `room_id`.
@@ -227,6 +232,14 @@ impl TestSessionHelpers for TestSession {
 
     fn draw_card_with_result(&mut self) -> Result<GameResponseOutput> {
         self.perform_action(Action::DrawCard(DrawCardAction {}), self.user_id())
+    }
+
+    fn gain_mana(&mut self) {
+        self.gain_mana_with_result().expect("Error performing gain mana action");
+    }
+
+    fn gain_mana_with_result(&mut self) -> Result<GameResponseOutput> {
+        self.perform_action(Action::GainMana(GainManaAction {}), self.user_id())
     }
 
     fn initiate_raid(&mut self, room_id: RoomId) -> GameResponseOutput {

@@ -21,6 +21,7 @@ use anyhow::Result;
 use core_ui::actions::InterfaceAction;
 use core_ui::panels;
 use database::Database;
+use display::render;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game::{GameState, MulliganDecision};
@@ -42,7 +43,7 @@ use user_action_data::{
 use with_error::WithError;
 
 use crate::server_data::{ClientData, GameResponse, RequestData};
-use crate::{adventure_server, game_server, requests};
+use crate::{adventure_server, requests};
 
 fn current_game_id() -> &'static Mutex<Option<GameId>> {
     static GAME_ID: OnceLock<Mutex<Option<GameId>>> = OnceLock::new();
@@ -91,21 +92,21 @@ pub async fn handle_debug_action(
             reload_scene(data, &game)
         }
         DebugAction::AddMana(amount) => {
-            game_server::update_game(database, data, |game, user_side| {
+            debug_update_game(database, data, |game, user_side| {
                 mana::gain(game, user_side, *amount);
                 Ok(())
             })
             .await
         }
         DebugAction::AddActionPoints(amount) => {
-            game_server::update_game(database, data, |game, user_side| {
+            debug_update_game(database, data, |game, user_side| {
                 game.player_mut(user_side).actions += amount;
                 Ok(())
             })
             .await
         }
         DebugAction::AddScore(amount) => {
-            game_server::update_game(database, data, |game, user_side| {
+            debug_update_game(database, data, |game, user_side| {
                 mutations::score_points(game, user_side, *amount)?;
                 Ok(())
             })
@@ -143,7 +144,7 @@ pub async fn handle_debug_action(
             Ok(result)
         }
         DebugAction::SetNamedPlayer(side, name) => {
-            game_server::update_game(database, data, |game, _| {
+            debug_update_game(database, data, |game, _| {
                 game.player_mut(*side).id = PlayerId::AI(*name);
                 Ok(())
             })
@@ -163,7 +164,7 @@ pub async fn handle_debug_action(
             )))
         }
         DebugAction::AddToZone(card_name, position) => {
-            game_server::update_game(database, data, |game, user_side| {
+            debug_update_game(database, data, |game, user_side| {
                 if let Some(top_of_deck) =
                     mutations::realize_top_of_deck(game, user_side, 1)?.get(0)
                 {
@@ -181,16 +182,28 @@ pub async fn handle_debug_action(
             .await
         }
         DebugAction::ApplyScenario(scenario) => {
-            game_server::update_game(database, data, |game, _| {
-                apply_scenario(*scenario, data, game)
-            })
-            .await?;
+            debug_update_game(database, data, |game, _| apply_scenario(*scenario, data, game))
+                .await?;
 
             let game = requests::fetch_game(database, data.game_id).await?;
             let mut player = requests::fetch_player(database, data.player_id).await?;
             player.status = Some(PlayerStatus::Playing(game.id, scenario.side()));
             database.write_player(&player).await?;
             reload_scene(data, &game)
+        }
+        DebugAction::DebugUndo => {
+            debug_update_game(database, data, |game, _| {
+                let new_state = game
+                    .undo_tracker
+                    .as_mut()
+                    .with_error(|| "Expected undo_tracker")?
+                    .undo
+                    .take()
+                    .with_error(|| "Expected undo state")?;
+                *game = *new_state;
+                Ok(())
+            })
+            .await
         }
     }
 }
@@ -320,4 +333,26 @@ fn create_at_position(
     mutations::overwrite_card(game, card_id, CardVariant::standard(card))?;
     mutations::move_card(game, card_id, position)?;
     Ok(card_id)
+}
+
+/// Applies a game mutation and produces a snapshot of the resulting game state
+/// to send to both players.
+async fn debug_update_game(
+    database: &impl Database,
+    data: &RequestData,
+    function: impl Fn(&mut GameState, Side) -> Result<()>,
+) -> Result<GameResponse> {
+    requests::with_game(database, data, |game| {
+        let user_side = game.player_side(data.player_id)?;
+        function(game, user_side)?;
+
+        let user_result = render::render_updates(game, user_side)?;
+        let opponent_id = game.player(user_side.opponent()).id;
+        let opponent_commands = render::render_updates(game, user_side.opponent())?;
+
+        Ok(GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
+            .commands(user_result)
+            .opponent_response(opponent_id, opponent_commands))
+    })
+    .await
 }
