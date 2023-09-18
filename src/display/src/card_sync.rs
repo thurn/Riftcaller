@@ -14,19 +14,19 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
-use core_ui::icons;
+use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::game::GameState;
-use game_data::game_actions::CardTarget;
+use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::primitives::{
     AbilityId, CardId, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
 };
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
-    ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView, NoTargeting,
-    PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
+    ArrowTargetRoom, CardEffects, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
+    FlexColor, NoTargeting, PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
 };
 use rules::{flags, queries};
 use rules_text::{card_icons, supplemental_info};
@@ -67,6 +67,7 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result
         destroy_position: context.query_or_none(|_, card| {
             positions::for_card(card, positions::deck(builder, card.side()))
         }),
+        effects: Some(CardEffects { outline_color: outline_color(context) }),
     })
 }
 
@@ -145,6 +146,7 @@ pub fn ability_card_view(
             ability_id,
             positions::parent_card(ability_id),
         )),
+        effects: Some(CardEffects { outline_color: None }),
     }
 }
 
@@ -177,6 +179,7 @@ pub fn unveil_card_view(builder: &ResponseBuilder, game: &GameState, card_id: Ca
             None
         },
         destroy_position: Some(positions::for_unveil_card(card, positions::parent_card(card_id))),
+        effects: Some(CardEffects { outline_color: None }),
     }
 }
 
@@ -317,4 +320,18 @@ fn card_targeting<T>(
             }
         }),
     }
+}
+
+fn outline_color(context: &CardViewContext) -> Option<FlexColor> {
+    if let CardViewContext::Game(_, game, card) = context {
+        if let Some(GamePrompt::PlayCardBrowser(browser)) =
+            &game.player(card.side()).prompt_queue.get(0)
+        {
+            if browser.cards.contains(&card.id) {
+                return Some(design::PLAY_CARD_BROWSER_OUTLINE);
+            }
+        }
+    }
+
+    None
 }

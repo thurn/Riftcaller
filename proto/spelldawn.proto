@@ -928,7 +928,7 @@ message RevealedCardView {
     // a card with a move target.
     ObjectPosition card_move_target = 11;
 
-    // If provided, identifes a parent card for this card. An arrow will be
+    // If provided, identifies a parent card for this card. An arrow will be
     // rendered from this card to its parent while it is being dragged,
     // indicating the relationship between these two cards.
     CardIdentifier point_to_parent = 12;
@@ -940,6 +940,11 @@ enum CardPrefab {
     CARD_PREFAB_TOKEN_CARD = 2;
     CARD_PREFAB_FULL_HEIGHT = 3;
     CARD_PREFAB_FULL_HEIGHT_TOKEN = 4;
+}
+
+// Custom VFX & SFX to apply to a card
+message CardEffects {
+    FlexColor outline_color = 1;
 }
 
 message CardView {
@@ -986,6 +991,9 @@ message CardView {
     // If provided, the card will be animated to this position before being
     // destroyed.
     ObjectPosition destroy_position = 13;
+
+    /// Decorative VFX & SFX for this card.
+    CardEffects effects = 14;
 }
 
 message PlayerInfo {

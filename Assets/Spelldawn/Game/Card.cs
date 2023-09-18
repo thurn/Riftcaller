@@ -31,6 +31,8 @@ namespace Spelldawn.Game
   public sealed class Card : Displayable, ArrowService.IArrowDelegate
   {
     public const float CardScale = 1.5f;
+    static readonly int MainOutlineColor = Shader.PropertyToID("_Color");
+    static readonly int HotOutlineColor = Shader.PropertyToID("_HiColor");    
 
     [Header("Card")] [SerializeField] SpriteRenderer _cardBack = null!;
     [SerializeField] GameObject _arenaCardBack = null!;
@@ -487,6 +489,11 @@ namespace Spelldawn.Game
       }
       
       UpdateRevealedToOpponent(inArena: GameContext.ShouldRenderArenaCard());
+
+      if (card.Effects != null)
+      {
+        RenderCardEffects(card.Effects);
+      }
     }
 
     void RenderRevealedCard(RevealedCardView revealed)
@@ -562,6 +569,16 @@ namespace Spelldawn.Game
       }
 
       _pointToParent = revealed.PointToParent;
+    }
+
+    void RenderCardEffects(CardEffects effects)
+    {
+      if (effects.OutlineColor != null)
+      {
+        var color = Mason.ToUnityColor(effects.OutlineColor);
+        _outline.material.SetColor(MainOutlineColor, color);
+        _outline.material.SetColor(HotOutlineColor, color);
+      }
     }
 
     void SetTitle(string title)

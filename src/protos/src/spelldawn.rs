@@ -899,11 +899,18 @@ pub struct RevealedCardView {
     /// a card with a move target.
     #[prost(message, optional, tag = "11")]
     pub card_move_target: ::core::option::Option<ObjectPosition>,
-    /// If provided, identifes a parent card for this card. An arrow will be
+    /// If provided, identifies a parent card for this card. An arrow will be
     /// rendered from this card to its parent while it is being dragged,
     /// indicating the relationship between these two cards.
     #[prost(message, optional, tag = "12")]
     pub point_to_parent: ::core::option::Option<CardIdentifier>,
+}
+/// Custom VFX & SFX to apply to a card
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CardEffects {
+    #[prost(message, optional, tag = "1")]
+    pub outline_color: ::core::option::Option<FlexColor>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -953,6 +960,9 @@ pub struct CardView {
     /// destroyed.
     #[prost(message, optional, tag = "13")]
     pub destroy_position: ::core::option::Option<ObjectPosition>,
+    /// / Decorative VFX & SFX for this card.
+    #[prost(message, optional, tag = "14")]
+    pub effects: ::core::option::Option<CardEffects>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
