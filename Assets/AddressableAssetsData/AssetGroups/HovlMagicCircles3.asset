@@ -15,16 +15,15 @@ MonoBehaviour:
   m_GroupName: HovlMagicCircles3
   m_Data:
     m_SerializedData: []
-  m_GUID: cd96e63782ba04a1ebd440e48a505d1d
+  m_GUID: 98be186bbb1a14fc29ab4bd050ab93a4
   m_SerializeEntries:
-  - m_GUID: 8eacc2acde8d243139562d24206a1117
-    m_Address: Hovl Studio/AAA Magic circles Vol 3
+  - m_GUID: 84912d38697e8ab45b25c8bf6df84324
+    m_Address: HovlStudio/MagicCircles3
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 40b05caf22c97488ab07c07fece64b25, type: 2}
-    - {fileID: 11400000, guid: 47b7493a2e307438faa79e5aede85b45, type: 2}
-    - {fileID: 11400000, guid: bf41c33fa397145eb86ae95e395e51e4, type: 2}
+    - {fileID: 11400000, guid: 0672a24edba084f3d8fe0b3531ca3edc, type: 2}
+    - {fileID: 11400000, guid: 1126584e3ae0d4f89835d7e1c8edfedf, type: 2}

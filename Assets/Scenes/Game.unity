@@ -9870,7 +9870,7 @@ MonoBehaviour:
     _text: {fileID: 479038091}
   _victory:
     _effectReference:
-      m_AssetGUID: 7945edc5f044e474ba6e96249a09af29
+      m_AssetGUID: 3b53808cca1a8438da6bd42c4c7f6338
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0

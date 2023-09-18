@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: HovlMagicCircles1
+  m_EditorClassIdentifier: 
+  m_GroupName: HovlMagicCircles1
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 34ed809e8189746e4953dff231efb219
+  m_SerializeEntries:
+  - m_GUID: 58c21e79a135d304d868043c4f1b8d60
+    m_Address: HovlStudio/MagicCircles1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 51346aa307e1f4b0c83edc54b3f73dd3, type: 2}
+    - {fileID: 11400000, guid: 539f12d42fa6f494c9c89c2f22248e53, type: 2}
