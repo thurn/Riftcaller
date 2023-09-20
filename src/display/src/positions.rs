@@ -35,7 +35,7 @@ use protos::spelldawn::{
     ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raids::raid_display_state;
-use rules::queries;
+use rules::{queries, CardDefinitionExt};
 use with_error::fail;
 
 pub const RELEASE_SORTING_KEY: u32 = 100;
@@ -234,7 +234,7 @@ pub fn played_position(
     card_id: CardId,
     target: CardTarget,
 ) -> Result<Position> {
-    if builder.user_side != side || rules::card_definition(game, card_id).card_type.is_spell() {
+    if builder.user_side != side || game.card(card_id).definition().card_type.is_spell() {
         Ok(staging())
     } else {
         adapt_position(

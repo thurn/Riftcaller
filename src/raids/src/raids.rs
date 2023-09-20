@@ -34,7 +34,7 @@ use game_data::raid_data::{
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{dispatch, flags, mana, mutations, queries};
+use rules::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 use tracing::debug;
 use with_error::{verify, WithError};
 
@@ -369,7 +369,9 @@ fn score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
 }
 
 fn score_points_for_card(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
-    let scheme_points = rules::card_definition(game, scored.id)
+    let scheme_points = game
+        .card(scored.id)
+        .definition()
         .config
         .stats
         .scheme_points

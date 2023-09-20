@@ -19,7 +19,7 @@ use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
-use rules::{mana, mutations};
+use rules::{mana, mutations, CardDefinitionExt};
 
 pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -115,7 +115,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
             in_play::vault_access_selected(|g, _, _| {
                 let cards = mutations::realize_top_of_deck(g, Side::Overlord, 5)?;
                 if let Some(card_id) =
-                    cards.into_iter().find(|id| rules::card_definition(g, *id).is_scheme())
+                    cards.into_iter().find(|id| g.card(*id).definition().is_scheme())
                 {
                     if !g.raid()?.accessed.contains(&card_id) {
                         g.raid_mut()?.accessed.push(card_id);

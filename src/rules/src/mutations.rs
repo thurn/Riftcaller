@@ -44,7 +44,7 @@ use tracing::{debug, instrument};
 use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, flags, mana, queries};
+use crate::{dispatch, flags, mana, queries, CardDefinitionExt};
 
 /// Change a card to the 'face up' state and makes the card revealed to both
 /// players.
@@ -422,7 +422,7 @@ pub fn unveil_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     verify!(game.card(card_id).is_face_down(), "Card is not face-down");
     verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
-    if let Some(custom_cost) = &crate::card_definition(game, card_id).cost.custom_cost {
+    if let Some(custom_cost) = &game.card(card_id).definition().cost.custom_cost {
         if (custom_cost.can_pay)(game, card_id) {
             (custom_cost.pay)(game, card_id)?;
         } else {
@@ -509,7 +509,7 @@ pub fn summon_minion(game: &mut GameState, card_id: CardId, costs: SummonMinion)
             mana::spend(game, Side::Overlord, ManaPurpose::PayForCard(card_id), cost)?;
         }
 
-        if let Some(custom_cost) = &crate::card_definition(game, card_id).cost.custom_cost {
+        if let Some(custom_cost) = &game.card(card_id).definition().cost.custom_cost {
             (custom_cost.pay)(game, card_id)?;
         }
     }

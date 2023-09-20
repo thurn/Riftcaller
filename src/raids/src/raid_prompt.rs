@@ -24,7 +24,7 @@ use game_data::tutorial_data::TutorialTrigger;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;
 use protos::spelldawn::InterfaceMainControls;
-use rules::queries;
+use rules::{queries, CardDefinitionExt};
 
 /// Builds an [InterfaceMainControls] response to show to the `side` player in
 /// order to make a decision in this raid if a choice is currently available.
@@ -122,7 +122,7 @@ fn render_button(game: &GameState, index: usize, choice: &RaidChoice) -> Respons
 }
 
 fn summon_button(game: &GameState, minion_id: CardId) -> ResponseButton {
-    let label = rules::card_definition(game, minion_id).name.displayed_name();
+    let label = game.card(minion_id).definition().name.displayed_name();
     if let Some(cost) = queries::mana_cost(game, minion_id) {
         if cost > 0 {
             return ResponseButton::new(format!("Summon {}\n{}{}", label, cost, icons::MANA))
@@ -133,7 +133,7 @@ fn summon_button(game: &GameState, minion_id: CardId) -> ResponseButton {
 }
 
 fn use_weapon_button(game: &GameState, interaction: WeaponInteraction) -> ResponseButton {
-    let label = rules::card_definition(game, interaction.weapon_id).name.displayed_name();
+    let label = game.card(interaction.weapon_id).definition().name.displayed_name();
     if let Some(cost) =
         queries::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
     {

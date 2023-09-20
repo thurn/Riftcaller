@@ -23,7 +23,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
-use rules::{flags, mana, mutations};
+use rules::{flags, mana, mutations, CardDefinitionExt};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -131,7 +131,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                 Delegate::ManaCost(QueryDelegate {
                     requirement: matching_raid,
                     transformation: |g, _s, card_id, current| {
-                        if rules::card_definition(g, *card_id).card_type == CardType::Minion {
+                        if g.card(*card_id).definition().card_type == CardType::Minion {
                             current.map(|current| current + 3)
                         } else {
                             current

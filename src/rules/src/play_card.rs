@@ -29,7 +29,7 @@ use game_data::primitives::{CardId, CardSubtype, CardType};
 use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, flags, mana, mutations, queries};
+use crate::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 
 /// Starts a new play card action, either as a result the explicit game action
 /// or as an effect of another card.
@@ -105,7 +105,7 @@ fn evaluate_play_step(game: &mut GameState, play_card: PlayCardData) -> Result<P
 }
 
 fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    let definition = crate::card_definition(game, play_card.card_id);
+    let definition = game.card(play_card.card_id).definition();
     let prompt = match play_card.target {
         CardTarget::None => match definition.card_type {
             CardType::Artifact
@@ -215,7 +215,7 @@ fn pay_mana_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCa
 }
 
 fn pay_custom_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    let definition = crate::card_definition(game, play_card.card_id);
+    let definition = game.card(play_card.card_id).definition();
     if let Some(custom_cost) = &definition.cost.custom_cost {
         (custom_cost.pay)(game, play_card.card_id)?;
     }
@@ -259,9 +259,8 @@ fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep>
 }
 
 fn game_weapons(game: &GameState) -> impl Iterator<Item = &CardState> {
-    game.artifacts().filter(|card| {
-        crate::card_definition(game, card.id).subtypes.contains(&CardSubtype::Weapon)
-    })
+    game.artifacts()
+        .filter(|card| game.card(card.id).definition().subtypes.contains(&CardSubtype::Weapon))
 }
 
 fn card_limit_prompt<'a>(

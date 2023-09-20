@@ -31,7 +31,7 @@ use game_data::primitives::{
 };
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
-use crate::dispatch;
+use crate::{dispatch, CardDefinitionExt};
 
 /// Obtain the [CardStats] for a given card
 pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
@@ -137,7 +137,8 @@ pub fn raze_cost(game: &GameState, card_id: CardId) -> RazeCost {
 
 /// Returns the [AttackBoost] for a given card, if any
 pub fn attack_boost(game: &GameState, card_id: CardId) -> Option<AttackBoost> {
-    crate::card_definition(game, card_id)
+    game.card(card_id)
+        .definition()
         .config
         .stats
         .attack_boost
@@ -212,7 +213,7 @@ pub fn sanctum_access_count(game: &GameState) -> Result<u32> {
 
 /// Looks up what type of target a given card requires
 pub fn card_target_kind(game: &GameState, card_id: CardId) -> CardTargetKind {
-    let definition = crate::card_definition(game, card_id);
+    let definition = game.card(card_id).definition();
     if let Some(targeting) = &definition.config.custom_targeting {
         return match targeting {
             TargetRequirement::None => CardTargetKind::None,
@@ -267,7 +268,7 @@ pub fn played_position(
     card_id: CardId,
     target: CardTarget,
 ) -> Result<CardPosition> {
-    Ok(match crate::card_definition(game, card_id).card_type {
+    Ok(match game.card(card_id).definition().card_type {
         CardType::ChampionSpell | CardType::OverlordSpell => CardPosition::DiscardPile(side),
         CardType::Artifact => CardPosition::ArenaItem(ItemLocation::Artifacts),
         CardType::Ally => CardPosition::ArenaItem(ItemLocation::Evocations),

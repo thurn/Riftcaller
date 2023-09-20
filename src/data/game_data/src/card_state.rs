@@ -25,8 +25,7 @@ use crate::card_name::CardVariant;
 use crate::game::TurnData;
 use crate::game_actions::CardTarget;
 use crate::primitives::{
-    BoostCount, CardId, CardType, ItemLocation, LevelValue, ManaValue, RaidId, RoomId,
-    RoomLocation, Side,
+    BoostCount, CardId, ItemLocation, LevelValue, ManaValue, RaidId, RoomId, RoomLocation, Side,
 };
 
 /// State for an ability within a game

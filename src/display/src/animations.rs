@@ -30,6 +30,7 @@ use protos::spelldawn::{
     PlayEffectPosition, PlaySoundCommand, RoomVisitType, SetCardMovementEffectCommand,
     SetMusicCommand, TimeValue, VisitRoomCommand,
 };
+use rules::CardDefinitionExt;
 use {adapters, assets};
 
 use crate::{card_sync, positions};
@@ -219,7 +220,7 @@ fn apply_projectile(
     interaction: &TargetedInteraction,
 ) {
     if let GameObjectId::CardId(card_id) = interaction.source {
-        let effects = &rules::card_definition(snapshot, card_id).config.special_effects;
+        let effects = &snapshot.card(card_id).definition().config.special_effects;
         if let Some(projectile) = effects.projectile {
             command.projectile = Some(assets::projectile(projectile));
         }

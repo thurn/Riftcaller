@@ -18,6 +18,7 @@ use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
+use rules::CardDefinitionExt;
 
 pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -33,9 +34,9 @@ pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
         abilities: vec![simple_ability(
             text!["The second spell you cast each turn does not cost", ActionSymbol],
             in_play::on_query_action_cost(|g, _, card_id, actions| {
-                if rules::card_definition(g, *card_id).is_spell() {
+                if g.card(*card_id).definition().is_spell() {
                     let cards = history::cards_played_this_turn(g);
-                    if cards.filter(|id| rules::card_definition(g, *id).is_spell()).count() == 1 {
+                    if cards.filter(|id| g.card(*id).definition().is_spell()).count() == 1 {
                         return 0;
                     }
                 }

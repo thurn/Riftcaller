@@ -32,7 +32,7 @@ use game_data::raid_data::RaidStatus;
 use game_data::utils;
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, mana, queries};
+use crate::{dispatch, mana, queries, CardDefinitionExt};
 
 /// Returns the player that is currently able to take actions in the provided
 /// game. If no player can act, e.g. because the game has ended, returns None.
@@ -100,7 +100,7 @@ pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
 pub fn can_pay_card_cost(game: &GameState, card_id: CardId) -> bool {
     let mut can_pay = matches!(queries::mana_cost(game, card_id), Some(cost)
                              if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)));
-    if let Some(custom_cost) = &crate::card_definition(game, card_id).cost.custom_cost {
+    if let Some(custom_cost) = &game.card(card_id).definition().cost.custom_cost {
         can_pay &= (custom_cost.can_pay)(game, card_id);
     }
 
@@ -226,7 +226,7 @@ pub fn activated_ability_has_valid_targets(
 /// Returns true if the provided card has any activated ability that can
 /// currently be used.
 fn can_use_any_card_ability(game: &GameState, card_id: CardId) -> bool {
-    let definition = crate::card_definition(game, card_id);
+    let definition = game.card(card_id).definition();
     definition
         .ability_ids(card_id)
         .any(|ability_id| activated_ability_has_valid_targets(game, card_id.side, ability_id))
@@ -328,7 +328,7 @@ pub fn can_take_level_up_room_action(game: &GameState, side: Side, room_id: Room
 /// Whether the indicated card can be leveled up when the 'level up' action is
 /// taken for its room.
 pub fn can_level_up_card(game: &GameState, card_id: CardId) -> bool {
-    let can_level_up = crate::card_definition(game, card_id).card_type == CardType::Scheme;
+    let can_level_up = game.card(card_id).definition().card_type == CardType::Scheme;
     dispatch::perform_query(game, CanLevelUpCardQuery(card_id), Flag::new(can_level_up)).into()
 }
 
@@ -349,8 +349,8 @@ pub fn entered_play_this_turn(game: &GameState, card_id: CardId) -> bool {
 pub fn can_encounter_target(game: &GameState, source: CardId, target: CardId) -> bool {
     let can_encounter = matches!(
         (
-            crate::card_definition(game, source).config.resonance,
-            crate::card_definition(game, target).config.resonance
+            game.card(source).definition().config.resonance,
+            game.card(target).definition().config.resonance
         ),
         (Some(source_resonance), Some(target_resonance))
         if source_resonance == Resonance::Prismatic || source_resonance == target_resonance
@@ -443,7 +443,7 @@ pub fn can_take_start_turn_action(game: &GameState, side: Side) -> bool {
 
 /// Is the `side` player currently able to unveil the provided card?
 pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId) -> bool {
-    let definition = &crate::card_definition(game, card_id);
+    let definition = &game.card(card_id).definition();
     can_take_game_actions(game)
         && side == Side::Overlord
         && has_priority(game, side)
@@ -466,7 +466,7 @@ pub fn overlord_has_instant_speed_actions(game: &GameState) -> bool {
 ///
 /// Does not check legality of activation beyond the card's subtypes.
 pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {
-    let subtypes = &crate::card_definition(game, card_id).subtypes;
+    let subtypes = &game.card(card_id).definition().subtypes;
     let current_turn = game.info.turn.side;
     let turn_state = game.info.turn_state;
 

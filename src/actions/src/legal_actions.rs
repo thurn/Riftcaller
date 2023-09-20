@@ -24,7 +24,7 @@ use game_data::game_actions::{
 };
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use raids::raid_prompt;
-use rules::{flags, queries};
+use rules::{flags, queries, CardDefinitionExt};
 use with_error::fail;
 
 /// Returns an iterator over currently-legal [GameAction]s for the `side` player
@@ -132,7 +132,9 @@ fn legal_card_actions(
         None
     };
 
-    let activated = rules::card_definition(game, card_id)
+    let activated = game
+        .card(card_id)
+        .definition()
         .ability_ids(card_id)
         .flat_map(move |ability_id| legal_ability_actions(game, side, ability_id));
 

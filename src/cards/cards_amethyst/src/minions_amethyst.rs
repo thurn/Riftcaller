@@ -26,7 +26,7 @@ use game_data::game::RaidJumpRequest;
 use game_data::primitives::{CardType, Rarity, Resonance, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{mana, mutations, queries};
+use rules::{mana, mutations, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
@@ -85,7 +85,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
                     let cards = g
                         .hand(Side::Overlord)
                         .chain(g.discard_pile(Side::Overlord))
-                        .filter(|c| rules::card_definition(g, c.id).card_type == CardType::Minion);
+                        .filter(|c| g.card(c.id).definition().card_type == CardType::Minion);
                     if let Some(minion_id) = queries::highest_cost(cards) {
                         let (room_id, index) = queries::minion_position(g, s.card_id())
                             .with_error(|| "Minion not found")?;

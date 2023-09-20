@@ -17,7 +17,7 @@ use game_data::game::GameState;
 use game_data::primitives::{CardId, Side};
 use game_data::raid_data::{RaidInfo, RaidStep};
 use rules::mana::ManaPurpose;
-use rules::{mana, queries};
+use rules::{mana, queries, CardDefinitionExt};
 
 /// Returns true if the raid `defender_id` is currently face down and could be
 /// turned face up automatically by paying its mana cost.
@@ -31,7 +31,7 @@ pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> bool {
         can_summon &= cost <= mana::get(game, Side::Overlord, ManaPurpose::PayForCard(defender_id))
     }
 
-    if let Some(custom_cost) = &rules::card_definition(game, defender_id).cost.custom_cost {
+    if let Some(custom_cost) = &game.card(defender_id).definition().cost.custom_cost {
         can_summon &= (custom_cost.can_pay)(game, defender_id);
     }
 

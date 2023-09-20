@@ -21,7 +21,7 @@ use game_data::card_definition::{Ability, CardDefinition};
 use game_data::card_name::{CardMetadata, CardVariant};
 use game_data::card_state::CardState;
 use game_data::game::GameState;
-use game_data::primitives::{AbilityId, CardId};
+use game_data::primitives::AbilityId;
 use once_cell::sync::Lazy;
 
 pub mod dispatch;
@@ -67,12 +67,8 @@ pub fn get(variant: CardVariant) -> &'static CardDefinition {
         .unwrap_or_else(|| panic!("Card not found. Call initialize() or update cards?"))
 }
 
-pub fn card_definition(game: &GameState, card_id: CardId) -> &'static CardDefinition {
-    get(game.card(card_id).variant)
-}
-
 pub fn ability_definition(game: &GameState, ability_id: AbilityId) -> &'static Ability {
-    card_definition(game, ability_id.card_id).ability(ability_id.index)
+    game.card(ability_id.card_id).definition().ability(ability_id.index)
 }
 
 pub trait CardDefinitionExt {
