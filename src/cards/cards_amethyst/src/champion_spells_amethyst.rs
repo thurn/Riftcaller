@@ -38,7 +38,7 @@ pub fn meditation(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![text![Gain, Mana(5)], text![Lose, Actions(1), reminder("(if able)")]],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 5);
                 mutations::lose_action_points_if_able(g, s.side(), 1)
             }),
@@ -65,7 +65,7 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
                 text!["If successful, draw a card"]
             ],
             delegates: vec![
-                on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
+                this::on_play(|g, s, play_card| initiate_raid(g, s, play_card.target)),
                 add_vault_access::<1>(matching_raid),
                 add_sanctum_access::<1>(matching_raid),
                 on_raid_success(matching_raid, |g, s, _| {
@@ -95,7 +95,7 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![text![BeginARaid], text![Gain, Mana(5), "to spend during that raid"]],
-            on_cast(|g, s, play_card| {
+            this::on_play(|g, s, play_card| {
                 initiate_raid_with_callback(g, s, play_card.target, |game, raid_id| {
                     mana::add_raid_specific_mana(game, s.side(), raid_id, 5);
                 })
@@ -127,7 +127,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                 text!["During that raid, summon costs are increased by", Mana(3)]
             ],
             delegates: vec![
-                on_cast(|g, s, play_card| initiate_raid(g, s, play_card.target)),
+                this::on_play(|g, s, play_card| initiate_raid(g, s, play_card.target)),
                 Delegate::ManaCost(QueryDelegate {
                     requirement: matching_raid,
                     transformation: |g, _s, card_id, current| {
@@ -161,7 +161,7 @@ pub fn preparation(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![text!["Draw", 4, "cards"], text!["Lose", Actions(1), reminder("(if able)")]],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 4)?;
                 mutations::lose_action_points_if_able(g, s.side(), 1)
             }),

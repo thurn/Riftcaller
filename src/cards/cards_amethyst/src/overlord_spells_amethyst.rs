@@ -37,7 +37,7 @@ pub fn overwhelming_power(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![Gain, Mana(15)],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 15);
                 Ok(())
             }),
@@ -61,7 +61,7 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
             text![
                 "Place 2 level counters on each card in target room which didn't enter play this turn"
             ],
-            on_cast(|g, _, played| {
+            this::on_play(|g, _, played| {
                 let targets = g
                     .defenders_and_occupants(played.target.room_id()?)
                     .filter(|card| {

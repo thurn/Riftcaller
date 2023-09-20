@@ -91,7 +91,7 @@ pub fn gathering_dark(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![Gain, Mana(9)],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
             }),

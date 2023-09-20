@@ -39,7 +39,7 @@ pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![Gain, Mana(9)],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
             }),
@@ -61,7 +61,7 @@ pub fn eldritch_surge(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![Gain, Mana(3)],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 3);
                 Ok(())
             }),
@@ -136,7 +136,7 @@ pub fn contemplate(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text![text![Gain, Mana(2)], text!["Draw a card"]],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 2);
                 mutations::draw_cards(g, s.side(), 1)?;
                 Ok(())
@@ -159,7 +159,7 @@ pub fn ancestral_knowledge(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text!["Draw", 3, "cards"],
-            on_cast(|g, s, _| {
+            this::on_play(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 3)?;
                 Ok(())
             }),

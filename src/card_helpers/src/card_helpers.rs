@@ -16,7 +16,6 @@
 //! wildcard import in card definition files.
 
 pub mod abilities;
-pub mod card_predicates;
 pub mod costs;
 pub mod history;
 pub mod in_play;
@@ -33,8 +32,8 @@ use game_data::card_definition::{
 };
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
-    AbilityActivated, CardPlayed, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded,
-    RaidEvent, RequirementFn, Scope, TransformationFn, UsedWeapon,
+    AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded, RaidEvent,
+    RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game::GameState;
 use game_data::game_actions::{CardTarget, PromptChoice};
@@ -184,11 +183,6 @@ pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 /// Predicate checking if a room is an inner room
 pub fn is_inner_room(room_id: RoomId) -> bool {
     room_id == RoomId::Vault || room_id == RoomId::Sanctum || room_id == RoomId::Crypts
-}
-
-/// A delegate which triggers when a card is cast
-pub fn on_cast(mutation: MutationFn<CardPlayed>) -> Delegate {
-    Delegate::PlayCard(EventDelegate { requirement: this_card, mutation })
 }
 
 /// A [Delegate] which triggers when an ability is activated
