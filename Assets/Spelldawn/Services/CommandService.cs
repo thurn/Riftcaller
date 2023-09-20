@@ -238,7 +238,6 @@ namespace Spelldawn.Services
 
     IEnumerator HandleUpdateGameView(GameView game, bool animate)
     {
-      var startTime = Time.time;
       _registry.CardService.SetDeckViews(game.User?.DeckView, game.Opponent?.DeckView);
 
       if (game.User != null)
@@ -263,8 +262,6 @@ namespace Spelldawn.Services
       _registry.DocumentService.RenderMainControls(game.MainControls);
       
       _registry.TutorialService.SetTutorialEffects(game.TutorialEffects);
-
-      Debug.Log($"HandleUpdateGameView: Finished updating game view in {Time.time - startTime} seconds");
     }
 
     void HandleRenderPlayer(PlayerName playerName, PlayerView playerView)

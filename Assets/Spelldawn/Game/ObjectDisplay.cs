@@ -185,6 +185,32 @@ namespace Spelldawn.Game
       _objects = _objects.OrderBy(o => o.SortingKey).ThenBy(o => o.SortingSubkey).ToList();
     }
 
+    bool IsEquivalentTransform(Displayable displayable, Vector3 position, Vector3? rotation, float scale)
+    {
+      if (Vector3.Distance(displayable.transform.position, position) > 0.01)
+      {
+        return false;
+      }
+
+      if (rotation != null && Vector3.Distance(
+            EulerAngleDistance(displayable.transform.localEulerAngles, rotation.Value), Vector3.zero) > 0.01f)
+      {
+        return false;
+      }
+
+      if (Vector3.Distance(displayable.transform.localScale, scale * Vector3.one) > 0.01)
+      {
+        return false;
+      }
+      
+      return true;
+    }
+
+    Vector3 EulerAngleDistance(Vector3 a, Vector3 b) => new(
+      Mathf.DeltaAngle(a.x, b.x),
+      Mathf.DeltaAngle(a.y, b.y),
+      Mathf.DeltaAngle(a.z, b.z));
+
     void MoveObjectsToPosition(bool animate)
     {
       Sequence? sequence = null;
@@ -198,6 +224,7 @@ namespace Spelldawn.Game
       }
 
       const float duration = TweenUtils.MoveAnimationDurationSeconds;
+      var hasTweens = false;
 
       for (var i = 0; i < _objects.Count; ++i)
       {
@@ -205,8 +232,13 @@ namespace Spelldawn.Game
         var position = CalculateObjectPosition(i, _objects.Count);
         var rotation = CalculateObjectRotation(i, _objects.Count);
         var scale = CalculateObjectScale(i, _objects.Count) ?? displayable.DefaultScale;
-
+        
         var shouldAnimate = animate;
+        if (shouldAnimate && IsEquivalentTransform(displayable, position, rotation, scale))
+        {
+          shouldAnimate = false;
+        }
+
         if (displayable.IsContainer())
         {
           // If the object is itself a container, we jump it to the destination position and then
@@ -218,6 +250,7 @@ namespace Spelldawn.Game
         if (shouldAnimate)
         {
           sequence.Insert(atPosition: 0, displayable.transform.DOMove(position, duration));
+          hasTweens = true;
         }
         else
         {
@@ -230,6 +263,7 @@ namespace Spelldawn.Game
           {
             sequence.Insert(atPosition: 0,
               displayable.transform.DOLocalRotate(vector, duration));
+            hasTweens = true;
           }
           else
           {
@@ -241,6 +275,7 @@ namespace Spelldawn.Game
         {
           sequence.Insert(atPosition: 0,
             displayable.transform.DOScale(Vector3.one * scale, duration));
+          hasTweens = true;
         }
         else
         {
@@ -250,12 +285,16 @@ namespace Spelldawn.Game
         displayable.SetGameContext(GameContext);
       }
 
-      if (animate)
+      if (animate && hasTweens)
       {
         sequence.InsertCallback(duration, () =>
         {
           _animationRunning = false;
         });
+      }
+      else
+      {
+        _animationRunning = false;
       }
     }
   }
