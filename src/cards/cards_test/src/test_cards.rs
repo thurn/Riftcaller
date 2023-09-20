@@ -17,13 +17,12 @@
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
-    SpecialEffects,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::RaidOutcome;
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
-use game_data::special_effects::{Projectile, TimedEffect};
+use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
 
@@ -438,10 +437,10 @@ pub fn test_attack_weapon(metadata: CardMetadata) -> CardDefinition {
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(Resonance::Infernal)
-            .special_effects(SpecialEffects {
-                projectile: Some(Projectile::Projectiles1(8)),
-                additional_hit: Some(TimedEffect::SwordSlashes(1)),
-            })
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(8))
+                    .additional_hit(TimedEffect::SwordSlashes(1)),
+            )
             .build(),
         ..test_champion_spell(metadata)
     }

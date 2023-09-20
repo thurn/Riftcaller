@@ -16,9 +16,10 @@ use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::game::GameState;
 use game_data::game_updates::{GameUpdate, InitiatedBy, TargetedInteraction};
-use game_data::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
+use game_data::primitives::{AbilityId, CardId, GameObjectId, Milliseconds, RoomId, Side};
 use game_data::special_effects::{
-    FantasyEventSounds, FireworksSound, Projectile, SoundEffect, SpecialEffect, TimedEffect,
+    FantasyEventSounds, FireworksSound, Projectile, ProjectileData, SoundEffect, SpecialEffect,
+    TimedEffect, TimedEffectData,
 };
 use game_data::utils;
 use protos::spelldawn::game_command::Command;
@@ -93,8 +94,8 @@ pub fn render(
                 initiate_raid(builder, *room_id)
             }
         }
-        GameUpdate::TargetedInteraction(interaction) => {
-            targeted_interaction(builder, snapshot, interaction)
+        GameUpdate::CombatInteraction(interaction) => {
+            combat_interaction(builder, snapshot, *interaction)
         }
         GameUpdate::ScoreCard(_, card_id) => score_card(builder, *card_id),
         GameUpdate::GameOver(_) => {}
@@ -196,39 +197,41 @@ fn initiate_raid(commands: &mut ResponseBuilder, target: RoomId) {
     }));
 }
 
-fn targeted_interaction(
+fn combat_interaction(
     builder: &mut ResponseBuilder,
     snapshot: &GameState,
-    interaction: &TargetedInteraction,
+    interaction: TargetedInteraction,
 ) {
-    let mut projectile = FireProjectileCommand {
-        source_id: Some(adapters::game_object_identifier(builder, interaction.source)),
-        target_id: Some(adapters::game_object_identifier(builder, interaction.target)),
-        projectile: Some(assets::projectile(Projectile::Projectiles1(3))),
-        travel_duration: Some(adapters::milliseconds(300)),
-        wait_duration: Some(adapters::milliseconds(300)),
-        ..FireProjectileCommand::default()
-    };
-    apply_projectile(snapshot, &mut projectile, interaction);
-    builder.push(Command::FireProjectile(projectile));
-}
-
-/// Applies custom projectile effects for a targeted interaction.
-fn apply_projectile(
-    snapshot: &GameState,
-    command: &mut FireProjectileCommand,
-    interaction: &TargetedInteraction,
-) {
+    let mut projectile = &ProjectileData::new(Projectile::Projectiles1(3));
     if let GameObjectId::CardId(card_id) = interaction.source {
-        let effects = &snapshot.card(card_id).definition().config.special_effects;
-        if let Some(projectile) = effects.projectile {
-            command.projectile = Some(assets::projectile(projectile));
-        }
-        if let Some(additional_hit) = effects.additional_hit {
-            command.additional_hit = Some(assets::timed_effect(additional_hit));
-            command.additional_hit_delay = Some(adapters::milliseconds(100));
+        if let Some(data) = &snapshot.card(card_id).definition().config.combat_projectile {
+            projectile = data;
         }
     }
+
+    builder.push(fire_projectile(builder, interaction, projectile));
+}
+
+fn fire_projectile(
+    builder: &ResponseBuilder,
+    interaction: TargetedInteraction,
+    data: &ProjectileData,
+) -> Command {
+    Command::FireProjectile(FireProjectileCommand {
+        source_id: Some(adapters::game_object_identifier(builder, interaction.source)),
+        target_id: Some(adapters::game_object_identifier(builder, interaction.target)),
+        projectile: Some(assets::projectile(data.projectile)),
+        travel_duration: Some(adapters::time_value(data.travel_time)),
+        fire_sound: data.fire_sound.map(assets::sound_effect),
+        impact_sound: data.impact_sound.map(assets::sound_effect),
+        additional_hit: data.additional_hit.map(assets::timed_effect),
+        additional_hit_delay: data
+            .additional_hit
+            .map(|_| adapters::time_value(data.additional_hit_delay)),
+        wait_duration: Some(adapters::time_value(data.wait_duration)),
+        hide_on_hit: false,
+        jump_to_position: None,
+    })
 }
 
 fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
@@ -236,23 +239,17 @@ fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
     builder.push(play_sound(SoundEffect::FantasyEvents(FantasyEventSounds::Positive1)));
     builder.push(play_timed_effect(
         builder,
-        TimedEffect::MagicHits(4),
         card_id,
-        PlayEffectOptions {
-            duration: Some(adapters::milliseconds(700)),
-            sound: Some(SoundEffect::Fireworks(FireworksSound::RocketExplodeLarge)),
-            ..PlayEffectOptions::default()
-        },
+        &TimedEffectData::new(TimedEffect::MagicHits(4))
+            .duration(Milliseconds(700))
+            .sound(SoundEffect::Fireworks(FireworksSound::RocketExplodeLarge)),
     ));
     builder.push(play_timed_effect(
         builder,
-        TimedEffect::MagicHits(4),
         card_id,
-        PlayEffectOptions {
-            duration: Some(adapters::milliseconds(300)),
-            sound: Some(SoundEffect::Fireworks(FireworksSound::RocketExplode)),
-            ..PlayEffectOptions::default()
-        },
+        &TimedEffectData::new(TimedEffect::MagicHits(4))
+            .duration(Milliseconds(300))
+            .sound(SoundEffect::Fireworks(FireworksSound::RocketExplode)),
     ));
     builder.push(delay(1000));
 }
@@ -260,43 +257,38 @@ fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
 fn play_special_effects(builder: &mut ResponseBuilder, effects: &[SpecialEffect]) {
     for effect in effects {
         match effect {
-            SpecialEffect::TimedEffect { .. } => {}
-            SpecialEffect::Projectile { .. } => {}
+            SpecialEffect::TimedEffect { target, effect } => {
+                builder.push(play_timed_effect(builder, *target, effect))
+            }
+            SpecialEffect::Projectile { interaction, projectile } => {
+                builder.push(fire_projectile(builder, *interaction, projectile));
+            }
             SpecialEffect::CardMovementEffect { card_id, effect } => {
                 builder.push(Command::SetCardMovementEffect(SetCardMovementEffectCommand {
                     card_id: Some(adapters::card_identifier(*card_id)),
                     projectile: Some(assets::projectile(*effect)),
                 }))
             }
-            SpecialEffect::SoundEffect { .. } => {}
         }
     }
 }
 
-#[derive(Debug, Default)]
-struct PlayEffectOptions {
-    pub duration: Option<TimeValue>,
-    pub sound: Option<SoundEffect>,
-    pub scale: Option<f32>,
-}
-
 fn play_timed_effect(
     builder: &ResponseBuilder,
-    effect: TimedEffect,
-    id: impl Into<GameObjectId>,
-    options: PlayEffectOptions,
+    position: impl Into<GameObjectId>,
+    effect: &TimedEffectData,
 ) -> Command {
     Command::PlayEffect(PlayEffectCommand {
-        effect: Some(assets::timed_effect(effect)),
+        effect: Some(assets::timed_effect(effect.effect)),
         position: Some(PlayEffectPosition {
             effect_position: Some(EffectPosition::GameObject(adapters::game_object_identifier(
                 builder,
-                id.into(),
+                position.into(),
             ))),
         }),
-        scale: options.scale,
-        duration: Some(options.duration.unwrap_or_else(|| adapters::milliseconds(300))),
-        sound: options.sound.map(assets::sound_effect),
+        scale: effect.scale,
+        duration: Some(adapters::time_value(effect.duration)),
+        sound: effect.sound.map(assets::sound_effect),
     })
 }
 

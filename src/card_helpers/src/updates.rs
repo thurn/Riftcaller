@@ -15,7 +15,7 @@
 use game_data::game::GameState;
 use game_data::game_updates::GameUpdate;
 use game_data::primitives::{AbilityId, CardId, GameObjectId, HasAbilityId, HasCardId};
-use game_data::special_effects::{Projectile, SpecialEffect, TimedEffect};
+use game_data::special_effects::{Projectile, SpecialEffect, TimedEffectData};
 
 pub struct Updates<'a> {
     game: &'a mut GameState,
@@ -54,7 +54,11 @@ impl<'a> Updates<'a> {
 
     /// Creates a [SpecialEffect::TimedEffect] playing a visual effect on the
     /// indicated target.    
-    pub fn timed_effect(mut self, effect: TimedEffect, target: impl Into<GameObjectId>) -> Self {
+    pub fn timed_effect(
+        mut self,
+        effect: TimedEffectData,
+        target: impl Into<GameObjectId>,
+    ) -> Self {
         self.effects.push(SpecialEffect::TimedEffect { target: target.into(), effect });
         self
     }

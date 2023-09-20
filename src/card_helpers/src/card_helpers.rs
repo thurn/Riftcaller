@@ -27,8 +27,7 @@ pub mod updates;
 
 use anyhow::Result;
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardStats, Cost, CustomCost, SchemePoints, SpecialEffects,
-    TargetRequirement,
+    Ability, AbilityType, AttackBoost, CardStats, Cost, CustomCost, SchemePoints, TargetRequirement,
 };
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
@@ -43,7 +42,6 @@ use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue,
     RaidId, RoomId, Side,
 };
-use game_data::special_effects::Projectile;
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
 use game_data::utils;
@@ -336,11 +334,6 @@ pub fn save_raid_id(
 pub fn add_stored_mana(game: &mut GameState, card_id: CardId, amount: ManaValue) -> ManaValue {
     game.card_mut(card_id).data.stored_mana += amount;
     game.card(card_id).data.stored_mana
-}
-
-/// Creates a [SpecialEffects] to fire a given [Projectile].
-pub fn projectile(projectile: Projectile) -> SpecialEffects {
-    SpecialEffects { projectile: Some(projectile), additional_hit: None }
 }
 
 /// A [PromptChoice] to end the current raid.

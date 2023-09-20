@@ -32,7 +32,7 @@ use crate::primitives::{
     HealthValue, LevelValue, ManaValue, PointsValue, Rarity, RazeCost, Resonance, RoomId, School,
     ShieldValue, Side, Sprite,
 };
-use crate::special_effects::{Projectile, TimedEffect};
+use crate::special_effects::ProjectileData;
 use crate::text::TextElement;
 
 /// A cost represented by custom functions.
@@ -166,15 +166,6 @@ pub struct Ability {
     pub delegates: Vec<Delegate>,
 }
 
-/// Describes custom visual & audio effects for this card
-#[derive(Debug, Default)]
-pub struct SpecialEffects {
-    /// Projectile to be fired by this card during targeted interactions
-    pub projectile: Option<Projectile>,
-    /// Additional hit effect after primary projectile impact
-    pub additional_hit: Option<TimedEffect>,
-}
-
 /// Individual card configuration; properties which are not universal for all
 /// cards
 #[derive(Debug, Default)]
@@ -182,7 +173,7 @@ pub struct CardConfig {
     pub stats: CardStats,
     pub resonance: Option<Resonance>,
     pub custom_targeting: Option<TargetRequirement<CardId>>,
-    pub special_effects: SpecialEffects,
+    pub combat_projectile: Option<ProjectileData>,
 
     // Alternate image to display to identify players in the arena
     pub player_portrait: Option<Sprite>,
@@ -258,8 +249,8 @@ impl CardConfigBuilder {
         self
     }
 
-    pub fn special_effects(mut self, effects: SpecialEffects) -> Self {
-        self.config.special_effects = effects;
+    pub fn combat_projectile(mut self, projectile: ProjectileData) -> Self {
+        self.config.combat_projectile = Some(projectile);
         self
     }
 }

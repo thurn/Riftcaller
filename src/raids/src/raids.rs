@@ -251,7 +251,7 @@ fn use_weapon(
     mana::spend(game, Side::Champion, ManaPurpose::UseWeapon(interaction.weapon_id), cost)?;
 
     game.record_update(|| {
-        GameUpdate::TargetedInteraction(TargetedInteraction {
+        GameUpdate::CombatInteraction(TargetedInteraction {
             source: GameObjectId::CardId(interaction.weapon_id),
             target: GameObjectId::CardId(interaction.defender_id),
         })
@@ -277,7 +277,7 @@ fn minion_defeated(game: &mut GameState, interaction: WeaponInteraction) -> Resu
 
 fn fire_minion_combat_ability(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
     game.record_update(|| {
-        GameUpdate::TargetedInteraction(TargetedInteraction {
+        GameUpdate::CombatInteraction(TargetedInteraction {
             source: GameObjectId::CardId(minion_id),
             target: GameObjectId::Character(Side::Champion),
         })

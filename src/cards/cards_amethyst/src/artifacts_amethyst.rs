@@ -18,13 +18,13 @@ use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, SpecialEffects,
+    Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
-use game_data::special_effects::{Projectile, TimedEffect};
+use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 
 pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -62,10 +62,10 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
             .base_attack(2)
             .attack_boost(AttackBoost { cost: 2, bonus: 3 })
             .resonance(Resonance::Infernal)
-            .special_effects(SpecialEffects {
-                projectile: Some(Projectile::Projectiles1(8)),
-                additional_hit: Some(TimedEffect::SwordSlashes(1)),
-            })
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(8))
+                    .additional_hit(TimedEffect::SwordSlashes(1)),
+            )
             .build(),
     }
 }
@@ -87,7 +87,7 @@ pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
             .breach(1)
             .resonance(Resonance::Abyssal)
-            .special_effects(projectile(Projectile::Projectiles1(2)))
+            .combat_projectile(ProjectileData::new(Projectile::Projectiles1(2)))
             .build(),
     }
 }
@@ -123,7 +123,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 1, bonus: 0 })
             .resonance(Resonance::Mortal)
-            .special_effects(projectile(Projectile::Projectiles1(4)))
+            .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),
     }
 }

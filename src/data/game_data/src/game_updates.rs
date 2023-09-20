@@ -19,7 +19,7 @@ use crate::special_effects::SpecialEffect;
 /// Indicates one game object targeted another with an effect.
 ///
 /// Typically represented in animation as a projectile being fired.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub struct TargetedInteraction {
     pub source: GameObjectId,
     pub target: GameObjectId,
@@ -61,8 +61,8 @@ pub enum GameUpdate {
     LevelUpRoom(RoomId, InitiatedBy),
     /// The Champion has initiated a raid on a room
     InitiateRaid(RoomId, InitiatedBy),
-    /// See [TargetedInteraction].
-    TargetedInteraction(TargetedInteraction),
+    /// Interaction between two cards during raid combat.
+    CombatInteraction(TargetedInteraction),
     /// A player has scored a card
     ScoreCard(Side, CardId),
     /// The game has ended and the indicated player has won
