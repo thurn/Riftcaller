@@ -24,8 +24,8 @@ use game_data::game_actions::{
     ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
 };
 use game_data::game_effect::GameEffect;
+use game_data::game_updates::GameUpdate;
 use game_data::primitives::{CardId, CardSubtype, CardType};
-use game_data::updates::GameUpdate;
 use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
@@ -224,7 +224,7 @@ fn pay_custom_cost(game: &mut GameState, play_card: PlayCardData) -> Result<Play
 
 fn turn_face_up(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
     mutations::turn_face_up(game, play_card.card_id);
-    game.record_update(|| GameUpdate::PlayCardFaceUp(play_card.card_id.side, play_card.card_id));
+    game.record_update(|| GameUpdate::PlayCard(play_card.card_id.side, play_card.card_id));
     Ok(PlayCardStep::MoveToTargetPosition)
 }
 

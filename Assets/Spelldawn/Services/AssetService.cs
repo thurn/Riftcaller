@@ -184,6 +184,9 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.CreateTokenCard:
             LoadCardListAssets(requests, new List<CardView> { command.CreateTokenCard.Card });
             break;
+          case GameCommand.CommandOneofCase.SetCardMovementEffect:
+            LoadProjectile(requests, command.SetCardMovementEffect.Projectile);            
+            break;
           case GameCommand.CommandOneofCase.UpdateWorldMap:
             LoadWorldMapAssets(requests, command.UpdateWorldMap);
             break;

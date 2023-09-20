@@ -26,12 +26,12 @@ use game_data::delegates::{
 };
 use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent, RaidJumpRequest};
 use game_data::game_actions::RaidAction;
+use game_data::game_updates::{GameUpdate, InitiatedBy, TargetedInteraction};
 use game_data::primitives::{CardId, GameObjectId, RaidId, RoomId, Side};
 use game_data::raid_data::{
     RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus, RaidStep, ScoredCard,
     WeaponInteraction,
 };
-use game_data::updates::{GameUpdate, InitiatedBy, TargetedInteraction};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{dispatch, flags, mana, mutations, queries};

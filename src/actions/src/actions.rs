@@ -27,8 +27,8 @@ use game_data::game_actions::{
     BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
     CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction, PromptContext,
 };
+use game_data::game_updates::{GameUpdate, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
-use game_data::updates::{GameUpdate, InitiatedBy};
 use rules::mana::ManaPurpose;
 use rules::{dispatch, flags, game_effect_actions, mana, mutations, play_card, queries};
 use tracing::{debug, instrument};

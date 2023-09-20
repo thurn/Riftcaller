@@ -1529,6 +1529,16 @@ message CreateTokenCardCommand {
     bool animate = 2;
 }
 
+// Adds a visual effect to a card which displays a trail while it is
+// being moved. This is accomplished in practice by attaching a projectile
+// body to the card itself. The effect is removed when the card finishes
+// being moved to a new position.
+message SetCardMovementEffectCommand {
+    CardIdentifier card_id = 1;
+
+    ProjectileAddress projectile = 2;
+}
+
 message GameObjectMove {
     GameObjectIdentifier id = 1;
 
@@ -1935,6 +1945,7 @@ message GameCommand {
         LoadSceneCommand load_scene = 14;
         MoveGameObjectsCommand move_game_objects = 15;
         CreateTokenCardCommand create_token_card = 16;
+        SetCardMovementEffectCommand set_card_movement_effect = 17;
         UpdateWorldMapCommand update_world_map = 18;
         RenderScreenOverlayCommand render_screen_overlay = 19;
         UpdateInterfaceCommand update_interface = 20;

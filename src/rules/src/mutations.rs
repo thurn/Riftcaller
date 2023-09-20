@@ -34,11 +34,11 @@ use game_data::delegates::{
     SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData, TurnState};
+use game_data::game_updates::GameUpdate;
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
     Side, TurnNumber,
 };
-use game_data::updates::GameUpdate;
 use game_data::{random, undo_tracker};
 use tracing::{debug, instrument};
 use with_error::{fail, verify};

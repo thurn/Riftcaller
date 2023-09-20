@@ -14,6 +14,7 @@
 
 use crate::game::GameState;
 use crate::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
+use crate::special_effects::SpecialEffect;
 
 /// Indicates one game object targeted another with an effect.
 ///
@@ -39,12 +40,14 @@ pub enum InitiatedBy {
 pub enum GameUpdate {
     /// Indicates that a player's turn has started
     StartTurn(Side),
-    /// A player has played a card which entered play face-up.
-    PlayCardFaceUp(Side, CardId),
+    /// A player has played a card face-up.
+    PlayCard(Side, CardId),
+    /// A request to play one or more visual or audio effects
+    CustomEffects(Vec<SpecialEffect>),
     /// A player has activated an ability of a card
     AbilityActivated(Side, AbilityId),
     /// An ability of a card has triggered an effect
-    AbilityTriggered(AbilityId),
+    AbilityTriggered(AbilityId, Vec<SpecialEffect>),
     /// One or more cards have been drawn by the [Side] player.
     DrawCards(Side, Vec<CardId>),
     /// A player has shuffled cards into their deck
@@ -79,7 +82,7 @@ pub struct UpdateStep {
 
 /// Standard enum used by APIs to configure their update tracking behavior.
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub enum Updates {
+pub enum UpdateState {
     /// Game updates should not be tracked by the receiver
     Ignore,
     /// Game updates should be tracked by the receiver
@@ -104,20 +107,19 @@ pub enum Updates {
 #[derive(Debug, Clone)]
 pub struct UpdateTracker {
     /// Used to globally disable or enable update tracking
-    pub state: Updates,
-    /// List of update steps, either full snapshots of the game state or
-    /// individual mutations.
+    pub state: UpdateState,
+    /// List of update steps with snapshots of the game state
     pub steps: Vec<UpdateStep>,
 }
 
 impl Default for UpdateTracker {
     fn default() -> Self {
-        Self { state: Updates::Ignore, steps: vec![] }
+        Self { state: UpdateState::Ignore, steps: vec![] }
     }
 }
 
 impl UpdateTracker {
-    pub fn new(updates: Updates) -> Self {
+    pub fn new(updates: UpdateState) -> Self {
         Self { state: updates, steps: vec![] }
     }
 }

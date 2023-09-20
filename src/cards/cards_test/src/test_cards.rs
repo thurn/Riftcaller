@@ -439,8 +439,8 @@ pub fn test_attack_weapon(metadata: CardMetadata) -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
             .resonance(Resonance::Infernal)
             .special_effects(SpecialEffects {
-                projectile: Some(Projectile::Hovl(8)),
-                additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
+                projectile: Some(Projectile::Projectiles1(8)),
+                additional_hit: Some(TimedEffect::SwordSlashes(1)),
             })
             .build(),
         ..test_champion_spell(metadata)

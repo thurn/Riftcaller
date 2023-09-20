@@ -218,7 +218,7 @@ pub fn jewel(rarity: Rarity) -> SpriteAddress {
 pub fn projectile(projectile: Projectile) -> ProjectileAddress {
     ProjectileAddress {
         address: match projectile {
-            Projectile::Hovl(number) => {
+            Projectile::Projectiles1(number) => {
                 format!("HovlStudio/Projectiles1/Projectile {number}.prefab")
             }
         },
@@ -228,10 +228,10 @@ pub fn projectile(projectile: Projectile) -> ProjectileAddress {
 pub fn timed_effect(effect: TimedEffect) -> EffectAddress {
     EffectAddress {
         address: match effect {
-            TimedEffect::HovlMagicHit(number) => {
+            TimedEffect::MagicHits(number) => {
                 format!("HovlStudio/MagicHits/Hit {number}.prefab")
             }
-            TimedEffect::HovlSwordSlash(number) => {
+            TimedEffect::SwordSlashes(number) => {
                 format!("HovlStudio/SwordSlashes/Sword Slash {number}.prefab")
             }
         },

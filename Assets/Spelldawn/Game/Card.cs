@@ -89,6 +89,7 @@ namespace Spelldawn.Game
     CardIdentifier? _pointToParent;
     bool _showingArrow;
     bool _isMove;
+    GameObject? _movementEffect;
 
     [Serializable]
     public sealed class Icon
@@ -184,6 +185,28 @@ namespace Spelldawn.Game
           return null;
         }
       }
+    }
+
+    public void SetMovementEffect(GameObject movementEffect)
+    {
+      if (movementEffect)
+      {
+        ClearMovementEffect();
+      }
+      
+      movementEffect.transform.SetParent(transform);
+      movementEffect.transform.localPosition = Vector3.zero;
+      _movementEffect = movementEffect;
+    }
+
+    public void ClearMovementEffect()
+    {
+      if (_movementEffect && _movementEffect != null)
+      {
+        _movementEffect.SetActive(false);
+        _movementEffect.transform.SetParent(null);
+      }
+      _movementEffect = null;
     }
 
     void Update()

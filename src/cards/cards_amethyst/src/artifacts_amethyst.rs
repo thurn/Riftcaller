@@ -63,8 +63,8 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
             .attack_boost(AttackBoost { cost: 2, bonus: 3 })
             .resonance(Resonance::Infernal)
             .special_effects(SpecialEffects {
-                projectile: Some(Projectile::Hovl(8)),
-                additional_hit: Some(TimedEffect::HovlSwordSlash(1)),
+                projectile: Some(Projectile::Projectiles1(8)),
+                additional_hit: Some(TimedEffect::SwordSlashes(1)),
             })
             .build(),
     }
@@ -87,7 +87,7 @@ pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
             .breach(1)
             .resonance(Resonance::Abyssal)
-            .special_effects(projectile(Projectile::Hovl(2)))
+            .special_effects(projectile(Projectile::Projectiles1(2)))
             .build(),
     }
 }
@@ -123,7 +123,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 1, bonus: 0 })
             .resonance(Resonance::Mortal)
-            .special_effects(projectile(Projectile::Hovl(4)))
+            .special_effects(projectile(Projectile::Projectiles1(4)))
             .build(),
     }
 }

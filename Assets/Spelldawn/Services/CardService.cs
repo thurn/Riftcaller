@@ -220,6 +220,22 @@ namespace Spelldawn.Services
       StartCoroutine(InfoZoom(card));
     }
 
+    public void OnCommandsFinished()
+    {
+      foreach (var card in _cards.Values)
+      {
+        card.ClearMovementEffect();
+      }
+    }
+
+    public void HandleSetCardMovementEffect(SetCardMovementEffectCommand command)
+    {
+      var card = FindCard(command.CardId);
+      var projectile = _registry.AssetPoolService.Create(
+        _registry.AssetService.GetProjectile(command.Projectile), card.transform.position);      
+      card.SetMovementEffect(projectile.gameObject);
+    }
+
     IEnumerator InfoZoom(Card card)
     {
       ClearInfoZoom();

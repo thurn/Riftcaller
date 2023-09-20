@@ -24,6 +24,7 @@ pub mod projects;
 pub mod show_prompt;
 pub mod text_macro;
 pub mod this;
+pub mod updates;
 
 use anyhow::Result;
 use game_data::card_definition::{
@@ -38,6 +39,7 @@ use game_data::delegates::{
 use game_data::game::GameState;
 use game_data::game_actions::{CardTarget, PromptChoice};
 use game_data::game_effect::GameEffect;
+use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue,
     RaidId, RoomId, Side,
@@ -45,7 +47,6 @@ use game_data::primitives::{
 use game_data::special_effects::Projectile;
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
-use game_data::updates::{GameUpdate, InitiatedBy};
 use game_data::utils;
 use rules::mana;
 use rules::mana::ManaPurpose;
@@ -183,19 +184,6 @@ pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 /// Predicate checking if a room is an inner room
 pub fn is_inner_room(room_id: RoomId) -> bool {
     room_id == RoomId::Vault || room_id == RoomId::Sanctum || room_id == RoomId::Crypts
-}
-
-/// Pushes a [GameUpdate] indicating the ability represented by [Scope] should
-/// have a trigger animation shown in the UI.
-pub fn alert(game: &mut GameState, scope: Scope) {
-    game.record_update(|| GameUpdate::AbilityTriggered(scope.ability_id()));
-}
-
-/// Invokes [alert] if the provided `number` is not zero.
-pub fn alert_if_nonzero(game: &mut GameState, scope: Scope, number: u32) {
-    if number > 0 {
-        alert(game, scope);
-    }
 }
 
 /// A delegate which triggers when a card is cast

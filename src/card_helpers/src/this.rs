@@ -22,7 +22,7 @@ pub fn card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
     scope.card_id() == card_id.card_id()
 }
 
-/// A delegate which triggers when a card is cast
-pub fn on_cast(mutation: MutationFn<CardPlayed>) -> Delegate {
+/// A delegate which triggers when a card is played
+pub fn on_play(mutation: MutationFn<CardPlayed>) -> Delegate {
     Delegate::CastCard(EventDelegate { requirement: card, mutation })
 }

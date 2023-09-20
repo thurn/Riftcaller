@@ -15,11 +15,11 @@
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::game::GameState;
+use game_data::game_updates::{GameUpdate, InitiatedBy, TargetedInteraction};
 use game_data::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
 use game_data::special_effects::{
-    FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
+    FantasyEventSounds, FireworksSound, Projectile, SoundEffect, SpecialEffect, TimedEffect,
 };
-use game_data::updates::{GameUpdate, InitiatedBy, TargetedInteraction};
 use game_data::utils;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::object_position::Position;
@@ -27,8 +27,8 @@ use protos::spelldawn::play_effect_position::EffectPosition;
 use protos::spelldawn::{
     CreateTokenCardCommand, DelayCommand, DisplayGameMessageCommand, FireProjectileCommand,
     GameMessageType, GameObjectMove, MoveGameObjectsCommand, MusicState, PlayEffectCommand,
-    PlayEffectPosition, PlaySoundCommand, RoomVisitType, SetMusicCommand, TimeValue,
-    VisitRoomCommand,
+    PlayEffectPosition, PlaySoundCommand, RoomVisitType, SetCardMovementEffectCommand,
+    SetMusicCommand, TimeValue, VisitRoomCommand,
 };
 use {adapters, assets};
 
@@ -41,17 +41,21 @@ pub fn render(
 ) -> Result<()> {
     match update {
         GameUpdate::StartTurn(side) => start_turn(builder, *side),
-        GameUpdate::PlayCardFaceUp(side, card_id) => {
+        GameUpdate::PlayCard(side, card_id) => {
             if builder.user_side == side.opponent() {
                 show_cards(builder, &vec![*card_id], ShowCards::default())
             }
         }
+        GameUpdate::CustomEffects(effects) => play_special_effects(builder, effects),
         GameUpdate::AbilityActivated(side, ability_id) => {
             if *side != builder.user_side {
                 show_ability(builder, snapshot, *ability_id);
             }
         }
-        GameUpdate::AbilityTriggered(ability_id) => show_ability(builder, snapshot, *ability_id),
+        GameUpdate::AbilityTriggered(ability_id, effects) => {
+            show_ability(builder, snapshot, *ability_id);
+            play_special_effects(builder, effects)
+        }
         GameUpdate::DrawCards(side, cards) => {
             if builder.user_side == *side {
                 show_cards(builder, cards, ShowCards::default())
@@ -118,7 +122,7 @@ struct ShowCards {
     /// 2000ms if there are >= 4 and 1000ms otherwise.
     milliseconds: Option<u32>,
     /// Whether to always use the large revealed card browser. If false, this
-    /// browser is only used if >= 4 cards are dhown.
+    /// browser is only used if >= 4 cards are shown.
     large_browser: bool,
 }
 
@@ -199,7 +203,7 @@ fn targeted_interaction(
     let mut projectile = FireProjectileCommand {
         source_id: Some(adapters::game_object_identifier(builder, interaction.source)),
         target_id: Some(adapters::game_object_identifier(builder, interaction.target)),
-        projectile: Some(assets::projectile(Projectile::Hovl(3))),
+        projectile: Some(assets::projectile(Projectile::Projectiles1(3))),
         travel_duration: Some(adapters::milliseconds(300)),
         wait_duration: Some(adapters::milliseconds(300)),
         ..FireProjectileCommand::default()
@@ -229,9 +233,9 @@ fn apply_projectile(
 fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
     builder.push(set_music(MusicState::Silent));
     builder.push(play_sound(SoundEffect::FantasyEvents(FantasyEventSounds::Positive1)));
-    builder.push(play_effect(
+    builder.push(play_timed_effect(
         builder,
-        TimedEffect::HovlMagicHit(4),
+        TimedEffect::MagicHits(4),
         card_id,
         PlayEffectOptions {
             duration: Some(adapters::milliseconds(700)),
@@ -239,9 +243,9 @@ fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
             ..PlayEffectOptions::default()
         },
     ));
-    builder.push(play_effect(
+    builder.push(play_timed_effect(
         builder,
-        TimedEffect::HovlMagicHit(4),
+        TimedEffect::MagicHits(4),
         card_id,
         PlayEffectOptions {
             duration: Some(adapters::milliseconds(300)),
@@ -252,6 +256,22 @@ fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
     builder.push(delay(1000));
 }
 
+fn play_special_effects(builder: &mut ResponseBuilder, effects: &[SpecialEffect]) {
+    for effect in effects {
+        match effect {
+            SpecialEffect::TimedEffect { .. } => {}
+            SpecialEffect::Projectile { .. } => {}
+            SpecialEffect::CardMovementEffect { card_id, effect } => {
+                builder.push(Command::SetCardMovementEffect(SetCardMovementEffectCommand {
+                    card_id: Some(adapters::card_identifier(*card_id)),
+                    projectile: Some(assets::projectile(*effect)),
+                }))
+            }
+            SpecialEffect::SoundEffect { .. } => {}
+        }
+    }
+}
+
 #[derive(Debug, Default)]
 struct PlayEffectOptions {
     pub duration: Option<TimeValue>,
@@ -259,7 +279,7 @@ struct PlayEffectOptions {
     pub scale: Option<f32>,
 }
 
-fn play_effect(
+fn play_timed_effect(
     builder: &ResponseBuilder,
     effect: TimedEffect,
     id: impl Into<GameObjectId>,

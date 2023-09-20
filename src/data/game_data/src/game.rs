@@ -30,6 +30,7 @@ use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
 use crate::game_actions::GamePrompt;
+use crate::game_updates::{GameUpdate, UpdateState, UpdateStep, UpdateTracker};
 use crate::player_name::PlayerId;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
@@ -38,7 +39,6 @@ use crate::primitives::{
 use crate::raid_data::RaidData;
 use crate::tutorial_data::GameTutorialState;
 use crate::undo_tracker::UndoTracker;
-use crate::updates::{GameUpdate, UpdateStep, UpdateTracker, Updates};
 
 /// Mana to be spent only during the `raid_id` raid
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -310,9 +310,9 @@ impl GameState {
             ability_state: HashMap::new(),
             history: vec![],
             updates: UpdateTracker::new(if config.simulation {
-                Updates::Ignore
+                UpdateState::Ignore
             } else {
-                Updates::Push
+                UpdateState::Push
             }),
             next_sorting_key: 1,
             delegate_cache: DelegateCache::default(),
@@ -326,7 +326,7 @@ impl GameState {
     }
 
     pub fn record_update(&mut self, update: impl FnOnce() -> GameUpdate) {
-        if self.updates.state == Updates::Push {
+        if self.updates.state == UpdateState::Push {
             // Snapshot current game state, omit things that aren't important for display
             // logic.
             let clone = Self {
@@ -334,7 +334,7 @@ impl GameState {
                 info: self.info.clone(),
                 current_action: self.current_action.clone(),
                 raid: self.raid.clone(),
-                updates: UpdateTracker::new(Updates::Ignore),
+                updates: UpdateTracker::new(UpdateState::Ignore),
                 overlord_cards: self.overlord_cards.clone(),
                 champion_cards: self.champion_cards.clone(),
                 overlord: self.overlord.clone(),

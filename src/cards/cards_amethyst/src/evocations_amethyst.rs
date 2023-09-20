@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
+use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
@@ -71,7 +72,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
             simple_ability(
                 text!["When you access a room", StoreMana(1)],
                 in_play::after_room_accessed(|g, s, _| {
-                    alert(g, s);
+                    Updates::new(g).ability_alert(s).apply();
                     add_stored_mana(g, s.card_id(), 1);
                     Ok(())
                 }),

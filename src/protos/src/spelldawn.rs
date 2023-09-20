@@ -1606,6 +1606,18 @@ pub struct CreateTokenCardCommand {
     #[prost(bool, tag = "2")]
     pub animate: bool,
 }
+/// Adds a visual effect to a card which displays a trail while it is
+/// being moved. This is accomplished in practice by attaching a projectile
+/// body to the card itself. The effect is removed when the card finishes
+/// being moved to a new position.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetCardMovementEffectCommand {
+    #[prost(message, optional, tag = "1")]
+    pub card_id: ::core::option::Option<CardIdentifier>,
+    #[prost(message, optional, tag = "2")]
+    pub projectile: ::core::option::Option<ProjectileAddress>,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameObjectMove {
@@ -2074,7 +2086,7 @@ pub struct InfoZoomCommand {
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -2115,6 +2127,8 @@ pub mod game_command {
         MoveGameObjects(super::MoveGameObjectsCommand),
         #[prost(message, tag = "16")]
         CreateTokenCard(super::CreateTokenCardCommand),
+        #[prost(message, tag = "17")]
+        SetCardMovementEffect(super::SetCardMovementEffectCommand),
         #[prost(message, tag = "18")]
         UpdateWorldMap(super::UpdateWorldMapCommand),
         #[prost(message, tag = "19")]

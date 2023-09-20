@@ -17,10 +17,8 @@ use game_data::game::GameState;
 use game_data::game_actions::{
     ButtonPrompt, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
 };
-use game_data::primitives::{HasSide, Side};
-use game_data::updates::GameUpdate;
-
-use crate::card_predicates::CardPredicate;
+use game_data::game_updates::GameUpdate;
+use game_data::primitives::{CardId, HasSide, Side};
 
 /// Ads the a prompt for the `side` player containing the non-`None` actions in
 /// `actions`.
@@ -36,14 +34,13 @@ pub fn with_choices(
     Ok(())
 }
 
-pub fn play_from_discard(
+pub fn play_card_browser(
     game: &mut GameState,
     side: impl HasSide,
-    restriction: CardPredicate,
+    cards: Vec<CardId>,
     context: PromptContext,
 ) -> Result<()> {
     let side = side.side();
-    let cards = game.discard_pile(side).filter(restriction).map(|c| c.id).collect::<Vec<_>>();
     game.record_update(|| GameUpdate::ShowPlayCardBrowser(cards.clone()));
     game.player_mut(side)
         .prompt_queue

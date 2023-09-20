@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
@@ -48,7 +49,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
                     if g.card(s.card_id()).data.stored_mana == 0 {
                         mutations::draw_cards(g, s.side(), 1)?;
                     }
-                    alert(g, s);
+                    Updates::new(g).ability_alert(s).apply();
                     Ok(())
                 })],
             },
@@ -78,7 +79,7 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
                 on_accessed(|g, s, _| {
                     if g.card(s.card_id()).position().in_play() {
                         mutations::deal_damage(g, s, 2 + g.card(s.card_id()).data.card_level)?;
-                        alert(g, s);
+                        Updates::new(g).ability_alert(s).apply();
                     }
 
                     Ok(())

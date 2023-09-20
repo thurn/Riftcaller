@@ -19,6 +19,7 @@ use std::collections::HashMap;
 use dashmap::DashSet;
 use game_data::card_definition::{Ability, CardDefinition};
 use game_data::card_name::{CardMetadata, CardVariant};
+use game_data::card_state::CardState;
 use game_data::game::GameState;
 use game_data::primitives::{AbilityId, CardId};
 use once_cell::sync::Lazy;
@@ -72,4 +73,14 @@ pub fn card_definition(game: &GameState, card_id: CardId) -> &'static CardDefini
 
 pub fn ability_definition(game: &GameState, ability_id: AbilityId) -> &'static Ability {
     card_definition(game, ability_id.card_id).ability(ability_id.index)
+}
+
+pub trait CardDefinitionExt {
+    fn definition(&self) -> &'static CardDefinition;
+}
+
+impl CardDefinitionExt for CardState {
+    fn definition(&self) -> &'static CardDefinition {
+        get(self.variant)
+    }
 }

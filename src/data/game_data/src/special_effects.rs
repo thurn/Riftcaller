@@ -14,19 +14,21 @@
 
 //! Types which describe custom visual & sound effects used during play
 
+use crate::primitives::{CardId, GameObjectId};
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum Projectile {
     /// Hovl Studios projectile number
-    Hovl(u32),
+    Projectiles1(u32),
 }
 
 /// Effect which plays for a short duration and then vanishes
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum TimedEffect {
     /// Magic hit number
-    HovlMagicHit(u32),
+    MagicHits(u32),
     /// Sword Slash VFX number
-    HovlSwordSlash(u32),
+    SwordSlashes(u32),
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
@@ -45,4 +47,13 @@ pub enum FantasyEventSounds {
 pub enum SoundEffect {
     FantasyEvents(FantasyEventSounds),
     Fireworks(FireworksSound),
+}
+
+/// Represents a single visual effect or sound effect to play
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum SpecialEffect {
+    TimedEffect { target: GameObjectId, effect: TimedEffect },
+    Projectile { source: GameObjectId, target: GameObjectId, projectile: Projectile },
+    CardMovementEffect { card_id: CardId, effect: Projectile },
+    SoundEffect { sound: SoundEffect },
 }

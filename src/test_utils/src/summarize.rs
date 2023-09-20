@@ -284,6 +284,7 @@ impl Summarize for Command {
             Self::UpdateInterface(_) => {}
             Self::Conditional(_) => {}
             Self::InfoZoom(_) => {}
+            Self::SetCardMovementEffect(_) => {}
         }
     }
 }

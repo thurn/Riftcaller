@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{card_predicates, costs, show_prompt, simple_ability, text, this};
+use card_helpers::updates::Updates;
+use card_helpers::{costs, show_prompt, simple_ability, text, this};
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::game_actions::PromptContext;
 use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
+use game_data::special_effects::Projectile;
+use rules::CardDefinitionExt;
 
 pub fn restoration(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -32,11 +35,19 @@ pub fn restoration(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![simple_ability(
             text!["Play an artifact in your discard pile"],
-            this::on_cast(|g, s, _| {
-                show_prompt::play_from_discard(
+            this::on_play(|g, s, _| {
+                let cards = g
+                    .discard_pile(s.side())
+                    .filter(|c| c.definition().card_type == CardType::Artifact)
+                    .map(|c| c.id)
+                    .collect::<Vec<_>>();
+
+                Updates::new(g).card_movements(Projectile::Projectiles1(3), &cards).apply();
+
+                show_prompt::play_card_browser(
                     g,
                     s,
-                    card_predicates::artifact,
+                    cards,
                     PromptContext::PlayFromDiscard(CardType::Artifact),
                 )
             }),

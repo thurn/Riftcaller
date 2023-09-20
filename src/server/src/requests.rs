@@ -18,9 +18,9 @@ use anyhow::Result;
 use core_ui::prelude::*;
 use database::Database;
 use game_data::game::GameState;
+use game_data::game_updates::{UpdateState, UpdateTracker};
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
-use game_data::updates::{UpdateTracker, Updates};
 use panel_address::PanelAddress;
 use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
@@ -79,9 +79,9 @@ pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Re
     let mut game = database.fetch_game(id).await?.with_error(|| format!("Game not found {id}"))?;
     dispatch::populate_delegate_cache(&mut game);
     game.updates = UpdateTracker::new(if game.info.config.simulation {
-        Updates::Ignore
+        UpdateState::Ignore
     } else {
-        Updates::Push
+        UpdateState::Push
     });
     Ok(game)
 }
