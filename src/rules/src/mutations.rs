@@ -28,7 +28,7 @@ use game_data::card_state::CardState;
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegates::{
-    CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterPlayEvent,
+    CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterArenaEvent,
     MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidEvent, RaidFailureEvent,
     RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
     SummonMinionEvent, UnveilCardEvent,
@@ -92,7 +92,7 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
 
     if !old_position.in_play() && new_position.in_play() {
         game.card_mut(card_id).data.last_entered_play = Some(game.info.turn);
-        dispatch::invoke_event(game, EnterPlayEvent(card_id))?;
+        dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
     }
 
     if new_position.in_discard_pile() && card_id.side == Side::Champion {

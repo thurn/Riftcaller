@@ -24,5 +24,5 @@ pub fn card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
 
 /// A delegate which triggers when a card is played
 pub fn on_play(mutation: MutationFn<CardPlayed>) -> Delegate {
-    Delegate::CastCard(EventDelegate { requirement: card, mutation })
+    Delegate::PlayCard(EventDelegate { requirement: card, mutation })
 }

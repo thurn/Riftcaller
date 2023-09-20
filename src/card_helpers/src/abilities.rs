@@ -60,7 +60,7 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
         ability_type: AbilityType::Standard,
         text: trigger_text(Play, text![StoreMana(N)]),
         delegates: vec![
-            Delegate::CastCard(EventDelegate::new(this_card, |g, _s, played| {
+            Delegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
                 g.card_mut(played.card_id).data.stored_mana = N;
                 Ok(())
             })),

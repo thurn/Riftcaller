@@ -368,9 +368,9 @@ pub enum Delegate {
     DrawCardAction(EventDelegate<CardId>),
     /// A card has been played via the Play Card action and has had its costs
     /// paid
-    CastCard(EventDelegate<CardPlayed>),
+    PlayCard(EventDelegate<CardPlayed>),
     /// A card has been moved from any non-arena zone to an arena zone.
-    EnterPlay(EventDelegate<CardId>),
+    EnterArena(EventDelegate<CardId>),
     /// A card ability with a cost is activated
     ActivateAbility(EventDelegate<AbilityActivated>),
     /// A card, typically a Project, is unveiled (turned face up by paying its

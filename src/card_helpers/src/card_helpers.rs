@@ -188,7 +188,7 @@ pub fn is_inner_room(room_id: RoomId) -> bool {
 
 /// A delegate which triggers when a card is cast
 pub fn on_cast(mutation: MutationFn<CardPlayed>) -> Delegate {
-    Delegate::CastCard(EventDelegate { requirement: this_card, mutation })
+    Delegate::PlayCard(EventDelegate { requirement: this_card, mutation })
 }
 
 /// A [Delegate] which triggers when an ability is activated

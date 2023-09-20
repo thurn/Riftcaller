@@ -18,7 +18,7 @@ use anyhow::Result;
 use constants::game_constants;
 use game_data::action_data::{ActionData, PlayCardData, PlayCardStep};
 use game_data::card_state::{CardPosition, CardState};
-use game_data::delegates::{CardPlayed, CastCardEvent};
+use game_data::delegates::{CardPlayed, PlayCardEvent};
 use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent};
 use game_data::game_actions::{
     ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
@@ -252,7 +252,7 @@ fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep>
 
     dispatch::invoke_event(
         game,
-        CastCardEvent(CardPlayed { card_id: play_card.card_id, target: play_card.target }),
+        PlayCardEvent(CardPlayed { card_id: play_card.card_id, target: play_card.target }),
     )?;
 
     Ok(PlayCardStep::Finish)
