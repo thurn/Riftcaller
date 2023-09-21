@@ -175,8 +175,6 @@ pub struct CardConfig {
     pub custom_targeting: Option<TargetRequirement<CardId>>,
     /// A projectile to use when this card's combat ability triggers
     pub combat_projectile: Option<ProjectileData>,
-    /// An effect to play on this card when it is played
-    pub play_effect: Option<TimedEffectData>,
     /// Alternate image to display to identify players in the arena
     pub player_portrait: Option<Sprite>,
     /// Content to display behind the main image
@@ -251,11 +249,6 @@ impl CardConfigBuilder {
 
     pub fn combat_projectile(mut self, projectile: ProjectileData) -> Self {
         self.config.combat_projectile = Some(projectile);
-        self
-    }
-
-    pub fn play_effect(mut self, effect: TimedEffectData) -> Self {
-        self.config.play_effect = Some(effect);
         self
     }
 }

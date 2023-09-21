@@ -133,7 +133,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
             simple_ability(
                 text!["While this minion is in an", OuterRoom, "it has", Plus(2), Health],
                 on_calculate_health(|g, s, _, current| match g.card(s.card_id()).position() {
-                    CardPosition::Room(room_id, _) if !is_inner_room(room_id) => current + 2,
+                    CardPosition::Room(room_id, _) if !room_id.is_inner_room() => current + 2,
                     _ => current,
                 }),
             ),

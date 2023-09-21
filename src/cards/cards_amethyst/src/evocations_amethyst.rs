@@ -113,7 +113,7 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
                 ability_type: AbilityType::Activated(
                     actions(1),
                     TargetRequirement::TargetRoom(|g, _, room_id| {
-                        is_inner_room(room_id)
+                        room_id.is_inner_room()
                             && history::rooms_raided_this_turn(g).all(|r| r != room_id)
                     }),
                 ),

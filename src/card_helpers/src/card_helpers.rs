@@ -178,11 +178,6 @@ pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     })
 }
 
-/// Predicate checking if a room is an inner room
-pub fn is_inner_room(room_id: RoomId) -> bool {
-    room_id == RoomId::Vault || room_id == RoomId::Sanctum || room_id == RoomId::Crypts
-}
-
 /// A [Delegate] which triggers when an ability is activated
 pub fn on_activated(mutation: MutationFn<AbilityActivated>) -> Delegate {
     Delegate::ActivateAbility(EventDelegate { requirement: this_ability, mutation })

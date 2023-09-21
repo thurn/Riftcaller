@@ -168,10 +168,10 @@ pub struct CardState {
 impl CardState {
     /// Creates a new card state, placing the card into the `side` player's
     /// deck.
-    pub fn new(id: CardId, name: CardVariant) -> Self {
+    pub fn new(id: CardId, variant: CardVariant) -> Self {
         Self {
             id,
-            variant: name,
+            variant,
             position: CardPosition::DeckUnknown(id.side),
             sorting_key: 0,
             data: CardData {
