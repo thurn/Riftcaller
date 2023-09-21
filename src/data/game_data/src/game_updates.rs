@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 use crate::game::GameState;
 use crate::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
 use crate::special_effects::SpecialEffect;
@@ -28,16 +30,37 @@ pub struct TargetedInteraction {
 /// Identifies whether some game update was caused by a player taking an
 /// explicit game action such as the 'initiate raid' action, or by a card
 /// effect.
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize)]
 pub enum InitiatedBy {
     GameAction,
-    Card,
+    Ability(AbilityId),
+}
+
+impl InitiatedBy {
+    pub fn is_game_action(&self) -> bool {
+        matches!(self, InitiatedBy::GameAction)
+    }
+
+    pub fn is_ability(&self) -> bool {
+        matches!(self, InitiatedBy::Ability(_))
+    }
+
+    pub fn ability_id(&self) -> Option<AbilityId> {
+        match self {
+            InitiatedBy::GameAction => None,
+            InitiatedBy::Ability(id) => Some(*id),
+        }
+    }
+
+    pub fn card_id(&self) -> Option<CardId> {
+        self.ability_id().map(|a| a.card_id)
+    }
 }
 
 /// Represents a change to the state of the game which should be translated
 /// into a client animation
 #[derive(Debug, Clone)]
-pub enum GameUpdate {
+pub enum GameAnimation {
     /// Indicates that a player's turn has started
     StartTurn(Side),
     /// A player has played a card face-up.
@@ -77,7 +100,7 @@ pub enum GameUpdate {
 #[derive(Debug, Clone)]
 pub struct UpdateStep {
     pub snapshot: GameState,
-    pub update: GameUpdate,
+    pub update: GameAnimation,
 }
 
 /// Standard enum used by APIs to configure their update tracking behavior.
@@ -94,11 +117,11 @@ pub enum UpdateState {
 /// Some game state changes in Spelldawn require custom animations in the UI in
 /// order to communicate their effects clearly. In order to implement the
 /// animation system, code which mutates game state can also call
-/// [GameState::record_update] and provide a [GameUpdate] to record the action
-/// they took. The way this process works is that a snapshot of the game state
-/// is stored (to capture any mutations that occurred *before* the animation),
-/// and then the update is stored. During the animation process, the
-/// stored snapshots and [GameUpdate]s are played back sequentially.
+/// [GameState::add_animation] and provide a [GameAnimation] to record the
+/// action they took. The way this process works is that a snapshot of the game
+/// state is stored (to capture any mutations that occurred *before* the
+/// animation), and then the update is stored. During the animation process, the
+/// stored snapshots and [GameAnimation]s are played back sequentially.
 ///
 /// Many types of state changes are handled automatically by the game state
 /// snapshot system, so appending an update is only needed for custom

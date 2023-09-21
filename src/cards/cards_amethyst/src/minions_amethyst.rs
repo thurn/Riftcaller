@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_helpers::abilities::standard;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
@@ -42,7 +43,7 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             abilities::construct(),
-            simple_ability(
+            standard(
                 trigger_text(
                     Encounter,
                     text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
@@ -76,7 +77,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            simple_ability(
+            standard(
                 trigger_text(
                     Combat,
                     text!["Summon a minion from the", Sanctum, "or", Crypts, "for free"],
@@ -103,7 +104,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            simple_ability(
+            standard(
                 trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
                 combat(|g, _, _| {
                     show_prompt::with_choices(
@@ -130,7 +131,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            simple_ability(
+            standard(
                 text!["While this minion is in an", OuterRoom, "it has", Plus(2), Health],
                 on_calculate_health(|g, s, _, current| match g.card(s.card_id()).position() {
                     CardPosition::Room(room_id, _) if !room_id.is_inner_room() => current + 2,
@@ -191,7 +192,7 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             trigger_text(
                 Combat,
                 text![
@@ -222,7 +223,7 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             trigger_text(
                 Combat,
                 text![

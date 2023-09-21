@@ -13,12 +13,13 @@
 // limitations under the License.
 
 use anyhow::Result;
+use game_data::delegates::Scope;
 use game_data::game::GameState;
 use game_data::game_actions::{
     ButtonPrompt, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
 };
-use game_data::game_updates::GameUpdate;
-use game_data::primitives::{CardId, HasSide, Side};
+use game_data::game_updates::GameAnimation;
+use game_data::primitives::{CardId, Side};
 
 /// Ads the a prompt for the `side` player containing the non-`None` actions in
 /// `actions`.
@@ -36,14 +37,16 @@ pub fn with_choices(
 
 pub fn play_card_browser(
     game: &mut GameState,
-    side: impl HasSide,
+    scope: Scope,
     cards: Vec<CardId>,
     context: PromptContext,
 ) -> Result<()> {
-    let side = side.side();
-    game.record_update(|| GameUpdate::ShowPlayCardBrowser(cards.clone()));
-    game.player_mut(side)
-        .prompt_queue
-        .push(GamePrompt::PlayCardBrowser(PlayCardBrowser { context: Some(context), cards }));
+    let side = scope.side();
+    game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards.clone()));
+    game.player_mut(side).prompt_queue.push(GamePrompt::PlayCardBrowser(PlayCardBrowser {
+        context: Some(context),
+        initiated_by: scope.ability_id(),
+        cards,
+    }));
     Ok(())
 }

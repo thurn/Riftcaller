@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
+use card_helpers::abilities::standard;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition,
@@ -105,7 +106,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             abilities::silent_ability(abilities::encounter_boost()),
-            simple_ability(
+            standard(
                 encounter_ability_text(
                     text![EncounterBoostCost],
                     text![Plus(1), Attack, "per weapon you control"],

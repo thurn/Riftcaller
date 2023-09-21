@@ -27,6 +27,7 @@ pub mod delegates;
 pub mod game;
 pub mod game_actions;
 pub mod game_effect;
+pub mod game_history;
 pub mod game_updates;
 pub mod player_name;
 pub mod primitives;

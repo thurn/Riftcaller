@@ -166,6 +166,8 @@ pub struct PlayCardBrowser {
     /// Identifies the context for this prompt, i.e. why it is being shown to
     /// the user
     pub context: Option<PromptContext>,
+    /// Identifies the ability which caused this browser to be displayed.
+    pub initiated_by: AbilityId,
     /// Identifies the choices of cards that the user can possibly play.
     pub cards: Vec<CardId>,
 }

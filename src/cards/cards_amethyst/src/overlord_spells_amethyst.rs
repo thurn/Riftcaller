@@ -15,6 +15,7 @@
 //! Card definitions for the Spell card type & Overlord player
 
 use assets::rexard_images;
+use card_helpers::abilities::standard;
 use card_helpers::{text, *};
 use game_data::card_definition::{
     CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
@@ -35,7 +36,7 @@ pub fn overwhelming_power(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![Gain, Mana(15)],
             this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 15);
@@ -57,7 +58,7 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![
                 "Place 2 level counters on each card in target room which didn't enter play this turn"
             ],

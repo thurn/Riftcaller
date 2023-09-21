@@ -22,7 +22,7 @@ use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
 use core_ui::text_field::TextField;
-use game_data::card_name::{CardName, CardVariant};
+use game_data::card_name::{CardMetadata, CardName, CardVariant};
 use game_data::card_state::CardPosition;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use user_action_data::{DebugAction, UserAction};
@@ -31,11 +31,16 @@ use user_action_data::{DebugAction, UserAction};
 pub struct AddToZonePanel {
     filter_string: String,
     position: CardPosition,
+    metadata: CardMetadata,
 }
 
 impl AddToZonePanel {
-    pub fn new(filter_string: impl Into<String>, position: CardPosition) -> Self {
-        Self { filter_string: filter_string.into(), position }
+    pub fn new(
+        filter_string: impl Into<String>,
+        position: CardPosition,
+        metadata: CardMetadata,
+    ) -> Self {
+        Self { filter_string: filter_string.into(), position, metadata }
     }
 
     fn matches(&self, name: CardName) -> bool {
@@ -51,7 +56,7 @@ impl AddToZonePanel {
 
 impl Panel for AddToZonePanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::StandardPanel(StandardPanel::AddToZone(self.position))
+        PanelAddress::StandardPanel(StandardPanel::AddToZone(self.position, self.metadata))
     }
 }
 
@@ -72,7 +77,10 @@ impl Component for AddToZonePanel {
                     .child(Text::new("Filter:").font_size(FontSize::Body))
                     .child(TextField::new("CardVariant").on_field_changed(
                         actions::with_request_fields(
-                            UserAction::Debug(DebugAction::FilterCardList(self.position)),
+                            UserAction::Debug(DebugAction::FilterCardList(
+                                self.position,
+                                self.metadata,
+                            )),
                             vec!["CardVariant".to_string()],
                         ),
                     )),
@@ -84,7 +92,7 @@ impl Component for AddToZonePanel {
                     Button::new("Add").action(
                         ActionBuilder::new()
                             .action(UserAction::Debug(DebugAction::AddToZone(
-                                CardVariant::standard(n),
+                                CardVariant { name: n, metadata: self.metadata },
                                 self.position,
                             )))
                             .update(self.close()),

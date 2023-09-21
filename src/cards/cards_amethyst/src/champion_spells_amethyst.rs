@@ -15,6 +15,7 @@
 //! Card definitions for the Spell card type & Champion player
 
 use assets::rexard_images;
+use card_helpers::abilities::standard;
 use card_helpers::{text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
@@ -36,7 +37,7 @@ pub fn meditation(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![text![Gain, Mana(5)], text![Lose, Actions(1), reminder("(if able)")]],
             this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 5);
@@ -93,7 +94,7 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![text![BeginARaid], text![Gain, Mana(5), "to spend during that raid"]],
             this::on_play(|g, s, play_card| {
                 initiate_raid_with_callback(g, s, play_card.target, |game, raid_id| {
@@ -159,7 +160,7 @@ pub fn preparation(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![text!["Draw", 4, "cards"], text!["Lose", Actions(1), reminder("(if able)")]],
             this::on_play(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 4)?;

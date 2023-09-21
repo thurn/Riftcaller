@@ -15,7 +15,7 @@
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::game::GameState;
-use game_data::game_updates::{GameUpdate, InitiatedBy, TargetedInteraction};
+use game_data::game_updates::{GameAnimation, TargetedInteraction};
 use game_data::primitives::{AbilityId, CardId, GameObjectId, Milliseconds, RoomId, Side};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, ProjectileData, SoundEffect, SpecialEffect,
@@ -38,40 +38,40 @@ use crate::{card_sync, positions};
 
 pub fn render(
     builder: &mut ResponseBuilder,
-    update: &GameUpdate,
+    update: &GameAnimation,
     snapshot: &GameState,
 ) -> Result<()> {
     match update {
-        GameUpdate::StartTurn(side) => start_turn(builder, *side),
-        GameUpdate::PlayCard(side, card_id) => {
+        GameAnimation::StartTurn(side) => start_turn(builder, *side),
+        GameAnimation::PlayCard(side, card_id) => {
             if builder.user_side == side.opponent() {
                 show_cards(builder, &vec![*card_id], ShowCards::default())
             }
         }
-        GameUpdate::CustomEffects(effects) => play_special_effects(builder, effects),
-        GameUpdate::AbilityActivated(side, ability_id) => {
+        GameAnimation::CustomEffects(effects) => play_special_effects(builder, effects),
+        GameAnimation::AbilityActivated(side, ability_id) => {
             if *side != builder.user_side {
                 show_ability(builder, snapshot, *ability_id);
             }
         }
-        GameUpdate::AbilityTriggered(ability_id, effects) => {
+        GameAnimation::AbilityTriggered(ability_id, effects) => {
             show_ability(builder, snapshot, *ability_id);
             play_special_effects(builder, effects)
         }
-        GameUpdate::DrawCards(side, cards) => {
+        GameAnimation::DrawCards(side, cards) => {
             if builder.user_side == *side {
                 show_cards(builder, cards, ShowCards::default())
             }
         }
-        GameUpdate::ShuffleIntoDeck => {
+        GameAnimation::ShuffleIntoDeck => {
             // No animation, just acts as a snapshot point.
         }
-        GameUpdate::UnveilCard(card_id) => show_cards(
+        GameAnimation::UnveilCard(card_id) => show_cards(
             builder,
             &vec![*card_id],
             ShowCards { show_if_prominent: true, ..ShowCards::default() },
         ),
-        GameUpdate::SummonMinion(card_id) => {
+        GameAnimation::SummonMinion(card_id) => {
             if builder.user_side == Side::Champion {
                 show_cards(
                     builder,
@@ -80,27 +80,27 @@ pub fn render(
                 )
             }
         }
-        GameUpdate::LevelUpRoom(room_id, initiated_by) => {
-            if *initiated_by == InitiatedBy::Card || builder.user_side == Side::Champion {
+        GameAnimation::LevelUpRoom(room_id, initiated_by) => {
+            if initiated_by.is_ability() || builder.user_side == Side::Champion {
                 // Animation is not required for the Overlord's own 'level up room' action, it's
                 // handled by the client's optimistic animation system.
                 level_up_room(builder, *room_id)
             }
         }
-        GameUpdate::InitiateRaid(room_id, initiated_by) => {
-            if *initiated_by == InitiatedBy::Card || builder.user_side == Side::Overlord {
+        GameAnimation::InitiateRaid(room_id, initiated_by) => {
+            if initiated_by.is_ability() || builder.user_side == Side::Overlord {
                 // Animation is not required for the Champion's own 'level up room' action, it's
                 // handled by the client's optimistic animation system.
                 initiate_raid(builder, *room_id)
             }
         }
-        GameUpdate::CombatInteraction(interaction) => {
+        GameAnimation::CombatInteraction(interaction) => {
             combat_interaction(builder, snapshot, *interaction)
         }
-        GameUpdate::ScoreCard(_, card_id) => score_card(builder, *card_id),
-        GameUpdate::GameOver(_) => {}
-        GameUpdate::BrowserSubmitted => {}
-        GameUpdate::ShowPlayCardBrowser(_) => {}
+        GameAnimation::ScoreCard(_, card_id) => score_card(builder, *card_id),
+        GameAnimation::GameOver(_) => {}
+        GameAnimation::BrowserSubmitted => {}
+        GameAnimation::ShowPlayCardBrowser(_) => {}
     }
     Ok(())
 }

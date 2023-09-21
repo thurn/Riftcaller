@@ -29,10 +29,10 @@ use crate::delegates::Delegate;
 use crate::game::GameState;
 use crate::primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
-    HealthValue, LevelValue, ManaValue, PointsValue, Rarity, RazeCost, Resonance, RoomId, School,
-    ShieldValue, Side, Sprite,
+    HealthValue, ManaValue, PointsValue, ProgressValue, Rarity, RazeCost, Resonance, RoomId,
+    School, ShieldValue, Side, Sprite,
 };
-use crate::special_effects::{ProjectileData, TimedEffectData};
+use crate::special_effects::ProjectileData;
 use crate::text::TextElement;
 
 /// A cost represented by custom functions.
@@ -94,7 +94,7 @@ pub struct AttackBoost {
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
 pub struct SchemePoints {
     /// Required number of level counters to score this card
-    pub level_requirement: LevelValue,
+    pub level_requirement: ProgressValue,
     /// Number of points received for scoring this card
     pub points: PointsValue,
 }

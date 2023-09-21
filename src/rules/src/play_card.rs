@@ -19,12 +19,13 @@ use constants::game_constants;
 use game_data::action_data::{ActionData, PlayCardData, PlayCardStep};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegates::{CardPlayed, PlayCardEvent};
-use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent};
+use game_data::game::{GamePhase, GameState};
 use game_data::game_actions::{
     ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_updates::GameUpdate;
+use game_data::game_history::HistoryEvent;
+use game_data::game_updates::{GameAnimation, InitiatedBy};
 use game_data::primitives::{CardId, CardSubtype, CardType};
 use with_error::{verify, WithError};
 
@@ -93,9 +94,10 @@ fn evaluate_play_step(game: &mut GameState, play_card: PlayCardData) -> Result<P
     match play_card.step {
         PlayCardStep::Begin => Ok(PlayCardStep::CheckLimits),
         PlayCardStep::CheckLimits => check_limits(game, play_card),
+        PlayCardStep::AddToHistory => add_to_history(game, play_card),
         PlayCardStep::MoveToPlayedPosition => move_to_played_position(game, play_card),
         PlayCardStep::PayActionPoints => pay_action_points(game, play_card),
-        PlayCardStep::ClearBrowser => clear_browser(game, play_card),
+        PlayCardStep::ClearBrowserPrompt => clear_browser_prompt(game, play_card),
         PlayCardStep::PayManaCost => pay_mana_cost(game, play_card),
         PlayCardStep::PayCustomCost => pay_custom_cost(game, play_card),
         PlayCardStep::TurnFaceUp => turn_face_up(game, play_card),
@@ -167,6 +169,23 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
         game.player_mut(play_card.card_id.side).prompt_queue.push(p);
     }
 
+    Ok(PlayCardStep::AddToHistory)
+}
+
+fn add_to_history(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+    let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
+        game.player(play_card.card_id.side).prompt_queue.get(0)
+    {
+        InitiatedBy::Ability(prompt.initiated_by)
+    } else {
+        InitiatedBy::GameAction
+    };
+
+    game.add_history_event(HistoryEvent::PlayCard(
+        play_card.card_id,
+        play_card.target,
+        initiated_by,
+    ));
     Ok(PlayCardStep::MoveToPlayedPosition)
 }
 
@@ -182,10 +201,10 @@ fn move_to_played_position(game: &mut GameState, play_card: PlayCardData) -> Res
 fn pay_action_points(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
     let actions = queries::action_cost(game, play_card.card_id);
     mutations::spend_action_points(game, play_card.card_id.side, actions)?;
-    Ok(PlayCardStep::ClearBrowser)
+    Ok(PlayCardStep::ClearBrowserPrompt)
 }
 
-fn clear_browser(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn clear_browser_prompt(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
     if let Some(GamePrompt::PlayCardBrowser(prompt)) =
         game.player(play_card.card_id.side).prompt_queue.get(0)
     {
@@ -224,7 +243,7 @@ fn pay_custom_cost(game: &mut GameState, play_card: PlayCardData) -> Result<Play
 
 fn turn_face_up(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
     mutations::turn_face_up(game, play_card.card_id);
-    game.record_update(|| GameUpdate::PlayCard(play_card.card_id.side, play_card.card_id));
+    game.add_animation(|| GameAnimation::PlayCard(play_card.card_id.side, play_card.card_id));
     Ok(PlayCardStep::MoveToTargetPosition)
 }
 
@@ -243,11 +262,6 @@ fn move_to_target_position(game: &mut GameState, play_card: PlayCardData) -> Res
 }
 
 fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    game.history.push(HistoryEntry {
-        turn: game.info.turn,
-        event: HistoryEvent::PlayedCard(play_card.card_id),
-    });
-
     game.current_action = None;
 
     dispatch::invoke_event(

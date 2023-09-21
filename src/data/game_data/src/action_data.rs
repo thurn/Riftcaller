@@ -22,9 +22,10 @@ use crate::primitives::CardId;
 pub enum PlayCardStep {
     Begin,
     CheckLimits,
+    AddToHistory,
     MoveToPlayedPosition,
     PayActionPoints,
-    ClearBrowser,
+    ClearBrowserPrompt,
     PayManaCost,
     PayCustomCost,
     TurnFaceUp,

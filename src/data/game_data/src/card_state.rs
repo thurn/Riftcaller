@@ -25,7 +25,7 @@ use crate::card_name::CardVariant;
 use crate::game::TurnData;
 use crate::game_actions::CardTarget;
 use crate::primitives::{
-    BoostCount, CardId, ItemLocation, LevelValue, ManaValue, RaidId, RoomId, RoomLocation, Side,
+    BoostCount, CardId, ItemLocation, ManaValue, ProgressValue, RaidId, RoomId, RoomLocation, Side,
 };
 
 /// State for an ability within a game
@@ -129,8 +129,8 @@ impl CardPosition {
 /// Optional card state, properties which are not universal
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CardData {
-    /// How many times has this card been leveled up?
-    pub card_level: LevelValue,
+    /// How many times has this card been progressed?
+    pub progress: ProgressValue,
     /// typically used to increase weapon attack power during a raid.
     pub boost_count: BoostCount,
     /// How much mana is stored in this card?

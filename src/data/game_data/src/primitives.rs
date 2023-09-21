@@ -35,7 +35,7 @@ pub type AttackValue = u32;
 pub type ShieldValue = u32;
 pub type BreachValue = u32;
 pub type BoostCount = u32;
-pub type LevelValue = u32;
+pub type ProgressValue = u32;
 pub type DamageAmount = u32;
 pub type RazeCost = u32;
 

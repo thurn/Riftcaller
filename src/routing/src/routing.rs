@@ -56,7 +56,9 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         )
         .build_panel(),
         StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
-        StandardPanel::AddToZone(position) => AddToZonePanel::new("", position).build_panel(),
+        StandardPanel::AddToZone(position, metadata) => {
+            AddToZonePanel::new("", position, metadata).build_panel()
+        }
         StandardPanel::ApplyScenario => ApplyScenarioPanel::new().build_panel(),
     })
 }

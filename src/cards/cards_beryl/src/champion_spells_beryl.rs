@@ -13,18 +13,20 @@
 // limitations under the License.
 
 use card_helpers::updates::Updates;
-use card_helpers::{costs, show_prompt, simple_ability, text, this};
+use card_helpers::{abilities, costs, requirements, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::game_actions::PromptContext;
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use game_data::special_effects::{Projectile, TimedEffect, TimedEffectData};
+use game_data::text::TextToken::Mana;
 use rules::CardDefinitionExt;
 
-pub fn restoration(_: CardMetadata) -> CardDefinition {
+pub fn restoration(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Restoration,
         sets: vec![CardSetName::Amethyst],
@@ -35,33 +37,45 @@ pub fn restoration(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
-            text!["Play an artifact in your discard pile"],
-            this::on_play(|g, s, _| {
-                let cards = g
-                    .discard_pile(s.side())
-                    .filter(|c| c.definition().card_type == CardType::Artifact)
-                    .map(|c| c.id)
-                    .collect::<Vec<_>>();
+        abilities: abilities::some(vec![
+            Some(abilities::standard(
+                text!["Play an artifact in your discard pile"],
+                this::on_play(|g, s, _| {
+                    let cards = g
+                        .discard_pile(s.side())
+                        .filter(|c| c.definition().card_type == CardType::Artifact)
+                        .map(|c| c.id)
+                        .collect::<Vec<_>>();
 
-                Updates::new(g)
-                    .timed_effect(
-                        GameObjectId::DiscardPile(Side::Champion),
-                        TimedEffectData::new(TimedEffect::MagicCircles1(2))
-                            .scale(2.0)
-                            .effect_color(design::YELLOW_900),
+                    Updates::new(g)
+                        .timed_effect(
+                            GameObjectId::DiscardPile(Side::Champion),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(2))
+                                .scale(2.0)
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .card_movement_effects(Projectile::Projectiles1(3), &cards)
+                        .apply();
+
+                    show_prompt::play_card_browser(
+                        g,
+                        s,
+                        cards,
+                        PromptContext::PlayFromDiscard(CardType::Artifact),
                     )
-                    .card_movement_effects(Projectile::Projectiles1(3), &cards)
-                    .apply();
-
-                show_prompt::play_card_browser(
-                    g,
-                    s,
-                    cards,
-                    PromptContext::PlayFromDiscard(CardType::Artifact),
-                )
-            }),
-        )],
+                }),
+            )),
+            abilities::when_upgraded(
+                meta,
+                abilities::standard(
+                    text!["Reduce its cost by", Mana(2)],
+                    Delegate::ManaCost(QueryDelegate {
+                        requirement: requirements::matching_play_browser,
+                        transformation: |_, _, _, cost| cost.map(|c| c.saturating_sub(2)),
+                    }),
+                ),
+            ),
+        ]),
         config: CardConfig::default(),
     }
 }

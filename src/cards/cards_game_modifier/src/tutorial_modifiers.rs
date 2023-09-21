@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use assets::rexard_images;
+use card_helpers::abilities::standard;
 use card_helpers::{text, *};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
 use game_data::card_name::{CardMetadata, CardName};
@@ -43,7 +44,7 @@ pub fn overlord_empty_modifier(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_draw_action(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableDrawAction,
-        simple_ability(
+        standard(
             text!["The Champion cannot take the 'draw card' action"],
             Delegate::CanTakeDrawCardAction(QueryDelegate {
                 requirement: side_is_champion,
@@ -56,7 +57,7 @@ pub fn tutorial_disable_draw_action(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_gain_mana(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableGainMana,
-        simple_ability(
+        standard(
             text!["The Champion cannot take the 'gain mana' action"],
             Delegate::CanTakeGainManaAction(QueryDelegate {
                 requirement: side_is_champion,
@@ -69,7 +70,7 @@ pub fn tutorial_disable_gain_mana(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_raid_sanctum(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidSanctum,
-        simple_ability(
+        standard(
             text!["The Champion cannot raid the Sanctum"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_sanctum,
@@ -82,7 +83,7 @@ pub fn tutorial_disable_raid_sanctum(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_raid_vault(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidVault,
-        simple_ability(
+        standard(
             text!["The Champion cannot raid the Vault"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_vault,
@@ -95,7 +96,7 @@ pub fn tutorial_disable_raid_vault(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_raid_crypts(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidCrypts,
-        simple_ability(
+        standard(
             text!["The Champion cannot raid the Crypts"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_crypts,
@@ -108,7 +109,7 @@ pub fn tutorial_disable_raid_crypts(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_raid_outer(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidOuter,
-        simple_ability(
+        standard(
             text!["The Champion cannot raid outer rooms"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: |_, _, room_id| room_id.is_outer_room(),
@@ -121,7 +122,7 @@ pub fn tutorial_disable_raid_outer(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_raid_continue(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidContinue,
-        simple_ability(
+        standard(
             text!["The Champion must use a weapon during raids"],
             Delegate::CanUseNoWeapon(QueryDelegate {
                 requirement: always,
@@ -134,7 +135,7 @@ pub fn tutorial_disable_raid_continue(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_disable_end_raid(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableEndRaid,
-        simple_ability(
+        standard(
             text!["The Champion cannot end the access phase of raids"],
             Delegate::CanEndRaidAccessPhase(QueryDelegate {
                 requirement: always,
@@ -147,7 +148,7 @@ pub fn tutorial_disable_end_raid(_: CardMetadata) -> CardDefinition {
 pub fn tutorial_force_sanctum_score(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialForceSanctumScore,
-        simple_ability(
+        standard(
             text!["The Champion always accesses a scheme card when raiding the Sanctum"],
             Delegate::RaidAccessSelected(EventDelegate {
                 requirement: |_, _, event| event.target == RoomId::Sanctum,

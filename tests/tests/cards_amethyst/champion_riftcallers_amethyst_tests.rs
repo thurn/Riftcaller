@@ -79,18 +79,3 @@ fn andvari_est_nights_warden() {
     g.click(Button::Score);
     assert_eq!(10, g.me().score())
 }
-
-#[test]
-fn ubras_efaris_time_shaper() {
-    let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::UbrasEfarisTimeShaper))
-            .build();
-
-    assert_eq!(3, g.me().actions());
-    g.create_and_play(CardName::TestChampionSpell);
-    assert_eq!(2, g.me().actions());
-    g.create_and_play(CardName::TestChampionSpell);
-    assert_eq!(2, g.me().actions());
-    g.create_and_play(CardName::TestChampionSpell);
-    assert_eq!(1, g.me().actions());
-}

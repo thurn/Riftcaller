@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_helpers::abilities::standard;
 use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
@@ -71,14 +72,14 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             abilities::level_up(),
-            simple_ability(
+            standard(
                 trigger_text(
                     Trap,
                     text!["If this card is in play,", DealDamage(2), "plus", 1, "per level"],
                 ),
                 on_accessed(|g, s, _| {
                     if g.card(s.card_id()).position().in_play() {
-                        mutations::deal_damage(g, s, 2 + g.card(s.card_id()).data.card_level)?;
+                        mutations::deal_damage(g, s, 2 + g.card(s.card_id()).data.progress)?;
                         Updates::new(g).ability_alert(s).apply();
                     }
 

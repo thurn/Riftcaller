@@ -18,7 +18,7 @@ use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
 use convert_case::{Case, Casing};
 use enum_iterator::Sequence;
-use game_data::card_name::CardVariant;
+use game_data::card_name::{CardMetadata, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
@@ -112,7 +112,7 @@ pub enum DebugAction {
     LoadPlayerState(u128),
     AddCoins(Coins),
     /// Reads text in the card list search field and shows matching cards
-    FilterCardList(CardPosition),
+    FilterCardList(CardPosition, CardMetadata),
     AddToZone(CardVariant, CardPosition),
     ApplyScenario(DebugScenario),
     DebugUndo,

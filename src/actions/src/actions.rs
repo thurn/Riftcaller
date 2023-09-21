@@ -27,7 +27,8 @@ use game_data::game_actions::{
     BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
     CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction, PromptContext,
 };
-use game_data::game_updates::{GameUpdate, InitiatedBy};
+use game_data::game_history::HistoryEvent;
+use game_data::game_updates::{GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{dispatch, flags, game_effect_actions, mana, mutations, play_card, queries};
@@ -74,6 +75,8 @@ pub fn handle_game_action(
         GameAction::Undo => handle_undo_action(game, user_side),
     }?;
 
+    // Clear & store the 'current event' in game history
+    game.history.finish_current_event_if_needed();
     Ok(())
 }
 
@@ -99,6 +102,7 @@ fn draw_card_action(game: &mut GameState, user_side: Side) -> Result<()> {
     mutations::spend_action_points(game, user_side, 1)?;
     let cards = mutations::draw_cards(game, user_side, 1)?;
     if let Some(card_id) = cards.get(0) {
+        game.add_history_event(HistoryEvent::DrawCardAction(*card_id));
         dispatch::invoke_event(game, DrawCardActionEvent(*card_id))?;
     }
 
@@ -139,6 +143,7 @@ fn activate_ability_action(
         ability_id
     );
 
+    game.add_history_event(HistoryEvent::ActivateAbility(ability_id, target));
     game.ability_state.entry(ability_id).or_default().currently_resolving = true;
     let card = game.card(ability_id.card_id);
 
@@ -158,7 +163,7 @@ fn activate_ability_action(
         (custom_cost.pay)(game, ability_id)?;
     }
 
-    game.record_update(|| GameUpdate::AbilityActivated(user_side, ability_id));
+    game.add_animation(|| GameAnimation::AbilityActivated(user_side, ability_id));
     dispatch::invoke_event(game, ActivateAbilityEvent(AbilityActivated { ability_id, target }))?;
 
     game.ability_state.entry(ability_id).or_default().currently_resolving = false;
@@ -174,6 +179,7 @@ fn unveil_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Resu
         card_id
     );
 
+    game.add_history_event(HistoryEvent::UnveilCard(card_id));
     mutations::unveil_card(game, card_id)?;
     Ok(())
 }
@@ -189,6 +195,7 @@ fn gain_mana_action(game: &mut GameState, user_side: Side) -> Result<()> {
     );
 
     debug!(?user_side, "Applying gain mana action");
+    game.add_history_event(HistoryEvent::GainManaAction);
     mutations::spend_action_points(game, user_side, 1)?;
     mana::gain(game, user_side, 1);
     Ok(())
@@ -201,9 +208,10 @@ fn level_up_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) 
         user_side
     );
     debug!(?user_side, "Applying level up room action");
+    game.add_history_event(HistoryEvent::CardProgress(room_id, 1, InitiatedBy::GameAction));
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, ManaPurpose::LevelUpRoom(room_id), 1)?;
-    game.record_update(|| GameUpdate::LevelUpRoom(room_id, InitiatedBy::GameAction));
+    game.add_animation(|| GameAnimation::LevelUpRoom(room_id, InitiatedBy::GameAction));
     mutations::level_up_room(game, room_id)?;
     Ok(())
 }
@@ -415,5 +423,6 @@ fn handle_undo_action(game: &mut GameState, user_side: Side) -> Result<()> {
         .take()
         .with_error(|| "Expected undo state")?;
     *game = *new_state;
+    dispatch::populate_delegate_cache(game);
     Ok(())
 }

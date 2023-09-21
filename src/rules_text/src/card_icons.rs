@@ -24,10 +24,10 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
     let mut icons = CardIcons::default();
 
     match context.card_data() {
-        Some(data) if data.card_level > 0 => {
+        Some(data) if data.progress > 0 => {
             icons.arena_icon = Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::LevelCounter)),
-                text: Some(data.card_level.to_string()),
+                text: Some(data.progress.to_string()),
                 background_scale: assets::icon_background_scale(CardIconType::LevelCounter),
             })
         }

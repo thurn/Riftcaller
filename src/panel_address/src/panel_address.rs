@@ -18,6 +18,7 @@ use adventure_data::adventure::TilePosition;
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
 use enum_kinds::EnumKind;
+use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
 use game_data::primitives::{DeckId, Side};
 use player_data::PlayerActivityKind;
@@ -65,7 +66,7 @@ pub enum StandardPanel {
     AdventureMenu,
     DeckEditorLoading,
     SetPlayerName(Side),
-    AddToZone(CardPosition),
+    AddToZone(CardPosition, CardMetadata),
     ApplyScenario,
 }
 

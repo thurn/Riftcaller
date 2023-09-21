@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
+use card_helpers::abilities::standard;
 use card_helpers::updates::Updates;
 use card_helpers::*;
 use game_data::card_definition::{
@@ -36,7 +37,7 @@ pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![Gain, Mana(9)],
             this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 9);
@@ -58,7 +59,7 @@ pub fn eldritch_surge(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![Gain, Mana(3)],
             this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 3);
@@ -100,7 +101,7 @@ pub fn mana_battery(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            simple_ability(
+            standard(
                 trigger_text(Dawn, text![TakeMana(1)]),
                 in_play::at_dawn(|g, s, _| {
                     let taken =
@@ -133,7 +134,7 @@ pub fn contemplate(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![text![Gain, Mana(2)], text!["Draw a card"]],
             this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 2);
@@ -156,7 +157,7 @@ pub fn ancestral_knowledge(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text!["Draw", 3, "cards"],
             this::on_play(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 3)?;

@@ -15,6 +15,7 @@
 //! Helpers for defining common card abilities
 
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
+use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
 use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
 use game_data::game::GameState;
@@ -25,6 +26,21 @@ use rules::{mutations, queries};
 
 use crate::text_macro::text;
 use crate::*;
+
+/// Helper to flatten a list of `Option` and remove `None` values.
+pub fn some(abilities: Vec<Option<Ability>>) -> Vec<Ability> {
+    abilities.into_iter().flatten().collect()
+}
+
+/// Creates a standard [Ability] with a single [Delegate].
+pub fn standard(text: Vec<TextElement>, delegate: Delegate) -> Ability {
+    Ability { text, ability_type: AbilityType::Standard, delegates: vec![delegate] }
+}
+
+/// Returns the provided [Ability] only for upgraded versions of a card.
+pub fn when_upgraded(metadata: CardMetadata, ability: Ability) -> Option<Ability> {
+    metadata.upgraded.then_some(ability)
+}
 
 pub fn silent_ability(ability: Ability) -> Ability {
     Ability { text: text![], ..ability }

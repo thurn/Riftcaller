@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use assets::rexard_images;
+use card_helpers::abilities::standard;
 use card_helpers::updates::Updates;
 use card_helpers::*;
 use game_data::card_definition::{CardConfig, CardDefinition};
@@ -32,7 +33,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Rare,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
             in_play::at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
@@ -57,7 +58,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Pact,
         rarity: Rarity::Riftcaller,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text!["The first time you take damage each turn, draw a card"],
             in_play::on_damage(|g, s, _| {
                 once_per_turn(g, s, &(), |g, s, _| {
@@ -82,7 +83,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Primal,
         rarity: Rarity::Riftcaller,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text!["After you access the", Sanctum, ", discard the top card of the", Vault],
             in_play::after_sanctum_accessed(|g, s, _| {
                 Updates::new(g).ability_alert(s).apply();
@@ -104,7 +105,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Shadow,
         rarity: Rarity::Riftcaller,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text![
                 "When you access the",
                 Vault,

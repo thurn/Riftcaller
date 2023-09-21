@@ -16,6 +16,7 @@ mod artifacts_amethyst_tests;
 mod champion_riftcallers_amethyst_tests;
 mod champion_spells_amethyst_tests;
 mod minions_amethyst_tests;
+mod overlord_riftcallers_amethyst_tests;
 mod overlord_spells_amethyst_tests;
 mod projects_amethyst_tests;
 mod schemes_amethyst_tests;

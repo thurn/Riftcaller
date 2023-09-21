@@ -20,6 +20,7 @@ pub mod costs;
 pub mod history;
 pub mod in_play;
 pub mod projects;
+pub mod requirements;
 pub mod show_prompt;
 pub mod text_macro;
 pub mod this;
@@ -103,11 +104,6 @@ pub fn once_per_turn_cost() -> Option<CustomCost<AbilityId>> {
         },
         description: None,
     })
-}
-
-/// Creates a standard [Ability] with a single [Delegate].
-pub fn simple_ability(text: Vec<TextElement>, delegate: Delegate) -> Ability {
-    Ability { text, ability_type: AbilityType::Standard, delegates: vec![delegate] }
 }
 
 /// An [AbilityType] for an ability which costs 1 action and has no target.
@@ -287,10 +283,15 @@ pub fn initiate_raid_with_callback(
     target: CardTarget,
     on_begin: impl Fn(&mut GameState, RaidId),
 ) -> Result<()> {
-    raids::initiate(game, target.room_id()?, InitiatedBy::Card, |game, raid_id| {
-        game.ability_state_mut(scope.ability_id()).raid_id = Some(raid_id);
-        on_begin(game, raid_id);
-    })
+    raids::initiate(
+        game,
+        target.room_id()?,
+        InitiatedBy::Ability(scope.ability_id()),
+        |game, raid_id| {
+            game.ability_state_mut(scope.ability_id()).raid_id = Some(raid_id);
+            on_begin(game, raid_id);
+        },
+    )
 }
 
 /// Invokes `function` at most once per turn.

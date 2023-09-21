@@ -30,7 +30,8 @@ use crate::card_state::{AbilityState, CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
 use crate::game_actions::GamePrompt;
-use crate::game_updates::{GameUpdate, UpdateState, UpdateStep, UpdateTracker};
+use crate::game_history::{GameHistory, HistoryEvent};
+use crate::game_updates::{GameAnimation, UpdateState, UpdateStep, UpdateTracker};
 use crate::player_name::PlayerId;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
@@ -208,26 +209,6 @@ pub struct RoomState {
     pub last_raided: Option<TurnData>,
 }
 
-/// Records a single event which happened during this game.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum HistoryEvent {
-    /// A card was played from hand via the 'play card' game action
-    PlayedCard(CardId),
-    /// A raid was started, either via a card effect or the explicit game action
-    RaidBegan(RoomId),
-    /// A raid ended in success.
-    RaidSuccess(RoomId),
-    /// A raid ended in failure.
-    RaidFailure(RoomId),
-}
-
-/// Records a history of events which have happened during this game.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct HistoryEntry {
-    pub turn: TurnData,
-    pub event: HistoryEvent,
-}
-
 /// Stores the primary state for an ongoing game
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -257,10 +238,9 @@ pub struct GameState {
     /// State for abilities of cards in this game
     #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub ability_state: HashMap<AbilityId, AbilityState>,
-    /// History of game actions which have happened during this game. This is
-    /// always updated *after* applying an action, i.e. it will typically not
-    /// include the action currently being resolved.
-    pub history: Vec<HistoryEntry>,
+    ///  History of events which have happened during this game. See
+    /// [GameHistory].
+    pub history: GameHistory,
     /// Next sorting key to use for card moves. Automatically updated by
     /// [Self::next_sorting_key] and [Self::move_card_internal].
     next_sorting_key: u32,
@@ -291,11 +271,12 @@ impl GameState {
         champion_deck: Deck,
         config: GameConfiguration,
     ) -> Self {
+        let turn = TurnData { side: Side::Overlord, turn_number: 0 };
         Self {
             id,
             info: GameInfo {
                 phase: GamePhase::ResolveMulligans(MulliganData::default()),
-                turn: TurnData { side: Side::Overlord, turn_number: 0 },
+                turn,
                 turn_state: TurnState::Active,
                 next_raid_id: 1,
                 tutorial_state: GameTutorialState::default(),
@@ -308,7 +289,7 @@ impl GameState {
             overlord: GamePlayerData::new(overlord, overlord_deck.schools),
             champion: GamePlayerData::new(champion, champion_deck.schools),
             ability_state: HashMap::new(),
-            history: vec![],
+            history: GameHistory::default(),
             updates: UpdateTracker::new(if config.simulation {
                 UpdateState::Ignore
             } else {
@@ -325,7 +306,7 @@ impl GameState {
         }
     }
 
-    pub fn record_update(&mut self, update: impl FnOnce() -> GameUpdate) {
+    pub fn add_animation(&mut self, update: impl FnOnce() -> GameAnimation) {
         if self.updates.state == UpdateState::Push {
             // Snapshot current game state, omit things that aren't important for display
             // logic.
@@ -623,8 +604,8 @@ impl GameState {
     }
 
     /// Adds a [HistoryEvent] for the current turn.
-    pub fn add_history(&mut self, event: HistoryEvent) {
-        self.history.push(HistoryEntry { turn: self.info.turn, event })
+    pub fn add_history_event(&mut self, event: HistoryEvent) {
+        self.history.add_event(self.info.turn, event)
     }
 
     /// Create card states for a deck

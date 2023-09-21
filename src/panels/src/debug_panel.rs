@@ -23,6 +23,7 @@ use core_ui::icons;
 use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
+use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
 use game_data::primitives::Side;
 use panel_address::{Panel, PanelAddress, StandardPanel};
@@ -92,15 +93,30 @@ impl DebugPanel {
             .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadGameState(3)))
             .child(debug_button(
                 "Card...",
-                Panels::open(StandardPanel::AddToZone(CardPosition::Hand(user_side)))
-                    .wait_to_load(true)
-                    .and_close(self.address()),
+                Panels::open(StandardPanel::AddToZone(
+                    CardPosition::Hand(user_side),
+                    CardMetadata::default(),
+                ))
+                .wait_to_load(true)
+                .and_close(self.address()),
             ))
             .child(debug_button(
                 "Discard...",
-                Panels::open(StandardPanel::AddToZone(CardPosition::DiscardPile(user_side)))
-                    .wait_to_load(true)
-                    .and_close(self.address()),
+                Panels::open(StandardPanel::AddToZone(
+                    CardPosition::DiscardPile(user_side),
+                    CardMetadata::default(),
+                ))
+                .wait_to_load(true)
+                .and_close(self.address()),
+            ))
+            .child(debug_button(
+                "Upgraded...",
+                Panels::open(StandardPanel::AddToZone(
+                    CardPosition::Hand(user_side),
+                    CardMetadata { upgraded: true, full_art: true },
+                ))
+                .wait_to_load(true)
+                .and_close(self.address()),
             ))
             .child(debug_button(
                 "Scenario...",

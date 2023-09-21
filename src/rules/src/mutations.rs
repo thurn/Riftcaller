@@ -33,8 +33,9 @@ use game_data::delegates::{
     RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
     SummonMinionEvent, UnveilCardEvent,
 };
-use game_data::game::{GamePhase, GameState, HistoryEvent, TurnData, TurnState};
-use game_data::game_updates::GameUpdate;
+use game_data::game::{GamePhase, GameState, TurnData, TurnState};
+use game_data::game_history::HistoryEvent;
+use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
     Side, TurnNumber,
@@ -149,7 +150,7 @@ pub fn shuffle_into_deck(game: &mut GameState, side: Side, cards: &[CardId]) -> 
         set_revealed_to(game, *card_id, Side::Champion, false);
     }
     shuffle_deck(game, side)?;
-    game.record_update(|| GameUpdate::ShuffleIntoDeck);
+    game.add_animation(|| GameAnimation::ShuffleIntoDeck);
     Ok(())
 }
 
@@ -183,7 +184,7 @@ pub fn draw_cards(game: &mut GameState, side: Side, count: u32) -> Result<Vec<Ca
         set_revealed_to(game, *card_id, side, true);
     }
 
-    game.record_update(|| GameUpdate::DrawCards(side, card_ids.clone()));
+    game.add_animation(|| GameAnimation::DrawCards(side, card_ids.clone()));
 
     for card_id in &card_ids {
         move_card(game, *card_id, CardPosition::Hand(side))?;
@@ -226,7 +227,7 @@ pub fn score_points(game: &mut GameState, side: Side, amount: PointsValue) -> Re
 /// Mark the game as won by the `winner` player.
 pub fn game_over(game: &mut GameState, winner: Side) -> Result<()> {
     game.info.phase = GamePhase::GameOver { winner };
-    game.record_update(|| GameUpdate::GameOver(winner));
+    game.add_animation(|| GameAnimation::GameOver(winner));
     Ok(())
 }
 
@@ -285,11 +286,11 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
     match outcome {
         RaidOutcome::Success => {
             dispatch::invoke_event(game, RaidSuccessEvent(event))?;
-            game.add_history(HistoryEvent::RaidSuccess(target));
+            game.add_history_event(HistoryEvent::RaidSuccess(target));
         }
         RaidOutcome::Failure => {
             dispatch::invoke_event(game, RaidFailureEvent(event))?;
-            game.add_history(HistoryEvent::RaidFailure(target));
+            game.add_history_event(HistoryEvent::RaidFailure(target));
         }
     }
     dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;
@@ -396,13 +397,13 @@ pub fn level_up_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
 /// Returns an error if this card cannot be leveled up.
 pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) -> Result<()> {
     verify!(flags::can_level_up_card(game, card_id));
-    game.card_mut(card_id).data.card_level += amount;
+    game.card_mut(card_id).data.progress += amount;
     let card = game.card(card_id);
     if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {
-        if card.data.card_level >= scheme_points.level_requirement {
+        if card.data.progress >= scheme_points.level_requirement {
             turn_face_up(game, card_id);
             move_card(game, card_id, CardPosition::Scoring)?;
-            game.record_update(|| GameUpdate::ScoreCard(Side::Overlord, card_id));
+            game.add_animation(|| GameAnimation::ScoreCard(Side::Overlord, card_id));
             dispatch::invoke_event(game, OverlordScoreCardEvent(card_id))?;
             dispatch::invoke_event(
                 game,
@@ -441,7 +442,7 @@ pub fn unveil_card(game: &mut GameState, card_id: CardId) -> Result<()> {
         _ => fail!("Insufficient mana available to unveil project"),
     }
 
-    game.record_update(|| GameUpdate::UnveilCard(card_id));
+    game.add_animation(|| GameAnimation::UnveilCard(card_id));
     dispatch::invoke_event(game, UnveilCardEvent(card_id))?;
 
     Ok(())
@@ -453,7 +454,7 @@ pub fn unveil_card_ignoring_costs(game: &mut GameState, card_id: CardId) -> Resu
     verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
     turn_face_up(game, card_id);
-    game.record_update(|| GameUpdate::UnveilCard(card_id));
+    game.add_animation(|| GameAnimation::UnveilCard(card_id));
     dispatch::invoke_event(game, UnveilCardEvent(card_id))?;
 
     Ok(())
@@ -466,7 +467,7 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     game.info.turn_state = TurnState::Active;
 
     debug!(?next_side, "Starting player turn");
-    game.record_update(|| GameUpdate::StartTurn(next_side));
+    game.add_animation(|| GameAnimation::StartTurn(next_side));
 
     if next_side == Side::Overlord {
         dispatch::invoke_event(game, DuskEvent(turn_number))?;
@@ -486,7 +487,7 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
 ///
 /// Automatically invoked by [move_card] when a card moves to a non-play zone.
 fn clear_counters(game: &mut GameState, card_id: CardId) {
-    game.card_mut(card_id).data.card_level = 0;
+    game.card_mut(card_id).data.progress = 0;
     game.card_mut(card_id).data.stored_mana = 0;
     game.card_mut(card_id).data.boost_count = 0;
 }
@@ -516,7 +517,7 @@ pub fn summon_minion(game: &mut GameState, card_id: CardId, costs: SummonMinion)
 
     dispatch::invoke_event(game, SummonMinionEvent(card_id))?;
     turn_face_up(game, card_id);
-    game.record_update(|| GameUpdate::SummonMinion(card_id));
+    game.add_animation(|| GameAnimation::SummonMinion(card_id));
     Ok(())
 }
 

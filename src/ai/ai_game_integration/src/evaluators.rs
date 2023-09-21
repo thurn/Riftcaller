@@ -65,7 +65,7 @@ impl StateEvaluator<SpelldawnState> for LevelCountersEvaluator {
             .cards(side)
             .iter()
             .filter(|c| c.position().in_play())
-            .map(|c| c.data.card_level)
+            .map(|c| c.data.progress)
             .sum::<u32>() as i32)
     }
 }

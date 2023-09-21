@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
+use card_helpers::abilities::standard;
 use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
@@ -69,7 +70,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            simple_ability(
+            standard(
                 text!["When you access a room", StoreMana(1)],
                 in_play::after_room_accessed(|g, s, _| {
                     Updates::new(g).ability_alert(s).apply();
@@ -174,7 +175,7 @@ pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![simple_ability(
+        abilities: vec![standard(
             text!["The first time each turn you take the 'draw card' action, draw another card"],
             Delegate::DrawCardAction(EventDelegate {
                 requirement: face_up_in_play,

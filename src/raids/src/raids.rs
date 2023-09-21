@@ -24,9 +24,10 @@ use game_data::delegates::{
     MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome,
     RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
-use game_data::game::{GamePhase, GameState, HistoryEntry, HistoryEvent, RaidJumpRequest};
+use game_data::game::{GamePhase, GameState, RaidJumpRequest};
 use game_data::game_actions::RaidAction;
-use game_data::game_updates::{GameUpdate, InitiatedBy, TargetedInteraction};
+use game_data::game_history::HistoryEvent;
+use game_data::game_updates::{GameAnimation, InitiatedBy, TargetedInteraction};
 use game_data::primitives::{CardId, GameObjectId, RaidId, RoomId, Side};
 use game_data::raid_data::{
     RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus, RaidStep, ScoredCard,
@@ -77,9 +78,8 @@ pub fn initiate(
     game.info.next_raid_id += 1;
     game.raid = Some(raid);
     on_begin(game, raid_id);
-    game.record_update(|| GameUpdate::InitiateRaid(target_room, initiated_by));
-    game.history
-        .push(HistoryEntry { turn: game.info.turn, event: HistoryEvent::RaidBegan(target_room) });
+    game.add_animation(|| GameAnimation::InitiateRaid(target_room, initiated_by));
+    game.add_history_event(HistoryEvent::RaidBegin(target_room, initiated_by));
 
     run(game, None)
 }
@@ -250,8 +250,8 @@ fn use_weapon(
         })?;
     mana::spend(game, Side::Champion, ManaPurpose::UseWeapon(interaction.weapon_id), cost)?;
 
-    game.record_update(|| {
-        GameUpdate::CombatInteraction(TargetedInteraction {
+    game.add_animation(|| {
+        GameAnimation::CombatInteraction(TargetedInteraction {
             source: GameObjectId::CardId(interaction.weapon_id),
             target: GameObjectId::CardId(interaction.defender_id),
         })
@@ -276,8 +276,8 @@ fn minion_defeated(game: &mut GameState, interaction: WeaponInteraction) -> Resu
 }
 
 fn fire_minion_combat_ability(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
-    game.record_update(|| {
-        GameUpdate::CombatInteraction(TargetedInteraction {
+    game.add_animation(|| {
+        GameAnimation::CombatInteraction(TargetedInteraction {
             source: GameObjectId::CardId(minion_id),
             target: GameObjectId::Character(Side::Champion),
         })
@@ -351,7 +351,7 @@ fn start_scoring_card(game: &mut GameState, scored: ScoredCard) -> Result<RaidSt
     mutations::turn_face_up(game, scored.id);
     mutations::move_card(game, scored.id, CardPosition::Scoring)?;
     game.raid_mut()?.accessed.retain(|c| *c != scored.id);
-    game.record_update(|| GameUpdate::ScoreCard(Side::Champion, scored.id));
+    game.add_animation(|| GameAnimation::ScoreCard(Side::Champion, scored.id));
     RaidState::step(RaidStep::ChampionScoreEvent(scored))
 }
 

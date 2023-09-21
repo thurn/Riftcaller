@@ -157,10 +157,10 @@ pub async fn handle_debug_action(
             })
             .await
         }
-        DebugAction::FilterCardList(position) => {
+        DebugAction::FilterCardList(position, metadata) => {
             let input = request_fields.get("CardVariant").with_error(|| "Expected CardVariant")?;
             Ok(GameResponse::new(ClientData::propagate(data)).command(panels::update(
-                AddToZonePanel::new(input, *position).build_panel().unwrap(),
+                AddToZonePanel::new(input, *position, *metadata).build_panel().unwrap(),
             )))
         }
         DebugAction::AddToZone(card_name, position) => {

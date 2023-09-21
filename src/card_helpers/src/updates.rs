@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::game::GameState;
-use game_data::game_updates::GameUpdate;
+use game_data::game_updates::GameAnimation;
 use game_data::primitives::{AbilityId, CardId, GameObjectId, HasAbilityId, HasCardId};
 use game_data::special_effects::{Projectile, SpecialEffect, TimedEffectData};
 
@@ -30,14 +30,14 @@ impl<'a> Updates<'a> {
 
     pub fn apply(self) {
         if let Some(id) = self.ability_triggered {
-            self.game.record_update(|| GameUpdate::AbilityTriggered(id, self.effects));
+            self.game.add_animation(|| GameAnimation::AbilityTriggered(id, self.effects));
         } else {
-            self.game.record_update(|| GameUpdate::CustomEffects(self.effects));
+            self.game.add_animation(|| GameAnimation::CustomEffects(self.effects));
         }
     }
 
-    /// Pushes a [GameUpdate] indicating the ability represented by the provided
-    /// ability ID should have a trigger animation shown in the UI.    
+    /// Pushes a [GameAnimation] indicating the ability represented by the
+    /// provided ability ID should have a trigger animation shown in the UI.
     pub fn ability_alert(mut self, ability_id: impl HasAbilityId) -> Self {
         self.ability_triggered = Some(ability_id.ability_id());
         self
