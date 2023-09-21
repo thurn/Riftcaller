@@ -57,7 +57,7 @@ TagManager:
   - name: DiscardPile
     uniqueID: 2902998159
     locked: 0
-  - name: Identity
+  - name: GameCharacter
     uniqueID: 4286107515
     locked: 0
   - name: ArenaRaidParticipant

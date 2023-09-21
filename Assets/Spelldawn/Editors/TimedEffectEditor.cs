@@ -47,6 +47,19 @@ namespace Spelldawn.Editors
         }
       }
 
+      if (GUILayout.Button("Duration 1s"))
+      {
+        foreach (var particleSystem in ((TimedEffect)target).GetComponentsInChildren<ParticleSystem>())
+        {
+          particleSystem.Stop();
+          var main = particleSystem.main;
+          main.duration = Mathf.Min(main.duration, 1f);
+          var startLifetime = main.startLifetime;
+          startLifetime.constantMax = Mathf.Min(startLifetime.constantMax, 1f);
+          main.startLifetime = startLifetime;
+        }
+      }
+
       var color = EditorGUILayout.ColorField("Main Color", _color);
       if (color != _color && color != Color.clear)
       {

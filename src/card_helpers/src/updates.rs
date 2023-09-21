@@ -56,8 +56,8 @@ impl<'a> Updates<'a> {
     /// indicated target.    
     pub fn timed_effect(
         mut self,
-        effect: TimedEffectData,
         target: impl Into<GameObjectId>,
+        effect: TimedEffectData,
     ) -> Self {
         self.effects.push(SpecialEffect::TimedEffect { target: target.into(), effect });
         self
@@ -65,14 +65,14 @@ impl<'a> Updates<'a> {
 
     /// Creates a [SpecialEffect::CardMovementEffect] playing an effect when the
     /// indicated card is moved to a new position.
-    pub fn card_movement(mut self, asset: Projectile, card_id: impl HasCardId) -> Self {
+    pub fn card_movement_effect(mut self, asset: Projectile, card_id: impl HasCardId) -> Self {
         self.effects
             .push(SpecialEffect::CardMovementEffect { card_id: card_id.card_id(), effect: asset });
         self
     }
 
-    /// Applies a series of [Self::card_movement] effects.
-    pub fn card_movements(mut self, asset: Projectile, cards: &[CardId]) -> Self {
+    /// Applies a series of [Self::card_movement_effect] effects.
+    pub fn card_movement_effects(mut self, asset: Projectile, cards: &[CardId]) -> Self {
         self.effects.extend(
             cards
                 .iter()

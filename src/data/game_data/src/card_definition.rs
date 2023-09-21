@@ -32,7 +32,7 @@ use crate::primitives::{
     HealthValue, LevelValue, ManaValue, PointsValue, Rarity, RazeCost, Resonance, RoomId, School,
     ShieldValue, Side, Sprite,
 };
-use crate::special_effects::ProjectileData;
+use crate::special_effects::{ProjectileData, TimedEffectData};
 use crate::text::TextElement;
 
 /// A cost represented by custom functions.
@@ -173,20 +173,20 @@ pub struct CardConfig {
     pub stats: CardStats,
     pub resonance: Option<Resonance>,
     pub custom_targeting: Option<TargetRequirement<CardId>>,
+    /// A projectile to use when this card's combat ability triggers
     pub combat_projectile: Option<ProjectileData>,
-
-    // Alternate image to display to identify players in the arena
+    /// An effect to play on this card when it is played
+    pub play_effect: Option<TimedEffectData>,
+    /// Alternate image to display to identify players in the arena
     pub player_portrait: Option<Sprite>,
-
-    // Content to display behind the main image
+    /// Content to display behind the main image
     pub image_background: Option<Sprite>,
-
-    // Which card variant does this definition correspond to?
-    //
-    // It is never necessary to specify this value when building a card
-    // definition, we automatically write the correct variant to each definition
-    // after construction. A value of 'None' is treated identically to the
-    // standard variant.
+    /// Which card variant does this definition correspond to?
+    ///
+    /// It is never necessary to specify this value when building a card
+    /// definition, we automatically write the correct variant to each
+    /// definition after construction. A value of 'None' is treated
+    /// identically to the standard variant.
     pub metadata: CardMetadata,
 }
 
@@ -251,6 +251,11 @@ impl CardConfigBuilder {
 
     pub fn combat_projectile(mut self, projectile: ProjectileData) -> Self {
         self.config.combat_projectile = Some(projectile);
+        self
+    }
+
+    pub fn play_effect(mut self, effect: TimedEffectData) -> Self {
+        self.config.play_effect = Some(effect);
         self
     }
 }

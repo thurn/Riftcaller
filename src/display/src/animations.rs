@@ -47,6 +47,7 @@ pub fn render(
             if builder.user_side == side.opponent() {
                 show_cards(builder, &vec![*card_id], ShowCards::default())
             }
+            on_play_effect(builder, snapshot, *card_id);
         }
         GameUpdate::CustomEffects(effects) => play_special_effects(builder, effects),
         GameUpdate::AbilityActivated(side, ability_id) => {
@@ -212,6 +213,12 @@ fn combat_interaction(
     builder.push(fire_projectile(builder, interaction, projectile));
 }
 
+fn on_play_effect(builder: &mut ResponseBuilder, snapshot: &GameState, card_id: CardId) {
+    if let Some(data) = &snapshot.card(card_id).definition().config.play_effect {
+        builder.push(play_timed_effect(builder, card_id, data));
+    }
+}
+
 fn fire_projectile(
     builder: &ResponseBuilder,
     interaction: TargetedInteraction,
@@ -289,6 +296,7 @@ fn play_timed_effect(
         scale: effect.scale,
         duration: Some(adapters::time_value(effect.duration)),
         sound: effect.sound.map(assets::sound_effect),
+        arena_effect: effect.arena_effect,
     })
 }
 

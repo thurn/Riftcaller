@@ -18,8 +18,8 @@ use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::game_actions::PromptContext;
-use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::special_effects::Projectile;
+use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use game_data::special_effects::{Projectile, TimedEffect, TimedEffectData};
 use rules::CardDefinitionExt;
 
 pub fn restoration(_: CardMetadata) -> CardDefinition {
@@ -42,7 +42,13 @@ pub fn restoration(_: CardMetadata) -> CardDefinition {
                     .map(|c| c.id)
                     .collect::<Vec<_>>();
 
-                Updates::new(g).card_movements(Projectile::Projectiles1(3), &cards).apply();
+                Updates::new(g)
+                    .timed_effect(
+                        GameObjectId::DiscardPile(Side::Champion),
+                        TimedEffectData::new(TimedEffect::MagicCircles1(1)).scale(2.0),
+                    )
+                    .card_movement_effects(Projectile::Projectiles1(3), &cards)
+                    .apply();
 
                 show_prompt::play_card_browser(
                     g,

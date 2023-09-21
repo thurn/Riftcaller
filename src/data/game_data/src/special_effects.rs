@@ -92,9 +92,8 @@ impl ProjectileData {
 /// Effect which plays for a short duration and then vanishes
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum TimedEffect {
-    /// Magic hit number
     MagicHits(u32),
-    /// Sword Slash VFX number
+    MagicCircles1(u32),
     SwordSlashes(u32),
 }
 
@@ -125,11 +124,13 @@ pub struct TimedEffectData {
     pub sound: Option<SoundEffect>,
     /// Scaling to apply to the effect.
     pub scale: Option<f32>,
+    /// If true, the effect will render *behind* arena items. Defaults to true.
+    pub arena_effect: bool,
 }
 
 impl TimedEffectData {
     pub fn new(effect: TimedEffect) -> Self {
-        Self { effect, duration: Milliseconds(300), sound: None, scale: None }
+        Self { effect, duration: Milliseconds(300), sound: None, scale: None, arena_effect: true }
     }
 
     pub fn duration(mut self, duration: Milliseconds) -> Self {
@@ -144,6 +145,11 @@ impl TimedEffectData {
 
     pub fn scale(mut self, scale: f32) -> Self {
         self.scale = Some(scale);
+        self
+    }
+
+    pub fn arena_effect(mut self, arena_effect: bool) -> Self {
+        self.arena_effect = arena_effect;
         self
     }
 }

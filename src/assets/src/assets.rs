@@ -231,6 +231,9 @@ pub fn timed_effect(effect: TimedEffect) -> EffectAddress {
             TimedEffect::MagicHits(number) => {
                 format!("HovlStudio/MagicHits/Hit {number}.prefab")
             }
+            TimedEffect::MagicCircles1(number) => {
+                format!("HovlStudio/MagicCircles1/Magic circle {number}.prefab")
+            }
             TimedEffect::SwordSlashes(number) => {
                 format!("HovlStudio/SwordSlashes/Sword Slash {number}.prefab")
             }

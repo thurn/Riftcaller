@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Spelldawn.Assets;
 using Spelldawn.Common;
+using Spelldawn.Game;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -213,15 +214,20 @@ namespace Spelldawn.Services
 
     IEnumerator HandlePlayEffect(PlayEffectCommand command)
     {
-      var position = command.Position.EffectPositionCase switch
+      var positionTransform = command.Position.EffectPositionCase switch
       {
         PlayEffectPosition.EffectPositionOneofCase.GameObject =>
-          _registry.ObjectPositionService.Find(command.Position.GameObject).transform.position,
+          _registry.ObjectPositionService.Find(command.Position.GameObject).transform,
         _ => throw new ArgumentOutOfRangeException()
       };
+      var anchor = positionTransform.Find("EffectAnchor");
+      var position = anchor ? anchor.position : positionTransform.position;
 
       var rotation = Quaternion.LookRotation(position - _registry.MainCamera.transform.position);
       var effect = _registry.AssetPoolService.Create(_registry.AssetService.GetEffect(command.Effect), position);
+      
+      effect.SetGameContext(command.ArenaEffect ? GameContext.Arena : GameContext.Effects);
+      
       effect.transform.rotation = rotation;
       if (command.Scale is { } scale)
       {
@@ -232,6 +238,7 @@ namespace Spelldawn.Services
       {
         AssetUtil.PlayOneShot(_registry.MainAudioSource, _registry.AssetService.GetAudioClip(command.Sound));
       }
+      
 
       yield return new WaitForSeconds(DataUtils.ToSeconds(command.Duration, 0));
     }

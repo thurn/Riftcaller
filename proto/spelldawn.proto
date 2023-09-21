@@ -1621,6 +1621,9 @@ message PlayEffectCommand {
     TimeValue duration = 4;
 
     AudioClipAddress sound = 5;
+
+    // If true, the effect will render *behind* arena items
+    bool arena_effect = 6;
 }
 
 enum GameMessageType {

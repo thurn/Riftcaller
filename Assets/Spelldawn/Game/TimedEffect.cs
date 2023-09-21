@@ -29,6 +29,14 @@ namespace Spelldawn.Game
       StartCoroutine(DisableAsync(_duration));
     }
 
+    public void SetGameContext(GameContext gameContext)
+    {
+      foreach (var ps in GetComponentsInChildren<ParticleSystem>())
+      {
+        SortingOrder.Create(gameContext).ApplyTo(ps.GetComponent<Renderer>());
+      }
+    }
+
     void OnValidate()
     {
       _duration = 0.0f;

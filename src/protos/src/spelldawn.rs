@@ -1715,6 +1715,9 @@ pub struct PlayEffectCommand {
     pub duration: ::core::option::Option<TimeValue>,
     #[prost(message, optional, tag = "5")]
     pub sound: ::core::option::Option<AudioClipAddress>,
+    /// If true, the effect will render *behind* arena items
+    #[prost(bool, tag = "6")]
+    pub arena_effect: bool,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
