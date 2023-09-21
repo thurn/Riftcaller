@@ -37,6 +37,20 @@ namespace Spelldawn.Game
       }
     }
 
+    public void SetStartColor(Color color)
+    {
+      foreach (var ps in GetComponentsInChildren<ParticleSystem>())
+      {
+        var main = ps.main;
+        var current = main.startColor.color;
+        Color.RGBToHSV(current, out var h, out var s, out var v);
+        if (s > 0.2f && v > 0.2f)
+        {
+          main.startColor = new Color(color.r, color.g, color.b, current.a);
+        }
+      }
+    }
+
     void OnValidate()
     {
       _duration = 0.0f;

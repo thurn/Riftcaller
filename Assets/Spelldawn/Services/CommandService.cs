@@ -19,6 +19,7 @@ using System.Linq;
 using Spelldawn.Assets;
 using Spelldawn.Common;
 using Spelldawn.Game;
+using Spelldawn.Masonry;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
@@ -227,6 +228,10 @@ namespace Spelldawn.Services
       var effect = _registry.AssetPoolService.Create(_registry.AssetService.GetEffect(command.Effect), position);
       
       effect.SetGameContext(command.ArenaEffect ? GameContext.Arena : GameContext.Effects);
+      if (command.StartColor != null)
+      {
+        effect.SetStartColor(Mason.ToUnityColor(command.StartColor));
+      }
       
       effect.transform.rotation = rotation;
       if (command.Scale is { } scale)

@@ -14,6 +14,8 @@
 
 use card_helpers::updates::Updates;
 use card_helpers::{costs, show_prompt, simple_ability, text, this};
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -45,7 +47,9 @@ pub fn restoration(_: CardMetadata) -> CardDefinition {
                 Updates::new(g)
                     .timed_effect(
                         GameObjectId::DiscardPile(Side::Champion),
-                        TimedEffectData::new(TimedEffect::MagicCircles1(1)).scale(2.0),
+                        TimedEffectData::new(TimedEffect::MagicCircles1(2))
+                            .scale(2.0)
+                            .effect_color(design::YELLOW_900),
                     )
                     .card_movement_effects(Projectile::Projectiles1(3), &cards)
                     .apply();

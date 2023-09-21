@@ -116,6 +116,14 @@ pub enum SoundEffect {
 }
 
 #[derive(Debug, Clone)]
+pub struct EffectColor {
+    pub red: f32,
+    pub green: f32,
+    pub blue: f32,
+    pub alpha: f32,
+}
+
+#[derive(Debug, Clone)]
 pub struct TimedEffectData {
     pub effect: TimedEffect,
     /// How long to play the effect for. Defaults to 300ms.
@@ -126,11 +134,20 @@ pub struct TimedEffectData {
     pub scale: Option<f32>,
     /// If true, the effect will render *behind* arena items. Defaults to true.
     pub arena_effect: bool,
+    /// Color to apply to the effect
+    pub effect_color: Option<EffectColor>,
 }
 
 impl TimedEffectData {
     pub fn new(effect: TimedEffect) -> Self {
-        Self { effect, duration: Milliseconds(300), sound: None, scale: None, arena_effect: true }
+        Self {
+            effect,
+            duration: Milliseconds(300),
+            sound: None,
+            scale: None,
+            arena_effect: true,
+            effect_color: None,
+        }
     }
 
     pub fn duration(mut self, duration: Milliseconds) -> Self {

@@ -27,9 +27,9 @@ use protos::spelldawn::object_position::Position;
 use protos::spelldawn::play_effect_position::EffectPosition;
 use protos::spelldawn::{
     CreateTokenCardCommand, DelayCommand, DisplayGameMessageCommand, FireProjectileCommand,
-    GameMessageType, GameObjectMove, MoveGameObjectsCommand, MusicState, PlayEffectCommand,
-    PlayEffectPosition, PlaySoundCommand, RoomVisitType, SetCardMovementEffectCommand,
-    SetMusicCommand, TimeValue, VisitRoomCommand,
+    FlexColor, GameMessageType, GameObjectMove, MoveGameObjectsCommand, MusicState,
+    PlayEffectCommand, PlayEffectPosition, PlaySoundCommand, RoomVisitType,
+    SetCardMovementEffectCommand, SetMusicCommand, TimeValue, VisitRoomCommand,
 };
 use rules::CardDefinitionExt;
 use {adapters, assets};
@@ -297,6 +297,12 @@ fn play_timed_effect(
         duration: Some(adapters::time_value(effect.duration)),
         sound: effect.sound.map(assets::sound_effect),
         arena_effect: effect.arena_effect,
+        start_color: effect.effect_color.as_ref().map(|color| FlexColor {
+            red: color.red,
+            green: color.green,
+            blue: color.blue,
+            alpha: color.alpha,
+        }),
     })
 }
 

@@ -1624,6 +1624,9 @@ message PlayEffectCommand {
 
     // If true, the effect will render *behind* arena items
     bool arena_effect = 6;
+
+    // Tint color to apply to all particle systems in this effect.
+    FlexColor start_color = 7;
 }
 
 enum GameMessageType {

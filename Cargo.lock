@@ -441,6 +441,7 @@ version = "0.0.0"
 dependencies = [
  "assets",
  "card_helpers",
+ "core_ui",
  "game_data",
  "rules",
  "with_error",

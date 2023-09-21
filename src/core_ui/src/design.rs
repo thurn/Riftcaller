@@ -14,6 +14,7 @@
 
 //! Core design primitives
 
+use game_data::special_effects::{EffectColor, TimedEffectData};
 use protos::spelldawn::{Dimension, FlexColor, FontAddress};
 
 use crate::style::DimensionExt;
@@ -245,5 +246,21 @@ impl From<Font> for FontAddress {
             Font::CardIcon => impact(),
             Font::CardVariant => bona_nova(),
         }
+    }
+}
+
+pub trait TimedEffectDataExt {
+    fn effect_color(self, color: FlexColor) -> Self;
+}
+
+impl TimedEffectDataExt for TimedEffectData {
+    fn effect_color(mut self, color: FlexColor) -> Self {
+        self.effect_color = Some(EffectColor {
+            red: color.red,
+            green: color.green,
+            blue: color.blue,
+            alpha: color.alpha,
+        });
+        self
     }
 }

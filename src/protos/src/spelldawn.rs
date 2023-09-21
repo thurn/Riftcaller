@@ -1718,6 +1718,10 @@ pub struct PlayEffectCommand {
     /// If true, the effect will render *behind* arena items
     #[prost(bool, tag = "6")]
     pub arena_effect: bool,
+    /// Optionally, a tint color to apply to all particle systems in this
+    /// effect.
+    #[prost(message, optional, tag = "7")]
+    pub start_color: ::core::option::Option<FlexColor>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
