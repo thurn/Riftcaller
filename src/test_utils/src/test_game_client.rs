@@ -39,10 +39,10 @@ use crate::client_interface::{ClientInterface, HasText};
 use crate::test_world_map::TestWorldMap;
 
 /// Overwrites the card with ID `card_id` in `game` to be a new card with the
-/// provided `card_name`.
-pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_name: CardName) {
+/// provided `card_variant`.
+pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_variant: CardVariant) {
     let card = game.card(card_id);
-    let mut state = CardState::new(card_id, CardVariant::standard(card_name));
+    let mut state = CardState::new(card_id, card_variant);
     state.set_position_internal(card.sorting_key, card.position());
     *game.card_mut(card_id) = state;
 

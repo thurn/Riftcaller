@@ -20,7 +20,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::RaidOutcome;
+use game_data::delegates::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations;
@@ -476,6 +476,44 @@ pub fn test_sacrifice_end_raid_project(metadata: CardMetadata) -> CardDefinition
             delegates: vec![on_activated(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
         }],
         config: CardConfig::default(),
+        ..test_overlord_spell(metadata)
+    }
+}
+
+pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestWeaponReduceCostOnSuccessfulRaid,
+        cost: cost(5),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Champion,
+        school: School::Law,
+        abilities: vec![
+            Ability {
+                ability_type: AbilityType::Standard,
+                text: text![
+                    "When you access a room, this weapon costs",
+                    ManaMinus(2),
+                    "to play this turn"
+                ],
+                delegates: vec![Delegate::ManaCost(QueryDelegate {
+                    requirement: this_card,
+                    transformation: |g, _, _, value| {
+                        if history::raid_accesses_this_turn(g).count() > 0 {
+                            value.map(|v| v.saturating_sub(2))
+                        } else {
+                            value
+                        }
+                    },
+                })],
+            },
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .attack_boost(AttackBoost { cost: 2, bonus: 3 })
+            .resonance(Resonance::Infernal)
+            .build(),
         ..test_overlord_spell(metadata)
     }
 }

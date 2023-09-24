@@ -45,6 +45,11 @@ impl CardVariant {
         Self { name, metadata: CardMetadata { upgraded: false, full_art: false } }
     }
 
+    /// Upgraded variant of a card
+    pub const fn upgraded(name: CardName) -> Self {
+        Self { name, metadata: CardMetadata { upgraded: true, full_art: false } }
+    }
+
     /// Returns an integer which uniquely identifies this variant among all
     /// other variants.
     pub fn as_ident(&self) -> u64 {
@@ -146,6 +151,7 @@ pub enum CardName {
     TestMinionDealDamageEndRaid,
     TestAttackWeapon,
     TestSacrificeDrawCardArtifact,
+    TestWeaponReduceCostOnSuccessfulRaid,
 
     // Proof of Concept
     GoldMine,

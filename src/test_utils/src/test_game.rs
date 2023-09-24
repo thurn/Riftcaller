@@ -329,7 +329,7 @@ fn overwrite_positions(
             .find(|c| c.position().kind() == CardPositionKind::DeckUnknown)
             .expect("No cards in deck")
             .id;
-        test_game_client::overwrite_card(game, target_id, *card);
+        test_game_client::overwrite_card(game, target_id, CardVariant::standard(*card));
         game.move_card_internal(target_id, position);
 
         if turn_face_up {

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::card_name::CardName;
-use game_data::primitives::Side;
+use game_data::primitives::{RoomId, Side};
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
@@ -70,4 +70,43 @@ fn restoration_cannot_take_other_action() {
     g.create_and_play(CardName::Restoration);
     test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
     assert!(g.draw_card_with_result().is_err());
+}
+
+#[test]
+fn restoration_upgraded() {
+    let (cost, reduction) = (1, 2);
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
+    )
+    .build();
+    assert!(g.user.cards.left_items().is_empty());
+    g.create_and_play_upgraded(CardName::Restoration);
+    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
+    let id = g.user.cards.hand().find_card(CardName::TestWeaponAbyssal);
+    g.play_card(id, g.user_id(), None);
+    assert!(g.user.cards.hand().is_empty());
+    test_helpers::assert_cards_match(g.user.cards.left_items(), vec![CardName::TestWeaponAbyssal]);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST + reduction
+    );
+}
+
+#[test]
+fn restoration_upgraded_stacking() {
+    let (cost, reduction) = (1, 2);
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion)
+            .in_discard_face_up(CardName::TestWeaponReduceCostOnSuccessfulRaid),
+    )
+    .build();
+    assert!(g.user.cards.left_items().is_empty());
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    g.create_and_play_upgraded(CardName::Restoration);
+    let id = g.user.cards.hand().find_card(CardName::TestWeaponReduceCostOnSuccessfulRaid);
+    g.play_card(id, g.user_id(), None);
+    assert!(g.user.cards.hand().is_empty());
+    // Test weapon costs 5 and reduces cost by 2 on raid access
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - 5 + reduction + 2);
 }

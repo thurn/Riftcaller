@@ -18,7 +18,7 @@
 use actions::legal_actions;
 use adventure_data::adventure::{Coins, TilePosition, TileState};
 use anyhow::Result;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
 #[allow(unused_imports)] // Used in docs
 use game_data::game::GameState;
@@ -187,9 +187,14 @@ impl TestSession {
     /// will correctly update the card's sorting key, however.
     ///
     /// Returns the client [CardIdentifier] for the drawn card. Panics if no
-    /// test cards remain in the user's deck.
+    /// test cards remain in the user's deck.    
     pub fn add_to_hand(&mut self, card_name: CardName) -> CardIdentifier {
-        let side = test_game_client::side_for_card_name(card_name);
+        self.add_variant_to_hand(CardVariant::standard(card_name))
+    }
+
+    /// Equivalent method to [Self::add_to_hand] which takes a [CardVariant].
+    pub fn add_variant_to_hand(&mut self, card_variant: CardVariant) -> CardIdentifier {
+        let side = test_game_client::side_for_card_name(card_variant.name);
         let card_id = self
             .database
             .game()
@@ -199,7 +204,7 @@ impl TestSession {
             .unwrap()
             .id;
         self.database.mutate_game(|game| {
-            test_game_client::overwrite_card(game, card_id, card_name);
+            test_game_client::overwrite_card(game, card_id, card_variant);
             game.move_card_internal(card_id, CardPosition::Hand(side));
             mutations::set_revealed_to(game, card_id, card_id.side, true);
         });

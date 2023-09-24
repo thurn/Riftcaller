@@ -97,6 +97,10 @@ pub trait TestSessionHelpers {
     /// Panics if the server returns an error for playing this card.
     fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier;
 
+    /// Equivalent method to [Self::create_and_play] which creates the upgraded
+    /// version of the card.
+    fn create_and_play_upgraded(&mut self, card_name: CardName) -> CardIdentifier;
+
     /// Equivalent method to [Self::create_and_play] which specifies
     /// a target room to use.
     fn play_with_target_room(&mut self, card_name: CardName, room_id: RoomId) -> CardIdentifier;
@@ -301,7 +305,20 @@ impl TestSessionHelpers for TestSession {
     fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier {
         play_impl(
             self,
-            card_name,
+            CardVariant::standard(card_name),
+            match rules::get(CardVariant::standard(card_name)).card_type {
+                CardType::Minion | CardType::Project | CardType::Scheme => {
+                    Some(test_constants::ROOM_ID)
+                }
+                _ => None,
+            },
+        )
+    }
+
+    fn create_and_play_upgraded(&mut self, card_name: CardName) -> CardIdentifier {
+        play_impl(
+            self,
+            CardVariant::upgraded(card_name),
             match rules::get(CardVariant::standard(card_name)).card_type {
                 CardType::Minion | CardType::Project | CardType::Scheme => {
                     Some(test_constants::ROOM_ID)
@@ -312,7 +329,7 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn play_with_target_room(&mut self, card_name: CardName, room_id: RoomId) -> CardIdentifier {
-        play_impl(self, card_name, Some(room_id))
+        play_impl(self, CardVariant::standard(card_name), Some(room_id))
     }
 
     fn activate_ability(&mut self, card_id: CardIdentifier, index: u32) {
@@ -435,17 +452,17 @@ impl TestSessionHelpers for TestSession {
 
 fn play_impl(
     session: &mut TestSession,
-    card_name: CardName,
+    card_variant: CardVariant,
     room_id: Option<RoomId>,
 ) -> CardIdentifier {
-    let card_id = session.add_to_hand(card_name);
+    let card_id = session.add_variant_to_hand(card_variant);
     let target = room_id.map(|room_id| CardTarget {
         card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(room_id))),
     });
 
     session.play_card(
         card_id,
-        session.player_id_for_side(test_game_client::side_for_card_name(card_name)),
+        session.player_id_for_side(test_game_client::side_for_card_name(card_variant.name)),
         target,
     );
 
