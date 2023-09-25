@@ -40,7 +40,12 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result
         card_id: context.query_or_none(|_, card| adapters::card_identifier(card.id)),
         card_position: context
             .query_or_ok(None, |game, card| Ok(Some(positions::calculate(builder, game, card)?)))?,
-        prefab: CardPrefab::Standard.into(),
+        prefab: if context.definition().config.metadata.upgraded {
+            CardPrefab::FullHeight
+        } else {
+            CardPrefab::Standard
+        }
+        .into(),
         card_back: Some(assets::card_back(
             context.query_or(context.definition().school, |game, card| {
                 *game.player(card.side()).schools.get(0).unwrap_or(&School::Neutral)
@@ -189,7 +194,10 @@ fn revealed_card_view(
 ) -> Box<RevealedCardView> {
     let definition = context.definition();
     Box::new(RevealedCardView {
-        card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
+        card_frame: Some(assets::card_frame(
+            definition.school,
+            definition.config.metadata.full_art,
+        )),
         title_background: Some(assets::title_background(definition.config.resonance)),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),
@@ -236,7 +244,7 @@ fn revealed_ability_card_view(
     let definition = context.definition();
     let ability = definition.ability(ability_id.index);
     Box::new(RevealedCardView {
-        card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
+        card_frame: Some(assets::card_frame(definition.school, false)),
         title_background: Some(assets::ability_title_background()),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),
@@ -269,7 +277,7 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
     let definition = context.definition();
     let no_target: Option<&TargetRequirement<()>> = None;
     Box::new(RevealedCardView {
-        card_frame: Some(assets::card_frame(definition.school, definition.card_type)),
+        card_frame: Some(assets::card_frame(definition.school, false)),
         title_background: Some(assets::ability_title_background()),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),

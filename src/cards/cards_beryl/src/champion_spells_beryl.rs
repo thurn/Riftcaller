@@ -31,7 +31,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
         name: CardName::Restoration,
         sets: vec![CardSetName::Amethyst],
         cost: costs::mana(1),
-        image: assets::champion_card("restoration"),
+        image: assets::champion_card(meta, "restoration"),
         card_type: CardType::ChampionSpell,
         subtypes: vec![CardSubtype::Conjuration],
         side: Side::Champion,

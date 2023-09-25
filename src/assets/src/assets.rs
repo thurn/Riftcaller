@@ -17,6 +17,7 @@
 pub mod rexard_images;
 
 use core_ui::design::FontColor;
+use game_data::card_name::CardMetadata;
 use game_data::character_preset::CharacterPreset;
 use game_data::primitives::{CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{
@@ -127,14 +128,33 @@ pub fn card_back(school: School) -> SpriteAddress {
 }
 
 /// Address for the frame of a card of a given [School]
-pub fn card_frame(school: School, _: CardType) -> SpriteAddress {
-    let string = match school {
-        School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardFrame",
-        School::Shadow => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame",
-        School::Primal => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame",
-        School::Beyond => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame",
-        School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PactCardFrame",
-        School::Neutral => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame",
+pub fn card_frame(school: School, full_height: bool) -> SpriteAddress {
+    let string = if full_height {
+        match school {
+            School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardLawFullHeight",
+            School::Shadow => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardShadowFullHeight"
+            }
+            School::Primal => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardPrimalFullHeight"
+            }
+            School::Beyond => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardBeyondFullHeight"
+            }
+            School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardPactFullHeight",
+            School::Neutral => {
+                "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/CardNeutralFullHeight"
+            }
+        }
+    } else {
+        match school {
+            School::Law => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/LawCardFrame",
+            School::Shadow => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/ShadowCardFrame",
+            School::Primal => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PrimalCardFrame",
+            School::Beyond => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/BeyondCardFrame",
+            School::Pact => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/PactCardFrame",
+            School::Neutral => "LittleSweetDaemon/TCG_Card_Fantasy_Design/Custom/NeutralCardFrame",
+        }
     };
 
     SpriteAddress { address: format!("{string}.png") }
@@ -281,6 +301,12 @@ pub fn ability_title_background() -> SpriteAddress {
     }
 }
 
-pub fn champion_card(name: impl Into<String>) -> Sprite {
-    Sprite { address: format!("Cards/Champion/{}.png", name.into()) }
+pub fn champion_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
+    Sprite {
+        address: format!(
+            "Cards/{}/{}.png",
+            if meta.full_art { "ChampionFullArt" } else { "Champion" },
+            name.into()
+        ),
+    }
 }
