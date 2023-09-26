@@ -16,7 +16,7 @@ use game_data::delegates::{
     DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
     TransformationFn,
 };
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::primitives::{
     ActionCount, CardId, HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum, RoomIdVault,
     TurnNumber,

@@ -26,7 +26,7 @@ use enum_kinds::EnumKind;
 use crate::card_name::{CardMetadata, CardName, CardVariant};
 use crate::card_set_name::CardSetName;
 use crate::delegates::Delegate;
-use crate::game::GameState;
+use crate::game_state::GameState;
 use crate::primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
     HealthValue, ManaValue, PointsValue, ProgressValue, Rarity, RazeCost, Resonance, RoomId,

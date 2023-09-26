@@ -23,8 +23,8 @@ use game_data::delegates::{
     BreachValueQuery, HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery,
     SanctumAccessCountQuery, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
-use game_data::game::GameState;
 use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
+use game_data::game_state::GameState;
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BreachValue, CardId, CardType, HealthValue,
     ItemLocation, ManaValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,

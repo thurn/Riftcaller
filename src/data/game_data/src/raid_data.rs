@@ -15,8 +15,9 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::game::RaidJumpRequest;
+use crate::delegates::RaidEvent;
 use crate::game_actions::RazeCardActionType;
+use crate::game_state::RaidJumpRequest;
 use crate::game_updates::InitiatedBy;
 use crate::primitives::{CardId, ManaValue, RaidId, RoomId, Side};
 
@@ -153,6 +154,12 @@ pub struct RaidInfo {
     pub raid_id: RaidId,
     pub target: RoomId,
     pub encounter: usize,
+}
+
+impl RaidInfo {
+    pub fn event(&self) -> RaidEvent {
+        RaidEvent { raid_id: self.raid_id, target: self.target }
+    }
 }
 
 /// Data about an active raid

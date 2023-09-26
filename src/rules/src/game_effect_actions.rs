@@ -14,8 +14,8 @@
 
 use anyhow::Result;
 use game_data::delegates::RaidOutcome;
-use game_data::game::GameState;
 use game_data::game_effect::GameEffect;
+use game_data::game_state::GameState;
 
 use crate::mana::ManaPurpose;
 use crate::{mana, mutations};

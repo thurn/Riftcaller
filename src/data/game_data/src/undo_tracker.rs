@@ -14,7 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::game::GameState;
+use crate::game_state::GameState;
 use crate::primitives::{CardId, Side};
 
 /// State for the undo system.

@@ -18,10 +18,10 @@ use std::iter;
 
 use anyhow::Result;
 use game_data::card_definition::{AbilityType, TargetRequirement};
-use game_data::game::{GamePhase, GameState, MulliganDecision};
 use game_data::game_actions::{
     CardTarget, CardTargetKind, GameAction, GamePrompt, GameStateAction, PromptAction,
 };
+use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use raids::raid_prompt;
 use rules::{flags, queries, CardDefinitionExt};

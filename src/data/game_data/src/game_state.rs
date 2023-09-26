@@ -16,17 +16,15 @@
 
 #![allow(clippy::use_self)] // Required to use EnumKind
 
-use std::collections::HashMap;
-
 use anyhow::Result;
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
+use serde_with::serde_as;
 use with_error::{fail, WithError};
 
 use crate::action_data::ActionData;
-use crate::card_state::{AbilityState, CardPosition, CardState};
+use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegates::DelegateCache;
 use crate::game_actions::GamePrompt;
@@ -34,8 +32,8 @@ use crate::game_history::{GameHistory, HistoryEvent};
 use crate::game_updates::{GameAnimation, UpdateState, UpdateStep, UpdateTracker};
 use crate::player_name::PlayerId;
 use crate::primitives::{
-    AbilityId, ActionCount, CardId, GameId, HasAbilityId, ItemLocation, ManaValue, PointsValue,
-    RaidId, RoomId, RoomLocation, School, Side, TurnNumber,
+    ActionCount, CardId, GameId, ItemLocation, ManaValue, PointsValue, RaidId, RoomId,
+    RoomLocation, School, Side, TurnNumber,
 };
 use crate::raid_data::RaidData;
 use crate::tutorial_data::GameTutorialState;
@@ -235,9 +233,6 @@ pub struct GameState {
     pub overlord: GamePlayerData,
     /// State for the champion player
     pub champion: GamePlayerData,
-    /// State for abilities of cards in this game
-    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    pub ability_state: HashMap<AbilityId, AbilityState>,
     ///  History of events which have happened during this game. See
     /// [GameHistory].
     pub history: GameHistory,
@@ -288,7 +283,6 @@ impl GameState {
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
             overlord: GamePlayerData::new(overlord, overlord_deck.schools),
             champion: GamePlayerData::new(champion, champion_deck.schools),
-            ability_state: HashMap::new(),
             history: GameHistory::default(),
             updates: UpdateTracker::new(if config.simulation {
                 UpdateState::Ignore
@@ -320,7 +314,6 @@ impl GameState {
                 champion_cards: self.champion_cards.clone(),
                 overlord: self.overlord.clone(),
                 champion: self.champion.clone(),
-                ability_state: self.ability_state.clone(),
                 history: self.history.clone(),
                 next_sorting_key: self.next_sorting_key,
                 rng: None,
@@ -345,7 +338,6 @@ impl GameState {
             champion_cards: self.champion_cards.clone(),
             overlord: self.overlord.clone(),
             champion: self.champion.clone(),
-            ability_state: self.ability_state.clone(),
             history: self.history.clone(),
             next_sorting_key: self.next_sorting_key,
             rng: self.rng.clone(),
@@ -590,17 +582,6 @@ impl GameState {
             .defender_list(self.raid()?.target)
             .get(self.raid()?.encounter)
             .with_error(|| "Defender Not Found")?)
-    }
-
-    /// Retrieves the [AbilityState] for an [AbilityId]
-    pub fn ability_state(&self, ability_id: impl HasAbilityId) -> Option<&AbilityState> {
-        self.ability_state.get(&ability_id.ability_id())
-    }
-
-    /// Returns a mutable [AbilityState] for an [AbilityId], creating a new one
-    /// if one has not previously been set
-    pub fn ability_state_mut(&mut self, ability_id: impl HasAbilityId) -> &mut AbilityState {
-        self.ability_state.entry(ability_id.ability_id()).or_insert_with(AbilityState::default)
     }
 
     /// Adds a current [HistoryEvent] for the current turn.

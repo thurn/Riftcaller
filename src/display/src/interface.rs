@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::game::{GamePhase, GameState, MulliganDecision};
 use game_data::game_actions::{ActionButtons, GamePrompt, GameStateAction};
+use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::primitives::Side;
 use prompts::prompts;
 use protos::spelldawn::InterfaceMainControls;

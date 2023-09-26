@@ -20,7 +20,7 @@ use std::fmt::Debug;
 use anyhow::Result;
 use game_data::card_definition::CardDefinition;
 use game_data::delegates::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId};
 
 /// Adds a [DelegateCache] for this game in order to improve lookup performance.

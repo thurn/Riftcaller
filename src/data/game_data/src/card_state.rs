@@ -22,17 +22,11 @@ use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 
 use crate::card_name::CardVariant;
-use crate::game::TurnData;
 use crate::game_actions::CardTarget;
+use crate::game_state::TurnData;
 use crate::primitives::{
-    BoostCount, CardId, ItemLocation, ManaValue, ProgressValue, RaidId, RoomId, RoomLocation, Side,
+    BoostCount, CardId, ItemLocation, ManaValue, ProgressValue, RoomId, RoomLocation, Side,
 };
-
-/// State for an ability within a game
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct AbilityState {
-    pub raid_id: Option<RaidId>,
-}
 
 /// Identifies the location of a card during an active game
 #[derive(

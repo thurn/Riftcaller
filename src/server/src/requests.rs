@@ -17,7 +17,7 @@ use std::fmt::{self, Display};
 use anyhow::Result;
 use core_ui::prelude::*;
 use database::Database;
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::game_updates::{UpdateState, UpdateTracker};
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;

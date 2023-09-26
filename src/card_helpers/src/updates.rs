@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{AbilityId, CardId, GameObjectId, HasAbilityId, HasCardId};
 use game_data::special_effects::{Projectile, SpecialEffect, TimedEffectData};

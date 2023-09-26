@@ -35,9 +35,9 @@ use game_data::delegates::{
     AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded, RaidEvent,
     RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
-use game_data::game::GameState;
 use game_data::game_actions::{CardTarget, PromptChoice};
 use game_data::game_effect::GameEffect;
+use game_data::game_state::GameState;
 use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue,
@@ -45,7 +45,6 @@ use game_data::primitives::{
 };
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
-use game_data::utils;
 use rules::mana;
 use rules::mana::ManaPurpose;
 
@@ -137,14 +136,6 @@ pub fn this_card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> b
 /// own ability.
 pub fn this_ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilityId) -> bool {
     scope.ability_id() == ability_id.ability_id()
-}
-
-/// A RequirementFn which checks if the current `raid_id` matches the stored
-/// [RaidId] for this `scope`.
-pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
-    utils::is_true(|| {
-        Some(game.ability_state(scope.ability_id())?.raid_id? == game.raid.as_ref()?.raid_id)
-    })
 }
 
 /// A [Delegate] which triggers when an ability is activated
@@ -246,35 +237,15 @@ pub fn initiate_raid(game: &mut GameState, scope: Scope, target: CardTarget) -> 
     initiate_raid_with_callback(game, scope, target, |_, _| {})
 }
 
-/// Initiates a raid on the `target` room and stores the raid ID as ability
-/// state.
-///
-/// Invokes `on_begin` as soon as a [RaidId] is available.
+/// Initiates a raid on the `target` room. Invokes `on_begin` as soon as a
+/// [RaidId] is available.
 pub fn initiate_raid_with_callback(
     game: &mut GameState,
     scope: Scope,
     target: CardTarget,
     on_begin: impl Fn(&mut GameState, RaidId),
 ) -> Result<()> {
-    raids::initiate(
-        game,
-        target.room_id()?,
-        InitiatedBy::Ability(scope.ability_id()),
-        |game, raid_id| {
-            game.ability_state_mut(scope.ability_id()).raid_id = Some(raid_id);
-            on_begin(game, raid_id);
-        },
-    )
-}
-
-/// Helper to store the provided [RaidId] as ability state for this [Scope].
-pub fn save_raid_id(
-    game: &mut GameState,
-    ability_id: impl HasAbilityId,
-    raid_id: &RaidId,
-) -> Result<()> {
-    game.ability_state_mut(ability_id.ability_id()).raid_id = Some(*raid_id);
-    Ok(())
+    raids::initiate(game, target.room_id()?, InitiatedBy::Ability(scope.ability_id()), on_begin)
 }
 
 /// Add `amount` to the stored mana in a card. Returns the new stored amount.

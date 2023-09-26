@@ -14,8 +14,8 @@
 
 use core_ui::icons;
 use core_ui::prelude::*;
-use game_data::game::GameState;
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
+use game_data::game_state::GameState;
 use game_data::primitives::{CardId, Side};
 use game_data::raid_data::{
     RaidChoice, RaidLabel, RaidPrompt, RaidState, RaidStep, WeaponInteraction,

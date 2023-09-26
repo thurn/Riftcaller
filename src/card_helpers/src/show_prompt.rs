@@ -14,10 +14,10 @@
 
 use anyhow::Result;
 use game_data::delegates::Scope;
-use game_data::game::GameState;
 use game_data::game_actions::{
     ButtonPrompt, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
 };
+use game_data::game_state::GameState;
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{CardId, Side};
 

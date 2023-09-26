@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use core_ui::action_builder::ActionBuilder;
-use game_data::game::MulliganDecision;
 use game_data::game_actions::{GameAction, GameStateAction};
+use game_data::game_state::MulliganDecision;
 
 use crate::response_button::ResponseButton;
 

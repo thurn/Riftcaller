@@ -14,7 +14,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use core_ui::panels::Panels;
-use game_data::game::{GamePhase, GameState};
+use game_data::game_state::{GamePhase, GameState};
 use panel_address::PlayerPanel;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};

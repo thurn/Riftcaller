@@ -67,6 +67,7 @@ use std::fmt::Formatter;
 use anyhow::Result;
 use enum_kinds::EnumKind;
 use macros::DelegateEnum;
+use serde::{Deserialize, Serialize};
 
 use crate::card_definition::AttackBoost;
 #[allow(unused)] // Used in rustdocs
@@ -75,8 +76,8 @@ use crate::card_definition::CardStats;
 use crate::card_definition::Cost;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
-use crate::game::GameState;
 use crate::game_actions::{CardTarget, GameStateAction};
+use crate::game_state::GameState;
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BoostCount, BoostData, BreachValue, CardId, HasAbilityId,
     HasCardId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side,
@@ -273,7 +274,7 @@ impl CardEncounter {
 }
 
 /// Event data when a raid is initiated
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct RaidEvent {
     pub raid_id: RaidId,
     pub target: RoomId,

@@ -33,8 +33,8 @@ use game_data::delegates::{
     RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
     SummonMinionEvent, UnveilCardEvent,
 };
-use game_data::game::{GamePhase, GameState, TurnData, TurnState};
 use game_data::game_history::HistoryEvent;
+use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
     ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
@@ -286,11 +286,11 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
     match outcome {
         RaidOutcome::Success => {
             dispatch::invoke_event(game, RaidSuccessEvent(event))?;
-            game.add_history_event(HistoryEvent::RaidSuccess(target));
+            game.add_history_event(HistoryEvent::RaidSuccess(event));
         }
         RaidOutcome::Failure => {
             dispatch::invoke_event(game, RaidFailureEvent(event))?;
-            game.add_history_event(HistoryEvent::RaidFailure(target));
+            game.add_history_event(HistoryEvent::RaidFailure(event));
         }
     }
     dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;

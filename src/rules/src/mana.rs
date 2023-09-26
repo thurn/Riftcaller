@@ -18,7 +18,7 @@
 use std::cmp;
 
 use anyhow::Result;
-use game_data::game::{GameState, SpecificRaidMana};
+use game_data::game_state::{GameState, SpecificRaidMana};
 use game_data::primitives::{AbilityId, CardId, ManaValue, RaidId, RoomId, Side};
 use tracing::debug;
 use with_error::{verify, WithError};

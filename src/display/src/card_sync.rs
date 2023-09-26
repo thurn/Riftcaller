@@ -18,8 +18,8 @@ use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
-use game_data::game::GameState;
 use game_data::game_actions::{CardTarget, GamePrompt};
+use game_data::game_state::GameState;
 use game_data::primitives::{
     AbilityId, CardId, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
 };

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::game::GameState;
 use game_data::game_history::HistoryEvent;
+use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId, RoomId};
 
 /// Returns the record of game events which happened on the current
@@ -55,8 +55,8 @@ pub fn abilities_activated_this_turn(game: &GameState) -> impl Iterator<Item = A
 /// player's turn so far.
 pub fn rooms_raided_this_turn(game: &GameState) -> impl Iterator<Item = RoomId> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::RaidBegin(room_id, _) = h {
-            Some(*room_id)
+        if let HistoryEvent::RaidBegin(event, _) = h {
+            Some(event.target)
         } else {
             None
         }
@@ -67,8 +67,8 @@ pub fn rooms_raided_this_turn(game: &GameState) -> impl Iterator<Item = RoomId> 
 /// current player's turn so far.
 pub fn raid_accesses_this_turn(game: &GameState) -> impl Iterator<Item = RoomId> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::RaidSuccess(room_id) = h {
-            Some(*room_id)
+        if let HistoryEvent::RaidSuccess(event) = h {
+            Some(event.target)
         } else {
             None
         }

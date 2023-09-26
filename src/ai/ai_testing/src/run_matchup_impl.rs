@@ -20,7 +20,7 @@ use ai_game_integration::agents;
 use ai_game_integration::state_node::SpelldawnState;
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
-use game_data::game::{GameConfiguration, GameState};
+use game_data::game_state::{GameConfiguration, GameState};
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};

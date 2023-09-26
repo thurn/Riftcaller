@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::raid_data::{RaidData, RaidDisplayState, RaidStatus};
 use rules::queries;
 

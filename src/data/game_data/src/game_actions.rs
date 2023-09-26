@@ -22,8 +22,8 @@ use anyhow::{anyhow, Result};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 
-use crate::game::MulliganDecision;
 use crate::game_effect::GameEffect;
+use crate::game_state::MulliganDecision;
 use crate::primitives::{AbilityId, CardId, CardSubtype, CardType, ManaValue, RoomId};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]

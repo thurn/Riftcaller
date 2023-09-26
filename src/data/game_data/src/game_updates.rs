@@ -14,7 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::game::GameState;
+use crate::game_state::GameState;
 use crate::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
 use crate::special_effects::SpecialEffect;
 

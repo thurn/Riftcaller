@@ -15,7 +15,7 @@
 use rand::prelude::{IteratorRandom, SliceRandom};
 
 use crate::card_state::CardPosition;
-use crate::game::GameState;
+use crate::game_state::GameState;
 use crate::primitives::{CardId, Side};
 
 /// Return a randomly-selected [CardId] of cards owned by the `side` player in

@@ -19,12 +19,12 @@ use constants::game_constants;
 use game_data::action_data::{ActionData, PlayCardData, PlayCardStep};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegates::{CardPlayed, PlayCardEvent};
-use game_data::game::{GamePhase, GameState};
 use game_data::game_actions::{
     ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_history::HistoryEvent;
+use game_data::game_state::{GamePhase, GameState};
 use game_data::game_updates::{GameAnimation, InitiatedBy};
 use game_data::primitives::{CardId, CardSubtype, CardType};
 use with_error::{verify, WithError};

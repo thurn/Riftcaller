@@ -20,9 +20,9 @@ use adventure_data::adventure::{Coins, TilePosition, TileState};
 use anyhow::Result;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
-#[allow(unused_imports)] // Used in docs
-use game_data::game::GameState;
 use game_data::game_actions::GameAction;
+#[allow(unused_imports)] // Used in docs
+use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Side};
 use protos::spelldawn::client_action::Action;

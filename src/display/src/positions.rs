@@ -17,8 +17,8 @@ use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
 use game_data::action_data::ActionData;
 use game_data::card_state::{CardPosition, CardState};
-use game_data::game::{GamePhase, GameState, MulliganData};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt, PromptContext};
+use game_data::game_state::{GamePhase, GameState, MulliganData};
 use game_data::primitives::{
     AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
 };

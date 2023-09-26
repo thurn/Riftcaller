@@ -24,9 +24,9 @@ use game_data::delegates::{
     MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome,
     RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
-use game_data::game::{GamePhase, GameState, RaidJumpRequest};
 use game_data::game_actions::RaidAction;
 use game_data::game_history::HistoryEvent;
+use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
 use game_data::game_updates::{GameAnimation, InitiatedBy, TargetedInteraction};
 use game_data::primitives::{CardId, GameObjectId, RaidId, RoomId, Side};
 use game_data::raid_data::{
@@ -61,17 +61,17 @@ pub fn handle_initiate_action(
 /// raid, before any other game logic runs.
 pub fn initiate(
     game: &mut GameState,
-    target_room: RoomId,
+    target: RoomId,
     initiated_by: InitiatedBy,
     on_begin: impl Fn(&mut GameState, RaidId),
 ) -> Result<()> {
     let raid_id = RaidId(game.info.next_raid_id);
     let raid = RaidData {
-        target: target_room,
+        target,
         initiated_by,
         raid_id,
         state: RaidState::Step(RaidStep::Begin),
-        encounter: game.defenders_unordered(target_room).count(),
+        encounter: game.defenders_unordered(target).count(),
         accessed: vec![],
         jump_request: None,
     };
@@ -79,8 +79,8 @@ pub fn initiate(
     game.info.next_raid_id += 1;
     game.raid = Some(raid);
     on_begin(game, raid_id);
-    game.add_animation(|| GameAnimation::InitiateRaid(target_room, initiated_by));
-    game.add_history_event(HistoryEvent::RaidBegin(target_room, initiated_by));
+    game.add_animation(|| GameAnimation::InitiateRaid(target, initiated_by));
+    game.add_history_event(HistoryEvent::RaidBegin(RaidEvent { target, raid_id }, initiated_by));
 
     run(game, None)
 }
@@ -169,7 +169,9 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::PopulateEncounterPrompt(minion_id) => populate_encounter_prompt(game, minion_id),
         RaidStep::UseWeapon(interaction) => use_weapon(game, info, interaction),
         RaidStep::MinionDefeated(interaction) => minion_defeated(game, interaction),
-        RaidStep::FireMinionCombatAbility(minion_id) => fire_minion_combat_ability(game, minion_id),
+        RaidStep::FireMinionCombatAbility(minion_id) => {
+            fire_minion_combat_ability(game, info, minion_id)
+        }
         RaidStep::PopulateApproachPrompt => populate_approach_prompt(game),
         RaidStep::AccessStart => access_start(game, info),
         RaidStep::BuildAccessSet => build_access_set(game, info),
@@ -251,6 +253,8 @@ fn use_weapon(
         })?;
     mana::spend(game, Side::Champion, ManaPurpose::UseWeapon(interaction.weapon_id), cost)?;
 
+    game.add_history_event(HistoryEvent::UseWeapon(info.event(), interaction));
+
     game.add_animation(|| {
         GameAnimation::CombatInteraction(TargetedInteraction {
             source: GameObjectId::CardId(interaction.weapon_id),
@@ -276,7 +280,13 @@ fn minion_defeated(game: &mut GameState, interaction: WeaponInteraction) -> Resu
     RaidState::step(RaidStep::NextEncounter)
 }
 
-fn fire_minion_combat_ability(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
+fn fire_minion_combat_ability(
+    game: &mut GameState,
+    info: RaidInfo,
+    minion_id: CardId,
+) -> Result<RaidState> {
+    game.add_history_event(HistoryEvent::MinionCombatAbility(info.event(), minion_id));
+
     game.add_animation(|| {
         GameAnimation::CombatInteraction(TargetedInteraction {
             source: GameObjectId::CardId(minion_id),

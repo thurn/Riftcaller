@@ -17,8 +17,8 @@ use adventure_data::adventure::TileEntity;
 use anyhow::Result;
 use database::Database;
 use display::render;
-use game_data::game::GameState;
 use game_data::game_actions::{self, GameAction};
+use game_data::game_state::GameState;
 use game_data::primitives::{GameId, Side};
 use player_data::PlayerState;
 use protos::spelldawn::{

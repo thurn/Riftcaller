@@ -21,12 +21,12 @@ pub mod legal_actions;
 use anyhow::Result;
 use game_data::card_state::CardPosition;
 use game_data::delegates::DrawCardActionEvent;
-use game_data::game::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::game_actions::{
     BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
     CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction, PromptContext,
 };
 use game_data::game_history::HistoryEvent;
+use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::game_updates::{GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;

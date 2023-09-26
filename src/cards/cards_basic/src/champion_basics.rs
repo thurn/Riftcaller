@@ -313,17 +313,11 @@ pub fn ethereal_blade(_: CardMetadata) -> CardDefinition {
             Ability {
                 ability_type: AbilityType::Standard,
                 text: text!["When you use this weapon, sacrifice it at the end of the raid"],
-                delegates: vec![
-                    on_weapon_used(
-                        |_g, s, used_weapon| used_weapon.weapon_id == s.card_id(),
-                        |g, s, used_weapon| save_raid_id(g, s, &used_weapon.raid_id),
-                    ),
-                    on_raid_ended(matching_raid, |g, s, _| {
-                        mutations::sacrifice_card(g, s.card_id())?;
-                        Updates::new(g).ability_alert(s).apply();
-                        Ok(())
-                    }),
-                ],
+                delegates: vec![on_raid_ended(requirements::weapon_used_this_raid, |g, s, _| {
+                    mutations::sacrifice_card(g, s.card_id())?;
+                    Updates::new(g).ability_alert(s).apply();
+                    Ok(())
+                })],
             },
         ],
         config: CardConfigBuilder::new()

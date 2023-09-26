@@ -16,9 +16,9 @@ use game_data::action_data::ActionData;
 use game_data::delegates::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegates::{RequirementFn, Scope};
-use game_data::game::GameState;
 use game_data::game_actions::GamePrompt;
-use game_data::game_history::HistoryEventKind;
+use game_data::game_history::{HistoryEvent, HistoryEventKind};
+use game_data::game_state::GameState;
 use game_data::primitives::{CardId, RaidId, RoomId};
 use game_data::utils;
 
@@ -86,6 +86,23 @@ pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -
 pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     utils::is_true(|| {
         Some(game.raid.as_ref()?.initiated_by.ability_id()?.card_id == scope.card_id())
+    })
+}
+
+/// A [RequirementFn] which matches if this weapon is face up in play and has
+/// been used during the current raid
+pub fn weapon_used_this_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
+    let Some(raid_id) = game.raid.as_ref().map(|r| r.raid_id) else {
+        return false;
+    };
+
+    if !face_up_in_play(game, scope, &()) {
+        return false;
+    }
+
+    history::current_turn(game).any(|event| {
+        matches!(event, HistoryEvent::UseWeapon(raid, interaction)
+            if raid.raid_id == raid_id && interaction.weapon_id == scope.card_id())
     })
 }
 

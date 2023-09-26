@@ -20,7 +20,7 @@ use dashmap::DashSet;
 use game_data::card_definition::{Ability, CardDefinition};
 use game_data::card_name::{CardMetadata, CardVariant};
 use game_data::card_state::CardState;
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::primitives::AbilityId;
 use once_cell::sync::Lazy;
 

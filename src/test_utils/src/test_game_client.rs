@@ -18,7 +18,7 @@ use std::collections::HashMap;
 use adapters;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardState;
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{ActionCount, CardId, ManaValue, PointsValue, RoomId, Side};
 use protos::spelldawn::card_targeting::Targeting;

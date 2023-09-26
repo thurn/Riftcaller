@@ -20,7 +20,7 @@ use constants::game_constants;
 use game_data::card_state::{CardPositionKind, CardState};
 use game_data::card_view_context::CardViewContext;
 use game_data::character_preset::CharacterPreset;
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::primitives::{RoomId, School, Side};
 use protos::spelldawn::{
     ActionTrackerView, CardView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,

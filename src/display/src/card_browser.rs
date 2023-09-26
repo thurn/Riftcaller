@@ -15,10 +15,10 @@
 use adapters::response_builder::ResponseBuilder;
 use core_ui::prelude::*;
 use game_data::card_state::CardState;
-use game_data::game::GameState;
 use game_data::game_actions::{
     BrowserPromptValidation, CardBrowserPrompt, GameAction, GamePrompt, PromptAction, PromptContext,
 };
+use game_data::game_state::GameState;
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;

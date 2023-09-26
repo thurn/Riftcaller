@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::delegates::{CardPlayed, Delegate, EventDelegate, MutationFn, Scope};
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::primitives::HasCardId;
 
 /// A RequirementFn which restricts delegates to only listen to events for their

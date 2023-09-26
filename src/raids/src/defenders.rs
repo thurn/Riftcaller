@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::game::GameState;
+use game_data::game_state::GameState;
 use game_data::primitives::{CardId, Side};
 use game_data::raid_data::{RaidInfo, RaidStep};
 use rules::mana::ManaPurpose;

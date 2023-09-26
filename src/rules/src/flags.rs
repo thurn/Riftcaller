@@ -23,8 +23,8 @@ use game_data::delegates::{
     CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
     CardEncounter, Flag,
 };
-use game_data::game::{GamePhase, GameState, TurnState};
 use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
+use game_data::game_state::{GamePhase, GameState, TurnState};
 use game_data::primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, Resonance, RoomId, Side,
 };

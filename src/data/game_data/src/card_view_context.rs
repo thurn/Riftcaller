@@ -16,7 +16,7 @@ use anyhow::Result;
 
 use crate::card_definition::CardDefinition;
 use crate::card_state::{CardData, CardState};
-use crate::game::GameState;
+use crate::game_state::GameState;
 use crate::primitives::CardId;
 
 /// Provides the context in which a card view is being displayed, i.e. either
