@@ -14,6 +14,7 @@
 
 use assets::rexard_images;
 use card_helpers::abilities::standard;
+use card_helpers::requirements::always;
 use card_helpers::{text, *};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
 use game_data::card_name::{CardMetadata, CardName};

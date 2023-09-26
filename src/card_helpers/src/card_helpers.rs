@@ -111,11 +111,6 @@ pub fn activate_for_action() -> AbilityType {
     AbilityType::Activated(actions(1), TargetRequirement::None)
 }
 
-/// RequirementFn which always returns true
-pub fn always<T>(_: &GameState, _: Scope, _: &T) -> bool {
-    true
-}
-
 /// RequirementFn which checks if the [Side] parameter is [Side::Champion]
 pub fn side_is_champion(_: &GameState, _: Scope, side: &Side) -> bool {
     *side == Side::Champion
@@ -134,12 +129,6 @@ pub fn room_is_vault(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
 /// RequirementFn which checks if the [RoomId] parameter is [RoomId::Crypts]
 pub fn room_is_crypts(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
     *room_id == RoomId::Crypts
-}
-
-/// RequirementFn that this delegate's card is currently face up & in play
-pub fn face_up_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
-    let card = game.card(scope.card_id());
-    card.is_face_up() && card.position().in_play()
 }
 
 /// RequirementFn that this delegate's card is currently face down & in play
@@ -292,28 +281,6 @@ pub fn initiate_raid_with_callback(
             on_begin(game, raid_id);
         },
     )
-}
-
-/// Invokes `function` at most once per turn.
-///
-/// Stores ability state to track the last-invoked turn number
-pub fn once_per_turn<T>(
-    game: &mut GameState,
-    scope: Scope,
-    data: &T,
-    function: MutationFn<T>,
-) -> Result<()> {
-    if utils::is_false(|| Some(game.ability_state(scope.ability_id())?.turn? == game.info.turn)) {
-        save_turn(game, scope);
-        function(game, scope, data)
-    } else {
-        Ok(())
-    }
-}
-
-/// Stores the current turn as ability state for the provided `ability_id`.
-pub fn save_turn(game: &mut GameState, ability_id: impl HasAbilityId) {
-    game.ability_state_mut(ability_id.ability_id()).turn = Some(game.info.turn);
 }
 
 /// Helper to store the provided [RaidId] as ability state for this [Scope].

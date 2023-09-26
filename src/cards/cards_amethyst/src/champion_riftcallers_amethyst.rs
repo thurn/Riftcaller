@@ -14,11 +14,13 @@
 
 use assets::rexard_images;
 use card_helpers::abilities::standard;
+use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::updates::Updates;
 use card_helpers::*;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::delegates::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::{mana, mutations, CardDefinitionExt};
 
@@ -60,12 +62,13 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Riftcaller,
         abilities: vec![standard(
             text!["The first time you take damage each turn, draw a card"],
-            in_play::on_damage(|g, s, _| {
-                once_per_turn(g, s, &(), |g, s, _| {
+            Delegate::DealtDamage(EventDelegate {
+                requirement: requirements::no_damage_dealt::<FaceUpInPlay>,
+                mutation: |g, s, _| {
                     Updates::new(g).ability_alert(s).apply();
                     mutations::draw_cards(g, s.side(), 1)?;
                     Ok(())
-                })
+                },
             }),
         )],
         config: CardConfig::default(),

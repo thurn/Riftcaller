@@ -24,17 +24,20 @@ use game_data::primitives::{
 
 /// A delegate which triggers at dawn if a card is face up in play
 pub fn at_dawn(mutation: MutationFn<TurnNumber>) -> Delegate {
-    Delegate::Dawn(EventDelegate { requirement: crate::face_up_in_play, mutation })
+    Delegate::Dawn(EventDelegate { requirement: crate::requirements::face_up_in_play, mutation })
 }
 
 /// A delegate which triggers at dusk if a card is face up in play
 pub fn at_dusk(mutation: MutationFn<TurnNumber>) -> Delegate {
-    Delegate::Dusk(EventDelegate { requirement: crate::face_up_in_play, mutation })
+    Delegate::Dusk(EventDelegate { requirement: crate::requirements::face_up_in_play, mutation })
 }
 
 /// A delegate which triggers if a card is face up in play when damage is dealt.
 pub fn on_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
-    Delegate::DealtDamage(EventDelegate { requirement: crate::face_up_in_play, mutation })
+    Delegate::DealtDamage(EventDelegate {
+        requirement: crate::requirements::face_up_in_play,
+        mutation,
+    })
 }
 
 /// A `RequirementFn` which matches for face up in play cards and events
@@ -44,12 +47,15 @@ pub fn in_play_with_room<M: RoomIdMarker>(
     scope: Scope,
     data: &impl HasRoomId,
 ) -> bool {
-    crate::face_up_in_play(game, scope, &data) && data.room_id() == M::room_id()
+    crate::requirements::face_up_in_play(game, scope, &data) && data.room_id() == M::room_id()
 }
 
 /// Delegate which fires when the 'access' phase of a raid begins.
 pub fn on_raid_access_start(mutation: MutationFn<RaidId>) -> Delegate {
-    Delegate::RaidAccessStart(EventDelegate { requirement: crate::face_up_in_play, mutation })
+    Delegate::RaidAccessStart(EventDelegate {
+        requirement: crate::requirements::face_up_in_play,
+        mutation,
+    })
 }
 
 /// A delegate which fires when a card is face up & in play when a raid on the
@@ -79,7 +85,10 @@ pub fn after_crypts_accessed(mutation: MutationFn<RaidEvent>) -> Delegate {
 /// A delegate which fires when a card is face up & in play when a raid ends in
 /// success
 pub fn after_room_accessed(mutation: MutationFn<RaidEvent>) -> Delegate {
-    Delegate::RaidSuccess(EventDelegate { requirement: crate::face_up_in_play, mutation })
+    Delegate::RaidSuccess(EventDelegate {
+        requirement: crate::requirements::face_up_in_play,
+        mutation,
+    })
 }
 
 /// A delegate which fires when a card is face up & in play when a raid on the
@@ -94,5 +103,8 @@ pub fn vault_access_selected(mutation: MutationFn<RaidEvent>) -> Delegate {
 /// A delegate which intercepts queries for the action costs of cards while its
 /// parent is face up and in play.
 pub fn on_query_action_cost(transformation: TransformationFn<CardId, ActionCount>) -> Delegate {
-    Delegate::ActionCost(QueryDelegate { requirement: crate::face_up_in_play, transformation })
+    Delegate::ActionCost(QueryDelegate {
+        requirement: crate::requirements::face_up_in_play,
+        transformation,
+    })
 }

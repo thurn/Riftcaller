@@ -541,6 +541,7 @@ pub fn deal_damage(game: &mut GameState, source: impl HasAbilityId, amount: u32)
         DealtDamageEvent(DealtDamage { source: source.ability_id(), amount, discarded }),
     )?;
 
+    game.add_history_event(HistoryEvent::DealDamage(amount));
     Ok(())
 }
 

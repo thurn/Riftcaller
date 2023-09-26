@@ -13,12 +13,52 @@
 // limitations under the License.
 
 use game_data::action_data::ActionData;
+use game_data::delegates::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegates::{RequirementFn, Scope};
 use game_data::game::GameState;
 use game_data::game_actions::GamePrompt;
-use game_data::primitives::CardId;
+use game_data::game_history::HistoryEventKind;
+use game_data::primitives::{CardId, RaidId, RoomId};
 use game_data::utils;
+
+use crate::{face_down_in_play, history};
+
+pub trait BaseRequirement {
+    fn run(game: &GameState, scope: Scope) -> bool;
+}
+
+pub struct Always;
+impl BaseRequirement for Always {
+    fn run(_: &GameState, _: Scope) -> bool {
+        true
+    }
+}
+
+pub struct FaceUpInPlay;
+impl BaseRequirement for FaceUpInPlay {
+    fn run(game: &GameState, scope: Scope) -> bool {
+        face_up_in_play(game, scope, &())
+    }
+}
+
+pub struct FaceDownInPlay;
+impl BaseRequirement for FaceDownInPlay {
+    fn run(game: &GameState, scope: Scope) -> bool {
+        face_down_in_play(game, scope, &())
+    }
+}
+
+/// RequirementFn which always returns true
+pub fn always<T>(_: &GameState, _: Scope, _: &T) -> bool {
+    true
+}
+
+/// RequirementFn that this card is currently face up & in play
+pub fn face_up_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
+    let card = game.card(scope.card_id());
+    card.is_face_up() && card.position().in_play()
+}
 
 /// A [RequirementFn] which matches while the `card_id` card is either:
 ///
@@ -41,10 +81,37 @@ pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -
     false
 }
 
-/// A RequirementFn which checks if there is a current raid which was initiated
-/// by this card.
+/// A [RequirementFn] which matches if there is a current raid which was
+/// initiated by this card.
 pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     utils::is_true(|| {
         Some(game.raid.as_ref()?.initiated_by.ability_id()?.card_id == scope.card_id())
     })
+}
+
+/// A [RequirementFn] which matches if there have been no accesses on the
+/// sanctum this turn.
+pub fn no_sanctum_access<R: BaseRequirement>(game: &GameState, scope: Scope, _: &RaidId) -> bool {
+    R::run(game, scope) && !history::raid_accesses_this_turn(game).any(|r| r == RoomId::Sanctum)
+}
+
+/// A [RequirementFn] which matches if there have been no 'draw a card' actions
+/// this turn
+pub fn no_card_draw_actions<R: BaseRequirement>(
+    game: &GameState,
+    scope: Scope,
+    _: &CardId,
+) -> bool {
+    R::run(game, scope)
+        && !history::current_turn(game).any(|e| e.kind() == HistoryEventKind::DrawCardAction)
+}
+
+/// A [RequirementFn] which matches if no damage has been dealt this turn.
+pub fn no_damage_dealt<R: BaseRequirement>(
+    game: &GameState,
+    scope: Scope,
+    _: &DealtDamage,
+) -> bool {
+    R::run(game, scope)
+        && !history::current_turn(game).any(|e| e.kind() == HistoryEventKind::DealDamage)
 }

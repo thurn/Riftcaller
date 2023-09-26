@@ -17,6 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::abilities::standard;
+use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
@@ -47,12 +48,9 @@ pub fn invisibility_ring(_: CardMetadata) -> CardDefinition {
                 1,
                 "additional card"
             ],
-            delegates: vec![
-                in_play::on_raid_access_start(|g, s, raid_id| {
-                    once_per_turn(g, s, raid_id, save_raid_id)
-                }),
-                add_sanctum_access::<1>(matching_raid),
-            ],
+            delegates: vec![add_sanctum_access::<1>(
+                requirements::no_sanctum_access::<FaceUpInPlay>,
+            )],
         }],
         config: CardConfig::default(),
     }
@@ -178,12 +176,10 @@ pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
         abilities: vec![standard(
             text!["The first time each turn you take the 'draw card' action, draw another card"],
             Delegate::DrawCardAction(EventDelegate {
-                requirement: face_up_in_play,
+                requirement: requirements::no_card_draw_actions::<FaceUpInPlay>,
                 mutation: |g, s, _| {
-                    once_per_turn(g, s, &(), |g, s, _| {
-                        mutations::draw_cards(g, s.side(), 1)?;
-                        Ok(())
-                    })
+                    mutations::draw_cards(g, s.side(), 1)?;
+                    Ok(())
                 },
             }),
         )],

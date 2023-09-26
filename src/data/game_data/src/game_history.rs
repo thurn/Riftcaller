@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 
+use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
@@ -23,7 +24,8 @@ use crate::game_updates::InitiatedBy;
 use crate::primitives::{AbilityId, CardId, ProgressValue, RoomId};
 
 /// Records a single event which happened during this game.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, EnumKind)]
+#[enum_kind(HistoryEventKind)]
 pub enum HistoryEvent {
     /// Mana was gained via the standard game action
     GainManaAction,
@@ -45,6 +47,15 @@ pub enum HistoryEvent {
     /// A card was progressed some number of times, either via a card effect or
     /// the standard game action
     CardProgress(RoomId, ProgressValue, InitiatedBy),
+    /// The Champion has been dealt damage
+    DealDamage(u32),
+}
+
+impl HistoryEvent {
+    /// Returns the [HistoryEventKind] for this event
+    pub fn kind(&self) -> HistoryEventKind {
+        self.into()
+    }
 }
 
 /// Tuple of [TurnData] and [HistoryEvent].
