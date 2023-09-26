@@ -17,14 +17,12 @@
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
-use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome, Scope};
-use game_data::game_state::GameState;
-use game_data::primitives::{AbilityId, AttackValue, CardId, DamageAmount, ManaValue};
+use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
+use game_data::primitives::{AbilityId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
+use rules::mutations;
 use rules::mutations::OnZeroStored;
-use rules::{mutations, queries};
 
-use crate::requirements::always;
 use crate::text_macro::text;
 use crate::*;
 
@@ -53,21 +51,8 @@ pub fn encounter_boost() -> Ability {
     Ability {
         ability_type: AbilityType::Encounter,
         text: encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
-        delegates: vec![
-            Delegate::ActivateBoost(EventDelegate::new(this_card, mutations::write_boost)),
-            Delegate::AttackValue(QueryDelegate::new(this_card, add_boost)),
-            Delegate::EncounterEnd(EventDelegate::new(always, mutations::clear_boost)),
-        ],
+        delegates: vec![],
     }
-}
-
-/// Applies this card's `attack_boost` stat a number of times equal to its
-/// [CardState::boost_count]. Returns default if this card has no attack boost
-/// defined.
-fn add_boost(game: &GameState, _: Scope, card_id: &CardId, current: AttackValue) -> AttackValue {
-    let boost_count = queries::boost_count(game, *card_id);
-    let bonus = queries::attack_boost(game, *card_id).unwrap_or_default().bonus;
-    current + (boost_count * bonus)
 }
 
 /// Store `N` mana in this card when played. Move it to the discard pile when

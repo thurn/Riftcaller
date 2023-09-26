@@ -79,9 +79,8 @@ use crate::card_state::{CardData, CardPosition};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
-    AbilityId, ActionCount, AttackValue, BoostCount, BoostData, BreachValue, CardId, HasAbilityId,
-    HasCardId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side,
-    TurnNumber,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, HasAbilityId, HasCardId, HasRoomId,
+    HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -393,8 +392,6 @@ pub enum Delegate {
     RaidStart(EventDelegate<RaidEvent>),
     /// A minion is encountered during a raid
     EncounterMinion(EventDelegate<CardId>),
-    /// A weapon boost is activated for a given card
-    ActivateBoost(EventDelegate<BoostData>),
     /// A weapon has been used to defeat a minion
     UsedWeapon(EventDelegate<UsedWeapon>),
     /// A minion is defeated during an encounter by dealing damage to it equal
@@ -487,9 +484,6 @@ pub enum Delegate {
     /// Gets the current [AttackBoost] of a card. Invoked with
     /// [CardStats::attack_boost] if one is present.
     AttackBoost(QueryDelegate<CardId, AttackBoost>),
-    /// Get the current boost count of a card. Invoked with the value of
-    /// [CardData::boost_count].
-    BoostCount(QueryDelegate<CardId, BoostCount>),
     /// Get the number of actions a player gets at the start of their turn.
     StartOfTurnActions(QueryDelegate<Side, ActionCount>),
     /// Gets the number of cards the Champion player can access from the Vault

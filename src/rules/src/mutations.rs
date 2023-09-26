@@ -30,15 +30,15 @@ use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegates::{
     CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterArenaEvent,
     MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidEvent, RaidFailureEvent,
-    RaidOutcome, RaidSuccessEvent, Scope, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
+    RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
     SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
-    ActionCount, BoostData, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
-    Side, TurnNumber,
+    ActionCount, CardId, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation, Side,
+    TurnNumber,
 };
 use game_data::{random, undo_tracker};
 use tracing::{debug, instrument};
@@ -262,21 +262,6 @@ pub fn take_stored_mana(
     Ok(taken)
 }
 
-/// Overwrites the value of [CardData::boost_count] to match the provided
-/// [BoostData].
-pub fn write_boost(game: &mut GameState, scope: Scope, data: &BoostData) -> Result<()> {
-    debug!(?scope, ?data, "Writing boost");
-    game.card_mut(data.card_id).data.boost_count = data.count;
-    Ok(())
-}
-
-/// Set the boost count to zero for the card in `scope`.
-pub fn clear_boost<T>(game: &mut GameState, scope: Scope, _: &T) -> Result<()> {
-    debug!(?scope, "Clearing boost");
-    game.card_mut(scope.card_id()).data.boost_count = 0;
-    Ok(())
-}
-
 /// Ends the current raid. Returns an error if no raid is currently active.
 pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
     debug!("Ending raid");
@@ -488,7 +473,6 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
 fn clear_counters(game: &mut GameState, card_id: CardId) {
     game.card_mut(card_id).data.progress = 0;
     game.card_mut(card_id).data.stored_mana = 0;
-    game.card_mut(card_id).data.boost_count = 0;
 }
 
 /// Options when invoking [summon_minion]

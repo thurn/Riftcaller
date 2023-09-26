@@ -19,15 +19,15 @@ use constants::game_constants;
 use game_data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegates::{
-    AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, AttackValueQuery, BoostCountQuery,
-    BreachValueQuery, HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery,
-    SanctumAccessCountQuery, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
+    AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, AttackValueQuery, BreachValueQuery,
+    HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, SanctumAccessCountQuery,
+    ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
 use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    AbilityId, ActionCount, AttackValue, BoostCount, BreachValue, CardId, CardType, HealthValue,
-    ItemLocation, ManaValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardType, HealthValue, ItemLocation,
+    ManaValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
@@ -143,11 +143,6 @@ pub fn attack_boost(game: &GameState, card_id: CardId) -> Option<AttackBoost> {
         .stats
         .attack_boost
         .map(|boost| dispatch::perform_query(game, AttackBoostQuery(card_id), boost))
-}
-
-/// Returns the [BoostCount] for a given card.
-pub fn boost_count(game: &GameState, card_id: CardId) -> BoostCount {
-    dispatch::perform_query(game, BoostCountQuery(card_id), game.card(card_id).data.boost_count)
 }
 
 /// Returns the amount of mana the owner of `card_id` would need to spend to

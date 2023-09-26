@@ -34,7 +34,6 @@ pub type HealthValue = u32;
 pub type AttackValue = u32;
 pub type ShieldValue = u32;
 pub type BreachValue = u32;
-pub type BoostCount = u32;
 pub type ProgressValue = u32;
 pub type DamageAmount = u32;
 pub type RazeCost = u32;
@@ -535,21 +534,6 @@ pub enum CardSubtype {
     Weapon,
     Silvered,
     Conjuration,
-}
-
-/// Describes a boost ability activation
-#[derive(PartialEq, Eq, Hash, Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct BoostData {
-    /// Boosted card
-    pub card_id: CardId,
-    /// How many times was the boost applied?
-    pub count: u32,
-}
-
-impl HasCardId for BoostData {
-    fn card_id(&self) -> CardId {
-        self.card_id
-    }
 }
 
 /// An interval of time in milliseconds
