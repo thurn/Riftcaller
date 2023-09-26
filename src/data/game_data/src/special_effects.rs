@@ -113,6 +113,7 @@ pub enum FantasyEventSounds {
 pub enum SoundEffect {
     FantasyEvents(FantasyEventSounds),
     Fireworks(FireworksSound),
+    LightMagic(&'static str),
 }
 
 #[derive(Debug, Clone)]

@@ -116,7 +116,7 @@ impl CardPosition {
     }
 }
 
-/// Optional card state, properties which are not universal
+/// Optional card state, properties which have a default.
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CardData {
     /// How many times has this card been progressed?

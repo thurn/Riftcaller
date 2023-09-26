@@ -22,7 +22,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::game_actions::PromptContext;
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
-use game_data::special_effects::{Projectile, TimedEffect, TimedEffectData};
+use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::Mana;
 use rules::CardDefinitionExt;
 
@@ -52,6 +52,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                             GameObjectId::DiscardPile(Side::Champion),
                             TimedEffectData::new(TimedEffect::MagicCircles1(2))
                                 .scale(2.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff03_P1"))
                                 .effect_color(design::YELLOW_900),
                         )
                         .card_movement_effects(Projectile::Projectiles1(3), &cards)

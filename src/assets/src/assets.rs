@@ -263,24 +263,28 @@ pub fn timed_effect(effect: TimedEffect) -> EffectAddress {
 
 pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
     AudioClipAddress {
-        address: format!(
-            "{}.wav",
-            match effect {
-                SoundEffect::FantasyEvents(events) => match events {
+        address: match effect {
+            SoundEffect::FantasyEvents(events) => format!(
+                "{}.wav",
+                match events {
                     FantasyEventSounds::Positive1 => {
                         "Cafofo/Fantasy Music Pack Vol 1/Events/Positive Event 01"
                     }
-                },
-                SoundEffect::Fireworks(firework) => match firework {
+                }
+            ),
+            SoundEffect::Fireworks(firework) => format!(
+                "{}.wav",
+                match firework {
                     FireworksSound::RocketExplodeLarge => {
                         "Universal Sound FX/FIREWORKS/FIREWORKS_Rocket_Explode_Large_RR1_mono"
                     }
                     FireworksSound::RocketExplode => {
                         "Universal Sound FX/FIREWORKS/FIREWORKS_Rocket_Explode_RR1_mono"
                     }
-                },
-            }
-        ),
+                }
+            ),
+            SoundEffect::LightMagic(name) => format!("WowSound/Light Magic/{name}.wav"),
+        },
     }
 }
 

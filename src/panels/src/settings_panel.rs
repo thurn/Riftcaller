@@ -55,7 +55,7 @@ impl Component for SettingsPanel {
                         ScrollView::new("TextScroll").style(Style::new().height(400.px())).child(
                             Slider::new()
                                 .label("Music Volume:")
-                                .preference_key("MusicVolume")
+                                .preference_key("SDMusicVolume")
                                 .low_value(0.0)
                                 .high_value(1.0),
                         ),

@@ -18,7 +18,6 @@ using DG.Tweening;
 using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -40,12 +39,12 @@ namespace Spelldawn.Services
 
     public void Initialize(GlobalGameMode globalGameMode)
     {
+      SyncVolume();
+      
       if (globalGameMode == GlobalGameMode.Default)
       {
         SetMusicState(SceneManager.GetActiveScene().name == "Main" ? MusicState.MainMenu : MusicState.Gameplay);
       }
-      
-      SyncVolume();
     }
 
     /// <summary>Sets audio source volume by reading the value of the music volume PlayerPref</summary>
