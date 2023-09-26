@@ -17,6 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::abilities::standard;
+use card_helpers::costs::once_per_turn;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
@@ -148,7 +149,7 @@ pub fn magical_resonator(_: CardMetadata) -> CardDefinition {
             abilities::store_mana_on_play::<9>(),
             Ability {
                 ability_type: AbilityType::Activated(
-                    Cost { mana: None, actions: 1, custom_cost: once_per_turn_cost() },
+                    Cost { mana: None, actions: 1, custom_cost: once_per_turn() },
                     TargetRequirement::None,
                 ),
                 text: text![text![TakeMana(3)], text!["Use this ability once per turn"]],

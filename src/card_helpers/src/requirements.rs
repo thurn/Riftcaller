@@ -92,7 +92,7 @@ pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 /// A [RequirementFn] which matches if there have been no accesses on the
 /// sanctum this turn.
 pub fn no_sanctum_access<R: BaseRequirement>(game: &GameState, scope: Scope, _: &RaidId) -> bool {
-    R::run(game, scope) && !history::raid_accesses_this_turn(game).any(|r| r == RoomId::Sanctum)
+    R::run(game, scope) && history::raid_accesses_this_turn(game).all(|r| r != RoomId::Sanctum)
 }
 
 /// A [RequirementFn] which matches if there have been no 'draw a card' actions
@@ -103,7 +103,7 @@ pub fn no_card_draw_actions<R: BaseRequirement>(
     _: &CardId,
 ) -> bool {
     R::run(game, scope)
-        && !history::current_turn(game).any(|e| e.kind() == HistoryEventKind::DrawCardAction)
+        && history::current_turn(game).all(|e| e.kind() != HistoryEventKind::DrawCardAction)
 }
 
 /// A [RequirementFn] which matches if no damage has been dealt this turn.
@@ -113,5 +113,5 @@ pub fn no_damage_dealt<R: BaseRequirement>(
     _: &DealtDamage,
 ) -> bool {
     R::run(game, scope)
-        && !history::current_turn(game).any(|e| e.kind() == HistoryEventKind::DealDamage)
+        && history::current_turn(game).all(|e| e.kind() != HistoryEventKind::DealDamage)
 }

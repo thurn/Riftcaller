@@ -13,10 +13,11 @@
 // limitations under the License.
 
 use game_data::card_definition::{Cost, CustomCost};
-use game_data::card_state::CardPosition;
 use game_data::primitives::{AbilityId, CardId, ManaValue};
 use game_data::text::TextElement;
 use rules::mutations;
+
+use crate::history;
 
 /// Provides the cost for a card, with 1 action point required and `mana` mana
 /// points
@@ -32,14 +33,18 @@ pub fn sacrifice_cost() -> Option<CustomCost<AbilityId>> {
             game.card(ability_id.card_id).is_face_up()
                 && game.card(ability_id.card_id).position().in_play()
         },
-        pay: |game, ability_id| {
-            game.ability_state_mut(ability_id).turn = Some(game.info.turn);
-            mutations::move_card(
-                game,
-                ability_id.card_id,
-                CardPosition::DiscardPile(ability_id.side()),
-            )
-        },
+        pay: |game, ability_id| mutations::sacrifice_card(game, ability_id.card_id),
         description: Some(TextElement::Literal("Sacrifice".to_string())),
+    })
+}
+
+/// A [CustomCost] which allows an ability to be activated once per turn.
+pub fn once_per_turn() -> Option<CustomCost<AbilityId>> {
+    Some(CustomCost {
+        can_pay: |g, ability_id| {
+            history::abilities_activated_this_turn(g).all(|id| id != ability_id)
+        },
+        pay: |_, _| Ok(()),
+        description: None,
     })
 }

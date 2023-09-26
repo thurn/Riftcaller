@@ -32,7 +32,6 @@ use crate::primitives::{
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AbilityState {
     pub raid_id: Option<RaidId>,
-    pub turn: Option<TurnData>,
 }
 
 /// Identifies the location of a card during an active game

@@ -28,7 +28,7 @@ pub mod updates;
 
 use anyhow::Result;
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardStats, Cost, CustomCost, SchemePoints, TargetRequirement,
+    Ability, AbilityType, AttackBoost, CardStats, Cost, SchemePoints, TargetRequirement,
 };
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
@@ -88,22 +88,6 @@ pub fn scheme_cost() -> Cost<CardId> {
 /// [Cost] for a riftcaller card
 pub fn riftcaller_cost() -> Cost<CardId> {
     Cost { mana: None, actions: 0, custom_cost: None }
-}
-
-/// A [CustomCost] which allows an ability to be activated once per turn.
-///
-/// Stores turn data in ability state. Never returns `None`.
-pub fn once_per_turn_cost() -> Option<CustomCost<AbilityId>> {
-    Some(CustomCost {
-        can_pay: |game, ability_id| {
-            utils::is_false(|| Some(game.ability_state(ability_id)?.turn? == game.info.turn))
-        },
-        pay: |game, ability_id| {
-            game.ability_state_mut(ability_id).turn = Some(game.info.turn);
-            Ok(())
-        },
-        description: None,
-    })
 }
 
 /// An [AbilityType] for an ability which costs 1 action and has no target.

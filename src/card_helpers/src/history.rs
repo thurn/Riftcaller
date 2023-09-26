@@ -14,7 +14,7 @@
 
 use game_data::game::GameState;
 use game_data::game_history::HistoryEvent;
-use game_data::primitives::{CardId, RoomId};
+use game_data::primitives::{AbilityId, CardId, RoomId};
 
 /// Returns the record of game events which happened on the current
 /// player's turn so far, not including the game action currently being
@@ -30,6 +30,20 @@ pub fn current_turn(game: &GameState) -> impl Iterator<Item = &HistoryEvent> + '
 pub fn cards_played_this_turn(game: &GameState) -> impl Iterator<Item = CardId> + '_ {
     current_turn(game).filter_map(move |h| {
         if let HistoryEvent::PlayCard(id, _, _) = h {
+            Some(*id)
+        } else {
+            None
+        }
+    })
+}
+
+/// Returns an iterator over abilities which have been activated in the current
+/// player's turn so far.
+///
+/// Does not include the current event.
+pub fn abilities_activated_this_turn(game: &GameState) -> impl Iterator<Item = AbilityId> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::ActivateAbility(id, _) = h {
             Some(*id)
         } else {
             None
