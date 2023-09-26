@@ -36,8 +36,21 @@ use crate::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 /// or as an effect of another card.
 pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Result<()> {
     verify!(game.current_action.is_none(), "An action is already being resolved!");
-    game.current_action =
-        Some(ActionData::PlayCard(PlayCardData { card_id, target, step: PlayCardStep::Begin }));
+
+    let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
+        game.player(card_id.side).prompt_queue.get(0)
+    {
+        InitiatedBy::Ability(prompt.initiated_by)
+    } else {
+        InitiatedBy::GameAction
+    };
+
+    game.current_action = Some(ActionData::PlayCard(PlayCardData {
+        card_id,
+        initiated_by,
+        target,
+        step: PlayCardStep::Begin,
+    }));
 
     run(game)
 }
@@ -169,18 +182,10 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
 }
 
 fn add_to_history(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
-        game.player(play_card.card_id.side).prompt_queue.get(0)
-    {
-        InitiatedBy::Ability(prompt.initiated_by)
-    } else {
-        InitiatedBy::GameAction
-    };
-
     game.add_history_event(HistoryEvent::PlayCard(
         play_card.card_id,
         play_card.target,
-        initiated_by,
+        play_card.initiated_by,
     ));
     Ok(PlayCardStep::MoveToPlayedPosition)
 }
@@ -258,13 +263,12 @@ fn move_to_target_position(game: &mut GameState, play_card: PlayCardData) -> Res
 }
 
 fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    game.current_action = None;
-
     dispatch::invoke_event(
         game,
         PlayCardEvent(CardPlayed { card_id: play_card.card_id, target: play_card.target }),
     )?;
 
+    game.current_action = None;
     Ok(PlayCardStep::Finish)
 }
 

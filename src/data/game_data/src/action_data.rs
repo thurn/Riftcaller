@@ -15,6 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::game_actions::CardTarget;
+use crate::game_updates::InitiatedBy;
 use crate::primitives::{AbilityId, CardId};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -37,6 +38,8 @@ pub enum PlayCardStep {
 pub struct PlayCardData {
     /// Card being played
     pub card_id: CardId,
+    /// How this card play was started
+    pub initiated_by: InitiatedBy,
     /// Room being targeted, if any
     pub target: CardTarget,
     /// Current state machine state

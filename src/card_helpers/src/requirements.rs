@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use game_data::action_data::ActionData;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegates::{RequirementFn, Scope};
 use game_data::game::GameState;
 use game_data::game_actions::GamePrompt;
-use game_data::game_history::HistoryEvent;
 use game_data::primitives::CardId;
 use game_data::utils;
 
@@ -34,8 +34,8 @@ pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -
         }
     }
 
-    if let Some(HistoryEvent::PlayCard(id, _, initiated_by)) = game.history.current_event() {
-        return id == card_id && initiated_by.card_id() == Some(scope.card_id());
+    if let Some(ActionData::PlayCard(data)) = game.current_action {
+        return data.card_id == *card_id && data.initiated_by.card_id() == Some(scope.card_id());
     }
 
     false

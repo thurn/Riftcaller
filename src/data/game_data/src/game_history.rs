@@ -47,49 +47,51 @@ pub enum HistoryEvent {
     CardProgress(RoomId, ProgressValue, InitiatedBy),
 }
 
-/// History of events which have happened during this game. This contains both
-/// the ongoing 'current event' as well as a sequence of past events for each
-/// turn.
+/// Tuple of [TurnData] and [HistoryEvent].
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct HistoryEntry {
+    turn: TurnData,
+    event: HistoryEvent,
+}
+
+/// History of events which have happened during this game.
+///
+/// This operates via a two-phase system where history entries are collected
+/// during action resolution, but are not immediately visible in the general
+/// history until they are finalized by calling [Self::write_events], usually as
+/// the final step of any game action. This helps avoid confusion where events
+/// added during the *current* action appear in history, which is typically not
+/// desired.
 #[serde_as]
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct GameHistory {
-    current: Option<(HistoryEvent, TurnData)>,
+    current: Vec<HistoryEntry>,
     #[serde_as(as = "Vec<(_, _)>")]
     entries: HashMap<TurnData, Vec<HistoryEvent>>,
 }
 
 impl GameHistory {
-    /// Returns the game event currently being processed, if any
-    pub fn current_event(&self) -> Option<&HistoryEvent> {
-        if let Some((event, _)) = &self.current {
-            Some(event)
-        } else {
-            None
-        }
-    }
-
-    /// Returns history events in the provided turn, *not* counting the
-    /// [Self::current_event] value.
+    /// Returns history events in the provided turn, *before* the current game
+    /// event.
     pub fn for_turn(&self, turn: TurnData) -> impl Iterator<Item = &HistoryEvent> {
         self.entries.get(&turn).into_iter().flatten()
     }
 
-    /// Starts a new history entry, setting it as the current event. Events do
+    /// Adds a new history entry to the 'current events' buffer. Events do
     /// not appear in the [Self::for_turn] history until they are finalized by
-    /// setting a new current event or calling
-    /// [Self::finish_current_event_if_needed].
-    ///
-    /// Adds the previously current event to general game history if needed.
+    /// calling [Self::write_events], which typically happens as the last step
+    /// in processing a game action.
     pub fn add_event(&mut self, turn: TurnData, event: HistoryEvent) {
-        self.finish_current_event_if_needed();
-        self.current = Some((event, turn));
+        self.current.push(HistoryEntry { turn, event })
     }
 
-    /// Clears the [Self::current_event] value and writes it to the general game
-    /// history, if one is present.
-    pub fn finish_current_event_if_needed(&mut self) {
-        if let Some((event, turn)) = self.current.take() {
-            self.entries.entry(turn).or_default().push(event);
+    /// Writes all stored history events to the game history and clears the
+    /// 'current events' buffer.
+    pub fn write_events(&mut self) {
+        for entry in &self.current {
+            self.entries.entry(entry.turn).or_default().push(entry.event.clone());
         }
+
+        self.current.clear();
     }
 }

@@ -131,8 +131,6 @@ fn finish(game: &mut GameState, activate: ActivateAbilityData) -> Result<Activat
         GameAnimation::AbilityActivated(activate.ability_id.side(), activate.ability_id)
     });
 
-    game.current_action = None;
-
     dispatch::invoke_event(
         game,
         ActivateAbilityEvent(AbilityActivated {
@@ -141,6 +139,7 @@ fn finish(game: &mut GameState, activate: ActivateAbilityData) -> Result<Activat
         }),
     )?;
 
+    game.current_action = None;
     Ok(ActivateAbilityStep::Finish)
 }
 

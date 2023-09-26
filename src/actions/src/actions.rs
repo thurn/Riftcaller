@@ -77,7 +77,7 @@ pub fn handle_game_action(
     }?;
 
     // Clear & store the 'current event' in game history
-    game.history.finish_current_event_if_needed();
+    game.history.write_events();
     Ok(())
 }
 
