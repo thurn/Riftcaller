@@ -37,6 +37,11 @@ pub fn cards_played_this_turn(game: &GameState) -> impl Iterator<Item = CardId> 
     })
 }
 
+/// Returns true if the `card_id` card was played this turn.
+pub fn played_this_turn(game: &GameState, card_id: CardId) -> bool {
+    cards_played_this_turn(game).any(|id| id == card_id)
+}
+
 /// Returns an iterator over abilities which have been activated in the current
 /// player's turn so far.
 ///

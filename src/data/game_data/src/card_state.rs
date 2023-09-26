@@ -23,7 +23,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::card_name::CardVariant;
 use crate::game_actions::CardTarget;
-use crate::game_state::TurnData;
 use crate::primitives::{
     BoostCount, CardId, ItemLocation, ManaValue, ProgressValue, RoomId, RoomLocation, Side,
 };
@@ -122,12 +121,10 @@ impl CardPosition {
 pub struct CardData {
     /// How many times has this card been progressed?
     pub progress: ProgressValue,
-    /// typically used to increase weapon attack power during a raid.
+    /// Typically used to increase weapon attack power during a raid.
     pub boost_count: BoostCount,
     /// How much mana is stored in this card?
     pub stored_mana: ManaValue,
-    /// When was the last time this card entered the arena, if ever?
-    pub last_entered_play: Option<TurnData>,
     /// Is this card face-up?
     is_face_up: bool,
     /// Is this card revealed to the [CardId.side] user?

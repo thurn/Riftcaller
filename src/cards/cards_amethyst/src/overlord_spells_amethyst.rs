@@ -67,7 +67,7 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
                     .defenders_and_occupants(played.target.room_id()?)
                     .filter(|card| {
                         flags::can_level_up_card(g, card.id)
-                            && !flags::entered_play_this_turn(g, card.id)
+                            && !history::played_this_turn(g, card.id)
                     })
                     .map(|card| card.id)
                     .collect::<Vec<_>>();
@@ -82,7 +82,7 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
             TargetRequirement::TargetRoom(|game, _, room_id| {
                 game.defenders_and_occupants(room_id).any(|card| {
                     flags::can_level_up_card(game, card.id)
-                        && !flags::entered_play_this_turn(game, card.id)
+                        && !history::played_this_turn(game, card.id)
                 })
             })).build()
     }

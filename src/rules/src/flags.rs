@@ -338,11 +338,6 @@ pub fn can_take_game_state_actions(game: &GameState, user_side: Side) -> bool {
     game.player(user_side).prompt_queue.is_empty() && current_priority(game) == Some(user_side)
 }
 
-/// Whether the indicated card entered play this turn
-pub fn entered_play_this_turn(game: &GameState, card_id: CardId) -> bool {
-    game.card(card_id).data.last_entered_play == Some(game.info.turn)
-}
-
 /// Whether the provided `source` card is able to target the `target` card with
 /// an encounter action. Typically used to determine whether a weapon can target
 /// a minion, e.g. based on resonance.
