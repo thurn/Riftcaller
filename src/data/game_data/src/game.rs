@@ -603,7 +603,7 @@ impl GameState {
         self.ability_state.entry(ability_id.ability_id()).or_insert_with(AbilityState::default)
     }
 
-    /// Adds a [HistoryEvent] for the current turn.
+    /// Adds a current [HistoryEvent] for the current turn.
     pub fn add_history_event(&mut self, event: HistoryEvent) {
         self.history.add_event(self.info.turn, event)
     }

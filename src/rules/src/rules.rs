@@ -24,6 +24,7 @@ use game_data::game::GameState;
 use game_data::primitives::AbilityId;
 use once_cell::sync::Lazy;
 
+pub mod activate_ability;
 pub mod dispatch;
 pub mod flags;
 pub mod game_effect_actions;

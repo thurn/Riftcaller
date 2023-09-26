@@ -19,9 +19,8 @@
 pub mod legal_actions;
 
 use anyhow::Result;
-use game_data::card_definition::AbilityType;
 use game_data::card_state::CardPosition;
-use game_data::delegates::{AbilityActivated, ActivateAbilityEvent, DrawCardActionEvent};
+use game_data::delegates::DrawCardActionEvent;
 use game_data::game::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::game_actions::{
     BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
@@ -31,7 +30,9 @@ use game_data::game_history::HistoryEvent;
 use game_data::game_updates::{GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
-use rules::{dispatch, flags, game_effect_actions, mana, mutations, play_card, queries};
+use rules::{
+    activate_ability, dispatch, flags, game_effect_actions, mana, mutations, play_card, queries,
+};
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
 
@@ -143,31 +144,7 @@ fn activate_ability_action(
         ability_id
     );
 
-    game.add_history_event(HistoryEvent::ActivateAbility(ability_id, target));
-    game.ability_state.entry(ability_id).or_default().currently_resolving = true;
-    let card = game.card(ability_id.card_id);
-
-    debug!(?card.variant, ?user_side, ?ability_id, "Applying activate ability action");
-
-    let cost = match &rules::get(card.variant).ability(ability_id.index).ability_type {
-        AbilityType::Activated(cost, _) => cost,
-        _ => fail!("Ability is not an activated ability"),
-    };
-
-    mutations::spend_action_points(game, user_side, cost.actions)?;
-    if let Some(mana) = queries::ability_mana_cost(game, ability_id) {
-        mana::spend(game, user_side, ManaPurpose::ActivateAbility(ability_id), mana)?;
-    }
-
-    if let Some(custom_cost) = &cost.custom_cost {
-        (custom_cost.pay)(game, ability_id)?;
-    }
-
-    game.add_animation(|| GameAnimation::AbilityActivated(user_side, ability_id));
-    dispatch::invoke_event(game, ActivateAbilityEvent(AbilityActivated { ability_id, target }))?;
-
-    game.ability_state.entry(ability_id).or_default().currently_resolving = false;
-    Ok(())
+    activate_ability::initiate(game, ability_id, target)
 }
 
 /// The basic game action to unveil a project card in play.
@@ -392,7 +369,8 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
 
     // Try to resume state machines, in case this prompt caused them to pause.
     raids::run(game, None)?;
-    play_card::run(game)
+    play_card::run(game)?;
+    activate_ability::run(game)
 }
 
 fn handle_card_browser_submit_action(

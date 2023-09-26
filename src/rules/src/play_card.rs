@@ -36,12 +36,8 @@ use crate::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 /// or as an effect of another card.
 pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Result<()> {
     verify!(game.current_action.is_none(), "An action is already being resolved!");
-    game.current_action = Some(ActionData::PlayCard(PlayCardData {
-        card_id,
-        original_position: game.card(card_id).position(),
-        target,
-        step: PlayCardStep::Begin,
-    }));
+    game.current_action =
+        Some(ActionData::PlayCard(PlayCardData { card_id, target, step: PlayCardStep::Begin }));
 
     run(game)
 }

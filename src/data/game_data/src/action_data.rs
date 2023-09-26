@@ -14,9 +14,8 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::card_state::CardPosition;
 use crate::game_actions::CardTarget;
-use crate::primitives::CardId;
+use crate::primitives::{AbilityId, CardId};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PlayCardStep {
@@ -38,13 +37,31 @@ pub enum PlayCardStep {
 pub struct PlayCardData {
     /// Card being played
     pub card_id: CardId,
-    /// Where should this card be moved if the play card action is
-    /// aborted/finished at the current step?
-    pub original_position: CardPosition,
     /// Room being targeted, if any
     pub target: CardTarget,
     /// Current state machine state
     pub step: PlayCardStep,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum ActivateAbilityStep {
+    Begin,
+    AddToHistory,
+    PayActionPoints,
+    PayManaCost,
+    PayCustomCost,
+    Finish,
+}
+
+/// Data related to an ongoing action to play a card.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct ActivateAbilityData {
+    /// Ability being activated
+    pub ability_id: AbilityId,
+    /// Room being targeted, if any
+    pub target: CardTarget,
+    /// Current state machine state
+    pub step: ActivateAbilityStep,
 }
 
 /// Data related to a game action which is currently in the process of
@@ -54,4 +71,5 @@ pub struct PlayCardData {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ActionData {
     PlayCard(PlayCardData),
+    ActivateAbility(ActivateAbilityData),
 }
