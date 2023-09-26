@@ -67,9 +67,9 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
             ],
             delegates: vec![
                 this::on_play(|g, s, play_card| initiate_raid(g, s, play_card.target)),
-                add_vault_access::<1>(matching_raid),
-                add_sanctum_access::<1>(matching_raid),
-                on_raid_success(matching_raid, |g, s, _| {
+                add_vault_access::<1>(requirements::matching_raid),
+                add_sanctum_access::<1>(requirements::matching_raid),
+                on_raid_success(requirements::matching_raid, |g, s, _| {
                     mutations::draw_cards(g, s.side(), 1).map(|_| ())
                 }),
             ],
@@ -130,7 +130,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
             delegates: vec![
                 this::on_play(|g, s, play_card| initiate_raid(g, s, play_card.target)),
                 Delegate::ManaCost(QueryDelegate {
-                    requirement: matching_raid,
+                    requirement: requirements::matching_raid,
                     transformation: |g, _s, card_id, current| {
                         if g.card(*card_id).definition().card_type == CardType::Minion {
                             current.map(|current| current + 3)

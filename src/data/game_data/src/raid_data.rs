@@ -17,6 +17,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::game::RaidJumpRequest;
 use crate::game_actions::RazeCardActionType;
+use crate::game_updates::InitiatedBy;
 use crate::primitives::{CardId, ManaValue, RaidId, RoomId, Side};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -159,6 +160,8 @@ pub struct RaidInfo {
 pub struct RaidData {
     /// Unique ID for this raid
     pub raid_id: RaidId,
+    /// Source which initiated this raid
+    pub initiated_by: InitiatedBy,
     /// Room being targeted by this raid
     pub target: RoomId,
     /// Current state of this raid. Use the functions in the `raids` crate

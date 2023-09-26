@@ -68,6 +68,7 @@ pub fn initiate(
     let raid_id = RaidId(game.info.next_raid_id);
     let raid = RaidData {
         target: target_room,
+        initiated_by,
         raid_id,
         state: RaidState::Step(RaidStep::Begin),
         encounter: game.defenders_unordered(target_room).count(),

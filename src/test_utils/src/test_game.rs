@@ -32,6 +32,7 @@ use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::{CardPosition, CardPositionKind};
 use game_data::deck::Deck;
 use game_data::game::{GameConfiguration, GamePhase, GameState, TurnData};
+use game_data::game_updates::InitiatedBy;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{ActionCount, GameId, ManaValue, PointsValue, Side};
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
@@ -191,6 +192,7 @@ impl TestRaid {
     pub fn apply_to(self, game: &mut GameState) {
         game.raid = Some(RaidData {
             raid_id: test_constants::RAID_ID,
+            initiated_by: InitiatedBy::GameAction,
             target: test_constants::ROOM_ID,
             state: RaidState::Step(RaidStep::Begin),
             encounter: game.defenders_unordered(test_constants::ROOM_ID).count(),

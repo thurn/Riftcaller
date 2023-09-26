@@ -18,12 +18,13 @@ use game_data::game::GameState;
 use game_data::game_actions::GamePrompt;
 use game_data::game_history::HistoryEvent;
 use game_data::primitives::CardId;
+use game_data::utils;
 
 /// A [RequirementFn] which matches while the `card_id` card is either:
 ///
-///   1) Displayed in a PlayCardBrowser initiated by the `scope` card, or
-///   2) Currently being played as part of a 'play card' action initiated by the
-///      `scope` card.
+///   1) Displayed in a PlayCardBrowser initiated by the this card, or
+///   2) Currently being played as part of a 'play card' action initiated by
+///      this card.
 pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -> bool {
     if let Some(GamePrompt::PlayCardBrowser(browser)) =
         game.player(card_id.side).prompt_queue.get(0)
@@ -38,4 +39,12 @@ pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -
     }
 
     false
+}
+
+/// A RequirementFn which checks if there is a current raid which was initiated
+/// by this card.
+pub fn matching_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
+    utils::is_true(|| {
+        Some(game.raid.as_ref()?.initiated_by.ability_id()?.card_id == scope.card_id())
+    })
 }

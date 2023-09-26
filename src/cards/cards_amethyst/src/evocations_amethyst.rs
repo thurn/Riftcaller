@@ -124,7 +124,7 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
                 ],
                 delegates: vec![
                     on_activated(|g, s, activated| initiate_raid(g, s, activated.target)),
-                    on_raid_success(matching_raid, |g, s, _| {
+                    on_raid_success(requirements::matching_raid, |g, s, _| {
                         mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                         Ok(())
                     }),
