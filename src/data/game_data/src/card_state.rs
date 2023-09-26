@@ -31,8 +31,6 @@ use crate::primitives::{
 /// State for an ability within a game
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct AbilityState {
-    /// True if this ability is currently being resolved
-    pub currently_resolving: bool,
     pub raid_id: Option<RaidId>,
     pub turn: Option<TurnData>,
 }

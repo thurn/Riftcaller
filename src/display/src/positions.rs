@@ -15,6 +15,7 @@
 use adapters;
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
+use game_data::action_data::ActionData;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game::{GamePhase, GameState, MulliganData};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt, PromptContext};
@@ -22,7 +23,6 @@ use game_data::primitives::{
     AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
 };
 use game_data::raid_data::{RaidData, RaidDisplayState};
-use game_data::utils;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
     ClientItemLocation, ClientRoomLocation, GameCharacterFacingDirection, GameObjectPositions,
@@ -254,8 +254,12 @@ pub fn ability_card_position(
     for_ability(
         game,
         ability_id,
-        if utils::is_true(|| Some(game.ability_state.get(&ability_id)?.currently_resolving)) {
-            staging()
+        if let Some(ActionData::ActivateAbility(activate)) = game.current_action {
+            if activate.ability_id == ability_id {
+                staging()
+            } else {
+                hand(builder, ability_id.side())
+            }
         } else {
             hand(builder, ability_id.side())
         },
