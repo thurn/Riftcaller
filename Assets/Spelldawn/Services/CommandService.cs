@@ -224,7 +224,6 @@ namespace Spelldawn.Services
       var anchor = positionTransform.Find("EffectAnchor");
       var position = anchor ? anchor.position : positionTransform.position;
 
-      var rotation = Quaternion.LookRotation(position - _registry.MainCamera.transform.position);
       var effect = _registry.AssetPoolService.Create(_registry.AssetService.GetEffect(command.Effect), position);
       
       effect.SetGameContext(command.ArenaEffect ? GameContext.Arena : GameContext.Effects);
@@ -232,8 +231,18 @@ namespace Spelldawn.Services
       {
         effect.SetStartColor(Mason.ToUnityColor(command.StartColor));
       }
+
+      if (anchor)
+      {
+        effect.transform.forward = anchor.forward;           
+      }
+      else
+      {
+        var rotation = Quaternion.LookRotation(position - _registry.MainCamera.transform.position);
+        effect.transform.rotation = rotation;        
+      }
+
       
-      effect.transform.rotation = rotation;
       if (command.Scale is { } scale)
       {
         effect.transform.localScale = scale * Vector3.one;

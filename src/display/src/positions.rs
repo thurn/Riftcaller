@@ -353,7 +353,7 @@ fn prompt_position_override(
         }
         GamePrompt::PlayCardBrowser(play_card) => {
             if play_card.cards.contains(&card.id) {
-                return Some(for_card(card, hand(builder, builder.user_side)));
+                return Some(for_card(card, hand(builder, card.side())));
             } else if card.position().in_hand() {
                 return Some(for_card(card, hand_storage()));
             }
