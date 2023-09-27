@@ -22,9 +22,9 @@ use game_data::card_state::CardPosition;
 use game_data::delegates::{
     CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, MinionCombatAbilityEvent,
     MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome,
-    RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
+    RaidStartEvent, RazeCardEvent, Scope, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
-use game_data::game_actions::RaidAction;
+use game_data::game_actions::{CardTarget, RaidAction};
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
 use game_data::game_updates::{GameAnimation, InitiatedBy, TargetedInteraction};
@@ -40,7 +40,7 @@ use tracing::debug;
 use with_error::{verify, WithError};
 
 /// Handle a client request to initiate a new raid. Deducts action points and
-/// then invokes [initiate].
+/// then invokes [initiate_with_callback].
 pub fn handle_initiate_action(
     game: &mut GameState,
     user_side: Side,
@@ -52,14 +52,25 @@ pub fn handle_initiate_action(
         user_side
     );
     mutations::spend_action_points(game, user_side, 1)?;
-    initiate(game, target_room, InitiatedBy::GameAction, |_, _| {})
+    initiate_with_callback(game, target_room, InitiatedBy::GameAction, |_, _| {})
+}
+
+/// Starts a new raid from a card ability associated with the provided [Scope]
+/// and [CardTarget] room.
+pub fn initiate(game: &mut GameState, scope: Scope, target: CardTarget) -> Result<()> {
+    initiate_with_callback(
+        game,
+        target.room_id()?,
+        InitiatedBy::Ability(scope.ability_id()),
+        |_, _| {},
+    )
 }
 
 /// Starts a new raid, either as a result of an explicit game action or via a
 /// card effect (as differentiated by the [InitiatedBy] prop). Invokes the
 /// `on_begin` function immediately with the [RaidId] that will be used for this
 /// raid, before any other game logic runs.
-pub fn initiate(
+pub fn initiate_with_callback(
     game: &mut GameState,
     target: RoomId,
     initiated_by: InitiatedBy,

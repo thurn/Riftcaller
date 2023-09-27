@@ -72,7 +72,7 @@ fn tag_parser(event: &Event) -> Option<Tag> {
         _ if target.contains("tutorial") => '🎓',
         _ if target.contains("server") => '💻',
         _ if target.contains("actions") => '🎬',
-        _ if target.contains("raids") => '🔪',
+        _ if target.contains("raid_state") => '🔪',
         _ => match level {
             Level::TRACE => '📍',
             Level::DEBUG => '📝',

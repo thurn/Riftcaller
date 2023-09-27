@@ -16,20 +16,20 @@ use card_helpers::updates::Updates;
 use card_helpers::{abilities, costs, requirements, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
-use game_data::game_actions::PromptContext;
-use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use game_data::game_actions::{CardTarget, PromptContext};
+use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
-use game_data::text::TextToken::Mana;
+use game_data::text::TextToken::*;
 use rules::CardDefinitionExt;
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Restoration,
-        sets: vec![CardSetName::Amethyst],
+        sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
         image: assets::champion_card(meta, "restoration"),
         card_type: CardType::ChampionSpell,
@@ -77,6 +77,28 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                 ),
             ),
         ]),
+        config: CardConfig::default(),
+    }
+}
+
+pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::StrikeTheHeart,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(3),
+        image: assets::champion_card(meta, "strike_the_heart"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
+            text: text!["Raid the", Sanctum, ", accessing", 2, "additional cards"],
+            delegates: vec![this::on_play(|g, s, play_card| {
+                raid_state::initiate(g, s, CardTarget::Room(RoomId::Sanctum))
+            })],
+        }],
         config: CardConfig::default(),
     }
 }

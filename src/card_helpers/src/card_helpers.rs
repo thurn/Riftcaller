@@ -26,22 +26,18 @@ pub mod text_macro;
 pub mod this;
 pub mod updates;
 
-use anyhow::Result;
-use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardStats, Cost, SchemePoints, TargetRequirement,
-};
+use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegates::{
     AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded, RaidEvent,
     RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
-use game_data::game_actions::{CardTarget, PromptChoice};
+use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{
-    AbilityId, ActionCount, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue,
-    RaidId, RoomId, Side,
+    AbilityId, ActionCount, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue, RaidId,
+    RoomId, Side,
 };
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
@@ -208,44 +204,6 @@ pub fn add_sanctum_access<const N: u32>(requirement: RequirementFn<RaidId>) -> D
         requirement,
         transformation: |_, _, _, current| current + N,
     })
-}
-
-/// Helper to create a [CardStats] with the given base [AttackValue]
-pub fn base_attack(base_attack: AttackValue) -> CardStats {
-    CardStats { base_attack: Some(base_attack), ..CardStats::default() }
-}
-
-/// Helper to create a [CardStats] with the given base [AttackValue] and
-/// [AttackBoost]
-pub fn attack(base_attack: AttackValue, boost: AttackBoost) -> CardStats {
-    CardStats { base_attack: Some(base_attack), attack_boost: Some(boost), ..CardStats::default() }
-}
-
-/// Helper to create a [CardStats] with the given [HealthValue]
-pub fn health(health: HealthValue) -> CardStats {
-    CardStats { health: Some(health), ..CardStats::default() }
-}
-
-/// Helper to create a [CardStats] with the given [SchemePoints].
-pub fn scheme_points(points: SchemePoints) -> CardStats {
-    CardStats { scheme_points: Some(points), ..CardStats::default() }
-}
-
-/// Initiates a raid on the `target` room and stores the raid ID as ability
-/// state.
-pub fn initiate_raid(game: &mut GameState, scope: Scope, target: CardTarget) -> Result<()> {
-    initiate_raid_with_callback(game, scope, target, |_, _| {})
-}
-
-/// Initiates a raid on the `target` room. Invokes `on_begin` as soon as a
-/// [RaidId] is available.
-pub fn initiate_raid_with_callback(
-    game: &mut GameState,
-    scope: Scope,
-    target: CardTarget,
-    on_begin: impl Fn(&mut GameState, RaidId),
-) -> Result<()> {
-    raids::initiate(game, target.room_id()?, InitiatedBy::Ability(scope.ability_id()), on_begin)
 }
 
 /// Add `amount` to the stored mana in a card. Returns the new stored amount.

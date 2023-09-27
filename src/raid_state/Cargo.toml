@@ -1,12 +1,12 @@
 [package]
-name = "raids"
+name = "raid_state"
 version = "0.0.0"
 description = "Implements state machine model for handling raids"
 license = "Apache-2.0"
 edition = "2021"
 
 [lib]
-path = "src/raids.rs"
+path = "src/raid_state.rs"
 test = false
 doctest = false
 

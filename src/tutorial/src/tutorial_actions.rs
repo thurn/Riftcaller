@@ -22,7 +22,7 @@ use game_data::tutorial_data::{
     TutorialDisplay, TutorialGameStateTrigger, TutorialOpponentAction, TutorialStep,
     TutorialTrigger,
 };
-use raids::raid_prompt;
+use raid_state::raid_prompt;
 use rules::mutations;
 use tracing::{debug, debug_span, info};
 use with_error::{fail, WithError};

@@ -23,6 +23,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegates::{Delegate, QueryDelegate};
+use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
 use rules::{flags, mana, mutations, CardDefinitionExt};
 
@@ -66,7 +67,7 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
                 text!["If successful, draw a card"]
             ],
             delegates: vec![
-                this::on_play(|g, s, play_card| initiate_raid(g, s, play_card.target)),
+                this::on_play(|g, s, play_card| raid_state::initiate(g, s, play_card.target)),
                 add_vault_access::<1>(requirements::matching_raid),
                 add_sanctum_access::<1>(requirements::matching_raid),
                 on_raid_success(requirements::matching_raid, |g, s, _| {
@@ -97,9 +98,14 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
         abilities: vec![standard(
             text![text![BeginARaid], text![Gain, Mana(5), "to spend during that raid"]],
             this::on_play(|g, s, play_card| {
-                initiate_raid_with_callback(g, s, play_card.target, |game, raid_id| {
-                    mana::add_raid_specific_mana(game, s.side(), raid_id, 5);
-                })
+                raid_state::initiate_with_callback(
+                    g,
+                    play_card.target.room_id()?,
+                    InitiatedBy::Ability(s.ability_id()),
+                    |game, raid_id| {
+                        mana::add_raid_specific_mana(game, s.side(), raid_id, 5);
+                    },
+                )
             }),
         )],
         config: CardConfigBuilder::new()
@@ -128,7 +134,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                 text!["During that raid, summon costs are increased by", Mana(3)]
             ],
             delegates: vec![
-                this::on_play(|g, s, play_card| initiate_raid(g, s, play_card.target)),
+                this::on_play(|g, s, play_card| raid_state::initiate(g, s, play_card.target)),
                 Delegate::ManaCost(QueryDelegate {
                     requirement: requirements::matching_raid,
                     transformation: |g, _s, card_id, current| {

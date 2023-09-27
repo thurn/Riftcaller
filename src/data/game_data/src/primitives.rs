@@ -534,6 +534,7 @@ pub enum CardSubtype {
     Weapon,
     Silvered,
     Conjuration,
+    Raid,
 }
 
 /// An interval of time in milliseconds

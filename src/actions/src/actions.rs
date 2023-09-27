@@ -66,12 +66,12 @@ pub fn handle_game_action(
         }
         GameAction::UnveilCard(card_id) => unveil_action(game, user_side, *card_id),
         GameAction::InitiateRaid(room_id) => {
-            raids::handle_initiate_action(game, user_side, *room_id)
+            raid_state::handle_initiate_action(game, user_side, *room_id)
         }
         GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
         GameAction::MoveCard(card_id) => move_card_action(game, user_side, *card_id),
-        GameAction::RaidAction(action) => raids::run(game, Some(*action)),
+        GameAction::RaidAction(action) => raid_state::run(game, Some(*action)),
         GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
         GameAction::Undo => handle_undo_action(game, user_side),
     }?;
@@ -368,7 +368,7 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
     }
 
     // Try to resume state machines, in case this prompt caused them to pause.
-    raids::run(game, None)?;
+    raid_state::run(game, None)?;
     play_card::run(game)?;
     activate_ability::run(game)
 }

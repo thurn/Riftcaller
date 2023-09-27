@@ -34,7 +34,7 @@ use protos::spelldawn::{
     ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
     ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
 };
-use raids::raid_display_state;
+use raid_state::raid_display_state;
 use rules::{queries, CardDefinitionExt};
 use with_error::fail;
 

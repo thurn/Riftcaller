@@ -124,7 +124,7 @@ pub fn tutorial_disable_raid_continue(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidContinue,
         standard(
-            text!["The Champion must use a weapon during raids"],
+            text!["The Champion must use a weapon during raid_state"],
             Delegate::CanUseNoWeapon(QueryDelegate {
                 requirement: always,
                 transformation: |_, _, _, f| f.with_override(false),
@@ -137,7 +137,7 @@ pub fn tutorial_disable_end_raid(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableEndRaid,
         standard(
-            text!["The Champion cannot end the access phase of raids"],
+            text!["The Champion cannot end the access phase of raid_state"],
             Delegate::CanEndRaidAccessPhase(QueryDelegate {
                 requirement: always,
                 transformation: |_, _, _, f| f.with_override(false),

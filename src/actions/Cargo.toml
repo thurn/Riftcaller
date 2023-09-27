@@ -17,6 +17,6 @@ enum-iterator = "1.3.0"
 
 constants = { path = "../constants", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
-raids = { path = "../raids", version = "0.0.0" }
+raid_state = { path = "../raid_state", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }

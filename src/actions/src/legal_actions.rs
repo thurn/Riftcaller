@@ -23,7 +23,7 @@ use game_data::game_actions::{
 };
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
-use raids::raid_prompt;
+use raid_state::raid_prompt;
 use rules::{flags, queries, CardDefinitionExt};
 use with_error::fail;
 

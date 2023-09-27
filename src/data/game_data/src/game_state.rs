@@ -192,7 +192,7 @@ pub struct GameInfo {
     pub turn: TurnData,
     /// State of the current turn
     pub turn_state: TurnState,
-    /// Counter to create unique IDs for raids within this game
+    /// Counter to create unique IDs for raid_state within this game
     pub next_raid_id: u32,
     /// Position within the game tutorial, if any
     pub tutorial_state: GameTutorialState,

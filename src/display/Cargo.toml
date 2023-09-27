@@ -16,7 +16,7 @@ enum-iterator = "1.3.0"
 actions = { path = "../actions", version = "0.0.0" }
 assets = { path = "../assets", version = "0.0.0" }
 adapters = { path = "../adapters", version = "0.0.0" }
-raids = { path = "../raids", version = "0.0.0" }
+raid_state = { path = "../raid_state", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 rules_text = { path = "../rules_text", version = "0.0.0" }
 constants = { path = "../constants", version = "0.0.0" }

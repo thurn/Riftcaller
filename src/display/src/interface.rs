@@ -18,7 +18,7 @@ use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::primitives::Side;
 use prompts::prompts;
 use protos::spelldawn::InterfaceMainControls;
-use raids::raid_prompt;
+use raid_state::raid_prompt;
 use rules::flags;
 
 use crate::{button_prompt, card_browser, play_card_browser};

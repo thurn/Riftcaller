@@ -23,4 +23,5 @@ pub enum CardSetName {
     TutorialEffects,
     Basics,
     Amethyst,
+    Beryl,
 }
