@@ -13,13 +13,12 @@
 // limitations under the License.
 
 use card_helpers::updates::Updates;
-use card_helpers::{abilities, costs, requirements, show_prompt, text, this};
+use card_helpers::{abilities, costs, delegates, raids, requirements, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, QueryDelegate};
 use game_data::game_actions::{CardTarget, PromptContext};
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
@@ -70,9 +69,8 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                 meta,
                 abilities::standard(
                     text!["Reduce its cost by", Mana(2)],
-                    Delegate::ManaCost(QueryDelegate {
-                        requirement: requirements::matching_play_browser,
-                        transformation: |_, _, _, cost| cost.map(|c| c.saturating_sub(2)),
+                    delegates::mana_cost(requirements::matching_play_browser, |_, _, _, cost| {
+                        cost.map(|c| c.saturating_sub(2))
                     }),
                 ),
             ),
@@ -94,10 +92,25 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text!["Raid the", Sanctum, ", accessing", 2, "additional cards"],
-            delegates: vec![this::on_play(|g, s, play_card| {
-                raid_state::initiate(g, s, CardTarget::Room(RoomId::Sanctum))
-            })],
+            text: text!["Raid the", Sanctum, ", accessing", meta.upgrade(2, 3), "additional cards"],
+            delegates: vec![
+                this::on_play(|g, s, _| {
+                    Updates::new(g)
+                        .timed_effect(
+                            GameObjectId::Character(Side::Overlord),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(1))
+                                .scale(2.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .apply();
+
+                    raids::initiate(g, s, CardTarget::Room(RoomId::Sanctum))
+                }),
+                delegates::sanctum_access_count(requirements::matching_raid, |_, s, _, v| {
+                    v + s.upgrade(2, 3)
+                }),
+            ],
         }],
         config: CardConfig::default(),
     }

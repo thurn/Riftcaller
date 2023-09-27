@@ -225,7 +225,7 @@ namespace Spelldawn.Services
       var position = anchor ? anchor.position : positionTransform.position;
 
       var effect = _registry.AssetPoolService.Create(_registry.AssetService.GetEffect(command.Effect), position);
-      
+
       effect.SetGameContext(command.ArenaEffect ? GameContext.Arena : GameContext.Effects);
       if (command.StartColor != null)
       {

@@ -84,7 +84,7 @@ impl ResponseButton {
         self
     }
 
-    /// Turns this button into a [CardAnchorNode] bsaed on its [Self::anchor_to]
+    /// Turns this button into a [CardAnchorNode] based on its [Self::anchor_to]
     /// value. Panics if no anchor ID has be supplied.
     pub fn render_to_card_anchor_node(self) -> CardAnchorNode {
         CardAnchorNode {

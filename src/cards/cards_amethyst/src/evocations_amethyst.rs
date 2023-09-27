@@ -18,6 +18,7 @@ use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::abilities::standard;
 use card_helpers::costs::once_per_turn;
+use card_helpers::raids::add_sanctum_access;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
@@ -122,7 +123,9 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
                     text!["If successful,", TakeMana(3)]
                 ],
                 delegates: vec![
-                    on_activated(|g, s, activated| raid_state::initiate(g, s, activated.target)),
+                    on_activated(|g, s, activated| {
+                        card_helpers::raids::initiate(g, s, activated.target)
+                    }),
                     on_raid_success(requirements::matching_raid, |g, s, _| {
                         mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                         Ok(())

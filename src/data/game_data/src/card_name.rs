@@ -30,6 +30,17 @@ pub struct CardMetadata {
     pub full_art: bool,
 }
 
+impl CardMetadata {
+    /// Returns one of two values based on whether the card is upgraded
+    pub fn upgrade<T>(&self, normal: T, upgraded: T) -> T {
+        if self.upgraded {
+            upgraded
+        } else {
+            normal
+        }
+    }
+}
+
 /// Identifies a specific card version within cards with the same name, covering
 /// both cosmetic and functional distinctions. Cards with the same variant are
 /// visually and functionally identical under the rules of the game.

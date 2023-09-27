@@ -103,6 +103,7 @@ pub enum BackgroundColor {
     Toast,
     SpeechBubble,
     GameInstructionsBackground,
+    AccessedNote,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -122,6 +123,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::Toast => BLACK,
             BackgroundColor::SpeechBubble => WHITE,
             BackgroundColor::GameInstructionsBackground => BLACK_ALPHA_75,
+            BackgroundColor::AccessedNote => BLACK_ALPHA_75,
         }
     }
 }

@@ -74,6 +74,7 @@ use crate::card_definition::AttackBoost;
 use crate::card_definition::CardStats;
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
+use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
 use crate::game_actions::{CardTarget, GameStateAction};
@@ -89,11 +90,13 @@ use crate::primitives::{
 pub struct Scope {
     /// Ability which owns this delegate.
     ability_id: AbilityId,
+    /// Metadata for the this card
+    metadata: CardMetadata,
 }
 
 impl Scope {
-    pub fn new(ability_id: AbilityId) -> Self {
-        Self { ability_id }
+    pub fn new(ability_id: AbilityId, metadata: CardMetadata) -> Self {
+        Self { ability_id, metadata }
     }
 
     /// Player who owns this scope
@@ -109,6 +112,15 @@ impl Scope {
     /// Card which owns this scope
     pub fn card_id(&self) -> CardId {
         self.ability_id.card_id
+    }
+
+    pub fn metadata(&self) -> CardMetadata {
+        self.metadata
+    }
+
+    /// Returns one of two values based on whether the card is upgraded
+    pub fn upgrade<T>(&self, normal: T, upgraded: T) -> T {
+        self.metadata.upgrade(normal, upgraded)
     }
 }
 

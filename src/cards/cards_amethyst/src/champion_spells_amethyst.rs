@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use card_helpers::abilities::standard;
+use card_helpers::raids::{add_sanctum_access, add_vault_access};
 use card_helpers::{text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
@@ -67,7 +68,9 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
                 text!["If successful, draw a card"]
             ],
             delegates: vec![
-                this::on_play(|g, s, play_card| raid_state::initiate(g, s, play_card.target)),
+                this::on_play(|g, s, play_card| {
+                    card_helpers::raids::initiate(g, s, play_card.target)
+                }),
                 add_vault_access::<1>(requirements::matching_raid),
                 add_sanctum_access::<1>(requirements::matching_raid),
                 on_raid_success(requirements::matching_raid, |g, s, _| {
@@ -134,7 +137,9 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                 text!["During that raid, summon costs are increased by", Mana(3)]
             ],
             delegates: vec![
-                this::on_play(|g, s, play_card| raid_state::initiate(g, s, play_card.target)),
+                this::on_play(|g, s, play_card| {
+                    card_helpers::raids::initiate(g, s, play_card.target)
+                }),
                 Delegate::ManaCost(QueryDelegate {
                     requirement: requirements::matching_raid,
                     transformation: |g, _s, card_id, current| {

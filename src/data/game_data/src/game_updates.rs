@@ -86,6 +86,8 @@ pub enum GameAnimation {
     InitiateRaid(RoomId, InitiatedBy),
     /// Interaction between two cards during raid combat.
     CombatInteraction(TargetedInteraction),
+    /// The Champion has accessed the specified cards in the Sanctum
+    AccessSanctumCards(Vec<CardId>),
     /// A player has scored a card
     ScoreCard(Side, CardId),
     /// The game has ended and the indicated player has won

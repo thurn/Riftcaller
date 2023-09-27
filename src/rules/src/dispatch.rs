@@ -19,6 +19,7 @@ use std::fmt::Debug;
 
 use anyhow::Result;
 use game_data::card_definition::CardDefinition;
+use game_data::card_name::CardMetadata;
 use game_data::delegates::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
 use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId};
@@ -27,8 +28,9 @@ use game_data::primitives::{AbilityId, CardId};
 pub fn populate_delegate_cache(game: &mut GameState) {
     let mut result = DelegateCache::default();
     for card_id in game.all_card_ids() {
-        let definition = crate::get(game.card(card_id).variant);
-        add_card_to_delegate_cache(&mut result, definition, card_id);
+        let variant = game.card(card_id).variant;
+        let definition = crate::get(variant);
+        add_card_to_delegate_cache(&mut result, definition, card_id, variant.metadata);
     }
     game.delegate_cache = result;
 }
@@ -38,10 +40,11 @@ pub fn add_card_to_delegate_cache(
     cache: &mut DelegateCache,
     definition: &CardDefinition,
     card_id: CardId,
+    metadata: CardMetadata,
 ) {
     for (index, ability) in definition.abilities.iter().enumerate() {
         let ability_id = AbilityId::new(card_id, index);
-        let scope = Scope::new(ability_id);
+        let scope = Scope::new(ability_id, metadata);
         for delegate in &ability.delegates {
             cache
                 .lookup

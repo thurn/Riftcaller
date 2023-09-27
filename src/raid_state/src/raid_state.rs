@@ -22,9 +22,9 @@ use game_data::card_state::CardPosition;
 use game_data::delegates::{
     CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, MinionCombatAbilityEvent,
     MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome,
-    RaidStartEvent, RazeCardEvent, Scope, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
+    RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
-use game_data::game_actions::{CardTarget, RaidAction};
+use game_data::game_actions::RaidAction;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
 use game_data::game_updates::{GameAnimation, InitiatedBy, TargetedInteraction};
@@ -53,17 +53,6 @@ pub fn handle_initiate_action(
     );
     mutations::spend_action_points(game, user_side, 1)?;
     initiate_with_callback(game, target_room, InitiatedBy::GameAction, |_, _| {})
-}
-
-/// Starts a new raid from a card ability associated with the provided [Scope]
-/// and [CardTarget] room.
-pub fn initiate(game: &mut GameState, scope: Scope, target: CardTarget) -> Result<()> {
-    initiate_with_callback(
-        game,
-        target.room_id()?,
-        InitiatedBy::Ability(scope.ability_id()),
-        |_, _| {},
-    )
 }
 
 /// Starts a new raid, either as a result of an explicit game action or via a
@@ -187,7 +176,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::AccessStart => access_start(game, info),
         RaidStep::BuildAccessSet => build_access_set(game, info),
         RaidStep::AccessSetBuilt => access_set_built(game, info),
-        RaidStep::RevealAccessedCards => reveal_accessed_cards(game),
+        RaidStep::RevealAccessedCards => reveal_accessed_cards(game, info),
         RaidStep::AccessCards => access_cards(game),
         RaidStep::PopulateAccessPrompt => populate_access_prompt(game, info),
         RaidStep::StartScoringCard(scored) => start_scoring_card(game, scored),
@@ -338,10 +327,14 @@ fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     RaidState::step(RaidStep::RevealAccessedCards)
 }
 
-fn reveal_accessed_cards(game: &mut GameState) -> Result<RaidState> {
+fn reveal_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     let accessed = game.raid()?.accessed.clone();
     for card_id in &accessed {
         mutations::set_revealed_to(game, *card_id, Side::Champion, true);
+    }
+
+    if info.target == RoomId::Sanctum {
+        game.add_animation(|| GameAnimation::AccessSanctumCards(accessed))
     }
 
     RaidState::step(RaidStep::AccessCards)

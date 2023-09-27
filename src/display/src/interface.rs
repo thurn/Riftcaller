@@ -35,8 +35,8 @@ pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainContro
             GamePrompt::CardBrowserPrompt(prompt) => return Ok(card_browser::controls(prompt)),
             GamePrompt::PlayCardBrowser(prompt) => return Ok(play_card_browser::controls(prompt)),
         }
-    } else if game.raid.is_some() {
-        return Ok(raid_prompt::build(game, side));
+    } else if let Some(raid) = &game.raid {
+        return Ok(raid_prompt::build(game, raid, side));
     } else if let GamePhase::ResolveMulligans(_) = &game.info.phase {
         if flags::can_make_mulligan_decision(game, side) {
             return Ok(prompts::action_prompt(&ActionButtons {

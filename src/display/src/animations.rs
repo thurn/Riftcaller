@@ -97,6 +97,7 @@ pub fn render(
         GameAnimation::CombatInteraction(interaction) => {
             combat_interaction(builder, snapshot, *interaction)
         }
+        GameAnimation::AccessSanctumCards(cards) => access_sanctum_cards(builder, cards),
         GameAnimation::ScoreCard(_, card_id) => score_card(builder, *card_id),
         GameAnimation::GameOver(_) => {}
         GameAnimation::BrowserSubmitted => {}
@@ -242,6 +243,7 @@ fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
         card_id,
         &TimedEffectData::new(TimedEffect::MagicHits(4))
             .duration(Milliseconds(700))
+            .arena_effect(false)
             .sound(SoundEffect::Fireworks(FireworksSound::RocketExplodeLarge)),
     ));
     builder.push(play_timed_effect(
@@ -249,8 +251,24 @@ fn score_card(builder: &mut ResponseBuilder, card_id: CardId) {
         card_id,
         &TimedEffectData::new(TimedEffect::MagicHits(4))
             .duration(Milliseconds(300))
+            .arena_effect(false)
             .sound(SoundEffect::Fireworks(FireworksSound::RocketExplode)),
     ));
+    builder.push(delay(1000));
+}
+
+fn access_sanctum_cards(builder: &mut ResponseBuilder, cards: &[CardId]) {
+    for card_id in cards {
+        builder.push(play_timed_effect(
+            builder,
+            *card_id,
+            &TimedEffectData::new(TimedEffect::MagicHits(15))
+                .duration(Milliseconds(100))
+                .arena_effect(false)
+                .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Buff02")),
+        ));
+    }
+
     builder.push(delay(1000));
 }
 

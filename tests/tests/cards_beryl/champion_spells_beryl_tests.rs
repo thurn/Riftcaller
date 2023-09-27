@@ -110,3 +110,21 @@ fn restoration_upgraded_stacking() {
     // Test weapon costs 5 and reduces cost by 2 on raid access
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - 5 + reduction + 2);
 }
+
+#[test]
+fn strike_the_heart() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+        .build();
+    g.create_and_play(CardName::StrikeTheHeart);
+    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+}
+
+#[test]
+fn strike_the_heart_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+        .build();
+    g.create_and_play_upgraded(CardName::StrikeTheHeart);
+    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 4);
+}

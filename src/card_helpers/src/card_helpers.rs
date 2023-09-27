@@ -17,9 +17,11 @@
 
 pub mod abilities;
 pub mod costs;
+pub mod delegates;
 pub mod history;
 pub mod in_play;
 pub mod projects;
+pub mod raids;
 pub mod requirements;
 pub mod show_prompt;
 pub mod text_macro;
@@ -36,8 +38,7 @@ use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    AbilityId, ActionCount, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue, RaidId,
-    RoomId, Side,
+    AbilityId, ActionCount, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue, RoomId, Side,
 };
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
@@ -190,20 +191,6 @@ pub fn on_raid_success(
 /// Delegate which transforms how a minion's health is calculated
 pub fn on_calculate_health(transformation: TransformationFn<CardId, HealthValue>) -> Delegate {
     Delegate::HealthValue(QueryDelegate { requirement: this_card, transformation })
-}
-
-pub fn add_vault_access<const N: u32>(requirement: RequirementFn<RaidId>) -> Delegate {
-    Delegate::VaultAccessCount(QueryDelegate {
-        requirement,
-        transformation: |_, _, _, current| current + N,
-    })
-}
-
-pub fn add_sanctum_access<const N: u32>(requirement: RequirementFn<RaidId>) -> Delegate {
-    Delegate::SanctumAccessCount(QueryDelegate {
-        requirement,
-        transformation: |_, _, _, current| current + N,
-    })
 }
 
 /// Add `amount` to the stored mana in a card. Returns the new stored amount.

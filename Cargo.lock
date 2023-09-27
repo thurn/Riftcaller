@@ -2197,6 +2197,7 @@ dependencies = [
 name = "raid_state"
 version = "0.0.0"
 dependencies = [
+ "adapters",
  "anyhow",
  "core_ui",
  "fallible-iterator",

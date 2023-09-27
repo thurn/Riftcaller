@@ -12,24 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_ui::design::BackgroundColor;
 use core_ui::icons;
 use core_ui::prelude::*;
+use core_ui::style::Corner;
+use core_ui::text::Text;
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, Side};
+use game_data::primitives::{CardId, RoomId, Side};
 use game_data::raid_data::{
-    RaidChoice, RaidLabel, RaidPrompt, RaidState, RaidStep, WeaponInteraction,
+    RaidChoice, RaidData, RaidLabel, RaidPrompt, RaidState, RaidStep, WeaponInteraction,
 };
 use game_data::tutorial_data::TutorialTrigger;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;
-use protos::spelldawn::InterfaceMainControls;
+use protos::spelldawn::{
+    AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify, InterfaceMainControls,
+};
 use rules::{queries, CardDefinitionExt};
 
 /// Builds an [InterfaceMainControls] response to show to the `side` player in
 /// order to make a decision in this raid if a choice is currently available.
-pub fn build(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
-    current_prompt(game, side).map(|prompt| {
+pub fn build(game: &GameState, raid: &RaidData, side: Side) -> Option<InterfaceMainControls> {
+    if let Some(prompt) = current_prompt(game, side) {
         let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
         let mut card_anchor_nodes = vec![];
 
@@ -42,12 +47,19 @@ pub fn build(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
             }
         }
 
-        InterfaceMainControls {
+        Some(InterfaceMainControls {
             node: PromptContainer::new().children(main_controls).build(),
             overlay: None,
             card_anchor_nodes,
-        }
-    })
+        })
+    } else if raid.target == RoomId::Sanctum && side == Side::Overlord && !raid.accessed.is_empty()
+    {
+        // During sanctum access, display an annotation on accessed cards for the
+        // Overlord
+        overlord_sanctum_access_info(raid)
+    } else {
+        None
+    }
 }
 
 /// Returns a vector of the [GameAction]s that are currently available for the
@@ -72,6 +84,43 @@ fn current_prompt(game: &GameState, side: Side) -> Option<&RaidPrompt> {
     }
 
     None
+}
+
+fn overlord_sanctum_access_info(raid: &RaidData) -> Option<InterfaceMainControls> {
+    Some(InterfaceMainControls {
+        node: None,
+        overlay: None,
+        card_anchor_nodes: raid.accessed.iter().map(sanctum_access_note).collect(),
+    })
+}
+
+fn sanctum_access_note(card_id: &CardId) -> CardAnchorNode {
+    CardAnchorNode {
+        card_id: Some(adapters::card_identifier(*card_id)),
+        node: Row::new("CardAccessInfo")
+            .style(
+                Style::new()
+                    .margin(Edge::Top, 16.px())
+                    .margin(Edge::Horizontal, 32.px())
+                    .padding(Edge::All, 8.px())
+                    .justify_content(FlexJustify::Center)
+                    .align_items(FlexAlign::Center)
+                    .border_radius(Corner::All, 8.px())
+                    .background_color(BackgroundColor::AccessedNote),
+            )
+            .child(Text::new(format!("{} Access", icons::EYE)))
+            .build(),
+        anchors: vec![
+            CardAnchor {
+                node_corner: AnchorCorner::TopLeft as i32,
+                card_corner: AnchorCorner::BottomLeft as i32,
+            },
+            CardAnchor {
+                node_corner: AnchorCorner::TopRight as i32,
+                card_corner: AnchorCorner::BottomRight as i32,
+            },
+        ],
+    }
 }
 
 /// Checks whether the provided [RaidAction] corresponds to the effect for a
