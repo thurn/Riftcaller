@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::delegates::{Delegate, QueryDelegate, RequirementFn, Scope};
+use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::game_updates::InitiatedBy;

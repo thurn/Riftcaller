@@ -13,14 +13,14 @@
 // limitations under the License.
 
 //! Core functions of the Delegate system. See the module-level comment in
-//! `delegates.rs` for more information about this system.
+//! `delegate_data` for more information about this system.
 
 use std::fmt::Debug;
 
 use anyhow::Result;
 use game_data::card_definition::CardDefinition;
 use game_data::card_name::CardMetadata;
-use game_data::delegates::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
+use game_data::delegate_data::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
 use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId};
 

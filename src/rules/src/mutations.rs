@@ -27,7 +27,7 @@ use game_data::card_name::CardVariant;
 use game_data::card_state::CardState;
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
-use game_data::delegates::{
+use game_data::delegate_data::{
     CardMoved, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent, DuskEvent, EnterArenaEvent,
     MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidEvent, RaidFailureEvent,
     RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,

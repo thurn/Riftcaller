@@ -18,7 +18,7 @@ use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::delegates::RaidEvent;
+use crate::delegate_data::RaidEvent;
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
 use crate::game_updates::InitiatedBy;

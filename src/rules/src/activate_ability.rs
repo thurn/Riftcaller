@@ -15,7 +15,7 @@
 use anyhow::Result;
 use game_data::action_data::{ActionData, ActivateAbilityData, ActivateAbilityStep};
 use game_data::card_definition::{AbilityType, Cost};
-use game_data::delegates::{AbilityActivated, ActivateAbilityEvent};
+use game_data::delegate_data::{AbilityActivated, ActivateAbilityEvent};
 use game_data::game_actions::CardTarget;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState};

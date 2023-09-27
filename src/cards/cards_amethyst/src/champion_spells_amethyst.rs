@@ -23,7 +23,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, QueryDelegate};
+use game_data::delegate_data::{Delegate, QueryDelegate};
 use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
 use rules::{flags, mana, mutations, CardDefinitionExt};

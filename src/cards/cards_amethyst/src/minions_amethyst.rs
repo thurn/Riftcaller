@@ -22,7 +22,7 @@ use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDe
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
-use game_data::delegates::{Delegate, EventDelegate, RaidOutcome};
+use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{CardType, Rarity, Resonance, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;

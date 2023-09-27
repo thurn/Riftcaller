@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::delegates::RaidOutcome;
+use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 

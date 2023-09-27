@@ -19,7 +19,7 @@ pub mod raid_prompt;
 
 use anyhow::Result;
 use game_data::card_state::CardPosition;
-use game_data::delegates::{
+use game_data::delegate_data::{
     CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, MinionCombatAbilityEvent,
     MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome,
     RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,

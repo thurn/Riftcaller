@@ -24,7 +24,7 @@ use syn::{
 };
 
 /// Generates Event & Query structs for the delegates in the delegate enum.
-/// See the module comment in `delegates.rs` for more information about this
+/// See the module comment in `delegate_data` for more information about this
 /// system.
 #[proc_macro_derive(DelegateEnum)]
 pub fn delegate_enum(input: proc_macro::TokenStream) -> proc_macro::TokenStream {

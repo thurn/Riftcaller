@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::delegates::{CardPlayed, Delegate, EventDelegate, MutationFn, Scope};
+use game_data::delegate_data::{CardPlayed, Delegate, EventDelegate, MutationFn, Scope};
 use game_data::game_state::GameState;
 use game_data::primitives::HasCardId;
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::delegates::Scope;
+use game_data::delegate_data::Scope;
 use game_data::game_actions::{
     ButtonPrompt, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
 };

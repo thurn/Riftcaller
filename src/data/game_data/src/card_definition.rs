@@ -25,7 +25,7 @@ use enum_kinds::EnumKind;
 
 use crate::card_name::{CardMetadata, CardName, CardVariant};
 use crate::card_set_name::CardSetName;
-use crate::delegates::Delegate;
+use crate::delegate_data::Delegate;
 use crate::game_state::GameState;
 use crate::primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
@@ -158,7 +158,7 @@ pub enum AbilityType {
 }
 
 /// Abilities are the unit of action in Spelldawn. Their behavior is provided by
-/// the Delegate system, see delegates.rs for more information.
+/// the Delegate system, see delegate_data for more information.
 #[derive(Debug)]
 pub struct Ability {
     pub ability_type: AbilityType,

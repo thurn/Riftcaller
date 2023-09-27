@@ -15,7 +15,7 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::delegates::RaidEvent;
+use crate::delegate_data::RaidEvent;
 use crate::game_actions::RazeCardActionType;
 use crate::game_state::RaidJumpRequest;
 use crate::game_updates::InitiatedBy;

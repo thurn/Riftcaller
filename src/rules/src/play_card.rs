@@ -18,7 +18,7 @@ use anyhow::Result;
 use constants::game_constants;
 use game_data::action_data::{ActionData, PlayCardData, PlayCardStep};
 use game_data::card_state::{CardPosition, CardState};
-use game_data::delegates::{CardPlayed, PlayCardEvent};
+use game_data::delegate_data::{CardPlayed, PlayCardEvent};
 use game_data::game_actions::{
     ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
 };

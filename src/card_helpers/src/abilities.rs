@@ -17,7 +17,7 @@
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
-use game_data::delegates::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
+use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
 use game_data::primitives::{AbilityId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
 use rules::mutations;

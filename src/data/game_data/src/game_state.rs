@@ -26,7 +26,7 @@ use with_error::{fail, WithError};
 use crate::action_data::ActionData;
 use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
-use crate::delegates::DelegateCache;
+use crate::delegate_data::DelegateCache;
 use crate::game_actions::GamePrompt;
 use crate::game_history::{GameHistory, HistoryEvent};
 use crate::game_updates::{GameAnimation, UpdateState, UpdateStep, UpdateTracker};

@@ -18,7 +18,7 @@ use anyhow::Result;
 use constants::game_constants;
 use game_data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
-use game_data::delegates::{
+use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, AttackValueQuery, BreachValueQuery,
     HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, SanctumAccessCountQuery,
     ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,

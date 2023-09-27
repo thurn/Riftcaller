@@ -30,7 +30,7 @@ pub mod updates;
 
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
-use game_data::delegates::{
+use game_data::delegate_data::{
     AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded, RaidEvent,
     RequirementFn, Scope, TransformationFn, UsedWeapon,
 };

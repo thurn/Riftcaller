@@ -23,7 +23,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, QueryDelegate};
+use game_data::delegate_data::{Delegate, QueryDelegate};
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 

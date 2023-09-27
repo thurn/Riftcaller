@@ -20,7 +20,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, QueryDelegate, RaidOutcome};
+use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations;

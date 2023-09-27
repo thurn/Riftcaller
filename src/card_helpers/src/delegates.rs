@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::delegates::{Delegate, QueryDelegate, RequirementFn, TransformationFn};
+use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, TransformationFn};
 use game_data::primitives::{CardId, ManaValue, RaidId};
 
 pub fn mana_cost(

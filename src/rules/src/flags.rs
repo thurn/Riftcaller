@@ -17,7 +17,7 @@
 
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
-use game_data::delegates::{
+use game_data::delegate_data::{
     CanActivateAbilityQuery, CanDefeatTargetQuery, CanEncounterTargetQuery,
     CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery, CanLevelUpRoomQuery,
     CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,

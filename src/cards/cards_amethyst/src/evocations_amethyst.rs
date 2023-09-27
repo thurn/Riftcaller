@@ -27,7 +27,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegates::{Delegate, EventDelegate};
+use game_data::delegate_data::{Delegate, EventDelegate};
 use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::mutations;
 use rules::mutations::OnZeroStored;

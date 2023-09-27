@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::card_definition::Ability;
-use game_data::delegates::Scope;
+use game_data::delegate_data::Scope;
 use game_data::game_state::GameState;
 use game_data::text::TextToken;
 

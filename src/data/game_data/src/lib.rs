@@ -23,7 +23,7 @@ pub mod card_state;
 pub mod card_view_context;
 pub mod character_preset;
 pub mod deck;
-pub mod delegates;
+pub mod delegate_data;
 pub mod game_actions;
 pub mod game_effect;
 pub mod game_history;

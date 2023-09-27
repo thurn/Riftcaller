@@ -20,7 +20,7 @@ pub mod legal_actions;
 
 use anyhow::Result;
 use game_data::card_state::CardPosition;
-use game_data::delegates::DrawCardActionEvent;
+use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
     BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
     CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction, PromptContext,

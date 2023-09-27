@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use game_data::action_data::ActionData;
-use game_data::delegates::DealtDamage;
+use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
-use game_data::delegates::{RequirementFn, Scope};
+use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
 use game_data::game_history::{HistoryEvent, HistoryEventKind};
 use game_data::game_state::GameState;
