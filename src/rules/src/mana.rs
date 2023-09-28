@@ -36,6 +36,7 @@ pub enum ManaPurpose {
     LevelUpRoom(RoomId),
     PayForTriggeredAbility,
     RemoveCurse,
+    DispelEvocation,
     AllSources,
 }
 

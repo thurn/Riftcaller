@@ -336,7 +336,7 @@ fn prompt_position_override(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let current_prompt = game.player(card.side()).prompt_queue.get(0)?;
+    let current_prompt = game.player(builder.user_side).prompt_queue.get(0)?;
 
     match current_prompt {
         GamePrompt::ButtonPrompt(prompt) => {

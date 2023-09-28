@@ -279,6 +279,7 @@ pub enum GameAction {
     ActivateAbility(AbilityId, CardTarget),
     UnveilCard(CardId),
     RemoveCurse,
+    DispelEvocation,
     InitiateRaid(RoomId),
     LevelUpRoom(RoomId),
     SpendActionPoint,
@@ -303,6 +304,7 @@ impl fmt::Debug for GameAction {
             }
             Self::UnveilCard(id) => f.debug_tuple("@UnveilCard").field(id).finish(),
             Self::RemoveCurse => write!(f, "@RemoveCurse"),
+            Self::DispelEvocation => write!(f, "@DispelEvocation"),
             Self::InitiateRaid(arg0) => f.debug_tuple("@InitiateRaid").field(arg0).finish(),
             Self::LevelUpRoom(arg0) => f.debug_tuple("@LevelUpRoom").field(arg0).finish(),
             Self::SpendActionPoint => write!(f, "@SpendActionPoint"),

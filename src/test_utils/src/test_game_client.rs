@@ -314,6 +314,8 @@ impl ClientPlayer {
 pub trait CardNamesExt {
     fn names(&self) -> Vec<String>;
 
+    fn ids(&self) -> Vec<CardIdentifier>;
+
     fn real_cards(&self) -> Self;
 
     fn token_cards(&self) -> Self;
@@ -327,6 +329,12 @@ impl CardNamesExt for Vec<&ClientCard> {
             .iter()
             .map(|c| c.title_option().unwrap_or_else(|| test_constants::HIDDEN_CARD.to_string()))
             .collect::<Vec<_>>();
+        result.sort();
+        result
+    }
+
+    fn ids(&self) -> Vec<CardIdentifier> {
+        let mut result = self.iter().map(|c| c.id()).collect::<Vec<_>>();
         result.sort();
         result
     }

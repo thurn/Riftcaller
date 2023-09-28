@@ -35,6 +35,8 @@ pub enum HistoryEvent {
     DrawCardAction(CardId),
     /// Curse removed via the standard game action
     RemoveCurseAction,
+    /// Evocation destroyed via the standard game action    
+    DispelEvocationAction,
     /// A card was played, either via the standard game action or initiated by
     /// [an ability of another card.
     PlayCard(CardId, CardTarget, InitiatedBy),

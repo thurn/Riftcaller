@@ -41,6 +41,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
     match effect {
         GameEffect::AbortCurrentGameAction => "Cancel".to_string(),
         GameEffect::SacrificeCard(_) => "Sacrifice".to_string(),
+        GameEffect::DestroyCard(_) => "Destroy".to_string(),
         GameEffect::LoseMana(side, amount) => {
             format!("{} {}{}", lose_text(user_side, *side), amount, icons::MANA)
         }

@@ -531,3 +531,14 @@ pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
         ..test_overlord_spell(metadata)
     }
 }
+
+pub fn test_evocation(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestEvocation,
+        cost: cost(test_constants::EVOCATION_COST),
+        card_type: CardType::Evocation,
+        sets: vec![CardSetName::Test],
+        abilities: vec![],
+        ..test_champion_spell(metadata)
+    }
+}

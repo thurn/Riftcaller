@@ -185,6 +185,7 @@ impl Summarize for CardIdentifier {
             ServerCardId::AbilityId(ability_id) => summary.primitive(ability_id),
             ServerCardId::UnveilCard(card_id) => summary.primitive(format!("Unveil {card_id:?}")),
             ServerCardId::CurseCard => summary.primitive("RemoveCurse".to_string()),
+            ServerCardId::DispelCard => summary.primitive("DispelCard".to_string()),
         }
     }
 }

@@ -457,6 +457,17 @@ pub fn can_take_remove_curse_action(game: &GameState, side: Side) -> bool {
         && mana::get(game, side, ManaPurpose::RemoveCurse) >= game_constants::COST_TO_REMOVE_CURSE
 }
 
+/// Can the `side` player currently take the standard action to dispel an
+/// evocation?
+pub fn can_take_dispel_evocation_action(game: &GameState, side: Side) -> bool {
+    side == Side::Overlord
+        && in_main_phase_with_action_point(game, side)
+        && game.champion.curses > 0
+        && game.evocations().count() > 0
+        && mana::get(game, side, ManaPurpose::DispelEvocation)
+            >= game_constants::COST_TO_DISPEL_EVOCATION
+}
+
 /// Returns true if the Overlord player currently has access to an effect they
 /// can activate outside of their normal main phase actions.
 pub fn overlord_has_instant_speed_actions(game: &GameState) -> bool {

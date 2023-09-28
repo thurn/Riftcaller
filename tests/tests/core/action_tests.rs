@@ -820,6 +820,73 @@ fn cannot_remove_curse_opponent_turn() {
 }
 
 #[test]
+fn destroy_evocation_while_cursed() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord))
+        .opponent(TestSide::new(Side::Champion).curses(1))
+        .build();
+    g.pass_turn(Side::Overlord);
+    let evocation_id = g.create_and_play(CardName::TestEvocation);
+    g.pass_turn(Side::Champion);
+    assert_eq!(g.user.cards.hand().token_cards().names(), vec!["Dispel Evocation"]);
+    assert_eq!(g.opponent.cards.opponent_hand().token_cards().names(), vec!["Dispel Evocation"]);
+    let dispel_card_id = g.user.cards.hand().token_cards()[0].id();
+    g.perform(
+        Action::PlayCard(PlayCardAction { card_id: Some(dispel_card_id), target: None }),
+        g.user_id(),
+    );
+    g.click(Button::Destroy);
+    assert_eq!(test_constants::STARTING_MANA - 2, g.me().mana());
+    assert_eq!(g.user.cards.opponent_discard_pile().ids(), vec![evocation_id])
+}
+
+#[test]
+fn cannot_destroy_evocation_without_mana() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0))
+        .opponent(TestSide::new(Side::Champion).curses(1))
+        .build();
+    g.pass_turn(Side::Overlord);
+    g.create_and_play(CardName::TestEvocation);
+    g.pass_turn(Side::Champion);
+    let dispel_card_id = g.user.cards.hand().token_cards()[0].id();
+    assert!(g
+        .perform_action(
+            Action::PlayCard(PlayCardAction { card_id: Some(dispel_card_id), target: None }),
+            g.user_id(),
+        )
+        .is_err());
+}
+
+#[test]
+fn cannot_destroy_evocation_without_targets() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord))
+        .opponent(TestSide::new(Side::Champion).curses(1))
+        .build();
+    let dispel_card_id = g.user.cards.hand().token_cards()[0].id();
+    assert!(g
+        .perform_action(
+            Action::PlayCard(PlayCardAction { card_id: Some(dispel_card_id), target: None }),
+            g.user_id(),
+        )
+        .is_err());
+}
+
+#[test]
+fn cannot_destroy_evocation_opponent_turn() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0))
+        .opponent(TestSide::new(Side::Champion).curses(1))
+        .build();
+    g.pass_turn(Side::Overlord);
+    g.create_and_play(CardName::TestEvocation);
+    let dispel_card_id = g.user.cards.hand().token_cards()[0].id();
+    assert!(g
+        .perform_action(
+            Action::PlayCard(PlayCardAction { card_id: Some(dispel_card_id), target: None }),
+            g.user_id(),
+        )
+        .is_err());
+}
+
+#[test]
 fn legal_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert!(g.legal_actions_result(Side::Champion).is_err());

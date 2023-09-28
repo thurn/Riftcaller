@@ -24,6 +24,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
     match effect {
         GameEffect::AbortCurrentGameAction => mutations::abort_current_game_action(game),
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
+        GameEffect::DestroyCard(card_id) => mutations::destroy_card(game, card_id)?,
         GameEffect::LoseMana(side, amount) => {
             mana::spend(game, side, ManaPurpose::PayForTriggeredAbility, amount)?
         }

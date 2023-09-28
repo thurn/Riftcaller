@@ -32,9 +32,11 @@ use with_error::fail;
 use crate::response_builder::ResponseBuilder;
 
 /// Possible game actions which can be associated with a client card identifier
+#[derive(Debug, Copy, Clone)]
 pub enum CardIdentifierAction {
     Unveil = 1,
     Curse = 2,
+    Dispel = 3,
 }
 
 impl CardIdentifierAction {
@@ -42,6 +44,7 @@ impl CardIdentifierAction {
         match value {
             1 => Some(CardIdentifierAction::Unveil),
             2 => Some(CardIdentifierAction::Curse),
+            3 => Some(CardIdentifierAction::Dispel),
             _ => None,
         }
     }
@@ -88,12 +91,12 @@ pub fn unveil_card_identifier(card_id: CardId) -> CardIdentifier {
     }
 }
 
-/// Identifier for a card representing the implicit ability to remove a curse
-pub fn curse_card_identifier(number: u32) -> CardIdentifier {
+/// Identifier for a card representing an implicit game ability
+pub fn action_card_identifier(action: CardIdentifierAction, number: u32) -> CardIdentifier {
     CardIdentifier {
         side: player_side(Side::Champion),
         index: number,
-        game_action: Some(CardIdentifierAction::Curse as u32),
+        game_action: Some(action as u32),
         ability_id: None,
     }
 }
@@ -108,6 +111,9 @@ pub enum ServerCardId {
     UnveilCard(CardId),
     /// Card representing the ability to remove a curse in hand
     CurseCard,
+    /// Card representing the ability to destroy an evocation when the Champion
+    /// is cursed
+    DispelCard,
 }
 
 /// Converts a client [CardIdentifier] into a server [CardId] or [AbilityId].
@@ -118,6 +124,7 @@ pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
         return match action {
             CardIdentifierAction::Unveil => Ok(ServerCardId::UnveilCard(result)),
             CardIdentifierAction::Curse => Ok(ServerCardId::CurseCard),
+            CardIdentifierAction::Dispel => Ok(ServerCardId::DispelCard),
         };
     }
 

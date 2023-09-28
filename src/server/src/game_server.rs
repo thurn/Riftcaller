@@ -157,6 +157,7 @@ pub async fn handle_play_card(
         }
         ServerCardId::UnveilCard(card_id) => GameAction::UnveilCard(card_id),
         ServerCardId::CurseCard => GameAction::RemoveCurse,
+        ServerCardId::DispelCard => GameAction::DispelEvocation,
     };
     handle_game_action(database, data, &action).await
 }

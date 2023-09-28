@@ -24,6 +24,8 @@ pub enum GameEffect {
     /// Sacrifice the indicated permanent, moving it to its owner's discard
     /// pile.
     SacrificeCard(CardId),
+    /// Destroy the indicated permanent
+    DestroyCard(CardId),
     /// A player loses mana
     LoseMana(Side, ManaValue),
     /// A player loses action points

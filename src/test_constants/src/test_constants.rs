@@ -43,6 +43,8 @@ pub const ARTIFACT_COST: ManaValue = 1;
 
 pub const UNVEIL_COST: ManaValue = 3;
 
+pub const EVOCATION_COST: ManaValue = 3;
+
 pub const RAZE_COST: ManaValue = 2;
 
 pub const MANA_STORED: ManaValue = 10;

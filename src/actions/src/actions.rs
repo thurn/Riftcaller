@@ -23,9 +23,11 @@ use constants::game_constants;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
-    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, CardBrowserPrompt,
-    CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction, PromptContext,
+    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt,
+    CardBrowserPrompt, CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction,
+    PromptChoice, PromptContext,
 };
+use game_data::game_effect::GameEffect;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::game_updates::{GameAnimation, InitiatedBy};
@@ -67,6 +69,7 @@ pub fn handle_game_action(
         }
         GameAction::UnveilCard(card_id) => unveil_action(game, user_side, *card_id),
         GameAction::RemoveCurse => remove_curse_action(game, user_side),
+        GameAction::DispelEvocation => dispel_evocation_action(game, user_side),
         GameAction::InitiateRaid(room_id) => {
             raid_state::handle_initiate_action(game, user_side, *room_id)
         }
@@ -218,6 +221,40 @@ fn remove_curse_action(game: &mut GameState, user_side: Side) -> Result<()> {
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, ManaPurpose::RemoveCurse, game_constants::COST_TO_REMOVE_CURSE)?;
     mutations::remove_curses(game, 1)?;
+    Ok(())
+}
+
+#[instrument(skip(game))]
+fn dispel_evocation_action(game: &mut GameState, user_side: Side) -> Result<()> {
+    verify!(
+        flags::can_take_dispel_evocation_action(game, user_side),
+        "Cannot dispel evocation for {:?}",
+        user_side
+    );
+
+    debug!(?user_side, "Initiating dispel evocation action");
+    game.add_history_event(HistoryEvent::DispelEvocationAction);
+    mutations::spend_action_points(game, user_side, 1)?;
+    mana::spend(
+        game,
+        user_side,
+        ManaPurpose::RemoveCurse,
+        game_constants::COST_TO_DISPEL_EVOCATION,
+    )?;
+
+    let prompt = GamePrompt::ButtonPrompt(ButtonPrompt {
+        context: None,
+        choices: game
+            .evocations()
+            .map(|card| PromptChoice {
+                effects: vec![GameEffect::DestroyCard(card.id)],
+                anchor_card: Some(card.id),
+                custom_label: None,
+            })
+            .collect(),
+    });
+    game.player_mut(user_side).prompt_queue.push(prompt);
+
     Ok(())
 }
 

@@ -22,7 +22,8 @@ use game_data::card_view_context::CardViewContext;
 use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    AbilityId, CardId, CardType, ItemLocation, Rarity, RoomId, RoomLocation, School, Side,
+    AbilityId, CardId, CardType, ItemLocation, ManaValue, Rarity, RoomId, RoomLocation, School,
+    Side,
 };
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
@@ -299,49 +300,90 @@ pub fn curse_card_view(
     game: Option<&GameState>,
     number: u32,
 ) -> CardView {
-    let character_position = game.map(|_| {
-        positions::for_action_card(
-            positions::character(builder, Side::Champion),
-            CardIdentifierAction::Curse,
-        )
-    });
+    action_card_view(
+        builder,
+        game,
+        ActionCard {
+            action: CardIdentifierAction::Curse,
+            identifier_number: number,
+            cost: game_constants::COST_TO_REMOVE_CURSE,
+            image: "curse".to_string(),
+            title: "Curse".to_string(),
+            text: format!(
+                "While this is held, the Overlord may pay {},2{} to destroy an evocation.",
+                icons::ACTION,
+                icons::MANA
+            ),
+            side: Side::Champion,
+            can_play_fn: flags::can_take_remove_curse_action,
+        },
+    )
+}
+
+pub fn dispel_card_view(builder: &ResponseBuilder, game: Option<&GameState>) -> CardView {
+    action_card_view(
+        builder,
+        game,
+        ActionCard {
+            action: CardIdentifierAction::Dispel,
+            identifier_number: 1,
+            cost: game_constants::COST_TO_DISPEL_EVOCATION,
+            image: "dispel".to_string(),
+            title: "Dispel Evocation".to_string(),
+            text: "Play only if the Champion is cursed.\nDestroy target evocation.".to_string(),
+            side: Side::Overlord,
+            can_play_fn: flags::can_take_dispel_evocation_action,
+        },
+    )
+}
+
+pub struct ActionCard {
+    pub action: CardIdentifierAction,
+    pub identifier_number: u32,
+    pub cost: ManaValue,
+    pub image: String,
+    pub title: String,
+    pub text: String,
+    pub side: Side,
+    pub can_play_fn: fn(&GameState, Side) -> bool,
+}
+
+fn action_card_view(
+    builder: &ResponseBuilder,
+    game: Option<&GameState>,
+    card: ActionCard,
+) -> CardView {
+    let character_position = game
+        .map(|_| positions::for_action_card(positions::character(builder, card.side), card.action));
     CardView {
-        card_id: Some(adapters::curse_card_identifier(number)),
+        card_id: Some(adapters::action_card_identifier(card.action, card.identifier_number)),
         card_position: Some(positions::for_action_card(
-            positions::hand(builder, Side::Champion),
-            CardIdentifierAction::Curse,
+            positions::hand(builder, card.side),
+            card.action,
         )),
         prefab: CardPrefab::TokenCard.into(),
         card_back: Some(assets::card_back(School::Neutral)),
         revealed_to_viewer: true,
         is_face_up: false,
         card_icons: Some(CardIcons {
-            top_left_icon: Some(card_icons::mana_card_icon(game_constants::COST_TO_REMOVE_CURSE)),
+            top_left_icon: Some(card_icons::mana_card_icon(card.cost)),
             ..CardIcons::default()
         }),
         arena_frame: None,
         face_down_arena_frame: None,
-        owning_player: builder.to_player_name(Side::Champion),
+        owning_player: builder.to_player_name(card.side),
         revealed_card: Some(Box::new(RevealedCardView {
             card_frame: Some(assets::card_frame(School::Neutral, false)),
             title_background: Some(assets::ability_title_background()),
             jewel: Some(assets::jewel(Rarity::None)),
-            image: Some(adapters::sprite(&assets::misc_card("curse", false))),
+            image: Some(adapters::sprite(&assets::misc_card(card.image, false))),
             image_background: None,
             title: Some(CardTitle {
-                text: "Curse".to_string(),
+                text: card.title,
                 text_color: Some(assets::title_color(None)),
             }),
-            rules_text: Some(RulesText {
-                text: format!(
-                    "While this is held, the Overlord may pay {},2{} to destroy an evocation.",
-                    icons::ACTION,
-                    icons::MANA
-                ),
-            }),
-            targeting: game.map(|g| {
-                boolean_target(|_| flags::can_take_remove_curse_action(g, builder.user_side))
-            }),
+            rules_text: Some(RulesText { text: card.text }),
+            targeting: game.map(|g| boolean_target(|_| (card.can_play_fn)(g, builder.user_side))),
             on_release_position: character_position.clone(),
             supplemental_info: None,
             card_move_target: None,

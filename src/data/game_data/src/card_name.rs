@@ -164,6 +164,7 @@ pub enum CardName {
     TestSacrificeDrawCardArtifact,
     TestWeaponReduceCostOnSuccessfulRaid,
     TestSpellGiveCurse,
+    TestEvocation,
 
     // Proof of Concept
     GoldMine,
