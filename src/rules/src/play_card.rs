@@ -252,12 +252,8 @@ fn move_to_target_position(game: &mut GameState, play_card: PlayCardData) -> Res
     mutations::move_card(
         game,
         play_card.card_id,
-        queries::played_position(
-            game,
-            play_card.card_id.side,
-            play_card.card_id,
-            play_card.target,
-        )?,
+        queries::played_position(game, play_card.card_id.side, play_card.card_id, play_card.target)
+            .with_error(|| "No valid position")?,
     )?;
     Ok(PlayCardStep::Finish)
 }

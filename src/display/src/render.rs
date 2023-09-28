@@ -23,7 +23,7 @@ use crate::{animations, game_over, sync};
 pub fn connect(game: &GameState, user_side: Side) -> Result<Vec<Command>> {
     let mut builder =
         ResponseBuilder::new(user_side, ResponseState { animate: false, is_final_update: true });
-    sync::run(&mut builder, game)?;
+    sync::run(&mut builder, game);
     game_over::check_game_over(&mut builder, game);
     Ok(builder.commands)
 }
@@ -33,12 +33,12 @@ pub fn render_updates(game: &GameState, user_side: Side) -> Result<Vec<Command>>
         ResponseBuilder::new(user_side, ResponseState { animate: true, is_final_update: false });
 
     for step in &game.updates.steps {
-        sync::run(&mut builder, &step.snapshot)?;
+        sync::run(&mut builder, &step.snapshot);
         animations::render(&mut builder, &step.update, &step.snapshot)?;
     }
 
     builder.state.is_final_update = true;
-    sync::run(&mut builder, game)?;
+    sync::run(&mut builder, game);
     game_over::check_game_over(&mut builder, game);
 
     Ok(builder.commands)

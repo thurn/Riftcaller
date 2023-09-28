@@ -136,8 +136,7 @@ impl Component for DeckCard {
             ResponseState { animate: false, is_final_update: true },
         );
         let context = CardViewContext::Default(definition);
-        let card_view =
-            card_sync::card_view(&response_builder, &context).expect("Error building CardView");
+        let card_view = card_sync::card_view(&response_builder, &context);
 
         let result = Column::new(element_names::deck_card(self.name))
             .style(

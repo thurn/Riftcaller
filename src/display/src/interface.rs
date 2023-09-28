@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use anyhow::Result;
 use game_data::game_actions::{ActionButtons, GamePrompt, GameStateAction};
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::primitives::Side;
@@ -25,39 +24,39 @@ use crate::{button_prompt, card_browser, play_card_browser};
 
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
-pub fn render(game: &GameState, side: Side) -> Result<Option<InterfaceMainControls>> {
+pub fn render(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
     let current_prompt = &game.player(side).prompt_queue.get(0);
     if let Some(current) = current_prompt {
         match current {
             GamePrompt::ButtonPrompt(prompt) => {
-                return Ok(button_prompt::controls(side, prompt));
+                return button_prompt::controls(side, prompt);
             }
-            GamePrompt::CardBrowserPrompt(prompt) => return Ok(card_browser::controls(prompt)),
-            GamePrompt::PlayCardBrowser(prompt) => return Ok(play_card_browser::controls(prompt)),
+            GamePrompt::CardBrowserPrompt(prompt) => return card_browser::controls(prompt),
+            GamePrompt::PlayCardBrowser(prompt) => return play_card_browser::controls(prompt),
         }
     } else if let Some(raid) = &game.raid {
-        return Ok(raid_prompt::build(game, raid, side));
+        return raid_prompt::build(game, raid, side);
     } else if let GamePhase::ResolveMulligans(_) = &game.info.phase {
         if flags::can_make_mulligan_decision(game, side) {
-            return Ok(prompts::action_prompt(&ActionButtons {
+            return prompts::action_prompt(&ActionButtons {
                 context: None,
                 responses: vec![
                     GameStateAction::MulliganDecision(MulliganDecision::Keep),
                     GameStateAction::MulliganDecision(MulliganDecision::Mulligan),
                 ],
-            }));
+            });
         }
     } else if flags::can_take_start_turn_action(game, side) {
-        return Ok(prompts::action_prompt(&ActionButtons {
+        return prompts::action_prompt(&ActionButtons {
             context: None,
             responses: vec![GameStateAction::StartTurnAction],
-        }));
+        });
     } else if flags::can_take_end_turn_action(game, side) {
-        return Ok(prompts::action_prompt(&ActionButtons {
+        return prompts::action_prompt(&ActionButtons {
             context: None,
             responses: vec![GameStateAction::EndTurnAction],
-        }));
+        });
     }
 
-    Ok(None)
+    None
 }

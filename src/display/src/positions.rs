@@ -15,7 +15,6 @@
 use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CardIdentifierAction;
-use anyhow::Result;
 use game_data::action_data::ActionData;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt, PromptContext};
@@ -37,7 +36,6 @@ use protos::spelldawn::{
 };
 use raid_state::raid_display_state;
 use rules::{queries, CardDefinitionExt};
-use with_error::fail;
 
 pub const RELEASE_SORTING_KEY: u32 = 100;
 
@@ -185,45 +183,41 @@ pub fn card_browser_target_position() -> Position {
 }
 
 /// Calculates the game position in which the provided card should be displayed.
-pub fn calculate(
-    builder: &ResponseBuilder,
-    game: &GameState,
-    card: &CardState,
-) -> Result<ObjectPosition> {
-    Ok(if let Some(position_override) = position_override(builder, game, card)? {
+pub fn calculate(builder: &ResponseBuilder, game: &GameState, card: &CardState) -> ObjectPosition {
+    if let Some(position_override) = position_override(builder, game, card) {
         position_override
     } else {
         ObjectPosition {
             sorting_key: card.sorting_key,
-            position: Some(adapt_position(builder, game, card.id, card.position())?),
+            position: adapt_position(builder, game, card.id, Some(card.position())),
             ..ObjectPosition::default()
         }
-    })
+    }
 }
 
 fn adapt_position(
     builder: &ResponseBuilder,
     game: &GameState,
     card_id: CardId,
-    position: CardPosition,
-) -> Result<Position> {
-    Ok(match position {
-        CardPosition::Room(room_id, location) => room(room_id, location),
-        CardPosition::ArenaItem(location) => item(location),
-        CardPosition::Hand(side) => hand(builder, side),
-        CardPosition::DeckTop(side) => deck(builder, side),
-        CardPosition::DiscardPile(side) => discard(builder, side),
-        CardPosition::Scored(side) => character(builder, side),
-        CardPosition::Riftcaller(side) => riftcaller(builder, side),
-        CardPosition::Scoring => staging(),
-        CardPosition::Played(side, target) => {
-            played_position(builder, game, side, card_id, target)?
-        }
-        CardPosition::DeckUnknown(_) => {
-            fail!("Invalid card position")
-        }
-        CardPosition::GameModifier => offscreen(),
-    })
+    position: Option<CardPosition>,
+) -> Option<Position> {
+    let Some(p) = position else {
+        return None;
+    };
+
+    match p {
+        CardPosition::Room(room_id, location) => Some(room(room_id, location)),
+        CardPosition::ArenaItem(location) => Some(item(location)),
+        CardPosition::Hand(side) => Some(hand(builder, side)),
+        CardPosition::DeckTop(side) => Some(deck(builder, side)),
+        CardPosition::DiscardPile(side) => Some(discard(builder, side)),
+        CardPosition::Scored(side) => Some(character(builder, side)),
+        CardPosition::Riftcaller(side) => Some(riftcaller(builder, side)),
+        CardPosition::Scoring => Some(staging()),
+        CardPosition::Played(side, target) => played_position(builder, game, side, card_id, target),
+        CardPosition::DeckUnknown(_) => None,
+        CardPosition::GameModifier => Some(offscreen()),
+    }
 }
 
 /// Calculates the position of a card after it has been played.
@@ -238,15 +232,15 @@ pub fn played_position(
     side: Side,
     card_id: CardId,
     target: CardTarget,
-) -> Result<Position> {
+) -> Option<Position> {
     if builder.user_side != side || game.card(card_id).definition().card_type.is_spell() {
-        Ok(staging())
+        Some(staging())
     } else {
         adapt_position(
             builder,
             game,
             card_id,
-            queries::played_position(game, side, card_id, target)?,
+            queries::played_position(game, side, card_id, target),
         )
     }
 }
@@ -274,9 +268,9 @@ pub fn ability_card_position(
 pub fn game_object_positions(
     builder: &ResponseBuilder,
     game: &GameState,
-) -> Result<GameObjectPositions> {
+) -> Option<GameObjectPositions> {
     let (side, opponent) = (builder.user_side, builder.user_side.opponent());
-    Ok(GameObjectPositions {
+    Some(GameObjectPositions {
         user_deck: Some(non_card(builder, game, GameObjectId::Deck(side))?),
         opponent_deck: Some(non_card(builder, game, GameObjectId::Deck(opponent))?),
         user_character: Some(non_card(builder, game, GameObjectId::Character(side))?),
@@ -302,34 +296,38 @@ fn non_card(
     builder: &ResponseBuilder,
     game: &GameState,
     id: GameObjectId,
-) -> Result<ObjectPosition> {
-    Ok(if let Some(position_override) = non_card_position_override(builder, game, id)? {
-        position_override
+) -> Option<ObjectPosition> {
+    if let Some(position_override) = non_card_position_override(builder, game, id) {
+        Some(position_override)
     } else {
         match id {
-            GameObjectId::Deck(side) => for_sorting_key(0, deck_container(builder, side)),
-            GameObjectId::DiscardPile(side) => for_sorting_key(0, discard_container(builder, side)),
-            GameObjectId::Character(side) => for_sorting_key(0, character_container(builder, side)),
-            _ => fail!("Unsupported ID type"),
+            GameObjectId::Deck(side) => Some(for_sorting_key(0, deck_container(builder, side))),
+            GameObjectId::DiscardPile(side) => {
+                Some(for_sorting_key(0, discard_container(builder, side)))
+            }
+            GameObjectId::Character(side) => {
+                Some(for_sorting_key(0, character_container(builder, side)))
+            }
+            _ => None,
         }
-    })
+    }
 }
 
 fn position_override(
     builder: &ResponseBuilder,
     game: &GameState,
     card: &CardState,
-) -> Result<Option<ObjectPosition>> {
+) -> Option<ObjectPosition> {
     if let Some(o) = prompt_position_override(builder, game, card) {
-        return Ok(Some(o));
+        return Some(o);
     }
 
     match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => {
-            Ok(opening_hand_position_override(builder, game, card, mulligans))
+            opening_hand_position_override(builder, game, card, mulligans)
         }
         GamePhase::Play => raid_position_override(game, card.id.into()),
-        _ => Ok(None),
+        _ => None,
     }
 }
 
@@ -372,7 +370,7 @@ fn non_card_position_override(
     builder: &ResponseBuilder,
     game: &GameState,
     id: GameObjectId,
-) -> Result<Option<ObjectPosition>> {
+) -> Option<ObjectPosition> {
     let current_prompt = game.player(builder.user_side).prompt_queue.get(0);
     if let Some(GamePrompt::CardBrowserPrompt(browser)) = current_prompt {
         let target = match browser.target {
@@ -380,18 +378,18 @@ fn non_card_position_override(
             BrowserPromptTarget::Deck => GameObjectId::Deck(builder.user_side),
         };
         if id == target {
-            return Ok(Some(for_sorting_key(
+            return Some(for_sorting_key(
                 0,
                 Position::BrowserDragTarget(ObjectPositionBrowserDragTarget {}),
-            )));
+            ));
         }
     }
 
     raid_position_override(game, id)
 }
 
-fn raid_position_override(game: &GameState, id: GameObjectId) -> Result<Option<ObjectPosition>> {
-    Ok(if let Some(raid_data) = &game.raid {
+fn raid_position_override(game: &GameState, id: GameObjectId) -> Option<ObjectPosition> {
+    if let Some(raid_data) = &game.raid {
         match raid_display_state::build(game) {
             RaidDisplayState::None => None,
             RaidDisplayState::Defenders(defenders) => {
@@ -403,7 +401,7 @@ fn raid_position_override(game: &GameState, id: GameObjectId) -> Result<Option<O
         }
     } else {
         None
-    })
+    }
 }
 
 fn opening_hand_position_override(
@@ -471,20 +469,20 @@ fn character_facing_direction_for_side(
     builder: &ResponseBuilder,
     game: &GameState,
     side: Side,
-) -> Result<GameCharacterFacingDirection> {
+) -> Option<GameCharacterFacingDirection> {
     if let Some(raid) = &game.raid {
         if matches!(raid_display_state::build(game), RaidDisplayState::Defenders(_)) {
             if side == Side::Champion {
-                return Ok(GameCharacterFacingDirection::Right);
+                return Some(GameCharacterFacingDirection::Right);
             }
 
             if side == Side::Overlord && raid.target == RoomId::Sanctum {
-                return Ok(GameCharacterFacingDirection::Left);
+                return Some(GameCharacterFacingDirection::Left);
             }
         }
     }
 
-    Ok(if builder.user_side == side {
+    Some(if builder.user_side == side {
         GameCharacterFacingDirection::Up
     } else {
         GameCharacterFacingDirection::Down

@@ -15,7 +15,6 @@
 //! Converts a GameState into GameView updates
 
 use adapters::response_builder::ResponseBuilder;
-use anyhow::Result;
 use constants::game_constants;
 use game_data::card_state::{CardPositionKind, CardState};
 use game_data::card_view_context::CardViewContext;
@@ -23,7 +22,7 @@ use game_data::character_preset::CharacterPreset;
 use game_data::game_state::GameState;
 use game_data::primitives::{RoomId, School, Side};
 use protos::spelldawn::{
-    ActionTrackerView, CardView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
+    ActionTrackerView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
 };
 use rules::mana::ManaPurpose;
 use rules::{flags, mana};
@@ -31,8 +30,8 @@ use {adapters, assets};
 
 use crate::{card_sync, interface, positions, tutorial_display};
 
-pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
-    let cards: Result<Vec<CardView>> = game
+pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
+    let cards = game
         .all_cards()
         .filter(|c| !skip_sending_to_client(c))
         .flat_map(|c| {
@@ -45,20 +44,20 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
         })
         .chain(
             (0..game.champion.curses)
-                .map(|number| Ok(card_sync::curse_card_view(builder, Some(game), number))),
+                .map(|number| card_sync::curse_card_view(builder, Some(game), number)),
         )
-        .collect();
+        .collect::<Vec<_>>();
 
     builder.push_game_view(GameView {
-        user: Some(player_view(game, builder.user_side)?),
-        opponent: Some(player_view(game, builder.user_side.opponent())?),
-        cards: cards?,
+        user: Some(player_view(game, builder.user_side)),
+        opponent: Some(player_view(game, builder.user_side.opponent())),
+        cards,
         raid_active: game.raid.is_some(),
-        game_object_positions: Some(positions::game_object_positions(builder, game)?),
+        game_object_positions: positions::game_object_positions(builder, game),
         main_controls: if builder.state.is_final_update {
             // Only include controls on final update to ensure interface doesn't show
             // previous UI after click.
-            interface::render(game, builder.user_side)?
+            interface::render(game, builder.user_side)
         } else {
             None
         },
@@ -69,12 +68,10 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
             vec![]
         },
     });
-
-    Ok(())
 }
 
-fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
-    Ok(PlayerView {
+fn player_view(game: &GameState, side: Side) -> PlayerView {
+    PlayerView {
         side: adapters::player_side(side),
         player_info: Some(PlayerInfo {
             valid_rooms_to_visit: match side {
@@ -113,7 +110,7 @@ fn player_view(game: &GameState, side: Side) -> Result<PlayerView> {
             can_take_draw_card_action: flags::can_take_draw_card_action(game, side),
         }),
         can_take_action: flags::has_priority(game, side),
-    })
+    }
 }
 
 fn skip_sending_to_client(card: &CardState) -> bool {

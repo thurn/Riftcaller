@@ -14,7 +14,6 @@
 
 use adapters::response_builder::ResponseBuilder;
 use adapters::CardIdentifierAction;
-use anyhow::Result;
 use constants::game_constants;
 use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
@@ -36,12 +35,12 @@ use {adapters, assets, rules_text};
 
 use crate::{card_browser, positions};
 
-pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result<CardView> {
+pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> CardView {
     let revealed = context.query_or(true, |_, card| card.is_revealed_to(builder.user_side));
-    Ok(CardView {
+    CardView {
         card_id: context.query_or_none(|_, card| adapters::card_identifier(card.id)),
         card_position: context
-            .query_or_ok(None, |game, card| Ok(Some(positions::calculate(builder, game, card)?)))?,
+            .query_or(None, |game, card| Some(positions::calculate(builder, game, card))),
         prefab: if context.definition().config.metadata.upgraded {
             CardPrefab::FullHeight
         } else {
@@ -75,14 +74,14 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> Result
             positions::for_card(card, positions::deck(builder, card.side()))
         }),
         effects: Some(CardEffects { outline_color: outline_color(context) }),
-    })
+    }
 }
 
 pub fn activated_ability_cards(
     builder: &ResponseBuilder,
     game: &GameState,
     card: &CardState,
-) -> Vec<Result<CardView>> {
+) -> Vec<CardView> {
     let mut result = vec![];
     if card.side() != builder.user_side || !card.position().in_play() {
         return result;
@@ -95,7 +94,7 @@ pub fn activated_ability_cards(
             && definition.card_type == CardType::Project
             && flags::can_activate_for_subtypes(game, card.id)
         {
-            result.push(Ok(unveil_card_view(builder, game, card.id)));
+            result.push(unveil_card_view(builder, game, card.id));
         }
 
         return result;
@@ -105,12 +104,7 @@ pub fn activated_ability_cards(
         if let AbilityType::Activated(_, target_requirement) = &ability.ability_type {
             let ability_id = AbilityId::new(card.id, ability_index);
             if flags::activated_ability_has_valid_targets(game, builder.user_side, ability_id) {
-                result.push(Ok(ability_card_view(
-                    builder,
-                    game,
-                    ability_id,
-                    Some(target_requirement),
-                )));
+                result.push(ability_card_view(builder, game, ability_id, Some(target_requirement)));
             }
         }
     }

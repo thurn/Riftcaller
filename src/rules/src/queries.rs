@@ -256,21 +256,22 @@ pub fn minion_position(game: &GameState, minion_id: CardId) -> Option<(RoomId, u
 }
 
 /// Returns the position to which a card should be moved after being played by
-/// the [Side] player with a given [CardTarget].
+/// the [Side] player with a given [CardTarget]. Returns `None` if no position
+/// exists for this target.
 pub fn played_position(
     game: &GameState,
     side: Side,
     card_id: CardId,
     target: CardTarget,
-) -> Result<CardPosition> {
-    Ok(match game.card(card_id).definition().card_type {
+) -> Option<CardPosition> {
+    Some(match game.card(card_id).definition().card_type {
         CardType::ChampionSpell | CardType::OverlordSpell => CardPosition::DiscardPile(side),
         CardType::Artifact => CardPosition::ArenaItem(ItemLocation::Artifacts),
         CardType::Ally => CardPosition::ArenaItem(ItemLocation::Evocations),
         CardType::Evocation => CardPosition::ArenaItem(ItemLocation::Evocations),
-        CardType::Minion => CardPosition::Room(target.room_id()?, RoomLocation::Defender),
+        CardType::Minion => CardPosition::Room(target.room_id().ok()?, RoomLocation::Defender),
         CardType::Project | CardType::Scheme => {
-            CardPosition::Room(target.room_id()?, RoomLocation::Occupant)
+            CardPosition::Room(target.room_id().ok()?, RoomLocation::Occupant)
         }
         CardType::Riftcaller => CardPosition::Riftcaller(side),
         CardType::GameModifier => CardPosition::GameModifier,
