@@ -781,6 +781,45 @@ fn cannot_undo_draw_card() {
 }
 
 #[test]
+fn remove_curse() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
+    assert_eq!(g.user.cards.hand().token_cards().names(), vec!["Curse"]);
+    assert_eq!(g.opponent.cards.opponent_hand().token_cards().names(), vec!["Curse"]);
+    let card_id = g.user.cards.hand().token_cards()[0].id();
+    g.perform(
+        Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
+        g.user_id(),
+    );
+    assert_eq!(test_constants::STARTING_MANA - 2, g.me().mana());
+    assert!(g.user.cards.hand().token_cards().is_empty());
+}
+
+#[test]
+fn cannot_remove_curse_without_mana() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1).mana(0)).build();
+    let card_id = g.user.cards.hand().token_cards()[0].id();
+    assert!(g
+        .perform_action(
+            Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
+            g.user_id(),
+        )
+        .is_err());
+}
+
+#[test]
+fn cannot_remove_curse_opponent_turn() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
+    let card_id = g.user.cards.hand().token_cards()[0].id();
+    g.pass_turn(Side::Champion);
+    assert!(g
+        .perform_action(
+            Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
+            g.user_id(),
+        )
+        .is_err());
+}
+
+#[test]
 fn legal_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     assert!(g.legal_actions_result(Side::Champion).is_err());

@@ -80,8 +80,8 @@ use crate::card_state::{CardData, CardPosition};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, HasAbilityId, HasCardId, HasRoomId,
-    HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
+    HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -439,6 +439,8 @@ pub enum Delegate {
     /// Damage has been dealt to the Champion player (in the form of discarded
     /// cards).
     DealtDamage(EventDelegate<DealtDamage>),
+    /// The Champion player has been given a curse
+    CurseReceived(EventDelegate<CurseCount>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

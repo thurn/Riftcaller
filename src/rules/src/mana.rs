@@ -35,6 +35,7 @@ pub enum ManaPurpose {
     ActivateAbility(AbilityId),
     LevelUpRoom(RoomId),
     PayForTriggeredAbility,
+    RemoveCurse,
     AllSources,
 }
 

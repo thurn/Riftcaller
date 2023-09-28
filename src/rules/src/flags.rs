@@ -15,6 +15,7 @@
 //! Functions to query boolean game information, typically whether some game
 //! action can currently be taken
 
+use constants::game_constants;
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -447,6 +448,13 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
         && definition.card_type == CardType::Project
         && can_activate_for_subtypes(game, card_id)
         && can_pay_card_cost(game, card_id)
+}
+
+/// Can the `side` player currently take the standard action to remove a curse?
+pub fn can_take_remove_curse_action(game: &GameState, side: Side) -> bool {
+    side == Side::Champion
+        && in_main_phase_with_action_point(game, side)
+        && mana::get(game, side, ManaPurpose::RemoveCurse) >= game_constants::COST_TO_REMOVE_CURSE
 }
 
 /// Returns true if the Overlord player currently has access to an effect they

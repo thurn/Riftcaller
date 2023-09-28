@@ -565,10 +565,11 @@ pub struct CardIdentifier {
     /// is represented by this displayed card.
     #[prost(message, optional, tag = "3")]
     pub ability_id: ::core::option::Option<u32>,
-    /// If true, this card represents the implicit 'unveil' ability to turn
-    /// project cards face up.
-    #[prost(bool, tag = "4")]
-    pub is_unveil: bool,
+    /// Optionally, identifies a special game action which this identifier
+    /// corresponds to. Identifiers are opaque to the client and should be
+    /// included with the 'play card' request.
+    #[prost(message, optional, tag = "4")]
+    pub game_action: ::core::option::Option<u32>,
 }
 #[derive(Eq, Hash, Copy, Ord, PartialOrd)]
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -1718,8 +1719,7 @@ pub struct PlayEffectCommand {
     /// If true, the effect will render *behind* arena items
     #[prost(bool, tag = "6")]
     pub arena_effect: bool,
-    /// Optionally, a tint color to apply to all particle systems in this
-    /// effect.
+    /// Tint color to apply to all particle systems in this effect.
     #[prost(message, optional, tag = "7")]
     pub start_color: ::core::option::Option<FlexColor>,
 }

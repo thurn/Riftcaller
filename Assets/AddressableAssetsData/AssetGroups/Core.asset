@@ -85,6 +85,14 @@ MonoBehaviour:
     m_Address: Sprites/Raze.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 97b8c1ef516cd425d90e25602ad1edfa
+    m_Address: Cards/Misc
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ed5598328040f4f43aaab39ed0902b1a
+    m_Address: Assets/ThirdParty/Cards/MiscFullArt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

@@ -22,7 +22,9 @@ use game_data::card_name::{CardMetadata, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{ActionCount, DeckId, GameId, ManaValue, PointsValue, Side};
+use game_data::primitives::{
+    ActionCount, CurseCount, DeckId, GameId, ManaValue, PointsValue, Side,
+};
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;
 
@@ -111,6 +113,8 @@ pub enum DebugAction {
     SavePlayerState(u128),
     LoadPlayerState(u128),
     AddCoins(Coins),
+    AddCurses(CurseCount),
+    RemoveCurses(CurseCount),
     /// Reads text in the card list search field and shows matching cards
     FilterCardList(CardPosition, CardMetadata),
     AddToZone(CardVariant, CardPosition),

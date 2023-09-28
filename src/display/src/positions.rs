@@ -14,6 +14,7 @@
 
 use adapters;
 use adapters::response_builder::ResponseBuilder;
+use adapters::CardIdentifierAction;
 use anyhow::Result;
 use game_data::action_data::ActionData;
 use game_data::card_state::{CardPosition, CardState};
@@ -54,6 +55,10 @@ pub fn for_unveil_card(card: &CardState, position: Position) -> ObjectPosition {
         sorting_key: 1 + card.sorting_key,
         sorting_subkey: 1,
     }
+}
+
+pub fn for_action_card(position: Position, action: CardIdentifierAction) -> ObjectPosition {
+    ObjectPosition { position: Some(position), sorting_key: 100, sorting_subkey: 1 + action as u32 }
 }
 
 pub fn for_ability(game: &GameState, ability_id: AbilityId, position: Position) -> ObjectPosition {

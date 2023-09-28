@@ -157,6 +157,20 @@ pub async fn handle_debug_action(
             })
             .await
         }
+        DebugAction::AddCurses(amount) => {
+            debug_update_game(database, data, |game, _| {
+                mutations::give_curses(game, *amount)?;
+                Ok(())
+            })
+            .await
+        }
+        DebugAction::RemoveCurses(amount) => {
+            debug_update_game(database, data, |game, _| {
+                mutations::remove_curses(game, *amount)?;
+                Ok(())
+            })
+            .await
+        }
         DebugAction::FilterCardList(position, metadata) => {
             let input = request_fields.get("CardVariant").with_error(|| "Expected CardVariant")?;
             Ok(GameResponse::new(ClientData::propagate(data)).command(panels::update(

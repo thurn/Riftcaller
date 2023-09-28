@@ -35,3 +35,5 @@ pub const MAXIMUM_ARTIFACTS_IN_PLAY: usize = 10;
 pub const MAXIMUM_EVOCATIONS_IN_PLAY: usize = 5;
 
 pub const MAXIMUM_ALLIES_IN_PLAY: usize = 5;
+
+pub const COST_TO_REMOVE_CURSE: u32 = 2;

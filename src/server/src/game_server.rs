@@ -156,6 +156,7 @@ pub async fn handle_play_card(
             GameAction::ActivateAbility(ability_id, card_target(&action.target))
         }
         ServerCardId::UnveilCard(card_id) => GameAction::UnveilCard(card_id),
+        ServerCardId::CurseCard => GameAction::RemoveCurse,
     };
     handle_game_action(database, data, &action).await
 }

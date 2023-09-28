@@ -307,10 +307,15 @@ namespace Spelldawn.Services
     public IEnumerator HandleDestroyCard(CardIdentifier cardId, bool animate)
     {
       var card = FindCard(cardId);
-      var sequence = card.TurnFaceDown(animate);
+
+      Sequence? sequence = null;
 
       if (card.DestroyPosition != null)
       {
+        if (card.DestroyPosition.PositionCase == ObjectPosition.PositionOneofCase.Deck)
+        {
+          sequence = card.TurnFaceDown(animate);          
+        }
         yield return _registry.ObjectPositionService.MoveGameObject(card, card.DestroyPosition, animate);
       }
 

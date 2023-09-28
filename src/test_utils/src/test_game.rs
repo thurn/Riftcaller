@@ -34,10 +34,10 @@ use game_data::deck::Deck;
 use game_data::game_state::{GameConfiguration, GamePhase, GameState, TurnData};
 use game_data::game_updates::InitiatedBy;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{ActionCount, GameId, ManaValue, PointsValue, Side};
+use game_data::primitives::{ActionCount, CurseCount, GameId, ManaValue, PointsValue, Side};
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use maplit::hashmap;
-use rules::{dispatch, mana};
+use rules::dispatch;
 
 use crate::test_game_client;
 use crate::test_session::TestSession;
@@ -213,6 +213,7 @@ pub struct TestSide {
     mana: ManaValue,
     score: PointsValue,
     hand_size: usize,
+    curses: CurseCount,
     deck_top: Vec<CardName>,
     in_discard_face_down: Vec<CardName>,
     in_discard_face_up: Vec<CardName>,
@@ -225,6 +226,7 @@ impl TestSide {
             side,
             mana: test_constants::STARTING_MANA,
             score: 0,
+            curses: 0,
             hand_size: 0,
             deck_top: vec![],
             in_discard_face_down: vec![],
@@ -281,9 +283,15 @@ impl TestSide {
         self
     }
 
+    pub fn curses(mut self, curses: CurseCount) -> Self {
+        self.curses = curses;
+        self
+    }
+
     pub fn apply_to(&self, game: &mut GameState) {
-        mana::set(game, self.side, self.mana);
+        game.player_mut(self.side).mana_state.base_mana = self.mana;
         game.player_mut(self.side).score = self.score;
+        game.player_mut(self.side).curses = self.curses;
 
         overwrite_positions(
             game,

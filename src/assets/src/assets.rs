@@ -314,3 +314,13 @@ pub fn champion_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
         ),
     }
 }
+
+pub fn misc_card(name: impl Into<String>, full_art: bool) -> Sprite {
+    Sprite {
+        address: format!(
+            "Cards/{}/{}.png",
+            if full_art { "MiscFullArt" } else { "Misc" },
+            name.into()
+        ),
+    }
+}

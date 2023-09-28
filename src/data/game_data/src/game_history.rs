@@ -33,6 +33,8 @@ pub enum HistoryEvent {
     GainManaAction,
     /// A card was drawn via the standard game action
     DrawCardAction(CardId),
+    /// Curse removed via the standard game action
+    RemoveCurseAction,
     /// A card was played, either via the standard game action or initiated by
     /// [an ability of another card.
     PlayCard(CardId, CardTarget, InitiatedBy),

@@ -43,6 +43,10 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) -> Result<()> {
             ));
             cards
         })
+        .chain(
+            (0..game.champion.curses)
+                .map(|number| Ok(card_sync::curse_card_view(builder, Some(game), number))),
+        )
         .collect();
 
     builder.push_game_view(GameView {

@@ -31,13 +31,29 @@ use with_error::fail;
 
 use crate::response_builder::ResponseBuilder;
 
+/// Possible game actions which can be associated with a client card identifier
+pub enum CardIdentifierAction {
+    Unveil = 1,
+    Curse = 2,
+}
+
+impl CardIdentifierAction {
+    pub fn from_u32(value: u32) -> Option<CardIdentifierAction> {
+        match value {
+            1 => Some(CardIdentifierAction::Unveil),
+            2 => Some(CardIdentifierAction::Curse),
+            _ => None,
+        }
+    }
+}
+
 pub fn card_identifier(card_id: CardId) -> CardIdentifier {
     // Maybe need to obfuscate this somehow?
     CardIdentifier {
         side: player_side(card_id.side),
         index: card_id.index as u32,
         ability_id: None,
-        is_unveil: false,
+        game_action: None,
     }
 }
 
@@ -66,7 +82,20 @@ pub fn ability_card_identifier(ability_id: AbilityId) -> CardIdentifier {
 /// Identifier for a card which provides the ability to unveil a project in
 /// play.
 pub fn unveil_card_identifier(card_id: CardId) -> CardIdentifier {
-    CardIdentifier { is_unveil: true, ..card_identifier(card_id) }
+    CardIdentifier {
+        game_action: Some(CardIdentifierAction::Unveil as u32),
+        ..card_identifier(card_id)
+    }
+}
+
+/// Identifier for a card representing the implicit ability to remove a curse
+pub fn curse_card_identifier(number: u32) -> CardIdentifier {
+    CardIdentifier {
+        side: player_side(Side::Champion),
+        index: number,
+        game_action: Some(CardIdentifierAction::Curse as u32),
+        ability_id: None,
+    }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -77,22 +106,27 @@ pub enum ServerCardId {
     AbilityId(AbilityId),
     /// Card representing the implicit ability to unveil a project
     UnveilCard(CardId),
+    /// Card representing the ability to remove a curse in hand
+    CurseCard,
 }
 
 /// Converts a client [CardIdentifier] into a server [CardId] or [AbilityId].
 pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
     let result = CardId { side: side(card_id.side)?, index: card_id.index as usize };
 
-    if card_id.is_unveil {
-        Ok(ServerCardId::UnveilCard(result))
-    } else {
-        card_id.ability_id.map_or(Ok(ServerCardId::CardId(result)), |index| {
-            Ok(ServerCardId::AbilityId(AbilityId {
-                card_id: result,
-                index: AbilityIndex(index as usize),
-            }))
-        })
+    if let Some(action) = card_id.game_action.and_then(CardIdentifierAction::from_u32) {
+        return match action {
+            CardIdentifierAction::Unveil => Ok(ServerCardId::UnveilCard(result)),
+            CardIdentifierAction::Curse => Ok(ServerCardId::CurseCard),
+        };
     }
+
+    card_id.ability_id.map_or(Ok(ServerCardId::CardId(result)), |index| {
+        Ok(ServerCardId::AbilityId(AbilityId {
+            card_id: result,
+            index: AbilityIndex(index as usize),
+        }))
+    })
 }
 
 pub fn player_side(side: Side) -> i32 {

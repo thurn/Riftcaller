@@ -334,14 +334,18 @@ impl CardNamesExt for Vec<&ClientCard> {
     fn real_cards(&self) -> Self {
         self.clone()
             .into_iter()
-            .filter(move |c| c.id.expect("id").ability_id.is_none() && !c.id.expect("id").is_unveil)
+            .filter(move |c| {
+                c.id.expect("id").ability_id.is_none() && c.id.expect("id").game_action.is_none()
+            })
             .collect()
     }
 
     fn token_cards(&self) -> Self {
         self.clone()
             .into_iter()
-            .filter(move |c| c.id.expect("id").ability_id.is_some() || c.id.expect("id").is_unveil)
+            .filter(move |c| {
+                c.id.expect("id").ability_id.is_some() || c.id.expect("id").game_action.is_some()
+            })
             .collect()
     }
 

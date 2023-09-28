@@ -19,6 +19,7 @@
 pub mod legal_actions;
 
 use anyhow::Result;
+use constants::game_constants;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
@@ -65,6 +66,7 @@ pub fn handle_game_action(
             activate_ability_action(game, user_side, *ability_id, *target)
         }
         GameAction::UnveilCard(card_id) => unveil_action(game, user_side, *card_id),
+        GameAction::RemoveCurse => remove_curse_action(game, user_side),
         GameAction::InitiateRaid(room_id) => {
             raid_state::handle_initiate_action(game, user_side, *room_id)
         }
@@ -200,6 +202,22 @@ fn spend_action_point_action(game: &mut GameState, user_side: Side) -> Result<()
         user_side
     );
     mutations::spend_action_points(game, user_side, 1)?;
+    Ok(())
+}
+
+#[instrument(skip(game))]
+fn remove_curse_action(game: &mut GameState, user_side: Side) -> Result<()> {
+    verify!(
+        flags::can_take_remove_curse_action(game, user_side),
+        "Cannot remove curse for {:?}",
+        user_side
+    );
+
+    debug!(?user_side, "Applying remove curse action");
+    game.add_history_event(HistoryEvent::RemoveCurseAction);
+    mutations::spend_action_points(game, user_side, 1)?;
+    mana::spend(game, user_side, ManaPurpose::RemoveCurse, game_constants::COST_TO_REMOVE_CURSE)?;
+    mutations::remove_curses(game, 1)?;
     Ok(())
 }
 

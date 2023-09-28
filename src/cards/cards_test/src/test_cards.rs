@@ -517,3 +517,17 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
         ..test_overlord_spell(metadata)
     }
 }
+
+pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestSpellGiveCurse,
+        cost: cost(0),
+        card_type: CardType::OverlordSpell,
+        sets: vec![CardSetName::Test],
+        abilities: vec![abilities::standard(
+            text!["Give the Champion a curse"],
+            this::on_play(|g, _, _| mutations::give_curses(g, 1)),
+        )],
+        ..test_overlord_spell(metadata)
+    }
+}

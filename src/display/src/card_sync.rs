@@ -13,7 +13,9 @@
 // limitations under the License.
 
 use adapters::response_builder::ResponseBuilder;
+use adapters::CardIdentifierAction;
 use anyhow::Result;
+use constants::game_constants;
 use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardState;
@@ -21,7 +23,7 @@ use game_data::card_view_context::CardViewContext;
 use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    AbilityId, CardId, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
+    AbilityId, CardId, CardType, ItemLocation, Rarity, RoomId, RoomLocation, School, Side,
 };
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
@@ -275,7 +277,6 @@ fn revealed_ability_card_view(
 
 fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<RevealedCardView> {
     let definition = context.definition();
-    let no_target: Option<&TargetRequirement<()>> = None;
     Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, false)),
         title_background: Some(assets::ability_title_background()),
@@ -288,9 +289,7 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
         }),
         rules_text: Some(rules_text::build(context)),
         targeting: context.query_or_none(|game, _| {
-            card_targeting(no_target, false, |_| {
-                flags::can_take_unveil_card_action(game, Side::Overlord, card_id)
-            })
+            boolean_target(|_| flags::can_take_unveil_card_action(game, Side::Overlord, card_id))
         }),
         on_release_position: context.query_or_none(|_, card| {
             positions::for_unveil_card(card, positions::parent_card(card_id))
@@ -299,6 +298,70 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
         card_move_target: None,
         point_to_parent: Some(adapters::card_identifier(card_id)),
     })
+}
+
+pub fn curse_card_view(
+    builder: &ResponseBuilder,
+    game: Option<&GameState>,
+    number: u32,
+) -> CardView {
+    let character_position = game.map(|_| {
+        positions::for_action_card(
+            positions::character(builder, Side::Champion),
+            CardIdentifierAction::Curse,
+        )
+    });
+    CardView {
+        card_id: Some(adapters::curse_card_identifier(number)),
+        card_position: Some(positions::for_action_card(
+            positions::hand(builder, Side::Champion),
+            CardIdentifierAction::Curse,
+        )),
+        prefab: CardPrefab::TokenCard.into(),
+        card_back: Some(assets::card_back(School::Neutral)),
+        revealed_to_viewer: true,
+        is_face_up: false,
+        card_icons: Some(CardIcons {
+            top_left_icon: Some(card_icons::mana_card_icon(game_constants::COST_TO_REMOVE_CURSE)),
+            ..CardIcons::default()
+        }),
+        arena_frame: None,
+        face_down_arena_frame: None,
+        owning_player: builder.to_player_name(Side::Champion),
+        revealed_card: Some(Box::new(RevealedCardView {
+            card_frame: Some(assets::card_frame(School::Neutral, false)),
+            title_background: Some(assets::ability_title_background()),
+            jewel: Some(assets::jewel(Rarity::None)),
+            image: Some(adapters::sprite(&assets::misc_card("curse", false))),
+            image_background: None,
+            title: Some(CardTitle {
+                text: "Curse".to_string(),
+                text_color: Some(assets::title_color(None)),
+            }),
+            rules_text: Some(RulesText {
+                text: format!(
+                    "While this is held, the Overlord may pay {},2{} to destroy an evocation.",
+                    icons::ACTION,
+                    icons::MANA
+                ),
+            }),
+            targeting: game.map(|g| {
+                boolean_target(|_| flags::can_take_remove_curse_action(g, builder.user_side))
+            }),
+            on_release_position: character_position.clone(),
+            supplemental_info: None,
+            card_move_target: None,
+            point_to_parent: None,
+        })),
+        create_position: if builder.state.animate { character_position.clone() } else { None },
+        destroy_position: character_position,
+        effects: Some(CardEffects { outline_color: None }),
+    }
+}
+
+fn boolean_target(can_play: impl Fn(CardTarget) -> bool) -> CardTargeting {
+    let no_target: Option<&TargetRequirement<()>> = None;
+    card_targeting(no_target, false, can_play)
 }
 
 fn card_targeting<T>(

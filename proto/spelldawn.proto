@@ -658,9 +658,10 @@ message CardIdentifier {
     // is represented by this displayed card.
     google.protobuf.UInt32Value ability_id = 3;
 
-    // If true, this card represents the implicit 'unveil' ability to turn
-    // project cards face up.
-    bool is_unveil = 4;
+    // Optionally, identifies a special game action which this identifier
+    // corresponds to. Identifiers are opaque to the client and should be
+    // included with the 'play card' request.
+    google.protobuf.UInt32Value game_action = 4;
 }
 
 message GameObjectIdentifier {
