@@ -39,6 +39,7 @@ pub fn label(user_side: Side, effects: &[GameEffect]) -> String {
 
 fn effect_label(user_side: Side, effect: &GameEffect) -> String {
     match effect {
+        GameEffect::Continue => "Continue".to_string(),
         GameEffect::AbortCurrentGameAction => "Cancel".to_string(),
         GameEffect::SacrificeCard(_) => "Sacrifice".to_string(),
         GameEffect::DestroyCard(_) => "Destroy".to_string(),
@@ -54,6 +55,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         }
         GameEffect::EndRaid => "End Raid".to_string(),
         GameEffect::TakeDamage(_, amount) => format!("Take {amount}"),
+        GameEffect::MoveCard(_, _) => "Move".to_string(),
     }
 }
 
@@ -63,9 +65,11 @@ fn is_primary(choice: &PromptChoice) -> bool {
 
 fn custom_label(label: PromptChoiceLabel) -> String {
     match label {
-        PromptChoiceLabel::Sacrifice => "Sacrifice",
+        PromptChoiceLabel::Sacrifice => "Sacrifice".to_string(),
+        PromptChoiceLabel::Return(cost) => {
+            format!("{}{} {} Return", cost, icons::MANA, icons::BULLET)
+        }
     }
-    .to_string()
 }
 
 fn lose_text(user_side: Side, target_side: Side) -> &'static str {

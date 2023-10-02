@@ -245,6 +245,7 @@ pub enum CardName {
     // Spelldawn: Beryl
     Restoration,
     StrikeTheHeart,
+    EnduringRadiance,
 }
 
 impl CardName {

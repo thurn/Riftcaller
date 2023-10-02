@@ -321,6 +321,8 @@ pub trait CardNamesExt {
     fn token_cards(&self) -> Self;
 
     fn find_card(&self, name: CardName) -> CardIdentifier;
+
+    fn count_with_name(&self, name: &'static str) -> usize;
 }
 
 impl CardNamesExt for Vec<&ClientCard> {
@@ -362,6 +364,10 @@ impl CardNamesExt for Vec<&ClientCard> {
             .find(|c| c.title() == name.displayed_name())
             .map(|c| c.id())
             .expect("Card not found")
+    }
+
+    fn count_with_name(&self, name: &'static str) -> usize {
+        self.iter().filter(|c| c.title() == name).count()
     }
 }
 

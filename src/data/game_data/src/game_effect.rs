@@ -14,11 +14,14 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::card_state::CardPosition;
 use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, Side};
 
 /// An arbitrary modification to the state of an ongoing game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum GameEffect {
+    /// Proceed without taking any action
+    Continue,
     /// Stop the current game action
     AbortCurrentGameAction,
     /// Sacrifice the indicated permanent, moving it to its owner's discard
@@ -34,4 +37,6 @@ pub enum GameEffect {
     EndRaid,
     /// Deal damage to the Champion
     TakeDamage(AbilityId, u32),
+    /// Move a card to a new target position
+    MoveCard(CardId, CardPosition),
 }

@@ -46,20 +46,6 @@ fn time_golem_pay_mana() {
 }
 
 #[test]
-fn time_golem_defeat() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    g.create_and_play(CardName::TimeGolem);
-    g.create_and_play(CardName::TestScheme3_10);
-    g.pass_turn(Side::Overlord);
-    g.create_and_play(CardName::TestWeapon5AttackInfernal);
-    g.initiate_raid(test_constants::ROOM_ID);
-    g.click(Button::Summon);
-    g.click_on(g.opponent_id(), format!("Pay 5{}", icons::MANA));
-    g.click_on(g.opponent_id(), "Test Weapon");
-    assert_eq!(vec!["Time Golem"], g.user.cards.discard_pile().names());
-}
-
-#[test]
 fn time_golem_pay_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TimeGolem);

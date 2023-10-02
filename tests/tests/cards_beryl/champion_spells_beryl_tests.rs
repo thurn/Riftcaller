@@ -128,3 +128,17 @@ fn strike_the_heart_upgraded() {
     g.create_and_play_upgraded(CardName::StrikeTheHeart);
     assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 4);
 }
+
+#[test]
+fn enduring_radiance() {
+    let (cost, return_cost) = (0, 1);
+    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(2)).build();
+    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 2);
+    g.create_and_play(CardName::EnduringRadiance);
+    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 1);
+    g.click(Button::ReturnToHand);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - return_cost);
+    let id = g.user.cards.hand().find_card(CardName::EnduringRadiance);
+    g.play_card(id, g.user_id(), None);
+    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
+}

@@ -43,6 +43,7 @@ pub enum Button {
     ShowDeck,
     CloseIcon,
     StartBattle,
+    ReturnToHand,
 }
 
 pub trait TestInterfaceHelpers {
@@ -182,6 +183,7 @@ fn resolve_button(button: Button) -> String {
         Button::ShowDeck => icons::DECK,
         Button::CloseIcon => icons::CLOSE,
         Button::StartBattle => "Start",
+        Button::ReturnToHand => "Return",
     }
     .to_string()
 }

@@ -41,26 +41,24 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![
-            abilities::construct(),
-            standard(
-                trigger_text(
-                    Encounter,
-                    text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
-                ),
-                on_encountered(|g, _s, _| {
-                    show_prompt::with_choices(
-                        g,
-                        Side::Champion,
-                        vec![
-                            end_raid_prompt(),
-                            lose_mana_prompt(g, Side::Champion, 5),
-                            lose_actions_prompt(g, Side::Champion, 2),
-                        ],
-                    )
-                }),
+        abilities: vec![standard(
+            trigger_text(
+                Encounter,
+                text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
             ),
-        ],
+            on_encountered(|g, _s, _| {
+                show_prompt::with_choices(
+                    g,
+                    Side::Champion,
+                    vec![
+                        end_raid_prompt(),
+                        lose_mana_prompt(g, Side::Champion, 5),
+                        lose_actions_prompt(g, Side::Champion, 2),
+                    ],
+                );
+                Ok(())
+            }),
+        )],
         config: CardConfigBuilder::new().health(3).resonance(Resonance::Infernal).build(),
     }
 }
@@ -111,7 +109,8 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
                         g,
                         Side::Champion,
                         vec![end_raid_prompt(), lose_actions_prompt(g, Side::Champion, 2)],
-                    )
+                    );
+                    Ok(())
                 }),
             ),
         ],
@@ -237,7 +236,8 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
                     g,
                     Side::Champion,
                     vec![take_damage_prompt(g, s, 2), end_raid_prompt()],
-                )
+                );
+                Ok(())
             }),
         )],
         config: CardConfigBuilder::new().health(3).shield(2).resonance(Resonance::Infernal).build(),

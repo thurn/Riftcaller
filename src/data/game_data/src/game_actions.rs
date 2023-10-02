@@ -175,6 +175,7 @@ pub struct PlayCardBrowser {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PromptChoiceLabel {
     Sacrifice,
+    Return(ManaValue),
 }
 
 /// A specific card choice shown in a [ButtonPrompt].

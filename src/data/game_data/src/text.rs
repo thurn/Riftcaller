@@ -63,12 +63,12 @@ pub enum TextToken {
     Breach(BreachValue),
     LevelUp,
     Trap,
-    Construct,
+    Curse,
 }
 
 impl TextToken {
     pub fn is_keyword(&self) -> bool {
-        matches!(self, Self::Breach(_) | Self::LevelUp | Self::Trap | Self::Construct)
+        matches!(self, Self::Breach(_) | Self::LevelUp | Self::Trap)
     }
 
     pub fn kind(&self) -> TextTokenKind {

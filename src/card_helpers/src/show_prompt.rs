@@ -23,16 +23,11 @@ use game_data::primitives::{CardId, Side};
 
 /// Ads the a prompt for the `side` player containing the non-`None` actions in
 /// `actions`.
-pub fn with_choices(
-    game: &mut GameState,
-    side: Side,
-    actions: Vec<Option<PromptChoice>>,
-) -> Result<()> {
+pub fn with_choices(game: &mut GameState, side: Side, actions: Vec<Option<PromptChoice>>) {
     game.player_mut(side).prompt_queue.push(GamePrompt::ButtonPrompt(ButtonPrompt {
         context: None,
         choices: actions.into_iter().flatten().collect(),
-    }));
-    Ok(())
+    }))
 }
 
 pub fn play_card_browser(

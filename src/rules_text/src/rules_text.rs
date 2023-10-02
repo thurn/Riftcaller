@@ -212,13 +212,13 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::TakeDamage(n) => format!("take {n} damage"),
         TextToken::InnerRoom => "inner room".to_string(),
         TextToken::OuterRoom => "outer room".to_string(),
-        TextToken::Sanctum => "Sanctum".to_string(),
-        TextToken::Vault => "Vault".to_string(),
-        TextToken::Crypts => "Crypts".to_string(),
+        TextToken::Sanctum => "sanctum".to_string(),
+        TextToken::Vault => "vault".to_string(),
+        TextToken::Crypts => "crypts".to_string(),
         TextToken::Breach(n) => format!("<b>Breach {n}</b>"),
         TextToken::LevelUp => "<b>Level Up</b>".to_string(),
         TextToken::Trap => "<b>Trap</b>".to_string(),
-        TextToken::Construct => "<b>Construct</b>".to_string(),
+        TextToken::Curse => "curse".to_string(),
     }
 }
 

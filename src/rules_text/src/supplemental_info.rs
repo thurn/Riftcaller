@@ -134,9 +134,6 @@ fn token_description(token: TextTokenKind) -> Option<String> {
             entry("Level Up", "This card gets levels when its room is leveled up")
         }
         TextTokenKind::Trap => entry("Trap", "Triggers when this card is accessed during a raid"),
-        TextTokenKind::Construct => {
-            entry("Construct", "Goes to discard pile when defeated. Damage with any weapon.")
-        }
         _ => None,
     }
 }
