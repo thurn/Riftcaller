@@ -47,7 +47,7 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
                 text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
             ),
             on_encountered(|g, _s, _| {
-                show_prompt::with_choices(
+                show_prompt::with_option_choices(
                     g,
                     Side::Champion,
                     vec![
@@ -105,7 +105,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
             standard(
                 trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
                 combat(|g, _, _| {
-                    show_prompt::with_choices(
+                    show_prompt::with_option_choices(
                         g,
                         Side::Champion,
                         vec![end_raid_prompt(), lose_actions_prompt(g, Side::Champion, 2)],
@@ -232,7 +232,7 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
             ),
             combat(|g, s, _| {
                 mutations::deal_damage(g, s, 2)?;
-                show_prompt::with_choices(
+                show_prompt::with_option_choices(
                     g,
                     Side::Champion,
                     vec![take_damage_prompt(g, s, 2), end_raid_prompt()],

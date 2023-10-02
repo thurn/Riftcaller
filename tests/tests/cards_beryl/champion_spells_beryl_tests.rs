@@ -142,3 +142,14 @@ fn enduring_radiance() {
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
 }
+
+#[test]
+fn enduring_radiance_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(2)).build();
+    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 2);
+    g.create_and_play_upgraded(CardName::EnduringRadiance);
+    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 1);
+    let id = g.user.cards.hand().find_card(CardName::EnduringRadiance);
+    g.play_card(id, g.user_id(), None);
+    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
+}

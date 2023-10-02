@@ -193,9 +193,23 @@ pub struct PromptChoice {
 }
 
 impl PromptChoice {
-    /// Create a new [PromptChoice] referencing a single [GameEffect].
-    pub fn from_effect(effect: GameEffect) -> Self {
-        Self { effects: vec![effect], anchor_card: None, custom_label: None }
+    pub fn new() -> Self {
+        Self { effects: vec![], anchor_card: None, custom_label: None }
+    }
+
+    pub fn effect(mut self, effect: GameEffect) -> Self {
+        self.effects.push(effect);
+        self
+    }
+
+    pub fn anchor_card(mut self, card_id: CardId) -> Self {
+        self.anchor_card = Some(card_id);
+        self
+    }
+
+    pub fn custom_label(mut self, label: PromptChoiceLabel) -> Self {
+        self.custom_label = Some(label);
+        self
     }
 }
 

@@ -118,6 +118,10 @@ impl Scope {
         self.metadata
     }
 
+    pub fn is_upgraded(&self) -> bool {
+        self.metadata.upgraded
+    }
+
     /// Returns one of two values based on whether the card is upgraded
     pub fn upgrade<T>(&self, normal: T, upgraded: T) -> T {
         self.metadata.upgrade(normal, upgraded)

@@ -201,13 +201,13 @@ pub fn add_stored_mana(game: &mut GameState, card_id: CardId, amount: ManaValue)
 
 /// A [PromptChoice] to end the current raid.
 pub fn end_raid_prompt() -> Option<PromptChoice> {
-    Some(PromptChoice::from_effect(GameEffect::EndRaid))
+    Some(PromptChoice::new().effect(GameEffect::EndRaid))
 }
 
 /// A [PromptChoice] for the `side` player to lose mana
 pub fn lose_mana_prompt(game: &GameState, side: Side, amount: ActionCount) -> Option<PromptChoice> {
     if mana::get(game, side, ManaPurpose::PayForTriggeredAbility) >= amount {
-        Some(PromptChoice::from_effect(GameEffect::LoseMana(side, amount)))
+        Some(PromptChoice::new().effect(GameEffect::LoseMana(side, amount)))
     } else {
         None
     }
@@ -220,7 +220,7 @@ pub fn lose_actions_prompt(
     amount: ActionCount,
 ) -> Option<PromptChoice> {
     if game.player(side).actions >= amount {
-        Some(PromptChoice::from_effect(GameEffect::LoseActions(side, amount)))
+        Some(PromptChoice::new().effect(GameEffect::LoseActions(side, amount)))
     } else {
         None
     }
@@ -234,7 +234,7 @@ pub fn take_damage_prompt(
     amount: u32,
 ) -> Option<PromptChoice> {
     if game.hand(Side::Champion).count() >= amount as usize {
-        Some(PromptChoice::from_effect(GameEffect::TakeDamage(ability_id.ability_id(), amount)))
+        Some(PromptChoice::new().effect(GameEffect::TakeDamage(ability_id.ability_id(), amount)))
     } else {
         None
     }

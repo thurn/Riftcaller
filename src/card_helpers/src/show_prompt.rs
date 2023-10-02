@@ -19,15 +19,20 @@ use game_data::game_actions::{
 };
 use game_data::game_state::GameState;
 use game_data::game_updates::GameAnimation;
-use game_data::primitives::{CardId, Side};
+use game_data::primitives::{CardId, HasSide, Side};
 
-/// Ads the a prompt for the `side` player containing the non-`None` actions in
-/// `actions`.
-pub fn with_choices(game: &mut GameState, side: Side, actions: Vec<Option<PromptChoice>>) {
-    game.player_mut(side).prompt_queue.push(GamePrompt::ButtonPrompt(ButtonPrompt {
-        context: None,
-        choices: actions.into_iter().flatten().collect(),
-    }))
+/// Adds a choice prompt for the `side` player containing the choices in
+/// `choices`.
+pub fn with_choices(game: &mut GameState, side: impl HasSide, choices: Vec<PromptChoice>) {
+    game.player_mut(side.side())
+        .prompt_queue
+        .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: None, choices }))
+}
+
+/// Adds a prompt for the `side` player containing the non-`None` choices in
+/// `choices`.
+pub fn with_option_choices(game: &mut GameState, side: Side, choices: Vec<Option<PromptChoice>>) {
+    with_choices(game, side, choices.into_iter().flatten().collect())
 }
 
 pub fn play_card_browser(

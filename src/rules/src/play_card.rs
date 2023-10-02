@@ -285,7 +285,7 @@ fn card_limit_prompt<'a>(
                 anchor_card: Some(existing.id),
                 custom_label: Some(PromptChoiceLabel::Sacrifice),
             })
-            .chain(iter::once(PromptChoice::from_effect(GameEffect::AbortCurrentGameAction)))
+            .chain(iter::once(PromptChoice::new().effect(GameEffect::AbortCurrentGameAction)))
             .collect(),
     })
 }

@@ -20,9 +20,7 @@ use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinitio
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
-use game_data::game_actions::{
-    ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
-};
+use game_data::game_actions::{CardTarget, PromptChoice, PromptChoiceLabel, PromptContext};
 use game_data::game_effect::GameEffect;
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
@@ -134,7 +132,10 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::standard(
             text![
                 text!["Remove a", Curse],
-                text!["You may pay", Mana(1), "to return this card to your hand"]
+                meta.upgrade(
+                    text!["You may pay", Mana(1), "to return this card to your hand"],
+                    text!["Return this card to your hand"]
+                ),
             ],
             this::on_play(|g, s, _| {
                 mutations::remove_curses(g, 1)?;
@@ -149,24 +150,25 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                     )
                     .apply();
 
-                g.player_mut(s.side()).prompt_queue.push(GamePrompt::ButtonPrompt(ButtonPrompt {
-                    context: None,
-                    choices: vec![
-                        PromptChoice {
-                            effects: vec![
-                                GameEffect::MoveCard(s.card_id(), CardPosition::Hand(s.side())),
-                                GameEffect::LoseMana(s.side(), 1),
-                            ],
-                            anchor_card: None,
-                            custom_label: Some(PromptChoiceLabel::Return(1)),
-                        },
-                        PromptChoice {
-                            effects: vec![GameEffect::Continue],
-                            anchor_card: None,
-                            custom_label: None,
-                        },
-                    ],
-                }));
+                if s.is_upgraded() {
+                    mutations::move_card(g, s.card_id(), CardPosition::Hand(s.side()))?;
+                } else {
+                    show_prompt::with_choices(
+                        g,
+                        s,
+                        vec![
+                            PromptChoice::new()
+                                .effect(GameEffect::MoveCard(
+                                    s.card_id(),
+                                    CardPosition::Hand(s.side()),
+                                ))
+                                .effect(GameEffect::LoseMana(s.side(), 1))
+                                .custom_label(PromptChoiceLabel::Return(1)),
+                            PromptChoice::new().effect(GameEffect::Continue),
+                        ],
+                    );
+                }
+
                 Ok(())
             }),
         )],
