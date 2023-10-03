@@ -18,7 +18,7 @@ use anyhow::Result;
 use core_ui::prelude::*;
 use database::Database;
 use game_data::game_state::GameState;
-use game_data::game_updates::{UpdateState, UpdateTracker};
+use game_data::game_updates::{AnimationState, AnimationTracker};
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
 use panel_address::PanelAddress;
@@ -78,10 +78,10 @@ pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Re
     let id = game_id.with_error(|| "Expected GameId to be included with client request")?;
     let mut game = database.fetch_game(id).await?.with_error(|| format!("Game not found {id}"))?;
     dispatch::populate_delegate_cache(&mut game);
-    game.updates = UpdateTracker::new(if game.info.config.simulation {
-        UpdateState::Ignore
+    game.animations = AnimationTracker::new(if game.info.config.simulation {
+        AnimationState::Ignore
     } else {
-        UpdateState::Push
+        AnimationState::Track
     });
     Ok(game)
 }

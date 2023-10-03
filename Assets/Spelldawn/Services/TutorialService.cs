@@ -33,7 +33,8 @@ namespace Spelldawn.Services
     [SerializeField] ArrowBubble _arrowBubblePrefab = null!;
     [SerializeField] Transform _userManaTooltipAnchor = null!;
     [SerializeField] Transform _opponentManaTooltipAnchor = null!;
-
+    readonly Dictionary<EffectKey, EffectData> _effectMap = new();
+    
     [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
     sealed record EffectKey(
       TutorialEffect.TutorialEffectTypeOneofCase EffectType,
@@ -77,8 +78,6 @@ namespace Spelldawn.Services
         _elements.Clear();
       }
     }
-    
-    readonly Dictionary<EffectKey, EffectData> _effectMap = new();
 
     public void ClearTutorialEffects()
     {

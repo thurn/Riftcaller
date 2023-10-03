@@ -30,7 +30,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
-use game_data::game_updates::{GameAnimation, InitiatedBy};
+use game_data::game_updates::{AnimationState, GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{
@@ -55,6 +55,9 @@ pub fn handle_game_action(
             undo_tracker.revealed = false;
         }
     }
+
+    // Clear tracking for rendering prompt response
+    game.animations.last_prompt_response = None;
 
     match action {
         GameAction::GameStateAction(action) => handle_game_state_action(game, user_side, *action),
@@ -406,7 +409,8 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
                 game_effect_actions::handle(game, effect)?;
             }
 
-            game.player_mut(user_side).prompt_queue.remove(0);
+            let removed = game.player_mut(user_side).prompt_queue.remove(0);
+            record_prompt_response(game, removed, user_side, index);
         }
         (GamePrompt::CardBrowserPrompt(browser), PromptAction::CardBrowserPromptSubmit) => {
             handle_card_browser_submit_action(
@@ -425,7 +429,19 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
     // Try to resume state machines, in case this prompt caused them to pause.
     raid_state::run(game, None)?;
     play_card::run(game)?;
-    activate_ability::run(game)
+    activate_ability::run(game)?;
+
+    Ok(())
+}
+
+fn record_prompt_response(game: &mut GameState, prompt: GamePrompt, side: Side, index: usize) {
+    if game.animations.state == AnimationState::Ignore {
+        return;
+    }
+
+    if let GamePrompt::ButtonPrompt(buttons) = prompt {
+        game.animations.last_prompt_response = Some((side, buttons.choices[index].clone()));
+    }
 }
 
 fn handle_card_browser_submit_action(

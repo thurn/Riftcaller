@@ -38,7 +38,7 @@ use database::Database;
 use display::render;
 use game_data::game_actions::GameAction;
 use game_data::game_state::GameState;
-use game_data::game_updates::{UpdateState, UpdateTracker};
+use game_data::game_updates::{AnimationState, AnimationTracker};
 use game_data::player_name::PlayerId;
 use game_data::primitives::{GameId, Milliseconds, Side};
 use protos::spelldawn::game_command::Command;
@@ -120,7 +120,7 @@ async fn run_agent_loop(
         {
             let _span = info_span!("apply_agent_action", ?action, ?player_id, ?game.id).entered();
             info!(?action, ?player_id, ?game.id, "Got agent action");
-            game.updates = UpdateTracker::new(UpdateState::Push);
+            game.animations = AnimationTracker::new(AnimationState::Track);
             game_server::apply_game_action(game, side, &action)?;
         };
         last_step_time = Some(Instant::now());

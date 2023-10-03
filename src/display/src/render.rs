@@ -32,7 +32,7 @@ pub fn render_updates(game: &GameState, user_side: Side) -> Result<Vec<Command>>
     let mut builder =
         ResponseBuilder::new(user_side, ResponseState { animate: true, is_final_update: false });
 
-    for step in &game.updates.steps {
+    for step in &game.animations.steps {
         sync::run(&mut builder, &step.snapshot);
         animations::render(&mut builder, &step.update, &step.snapshot)?;
     }

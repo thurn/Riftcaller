@@ -14,6 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::game_actions::PromptChoice;
 use crate::game_state::GameState;
 use crate::primitives::{AbilityId, CardId, GameObjectId, RoomId, Side};
 use crate::special_effects::SpecialEffect;
@@ -100,18 +101,18 @@ pub enum GameAnimation {
 
 /// A step in the animation process
 #[derive(Debug, Clone)]
-pub struct UpdateStep {
+pub struct AnimationStep {
     pub snapshot: GameState,
     pub update: GameAnimation,
 }
 
 /// Standard enum used by APIs to configure their update tracking behavior.
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub enum UpdateState {
+pub enum AnimationState {
     /// Game updates should not be tracked by the receiver
     Ignore,
     /// Game updates should be tracked by the receiver
-    Push,
+    Track,
 }
 
 /// Tracks game mutations for a game action.
@@ -130,21 +131,23 @@ pub enum UpdateState {
 /// animations. For example the system will correctly detect and animate a card
 /// which has moved to a new position.
 #[derive(Debug, Clone)]
-pub struct UpdateTracker {
+pub struct AnimationTracker {
     /// Used to globally disable or enable update tracking
-    pub state: UpdateState,
+    pub state: AnimationState,
     /// List of update steps with snapshots of the game state
-    pub steps: Vec<UpdateStep>,
+    pub steps: Vec<AnimationStep>,
+    /// Most recent user prompt response, if any
+    pub last_prompt_response: Option<(Side, PromptChoice)>,
 }
 
-impl Default for UpdateTracker {
+impl Default for AnimationTracker {
     fn default() -> Self {
-        Self { state: UpdateState::Ignore, steps: vec![] }
+        Self { state: AnimationState::Ignore, steps: vec![], last_prompt_response: None }
     }
 }
 
-impl UpdateTracker {
-    pub fn new(updates: UpdateState) -> Self {
-        Self { state: updates, steps: vec![] }
+impl AnimationTracker {
+    pub fn new(updates: AnimationState) -> Self {
+        Self { state: updates, steps: vec![], last_prompt_response: None }
     }
 }

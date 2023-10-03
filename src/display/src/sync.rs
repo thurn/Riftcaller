@@ -28,7 +28,7 @@ use rules::mana::ManaPurpose;
 use rules::{flags, mana};
 use {adapters, assets};
 
-use crate::{card_sync, interface, positions, tutorial_display};
+use crate::{button_prompt, card_sync, interface, positions, tutorial_display};
 
 pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
     let cards = game
@@ -65,6 +65,8 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
         tutorial_effects: if builder.state.is_final_update {
             // Likewise hide tutorial updates while animating
             tutorial_display::render(builder, &game.info.tutorial_state)
+                .chain(button_prompt::tutorial_effects(builder, game))
+                .collect()
         } else {
             vec![]
         },

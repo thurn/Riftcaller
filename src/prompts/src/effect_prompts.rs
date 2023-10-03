@@ -21,20 +21,28 @@ use crate::response_button::ResponseButton;
 
 /// Builds a [ResponseButton] for a given [PromptChoice].
 pub fn button(user_side: Side, index: usize, choice: &PromptChoice) -> ResponseButton {
-    let mut result = ResponseButton::new(
-        choice.custom_label.map_or_else(|| label(user_side, &choice.effects), custom_label),
-    );
+    let mut result = ResponseButton::new(label(user_side, choice));
     if let Some(card_id) = choice.anchor_card {
         result = result.anchor_to(card_id);
     }
     result
         .action(GameAction::PromptAction(PromptAction::ButtonPromptSelect(index)))
-        .primary(is_primary(choice))
+        .primary(!choice.is_secondary())
 }
 
 /// Helper to build a button label describing a series of [GameEffect]s.
-pub fn label(user_side: Side, effects: &[GameEffect]) -> String {
-    effects.iter().map(|effect| effect_label(user_side, effect)).collect::<Vec<_>>().join(", ")
+pub fn label(user_side: Side, choice: &PromptChoice) -> String {
+    choice.custom_label.map_or_else(
+        || {
+            choice
+                .effects
+                .iter()
+                .map(|effect| effect_label(user_side, effect))
+                .collect::<Vec<_>>()
+                .join(", ")
+        },
+        custom_label,
+    )
 }
 
 fn effect_label(user_side: Side, effect: &GameEffect) -> String {
@@ -59,15 +67,11 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
     }
 }
 
-fn is_primary(choice: &PromptChoice) -> bool {
-    !choice.effects.contains(&GameEffect::AbortCurrentGameAction)
-}
-
 fn custom_label(label: PromptChoiceLabel) -> String {
     match label {
         PromptChoiceLabel::Sacrifice => "Sacrifice".to_string(),
         PromptChoiceLabel::Return(cost) => {
-            format!("{}{} {} Return", cost, icons::MANA, icons::BULLET)
+            format!("{}{}: Return", cost, icons::MANA)
         }
     }
 }

@@ -211,6 +211,12 @@ impl PromptChoice {
         self.custom_label = Some(label);
         self
     }
+
+    /// Returns true if this prompt choice should be de-emphasized in the UI
+    /// (e.g. rendered with a gray button).
+    pub fn is_secondary(&self) -> bool {
+        self.effects.iter().any(|effect| effect.is_secondary())
+    }
 }
 
 /// Presents a choice to a user presented via buttons attached to specific cards

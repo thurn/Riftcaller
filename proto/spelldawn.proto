@@ -1117,7 +1117,7 @@ message ShowArrowBubble {
     // Color of text. Defaults to black.
     FlexColor font_color = 6;
 
-    // Multiplier for size of arrow buble. Defaults to 1.0.
+    // Multiplier for size of arrow bubble. Defaults to 1.0.
     google.protobuf.FloatValue scale = 7;
 
     // Which corner should the arrow be shown on?

@@ -200,7 +200,7 @@ fn set_hand(game: &mut GameState, side: Side, cards: &[CardName]) -> Result<()> 
     }
 
     // Ignore game update caused by reshuffling
-    game.updates.steps.clear();
+    game.animations.steps.clear();
     Ok(())
 }
 

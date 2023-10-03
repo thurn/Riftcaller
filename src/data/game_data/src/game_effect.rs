@@ -40,3 +40,12 @@ pub enum GameEffect {
     /// Move a card to a new target position
     MoveCard(CardId, CardPosition),
 }
+
+impl GameEffect {
+    pub fn is_secondary(&self) -> bool {
+        match self {
+            Self::Continue | Self::AbortCurrentGameAction => true,
+            _ => false,
+        }
+    }
+}

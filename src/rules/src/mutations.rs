@@ -13,10 +13,10 @@
 // limitations under the License.
 
 //! Core game mutations. In general, functions in this module append updates to
-//! [GameState::updates].
+//! [GameState::animations].
 //!
-//! Generally, mutation functions are expected to invoke a delegate event
-//! *after* performing their mutation to inform other systems that game state
+//! Mutation functions are expected to invoke a delegate event *after*
+//! performing their mutation to inform other systems that game state
 //! has changed.
 
 use std::cmp;

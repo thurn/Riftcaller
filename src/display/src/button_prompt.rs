@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adapters::response_builder::ResponseBuilder;
 use core_ui::prelude::*;
-use game_data::game_actions::{ButtonPrompt, PromptContext};
-use game_data::primitives::{CardSubtype, CardType, Side};
+use game_data::game_actions::{ButtonPrompt, PromptChoice, PromptContext};
+use game_data::game_state::GameState;
+use game_data::primitives::{CardSubtype, CardType, Milliseconds, Side};
+use game_data::tutorial_data::{SpeechBubble, TutorialDisplay};
 use prompts::effect_prompts;
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
-use protos::spelldawn::InterfaceMainControls;
+use protos::spelldawn::{InterfaceMainControls, TutorialEffect};
+
+use crate::tutorial_display;
 
 pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainControls> {
     let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
@@ -38,6 +43,31 @@ pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainC
         overlay: prompt_context(prompt.context),
         card_anchor_nodes,
     })
+}
+
+pub fn tutorial_effects<'a>(
+    builder: &'a ResponseBuilder,
+    game: &'a GameState,
+) -> impl Iterator<Item = TutorialEffect> + 'a {
+    game.animations.last_prompt_response.iter().filter_map(move |(side, choice)| {
+        should_show_bubble(builder, *side, choice).then(|| TutorialEffect {
+            tutorial_effect_type: Some(tutorial_display::render_effect(
+                builder,
+                &TutorialDisplay::SpeechBubble(SpeechBubble {
+                    text: effect_prompts::label(*side, choice),
+                    side: *side,
+                    delay: Milliseconds(0),
+                    recurring: false,
+                }),
+            )),
+        })
+    })
+}
+
+/// Whether a speech bubble should be shown for this user choice. Bubbles are
+/// shown when the opponent makes a non-card choice.  
+fn should_show_bubble(builder: &ResponseBuilder, side: Side, choice: &PromptChoice) -> bool {
+    builder.user_side != side && !choice.is_secondary() && choice.anchor_card.is_none()
 }
 
 fn prompt_context(context: Option<PromptContext>) -> Option<Node> {

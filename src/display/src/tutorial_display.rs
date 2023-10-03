@@ -26,17 +26,16 @@ use protos::spelldawn::{
     TutorialEffect, WhiteSpace,
 };
 
-pub fn render(builder: &ResponseBuilder, state: &GameTutorialState) -> Vec<TutorialEffect> {
-    state
-        .display
-        .iter()
-        .map(|display| TutorialEffect {
-            tutorial_effect_type: Some(render_effect(builder, display)),
-        })
-        .collect()
+pub fn render<'a>(
+    builder: &'a ResponseBuilder,
+    state: &'a GameTutorialState,
+) -> impl Iterator<Item = TutorialEffect> + 'a {
+    state.display.iter().map(|display| TutorialEffect {
+        tutorial_effect_type: Some(render_effect(builder, display)),
+    })
 }
 
-fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> TutorialEffectType {
+pub fn render_effect(builder: &ResponseBuilder, display: &TutorialDisplay) -> TutorialEffectType {
     match display {
         TutorialDisplay::Tooltip(tooltip) => TutorialEffectType::ArrowBubble(ShowArrowBubble {
             text: tooltip.text.clone(),

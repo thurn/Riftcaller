@@ -29,7 +29,7 @@ use crate::deck::Deck;
 use crate::delegate_data::DelegateCache;
 use crate::game_actions::GamePrompt;
 use crate::game_history::{GameHistory, HistoryEvent};
-use crate::game_updates::{GameAnimation, UpdateState, UpdateStep, UpdateTracker};
+use crate::game_updates::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};
 use crate::player_name::PlayerId;
 use crate::primitives::{
     ActionCount, CardId, CurseCount, GameId, ItemLocation, ManaValue, PointsValue, RaidId, RoomId,
@@ -222,9 +222,9 @@ pub struct GameState {
     /// State of the ongoing raid in this game, if any
     pub raid: Option<RaidData>,
     /// Used to track changes to game state in order to update the client. See
-    /// [UpdateTracker] for more information.
+    /// [AnimationTracker] for more information.
     #[serde(skip)]
-    pub updates: UpdateTracker,
+    pub animations: AnimationTracker,
     /// Cards for the overlord player. In general, code should use one of the
     /// helper methods below instead of accessing this directly.
     pub overlord_cards: Vec<CardState>,
@@ -286,10 +286,10 @@ impl GameState {
             overlord: GamePlayerData::new(overlord, overlord_deck.schools),
             champion: GamePlayerData::new(champion, champion_deck.schools),
             history: GameHistory::default(),
-            updates: UpdateTracker::new(if config.simulation {
-                UpdateState::Ignore
+            animations: AnimationTracker::new(if config.simulation {
+                AnimationState::Ignore
             } else {
-                UpdateState::Push
+                AnimationState::Track
             }),
             next_sorting_key: 1,
             delegate_cache: DelegateCache::default(),
@@ -303,7 +303,7 @@ impl GameState {
     }
 
     pub fn add_animation(&mut self, update: impl FnOnce() -> GameAnimation) {
-        if self.updates.state == UpdateState::Push {
+        if self.animations.state == AnimationState::Track {
             // Snapshot current game state, omit things that aren't important for display
             // logic.
             let clone = Self {
@@ -311,7 +311,7 @@ impl GameState {
                 info: self.info.clone(),
                 current_action: self.current_action.clone(),
                 raid: self.raid.clone(),
-                updates: UpdateTracker::new(UpdateState::Ignore),
+                animations: AnimationTracker::new(AnimationState::Ignore),
                 overlord_cards: self.overlord_cards.clone(),
                 champion_cards: self.champion_cards.clone(),
                 overlord: self.overlord.clone(),
@@ -323,11 +323,11 @@ impl GameState {
                 undo_tracker: None,
             };
 
-            self.updates.steps.push(UpdateStep { snapshot: clone, update: update() });
+            self.animations.steps.push(AnimationStep { snapshot: clone, update: update() });
         }
     }
 
-    /// Makes a clone of the game state without including the [UpdateTracker]
+    /// Makes a clone of the game state without including the [AnimationTracker]
     /// or [UndoTracker] data.
     pub fn clone_for_simulation(&self) -> Self {
         Self {
@@ -335,7 +335,7 @@ impl GameState {
             info: self.info.clone(),
             current_action: self.current_action.clone(),
             raid: self.raid.clone(),
-            updates: UpdateTracker::default(),
+            animations: AnimationTracker::default(),
             overlord_cards: self.overlord_cards.clone(),
             champion_cards: self.champion_cards.clone(),
             overlord: self.overlord.clone(),
