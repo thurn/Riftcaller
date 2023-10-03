@@ -30,8 +30,10 @@
 //! delegate has a [RequirementFn] which needs to return true when the delegate
 //! should run.
 //!
-//! Currently, Overlord delegates ares always invoked before Champion delegates,
-//! and they are called in alphabetical order by card name.
+//! Delegate callbacks are always raw function pointers, which means they
+//! *cannot be closures* to state from their enclosing scope. When I last
+//! profiled it, switching delegates to use Arc<dyn Fn()> closures resulted
+//! in game simulation code running 25% slower.
 //!
 //! Delegate enum members automatically have an associated struct generated for
 //! them by the [DelegateEnum] macro, which is the name of the enum variant with
