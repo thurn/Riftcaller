@@ -35,12 +35,13 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mutations::SummonMinion;
 use rules::{dispatch, mana, mutations};
+use tracing::debug;
 use ulid::Ulid;
 use user_action_data::{
     DebugAction, DebugScenario, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck,
     UserAction,
 };
-use with_error::WithError;
+use with_error::{fail, WithError};
 
 use crate::server_data::{ClientData, GameResponse, RequestData};
 use crate::{adventure_server, requests};
@@ -59,7 +60,11 @@ pub async fn handle_debug_action(
     match action {
         DebugAction::NewGame(side) => create_debug_game(data, *side),
         DebugAction::JoinGame(side) => {
-            let game_id = current_game_id().lock().unwrap().expect("game_id");
+            let game_id = match current_game_id().lock() {
+                Ok(id) => id,
+                Err(_) => fail!("Unable to acquire lock, another holder panicked"),
+            }
+            .with_error(|| "Current debug game id not found")?;
             let mut game = requests::fetch_game(database, Some(game_id)).await?;
             match side {
                 Side::Overlord => game.overlord.id = data.player_id,
@@ -224,7 +229,12 @@ pub async fn handle_debug_action(
 
 fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
     let id = GameId::new(Ulid::new());
-    let _ = current_game_id().lock().unwrap().insert(id);
+    let mut current_game_id = match current_game_id().lock() {
+        Ok(id) => id,
+        Err(_) => fail!("Unable to acquire lock, another holder panicked"),
+    };
+    debug!(?id, "Creating debug game");
+    let _ = current_game_id.insert(id);
     Ok(GameResponse::new(ClientData::propagate(data)).commands(vec![Command::Debug(
         ClientDebugCommand {
             debug_command: Some(DebugCommand::InvokeAction(ClientAction {

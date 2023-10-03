@@ -134,6 +134,16 @@ fn token_description(token: TextTokenKind) -> Option<String> {
             entry("Level Up", "This card gets levels when its room is leveled up")
         }
         TextTokenKind::Trap => entry("Trap", "Triggers when this card is accessed during a raid"),
+        TextTokenKind::Curse => entry(
+            "Curse",
+            format!(
+                "Allows Overlord to pay {} and 2{} to destroy evocations. Can be removed for {} and 2{}",
+                icons::ACTION,
+                icons::MANA,
+                icons::ACTION,
+                icons::MANA
+            ),
+        ),
         _ => None,
     }
 }
