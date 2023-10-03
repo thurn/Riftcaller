@@ -31,7 +31,7 @@ pub fn render(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
             GamePrompt::ButtonPrompt(prompt) => {
                 return button_prompt::controls(side, prompt);
             }
-            GamePrompt::CardBrowserPrompt(prompt) => return card_browser::controls(prompt),
+            GamePrompt::CardSelector(prompt) => return card_browser::controls(prompt),
             GamePrompt::PlayCardBrowser(prompt) => return play_card_browser::controls(prompt),
         }
     } else if let Some(raid) = &game.raid {

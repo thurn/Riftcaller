@@ -20,7 +20,9 @@ use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinitio
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
-use game_data::game_actions::{CardTarget, PromptChoice, PromptChoiceLabel, PromptContext};
+use game_data::game_actions::{
+    CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
+};
 use game_data::game_effect::GameEffect;
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
@@ -64,6 +66,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                         s,
                         cards,
                         PromptContext::PlayFromDiscard(CardType::Artifact),
+                        UnplayedAction::None,
                     )
                 }),
             )),
@@ -172,6 +175,61 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }),
         )],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SiftTheSands,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::champion_card(meta, "sift_the_sands"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![CardSubtype::Conjuration],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
+            text: text![
+                text!["Look at the top", meta.upgrade(4, 6), "cards of your deck"],
+                text!["You may play one of them, paying", Mana(3), "less"],
+                text!["Discard the rest"]
+            ],
+            delegates: vec![
+                this::on_play(|g, s, _| {
+                    let cards = mutations::realize_top_of_deck(g, s.side(), s.upgrade(4, 6))?;
+                    for card in &cards {
+                        mutations::set_revealed_to(g, *card, s.side(), true);
+                    }
+
+                    Updates::new(g)
+                        .timed_effect(
+                            GameObjectId::Deck(Side::Champion),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(4))
+                                .scale(2.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic4_P1_Cast"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .card_movement_effects(Projectile::Projectiles1(3), &cards)
+                        .apply();
+
+                    show_prompt::play_card_browser(
+                        g,
+                        s,
+                        cards,
+                        PromptContext::PlayACard,
+                        UnplayedAction::Discard,
+                    )?;
+
+                    Ok(())
+                }),
+                delegates::mana_cost(requirements::matching_play_browser, |_, _, _, cost| {
+                    cost.map(|c| c.saturating_sub(3))
+                }),
+            ],
+        }],
         config: CardConfig::default(),
     }
 }

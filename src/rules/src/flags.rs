@@ -301,15 +301,21 @@ pub fn can_take_gain_mana_action(game: &GameState, side: Side) -> bool {
     dispatch::perform_query(game, CanTakeGainManaActionQuery(side), Flag::new(can_gain_mana)).into()
 }
 
+/// Returns whether the indicated room could be the target of a raid based on
+/// its properties (occupancy, etc). To check whether the 'initiate raid' action
+/// itself can be performed, call [can_take_initiate_raid_action] instead.
+pub fn is_valid_raid_target(game: &GameState, room_id: RoomId) -> bool {
+    let valid = room_id.is_inner_room() || game.occupants(room_id).next().is_some();
+    dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(valid)).into()
+}
+
 /// Returns whether the indicated player can currently take the basic game
 /// action to initiate a raid on the target [RoomId].
 pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: RoomId) -> bool {
-    let non_empty = room_id.is_inner_room() || game.occupants(room_id).next().is_some();
-    let can_initiate = non_empty
-        && side == Side::Champion
+    side == Side::Champion
         && game.raid.is_none()
-        && in_main_phase_with_action_point(game, side);
-    dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(can_initiate)).into()
+        && in_main_phase_with_action_point(game, side)
+        && is_valid_raid_target(game, room_id)
 }
 
 /// Returns whether the indicated player can currently take the basic game

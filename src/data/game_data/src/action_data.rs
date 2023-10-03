@@ -25,7 +25,7 @@ pub enum PlayCardStep {
     AddToHistory,
     MoveToPlayedPosition,
     PayActionPoints,
-    ClearBrowserPrompt,
+    ApplyPlayCardBrowser,
     PayManaCost,
     PayCustomCost,
     TurnFaceUp,

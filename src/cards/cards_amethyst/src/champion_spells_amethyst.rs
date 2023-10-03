@@ -79,8 +79,8 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
             ],
         }],
         config: CardConfigBuilder::new()
-            .custom_targeting(TargetRequirement::TargetRoom(|game, _, room_id| {
-                flags::can_take_initiate_raid_action(game, Side::Champion, room_id)
+            .custom_targeting(TargetRequirement::TargetRoom(|g, _, room_id| {
+                flags::is_valid_raid_target(g, room_id)
                     && (room_id == RoomId::Sanctum || room_id == RoomId::Vault)
             }))
             .build(),
@@ -111,11 +111,7 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
                 )
             }),
         )],
-        config: CardConfigBuilder::new()
-            .custom_targeting(TargetRequirement::TargetRoom(|game, _, room_id| {
-                flags::can_take_initiate_raid_action(game, Side::Champion, room_id)
-            }))
-            .build(),
+        config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }
 }
 
@@ -152,11 +148,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                 }),
             ],
         }],
-        config: CardConfigBuilder::new()
-            .custom_targeting(TargetRequirement::TargetRoom(|game, _, room_id| {
-                flags::can_take_initiate_raid_action(game, Side::Champion, room_id)
-            }))
-            .build(),
+        config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }
 }
 

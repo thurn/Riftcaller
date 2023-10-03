@@ -80,6 +80,8 @@ pub enum PromptContext {
     /// limit for cards in play of this type. Player must sacrifice until they
     /// have the provided number of minions in the room.
     CardLimit(CardType, Option<CardSubtype>),
+    /// Play a chosen card
+    PlayACard,
     /// Play a card of a given type the discard pile
     PlayFromDiscard(CardType),
 }
@@ -106,14 +108,15 @@ impl fmt::Debug for GameStateAction {
     }
 }
 
-/// Target game object for a [CardBrowserPrompt] to which cards must be dragged.
+/// Target game object for a [CardSelectorPrompt] to which cards must be
+/// dragged.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum BrowserPromptTarget {
     DiscardPile,
     Deck,
 }
 
-/// Describes which configurations of subjects for a [CardBrowserPrompt] are
+/// Describes which configurations of subjects for a [CardSelectorPrompt] are
 /// valid and should allow the prompt to be exited.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum BrowserPromptValidation {
@@ -121,7 +124,7 @@ pub enum BrowserPromptValidation {
     ExactlyCount(usize),
 }
 
-/// Describes the action which should be performed for a [CardBrowserPrompt] on
+/// Describes the action which should be performed for a [CardSelectorPrompt] on
 /// the `chosen_subjects` cards once the user submits their final choice.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum BrowserPromptAction {
@@ -133,7 +136,7 @@ pub enum BrowserPromptAction {
 /// they drag cards to a target, e.g. in order to discard them from hand or
 /// shuffle cards from their discard pile into their deck.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CardBrowserPrompt {
+pub struct CardSelectorPrompt {
     /// Identifies the context for this prompt, i.e. why it is being shown to
     /// the user
     pub context: Option<PromptContext>,
@@ -159,6 +162,13 @@ pub struct CardBrowserPrompt {
     pub action: BrowserPromptAction,
 }
 
+/// Action to take on cards which are *not* played via the [PlayCardBrowser].
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum UnplayedAction {
+    None,
+    Discard,
+}
+
 /// A browser shown to the user to allow them to play one or more cards from a
 /// set of cards.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -170,6 +180,8 @@ pub struct PlayCardBrowser {
     pub initiated_by: AbilityId,
     /// Identifies the choices of cards that the user can possibly play.
     pub cards: Vec<CardId>,
+    /// Action to take on cards which are *not* played
+    pub unplayed_action: UnplayedAction,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -234,7 +246,7 @@ pub struct ButtonPrompt {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GamePrompt {
     ButtonPrompt(ButtonPrompt),
-    CardBrowserPrompt(CardBrowserPrompt),
+    CardSelector(CardSelectorPrompt),
     PlayCardBrowser(PlayCardBrowser),
 }
 
@@ -244,8 +256,8 @@ pub enum GamePrompt {
 pub enum PromptAction {
     /// Select the option at the provided index in the current [ButtonPrompt].
     ButtonPromptSelect(usize),
-    /// Submit the current selection in the current [CardBrowserPrompt].
-    CardBrowserPromptSubmit,
+    /// Submit the current selection in the current [CardSelectorPrompt].
+    CardSelectorSubmit,
     /// Button to avoid playing a card when shown a 'Play Card' browser
     SkipPlayingCard,
 }

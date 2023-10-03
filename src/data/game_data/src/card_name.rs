@@ -246,6 +246,7 @@ pub enum CardName {
     Restoration,
     StrikeTheHeart,
     EnduringRadiance,
+    SiftTheSands,
 }
 
 impl CardName {

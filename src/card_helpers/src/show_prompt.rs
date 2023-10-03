@@ -15,7 +15,7 @@
 use anyhow::Result;
 use game_data::delegate_data::Scope;
 use game_data::game_actions::{
-    ButtonPrompt, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
+    ButtonPrompt, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext, UnplayedAction,
 };
 use game_data::game_state::GameState;
 use game_data::game_updates::GameAnimation;
@@ -40,6 +40,7 @@ pub fn play_card_browser(
     scope: Scope,
     cards: Vec<CardId>,
     context: PromptContext,
+    unplayed_action: UnplayedAction,
 ) -> Result<()> {
     let side = scope.side();
     game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards.clone()));
@@ -47,6 +48,7 @@ pub fn play_card_browser(
         context: Some(context),
         initiated_by: scope.ability_id(),
         cards,
+        unplayed_action,
     }));
     Ok(())
 }

@@ -20,17 +20,21 @@ use prompts::response_button::ResponseButton;
 use protos::spelldawn::InterfaceMainControls;
 
 pub fn controls(prompt: &PlayCardBrowser) -> Option<InterfaceMainControls> {
-    match prompt.context {
-        Some(PromptContext::PlayFromDiscard(card_type)) => Some(InterfaceMainControls {
-            node: buttons().build(),
-            overlay: GameInstructions::new(format!(
-                "Play {} {} from your discard pile.",
-                card_type.article(),
-                card_type.to_string().to_lowercase()
-            ))
-            .build(),
-            card_anchor_nodes: vec![],
-        }),
+    game_instructions(prompt.context).map(|message| InterfaceMainControls {
+        node: buttons().build(),
+        overlay: GameInstructions::new(message).build(),
+        card_anchor_nodes: vec![],
+    })
+}
+
+fn game_instructions(context: Option<PromptContext>) -> Option<String> {
+    match context {
+        Some(PromptContext::PlayFromDiscard(card_type)) => Some(format!(
+            "Play {} {} from your discard pile.",
+            card_type.article(),
+            card_type.to_string().to_lowercase()
+        )),
+        Some(PromptContext::PlayACard) => Some("Play a card.".to_string()),
         _ => None,
     }
 }

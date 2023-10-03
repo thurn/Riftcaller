@@ -16,7 +16,8 @@ use adapters::response_builder::ResponseBuilder;
 use core_ui::prelude::*;
 use game_data::card_state::CardState;
 use game_data::game_actions::{
-    BrowserPromptValidation, CardBrowserPrompt, GameAction, GamePrompt, PromptAction, PromptContext,
+    BrowserPromptValidation, CardSelectorPrompt, GameAction, GamePrompt, PromptAction,
+    PromptContext,
 };
 use game_data::game_state::GameState;
 use prompts::game_instructions::GameInstructions;
@@ -26,7 +27,7 @@ use protos::spelldawn::{InterfaceMainControls, ObjectPosition};
 
 use crate::positions;
 
-pub fn controls(prompt: &CardBrowserPrompt) -> Option<InterfaceMainControls> {
+pub fn controls(prompt: &CardSelectorPrompt) -> Option<InterfaceMainControls> {
     match prompt.context {
         Some(PromptContext::DiscardToHandSize(amount)) => Some(InterfaceMainControls {
             node: buttons(prompt).build(),
@@ -46,8 +47,7 @@ pub fn move_target(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let Some(GamePrompt::CardBrowserPrompt(prompt)) =
-        game.player(builder.user_side).prompt_queue.get(0)
+    let Some(GamePrompt::CardSelector(prompt)) = game.player(builder.user_side).prompt_queue.get(0)
     else {
         return None;
     };
@@ -61,15 +61,15 @@ pub fn move_target(
     }
 }
 
-fn buttons(prompt: &CardBrowserPrompt) -> PromptContainer {
+fn buttons(prompt: &CardSelectorPrompt) -> PromptContainer {
     let show_submit = is_valid(prompt);
     PromptContainer::new().child(show_submit.then(|| {
         ResponseButton::new("Submit")
-            .action(GameAction::PromptAction(PromptAction::CardBrowserPromptSubmit))
+            .action(GameAction::PromptAction(PromptAction::CardSelectorSubmit))
     }))
 }
 
-fn is_valid(prompt: &CardBrowserPrompt) -> bool {
+fn is_valid(prompt: &CardSelectorPrompt) -> bool {
     match prompt.validation {
         BrowserPromptValidation::ExactlyCount(count) => prompt.chosen_subjects.len() == count,
     }

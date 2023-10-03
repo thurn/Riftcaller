@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use game_data::primitives::{RoomId, Side};
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
@@ -165,4 +165,31 @@ fn enduring_radiance_upgraded() {
     let id = g.user.cards.hand().find_card(CardName::EnduringRadiance);
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
+}
+
+#[test]
+fn sift_the_sands() {
+    let (cost, reduction) = (1, 3);
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestEvocation)).build();
+    g.create_and_play(CardName::SiftTheSands);
+    assert_eq!(g.user.cards.hand().len(), 4);
+    let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
+    g.play_card(id, g.user_id(), None);
+    assert_eq!(g.user.cards.discard_pile().len(), 4);
+    test_helpers::assert_cards_match(g.user.cards.right_items(), vec![CardName::TestEvocation]);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA - cost - (test_constants::EVOCATION_COST - reduction)
+    )
+}
+
+#[test]
+fn sift_the_sands_upgraded() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestEvocation)).build();
+    g.create_and_play_upgraded(CardName::SiftTheSands);
+    assert_eq!(g.user.cards.hand().len(), 6);
+    let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
+    g.play_card(id, g.user_id(), None);
 }

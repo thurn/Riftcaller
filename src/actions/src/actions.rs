@@ -24,7 +24,7 @@ use game_data::card_state::CardPosition;
 use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
     BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt,
-    CardBrowserPrompt, CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction,
+    CardSelectorPrompt, CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction,
     PromptChoice, PromptContext,
 };
 use game_data::game_effect::GameEffect;
@@ -263,8 +263,7 @@ fn dispel_evocation_action(game: &mut GameState, user_side: Side) -> Result<()> 
 
 #[instrument(skip(game))]
 fn move_card_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
-    let Some(GamePrompt::CardBrowserPrompt(prompt)) =
-        game.player_mut(user_side).prompt_queue.get_mut(0)
+    let Some(GamePrompt::CardSelector(prompt)) = game.player_mut(user_side).prompt_queue.get_mut(0)
     else {
         fail!("Expected active CardBrowserPrompt");
     };
@@ -353,8 +352,8 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
     if hand.len() > max_hand_size {
         // Must discard to hand size
         let discard = hand.len() - max_hand_size;
-        game.player_mut(user_side).prompt_queue.push(GamePrompt::CardBrowserPrompt(
-            CardBrowserPrompt {
+        game.player_mut(user_side).prompt_queue.push(GamePrompt::CardSelector(
+            CardSelectorPrompt {
                 context: Some(PromptContext::DiscardToHandSize(max_hand_size)),
                 unchosen_subjects: hand,
                 chosen_subjects: vec![],
@@ -412,8 +411,8 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
             let removed = game.player_mut(user_side).prompt_queue.remove(0);
             record_prompt_response(game, removed, user_side, index);
         }
-        (GamePrompt::CardBrowserPrompt(browser), PromptAction::CardBrowserPromptSubmit) => {
-            handle_card_browser_submit_action(
+        (GamePrompt::CardSelector(browser), PromptAction::CardSelectorSubmit) => {
+            handle_card_selector_submit(
                 game,
                 user_side,
                 browser.chosen_subjects.clone(),
@@ -421,7 +420,7 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
             )?;
         }
         (GamePrompt::PlayCardBrowser(_), PromptAction::SkipPlayingCard) => {
-            game.player_mut(user_side).prompt_queue.remove(0);
+            play_card::invoke_play_card_browser(game, user_side, None)?;
         }
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
@@ -444,7 +443,7 @@ fn record_prompt_response(game: &mut GameState, prompt: GamePrompt, side: Side, 
     }
 }
 
-fn handle_card_browser_submit_action(
+fn handle_card_selector_submit(
     game: &mut GameState,
     user_side: Side,
     subjects: Vec<CardId>,

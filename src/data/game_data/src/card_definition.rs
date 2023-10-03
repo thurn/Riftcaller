@@ -128,7 +128,9 @@ pub enum TargetRequirement<T> {
     /// No target required
     None,
     /// Target a specific room when played. Only rooms for which the provided
-    /// [RoomPredicate] returns true are considered valid targets.
+    /// [RoomPredicate] returns true are considered valid targets. This
+    /// predicate is expected to check room identity based on the card's text,
+    /// it does not need to verify that e.g. the card can currently be played.
     TargetRoom(RoomPredicate<T>),
 }
 

@@ -347,7 +347,7 @@ fn prompt_position_override(
                 return Some(for_card(card, card_choice_browser()));
             }
         }
-        GamePrompt::CardBrowserPrompt(browser) => {
+        GamePrompt::CardSelector(browser) => {
             if browser.unchosen_subjects.contains(&card.id) {
                 return Some(for_card(card, revealed_cards(true)));
             } else if browser.chosen_subjects.contains(&card.id) {
@@ -357,7 +357,7 @@ fn prompt_position_override(
         GamePrompt::PlayCardBrowser(play_card) => {
             if play_card.cards.contains(&card.id) {
                 return Some(for_card(card, hand(builder, card.side())));
-            } else if card.position().in_hand() {
+            } else if card.position() == CardPosition::Hand(builder.user_side) {
                 return Some(for_card(card, hand_storage()));
             }
         }
@@ -372,7 +372,7 @@ fn non_card_position_override(
     id: GameObjectId,
 ) -> Option<ObjectPosition> {
     let current_prompt = game.player(builder.user_side).prompt_queue.get(0);
-    if let Some(GamePrompt::CardBrowserPrompt(browser)) = current_prompt {
+    if let Some(GamePrompt::CardSelector(browser)) = current_prompt {
         let target = match browser.target {
             BrowserPromptTarget::DiscardPile => GameObjectId::DiscardPile(builder.user_side),
             BrowserPromptTarget::Deck => GameObjectId::Deck(builder.user_side),

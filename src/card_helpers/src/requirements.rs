@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use game_data::action_data::ActionData;
+use game_data::card_definition::TargetRequirement;
 use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegate_data::{RequirementFn, Scope};
@@ -21,6 +22,7 @@ use game_data::game_history::{HistoryEvent, HistoryEventKind};
 use game_data::game_state::GameState;
 use game_data::primitives::{CardId, RaidId, RoomId};
 use game_data::utils;
+use rules::flags;
 
 use crate::{face_down_in_play, history};
 
@@ -131,4 +133,10 @@ pub fn no_damage_dealt<R: BaseRequirement>(
 ) -> bool {
     R::run(game, scope)
         && history::current_turn(game).all(|e| e.kind() != HistoryEventKind::DealDamage)
+}
+
+/// A `TargetRequirement` for a card which can target any room which is a valid
+/// raid target
+pub fn any_raid_target<T>() -> TargetRequirement<T> {
+    TargetRequirement::TargetRoom(|game, _, room_id| flags::is_valid_raid_target(game, room_id))
 }

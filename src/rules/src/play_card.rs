@@ -21,12 +21,13 @@ use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent};
 use game_data::game_actions::{
     ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
+    UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState};
 use game_data::game_updates::{GameAnimation, InitiatedBy};
-use game_data::primitives::{CardId, CardSubtype, CardType};
+use game_data::primitives::{CardId, CardSubtype, CardType, Side};
 use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
@@ -106,7 +107,7 @@ fn evaluate_play_step(game: &mut GameState, play_card: PlayCardData) -> Result<P
         PlayCardStep::AddToHistory => add_to_history(game, play_card),
         PlayCardStep::MoveToPlayedPosition => move_to_played_position(game, play_card),
         PlayCardStep::PayActionPoints => pay_action_points(game, play_card),
-        PlayCardStep::ClearBrowserPrompt => clear_browser_prompt(game, play_card),
+        PlayCardStep::ApplyPlayCardBrowser => apply_play_card_browser(game, play_card),
         PlayCardStep::PayManaCost => pay_mana_cost(game, play_card),
         PlayCardStep::PayCustomCost => pay_custom_cost(game, play_card),
         PlayCardStep::TurnFaceUp => turn_face_up(game, play_card),
@@ -202,19 +203,44 @@ fn move_to_played_position(game: &mut GameState, play_card: PlayCardData) -> Res
 fn pay_action_points(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
     let actions = queries::action_cost(game, play_card.card_id);
     mutations::spend_action_points(game, play_card.card_id.side, actions)?;
-    Ok(PlayCardStep::ClearBrowserPrompt)
+    Ok(PlayCardStep::ApplyPlayCardBrowser)
 }
 
-fn clear_browser_prompt(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    if let Some(GamePrompt::PlayCardBrowser(prompt)) =
-        game.player(play_card.card_id.side).prompt_queue.get(0)
-    {
-        // Clear the current 'play card' prompt if one is present.
-        verify!(prompt.cards.contains(&play_card.card_id), "Unexpected prompt card");
-        game.player_mut(play_card.card_id.side).prompt_queue.remove(0);
-    }
-
+fn apply_play_card_browser(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+    invoke_play_card_browser(game, play_card.card_id.side, Some(play_card.card_id))?;
     Ok(PlayCardStep::PayManaCost)
+}
+
+/// Handles resolution of a [GamePrompt] with a `PlayCardBrowser`. Fires the
+/// [UnplayedAction] for this browser and clears the user's prompt queue.
+pub fn invoke_play_card_browser(
+    game: &mut GameState,
+    side: Side,
+    card_id: Option<CardId>,
+) -> Result<()> {
+    if let Some(GamePrompt::PlayCardBrowser(prompt)) = game.player(side).prompt_queue.get(0) {
+        if let Some(id) = card_id {
+            verify!(prompt.cards.contains(&id), "Unexpected prompt card");
+        }
+
+        match prompt.unplayed_action {
+            UnplayedAction::None => {}
+            UnplayedAction::Discard => {
+                let discard = prompt
+                    .cards
+                    .iter()
+                    .copied()
+                    .filter(|id| Some(*id) != card_id)
+                    .collect::<Vec<_>>();
+                for card_id in discard {
+                    mutations::discard_card(game, card_id)?;
+                }
+            }
+        }
+
+        game.player_mut(side).prompt_queue.remove(0);
+    }
+    Ok(())
 }
 
 fn pay_mana_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
