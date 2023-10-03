@@ -65,7 +65,7 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
         tutorial_effects: if builder.state.is_final_update {
             // Likewise hide tutorial updates while animating
             tutorial_display::render(builder, &game.info.tutorial_state)
-                .chain(button_prompt::tutorial_effects(builder, game))
+                .chain(button_prompt::append_prompt_speech_bubble(builder, game))
                 .collect()
         } else {
             vec![]

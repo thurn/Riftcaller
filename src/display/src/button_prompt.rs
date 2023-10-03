@@ -45,7 +45,9 @@ pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainC
     })
 }
 
-pub fn tutorial_effects<'a>(
+/// Shows a speech bubble for a button prompt. This uses the tutorial effect
+/// system, and is intended to show the result when the opponent makes choices.
+pub fn append_prompt_speech_bubble<'a>(
     builder: &'a ResponseBuilder,
     game: &'a GameState,
 ) -> impl Iterator<Item = TutorialEffect> + 'a {
@@ -64,8 +66,7 @@ pub fn tutorial_effects<'a>(
     })
 }
 
-/// Whether a speech bubble should be shown for this user choice. Bubbles are
-/// shown when the opponent makes a non-card choice.  
+/// Whether a speech bubble should be shown for this user choice.
 fn should_show_bubble(builder: &ResponseBuilder, side: Side, choice: &PromptChoice) -> bool {
     builder.user_side != side && !choice.is_secondary() && choice.anchor_card.is_none()
 }
