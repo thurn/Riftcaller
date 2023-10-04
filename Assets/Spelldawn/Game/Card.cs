@@ -66,6 +66,7 @@ namespace Spelldawn.Game
     [SerializeField] Vector3 _dragOffset;
     [SerializeField] Quaternion _initialDragRotation;
     [SerializeField] ObjectDisplay? _previousParent;
+    [SerializeField] GameObject? _contentProtection;
 
     [SerializeField] ObjectDisplay? _containedObjectsDisplay;
 
@@ -266,6 +267,10 @@ namespace Spelldawn.Game
         // In Arena mode, we want the image content to be centered within the card, so we shift
         // it around.
         _arenaCard.position = transform.position;
+        if (_contentProtection && _contentProtection != null)
+        {
+          _contentProtection.SetActive(false);
+        }
       }
       else
       {
@@ -285,6 +290,10 @@ namespace Spelldawn.Game
         _cardShadow.SetActive(true);
         _arenaShadow.SetActive(false);
         _arenaCard.localPosition = new Vector3(0, _arenaCardYOffset, 0);
+        if (_contentProtection && _contentProtection != null)
+        {
+          _contentProtection.SetActive(true);
+        }        
       }
 
       EnableIconsForContext(newContext);

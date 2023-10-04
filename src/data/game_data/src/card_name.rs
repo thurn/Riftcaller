@@ -249,6 +249,7 @@ pub enum CardName {
     EnduringRadiance,
     SiftTheSands,
     HolyAura,
+    Pathfinder,
 }
 
 impl CardName {

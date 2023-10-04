@@ -177,7 +177,6 @@ pub trait TestSessionHelpers {
     /// - Ends the Champion turn
     /// - Plays a 3-1 scheme in the [test_constants::ROOM_ID] room.
     /// - Plays the provided `card_name` minion into that room.
-    /// - Plays the selected minion in the [test_constants::ROOM_ID] room.
     /// - Ends the Overlord turn.
     ///
     /// Returns a tuple of (scheme_id, minion_id).

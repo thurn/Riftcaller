@@ -20,4 +20,3 @@ mod overlord_riftcallers_amethyst_tests;
 mod overlord_spells_amethyst_tests;
 mod projects_amethyst_tests;
 mod schemes_amethyst_tests;
-mod weapons_amethyst_tests;

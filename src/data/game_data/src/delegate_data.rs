@@ -510,7 +510,10 @@ pub enum Delegate {
     ActionCost(QueryDelegate<CardId, ActionCount>),
     /// Query the current attack value of a card. Invoked with
     /// [CardStats::base_attack] or 0.
-    AttackValue(QueryDelegate<CardId, AttackValue>),
+    BaseAttack(QueryDelegate<CardId, AttackValue>),
+    /// Gets the current [AttackBoost] of a card. Invoked with
+    /// [CardStats::attack_boost] if one is present.
+    AttackBoost(QueryDelegate<CardId, AttackBoost>),
     /// Query the current health value of a card. Invoked with
     /// [CardStats::health] or 0.
     HealthValue(QueryDelegate<CardId, HealthValue>),
@@ -523,9 +526,6 @@ pub enum Delegate {
     /// Queries the current raze cost of a card. Invoked with
     /// [CardStats::raze_cost] or 0.
     RazeCost(QueryDelegate<CardId, BreachValue>),
-    /// Gets the current [AttackBoost] of a card. Invoked with
-    /// [CardStats::attack_boost] if one is present.
-    AttackBoost(QueryDelegate<CardId, AttackBoost>),
     /// Get the number of actions a player gets at the start of their turn.
     StartOfTurnActions(QueryDelegate<Side, ActionCount>),
     /// Gets the number of cards the Champion player can access from the Vault

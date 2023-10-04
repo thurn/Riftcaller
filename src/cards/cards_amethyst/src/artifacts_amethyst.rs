@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
-use card_helpers::abilities::standard;
+use card_helpers::abilities::{encounter_ability_text, standard};
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition,

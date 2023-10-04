@@ -148,10 +148,6 @@ pub enum AbilityType {
     /// Standard abilities function at all times without requiring activation.
     Standard,
 
-    /// Encounter abilities can be activated by the Champion during a raid
-    /// encounter, typically in order to increase a Weapon's attack.
-    Encounter,
-
     /// Activated abilities have an associated cost in order to be used.
     Activated(Cost<AbilityId>, TargetRequirement<AbilityId>),
 

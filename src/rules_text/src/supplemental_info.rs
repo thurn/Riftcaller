@@ -123,9 +123,9 @@ fn token_description(token: TextTokenKind) -> Option<String> {
         TextTokenKind::DealDamage => {
             entry("Damage", "Causes the Champion to discard cards at random")
         }
-        TextTokenKind::InnerRoom => entry("Inner Room", "The Sanctum, Vault or Crypts"),
-        TextTokenKind::OuterRoom => {
-            entry("Outer Room", "Room other than the Sanctum, Vault or Crypts")
+        TextTokenKind::InnerRoom | TextTokenKind::InnerRooms => entry("Inner Room", "The sanctum, vault or crypt"),
+        TextTokenKind::OuterRoom | TextTokenKind::OuterRooms => {
+            entry("Outer Room", "Room other than the sanctum, vault or crypts")
         }
         TextTokenKind::Breach => {
             entry("Breach", "Allows this weapon to bypass some amount of Shield")

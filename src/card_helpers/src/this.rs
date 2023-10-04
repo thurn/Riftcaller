@@ -13,10 +13,11 @@
 // limitations under the License.
 
 use game_data::delegate_data::{
-    CardPlayed, Delegate, DiscardedCard, EventDelegate, MutationFn, Scope,
+    CardPlayed, Delegate, DiscardedCard, EventDelegate, MutationFn, QueryDelegate, Scope,
+    TransformationFn,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::HasCardId;
+use game_data::primitives::{AttackValue, CardId, HasCardId};
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.
@@ -33,4 +34,9 @@ pub fn on_play(mutation: MutationFn<CardPlayed>) -> Delegate {
 /// discard pile.
 pub fn on_discarded(mutation: MutationFn<DiscardedCard>) -> Delegate {
     Delegate::DiscardCard(EventDelegate { requirement: card, mutation })
+}
+
+/// A delegate which modifies a card's base attack value
+pub fn base_attack(transformation: TransformationFn<CardId, AttackValue>) -> Delegate {
+    Delegate::BaseAttack(QueryDelegate { requirement: card, transformation })
 }

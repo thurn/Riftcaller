@@ -26,14 +26,19 @@ use rules::mutations::OnZeroStored;
 use crate::text_macro::text;
 use crate::*;
 
-/// Helper to flatten a list of `Option` and remove `None` values.
-pub fn some(abilities: Vec<Option<Ability>>) -> Vec<Ability> {
-    abilities.into_iter().flatten().collect()
-}
-
 /// Creates a standard [Ability] with a single [Delegate].
 pub fn standard(text: Vec<TextElement>, delegate: Delegate) -> Ability {
     Ability { text, ability_type: AbilityType::Standard, delegates: vec![delegate] }
+}
+
+/// An ability which only exists to add text to a card.
+pub fn text_only_ability(text: Vec<TextElement>) -> Ability {
+    Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
+}
+
+/// Helper to flatten a list of `Option` and remove `None` values.
+pub fn some(abilities: Vec<Option<Ability>>) -> Vec<Ability> {
+    abilities.into_iter().flatten().collect()
 }
 
 /// Returns the provided [Ability] only for upgraded versions of a card.
@@ -48,11 +53,7 @@ pub fn silent_ability(ability: Ability) -> Ability {
 /// The standard weapon ability; applies an attack boost for the duration of a
 /// single encounter.
 pub fn encounter_boost() -> Ability {
-    Ability {
-        ability_type: AbilityType::Encounter,
-        text: encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
-        delegates: vec![],
-    }
+    text_only_ability(encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]))
 }
 
 /// Store `N` mana in this card when played. Move it to the discard pile when
@@ -151,4 +152,11 @@ pub fn sacrifice_this() -> AbilityType {
         Cost { mana: None, actions: 0, custom_cost: costs::sacrifice_cost() },
         TargetRequirement::None,
     )
+}
+
+pub fn encounter_ability_text(
+    cost: Vec<TextElement>,
+    effect: Vec<TextElement>,
+) -> Vec<TextElement> {
+    vec![TextElement::EncounterAbility { cost, effect }]
 }

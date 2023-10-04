@@ -61,7 +61,7 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
         icons.bottom_right_icon = if let Some(attack) = definition.config.stats.base_attack {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Attack)),
-                text: Some(context.query_id_or(attack, queries::attack).to_string()),
+                text: Some(context.query_id_or(attack, queries::base_attack).to_string()),
                 background_scale: assets::icon_background_scale(CardIconType::Attack),
             })
         } else if let Some(health) = definition.config.stats.health {

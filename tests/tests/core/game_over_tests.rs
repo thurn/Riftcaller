@@ -54,7 +54,7 @@ fn draw_all_overlord_cards() {
 
     loop {
         g.pass_turn(Side::Champion);
-        if g.user.cards.hand().real_cards().len() == 0 {
+        if g.user.cards.hand().real_cards().is_empty() {
             assert!(g.is_victory_for_player(Side::Champion));
             break;
         }

@@ -28,7 +28,7 @@ pub mod text_macro;
 pub mod this;
 pub mod updates;
 
-use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
+use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded, RaidEvent,
@@ -49,20 +49,8 @@ pub fn trigger_text(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElemen
     vec![TextElement::NamedTrigger(name, effect)]
 }
 
-pub fn encounter_ability_text(
-    cost: Vec<TextElement>,
-    effect: Vec<TextElement>,
-) -> Vec<TextElement> {
-    vec![TextElement::EncounterAbility { cost, effect }]
-}
-
 pub fn reminder(text: &'static str) -> TextElement {
     TextElement::Reminder(text.to_string())
-}
-
-/// An ability which only exists to add text to a card.
-pub fn text_only_ability(text: Vec<TextElement>) -> Ability {
-    Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
 }
 
 /// A [Cost] which requires no mana and `actions` action points.

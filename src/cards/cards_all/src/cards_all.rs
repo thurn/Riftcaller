@@ -61,6 +61,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_basic::overlord_basics::frog);
     DEFINITIONS.insert(cards_basic::overlord_basics::captain);
     DEFINITIONS.insert(cards_basic::overlord_basics::scout);
+    DEFINITIONS.insert(cards_beryl::artifacts_beryl::pathfinder);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::restoration);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::strike_the_heart);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::enduring_radiance);

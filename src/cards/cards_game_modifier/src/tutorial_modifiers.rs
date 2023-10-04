@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use assets::rexard_images;
-use card_helpers::abilities::standard;
+use card_helpers::abilities::{standard, text_only_ability};
 use card_helpers::requirements::always;
 use card_helpers::{text, *};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};

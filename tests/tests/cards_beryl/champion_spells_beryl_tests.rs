@@ -24,13 +24,13 @@ fn restoration() {
         TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
     )
     .build();
-    assert!(g.user.cards.left_items().is_empty());
+    assert!(g.user.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
     test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
-    let id = g.user.cards.hand().find_card(CardName::TestWeaponAbyssal);
+    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponAbyssal);
     g.play_card(id, g.user_id(), None);
     assert!(g.user.cards.hand().is_empty());
-    test_helpers::assert_cards_match(g.user.cards.left_items(), vec![CardName::TestWeaponAbyssal]);
+    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestWeaponAbyssal]);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST);
 }
 
@@ -55,7 +55,7 @@ fn restoration_last_action_point() {
     .build();
     g.create_and_play(CardName::Restoration);
     test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
-    let id = g.user.cards.hand().find_card(CardName::TestWeaponAbyssal);
+    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponAbyssal);
     g.play_card(id, g.user_id(), None);
     assert!(g.has(Button::EndTurn));
 }
@@ -66,7 +66,7 @@ fn restoration_cannot_take_other_action() {
         TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
     )
     .build();
-    assert!(g.user.cards.left_items().is_empty());
+    assert!(g.user.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
     test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
     assert!(g.draw_card_with_result().is_err());
@@ -79,13 +79,13 @@ fn restoration_upgraded() {
         TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
     )
     .build();
-    assert!(g.user.cards.left_items().is_empty());
+    assert!(g.user.cards.artifacts().is_empty());
     g.create_and_play_upgraded(CardName::Restoration);
     test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
-    let id = g.user.cards.hand().find_card(CardName::TestWeaponAbyssal);
+    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponAbyssal);
     g.play_card(id, g.user_id(), None);
     assert!(g.user.cards.hand().is_empty());
-    test_helpers::assert_cards_match(g.user.cards.left_items(), vec![CardName::TestWeaponAbyssal]);
+    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestWeaponAbyssal]);
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST + reduction
@@ -100,11 +100,11 @@ fn restoration_upgraded_stacking() {
             .in_discard_face_up(CardName::TestWeaponReduceCostOnSuccessfulRaid),
     )
     .build();
-    assert!(g.user.cards.left_items().is_empty());
+    assert!(g.user.cards.artifacts().is_empty());
     g.initiate_raid(RoomId::Crypts);
     g.click(Button::EndRaid);
     g.create_and_play_upgraded(CardName::Restoration);
-    let id = g.user.cards.hand().find_card(CardName::TestWeaponReduceCostOnSuccessfulRaid);
+    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponReduceCostOnSuccessfulRaid);
     g.play_card(id, g.user_id(), None);
     assert!(g.user.cards.hand().is_empty());
     // Test weapon costs 5 and reduces cost by 2 on raid access
@@ -138,7 +138,7 @@ fn enduring_radiance() {
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 1);
     g.click(Button::ReturnToHand);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - return_cost);
-    let id = g.user.cards.hand().find_card(CardName::EnduringRadiance);
+    let id = g.user.cards.hand().find_card_id(CardName::EnduringRadiance);
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
 }
@@ -151,7 +151,7 @@ fn enduring_radiance_no_curses() {
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
     g.click(Button::ReturnToHand);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - return_cost);
-    let id = g.user.cards.hand().find_card(CardName::EnduringRadiance);
+    let id = g.user.cards.hand().find_card_id(CardName::EnduringRadiance);
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
 }
@@ -162,7 +162,7 @@ fn enduring_radiance_upgraded() {
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 2);
     g.create_and_play_upgraded(CardName::EnduringRadiance);
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 1);
-    let id = g.user.cards.hand().find_card(CardName::EnduringRadiance);
+    let id = g.user.cards.hand().find_card_id(CardName::EnduringRadiance);
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
 }
@@ -177,7 +177,10 @@ fn sift_the_sands() {
     let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.user.cards.discard_pile().len(), 4);
-    test_helpers::assert_cards_match(g.user.cards.right_items(), vec![CardName::TestEvocation]);
+    test_helpers::assert_cards_match(
+        g.user.cards.evocations_and_allies(),
+        vec![CardName::TestEvocation],
+    );
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA - cost - (test_constants::EVOCATION_COST - reduction)

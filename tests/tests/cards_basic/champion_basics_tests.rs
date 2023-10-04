@@ -171,8 +171,8 @@ fn ethereal_blade() {
     assert_eq!(test_constants::STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
     g.click(Button::Score);
     assert_eq!(0, g.user.cards.discard_pile().len());
-    assert_eq!(1, g.user.cards.left_items().len());
+    assert_eq!(1, g.user.cards.artifacts().len());
     g.click(Button::EndRaid);
     assert_eq!(1, g.user.cards.discard_pile().len());
-    assert_eq!(0, g.user.cards.left_items().len());
+    assert_eq!(0, g.user.cards.artifacts().len());
 }

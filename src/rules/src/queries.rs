@@ -19,7 +19,7 @@ use constants::game_constants;
 use game_data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
-    AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, AttackValueQuery, BreachValueQuery,
+    AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, BaseAttackQuery, BreachValueQuery,
     HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, SanctumAccessCountQuery,
     ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
@@ -90,10 +90,10 @@ pub fn action_cost(game: &GameState, card_id: CardId) -> ActionCount {
 }
 
 /// Returns the attack power value for a given card, or 0 by default.
-pub fn attack(game: &GameState, card_id: CardId) -> AttackValue {
+pub fn base_attack(game: &GameState, card_id: CardId) -> AttackValue {
     dispatch::perform_query(
         game,
-        AttackValueQuery(card_id),
+        BaseAttackQuery(card_id),
         stats(game, card_id).base_attack.unwrap_or(0),
     )
 }
@@ -158,7 +158,7 @@ pub fn cost_to_defeat_target(
     target_id: CardId,
 ) -> Option<ManaValue> {
     let target = health(game, target_id);
-    let current = attack(game, card_id);
+    let current = base_attack(game, card_id);
 
     let result = if current >= target {
         Some(0)

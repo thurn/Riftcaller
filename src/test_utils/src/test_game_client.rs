@@ -320,7 +320,9 @@ pub trait CardNamesExt {
 
     fn token_cards(&self) -> Self;
 
-    fn find_card(&self, name: CardName) -> CardIdentifier;
+    fn find_card(&self, name: CardName) -> &ClientCard;
+
+    fn find_card_id(&self, name: CardName) -> CardIdentifier;
 
     fn count_with_name(&self, name: &'static str) -> usize;
 }
@@ -359,11 +361,12 @@ impl CardNamesExt for Vec<&ClientCard> {
             .collect()
     }
 
-    fn find_card(&self, name: CardName) -> CardIdentifier {
-        self.iter()
-            .find(|c| c.title() == name.displayed_name())
-            .map(|c| c.id())
-            .expect("Card not found")
+    fn find_card(&self, name: CardName) -> &ClientCard {
+        self.iter().find(|c| c.title() == name.displayed_name()).expect("Card not found")
+    }
+
+    fn find_card_id(&self, name: CardName) -> CardIdentifier {
+        self.find_card(name).id()
     }
 
     fn count_with_name(&self, name: &'static str) -> usize {
@@ -432,15 +435,13 @@ impl ClientCards {
         }))
     }
 
-    /// Returns left items in play
-    pub fn left_items(&self) -> Vec<&ClientCard> {
+    pub fn artifacts(&self) -> Vec<&ClientCard> {
         self.in_position(Position::Item(ObjectPositionItem {
             item_location: ClientItemLocation::Left.into(),
         }))
     }
 
-    /// Returns right items in play
-    pub fn right_items(&self) -> Vec<&ClientCard> {
+    pub fn evocations_and_allies(&self) -> Vec<&ClientCard> {
         self.in_position(Position::Item(ObjectPositionItem {
             item_location: ClientItemLocation::Right as i32,
         }))
