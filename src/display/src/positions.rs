@@ -144,7 +144,7 @@ pub fn staging() -> Position {
     Position::Staging(ObjectPositionStaging {})
 }
 
-pub fn accessed_browser() -> Position {
+pub fn card_browser() -> Position {
     Position::Browser(ObjectPositionBrowser {})
 }
 
@@ -341,7 +341,7 @@ fn prompt_position_override(
     match current_prompt {
         GamePrompt::ButtonPrompt(prompt) => {
             if prompt.context == Some(PromptContext::Card(card.id)) {
-                return Some(for_card(card, accessed_browser()));
+                return Some(for_card(card, card_browser()));
             }
             if prompt.choices.iter().any(|choice| choice.anchor_card == Some(card.id)) {
                 return Some(for_card(card, card_choice_browser()));
@@ -349,7 +349,7 @@ fn prompt_position_override(
         }
         GamePrompt::CardSelector(browser) => {
             if browser.unchosen_subjects.contains(&card.id) {
-                return Some(for_card(card, revealed_cards(true)));
+                return Some(for_card(card, card_browser()));
             } else if browser.chosen_subjects.contains(&card.id) {
                 return Some(for_card(card, card_browser_target_position()));
             }
@@ -396,7 +396,7 @@ fn raid_position_override(game: &GameState, id: GameObjectId) -> Option<ObjectPo
                 browser_position(id, raid(), raid_browser(game, raid_data, defenders))
             }
             RaidDisplayState::Access => {
-                browser_position(id, accessed_browser(), raid_access_browser(game, raid_data))
+                browser_position(id, card_browser(), raid_access_browser(game, raid_data))
             }
         }
     } else {

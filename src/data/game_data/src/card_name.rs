@@ -165,6 +165,7 @@ pub enum CardName {
     TestWeaponReduceCostOnSuccessfulRaid,
     TestSpellGiveCurse,
     TestEvocation,
+    TestSpellDeal1Damage,
 
     // Proof of Concept
     GoldMine,
@@ -247,6 +248,7 @@ pub enum CardName {
     StrikeTheHeart,
     EnduringRadiance,
     SiftTheSands,
+    HolyAura,
 }
 
 impl CardName {

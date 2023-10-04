@@ -133,9 +133,10 @@ pub trait TestSessionHelpers {
     fn spend_all_action_points(&mut self, side: Side);
 
     /// Performs the move card action, selecting a card to e.g. be discarded.
-    fn move_card(&mut self, card_id: CardIdentifier);
+    fn move_selector_card(&mut self, card_id: CardIdentifier);
 
-    /// Equivalent function to [Self::move_card] which returns the result
+    /// Equivalent function to [Self::move_selector_card] which returns the
+    /// result
     fn move_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput>;
 
     /// Spends the `side` player's action points with no effect until they have
@@ -380,7 +381,7 @@ impl TestSessionHelpers for TestSession {
         }
     }
 
-    fn move_card(&mut self, card_id: CardIdentifier) {
+    fn move_selector_card(&mut self, card_id: CardIdentifier) {
         self.move_card_with_result(card_id)
             .unwrap_or_else(|_| panic!("Error moving card {card_id:?}"));
     }

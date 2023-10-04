@@ -131,7 +131,7 @@ struct ShowCards {
 
 /// An animation to place the indicated cards center-screen.
 fn show_cards(builder: &mut ResponseBuilder, cards: &Vec<CardId>, options: ShowCards) {
-    let is_large = cards.len() >= 4;
+    let is_large = cards.len() >= 3;
     builder.push(Command::MoveGameObjects(MoveGameObjectsCommand {
         moves: cards
             .iter()

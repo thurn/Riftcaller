@@ -368,6 +368,26 @@ pub struct MinionCombatPrompt {
     pub include_no_action: bool,
 }
 
+/// Source from which a card has been discarded
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+pub enum DiscardedFrom {
+    Deck,
+    Hand,
+}
+
+/// Event information when a card is discarded from a deck or from hand
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+pub struct DiscardedCard {
+    pub card_id: CardId,
+    pub discarded_from: DiscardedFrom,
+}
+
+impl HasCardId for DiscardedCard {
+    fn card_id(&self) -> CardId {
+        self.card_id
+    }
+}
+
 /// The core of the delegate pattern, used to identify which event or which
 /// query this delegate wishes to respond to. Each enum variant here
 /// automatically gets an associated struct value generated for it by the
@@ -389,6 +409,8 @@ pub enum Delegate {
     PlayCard(EventDelegate<CardPlayed>),
     /// A card has been moved from any non-arena zone to an arena zone.
     EnterArena(EventDelegate<CardId>),
+    /// A card has been moved from a deck or hand to a discard pile.
+    DiscardCard(EventDelegate<DiscardedCard>),
     /// A card ability with a cost is activated
     ActivateAbility(EventDelegate<AbilityActivated>),
     /// A card, typically a Project, is unveiled (turned face up by paying its

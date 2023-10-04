@@ -65,6 +65,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::strike_the_heart);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::enduring_radiance);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::sift_the_sands);
+    DEFINITIONS.insert(cards_beryl::champion_spells_beryl::holy_aura);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);
@@ -111,4 +112,5 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_reduce_cost_on_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_give_curse);
     DEFINITIONS.insert(cards_test::test_cards::test_evocation);
+    DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_1_damage);
 }

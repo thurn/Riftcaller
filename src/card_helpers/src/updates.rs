@@ -43,6 +43,13 @@ impl<'a> Updates<'a> {
         self
     }
 
+    /// Equivalent function to [Self::ability_alert] which triggers if the
+    /// provided id is present.
+    pub fn optional_ability_alert(mut self, ability_id: Option<AbilityId>) -> Self {
+        self.ability_triggered = ability_id;
+        self
+    }
+
     /// Shows an `alert` if the provided `number` is not zero.
     pub fn ability_alert_if_nonzero(self, ability_id: impl HasAbilityId, number: u32) -> Self {
         if number > 0 {

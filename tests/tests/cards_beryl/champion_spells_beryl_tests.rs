@@ -193,3 +193,53 @@ fn sift_the_sands_upgraded() {
     let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
     g.play_card(id, g.user_id(), None);
 }
+
+#[test]
+fn holy_aura() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.create_and_play(CardName::HolyAura);
+    assert_eq!(g.user.cards.hand().len(), 3);
+}
+
+#[test]
+fn holy_aura_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.create_and_play_upgraded(CardName::HolyAura);
+    assert_eq!(g.user.cards.hand().len(), 4);
+}
+
+#[test]
+fn holy_aura_discard_to_damage() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.add_to_hand(CardName::HolyAura);
+    g.pass_turn(Side::Champion);
+    assert_eq!(g.user.cards.hand().len(), 1);
+    g.create_and_play(CardName::TestSpellDeal1Damage);
+    assert_eq!(g.user.cards.hand().len(), 2);
+    test_helpers::assert_cards_match(g.user.cards.discard_pile(), vec![CardName::HolyAura]);
+}
+
+#[test]
+fn holy_aura_discard_to_hand_size() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5)).build();
+    let id = g.add_to_hand(CardName::HolyAura);
+    g.move_to_end_step(Side::Champion);
+    g.move_selector_card(id);
+    g.click(Button::SubmitDiscard);
+    assert_eq!(g.user.cards.hand().len(), 7);
+    test_helpers::assert_cards_match(g.user.cards.discard_pile(), vec![CardName::HolyAura]);
+}
+
+#[test]
+fn holy_aura_discard_to_sift_the_sands() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion)
+            .deck_top(CardName::HolyAura)
+            .deck_top(CardName::TestEvocation),
+    )
+    .build();
+    g.create_and_play(CardName::SiftTheSands);
+    let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
+    g.play_card(id, g.user_id(), None);
+    assert_eq!(g.user.cards.hand().len(), 2);
+}

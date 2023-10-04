@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::delegate_data::{CardPlayed, Delegate, EventDelegate, MutationFn, Scope};
+use game_data::delegate_data::{
+    CardPlayed, Delegate, DiscardedCard, EventDelegate, MutationFn, Scope,
+};
 use game_data::game_state::GameState;
 use game_data::primitives::HasCardId;
 
@@ -25,4 +27,10 @@ pub fn card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
 /// A delegate which triggers when a card is played
 pub fn on_play(mutation: MutationFn<CardPlayed>) -> Delegate {
     Delegate::PlayCard(EventDelegate { requirement: card, mutation })
+}
+
+/// A delegate which triggers when a card is moved from a deck *or* hand to a
+/// discard pile.
+pub fn on_discarded(mutation: MutationFn<DiscardedCard>) -> Delegate {
+    Delegate::DiscardCard(EventDelegate { requirement: card, mutation })
 }

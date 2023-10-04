@@ -24,7 +24,10 @@ use game_data::game_actions::{
     CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
-use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side};
+use game_data::game_state::GameState;
+use game_data::primitives::{
+    AbilityId, CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
+};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::{mutations, CardDefinitionExt};
@@ -230,6 +233,52 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
                 }),
             ],
         }],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
+    fn update(game: &mut GameState, alert: Option<AbilityId>) {
+        Updates::new(game)
+            .timed_effect(
+                GameObjectId::Deck(Side::Champion),
+                TimedEffectData::new(TimedEffect::MagicCircles1(5))
+                    .scale(4.0)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_HealingWing_P1"))
+                    .effect_color(design::YELLOW_900),
+            )
+            .optional_ability_alert(alert)
+            .apply();
+    }
+
+    CardDefinition {
+        name: CardName::HolyAura,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::champion_card(meta, "holy_aura"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::standard(
+                text!["Draw", meta.upgrade(3, 4), "cards"],
+                this::on_play(|g, s, _| {
+                    update(g, None);
+                    mutations::draw_cards(g, s.side(), s.upgrade(3, 4))?;
+                    Ok(())
+                }),
+            ),
+            abilities::standard(
+                text!["If this card is discarded, draw", meta.upgrade(2, 3), "cards"],
+                this::on_discarded(|g, s, _| {
+                    update(g, Some(s.ability_id()));
+                    mutations::draw_cards(g, s.side(), s.upgrade(2, 3))?;
+                    Ok(())
+                }),
+            ),
+        ],
         config: CardConfig::default(),
     }
 }

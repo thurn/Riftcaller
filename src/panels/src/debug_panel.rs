@@ -112,6 +112,15 @@ impl DebugPanel {
                 .and_close(self.address()),
             ))
             .child(debug_button(
+                "Deck Top...",
+                Panels::open(StandardPanel::AddToZone(
+                    CardPosition::DeckTop(user_side),
+                    CardMetadata::default(),
+                ))
+                .wait_to_load(true)
+                .and_close(self.address()),
+            ))
+            .child(debug_button(
                 "Upgraded...",
                 Panels::open(StandardPanel::AddToZone(
                     CardPosition::Hand(user_side),

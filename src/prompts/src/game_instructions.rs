@@ -42,7 +42,7 @@ impl Component for GameInstructions {
                     .position_type(FlexPosition::Absolute)
                     .position(Edge::Top, 8.px())
                     .position(Edge::Left, 50.pct())
-                    .max_width(40.pct())
+                    .max_width(45.pct())
                     .translate((-50).pct(), 0.px()),
             )
             .child(

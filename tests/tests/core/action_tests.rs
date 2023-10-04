@@ -718,7 +718,7 @@ fn discard_to_hand_size() {
     assert_eq!(g.user.cards.hand().real_cards().len(), 6);
     g.move_to_end_step(Side::Overlord);
 
-    g.move_card(discard_id);
+    g.move_selector_card(discard_id);
     g.click(Button::SubmitDiscard);
 
     assert_eq!(g.user.cards.hand().real_cards().len(), 5);
@@ -737,8 +737,8 @@ fn cannot_discard_extra_to_hand_size() {
     assert_eq!(g.user.cards.hand().real_cards().len(), 6);
     g.move_to_end_step(Side::Overlord);
 
-    g.move_card(d1);
-    g.move_card(d2);
+    g.move_selector_card(d1);
+    g.move_selector_card(d2);
     assert!(g.click_with_result(Button::SubmitDiscard).is_err());
 }
 

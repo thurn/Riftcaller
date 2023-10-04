@@ -34,7 +34,7 @@ use rules::{flags, queries};
 use rules_text::{card_icons, supplemental_info};
 use {adapters, assets, rules_text};
 
-use crate::{card_browser, positions};
+use crate::{card_selector, positions};
 
 pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> CardView {
     let revealed = context.query_or(true, |_, card| card.is_revealed_to(builder.user_side));
@@ -228,7 +228,7 @@ fn revealed_card_view(
         )),
         supplemental_info: supplemental_info::build(context, None),
         card_move_target: context
-            .query_or(None, |game, card| card_browser::move_target(builder, game, card)),
+            .query_or(None, |game, card| card_selector::move_target(builder, game, card)),
         point_to_parent: None,
     })
 }

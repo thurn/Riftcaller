@@ -28,10 +28,11 @@ use game_data::card_state::CardState;
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CardMoved, CurseReceivedEvent, DawnEvent, DealtDamage, DealtDamageEvent, DrawCardEvent,
-    DuskEvent, EnterArenaEvent, MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEnded,
-    RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
-    StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
+    CardMoved, CurseReceivedEvent, DawnEvent, DealtDamage, DealtDamageEvent, DiscardCardEvent,
+    DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, MoveCardEvent,
+    OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidEvent, RaidFailureEvent, RaidOutcome,
+    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
+    UnveilCardEvent,
 };
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
@@ -95,6 +96,20 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
         dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
     }
 
+    if old_position.in_deck() && new_position.in_discard_pile() {
+        dispatch::invoke_event(
+            game,
+            DiscardCardEvent(DiscardedCard { card_id, discarded_from: DiscardedFrom::Deck }),
+        )?;
+    }
+
+    if old_position.in_hand() && new_position.in_discard_pile() {
+        dispatch::invoke_event(
+            game,
+            DiscardCardEvent(DiscardedCard { card_id, discarded_from: DiscardedFrom::Hand }),
+        )?;
+    }
+
     if new_position.in_discard_pile() && card_id.side == Side::Champion {
         turn_face_up(game, card_id);
     }
@@ -138,15 +153,11 @@ pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     Ok(())
 }
 
-/// Moves a card to the discard pile. This is identical to calling [move_card]
-/// for the discard pile position, except that the card is turned face up if it
-/// is owned by the Champion.
+/// Moves a card to the discard pile. This is precisely identical to calling
+/// [move_card] for the discard pile position and only exists to improve
+/// readability of code.
 pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
-    move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
-    if card_id.side == Side::Champion {
-        turn_face_up(game, card_id);
-    }
-    Ok(())
+    move_card(game, card_id, CardPosition::DiscardPile(card_id.side))
 }
 
 // Shuffles the provided `cards` into the `side` player's deck, clearing their

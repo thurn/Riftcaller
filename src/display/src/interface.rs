@@ -20,7 +20,7 @@ use protos::spelldawn::InterfaceMainControls;
 use raid_state::raid_prompt;
 use rules::flags;
 
-use crate::{button_prompt, card_browser, play_card_browser};
+use crate::{button_prompt, card_selector, play_card_browser};
 
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
@@ -31,7 +31,7 @@ pub fn render(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
             GamePrompt::ButtonPrompt(prompt) => {
                 return button_prompt::controls(side, prompt);
             }
-            GamePrompt::CardSelector(prompt) => return card_browser::controls(prompt),
+            GamePrompt::CardSelector(prompt) => return card_selector::controls(prompt),
             GamePrompt::PlayCardBrowser(prompt) => return play_card_browser::controls(prompt),
         }
     } else if let Some(raid) = &game.raid {

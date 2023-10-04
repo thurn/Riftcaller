@@ -17,7 +17,7 @@
 
 pub mod animations;
 pub mod button_prompt;
-pub mod card_browser;
+pub mod card_selector;
 pub mod card_sync;
 pub mod game_over;
 pub mod interface;
