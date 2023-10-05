@@ -373,8 +373,8 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
     let can_defeat = can_encounter_target(game, source, target)
         && matches!(
             queries::cost_to_defeat_target(game, source, target),
-            Some(cost)
-            if cost <= mana::get(game, source.side, ManaPurpose::UseWeapon(source))
+            Some(can_defeat)
+            if can_defeat.cost <= mana::get(game, source.side, ManaPurpose::UseWeapon(source))
         );
 
     dispatch::perform_query(

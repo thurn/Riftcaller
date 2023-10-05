@@ -157,8 +157,8 @@ pub struct RaidInfo {
 }
 
 impl RaidInfo {
-    pub fn event(&self) -> RaidEvent {
-        RaidEvent { raid_id: self.raid_id, target: self.target }
+    pub fn event<T>(&self, data: T) -> RaidEvent<T> {
+        RaidEvent { raid_id: self.raid_id, target: self.target, data }
     }
 }
 

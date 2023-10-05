@@ -290,11 +290,10 @@ fn apply_scenario(scenario: DebugScenario, data: &RequestData, game: &mut GameSt
         DebugScenario::NewGameOverlord => {}
         DebugScenario::NewGameChampion => {}
         DebugScenario::VsInfernalMinionAndScheme => {
-            create_at_position(
-                game,
-                CardName::TestScheme3_10,
-                CardPosition::Room(RoomId::RoomE, RoomLocation::Occupant),
-            )?;
+            vs_minion_and_scheme(game, CardName::TestInfernalMinion)?;
+        }
+        DebugScenario::VsTwoInfernalMinionsAndScheme => {
+            vs_minion_and_scheme(game, CardName::TestInfernalMinion)?;
             let minion_id = create_at_position(
                 game,
                 CardName::TestInfernalMinion,
@@ -304,6 +303,20 @@ fn apply_scenario(scenario: DebugScenario, data: &RequestData, game: &mut GameSt
         }
     }
     Ok(())
+}
+
+fn vs_minion_and_scheme(game: &mut GameState, minion: CardName) -> Result<()> {
+    create_at_position(
+        game,
+        CardName::TestScheme3_10,
+        CardPosition::Room(RoomId::RoomE, RoomLocation::Occupant),
+    )?;
+    let minion_id = create_at_position(
+        game,
+        minion,
+        CardPosition::Room(RoomId::RoomE, RoomLocation::Defender),
+    )?;
+    mutations::summon_minion(game, minion_id, SummonMinion::IgnoreCosts)
 }
 
 fn scenario_game(game: &GameState, data: &RequestData, side: Side) -> Result<GameState> {

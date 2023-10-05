@@ -250,6 +250,7 @@ pub enum CardName {
     SiftTheSands,
     HolyAura,
     Pathfinder,
+    StaffOfTheValiant,
 }
 
 impl CardName {

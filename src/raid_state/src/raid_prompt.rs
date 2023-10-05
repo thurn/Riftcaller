@@ -183,11 +183,11 @@ fn summon_button(game: &GameState, minion_id: CardId) -> ResponseButton {
 
 fn use_weapon_button(game: &GameState, interaction: WeaponInteraction) -> ResponseButton {
     let label = game.card(interaction.weapon_id).definition().name.displayed_name();
-    if let Some(cost) =
+    if let Some(can_defeat) =
         queries::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
     {
-        if cost > 0 {
-            return ResponseButton::new(format!("{}\n{}{}", label, cost, icons::MANA))
+        if can_defeat.cost > 0 {
+            return ResponseButton::new(format!("{}\n{}{}", label, can_defeat.cost, icons::MANA))
                 .two_lines(true);
         }
     }

@@ -579,6 +579,10 @@ impl ClientCard {
         self.bottom_right_icon.clone().expect("bottom_right_icon")
     }
 
+    pub fn attack_icon(&self) -> String {
+        self.bottom_right_icon()
+    }
+
     pub fn set_position(&mut self, position: ObjectPosition) {
         self.position = Some(position);
     }

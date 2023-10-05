@@ -18,12 +18,11 @@ use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::delegate_data::RaidEvent;
+use crate::delegate_data::{RaidEvent, UsedWeapon};
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
 use crate::game_updates::InitiatedBy;
 use crate::primitives::{AbilityId, CardId, ProgressValue, RoomId};
-use crate::raid_data::WeaponInteraction;
 
 /// Records a single event which happened during this game.
 #[derive(Debug, Clone, Serialize, Deserialize, EnumKind)]
@@ -45,15 +44,15 @@ pub enum HistoryEvent {
     /// A face-down card has been unveiled.
     UnveilCard(CardId),
     /// A raid was started, either via a card effect or the standard game action
-    RaidBegin(RaidEvent, InitiatedBy),
+    RaidBegin(RaidEvent<InitiatedBy>),
     /// A weapon has been used on minion
-    UseWeapon(RaidEvent, WeaponInteraction),
+    UseWeapon(RaidEvent<UsedWeapon>),
     /// A minion's combat ability has triggered
-    MinionCombatAbility(RaidEvent, CardId),
+    MinionCombatAbility(RaidEvent<CardId>),
     /// A raid ended in success.
-    RaidSuccess(RaidEvent),
+    RaidSuccess(RaidEvent<()>),
     /// A raid ended in failure.
-    RaidFailure(RaidEvent),
+    RaidFailure(RaidEvent<()>),
     /// A card was progressed some number of times, either via a card effect or
     /// the standard game action
     CardProgress(RoomId, ProgressValue, InitiatedBy),

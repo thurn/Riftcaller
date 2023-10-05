@@ -103,8 +103,8 @@ pub fn weapon_used_this_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     }
 
     history::current_turn(game).any(|event| {
-        matches!(event, HistoryEvent::UseWeapon(raid, interaction)
-            if raid.raid_id == raid_id && interaction.weapon_id == scope.card_id())
+        matches!(event, HistoryEvent::UseWeapon(raid)
+            if raid.raid_id == raid_id && raid.data.weapon_id == scope.card_id())
     })
 }
 

@@ -31,7 +31,7 @@ pub mod updates;
 use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEnded, RaidEvent,
+    AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
     RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_actions::PromptChoice;
@@ -149,8 +149,8 @@ pub fn on_overlord_score(mutation: MutationFn<CardId>) -> Delegate {
 
 /// Delegate which fires when a weapon is used
 pub fn on_weapon_used(
-    requirement: RequirementFn<UsedWeapon>,
-    mutation: MutationFn<UsedWeapon>,
+    requirement: RequirementFn<RaidEvent<UsedWeapon>>,
+    mutation: MutationFn<RaidEvent<UsedWeapon>>,
 ) -> Delegate {
     Delegate::UsedWeapon(EventDelegate { requirement, mutation })
 }
@@ -162,16 +162,16 @@ pub fn on_accessed(mutation: MutationFn<CardId>) -> Delegate {
 
 /// A delegate which fires when a raid ends in any way (except the game ending).
 pub fn on_raid_ended(
-    requirement: RequirementFn<RaidEnded>,
-    mutation: MutationFn<RaidEnded>,
+    requirement: RequirementFn<RaidEvent<RaidOutcome>>,
+    mutation: MutationFn<RaidEvent<RaidOutcome>>,
 ) -> Delegate {
     Delegate::RaidEnd(EventDelegate { requirement, mutation })
 }
 
 /// A delegate which fires when a raid ends in success
 pub fn on_raid_success(
-    requirement: RequirementFn<RaidEvent>,
-    mutation: MutationFn<RaidEvent>,
+    requirement: RequirementFn<RaidEvent<()>>,
+    mutation: MutationFn<RaidEvent<()>>,
 ) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement, mutation })
 }

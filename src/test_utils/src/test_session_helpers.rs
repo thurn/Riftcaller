@@ -167,8 +167,7 @@ pub trait TestSessionHelpers {
     fn set_up_minion_combat(&mut self);
 
     /// Equivalent to [Self::set_up_minion_combat] which invokes an `action`
-    /// function
-    /// at the start of the Champion's turn.
+    /// function at the start of the Champion's turn.
     fn set_up_minion_combat_with_action(&mut self, action: impl FnOnce(&mut TestSession));
 
     /// Must be invoked during the Champion turn. Performs the following

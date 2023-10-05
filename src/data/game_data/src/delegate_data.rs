@@ -83,7 +83,8 @@ use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
-    HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side, TurnNumber,
+    HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side,
+    TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -292,24 +293,33 @@ impl CardEncounter {
 
 /// Event data when a raid is initiated
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
-pub struct RaidEvent {
+pub struct RaidEvent<T> {
     pub raid_id: RaidId,
     pub target: RoomId,
+    pub data: T,
 }
 
-impl HasRoomId for RaidEvent {
+impl<T> HasRoomId for RaidEvent<T> {
     fn room_id(&self) -> RoomId {
         self.target
     }
 }
 
+impl<T> HasRaidId for RaidEvent<T> {
+    fn raid_id(&self) -> RaidId {
+        self.raid_id
+    }
+}
+
 /// Event data when a weapon is used
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct UsedWeapon {
-    pub raid_id: RaidId,
     pub weapon_id: CardId,
     pub target_id: CardId,
+    /// Mana spent to use this weapon
     pub mana_spent: ManaValue,
+    /// Attack value added to this weapon to defeat this minion
+    pub attack_boost: AttackValue,
 }
 
 /// Event data when a card is scored
@@ -330,19 +340,6 @@ impl HasCardId for ScoreCard {
 pub enum RaidOutcome {
     Success,
     Failure,
-}
-
-/// Event data when a raid is completed
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
-pub struct RaidEnded {
-    pub raid_event: RaidEvent,
-    pub outcome: RaidOutcome,
-}
-
-impl From<RaidEnded> for RaidId {
-    fn from(this: RaidEnded) -> Self {
-        this.raid_event.raid_id
-    }
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
@@ -429,11 +426,11 @@ pub enum Delegate {
     /// A card is razed (discarded by paying its raze cost) by the Champion
     RazeCard(EventDelegate<CardId>),
     /// A Raid is initiated
-    RaidStart(EventDelegate<RaidEvent>),
+    RaidStart(EventDelegate<RaidEvent<()>>),
     /// A minion is encountered during a raid
     EncounterMinion(EventDelegate<CardId>),
     /// A weapon has been used to defeat a minion
-    UsedWeapon(EventDelegate<UsedWeapon>),
+    UsedWeapon(EventDelegate<RaidEvent<UsedWeapon>>),
     /// A minion is defeated during an encounter by dealing damage to it equal
     /// to its health
     MinionDefeated(EventDelegate<CardId>),
@@ -450,18 +447,18 @@ pub enum Delegate {
     /// to `GameState`, but not 'on access' effects have yet triggered. This is
     /// the expected place to modify the set of accessed cards if it was not
     /// possible earlier.
-    RaidAccessSelected(EventDelegate<RaidEvent>),
+    RaidAccessSelected(EventDelegate<RaidEvent<()>>),
     /// The card with the provided `card_id` has been accessed and revealed
     /// during a raid (in any zone), but not yet scored/acted on.
     CardAccess(EventDelegate<CardId>),
     /// A Raid is completed, either successfully or unsuccessfully.
     ///
     /// Note that this is invoked before `game.data.raid` is cleared.
-    RaidEnd(EventDelegate<RaidEnded>),
+    RaidEnd(EventDelegate<RaidEvent<RaidOutcome>>),
     /// A raid has ended in failure.
-    RaidFailure(EventDelegate<RaidEvent>),
+    RaidFailure(EventDelegate<RaidEvent<()>>),
     /// A raid has ended in success.
-    RaidSuccess(EventDelegate<RaidEvent>),
+    RaidSuccess(EventDelegate<RaidEvent<()>>),
     /// Stored mana is taken from a card
     StoredManaTaken(EventDelegate<CardId>),
     /// Damage has been dealt to the Champion player (in the form of discarded

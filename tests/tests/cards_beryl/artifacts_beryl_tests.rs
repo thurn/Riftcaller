@@ -15,6 +15,7 @@
 use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_helpers::WeaponStats;
 use test_utils::*;
 
 #[test]
@@ -26,7 +27,7 @@ fn pathfinder() {
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(
         (base_attack + bonus).to_string(),
-        g.user.cards.artifacts().find_card(CardName::Pathfinder).bottom_right_icon()
+        g.user.cards.artifacts().find_card(CardName::Pathfinder).attack_icon()
     );
 }
 
@@ -38,6 +39,43 @@ fn pathfinder_inner_room() {
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(
         base_attack.to_string(),
-        g.user.cards.artifacts().find_card(CardName::Pathfinder).bottom_right_icon()
+        g.user.cards.artifacts().find_card(CardName::Pathfinder).attack_icon()
+    );
+}
+
+#[test]
+fn staff_of_the_valiant() {
+    let stats = WeaponStats { cost: 0, attack: 1, boost_cost: 2, boost: 1 };
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestScheme3_10);
+    g.create_and_play(CardName::TestInfernalMinion);
+    g.create_and_play(CardName::TestInfernalMinion);
+    g.pass_turn(Side::Overlord);
+    g.create_and_play(CardName::StaffOfTheValiant);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.click_as_side(Button::Summon, Side::Overlord);
+    g.click_on(g.user_id(), CardName::StaffOfTheValiant.displayed_name());
+    let mana = test_constants::STARTING_MANA
+        - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH);
+    assert_eq!(g.me().mana(), mana,);
+    assert_eq!(
+        test_constants::MINION_HEALTH.to_string(),
+        g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
+    );
+
+    g.click_as_side(Button::Summon, Side::Overlord);
+    g.click_on(g.user_id(), CardName::StaffOfTheValiant.displayed_name());
+    assert_eq!(g.me().mana(), mana,);
+    assert_eq!(
+        test_constants::MINION_HEALTH.to_string(),
+        g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
+    );
+
+    g.click(Button::Score);
+    assert_eq!(g.me().mana(), mana,);
+    assert_eq!(
+        test_constants::MINION_HEALTH.to_string(),
+        g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
     );
 }

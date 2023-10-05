@@ -30,7 +30,7 @@ use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     CardMoved, CurseReceivedEvent, DawnEvent, DealtDamage, DealtDamageEvent, DiscardCardEvent,
     DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, MoveCardEvent,
-    OverlordScoreCardEvent, RaidEndEvent, RaidEnded, RaidEvent, RaidFailureEvent, RaidOutcome,
+    OverlordScoreCardEvent, RaidEndEvent, RaidEvent, RaidFailureEvent, RaidOutcome,
     RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
     UnveilCardEvent,
 };
@@ -287,7 +287,7 @@ pub fn take_stored_mana(
 pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
     debug!("Ending raid");
     let target = game.raid()?.target;
-    let event = RaidEvent { raid_id: game.raid()?.raid_id, target };
+    let event = RaidEvent { raid_id: game.raid()?.raid_id, target, data: () };
     match outcome {
         RaidOutcome::Success => {
             dispatch::invoke_event(game, RaidSuccessEvent(event))?;
@@ -298,7 +298,10 @@ pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
             game.add_history_event(HistoryEvent::RaidFailure(event));
         }
     }
-    dispatch::invoke_event(game, RaidEndEvent(RaidEnded { raid_event: event, outcome }))?;
+    dispatch::invoke_event(
+        game,
+        RaidEndEvent(RaidEvent { raid_id: event.raid_id, target: event.target, data: outcome }),
+    )?;
     game.raid = None;
     Ok(())
 }

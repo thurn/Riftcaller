@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use game_data::delegate_data::{RaidEvent, UsedWeapon};
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId, RoomId};
@@ -60,7 +61,7 @@ pub fn abilities_activated_this_turn(game: &GameState) -> impl Iterator<Item = A
 /// player's turn so far.
 pub fn rooms_raided_this_turn(game: &GameState) -> impl Iterator<Item = RoomId> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::RaidBegin(event, _) = h {
+        if let HistoryEvent::RaidBegin(event) = h {
             Some(event.target)
         } else {
             None
@@ -74,6 +75,20 @@ pub fn raid_accesses_this_turn(game: &GameState) -> impl Iterator<Item = RoomId>
     current_turn(game).filter_map(move |h| {
         if let HistoryEvent::RaidSuccess(event) = h {
             Some(event.target)
+        } else {
+            None
+        }
+    })
+}
+
+/// Returns an iterator over weapons which have been used in the current
+/// player's turn so far.
+pub fn weapons_used_this_turn(
+    game: &GameState,
+) -> impl Iterator<Item = &RaidEvent<UsedWeapon>> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::UseWeapon(event) = h {
+            Some(event)
         } else {
             None
         }

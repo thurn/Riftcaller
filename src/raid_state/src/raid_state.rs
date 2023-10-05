@@ -37,7 +37,7 @@ use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 use tracing::debug;
-use with_error::{verify, WithError};
+use with_error::{fail, verify, WithError};
 
 /// Handle a client request to initiate a new raid. Deducts action points and
 /// then invokes [initiate_with_callback].
@@ -80,7 +80,11 @@ pub fn initiate_with_callback(
     game.raid = Some(raid);
     on_begin(game, raid_id);
     game.add_animation(|| GameAnimation::InitiateRaid(target, initiated_by));
-    game.add_history_event(HistoryEvent::RaidBegin(RaidEvent { target, raid_id }, initiated_by));
+    game.add_history_event(HistoryEvent::RaidBegin(RaidEvent {
+        target,
+        raid_id,
+        data: initiated_by,
+    }));
 
     run(game, None)
 }
@@ -159,7 +163,7 @@ fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
 
 fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> Result<RaidState> {
     debug!(?step, ?info.target, ?info.raid_id, ?info.encounter, "Evaluating raid step");
-    match step {
+    let result = match step {
         RaidStep::Begin => begin_raid(game, info),
         RaidStep::NextEncounter => RaidState::step(defenders::next_encounter(game, info)?),
         RaidStep::PopulateSummonPrompt(minion_id) => populate_summon_prompt(minion_id),
@@ -187,13 +191,18 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::StartRazingCard(card_id, cost) => start_razing_card(game, card_id, cost),
         RaidStep::RazeCard(card_id, cost) => raze_card(game, card_id, cost),
         RaidStep::FinishRaid => finish_raid(game),
-    }
+    };
+
+    // Write history events after each state machine step so they are visible
+    // to the next step.
+    game.history.write_events();
+    result
 }
 
 fn begin_raid(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     dispatch::invoke_event(
         game,
-        RaidStartEvent(RaidEvent { raid_id: info.raid_id, target: info.target }),
+        RaidStartEvent(RaidEvent { raid_id: info.raid_id, target: info.target, data: () }),
     )?;
 
     RaidState::step(RaidStep::NextEncounter)
@@ -244,16 +253,26 @@ fn use_weapon(
     info: RaidInfo,
     interaction: WeaponInteraction,
 ) -> Result<RaidState> {
-    let cost = queries::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
-        .with_error(|| {
-            format!(
-                "{:?} cannot defeat target: {:?}",
-                interaction.weapon_id, interaction.defender_id
-            )
-        })?;
-    mana::spend(game, Side::Champion, ManaPurpose::UseWeapon(interaction.weapon_id), cost)?;
+    let Some(to_defeat) =
+        queries::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
+    else {
+        fail!("{:?} cannot defeat target: {:?}", interaction.weapon_id, interaction.defender_id)
+    };
 
-    game.add_history_event(HistoryEvent::UseWeapon(info.event(), interaction));
+    mana::spend(
+        game,
+        Side::Champion,
+        ManaPurpose::UseWeapon(interaction.weapon_id),
+        to_defeat.cost,
+    )?;
+
+    let used_weapon = UsedWeapon {
+        weapon_id: interaction.weapon_id,
+        target_id: interaction.defender_id,
+        mana_spent: to_defeat.cost,
+        attack_boost: to_defeat.attack_boost,
+    };
+    game.add_history_event(HistoryEvent::UseWeapon(info.event(used_weapon)));
 
     game.add_animation(|| {
         GameAnimation::CombatInteraction(TargetedInteraction {
@@ -262,15 +281,7 @@ fn use_weapon(
         })
     });
 
-    dispatch::invoke_event(
-        game,
-        UsedWeaponEvent(UsedWeapon {
-            raid_id: info.raid_id,
-            weapon_id: interaction.weapon_id,
-            target_id: interaction.defender_id,
-            mana_spent: cost,
-        }),
-    )?;
+    dispatch::invoke_event(game, UsedWeaponEvent(info.event(used_weapon)))?;
 
     RaidState::step(RaidStep::MinionDefeated(interaction))
 }
@@ -285,7 +296,7 @@ fn fire_minion_combat_ability(
     info: RaidInfo,
     minion_id: CardId,
 ) -> Result<RaidState> {
-    game.add_history_event(HistoryEvent::MinionCombatAbility(info.event(), minion_id));
+    game.add_history_event(HistoryEvent::MinionCombatAbility(info.event(minion_id)));
 
     game.add_animation(|| {
         GameAnimation::CombatInteraction(TargetedInteraction {
@@ -322,7 +333,7 @@ fn build_access_set(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     dispatch::invoke_event(
         game,
-        RaidAccessSelectedEvent(RaidEvent { raid_id: info.raid_id, target: info.target }),
+        RaidAccessSelectedEvent(RaidEvent { raid_id: info.raid_id, target: info.target, data: () }),
     )?;
     RaidState::step(RaidStep::RevealAccessedCards)
 }

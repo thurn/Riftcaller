@@ -145,40 +145,50 @@ pub fn attack_boost(game: &GameState, card_id: CardId) -> Option<AttackBoost> {
         .map(|boost| dispatch::perform_query(game, AttackBoostQuery(card_id), boost))
 }
 
+/// Result of a call to [cost_to_defeat_target].
+pub struct CostToDefeatTarget {
+    /// Mana required to defeat the minion
+    pub cost: ManaValue,
+    /// Attack value added to this weapon to defeat this minion
+    pub attack_boost: AttackValue,
+}
+
 /// Returns the amount of mana the owner of `card_id` would need to spend to
 /// raise its [AttackValue] to the provided `target` by activating boosts or
 /// by using other innate abilities, plus the amount of mana required to pay
-/// the shield cost of `target`.
+/// the shield cost of `target`. See [CostToDefeatTarget].
 ///
-/// - Returns 0 if this card can already defeat the target.
+/// - Returns a cost of 0 if this card can already defeat the target.
 /// - Returns None if it is impossible for this card to defeat the target.
 pub fn cost_to_defeat_target(
     game: &GameState,
     card_id: CardId,
     target_id: CardId,
-) -> Option<ManaValue> {
+) -> Option<CostToDefeatTarget> {
     let target = health(game, target_id);
     let current = base_attack(game, card_id);
 
-    let result = if current >= target {
-        Some(0)
+    let (result, attack_boost) = if current >= target {
+        (0, 0)
     } else if let Some(boost) = attack_boost(game, card_id) {
         if boost.bonus == 0 {
-            None
+            return None;
         } else {
             let increase = target - current;
             // If the boost does not evenly divide into the target, we need to apply it an
             // additional time.
             let add = if (increase % boost.bonus) == 0 { 0 } else { 1 };
+            let boost_count = add + (increase / boost.bonus);
 
             #[allow(clippy::integer_division)] // Deliberate integer truncation
-            Some((add + (increase / boost.bonus)) * boost.cost)
+            (boost_count * boost.cost, boost_count * boost.bonus)
         }
     } else {
-        None
+        return None;
     };
 
-    result.map(|r| r + (shield(game, target_id).saturating_sub(breach(game, card_id))))
+    let cost = result + shield(game, target_id).saturating_sub(breach(game, card_id));
+    Some(CostToDefeatTarget { cost, attack_boost })
 }
 
 /// Look up the number of action points a player receives at the start of their

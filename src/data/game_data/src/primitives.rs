@@ -398,7 +398,7 @@ pub trait HasRoomId {
     fn room_id(&self) -> RoomId;
 }
 
-/// Identifies a struct which identies a [RoomId] at compile time.
+/// Identifies a struct which identifies a [RoomId] at compile time.
 pub trait RoomIdMarker {
     fn room_id() -> RoomId;
 }
@@ -422,6 +422,11 @@ impl RoomIdMarker for RoomIdCrypts {
     fn room_id() -> RoomId {
         RoomId::Crypts
     }
+}
+
+/// Identifies a struct that is 1:1 associated with a given [RaidId].
+pub trait HasRaidId {
+    fn raid_id(&self) -> RaidId;
 }
 
 /// Used to control where a card is rendered within a room
@@ -536,6 +541,7 @@ pub enum CardSubtype {
     Silvered,
     Conjuration,
     Raid,
+    Runic,
 }
 
 /// An interval of time in milliseconds

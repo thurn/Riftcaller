@@ -565,6 +565,11 @@ impl GameState {
         self.overlord_cards.iter().chain(self.champion_cards.iter())
     }
 
+    /// Returns the [RaidId] of the ongoing raid, if any.
+    pub fn raid_id(&self) -> Option<RaidId> {
+        self.raid.as_ref().map(|r| r.raid_id)
+    }
+
     /// Helper method to return the current [RaidData] or an error when one is
     /// expected to exist.
     pub fn raid(&self) -> Result<&RaidData> {
