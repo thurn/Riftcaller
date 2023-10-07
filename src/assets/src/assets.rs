@@ -166,7 +166,7 @@ pub fn title_color(resonance: Option<Resonance>) -> FlexColor {
         None => FontColor::NormalCardTitle,
         Some(Resonance::Mortal) => FontColor::MortalCardTitle,
         Some(Resonance::Infernal) => FontColor::InfernalCardTitle,
-        Some(Resonance::Abyssal) => FontColor::AbyssalCardTitle,
+        Some(Resonance::Astral) => FontColor::AbyssalCardTitle,
         Some(Resonance::Prismatic) => FontColor::PrismaticCardTitle,
     }
     .into()
@@ -189,7 +189,7 @@ pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>
             match resonance {
                 Some(Resonance::Mortal) => "SpriteWay/Icons/Clean Frames/9048",
                 Some(Resonance::Infernal) => "SpriteWay/Icons/Clean Frames/9054",
-                Some(Resonance::Abyssal) => "SpriteWay/Icons/Clean Frames/9020",
+                Some(Resonance::Astral) => "SpriteWay/Icons/Clean Frames/9020",
                 Some(Resonance::Prismatic) => "SpriteWay/Icons/Clean Frames/9047",
                 None => match card_type {
                     CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",

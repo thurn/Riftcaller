@@ -66,7 +66,7 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
         let (resonance, color) = match resonance {
             Resonance::Prismatic => ("Prismatic", FontColor::PrismaticCardTitle),
             Resonance::Mortal => ("Mortal", FontColor::MortalCardTitle),
-            Resonance::Abyssal => ("Abyssal", FontColor::AbyssalCardTitle),
+            Resonance::Astral => ("Abyssal", FontColor::AbyssalCardTitle),
             Resonance::Infernal => ("Infernal", FontColor::InfernalCardTitle),
         };
         let string = format!("<color={}>{}</color>", design::as_hex(color), resonance);
@@ -144,6 +144,7 @@ fn token_description(token: TextTokenKind) -> Option<String> {
                 icons::MANA
             ),
         ),
+        TextTokenKind::Slow => entry("Slow", "Shield costs are doubled when using this weapon"),
         _ => None,
     }
 }

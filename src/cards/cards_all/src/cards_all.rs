@@ -63,6 +63,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_basic::overlord_basics::scout);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::pathfinder);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::staff_of_the_valiant);
+    DEFINITIONS.insert(cards_beryl::artifacts_beryl::triumph);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::restoration);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::strike_the_heart);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::enduring_radiance);
@@ -87,7 +88,8 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_2_abyssal);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_deal_damage);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_infernal);
-    DEFINITIONS.insert(cards_test::test_cards::test_minion_abyssal);
+    DEFINITIONS.insert(cards_test::test_cards::test_minion_astral);
+    DEFINITIONS.insert(cards_test::test_cards::test_minion_astral_1_shield);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_mortal);
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_2_attack);
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_2_attack_12_boost);

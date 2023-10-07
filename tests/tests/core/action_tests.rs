@@ -230,7 +230,7 @@ fn minion_limit() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestInfernalMinion);
-    g.create_and_play(CardName::TestAbyssalMinion);
+    g.create_and_play(CardName::TestAstralMinion);
     g.create_and_play(CardName::TestMortalMinion);
     assert_eq!(g.user.cards.room_defenders(test_constants::ROOM_ID).len(), 4);
     g.create_and_play(CardName::TestMinionDealDamage);
@@ -244,7 +244,7 @@ fn minion_limit_cannot_take_other_actions() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestInfernalMinion);
-    g.create_and_play(CardName::TestAbyssalMinion);
+    g.create_and_play(CardName::TestAstralMinion);
     g.create_and_play(CardName::TestMortalMinion);
     g.create_and_play(CardName::TestMinionDealDamage);
     assert!(g.draw_card_with_result().is_err());
@@ -255,7 +255,7 @@ fn minion_limit_cancel_playing() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestInfernalMinion);
-    g.create_and_play(CardName::TestAbyssalMinion);
+    g.create_and_play(CardName::TestAstralMinion);
     g.create_and_play(CardName::TestMortalMinion);
     g.create_and_play(CardName::TestMinionDealDamage);
     g.click(Button::CancelPlayingCard);

@@ -160,3 +160,17 @@ pub fn encounter_ability_text(
 ) -> Vec<TextElement> {
     vec![TextElement::EncounterAbility { cost, effect }]
 }
+
+/// The "slow" ability, which doubles shield costs when using a weapon
+pub fn slow() -> Ability {
+    standard(
+        text![
+            encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
+            text![Slow]
+        ],
+        delegates::shield_value(
+            |_, s, info| info.weapon_id == Some(s.card_id()),
+            |_, _, _, current| current * 2,
+        ),
+    )
+}

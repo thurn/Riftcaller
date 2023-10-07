@@ -85,7 +85,9 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
         };
 
         let shield = context
-            .query_id_or(definition.config.stats.shield.unwrap_or_default(), queries::shield);
+            .query_id_or(definition.config.stats.shield.unwrap_or_default(), |g, card_id| {
+                queries::shield(g, card_id, None)
+            });
         icons.bottom_left_icon = if shield > 0 {
             Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Shield)),

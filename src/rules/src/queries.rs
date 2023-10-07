@@ -21,7 +21,7 @@ use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, BaseAttackQuery, BreachValueQuery,
     HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, SanctumAccessCountQuery,
-    ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
+    ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
 use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
 use game_data::game_state::GameState;
@@ -107,12 +107,15 @@ pub fn health(game: &GameState, card_id: CardId) -> HealthValue {
     )
 }
 
-/// Returns the shield value for a given card, or 0 by default.
-pub fn shield(game: &GameState, card_id: CardId) -> ShieldValue {
+/// Returns the shield value for a given minion card, or 0 by default.
+///
+/// A `weapon_id` should be provided to determine the shield value when opposing
+/// a specific weapon card.
+pub fn shield(game: &GameState, minion_id: CardId, weapon_id: Option<CardId>) -> ShieldValue {
     dispatch::perform_query(
         game,
-        ShieldValueQuery(card_id),
-        stats(game, card_id).shield.unwrap_or(0),
+        ShieldValueQuery(ShieldCardInfo { minion_id, weapon_id }),
+        stats(game, minion_id).shield.unwrap_or(0),
     )
 }
 
@@ -187,7 +190,8 @@ pub fn cost_to_defeat_target(
         return None;
     };
 
-    let cost = result + shield(game, target_id).saturating_sub(breach(game, card_id));
+    let cost =
+        result + shield(game, target_id, Some(card_id)).saturating_sub(breach(game, card_id));
     Some(CostToDefeatTarget { cost, attack_boost })
 }
 

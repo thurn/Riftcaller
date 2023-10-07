@@ -324,6 +324,8 @@ pub trait CardNamesExt {
 
     fn find_card_id(&self, name: CardName) -> CardIdentifier;
 
+    fn contains_card(&self, name: CardName) -> bool;
+
     fn count_with_name(&self, name: &'static str) -> usize;
 }
 
@@ -367,6 +369,10 @@ impl CardNamesExt for Vec<&ClientCard> {
 
     fn find_card_id(&self, name: CardName) -> CardIdentifier {
         self.find_card(name).id()
+    }
+
+    fn contains_card(&self, name: CardName) -> bool {
+        self.iter().any(|c| c.title() == name.displayed_name())
     }
 
     fn count_with_name(&self, name: &'static str) -> usize {

@@ -118,7 +118,7 @@ pub fn test_minion_shield_2_abyssal(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .shield(2)
-            .resonance(Resonance::Abyssal)
+            .resonance(Resonance::Astral)
             .build(),
         ..test_overlord_spell(metadata)
     }
@@ -149,12 +149,24 @@ pub fn test_minion_infernal(metadata: CardMetadata) -> CardDefinition {
     }
 }
 
-pub fn test_minion_abyssal(metadata: CardMetadata) -> CardDefinition {
+pub fn test_minion_astral(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestAbyssalMinion,
+        name: CardName::TestAstralMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .resonance(Resonance::Abyssal)
+            .resonance(Resonance::Astral)
+            .build(),
+        ..test_minion_end_raid(metadata)
+    }
+}
+
+pub fn test_minion_astral_1_shield(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestAstralMinion1Shield,
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .shield(1)
+            .resonance(Resonance::Astral)
             .build(),
         ..test_minion_end_raid(metadata)
     }
@@ -235,7 +247,7 @@ pub fn test_weapon_abyssal(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 1, bonus: 2 })
-            .resonance(Resonance::Abyssal)
+            .resonance(Resonance::Astral)
             .build(),
         ..test_weapon_2_attack(metadata)
     }

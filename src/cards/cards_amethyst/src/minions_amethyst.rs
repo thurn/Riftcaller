@@ -114,7 +114,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfigBuilder::new().health(6).shield(3).resonance(Resonance::Abyssal).build(),
+        config: CardConfigBuilder::new().health(6).shield(3).resonance(Resonance::Astral).build(),
     }
 }
 
@@ -139,7 +139,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
             ),
             abilities::combat_end_raid(),
         ],
-        config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::Abyssal).build(),
+        config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::Astral).build(),
     }
 }
 

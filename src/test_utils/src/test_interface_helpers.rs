@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use core_ui::icons;
+use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
 use game_data::primitives::Side;
 use protos::spelldawn::client_action::Action;
@@ -67,6 +68,8 @@ pub trait TestInterfaceHelpers {
     /// Returns true if the matching button can be found anywhere in the user
     /// interface for the `side` user.
     fn side_has(&self, button: Button, side: Side) -> bool;
+
+    fn click_weapon_name(&mut self, card_name: CardName);
 
     /// Locate a button containing the provided `text` in the provided player's
     /// interface controls and invoke its registered action.
@@ -124,6 +127,10 @@ impl TestInterfaceHelpers for TestSession {
         } else {
             self.opponent.interface.all_active_nodes().has_text(text)
         }
+    }
+
+    fn click_weapon_name(&mut self, card_name: CardName) {
+        self.click_on(self.player_id_for_side(Side::Champion), card_name.displayed_name());
     }
 
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {

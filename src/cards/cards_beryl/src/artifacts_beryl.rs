@@ -12,13 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::updates::Updates;
 use card_helpers::{abilities, costs, history, text, this};
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{AttackBoost, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
-use game_data::special_effects::{Projectile, ProjectileData};
+use game_data::card_state::CardPosition;
+use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, Resonance, School, Side};
+use game_data::special_effects::{
+    Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
+};
 use game_data::text::TextToken::*;
+use rules::mutations;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -88,6 +95,56 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
             .resonance(Resonance::Infernal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(5)))
+            .build(),
+    }
+}
+
+pub fn triumph(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Triumph,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(8, 5)),
+        image: assets::champion_card(meta, "triumph"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon, CardSubtype::Runic],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::standard(
+                text![
+                "The first time this weapon defeats a minion each turn, return that minion to the",
+                Sanctum
+            ],
+                this::on_weapon_used(|g, s, weapon| {
+                    if history::weapons_used_this_turn(g).all(|w| w.data.weapon_id != s.card_id()) {
+                        Updates::new(g)
+                            .timed_effect(
+                                GameObjectId::CardId(weapon.data.target_id),
+                                TimedEffectData::new(TimedEffect::MagicCircles1(6))
+                                    .scale(2.0)
+                                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
+                                    .effect_color(design::YELLOW_900),
+                            )
+                            .ability_alert(s)
+                            .apply();
+
+                        mutations::move_card(
+                            g,
+                            weapon.data.target_id,
+                            CardPosition::Hand(Side::Overlord),
+                        )?;
+                    }
+                    Ok(())
+                }),
+            ),
+            abilities::slow(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(0)
+            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .resonance(Resonance::Astral)
+            .combat_projectile(ProjectileData::new(Projectile::Projectiles1(6)))
             .build(),
     }
 }

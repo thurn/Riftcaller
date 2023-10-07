@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, TransformationFn};
-use game_data::primitives::{CardId, ManaValue, RaidId};
+use game_data::delegate_data::{
+    Delegate, QueryDelegate, RequirementFn, ShieldCardInfo, TransformationFn,
+};
+use game_data::primitives::{CardId, ManaValue, RaidId, ShieldValue};
 
 pub fn mana_cost(
     requirement: RequirementFn<CardId>,
@@ -27,4 +29,11 @@ pub fn sanctum_access_count(
     transformation: TransformationFn<RaidId, u32>,
 ) -> Delegate {
     Delegate::SanctumAccessCount(QueryDelegate { requirement, transformation })
+}
+
+pub fn shield_value(
+    requirement: RequirementFn<ShieldCardInfo>,
+    transformation: TransformationFn<ShieldCardInfo, ShieldValue>,
+) -> Delegate {
+    Delegate::ShieldValue(QueryDelegate { requirement, transformation })
 }

@@ -385,6 +385,16 @@ impl HasCardId for DiscardedCard {
     }
 }
 
+/// Event information when determining shield values for a minion
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+pub struct ShieldCardInfo {
+    /// Minion to determine shield value for
+    pub minion_id: CardId,
+    /// Optionally, a weapon which is being used to attack this minion which may
+    /// modify the shield value.
+    pub weapon_id: Option<CardId>,
+}
+
 /// The core of the delegate pattern, used to identify which event or which
 /// query this delegate wishes to respond to. Each enum variant here
 /// automatically gets an associated struct value generated for it by the
@@ -516,7 +526,7 @@ pub enum Delegate {
     HealthValue(QueryDelegate<CardId, HealthValue>),
     /// Query the current shield value of a card. Invoked with
     /// [CardStats::shield] or 0.
-    ShieldValue(QueryDelegate<CardId, ShieldValue>),
+    ShieldValue(QueryDelegate<ShieldCardInfo, ShieldValue>),
     /// Queries the current breach value of a card. Invoked with
     /// [CardStats::breach] or 0.
     BreachValue(QueryDelegate<CardId, BreachValue>),

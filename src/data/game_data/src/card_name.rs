@@ -113,12 +113,15 @@ pub enum CardName {
     /// Minion with the 'infernal' resonance, MINION_HEALTH health, and an 'end
     /// raid' ability.
     TestInfernalMinion,
-    /// Minion with the 'abyssal' resonance, MINION_HEALTH health, and an 'end
+    /// Minion with the 'astral' resonance, MINION_HEALTH health, and an 'end
     /// raid' ability.
-    TestAbyssalMinion,
+    TestAstralMinion,
     /// Minion with the 'mortal' resonance, MINION_HEALTH health, and an 'end
     /// raid' ability.
     TestMortalMinion,
+    /// Minion with the 'astral' resonance, MINION_HEALTH health, and an 'end
+    /// raid' ability, and 1 shield point
+    TestAstralMinion1Shield,
     /// Weapon with 2 attack and no boost.
     TestWeapon2Attack,
     /// Weapon with 2 attack and a '1 mana: +2 attack' boost.
@@ -251,6 +254,7 @@ pub enum CardName {
     HolyAura,
     Pathfinder,
     StaffOfTheValiant,
+    Triumph,
 }
 
 impl CardName {

@@ -292,6 +292,15 @@ fn apply_scenario(scenario: DebugScenario, data: &RequestData, game: &mut GameSt
         DebugScenario::VsInfernalMinionAndScheme => {
             vs_minion_and_scheme(game, CardName::TestInfernalMinion)?;
         }
+        DebugScenario::VsAstralMinionAndScheme => {
+            vs_minion_and_scheme(game, CardName::TestAstralMinion)?;
+        }
+        DebugScenario::VsMortalMinionAndScheme => {
+            vs_minion_and_scheme(game, CardName::TestMortalMinion)?;
+        }
+        DebugScenario::VsAstralShieldMinionAndScheme => {
+            vs_minion_and_scheme(game, CardName::TestAstralMinion1Shield)?;
+        }
         DebugScenario::VsTwoInfernalMinionsAndScheme => {
             vs_minion_and_scheme(game, CardName::TestInfernalMinion)?;
             let minion_id = create_at_position(
@@ -369,6 +378,7 @@ fn create_at_position(
         *mutations::realize_top_of_deck(game, side, 1)?.get(0).with_error(|| "Deck is empty")?;
     mutations::overwrite_card(game, card_id, CardVariant::standard(card))?;
     mutations::move_card(game, card_id, position)?;
+    mutations::set_revealed_to(game, card_id, card_id.side, true);
     Ok(card_id)
 }
 

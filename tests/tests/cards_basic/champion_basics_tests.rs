@@ -115,7 +115,7 @@ fn simple_bow() {
     let stats = WeaponStats { cost: 0, attack: 1, boost_cost: 2, boost: 1 };
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::SimpleBow);
-    g.fire_weapon_combat_abilities(Resonance::Abyssal, CardName::SimpleBow);
+    g.fire_weapon_combat_abilities(Resonance::Astral, CardName::SimpleBow);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
@@ -128,7 +128,7 @@ fn simple_club() {
     let stats = WeaponStats { cost: 2, attack: 2, boost_cost: 1, boost: 1 };
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::SimpleClub);
-    g.fire_weapon_combat_abilities(Resonance::Abyssal, CardName::SimpleClub);
+    g.fire_weapon_combat_abilities(Resonance::Astral, CardName::SimpleClub);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),

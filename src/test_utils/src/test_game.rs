@@ -34,7 +34,9 @@ use game_data::deck::Deck;
 use game_data::game_state::{GameConfiguration, GamePhase, GameState, TurnData};
 use game_data::game_updates::InitiatedBy;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{ActionCount, CurseCount, GameId, ManaValue, PointsValue, Side};
+use game_data::primitives::{
+    ActionCount, CurseCount, GameId, ManaValue, PointsValue, RoomId, RoomLocation, Side,
+};
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use maplit::hashmap;
 use rules::dispatch;
@@ -218,6 +220,8 @@ pub struct TestSide {
     in_discard_face_down: Vec<CardName>,
     in_discard_face_up: Vec<CardName>,
     riftcallers: Vec<CardName>,
+    room_occupants: Vec<(RoomId, CardName)>,
+    room_defenders: Vec<(RoomId, CardName)>,
 }
 
 impl TestSide {
@@ -232,6 +236,8 @@ impl TestSide {
             in_discard_face_down: vec![],
             in_discard_face_up: vec![],
             riftcallers: vec![],
+            room_occupants: vec![],
+            room_defenders: vec![],
         }
     }
 
@@ -266,6 +272,18 @@ impl TestSide {
     /// Card to be inserted face-up into the player's discard pile.
     pub fn in_discard_face_up(mut self, card: CardName) -> Self {
         self.in_discard_face_up.push(card);
+        self
+    }
+
+    /// Card to be inserted as a face-up defender of a room
+    pub fn face_up_defender(mut self, room_id: RoomId, card: CardName) -> Self {
+        self.room_defenders.push((room_id, card));
+        self
+    }
+
+    /// Card to be inserted as a face-down occupant of a room
+    pub fn room_occupant(mut self, room_id: RoomId, card: CardName) -> Self {
+        self.room_occupants.push((room_id, card));
         self
     }
 
@@ -314,6 +332,24 @@ impl TestSide {
             CardPosition::DiscardPile(self.side),
             true,
         );
+        for (room_id, card_name) in &self.room_occupants {
+            overwrite_positions(
+                game,
+                Side::Overlord,
+                &[*card_name],
+                CardPosition::Room(*room_id, RoomLocation::Occupant),
+                false,
+            );
+        }
+        for (room_id, card_name) in &self.room_defenders {
+            overwrite_positions(
+                game,
+                Side::Overlord,
+                &[*card_name],
+                CardPosition::Room(*room_id, RoomLocation::Defender),
+                true,
+            );
+        }
 
         let hand_card = if self.side == Side::Overlord {
             CardName::TestOverlordSpell

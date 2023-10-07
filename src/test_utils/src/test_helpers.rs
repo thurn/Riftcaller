@@ -42,7 +42,7 @@ pub fn generate_ids() -> (GameId, PlayerId, PlayerId) {
 pub fn minion_for_resonance(resonance: Resonance) -> CardName {
     match resonance {
         Resonance::Mortal => CardName::TestMortalMinion,
-        Resonance::Abyssal => CardName::TestAbyssalMinion,
+        Resonance::Astral => CardName::TestAstralMinion,
         Resonance::Infernal => CardName::TestInfernalMinion,
         _ => panic!("Unsupported"),
     }

@@ -87,7 +87,7 @@ pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
             .base_attack(3)
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
             .breach(1)
-            .resonance(Resonance::Abyssal)
+            .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(2)))
             .build(),
     }

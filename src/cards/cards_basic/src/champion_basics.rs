@@ -228,7 +228,7 @@ pub fn simple_bow(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
-            .resonance(Resonance::Abyssal)
+            .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),
     }
@@ -249,7 +249,7 @@ pub fn simple_club(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
-            .resonance(Resonance::Abyssal)
+            .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),
     }

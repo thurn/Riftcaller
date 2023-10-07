@@ -79,3 +79,46 @@ fn staff_of_the_valiant() {
         g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
     );
 }
+
+#[test]
+fn triumph_return_to_hand() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion)
+                .face_up_defender(RoomId::Vault, CardName::TestAstralMinion),
+        )
+        .build();
+    g.create_and_play(CardName::Triumph);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_weapon_name(CardName::Triumph);
+    g.click(Button::EndRaid);
+
+    assert_eq!(g.user.cards.room_defenders(RoomId::Sanctum).len(), 0);
+    assert!(g.opponent.cards.hand().contains_card(CardName::TestAstralMinion));
+
+    g.initiate_raid(RoomId::Vault);
+    g.click_weapon_name(CardName::Triumph);
+    g.click(Button::EndRaid);
+    assert!(g.user.cards.room_defenders(RoomId::Vault).contains_card(CardName::TestAstralMinion));
+}
+
+#[test]
+fn triumph_slow() {
+    let stats = WeaponStats { cost: 8, attack: 0, boost_cost: 1, boost: 1 };
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion1Shield),
+        )
+        .build();
+    g.create_and_play(CardName::Triumph);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_weapon_name(CardName::Triumph);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA
+            - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH)
+            - 2
+    );
+}

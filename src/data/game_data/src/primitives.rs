@@ -450,7 +450,7 @@ pub enum ItemLocation {
 pub enum Resonance {
     Mortal,
     Infernal,
-    Abyssal,
+    Astral,
     Prismatic,
 }
 

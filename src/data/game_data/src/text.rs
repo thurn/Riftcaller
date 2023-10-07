@@ -66,6 +66,7 @@ pub enum TextToken {
     LevelUp,
     Trap,
     Curse,
+    Slow,
 }
 
 impl TextToken {

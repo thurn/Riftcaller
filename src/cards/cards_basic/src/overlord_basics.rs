@@ -220,7 +220,7 @@ pub fn toucan(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfigBuilder::new().health(3).resonance(Resonance::Abyssal).build(),
+        config: CardConfigBuilder::new().health(3).resonance(Resonance::Astral).build(),
     }
 }
 
@@ -236,7 +236,7 @@ pub fn frog(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![abilities::combat_end_raid()],
-        config: CardConfigBuilder::new().health(4).resonance(Resonance::Abyssal).build(),
+        config: CardConfigBuilder::new().health(4).resonance(Resonance::Astral).build(),
     }
 }
 
