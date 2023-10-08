@@ -29,6 +29,7 @@ use panels::adventure_menu::AdventureMenu;
 use panels::apply_scenario_panel::ApplyScenarioPanel;
 use panels::battle_defeat_panel::BattleDefeatPanel;
 use panels::battle_victory_panel::BattleVictoryPanel;
+use panels::debug_create_card_panel::DebugCreateCardPanel;
 use panels::debug_panel::DebugPanel;
 use panels::disclaimer_panel::DisclaimerPanel;
 use panels::game_menu_panel::GameMenuPanel;
@@ -56,6 +57,9 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         )
         .build_panel(),
         StandardPanel::SetPlayerName(side) => SetPlayerNamePanel::new(side).build_panel(),
+        StandardPanel::DebugCreateCard(side, metadata) => {
+            DebugCreateCardPanel::new(side, metadata).build_panel()
+        }
         StandardPanel::AddToZone(position, metadata) => {
             AddToZonePanel::new("", position, metadata).build_panel()
         }

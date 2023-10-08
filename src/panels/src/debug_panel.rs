@@ -24,7 +24,6 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use game_data::card_name::CardMetadata;
-use game_data::card_state::CardPosition;
 use game_data::primitives::Side;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use player_data::PlayerActivityKind;
@@ -41,6 +40,7 @@ pub struct DebugPanel {
 
 impl DebugPanel {
     pub fn new(activity: PlayerActivityKind, side: Option<Side>) -> Self {
+        eprintln!("Creating debug panel with user side {:?}", side);
         Self { activity, side }
     }
 
@@ -94,36 +94,15 @@ impl DebugPanel {
             .child(debug_button(format!("{} 3", icons::SAVE), DebugAction::SaveGameState(3)))
             .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadGameState(3)))
             .child(debug_button(
-                "Card...",
-                Panels::open(StandardPanel::AddToZone(
-                    CardPosition::Hand(user_side),
-                    CardMetadata::default(),
-                ))
-                .wait_to_load(true)
-                .and_close(self.address()),
+                "Create Card...",
+                Panels::open(StandardPanel::DebugCreateCard(user_side, CardMetadata::default()))
+                    .wait_to_load(true)
+                    .and_close(self.address()),
             ))
             .child(debug_button(
-                "Discard...",
-                Panels::open(StandardPanel::AddToZone(
-                    CardPosition::DiscardPile(user_side),
-                    CardMetadata::default(),
-                ))
-                .wait_to_load(true)
-                .and_close(self.address()),
-            ))
-            .child(debug_button(
-                "Deck Top...",
-                Panels::open(StandardPanel::AddToZone(
-                    CardPosition::DeckTop(user_side),
-                    CardMetadata::default(),
-                ))
-                .wait_to_load(true)
-                .and_close(self.address()),
-            ))
-            .child(debug_button(
-                "Upgraded...",
-                Panels::open(StandardPanel::AddToZone(
-                    CardPosition::Hand(user_side),
+                "Upgraded Card...",
+                Panels::open(StandardPanel::DebugCreateCard(
+                    user_side,
                     CardMetadata { upgraded: true, full_art: true },
                 ))
                 .wait_to_load(true)

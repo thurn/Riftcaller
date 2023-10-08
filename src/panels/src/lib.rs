@@ -22,6 +22,7 @@ pub mod apply_scenario_panel;
 pub mod battle_defeat_panel;
 pub mod battle_victory_panel;
 pub mod button_menu;
+pub mod debug_create_card_panel;
 pub mod debug_panel;
 pub mod disclaimer_panel;
 pub mod game_menu_panel;

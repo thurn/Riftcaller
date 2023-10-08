@@ -77,9 +77,7 @@ pub enum DebugScenario {
     NewGameChampion,
     VsInfernalMinionAndScheme,
     VsAstralMinionAndScheme,
-    VsAstralShieldMinionAndScheme,
     VsMortalMinionAndScheme,
-    VsTwoInfernalMinionsAndScheme,
 }
 
 impl DebugScenario {
@@ -90,8 +88,6 @@ impl DebugScenario {
             DebugScenario::VsInfernalMinionAndScheme => Side::Champion,
             DebugScenario::VsAstralMinionAndScheme => Side::Champion,
             DebugScenario::VsMortalMinionAndScheme => Side::Champion,
-            DebugScenario::VsAstralShieldMinionAndScheme => Side::Champion,
-            DebugScenario::VsTwoInfernalMinionsAndScheme => Side::Champion,
         }
     }
 

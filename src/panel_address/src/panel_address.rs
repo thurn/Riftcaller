@@ -66,6 +66,7 @@ pub enum StandardPanel {
     AdventureMenu,
     DeckEditorLoading,
     SetPlayerName(Side),
+    DebugCreateCard(Side, CardMetadata),
     AddToZone(CardPosition, CardMetadata),
     ApplyScenario,
 }

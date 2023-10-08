@@ -194,6 +194,7 @@ pub async fn handle_debug_action(
                         mutations::discard_card(game, *top_of_deck)?;
                     } else {
                         mutations::move_card(game, *top_of_deck, *position)?;
+                        mutations::turn_face_up(game, *top_of_deck);
                     }
                 }
                 Ok(())
@@ -206,10 +207,10 @@ pub async fn handle_debug_action(
 
             let mut player = requests::fetch_player(database, data.player_id).await?;
             if data.player_id == game.overlord.id {
-                player.status = Some(PlayerStatus::Playing(game.id, Side::Champion));
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Overlord));
                 database.write_player(&player).await?;
             } else {
-                player.status = Some(PlayerStatus::Playing(game.id, Side::Overlord));
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Champion));
                 database.write_player(&player).await?;
             }
 
@@ -318,18 +319,6 @@ fn apply_scenario(scenario: DebugScenario, data: &RequestData) -> Result<GameSta
         }
         DebugScenario::VsMortalMinionAndScheme => {
             vs_minion_and_scheme(&mut game, CardName::TestMortalMinion)?;
-        }
-        DebugScenario::VsAstralShieldMinionAndScheme => {
-            vs_minion_and_scheme(&mut game, CardName::TestAstralMinion1Shield)?;
-        }
-        DebugScenario::VsTwoInfernalMinionsAndScheme => {
-            vs_minion_and_scheme(&mut game, CardName::TestInfernalMinion)?;
-            let minion_id = create_at_position(
-                &mut game,
-                CardName::TestInfernalMinion,
-                CardPosition::Room(RoomId::RoomE, RoomLocation::Defender),
-            )?;
-            mutations::summon_minion(&mut game, minion_id, SummonMinion::IgnoreCosts)?;
         }
     }
 

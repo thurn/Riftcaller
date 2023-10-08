@@ -44,10 +44,6 @@ impl AddToZonePanel {
     }
 
     fn matches(&self, name: CardName) -> bool {
-        if name.displayed_name().starts_with("Test") {
-            return false;
-        }
-
         name.displayed_name()
             .split(' ')
             .any(|part| part.to_lowercase().starts_with(&self.filter_string.to_lowercase()))
