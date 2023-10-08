@@ -40,7 +40,6 @@ pub struct DebugPanel {
 
 impl DebugPanel {
     pub fn new(activity: PlayerActivityKind, side: Option<Side>) -> Self {
-        eprintln!("Creating debug panel with user side {:?}", side);
         Self { activity, side }
     }
 

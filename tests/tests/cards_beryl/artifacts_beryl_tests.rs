@@ -21,10 +21,15 @@ use test_utils::*;
 #[test]
 fn pathfinder() {
     let (base_attack, bonus) = (1, 2);
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
+                .face_up_defender(RoomId::RoomA, CardName::TestInfernalMinion),
+        )
+        .build();
     g.create_and_play(CardName::Pathfinder);
-    g.setup_raid_target(CardName::TestInfernalMinion);
-    g.initiate_raid(test_constants::ROOM_ID);
+    g.initiate_raid(RoomId::RoomA);
     assert_eq!(
         (base_attack + bonus).to_string(),
         g.user.cards.artifacts().find_card(CardName::Pathfinder).attack_icon()
@@ -46,15 +51,16 @@ fn pathfinder_inner_room() {
 #[test]
 fn staff_of_the_valiant() {
     let stats = WeaponStats { cost: 0, attack: 1, boost_cost: 2, boost: 1 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.pass_turn(Side::Champion);
-    g.create_and_play(CardName::TestScheme3_10);
-    g.create_and_play(CardName::TestInfernalMinion);
-    g.create_and_play(CardName::TestInfernalMinion);
-    g.pass_turn(Side::Overlord);
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
+                .face_up_defender(RoomId::RoomA, CardName::TestInfernalMinion)
+                .face_up_defender(RoomId::RoomA, CardName::TestInfernalMinion),
+        )
+        .build();
     g.create_and_play(CardName::StaffOfTheValiant);
     g.initiate_raid(test_constants::ROOM_ID);
-    g.click_as_side(Button::Summon, Side::Overlord);
     g.click_on(g.user_id(), CardName::StaffOfTheValiant.displayed_name());
     let mana = test_constants::STARTING_MANA
         - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH);
@@ -64,7 +70,6 @@ fn staff_of_the_valiant() {
         g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
     );
 
-    g.click_as_side(Button::Summon, Side::Overlord);
     g.click_on(g.user_id(), CardName::StaffOfTheValiant.displayed_name());
     assert_eq!(g.me().mana(), mana,);
     assert_eq!(
@@ -106,6 +111,7 @@ fn triumph_return_to_hand() {
 #[test]
 fn triumph_slow() {
     let stats = WeaponStats { cost: 8, attack: 0, boost_cost: 1, boost: 1 };
+    let minion_shield = 1;
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .opponent(
             TestSide::new(Side::Overlord)
@@ -119,6 +125,6 @@ fn triumph_slow() {
         g.me().mana(),
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH)
-            - 2
+            - (2 * minion_shield)
     );
 }
