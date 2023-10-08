@@ -406,12 +406,15 @@ dependencies = [
 name = "cards_all"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "cards_amethyst",
  "cards_basic",
  "cards_beryl",
  "cards_game_modifier",
  "cards_test",
+ "regex",
  "rules",
+ "walkdir",
 ]
 
 [[package]]

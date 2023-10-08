@@ -10,6 +10,11 @@ path = "src/cards_all.rs"
 test = false
 doctest = false
 
+[build-dependencies]
+anyhow = { features = ["backtrace"], version = "1.0.75" }
+regex = "1.7.1"
+walkdir = "2.3.2"
+
 [dependencies]
 cards_amethyst = { path = "../cards_amethyst", version = "0.0.0" }
 cards_basic = { path = "../cards_basic", version = "0.0.0" }
