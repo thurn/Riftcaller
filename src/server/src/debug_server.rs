@@ -25,7 +25,7 @@ use display::render;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game_actions::{GameAction, GameStateAction};
-use game_data::game_state::{GameState, MulliganDecision};
+use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{CardId, GameId, RoomId, RoomLocation, Side};
 use panel_address::Panel;
@@ -201,14 +201,34 @@ pub async fn handle_debug_action(
             .await
         }
         DebugAction::ApplyScenario(scenario) => {
-            debug_update_game(database, data, |game, _| apply_scenario(*scenario, data, game))
-                .await?;
+            let game = apply_scenario(*scenario, data)?;
+            let game_id = game.id;
 
-            let game = requests::fetch_game(database, data.game_id).await?;
             let mut player = requests::fetch_player(database, data.player_id).await?;
-            player.status = Some(PlayerStatus::Playing(game.id, scenario.side()));
-            database.write_player(&player).await?;
-            reload_scene(data, &game)
+            if data.player_id == game.overlord.id {
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Champion));
+                database.write_player(&player).await?;
+            } else {
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Overlord));
+                database.write_player(&player).await?;
+            }
+
+            database.write_game(&game).await?;
+
+            let mut current_game_id = match current_game_id().lock() {
+                Ok(id) => id,
+                Err(_) => fail!("Unable to acquire lock, another holder panicked"),
+            };
+            let _ = current_game_id.insert(game_id);
+
+            reload_scene(
+                &RequestData {
+                    player_id: data.player_id,
+                    game_id: Some(game_id),
+                    adventure_id: data.adventure_id,
+                },
+                &game,
+            )
         }
         DebugAction::DebugUndo => {
             debug_update_game(database, data, |game, _| {
@@ -283,35 +303,37 @@ fn reload_world_scene(data: &RequestData) -> GameResponse {
     GameResponse::new(ClientData::propagate(data)).command(command)
 }
 
-fn apply_scenario(scenario: DebugScenario, data: &RequestData, game: &mut GameState) -> Result<()> {
-    *game = scenario_game(game, data, scenario.side())?;
+fn apply_scenario(scenario: DebugScenario, data: &RequestData) -> Result<GameState> {
+    let id = GameId::generate();
+    let mut game = scenario_game(id, data.player_id, scenario.side())?;
 
     match scenario {
         DebugScenario::NewGameOverlord => {}
         DebugScenario::NewGameChampion => {}
         DebugScenario::VsInfernalMinionAndScheme => {
-            vs_minion_and_scheme(game, CardName::TestInfernalMinion)?;
+            vs_minion_and_scheme(&mut game, CardName::TestInfernalMinion)?;
         }
         DebugScenario::VsAstralMinionAndScheme => {
-            vs_minion_and_scheme(game, CardName::TestAstralMinion)?;
+            vs_minion_and_scheme(&mut game, CardName::TestAstralMinion)?;
         }
         DebugScenario::VsMortalMinionAndScheme => {
-            vs_minion_and_scheme(game, CardName::TestMortalMinion)?;
+            vs_minion_and_scheme(&mut game, CardName::TestMortalMinion)?;
         }
         DebugScenario::VsAstralShieldMinionAndScheme => {
-            vs_minion_and_scheme(game, CardName::TestAstralMinion1Shield)?;
+            vs_minion_and_scheme(&mut game, CardName::TestAstralMinion1Shield)?;
         }
         DebugScenario::VsTwoInfernalMinionsAndScheme => {
-            vs_minion_and_scheme(game, CardName::TestInfernalMinion)?;
+            vs_minion_and_scheme(&mut game, CardName::TestInfernalMinion)?;
             let minion_id = create_at_position(
-                game,
+                &mut game,
                 CardName::TestInfernalMinion,
                 CardPosition::Room(RoomId::RoomE, RoomLocation::Defender),
             )?;
-            mutations::summon_minion(game, minion_id, SummonMinion::IgnoreCosts)?;
+            mutations::summon_minion(&mut game, minion_id, SummonMinion::IgnoreCosts)?;
         }
     }
-    Ok(())
+
+    Ok(game)
 }
 
 fn vs_minion_and_scheme(game: &mut GameState, minion: CardName) -> Result<()> {
@@ -328,14 +350,14 @@ fn vs_minion_and_scheme(game: &mut GameState, minion: CardName) -> Result<()> {
     mutations::summon_minion(game, minion_id, SummonMinion::IgnoreCosts)
 }
 
-fn scenario_game(game: &GameState, data: &RequestData, side: Side) -> Result<GameState> {
+fn scenario_game(game_id: GameId, player_id: PlayerId, side: Side) -> Result<GameState> {
     let mut result = GameState::new(
-        game.id,
-        if side == Side::Overlord { data.player_id } else { PlayerId::AI(AIPlayer::NoAction) },
+        game_id,
+        if side == Side::Overlord { player_id } else { PlayerId::AI(AIPlayer::NoAction) },
         decklists::CANONICAL_OVERLORD.clone(),
-        if side == Side::Champion { data.player_id } else { PlayerId::AI(AIPlayer::NoAction) },
+        if side == Side::Champion { player_id } else { PlayerId::AI(AIPlayer::NoAction) },
         decklists::CANONICAL_CHAMPION.clone(),
-        game.info.config,
+        GameConfiguration::default(),
     );
     dispatch::populate_delegate_cache(&mut result);
     actions::handle_game_action(
