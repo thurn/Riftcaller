@@ -192,9 +192,11 @@ pub async fn handle_debug_action(
                         mutations::draw_cards(game, user_side, 1)?;
                     } else if matches!(position, CardPosition::DiscardPile(_)) {
                         mutations::discard_card(game, *top_of_deck)?;
-                    } else {
+                    } else if matches!(position, CardPosition::Room(_, RoomLocation::Defender)) {
                         mutations::move_card(game, *top_of_deck, *position)?;
                         mutations::turn_face_up(game, *top_of_deck);
+                    } else {
+                        mutations::move_card(game, *top_of_deck, *position)?;
                     }
                 }
                 Ok(())
@@ -329,12 +331,12 @@ fn vs_minion_and_scheme(game: &mut GameState, minion: CardName) -> Result<()> {
     create_at_position(
         game,
         CardName::TestScheme3_10,
-        CardPosition::Room(RoomId::RoomE, RoomLocation::Occupant),
+        CardPosition::Room(RoomId::RoomA, RoomLocation::Occupant),
     )?;
     let minion_id = create_at_position(
         game,
         minion,
-        CardPosition::Room(RoomId::RoomE, RoomLocation::Defender),
+        CardPosition::Room(RoomId::RoomA, RoomLocation::Defender),
     )?;
     mutations::summon_minion(game, minion_id, SummonMinion::IgnoreCosts)
 }

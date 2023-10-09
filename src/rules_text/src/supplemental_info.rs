@@ -66,7 +66,7 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
         let (resonance, color) = match resonance {
             Resonance::Prismatic => ("Prismatic", FontColor::PrismaticCardTitle),
             Resonance::Mortal => ("Mortal", FontColor::MortalCardTitle),
-            Resonance::Astral => ("Abyssal", FontColor::AbyssalCardTitle),
+            Resonance::Astral => ("Astral", FontColor::AbyssalCardTitle),
             Resonance::Infernal => ("Infernal", FontColor::InfernalCardTitle),
         };
         let string = format!("<color={}>{}</color>", design::as_hex(color), resonance);

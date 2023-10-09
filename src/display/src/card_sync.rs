@@ -105,7 +105,13 @@ pub fn activated_ability_cards(
         if let AbilityType::Activated(_, target_requirement) = &ability.ability_type {
             let ability_id = AbilityId::new(card.id, ability_index);
             if flags::activated_ability_has_valid_targets(game, builder.user_side, ability_id) {
-                result.push(ability_card_view(builder, game, ability_id, Some(target_requirement)));
+                result.push(ability_card_view(
+                    builder,
+                    game,
+                    ability_id,
+                    card.variant.metadata.full_art,
+                    Some(target_requirement),
+                ));
             }
         }
     }
@@ -116,6 +122,7 @@ pub fn ability_card_view(
     builder: &ResponseBuilder,
     game: &GameState,
     ability_id: AbilityId,
+    full_height: bool,
     target_requirement: Option<&TargetRequirement<AbilityId>>,
 ) -> CardView {
     let card = game.card(ability_id.card_id);
@@ -125,7 +132,8 @@ pub fn ability_card_view(
     CardView {
         card_id: Some(adapters::ability_card_identifier(ability_id)),
         card_position: Some(positions::ability_card_position(builder, game, ability_id)),
-        prefab: CardPrefab::TokenCard.into(),
+        prefab: if full_height { CardPrefab::FullHeightToken } else { CardPrefab::TokenCard }
+            .into(),
         card_back: Some(assets::card_back(context.definition().school)),
         revealed_to_viewer: true,
         is_face_up: false,
@@ -137,7 +145,12 @@ pub fn ability_card_view(
         arena_frame: None,
         face_down_arena_frame: None,
         owning_player: builder.to_player_name(ability_id.card_id.side),
-        revealed_card: Some(revealed_ability_card_view(&context, ability_id, target_requirement)),
+        revealed_card: Some(revealed_ability_card_view(
+            &context,
+            ability_id,
+            full_height,
+            target_requirement,
+        )),
         create_position: if builder.state.animate {
             Some(positions::for_ability(game, ability_id, positions::parent_card(ability_id)))
         } else {
@@ -236,12 +249,13 @@ fn revealed_card_view(
 fn revealed_ability_card_view(
     context: &CardViewContext,
     ability_id: AbilityId,
+    full_height: bool,
     target_requirement: Option<&TargetRequirement<AbilityId>>,
 ) -> Box<RevealedCardView> {
     let definition = context.definition();
     let ability = definition.ability(ability_id.index);
     Box::new(RevealedCardView {
-        card_frame: Some(assets::card_frame(definition.school, false)),
+        card_frame: Some(assets::card_frame(definition.school, full_height)),
         title_background: Some(assets::ability_title_background()),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),

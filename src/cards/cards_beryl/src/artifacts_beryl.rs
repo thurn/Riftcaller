@@ -55,7 +55,11 @@ pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
             .resonance(Resonance::Infernal)
-            .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(4))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact01")),
+            )
             .build(),
     }
 }
@@ -94,7 +98,11 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
             .base_attack(1)
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
             .resonance(Resonance::Infernal)
-            .combat_projectile(ProjectileData::new(Projectile::Projectiles1(5)))
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(5))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile02"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact02")),
+            )
             .build(),
     }
 }
@@ -144,7 +152,11 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
             .base_attack(0)
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
             .resonance(Resonance::Astral)
-            .combat_projectile(ProjectileData::new(Projectile::Projectiles1(6)))
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(6))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic3_Projectile03"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Impact01")),
+            )
             .build(),
     }
 }
