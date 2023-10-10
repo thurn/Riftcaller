@@ -99,7 +99,7 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
             .attack_boost(AttackBoost { cost: 2, bonus: 1 })
             .resonance(Resonance::Infernal)
             .combat_projectile(
-                ProjectileData::new(Projectile::Projectiles1(5))
+                ProjectileData::new(Projectile::Projectiles1(13))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile02"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact02")),
             )
@@ -153,7 +153,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
             .attack_boost(AttackBoost { cost: 1, bonus: 1 })
             .resonance(Resonance::Astral)
             .combat_projectile(
-                ProjectileData::new(Projectile::Projectiles1(6))
+                ProjectileData::new(Projectile::Projectiles1(15))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic3_Projectile03"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Impact01")),
             )
