@@ -196,3 +196,39 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::BladeOfReckoning,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(2),
+        image: assets::champion_card(meta, "blade_of_reckoning"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon, CardSubtype::Charge],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::standard(
+                text!["When you access a room, add", PowerCharges(1)],
+                in_play::on_raid_access_start(|g, s, _| {
+                    mutations::add_power_charges(g, s.card_id(), 1)
+                }),
+            ),
+            abilities::text_only_ability(abilities::encounter_ability_text(
+                text![PowerCharges(1)],
+                text![EncounterBoostBonus],
+            )),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(meta.upgrade(2, 3))
+            .attack_boost(AttackBoost::new().custom_cost(CustomBoostCost::PowerCharges(1)).bonus(1))
+            .resonance(Resonance::Astral)
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(23))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact01")),
+            )
+            .build(),
+    }
+}

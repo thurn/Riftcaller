@@ -258,6 +258,7 @@ pub enum CardName {
     StaffOfTheValiant,
     Triumph,
     SpearOfConquest,
+    BladeOfReckoning,
 }
 
 impl CardName {

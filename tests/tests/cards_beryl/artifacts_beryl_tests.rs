@@ -185,3 +185,30 @@ fn spear_of_conquest_insufficient_charges() {
     g.initiate_raid(RoomId::Sanctum);
     assert!(!g.user.interface.main_controls().has_text(CardName::SpearOfConquest.displayed_name()))
 }
+
+#[test]
+fn blade_of_reckoning() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .actions(5)
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion),
+        )
+        .build();
+    g.create_and_play(CardName::BladeOfReckoning);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    assert!(g
+        .user
+        .cards
+        .artifacts()
+        .find_card(CardName::BladeOfReckoning)
+        .arena_icon()
+        .contains('3'));
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_weapon_name(CardName::BladeOfReckoning);
+}
