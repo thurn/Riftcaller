@@ -182,7 +182,7 @@ pub fn simple_blade(_: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(2)
-            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .resonance(Resonance::Mortal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(2)))
             .build(),
@@ -203,7 +203,7 @@ pub fn simple_axe(_: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
-            .attack_boost(AttackBoost { cost: 3, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(3).bonus(1))
             .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(8))
@@ -227,7 +227,7 @@ pub fn simple_bow(_: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(1)
-            .attack_boost(AttackBoost { cost: 2, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
             .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),
@@ -248,7 +248,7 @@ pub fn simple_club(_: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(2)
-            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),
@@ -269,7 +269,7 @@ pub fn simple_hammer(_: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(1)
-            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .resonance(Resonance::Infernal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),
@@ -290,7 +290,7 @@ pub fn simple_spear(_: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(0)
-            .attack_boost(AttackBoost { cost: 3, bonus: 5 })
+            .attack_boost(AttackBoost::new().mana_cost(3).bonus(5))
             .resonance(Resonance::Infernal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),
@@ -322,7 +322,7 @@ pub fn ethereal_blade(_: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .base_attack(1)
-            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .resonance(Resonance::Prismatic)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),

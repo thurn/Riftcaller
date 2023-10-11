@@ -38,8 +38,8 @@ use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
-    ActionCount, CardId, CurseCount, HasAbilityId, ManaValue, PointsValue, RoomId, RoomLocation,
-    Side, TurnNumber,
+    ActionCount, CardId, CurseCount, HasAbilityId, ManaValue, PointsValue, PowerChargeValue,
+    RoomId, RoomLocation, Side, TurnNumber,
 };
 use game_data::{random, undo_tracker};
 use tracing::{debug, instrument};
@@ -277,6 +277,30 @@ pub fn take_stored_mana(
     }
 
     Ok(taken)
+}
+
+/// Adds `count` power charges to the `card_id` card.
+pub fn add_power_charges(
+    game: &mut GameState,
+    card_id: CardId,
+    count: PowerChargeValue,
+) -> Result<()> {
+    game.card_mut(card_id).data.power_charges += count;
+    Ok(())
+}
+
+/// Spends `count` power charges from the `card_id` card.
+///
+/// Returns an error if insufficient charges are available.
+pub fn spend_power_charges(
+    game: &mut GameState,
+    card_id: CardId,
+    count: PowerChargeValue,
+) -> Result<()> {
+    let card = game.card_mut(card_id);
+    verify!(card.data.power_charges >= count, "Insufficient power charges available");
+    card.data.power_charges -= count;
+    Ok(())
 }
 
 /// Ends the current raid. Returns an error if no raid is currently active.

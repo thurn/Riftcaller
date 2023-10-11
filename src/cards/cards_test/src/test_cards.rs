@@ -204,7 +204,7 @@ pub fn test_weapon_2_attack_12_boost(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(2)
-            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_weapon_2_attack(metadata)
@@ -218,7 +218,7 @@ pub fn test_weapon_3_attack_12_boost(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
-            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_weapon_2_attack(metadata)
@@ -232,7 +232,7 @@ pub fn test_weapon_4_attack_12_boost(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(4)
-            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
         ..test_weapon_2_attack(metadata)
@@ -246,7 +246,7 @@ pub fn test_weapon_abyssal(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
-            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
             .resonance(Resonance::Astral)
             .build(),
         ..test_weapon_2_attack(metadata)
@@ -260,7 +260,7 @@ pub fn test_weapon_infernal(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
-            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
             .resonance(Resonance::Infernal)
             .build(),
         ..test_weapon_2_attack(metadata)
@@ -274,7 +274,7 @@ pub fn test_weapon_mortal(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
-            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
             .resonance(Resonance::Mortal)
             .build(),
         ..test_weapon_2_attack(metadata)
@@ -447,7 +447,7 @@ pub fn test_attack_weapon(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
-            .attack_boost(AttackBoost { cost: 1, bonus: 2 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
             .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(8))
@@ -523,7 +523,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
         ],
         config: CardConfigBuilder::new()
             .base_attack(2)
-            .attack_boost(AttackBoost { cost: 2, bonus: 3 })
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
             .resonance(Resonance::Infernal)
             .build(),
         ..test_overlord_spell(metadata)

@@ -22,7 +22,6 @@ use game_data::card_view_context::CardViewContext;
 use game_data::primitives::AbilityId;
 use game_data::text::{TextElement, TextToken};
 use protos::spelldawn::RulesText;
-use rules::queries;
 
 /// Primary function which turns the current state of a card into its client
 /// [RulesText] representation
@@ -176,7 +175,7 @@ fn process_text(context: &CardViewContext, text: &TextElement) -> String {
             format!("{}: {}", build_text(context, cost, false), build_text(context, effect, true))
         }
         TextElement::Literal(string) => string.clone(),
-        TextElement::Reminder(string) => string.clone(),
+        TextElement::Reminder(string) => format!("<i>{string}</i>"),
         TextElement::Token(token) => process_token(context, token),
     }
 }
@@ -188,12 +187,21 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::ManaMinus(n) => format!("-{n}{}", icons::MANA),
         TextToken::ActionSymbol => icons::ACTION.to_string(),
         TextToken::Actions(n) => icons::ACTION.repeat(*n as usize),
+        TextToken::PowerCharges(n) => {
+            if *n == 1 {
+                icons::POWER_CHARGE.to_string()
+            } else {
+                icons::POWER_CHARGE.repeat(*n as usize)
+            }
+        }
         TextToken::Number(n) => n.to_string(),
         TextToken::Plus(n) => format!("+{n}"),
         TextToken::EncounterBoostCost => {
-            format!("{}{}", encounter_boost(context).cost, icons::MANA)
+            format!("{}{}", encounter_boost(context).map_or(0, |boost| boost.cost), icons::MANA)
         }
-        TextToken::EncounterBoostBonus => format!("+{} attack", encounter_boost(context).bonus),
+        TextToken::EncounterBoostBonus => {
+            format!("+{} attack", encounter_boost(context).map_or(0, |boost| boost.bonus))
+        }
         TextToken::Attack => "attack".to_string(),
         TextToken::Health => "health".to_string(),
         TextToken::Gain => "gain".to_string(),
@@ -225,10 +233,6 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
     }
 }
 
-fn encounter_boost(context: &CardViewContext) -> AttackBoost {
-    match context {
-        CardViewContext::Default(definition) => definition.config.stats.attack_boost,
-        CardViewContext::Game(_, game, card) => queries::attack_boost(game, card.id),
-    }
-    .unwrap_or_default()
+fn encounter_boost<'a>(context: &'a CardViewContext) -> Option<&'a AttackBoost> {
+    context.definition().config.stats.attack_boost.as_ref()
 }

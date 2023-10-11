@@ -255,6 +255,7 @@ pub enum CardName {
     Pathfinder,
     StaffOfTheValiant,
     Triumph,
+    SpearOfConquest,
 }
 
 impl CardName {

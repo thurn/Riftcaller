@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use card_helpers::updates::Updates;
-use card_helpers::{abilities, costs, history, text, this};
+use card_helpers::{abilities, costs, history, in_play, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{AttackBoost, CardConfigBuilder, CardDefinition};
@@ -53,7 +53,7 @@ pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .base_attack(1)
-            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(4))
@@ -96,7 +96,7 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
         )],
         config: CardConfigBuilder::new()
             .base_attack(1)
-            .attack_boost(AttackBoost { cost: 2, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
             .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(13))
@@ -114,7 +114,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
         cost: costs::mana(meta.upgrade(8, 5)),
         image: assets::champion_card(meta, "triumph"),
         card_type: CardType::Artifact,
-        subtypes: vec![CardSubtype::Weapon, CardSubtype::Runic],
+        subtypes: vec![CardSubtype::Weapon],
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
@@ -150,12 +150,41 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .base_attack(0)
-            .attack_boost(AttackBoost { cost: 1, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .resonance(Resonance::Astral)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(15))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic3_Projectile03"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SpearOfConquest,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::champion_card(meta, "spear_of_conquest"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon, CardSubtype::Charge],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![abilities::standard(
+            text!["When you access a room, add", PowerCharges(1)],
+            in_play::on_raid_access_start(|g, s, _| {
+                mutations::add_power_charges(g, s.card_id(), 1)
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .base_attack(1)
+            .resonance(Resonance::Mortal)
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(23))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact01")),
             )
             .build(),
     }

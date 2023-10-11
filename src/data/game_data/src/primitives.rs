@@ -35,6 +35,7 @@ pub type AttackValue = u32;
 pub type ShieldValue = u32;
 pub type BreachValue = u32;
 pub type ProgressValue = u32;
+pub type PowerChargeValue = u32;
 pub type DamageAmount = u32;
 pub type RazeCost = u32;
 pub type CurseCount = u32;
@@ -542,6 +543,7 @@ pub enum CardSubtype {
     Conjuration,
     Raid,
     Runic,
+    Charge,
 }
 
 /// An interval of time in milliseconds

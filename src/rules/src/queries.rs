@@ -19,9 +19,10 @@ use constants::game_constants;
 use game_data::card_definition::{AbilityType, AttackBoost, CardStats, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
-    AbilityManaCostQuery, ActionCostQuery, AttackBoostQuery, BaseAttackQuery, BreachValueQuery,
-    HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, SanctumAccessCountQuery,
-    ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
+    AbilityManaCostQuery, ActionCostQuery, AttackBoostBonusQuery, BaseAttackQuery,
+    BreachValueQuery, HealthValueQuery, ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery,
+    SanctumAccessCountQuery, ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery,
+    VaultAccessCountQuery,
 };
 use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
 use game_data::game_state::GameState;
@@ -138,14 +139,10 @@ pub fn raze_cost(game: &GameState, card_id: CardId) -> RazeCost {
     )
 }
 
-/// Returns the [AttackBoost] for a given card, if any
-pub fn attack_boost(game: &GameState, card_id: CardId) -> Option<AttackBoost> {
-    game.card(card_id)
-        .definition()
-        .config
-        .stats
-        .attack_boost
-        .map(|boost| dispatch::perform_query(game, AttackBoostQuery(card_id), boost))
+/// Queries the amount of attack to add to a card each time its weapon boost
+/// ability is activated.
+pub fn attack_boost_bonus(game: &GameState, card_id: CardId, boost: &AttackBoost) -> AttackValue {
+    dispatch::perform_query(game, AttackBoostBonusQuery(card_id), boost.bonus)
 }
 
 /// Result of a call to [cost_to_defeat_target].
@@ -171,28 +168,29 @@ pub fn cost_to_defeat_target(
     let target = health(game, target_id);
     let current = base_attack(game, card_id);
 
-    let (result, attack_boost) = if current >= target {
+    let (mana_cost, added_attack) = if current >= target {
         (0, 0)
-    } else if let Some(boost) = attack_boost(game, card_id) {
-        if boost.bonus == 0 {
+    } else if let Some(boost) = game.card(card_id).definition().config.stats.attack_boost.as_ref() {
+        let bonus = attack_boost_bonus(game, card_id, boost);
+        if bonus == 0 {
             return None;
         } else {
             let increase = target - current;
             // If the boost does not evenly divide into the target, we need to apply it an
             // additional time.
-            let add = if (increase % boost.bonus) == 0 { 0 } else { 1 };
-            let boost_count = add + (increase / boost.bonus);
+            let add = if (increase % bonus) == 0 { 0 } else { 1 };
+            let boost_count = add + (increase / bonus);
 
             #[allow(clippy::integer_division)] // Deliberate integer truncation
-            (boost_count * boost.cost, boost_count * boost.bonus)
+            (boost_count * boost.cost, boost_count * bonus)
         }
     } else {
         return None;
     };
 
     let cost =
-        result + shield(game, target_id, Some(card_id)).saturating_sub(breach(game, card_id));
-    Some(CostToDefeatTarget { cost, attack_boost })
+        mana_cost + shield(game, target_id, Some(card_id)).saturating_sub(breach(game, card_id));
+    Some(CostToDefeatTarget { cost, attack_boost: added_attack })
 }
 
 /// Look up the number of action points a player receives at the start of their

@@ -24,7 +24,7 @@ use serde::{Deserialize, Serialize};
 use crate::card_name::CardVariant;
 use crate::game_actions::CardTarget;
 use crate::primitives::{
-    CardId, ItemLocation, ManaValue, ProgressValue, RoomId, RoomLocation, Side,
+    CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId, RoomLocation, Side,
 };
 
 /// Identifies the location of a card during an active game
@@ -123,6 +123,8 @@ pub struct CardData {
     pub progress: ProgressValue,
     /// How much mana is stored in this card?
     pub stored_mana: ManaValue,
+    /// Number of power charges on this card.
+    pub power_charges: PowerChargeValue,
     /// Is this card face-up?
     is_face_up: bool,
     /// Is this card revealed to the [CardId.side] user?

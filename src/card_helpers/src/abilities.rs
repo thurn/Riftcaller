@@ -36,6 +36,11 @@ pub fn text_only_ability(text: Vec<TextElement>) -> Ability {
     Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
 }
 
+/// Creates reminder text fro an ability
+pub fn reminder(text: &'static str) -> TextElement {
+    TextElement::Reminder(text.to_string())
+}
+
 /// Helper to flatten a list of `Option` and remove `None` values.
 pub fn some(abilities: Vec<Option<Ability>>) -> Vec<Ability> {
     abilities.into_iter().flatten().collect()

@@ -61,7 +61,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .base_attack(2)
-            .attack_boost(AttackBoost { cost: 2, bonus: 3 })
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
             .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(8))
@@ -85,7 +85,7 @@ pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
             .base_attack(3)
-            .attack_boost(AttackBoost { cost: 2, bonus: 1 })
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
             .breach(1)
             .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(2)))
@@ -111,18 +111,15 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
                     text![EncounterBoostCost],
                     text![Plus(1), Attack, "per weapon you control"],
                 ),
-                Delegate::AttackBoost(QueryDelegate {
+                Delegate::AttackBoostBonus(QueryDelegate {
                     requirement: this_card,
-                    transformation: |g, _s, _, boost| AttackBoost {
-                        bonus: g.artifacts().count() as u32,
-                        ..boost
-                    },
+                    transformation: |g, _s, _, current| current + g.artifacts().count() as u32,
                 }),
             ),
         ],
         config: CardConfigBuilder::new()
             .base_attack(1)
-            .attack_boost(AttackBoost { cost: 1, bonus: 0 })
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(0))
             .resonance(Resonance::Mortal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),

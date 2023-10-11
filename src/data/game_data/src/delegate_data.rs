@@ -71,11 +71,10 @@ use enum_kinds::EnumKind;
 use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
 
-use crate::card_definition::AttackBoost;
-#[allow(unused)] // Used in rustdocs
-use crate::card_definition::CardStats;
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
+#[allow(unused)] // Used in rustdocs
+use crate::card_definition::{AttackBoost, CardStats};
 use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
@@ -518,9 +517,9 @@ pub enum Delegate {
     /// Query the current attack value of a card. Invoked with
     /// [CardStats::base_attack] or 0.
     BaseAttack(QueryDelegate<CardId, AttackValue>),
-    /// Gets the current [AttackBoost] of a card. Invoked with
-    /// [CardStats::attack_boost] if one is present.
-    AttackBoost(QueryDelegate<CardId, AttackBoost>),
+    /// Query the amount of attack added each time a card's weapon boost ability
+    /// is activated. Invokes with [AttackBoost::bonus].
+    AttackBoostBonus(QueryDelegate<CardId, AttackValue>),
     /// Query the current health value of a card. Invoked with
     /// [CardStats::health] or 0.
     HealthValue(QueryDelegate<CardId, HealthValue>),

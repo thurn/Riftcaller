@@ -49,10 +49,6 @@ pub fn trigger_text(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElemen
     vec![TextElement::NamedTrigger(name, effect)]
 }
 
-pub fn reminder(text: &'static str) -> TextElement {
-    TextElement::Reminder(text.to_string())
-}
-
 /// A [Cost] which requires no mana and `actions` action points.
 pub fn actions(actions: ActionCount) -> Cost<AbilityId> {
     Cost { mana: None, actions, custom_cost: None }

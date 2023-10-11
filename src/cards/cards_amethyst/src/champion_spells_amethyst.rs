@@ -40,7 +40,7 @@ pub fn meditation(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![standard(
-            text![text![Gain, Mana(5)], text![Lose, Actions(1), reminder("(if able)")]],
+            text![text![Gain, Mana(5)], text![Lose, Actions(1), abilities::reminder("(if able)")]],
             this::on_play(|g, s, _| {
                 mana::gain(g, s.side(), 5);
                 mutations::lose_action_points_if_able(g, s.side(), 1)
@@ -164,7 +164,10 @@ pub fn preparation(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![standard(
-            text![text!["Draw", 4, "cards"], text!["Lose", Actions(1), reminder("(if able)")]],
+            text![
+                text!["Draw", 4, "cards"],
+                text!["Lose", Actions(1), abilities::reminder("(if able)")]
+            ],
             this::on_play(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 4)?;
                 mutations::lose_action_points_if_able(g, s.side(), 1)

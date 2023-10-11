@@ -82,12 +82,35 @@ impl<T> Default for Cost<T> {
 
 /// An activated ability used by Weapons to increase their attack value by
 /// paying a mana cost during a raid encounter. Can be used any number of times.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct AttackBoost {
-    /// Cost to activate an instance of this boost
+    /// Mana cost to activate an instance of this boost
     pub cost: ManaValue,
+    /// Additional custom cost to pay to activate an instance of this boost
+    pub custom_cost: Option<CustomCost<CardId>>,
     /// Bonus to attack added for each activation
     pub bonus: AttackValue,
+}
+
+impl AttackBoost {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn mana_cost(mut self, mana: ManaValue) -> Self {
+        self.cost = mana;
+        self
+    }
+
+    pub fn bonus(mut self, bonus: AttackValue) -> Self {
+        self.bonus = bonus;
+        self
+    }
+
+    pub fn custom_cost(mut self, custom_cost: CustomCost<CardId>) -> Self {
+        self.custom_cost = Some(custom_cost);
+        self
+    }
 }
 
 /// Scoring information about a card
@@ -100,7 +123,7 @@ pub struct SchemePoints {
 }
 
 /// Base card state values
-#[derive(PartialEq, Eq, Hash, Debug, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct CardStats {
     /// Damage required to destroy this card
     pub health: Option<HealthValue>,

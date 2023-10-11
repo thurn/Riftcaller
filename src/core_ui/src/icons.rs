@@ -17,6 +17,7 @@ pub const MANA: &str = "\u{f06d}";
 pub const CLOSE: &str = "\u{f00d}";
 pub const BACK: &str = "\u{f104}";
 pub const ACTION: &str = "\u{f254}";
+pub const POWER_CHARGE: &str = "\u{f0e7}";
 pub const ARROW: &str = "\u{f30b}";
 pub const TRIGGER: &str = "\u{f0e7}";
 pub const SAVE: &str = "\u{f0c7}";

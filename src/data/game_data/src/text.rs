@@ -14,7 +14,7 @@
 
 use enum_kinds::EnumKind;
 
-use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue};
+use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue, PowerChargeValue};
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TextElement {
@@ -35,6 +35,7 @@ pub enum TextToken {
     ManaMinus(ManaValue),
     ActionSymbol,
     Actions(ActionCount),
+    PowerCharges(PowerChargeValue),
     Number(u32),
     Plus(u32),
     EncounterBoostCost,
