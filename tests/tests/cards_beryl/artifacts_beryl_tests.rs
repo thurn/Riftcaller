@@ -14,6 +14,7 @@
 
 use game_data::card_name::CardName;
 use game_data::primitives::{RoomId, Side};
+use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_helpers::WeaponStats;
 use test_utils::*;
@@ -127,4 +128,60 @@ fn triumph_slow() {
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH)
             - (2 * minion_shield)
     );
+}
+
+#[test]
+fn spear_of_conquest() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .actions(4)
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion)
+                .face_up_defender(RoomId::Sanctum, CardName::TestMortalMinion2Health),
+        )
+        .build();
+    g.create_and_play(CardName::SpearOfConquest);
+
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    assert!(g
+        .user
+        .cards
+        .artifacts()
+        .find_card(CardName::SpearOfConquest)
+        .arena_icon()
+        .contains('1'));
+
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    assert!(g
+        .user
+        .cards
+        .artifacts()
+        .find_card(CardName::SpearOfConquest)
+        .arena_icon()
+        .contains('2'));
+
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_weapon_name(CardName::SpearOfConquest);
+    assert!(g
+        .user
+        .cards
+        .artifacts()
+        .find_card(CardName::SpearOfConquest)
+        .arena_icon()
+        .contains('1'));
+}
+
+#[test]
+fn spear_of_conquest_insufficient_charges() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestMortalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::SpearOfConquest);
+    g.initiate_raid(RoomId::Sanctum);
+    assert!(!g.user.interface.main_controls().has_text(CardName::SpearOfConquest.displayed_name()))
 }

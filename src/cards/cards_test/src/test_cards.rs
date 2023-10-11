@@ -183,6 +183,14 @@ pub fn test_minion_mortal(metadata: CardMetadata) -> CardDefinition {
     }
 }
 
+pub fn test_mortal_minion_2_health(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestMortalMinion2Health,
+        config: CardConfigBuilder::new().health(2).resonance(Resonance::Mortal).build(),
+        ..test_minion_end_raid(metadata)
+    }
+}
+
 pub fn test_weapon_2_attack(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestWeapon2Attack,

@@ -122,6 +122,8 @@ pub enum CardName {
     /// Minion with the 'astral' resonance, MINION_HEALTH health, and an 'end
     /// raid' ability, and 1 shield point
     TestAstralMinion1Shield,
+    /// Minion with 'mortal' resonance, an 'end the raid' ability, and 2 health
+    TestMortalMinion2Health,
     /// Weapon with 2 attack and no boost.
     TestWeapon2Attack,
     /// Weapon with 2 attack and a '1 mana: +2 attack' boost.

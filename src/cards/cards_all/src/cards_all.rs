@@ -92,6 +92,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_minion_astral);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_astral_1_shield);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_mortal);
+    DEFINITIONS.insert(cards_test::test_cards::test_mortal_minion_2_health);
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_2_attack);
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_2_attack_12_boost);
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_3_attack_12_boost);
