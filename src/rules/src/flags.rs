@@ -19,16 +19,13 @@ use constants::game_constants;
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    CanActivateAbilityQuery, CanDefeatTargetQuery, CanEncounterTargetQuery,
-    CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery, CanLevelUpRoomQuery,
-    CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
-    CardEncounter, Flag,
+    CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery,
+    CanLevelUpRoomQuery, CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery,
+    CanUseNoWeaponQuery, Flag,
 };
 use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
 use game_data::game_state::{GamePhase, GameState, TurnState};
-use game_data::primitives::{
-    AbilityId, CardId, CardSubtype, CardType, RaidId, Resonance, RoomId, Side,
-};
+use game_data::primitives::{AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, Side};
 use game_data::raid_data::RaidStatus;
 use game_data::utils;
 
@@ -343,46 +340,6 @@ pub fn can_level_up_card(game: &GameState, card_id: CardId) -> bool {
 /// actions.
 pub fn can_take_game_state_actions(game: &GameState, user_side: Side) -> bool {
     game.player(user_side).prompt_queue.is_empty() && current_priority(game) == Some(user_side)
-}
-
-/// Whether the provided `source` card is able to target the `target` card with
-/// an encounter action. Typically used to determine whether a weapon can target
-/// a minion, e.g. based on resonance.
-pub fn can_encounter_target(game: &GameState, source: CardId, target: CardId) -> bool {
-    let can_encounter = matches!(
-        (
-            game.card(source).definition().config.resonance,
-            game.card(target).definition().config.resonance
-        ),
-        (Some(source_resonance), Some(target_resonance))
-        if source_resonance == Resonance::Prismatic || source_resonance == target_resonance
-    );
-
-    dispatch::perform_query(
-        game,
-        CanEncounterTargetQuery(CardEncounter::new(source, target)),
-        Flag::new(can_encounter),
-    )
-    .into()
-}
-
-/// Can the `source` card defeat the `target` card in an encounter by paying its
-/// shield cost and dealing enough damage to equal its health (potentially after
-/// paying mana & applying boosts), or via some other game mechanism?
-pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bool {
-    let can_defeat = can_encounter_target(game, source, target)
-        && matches!(
-            queries::cost_to_defeat_target(game, source, target),
-            Some(can_defeat)
-            if can_defeat.cost <= mana::get(game, source.side, ManaPurpose::UseWeapon(source))
-        );
-
-    dispatch::perform_query(
-        game,
-        CanDefeatTargetQuery(CardEncounter::new(source, target)),
-        Flag::new(can_defeat),
-    )
-    .into()
 }
 
 /// Returns true if the `side` player is in their main phase as described in

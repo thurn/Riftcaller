@@ -18,6 +18,7 @@ pub mod raid_display_state;
 pub mod raid_prompt;
 
 use anyhow::Result;
+use game_data::card_definition::CustomBoostCost;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, MinionCombatAbilityEvent,
@@ -35,7 +36,7 @@ use game_data::raid_data::{
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
+use rules::{combat, dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 use tracing::debug;
 use with_error::{fail, verify, WithError};
 
@@ -233,7 +234,7 @@ fn populate_encounter_prompt(game: &mut GameState, minion_id: CardId) -> Result<
     RaidState::prompt(
         RaidStatus::Encounter,
         game.artifacts()
-            .filter(|weapon| flags::can_defeat_target(game, weapon.id, minion_id))
+            .filter(|weapon| combat::can_defeat_target(game, weapon.id, minion_id))
             .map(|weapon| {
                 let interaction = WeaponInteraction::new(weapon.id, minion_id);
                 RaidChoice::new(RaidLabel::UseWeapon(interaction), RaidStep::UseWeapon(interaction))
@@ -253,8 +254,8 @@ fn use_weapon(
     info: RaidInfo,
     interaction: WeaponInteraction,
 ) -> Result<RaidState> {
-    let Some(to_defeat) =
-        queries::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
+    let Some(cost_to_defeat) =
+        combat::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
     else {
         fail!("{:?} cannot defeat target: {:?}", interaction.weapon_id, interaction.defender_id)
     };
@@ -263,14 +264,26 @@ fn use_weapon(
         game,
         Side::Champion,
         ManaPurpose::UseWeapon(interaction.weapon_id),
-        to_defeat.cost,
+        cost_to_defeat.mana_cost,
     )?;
+
+    if let Some(custom_activation) = cost_to_defeat.custom_activations.as_ref() {
+        match custom_activation.cost {
+            CustomBoostCost::PowerCharges(n) => {
+                mutations::spend_power_charges(
+                    game,
+                    interaction.weapon_id,
+                    n * custom_activation.activation_count,
+                )?;
+            }
+        }
+    }
 
     let used_weapon = UsedWeapon {
         weapon_id: interaction.weapon_id,
         target_id: interaction.defender_id,
-        mana_spent: to_defeat.cost,
-        attack_boost: to_defeat.attack_boost,
+        mana_spent: cost_to_defeat.mana_cost,
+        attack_boost: cost_to_defeat.attack_boost,
     };
     game.add_history_event(HistoryEvent::UseWeapon(info.event(used_weapon)));
 

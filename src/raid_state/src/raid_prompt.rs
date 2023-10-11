@@ -17,6 +17,7 @@ use core_ui::icons;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
+use game_data::card_definition::CustomBoostCost;
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
 use game_data::game_state::GameState;
 use game_data::primitives::{CardId, RoomId, Side};
@@ -29,7 +30,8 @@ use prompts::response_button::ResponseButton;
 use protos::spelldawn::{
     AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify, InterfaceMainControls,
 };
-use rules::{queries, CardDefinitionExt};
+use rules::combat::CustomBoostActivation;
+use rules::{combat, queries, CardDefinitionExt};
 
 /// Builds an [InterfaceMainControls] response to show to the `side` player in
 /// order to make a decision in this raid if a choice is currently available.
@@ -183,15 +185,33 @@ fn summon_button(game: &GameState, minion_id: CardId) -> ResponseButton {
 
 fn use_weapon_button(game: &GameState, interaction: WeaponInteraction) -> ResponseButton {
     let label = game.card(interaction.weapon_id).definition().name.displayed_name();
-    if let Some(can_defeat) =
-        queries::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
+    if let Some(cost_to_defeat) =
+        combat::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
     {
-        if can_defeat.cost > 0 {
-            return ResponseButton::new(format!("{}\n{}{}", label, can_defeat.cost, icons::MANA))
+        if let Some(activation) = cost_to_defeat.custom_activations.as_ref() {
+            return ResponseButton::new(custom_weapon_activation_label(activation, label))
                 .two_lines(true);
+        }
+
+        if cost_to_defeat.mana_cost > 0 {
+            return ResponseButton::new(format!(
+                "{}\n{}{}",
+                label,
+                cost_to_defeat.mana_cost,
+                icons::MANA
+            ))
+            .two_lines(true);
         }
     }
     ResponseButton::new(label)
+}
+
+fn custom_weapon_activation_label(activation: &CustomBoostActivation, label: String) -> String {
+    match activation.cost {
+        CustomBoostCost::PowerCharges(n) => {
+            format!("{}\n{}{}", label, n * activation.activation_count, icons::POWER_CHARGE)
+        }
+    }
 }
 
 fn raze_button(game: &GameState, card_id: CardId, action: RazeCardActionType) -> ResponseButton {

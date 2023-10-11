@@ -29,8 +29,8 @@ use crate::delegate_data::Delegate;
 use crate::game_state::GameState;
 use crate::primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
-    HealthValue, ManaValue, PointsValue, ProgressValue, Rarity, RazeCost, Resonance, RoomId,
-    School, ShieldValue, Side, Sprite,
+    HealthValue, ManaValue, PointsValue, PowerChargeValue, ProgressValue, Rarity, RazeCost,
+    Resonance, RoomId, School, ShieldValue, Side, Sprite,
 };
 use crate::special_effects::ProjectileData;
 use crate::text::TextElement;
@@ -80,6 +80,12 @@ impl<T> Default for Cost<T> {
     }
 }
 
+/// Possible alternate costs for activating an attack boost.
+#[derive(Debug, Clone)]
+pub enum CustomBoostCost {
+    PowerCharges(PowerChargeValue),
+}
+
 /// An activated ability used by Weapons to increase their attack value by
 /// paying a mana cost during a raid encounter. Can be used any number of times.
 #[derive(Debug, Clone, Default)]
@@ -87,7 +93,7 @@ pub struct AttackBoost {
     /// Mana cost to activate an instance of this boost
     pub cost: ManaValue,
     /// Additional custom cost to pay to activate an instance of this boost
-    pub custom_cost: Option<CustomCost<CardId>>,
+    pub custom_cost: Option<CustomBoostCost>,
     /// Bonus to attack added for each activation
     pub bonus: AttackValue,
 }
@@ -107,7 +113,7 @@ impl AttackBoost {
         self
     }
 
-    pub fn custom_cost(mut self, custom_cost: CustomCost<CardId>) -> Self {
+    pub fn custom_cost(mut self, custom_cost: CustomBoostCost) -> Self {
         self.custom_cost = Some(custom_cost);
         self
     }

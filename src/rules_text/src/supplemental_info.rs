@@ -107,7 +107,7 @@ fn add_tokens(tokens: &mut Vec<TextTokenKind>, text: &[TextElement]) {
 fn token_description(token: TextTokenKind) -> Option<String> {
     match token {
         TextTokenKind::PowerCharges => Some(format!(
-            "{}: Power Charge. Stored while in play to spend on abilities", 
+            "{}: A power charge, stored while in play to spend on abilities", 
             icons::POWER_CHARGE
         )),
         TextTokenKind::Play => entry("Play", "Triggers when this card enters the arena"),

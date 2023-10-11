@@ -16,7 +16,7 @@ use card_helpers::updates::Updates;
 use card_helpers::{abilities, costs, history, in_play, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{AttackBoost, CardConfigBuilder, CardDefinition};
+use game_data::card_definition::{AttackBoost, CardConfigBuilder, CardDefinition, CustomBoostCost};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
@@ -172,14 +172,21 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::standard(
-            text!["When you access a room, add", PowerCharges(1)],
-            in_play::on_raid_access_start(|g, s, _| {
-                mutations::add_power_charges(g, s.card_id(), 1)
-            }),
-        )],
+        abilities: vec![
+            abilities::standard(
+                text!["When you access a room, add", PowerCharges(1)],
+                in_play::on_raid_access_start(|g, s, _| {
+                    mutations::add_power_charges(g, s.card_id(), 1)
+                }),
+            ),
+            abilities::text_only_ability(abilities::encounter_ability_text(
+                text![PowerCharges(1)],
+                text![EncounterBoostBonus],
+            )),
+        ],
         config: CardConfigBuilder::new()
-            .base_attack(1)
+            .base_attack(meta.upgrade(1, 2))
+            .attack_boost(AttackBoost::new().custom_cost(CustomBoostCost::PowerCharges(1)).bonus(1))
             .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(23))

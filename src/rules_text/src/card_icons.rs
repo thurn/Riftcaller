@@ -14,6 +14,7 @@
 
 use assets;
 use assets::CardIconType;
+use core_ui::icons;
 use game_data::card_view_context::CardViewContext;
 use game_data::primitives::ManaValue;
 use protos::spelldawn::{CardIcon, CardIcons};
@@ -40,6 +41,21 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
                 background: Some(assets::card_icon(CardIconType::Mana)),
                 text: Some(data.stored_mana.to_string()),
                 background_scale: assets::icon_background_scale(CardIconType::Mana),
+            })
+        }
+        _ => {}
+    }
+
+    match context.card_data() {
+        Some(data) if data.power_charges > 0 => {
+            icons.arena_icon = Some(CardIcon {
+                background: Some(assets::card_icon(CardIconType::PowerCharge)),
+                text: Some(format!(
+                    "{}<color=#EE2><voffset=0.1em><size=80%>{}</size></voffset></color>",
+                    data.power_charges,
+                    icons::POWER_CHARGE
+                )),
+                background_scale: assets::icon_background_scale(CardIconType::PowerCharge),
             })
         }
         _ => {}

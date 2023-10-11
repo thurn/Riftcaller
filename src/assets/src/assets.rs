@@ -38,6 +38,7 @@ pub enum CardIconType {
     LevelRequirement,
     Points,
     Raze,
+    PowerCharge,
 }
 
 pub fn side_badge(side: Side) -> SpriteAddress {
@@ -92,6 +93,9 @@ pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
                 }
                 CardIconType::Raze => {
                     "Sprites/Raze"
+                }
+                CardIconType::PowerCharge => {
+                    "LittleSweetDaemon/TCG_Card_Elemental_Design/Number_Icons/Number_Icons_Color_1"
                 }
             }
         ),
