@@ -259,6 +259,7 @@ pub enum CardName {
     Triumph,
     SpearOfConquest,
     BladeOfReckoning,
+    Resolution,
 }
 
 impl CardName {

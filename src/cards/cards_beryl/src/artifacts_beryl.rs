@@ -232,3 +232,39 @@ pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn resolution(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Resolution,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::champion_card(meta, "resolution"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::breach(),
+            abilities::standard(
+                text!["When this weapon defeats a minion, sacrifice it"],
+                this::on_weapon_used(|g, s, _| {
+                    Updates::new(g).ability_alert(s).apply();
+                    mutations::sacrifice_card(g, s.card_id())
+                }),
+            ),
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(meta.upgrade(2, 4))
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
+            .breach(5)
+            .resonance(Resonance::Mortal)
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles2(19))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile03"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact03")),
+            )
+            .build(),
+    }
+}

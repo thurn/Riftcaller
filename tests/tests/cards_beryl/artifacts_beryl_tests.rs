@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::card_name::CardName;
-use game_data::primitives::{RoomId, Side};
+use game_data::primitives::{Resonance, RoomId, Side};
 use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_helpers::WeaponStats;
@@ -211,4 +211,12 @@ fn blade_of_reckoning() {
         .contains('3'));
     g.initiate_raid(RoomId::Sanctum);
     g.click_weapon_name(CardName::BladeOfReckoning);
+}
+
+#[test]
+fn resolution() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.create_and_play(CardName::Resolution);
+    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::Resolution);
+    assert!(g.user.cards.discard_pile().contains_card(CardName::Resolution));
 }

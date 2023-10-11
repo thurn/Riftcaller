@@ -61,6 +61,12 @@ pub fn encounter_boost() -> Ability {
     text_only_ability(encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]))
 }
 
+/// The standard weapon breach ability, reads the weapon's breach value from its
+/// definition.
+pub fn breach() -> Ability {
+    text_only_ability(text![Breach])
+}
+
 /// Store `N` mana in this card when played. Move it to the discard pile when
 /// the stored mana is depleted.
 pub fn store_mana_on_play<const N: ManaValue>() -> Ability {

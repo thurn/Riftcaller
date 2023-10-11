@@ -14,7 +14,7 @@
 
 use enum_kinds::EnumKind;
 
-use crate::primitives::{ActionCount, BreachValue, DamageAmount, ManaValue, PowerChargeValue};
+use crate::primitives::{ActionCount, DamageAmount, ManaValue, PowerChargeValue};
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TextElement {
@@ -63,7 +63,7 @@ pub enum TextToken {
     Sanctum,
     Vault,
     Crypts,
-    Breach(BreachValue),
+    Breach,
     LevelUp,
     Trap,
     Curse,
@@ -71,10 +71,6 @@ pub enum TextToken {
 }
 
 impl TextToken {
-    pub fn is_keyword(&self) -> bool {
-        matches!(self, Self::Breach(_) | Self::LevelUp | Self::Trap)
-    }
-
     pub fn kind(&self) -> TextTokenKind {
         self.into()
     }

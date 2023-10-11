@@ -38,10 +38,6 @@ pub fn build(context: &CardViewContext) -> RulesText {
         }
     }
 
-    if let Some(breach) = context.definition().config.stats.breach {
-        lines.push(build_text(context, &[TextElement::Token(TextToken::Breach(breach))], false))
-    }
-
     RulesText { text: lines.join("\n") }
 }
 
@@ -138,7 +134,7 @@ fn build_text(context: &CardViewContext, text: &[TextElement], add_period: bool)
         text.iter().map(|text| process_text(context, text)).collect::<Vec<_>>().join(" ");
     if add_period {
         match text[text.len() - 1] {
-            TextElement::Token(t) if !(text.len() == 1 && t.is_keyword()) => result.push('.'),
+            TextElement::Token(_) => result.push('.'),
             TextElement::Literal(_) | TextElement::Reminder(_) => result.push('.'),
             _ => {}
         }
@@ -225,7 +221,9 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Sanctum => "sanctum".to_string(),
         TextToken::Vault => "vault".to_string(),
         TextToken::Crypts => "crypts".to_string(),
-        TextToken::Breach(n) => format!("<b>Breach {n}</b>"),
+        TextToken::Breach => {
+            format!("breach {}", context.definition().config.stats.breach.unwrap_or_default())
+        }
         TextToken::LevelUp => "<b>Level Up</b>".to_string(),
         TextToken::Trap => "<b>Trap</b>".to_string(),
         TextToken::Curse => "curse".to_string(),

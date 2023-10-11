@@ -21,6 +21,7 @@ use crate::primitives::{CardId, GameObjectId, Milliseconds};
 pub enum Projectile {
     /// Hovl Studios projectile number
     Projectiles1(u32),
+    Projectiles2(u32),
 }
 
 /// A projectile asset and associated behavior data

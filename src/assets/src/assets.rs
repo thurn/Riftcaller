@@ -245,6 +245,9 @@ pub fn projectile(projectile: Projectile) -> ProjectileAddress {
             Projectile::Projectiles1(number) => {
                 format!("HovlStudio/Projectiles1/Projectile {number}.prefab")
             }
+            Projectile::Projectiles2(number) => {
+                format!("HovlStudio/Projectiles2/Projectile {number}.prefab")
+            }
         },
     }
 }
