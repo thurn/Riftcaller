@@ -14,6 +14,7 @@
 
 //! Test cards
 
+use card_helpers::this::on_activated;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
@@ -470,7 +471,7 @@ pub fn test_sacrifice_draw_card_artifact(metadata: CardMetadata) -> CardDefiniti
     CardDefinition {
         name: CardName::TestSacrificeDrawCardArtifact,
         cost: cost(test_constants::ARTIFACT_COST),
-        card_type: CardType::Evocation,
+        card_type: CardType::Artifact,
         abilities: vec![Ability {
             ability_type: abilities::sacrifice_this(),
             text: text!["Draw a card"],
@@ -546,7 +547,7 @@ pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Test],
         abilities: vec![abilities::standard(
             text!["Give the Champion a curse"],
-            this::on_play(|g, _, _| mutations::give_curses(g, 1)),
+            this::on_played(|g, _, _| mutations::give_curses(g, 1)),
         )],
         ..test_overlord_spell(metadata)
     }
@@ -571,7 +572,7 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Test],
         abilities: vec![abilities::standard(
             text!["Deal 1 damage"],
-            this::on_play(|g, s, _| mutations::deal_damage(g, s, 1)),
+            this::on_played(|g, s, _| mutations::deal_damage(g, s, 1)),
         )],
         ..test_overlord_spell(metadata)
     }

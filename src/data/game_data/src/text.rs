@@ -40,6 +40,7 @@ pub enum TextToken {
     Plus(u32),
     EncounterBoostCost,
     EncounterBoostBonus,
+    SacrificeCost,
     Attack,
     Health,
     Gain,

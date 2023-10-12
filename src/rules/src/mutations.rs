@@ -24,7 +24,7 @@ use std::cmp;
 use anyhow::Result;
 use constants::game_constants;
 use game_data::card_name::CardVariant;
-use game_data::card_state::CardState;
+use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
@@ -93,6 +93,7 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     }
 
     if !old_position.in_play() && new_position.in_play() {
+        game.card_mut(card_id).clear_all_counters();
         dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
     }
 
@@ -112,10 +113,6 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
 
     if new_position.in_discard_pile() && card_id.side == Side::Champion {
         turn_face_up(game, card_id);
-    }
-
-    if !new_position.in_play() {
-        clear_counters(game, card_id);
     }
 
     Ok(())
@@ -254,6 +251,12 @@ pub enum OnZeroStored {
     Ignore,
 }
 
+/// Add `amount` to the stored mana in a card. Returns the new stored amount.
+pub fn add_stored_mana(game: &mut GameState, card_id: CardId, amount: ManaValue) -> ManaValue {
+    game.card_mut(card_id).add_counters(CardCounter::StoredMana, amount);
+    game.card(card_id).counters(CardCounter::StoredMana)
+}
+
 /// Takes *up to* `maximum` stored mana from a card and gives it to the player
 /// who owns this card. Returns the amount of mana taken.
 ///
@@ -266,13 +269,15 @@ pub fn take_stored_mana(
     on_zero_stored: OnZeroStored,
 ) -> Result<ManaValue> {
     debug!(?card_id, ?maximum, "Taking stored mana");
-    let available = game.card(card_id).data.stored_mana;
+    let available = game.card(card_id).counters(CardCounter::StoredMana);
     let taken = cmp::min(available, maximum);
-    game.card_mut(card_id).data.stored_mana -= taken;
+    game.card_mut(card_id).remove_counters_saturating(CardCounter::StoredMana, taken);
     mana::gain(game, card_id.side, taken);
     dispatch::invoke_event(game, StoredManaTakenEvent(card_id))?;
 
-    if on_zero_stored == OnZeroStored::Sacrifice && game.card(card_id).data.stored_mana == 0 {
+    if on_zero_stored == OnZeroStored::Sacrifice
+        && game.card(card_id).counters(CardCounter::StoredMana) == 0
+    {
         sacrifice_card(game, card_id)?;
     }
 
@@ -285,7 +290,7 @@ pub fn add_power_charges(
     card_id: CardId,
     count: PowerChargeValue,
 ) -> Result<()> {
-    game.card_mut(card_id).data.power_charges += count;
+    game.card_mut(card_id).add_counters(CardCounter::PowerCharges, count);
     Ok(())
 }
 
@@ -298,8 +303,11 @@ pub fn spend_power_charges(
     count: PowerChargeValue,
 ) -> Result<()> {
     let card = game.card_mut(card_id);
-    verify!(card.data.power_charges >= count, "Insufficient power charges available");
-    card.data.power_charges -= count;
+    verify!(
+        card.counters(CardCounter::PowerCharges) >= count,
+        "Insufficient power charges available"
+    );
+    card.remove_counters_saturating(CardCounter::PowerCharges, count);
     Ok(())
 }
 
@@ -415,10 +423,10 @@ pub fn level_up_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
 /// Returns an error if this card cannot be leveled up.
 pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) -> Result<()> {
     verify!(flags::can_level_up_card(game, card_id));
-    game.card_mut(card_id).data.progress += amount;
+    game.card_mut(card_id).add_counters(CardCounter::Progress, amount);
     let card = game.card(card_id);
     if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {
-        if card.data.progress >= scheme_points.level_requirement {
+        if card.counters(CardCounter::Progress) >= scheme_points.level_requirement {
             turn_face_up(game, card_id);
             move_card(game, card_id, CardPosition::Scoring)?;
             game.add_animation(|| GameAnimation::ScoreCard(Side::Overlord, card_id));
@@ -499,14 +507,6 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     }
 
     Ok(())
-}
-
-/// Clears card state which is specific to a card being in play.
-///
-/// Automatically invoked by [move_card] when a card moves to a non-play zone.
-fn clear_counters(game: &mut GameState, card_id: CardId) {
-    game.card_mut(card_id).data.progress = 0;
-    game.card_mut(card_id).data.stored_mana = 0;
 }
 
 /// Options when invoking [summon_minion]

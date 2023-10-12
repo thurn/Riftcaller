@@ -15,6 +15,7 @@
 //! Calculations for using weapons during combat
 
 use game_data::card_definition::{AttackBoost, CustomBoostCost};
+use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
     AttackBoostBonusQuery, CanDefeatTargetQuery, CanEncounterTargetQuery, CardEncounter, Flag,
 };
@@ -154,6 +155,8 @@ fn can_pay_custom_boost(
     times: u32,
 ) -> bool {
     match cost {
-        CustomBoostCost::PowerCharges(n) => game.card(card_id).data.power_charges >= (times * n),
+        CustomBoostCost::PowerCharges(n) => {
+            game.card(card_id).counters(CardCounter::PowerCharges) >= (times * n)
+        }
     }
 }

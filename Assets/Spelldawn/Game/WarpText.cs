@@ -42,29 +42,16 @@ namespace Spelldawn.Game
 
     [SerializeField] TMP_Text _text = null!;
 
-    void Start()
-    {
-      StartCoroutine(Warp());
-    }
-
-    public IEnumerator Warp()
-    {
-      for (var i = 0; i < 10; ++i)
-      {
-        // TextMeshPro mesh updates basically just take an arbitrary number of frames to take effect,
-        // and I don't think there's really a callback when it's done.
-        //
-        // The *official* Unity example of how to do this is just "run it in a loop forever lol" ?!?
-        yield return new WaitForEndOfFrame();
-        RunWarp();
-      }      
-    }
-
     /// <summary>
     ///  Method to curve text along a Unity animation curve.
     /// </summary>
-    void RunWarp()
+    public void RunWarp()
     {
+      // TextMeshPro mesh updates basically just take an arbitrary number of frames to take effect,
+      // and I don't think there's really a callback when it's done.
+      //
+      // The *official* Unity example of how to do this is just "run it in a loop forever lol" ?!?
+      
       var preferredWidth = _text.GetPreferredValues().x;
 
       if (preferredWidth < 16f)

@@ -16,16 +16,18 @@ use card_helpers::updates::Updates;
 use card_helpers::{abilities, costs, history, in_play, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{AttackBoost, CardConfigBuilder, CardDefinition, CustomBoostCost};
+use game_data::card_definition::{
+    AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, CustomBoostCost,
+};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::CardPosition;
+use game_data::card_state::{CardCounter, CardPosition};
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, Resonance, School, Side};
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
 use game_data::text::TextToken::*;
-use rules::mutations;
+use rules::{mana, mutations, CardDefinitionExt};
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -266,5 +268,52 @@ pub fn resolution(meta: CardMetadata) -> CardDefinition {
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact03")),
             )
             .build(),
+    }
+}
+
+pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::StarlightLantern,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::champion_card(meta, "starlight_lantern"),
+        card_type: CardType::Artifact,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::standard(
+                text!["When you play an artifact, including this card,", StoreMana(1)],
+                in_play::on_card_played(|g, s, played| {
+                    if g.card(played.card_id).definition().card_type == CardType::Artifact {
+                        Updates::new(g)
+                            .timed_effect(
+                                GameObjectId::CardId(s.card_id()),
+                                TimedEffectData::new(TimedEffect::MagicCircles1(7))
+                                    .scale(2.0)
+                                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02"))
+                                    .effect_color(design::YELLOW_900),
+                            )
+                            .apply();
+                        mutations::add_stored_mana(g, s.card_id(), 1);
+                    }
+                    Ok(())
+                }),
+            ),
+            abilities::activated(
+                text!["Take all stored mana"],
+                costs::sacrifice_for_action(),
+                this::on_activated(|g, s, _| {
+                    mana::gain(
+                        g,
+                        s.side(),
+                        g.card(s.card_id()).last_known_counters(CardCounter::StoredMana),
+                    );
+                    Ok(())
+                }),
+            ),
+        ],
+        config: CardConfig::default(),
     }
 }

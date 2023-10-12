@@ -14,6 +14,7 @@
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use card_helpers::abilities::standard;
+use card_helpers::this::on_activated;
 use card_helpers::updates::Updates;
 use card_helpers::*;
 use game_data::card_definition::{
@@ -23,7 +24,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-use rules::mutations::OnZeroStored;
+use rules::mutations::{add_stored_mana, OnZeroStored};
 use rules::{mana, mutations};
 
 pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
@@ -39,7 +40,7 @@ pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![standard(
             text![Gain, Mana(9)],
-            this::on_play(|g, s, _| {
+            this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
             }),
@@ -61,7 +62,7 @@ pub fn eldritch_surge(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![standard(
             text![Gain, Mana(3)],
-            this::on_play(|g, s, _| {
+            this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 3);
                 Ok(())
             }),
@@ -136,7 +137,7 @@ pub fn contemplate(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![standard(
             text![text![Gain, Mana(2)], text!["Draw a card"]],
-            this::on_play(|g, s, _| {
+            this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 2);
                 mutations::draw_cards(g, s.side(), 1)?;
                 Ok(())
@@ -159,7 +160,7 @@ pub fn ancestral_knowledge(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![standard(
             text!["Draw", 3, "cards"],
-            this::on_play(|g, s, _| {
+            this::on_played(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 3)?;
                 Ok(())
             }),

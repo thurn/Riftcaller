@@ -220,3 +220,17 @@ fn resolution() {
     g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::Resolution);
     assert!(g.user.cards.discard_pile().contains_card(CardName::Resolution));
 }
+
+#[test]
+fn starlight_lantern() {
+    let cost = 0;
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let id = g.create_and_play(CardName::StarlightLantern);
+    g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.activate_ability(id, 1);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA - cost - test_constants::ARTIFACT_COST + 2
+    );
+    assert!(g.user.cards.discard_pile().contains_card(CardName::StarlightLantern));
+}

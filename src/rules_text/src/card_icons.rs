@@ -15,6 +15,7 @@
 use assets;
 use assets::CardIconType;
 use core_ui::icons;
+use game_data::card_state::CardCounter;
 use game_data::card_view_context::CardViewContext;
 use game_data::primitives::ManaValue;
 use protos::spelldawn::{CardIcon, CardIcons};
@@ -24,35 +25,35 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
     let definition = context.definition();
     let mut icons = CardIcons::default();
 
-    match context.card_data() {
-        Some(data) if data.progress > 0 => {
+    match context.card() {
+        Some(card) if card.counters(CardCounter::Progress) > 0 => {
             icons.arena_icon = Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::LevelCounter)),
-                text: Some(data.progress.to_string()),
+                text: Some(card.counters(CardCounter::Progress).to_string()),
                 background_scale: assets::icon_background_scale(CardIconType::LevelCounter),
             })
         }
         _ => {}
     }
 
-    match context.card_data() {
-        Some(data) if data.stored_mana > 0 => {
+    match context.card() {
+        Some(card) if card.counters(CardCounter::StoredMana) > 0 => {
             icons.arena_icon = Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::Mana)),
-                text: Some(data.stored_mana.to_string()),
+                text: Some(card.counters(CardCounter::StoredMana).to_string()),
                 background_scale: assets::icon_background_scale(CardIconType::Mana),
             })
         }
         _ => {}
     }
 
-    match context.card_data() {
-        Some(data) if data.power_charges > 0 => {
+    match context.card() {
+        Some(card) if card.counters(CardCounter::PowerCharges) > 0 => {
             icons.arena_icon = Some(CardIcon {
                 background: Some(assets::card_icon(CardIconType::PowerCharge)),
                 text: Some(format!(
                     "{}<color=#EE2><voffset=0.1em><size=80%>{}</size></voffset></color>",
-                    data.power_charges,
+                    card.counters(CardCounter::PowerCharges),
                     icons::POWER_CHARGE
                 )),
                 background_scale: assets::icon_background_scale(CardIconType::PowerCharge),

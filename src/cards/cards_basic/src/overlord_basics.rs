@@ -15,6 +15,7 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::abilities::standard;
+use card_helpers::this::on_activated;
 use card_helpers::*;
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, SchemePoints,
@@ -92,7 +93,7 @@ pub fn gathering_dark(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![standard(
             text![Gain, Mana(9)],
-            this::on_play(|g, s, _| {
+            this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
             }),

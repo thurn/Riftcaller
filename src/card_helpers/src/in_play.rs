@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::delegate_data::{
-    DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
+    CardPlayed, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
     TransformationFn,
 };
 use game_data::game_state::GameState;
@@ -32,6 +32,12 @@ pub fn at_dawn(mutation: MutationFn<TurnNumber>) -> Delegate {
 /// A delegate which triggers at dusk if a card is face up in play
 pub fn at_dusk(mutation: MutationFn<TurnNumber>) -> Delegate {
     Delegate::Dusk(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
+/// A delegate which triggers when any card is played if this card is face up
+/// and in play
+pub fn on_card_played(mutation: MutationFn<CardPlayed>) -> Delegate {
+    Delegate::PlayCard(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
 /// A delegate which triggers if a card is face up in play when damage is dealt.

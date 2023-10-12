@@ -216,6 +216,11 @@ namespace Spelldawn.Game
       {
         // Outline is too fiery for screenshot tests
         _outline.gameObject.SetActive(CanPlay());
+        
+        if (_warpText && _warpText != null)
+        {
+          _warpText.RunWarp();
+        }        
       }
     }
 
@@ -618,10 +623,6 @@ namespace Spelldawn.Game
       if (_title.text != title)
       {
         _title.text = title;
-        if (_warpText && _warpText != null)
-        {
-          StartCoroutine(_warpText.Warp());
-        }
       }
     }
 

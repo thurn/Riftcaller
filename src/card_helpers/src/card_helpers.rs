@@ -31,8 +31,8 @@ pub mod updates;
 use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    AbilityActivated, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
-    RequirementFn, Scope, TransformationFn, UsedWeapon,
+    Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome, RequirementFn,
+    Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
@@ -119,11 +119,6 @@ pub fn this_ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilit
     scope.ability_id() == ability_id.ability_id()
 }
 
-/// A [Delegate] which triggers when an ability is activated
-pub fn on_activated(mutation: MutationFn<AbilityActivated>) -> Delegate {
-    Delegate::ActivateAbility(EventDelegate { requirement: this_ability, mutation })
-}
-
 pub fn when_unveiled(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::UnveilCard(EventDelegate { requirement: this_card, mutation })
 }
@@ -175,12 +170,6 @@ pub fn on_raid_success(
 /// Delegate which transforms how a minion's health is calculated
 pub fn on_calculate_health(transformation: TransformationFn<CardId, HealthValue>) -> Delegate {
     Delegate::HealthValue(QueryDelegate { requirement: this_card, transformation })
-}
-
-/// Add `amount` to the stored mana in a card. Returns the new stored amount.
-pub fn add_stored_mana(game: &mut GameState, card_id: CardId, amount: ManaValue) -> ManaValue {
-    game.card_mut(card_id).data.stored_mana += amount;
-    game.card(card_id).data.stored_mana
 }
 
 /// A [PromptChoice] to end the current raid.

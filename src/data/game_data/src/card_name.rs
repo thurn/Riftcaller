@@ -260,6 +260,7 @@ pub enum CardName {
     SpearOfConquest,
     BladeOfReckoning,
     Resolution,
+    StarlightLantern,
 }
 
 impl CardName {

@@ -14,7 +14,7 @@
 
 use game_data::card_definition::{Cost, CustomCost};
 use game_data::primitives::{AbilityId, CardId, ManaValue};
-use game_data::text::TextElement;
+use game_data::text::{TextElement, TextToken};
 use rules::mutations;
 
 use crate::history;
@@ -23,6 +23,12 @@ use crate::history;
 /// points
 pub fn mana(mana: ManaValue) -> Cost<CardId> {
     Cost { mana: Some(mana), actions: 1, custom_cost: None }
+}
+
+/// Cost for an ability which costs 1 action point and requires the owning card
+/// to be sacrificed.
+pub fn sacrifice_for_action() -> Cost<AbilityId> {
+    Cost { mana: None, actions: 1, custom_cost: sacrifice_cost() }
 }
 
 /// A [CustomCost] which allows an ability to be activated by sacrificing the
@@ -34,7 +40,7 @@ pub fn sacrifice_cost() -> Option<CustomCost<AbilityId>> {
                 && game.card(ability_id.card_id).position().in_play()
         },
         pay: |game, ability_id| mutations::sacrifice_card(game, ability_id.card_id),
-        description: Some(TextElement::Literal("Sacrifice".to_string())),
+        description: Some(TextElement::Token(TextToken::SacrificeCost)),
     })
 }
 

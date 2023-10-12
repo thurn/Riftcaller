@@ -104,19 +104,16 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![
-            abilities::silent_ability(abilities::encounter_boost()),
-            standard(
-                encounter_ability_text(
-                    text![EncounterBoostCost],
-                    text![Plus(1), Attack, "per weapon you control"],
-                ),
-                Delegate::AttackBoostBonus(QueryDelegate {
-                    requirement: this_card,
-                    transformation: |g, _s, _, current| current + g.artifacts().count() as u32,
-                }),
+        abilities: vec![standard(
+            encounter_ability_text(
+                text![EncounterBoostCost],
+                text![Plus(1), Attack, "per weapon you control"],
             ),
-        ],
+            Delegate::AttackBoostBonus(QueryDelegate {
+                requirement: this_card,
+                transformation: |g, _s, _, current| current + g.artifacts().count() as u32,
+            }),
+        )],
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(0))

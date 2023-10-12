@@ -46,7 +46,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
         abilities: abilities::some(vec![
             Some(abilities::standard(
                 text!["Play an artifact in your discard pile"],
-                this::on_play(|g, s, _| {
+                this::on_played(|g, s, _| {
                     let cards = g
                         .discard_pile(s.side())
                         .filter(|c| c.definition().card_type == CardType::Artifact)
@@ -102,7 +102,7 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
             ability_type: AbilityType::Standard,
             text: text!["Raid the", Sanctum, ", accessing", meta.upgrade(2, 3), "additional cards"],
             delegates: vec![
-                this::on_play(|g, s, _| {
+                this::on_played(|g, s, _| {
                     Updates::new(g)
                         .timed_effect(
                             GameObjectId::Character(Side::Overlord),
@@ -143,7 +143,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                     text!["Return this card to your hand"]
                 ),
             ],
-            this::on_play(|g, s, _| {
+            this::on_played(|g, s, _| {
                 mutations::remove_curses(g, 1)?;
 
                 Updates::new(g)
@@ -201,7 +201,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
                 text!["Discard the rest"]
             ],
             delegates: vec![
-                this::on_play(|g, s, _| {
+                this::on_played(|g, s, _| {
                     let cards = mutations::realize_top_of_deck(g, s.side(), s.upgrade(4, 6))?;
                     for card in &cards {
                         mutations::set_revealed_to(g, *card, s.side(), true);
@@ -264,7 +264,7 @@ pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
         abilities: vec![
             abilities::standard(
                 text!["Draw", meta.upgrade(3, 4), "cards"],
-                this::on_play(|g, s, _| {
+                this::on_played(|g, s, _| {
                     update(g, None);
                     mutations::draw_cards(g, s.side(), s.upgrade(3, 4))?;
                     Ok(())

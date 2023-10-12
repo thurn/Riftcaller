@@ -122,7 +122,7 @@ fn token_description(token: TextTokenKind) -> Option<String> {
         }
         TextTokenKind::Unveil => entry("Unveil", "Triggers when this card is turned face up"),
         TextTokenKind::StoreMana => {
-            entry("Store", format!("Add {} to this card to <b>take</b> later", icons::MANA))
+            entry("Store", format!("Add {} to this card to take later", icons::MANA))
         }
         TextTokenKind::DealDamage => {
             entry("Damage", "Causes the Champion to discard cards at random")

@@ -116,15 +116,23 @@ impl CardPosition {
     }
 }
 
+/// A counter which can be placed on a card to track some kind of numeric state
+#[derive(PartialEq, Eq, Hash, Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum CardCounter {
+    Progress,
+    StoredMana,
+    PowerCharges,
+}
+
 /// Optional card state, properties which have a default.
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CardData {
     /// How many times has this card been progressed?
-    pub progress: ProgressValue,
+    progress: ProgressValue,
     /// How much mana is stored in this card?
-    pub stored_mana: ManaValue,
+    stored_mana: ManaValue,
     /// Number of power charges on this card.
-    pub power_charges: PowerChargeValue,
+    power_charges: PowerChargeValue,
     /// Is this card face-up?
     is_face_up: bool,
     /// Is this card revealed to the [CardId.side] user?
@@ -193,6 +201,48 @@ impl CardState {
         }
     }
 
+    /// Retrieves the current value for a [CardCounter], or 0 if this card is
+    /// not in play.
+    pub fn counters(&self, counter: CardCounter) -> u32 {
+        if self.position.in_play() {
+            self.last_known_counters(counter)
+        } else {
+            0
+        }
+    }
+
+    /// Retrieves the last known value for a [CardCounter], returning a value
+    /// even if this card is not in play.
+    pub fn last_known_counters(&self, counter: CardCounter) -> u32 {
+        match counter {
+            CardCounter::Progress => self.data.progress,
+            CardCounter::StoredMana => self.data.stored_mana,
+            CardCounter::PowerCharges => self.data.power_charges,
+        }
+    }
+
+    /// Adds a `amount` [CardCounter]s to this card
+    pub fn add_counters(&mut self, counter: CardCounter, amount: u32) {
+        *self.counters_mut(counter) = self.counters(counter) + amount;
+    }
+
+    /// Removes *up to* `amount` [CardCounter]s from this card
+    pub fn remove_counters_saturating(&mut self, counter: CardCounter, amount: u32) {
+        *self.counters_mut(counter) = self.counters(counter).saturating_sub(amount);
+    }
+
+    /// Sets the current `amount` of [CardCounter]s on this card
+    pub fn set_counters(&mut self, counter: CardCounter, amount: u32) {
+        *self.counters_mut(counter) = amount;
+    }
+
+    /// Clears all stored counters on this card.
+    pub fn clear_all_counters(&mut self) {
+        self.data.progress = 0;
+        self.data.stored_mana = 0;
+        self.data.power_charges = 0;
+    }
+
     pub fn side(&self) -> Side {
         self.id.side
     }
@@ -254,6 +304,14 @@ impl CardState {
             self.data.revealed_to_owner = revealed
         } else {
             self.data.revealed_to_opponent = revealed
+        }
+    }
+
+    fn counters_mut(&mut self, counter: CardCounter) -> &mut u32 {
+        match counter {
+            CardCounter::Progress => &mut self.data.progress,
+            CardCounter::StoredMana => &mut self.data.stored_mana,
+            CardCounter::PowerCharges => &mut self.data.power_charges,
         }
     }
 }

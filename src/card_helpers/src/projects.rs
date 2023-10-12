@@ -30,7 +30,7 @@ pub fn store_mana_on_unveil<const N: u32>() -> Ability {
     crate::abilities::standard(
         crate::trigger_text(TextToken::Unveil, text![TextToken::StoreMana(N)]),
         crate::when_unveiled(|g, s, _| {
-            crate::add_stored_mana(g, s.card_id(), N);
+            rules::mutations::add_stored_mana(g, s.card_id(), N);
             Ok(())
         }),
     )

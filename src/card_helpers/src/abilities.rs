@@ -16,7 +16,7 @@
 
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
-use game_data::card_state::CardPosition;
+use game_data::card_state::{CardCounter, CardPosition};
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
 use game_data::primitives::{AbilityId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
@@ -24,6 +24,7 @@ use rules::mutations;
 use rules::mutations::OnZeroStored;
 
 use crate::text_macro::text;
+use crate::this::on_activated;
 use crate::*;
 
 /// Creates a standard [Ability] with a single [Delegate].
@@ -36,9 +37,12 @@ pub fn text_only_ability(text: Vec<TextElement>) -> Ability {
     Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
 }
 
-/// Creates reminder text fro an ability
-pub fn reminder(text: &'static str) -> TextElement {
-    TextElement::Reminder(text.to_string())
+pub fn activated(text: Vec<TextElement>, cost: Cost<AbilityId>, delegate: Delegate) -> Ability {
+    Ability {
+        text,
+        ability_type: AbilityType::Activated(cost, TargetRequirement::None),
+        delegates: vec![delegate],
+    }
 }
 
 /// Helper to flatten a list of `Option` and remove `None` values.
@@ -75,11 +79,11 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
         text: trigger_text(Play, text![StoreMana(N)]),
         delegates: vec![
             Delegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
-                g.card_mut(played.card_id).data.stored_mana = N;
+                g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);
                 Ok(())
             })),
             Delegate::StoredManaTaken(EventDelegate::new(this_card, |g, s, card_id| {
-                if g.card(*card_id).data.stored_mana == 0 {
+                if g.card(*card_id).counters(CardCounter::StoredMana) == 0 {
                     mutations::move_card(g, *card_id, CardPosition::DiscardPile(s.side()))
                 } else {
                     Ok(())

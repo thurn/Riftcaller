@@ -14,6 +14,7 @@
 
 use ai_core::state_evaluator::StateEvaluator;
 use anyhow::Result;
+use game_data::card_state::CardCounter;
 use game_data::primitives::Side;
 use rules::mana;
 use rules::mana::ManaPurpose;
@@ -65,7 +66,7 @@ impl StateEvaluator<SpelldawnState> for LevelCountersEvaluator {
             .cards(side)
             .iter()
             .filter(|c| c.position().in_play())
-            .map(|c| c.data.progress)
+            .map(|c| c.counters(CardCounter::Progress))
             .sum::<u32>() as i32)
     }
 }

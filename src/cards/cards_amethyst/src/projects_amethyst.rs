@@ -22,6 +22,7 @@ use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::CardCounter;
 use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use rules::mutations;
 use rules::mutations::OnZeroStored;
@@ -47,7 +48,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
                 ),
                 delegates: vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
-                    if g.card(s.card_id()).data.stored_mana == 0 {
+                    if g.card(s.card_id()).counters(CardCounter::StoredMana) == 0 {
                         mutations::draw_cards(g, s.side(), 1)?;
                     }
                     Updates::new(g).ability_alert(s).apply();
@@ -79,7 +80,11 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
                 ),
                 on_accessed(|g, s, _| {
                     if g.card(s.card_id()).position().in_play() {
-                        mutations::deal_damage(g, s, 2 + g.card(s.card_id()).data.progress)?;
+                        mutations::deal_damage(
+                            g,
+                            s,
+                            2 + g.card(s.card_id()).counters(CardCounter::Progress),
+                        )?;
                         Updates::new(g).ability_alert(s).apply();
                     }
 

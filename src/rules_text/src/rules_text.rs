@@ -70,8 +70,6 @@ fn aggregate_named_triggers(abilities: &[Ability]) -> Vec<Vec<TextElement>> {
                 if !found {
                     results.push((Some(*name), vec![all.clone()]));
                 }
-            } else {
-                results.push((None, ability.text.clone()));
             }
         } else {
             results.push((None, ability.text.clone()));
@@ -112,7 +110,7 @@ fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<TextElement> {
         cost.custom_cost.as_ref().and_then(|custom| custom.description.as_ref())
     {
         if !result.is_empty() {
-            result.push(TextElement::Literal(", ".to_string()));
+            result.push(TextElement::Literal(",".to_string()));
         }
         result.push(description.clone());
     }
@@ -198,6 +196,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::EncounterBoostBonus => {
             format!("+{} attack", encounter_boost(context).map_or(0, |boost| boost.bonus))
         }
+        TextToken::SacrificeCost => "Sacrifice".to_string(),
         TextToken::Attack => "attack".to_string(),
         TextToken::Health => "health".to_string(),
         TextToken::Gain => "gain".to_string(),
@@ -210,8 +209,8 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Encounter => "Encounter".to_string(),
         TextToken::Unveil => "<b>Unveil</b>".to_string(),
         TextToken::BeginARaid => "Begin a raid".to_string(),
-        TextToken::StoreMana(n) => format!("<b>Store</b> {n}{}", icons::MANA),
-        TextToken::TakeMana(n) => format!("<b>Take</b> {n}{}", icons::MANA),
+        TextToken::StoreMana(n) => format!("store {n}{}", icons::MANA),
+        TextToken::TakeMana(n) => format!("take {n}{}", icons::MANA),
         TextToken::DealDamage(n) => format!("deal {n} damage"),
         TextToken::TakeDamage(n) => format!("take {n} damage"),
         TextToken::InnerRoom => "inner room".to_string(),
