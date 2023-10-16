@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{abilities, costs};
+use card_helpers::{abilities, costs, in_play, show_prompt, text};
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::game_actions::{PromptChoice, PromptContext};
+use game_data::game_effect::GameEffect;
 use game_data::primitives::{CardType, Rarity, School, Side};
+use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 
 pub fn visitation(meta: CardMetadata) -> CardDefinition {
@@ -30,7 +33,30 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: abilities::some(vec![]),
+        abilities: vec![abilities::standard(
+            // This is templated as an activated ability for clarity even though it's
+            // secretly not.
+            text![TextElement::Activated {
+                cost: text![SacrificeCost],
+                effect: text!["Prevent up to", meta.upgrade(2, 5), Damage]
+            }],
+            in_play::on_will_deal_damage(|g, s, damage| {
+                if damage.source.side() == Side::Overlord {
+                    show_prompt::with_context_and_choices(
+                        g,
+                        s,
+                        PromptContext::SacrificeToPreventDamage(s.card_id(), s.upgrade(2, 5)),
+                        vec![
+                            PromptChoice::new()
+                                .effect(GameEffect::SacrificeCard(s.card_id()))
+                                .effect(GameEffect::PreventDamage(s.upgrade(2, 5))),
+                            PromptChoice::new().effect(GameEffect::Continue),
+                        ],
+                    );
+                }
+                Ok(())
+            }),
+        )],
         config: CardConfig::default(),
     }
 }

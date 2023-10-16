@@ -23,6 +23,19 @@ use game_data::primitives::{CardId, HasSide, Side};
 
 /// Adds a choice prompt for the `side` player containing the choices in
 /// `choices`.
+pub fn with_context_and_choices(
+    game: &mut GameState,
+    side: impl HasSide,
+    context: PromptContext,
+    choices: Vec<PromptChoice>,
+) {
+    game.player_mut(side.side())
+        .prompt_queue
+        .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: Some(context), choices }))
+}
+
+/// Adds a choice prompt for the `side` player containing the choices in
+/// `choices`.
 pub fn with_choices(game: &mut GameState, side: impl HasSide, choices: Vec<PromptChoice>) {
     game.player_mut(side.side())
         .prompt_queue

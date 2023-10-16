@@ -123,4 +123,5 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_spell_give_curse);
     DEFINITIONS.insert(cards_test::test_cards::test_evocation);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_1_damage);
+    DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_5_damage);
 }

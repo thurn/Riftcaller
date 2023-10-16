@@ -577,3 +577,17 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
         ..test_overlord_spell(metadata)
     }
 }
+
+pub fn test_spell_deal_5_damage(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestSpellDeal5Damage,
+        cost: cost(0),
+        card_type: CardType::OverlordSpell,
+        sets: vec![CardSetName::Test],
+        abilities: vec![abilities::standard(
+            text!["Deal 5 damage"],
+            this::on_played(|g, s, _| deal_damage::apply(g, s, 5)),
+        )],
+        ..test_overlord_spell(metadata)
+    }
+}

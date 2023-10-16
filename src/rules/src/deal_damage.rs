@@ -54,7 +54,13 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
             let step = match data.step {
                 DealDamageStep::Begin => DealDamageStep::WillDealDamageEvent,
                 DealDamageStep::WillDealDamageEvent => {
-                    dispatch::invoke_event(game, WillDealDamageEvent(data.amount))?;
+                    dispatch::invoke_event(
+                        game,
+                        WillDealDamageEvent(DealtDamage {
+                            source: data.source,
+                            amount: data.amount,
+                        }),
+                    )?;
                     DealDamageStep::DiscardCards
                 }
                 DealDamageStep::DiscardCards => {

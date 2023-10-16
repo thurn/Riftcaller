@@ -52,7 +52,7 @@ pub fn some(abilities: Vec<Option<Ability>>) -> Vec<Ability> {
 
 /// Returns the provided [Ability] only for upgraded versions of a card.
 pub fn when_upgraded(metadata: CardMetadata, ability: Ability) -> Option<Ability> {
-    metadata.upgraded.then_some(ability)
+    metadata.is_upgraded.then_some(ability)
 }
 
 pub fn silent_ability(ability: Ability) -> Ability {

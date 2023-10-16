@@ -81,9 +81,9 @@ use crate::card_state::{CardData, CardPosition};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, DamageAmount,
-    HasAbilityId, HasCardId, HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId,
-    ShieldValue, Side, TurnNumber,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
+    HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side,
+    TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -121,7 +121,7 @@ impl Scope {
     }
 
     pub fn is_upgraded(&self) -> bool {
-        self.metadata.upgraded
+        self.metadata.is_upgraded
     }
 
     /// Returns one of two values based on whether the card is upgraded
@@ -470,7 +470,7 @@ pub enum Delegate {
     /// Stored mana is taken from a card
     StoredManaTaken(EventDelegate<CardId>),
     /// Damage is about to be dealt to the Champion player in a given amount.
-    WillDealDamage(EventDelegate<DamageAmount>),
+    WillDealDamage(EventDelegate<DealtDamage>),
     /// Damage has been dealt to the Champion player (in the form of discarded
     /// cards).
     DealtDamage(EventDelegate<DealtDamage>),

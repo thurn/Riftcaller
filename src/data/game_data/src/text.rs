@@ -55,6 +55,7 @@ pub enum TextToken {
     BeginARaid,
     StoreMana(ManaValue),
     TakeMana(ManaValue),
+    Damage,
     DealDamage(DamageAmount),
     TakeDamage(DamageAmount),
     InnerRoom,

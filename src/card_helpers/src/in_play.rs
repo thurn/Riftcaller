@@ -40,6 +40,12 @@ pub fn on_card_played(mutation: MutationFn<CardPlayed>) -> Delegate {
     Delegate::PlayCard(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
+/// A delegate which triggers if a card is face up in play before damage is
+/// dealt.
+pub fn on_will_deal_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
+    Delegate::WillDealDamage(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
 /// A delegate which triggers if a card is face up in play when damage is dealt.
 pub fn on_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
     Delegate::DealtDamage(EventDelegate { requirement: requirements::face_up_in_play, mutation })

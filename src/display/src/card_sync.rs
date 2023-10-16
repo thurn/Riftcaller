@@ -42,7 +42,7 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> CardVi
         card_id: context.query_or_none(|_, card| adapters::card_identifier(card.id)),
         card_position: context
             .query_or(None, |game, card| Some(positions::calculate(builder, game, card))),
-        prefab: if context.definition().config.metadata.upgraded {
+        prefab: if context.definition().config.metadata.is_upgraded {
             CardPrefab::FullHeight
         } else {
             CardPrefab::Standard

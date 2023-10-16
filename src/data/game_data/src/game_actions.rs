@@ -24,7 +24,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::game_effect::GameEffect;
 use crate::game_state::MulliganDecision;
-use crate::primitives::{AbilityId, CardId, CardSubtype, CardType, ManaValue, RoomId};
+use crate::primitives::{
+    AbilityId, CardId, CardSubtype, CardType, DamageAmount, ManaValue, RoomId,
+};
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum SummonAction {
@@ -84,6 +86,21 @@ pub enum PromptContext {
     PlayACard,
     /// Play a card of a given type the discard pile
     PlayFromDiscard(CardType),
+    /// Sacrifice a card to prevent up to `DamageAmount` damage. Will inspect
+    /// the current incoming damage value and display only the lower of the two
+    /// values.
+    SacrificeToPreventDamage(CardId, DamageAmount),
+}
+
+impl PromptContext {
+    /// Looks up the card associated with this prompt, if any
+    pub fn associated_card(&self) -> Option<CardId> {
+        match self {
+            Self::Card(id) => Some(*id),
+            Self::SacrificeToPreventDamage(id, _) => Some(*id),
+            _ => None,
+        }
+    }
 }
 
 /// An action which can be taken in the user interface as a result of the game

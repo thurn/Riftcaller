@@ -124,7 +124,7 @@ fn token_description(token: TextTokenKind) -> Option<String> {
         TextTokenKind::StoreMana => {
             entry("Store", format!("Add {} to this card to take later", icons::MANA))
         }
-        TextTokenKind::DealDamage => {
+        TextTokenKind::Damage | TextTokenKind::DealDamage => {
             entry("Damage", "Causes the Champion to discard cards at random")
         }
         TextTokenKind::InnerRoom | TextTokenKind::InnerRooms => entry("Inner Room", "The sanctum, vault or crypt"),

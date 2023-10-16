@@ -37,6 +37,11 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::MoveCard(card_id, target_position) => {
             mutations::move_card(game, card_id, target_position)?
         }
+        GameEffect::PreventDamage(amount) => {
+            if let Some(damage) = &mut game.state_machines.deal_damage {
+                damage.amount = damage.amount.saturating_sub(amount);
+            }
+        }
     }
 
     Ok(())

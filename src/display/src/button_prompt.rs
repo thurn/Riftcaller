@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::cmp;
+
 use adapters::response_builder::ResponseBuilder;
 use core_ui::prelude::*;
 use game_data::game_actions::{ButtonPrompt, PromptChoice, PromptContext};
@@ -25,7 +27,11 @@ use protos::spelldawn::{InterfaceMainControls, TutorialEffect};
 
 use crate::tutorial_display;
 
-pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainControls> {
+pub fn controls(
+    game: &GameState,
+    user_side: Side,
+    prompt: &ButtonPrompt,
+) -> Option<InterfaceMainControls> {
     let mut main_controls: Vec<Box<dyn ComponentObject>> = vec![];
     let mut card_anchor_nodes = vec![];
 
@@ -40,7 +46,7 @@ pub fn controls(user_side: Side, prompt: &ButtonPrompt) -> Option<InterfaceMainC
 
     Some(InterfaceMainControls {
         node: PromptContainer::new().children(main_controls).build(),
-        overlay: prompt_context(prompt.context),
+        overlay: prompt_context(game, prompt.context),
         card_anchor_nodes,
     })
 }
@@ -71,7 +77,7 @@ fn should_show_bubble(builder: &ResponseBuilder, side: Side, choice: &PromptChoi
     builder.user_side != side && !choice.is_secondary() && choice.anchor_card.is_none()
 }
 
-fn prompt_context(context: Option<PromptContext>) -> Option<Node> {
+fn prompt_context(game: &GameState, context: Option<PromptContext>) -> Option<Node> {
     match context {
         Some(PromptContext::CardLimit(card_type, subtype)) => match card_type {
             CardType::Minion => GameInstructions::new(
@@ -94,6 +100,18 @@ fn prompt_context(context: Option<PromptContext>) -> Option<Node> {
             )),
         }
         .build(),
+        Some(PromptContext::SacrificeToPreventDamage(card_id, amount)) => {
+            GameInstructions::new(format!(
+                "Sacrifice {} to prevent {} damage?",
+                game.card(card_id).variant.name.displayed_name(),
+                // Show the total incoming damage if it is lower than the amount to prevent
+                cmp::min(
+                    amount,
+                    game.state_machines.deal_damage.as_ref().map(|d| d.amount).unwrap_or_default()
+                )
+            ))
+            .build()
+        }
         _ => None,
     }
 }

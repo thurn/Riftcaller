@@ -27,13 +27,11 @@ use crate::{button_prompt, card_selector, play_card_browser};
 pub fn render(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
     let current_prompt = &game.player(side).prompt_queue.get(0);
     if let Some(current) = current_prompt {
-        match current {
-            GamePrompt::ButtonPrompt(prompt) => {
-                return button_prompt::controls(side, prompt);
-            }
-            GamePrompt::CardSelector(prompt) => return card_selector::controls(prompt),
-            GamePrompt::PlayCardBrowser(prompt) => return play_card_browser::controls(prompt),
-        }
+        return match current {
+            GamePrompt::ButtonPrompt(prompt) => button_prompt::controls(game, side, prompt),
+            GamePrompt::CardSelector(prompt) => card_selector::controls(prompt),
+            GamePrompt::PlayCardBrowser(prompt) => play_card_browser::controls(prompt),
+        };
     } else if let Some(raid) = &game.raid {
         return raid_prompt::build(game, raid, side);
     } else if let GamePhase::ResolveMulligans(_) = &game.info.phase {

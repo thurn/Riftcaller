@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::card_state::CardPosition;
-use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, Side};
+use crate::primitives::{AbilityId, ActionCount, CardId, DamageAmount, ManaValue, Side};
 
 /// An arbitrary modification to the state of an ongoing game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -39,6 +39,9 @@ pub enum GameEffect {
     TakeDamage(AbilityId, u32),
     /// Move a card to a new target position
     MoveCard(CardId, CardPosition),
+    /// Prevent *up to* this amount of incoming damage if there is an active
+    /// damage event.
+    PreventDamage(DamageAmount),
 }
 
 impl GameEffect {

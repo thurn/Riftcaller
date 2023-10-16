@@ -70,6 +70,8 @@ fn aggregate_named_triggers(abilities: &[Ability]) -> Vec<Vec<TextElement>> {
                 if !found {
                     results.push((Some(*name), vec![all.clone()]));
                 }
+            } else {
+                results.push((None, ability.text.clone()));
             }
         } else {
             results.push((None, ability.text.clone()));
@@ -196,7 +198,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::EncounterBoostBonus => {
             format!("+{} attack", encounter_boost(context).map_or(0, |boost| boost.bonus))
         }
-        TextToken::SacrificeCost => "Sacrifice".to_string(),
+        TextToken::SacrificeCost => format!("{}Sacrifice", icons::TRIGGER),
         TextToken::Attack => "attack".to_string(),
         TextToken::Health => "health".to_string(),
         TextToken::Gain => "gain".to_string(),
@@ -211,6 +213,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::BeginARaid => "Begin a raid".to_string(),
         TextToken::StoreMana(n) => format!("store {n}{}", icons::MANA),
         TextToken::TakeMana(n) => format!("take {n}{}", icons::MANA),
+        TextToken::Damage => "damage".to_string(),
         TextToken::DealDamage(n) => format!("deal {n} damage"),
         TextToken::TakeDamage(n) => format!("take {n} damage"),
         TextToken::InnerRoom => "inner room".to_string(),

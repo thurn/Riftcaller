@@ -26,14 +26,14 @@ use strum_macros::{Display, EnumString};
     PartialEq, Eq, Hash, Default, Debug, Copy, Clone, Serialize, Deserialize, PartialOrd, Ord,
 )]
 pub struct CardMetadata {
-    pub upgraded: bool,
+    pub is_upgraded: bool,
     pub full_art: bool,
 }
 
 impl CardMetadata {
     /// Returns one of two values based on whether the card is upgraded
     pub fn upgrade<T>(&self, normal: T, upgraded: T) -> T {
-        if self.upgraded {
+        if self.is_upgraded {
             upgraded
         } else {
             normal
@@ -53,19 +53,19 @@ pub struct CardVariant {
 impl CardVariant {
     /// Base card variant with no upgrades or cosmetic modifications.
     pub const fn standard(name: CardName) -> Self {
-        Self { name, metadata: CardMetadata { upgraded: false, full_art: false } }
+        Self { name, metadata: CardMetadata { is_upgraded: false, full_art: false } }
     }
 
     /// Upgraded variant of a card
     pub const fn upgraded(name: CardName) -> Self {
-        Self { name, metadata: CardMetadata { upgraded: true, full_art: false } }
+        Self { name, metadata: CardMetadata { is_upgraded: true, full_art: false } }
     }
 
     /// Returns an integer which uniquely identifies this variant among all
     /// other variants.
     pub fn as_ident(&self) -> u64 {
         let result = self.name as u64;
-        match (self.metadata.upgraded, self.metadata.full_art) {
+        match (self.metadata.is_upgraded, self.metadata.full_art) {
             (true, true) => result + 3_000_000,
             (true, false) => result + 2_000_000,
             (false, true) => result + 1_000_000,
@@ -171,6 +171,7 @@ pub enum CardName {
     TestSpellGiveCurse,
     TestEvocation,
     TestSpellDeal1Damage,
+    TestSpellDeal5Damage,
 
     // Proof of Concept
     GoldMine,

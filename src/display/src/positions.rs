@@ -16,7 +16,7 @@ use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CardIdentifierAction;
 use game_data::card_state::{CardPosition, CardState};
-use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt, PromptContext};
+use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
 use game_data::primitives::{
     AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
@@ -320,6 +320,9 @@ fn position_override(
     if let Some(o) = prompt_position_override(builder, game, card) {
         return Some(o);
     }
+    if let Some(o) = opponent_prompt_position_override(builder, game, card) {
+        return Some(o);
+    }
 
     match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans) => {
@@ -339,7 +342,7 @@ fn prompt_position_override(
 
     match current_prompt {
         GamePrompt::ButtonPrompt(prompt) => {
-            if prompt.context == Some(PromptContext::Card(card.id)) {
+            if prompt.context.and_then(|c| c.associated_card()) == Some(card.id) {
                 return Some(for_card(card, card_browser()));
             }
             if prompt.choices.iter().any(|choice| choice.anchor_card == Some(card.id)) {
@@ -359,6 +362,21 @@ fn prompt_position_override(
             } else if card.position() == CardPosition::Hand(builder.user_side) {
                 return Some(for_card(card, hand_storage()));
             }
+        }
+    }
+
+    None
+}
+
+fn opponent_prompt_position_override(
+    builder: &ResponseBuilder,
+    game: &GameState,
+    card: &CardState,
+) -> Option<ObjectPosition> {
+    let current_prompt = game.player(builder.user_side.opponent()).prompt_queue.get(0)?;
+    if let GamePrompt::ButtonPrompt(prompt) = current_prompt {
+        if prompt.context.and_then(|c| c.associated_card()) == Some(card.id) {
+            return Some(for_card(card, card_browser()));
         }
     }
 

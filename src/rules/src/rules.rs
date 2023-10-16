@@ -45,7 +45,7 @@ static CARDS: Lazy<HashMap<CardVariant, CardDefinition>> = Lazy::new(|| {
     for card_fn in DEFINITIONS.iter() {
         for upgraded in [false, true] {
             for full_art in [false, true] {
-                let metadata = CardMetadata { upgraded, full_art };
+                let metadata = CardMetadata { is_upgraded: upgraded, full_art };
                 let mut card = card_fn(metadata);
                 card.config.metadata = metadata;
                 let variant = CardVariant { name: card.name, metadata };
