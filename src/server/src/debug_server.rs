@@ -27,14 +27,14 @@ use game_data::card_state::CardPosition;
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{CardId, GameId, RoomId, RoomLocation, Side};
+use game_data::primitives::{AbilityId, AbilityIndex, CardId, GameId, RoomId, RoomLocation, Side};
 use panel_address::Panel;
 use player_data::PlayerStatus;
 use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mutations::SummonMinion;
-use rules::{dispatch, mana, mutations};
+use rules::{curses, dispatch, mana, mutations};
 use tracing::debug;
 use ulid::Ulid;
 use user_action_data::{
@@ -50,6 +50,11 @@ fn current_game_id() -> &'static Mutex<Option<GameId>> {
     static GAME_ID: OnceLock<Mutex<Option<GameId>>> = OnceLock::new();
     GAME_ID.get_or_init(|| Mutex::new(None))
 }
+
+const DEBUG_ABILITY_ID: AbilityId = AbilityId {
+    card_id: CardId { side: Side::Overlord, index: usize::MAX },
+    index: AbilityIndex(0),
+};
 
 pub async fn handle_debug_action(
     database: &impl Database,
@@ -164,14 +169,14 @@ pub async fn handle_debug_action(
         }
         DebugAction::AddCurses(amount) => {
             debug_update_game(database, data, |game, _| {
-                mutations::give_curses(game, *amount)?;
+                curses::give_curses(game, DEBUG_ABILITY_ID, *amount)?;
                 Ok(())
             })
             .await
         }
         DebugAction::RemoveCurses(amount) => {
             debug_update_game(database, data, |game, _| {
-                mutations::remove_curses(game, *amount)?;
+                curses::remove_curses(game, *amount)?;
                 Ok(())
             })
             .await

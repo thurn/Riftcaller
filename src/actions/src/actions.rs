@@ -34,7 +34,7 @@ use game_data::game_updates::{AnimationState, GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, deal_damage, dispatch, flags, game_effect_actions, mana, mutations,
+    activate_ability, curses, deal_damage, dispatch, flags, game_effect_actions, mana, mutations,
     play_card, queries,
 };
 use tracing::{debug, instrument};
@@ -224,7 +224,7 @@ fn remove_curse_action(game: &mut GameState, user_side: Side) -> Result<()> {
     game.add_history_event(HistoryEvent::RemoveCurseAction);
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, ManaPurpose::RemoveCurse, game_constants::COST_TO_REMOVE_CURSE)?;
-    mutations::remove_curses(game, 1)?;
+    curses::remove_curses(game, 1)?;
     Ok(())
 }
 

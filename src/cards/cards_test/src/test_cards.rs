@@ -25,7 +25,7 @@ use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::OnZeroStored;
-use rules::{deal_damage, mutations};
+use rules::{curses, deal_damage, mutations};
 
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -547,7 +547,7 @@ pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Test],
         abilities: vec![abilities::standard(
             text!["Give the Champion a curse"],
-            this::on_played(|g, _, _| mutations::give_curses(g, 1)),
+            this::on_played(|g, s, _| curses::give_curses(g, s, 1)),
         )],
         ..test_overlord_spell(metadata)
     }

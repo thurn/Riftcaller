@@ -474,8 +474,10 @@ pub enum Delegate {
     /// Damage has been dealt to the Champion player (in the form of discarded
     /// cards).
     DealtDamage(EventDelegate<DealtDamage>),
-    /// The Champion player has been given a curse
-    CurseReceived(EventDelegate<CurseCount>),
+    /// Curses are about to be given to the Champion player
+    WillReceiveCurses(EventDelegate<CurseCount>),
+    /// The Champion player has been given one or more curses
+    CursesReceived(EventDelegate<CurseCount>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

@@ -22,7 +22,7 @@ use crate::delegate_data::{RaidEvent, UsedWeapon};
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
 use crate::game_updates::InitiatedBy;
-use crate::primitives::{AbilityId, CardId, ProgressValue, RoomId};
+use crate::primitives::{AbilityId, CardId, CurseCount, ProgressValue, RoomId};
 
 /// Records a single event which happened during this game.
 #[derive(Debug, Clone, Serialize, Deserialize, EnumKind)]
@@ -58,6 +58,8 @@ pub enum HistoryEvent {
     CardProgress(RoomId, ProgressValue, InitiatedBy),
     /// The Champion has been dealt damage
     DealDamage(u32),
+    /// Curses have been given to the Champion player
+    CursesGiven(CurseCount),
 }
 
 impl HistoryEvent {

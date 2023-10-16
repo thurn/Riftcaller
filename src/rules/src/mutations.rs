@@ -28,17 +28,17 @@ use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CardMoved, CurseReceivedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom,
-    DrawCardEvent, DuskEvent, EnterArenaEvent, MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent,
-    RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
+    CardMoved, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent,
+    EnterArenaEvent, MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEvent,
+    RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
     StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
-    ActionCount, CardId, CurseCount, ManaValue, PointsValue, PowerChargeValue, RoomId,
-    RoomLocation, Side, TurnNumber,
+    ActionCount, CardId, ManaValue, PointsValue, PowerChargeValue, RoomId, RoomLocation, Side,
+    TurnNumber,
 };
 use game_data::{random, undo_tracker};
 use tracing::{debug, instrument};
@@ -544,18 +544,6 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
     for card_id in realize_top_of_deck(game, Side::Overlord, amount)? {
         move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
     }
-    Ok(())
-}
-
-/// Add `amount` curses to the Champion player.
-pub fn give_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
-    game.champion.curses += amount;
-    dispatch::invoke_event(game, CurseReceivedEvent(amount))
-}
-
-/// Remove *up to* `amount` curses from the Champion player.
-pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
-    game.champion.curses = game.champion.curses.saturating_sub(amount);
     Ok(())
 }
 

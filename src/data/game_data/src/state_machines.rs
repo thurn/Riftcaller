@@ -89,6 +89,26 @@ pub struct DealDamageData {
     pub step: DealDamageStep,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum GiveCursesStep {
+    Begin,
+    WillReceiveCursesEvent,
+    AddCurses,
+    CursesReceivedEvent,
+    Finish,
+}
+
+/// State data for giving a curse to the Champion player
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GiveCursesData {
+    /// Number of curses to add
+    pub quantity: u32,
+    /// Source of the curses
+    pub source: AbilityId,
+    /// Current state machine state
+    pub step: GiveCursesStep,
+}
+
 /// Data related to ongoing game events. Some types of updates are handled via a
 /// resumable state machine in order to allow interruptions in the resolution
 /// process when a player is required to make a prompt decision.
@@ -97,4 +117,5 @@ pub struct StateMachines {
     pub play_card: Option<PlayCardData>,
     pub activate_ability: Option<ActivateAbilityData>,
     pub deal_damage: Option<DealDamageData>,
+    pub give_curses: Option<GiveCursesData>,
 }

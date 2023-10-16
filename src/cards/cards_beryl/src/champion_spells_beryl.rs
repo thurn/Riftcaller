@@ -30,7 +30,7 @@ use game_data::primitives::{
 };
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
-use rules::{mutations, CardDefinitionExt};
+use rules::{curses, mutations, CardDefinitionExt};
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -144,7 +144,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                 ),
             ],
             this::on_played(|g, s, _| {
-                mutations::remove_curses(g, 1)?;
+                curses::remove_curses(g, 1)?;
 
                 Updates::new(g)
                     .timed_effect(
