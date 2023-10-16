@@ -170,6 +170,10 @@ impl<T> Debug for TargetRequirement<T> {
     }
 }
 
+/// Predicate which provides additional restrictions on whether an ability can
+/// be activated. If not specified, normal activation rules apply.
+pub type CanActivate = fn(&GameState, AbilityId) -> bool;
+
 /// Possible types of ability
 #[derive(Debug, Clone, EnumKind)]
 #[enum_kind(AbilityTypeKind)]
@@ -178,7 +182,11 @@ pub enum AbilityType {
     Standard,
 
     /// Activated abilities have an associated cost in order to be used.
-    Activated(Cost<AbilityId>, TargetRequirement<AbilityId>),
+    Activated {
+        cost: Cost<AbilityId>,
+        target_requirement: TargetRequirement<AbilityId>,
+        can_activate: Option<CanActivate>,
+    },
 
     /// Abilities which have no effect, but simply provide additional card text.
     TextOnly,

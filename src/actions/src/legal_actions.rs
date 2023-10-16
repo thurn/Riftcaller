@@ -152,8 +152,8 @@ fn legal_ability_actions(
     let mut activate = None;
     let mut target_rooms = None;
 
-    if let AbilityType::Activated(_, targeting) = &ability.ability_type {
-        match targeting {
+    if let AbilityType::Activated { target_requirement, .. } = &ability.ability_type {
+        match target_requirement {
             TargetRequirement::None => {
                 if flags::can_take_activate_ability_action(game, side, ability_id, CardTarget::None)
                 {

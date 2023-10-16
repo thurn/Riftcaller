@@ -151,7 +151,7 @@ fn get_cost(game: &GameState, activate: ActivateAbilityData) -> Result<&Cost<Abi
             .ability(activate.ability_id.index)
             .ability_type
         {
-            AbilityType::Activated(cost, _) => cost,
+            AbilityType::Activated { cost, .. } => cost,
             _ => fail!("Ability is not an activated ability"),
         },
     )

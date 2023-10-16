@@ -14,7 +14,7 @@
 
 //! Helpers for defining common card abilities
 
-use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
+use game_data::card_definition::{Ability, AbilityType, CanActivate, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
@@ -37,10 +37,50 @@ pub fn text_only_ability(text: Vec<TextElement>) -> Ability {
     Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
 }
 
+pub struct ActivatedConfig {
+    pub target_requirement: TargetRequirement<AbilityId>,
+    pub can_activate: Option<CanActivate>,
+}
+
+impl Default for ActivatedConfig {
+    fn default() -> Self {
+        Self { target_requirement: TargetRequirement::None, can_activate: None }
+    }
+}
+
+impl ActivatedConfig {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn target_requirement(mut self, target_requirement: TargetRequirement<AbilityId>) -> Self {
+        self.target_requirement = target_requirement;
+        self
+    }
+
+    pub fn can_activate(mut self, can_activate: CanActivate) -> Self {
+        self.can_activate = Some(can_activate);
+        self
+    }
+}
+
 pub fn activated(text: Vec<TextElement>, cost: Cost<AbilityId>, delegate: Delegate) -> Ability {
+    activated_with_config(text, cost, ActivatedConfig::new(), delegate)
+}
+
+pub fn activated_with_config(
+    text: Vec<TextElement>,
+    cost: Cost<AbilityId>,
+    config: ActivatedConfig,
+    delegate: Delegate,
+) -> Ability {
     Ability {
         text,
-        ability_type: AbilityType::Activated(cost, TargetRequirement::None),
+        ability_type: AbilityType::Activated {
+            cost,
+            target_requirement: config.target_requirement,
+            can_activate: config.can_activate,
+        },
         delegates: vec![delegate],
     }
 }
@@ -96,7 +136,11 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
 /// Activated ability to take `N` stored mana from this card by paying a cost
 pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability {
     Ability {
-        ability_type: AbilityType::Activated(cost, TargetRequirement::None),
+        ability_type: AbilityType::Activated {
+            cost,
+            target_requirement: TargetRequirement::None,
+            can_activate: None,
+        },
         text: text![TakeMana(N)],
         delegates: vec![on_activated(|g, _s, activated| {
             mutations::take_stored_mana(g, activated.card_id(), N, OnZeroStored::Sacrifice)
@@ -163,10 +207,11 @@ pub fn level_up() -> Ability {
 
 /// An [AbilityType] for an ability with "Sacrifice:" as its only cost.
 pub fn sacrifice_this() -> AbilityType {
-    AbilityType::Activated(
-        Cost { mana: None, actions: 0, custom_cost: costs::sacrifice_cost() },
-        TargetRequirement::None,
-    )
+    AbilityType::Activated {
+        cost: Cost { mana: None, actions: 0, custom_cost: costs::sacrifice_cost() },
+        target_requirement: TargetRequirement::None,
+        can_activate: None,
+    }
 }
 
 pub fn encounter_ability_text(

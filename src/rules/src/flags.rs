@@ -163,11 +163,15 @@ pub fn can_take_activate_ability_action(
 ) -> bool {
     let card = game.card(ability_id.card_id);
 
-    let (cost, target_requirement) = match &crate::ability_definition(game, ability_id).ability_type
-    {
-        AbilityType::Activated(cost, target_requirement) => (cost, target_requirement),
-        _ => return false,
+    let AbilityType::Activated { cost, target_requirement, can_activate } =
+        &crate::ability_definition(game, ability_id).ability_type
+    else {
+        return false;
     };
+
+    if !can_activate.map_or(true, |can_activate_fn| can_activate_fn(game, ability_id)) {
+        return false;
+    }
 
     if !matching_targeting(game, target_requirement, ability_id, target) {
         return false;
@@ -209,7 +213,7 @@ pub fn activated_ability_has_valid_targets(
     ability_id: AbilityId,
 ) -> bool {
     match &crate::ability_definition(game, ability_id).ability_type {
-        AbilityType::Activated(_, requirement) => match requirement {
+        AbilityType::Activated { target_requirement, .. } => match target_requirement {
             TargetRequirement::None => {
                 can_take_activate_ability_action(game, side, ability_id, CardTarget::None)
             }

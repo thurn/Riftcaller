@@ -46,7 +46,7 @@ pub fn build(context: &CardViewContext) -> RulesText {
 fn aggregate_named_triggers(abilities: &[Ability]) -> Vec<Vec<TextElement>> {
     let mut results: Vec<(Option<TextToken>, Vec<TextElement>)> = vec![];
     for ability in abilities {
-        if let AbilityType::Activated(cost, _) = &ability.ability_type {
+        if let AbilityType::Activated { cost, .. } = &ability.ability_type {
             results.push((
                 None,
                 vec![TextElement::Activated {
@@ -84,7 +84,7 @@ fn aggregate_named_triggers(abilities: &[Ability]) -> Vec<Vec<TextElement>> {
 /// Builds the rules text for a single [Ability], not including its cost (if
 /// any).
 pub fn ability_text(context: &CardViewContext, ability: &Ability) -> String {
-    if let AbilityType::Activated(cost, _) = &ability.ability_type {
+    if let AbilityType::Activated { cost, .. } = &ability.ability_type {
         let text = vec![TextElement::Activated {
             cost: ability_cost_string(cost),
             effect: ability.text.clone(),

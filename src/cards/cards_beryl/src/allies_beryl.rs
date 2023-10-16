@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::abilities::ActivatedConfig;
 use card_helpers::{abilities, costs, in_play, show_prompt, text, this};
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
@@ -55,9 +56,10 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            abilities::activated(
+            abilities::activated_with_config(
                 text!["Remove a curse"],
                 costs::sacrifice(),
+                ActivatedConfig::new().can_activate(|g, _| g.champion.curses > 0),
                 this::on_activated(|g, _, _| curses::remove_curses(g, 1)),
             ),
         ],

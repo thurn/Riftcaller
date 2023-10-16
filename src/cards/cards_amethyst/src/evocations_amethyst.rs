@@ -112,13 +112,14 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
         abilities: vec![
             abilities::store_mana_on_play::<12>(),
             Ability {
-                ability_type: AbilityType::Activated(
-                    actions(1),
-                    TargetRequirement::TargetRoom(|g, _, room_id| {
+                ability_type: AbilityType::Activated {
+                    cost: actions(1),
+                    target_requirement: TargetRequirement::TargetRoom(|g, _, room_id| {
                         room_id.is_inner_room()
-                            && history::rooms_raided_this_turn(g).all(|r| r != room_id)
+                            & &history::rooms_raided_this_turn(g).all(|r| r != room_id)
                     }),
-                ),
+                    can_activate: None,
+                },
                 text: text![
                     text!["Raid an", InnerRoom, "you have not raided this turn"],
                     text!["If successful,", TakeMana(3)]
@@ -152,10 +153,11 @@ pub fn magical_resonator(_: CardMetadata) -> CardDefinition {
         abilities: vec![
             abilities::store_mana_on_play::<9>(),
             Ability {
-                ability_type: AbilityType::Activated(
-                    Cost { mana: None, actions: 1, custom_cost: once_per_turn() },
-                    TargetRequirement::None,
-                ),
+                ability_type: AbilityType::Activated {
+                    cost: Cost { mana: None, actions: 1, custom_cost: once_per_turn() },
+                    target_requirement: TargetRequirement::None,
+                    can_activate: None,
+                },
                 text: text![text![TakeMana(3)], text!["Use this ability once per turn"]],
                 delegates: vec![on_activated(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;

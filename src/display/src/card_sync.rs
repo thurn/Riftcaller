@@ -99,7 +99,7 @@ pub fn activated_ability_cards(
     }
 
     for (ability_index, ability) in definition.abilities.iter().enumerate() {
-        if let AbilityType::Activated(_, target_requirement) = &ability.ability_type {
+        if let AbilityType::Activated { target_requirement, .. } = &ability.ability_type {
             let ability_id = AbilityId::new(card.id, ability_index);
             result.push(ability_card_view(
                 builder,
