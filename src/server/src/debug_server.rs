@@ -127,6 +127,12 @@ pub async fn handle_debug_action(
             let game_id = GameId::new_from_u128(100 + index);
             game.id = game_id;
             database.write_game(&game).await?;
+
+            let mut current_game_id = match current_game_id().lock() {
+                Ok(id) => id,
+                Err(_) => fail!("Unable to acquire lock, another holder panicked"),
+            };
+            let _ = current_game_id.insert(game_id);
             Ok(GameResponse::new(ClientData::propagate(data)))
         }
         DebugAction::LoadGameState(index) => {

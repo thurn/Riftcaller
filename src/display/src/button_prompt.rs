@@ -112,6 +112,18 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
             ))
             .build()
         }
+        ButtonPromptContext::SacrificeToPreventCurses(card_id, amount) => {
+            let quantity = cmp::min(
+                *amount,
+                game.state_machines.give_curses.as_ref().map(|d| d.quantity).unwrap_or_default(),
+            );
+            GameInstructions::new(format!(
+                "Sacrifice {} to prevent {}?",
+                game.card(*card_id).variant.name.displayed_name(),
+                if quantity == 1 { "a curse".to_string() } else { format!("{} curses", quantity) }
+            ))
+            .build()
+        }
         ButtonPromptContext::Card(_) => None,
     }
 }

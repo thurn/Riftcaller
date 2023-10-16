@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod allies_beryl_tests;
 mod artifacts_beryl_tests;
 mod champion_spells_beryl_tests;
 mod evocations_beryl_tests;

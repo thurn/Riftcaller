@@ -65,6 +65,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::TakeDamage(_, amount) => format!("Take {amount}"),
         GameEffect::MoveCard(_, _) => "Move".to_string(),
         GameEffect::PreventDamage(_) => "Prevent".to_string(),
+        GameEffect::PreventCurses(_) => "Prevent".to_string(),
     }
 }
 

@@ -31,6 +31,11 @@ pub fn sacrifice_for_action() -> Cost<AbilityId> {
     Cost { mana: None, actions: 1, custom_cost: sacrifice_cost() }
 }
 
+/// Cost for an ability which requires the owning card to be sacrificed.
+pub fn sacrifice() -> Cost<AbilityId> {
+    Cost { mana: None, actions: 0, custom_cost: sacrifice_cost() }
+}
+
 /// A [CustomCost] which allows an ability to be activated by sacrificing the
 /// card.
 pub fn sacrifice_cost() -> Option<CustomCost<AbilityId>> {

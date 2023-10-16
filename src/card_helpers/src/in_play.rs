@@ -18,8 +18,8 @@ use game_data::delegate_data::{
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    ActionCount, CardId, HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum, RoomIdVault,
-    TurnNumber,
+    ActionCount, CardId, CurseCount, HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
+    RoomIdVault, TurnNumber,
 };
 
 use crate::requirements;
@@ -49,6 +49,15 @@ pub fn on_will_deal_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
 /// A delegate which triggers if a card is face up in play when damage is dealt.
 pub fn on_damage(mutation: MutationFn<DealtDamage>) -> Delegate {
     Delegate::DealtDamage(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
+/// A delegate which triggers if a card is face up in play before a curse is
+/// given
+pub fn on_will_receive_curses(mutation: MutationFn<CurseCount>) -> Delegate {
+    Delegate::WillReceiveCurses(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
 }
 
 /// A `RequirementFn` which matches for face up in play cards and events

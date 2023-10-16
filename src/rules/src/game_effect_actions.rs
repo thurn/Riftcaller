@@ -42,6 +42,11 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
                 damage.amount = damage.amount.saturating_sub(amount);
             }
         }
+        GameEffect::PreventCurses(quantity) => {
+            if let Some(curses) = &mut game.state_machines.give_curses {
+                curses.quantity = curses.quantity.saturating_sub(quantity);
+            }
+        }
     }
 
     Ok(())

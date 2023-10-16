@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub mod allies_beryl;
 pub mod artifacts_beryl;
 pub mod champion_spells_beryl;
 pub mod evocations_beryl;

@@ -263,6 +263,7 @@ pub enum CardName {
     Resolution,
     StarlightLantern,
     Visitation,
+    StalwartProtector,
 }
 
 impl CardName {

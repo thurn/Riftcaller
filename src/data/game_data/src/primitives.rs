@@ -544,6 +544,7 @@ pub enum CardSubtype {
     Raid,
     Runic,
     Charge,
+    Warrior,
 }
 
 /// An interval of time in milliseconds

@@ -25,7 +25,7 @@ use serde::{Deserialize, Serialize};
 use crate::game_effect::GameEffect;
 use crate::game_state::MulliganDecision;
 use crate::primitives::{
-    AbilityId, CardId, CardSubtype, CardType, DamageAmount, ManaValue, RoomId,
+    AbilityId, CardId, CardSubtype, CardType, CurseCount, DamageAmount, ManaValue, RoomId,
 };
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
@@ -96,6 +96,10 @@ pub enum ButtonPromptContext {
     /// the current incoming damage value and display only the lower of the two
     /// values.
     SacrificeToPreventDamage(CardId, DamageAmount),
+    /// Sacrifice a card to prevent up to `CurseCount` curses. Will inspect
+    /// the current incoming curse count and display only the lower of the two
+    /// values.
+    SacrificeToPreventCurses(CardId, CurseCount),
 }
 
 impl ButtonPromptContext {
@@ -104,6 +108,7 @@ impl ButtonPromptContext {
         match self {
             Self::Card(id) => Some(*id),
             Self::SacrificeToPreventDamage(id, _) => Some(*id),
+            Self::SacrificeToPreventCurses(id, _) => Some(*id),
             _ => None,
         }
     }
