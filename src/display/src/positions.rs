@@ -342,7 +342,7 @@ fn prompt_position_override(
 
     match current_prompt {
         GamePrompt::ButtonPrompt(prompt) => {
-            if prompt.context.and_then(|c| c.associated_card()) == Some(card.id) {
+            if prompt.context.as_ref().and_then(|c| c.associated_card()) == Some(card.id) {
                 return Some(for_card(card, card_browser()));
             }
             if prompt.choices.iter().any(|choice| choice.anchor_card == Some(card.id)) {
@@ -375,7 +375,7 @@ fn opponent_prompt_position_override(
 ) -> Option<ObjectPosition> {
     let current_prompt = game.player(builder.user_side.opponent()).prompt_queue.get(0)?;
     if let GamePrompt::ButtonPrompt(prompt) = current_prompt {
-        if prompt.context.and_then(|c| c.associated_card()) == Some(card.id) {
+        if prompt.context.as_ref().and_then(|c| c.associated_card()) == Some(card.id) {
             return Some(for_card(card, card_browser()));
         }
     }

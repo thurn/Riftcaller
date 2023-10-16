@@ -16,7 +16,7 @@ use card_helpers::{abilities, costs, in_play, show_prompt, text};
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::game_actions::{PromptChoice, PromptContext};
+use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::TextElement;
@@ -45,7 +45,7 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
                     show_prompt::with_context_and_choices(
                         g,
                         s,
-                        PromptContext::SacrificeToPreventDamage(s.card_id(), s.upgrade(2, 5)),
+                        ButtonPromptContext::SacrificeToPreventDamage(s.card_id(), s.upgrade(2, 5)),
                         vec![
                             PromptChoice::new()
                                 .effect(GameEffect::SacrificeCard(s.card_id()))

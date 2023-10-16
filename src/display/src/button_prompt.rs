@@ -16,7 +16,7 @@ use std::cmp;
 
 use adapters::response_builder::ResponseBuilder;
 use core_ui::prelude::*;
-use game_data::game_actions::{ButtonPrompt, PromptChoice, PromptContext};
+use game_data::game_actions::{ButtonPrompt, ButtonPromptContext, PromptChoice};
 use game_data::game_state::GameState;
 use game_data::primitives::{CardSubtype, CardType, Milliseconds, Side};
 use game_data::tutorial_data::{SpeechBubble, TutorialDisplay};
@@ -46,7 +46,7 @@ pub fn controls(
 
     Some(InterfaceMainControls {
         node: PromptContainer::new().children(main_controls).build(),
-        overlay: prompt_context(game, prompt.context),
+        overlay: prompt_context(game, prompt.context.as_ref()),
         card_anchor_nodes,
     })
 }
@@ -77,13 +77,13 @@ fn should_show_bubble(builder: &ResponseBuilder, side: Side, choice: &PromptChoi
     builder.user_side != side && !choice.is_secondary() && choice.anchor_card.is_none()
 }
 
-fn prompt_context(game: &GameState, context: Option<PromptContext>) -> Option<Node> {
-    match context {
-        Some(PromptContext::CardLimit(card_type, subtype)) => match card_type {
+fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>) -> Option<Node> {
+    match prompt_context? {
+        ButtonPromptContext::CardLimit(card_type, subtype) => match card_type {
             CardType::Minion => GameInstructions::new(
                 "Minion limit exceeded. You must sacrifice a minion in this room.".to_string(),
             ),
-            CardType::Artifact if subtype == Some(CardSubtype::Weapon) => GameInstructions::new(
+            CardType::Artifact if *subtype == Some(CardSubtype::Weapon) => GameInstructions::new(
                 "Weapon limit exceeded. You must sacrifice a Weapon card in play.".to_string(),
             ),
             CardType::Project | CardType::Scheme => GameInstructions::new(
@@ -100,18 +100,18 @@ fn prompt_context(game: &GameState, context: Option<PromptContext>) -> Option<No
             )),
         }
         .build(),
-        Some(PromptContext::SacrificeToPreventDamage(card_id, amount)) => {
+        ButtonPromptContext::SacrificeToPreventDamage(card_id, amount) => {
             GameInstructions::new(format!(
                 "Sacrifice {} to prevent {} damage?",
-                game.card(card_id).variant.name.displayed_name(),
+                game.card(*card_id).variant.name.displayed_name(),
                 // Show the total incoming damage if it is lower than the amount to prevent
                 cmp::min(
-                    amount,
+                    *amount,
                     game.state_machines.deal_damage.as_ref().map(|d| d.amount).unwrap_or_default()
                 )
             ))
             .build()
         }
-        _ => None,
+        ButtonPromptContext::Card(_) => None,
     }
 }

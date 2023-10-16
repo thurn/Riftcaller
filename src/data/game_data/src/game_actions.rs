@@ -78,21 +78,27 @@ pub enum PromptContext {
     /// limit, player must discard until they have the provided number of cards
     /// in hand.
     DiscardToHandSize(usize),
-    /// Prompt is being shown to sacrifice cards due to exceeding the
-    /// limit for cards in play of this type. Player must sacrifice until they
-    /// have the provided number of minions in the room.
-    CardLimit(CardType, Option<CardSubtype>),
     /// Play a chosen card
     PlayACard,
     /// Play a card of a given type the discard pile
     PlayFromDiscard(CardType),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ButtonPromptContext {
+    /// Prompt is being shown related to a specific card
+    Card(CardId),
+    /// Prompt is being shown to sacrifice cards due to exceeding the
+    /// limit for cards in play of this type. Player must sacrifice until they
+    /// have the provided number of minions in the room.
+    CardLimit(CardType, Option<CardSubtype>),
     /// Sacrifice a card to prevent up to `DamageAmount` damage. Will inspect
     /// the current incoming damage value and display only the lower of the two
     /// values.
     SacrificeToPreventDamage(CardId, DamageAmount),
 }
 
-impl PromptContext {
+impl ButtonPromptContext {
     /// Looks up the card associated with this prompt, if any
     pub fn associated_card(&self) -> Option<CardId> {
         match self {
@@ -253,7 +259,7 @@ impl PromptChoice {
 pub struct ButtonPrompt {
     /// Identifies the context for this prompt, i.e. why it is being shown to
     /// the user.
-    pub context: Option<PromptContext>,
+    pub context: Option<ButtonPromptContext>,
     /// Card actions for this prompt
     pub choices: Vec<PromptChoice>,
 }

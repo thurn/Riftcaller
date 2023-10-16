@@ -15,7 +15,8 @@
 use anyhow::Result;
 use game_data::delegate_data::Scope;
 use game_data::game_actions::{
-    ButtonPrompt, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext, UnplayedAction,
+    ButtonPrompt, ButtonPromptContext, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
+    UnplayedAction,
 };
 use game_data::game_state::GameState;
 use game_data::game_updates::GameAnimation;
@@ -26,7 +27,7 @@ use game_data::primitives::{CardId, HasSide, Side};
 pub fn with_context_and_choices(
     game: &mut GameState,
     side: impl HasSide,
-    context: PromptContext,
+    context: ButtonPromptContext,
     choices: Vec<PromptChoice>,
 ) {
     game.player_mut(side.side())

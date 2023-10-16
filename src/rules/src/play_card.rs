@@ -19,7 +19,7 @@ use constants::game_constants;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent};
 use game_data::game_actions::{
-    ButtonPrompt, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel, PromptContext,
+    ButtonPrompt, ButtonPromptContext, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel,
     UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
@@ -122,7 +122,7 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
             {
                 Some(card_limit_prompt(
                     game_weapons(game),
-                    PromptContext::CardLimit(CardType::Artifact, Some(CardSubtype::Weapon)),
+                    ButtonPromptContext::CardLimit(CardType::Artifact, Some(CardSubtype::Weapon)),
                 ))
             }
             CardType::Artifact
@@ -130,7 +130,7 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
             {
                 Some(card_limit_prompt(
                     game.artifacts(),
-                    PromptContext::CardLimit(CardType::Artifact, None),
+                    ButtonPromptContext::CardLimit(CardType::Artifact, None),
                 ))
             }
             CardType::Evocation
@@ -138,13 +138,13 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
             {
                 Some(card_limit_prompt(
                     game.evocations(),
-                    PromptContext::CardLimit(CardType::Evocation, None),
+                    ButtonPromptContext::CardLimit(CardType::Evocation, None),
                 ))
             }
             CardType::Ally if game.allies().count() >= game_constants::MAXIMUM_ALLIES_IN_PLAY => {
                 Some(card_limit_prompt(
                     game.allies(),
-                    PromptContext::CardLimit(CardType::Ally, None),
+                    ButtonPromptContext::CardLimit(CardType::Ally, None),
                 ))
             }
             _ => None,
@@ -156,7 +156,7 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
             {
                 Some(card_limit_prompt(
                     game.defenders_unordered(room_id),
-                    PromptContext::CardLimit(CardType::Minion, None),
+                    ButtonPromptContext::CardLimit(CardType::Minion, None),
                 ))
             }
             CardType::Project | CardType::Scheme
@@ -164,7 +164,7 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
             {
                 Some(card_limit_prompt(
                     game.occupants(room_id),
-                    PromptContext::CardLimit(definition.card_type, None),
+                    ButtonPromptContext::CardLimit(definition.card_type, None),
                 ))
             }
             _ => None,
@@ -297,7 +297,7 @@ fn game_weapons(game: &GameState) -> impl Iterator<Item = &CardState> {
 
 fn card_limit_prompt<'a>(
     cards: impl Iterator<Item = &'a CardState>,
-    context: PromptContext,
+    context: ButtonPromptContext,
 ) -> GamePrompt {
     GamePrompt::ButtonPrompt(ButtonPrompt {
         context: Some(context),
