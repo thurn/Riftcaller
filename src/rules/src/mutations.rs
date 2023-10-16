@@ -584,11 +584,9 @@ pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
     Ok(())
 }
 
-/// Stops the currently-active game action.
-///
-/// If there is no `current_action`, this function has no effect.
-pub fn abort_current_game_action(game: &mut GameState) {
-    game.current_action = None;
+/// Stops the currently-active 'play card' game action.
+pub fn abort_playing_card(game: &mut GameState) {
+    game.state_machines.play_card = None;
 }
 
 /// Creates an entirely new card from outside the game face-up in the indicated

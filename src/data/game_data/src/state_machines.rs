@@ -67,12 +67,11 @@ pub struct ActivateAbilityData {
     pub step: ActivateAbilityStep,
 }
 
-/// Data related to a game action which is currently in the process of
-/// resolving. Game actions are handled via a resumable state machine in order
-/// to allow interruptions in the resolution process when a player is required
-/// to make a prompt decision.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum ActionData {
-    PlayCard(PlayCardData),
-    ActivateAbility(ActivateAbilityData),
+/// Data related to ongoing game events. Some types of updates are handled via a
+/// resumable state machine in order to allow interruptions in the resolution
+/// process when a player is required to make a prompt decision.
+#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize)]
+pub struct StateMachines {
+    pub play_card: Option<PlayCardData>,
+    pub activate_ability: Option<ActivateAbilityData>,
 }

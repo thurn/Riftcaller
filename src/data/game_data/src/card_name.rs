@@ -261,6 +261,7 @@ pub enum CardName {
     BladeOfReckoning,
     Resolution,
     StarlightLantern,
+    Visitation,
 }
 
 impl CardName {

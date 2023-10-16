@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::action_data::ActionData;
 use game_data::card_definition::TargetRequirement;
 use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
@@ -76,7 +75,7 @@ pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -
         }
     }
 
-    if let Some(ActionData::PlayCard(data)) = game.current_action {
+    if let Some(data) = game.state_machines.play_card {
         return data.card_id == *card_id && data.initiated_by.card_id() == Some(scope.card_id());
     }
 

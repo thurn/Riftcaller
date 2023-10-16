@@ -15,7 +15,6 @@
 use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CardIdentifierAction;
-use game_data::action_data::ActionData;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt, PromptContext};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
@@ -253,7 +252,7 @@ pub fn ability_card_position(
     for_ability(
         game,
         ability_id,
-        if let Some(ActionData::ActivateAbility(activate)) = game.current_action {
+        if let Some(activate) = game.state_machines.activate_ability {
             if activate.ability_id == ability_id {
                 staging()
             } else {

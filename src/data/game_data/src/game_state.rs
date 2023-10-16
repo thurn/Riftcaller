@@ -23,7 +23,6 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use with_error::{fail, WithError};
 
-use crate::action_data::ActionData;
 use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegate_data::DelegateCache;
@@ -36,6 +35,7 @@ use crate::primitives::{
     RoomLocation, School, Side, TurnNumber,
 };
 use crate::raid_data::RaidData;
+use crate::state_machines::StateMachines;
 use crate::tutorial_data::GameTutorialState;
 use crate::undo_tracker::UndoTracker;
 
@@ -217,8 +217,9 @@ pub struct GameState {
     pub id: GameId,
     /// General game state & configuration
     pub info: GameInfo,
-    /// User action currently in the process of being resolved.
-    pub current_action: Option<ActionData>,
+    /// Collection of state machines for handling resolution of multi-step game
+    /// updates.
+    pub state_machines: StateMachines,
     /// State of the ongoing raid in this game, if any
     pub raid: Option<RaidData>,
     /// Used to track changes to game state in order to update the client. See
@@ -279,7 +280,7 @@ impl GameState {
                 tutorial_state: GameTutorialState::default(),
                 config,
             },
-            current_action: None,
+            state_machines: StateMachines::default(),
             raid: None,
             overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
             champion_cards: Self::make_deck(&champion_deck, Side::Champion),
@@ -309,7 +310,7 @@ impl GameState {
             let clone = Self {
                 id: self.id,
                 info: self.info.clone(),
-                current_action: self.current_action.clone(),
+                state_machines: self.state_machines.clone(),
                 raid: self.raid.clone(),
                 animations: AnimationTracker::new(AnimationState::Ignore),
                 overlord_cards: self.overlord_cards.clone(),
@@ -333,7 +334,7 @@ impl GameState {
         Self {
             id: self.id,
             info: self.info.clone(),
-            current_action: self.current_action.clone(),
+            state_machines: self.state_machines.clone(),
             raid: self.raid.clone(),
             animations: AnimationTracker::default(),
             overlord_cards: self.overlord_cards.clone(),

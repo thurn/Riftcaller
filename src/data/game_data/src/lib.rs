@@ -14,7 +14,6 @@
 
 //! Data types used to represent game state
 
-pub mod action_data;
 pub mod agent_definition;
 pub mod card_definition;
 pub mod card_name;
@@ -34,6 +33,7 @@ pub mod primitives;
 pub mod raid_data;
 pub mod random;
 pub mod special_effects;
+pub mod state_machines;
 pub mod text;
 pub mod tutorial_data;
 pub mod undo_tracker;

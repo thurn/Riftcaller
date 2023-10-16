@@ -16,7 +16,6 @@ use std::iter;
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::action_data::{ActionData, PlayCardData, PlayCardStep};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent};
 use game_data::game_actions::{
@@ -28,6 +27,7 @@ use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState};
 use game_data::game_updates::{GameAnimation, InitiatedBy};
 use game_data::primitives::{CardId, CardSubtype, CardType, Side};
+use game_data::state_machines::{PlayCardData, PlayCardStep};
 use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
@@ -36,7 +36,7 @@ use crate::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 /// Starts a new play card action, either as a result the explicit game action
 /// or as an effect of another card.
 pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Result<()> {
-    verify!(game.current_action.is_none(), "An action is already being resolved!");
+    verify!(game.state_machines.play_card.is_none(), "An action is already being resolved!");
 
     let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
         game.player(card_id.side).prompt_queue.get(0)
@@ -46,12 +46,8 @@ pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Re
         InitiatedBy::GameAction
     };
 
-    game.current_action = Some(ActionData::PlayCard(PlayCardData {
-        card_id,
-        initiated_by,
-        target,
-        step: PlayCardStep::Begin,
-    }));
+    game.state_machines.play_card =
+        Some(PlayCardData { card_id, initiated_by, target, step: PlayCardStep::Begin });
 
     run(game)
 }
@@ -78,9 +74,9 @@ pub fn run(game: &mut GameState) -> Result<()> {
             break;
         }
 
-        if let Some(ActionData::PlayCard(play_card)) = game.current_action {
+        if let Some(play_card) = game.state_machines.play_card {
             let step = evaluate_play_step(game, play_card)?;
-            if let Some(ActionData::PlayCard(play)) = &mut game.current_action {
+            if let Some(play) = &mut game.state_machines.play_card {
                 play.step = step;
             }
         } else {
@@ -290,7 +286,7 @@ fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep>
         PlayCardEvent(CardPlayed { card_id: play_card.card_id, target: play_card.target }),
     )?;
 
-    game.current_action = None;
+    game.state_machines.play_card = None;
     Ok(PlayCardStep::Finish)
 }
 
@@ -311,7 +307,7 @@ fn card_limit_prompt<'a>(
                 anchor_card: Some(existing.id),
                 custom_label: Some(PromptChoiceLabel::Sacrifice),
             })
-            .chain(iter::once(PromptChoice::new().effect(GameEffect::AbortCurrentGameAction)))
+            .chain(iter::once(PromptChoice::new().effect(GameEffect::AbortPlayingCard)))
             .collect(),
     })
 }

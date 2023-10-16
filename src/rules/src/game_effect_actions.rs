@@ -23,7 +23,7 @@ use crate::{mana, mutations};
 pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
     match effect {
         GameEffect::Continue => {}
-        GameEffect::AbortCurrentGameAction => mutations::abort_current_game_action(game),
+        GameEffect::AbortPlayingCard => mutations::abort_playing_card(game),
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
         GameEffect::DestroyCard(card_id) => mutations::destroy_card(game, card_id)?,
         GameEffect::LoseMana(side, amount) => {

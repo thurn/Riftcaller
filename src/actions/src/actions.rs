@@ -425,12 +425,15 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
 
-    // Try to resume state machines, in case this prompt caused them to pause.
+    resume_all_state_machines(game)
+}
+
+/// Attempt to start all active game state machines to process further actions,
+/// typically after a user prompt is completed.
+fn resume_all_state_machines(game: &mut GameState) -> Result<()> {
     raid_state::run(game, None)?;
     play_card::run(game)?;
-    activate_ability::run(game)?;
-
-    Ok(())
+    activate_ability::run(game)
 }
 
 fn record_prompt_response(game: &mut GameState, prompt: GamePrompt, side: Side, index: usize) {

@@ -22,8 +22,8 @@ use crate::primitives::{AbilityId, ActionCount, CardId, ManaValue, Side};
 pub enum GameEffect {
     /// Proceed without taking any action
     Continue,
-    /// Stop the current game action
-    AbortCurrentGameAction,
+    /// Stop the current 'play card' game action
+    AbortPlayingCard,
     /// Sacrifice the indicated permanent, moving it to its owner's discard
     /// pile.
     SacrificeCard(CardId),
@@ -44,7 +44,7 @@ pub enum GameEffect {
 impl GameEffect {
     pub fn is_secondary(&self) -> bool {
         match self {
-            Self::Continue | Self::AbortCurrentGameAction => true,
+            Self::Continue | Self::AbortPlayingCard => true,
             _ => false,
         }
     }

@@ -48,7 +48,7 @@ pub fn label(user_side: Side, choice: &PromptChoice) -> String {
 fn effect_label(user_side: Side, effect: &GameEffect) -> String {
     match effect {
         GameEffect::Continue => "Continue".to_string(),
-        GameEffect::AbortCurrentGameAction => "Cancel".to_string(),
+        GameEffect::AbortPlayingCard => "Cancel".to_string(),
         GameEffect::SacrificeCard(_) => "Sacrifice".to_string(),
         GameEffect::DestroyCard(_) => "Destroy".to_string(),
         GameEffect::LoseMana(side, amount) => {
