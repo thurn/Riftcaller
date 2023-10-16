@@ -57,6 +57,7 @@ pub enum RaidStep {
     MinionDefeated(WeaponInteraction),
     FireMinionCombatAbility(CardId),
     PopulateApproachPrompt,
+    CheckCanAccess,
     AccessStart,
     BuildAccessSet,
     AccessSetBuilt,

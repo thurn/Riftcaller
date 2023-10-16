@@ -21,9 +21,10 @@ use anyhow::Result;
 use game_data::card_definition::CustomBoostCost;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, MinionCombatAbilityEvent,
-    MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome,
-    RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
+    CanRaidAccessCardsQuery, CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, Flag,
+    MinionCombatAbilityEvent, MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent,
+    RaidEvent, RaidOutcome, RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon,
+    UsedWeaponEvent,
 };
 use game_data::game_actions::RaidAction;
 use game_data::game_history::HistoryEvent;
@@ -178,6 +179,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
             fire_minion_combat_ability(game, info, minion_id)
         }
         RaidStep::PopulateApproachPrompt => populate_approach_prompt(game),
+        RaidStep::CheckCanAccess => check_can_access(game, info),
         RaidStep::AccessStart => access_start(game, info),
         RaidStep::BuildAccessSet => build_access_set(game, info),
         RaidStep::AccessSetBuilt => access_set_built(game, info),
@@ -326,10 +328,20 @@ fn populate_approach_prompt(game: &mut GameState) -> Result<RaidState> {
     if flags::overlord_has_instant_speed_actions(game) {
         RaidState::prompt(
             RaidStatus::ApproachRoom,
-            vec![RaidChoice::new(RaidLabel::ProceedToAccess, RaidStep::AccessStart)],
+            vec![RaidChoice::new(RaidLabel::ProceedToAccess, RaidStep::CheckCanAccess)],
         )
     } else {
+        RaidState::step(RaidStep::CheckCanAccess)
+    }
+}
+
+fn check_can_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    let can_access =
+        dispatch::perform_query(game, CanRaidAccessCardsQuery(info.event(())), Flag::new(true));
+    if can_access.into() {
         RaidState::step(RaidStep::AccessStart)
+    } else {
+        RaidState::step(RaidStep::FinishRaid)
     }
 }
 

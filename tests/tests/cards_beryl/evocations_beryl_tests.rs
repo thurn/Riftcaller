@@ -72,3 +72,19 @@ pub fn visitation_upgraded() {
     g.click(Button::Sacrifice);
     assert_eq!(g.user.cards.hand().len(), 5);
 }
+
+#[test]
+pub fn empyreal_chorus() {
+    let (cost, gained) = (1, 8);
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(test_constants::ROOM_ID, CardName::TestScheme3_10),
+        )
+        .build();
+    let id = g.create_and_play(CardName::EmpyrealChorus);
+    g.activate_ability_with_target(id, 0, test_constants::ROOM_ID);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
+    assert!(!g.user.data.raid_active());
+    assert!(!g.user.cards.room_occupants(test_constants::ROOM_ID)[0].revealed_to_me());
+}

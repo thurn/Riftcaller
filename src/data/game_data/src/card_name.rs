@@ -262,6 +262,7 @@ pub enum CardName {
     BladeOfReckoning,
     Resolution,
     StarlightLantern,
+    EmpyrealChorus,
     Visitation,
     StalwartProtector,
 }

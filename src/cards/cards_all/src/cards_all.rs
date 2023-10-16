@@ -74,6 +74,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::enduring_radiance);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::sift_the_sands);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::holy_aura);
+    DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);

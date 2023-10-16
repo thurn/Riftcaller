@@ -507,6 +507,9 @@ pub enum Delegate {
     /// Can the Champion choose to not use a weapon ability when encountering
     /// the indicated minion card?
     CanUseNoWeapon(QueryDelegate<CardId, Flag>),
+    /// Can an ongoing raid access cards any cards? If false the raid will
+    /// immediately move to the 'end' state once it is successful.
+    CanRaidAccessCards(QueryDelegate<RaidEvent<()>, Flag>),
     /// Can the Champion choose to use the 'End Raid' button to end the access
     /// phase of a raid?
     CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
