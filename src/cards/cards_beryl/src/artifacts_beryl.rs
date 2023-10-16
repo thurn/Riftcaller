@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::updates::Updates;
+use card_helpers::effects::Effects;
 use card_helpers::{abilities, costs, history, in_play, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -128,7 +128,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
             ],
                 this::on_weapon_used(|g, s, weapon| {
                     if history::weapons_used_this_turn(g).all(|w| w.data.weapon_id != s.card_id()) {
-                        Updates::new(g)
+                        Effects::new()
                             .timed_effect(
                                 GameObjectId::CardId(weapon.data.target_id),
                                 TimedEffectData::new(TimedEffect::MagicCircles1(6))
@@ -137,7 +137,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
                                     .effect_color(design::YELLOW_900),
                             )
                             .ability_alert(s)
-                            .apply();
+                            .apply(g);
 
                         mutations::move_card(
                             g,
@@ -251,7 +251,7 @@ pub fn resolution(meta: CardMetadata) -> CardDefinition {
             abilities::standard(
                 text!["When this weapon defeats a minion, sacrifice it"],
                 this::on_weapon_used(|g, s, _| {
-                    Updates::new(g).ability_alert(s).apply();
+                    Effects::new().ability_alert(s).apply(g);
                     mutations::sacrifice_card(g, s.card_id())
                 }),
             ),
@@ -287,7 +287,7 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
                 text!["When you play an artifact, including this card,", StoreMana(1)],
                 in_play::on_card_played(|g, s, played| {
                     if g.card(played.card_id).definition().card_type == CardType::Artifact {
-                        Updates::new(g)
+                        Effects::new()
                             .timed_effect(
                                 GameObjectId::CardId(s.card_id()),
                                 TimedEffectData::new(TimedEffect::MagicCircles1(7))
@@ -295,7 +295,7 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
                                     .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02"))
                                     .effect_color(design::YELLOW_900),
                             )
-                            .apply();
+                            .apply(g);
                         mutations::add_stored_mana(g, s.card_id(), 1);
                     }
                     Ok(())

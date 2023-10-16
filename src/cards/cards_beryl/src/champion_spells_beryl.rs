@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::updates::Updates;
+use card_helpers::effects::Effects;
 use card_helpers::{abilities, costs, delegates, raids, requirements, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -53,7 +53,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                         .map(|c| c.id)
                         .collect::<Vec<_>>();
 
-                    Updates::new(g)
+                    Effects::new()
                         .timed_effect(
                             GameObjectId::DiscardPile(Side::Champion),
                             TimedEffectData::new(TimedEffect::MagicCircles1(2))
@@ -62,7 +62,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                                 .effect_color(design::YELLOW_900),
                         )
                         .card_movement_effects(Projectile::Projectiles1(3), &cards)
-                        .apply();
+                        .apply(g);
 
                     show_prompt::play_card_browser(
                         g,
@@ -103,7 +103,7 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
             text: text!["Raid the", Sanctum, ", accessing", meta.upgrade(2, 3), "additional cards"],
             delegates: vec![
                 this::on_played(|g, s, _| {
-                    Updates::new(g)
+                    Effects::new()
                         .timed_effect(
                             GameObjectId::Character(Side::Overlord),
                             TimedEffectData::new(TimedEffect::MagicCircles1(1))
@@ -111,7 +111,7 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
                                 .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
                                 .effect_color(design::YELLOW_900),
                         )
-                        .apply();
+                        .apply(g);
 
                     raids::initiate(g, s, CardTarget::Room(RoomId::Sanctum))
                 }),
@@ -146,7 +146,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
             this::on_played(|g, s, _| {
                 curses::remove_curses(g, 1)?;
 
-                Updates::new(g)
+                Effects::new()
                     .timed_effect(
                         GameObjectId::Character(Side::Champion),
                         TimedEffectData::new(TimedEffect::MagicCircles1(3))
@@ -154,7 +154,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                             .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Heal02"))
                             .effect_color(design::YELLOW_900),
                     )
-                    .apply();
+                    .apply(g);
 
                 if s.is_upgraded() {
                     mutations::move_card(g, s.card_id(), CardPosition::Hand(s.side()))?;
@@ -207,7 +207,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
                         mutations::set_revealed_to(g, *card, s.side(), true);
                     }
 
-                    Updates::new(g)
+                    Effects::new()
                         .timed_effect(
                             GameObjectId::Deck(Side::Champion),
                             TimedEffectData::new(TimedEffect::MagicCircles1(4))
@@ -216,7 +216,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
                                 .effect_color(design::YELLOW_900),
                         )
                         .card_movement_effects(Projectile::Projectiles1(3), &cards)
-                        .apply();
+                        .apply(g);
 
                     show_prompt::play_card_browser(
                         g,
@@ -239,7 +239,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
 
 pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
     fn update(game: &mut GameState, alert: Option<AbilityId>) {
-        Updates::new(game)
+        Effects::new()
             .timed_effect(
                 GameObjectId::Deck(Side::Champion),
                 TimedEffectData::new(TimedEffect::MagicCircles1(5))
@@ -248,7 +248,7 @@ pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
                     .effect_color(design::YELLOW_900),
             )
             .optional_ability_alert(alert)
-            .apply();
+            .apply(game);
     }
 
     CardDefinition {

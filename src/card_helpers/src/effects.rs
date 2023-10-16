@@ -17,22 +17,22 @@ use game_data::game_updates::GameAnimation;
 use game_data::primitives::{AbilityId, CardId, GameObjectId, HasAbilityId, HasCardId};
 use game_data::special_effects::{Projectile, SpecialEffect, TimedEffectData};
 
-pub struct Updates<'a> {
-    game: &'a mut GameState,
+#[derive(Clone, Debug, Default)]
+pub struct Effects {
     ability_triggered: Option<AbilityId>,
     effects: Vec<SpecialEffect>,
 }
 
-impl<'a> Updates<'a> {
-    pub fn new(game: &'a mut GameState) -> Self {
-        Self { game, ability_triggered: None, effects: vec![] }
+impl Effects {
+    pub fn new() -> Self {
+        Self::default()
     }
 
-    pub fn apply(self) {
+    pub fn apply(self, game: &mut GameState) {
         if let Some(id) = self.ability_triggered {
-            self.game.add_animation(|| GameAnimation::AbilityTriggered(id, self.effects));
+            game.add_animation(|| GameAnimation::AbilityTriggered(id, self.effects));
         } else {
-            self.game.add_animation(|| GameAnimation::CustomEffects(self.effects));
+            game.add_animation(|| GameAnimation::CustomEffects(self.effects));
         }
     }
 

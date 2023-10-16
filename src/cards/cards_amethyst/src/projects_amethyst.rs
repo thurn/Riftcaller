@@ -17,7 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::abilities::standard;
-use card_helpers::updates::Updates;
+use card_helpers::effects::Effects;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
@@ -51,7 +51,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
                     if g.card(s.card_id()).counters(CardCounter::StoredMana) == 0 {
                         mutations::draw_cards(g, s.side(), 1)?;
                     }
-                    Updates::new(g).ability_alert(s).apply();
+                    Effects::new().ability_alert(s).apply(g);
                     Ok(())
                 })],
             },
@@ -85,7 +85,7 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
                             s,
                             2 + g.card(s.card_id()).counters(CardCounter::Progress),
                         )?;
-                        Updates::new(g).ability_alert(s).apply();
+                        Effects::new().ability_alert(s).apply(g);
                     }
 
                     Ok(())

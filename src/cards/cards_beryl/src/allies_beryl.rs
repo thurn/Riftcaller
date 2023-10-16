@@ -13,18 +13,35 @@
 // limitations under the License.
 
 use card_helpers::abilities::ActivatedConfig;
+use card_helpers::effects::Effects;
 use card_helpers::{abilities, costs, in_play, show_prompt, text, this};
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
-use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
+use game_data::game_state::GameState;
+use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use rules::curses;
 
 pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
+    fn update(game: &mut GameState) {
+        Effects::new()
+            .timed_effect(
+                GameObjectId::Character(Side::Champion),
+                TimedEffectData::new(TimedEffect::MagicCircles1(7))
+                    .scale(2.0)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_HealingWing_P1"))
+                    .effect_color(design::YELLOW_900),
+            )
+            .apply(game);
+    }
+
     CardDefinition {
         name: CardName::StalwartProtector,
         sets: vec![CardSetName::Beryl],
@@ -60,7 +77,10 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
                 text!["Remove a curse"],
                 costs::sacrifice(),
                 ActivatedConfig::new().can_activate(|g, _| g.champion.curses > 0),
-                this::on_activated(|g, _, _| curses::remove_curses(g, 1)),
+                this::on_activated(|g, _, _| {
+                    update(g);
+                    curses::remove_curses(g, 1)
+                }),
             ),
         ],
         config: CardConfig::default(),

@@ -18,10 +18,10 @@ use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::abilities::standard;
 use card_helpers::costs::once_per_turn;
+use card_helpers::effects::Effects;
 use card_helpers::raids::add_sanctum_access;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::this::on_activated;
-use card_helpers::updates::Updates;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
@@ -74,7 +74,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
             standard(
                 text!["When you access a room", StoreMana(1)],
                 in_play::after_room_accessed(|g, s, _| {
-                    Updates::new(g).ability_alert(s).apply();
+                    Effects::new().ability_alert(s).apply(g);
                     add_stored_mana(g, s.card_id(), 1);
                     Ok(())
                 }),

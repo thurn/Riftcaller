@@ -14,8 +14,8 @@
 
 use assets::rexard_images;
 use card_helpers::abilities::standard;
+use card_helpers::effects::Effects;
 use card_helpers::requirements::FaceUpInPlay;
-use card_helpers::updates::Updates;
 use card_helpers::*;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
@@ -39,7 +39,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
             trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
             in_play::at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
-                    Updates::new(g).ability_alert(s).apply();
+                    Effects::new().ability_alert(s).apply(g);
                     mana::gain(g, s.side(), 1);
                 }
                 Ok(())
@@ -65,7 +65,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
             Delegate::DealtDamage(EventDelegate {
                 requirement: requirements::no_damage_dealt::<FaceUpInPlay>,
                 mutation: |g, s, _| {
-                    Updates::new(g).ability_alert(s).apply();
+                    Effects::new().ability_alert(s).apply(g);
                     mutations::draw_cards(g, s.side(), 1)?;
                     Ok(())
                 },
@@ -89,7 +89,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
         abilities: vec![standard(
             text!["After you access the", Sanctum, ", discard the top card of the", Vault],
             in_play::after_sanctum_accessed(|g, s, _| {
-                Updates::new(g).ability_alert(s).apply();
+                Effects::new().ability_alert(s).apply(g);
                 mutations::discard_from_vault(g, 1)
             }),
         )],

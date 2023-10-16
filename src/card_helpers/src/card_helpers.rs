@@ -18,6 +18,7 @@
 pub mod abilities;
 pub mod costs;
 pub mod delegates;
+pub mod effects;
 pub mod history;
 pub mod in_play;
 pub mod projects;
@@ -26,7 +27,6 @@ pub mod requirements;
 pub mod show_prompt;
 pub mod text_macro;
 pub mod this;
-pub mod updates;
 
 use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;

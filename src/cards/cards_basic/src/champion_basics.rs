@@ -14,8 +14,8 @@
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use card_helpers::abilities::standard;
+use card_helpers::effects::Effects;
 use card_helpers::this::on_activated;
-use card_helpers::updates::Updates;
 use card_helpers::*;
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
@@ -107,7 +107,7 @@ pub fn mana_battery(_: CardMetadata) -> CardDefinition {
                 in_play::at_dawn(|g, s, _| {
                     let taken =
                         mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;
-                    Updates::new(g).ability_alert_if_nonzero(s, taken).apply();
+                    Effects::new().ability_alert_if_nonzero(s, taken).apply(g);
                     Ok(())
                 }),
             ),
@@ -316,7 +316,7 @@ pub fn ethereal_blade(_: CardMetadata) -> CardDefinition {
                 text: text!["When you use this weapon, sacrifice it at the end of the raid"],
                 delegates: vec![on_raid_ended(requirements::weapon_used_this_raid, |g, s, _| {
                     mutations::sacrifice_card(g, s.card_id())?;
-                    Updates::new(g).ability_alert(s).apply();
+                    Effects::new().ability_alert(s).apply(g);
                     Ok(())
                 })],
             },
