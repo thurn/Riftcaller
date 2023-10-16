@@ -20,8 +20,8 @@ use game_data::card_state::{CardCounter, CardPosition};
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
 use game_data::primitives::{AbilityId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
-use rules::mutations;
 use rules::mutations::OnZeroStored;
+use rules::{deal_damage, mutations};
 
 use crate::text_macro::text;
 use crate::this::on_activated;
@@ -112,7 +112,7 @@ pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: trigger_text(Combat, text![DealDamage(N)]),
-        delegates: vec![combat(|g, s, _| mutations::deal_damage(g, s, N))],
+        delegates: vec![combat(|g, s, _| deal_damage::apply(g, s, N))],
     }
 }
 

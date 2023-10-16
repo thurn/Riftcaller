@@ -28,18 +28,17 @@ use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CardMoved, CurseReceivedEvent, DawnEvent, DealtDamage, DealtDamageEvent, DiscardCardEvent,
-    DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, MoveCardEvent,
-    OverlordScoreCardEvent, RaidEndEvent, RaidEvent, RaidFailureEvent, RaidOutcome,
-    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
-    UnveilCardEvent,
+    CardMoved, CurseReceivedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom,
+    DrawCardEvent, DuskEvent, EnterArenaEvent, MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent,
+    RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
+    StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
-    ActionCount, CardId, CurseCount, HasAbilityId, ManaValue, PointsValue, PowerChargeValue,
-    RoomId, RoomLocation, Side, TurnNumber,
+    ActionCount, CardId, CurseCount, ManaValue, PointsValue, PowerChargeValue, RoomId,
+    RoomLocation, Side, TurnNumber,
 };
 use game_data::{random, undo_tracker};
 use tracing::{debug, instrument};
@@ -535,30 +534,6 @@ pub fn summon_minion(game: &mut GameState, card_id: CardId, costs: SummonMinion)
     dispatch::invoke_event(game, SummonMinionEvent(card_id))?;
     turn_face_up(game, card_id);
     game.add_animation(|| GameAnimation::SummonMinion(card_id));
-    Ok(())
-}
-
-/// Deals damage. Discards random card from the hand of the Champion player. If
-/// no cards remain, this player loses the game.
-pub fn deal_damage(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Result<()> {
-    let mut discarded = vec![];
-    for _ in 0..amount {
-        if let Some(card_id) =
-            random::card_in_position(game, Side::Champion, CardPosition::Hand(Side::Champion))
-        {
-            move_card(game, card_id, CardPosition::DiscardPile(Side::Champion))?;
-            discarded.push(card_id);
-        } else {
-            game_over(game, Side::Overlord)?;
-        }
-    }
-
-    dispatch::invoke_event(
-        game,
-        DealtDamageEvent(DealtDamage { source: source.ability_id(), amount, discarded }),
-    )?;
-
-    game.add_history_event(HistoryEvent::DealDamage(amount));
     Ok(())
 }
 

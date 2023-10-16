@@ -26,6 +26,7 @@ use once_cell::sync::Lazy;
 
 pub mod activate_ability;
 pub mod combat;
+pub mod deal_damage;
 pub mod dispatch;
 pub mod flags;
 pub mod game_effect_actions;

@@ -81,9 +81,9 @@ use crate::card_state::{CardData, CardPosition};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
-    HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side,
-    TurnNumber,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, DamageAmount,
+    HasAbilityId, HasCardId, HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId,
+    ShieldValue, Side, TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -345,7 +345,6 @@ pub enum RaidOutcome {
 pub struct DealtDamage {
     pub source: AbilityId,
     pub amount: u32,
-    pub discarded: Vec<CardId>,
 }
 
 impl HasAbilityId for DealtDamage {
@@ -470,6 +469,8 @@ pub enum Delegate {
     RaidSuccess(EventDelegate<RaidEvent<()>>),
     /// Stored mana is taken from a card
     StoredManaTaken(EventDelegate<CardId>),
+    /// Damage is about to be dealt to the Champion player in a given amount.
+    WillDealDamage(EventDelegate<DamageAmount>),
     /// Damage has been dealt to the Champion player (in the form of discarded
     /// cards).
     DealtDamage(EventDelegate<DealtDamage>),

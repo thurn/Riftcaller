@@ -56,7 +56,7 @@ pub fn run(game: &mut GameState) -> Result<()> {
         }
 
         if let Some(activate) = game.state_machines.activate_ability {
-            let step = evaluate_play_step(game, activate)?;
+            let step = evaluate_step(game, activate)?;
             if let Some(updated) = &mut game.state_machines.activate_ability {
                 updated.step = step;
             }
@@ -67,7 +67,7 @@ pub fn run(game: &mut GameState) -> Result<()> {
     Ok(())
 }
 
-fn evaluate_play_step(
+fn evaluate_step(
     game: &mut GameState,
     activate: ActivateAbilityData,
 ) -> Result<ActivateAbilityStep> {

@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::game_actions::CardTarget;
 use crate::game_updates::InitiatedBy;
-use crate::primitives::{AbilityId, CardId};
+use crate::primitives::{AbilityId, CardId, DamageAmount};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PlayCardStep {
@@ -67,11 +67,34 @@ pub struct ActivateAbilityData {
     pub step: ActivateAbilityStep,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum DealDamageStep {
+    Begin,
+    WillDealDamageEvent,
+    DiscardCards,
+    DealtDamageEvent,
+    Finish,
+}
+
+/// State data for dealing damage to the Champion player
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DealDamageData {
+    /// Amount of damage to deal
+    pub amount: DamageAmount,
+    /// Source of the damage
+    pub source: AbilityId,
+    /// Cards which have been discarded to this damage event, if any
+    pub discarded: Vec<CardId>,
+    /// Current state machine state
+    pub step: DealDamageStep,
+}
+
 /// Data related to ongoing game events. Some types of updates are handled via a
 /// resumable state machine in order to allow interruptions in the resolution
 /// process when a player is required to make a prompt decision.
-#[derive(Debug, Default, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct StateMachines {
     pub play_card: Option<PlayCardData>,
     pub activate_ability: Option<ActivateAbilityData>,
+    pub deal_damage: Option<DealDamageData>,
 }

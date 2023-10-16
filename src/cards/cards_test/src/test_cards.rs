@@ -24,8 +24,8 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-use rules::mutations;
 use rules::mutations::OnZeroStored;
+use rules::{deal_damage, mutations};
 
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -572,7 +572,7 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Test],
         abilities: vec![abilities::standard(
             text!["Deal 1 damage"],
-            this::on_played(|g, s, _| mutations::deal_damage(g, s, 1)),
+            this::on_played(|g, s, _| deal_damage::apply(g, s, 1)),
         )],
         ..test_overlord_spell(metadata)
     }

@@ -18,7 +18,7 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 
 use crate::mana::ManaPurpose;
-use crate::{mana, mutations};
+use crate::{deal_damage, mana, mutations};
 
 pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
     match effect {
@@ -33,9 +33,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             mutations::spend_action_points(game, side, amount)?
         }
         GameEffect::EndRaid => mutations::end_raid(game, RaidOutcome::Failure)?,
-        GameEffect::TakeDamage(ability_id, amount) => {
-            mutations::deal_damage(game, ability_id, amount)?
-        }
+        GameEffect::TakeDamage(ability_id, amount) => deal_damage::apply(game, ability_id, amount)?,
         GameEffect::MoveCard(card_id, target_position) => {
             mutations::move_card(game, card_id, target_position)?
         }

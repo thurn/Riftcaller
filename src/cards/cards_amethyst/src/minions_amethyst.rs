@@ -27,7 +27,7 @@ use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{CardType, Rarity, Resonance, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{mana, mutations, queries, CardDefinitionExt};
+use rules::{deal_damage, mana, mutations, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
@@ -164,11 +164,18 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                 ],
             ),
             delegates: vec![
-                combat(|g, s, _| mutations::deal_damage(g, s, 1)),
+                combat(|g, s, _| deal_damage::apply(g, s, 1)),
                 Delegate::DealtDamage(EventDelegate {
                     requirement: |g, s, data| {
+                        let discarded = &g
+                            .state_machines
+                            .deal_damage
+                            .as_ref()
+                            .expect("Active damage event")
+                            .discarded;
+
                         s.ability_id() == data.source
-                            && data.discarded.iter().any(|card_id| {
+                            && discarded.iter().any(|card_id| {
                                 queries::mana_cost(g, *card_id).unwrap_or(0) % 2 != 0
                             })
                     },
@@ -231,7 +238,7 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
                 ],
             ),
             combat(|g, s, _| {
-                mutations::deal_damage(g, s, 2)?;
+                deal_damage::apply(g, s, 2)?;
                 show_prompt::with_option_choices(
                     g,
                     Side::Champion,

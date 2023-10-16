@@ -34,7 +34,8 @@ use game_data::game_updates::{AnimationState, GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, dispatch, flags, game_effect_actions, mana, mutations, play_card, queries,
+    activate_ability, deal_damage, dispatch, flags, game_effect_actions, mana, mutations,
+    play_card, queries,
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
@@ -433,7 +434,8 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
 fn resume_all_state_machines(game: &mut GameState) -> Result<()> {
     raid_state::run(game, None)?;
     play_card::run(game)?;
-    activate_ability::run(game)
+    activate_ability::run(game)?;
+    deal_damage::run_state_machine(game)
 }
 
 fn record_prompt_response(game: &mut GameState, prompt: GamePrompt, side: Side, index: usize) {
