@@ -128,6 +128,15 @@ pub fn on_card_sacrificed(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::CardSacrificed(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
+/// A delegate which fires when a card is face up & in play when a card is
+/// moved to a discard pile
+pub fn on_card_moved_to_discard_pile(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::MoveToDiscardPile(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
+}
+
 /// A delegate which intercepts queries for the action costs of cards while its
 /// parent is face up and in play.
 pub fn on_query_action_cost(transformation: TransformationFn<CardId, ActionCount>) -> Delegate {

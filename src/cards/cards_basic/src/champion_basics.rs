@@ -14,6 +14,7 @@
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use card_helpers::abilities::standard;
+use card_helpers::costs::actions;
 use card_helpers::effects::Effects;
 use card_helpers::this::on_activated;
 use card_helpers::*;

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::card_definition::{Cost, CustomCost};
-use game_data::primitives::{AbilityId, CardId, ManaValue};
+use game_data::primitives::{AbilityId, ActionCount, CardId, ManaValue};
 use game_data::text::{TextElement, TextToken};
 use rules::mutations;
 
@@ -58,4 +58,9 @@ pub fn once_per_turn() -> Option<CustomCost<AbilityId>> {
         pay: |_, _| Ok(()),
         description: None,
     })
+}
+
+/// A [Cost] which requires no mana and `actions` action points.
+pub fn actions(actions: ActionCount) -> Cost<AbilityId> {
+    Cost { mana: None, actions, custom_cost: None }
 }

@@ -20,6 +20,7 @@ use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::CardCounter;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
@@ -27,7 +28,8 @@ use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School,
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-use rules::curses;
+use rules::mutations::OnZeroStored;
+use rules::{curses, mutations, CardDefinitionExt};
 
 pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
     fn update(game: &mut GameState) {
@@ -80,6 +82,63 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
                 this::on_activated(|g, _, _| {
                     update(g);
                     curses::remove_curses(g, 1)
+                }),
+            ),
+        ],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Dawnwarden,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::champion_card(meta, "dawnwarden"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Cleric],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::standard(
+                text![
+                    "When an artifact is put into your discard pile,",
+                    StoreMana(meta.upgrade(2, 3))
+                ],
+                in_play::on_card_moved_to_discard_pile(|g, s, card_id| {
+                    if g.card(*card_id).definition().card_type == CardType::Artifact {
+                        Effects::new()
+                            .timed_effect(
+                                GameObjectId::CardId(s.card_id()),
+                                TimedEffectData::new(TimedEffect::MagicCircles2(13))
+                                    .scale(2.0)
+                                    .sound(SoundEffect::LightMagic(
+                                        "RPG3_LightMagicEpic_Transform02",
+                                    ))
+                                    .effect_color(design::YELLOW_900),
+                            )
+                            .apply(g);
+
+                        mutations::add_stored_mana(g, s.card_id(), s.upgrade(2, 3));
+                    }
+                    Ok(())
+                }),
+            ),
+            abilities::activated_with_config(
+                text!["Take all stored mana"],
+                costs::actions(1),
+                ActivatedConfig::new().can_activate(|g, ability_id| {
+                    g.card(ability_id.card_id).counters(CardCounter::StoredMana) > 0
+                }),
+                this::on_activated(|g, s, _| {
+                    mutations::take_stored_mana(
+                        g,
+                        s.card_id(),
+                        g.card(s.card_id()).counters(CardCounter::StoredMana),
+                        OnZeroStored::Ignore,
+                    )?;
+                    Ok(())
                 }),
             ),
         ],

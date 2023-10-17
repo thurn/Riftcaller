@@ -123,6 +123,7 @@ pub async fn handle_debug_action(
             .await
         }
         DebugAction::SaveGameState(index) => {
+            let current_id = data.game_id.with_error(|| "Expected active game")?;
             let mut game = requests::fetch_game(database, data.game_id).await?;
             let game_id = GameId::new_from_u128(100 + index);
             game.id = game_id;
@@ -132,7 +133,7 @@ pub async fn handle_debug_action(
                 Ok(id) => id,
                 Err(_) => fail!("Unable to acquire lock, another holder panicked"),
             };
-            let _ = current_game_id.insert(game_id);
+            let _ = current_game_id.insert(current_id);
             Ok(GameResponse::new(ClientData::propagate(data)))
         }
         DebugAction::LoadGameState(index) => {

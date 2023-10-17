@@ -28,8 +28,8 @@ use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CardMoved, CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom,
-    DrawCardEvent, DuskEvent, EnterArenaEvent, MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent,
+    CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent,
+    DuskEvent, EnterArenaEvent, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
     RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
     StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
 };
@@ -85,8 +85,6 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     let old_position = game.card(card_id).position();
     game.move_card_internal(card_id, new_position);
 
-    dispatch::invoke_event(game, MoveCardEvent(CardMoved { old_position, new_position }))?;
-
     if old_position.in_deck() && new_position.in_hand() {
         dispatch::invoke_event(game, DrawCardEvent(card_id))?;
     }
@@ -94,6 +92,10 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     if !old_position.in_play() && new_position.in_play() {
         game.card_mut(card_id).clear_all_counters();
         dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
+    }
+
+    if new_position.in_discard_pile() {
+        dispatch::invoke_event(game, MoveToDiscardPileEvent(card_id))?;
     }
 
     if old_position.in_deck() && new_position.in_discard_pile() {

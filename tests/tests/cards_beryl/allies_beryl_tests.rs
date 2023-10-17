@@ -62,3 +62,17 @@ pub fn stalwart_protector_activate() {
     assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
     assert!(g.user.cards.discard_pile().contains_card(CardName::StalwartProtector));
 }
+
+#[test]
+pub fn dawnwarden() {
+    let (cost, gained) = (1, 2);
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let id = g.create_and_play(CardName::Dawnwarden);
+    let test_sacrifice = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.activate_ability(test_sacrifice, 0);
+    g.activate_ability(id, 1);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA - test_constants::ARTIFACT_COST - cost + gained
+    );
+}

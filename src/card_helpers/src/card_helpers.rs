@@ -38,7 +38,7 @@ use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    AbilityId, ActionCount, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue, RoomId, Side,
+    ActionCount, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue, RoomId, Side,
 };
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
@@ -47,11 +47,6 @@ use rules::mana::ManaPurpose;
 
 pub fn trigger_text(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElement> {
     vec![TextElement::NamedTrigger(name, effect)]
-}
-
-/// A [Cost] which requires no mana and `actions` action points.
-pub fn actions(actions: ActionCount) -> Cost<AbilityId> {
-    Cost { mana: None, actions, custom_cost: None }
 }
 
 /// Provides the cost for a card, with 1 action point required and `mana` mana
@@ -73,7 +68,7 @@ pub fn riftcaller_cost() -> Cost<CardId> {
 /// An [AbilityType] for an ability which costs 1 action and has no target.
 pub fn activate_for_action() -> AbilityType {
     AbilityType::Activated {
-        cost: actions(1),
+        cost: costs::actions(1),
         target_requirement: TargetRequirement::None,
         can_activate: None,
     }

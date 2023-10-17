@@ -266,15 +266,6 @@ impl HasAbilityId for AbilityActivated {
     }
 }
 
-/// Event data for when a card is moved
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
-pub struct CardMoved {
-    /// Position before the move
-    pub old_position: CardPosition,
-    /// New card position, where the the card is now located.
-    pub new_position: CardPosition,
-}
-
 /// Event data for encounters between cards
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
 pub struct CardEncounter {
@@ -416,6 +407,8 @@ pub enum Delegate {
     EnterArena(EventDelegate<CardId>),
     /// A card has been moved from a deck or hand to a discard pile.
     DiscardCard(EventDelegate<DiscardedCard>),
+    /// A card is moved to the discard pile from anywhere
+    MoveToDiscardPile(EventDelegate<CardId>),
     /// A card ability with a cost is activated
     ActivateAbility(EventDelegate<AbilityActivated>),
     /// A card, typically a Project, is unveiled (turned face up by paying its
@@ -423,8 +416,6 @@ pub enum Delegate {
     UnveilCard(EventDelegate<CardId>),
     /// A minion card is turned face up.
     SummonMinion(EventDelegate<CardId>),
-    /// A card is moved to a new position
-    MoveCard(EventDelegate<CardMoved>),
     /// A card is scored by the Overlord
     OverlordScoreCard(EventDelegate<CardId>),
     /// A card is scored by the Champion

@@ -267,6 +267,7 @@ pub enum CardName {
     StarfieldOmen,
     Visitation,
     StalwartProtector,
+    Dawnwarden,
 }
 
 impl CardName {
