@@ -380,6 +380,8 @@ pub enum RoomId {
     RoomE,
 }
 
+pub static INNER_ROOMS: &'static [RoomId] = &[RoomId::Vault, RoomId::Sanctum, RoomId::Crypts];
+
 impl RoomId {
     /// An 'inner room' is one of the three predefined rooms for the Overlord
     /// player's deck, hand, and discard pile. Inner rooms cannot contain

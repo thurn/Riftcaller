@@ -78,7 +78,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
             standard(
                 trigger_text(
                     Combat,
-                    text!["Summon a minion from the", Sanctum, "or", Crypts, "for free"],
+                    text!["Summon a minion from the", Sanctum, "or", Crypt, "for free"],
                 ),
                 combat(|g, s, _| {
                     let cards = g

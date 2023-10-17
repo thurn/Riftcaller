@@ -262,6 +262,7 @@ pub enum CardName {
     BladeOfReckoning,
     Resolution,
     StarlightLantern,
+    WarriorsSign,
     EmpyrealChorus,
     Visitation,
     StalwartProtector,
@@ -273,6 +274,7 @@ impl CardName {
         let custom = match self {
             Self::MaraudersAxe => "Marauder's Axe",
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath",
+            Self::WarriorsSign => "Warrior's Sign",
             _ => "",
         };
 

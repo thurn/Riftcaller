@@ -227,6 +227,13 @@ pub fn spend_action_points(game: &mut GameState, side: Side, amount: ActionCount
     Ok(())
 }
 
+/// Adds action points for a player
+pub fn gain_action_points(game: &mut GameState, side: Side, amount: ActionCount) -> Result<()> {
+    debug!(?side, ?amount, "Gaining action points");
+    game.player_mut(side).actions += amount;
+    Ok(())
+}
+
 /// Adds points to a player's score and checks for the Game Over condition.
 pub fn score_points(game: &mut GameState, side: Side, amount: PointsValue) -> Result<()> {
     game.player_mut(side).score += amount;

@@ -222,7 +222,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::OuterRooms => "outer rooms".to_string(),
         TextToken::Sanctum => "sanctum".to_string(),
         TextToken::Vault => "vault".to_string(),
-        TextToken::Crypts => "crypts".to_string(),
+        TextToken::Crypt => "crypt".to_string(),
         TextToken::Breach => {
             format!("breach {}", context.definition().config.stats.breach.unwrap_or_default())
         }

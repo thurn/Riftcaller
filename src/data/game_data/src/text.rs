@@ -64,7 +64,7 @@ pub enum TextToken {
     OuterRooms,
     Sanctum,
     Vault,
-    Crypts,
+    Crypt,
     Breach,
     LevelUp,
     Trap,

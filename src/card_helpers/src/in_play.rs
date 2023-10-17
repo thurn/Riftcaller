@@ -70,6 +70,11 @@ pub fn in_play_with_room<M: RoomIdMarker>(
     requirements::face_up_in_play(game, scope, &data) && data.room_id() == M::room_id()
 }
 
+/// Delegate which fires when a raid starts
+pub fn on_raid_started(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
+    Delegate::RaidStart(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
 /// Delegate which fires when the 'access' phase of a raid begins.
 pub fn on_raid_access_start(mutation: MutationFn<RaidId>) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate {

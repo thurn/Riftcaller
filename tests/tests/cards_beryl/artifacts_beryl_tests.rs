@@ -234,3 +234,42 @@ fn starlight_lantern() {
     );
     assert!(g.user.cards.discard_pile().contains_card(CardName::StarlightLantern));
 }
+
+#[test]
+fn warriors_sign() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(4).build();
+    g.create_and_play(CardName::WarriorsSign);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn warriors_sign_two_of_same() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(4).build();
+    g.create_and_play(CardName::WarriorsSign);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().actions(), 0);
+}
+
+#[test]
+fn warriors_sign_alternate_order() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(4).build();
+    g.create_and_play_upgraded(CardName::WarriorsSign);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().actions(), 2);
+}

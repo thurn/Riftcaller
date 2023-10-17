@@ -22,7 +22,9 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
-use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, Resonance, School, Side};
+use game_data::primitives::{
+    CardSubtype, CardType, GameObjectId, Rarity, Resonance, School, Side, INNER_ROOMS,
+};
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
@@ -314,6 +316,57 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
                 }),
             ),
         ],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn warriors_sign(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::WarriorsSign,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(3),
+        image: assets::champion_card(meta, "warriors_sign"),
+        card_type: CardType::Artifact,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![abilities::standard(
+            text![
+                "When you start raids on the",
+                Vault,
+                ",",
+                Sanctum,
+                ", and",
+                Crypt,
+                "in a single turn,",
+                Gain,
+                Actions(meta.upgrade(1, 2))
+            ],
+            in_play::on_raid_started(|g, s, raid| {
+                if raid.target.is_inner_room()
+                    && INNER_ROOMS
+                        .into_iter()
+                        .filter(|room_id| **room_id != raid.target)
+                        .all(|room_id| history::rooms_raided_this_turn(g).any(|r| r == *room_id))
+                {
+                    Effects::new()
+                        .timed_effect(
+                            GameObjectId::Character(Side::Champion),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(9))
+                                .scale(2.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff03_FULL"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .ability_alert(s)
+                        .apply(g);
+
+                    mutations::gain_action_points(g, s.side(), s.upgrade(1, 2))?;
+                }
+
+                Ok(())
+            }),
+        )],
         config: CardConfig::default(),
     }
 }

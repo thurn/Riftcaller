@@ -55,8 +55,8 @@ pub fn render(
             }
         }
         GameAnimation::AbilityTriggered(ability_id, effects) => {
+            play_special_effects(builder, effects);
             show_ability(builder, snapshot, *ability_id);
-            play_special_effects(builder, effects)
         }
         GameAnimation::DrawCards(side, cards) => {
             if builder.user_side == *side {
