@@ -28,9 +28,9 @@ use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CardMoved, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent,
-    EnterArenaEvent, MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEvent,
-    RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
+    CardMoved, CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom,
+    DrawCardEvent, DuskEvent, EnterArenaEvent, MoveCardEvent, OverlordScoreCardEvent, RaidEndEvent,
+    RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
     StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game_history::HistoryEvent;
@@ -142,7 +142,7 @@ pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     if card_id.side == Side::Champion {
         turn_face_up(game, card_id);
     }
-    Ok(())
+    dispatch::invoke_event(game, CardSacrificedEvent(card_id))
 }
 
 /// Moves a card to the discard pile. This is precisely identical to calling

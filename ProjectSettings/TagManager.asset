@@ -66,9 +66,6 @@ TagManager:
   - name: RaidParticipant
     uniqueID: 1934750129
     locked: 0
-  - name: Hand
-    uniqueID: 4258681941
-    locked: 0
   - name: HandStorage
     uniqueID: 4222849977
     locked: 0
@@ -83,6 +80,9 @@ TagManager:
     locked: 0
   - name: RevealedCardsBrowser
     uniqueID: 1041461123
+    locked: 0
+  - name: Hand
+    uniqueID: 4258681941
     locked: 0
   - name: CardChoiceBrowser
     uniqueID: 1880721311

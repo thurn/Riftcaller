@@ -25,11 +25,11 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
-use game_data::primitives::{CardType, GameObjectId, Rarity, School, Side};
+use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-use rules::{flags, mana};
+use rules::{flags, mana, mutations, CardDefinitionExt};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -80,6 +80,40 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
                 }),
             ],
         }],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn starfield_omen(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::StarfieldOmen,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::champion_card(meta, "starfield_omen"),
+        card_type: CardType::Evocation,
+        subtypes: vec![CardSubtype::Mystic],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![abilities::standard(
+            text!["When you sacrifice an artifact, draw a card"],
+            in_play::on_card_sacrificed(|g, s, card_id| {
+                if g.card(*card_id).definition().card_type == CardType::Artifact {
+                    Effects::new()
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles2(12))
+                                .scale(1.5)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Transform01"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .apply(g);
+
+                    mutations::draw_cards(g, s.side(), 1)?;
+                }
+                Ok(())
+            }),
+        )],
         config: CardConfig::default(),
     }
 }

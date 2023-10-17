@@ -95,6 +95,7 @@ impl ProjectileData {
 pub enum TimedEffect {
     MagicHits(u32),
     MagicCircles1(u32),
+    MagicCircles2(u32),
     SwordSlashes(u32),
 }
 

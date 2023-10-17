@@ -478,6 +478,8 @@ pub enum Delegate {
     WillReceiveCurses(EventDelegate<CurseCount>),
     /// The Champion player has been given one or more curses
     CursesReceived(EventDelegate<CurseCount>),
+    /// A card has been sacrificed by its owner
+    CardSacrificed(EventDelegate<CardId>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

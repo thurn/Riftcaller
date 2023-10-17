@@ -264,6 +264,7 @@ pub enum CardName {
     StarlightLantern,
     WarriorsSign,
     EmpyrealChorus,
+    StarfieldOmen,
     Visitation,
     StalwartProtector,
 }
