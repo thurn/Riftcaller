@@ -18,11 +18,11 @@ use game_data::delegate_data::{
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    ActionCount, CardId, CurseCount, HasRoomId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
+    ActionCount, CardId, CurseCount, HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
     RoomIdVault, TurnNumber,
 };
 
-use crate::requirements;
+use crate::{delegates, requirements};
 
 /// A delegate which triggers at dawn if a card is face up in play
 pub fn at_dawn(mutation: MutationFn<TurnNumber>) -> Delegate {
@@ -108,6 +108,12 @@ pub fn on_crypt_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
         requirement: in_play_with_room::<RoomIdCrypts>,
         mutation,
     })
+}
+
+/// A delegate which transforms the sanctum access count when a card is face up
+/// & in play
+pub fn sanctum_access_count(transformation: TransformationFn<RaidId, u32>) -> Delegate {
+    delegates::sanctum_access_count(requirements::face_up_in_play, transformation)
 }
 
 /// A delegate which fires when a card is face up & in play when a raid on the

@@ -17,7 +17,7 @@ use card_helpers::effects::Effects;
 use card_helpers::{abilities, costs, history, in_play, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
@@ -30,6 +30,39 @@ use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
 use rules::{curses, mana, mutations, CardDefinitionExt};
+
+pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::AstrianOracle,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(5),
+        image: assets::champion_card(meta, "astrian_oracle"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Noble],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![Ability {
+            ability_type: AbilityType::Standard,
+            text: text!["When you raid the", Sanctum, "access an additional card"],
+            delegates: vec![
+                in_play::sanctum_access_count(|_, _, _, current| current + 1),
+                in_play::on_sanctum_access_start(|g, s, _| {
+                    Effects::new()
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles2(15))
+                                .scale(2.0)
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .apply(g);
+                    Ok(())
+                }),
+            ],
+        }],
+        config: CardConfig::default(),
+    }
+}
 
 pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

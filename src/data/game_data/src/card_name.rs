@@ -266,9 +266,10 @@ pub enum CardName {
     EmpyrealChorus,
     StarfieldOmen,
     Visitation,
+    AstrianOracle,
+    ResplendentChanneler,
     StalwartProtector,
     Dawnwarden,
-    ResplendentChanneler,
 }
 
 impl CardName {

@@ -548,6 +548,7 @@ pub enum CardSubtype {
     Charge,
     Warrior,
     Cleric,
+    Noble,
     Mystic,
 }
 

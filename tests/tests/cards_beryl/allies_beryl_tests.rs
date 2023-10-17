@@ -18,6 +18,16 @@ use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
+pub fn astrian_oracle() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+        .build();
+    g.create_and_play(CardName::AstrianOracle);
+    g.initiate_raid(RoomId::Sanctum);
+    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 2);
+}
+
+#[test]
 pub fn resplendent_channeler() {
     let (cost, gained) = (3, 1);
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
