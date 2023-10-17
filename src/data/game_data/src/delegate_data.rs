@@ -441,7 +441,7 @@ pub enum Delegate {
     EncounterEnd(EventDelegate<RaidId>),
     /// Minion encounters have been completed for a raid and the Access phase is
     /// about to start. The set of accessed cards has not yet been selected.
-    RaidAccessStart(EventDelegate<RaidId>),
+    RaidAccessStart(EventDelegate<RaidEvent<()>>),
     /// The set of cards accessed during a raid have been selected and written
     /// to `GameState`, but not 'on access' effects have yet triggered. This is
     /// the expected place to modify the set of accessed cards if it was not

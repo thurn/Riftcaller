@@ -18,7 +18,7 @@ use game_data::delegate_data::{
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    ActionCount, CardId, CurseCount, HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
+    ActionCount, CardId, CurseCount, HasRoomId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
     RoomIdVault, TurnNumber,
 };
 
@@ -76,9 +76,36 @@ pub fn on_raid_started(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
 }
 
 /// Delegate which fires when the 'access' phase of a raid begins.
-pub fn on_raid_access_start(mutation: MutationFn<RaidId>) -> Delegate {
+pub fn on_raid_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate {
         requirement: requirements::face_up_in_play,
+        mutation,
+    })
+}
+
+/// A delegate which fires when a card is face up & in play when a raid
+/// accesses the sanctum
+pub fn on_sanctum_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
+    Delegate::RaidAccessStart(EventDelegate {
+        requirement: in_play_with_room::<RoomIdSanctum>,
+        mutation,
+    })
+}
+
+/// A delegate which fires when a card is face up & in play when a raid
+/// accesses the vault
+pub fn on_vault_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
+    Delegate::RaidAccessStart(EventDelegate {
+        requirement: in_play_with_room::<RoomIdVault>,
+        mutation,
+    })
+}
+
+/// A delegate which fires when a card is face up & in play when a raid
+/// accesses the crypt
+pub fn on_crypt_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
+    Delegate::RaidAccessStart(EventDelegate {
+        requirement: in_play_with_room::<RoomIdCrypts>,
         mutation,
     })
 }

@@ -13,9 +13,24 @@
 // limitations under the License.
 
 use game_data::card_name::CardName;
-use game_data::primitives::Side;
+use game_data::primitives::{RoomId, Side};
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
+
+#[test]
+pub fn resplendent_channeler() {
+    let (cost, gained) = (3, 1);
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.create_and_play(CardName::ResplendentChanneler);
+    g.initiate_raid(RoomId::Sanctum);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
+    assert_eq!(g.user.cards.hand().len(), 1);
+    g.click(Button::EndRaid);
+
+    g.initiate_raid(RoomId::Sanctum);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
+    assert_eq!(g.user.cards.hand().len(), 1);
+}
 
 #[test]
 pub fn stalwart_protector() {

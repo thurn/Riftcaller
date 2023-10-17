@@ -268,6 +268,7 @@ pub enum CardName {
     Visitation,
     StalwartProtector,
     Dawnwarden,
+    ResplendentChanneler,
 }
 
 impl CardName {

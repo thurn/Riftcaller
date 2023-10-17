@@ -14,7 +14,7 @@
 
 use card_helpers::abilities::ActivatedConfig;
 use card_helpers::effects::Effects;
-use card_helpers::{abilities, costs, in_play, show_prompt, text, this};
+use card_helpers::{abilities, costs, history, in_play, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{CardConfig, CardDefinition};
@@ -24,12 +24,53 @@ use game_data::card_state::CardCounter;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
-use rules::{curses, mutations, CardDefinitionExt};
+use rules::{curses, mana, mutations, CardDefinitionExt};
+
+pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::ResplendentChanneler,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(3),
+        image: assets::champion_card(meta, "resplendent_channeler"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Cleric],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![abilities::standard(
+            text![
+                "The first time you access the sanctum each turn, draw a card and gain",
+                Mana(meta.upgrade(1, 3))
+            ],
+            in_play::on_sanctum_access_start(|g, s, _| {
+                if history::raid_accesses_this_turn(g).all(|r| r != RoomId::Sanctum) {
+                    Effects::new()
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles2(14))
+                                .scale(2.0)
+                                .sound(SoundEffect::LightMagic(
+                                    "RPG3_LightMagicMisc_AttackMissed04",
+                                ))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .ability_alert(s)
+                        .apply(g);
+
+                    mana::gain(g, s.side(), s.upgrade(1, 3));
+                    mutations::draw_cards(g, s.side(), 1)?;
+                }
+                Ok(())
+            }),
+        )],
+        config: CardConfig::default(),
+    }
+}
 
 pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
     fn update(game: &mut GameState) {

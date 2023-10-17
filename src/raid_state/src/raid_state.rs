@@ -346,7 +346,7 @@ fn check_can_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 }
 
 fn access_start(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    dispatch::invoke_event(game, RaidAccessStartEvent(info.raid_id))?;
+    dispatch::invoke_event(game, RaidAccessStartEvent(info.event(())))?;
     RaidState::step(RaidStep::BuildAccessSet)
 }
 
