@@ -35,7 +35,7 @@ pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::AstrianOracle,
         sets: vec![CardSetName::Beryl],
-        cost: costs::mana(5),
+        cost: costs::mana(meta.upgrade(5, 8)),
         image: assets::champion_card(meta, "astrian_oracle"),
         card_type: CardType::Ally,
         subtypes: vec![CardSubtype::Noble],
@@ -44,9 +44,13 @@ pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: text!["When you raid the", Sanctum, "access an additional card"],
+            text: text![
+                "When you raid the",
+                Sanctum,
+                meta.upgrade("an additional card", "two additional cards")
+            ],
             delegates: vec![
-                in_play::sanctum_access_count(|_, _, _, current| current + 1),
+                in_play::sanctum_access_count(|_, s, _, current| current + s.upgrade(1, 2)),
                 in_play::on_sanctum_access_start(|g, s, _| {
                     Effects::new()
                         .timed_effect(

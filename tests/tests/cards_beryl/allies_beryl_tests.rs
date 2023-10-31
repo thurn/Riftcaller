@@ -28,6 +28,33 @@ pub fn astrian_oracle() {
 }
 
 #[test]
+pub fn astrian_oracle_two_copies() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+        .build();
+
+    g.create_and_play(CardName::AstrianOracle);
+    g.create_and_play(CardName::AstrianOracle);
+
+    g.initiate_raid(RoomId::Sanctum);
+
+    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+}
+
+#[test]
+pub fn astrian_oracle_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+        .build();
+
+    g.create_and_play_upgraded(CardName::AstrianOracle);
+
+    g.initiate_raid(RoomId::Sanctum);
+
+    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+}
+
+#[test]
 pub fn resplendent_channeler() {
     let (cost, gained) = (3, 1);
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
