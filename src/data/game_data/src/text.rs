@@ -70,6 +70,10 @@ pub enum TextToken {
     Trap,
     Curse,
     Slow,
+    Mortal,
+    Abyssal,
+    Infernal,
+    Prismatic,
 }
 
 impl TextToken {

@@ -18,9 +18,10 @@ use std::hash::Hash;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use adapters::ServerCardId;
+use game_data::card_definition::Resonance;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue, Resonance};
+use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue};
 use protos::spelldawn::CardIdentifier;
 use ulid::Ulid;
 
@@ -41,9 +42,9 @@ pub fn generate_ids() -> (GameId, PlayerId, PlayerId) {
 /// Looks up the test minion to use for a given resonance type.
 pub fn minion_for_resonance(resonance: Resonance) -> CardName {
     match resonance {
-        Resonance::Mortal => CardName::TestMortalMinion,
-        Resonance::Astral => CardName::TestAstralMinion,
-        Resonance::Infernal => CardName::TestInfernalMinion,
+        _ if resonance.mortal => CardName::TestMortalMinion,
+        _ if resonance.astral => CardName::TestAstralMinion,
+        _ if resonance.infernal => CardName::TestInfernalMinion,
         _ => panic!("Unsupported"),
     }
 }

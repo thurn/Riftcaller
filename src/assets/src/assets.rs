@@ -16,10 +16,12 @@
 
 pub mod rexard_images;
 
+use core_ui::design;
 use core_ui::design::FontColor;
+use game_data::card_definition::Resonance;
 use game_data::card_name::CardMetadata;
 use game_data::character_preset::CharacterPreset;
-use game_data::primitives::{CardType, Rarity, Resonance, School, Side, Sprite};
+use game_data::primitives::{CardType, Rarity, School, Side, Sprite};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };
@@ -167,13 +169,26 @@ pub fn card_frame(school: School, full_height: bool) -> SpriteAddress {
 /// Title font color to use for a given [Resonance].
 pub fn title_color(resonance: Option<Resonance>) -> FlexColor {
     match resonance {
-        None => FontColor::NormalCardTitle,
-        Some(Resonance::Mortal) => FontColor::MortalCardTitle,
-        Some(Resonance::Infernal) => FontColor::InfernalCardTitle,
-        Some(Resonance::Astral) => FontColor::AbyssalCardTitle,
-        Some(Resonance::Prismatic) => FontColor::PrismaticCardTitle,
+        Some(r) if r.prismatic => FontColor::PrismaticCardTitle,
+        Some(r) if r.basic_resonance_count() > 1 => FontColor::MultiResonanceCardTitle,
+        Some(r) if r.mortal => FontColor::MortalCardTitle,
+        Some(r) if r.infernal => FontColor::InfernalCardTitle,
+        Some(r) if r.astral => FontColor::AstralCardTitle,
+        _ => FontColor::NormalCardTitle,
     }
     .into()
+}
+
+/// Text reference to a named resonance type.
+pub fn resonance_string(name: &'static str) -> String {
+    let color = match name {
+        "mortal" | "Mortal" => FontColor::MortalCardTitle,
+        "infernal" | "Infernal" => FontColor::InfernalCardTitle,
+        "astral" | "Astral" => FontColor::AstralCardTitle,
+        "prismatic" | "Prismatic" => FontColor::PrismaticCardTitle,
+        _ => FontColor::NormalCardTitle,
+    };
+    format!("<b><color={}>{}</color></b>", design::as_hex(color), name)
 }
 
 /// Address for an image to display as a background for a card of the given
@@ -191,11 +206,12 @@ pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>
         address: format!(
             "{}.png",
             match resonance {
-                Some(Resonance::Mortal) => "SpriteWay/Icons/Clean Frames/9048",
-                Some(Resonance::Infernal) => "SpriteWay/Icons/Clean Frames/9054",
-                Some(Resonance::Astral) => "SpriteWay/Icons/Clean Frames/9020",
-                Some(Resonance::Prismatic) => "SpriteWay/Icons/Clean Frames/9047",
-                None => match card_type {
+                Some(r) if r.prismatic => "SpriteWay/Icons/Clean Frames/9047",
+                Some(r) if r.basic_resonance_count() > 1 => "SpriteWay/Icons/Clean Frames/9008",
+                Some(r) if r.mortal => "SpriteWay/Icons/Clean Frames/9048",
+                Some(r) if r.infernal => "SpriteWay/Icons/Clean Frames/9054",
+                Some(r) if r.astral => "SpriteWay/Icons/Clean Frames/9020",
+                _ => match card_type {
                     CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
@@ -294,6 +310,7 @@ pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
                 }
             ),
             SoundEffect::LightMagic(name) => format!("WowSound/Light Magic/{name}.wav"),
+            SoundEffect::WaterMagic(name) => format!("WowSound/Water Magic/{name}.wav"),
         },
     }
 }

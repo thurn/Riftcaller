@@ -230,6 +230,10 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Trap => "<b>Trap</b>".to_string(),
         TextToken::Curse => "curse".to_string(),
         TextToken::Slow => "slow".to_string(),
+        TextToken::Mortal => assets::resonance_string("mortal"),
+        TextToken::Infernal => assets::resonance_string("infernal"),
+        TextToken::Abyssal => assets::resonance_string("abyssal"),
+        TextToken::Prismatic => assets::resonance_string("prismatic"),
     }
 }
 

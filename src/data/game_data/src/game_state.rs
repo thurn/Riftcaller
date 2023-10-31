@@ -583,13 +583,12 @@ impl GameState {
     }
 
     /// Helper method to return the defender currently being encountered during
-    /// a raid. Returns an error if there is no active raid or no defender is
+    /// a raid. Returns None if there is no active raid or no defender is
     /// being encountered.
-    pub fn raid_defender(&self) -> Result<CardId> {
-        Ok(*self
-            .defender_list(self.raid()?.target)
-            .get(self.raid()?.encounter)
-            .with_error(|| "Defender Not Found")?)
+    pub fn current_raid_defender(&self) -> Option<CardId> {
+        self.defender_list(self.raid.as_ref()?.target)
+            .get(self.raid.as_ref()?.encounter)
+            .map(|c| *c)
     }
 
     /// Adds a current [HistoryEvent] for the current turn.

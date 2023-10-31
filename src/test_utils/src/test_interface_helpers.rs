@@ -70,7 +70,11 @@ pub trait TestInterfaceHelpers {
     /// interface for the `side` user.
     fn side_has(&self, button: Button, side: Side) -> bool;
 
-    fn click_weapon_name(&mut self, card_name: CardName);
+    /// Returns true if any UI for the user contains the given card's name
+    fn has_card_name(&self, card_name: CardName) -> bool;
+
+    /// Clicks as the user on a button as the showing a given card's name
+    fn click_card_name(&mut self, card_name: CardName);
 
     /// Locate a button containing the provided `text` in the provided player's
     /// interface controls and invoke its registered action.
@@ -130,7 +134,11 @@ impl TestInterfaceHelpers for TestSession {
         }
     }
 
-    fn click_weapon_name(&mut self, card_name: CardName) {
+    fn has_card_name(&self, card_name: CardName) -> bool {
+        self.has_text(card_name.displayed_name())
+    }
+
+    fn click_card_name(&mut self, card_name: CardName) {
         self.click_on(self.player_id_for_side(Side::Champion), card_name.displayed_name());
     }
 

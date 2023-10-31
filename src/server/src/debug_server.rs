@@ -194,21 +194,22 @@ pub async fn handle_debug_action(
                 AddToZonePanel::new(input, *position, *metadata).build_panel().unwrap(),
             )))
         }
-        DebugAction::AddToZone(card_name, position) => {
-            debug_update_game(database, data, |game, user_side| {
-                if let Some(top_of_deck) =
-                    mutations::realize_top_of_deck(game, user_side, 1)?.get(0)
-                {
-                    mutations::overwrite_card(game, *top_of_deck, *card_name)?;
-                    if matches!(position, CardPosition::Hand(s) if *s == user_side) {
-                        mutations::draw_cards(game, user_side, 1)?;
+        DebugAction::AddToZone(variant, position) => {
+            debug_update_game(database, data, |game, _| {
+                let side = rules::get(*variant).side;
+                if let Some(card_id) = mutations::realize_top_of_deck(game, side, 1)?.get(0) {
+                    mutations::overwrite_card(game, *card_id, *variant)?;
+                    mutations::set_revealed_to(game, *card_id, card_id.side, true);
+
+                    if matches!(position, CardPosition::Hand(s) if *s == side) {
+                        mutations::draw_cards(game, side, 1)?;
                     } else if matches!(position, CardPosition::DiscardPile(_)) {
-                        mutations::discard_card(game, *top_of_deck)?;
+                        mutations::discard_card(game, *card_id)?;
                     } else if matches!(position, CardPosition::Room(_, RoomLocation::Defender)) {
-                        mutations::move_card(game, *top_of_deck, *position)?;
-                        mutations::turn_face_up(game, *top_of_deck);
+                        mutations::move_card(game, *card_id, *position)?;
+                        mutations::turn_face_up(game, *card_id);
                     } else {
-                        mutations::move_card(game, *top_of_deck, *position)?;
+                        mutations::move_card(game, *card_id, *position)?;
                     }
                 }
                 Ok(())

@@ -13,13 +13,13 @@
 // limitations under the License.
 
 use convert_case::{Case, Casing};
-use core_ui::design::{self, FontColor};
 use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::card_view_context::CardViewContext;
-use game_data::primitives::{AbilityIndex, Resonance};
+use game_data::primitives::AbilityIndex;
 use game_data::text::{TextElement, TextTokenKind};
+use rules::queries;
 
 use crate::card_info::SupplementalCardInfo;
 
@@ -32,7 +32,7 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
     let definition = context.definition();
     let mut result = vec![];
     if ability_index.is_none() {
-        add_card_type_line(&mut result, definition);
+        add_card_type_line(&mut result, context, definition);
     } else {
         result.push("Activated Ability".to_string())
     }
@@ -57,20 +57,28 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
     SupplementalCardInfo::new(result).build().map(Box::new)
 }
 
-fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
+fn add_card_type_line(
+    builder: &mut Vec<String>,
+    context: &CardViewContext,
+    definition: &CardDefinition,
+) {
     let mut result = String::new();
     result.push_str(&definition.card_type.to_string());
+    let resonance = context.query_id_or(definition.config.resonance, queries::resonance);
 
-    if let Some(resonance) = definition.config.resonance {
-        result.push_str(" • ");
-        let (resonance, color) = match resonance {
-            Resonance::Prismatic => ("Prismatic", FontColor::PrismaticCardTitle),
-            Resonance::Mortal => ("Mortal", FontColor::MortalCardTitle),
-            Resonance::Astral => ("Astral", FontColor::AbyssalCardTitle),
-            Resonance::Infernal => ("Infernal", FontColor::InfernalCardTitle),
-        };
-        let string = format!("<color={}>{}</color>", design::as_hex(color), resonance);
-        result.push_str(&string);
+    if let Some(resonance) = resonance {
+        if resonance.mortal {
+            append_resonance(&mut result, "Mortal");
+        }
+        if resonance.infernal {
+            append_resonance(&mut result, "Infernal");
+        }
+        if resonance.astral {
+            append_resonance(&mut result, "Astral");
+        }
+        if resonance.prismatic {
+            append_resonance(&mut result, "Prismatic");
+        }
     }
 
     for subtype in &definition.subtypes {
@@ -79,6 +87,11 @@ fn add_card_type_line(builder: &mut Vec<String>, definition: &CardDefinition) {
     }
 
     builder.push(result);
+}
+
+fn append_resonance(result: &mut String, name: &'static str) {
+    result.push_str(" • ");
+    result.push_str(&assets::resonance_string(name));
 }
 
 fn add_tokens(tokens: &mut Vec<TextTokenKind>, text: &[TextElement]) {

@@ -50,7 +50,9 @@ pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
                 meta.upgrade("an additional card", "two additional cards")
             ],
             delegates: vec![
-                in_play::sanctum_access_count(|_, s, _, current| current + s.upgrade(1, 2)),
+                in_play::on_query_sanctum_access_count(|_, s, _, current| {
+                    current + s.upgrade(1, 2)
+                }),
                 in_play::on_sanctum_access_start(|g, s, _| {
                     Effects::new()
                         .timed_effect(

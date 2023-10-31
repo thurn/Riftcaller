@@ -447,16 +447,6 @@ pub enum ItemLocation {
     Allies,
 }
 
-/// The Possible resonances of weapons and minions. Minions can only be
-/// damaged by weapons from the same resonance, or by Prismatic weapons.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
-pub enum Resonance {
-    Mortal,
-    Infernal,
-    Astral,
-    Prismatic,
-}
-
 /// Rarity of a card, used to determine how likely it is to appear in randomized
 /// rewards.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]

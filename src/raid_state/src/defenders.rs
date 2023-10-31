@@ -18,6 +18,7 @@ use game_data::primitives::{CardId, Side};
 use game_data::raid_data::{RaidInfo, RaidStep};
 use rules::mana::ManaPurpose;
 use rules::{mana, queries, CardDefinitionExt};
+use with_error::WithError;
 
 /// Returns true if the raid `defender_id` is currently face down and could be
 /// turned face up automatically by paying its mana cost.
@@ -45,7 +46,7 @@ pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> bool {
 pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> {
     Ok(if let Some(encounter) = next_defender(game, info, info.encounter) {
         game.raid_mut()?.encounter = encounter;
-        let defender = game.raid_defender()?;
+        let defender = game.current_raid_defender().with_error(|| "No defender found")?;
         if game.card(defender).is_face_down() {
             RaidStep::PopulateSummonPrompt(defender)
         } else {

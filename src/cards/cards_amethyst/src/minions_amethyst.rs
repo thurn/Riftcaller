@@ -18,13 +18,15 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::abilities::standard;
 use card_helpers::{abilities, text, *};
-use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
+use game_data::card_definition::{
+    Ability, AbilityType, CardConfigBuilder, CardDefinition, Resonance,
+};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_state::RaidJumpRequest;
-use game_data::primitives::{CardType, Rarity, Resonance, RoomLocation, School, Side};
+use game_data::primitives::{CardType, Rarity, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{deal_damage, mana, mutations, queries, CardDefinitionExt};
@@ -59,7 +61,7 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfigBuilder::new().health(3).resonance(Resonance::Infernal).build(),
+        config: CardConfigBuilder::new().health(3).resonance(Resonance::infernal()).build(),
     }
 }
 
@@ -114,7 +116,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfigBuilder::new().health(6).shield(3).resonance(Resonance::Astral).build(),
+        config: CardConfigBuilder::new().health(6).shield(3).resonance(Resonance::astral()).build(),
     }
 }
 
@@ -139,7 +141,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
             ),
             abilities::combat_end_raid(),
         ],
-        config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::Astral).build(),
+        config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::astral()).build(),
     }
 }
 
@@ -183,7 +185,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                 }),
             ],
         }],
-        config: CardConfigBuilder::new().health(3).shield(1).resonance(Resonance::Mortal).build(),
+        config: CardConfigBuilder::new().health(3).shield(1).resonance(Resonance::mortal()).build(),
     }
 }
 
@@ -214,7 +216,7 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfigBuilder::new().health(0).shield(2).resonance(Resonance::Mortal).build(),
+        config: CardConfigBuilder::new().health(0).shield(2).resonance(Resonance::mortal()).build(),
     }
 }
 
@@ -247,6 +249,10 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfigBuilder::new().health(3).shield(2).resonance(Resonance::Infernal).build(),
+        config: CardConfigBuilder::new()
+            .health(3)
+            .shield(2)
+            .resonance(Resonance::infernal())
+            .build(),
     }
 }

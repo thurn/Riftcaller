@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use game_data::card_definition::Resonance;
 use game_data::card_name::CardName;
-use game_data::primitives::{Resonance, RoomId, Side};
+use game_data::primitives::{RoomId, Side};
 use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_helpers::WeaponStats;
@@ -97,14 +98,14 @@ fn triumph_return_to_hand() {
         .build();
     g.create_and_play(CardName::Triumph);
     g.initiate_raid(RoomId::Sanctum);
-    g.click_weapon_name(CardName::Triumph);
+    g.click_card_name(CardName::Triumph);
     g.click(Button::EndRaid);
 
     assert_eq!(g.user.cards.room_defenders(RoomId::Sanctum).len(), 0);
     assert!(g.opponent.cards.hand().contains_card(CardName::TestAstralMinion));
 
     g.initiate_raid(RoomId::Vault);
-    g.click_weapon_name(CardName::Triumph);
+    g.click_card_name(CardName::Triumph);
     g.click(Button::EndRaid);
     assert!(g.user.cards.room_defenders(RoomId::Vault).contains_card(CardName::TestAstralMinion));
 }
@@ -121,7 +122,7 @@ fn triumph_slow() {
         .build();
     g.create_and_play(CardName::Triumph);
     g.initiate_raid(RoomId::Sanctum);
-    g.click_weapon_name(CardName::Triumph);
+    g.click_card_name(CardName::Triumph);
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA
@@ -163,7 +164,7 @@ fn spear_of_conquest() {
         .contains('2'));
 
     g.initiate_raid(RoomId::Sanctum);
-    g.click_weapon_name(CardName::SpearOfConquest);
+    g.click_card_name(CardName::SpearOfConquest);
     assert!(g
         .user
         .cards
@@ -210,14 +211,14 @@ fn blade_of_reckoning() {
         .arena_icon()
         .contains('3'));
     g.initiate_raid(RoomId::Sanctum);
-    g.click_weapon_name(CardName::BladeOfReckoning);
+    g.click_card_name(CardName::BladeOfReckoning);
 }
 
 #[test]
 fn resolution() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::Resolution);
-    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::Resolution);
+    g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::Resolution);
     assert!(g.user.cards.discard_pile().contains_card(CardName::Resolution));
 }
 
@@ -272,4 +273,50 @@ fn warriors_sign_alternate_order() {
     g.initiate_raid(RoomId::Vault);
     g.click(Button::EndRaid);
     assert_eq!(g.me().actions(), 2);
+}
+
+#[test]
+fn chains_of_mortality() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::ChainsOfMortality);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_card_name(CardName::ChainsOfMortality);
+    assert!(g.user.data.raid_active());
+}
+
+#[test]
+fn chains_of_mortality_two_raids() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::ChainsOfMortality);
+    g.initiate_raid(RoomId::Sanctum);
+    assert!(g.has_card_name(CardName::ChainsOfMortality));
+    g.click_card_name(CardName::ChainsOfMortality);
+    g.click(Button::EndRaid);
+
+    g.initiate_raid(RoomId::Sanctum);
+    assert!(!g.has_card_name(CardName::ChainsOfMortality));
+}
+
+#[test]
+fn chains_of_mortality_mortal_minion() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Sanctum, CardName::TestMortalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::ChainsOfMortality);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_card_name(CardName::ChainsOfMortality);
+    assert!(g.user.data.raid_active());
 }

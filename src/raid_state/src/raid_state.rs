@@ -171,7 +171,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::PopulateSummonPrompt(minion_id) => populate_summon_prompt(minion_id),
         RaidStep::SummonMinion(minion_id) => summon_minion(game, minion_id),
         RaidStep::DoNotSummon(_) => RaidState::step(RaidStep::NextEncounter),
-        RaidStep::EncounterMinion(minion_id) => encounter_minion(game, minion_id),
+        RaidStep::EncounterMinion(minion_id) => encounter_minion(game, info, minion_id),
         RaidStep::PopulateEncounterPrompt(minion_id) => populate_encounter_prompt(game, minion_id),
         RaidStep::UseWeapon(interaction) => use_weapon(game, info, interaction),
         RaidStep::MinionDefeated(interaction) => minion_defeated(game, interaction),
@@ -227,8 +227,9 @@ fn summon_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
     RaidState::step(RaidStep::EncounterMinion(minion_id))
 }
 
-fn encounter_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
+fn encounter_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> Result<RaidState> {
     dispatch::invoke_event(game, EncounterMinionEvent(minion_id))?;
+    game.add_history_event(HistoryEvent::MinionEncountered(info.event(minion_id)));
     RaidState::step(RaidStep::PopulateEncounterPrompt(minion_id))
 }
 

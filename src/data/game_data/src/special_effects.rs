@@ -116,6 +116,7 @@ pub enum SoundEffect {
     FantasyEvents(FantasyEventSounds),
     Fireworks(FireworksSound),
     LightMagic(&'static str),
+    WaterMagic(&'static str),
 }
 
 #[derive(Debug, Clone)]

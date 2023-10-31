@@ -17,13 +17,13 @@ use card_helpers::{abilities, costs, history, in_play, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
-    AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, CustomBoostCost,
+    AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, CustomBoostCost, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::primitives::{
-    CardSubtype, CardType, GameObjectId, Rarity, Resonance, School, Side, INNER_ROOMS,
+    CardSubtype, CardType, GameObjectId, Rarity, School, Side, INNER_ROOMS,
 };
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
@@ -58,7 +58,7 @@ pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::Infernal)
+            .resonance(Resonance::infernal())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(4))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
@@ -101,7 +101,7 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
-            .resonance(Resonance::Infernal)
+            .resonance(Resonance::infernal())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(13))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile02"))
@@ -155,7 +155,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(0)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::Astral)
+            .resonance(Resonance::astral())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(15))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic3_Projectile03"))
@@ -191,7 +191,7 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(meta.upgrade(1, 2))
             .attack_boost(AttackBoost::new().custom_cost(CustomBoostCost::PowerCharges(1)).bonus(1))
-            .resonance(Resonance::Mortal)
+            .resonance(Resonance::mortal())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(23))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
@@ -227,7 +227,7 @@ pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(meta.upgrade(2, 3))
             .attack_boost(AttackBoost::new().custom_cost(CustomBoostCost::PowerCharges(1)).bonus(1))
-            .resonance(Resonance::Astral)
+            .resonance(Resonance::astral())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(23))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
@@ -263,7 +263,7 @@ pub fn resolution(meta: CardMetadata) -> CardDefinition {
             .base_attack(meta.upgrade(2, 4))
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .breach(5)
-            .resonance(Resonance::Mortal)
+            .resonance(Resonance::mortal())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles2(19))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile03"))
@@ -368,5 +368,50 @@ pub fn warriors_sign(meta: CardMetadata) -> CardDefinition {
             }),
         )],
         config: CardConfig::default(),
+    }
+}
+
+pub fn chains_of_mortality(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::ChainsOfMortality,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(5, 3)),
+        image: assets::champion_card(meta, "chains_of_mortality"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::standard(
+                text![
+                    "The first minion you encounter each turn gains",
+                    Mortal,
+                    "during that encounter"
+                ],
+                in_play::on_query_resonance(|g, _, card_id, resonance| {
+                    if Some(*card_id) == g.current_raid_defender()
+                        && history::minions_encountered_this_turn(g).count() == 1
+                    {
+                        // Encounters are added to history immediately, so the 'first encounter'
+                        // corresponds to an encounter history of length 1.
+                        resonance.with_mortal(true)
+                    } else {
+                        resonance
+                    }
+                }),
+            ),
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(1)
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
+            .resonance(Resonance::mortal())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(2))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
+            )
+            .build(),
     }
 }

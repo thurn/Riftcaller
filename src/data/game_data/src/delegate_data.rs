@@ -73,6 +73,7 @@ use serde::{Deserialize, Serialize};
 
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
+use crate::card_definition::Resonance;
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::{AttackBoost, CardStats};
 use crate::card_name::CardMetadata;
@@ -528,6 +529,9 @@ pub enum Delegate {
     /// Queries the current breach value of a card. Invoked with
     /// [CardStats::breach] or 0.
     BreachValue(QueryDelegate<CardId, BreachValue>),
+    /// Queries the [Resonance] for a weapon or minion. Invoked with
+    /// `CardConfig::resonance`.
+    Resonance(QueryDelegate<CardId, Resonance>),
     /// Queries the current raze cost of a card. Invoked with
     /// [CardStats::raze_cost] or 0.
     RazeCost(QueryDelegate<CardId, BreachValue>),

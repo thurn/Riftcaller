@@ -20,7 +20,7 @@ use game_data::delegate_data::{
     AttackBoostBonusQuery, CanDefeatTargetQuery, CanEncounterTargetQuery, CardEncounter, Flag,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::{AttackValue, CardId, ManaValue, Resonance};
+use game_data::primitives::{AttackValue, CardId, ManaValue};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, mana, queries, CardDefinitionExt};
@@ -124,19 +124,22 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
 /// Whether the provided `source` card is able to target the `target` card with
 /// an encounter action. Typically used to determine whether a weapon can target
 /// a minion, e.g. based on resonance.
-pub fn can_encounter_target(game: &GameState, source: CardId, target: CardId) -> bool {
-    let can_encounter = matches!(
-        (
-            game.card(source).definition().config.resonance,
-            game.card(target).definition().config.resonance
-        ),
-        (Some(source_resonance), Some(target_resonance))
-        if source_resonance == Resonance::Prismatic || source_resonance == target_resonance
-    );
+pub fn can_encounter_target(game: &GameState, weapon: CardId, minion: CardId) -> bool {
+    let Some(weapon_resonance) = queries::resonance(game, weapon) else {
+        return false;
+    };
+    let Some(minion_resonance) = queries::resonance(game, minion) else {
+        return false;
+    };
+
+    let can_encounter = weapon_resonance.prismatic
+        || (weapon_resonance.mortal && minion_resonance.mortal)
+        || (weapon_resonance.infernal && minion_resonance.infernal)
+        || (weapon_resonance.astral && minion_resonance.astral);
 
     dispatch::perform_query(
         game,
-        CanEncounterTargetQuery(CardEncounter::new(source, target)),
+        CanEncounterTargetQuery(CardEncounter::new(weapon, minion)),
         Flag::new(can_encounter),
     )
     .into()

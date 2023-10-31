@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
     CardPlayed, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
     TransformationFn,
@@ -110,12 +111,6 @@ pub fn on_crypt_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
-/// A delegate which transforms the sanctum access count when a card is face up
-/// & in play
-pub fn sanctum_access_count(transformation: TransformationFn<RaidId, u32>) -> Delegate {
-    delegates::sanctum_access_count(requirements::face_up_in_play, transformation)
-}
-
 /// A delegate which fires when a card is face up & in play when a raid on the
 /// sanctum ends in success
 pub fn after_sanctum_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
@@ -170,10 +165,25 @@ pub fn on_card_moved_to_discard_pile(mutation: MutationFn<CardId>) -> Delegate {
     })
 }
 
+/// A delegate which transforms the sanctum access count when a card is face up
+/// & in play
+pub fn on_query_sanctum_access_count(transformation: TransformationFn<RaidId, u32>) -> Delegate {
+    delegates::sanctum_access_count(requirements::face_up_in_play, transformation)
+}
+
 /// A delegate which intercepts queries for the action costs of cards while its
 /// parent is face up and in play.
 pub fn on_query_action_cost(transformation: TransformationFn<CardId, ActionCount>) -> Delegate {
     Delegate::ActionCost(QueryDelegate {
+        requirement: requirements::face_up_in_play,
+        transformation,
+    })
+}
+
+/// A delegate which intercepts queries for a card's [Resonance] when a card is
+/// face up & in play.
+pub fn on_query_resonance(transformation: TransformationFn<CardId, Resonance>) -> Delegate {
+    Delegate::Resonance(QueryDelegate {
         requirement: requirements::face_up_in_play,
         transformation,
     })

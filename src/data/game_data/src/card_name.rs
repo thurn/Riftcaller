@@ -270,6 +270,7 @@ pub enum CardName {
     ResplendentChanneler,
     StalwartProtector,
     Dawnwarden,
+    ChainsOfMortality,
 }
 
 impl CardName {

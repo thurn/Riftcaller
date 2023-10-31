@@ -254,7 +254,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 permanent_toast(
                     format!("A <color={}>Mortal</color> weapon cannot damage an <color={}>Abyssal</color> minion. A matching weapon is required!",
                     design::as_hex(FontColor::MortalCardTitle),
-                    design::as_hex(FontColor::AbyssalCardTitle)),
+                    design::as_hex(FontColor::AstralCardTitle)),
                     Milliseconds(4000),
                 ),
             ]),
@@ -285,7 +285,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::Display(vec![
                 permanent_toast(
                     format!("Now you just need to find an <color={}>Abyssal</color> weapon",
-                    design::as_hex(FontColor::AbyssalCardTitle)),
+                    design::as_hex(FontColor::AstralCardTitle)),
                     Milliseconds(0),
                 ),
             ]),
@@ -368,7 +368,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                         format!("There are three different kinds of weapons: <color={}>Mortal</color>, <color={}>Infernal</color>, and <color={}>Abyssal</color>.",
                         design::as_hex(FontColor::MortalCardTitle),
                         design::as_hex(FontColor::InfernalCardTitle),
-                        design::as_hex(FontColor::AbyssalCardTitle)),
+                        design::as_hex(FontColor::AstralCardTitle)),
                     )
                 ]
             },

@@ -19,12 +19,12 @@ use assets::rexard_images::RexardWeaponType;
 use card_helpers::abilities::{encounter_ability_text, standard};
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition,
+    Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate};
-use game_data::primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
+use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 
 pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
@@ -62,7 +62,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
-            .resonance(Resonance::Infernal)
+            .resonance(Resonance::infernal())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(8))
                     .additional_hit(TimedEffect::SwordSlashes(1)),
@@ -87,7 +87,7 @@ pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
             .base_attack(3)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
             .breach(1)
-            .resonance(Resonance::Astral)
+            .resonance(Resonance::astral())
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(2)))
             .build(),
     }
@@ -117,7 +117,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(0))
-            .resonance(Resonance::Mortal)
+            .resonance(Resonance::mortal())
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),
     }

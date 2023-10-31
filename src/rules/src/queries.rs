@@ -16,12 +16,12 @@
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::card_definition::{AbilityType, CardStats, TargetRequirement};
+use game_data::card_definition::{AbilityType, CardStats, Resonance, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, BaseAttackQuery, BreachValueQuery, HealthValueQuery,
-    ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, SanctumAccessCountQuery, ShieldCardInfo,
-    ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
+    ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, ResonanceQuery, SanctumAccessCountQuery,
+    ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
 use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
 use game_data::game_state::GameState;
@@ -161,6 +161,13 @@ pub fn vault_access_count(game: &GameState) -> Result<u32> {
 pub fn sanctum_access_count(game: &GameState) -> Result<u32> {
     let raid_id = game.raid()?.raid_id;
     Ok(dispatch::perform_query(game, SanctumAccessCountQuery(raid_id), 1))
+}
+
+/// Queries the Resonance for a card (weapon or minion). Minions can only be
+/// damaged by weapons from the same resonance, or by Prismatic weapons.
+pub fn resonance(game: &GameState, card_id: CardId) -> Option<Resonance> {
+    let resonance = game.card(card_id).definition().config.resonance?;
+    Some(dispatch::perform_query(game, ResonanceQuery(card_id), resonance))
 }
 
 /// Looks up what type of target a given card requires
