@@ -320,3 +320,33 @@ fn chains_of_mortality_mortal_minion() {
     g.click_card_name(CardName::ChainsOfMortality);
     assert!(g.user.data.raid_active());
 }
+
+#[test]
+fn phase_door() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .deck_top(CardName::TestScheme3_10)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::PhaseDoor);
+    g.activate_ability(id, 0);
+    g.click(Button::Score);
+}
+
+#[test]
+fn phase_door_defender() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .deck_top(CardName::TestScheme3_10)
+                .face_up_defender(RoomId::Crypts, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::TestWeaponInfernal);
+    let id = g.create_and_play(CardName::PhaseDoor);
+    g.activate_ability(id, 0);
+    g.click_card_name(CardName::TestWeaponInfernal);
+    g.click(Button::Score);
+}

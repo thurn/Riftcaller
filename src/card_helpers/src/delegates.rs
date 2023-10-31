@@ -39,6 +39,13 @@ pub fn shield_value(
     Delegate::ShieldValue(QueryDelegate { requirement, transformation })
 }
 
+pub fn on_raid_access_start(
+    requirement: RequirementFn<RaidEvent<()>>,
+    mutation: MutationFn<RaidEvent<()>>,
+) -> Delegate {
+    Delegate::RaidAccessStart(EventDelegate { requirement, mutation })
+}
+
 pub fn on_raid_successful(
     requirement: RequirementFn<RaidEvent<()>>,
     mutation: MutationFn<RaidEvent<()>>,

@@ -148,15 +148,23 @@ pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
 /// raid.
 fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
     if let Some(raid) = &game.raid {
-        if let Some(RaidJumpRequest::EncounterMinion(card_id)) = raid.jump_request {
-            let (room_id, index) =
-                queries::minion_position(game, card_id).with_error(|| "Minion not found")?;
-            debug!(?index, ?card_id, ?room_id, "Handling RaidJumpRequest::EncounterMinion");
-            let raid = game.raid_mut()?;
-            raid.target = room_id;
-            raid.encounter = index;
-            raid.jump_request = None;
-            raid.state = RaidState::Step(RaidStep::EncounterMinion(card_id));
+        match raid.jump_request {
+            Some(RaidJumpRequest::EncounterMinion(card_id)) => {
+                let (room_id, index) =
+                    queries::minion_position(game, card_id).with_error(|| "Minion not found")?;
+                debug!(?index, ?card_id, ?room_id, "Handling RaidJumpRequest::EncounterMinion");
+                let raid = game.raid_mut()?;
+                raid.target = room_id;
+                raid.encounter = index;
+                raid.jump_request = None;
+                raid.state = RaidState::Step(RaidStep::EncounterMinion(card_id));
+            }
+            Some(RaidJumpRequest::ChangeTarget(target)) => {
+                debug!(?target, "Handling RaidJumpRequest::ChangeTarget");
+                let raid = game.raid_mut()?;
+                raid.target = target;
+            }
+            _ => {}
         }
     }
 

@@ -13,17 +13,22 @@
 // limitations under the License.
 
 use card_helpers::effects::Effects;
-use card_helpers::{abilities, costs, history, in_play, text, this};
+use card_helpers::{
+    abilities, costs, delegates, history, in_play, raids, requirements, text, this,
+};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
-    AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, CustomBoostCost, Resonance,
+    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
+    CustomBoostCost, Resonance, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
+use game_data::game_actions::CardTarget;
+use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{
-    CardSubtype, CardType, GameObjectId, Rarity, School, Side, INNER_ROOMS,
+    CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
 };
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
@@ -413,5 +418,51 @@ pub fn chains_of_mortality(meta: CardMetadata) -> CardDefinition {
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
             )
             .build(),
+    }
+}
+
+pub fn phase_door(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::PhaseDoor,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(5, 3)),
+        image: assets::champion_card(meta, "phase_door"),
+        card_type: CardType::Artifact,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![Ability {
+            ability_type: AbilityType::Activated {
+                cost: costs::actions(1),
+                target_requirement: TargetRequirement::None,
+                can_activate: None,
+            },
+            text: text![
+                text!["Raid the", Crypt],
+                text!["If successful, access the", Vault, "instead"]
+            ],
+            delegates: vec![
+                this::on_activated(|g, s, _| {
+                    raids::initiate(g, s, CardTarget::Room(RoomId::Crypts))?;
+                    Ok(())
+                }),
+                delegates::on_raid_access_start(requirements::matching_raid, |g, s, _| {
+                    Effects::new()
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(1))
+                                .scale(2.0)
+                                .sound(SoundEffect::WaterMagic("RPG3_WaterMagic2_Cast"))
+                                .effect_color(design::BLUE_900),
+                        )
+                        .ability_alert(s)
+                        .apply(g);
+                    g.raid_mut()?.jump_request = Some(RaidJumpRequest::ChangeTarget(RoomId::Vault));
+                    Ok(())
+                }),
+            ],
+        }],
+        config: CardConfig::default(),
     }
 }

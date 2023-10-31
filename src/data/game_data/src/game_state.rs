@@ -104,6 +104,7 @@ impl GamePlayerData {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum RaidJumpRequest {
     EncounterMinion(CardId),
+    ChangeTarget(RoomId),
 }
 
 /// Describes options for this game & the set of rules it is using.

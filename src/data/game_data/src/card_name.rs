@@ -271,6 +271,7 @@ pub enum CardName {
     StalwartProtector,
     Dawnwarden,
     ChainsOfMortality,
+    PhaseDoor,
 }
 
 impl CardName {
