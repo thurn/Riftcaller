@@ -47,6 +47,10 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
                 .map(|number| card_sync::curse_card_view(builder, Some(game), number)),
         )
         .chain((game.champion.curses > 0).then(|| card_sync::dispel_card_view(builder, Some(game))))
+        .chain(
+            (game.champion.wounds > 0)
+                .then(|| card_sync::wound_card_view(builder, game.champion.wounds)),
+        )
         .collect::<Vec<_>>();
 
     builder.push_game_view(GameView {

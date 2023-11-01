@@ -34,7 +34,7 @@ use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mutations::SummonMinion;
-use rules::{curses, dispatch, mana, mutations};
+use rules::{curses, dispatch, mana, mutations, wounds};
 use tracing::debug;
 use ulid::Ulid;
 use user_action_data::{
@@ -184,6 +184,20 @@ pub async fn handle_debug_action(
         DebugAction::RemoveCurses(amount) => {
             debug_update_game(database, data, |game, _| {
                 curses::remove_curses(game, *amount)?;
+                Ok(())
+            })
+            .await
+        }
+        DebugAction::AddWounds(amount) => {
+            debug_update_game(database, data, |game, _| {
+                wounds::give_wounds(game, DEBUG_ABILITY_ID, *amount)?;
+                Ok(())
+            })
+            .await
+        }
+        DebugAction::RemoveWounds(amount) => {
+            debug_update_game(database, data, |game, _| {
+                wounds::remove_wounds(game, *amount)?;
                 Ok(())
             })
             .await

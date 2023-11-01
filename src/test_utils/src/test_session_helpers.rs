@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adapters::CardIdentifierAction;
+use adapters::CustomCardIdentifier;
 use anyhow::Result;
 use game_data::card_definition::Resonance;
 use game_data::card_name::{CardName, CardVariant};
@@ -361,7 +361,7 @@ impl TestSessionHelpers for TestSession {
 
     fn unveil_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput> {
         let id =
-            CardIdentifier { game_action: Some(CardIdentifierAction::Unveil as u32), ..card_id };
+            CardIdentifier { game_action: Some(CustomCardIdentifier::Unveil as u32), ..card_id };
         self.perform_action(
             Action::PlayCard(PlayCardAction { card_id: Some(id), target: None }),
             self.player_id_for_side(adapters::side(id.side).expect("Invalid Side")),

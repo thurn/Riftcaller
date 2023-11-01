@@ -76,7 +76,6 @@ namespace Spelldawn.Services
           return true;
         case GameContext.Deck:
         case GameContext.DiscardPile:
-        case GameContext.Riftcallers:  
           return false;
         default:
           return !AnyOverlayOpen();

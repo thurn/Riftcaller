@@ -727,6 +727,22 @@ fn discard_to_hand_size() {
 }
 
 #[test]
+fn discard_to_hand_size_wounds() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5).wounds(1)).build();
+    let discard_id = g.user.cards.hand()[0].id();
+
+    assert_eq!(g.user.cards.hand().real_cards().len(), 5);
+    g.move_to_end_step(Side::Champion);
+
+    g.move_selector_card(discard_id);
+    g.click(Button::SubmitDiscard);
+
+    assert_eq!(g.user.cards.hand().real_cards().len(), 4);
+    assert_eq!(g.user.cards.discard_pile().len(), 1);
+    assert!(g.dusk());
+}
+
+#[test]
 fn cannot_discard_extra_to_hand_size() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
     g.draw_card();

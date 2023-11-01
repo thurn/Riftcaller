@@ -14,7 +14,7 @@
 
 use adapters;
 use adapters::response_builder::ResponseBuilder;
-use adapters::CardIdentifierAction;
+use adapters::CustomCardIdentifier;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
@@ -54,8 +54,8 @@ pub fn for_unveil_card(card: &CardState, position: Position) -> ObjectPosition {
     }
 }
 
-pub fn for_action_card(position: Position, action: CardIdentifierAction) -> ObjectPosition {
-    ObjectPosition { position: Some(position), sorting_key: 100, sorting_subkey: 1 + action as u32 }
+pub fn for_custom_card(position: Position, id: CustomCardIdentifier) -> ObjectPosition {
+    ObjectPosition { position: Some(position), sorting_key: 100, sorting_subkey: 1 + id as u32 }
 }
 
 pub fn for_ability(game: &GameState, ability_id: AbilityId, position: Position) -> ObjectPosition {

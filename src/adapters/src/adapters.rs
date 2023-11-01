@@ -33,18 +33,20 @@ use crate::response_builder::ResponseBuilder;
 
 /// Possible game actions which can be associated with a client card identifier
 #[derive(Debug, Copy, Clone)]
-pub enum CardIdentifierAction {
+pub enum CustomCardIdentifier {
     Unveil = 1,
     Curse = 2,
     Dispel = 3,
+    Wound = 4,
+    Leyline = 5,
 }
 
-impl CardIdentifierAction {
-    pub fn from_u32(value: u32) -> Option<CardIdentifierAction> {
+impl CustomCardIdentifier {
+    pub fn from_u32(value: u32) -> Option<CustomCardIdentifier> {
         match value {
-            1 => Some(CardIdentifierAction::Unveil),
-            2 => Some(CardIdentifierAction::Curse),
-            3 => Some(CardIdentifierAction::Dispel),
+            1 => Some(CustomCardIdentifier::Unveil),
+            2 => Some(CustomCardIdentifier::Curse),
+            3 => Some(CustomCardIdentifier::Dispel),
             _ => None,
         }
     }
@@ -86,13 +88,13 @@ pub fn ability_card_identifier(ability_id: AbilityId) -> CardIdentifier {
 /// play.
 pub fn unveil_card_identifier(card_id: CardId) -> CardIdentifier {
     CardIdentifier {
-        game_action: Some(CardIdentifierAction::Unveil as u32),
+        game_action: Some(CustomCardIdentifier::Unveil as u32),
         ..card_identifier(card_id)
     }
 }
 
 /// Identifier for a card representing an implicit game ability
-pub fn action_card_identifier(action: CardIdentifierAction, number: u32) -> CardIdentifier {
+pub fn custom_card_identifier(action: CustomCardIdentifier, number: u32) -> CardIdentifier {
     CardIdentifier {
         side: player_side(Side::Champion),
         index: number,
@@ -120,11 +122,12 @@ pub enum ServerCardId {
 pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
     let result = CardId { side: side(card_id.side)?, index: card_id.index as usize };
 
-    if let Some(action) = card_id.game_action.and_then(CardIdentifierAction::from_u32) {
+    if let Some(action) = card_id.game_action.and_then(CustomCardIdentifier::from_u32) {
         return match action {
-            CardIdentifierAction::Unveil => Ok(ServerCardId::UnveilCard(result)),
-            CardIdentifierAction::Curse => Ok(ServerCardId::CurseCard),
-            CardIdentifierAction::Dispel => Ok(ServerCardId::DispelCard),
+            CustomCardIdentifier::Unveil => Ok(ServerCardId::UnveilCard(result)),
+            CustomCardIdentifier::Curse => Ok(ServerCardId::CurseCard),
+            CustomCardIdentifier::Dispel => Ok(ServerCardId::DispelCard),
+            _ => fail!("Invalid CustomCardIdentifier"),
         };
     }
 

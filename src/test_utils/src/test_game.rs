@@ -35,7 +35,7 @@ use game_data::game_state::{GameConfiguration, GamePhase, GameState, TurnData};
 use game_data::game_updates::InitiatedBy;
 use game_data::player_name::PlayerId;
 use game_data::primitives::{
-    ActionCount, CurseCount, GameId, ManaValue, PointsValue, RoomId, RoomLocation, Side,
+    ActionCount, CurseCount, GameId, ManaValue, PointsValue, RoomId, RoomLocation, Side, WoundCount,
 };
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use maplit::hashmap;
@@ -216,6 +216,7 @@ pub struct TestSide {
     score: PointsValue,
     hand_size: usize,
     curses: CurseCount,
+    wounds: WoundCount,
     deck_top: Vec<CardName>,
     in_discard_face_down: Vec<CardName>,
     in_discard_face_up: Vec<CardName>,
@@ -231,6 +232,7 @@ impl TestSide {
             mana: test_constants::STARTING_MANA,
             score: 0,
             curses: 0,
+            wounds: 0,
             hand_size: 0,
             deck_top: vec![],
             in_discard_face_down: vec![],
@@ -306,10 +308,16 @@ impl TestSide {
         self
     }
 
+    pub fn wounds(mut self, wounds: WoundCount) -> Self {
+        self.wounds = wounds;
+        self
+    }
+
     pub fn apply_to(&self, game: &mut GameState) {
         game.player_mut(self.side).mana_state.base_mana = self.mana;
         game.player_mut(self.side).score = self.score;
         game.player_mut(self.side).curses = self.curses;
+        game.player_mut(self.side).wounds = self.wounds;
 
         overwrite_positions(
             game,

@@ -203,7 +203,7 @@ pub fn maximum_hand_size(game: &GameState, side: Side) -> u32 {
     dispatch::perform_query(
         game,
         MaximumHandSizeQuery(side),
-        game_constants::STARTING_MAXIMUM_HAND_SIZE,
+        game_constants::STARTING_MAXIMUM_HAND_SIZE.saturating_sub(game.player(side).wounds),
     )
 }
 

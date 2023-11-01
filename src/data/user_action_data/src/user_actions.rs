@@ -23,7 +23,7 @@ use game_data::card_state::CardPosition;
 use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{
-    ActionCount, CurseCount, DeckId, GameId, ManaValue, PointsValue, Side,
+    ActionCount, CurseCount, DeckId, GameId, ManaValue, PointsValue, Side, WoundCount,
 };
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;
@@ -119,6 +119,8 @@ pub enum DebugAction {
     AddCoins(Coins),
     AddCurses(CurseCount),
     RemoveCurses(CurseCount),
+    AddWounds(WoundCount),
+    RemoveWounds(WoundCount),
     /// Reads text in the card list search field and shows matching cards
     FilterCardList(CardPosition, CardMetadata),
     AddToZone(CardVariant, CardPosition),

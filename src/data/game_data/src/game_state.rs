@@ -31,8 +31,8 @@ use crate::game_history::{GameHistory, HistoryEvent};
 use crate::game_updates::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};
 use crate::player_name::PlayerId;
 use crate::primitives::{
-    ActionCount, CardId, CurseCount, GameId, ItemLocation, ManaValue, PointsValue, RaidId, RoomId,
-    RoomLocation, School, Side, TurnNumber,
+    ActionCount, CardId, CurseCount, GameId, ItemLocation, LeylineCount, ManaValue, PointsValue,
+    RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
 };
 use crate::raid_data::RaidData;
 use crate::state_machines::StateMachines;
@@ -67,6 +67,8 @@ pub struct GamePlayerData {
     pub actions: ActionCount,
     pub score: PointsValue,
     pub curses: CurseCount,
+    pub wounds: WoundCount,
+    pub leylines: LeylineCount,
 
     /// A queue of choices this player is facing related to game choices.
     ///
@@ -86,6 +88,8 @@ impl GamePlayerData {
             actions: 0,
             score: 0,
             curses: 0,
+            wounds: 0,
+            leylines: 0,
             prompt_queue: vec![],
         }
     }

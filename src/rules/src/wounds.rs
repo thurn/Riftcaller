@@ -12,14 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#nullable enable
+use anyhow::Result;
+use game_data::game_state::GameState;
+use game_data::primitives::{HasAbilityId, WoundCount};
 
-using Spelldawn.Services;
-using UnityEngine;
+/// Give the Champion player `quantity` wounds, which decreases their maximum
+/// hand size.
+pub fn give_wounds(game: &mut GameState, _: impl HasAbilityId, quantity: WoundCount) -> Result<()> {
+    game.champion.wounds += quantity;
+    Ok(())
+}
 
-namespace Spelldawn.Game
-{
-  public sealed class RiftcallerDisplay : LinearObjectDisplay
-  {
-  }
+/// Remove `quantity` wounds from the Champion player.
+pub fn remove_wounds(game: &mut GameState, quantity: WoundCount) -> Result<()> {
+    game.champion.wounds = game.champion.wounds.saturating_sub(quantity);
+    Ok(())
 }

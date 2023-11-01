@@ -39,6 +39,8 @@ pub type PowerChargeValue = u32;
 pub type DamageAmount = u32;
 pub type RazeCost = u32;
 pub type CurseCount = u32;
+pub type WoundCount = u32;
+pub type LeylineCount = u32;
 
 /// Identifies one of a player's decks
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]

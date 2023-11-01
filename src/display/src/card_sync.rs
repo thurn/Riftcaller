@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use adapters::response_builder::ResponseBuilder;
-use adapters::CardIdentifierAction;
+use adapters::CustomCardIdentifier;
 use constants::game_constants;
 use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
@@ -23,7 +23,7 @@ use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::game_state::GameState;
 use game_data::primitives::{
     AbilityId, CardId, CardType, ItemLocation, ManaValue, Rarity, RoomId, RoomLocation, School,
-    Side,
+    Side, WoundCount,
 };
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
@@ -315,7 +315,7 @@ pub fn curse_card_view(
         builder,
         game,
         ActionCard {
-            action: CardIdentifierAction::Curse,
+            action: CustomCardIdentifier::Curse,
             identifier_number: number,
             cost: game_constants::COST_TO_REMOVE_CURSE,
             image: "curse".to_string(),
@@ -336,7 +336,7 @@ pub fn dispel_card_view(builder: &ResponseBuilder, game: Option<&GameState>) -> 
         builder,
         game,
         ActionCard {
-            action: CardIdentifierAction::Dispel,
+            action: CustomCardIdentifier::Dispel,
             identifier_number: 1,
             cost: game_constants::COST_TO_DISPEL_EVOCATION,
             image: "dispel".to_string(),
@@ -347,9 +347,8 @@ pub fn dispel_card_view(builder: &ResponseBuilder, game: Option<&GameState>) -> 
         },
     )
 }
-
 pub struct ActionCard {
-    pub action: CardIdentifierAction,
+    pub action: CustomCardIdentifier,
     pub identifier_number: u32,
     pub cost: ManaValue,
     pub image: String,
@@ -365,10 +364,10 @@ fn action_card_view(
     card: ActionCard,
 ) -> CardView {
     let character_position = game
-        .map(|_| positions::for_action_card(positions::character(builder, card.side), card.action));
+        .map(|_| positions::for_custom_card(positions::character(builder, card.side), card.action));
     CardView {
-        card_id: Some(adapters::action_card_identifier(card.action, card.identifier_number)),
-        card_position: Some(positions::for_action_card(
+        card_id: Some(adapters::custom_card_identifier(card.action, card.identifier_number)),
+        card_position: Some(positions::for_custom_card(
             positions::hand(builder, card.side),
             card.action,
         )),
@@ -403,6 +402,79 @@ fn action_card_view(
         create_position: if builder.state.animate { character_position.clone() } else { None },
         destroy_position: character_position,
         effects: Some(CardEffects { outline_color: None }),
+    }
+}
+
+pub fn wound_card_view(builder: &ResponseBuilder, count: WoundCount) -> CardView {
+    status_card_view(
+        builder,
+        Side::Champion,
+        StatusCard {
+            identifier: CustomCardIdentifier::Unveil,
+            counters: count,
+            image: "wound".to_string(),
+            title: "Wound".to_string(),
+            text: "-1 maximum hand size".to_string(),
+        },
+    )
+}
+
+pub struct StatusCard {
+    pub identifier: CustomCardIdentifier,
+    pub counters: u32,
+    pub image: String,
+    pub title: String,
+    pub text: String,
+}
+
+fn status_card_view(builder: &ResponseBuilder, side: Side, card: StatusCard) -> CardView {
+    CardView {
+        card_id: Some(adapters::custom_card_identifier(card.identifier, 0)),
+        card_position: Some(positions::for_custom_card(
+            positions::riftcaller(builder, side),
+            card.identifier,
+        )),
+        prefab: CardPrefab::TokenCard.into(),
+        card_back: Some(assets::card_back(School::Neutral)),
+        revealed_to_viewer: true,
+        is_face_up: true,
+        card_icons: if card.counters > 1 {
+            Some(CardIcons {
+                arena_icon: Some(card_icons::status_quantity_icon(card.counters)),
+                ..CardIcons::default()
+            })
+        } else {
+            None
+        },
+        arena_frame: Some(assets::arena_frame(Side::Champion, CardType::GameModifier, None)),
+        face_down_arena_frame: None,
+        owning_player: builder.to_player_name(side),
+        revealed_card: Some(Box::new(RevealedCardView {
+            card_frame: Some(assets::card_frame(School::Neutral, false)),
+            title_background: Some(assets::ability_title_background()),
+            jewel: Some(assets::jewel(Rarity::None)),
+            image: Some(adapters::sprite(&assets::misc_card(card.image, false))),
+            image_background: None,
+            title: Some(CardTitle {
+                text: card.title,
+                text_color: Some(assets::title_color(None)),
+            }),
+            rules_text: Some(RulesText { text: card.text }),
+            targeting: None,
+            on_release_position: None,
+            supplemental_info: None,
+            card_move_target: None,
+            point_to_parent: None,
+        })),
+        create_position: Some(positions::for_custom_card(
+            positions::character(builder, side),
+            card.identifier,
+        )),
+        destroy_position: Some(positions::for_custom_card(
+            positions::character(builder, side),
+            card.identifier,
+        )),
+        effects: None,
     }
 }
 

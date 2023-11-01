@@ -119,6 +119,14 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
     icons
 }
 
+pub fn status_quantity_icon(quantity: u32) -> CardIcon {
+    CardIcon {
+        background: Some(assets::card_icon(CardIconType::StatusQuantity)),
+        text: Some(quantity.to_string()),
+        background_scale: assets::icon_background_scale(CardIconType::StatusQuantity),
+    }
+}
+
 pub fn mana_card_icon(value: ManaValue) -> CardIcon {
     CardIcon {
         background: Some(assets::card_icon(CardIconType::Mana)),

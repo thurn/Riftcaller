@@ -85,6 +85,8 @@ impl DebugPanel {
             .child(debug_button("+10p", DebugAction::AddScore(10)))
             .child(debug_button("+Curse", DebugAction::AddCurses(1)))
             .child(debug_button("-Curse", DebugAction::RemoveCurses(1)))
+            .child(debug_button("+Wound", DebugAction::AddWounds(1)))
+            .child(debug_button("-Wound", DebugAction::RemoveWounds(1)))
             .child(debug_button("Flip View", DebugAction::FlipViewpoint))
             .child(debug_button(format!("{} 1", icons::SAVE), DebugAction::SaveGameState(1)))
             .child(debug_button(format!("{} 1", icons::RESTORE), DebugAction::LoadGameState(1)))

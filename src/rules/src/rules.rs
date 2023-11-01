@@ -35,6 +35,7 @@ pub mod mana;
 pub mod mutations;
 pub mod play_card;
 pub mod queries;
+pub mod wounds;
 
 pub type CardFn = fn(CardMetadata) -> CardDefinition;
 

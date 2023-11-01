@@ -41,6 +41,7 @@ pub enum CardIconType {
     Points,
     Raze,
     PowerCharge,
+    StatusQuantity,
 }
 
 pub fn side_badge(side: Side) -> SpriteAddress {
@@ -98,6 +99,9 @@ pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
                 }
                 CardIconType::PowerCharge => {
                     "LittleSweetDaemon/TCG_Card_Elemental_Design/Number_Icons/Number_Icons_Color_1"
+                }
+                CardIconType::StatusQuantity => {
+                    "LittleSweetDaemon/TCG_Card_Elemental_Design/Number_Icons/Number_Icons_Color_2"
                 }
             }
         ),
@@ -215,6 +219,7 @@ pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>
                     CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
+                    CardType::GameModifier => "SpriteWay/Icons/Clean Frames/9058",
                     CardType::Riftcaller =>
                         if side == Side::Overlord {
                             "SpriteWay/Icons/Clean Frames/9022"
