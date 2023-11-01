@@ -109,6 +109,7 @@ impl GamePlayerData {
 pub enum RaidJumpRequest {
     EncounterMinion(CardId),
     ChangeTarget(RoomId),
+    EvadeCurrentMinion,
 }
 
 /// Describes options for this game & the set of rules it is using.

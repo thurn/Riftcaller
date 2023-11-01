@@ -84,6 +84,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);
+    DEFINITIONS.insert(cards_beryl::evocations_beryl::backup_plan);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);

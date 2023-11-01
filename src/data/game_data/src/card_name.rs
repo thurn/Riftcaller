@@ -273,6 +273,7 @@ pub enum CardName {
     ChainsOfMortality,
     PhaseDoor,
     SpellcraftRitualist,
+    BackupPlan,
 }
 
 impl CardName {

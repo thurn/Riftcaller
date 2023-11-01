@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::abilities::ActivatedConfig;
 use card_helpers::effects::Effects;
 use card_helpers::{
     abilities, costs, delegates, in_play, raids, requirements, show_prompt, text, this,
@@ -25,11 +26,14 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
+use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use game_data::raid_data::RaidStatus;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-use rules::{flags, mana, mutations, CardDefinitionExt};
+use game_data::utils;
+use rules::{flags, mana, mutations, queries, CardDefinitionExt};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -150,6 +154,42 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
                         ],
                     );
                 }
+                Ok(())
+            }),
+        )],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::BackupPlan,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::champion_card(meta, "backup_plan"),
+        card_type: CardType::Evocation,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![abilities::activated_with_config(
+            text![
+                text![Evade, "a minion"],
+                meta.upgrade(text!["Lose all", ActionSymbol], text!["Lose", Actions(1)])
+            ],
+            costs::sacrifice(),
+            ActivatedConfig::new().can_activate(|g, _| {
+                utils::is_true(|| {
+                    Some(queries::raid_status(g.raid.as_ref()?) == RaidStatus::Encounter)
+                })
+            }),
+            this::on_activated(|g, s, _| {
+                g.raid_mut()?.jump_request = Some(RaidJumpRequest::EvadeCurrentMinion);
+                mutations::lose_action_points_if_able(
+                    g,
+                    Side::Champion,
+                    s.upgrade(g.champion.actions, 1),
+                )?;
                 Ok(())
             }),
         )],

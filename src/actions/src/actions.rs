@@ -85,6 +85,10 @@ pub fn handle_game_action(
         GameAction::Undo => handle_undo_action(game, user_side),
     }?;
 
+    if action != &GameAction::Undo {
+        raid_state::run(game, None)?;
+    }
+
     // Clear & store the 'current event' in game history
     game.history.write_events();
     Ok(())

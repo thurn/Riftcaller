@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::card_name::CardName;
-use game_data::primitives::Side;
+use game_data::primitives::{RoomId, Side};
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
@@ -98,4 +98,45 @@ pub fn visitation_upgraded() {
     g.create_and_play(CardName::TestSpellDeal5Damage);
     g.click(Button::Sacrifice);
     assert_eq!(g.user.cards.hand().len(), 5);
+}
+
+#[test]
+pub fn backup_plan() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::BackupPlan);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 0);
+    assert!(g.user.data.raid_active());
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().actions(), 0);
+}
+
+#[test]
+pub fn backup_plan_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .actions(4)
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    let id = g.create_and_play_upgraded(CardName::BackupPlan);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 0);
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+pub fn backup_plan_cannot_activate_outside_encounter() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord))
+        .build();
+    let id = g.create_and_play(CardName::BackupPlan);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.activate_ability_with_result(id, 0).is_err());
 }
