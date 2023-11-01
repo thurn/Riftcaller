@@ -154,7 +154,7 @@ fn process_text(context: &CardViewContext, text: &TextElement) -> String {
         TextElement::Children(children) => build_text(context, children, true),
         TextElement::NamedTrigger(token, children) => {
             format!(
-                "{}<b>{}:</b> {}",
+                "{}{}: {}",
                 icons::TRIGGER,
                 process_token(context, token),
                 build_text(context, children, true)
@@ -234,6 +234,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Infernal => assets::resonance_string("infernal"),
         TextToken::Abyssal => assets::resonance_string("abyssal"),
         TextToken::Prismatic => assets::resonance_string("prismatic"),
+        TextToken::Wound => "wound".to_string(),
     }
 }
 

@@ -29,7 +29,7 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
-use rules::{curses, mana, mutations, CardDefinitionExt};
+use rules::{curses, mana, mutations, wounds, CardDefinitionExt};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -219,6 +219,39 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
                         OnZeroStored::Ignore,
                     )?;
                     Ok(())
+                }),
+            ),
+        ],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn spellcraft_ritualist(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SpellcraftRitualist,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(2),
+        image: assets::champion_card(meta, "spellcraft_ritualist"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Mage],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::standard(
+                text![TextElement::NamedTrigger(Play, text!["Take a", Wound])],
+                this::on_played(|g, s, _| wounds::give_wounds(g, s, 1)),
+            ),
+            abilities::standard(
+                text!["Your spells cost", Mana(meta.upgrade(1, 2)), "less"],
+                in_play::on_query_mana_cost(|g, s, card_id, cost| {
+                    if g.card(*card_id).definition().card_type.is_spell()
+                        && card_id.side == s.side()
+                    {
+                        cost.map(|c| c.saturating_sub(s.upgrade(1, 2)))
+                    } else {
+                        cost
+                    }
                 }),
             ),
         ],

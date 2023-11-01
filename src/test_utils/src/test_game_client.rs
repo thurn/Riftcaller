@@ -30,8 +30,8 @@ use protos::spelldawn::{
     ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation, CommandList,
     GameMessageType, GameObjectIdentifier, NoTargeting, ObjectPosition, ObjectPositionBrowser,
     ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem, ObjectPositionRaid,
-    ObjectPositionRevealedCards, ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView,
-    RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom, PlayInRoom,
+    PlayerName, PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
 
@@ -464,6 +464,18 @@ impl ClientCards {
         self.in_position(Position::Room(ObjectPositionRoom {
             room_id: adapters::room_identifier(room_id),
             room_location: ClientRoomLocation::Back.into(),
+        }))
+    }
+
+    pub fn display_shelf(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Riftcaller(ObjectPositionRiftcallers {
+            owner: PlayerName::User.into(),
+        }))
+    }
+
+    pub fn opponent_display_shelf(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Riftcaller(ObjectPositionRiftcallers {
+            owner: PlayerName::Opponent.into(),
         }))
     }
 

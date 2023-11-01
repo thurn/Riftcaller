@@ -36,6 +36,8 @@ pub const STARTING_MANA: ManaValue = 999;
 
 pub const STARTING_COINS: Coins = Coins(999);
 
+pub const SPELL_COST: ManaValue = 1;
+
 pub const MINION_COST: ManaValue = 3;
 
 pub const WEAPON_COST: ManaValue = 3;

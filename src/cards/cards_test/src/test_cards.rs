@@ -32,7 +32,7 @@ use rules::{curses, deal_damage, mutations};
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestOverlordSpell,
-        cost: cost(1),
+        cost: cost(test_constants::SPELL_COST),
         card_type: CardType::OverlordSpell,
         subtypes: vec![],
         sets: vec![CardSetName::Test],
@@ -48,7 +48,7 @@ pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
 pub fn test_champion_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestChampionSpell,
-        cost: cost(1),
+        cost: cost(test_constants::SPELL_COST),
         card_type: CardType::ChampionSpell,
         subtypes: vec![],
         sets: vec![CardSetName::Test],

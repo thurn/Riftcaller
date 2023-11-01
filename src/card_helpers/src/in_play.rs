@@ -19,8 +19,8 @@ use game_data::delegate_data::{
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{
-    ActionCount, CardId, CurseCount, HasRoomId, RaidId, RoomIdCrypts, RoomIdMarker, RoomIdSanctum,
-    RoomIdVault, TurnNumber,
+    ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypts, RoomIdMarker,
+    RoomIdSanctum, RoomIdVault, TurnNumber,
 };
 
 use crate::{delegates, requirements};
@@ -178,6 +178,12 @@ pub fn on_query_action_cost(transformation: TransformationFn<CardId, ActionCount
         requirement: requirements::face_up_in_play,
         transformation,
     })
+}
+
+/// A delegate which intercepts queries for the mana costs of cards while its
+/// parent is face up and in play.
+pub fn on_query_mana_cost(transformation: TransformationFn<CardId, Option<ManaValue>>) -> Delegate {
+    Delegate::ManaCost(QueryDelegate { requirement: requirements::face_up_in_play, transformation })
 }
 
 /// A delegate which intercepts queries for a card's [Resonance] when a card is

@@ -23,7 +23,7 @@ fn test_keyword_aggregation() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     assert_eq!(
-        format!("{}<b>Combat:</b> Deal 1 damage. End the raid.", icons::TRIGGER),
+        format!("{}Combat: Deal 1 damage. End the raid.", icons::TRIGGER),
         g.user.cards.get(id).rules_text()
     );
 }

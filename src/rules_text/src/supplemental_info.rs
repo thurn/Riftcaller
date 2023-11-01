@@ -162,6 +162,7 @@ fn token_description(token: TextTokenKind) -> Option<String> {
             ),
         ),
         TextTokenKind::Slow => entry("Slow", "Shield costs are doubled when using this weapon"),
+        TextTokenKind::Wound => entry("Wound", "Reduces your maximum hand size by 1"),
         _ => None,
     }
 }

@@ -542,6 +542,7 @@ pub enum CardSubtype {
     Cleric,
     Noble,
     Mystic,
+    Mage,
 }
 
 /// An interval of time in milliseconds

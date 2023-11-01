@@ -128,3 +128,21 @@ pub fn dawnwarden() {
         test_constants::STARTING_MANA - test_constants::ARTIFACT_COST - cost + gained
     );
 }
+
+#[test]
+pub fn spellcraft_ritualist() {
+    let cost = 2;
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.create_and_play(CardName::SpellcraftRitualist);
+    assert_eq!(1, g.user.cards.display_shelf().count_with_name("Wound"));
+    g.create_and_play(CardName::TestChampionSpell);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA - cost - (test_constants::SPELL_COST - 1)
+    );
+    g.create_and_play(CardName::TestChampionSpell);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA - cost - 2 * (test_constants::SPELL_COST - 1)
+    );
+}

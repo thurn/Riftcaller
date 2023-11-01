@@ -74,6 +74,7 @@ pub enum TextToken {
     Abyssal,
     Infernal,
     Prismatic,
+    Wound,
 }
 
 impl TextToken {

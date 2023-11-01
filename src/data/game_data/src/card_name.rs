@@ -272,6 +272,7 @@ pub enum CardName {
     Dawnwarden,
     ChainsOfMortality,
     PhaseDoor,
+    SpellcraftRitualist,
 }
 
 impl CardName {
