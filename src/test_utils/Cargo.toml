@@ -16,6 +16,7 @@ adapters = { path = "../adapters", version = "0.0.0" }
 adventure_data = { path = "../data/adventure_data", version = "0.0.0" }
 adventure_generator = { path = "../adventure/adventure_generator", version = "0.0.0" }
 cards_all = { path = "../cards/cards_all", version = "0.0.0" }
+constants = { path = "../constants", version = "0.0.0" }
 core_ui = { path = "../core_ui", version = "0.0.0" }
 database = { path = "../database", version = "0.0.0" }
 decklists = { path = "../decklists", version = "0.0.0" }

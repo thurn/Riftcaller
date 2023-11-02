@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/action_tests.rs
-assertion_line: 128
+assertion_line: 107
 expression: "Summary::run(&response)"
 ---
 
@@ -11,7 +11,7 @@ command_list:
             player_info: 
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 0
-            action_tracker: 2
+            action_tracker: 3
             score: 0
             can_take_action: true
         opponent: 
@@ -68,7 +68,7 @@ command_list:
             player_info: 
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 9
-            action_tracker: 2
+            action_tracker: 3
             score: 0
             can_take_action: true
         opponent: 
@@ -134,7 +134,7 @@ channel_response:
             player_info: 
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 0
-            action_tracker: 2
+            action_tracker: 3
             score: 0
             can_take_action: true
         raid_active: false
@@ -192,7 +192,7 @@ channel_response:
             player_info: 
             valid_rooms_to_visit: VaultSanctumCrypts
             mana: 9
-            action_tracker: 2
+            action_tracker: 3
             score: 0
             can_take_action: true
         raid_active: false

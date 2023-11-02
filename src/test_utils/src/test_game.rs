@@ -28,6 +28,7 @@
 
 use std::iter;
 
+use constants::game_constants;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::{CardPosition, CardPositionKind};
 use game_data::deck::Deck;
@@ -47,7 +48,7 @@ use crate::test_session_builder::TestSessionBuilder;
 
 pub struct TestGame {
     current_turn: Side,
-    actions: ActionCount,
+    actions: Option<ActionCount>,
     raid: Option<TestRaid>,
     user_side: TestSide,
     opponent_side: TestSide,
@@ -65,7 +66,7 @@ impl TestGame {
         let opponent = user_side.side.opponent();
         Self {
             current_turn: user_side.side,
-            actions: 3,
+            actions: None,
             raid: None,
             user_side,
             opponent_side: TestSide::new(opponent),
@@ -84,9 +85,9 @@ impl TestGame {
         self
     }
 
-    /// Action points for the player whose turn it is. Defaults to 3.
+    /// Action points available for the player whose turn it is.
     pub fn actions(mut self, actions: ActionCount) -> Self {
-        self.actions = actions;
+        self.actions = Some(actions);
         self
     }
 
@@ -174,7 +175,12 @@ impl TestGame {
 
         self.user_side.apply_to(&mut game);
         self.opponent_side.apply_to(&mut game);
-        game.player_mut(self.current_turn).actions = self.actions;
+        game.player_mut(self.current_turn).actions =
+            self.actions.unwrap_or(if self.user_side.side == Side::Overlord {
+                game_constants::OVERLORD_START_OF_TURN_ACTIONS
+            } else {
+                game_constants::CHAMPION_START_OF_TURN_ACTIONS
+            });
 
         if let Some(r) = self.raid {
             r.apply_to(&mut game);

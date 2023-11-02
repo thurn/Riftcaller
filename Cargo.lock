@@ -2931,6 +2931,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "cards_all",
+ "constants",
  "core_ui",
  "database",
  "decklists",

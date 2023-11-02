@@ -42,7 +42,7 @@ fn lodestone() {
     assert_eq!("12", g.user.get_card(id).arena_icon());
     g.activate_ability(id, 1);
     assert_eq!(test_constants::STARTING_MANA - 1 + 2, g.me().mana());
-    assert_eq!(1, g.me().actions());
+    assert_eq!(2, g.me().actions());
     assert_eq!("10", g.user.get_card(id).arena_icon());
 }
 

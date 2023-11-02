@@ -106,8 +106,8 @@ fn play_card() {
     );
     assert_snapshot!(Summary::run(&response));
 
-    assert_eq!(2, g.me().actions());
-    assert_eq!(2, g.opponent.other_player.actions());
+    assert_eq!(3, g.me().actions());
+    assert_eq!(3, g.opponent.other_player.actions());
     assert_eq!(9, g.me().mana());
     assert_eq!(9, g.opponent.other_player.mana());
     test_helpers::assert_cards_match(g.user.cards.discard_pile(), vec![CardName::ArcaneRecovery]);
@@ -772,10 +772,10 @@ fn undo_gain_mana() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.gain_mana();
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 1);
-    assert_eq!(g.me().actions(), 2);
+    assert_eq!(g.me().actions(), 3);
     g.click(Button::Undo);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA);
-    assert_eq!(g.me().actions(), 3);
+    assert_eq!(g.me().actions(), 4);
 }
 
 #[test]
@@ -783,10 +783,10 @@ fn undo_play_card() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::TestWeaponAbyssal);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - test_constants::WEAPON_COST);
-    assert_eq!(g.me().actions(), 2);
+    assert_eq!(g.me().actions(), 3);
     g.click(Button::Undo);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA);
-    assert_eq!(g.me().actions(), 3);
+    assert_eq!(g.me().actions(), 4);
 }
 
 #[test]

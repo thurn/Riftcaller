@@ -20,13 +20,13 @@ use test_utils::*;
 #[test]
 fn meditation() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
-    assert_eq!(3, g.me().actions());
+    assert_eq!(4, g.me().actions());
     g.create_and_play(CardName::Meditation);
     assert_eq!(9, g.me().mana());
-    assert_eq!(1, g.me().actions());
+    assert_eq!(2, g.me().actions());
     g.create_and_play(CardName::Meditation);
     assert_eq!(13, g.me().mana());
-    assert!(g.has(Button::EndTurn));
+    assert_eq!(0, g.me().actions());
 }
 
 #[test]
@@ -82,11 +82,11 @@ fn stealth_mission() {
 #[test]
 fn preparation() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
-    assert_eq!(3, g.me().actions());
+    assert_eq!(4, g.me().actions());
     g.create_and_play(CardName::Preparation);
     assert_eq!(4, g.user.cards.hand().len());
-    assert_eq!(1, g.me().actions());
+    assert_eq!(2, g.me().actions());
     g.create_and_play(CardName::Preparation);
     assert_eq!(8, g.user.cards.hand().len());
-    assert!(g.has(Button::EndTurn));
+    assert_eq!(0, g.me().actions());
 }
