@@ -14,7 +14,6 @@
 
 use std::collections::HashMap;
 use std::mem;
-use std::sync::{Mutex, OnceLock};
 
 use ::panels::add_to_zone_panel::AddToZonePanel;
 use anyhow::Result;
@@ -28,6 +27,7 @@ use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{AbilityId, AbilityIndex, CardId, GameId, RoomId, RoomLocation, Side};
+use once_cell::sync::Lazy;
 use panel_address::Panel;
 use player_data::PlayerStatus;
 use protos::spelldawn::client_debug_command::DebugCommand;
@@ -35,20 +35,37 @@ use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mutations::SummonMinion;
 use rules::{curses, dispatch, mana, mutations, wounds};
-use tracing::debug;
+use serde_json::{de, ser};
+use sled::Db;
 use ulid::Ulid;
 use user_action_data::{
     DebugAction, DebugScenario, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck,
     UserAction,
 };
-use with_error::{fail, WithError};
+use with_error::WithError;
 
 use crate::server_data::{ClientData, GameResponse, RequestData};
 use crate::{adventure_server, requests};
 
-fn current_game_id() -> &'static Mutex<Option<GameId>> {
-    static GAME_ID: OnceLock<Mutex<Option<GameId>>> = OnceLock::new();
-    GAME_ID.get_or_init(|| Mutex::new(None))
+static DEBUG_DB: Lazy<Db> = Lazy::new(|| sled::open("debug_db").expect("Error opening debug_db"));
+
+fn get_current_game_id() -> Result<GameId> {
+    DEBUG_DB
+        .open_tree("debug")
+        .with_error(|| "Error opening debug tree")?
+        .get("debug_game_id")
+        .with_error(|| "Error fetching debug game id")?
+        .map(|slice| de::from_slice::<GameId>(&slice).with_error(|| "Error deserializing game id"))
+        .with_error(|| "Error fetching debug game id")?
+}
+
+fn set_current_game_id(game_id: GameId) -> Result<()> {
+    DEBUG_DB.open_tree("debug").with_error(|| "Error opening debug tree")?.insert(
+        "debug_game_id",
+        ser::to_vec(&game_id).with_error(|| "Error serializing game id")?,
+    )?;
+    DEBUG_DB.flush()?;
+    Ok(())
 }
 
 const DEBUG_ABILITY_ID: AbilityId = AbilityId {
@@ -65,11 +82,7 @@ pub async fn handle_debug_action(
     match action {
         DebugAction::NewGame(side) => create_debug_game(data, *side),
         DebugAction::JoinGame(side) => {
-            let game_id = match current_game_id().lock() {
-                Ok(id) => id,
-                Err(_) => fail!("Unable to acquire lock, another holder panicked"),
-            }
-            .with_error(|| "Current debug game id not found")?;
+            let game_id = get_current_game_id()?;
             let mut game = requests::fetch_game(database, Some(game_id)).await?;
             match side {
                 Side::Overlord => game.overlord.id = data.player_id,
@@ -128,12 +141,7 @@ pub async fn handle_debug_action(
             let game_id = GameId::new_from_u128(100 + index);
             game.id = game_id;
             database.write_game(&game).await?;
-
-            let mut current_game_id = match current_game_id().lock() {
-                Ok(id) => id,
-                Err(_) => fail!("Unable to acquire lock, another holder panicked"),
-            };
-            let _ = current_game_id.insert(current_id);
+            set_current_game_id(current_id)?;
             Ok(GameResponse::new(ClientData::propagate(data)))
         }
         DebugAction::LoadGameState(index) => {
@@ -244,12 +252,7 @@ pub async fn handle_debug_action(
             }
 
             database.write_game(&game).await?;
-
-            let mut current_game_id = match current_game_id().lock() {
-                Ok(id) => id,
-                Err(_) => fail!("Unable to acquire lock, another holder panicked"),
-            };
-            let _ = current_game_id.insert(game_id);
+            set_current_game_id(game_id)?;
 
             reload_scene(
                 &RequestData {
@@ -279,12 +282,7 @@ pub async fn handle_debug_action(
 
 fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
     let id = GameId::new(Ulid::new());
-    let mut current_game_id = match current_game_id().lock() {
-        Ok(id) => id,
-        Err(_) => fail!("Unable to acquire lock, another holder panicked"),
-    };
-    debug!(?id, "Creating debug game");
-    let _ = current_game_id.insert(id);
+    set_current_game_id(id)?;
     Ok(GameResponse::new(ClientData::propagate(data)).commands(vec![Command::Debug(
         ClientDebugCommand {
             debug_command: Some(DebugCommand::InvokeAction(ClientAction {

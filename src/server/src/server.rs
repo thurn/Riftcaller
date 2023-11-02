@@ -40,7 +40,7 @@ use tokio::sync::mpsc;
 use tokio::sync::mpsc::Sender;
 use tokio_stream::wrappers::ReceiverStream;
 use tonic::{Request, Response, Status};
-use tracing::{error, info, info_span, warn, Instrument};
+use tracing::{debug, error, info, info_span, warn, Instrument};
 use ulid::Ulid;
 use user_action_data::UserAction;
 use with_error::{fail, WithError};
@@ -274,13 +274,13 @@ pub async fn send_player_response(response: Option<(PlayerId, CommandList)>) {
         if let Some(channel_type) = CHANNELS.get(&player_id) {
             match channel_type.value() {
                 ChannelType::Sender(sender) => {
-                    if let Err(e) = sender.send(Ok(commands)).await {
-                        error!(?player_id, "Unable to send to player: {e:?}");
+                    if (sender.send(Ok(commands)).await).is_err() {
+                        debug!(?player_id, "Unable to send to player");
                     }
                 }
                 ChannelType::Polling(queue) => {
-                    if let Err(e) = queue.push(commands) {
-                        error!(?player_id, "Unable to enqueue for player: {e:?}");
+                    if queue.push(commands).is_err() {
+                        debug!(?player_id, "Unable to enqueue for player");
                     }
                 }
             }

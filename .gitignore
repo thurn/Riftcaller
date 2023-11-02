@@ -24,6 +24,7 @@ spelldawn.keystore
 /Assets/PlayAssetDelivery/Build
 /UserSettings/
 /db/
+/debug_db/
 /log/
 
 # Visual Studio cache directory
