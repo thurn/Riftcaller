@@ -287,6 +287,7 @@ impl Summarize for Command {
             Self::Conditional(_) => {}
             Self::InfoZoom(_) => {}
             Self::SetCardMovementEffect(_) => {}
+            Self::SetKeyboardShortcuts(_) => {}
         }
     }
 }

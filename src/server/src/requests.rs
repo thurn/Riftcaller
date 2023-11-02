@@ -32,6 +32,7 @@ use rules::dispatch;
 use screen_overlay::ScreenOverlay;
 use with_error::WithError;
 
+use crate::keyboard_shortcuts;
 use crate::server_data::{GameResponse, RequestData};
 
 /// Fetches the current state of the current game from the database, applies a
@@ -130,6 +131,8 @@ pub async fn add_standard_ui(
             node: ScreenOverlay::new(player).game(game).build(),
         }),
     );
+
+    response.insert_command(0, keyboard_shortcuts::build(player, game));
 
     let panels = all_panels::standard_panels()
         .into_iter()

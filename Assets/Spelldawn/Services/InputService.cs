@@ -20,6 +20,7 @@ using System.Linq;
 using DG.Tweening;
 using Spelldawn.Game;
 using Spelldawn.Masonry;
+using Spelldawn.Protos;
 using Spelldawn.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -29,6 +30,7 @@ namespace Spelldawn.Services
   public sealed class InputService : MonoBehaviour
   {
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
+    readonly List<KeyboardMapping> _keyboardMappings = new();
     Displayable? _lastClicked;
     Draggable? _originalDragSource;
     VisualElement? _currentlyDragging;
@@ -85,6 +87,12 @@ namespace Spelldawn.Services
       return overTargetElement ?? _registry.DocumentService.RootVisualElement.Q(DragElementName);
     }
 
+    public void SetKeyboardShortcuts(IEnumerable<KeyboardMapping> mapping)
+    {
+      _keyboardMappings.Clear();
+      _keyboardMappings.AddRange(mapping);
+    }
+
     void Update()
     {
       // I don't trust any of Unity's event handling code. They couldn't event-handle their way
@@ -115,6 +123,33 @@ namespace Spelldawn.Services
           ElementMouseUp(_currentlyDragging);
           break;
       }
+
+      HandleKeyboardShortcuts();
+    }
+
+    void HandleKeyboardShortcuts()
+    {
+      foreach (var mapping in _keyboardMappings)
+      {
+        if (Input.GetKeyDown(mapping.Shortcut.KeyName))
+        {
+          if (mapping.Shortcut.Alt && !(Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)))
+          {
+            continue;
+          }
+          if (mapping.Shortcut.Ctrl && !(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
+          {
+            continue;
+          }
+          if (mapping.Shortcut.Shift && !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+          {
+            continue;
+          }
+          
+          _registry.ActionService.HandleAction(mapping.Action);
+        }
+      }
+      
     }
 
     Displayable? FireMouseDown()
@@ -159,6 +194,7 @@ namespace Spelldawn.Services
       var horizontalDistance = Mathf.Abs(mousePosition.x - _dragStartMousePosition!.Value.x);
       if (_originalDragSource is { HorizontalDragStartDistance: { } distance } && horizontalDistance < distance)
       {
+        
         _currentlyDragging!.style.visibility = Visibility.Hidden;
         if (_overTargetIndicator != null)
         {

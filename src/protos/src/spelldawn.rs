@@ -1106,7 +1106,7 @@ pub struct ShowArrowBubble {
     /// Color of text. Defaults to black.
     #[prost(message, optional, tag = "6")]
     pub font_color: ::core::option::Option<FlexColor>,
-    /// Multiplier for size of arrow buble. Defaults to 1.0.
+    /// Multiplier for size of arrow bubble. Defaults to 1.0.
     #[prost(message, optional, tag = "7")]
     pub scale: ::core::option::Option<f32>,
     /// Which corner should the arrow be shown on?
@@ -2088,12 +2088,44 @@ pub struct InfoZoomCommand {
     #[prost(message, optional, tag = "2")]
     pub card: ::core::option::Option<CardView>,
 }
+/// A combination of keys which can trigger an action.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct KeyboardShortcut {
+    #[prost(string, tag = "1")]
+    pub key_name: ::prost::alloc::string::String,
+    #[prost(bool, tag = "2")]
+    pub alt: bool,
+    #[prost(bool, tag = "3")]
+    pub ctrl: bool,
+    #[prost(bool, tag = "4")]
+    pub shift: bool,
+}
+/// A single keyboard shortcut and associated action.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct KeyboardMapping {
+    #[prost(message, optional, tag = "1")]
+    pub shortcut: ::core::option::Option<KeyboardShortcut>,
+    #[prost(message, optional, tag = "2")]
+    pub action: ::core::option::Option<ClientAction>,
+}
+/// Provides a mapping from keyboard shortcuts to actions which should be
+/// available.
+///
+/// Overwrites all previous mappings.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetKeyboardShortcutsCommand {
+    #[prost(message, repeated, tag = "1")]
+    pub mapping_list: ::prost::alloc::vec::Vec<KeyboardMapping>,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -2146,6 +2178,8 @@ pub mod game_command {
         Conditional(super::ConditionalCommand),
         #[prost(message, tag = "22")]
         InfoZoom(super::InfoZoomCommand),
+        #[prost(message, tag = "23")]
+        SetKeyboardShortcuts(super::SetKeyboardShortcutsCommand),
     }
 }
 /// Metadata to include with logging for this client, e.g. for crash

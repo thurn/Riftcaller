@@ -177,9 +177,13 @@ namespace Spelldawn.Services
                 WaitFor(WaitingFor.PanelFetch);
                 fetch = transition.Open;
               }
-              else if (transition.WaitToLoad && transition.Close != null && _panelCache.ContainsKey(transition.Close))
+              else if (transition.WaitToLoad)
               {
-                _panelCache[transition.Open] = _panelCache[transition.Close];
+                if (transition.Close != null && _panelCache.ContainsKey(transition.Close))
+                {
+                  _panelCache[transition.Open] = _panelCache[transition.Close];
+                }
+                
                 _waitingFor.Add(transition.Open);
                 WaitFor(WaitingFor.PanelFetch);
                 fetch = transition.Open;

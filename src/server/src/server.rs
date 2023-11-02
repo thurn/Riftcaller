@@ -16,6 +16,7 @@ pub mod adventure_server;
 pub mod ai_agent_response;
 pub mod debug_server;
 pub mod game_server;
+pub mod keyboard_shortcuts;
 pub mod main_menu_server;
 pub mod new_game;
 pub mod player_server;

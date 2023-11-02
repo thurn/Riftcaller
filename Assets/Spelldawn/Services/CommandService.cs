@@ -160,6 +160,9 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.InfoZoom:
             _registry.CardService.HandleInfoZoomCommand(command.InfoZoom);
             break;
+          case GameCommand.CommandOneofCase.SetKeyboardShortcuts:
+            _registry.InputService.SetKeyboardShortcuts(command.SetKeyboardShortcuts.MappingList);
+            break;
           case GameCommand.CommandOneofCase.None:
             break;
           default:

@@ -1934,6 +1934,27 @@ message InfoZoomCommand {
     CardView card = 2;
 }
 
+// A combination of keys which can trigger an action.
+message KeyboardShortcut {
+    string key_name = 1;
+    bool alt = 2;
+    bool ctrl = 3;
+    bool shift = 4;
+}
+
+// A single keyboard shortcut and associated action.
+message KeyboardMapping {
+    KeyboardShortcut shortcut = 1;
+    ClientAction action = 2;
+}
+
+// Provides a mapping from keyboard shortcuts to actions which should be available.
+//
+// Overwrites all previous mappings.
+message SetKeyboardShortcutsCommand {
+    repeated KeyboardMapping mapping_list = 1;
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -1958,6 +1979,7 @@ message GameCommand {
         UpdateInterfaceCommand update_interface = 20;
         ConditionalCommand conditional = 21;
         InfoZoomCommand info_zoom = 22;
+        SetKeyboardShortcutsCommand set_keyboard_shortcuts = 23;
     }
 }
 
