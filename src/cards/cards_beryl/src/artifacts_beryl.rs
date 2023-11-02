@@ -19,8 +19,8 @@ use card_helpers::{
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
-    CustomBoostCost, Resonance, TargetRequirement,
+    Ability, ActivatedAbility, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
+    CustomBoostCost, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -48,7 +48,7 @@ pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text![Plus(meta.upgrade(2, 4)), "attack in", OuterRooms],
                 this::base_attack(|g, s, _, current| {
                     let Some(raid) = &g.raid else {
@@ -84,7 +84,7 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             abilities::encounter_ability_text(
                 text![EncounterBoostCost],
                 text![EncounterBoostBonus, "for the remainder of this raid"],
@@ -128,7 +128,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text![
                 "The first time this weapon defeats a minion each turn, return that minion to the",
                 Sanctum
@@ -182,13 +182,13 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text!["When you access a room, add", PowerCharges(1)],
                 in_play::on_raid_access_start(|g, s, _| {
                     mutations::add_power_charges(g, s.card_id(), 1)
                 }),
             ),
-            abilities::text_only_ability(abilities::encounter_ability_text(
+            Ability::new(abilities::encounter_ability_text(
                 text![PowerCharges(1)],
                 text![EncounterBoostBonus],
             )),
@@ -218,13 +218,13 @@ pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text!["When you access a room, add", PowerCharges(1)],
                 in_play::on_raid_access_start(|g, s, _| {
                     mutations::add_power_charges(g, s.card_id(), 1)
                 }),
             ),
-            abilities::text_only_ability(abilities::encounter_ability_text(
+            Ability::new(abilities::encounter_ability_text(
                 text![PowerCharges(1)],
                 text![EncounterBoostBonus],
             )),
@@ -255,7 +255,7 @@ pub fn resolution(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             abilities::breach(),
-            abilities::standard(
+            Ability::new_with_delegate(
                 text!["When this weapon defeats a minion, sacrifice it"],
                 this::on_weapon_used(|g, s, _| {
                     Effects::new().ability_alert(s).apply(g);
@@ -290,7 +290,7 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text!["When you play an artifact, including this card,", StoreMana(1)],
                 in_play::on_card_played(|g, s, played| {
                     if g.card(played.card_id).definition().card_type == CardType::Artifact {
@@ -308,18 +308,16 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            abilities::activated(
-                text!["Take all stored mana"],
-                costs::sacrifice_for_action(),
-                this::on_activated(|g, s, _| {
+            ActivatedAbility::new(text!["Take all stored mana"], costs::sacrifice_for_action())
+                .delegate(this::on_activated(|g, s, _| {
                     mana::gain(
                         g,
                         s.side(),
                         g.card(s.card_id()).last_known_counters(CardCounter::StoredMana),
                     );
                     Ok(())
-                }),
-            ),
+                }))
+                .build(),
         ],
         config: CardConfig::default(),
     }
@@ -336,7 +334,7 @@ pub fn warriors_sign(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             text![
                 "When you start raids on the",
                 Vault,
@@ -388,7 +386,7 @@ pub fn chains_of_mortality(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text![
                     "The first minion you encounter each turn gains",
                     Mortal,
@@ -432,37 +430,29 @@ pub fn phase_door(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Beyond,
         rarity: Rarity::Common,
-        abilities: vec![Ability {
-            ability_type: AbilityType::Activated {
-                cost: costs::actions(1),
-                target_requirement: TargetRequirement::None,
-                can_activate: None,
-            },
-            text: text![
-                text!["Raid the", Crypt],
-                text!["If successful, access the", Vault, "instead"]
-            ],
-            delegates: vec![
-                this::on_activated(|g, s, _| {
-                    raids::initiate(g, s, CardTarget::Room(RoomId::Crypts))?;
-                    Ok(())
-                }),
-                delegates::on_raid_access_start(requirements::matching_raid, |g, s, _| {
-                    Effects::new()
-                        .timed_effect(
-                            GameObjectId::CardId(s.card_id()),
-                            TimedEffectData::new(TimedEffect::MagicCircles1(1))
-                                .scale(2.0)
-                                .sound(SoundEffect::WaterMagic("RPG3_WaterMagic2_Cast"))
-                                .effect_color(design::BLUE_900),
-                        )
-                        .ability_alert(s)
-                        .apply(g);
-                    g.raid_mut()?.jump_request = Some(RaidJumpRequest::ChangeTarget(RoomId::Vault));
-                    Ok(())
-                }),
-            ],
-        }],
+        abilities: vec![ActivatedAbility::new(
+            text![text!["Raid the", Crypt], text!["If successful, access the", Vault, "instead"]],
+            costs::actions(1),
+        )
+        .delegate(this::on_activated(|g, s, _| {
+            raids::initiate(g, s, CardTarget::Room(RoomId::Crypts))?;
+            Ok(())
+        }))
+        .delegate(delegates::on_raid_access_start(requirements::matching_raid, |g, s, _| {
+            Effects::new()
+                .timed_effect(
+                    GameObjectId::CardId(s.card_id()),
+                    TimedEffectData::new(TimedEffect::MagicCircles1(1))
+                        .scale(2.0)
+                        .sound(SoundEffect::WaterMagic("RPG3_WaterMagic2_Cast"))
+                        .effect_color(design::BLUE_900),
+                )
+                .ability_alert(s)
+                .apply(g);
+            g.raid_mut()?.jump_request = Some(RaidJumpRequest::ChangeTarget(RoomId::Vault));
+            Ok(())
+        }))
+        .build()],
         config: CardConfig::default(),
     }
 }

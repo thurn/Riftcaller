@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::abilities::ActivatedConfig;
 use card_helpers::effects::Effects;
-use card_helpers::{abilities, costs, history, in_play, show_prompt, text, this};
+use card_helpers::{costs, history, in_play, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, ActivatedAbility, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
@@ -42,30 +41,25 @@ pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![Ability {
-            ability_type: AbilityType::Standard,
-            text: text![
-                "When you raid the",
-                Sanctum,
-                meta.upgrade("an additional card", "two additional cards")
-            ],
-            delegates: vec![
-                in_play::on_query_sanctum_access_count(|_, s, _, current| {
-                    current + s.upgrade(1, 2)
-                }),
-                in_play::on_sanctum_access_start(|g, s, _| {
-                    Effects::new()
-                        .timed_effect(
-                            GameObjectId::CardId(s.card_id()),
-                            TimedEffectData::new(TimedEffect::MagicCircles2(15))
-                                .scale(2.0)
-                                .effect_color(design::YELLOW_900),
-                        )
-                        .apply(g);
-                    Ok(())
-                }),
-            ],
-        }],
+        abilities: vec![Ability::new(text![
+            "When you raid the",
+            Sanctum,
+            meta.upgrade("an additional card", "two additional cards")
+        ])
+        .delegate(in_play::on_query_sanctum_access_count(|_, s, _, current| {
+            current + s.upgrade(1, 2)
+        }))
+        .delegate(in_play::on_sanctum_access_start(|g, s, _| {
+            Effects::new()
+                .timed_effect(
+                    GameObjectId::CardId(s.card_id()),
+                    TimedEffectData::new(TimedEffect::MagicCircles2(15))
+                        .scale(2.0)
+                        .effect_color(design::YELLOW_900),
+                )
+                .apply(g);
+            Ok(())
+        }))],
         config: CardConfig::default(),
     }
 }
@@ -81,7 +75,7 @@ pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             text![
                 "The first time you access the sanctum each turn, draw a card and gain",
                 Mana(meta.upgrade(1, 3))
@@ -135,7 +129,7 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text![TextElement::Activated {
                     cost: text![SacrificeCost],
                     effect: text!["Prevent receiving a", Curse]
@@ -155,15 +149,13 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            abilities::activated_with_config(
-                text!["Remove a curse"],
-                costs::sacrifice(),
-                ActivatedConfig::new().can_activate(|g, _| g.champion.curses > 0),
-                this::on_activated(|g, _, _| {
+            ActivatedAbility::new(text!["Remove a curse"], costs::sacrifice())
+                .can_activate(|g, _| g.champion.curses > 0)
+                .delegate(this::on_activated(|g, _, _| {
                     update(g);
                     curses::remove_curses(g, 1)
-                }),
-            ),
+                }))
+                .build(),
         ],
         config: CardConfig::default(),
     }
@@ -181,7 +173,7 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text![
                     "When an artifact is put into your discard pile,",
                     StoreMana(meta.upgrade(2, 3))
@@ -205,13 +197,11 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            abilities::activated_with_config(
-                text!["Take all stored mana"],
-                costs::actions(1),
-                ActivatedConfig::new().can_activate(|g, ability_id| {
+            ActivatedAbility::new(text!["Take all stored mana"], costs::actions(1))
+                .can_activate(|g, ability_id| {
                     g.card(ability_id.card_id).counters(CardCounter::StoredMana) > 0
-                }),
-                this::on_activated(|g, s, _| {
+                })
+                .delegate(this::on_activated(|g, s, _| {
                     mutations::take_stored_mana(
                         g,
                         s.card_id(),
@@ -219,8 +209,8 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
                         OnZeroStored::Ignore,
                     )?;
                     Ok(())
-                }),
-            ),
+                }))
+                .build(),
         ],
         config: CardConfig::default(),
     }
@@ -238,11 +228,11 @@ pub fn spellcraft_ritualist(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text![TextElement::NamedTrigger(Play, text!["Take a", Wound])],
                 this::on_played(|g, s, _| wounds::give_wounds(g, s, 1)),
             ),
-            abilities::standard(
+            Ability::new_with_delegate(
                 text!["Your spells cost", Mana(meta.upgrade(1, 2)), "less"],
                 in_play::on_query_mana_cost(|g, s, card_id, cost| {
                     if g.card(*card_id).definition().card_type.is_spell()

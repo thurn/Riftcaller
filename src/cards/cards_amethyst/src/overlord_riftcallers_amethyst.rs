@@ -13,9 +13,8 @@
 // limitations under the License.
 
 use assets::rexard_images;
-use card_helpers::abilities::standard;
 use card_helpers::{history, *};
-use game_data::card_definition::{CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::primitives::{CardType, Rarity, School, Side};
@@ -32,7 +31,7 @@ pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Shadow,
         rarity: Rarity::Riftcaller,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["The second spell you cast each turn does not cost", ActionSymbol],
             in_play::on_query_action_cost(|g, _, card_id, actions| {
                 if g.card(*card_id).definition().is_spell() {

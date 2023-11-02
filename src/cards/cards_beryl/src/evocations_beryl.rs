@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::abilities::ActivatedConfig;
 use card_helpers::effects::Effects;
-use card_helpers::{
-    abilities, costs, delegates, in_play, raids, requirements, show_prompt, text, this,
-};
+use card_helpers::{costs, delegates, in_play, raids, requirements, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
-    Ability, AbilityType, CardConfig, CardDefinition, TargetRequirement,
+    Ability, ActivatedAbility, CardConfig, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -46,15 +43,8 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![Ability {
-            ability_type: AbilityType::Activated {
-                cost: costs::sacrifice_for_action(),
-                target_requirement: TargetRequirement::TargetRoom(|g, _, r| {
-                    r.is_outer_room() && flags::is_valid_raid_target(g, r)
-                }),
-                can_activate: None,
-            },
-            text: text![
+        abilities: vec![ActivatedAbility::new(
+            text![
                 text!["Raid target outer room"],
                 text![
                     "If successful",
@@ -63,27 +53,30 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
                     "instead of accessing cards"
                 ]
             ],
-            delegates: vec![
-                this::on_activated(|g, s, activated| raids::initiate(g, s, activated.target)),
-                delegates::can_raid_access_cards(requirements::matching_raid, |_, _, _, flag| {
-                    flag.with_override(false)
-                }),
-                delegates::on_raid_successful(requirements::matching_raid, |g, s, _| {
-                    Effects::new()
-                        .ability_alert(s)
-                        .timed_effect(
-                            GameObjectId::Character(Side::Champion),
-                            TimedEffectData::new(TimedEffect::MagicCircles1(10))
-                                .scale(4.0)
-                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02"))
-                                .effect_color(design::YELLOW_900),
-                        )
-                        .apply(g);
-                    mana::gain(g, s.side(), s.upgrade(8, 10));
-                    Ok(())
-                }),
-            ],
-        }],
+            costs::sacrifice_for_action(),
+        )
+        .target_requirement(TargetRequirement::TargetRoom(|g, _, r| {
+            r.is_outer_room() && flags::is_valid_raid_target(g, r)
+        }))
+        .delegate(this::on_activated(|g, s, activated| raids::initiate(g, s, activated.target)))
+        .delegate(delegates::can_raid_access_cards(requirements::matching_raid, |_, _, _, flag| {
+            flag.with_override(false)
+        }))
+        .delegate(delegates::on_raid_successful(requirements::matching_raid, |g, s, _| {
+            Effects::new()
+                .ability_alert(s)
+                .timed_effect(
+                    GameObjectId::Character(Side::Champion),
+                    TimedEffectData::new(TimedEffect::MagicCircles1(10))
+                        .scale(4.0)
+                        .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02"))
+                        .effect_color(design::YELLOW_900),
+                )
+                .apply(g);
+            mana::gain(g, s.side(), s.upgrade(8, 10));
+            Ok(())
+        }))
+        .build()],
         config: CardConfig::default(),
     }
 }
@@ -99,7 +92,7 @@ pub fn starfield_omen(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["When you sacrifice an artifact, draw a card"],
             in_play::on_card_sacrificed(|g, s, card_id| {
                 if g.card(*card_id).definition().card_type == CardType::Artifact {
@@ -133,7 +126,7 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             // This is templated as an activated ability for clarity even though it's
             // secretly not.
             text![TextElement::Activated {
@@ -172,27 +165,26 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Beyond,
         rarity: Rarity::Common,
-        abilities: vec![abilities::activated_with_config(
+        abilities: vec![ActivatedAbility::new(
             text![
                 text![Evade, "a minion"],
                 meta.upgrade(text!["Lose all", ActionSymbol], text!["Lose", Actions(1)])
             ],
             costs::sacrifice(),
-            ActivatedConfig::new().can_activate(|g, _| {
-                utils::is_true(|| {
-                    Some(queries::raid_status(g.raid.as_ref()?) == RaidStatus::Encounter)
-                })
-            }),
-            this::on_activated(|g, s, _| {
-                g.raid_mut()?.jump_request = Some(RaidJumpRequest::EvadeCurrentMinion);
-                mutations::lose_action_points_if_able(
-                    g,
-                    Side::Champion,
-                    s.upgrade(g.champion.actions, 1),
-                )?;
-                Ok(())
-            }),
-        )],
+        )
+        .can_activate(|g, _| {
+            utils::is_true(|| Some(queries::raid_status(g.raid.as_ref()?) == RaidStatus::Encounter))
+        })
+        .delegate(this::on_activated(|g, s, _| {
+            g.raid_mut()?.jump_request = Some(RaidJumpRequest::EvadeCurrentMinion);
+            mutations::lose_action_points_if_able(
+                g,
+                Side::Champion,
+                s.upgrade(g.champion.actions, 1),
+            )?;
+            Ok(())
+        }))
+        .build()],
         config: CardConfig::default(),
     }
 }

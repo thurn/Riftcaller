@@ -27,7 +27,7 @@ pub fn either_face_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 
 /// Ability to store a fixed amount of mana in a card when it is unveiled.
 pub fn store_mana_on_unveil<const N: u32>() -> Ability {
-    crate::abilities::standard(
+    Ability::new_with_delegate(
         crate::trigger_text(TextToken::Unveil, text![TextToken::StoreMana(N)]),
         crate::when_unveiled(|g, s, _| {
             rules::mutations::add_stored_mana(g, s.card_id(), N);

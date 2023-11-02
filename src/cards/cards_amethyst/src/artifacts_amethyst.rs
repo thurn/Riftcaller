@@ -16,7 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
-use card_helpers::abilities::{encounter_ability_text, standard};
+use card_helpers::abilities::encounter_ability_text;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, Resonance,
@@ -104,7 +104,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             encounter_ability_text(
                 text![EncounterBoostCost],
                 text![Plus(1), Attack, "per weapon you control"],

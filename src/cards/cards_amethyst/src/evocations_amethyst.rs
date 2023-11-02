@@ -16,7 +16,6 @@
 
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
-use card_helpers::abilities::standard;
 use card_helpers::costs::{actions, once_per_turn};
 use card_helpers::effects::Effects;
 use card_helpers::raids::add_sanctum_access;
@@ -71,7 +70,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            standard(
+            Ability::new_with_delegate(
                 text!["When you access a room", StoreMana(1)],
                 in_play::after_room_accessed(|g, s, _| {
                     Effects::new().ability_alert(s).apply(g);
@@ -180,7 +179,7 @@ pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["The first time each turn you take the 'draw card' action, draw another card"],
             Delegate::DrawCardAction(EventDelegate {
                 requirement: requirements::no_card_draw_actions::<FaceUpInPlay>,

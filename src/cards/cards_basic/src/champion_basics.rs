@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
-use card_helpers::abilities::standard;
 use card_helpers::costs::actions;
 use card_helpers::effects::Effects;
 use card_helpers::this::on_activated;
@@ -39,7 +38,7 @@ pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![Gain, Mana(9)],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 9);
@@ -61,7 +60,7 @@ pub fn eldritch_surge(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![Gain, Mana(3)],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 3);
@@ -103,7 +102,7 @@ pub fn mana_battery(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            standard(
+            Ability::new_with_delegate(
                 trigger_text(Dawn, text![TakeMana(1)]),
                 in_play::at_dawn(|g, s, _| {
                     let taken =
@@ -136,7 +135,7 @@ pub fn contemplate(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![text![Gain, Mana(2)], text!["Draw a card"]],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 2);
@@ -159,7 +158,7 @@ pub fn ancestral_knowledge(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["Draw", 3, "cards"],
             this::on_played(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 3)?;

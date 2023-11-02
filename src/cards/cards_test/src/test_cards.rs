@@ -551,7 +551,7 @@ pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
         cost: cost(0),
         card_type: CardType::OverlordSpell,
         sets: vec![CardSetName::Test],
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["Give the Champion a curse"],
             this::on_played(|g, s, _| curses::give_curses(g, s, 1)),
         )],
@@ -576,7 +576,7 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
         cost: cost(0),
         card_type: CardType::OverlordSpell,
         sets: vec![CardSetName::Test],
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["Deal 1 damage"],
             this::on_played(|g, s, _| deal_damage::apply(g, s, 1)),
         )],
@@ -590,7 +590,7 @@ pub fn test_spell_deal_5_damage(metadata: CardMetadata) -> CardDefinition {
         cost: cost(0),
         card_type: CardType::OverlordSpell,
         sets: vec![CardSetName::Test],
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["Deal 5 damage"],
             this::on_played(|g, s, _| deal_damage::apply(g, s, 5)),
         )],

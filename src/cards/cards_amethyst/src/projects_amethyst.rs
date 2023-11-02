@@ -16,7 +16,6 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::abilities::standard;
 use card_helpers::effects::Effects;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
@@ -73,7 +72,7 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             abilities::level_up(),
-            standard(
+            Ability::new_with_delegate(
                 trigger_text(
                     Trap,
                     text!["If this card is in play,", DealDamage(2), "plus", 1, "per level"],

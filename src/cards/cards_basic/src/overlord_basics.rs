@@ -14,7 +14,6 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::abilities::standard;
 use card_helpers::this::on_activated;
 use card_helpers::*;
 use game_data::card_definition::{
@@ -91,7 +90,7 @@ pub fn gathering_dark(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![Gain, Mana(9)],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 9);

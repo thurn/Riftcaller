@@ -16,7 +16,7 @@ use card_helpers::effects::Effects;
 use card_helpers::{abilities, costs, delegates, raids, requirements, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{Ability, AbilityType, CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
@@ -44,7 +44,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: abilities::some(vec![
-            Some(abilities::standard(
+            Some(Ability::new_with_delegate(
                 text!["Play an artifact in your discard pile"],
                 this::on_played(|g, s, _| {
                     let cards = g
@@ -75,7 +75,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
             )),
             abilities::when_upgraded(
                 meta,
-                abilities::standard(
+                Ability::new_with_delegate(
                     text!["Reduce its cost by", Mana(2)],
                     delegates::mana_cost(requirements::matching_play_browser, |_, _, _, cost| {
                         cost.map(|c| c.saturating_sub(2))
@@ -98,28 +98,29 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![Ability {
-            ability_type: AbilityType::Standard,
-            text: text!["Raid the", Sanctum, ", accessing", meta.upgrade(2, 3), "additional cards"],
-            delegates: vec![
-                this::on_played(|g, s, _| {
-                    Effects::new()
-                        .timed_effect(
-                            GameObjectId::Character(Side::Overlord),
-                            TimedEffectData::new(TimedEffect::MagicCircles1(1))
-                                .scale(2.0)
-                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
-                                .effect_color(design::YELLOW_900),
-                        )
-                        .apply(g);
+        abilities: vec![Ability::new(text![
+            "Raid the",
+            Sanctum,
+            ", accessing",
+            meta.upgrade(2, 3),
+            "additional cards"
+        ])
+        .delegate(this::on_played(|g, s, _| {
+            Effects::new()
+                .timed_effect(
+                    GameObjectId::Character(Side::Overlord),
+                    TimedEffectData::new(TimedEffect::MagicCircles1(1))
+                        .scale(2.0)
+                        .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
+                        .effect_color(design::YELLOW_900),
+                )
+                .apply(g);
 
-                    raids::initiate(g, s, CardTarget::Room(RoomId::Sanctum))
-                }),
-                delegates::sanctum_access_count(requirements::matching_raid, |_, s, _, v| {
-                    v + s.upgrade(2, 3)
-                }),
-            ],
-        }],
+            raids::initiate(g, s, CardTarget::Room(RoomId::Sanctum))
+        }))
+        .delegate(delegates::sanctum_access_count(requirements::matching_raid, |_, s, _, v| {
+            v + s.upgrade(2, 3)
+        }))],
         config: CardConfig::default(),
     }
 }
@@ -135,7 +136,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::standard(
+        abilities: vec![Ability::new_with_delegate(
             text![
                 text!["Remove a", Curse],
                 meta.upgrade(
@@ -193,46 +194,41 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![Ability {
-            ability_type: AbilityType::Standard,
-            text: text![
-                text!["Look at the top", meta.upgrade(4, 6), "cards of your deck"],
-                text!["You may play one of them, paying", Mana(3), "less"],
-                text!["Discard the rest"]
-            ],
-            delegates: vec![
-                this::on_played(|g, s, _| {
-                    let cards = mutations::realize_top_of_deck(g, s.side(), s.upgrade(4, 6))?;
-                    for card in &cards {
-                        mutations::set_revealed_to(g, *card, s.side(), true);
-                    }
+        abilities: vec![Ability::new(text![
+            text!["Look at the top", meta.upgrade(4, 6), "cards of your deck"],
+            text!["You may play one of them, paying", Mana(3), "less"],
+            text!["Discard the rest"]
+        ])
+        .delegate(this::on_played(|g, s, _| {
+            let cards = mutations::realize_top_of_deck(g, s.side(), s.upgrade(4, 6))?;
+            for card in &cards {
+                mutations::set_revealed_to(g, *card, s.side(), true);
+            }
 
-                    Effects::new()
-                        .timed_effect(
-                            GameObjectId::Deck(Side::Champion),
-                            TimedEffectData::new(TimedEffect::MagicCircles1(4))
-                                .scale(2.0)
-                                .sound(SoundEffect::LightMagic("RPG3_LightMagic4_P1_Cast"))
-                                .effect_color(design::YELLOW_900),
-                        )
-                        .card_movement_effects(Projectile::Projectiles1(3), &cards)
-                        .apply(g);
+            Effects::new()
+                .timed_effect(
+                    GameObjectId::Deck(Side::Champion),
+                    TimedEffectData::new(TimedEffect::MagicCircles1(4))
+                        .scale(2.0)
+                        .sound(SoundEffect::LightMagic("RPG3_LightMagic4_P1_Cast"))
+                        .effect_color(design::YELLOW_900),
+                )
+                .card_movement_effects(Projectile::Projectiles1(3), &cards)
+                .apply(g);
 
-                    show_prompt::play_card_browser(
-                        g,
-                        s,
-                        cards,
-                        PromptContext::PlayACard,
-                        UnplayedAction::Discard,
-                    )?;
+            show_prompt::play_card_browser(
+                g,
+                s,
+                cards,
+                PromptContext::PlayACard,
+                UnplayedAction::Discard,
+            )?;
 
-                    Ok(())
-                }),
-                delegates::mana_cost(requirements::matching_play_browser, |_, _, _, cost| {
-                    cost.map(|c| c.saturating_sub(3))
-                }),
-            ],
-        }],
+            Ok(())
+        }))
+        .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, _, _, cost| {
+            cost.map(|c| c.saturating_sub(3))
+        }))],
         config: CardConfig::default(),
     }
 }
@@ -262,7 +258,7 @@ pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::standard(
+            Ability::new_with_delegate(
                 text!["Draw", meta.upgrade(3, 4), "cards"],
                 this::on_played(|g, s, _| {
                     update(g, None);
@@ -270,7 +266,7 @@ pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            abilities::standard(
+            Ability::new_with_delegate(
                 text!["If this card is discarded, draw", meta.upgrade(2, 3), "cards"],
                 this::on_discarded(|g, s, _| {
                     update(g, Some(s.ability_id()));

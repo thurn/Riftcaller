@@ -14,7 +14,7 @@
 
 //! Helpers for defining common card abilities
 
-use game_data::card_definition::{Ability, AbilityType, CanActivate, Cost, TargetRequirement};
+use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
@@ -26,64 +26,6 @@ use rules::{deal_damage, mutations};
 use crate::text_macro::text;
 use crate::this::on_activated;
 use crate::*;
-
-/// Creates a standard [Ability] with a single [Delegate].
-pub fn standard(text: Vec<TextElement>, delegate: Delegate) -> Ability {
-    Ability { text, ability_type: AbilityType::Standard, delegates: vec![delegate] }
-}
-
-/// An ability which only exists to add text to a card.
-pub fn text_only_ability(text: Vec<TextElement>) -> Ability {
-    Ability { text, ability_type: AbilityType::TextOnly, delegates: vec![] }
-}
-
-pub struct ActivatedConfig {
-    pub target_requirement: TargetRequirement<AbilityId>,
-    pub can_activate: Option<CanActivate>,
-}
-
-impl Default for ActivatedConfig {
-    fn default() -> Self {
-        Self { target_requirement: TargetRequirement::None, can_activate: None }
-    }
-}
-
-impl ActivatedConfig {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn target_requirement(mut self, target_requirement: TargetRequirement<AbilityId>) -> Self {
-        self.target_requirement = target_requirement;
-        self
-    }
-
-    pub fn can_activate(mut self, can_activate: CanActivate) -> Self {
-        self.can_activate = Some(can_activate);
-        self
-    }
-}
-
-pub fn activated(text: Vec<TextElement>, cost: Cost<AbilityId>, delegate: Delegate) -> Ability {
-    activated_with_config(text, cost, ActivatedConfig::new(), delegate)
-}
-
-pub fn activated_with_config(
-    text: Vec<TextElement>,
-    cost: Cost<AbilityId>,
-    config: ActivatedConfig,
-    delegate: Delegate,
-) -> Ability {
-    Ability {
-        text,
-        ability_type: AbilityType::Activated {
-            cost,
-            target_requirement: config.target_requirement,
-            can_activate: config.can_activate,
-        },
-        delegates: vec![delegate],
-    }
-}
 
 /// Helper to flatten a list of `Option` and remove `None` values.
 pub fn some(abilities: Vec<Option<Ability>>) -> Vec<Ability> {
@@ -102,13 +44,13 @@ pub fn silent_ability(ability: Ability) -> Ability {
 /// The standard weapon ability; applies an attack boost for the duration of a
 /// single encounter.
 pub fn encounter_boost() -> Ability {
-    text_only_ability(encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]))
+    Ability::new(encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]))
 }
 
 /// The standard weapon breach ability, reads the weapon's breach value from its
 /// definition.
 pub fn breach() -> Ability {
-    text_only_ability(text![Breach])
+    Ability::new(text![Breach])
 }
 
 /// Store `N` mana in this card when played. Move it to the discard pile when
@@ -223,7 +165,7 @@ pub fn encounter_ability_text(
 
 /// The "slow" ability, which doubles shield costs when using a weapon
 pub fn slow() -> Ability {
-    standard(
+    Ability::new_with_delegate(
         text![
             encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
             text![Slow]

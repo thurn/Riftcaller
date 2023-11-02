@@ -13,11 +13,10 @@
 // limitations under the License.
 
 use assets::rexard_images;
-use card_helpers::abilities::standard;
 use card_helpers::effects::Effects;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::*;
-use game_data::card_definition::{CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
@@ -35,7 +34,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Rare,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
             in_play::at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
@@ -60,7 +59,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Pact,
         rarity: Rarity::Riftcaller,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["The first time you take damage each turn, draw a card"],
             Delegate::DealtDamage(EventDelegate {
                 requirement: requirements::no_damage_dealt::<FaceUpInPlay>,
@@ -86,7 +85,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Primal,
         rarity: Rarity::Riftcaller,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text!["After you access the", Sanctum, ", discard the top card of the", Vault],
             in_play::after_sanctum_accessed(|g, s, _| {
                 Effects::new().ability_alert(s).apply(g);
@@ -108,7 +107,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Shadow,
         rarity: Rarity::Riftcaller,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![
                 "When you access the",
                 Vault,

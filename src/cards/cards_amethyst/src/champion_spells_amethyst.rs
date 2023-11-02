@@ -15,7 +15,6 @@
 //! Card definitions for the Spell card type & Champion player
 
 use assets::rexard_images;
-use card_helpers::abilities::standard;
 use card_helpers::raids::{add_sanctum_access, add_vault_access};
 use card_helpers::{text, *};
 use game_data::card_definition::{
@@ -39,7 +38,7 @@ pub fn meditation(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![text![Gain, Mana(5)], text![Lose, Actions(1), "if able"]],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 5);
@@ -98,7 +97,7 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![text![BeginARaid], text![Gain, Mana(5), "to spend during that raid"]],
             this::on_played(|g, s, play_card| {
                 raid_state::initiate_with_callback(
@@ -163,7 +162,7 @@ pub fn preparation(_: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![standard(
+        abilities: vec![Ability::new_with_delegate(
             text![text!["Draw", 4, "cards"], text!["Lose", Actions(1), "if able"]],
             this::on_played(|g, s, _| {
                 mutations::draw_cards(g, s.side(), 4)?;

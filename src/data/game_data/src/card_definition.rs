@@ -187,9 +187,6 @@ pub enum AbilityType {
         target_requirement: TargetRequirement<AbilityId>,
         can_activate: Option<CanActivate>,
     },
-
-    /// Abilities which have no effect, but simply provide additional card text.
-    TextOnly,
 }
 
 /// Abilities are the unit of action in Spelldawn. Their behavior is provided by
@@ -199,6 +196,70 @@ pub struct Ability {
     pub ability_type: AbilityType,
     pub text: Vec<TextElement>,
     pub delegates: Vec<Delegate>,
+}
+
+impl Ability {
+    pub fn new(text: Vec<TextElement>) -> Self {
+        Self { ability_type: AbilityType::Standard, text, delegates: vec![] }
+    }
+
+    pub fn new_with_delegate(text: Vec<TextElement>, delegate: Delegate) -> Self {
+        Self { ability_type: AbilityType::Standard, text, delegates: vec![delegate] }
+    }
+
+    pub fn delegate(mut self, delegate: Delegate) -> Self {
+        self.delegates.push(delegate);
+        self
+    }
+}
+
+/// Builder helper for activated abilities
+#[derive(Debug)]
+pub struct ActivatedAbility {
+    text: Vec<TextElement>,
+    cost: Cost<AbilityId>,
+    target_requirement: TargetRequirement<AbilityId>,
+    can_activate: Option<CanActivate>,
+    delegates: Vec<Delegate>,
+}
+
+impl ActivatedAbility {
+    pub fn new(text: Vec<TextElement>, cost: Cost<AbilityId>) -> Self {
+        Self {
+            text,
+            cost,
+            target_requirement: TargetRequirement::None,
+            can_activate: None,
+            delegates: vec![],
+        }
+    }
+
+    pub fn target_requirement(mut self, requirement: TargetRequirement<AbilityId>) -> Self {
+        self.target_requirement = requirement;
+        self
+    }
+
+    pub fn can_activate(mut self, can_activate: CanActivate) -> Self {
+        self.can_activate = Some(can_activate);
+        self
+    }
+
+    pub fn delegate(mut self, delegate: Delegate) -> Self {
+        self.delegates.push(delegate);
+        self
+    }
+
+    pub fn build(self) -> Ability {
+        Ability {
+            ability_type: AbilityType::Activated {
+                cost: self.cost,
+                target_requirement: self.target_requirement,
+                can_activate: self.can_activate,
+            },
+            text: self.text,
+            delegates: self.delegates,
+        }
+    }
 }
 
 /// The Possible resonances of weapons and minions. Minions can only be
