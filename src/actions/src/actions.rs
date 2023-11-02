@@ -86,7 +86,7 @@ pub fn handle_game_action(
     }?;
 
     if action != &GameAction::Undo {
-        raid_state::run(game, None)?;
+        resume_all_state_machines(game)?;
     }
 
     // Clear & store the 'current event' in game history
@@ -430,11 +430,10 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
 
-    resume_all_state_machines(game)
+    Ok(())
 }
 
-/// Attempt to start all active game state machines to process further actions,
-/// typically after a user prompt is completed.
+/// Attempt to start all active game state machines to process further actions
 fn resume_all_state_machines(game: &mut GameState) -> Result<()> {
     deal_damage::run_state_machine(game)?;
     curses::run_state_machine(game)?;
