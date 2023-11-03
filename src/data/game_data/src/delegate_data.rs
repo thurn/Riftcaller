@@ -427,7 +427,9 @@ pub enum Delegate {
     RazeCard(EventDelegate<CardId>),
     /// A Raid is initiated
     RaidStart(EventDelegate<RaidEvent<()>>),
-    /// A minion is encountered during a raid
+    /// A summoned minion is about to be encountered during a raid
+    ApproachMinion(EventDelegate<RaidEvent<CardId>>),
+    /// A summoned minion is encountered during a raid
     EncounterMinion(EventDelegate<CardId>),
     /// A weapon has been used to defeat a minion
     UsedWeapon(EventDelegate<RaidEvent<UsedWeapon>>),

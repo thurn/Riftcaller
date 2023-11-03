@@ -176,7 +176,7 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
             utils::is_true(|| Some(queries::raid_status(g.raid.as_ref()?) == RaidStatus::Encounter))
         })
         .delegate(this::on_activated(|g, s, _| {
-            g.raid_mut()?.jump_request = Some(RaidJumpRequest::EvadeCurrentMinion);
+            mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
             mutations::lose_action_points_if_able(
                 g,
                 Side::Champion,

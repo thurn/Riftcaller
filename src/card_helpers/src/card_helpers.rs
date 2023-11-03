@@ -112,12 +112,6 @@ pub fn this_card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> b
     scope.card_id() == card_id.card_id()
 }
 
-/// A RequirementFn which restricts delegates to only listen to events for their
-/// own ability.
-pub fn this_ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilityId) -> bool {
-    scope.ability_id() == ability_id.ability_id()
-}
-
 pub fn when_unveiled(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::UnveilCard(EventDelegate { requirement: this_card, mutation })
 }

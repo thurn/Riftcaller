@@ -17,12 +17,18 @@ use game_data::delegate_data::{
     QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::{AttackValue, CardId, HasCardId};
+use game_data::primitives::{AttackValue, CardId, HasAbilityId, HasCardId};
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.
 pub fn card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
     scope.card_id() == card_id.card_id()
+}
+
+/// A RequirementFn which restricts delegates to only listen to events for their
+/// own ability.
+pub fn ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilityId) -> bool {
+    scope.ability_id() == ability_id.ability_id()
 }
 
 /// A delegate which triggers when this card is played
@@ -32,7 +38,7 @@ pub fn on_played(mutation: MutationFn<CardPlayed>) -> Delegate {
 
 /// A [Delegate] which triggers when an ability is activated
 pub fn on_activated(mutation: MutationFn<AbilityActivated>) -> Delegate {
-    Delegate::ActivateAbility(EventDelegate { requirement: crate::this_ability, mutation })
+    Delegate::ActivateAbility(EventDelegate { requirement: ability, mutation })
 }
 
 /// A delegate which triggers when this card is moved from a deck *or* hand to a

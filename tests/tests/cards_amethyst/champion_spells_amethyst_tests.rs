@@ -32,7 +32,7 @@ fn meditation() {
 #[test]
 fn coup_de_grace() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.play_with_target_room(CardName::CoupDeGrace, RoomId::Vault);
+    g.create_and_play_with_target(CardName::CoupDeGrace, RoomId::Vault);
     assert!(g.user.data.raid_active());
     assert_eq!(2, g.user.cards.browser().len());
     assert_eq!(0, g.user.cards.hand().len());
@@ -44,7 +44,7 @@ fn coup_de_grace() {
 #[should_panic]
 fn coup_de_grace_invalid_room() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.play_with_target_room(CardName::CoupDeGrace, test_constants::ROOM_ID);
+    g.create_and_play_with_target(CardName::CoupDeGrace, test_constants::ROOM_ID);
 }
 
 #[test]
@@ -53,7 +53,7 @@ fn charged_strike() {
     g.setup_raid_target(test_helpers::minion_for_resonance(test_constants::TEST_RESONANCE));
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     assert_eq!(test_constants::STARTING_MANA - 3, g.me().mana());
-    g.play_with_target_room(CardName::ChargedStrike, test_constants::ROOM_ID);
+    g.create_and_play_with_target(CardName::ChargedStrike, test_constants::ROOM_ID);
     assert!(g.user.data.raid_active());
     assert_eq!(test_constants::STARTING_MANA - 4, g.me().mana());
     assert_eq!(5, g.user.this_player.bonus_mana());
@@ -71,7 +71,7 @@ fn stealth_mission() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.setup_raid_target(test_helpers::minion_for_resonance(test_constants::TEST_RESONANCE));
     assert_eq!(test_constants::STARTING_MANA, g.opponent.this_player.mana());
-    g.play_with_target_room(CardName::StealthMission, test_constants::ROOM_ID);
+    g.create_and_play_with_target(CardName::StealthMission, test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
     assert_eq!(
         test_constants::STARTING_MANA - test_constants::MINION_COST - 3,

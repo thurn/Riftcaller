@@ -375,7 +375,7 @@ fn raid_vault() {
         .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
-    g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
@@ -394,7 +394,7 @@ fn raid_sanctum() {
         .build();
 
     g.add_to_hand(CardName::TestScheme3_10);
-    g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Sanctum);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Sanctum);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
@@ -414,7 +414,7 @@ fn raid_crypts() {
         .opponent(TestSide::new(Side::Overlord).in_discard_face_down(CardName::TestScheme3_10))
         .build();
 
-    g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Crypts);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Crypts);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
@@ -434,7 +434,7 @@ fn raid_vault_twice() {
         .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
-    g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
@@ -530,8 +530,8 @@ fn raid_two_defenders() {
         .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
-    g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
@@ -552,8 +552,8 @@ fn raid_two_defenders_full_raid() {
         .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
 
-    g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
@@ -572,7 +572,7 @@ fn raid_two_defenders_full_raid() {
 fn raid_deal_damage_game_over() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
 
-    g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
 
@@ -591,8 +591,8 @@ fn raid_two_defenders_cannot_afford_second() {
         .opponent(TestSide::new(Side::Overlord).mana(1).deck_top(CardName::TestScheme3_10))
         .build();
 
-    g.play_with_target_room(CardName::TestMinionDealDamage, RoomId::Vault);
-    g.play_with_target_room(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);

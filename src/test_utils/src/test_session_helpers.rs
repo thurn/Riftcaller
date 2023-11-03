@@ -105,7 +105,11 @@ pub trait TestSessionHelpers {
 
     /// Equivalent method to [Self::create_and_play] which specifies
     /// a target room to use.
-    fn play_with_target_room(&mut self, card_name: CardName, room_id: RoomId) -> CardIdentifier;
+    fn create_and_play_with_target(
+        &mut self,
+        card_name: CardName,
+        room_id: RoomId,
+    ) -> CardIdentifier;
 
     /// Activates an ability of a card owned by the user based on its ability
     /// index.
@@ -329,7 +333,11 @@ impl TestSessionHelpers for TestSession {
         )
     }
 
-    fn play_with_target_room(&mut self, card_name: CardName, room_id: RoomId) -> CardIdentifier {
+    fn create_and_play_with_target(
+        &mut self,
+        card_name: CardName,
+        room_id: RoomId,
+    ) -> CardIdentifier {
         play_impl(self, CardVariant::standard(card_name), Some(room_id))
     }
 

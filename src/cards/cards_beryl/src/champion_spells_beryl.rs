@@ -13,10 +13,12 @@
 // limitations under the License.
 
 use card_helpers::effects::Effects;
-use card_helpers::{abilities, costs, delegates, raids, requirements, show_prompt, text, this};
+use card_helpers::{
+    abilities, costs, delegates, history, raids, requirements, show_prompt, text, this,
+};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{Ability, CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
@@ -24,7 +26,7 @@ use game_data::game_actions::{
     CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_state::GameState;
+use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::primitives::{
     AbilityId, CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
 };
@@ -276,5 +278,50 @@ pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
             ),
         ],
         config: CardConfig::default(),
+    }
+}
+
+pub fn voidstep(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Voidstep,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(2, 0)),
+        image: assets::champion_card(meta, "voidstep"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![Ability::new(text![
+            text!["Raid target room"],
+            text![Evade, "the first minion you encounter"]
+        ])
+        .delegate(this::on_played(|g, s, play_card| {
+            Effects::new()
+                .timed_effect(
+                    GameObjectId::Character(Side::Champion),
+                    TimedEffectData::new(TimedEffect::MagicCircles1(2))
+                        .scale(2.0)
+                        .sound(SoundEffect::WaterMagic("RPG3_WaterMagic3_P1_Castv2"))
+                        .effect_color(design::BLUE_500),
+                )
+                .apply(g);
+
+            raids::initiate(g, s, play_card.target)
+        }))
+        .delegate(delegates::on_minion_approached(
+            requirements::matching_raid,
+            |g, _, minion| {
+                if history::minions_approached_this_turn(g)
+                    .filter(|event| event.raid_id == minion.raid_id)
+                    .next()
+                    .is_none()
+                {
+                    mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
+                }
+                Ok(())
+            },
+        ))],
+        config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }
 }

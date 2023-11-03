@@ -21,10 +21,10 @@ use anyhow::Result;
 use game_data::card_definition::CustomBoostCost;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    CanRaidAccessCardsQuery, CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent, Flag,
-    MinionCombatAbilityEvent, MinionDefeatedEvent, RaidAccessSelectedEvent, RaidAccessStartEvent,
-    RaidEvent, RaidOutcome, RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon,
-    UsedWeaponEvent,
+    ApproachMinionEvent, CanRaidAccessCardsQuery, CardAccessEvent, ChampionScoreCardEvent,
+    EncounterMinionEvent, Flag, MinionCombatAbilityEvent, MinionDefeatedEvent,
+    RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome, RaidStartEvent,
+    RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
 use game_data::game_actions::RaidAction;
 use game_data::game_history::HistoryEvent;
@@ -187,6 +187,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::PopulateSummonPrompt(minion_id) => populate_summon_prompt(minion_id),
         RaidStep::SummonMinion(minion_id) => summon_minion(game, minion_id),
         RaidStep::DoNotSummon(_) => RaidState::step(RaidStep::NextEncounter),
+        RaidStep::ApproachMinion(minion_id) => approach_minion(game, info, minion_id),
         RaidStep::EncounterMinion(minion_id) => encounter_minion(game, info, minion_id),
         RaidStep::PopulateEncounterPrompt(minion_id) => populate_encounter_prompt(game, minion_id),
         RaidStep::UseWeapon(interaction) => use_weapon(game, info, interaction),
@@ -240,6 +241,13 @@ fn populate_summon_prompt(minion_id: CardId) -> Result<RaidState> {
 fn summon_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
     verify!(defenders::can_summon_defender(game, minion_id), "Cannot summon minion");
     mutations::summon_minion(game, minion_id, SummonMinion::PayCosts)?;
+    RaidState::step(RaidStep::ApproachMinion(minion_id))
+}
+
+fn approach_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> Result<RaidState> {
+    let event = info.event(minion_id);
+    dispatch::invoke_event(game, ApproachMinionEvent(event))?;
+    game.add_history_event(HistoryEvent::MinionApproached(event));
     RaidState::step(RaidStep::EncounterMinion(minion_id))
 }
 

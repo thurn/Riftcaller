@@ -449,7 +449,9 @@ pub fn phase_door(meta: CardMetadata) -> CardDefinition {
                 )
                 .ability_alert(s)
                 .apply(g);
-            g.raid_mut()?.jump_request = Some(RaidJumpRequest::ChangeTarget(RoomId::Vault));
+
+            mutations::apply_raid_jump(g, RaidJumpRequest::ChangeTarget(RoomId::Vault));
+
             Ok(())
         }))
         .build()],

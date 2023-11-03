@@ -274,6 +274,7 @@ pub enum CardName {
     PhaseDoor,
     SpellcraftRitualist,
     BackupPlan,
+    Voidstep,
 }
 
 impl CardName {

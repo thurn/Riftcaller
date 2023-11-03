@@ -51,6 +51,7 @@ pub enum RaidStep {
     PopulateSummonPrompt(CardId),
     SummonMinion(CardId),
     DoNotSummon(CardId),
+    ApproachMinion(CardId),
     EncounterMinion(CardId),
     PopulateEncounterPrompt(CardId),
     UseWeapon(WeaponInteraction),

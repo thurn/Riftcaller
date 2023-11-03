@@ -50,7 +50,7 @@ pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> 
         if game.card(defender).is_face_down() {
             RaidStep::PopulateSummonPrompt(defender)
         } else {
-            RaidStep::EncounterMinion(defender)
+            RaidStep::ApproachMinion(defender)
         }
     } else {
         RaidStep::PopulateApproachPrompt

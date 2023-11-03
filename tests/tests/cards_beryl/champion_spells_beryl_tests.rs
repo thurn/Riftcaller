@@ -246,3 +246,29 @@ fn holy_aura_discard_to_sift_the_sands() {
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.user.cards.hand().len(), 2);
 }
+
+#[test]
+fn voidstep() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::Voidstep, RoomId::Vault);
+    assert!(g.has(Button::EndRaid));
+    assert!(g.user.data.raid_active());
+}
+
+#[test]
+fn voidstep_two_defenders() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion)
+                .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::Voidstep, RoomId::Vault);
+    assert_eq!(g.user.cards.raid_display().len(), 1);
+}

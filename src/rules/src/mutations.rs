@@ -34,7 +34,7 @@ use game_data::delegate_data::{
     StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
 };
 use game_data::game_history::HistoryEvent;
-use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
+use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
     ActionCount, CardId, ManaValue, PointsValue, PowerChargeValue, RoomId, RoomLocation, Side,
@@ -559,6 +559,14 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
 /// Stops the currently-active 'play card' game action.
 pub fn abort_playing_card(game: &mut GameState) {
     game.state_machines.play_card = None;
+}
+
+/// Applies a [RaidJumpRequest] to the provided `game` if there is currently an
+/// active raid.
+pub fn apply_raid_jump(game: &mut GameState, request: RaidJumpRequest) {
+    if let Some(raid) = game.raid.as_mut() {
+        raid.jump_request = Some(request);
+    }
 }
 
 /// Creates an entirely new card from outside the game face-up in the indicated

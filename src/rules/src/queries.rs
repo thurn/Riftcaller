@@ -251,6 +251,7 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::SummonMinion(_)
             | RaidStep::DoNotSummon(_) => RaidStatus::Summon,
             RaidStep::NextEncounter
+            | RaidStep::ApproachMinion(_)
             | RaidStep::EncounterMinion(_)
             | RaidStep::PopulateEncounterPrompt(_)
             | RaidStep::UseWeapon(_)

@@ -81,6 +81,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::enduring_radiance);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::sift_the_sands);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::holy_aura);
+    DEFINITIONS.insert(cards_beryl::champion_spells_beryl::voidstep);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);

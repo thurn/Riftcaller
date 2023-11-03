@@ -141,7 +141,7 @@ fn shadow_lurker_outer_room() {
 #[test]
 fn shadow_lurker_inner_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    let id = g.play_with_target_room(CardName::ShadowLurker, RoomId::Sanctum);
+    let id = g.create_and_play_with_target(CardName::ShadowLurker, RoomId::Sanctum);
     assert_eq!("2", g.user.get_card(id).bottom_right_icon());
 }
 

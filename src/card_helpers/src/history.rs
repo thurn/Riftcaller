@@ -81,6 +81,20 @@ pub fn raid_accesses_this_turn(game: &GameState) -> impl Iterator<Item = RoomId>
     })
 }
 
+/// Returns an iterator over minions which have been approached in the current
+/// player's turn so far.
+pub fn minions_approached_this_turn(
+    game: &GameState,
+) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::MinionApproached(event) = h {
+            Some(event)
+        } else {
+            None
+        }
+    })
+}
+
 /// Returns an iterator over minions which have been encountered in the current
 /// player's turn so far.
 pub fn minions_encountered_this_turn(

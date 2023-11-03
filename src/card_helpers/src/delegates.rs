@@ -39,6 +39,13 @@ pub fn shield_value(
     Delegate::ShieldValue(QueryDelegate { requirement, transformation })
 }
 
+pub fn on_minion_approached(
+    requirement: RequirementFn<RaidEvent<CardId>>,
+    mutation: MutationFn<RaidEvent<CardId>>,
+) -> Delegate {
+    Delegate::ApproachMinion(EventDelegate { requirement, mutation })
+}
+
 pub fn on_raid_access_start(
     requirement: RequirementFn<RaidEvent<()>>,
     mutation: MutationFn<RaidEvent<()>>,
