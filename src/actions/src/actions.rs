@@ -16,6 +16,7 @@
 //! from the client. The `handle_user_action` function is the primary
 //! entry-point into the rules engine.
 
+pub mod game_effect_actions;
 pub mod legal_actions;
 
 use anyhow::Result;
@@ -34,8 +35,7 @@ use game_data::game_updates::{AnimationState, GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, deal_damage, dispatch, flags, game_effect_actions, mana, mutations,
-    play_card, queries,
+    activate_ability, curses, deal_damage, dispatch, flags, mana, mutations, play_card, queries,
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};

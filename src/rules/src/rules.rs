@@ -30,7 +30,6 @@ pub mod curses;
 pub mod deal_damage;
 pub mod dispatch;
 pub mod flags;
-pub mod game_effect_actions;
 pub mod mana;
 pub mod mutations;
 pub mod play_card;

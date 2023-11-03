@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card_state::CardPosition;
 use crate::primitives::{
-    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, ManaValue, Side,
+    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, ManaValue, RoomId, Side,
 };
 
 /// An arbitrary modification to the state of an ongoing game.
@@ -35,6 +35,8 @@ pub enum GameEffect {
     LoseMana(Side, ManaValue),
     /// A player loses action points
     LoseActions(Side, ActionCount),
+    /// Initiate a new raid on this room.
+    InitiateRaid(RoomId, AbilityId),
     /// End the current raid in failure.
     EndRaid,
     /// Deal damage to the Champion

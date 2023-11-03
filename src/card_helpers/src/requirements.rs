@@ -139,3 +139,11 @@ pub fn no_damage_dealt<R: BaseRequirement>(
 pub fn any_raid_target<T>() -> TargetRequirement<T> {
     TargetRequirement::TargetRoom(|game, _, room_id| flags::is_valid_raid_target(game, room_id))
 }
+
+/// A `TargetRequirement` for a card which can target any outer room which is a
+/// valid raid target
+pub fn any_outer_room_raid_target<T>() -> TargetRequirement<T> {
+    TargetRequirement::TargetRoom(|game, _, room_id| {
+        room_id.is_outer_room() && flags::is_valid_raid_target(game, room_id)
+    })
+}

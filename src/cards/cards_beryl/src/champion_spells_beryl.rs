@@ -325,3 +325,52 @@ pub fn voidstep(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }
 }
+
+pub fn keensight(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Keensight,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::champion_card(meta, "keensight"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![Ability::new(text![
+            text!["Reveal the card occupying target room"],
+            text!["You may raid that room"]
+        ])
+        .delegate(this::on_played(|g, s, play_card| {
+            let target = play_card.target.room_id()?;
+            Effects::new()
+                .timed_effect(
+                    GameObjectId::Character(s.side()),
+                    TimedEffectData::new(TimedEffect::MagicCircles1(2))
+                        .scale(2.0)
+                        .sound(SoundEffect::WaterMagic("RPG3_WaterMagic3_P1_Castv2"))
+                        .effect_color(design::BLUE_500),
+                )
+                .apply(g);
+
+            let occupants = g.occupants(target).map(|c| c.id).collect::<Vec<_>>();
+            for occupant in occupants {
+                mutations::set_revealed_to(g, occupant, s.side(), true);
+            }
+
+            show_prompt::with_choices(
+                g,
+                s,
+                vec![
+                    PromptChoice::new().effect(GameEffect::InitiateRaid(target, s.ability_id())),
+                    PromptChoice::new().effect(GameEffect::Continue),
+                ],
+            );
+
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .custom_targeting(requirements::any_outer_room_raid_target())
+            .build(),
+    }
+}

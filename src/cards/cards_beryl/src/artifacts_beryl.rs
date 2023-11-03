@@ -475,7 +475,7 @@ pub fn skyprism(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
-            Ability::new(text!["As an additional cost to use this weapon, spend", Actions(1)]),
+            Ability::new(text!["As an additional cost to use this weapon, pay", Actions(1)]),
             abilities::encounter_boost(),
         ],
         config: CardConfigBuilder::new()

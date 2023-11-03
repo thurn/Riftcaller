@@ -272,3 +272,17 @@ fn voidstep_two_defenders() {
     g.create_and_play_with_target(CardName::Voidstep, RoomId::Vault);
     assert_eq!(g.user.cards.raid_display().len(), 1);
 }
+
+#[test]
+fn keensight() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+        )
+        .build();
+    assert!(!g.user.cards.room_occupants(RoomId::RoomA)[0].revealed_to_me());
+    g.create_and_play_with_target(CardName::Keensight, RoomId::RoomA);
+    assert!(g.user.cards.room_occupants(RoomId::RoomA)[0].revealed_to_me());
+    g.click(Button::InitiateRaid);
+    assert!(g.user.data.raid_active());
+}

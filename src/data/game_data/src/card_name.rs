@@ -276,6 +276,7 @@ pub enum CardName {
     BackupPlan,
     Voidstep,
     Skyprism,
+    Keensight,
 }
 
 impl CardName {
