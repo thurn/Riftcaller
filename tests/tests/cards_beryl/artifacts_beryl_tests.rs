@@ -350,3 +350,17 @@ fn phase_door_defender() {
     g.click_card_name(CardName::TestWeaponInfernal);
     g.click(Button::Score);
 }
+
+#[test]
+fn skyprism() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestAstralMinion),
+        )
+        .build();
+    g.create_and_play(CardName::Skyprism);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Skyprism);
+    assert_eq!(g.me().actions(), 1);
+}

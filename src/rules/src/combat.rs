@@ -14,7 +14,7 @@
 
 //! Calculations for using weapons during combat
 
-use game_data::card_definition::{AttackBoost, CustomBoostCost};
+use game_data::card_definition::{AttackBoost, CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
     AttackBoostBonusQuery, CanDefeatTargetQuery, CanEncounterTargetQuery, CardEncounter, Flag,
@@ -38,8 +38,10 @@ pub struct CostToDefeatTarget {
     pub mana_cost: ManaValue,
     /// Attack value added to this weapon to defeat this minion
     pub attack_boost: AttackValue,
+    /// Additional cost to use this weapon    
+    pub custom_weapon_cost: Option<CustomWeaponCost>,
     /// Custom boost costs required to defeat this minion, if any.
-    pub custom_activations: Option<CustomBoostActivation>,
+    pub custom_boost_activation: Option<CustomBoostActivation>,
 }
 
 /// Returns the costs the owner of `card_id` would need to spend to raise its
@@ -55,10 +57,28 @@ pub fn cost_to_defeat_target(
 ) -> Option<CostToDefeatTarget> {
     let target = queries::health(game, target_id);
     let current = queries::base_attack(game, card_id);
+    let Some(boost) = game.card(card_id).definition().config.stats.attack_boost.as_ref() else {
+        return None;
+    };
+
+    // Handle custom weapon costs
+    let custom_weapon_cost = if let Some(custom) = &boost.custom_weapon_cost {
+        if !can_pay_custom_weapon_cost(game, card_id, custom) {
+            return None;
+        }
+        Some(custom.clone())
+    } else {
+        None
+    };
 
     let mut result = if current >= target {
-        CostToDefeatTarget { mana_cost: 0, attack_boost: 0, custom_activations: None }
-    } else if let Some(boost) = game.card(card_id).definition().config.stats.attack_boost.as_ref() {
+        CostToDefeatTarget {
+            mana_cost: 0,
+            attack_boost: 0,
+            custom_weapon_cost,
+            custom_boost_activation: None,
+        }
+    } else {
         let bonus = attack_boost_bonus(game, card_id, boost);
         if bonus == 0 {
             return None;
@@ -72,8 +92,8 @@ pub fn cost_to_defeat_target(
             let boost_count = add + (increase / bonus);
 
             // Handle applying custom (non-mana) weapon boost abilities
-            let custom_activation = if let Some(custom) = &boost.custom_cost {
-                if !can_pay_custom_boost(game, card_id, custom, boost_count) {
+            let custom_boost_activation = if let Some(custom) = &boost.custom_boost_cost {
+                if !can_pay_custom_boost_cost(game, card_id, custom, boost_count) {
                     return None;
                 }
                 Some(CustomBoostActivation { activation_count: boost_count, cost: custom.clone() })
@@ -84,11 +104,10 @@ pub fn cost_to_defeat_target(
             CostToDefeatTarget {
                 mana_cost: boost_count * boost.cost,
                 attack_boost: boost_count * bonus,
-                custom_activations: custom_activation,
+                custom_weapon_cost,
+                custom_boost_activation,
             }
         }
-    } else {
-        return None;
     };
 
     result.mana_cost += queries::shield(game, target_id, Some(card_id))
@@ -109,8 +128,8 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
 
     let can_defeat = cost_to_defeat.mana_cost
         <= mana::get(game, source.side, ManaPurpose::UseWeapon(source))
-        && cost_to_defeat.custom_activations.as_ref().map_or(true, |custom| {
-            can_pay_custom_boost(game, source, &custom.cost, custom.activation_count)
+        && cost_to_defeat.custom_boost_activation.as_ref().map_or(true, |custom| {
+            can_pay_custom_boost_cost(game, source, &custom.cost, custom.activation_count)
         });
 
     dispatch::perform_query(
@@ -151,7 +170,13 @@ pub fn attack_boost_bonus(game: &GameState, card_id: CardId, boost: &AttackBoost
     dispatch::perform_query(game, AttackBoostBonusQuery(card_id), boost.bonus)
 }
 
-fn can_pay_custom_boost(
+fn can_pay_custom_weapon_cost(game: &GameState, card_id: CardId, cost: &CustomWeaponCost) -> bool {
+    match cost {
+        CustomWeaponCost::ActionPoints(points) => game.player(card_id.side).actions >= *points,
+    }
+}
+
+fn can_pay_custom_boost_cost(
     game: &GameState,
     card_id: CardId,
     cost: &CustomBoostCost,

@@ -275,6 +275,7 @@ pub enum CardName {
     SpellcraftRitualist,
     BackupPlan,
     Voidstep,
+    Skyprism,
 }
 
 impl CardName {

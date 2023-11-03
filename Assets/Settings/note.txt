@@ -1,6 +1,8 @@
 FontAwesome glyphs:
 
-Need to modify Assets/ThirdParty/Resources/Fonts/FontAwesomeSDF.asset
+Need to modify FontAwesomeSDF.asset
+For changes to affect UIToolkit, need to modify FontAwesomeAsset.asset
+
 Make adjustments to the 'Glyph Table'
 You *can* modify this while the game is running, changes will be saved
 

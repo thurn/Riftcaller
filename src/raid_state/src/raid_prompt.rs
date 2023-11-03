@@ -17,7 +17,7 @@ use core_ui::icons;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use game_data::card_definition::CustomBoostCost;
+use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
 use game_data::game_state::GameState;
 use game_data::primitives::{CardId, RoomId, Side};
@@ -188,15 +188,18 @@ fn use_weapon_button(game: &GameState, interaction: WeaponInteraction) -> Respon
     if let Some(cost_to_defeat) =
         combat::cost_to_defeat_target(game, interaction.weapon_id, interaction.defender_id)
     {
-        if let Some(activation) = cost_to_defeat.custom_activations.as_ref() {
+        let prepend = cost_to_defeat.custom_weapon_cost.as_ref().map(custom_weapon_cost_label);
+
+        if let Some(activation) = cost_to_defeat.custom_boost_activation.as_ref() {
             return ResponseButton::new(custom_weapon_activation_label(activation, label))
                 .two_lines(true);
         }
 
         if cost_to_defeat.mana_cost > 0 {
             return ResponseButton::new(format!(
-                "{}\n{}{}",
+                "{}\n{}{}{}",
                 label,
+                prepend.unwrap_or(String::new()),
                 cost_to_defeat.mana_cost,
                 icons::MANA
             ))
@@ -204,6 +207,14 @@ fn use_weapon_button(game: &GameState, interaction: WeaponInteraction) -> Respon
         }
     }
     ResponseButton::new(label)
+}
+
+fn custom_weapon_cost_label(cost: &CustomWeaponCost) -> String {
+    match cost {
+        CustomWeaponCost::ActionPoints(points) => {
+            format!("{},", icons::ACTION.repeat(*points as usize))
+        }
+    }
 }
 
 fn custom_weapon_activation_label(activation: &CustomBoostActivation, label: String) -> String {

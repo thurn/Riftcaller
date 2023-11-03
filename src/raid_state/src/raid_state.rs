@@ -18,7 +18,7 @@ pub mod raid_display_state;
 pub mod raid_prompt;
 
 use anyhow::Result;
-use game_data::card_definition::CustomBoostCost;
+use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     ApproachMinionEvent, CanRaidAccessCardsQuery, CardAccessEvent, ChampionScoreCardEvent,
@@ -294,7 +294,15 @@ fn use_weapon(
         cost_to_defeat.mana_cost,
     )?;
 
-    if let Some(custom_activation) = cost_to_defeat.custom_activations.as_ref() {
+    if let Some(custom_weapon_cost) = cost_to_defeat.custom_weapon_cost.as_ref() {
+        match custom_weapon_cost {
+            CustomWeaponCost::ActionPoints(points) => {
+                mutations::spend_action_points(game, Side::Champion, *points)?;
+            }
+        }
+    }
+
+    if let Some(custom_activation) = cost_to_defeat.custom_boost_activation.as_ref() {
         match custom_activation.cost {
             CustomBoostCost::PowerCharges(n) => {
                 mutations::spend_power_charges(

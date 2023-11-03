@@ -80,6 +80,12 @@ impl<T> Default for Cost<T> {
     }
 }
 
+/// Possible additional costs for using a weapon
+#[derive(Debug, Clone)]
+pub enum CustomWeaponCost {
+    ActionPoints(ActionCount),
+}
+
 /// Possible alternate costs for activating an attack boost.
 #[derive(Debug, Clone)]
 pub enum CustomBoostCost {
@@ -92,8 +98,10 @@ pub enum CustomBoostCost {
 pub struct AttackBoost {
     /// Mana cost to activate an instance of this boost
     pub cost: ManaValue,
+    /// Additional cost to use this weapon
+    pub custom_weapon_cost: Option<CustomWeaponCost>,
     /// Additional custom cost to pay to activate an instance of this boost
-    pub custom_cost: Option<CustomBoostCost>,
+    pub custom_boost_cost: Option<CustomBoostCost>,
     /// Bonus to attack added for each activation
     pub bonus: AttackValue,
 }
@@ -113,8 +121,13 @@ impl AttackBoost {
         self
     }
 
-    pub fn custom_cost(mut self, custom_cost: CustomBoostCost) -> Self {
-        self.custom_cost = Some(custom_cost);
+    pub fn custom_weapon_cost(mut self, custom_weapon_cost: CustomWeaponCost) -> Self {
+        self.custom_weapon_cost = Some(custom_weapon_cost);
+        self
+    }
+
+    pub fn custom_boost_cost(mut self, custom_cost: CustomBoostCost) -> Self {
+        self.custom_boost_cost = Some(custom_cost);
         self
     }
 }

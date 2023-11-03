@@ -20,7 +20,7 @@ use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
     Ability, ActivatedAbility, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
-    CustomBoostCost, Resonance,
+    CustomBoostCost, CustomWeaponCost, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -195,7 +195,9 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .base_attack(meta.upgrade(1, 2))
-            .attack_boost(AttackBoost::new().custom_cost(CustomBoostCost::PowerCharges(1)).bonus(1))
+            .attack_boost(
+                AttackBoost::new().custom_boost_cost(CustomBoostCost::PowerCharges(1)).bonus(1),
+            )
             .resonance(Resonance::mortal())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(23))
@@ -231,7 +233,9 @@ pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .base_attack(meta.upgrade(2, 3))
-            .attack_boost(AttackBoost::new().custom_cost(CustomBoostCost::PowerCharges(1)).bonus(1))
+            .attack_boost(
+                AttackBoost::new().custom_boost_cost(CustomBoostCost::PowerCharges(1)).bonus(1),
+            )
             .resonance(Resonance::astral())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(23))
@@ -456,5 +460,38 @@ pub fn phase_door(meta: CardMetadata) -> CardDefinition {
         }))
         .build()],
         config: CardConfig::default(),
+    }
+}
+
+pub fn skyprism(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Skyprism,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(5),
+        image: assets::champion_card(meta, "skyprism"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![
+            Ability::new(text!["As an additional cost to use this weapon, spend", Actions(1)]),
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(meta.upgrade(0, 2))
+            .attack_boost(
+                AttackBoost::new()
+                    .mana_cost(1)
+                    .bonus(1)
+                    .custom_weapon_cost(CustomWeaponCost::ActionPoints(1)),
+            )
+            .resonance(Resonance::prismatic())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(6))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
+            )
+            .build(),
     }
 }
