@@ -364,3 +364,20 @@ fn skyprism() {
     g.click_card_name(CardName::Skyprism);
     assert_eq!(g.me().actions(), 1);
 }
+
+#[test]
+fn shield_of_the_flames() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+
+    let shield_id = g.create_and_play(CardName::ShieldOfTheFlames);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(shield_id, 0);
+    assert!(g.user.data.raid_active());
+    assert!(g.user.cards.discard_pile().contains_card(CardName::ShieldOfTheFlames));
+    g.click(Button::EndRaid);
+}

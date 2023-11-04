@@ -277,6 +277,7 @@ pub enum CardName {
     Voidstep,
     Skyprism,
     Keensight,
+    ShieldOfTheFlames,
 }
 
 impl CardName {

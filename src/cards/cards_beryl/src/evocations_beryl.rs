@@ -25,12 +25,10 @@ use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
-use game_data::raid_data::RaidStatus;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-use game_data::utils;
-use rules::{flags, mana, mutations, queries, CardDefinitionExt};
+use rules::{flags, mana, mutations, CardDefinitionExt};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -172,9 +170,7 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
             ],
             costs::sacrifice(),
         )
-        .can_activate(|g, _| {
-            utils::is_true(|| Some(queries::raid_status(g.raid.as_ref()?) == RaidStatus::Encounter))
-        })
+        .can_activate(|g, _| raids::active_encounter(g).is_some())
         .delegate(this::on_activated(|g, s, _| {
             mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
             mutations::lose_action_points_if_able(

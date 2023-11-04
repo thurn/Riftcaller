@@ -34,7 +34,8 @@ use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
 use game_data::text::TextToken::*;
-use rules::{mana, mutations, CardDefinitionExt};
+use game_data::utils;
+use rules::{mana, mutations, queries, CardDefinitionExt};
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -490,6 +491,44 @@ pub fn skyprism(meta: CardMetadata) -> CardDefinition {
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(6))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::ShieldOfTheFlames,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::champion_card(meta, "shield_of_the_flames"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![
+            ActivatedAbility::new(text![Evade, "an", Infernal, "minion"], costs::sacrifice())
+                .can_activate(|g, _| {
+                    utils::is_true(|| {
+                        Some(queries::resonance(g, raids::active_encounter(g)?)?.infernal)
+                    })
+                })
+                .delegate(this::on_activated(|g, _, _| {
+                    mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
+                    Ok(())
+                }))
+                .build(),
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(meta.upgrade(2, 3))
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
+            .resonance(Resonance::infernal())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(9))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles02"))
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
             )
             .build(),
