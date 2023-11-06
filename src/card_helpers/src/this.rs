@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::delegate_data::{
-    AbilityActivated, CardPlayed, Delegate, DiscardedCard, EventDelegate, MutationFn,
+    AbilityActivated, CardPlayed, Delegate, DiscardedCard, EventDelegate, Flag, MutationFn,
     QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_state::GameState;
@@ -53,6 +53,11 @@ pub fn on_weapon_used(mutation: MutationFn<RaidEvent<UsedWeapon>>) -> Delegate {
         requirement: |_, s, used| s.card_id() == used.data.weapon_id,
         mutation,
     })
+}
+
+/// A delegate which prevents a card from being able to be played
+pub fn can_play(transformation: TransformationFn<CardId, Flag>) -> Delegate {
+    Delegate::CanPlayCard(QueryDelegate { requirement: card, transformation })
 }
 
 /// A delegate which modifies this card's base attack value

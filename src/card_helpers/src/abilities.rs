@@ -17,7 +17,9 @@
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition};
-use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate, RaidOutcome};
+use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate, RaidOutcome};
+use game_data::game_history::{AbilityActivationType, HistoryEvent};
+use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{AbilityId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
@@ -177,7 +179,45 @@ pub fn slow() -> Ability {
     )
 }
 
+/// Creates a silent 'can play?' ability, usually used to help prevent user
+/// errors by playing cards when they make no sense (e.g. have no valid
+/// targets).
+pub fn silent_can_play(predicate: TransformationFn<CardId, Flag>) -> Ability {
+    Ability::new_with_delegate(text![], this::can_play(predicate))
+}
+
 /// Text for cards which can only be played as a player's first action
-pub fn play_as_first_action_text() -> Ability {
-    Ability::new(text!["Play as your first", TextToken::ActionSymbol])
+pub fn play_as_first_action() -> Ability {
+    fn is_game_action(event: &HistoryEvent) -> bool {
+        match event {
+            HistoryEvent::GainManaAction
+            | HistoryEvent::DrawCardAction(_)
+            | HistoryEvent::RemoveCurseAction
+            | HistoryEvent::DispelEvocationAction => true,
+            HistoryEvent::PlayCard(_, _, initiated_by)
+                if *initiated_by == InitiatedBy::GameAction =>
+            {
+                true
+            }
+            HistoryEvent::ActivateAbility(_, _, activation)
+                if *activation == AbilityActivationType::GameAction =>
+            {
+                true
+            }
+            HistoryEvent::RaidBegin(e) if e.data == InitiatedBy::GameAction => true,
+            HistoryEvent::CardProgress(_, _, initiated_by)
+                if *initiated_by == InitiatedBy::GameAction =>
+            {
+                true
+            }
+            _ => false,
+        }
+    }
+
+    Ability::new_with_delegate(
+        text!["Play as your first", TextToken::ActionSymbol],
+        this::can_play(|g, _, _, current| {
+            current.with_override(!history::current_turn(g).any(is_game_action))
+        }),
+    )
 }

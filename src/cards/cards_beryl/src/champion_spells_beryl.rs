@@ -46,6 +46,11 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: abilities::some(vec![
+            Some(abilities::silent_can_play(|g, _, _, current| {
+                current.with_override(
+                    g.discard_pile(Side::Champion).any(|c| c.definition().is_artifact()),
+                )
+            })),
             Some(Ability::new_with_delegate(
                 text!["Play an artifact in your discard pile"],
                 this::on_played(|g, s, _| {
@@ -85,9 +90,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                 ),
             ),
         ]),
-        config: CardConfigBuilder::new()
-            .can_play(|g, _| g.discard_pile(Side::Champion).any(|c| c.definition().is_artifact()))
-            .build(),
+        config: CardConfig::default(),
     }
 }
 
@@ -422,7 +425,7 @@ pub fn time_stop(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::play_as_first_action_text(),
+            abilities::play_as_first_action(),
             Ability::new_with_delegate(
                 text![text![Gain, Actions(meta.upgrade(1, 2))], text!["Raid target room"]],
                 this::on_played(|g, s, played| {
@@ -431,9 +434,6 @@ pub fn time_stop(meta: CardMetadata) -> CardDefinition {
                 }),
             ),
         ],
-        config: CardConfigBuilder::new()
-            .can_play(requirements::play_as_first_action)
-            .custom_targeting(requirements::any_raid_target())
-            .build(),
+        config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }
 }

@@ -177,7 +177,7 @@ pub enum TargetRequirement<T> {
 }
 
 impl<T> Debug for TargetRequirement<T> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let kind: TargetRequirementKind = self.into();
         write!(f, "{kind:?}")
     }
@@ -341,8 +341,6 @@ pub type CanPlay = fn(&GameState, CardId) -> bool;
 pub struct CardConfig {
     pub stats: CardStats,
     pub resonance: Option<Resonance>,
-    /// Additional constraints on whether this card can be played.
-    pub can_play: Option<CanPlay>,
     /// Targeting requirements for this card, e.g. to target a room.
     pub custom_targeting: Option<TargetRequirement<CardId>>,
     /// A projectile to use when this card's combat ability triggers
@@ -410,11 +408,6 @@ impl CardConfigBuilder {
 
     pub fn resonance(mut self, resonance: Resonance) -> Self {
         self.config.resonance = Some(resonance);
-        self
-    }
-
-    pub fn can_play(mut self, can_play: CanPlay) -> Self {
-        self.config.can_play = Some(can_play);
         self
     }
 
