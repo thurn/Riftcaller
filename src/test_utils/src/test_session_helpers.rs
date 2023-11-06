@@ -85,6 +85,14 @@ pub trait TestSessionHelpers {
         target: Option<CardTarget>,
     );
 
+    /// Equivalent function to [Self::play_card] which returns a result.
+    fn play_card_with_result(
+        &mut self,
+        card_id: CardIdentifier,
+        player_id: PlayerId,
+        target: Option<CardTarget>,
+    ) -> Result<GameResponseOutput>;
+
     /// Creates and then plays a named card as the user who owns this card.
     ///
     /// This function first adds a copy of the requested card to the user's hand
@@ -305,6 +313,18 @@ impl TestSessionHelpers for TestSession {
             Action::PlayCard(PlayCardAction { card_id: Some(card_id), target }),
             player_id,
         );
+    }
+
+    fn play_card_with_result(
+        &mut self,
+        card_id: CardIdentifier,
+        player_id: PlayerId,
+        target: Option<CardTarget>,
+    ) -> Result<GameResponseOutput> {
+        self.perform_action(
+            Action::PlayCard(PlayCardAction { card_id: Some(card_id), target }),
+            player_id,
+        )
     }
 
     fn create_and_play(&mut self, card_name: CardName) -> CardIdentifier {
