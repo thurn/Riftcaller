@@ -69,7 +69,7 @@ fn draw_all_overlord_cards() {
 fn win_game() {
     let position = TilePosition::new(1, 1);
     let mut session = TestSessionBuilder::new()
-        .game(TestGame::new(TestSide::new(Side::Overlord).score(95)))
+        .game(TestGame::new(TestSide::new(Side::Overlord).bonus_points(95)))
         .adventure(TestAdventure::new(Side::Overlord).coins(Coins(500)).visiting_position(position))
         .build();
     session.insert_tile_at_position(

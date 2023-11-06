@@ -18,6 +18,7 @@ pub mod raid_display_state;
 pub mod raid_prompt;
 
 use anyhow::Result;
+use constants::game_constants;
 use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -37,7 +38,7 @@ use game_data::raid_data::{
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{combat, dispatch, flags, mana, mutations, queries, CardDefinitionExt};
+use rules::{combat, dispatch, flags, mana, mutations, queries};
 use tracing::debug;
 use with_error::{fail, verify, WithError};
 
@@ -206,8 +207,8 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::StartScoringCard(scored) => start_scoring_card(game, scored),
         RaidStep::ChampionScoreEvent(scored) => champion_score_event(game, scored),
         RaidStep::ScoreEvent(scored) => score_event(game, scored),
-        RaidStep::ScorePointsForCard(scored) => score_points_for_card(game, scored),
         RaidStep::MoveToScoredPosition(scored) => move_to_scored_position(game, scored),
+        RaidStep::CheckForPointsVictory => check_for_points_victory(game),
         RaidStep::StartRazingCard(card_id, cost) => start_razing_card(game, card_id, cost),
         RaidStep::RazeCard(card_id, cost) => raze_card(game, card_id, cost),
         RaidStep::FinishRaid => finish_raid(game),
@@ -450,23 +451,18 @@ fn score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
         game,
         ScoreCardEvent(ScoreCard { player: Side::Champion, card_id: scored.id }),
     )?;
-    RaidState::step(RaidStep::ScorePointsForCard(scored))
-}
-
-fn score_points_for_card(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
-    let scheme_points = game
-        .card(scored.id)
-        .definition()
-        .config
-        .stats
-        .scheme_points
-        .with_error(|| format!("Expected SchemePoints for {:?}", scored.id))?;
-    mutations::score_points(game, Side::Champion, scheme_points.points)?;
     RaidState::step(RaidStep::MoveToScoredPosition(scored))
 }
 
 fn move_to_scored_position(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
     mutations::move_card(game, scored.id, CardPosition::Scored(Side::Champion))?;
+    RaidState::step(RaidStep::CheckForPointsVictory)
+}
+
+fn check_for_points_victory(game: &mut GameState) -> Result<RaidState> {
+    if queries::score(game, Side::Champion) >= game_constants::POINTS_TO_WIN_GAME {
+        mutations::game_over(game, Side::Champion)?;
+    }
     RaidState::step(RaidStep::PopulateAccessPrompt)
 }
 

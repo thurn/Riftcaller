@@ -23,7 +23,7 @@ use clap::{ArgEnum, Parser};
 use game_data::game_state::{GameConfiguration, GameState};
 use game_data::player_name::{AIPlayer, PlayerId};
 use game_data::primitives::{GameId, Side};
-use rules::{dispatch, mutations};
+use rules::{dispatch, mutations, queries};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]
 pub enum Verbosity {
@@ -112,8 +112,8 @@ pub fn run(args: Args) -> Result<()> {
                             "{} wins as {:?}, {} to {}",
                             agent.name(),
                             winner,
-                            state.player(winner).score,
-                            state.player(winner.opponent()).score
+                            queries::score(&state, winner),
+                            queries::score(&state, winner.opponent())
                         );
                     }
                     break;

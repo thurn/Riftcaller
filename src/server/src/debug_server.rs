@@ -130,7 +130,7 @@ pub async fn handle_debug_action(
         }
         DebugAction::AddScore(amount) => {
             debug_update_game(database, data, |game, user_side| {
-                mutations::score_points(game, user_side, *amount)?;
+                mutations::score_bonus_points(game, user_side, *amount)?;
                 Ok(())
             })
             .await

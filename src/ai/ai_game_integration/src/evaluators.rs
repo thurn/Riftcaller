@@ -16,8 +16,8 @@ use ai_core::state_evaluator::StateEvaluator;
 use anyhow::Result;
 use game_data::card_state::CardCounter;
 use game_data::primitives::Side;
-use rules::mana;
 use rules::mana::ManaPurpose;
+use rules::{mana, queries};
 
 use crate::state_node::SpelldawnState;
 
@@ -25,7 +25,7 @@ pub struct ScoreEvaluator {}
 
 impl StateEvaluator<SpelldawnState> for ScoreEvaluator {
     fn evaluate(&self, node: &SpelldawnState, side: Side) -> Result<i32> {
-        Ok(node.player(side).score as i32 - (node.player(side.opponent()).score as i32))
+        Ok(queries::score(node, side) as i32 - (queries::score(node, side.opponent()) as i32))
     }
 }
 

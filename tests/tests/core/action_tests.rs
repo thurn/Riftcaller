@@ -321,7 +321,8 @@ fn score_overlord_card() {
 
 #[test]
 fn overlord_win_game() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10).score(90)).actions(5).build();
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).mana(10).bonus_points(90)).actions(5).build();
     g.create_and_play(CardName::TestScheme3_10);
     let level_up =
         Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });

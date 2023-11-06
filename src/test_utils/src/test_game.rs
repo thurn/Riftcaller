@@ -219,7 +219,7 @@ impl Default for TestRaid {
 pub struct TestSide {
     side: Side,
     mana: ManaValue,
-    score: PointsValue,
+    bonus_points: PointsValue,
     hand_size: usize,
     curses: CurseCount,
     wounds: WoundCount,
@@ -237,7 +237,7 @@ impl TestSide {
         TestSide {
             side,
             mana: test_constants::STARTING_MANA,
-            score: 0,
+            bonus_points: 0,
             curses: 0,
             wounds: 0,
             hand_size: 0,
@@ -257,9 +257,9 @@ impl TestSide {
         self
     }
 
-    /// Score for this player. Defaults to 0.
-    pub fn score(mut self, score: PointsValue) -> Self {
-        self.score = score;
+    /// Bonus points score for this player. Defaults to 0.
+    pub fn bonus_points(mut self, score: PointsValue) -> Self {
+        self.bonus_points = score;
         self
     }
 
@@ -329,7 +329,7 @@ impl TestSide {
 
     pub fn apply_to(&self, game: &mut GameState) {
         game.player_mut(self.side).mana_state.base_mana = self.mana;
-        game.player_mut(self.side).score = self.score;
+        game.player_mut(self.side).bonus_points = self.bonus_points;
         game.player_mut(self.side).curses = self.curses;
         game.player_mut(self.side).wounds = self.wounds;
 

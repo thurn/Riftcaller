@@ -27,7 +27,7 @@ use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
 use game_data::game_state::GameState;
 use game_data::primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardType, HealthValue, ItemLocation,
-    ManaValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
+    ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
@@ -36,6 +36,15 @@ use crate::{dispatch, CardDefinitionExt};
 /// Obtain the [CardStats] for a given card
 pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
     &crate::get(game.card(card_id).variant).config.stats
+}
+
+/// Returns the current score for the `side` player.
+pub fn score(game: &GameState, side: Side) -> PointsValue {
+    // All scored cards are owned by the Overlord
+    game.cards_in_position(Side::Overlord, CardPosition::Scored(side))
+        .filter_map(|c| Some(c.definition().config.stats.scheme_points?.points))
+        .sum::<u32>()
+        + game.player(side).bonus_points
 }
 
 /// Returns the mana cost for a given card.
@@ -268,8 +277,8 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::StartScoringCard(_)
             | RaidStep::ChampionScoreEvent(_)
             | RaidStep::ScoreEvent(_)
-            | RaidStep::ScorePointsForCard(_)
             | RaidStep::MoveToScoredPosition(_)
+            | RaidStep::CheckForPointsVictory
             | RaidStep::StartRazingCard(_, _)
             | RaidStep::RazeCard(_, _)
             | RaidStep::FinishRaid => RaidStatus::Access,

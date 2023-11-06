@@ -236,10 +236,11 @@ pub fn gain_action_points(game: &mut GameState, side: Side, amount: ActionCount)
     Ok(())
 }
 
-/// Adds points to a player's score and checks for the Game Over condition.
-pub fn score_points(game: &mut GameState, side: Side, amount: PointsValue) -> Result<()> {
-    game.player_mut(side).score += amount;
-    if game.player(side).score >= game_constants::POINTS_TO_WIN_GAME {
+/// Adds bonus points to a player's score and checks for the Game Over
+/// condition.
+pub fn score_bonus_points(game: &mut GameState, side: Side, amount: PointsValue) -> Result<()> {
+    game.player_mut(side).bonus_points += amount;
+    if queries::score(game, side) >= game_constants::POINTS_TO_WIN_GAME {
         game_over(game, side)?;
     }
     Ok(())
@@ -443,8 +444,11 @@ pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) ->
                 game,
                 ScoreCardEvent(ScoreCard { player: Side::Overlord, card_id }),
             )?;
-            score_points(game, Side::Overlord, scheme_points.points)?;
+
             move_card(game, card_id, CardPosition::Scored(Side::Overlord))?;
+            if queries::score(game, Side::Overlord) >= game_constants::POINTS_TO_WIN_GAME {
+                game_over(game, Side::Overlord)?;
+            }
         }
     }
 

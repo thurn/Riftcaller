@@ -65,10 +65,10 @@ pub struct GamePlayerData {
     pub schools: Vec<School>,
     pub mana_state: ManaState,
     pub actions: ActionCount,
-    pub score: PointsValue,
     pub curses: CurseCount,
     pub wounds: WoundCount,
     pub leylines: LeylineCount,
+    pub bonus_points: PointsValue,
 
     /// A queue of choices this player is facing related to game choices.
     ///
@@ -86,10 +86,10 @@ impl GamePlayerData {
             schools,
             mana_state: ManaState::default(),
             actions: 0,
-            score: 0,
             curses: 0,
             wounds: 0,
             leylines: 0,
+            bonus_points: 0,
             prompt_queue: vec![],
         }
     }

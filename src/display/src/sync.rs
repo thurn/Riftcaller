@@ -25,7 +25,7 @@ use protos::spelldawn::{
     ActionTrackerView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
 };
 use rules::mana::ManaPurpose;
-use rules::{flags, mana};
+use rules::{flags, mana, queries};
 use {adapters, assets};
 
 use crate::{button_prompt, card_sync, interface, positions, tutorial_display};
@@ -96,7 +96,7 @@ fn player_view(game: &GameState, side: Side) -> PlayerView {
                 Side::Champion => CharacterPreset::Champion,
             })),
         }),
-        score: Some(ScoreView { score: game.player(side).score }),
+        score: Some(ScoreView { score: queries::score(game, side) }),
         mana: Some(ManaView {
             base_mana: mana::get(game, side, ManaPurpose::BaseMana),
             bonus_mana: mana::get(game, side, ManaPurpose::BonusForDisplay),
