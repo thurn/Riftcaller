@@ -176,3 +176,8 @@ pub fn slow() -> Ability {
         ),
     )
 }
+
+/// Text for cards which can only be played as a player's first action
+pub fn play_as_first_action_text() -> Ability {
+    Ability::new(text!["Play as your first", TextToken::ActionSymbol])
+}

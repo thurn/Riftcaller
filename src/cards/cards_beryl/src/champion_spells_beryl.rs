@@ -409,3 +409,31 @@ pub fn ethereal_incursion(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }
 }
+
+pub fn time_stop(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TimeStop,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::champion_card(meta, "time_stop"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![
+            abilities::play_as_first_action_text(),
+            Ability::new_with_delegate(
+                text![text![Gain, Actions(meta.upgrade(1, 2))], text!["Raid target room"]],
+                this::on_played(|g, s, played| {
+                    mutations::gain_action_points(g, s.side(), s.upgrade(1, 2))?;
+                    raids::initiate(g, s, played.target)
+                }),
+            ),
+        ],
+        config: CardConfigBuilder::new()
+            .can_play(requirements::play_as_first_action)
+            .custom_targeting(requirements::any_raid_target())
+            .build(),
+    }
+}

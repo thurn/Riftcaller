@@ -69,7 +69,7 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
                     GiveCursesStep::Finish
                 }
                 GiveCursesStep::Finish => {
-                    game.add_history_event(HistoryEvent::CursesGiven(data.quantity));
+                    game.add_history_event(HistoryEvent::GiveCurse(data.quantity));
                     game.state_machines.give_curses = None;
                     GiveCursesStep::Finish
                 }

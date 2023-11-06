@@ -49,7 +49,6 @@ pub struct PlayCardData {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ActivateAbilityStep {
     Begin,
-    AddToHistory,
     PayActionPoints,
     PayManaCost,
     PayCustomCost,

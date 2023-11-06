@@ -17,8 +17,9 @@ use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
-use game_data::game_history::{HistoryEvent, HistoryEventKind};
+use game_data::game_history::{AbilityActivationType, HistoryEvent, HistoryEventKind};
 use game_data::game_state::GameState;
+use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{CardId, RaidId, RoomId};
 use game_data::utils;
 use rules::flags;
@@ -146,4 +147,36 @@ pub fn any_outer_room_raid_target<T>() -> TargetRequirement<T> {
     TargetRequirement::TargetRoom(|game, _, room_id| {
         room_id.is_outer_room() && flags::is_valid_raid_target(game, room_id)
     })
+}
+
+/// A `CanPlay` function which only allows a card to be played as a player's
+/// first action in a turn.
+pub fn play_as_first_action(game: &GameState, _: CardId) -> bool {
+    fn is_game_action(event: &HistoryEvent) -> bool {
+        match event {
+            HistoryEvent::GainManaAction
+            | HistoryEvent::DrawCardAction(_)
+            | HistoryEvent::RemoveCurseAction
+            | HistoryEvent::DispelEvocationAction => true,
+            HistoryEvent::PlayCard(_, _, initiated_by)
+                if *initiated_by == InitiatedBy::GameAction =>
+            {
+                true
+            }
+            HistoryEvent::ActivateAbility(_, _, activation)
+                if *activation == AbilityActivationType::GameAction =>
+            {
+                true
+            }
+            HistoryEvent::RaidBegin(e) if e.data == InitiatedBy::GameAction => true,
+            HistoryEvent::CardProgress(_, _, initiated_by)
+                if *initiated_by == InitiatedBy::GameAction =>
+            {
+                true
+            }
+            _ => false,
+        }
+    }
+
+    !history::current_turn(game).any(is_game_action)
 }

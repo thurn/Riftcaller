@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use anyhow::Result;
 use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
@@ -22,7 +23,7 @@ use rules::queries;
 
 /// Starts a new raid from a card ability associated with the provided [Scope]
 /// and [CardTarget] room.
-pub fn initiate(game: &mut GameState, scope: Scope, target: CardTarget) -> anyhow::Result<()> {
+pub fn initiate(game: &mut GameState, scope: Scope, target: CardTarget) -> Result<()> {
     raid_state::initiate_with_callback(
         game,
         target.room_id()?,

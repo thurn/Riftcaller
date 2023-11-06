@@ -297,3 +297,21 @@ fn ethereal_incursion() {
     assert!(!g.user.data.raid_active());
     assert!(!g.user.cards.room_defenders(RoomId::Vault)[0].is_face_up())
 }
+
+#[test]
+fn time_stop() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.create_and_play_with_target(CardName::TimeStop, RoomId::Vault);
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().actions(), 4);
+}
+
+#[test]
+fn time_stop_cannot_play_second() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.gain_mana();
+    let id = g.add_to_hand(CardName::TimeStop);
+    assert!(g
+        .play_card_with_result(id, g.user_id(), test_helpers::target_room(RoomId::Vault))
+        .is_err());
+}

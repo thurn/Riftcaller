@@ -21,8 +21,8 @@ use adapters::ServerCardId;
 use game_data::card_definition::Resonance;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue};
-use protos::spelldawn::CardIdentifier;
+use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue, RoomId};
+use protos::spelldawn::{card_target, CardIdentifier, CardTarget};
 use ulid::Ulid;
 
 use crate::test_game_client::ClientCard;
@@ -55,6 +55,13 @@ pub struct WeaponStats {
     pub attack: AttackValue,
     pub boost_cost: ManaValue,
     pub boost: AttackValue,
+}
+
+/// Creates a [CardTarget] to target a given room.
+pub fn target_room(room_id: RoomId) -> Option<CardTarget> {
+    Some(CardTarget {
+        card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(room_id))),
+    })
 }
 
 /// Returns the basic mana cost to play a card with the stats in [WeaponStats]

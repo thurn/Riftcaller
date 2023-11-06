@@ -16,7 +16,7 @@ use anyhow::Result;
 use game_data::card_definition::{AbilityType, Cost};
 use game_data::delegate_data::{AbilityActivated, ActivateAbilityEvent};
 use game_data::game_actions::CardTarget;
-use game_data::game_history::HistoryEvent;
+use game_data::game_history::{AbilityActivationType, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::AbilityId;
@@ -72,8 +72,7 @@ fn evaluate_step(
     activate: ActivateAbilityData,
 ) -> Result<ActivateAbilityStep> {
     match activate.step {
-        ActivateAbilityStep::Begin => Ok(ActivateAbilityStep::AddToHistory),
-        ActivateAbilityStep::AddToHistory => add_to_history(game, activate),
+        ActivateAbilityStep::Begin => Ok(ActivateAbilityStep::PayActionPoints),
         ActivateAbilityStep::PayActionPoints => pay_action_points(game, activate),
         ActivateAbilityStep::PayManaCost => pay_mana_cost(game, activate),
         ActivateAbilityStep::PayCustomCost => pay_custom_cost(game, activate),
@@ -81,20 +80,23 @@ fn evaluate_step(
     }
 }
 
-fn add_to_history(
-    game: &mut GameState,
-    activate: ActivateAbilityData,
-) -> Result<ActivateAbilityStep> {
-    game.add_history_event(HistoryEvent::ActivateAbility(activate.ability_id, activate.target));
-    Ok(ActivateAbilityStep::PayActionPoints)
-}
-
 fn pay_action_points(
     game: &mut GameState,
     activate: ActivateAbilityData,
 ) -> Result<ActivateAbilityStep> {
-    let cost = get_cost(game, activate)?;
-    mutations::spend_action_points(game, activate.ability_id.side(), cost.actions)?;
+    let actions = get_cost(game, activate)?.actions;
+
+    game.add_history_event(HistoryEvent::ActivateAbility(
+        activate.ability_id,
+        activate.target,
+        if actions > 0 {
+            AbilityActivationType::GameAction
+        } else {
+            AbilityActivationType::FreeAction
+        },
+    ));
+
+    mutations::spend_action_points(game, activate.ability_id.side(), actions)?;
     Ok(ActivateAbilityStep::PayManaCost)
 }
 

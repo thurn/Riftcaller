@@ -202,7 +202,7 @@ pub async fn handle_move_card(
         ServerCardId::CardId(card_id) => card_id,
         _ => fail!("Expected standard CardId"),
     };
-    handle_game_action(database, data, &GameAction::MoveCard(card_id)).await
+    handle_game_action(database, data, &GameAction::MoveSelectorCard(card_id)).await
 }
 
 fn card_target(target: &Option<protos::spelldawn::CardTarget>) -> game_actions::CardTarget {

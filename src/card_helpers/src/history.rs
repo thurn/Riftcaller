@@ -49,7 +49,7 @@ pub fn played_this_turn(game: &GameState, card_id: CardId) -> bool {
 /// Does not include the current event.
 pub fn abilities_activated_this_turn(game: &GameState) -> impl Iterator<Item = AbilityId> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::ActivateAbility(id, _) = h {
+        if let HistoryEvent::ActivateAbility(id, _, _) = h {
             Some(*id)
         } else {
             None
@@ -87,7 +87,7 @@ pub fn minions_summoned_this_turn(
     game: &GameState,
 ) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::MinionSummoned(event) = h {
+        if let HistoryEvent::MinionSummon(event) = h {
             Some(event)
         } else {
             None
@@ -101,7 +101,7 @@ pub fn minions_approached_this_turn(
     game: &GameState,
 ) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::MinionApproached(event) = h {
+        if let HistoryEvent::MinionApproach(event) = h {
             Some(event)
         } else {
             None
@@ -115,7 +115,7 @@ pub fn minions_encountered_this_turn(
     game: &GameState,
 ) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::MinionEncountered(event) = h {
+        if let HistoryEvent::MinionEncounter(event) = h {
             Some(event)
         } else {
             None

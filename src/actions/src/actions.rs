@@ -79,7 +79,7 @@ pub fn handle_game_action(
         }
         GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
-        GameAction::MoveCard(card_id) => move_card_action(game, user_side, *card_id),
+        GameAction::MoveSelectorCard(card_id) => move_card_action(game, user_side, *card_id),
         GameAction::RaidAction(action) => raid_state::run(game, Some(*action)),
         GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
         GameAction::Undo => handle_undo_action(game, user_side),

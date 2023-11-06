@@ -279,6 +279,7 @@ pub enum CardName {
     Keensight,
     ShieldOfTheFlames,
     EtherealIncursion,
+    TimeStop,
 }
 
 impl CardName {

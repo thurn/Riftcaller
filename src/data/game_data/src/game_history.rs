@@ -24,6 +24,15 @@ use crate::game_state::TurnData;
 use crate::game_updates::InitiatedBy;
 use crate::primitives::{AbilityId, CardId, CurseCount, ProgressValue, RoomId};
 
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
+pub enum AbilityActivationType {
+    /// Activated ability had an action point cost and thus counts as a full
+    /// game action.
+    GameAction,
+    /// Activated ability did not have an action point cost.
+    FreeAction,
+}
+
 /// Records a single event which happened during this game.
 #[derive(Debug, Clone, Serialize, Deserialize, EnumKind)]
 #[enum_kind(HistoryEventKind)]
@@ -40,17 +49,17 @@ pub enum HistoryEvent {
     /// [an ability of another card.
     PlayCard(CardId, CardTarget, InitiatedBy),
     /// A card ability was activated
-    ActivateAbility(AbilityId, CardTarget),
+    ActivateAbility(AbilityId, CardTarget, AbilityActivationType),
     /// A face-down card has been unveiled.
     UnveilCard(CardId),
     /// A raid was started, either via a card effect or the standard game action
     RaidBegin(RaidEvent<InitiatedBy>),
     /// A minion has been summoned during a raid.
-    MinionSummoned(RaidEvent<CardId>),
+    MinionSummon(RaidEvent<CardId>),
     /// A minion has been approached during a raid.
-    MinionApproached(RaidEvent<CardId>),
+    MinionApproach(RaidEvent<CardId>),
     /// A minion has been encountered during a raid.
-    MinionEncountered(RaidEvent<CardId>),
+    MinionEncounter(RaidEvent<CardId>),
     /// A weapon has been used on minion
     UseWeapon(RaidEvent<UsedWeapon>),
     /// A minion's combat ability has triggered
@@ -65,7 +74,7 @@ pub enum HistoryEvent {
     /// The Champion has been dealt damage
     DealDamage(u32),
     /// Curses have been given to the Champion player
-    CursesGiven(CurseCount),
+    GiveCurse(CurseCount),
 }
 
 impl HistoryEvent {
