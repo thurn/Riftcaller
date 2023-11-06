@@ -546,6 +546,13 @@ pub fn summon_minion(game: &mut GameState, card_id: CardId, costs: SummonMinion)
     Ok(())
 }
 
+/// Turn a minion card in play face down, if able.
+pub fn unsummon_minion(game: &mut GameState, card_id: CardId) -> Result<()> {
+    turn_face_down(game, card_id);
+    game.add_animation(|| GameAnimation::UnsummonMinion(card_id));
+    Ok(())
+}
+
 /// Discards `amount` cards from the top of the Overlord's deck.
 ///
 /// If insufficient cards are present, discards all available cards.

@@ -33,12 +33,21 @@ impl DebugCreateCardPanel {
         Self { user_side, metadata }
     }
 
-    fn button(&self, label: impl Into<String>, position: CardPosition) -> Button {
+    fn button(
+        &self,
+        label: impl Into<String>,
+        position: CardPosition,
+        turn_face_up: bool,
+    ) -> Button {
         Button::new(label)
             .action(
-                Panels::open(StandardPanel::AddToZone(position, self.metadata))
-                    .wait_to_load(true)
-                    .and_close(self.address()),
+                Panels::open(StandardPanel::AddToZone {
+                    position,
+                    metadata: self.metadata,
+                    turn_face_up,
+                })
+                .wait_to_load(true)
+                .and_close(self.address()),
             )
             .layout(Layout::new().margin(Edge::All, 8.px()))
     }
@@ -63,32 +72,47 @@ impl Component for DebugCreateCardPanel {
                             .justify_content(FlexJustify::Center)
                             .wrap(FlexWrap::Wrap),
                     )
-                    .child(self.button("Deck Top", CardPosition::DeckTop(self.user_side)))
-                    .child(self.button("Hand", CardPosition::Hand(self.user_side)))
-                    .child(self.button("Discard Pile", CardPosition::DiscardPile(self.user_side)))
                     .child(self.button(
-                        "Sanctum",
-                        CardPosition::Room(RoomId::Sanctum, RoomLocation::Defender),
+                        "User Deck Top",
+                        CardPosition::DeckTop(self.user_side),
+                        false,
                     ))
-                    .child(
-                        self.button(
-                            "Vault",
-                            CardPosition::Room(RoomId::Vault, RoomLocation::Defender),
-                        ),
-                    )
+                    .child(self.button("User Hand", CardPosition::Hand(self.user_side), false))
                     .child(self.button(
-                        "Crypt",
+                        "User Discard",
+                        CardPosition::DiscardPile(self.user_side),
+                        false,
+                    ))
+                    .child(self.button(
+                        "Sanctum Defender",
+                        CardPosition::Room(RoomId::Sanctum, RoomLocation::Defender),
+                        true,
+                    ))
+                    .child(self.button(
+                        "Vault Defender",
+                        CardPosition::Room(RoomId::Vault, RoomLocation::Defender),
+                        true,
+                    ))
+                    .child(self.button(
+                        "Crypt Defender",
                         CardPosition::Room(RoomId::Crypts, RoomLocation::Defender),
+                        true,
                     ))
                     .child(self.button(
                         "Outer Defender",
                         CardPosition::Room(RoomId::RoomA, RoomLocation::Defender),
+                        true,
+                    ))
+                    .child(self.button(
+                        "Outer Face-Down Defender",
+                        CardPosition::Room(RoomId::RoomA, RoomLocation::Defender),
+                        false,
                     ))
                     .child(self.button(
                         "Outer Occupant",
                         CardPosition::Room(RoomId::RoomA, RoomLocation::Occupant),
-                    ))
-                    .child(self.button("Discard Pile", CardPosition::DiscardPile(self.user_side))),
+                        false,
+                    )),
             )
             .build()
     }

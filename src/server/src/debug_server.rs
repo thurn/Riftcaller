@@ -210,13 +210,15 @@ pub async fn handle_debug_action(
             })
             .await
         }
-        DebugAction::FilterCardList(position, metadata) => {
+        DebugAction::FilterCardList { position, metadata, turn_face_up } => {
             let input = request_fields.get("CardVariant").with_error(|| "Expected CardVariant")?;
             Ok(GameResponse::new(ClientData::propagate(data)).command(panels::update(
-                AddToZonePanel::new(input, *position, *metadata).build_panel().unwrap(),
+                AddToZonePanel::new(input, *position, *metadata, *turn_face_up)
+                    .build_panel()
+                    .unwrap(),
             )))
         }
-        DebugAction::AddToZone(variant, position) => {
+        DebugAction::AddToZone { variant, position, turn_face_up } => {
             debug_update_game(database, data, |game, _| {
                 let side = rules::get(*variant).side;
                 if let Some(card_id) = mutations::realize_top_of_deck(game, side, 1)?.get(0) {
@@ -227,11 +229,12 @@ pub async fn handle_debug_action(
                         mutations::draw_cards(game, side, 1)?;
                     } else if matches!(position, CardPosition::DiscardPile(_)) {
                         mutations::discard_card(game, *card_id)?;
-                    } else if matches!(position, CardPosition::Room(_, RoomLocation::Defender)) {
-                        mutations::move_card(game, *card_id, *position)?;
-                        mutations::turn_face_up(game, *card_id);
                     } else {
                         mutations::move_card(game, *card_id, *position)?;
+                    }
+
+                    if *turn_face_up {
+                        mutations::turn_face_up(game, *card_id);
                     }
                 }
                 Ok(())

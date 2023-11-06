@@ -122,8 +122,16 @@ pub enum DebugAction {
     AddWounds(WoundCount),
     RemoveWounds(WoundCount),
     /// Reads text in the card list search field and shows matching cards
-    FilterCardList(CardPosition, CardMetadata),
-    AddToZone(CardVariant, CardPosition),
+    FilterCardList {
+        position: CardPosition,
+        metadata: CardMetadata,
+        turn_face_up: bool,
+    },
+    AddToZone {
+        variant: CardVariant,
+        position: CardPosition,
+        turn_face_up: bool,
+    },
     ApplyScenario(DebugScenario),
     DebugUndo,
 }

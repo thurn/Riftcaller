@@ -278,6 +278,7 @@ pub enum CardName {
     Skyprism,
     Keensight,
     ShieldOfTheFlames,
+    EtherealIncursion,
 }
 
 impl CardName {

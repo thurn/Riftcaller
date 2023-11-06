@@ -1955,6 +1955,15 @@ message SetKeyboardShortcutsCommand {
     repeated KeyboardMapping mapping_list = 1;
 }
 
+// Plays a temporary flip animation for a card. This should *usually* be handled by
+// just changing the card's state, but in some cases we play the animation to help
+// add clarity about what is happening even though the card is still revealed (for
+// example, when a minion is unsummoned).
+message TurnFaceDownArenaAnimationCommand {
+    // Card to turn face down
+    CardIdentifier card_id = 1;
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -1980,6 +1989,7 @@ message GameCommand {
         ConditionalCommand conditional = 21;
         InfoZoomCommand info_zoom = 22;
         SetKeyboardShortcutsCommand set_keyboard_shortcuts = 23;
+        TurnFaceDownArenaAnimationCommand turn_face_down_arena_animation = 24;
     }
 }
 

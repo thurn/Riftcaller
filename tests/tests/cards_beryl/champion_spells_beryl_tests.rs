@@ -286,3 +286,18 @@ fn keensight() {
     g.click(Button::InitiateRaid);
     assert!(g.user.data.raid_active());
 }
+
+#[test]
+fn ethereal_incursion() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_down_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::EtherealIncursion, RoomId::Vault);
+    g.click_as_side(Button::Summon, Side::Overlord);
+    g.click(Button::NoWeapon);
+    assert!(!g.user.data.raid_active());
+    assert!(!g.user.cards.room_defenders(RoomId::Vault)[0].is_face_up())
+}

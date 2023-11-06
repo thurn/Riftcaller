@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -162,6 +163,11 @@ namespace Spelldawn.Game
       Registry.AssetService.AssignSprite(_faceDownArenaFrame, cardView.FaceDownArenaFrame);
       DestroyPosition = cardView.DestroyPosition;
 
+      if (_cardId.Index == 27)
+      {
+        Debug.Log($"Render: {name} RevealedToViewer {cardView.RevealedToViewer} with _isRevealed {_isRevealed}");
+      }
+
       if (cardView.RevealedToViewer)
       {
         if (_isRevealed)
@@ -198,6 +204,18 @@ namespace Spelldawn.Game
       movementEffect.transform.SetParent(transform);
       movementEffect.transform.localPosition = Vector3.zero;
       _movementEffect = movementEffect;
+    }
+
+    /// <summary>
+    /// Play a temporary flip animation to indicate some game action. Overwritten by the next state update.
+    /// </summary>
+    public IEnumerator PlayFlipAnimation()
+    {
+      var originalRotation = _cardFront.transform.localRotation;      
+      var sequence = Flip(_cardBack, _cardFront, () => {} , animate: true);
+      yield return sequence.WaitForCompletion();
+      _cardFront.transform.localRotation = originalRotation;
+      SetGameContext(GameContext.Arena);
     }
 
     public void ClearMovementEffect()

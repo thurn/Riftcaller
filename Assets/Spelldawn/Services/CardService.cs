@@ -186,6 +186,12 @@ namespace Spelldawn.Services
       return card;
     }
 
+    public IEnumerator HandleTurnFaceDownArenaAnimation(TurnFaceDownArenaAnimationCommand command)
+    {
+      var card = FindCard(command.CardId);
+      return card.PlayFlipAnimation();
+    }
+    
     public bool IsMouseOverPlayCardArea()
     {
       var ray = _registry.MainCamera.ScreenPointToRay(Input.mousePosition);

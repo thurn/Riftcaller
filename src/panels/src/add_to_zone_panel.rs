@@ -32,6 +32,7 @@ pub struct AddToZonePanel {
     filter_string: String,
     position: CardPosition,
     metadata: CardMetadata,
+    turn_face_up: bool,
 }
 
 impl AddToZonePanel {
@@ -39,8 +40,9 @@ impl AddToZonePanel {
         filter_string: impl Into<String>,
         position: CardPosition,
         metadata: CardMetadata,
+        turn_face_up: bool,
     ) -> Self {
-        Self { filter_string: filter_string.into(), position, metadata }
+        Self { filter_string: filter_string.into(), position, metadata, turn_face_up }
     }
 
     fn matches(&self, name: CardName) -> bool {
@@ -52,7 +54,11 @@ impl AddToZonePanel {
 
 impl Panel for AddToZonePanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::StandardPanel(StandardPanel::AddToZone(self.position, self.metadata))
+        PanelAddress::StandardPanel(StandardPanel::AddToZone {
+            position: self.position,
+            metadata: self.metadata,
+            turn_face_up: self.turn_face_up,
+        })
     }
 }
 
@@ -73,10 +79,11 @@ impl Component for AddToZonePanel {
                     .child(Text::new("Filter:").font_size(FontSize::Body))
                     .child(TextField::new("CardVariant").on_field_changed(
                         actions::with_request_fields(
-                            UserAction::Debug(DebugAction::FilterCardList(
-                                self.position,
-                                self.metadata,
-                            )),
+                            UserAction::Debug(DebugAction::FilterCardList {
+                                position: self.position,
+                                metadata: self.metadata,
+                                turn_face_up: self.turn_face_up,
+                            }),
                             vec!["CardVariant".to_string()],
                         ),
                     )),
@@ -87,10 +94,11 @@ impl Component for AddToZonePanel {
                 ListCell::new(n.displayed_name()).button(
                     Button::new("Add").action(
                         ActionBuilder::new()
-                            .action(UserAction::Debug(DebugAction::AddToZone(
-                                CardVariant { name: n, metadata: self.metadata },
-                                self.position,
-                            )))
+                            .action(UserAction::Debug(DebugAction::AddToZone {
+                                variant: CardVariant { name: n, metadata: self.metadata },
+                                position: self.position,
+                                turn_face_up: false,
+                            }))
                             .update(self.close()),
                     ),
                 )

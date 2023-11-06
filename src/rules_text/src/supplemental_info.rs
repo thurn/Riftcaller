@@ -164,6 +164,7 @@ fn token_description(token: TextTokenKind) -> Option<String> {
         TextTokenKind::Slow => entry("Slow", "Shield costs are doubled when using this weapon"),
         TextTokenKind::Wound => entry("Wound", "Reduces your maximum hand size by 1"),
         TextTokenKind::Evade => entry("Evade", "Bypass a minion without combat"),
+        TextTokenKind::Unsummon => entry("Unsummon", "Turn a minion face-down"),
         _ => None,
     }
 }

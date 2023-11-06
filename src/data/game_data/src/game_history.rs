@@ -45,6 +45,8 @@ pub enum HistoryEvent {
     UnveilCard(CardId),
     /// A raid was started, either via a card effect or the standard game action
     RaidBegin(RaidEvent<InitiatedBy>),
+    /// A minion has been summoned during a raid.
+    MinionSummoned(RaidEvent<CardId>),
     /// A minion has been approached during a raid.
     MinionApproached(RaidEvent<CardId>),
     /// A minion has been encountered during a raid.

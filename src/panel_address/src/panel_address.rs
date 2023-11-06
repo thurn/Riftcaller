@@ -67,7 +67,7 @@ pub enum StandardPanel {
     DeckEditorLoading,
     SetPlayerName(Side),
     DebugCreateCard(Side, CardMetadata),
-    AddToZone(CardPosition, CardMetadata),
+    AddToZone { position: CardPosition, metadata: CardMetadata, turn_face_up: bool },
     ApplyScenario,
 }
 

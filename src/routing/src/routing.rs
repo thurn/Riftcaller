@@ -60,8 +60,8 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         StandardPanel::DebugCreateCard(side, metadata) => {
             DebugCreateCardPanel::new(side, metadata).build_panel()
         }
-        StandardPanel::AddToZone(position, metadata) => {
-            AddToZonePanel::new("", position, metadata).build_panel()
+        StandardPanel::AddToZone { position, metadata, turn_face_up } => {
+            AddToZonePanel::new("", position, metadata, turn_face_up).build_panel()
         }
         StandardPanel::ApplyScenario => ApplyScenarioPanel::new().build_panel(),
     })

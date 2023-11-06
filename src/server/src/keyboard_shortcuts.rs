@@ -30,10 +30,11 @@ pub fn build(player: &PlayerState, _: Option<&GameState>) -> Command {
     if let PlayerActivity::PlayingGame(_, user_side) = activity {
         mapping_list.push(alt_command(
             "c",
-            Panels::open(StandardPanel::AddToZone(
-                CardPosition::Hand(user_side),
-                CardMetadata::default(),
-            ))
+            Panels::open(StandardPanel::AddToZone {
+                position: CardPosition::Hand(user_side),
+                metadata: CardMetadata::default(),
+                turn_face_up: false,
+            })
             .wait_to_load(true),
         ));
 

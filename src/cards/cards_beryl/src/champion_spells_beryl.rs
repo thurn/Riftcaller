@@ -374,3 +374,36 @@ pub fn keensight(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn ethereal_incursion(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::EtherealIncursion,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(2, 0)),
+        image: assets::champion_card(meta, "ethereal_incursion"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![Ability::new(text![
+            text!["Raid target room"],
+            text!["When this raid ends,", Unsummon, "all minions summoned during the raid"]
+        ])
+        .delegate(this::on_played(|g, s, play_card| raids::initiate(g, s, play_card.target)))
+        .delegate(delegates::on_raid_end(requirements::matching_raid, |g, s, outcome| {
+            Effects::new().ability_alert(s).apply(g);
+
+            let minions = history::minions_summoned_this_turn(g)
+                .filter(|event| event.raid_id == outcome.raid_id)
+                .map(|event| event.data)
+                .collect::<Vec<_>>();
+            for minion in minions {
+                mutations::unsummon_minion(g, minion)?;
+            }
+
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
+    }
+}

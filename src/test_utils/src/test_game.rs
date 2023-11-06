@@ -228,7 +228,8 @@ pub struct TestSide {
     in_discard_face_up: Vec<CardName>,
     riftcallers: Vec<CardName>,
     room_occupants: Vec<(RoomId, CardName)>,
-    room_defenders: Vec<(RoomId, CardName)>,
+    face_up_defenders: Vec<(RoomId, CardName)>,
+    face_down_defenders: Vec<(RoomId, CardName)>,
 }
 
 impl TestSide {
@@ -245,7 +246,8 @@ impl TestSide {
             in_discard_face_up: vec![],
             riftcallers: vec![],
             room_occupants: vec![],
-            room_defenders: vec![],
+            face_up_defenders: vec![],
+            face_down_defenders: vec![],
         }
     }
 
@@ -285,7 +287,13 @@ impl TestSide {
 
     /// Card to be inserted as a face-up defender of a room
     pub fn face_up_defender(mut self, room_id: RoomId, card: CardName) -> Self {
-        self.room_defenders.push((room_id, card));
+        self.face_up_defenders.push((room_id, card));
+        self
+    }
+
+    /// Card to be inserted as a face-down defender of a room
+    pub fn face_down_defender(mut self, room_id: RoomId, card: CardName) -> Self {
+        self.face_down_defenders.push((room_id, card));
         self
     }
 
@@ -355,13 +363,22 @@ impl TestSide {
                 false,
             );
         }
-        for (room_id, card_name) in &self.room_defenders {
+        for (room_id, card_name) in &self.face_up_defenders {
             overwrite_positions(
                 game,
                 Side::Overlord,
                 &[*card_name],
                 CardPosition::Room(*room_id, RoomLocation::Defender),
                 true,
+            );
+        }
+        for (room_id, card_name) in &self.face_down_defenders {
+            overwrite_positions(
+                game,
+                Side::Overlord,
+                &[*card_name],
+                CardPosition::Room(*room_id, RoomLocation::Defender),
+                false,
             );
         }
 

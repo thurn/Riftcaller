@@ -76,6 +76,7 @@ pub enum TextToken {
     Prismatic,
     Wound,
     Evade,
+    Unsummon,
 }
 
 impl TextToken {

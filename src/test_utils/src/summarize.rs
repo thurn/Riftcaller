@@ -288,6 +288,7 @@ impl Summarize for Command {
             Self::InfoZoom(_) => {}
             Self::SetCardMovementEffect(_) => {}
             Self::SetKeyboardShortcuts(_) => {}
+            Self::TurnFaceDownArenaAnimation(_) => {}
         }
     }
 }

@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use game_data::delegate_data::{
-    Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent, RequirementFn,
-    ShieldCardInfo, TransformationFn,
+    Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
+    RequirementFn, ShieldCardInfo, TransformationFn,
 };
 use game_data::primitives::{CardId, ManaValue, RaidId, ShieldValue};
 
@@ -51,6 +51,13 @@ pub fn on_raid_access_start(
     mutation: MutationFn<RaidEvent<()>>,
 ) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate { requirement, mutation })
+}
+
+pub fn on_raid_end(
+    requirement: RequirementFn<RaidEvent<RaidOutcome>>,
+    mutation: MutationFn<RaidEvent<RaidOutcome>>,
+) -> Delegate {
+    Delegate::RaidEnd(EventDelegate { requirement, mutation })
 }
 
 pub fn on_raid_successful(

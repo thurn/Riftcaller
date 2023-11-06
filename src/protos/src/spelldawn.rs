@@ -2120,12 +2120,23 @@ pub struct SetKeyboardShortcutsCommand {
     #[prost(message, repeated, tag = "1")]
     pub mapping_list: ::prost::alloc::vec::Vec<KeyboardMapping>,
 }
+/// Plays a temporary flip animation for a card. This should *usually* be
+/// handled by just changing the card's state, but in some cases we play the
+/// animation to help add clarity about what is happening even though the card
+/// is still revealed (for example, when a minion is unsummoned).
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TurnFaceDownArenaAnimationCommand {
+    /// Card to turn face down
+    #[prost(message, optional, tag = "1")]
+    pub card_id: ::core::option::Option<CardIdentifier>,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -2180,6 +2191,8 @@ pub mod game_command {
         InfoZoom(super::InfoZoomCommand),
         #[prost(message, tag = "23")]
         SetKeyboardShortcuts(super::SetKeyboardShortcutsCommand),
+        #[prost(message, tag = "24")]
+        TurnFaceDownArenaAnimation(super::TurnFaceDownArenaAnimationCommand),
     }
 }
 /// Metadata to include with logging for this client, e.g. for crash

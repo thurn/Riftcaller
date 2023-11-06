@@ -29,7 +29,8 @@ use protos::spelldawn::{
     CreateTokenCardCommand, DelayCommand, DisplayGameMessageCommand, FireProjectileCommand,
     FlexColor, GameMessageType, GameObjectMove, MoveGameObjectsCommand, MusicState,
     PlayEffectCommand, PlayEffectPosition, PlaySoundCommand, RoomVisitType,
-    SetCardMovementEffectCommand, SetMusicCommand, TimeValue, VisitRoomCommand,
+    SetCardMovementEffectCommand, SetMusicCommand, TimeValue, TurnFaceDownArenaAnimationCommand,
+    VisitRoomCommand,
 };
 use rules::CardDefinitionExt;
 use {adapters, assets};
@@ -80,6 +81,11 @@ pub fn render(
                 )
             }
         }
+        GameAnimation::UnsummonMinion(minion_id) => {
+            builder.push(Command::TurnFaceDownArenaAnimation(TurnFaceDownArenaAnimationCommand {
+                card_id: Some(adapters::card_identifier(*minion_id)),
+            }));
+        }
         GameAnimation::LevelUpRoom(room_id, initiated_by) => {
             if initiated_by.is_ability() || builder.user_side == Side::Champion {
                 // Animation is not required for the Overlord's own 'level up room' action, it's
@@ -89,7 +95,7 @@ pub fn render(
         }
         GameAnimation::InitiateRaid(room_id, initiated_by) => {
             if initiated_by.is_ability() || builder.user_side == Side::Overlord {
-                // Animation is not required for the Champion's own 'level up room' action, it's
+                // Animation is not required for the Champion's own 'initiate raid' action, it's
                 // handled by the client's optimistic animation system.
                 initiate_raid(builder, *room_id)
             }

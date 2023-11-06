@@ -163,6 +163,9 @@ namespace Spelldawn.Services
           case GameCommand.CommandOneofCase.SetKeyboardShortcuts:
             _registry.InputService.SetKeyboardShortcuts(command.SetKeyboardShortcuts.MappingList);
             break;
+          case GameCommand.CommandOneofCase.TurnFaceDownArenaAnimation:
+            yield return _registry.CardService.HandleTurnFaceDownArenaAnimation(command.TurnFaceDownArenaAnimation);
+            break;
           case GameCommand.CommandOneofCase.None:
             break;
           default:
