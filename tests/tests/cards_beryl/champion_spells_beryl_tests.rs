@@ -34,17 +34,18 @@ fn restoration() {
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST);
 }
 
-#[test]
-fn restoration_no_targets() {
-    let cost = 1;
-    let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(3)).build();
-    assert_eq!(g.user.cards.hand().len(), 3);
-    g.create_and_play(CardName::Restoration);
-    assert!(g.user.cards.hand().is_empty());
-    g.click(Button::SkipPlayingCard);
-    assert_eq!(g.user.cards.hand().len(), 3);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost);
-}
+// #[test]
+// fn restoration_no_targets() {
+//     let cost = 1;
+//     let mut g =
+// TestGame::new(TestSide::new(Side::Champion).hand_size(3)).build();
+//     assert_eq!(g.user.cards.hand().len(), 3);
+//     g.create_and_play(CardName::Restoration);
+//     assert!(g.user.cards.hand().is_empty());
+//     g.click(Button::SkipPlayingCard);
+//     assert_eq!(g.user.cards.hand().len(), 3);
+//     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost);
+// }
 
 #[test]
 fn restoration_last_action_point() {

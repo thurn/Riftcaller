@@ -331,12 +331,19 @@ impl Resonance {
     }
 }
 
+/// Predicate which provides additional restrictions on whether a card can
+/// be played. If not specified, normal rules apply.
+pub type CanPlay = fn(&GameState, CardId) -> bool;
+
 /// Individual card configuration; properties which are not universal for all
 /// cards
 #[derive(Debug, Default)]
 pub struct CardConfig {
     pub stats: CardStats,
     pub resonance: Option<Resonance>,
+    /// Additional constraints on whether this card can be played.
+    pub can_play: Option<CanPlay>,
+    /// Targeting requirements for this card, e.g. to target a room.
     pub custom_targeting: Option<TargetRequirement<CardId>>,
     /// A projectile to use when this card's combat ability triggers
     pub combat_projectile: Option<ProjectileData>,
@@ -348,8 +355,7 @@ pub struct CardConfig {
     ///
     /// It is never necessary to specify this value when building a card
     /// definition, we automatically write the correct variant to each
-    /// definition after construction. A value of 'None' is treated
-    /// identically to the standard variant.
+    /// definition after construction.
     pub metadata: CardMetadata,
 }
 
@@ -404,6 +410,11 @@ impl CardConfigBuilder {
 
     pub fn resonance(mut self, resonance: Resonance) -> Self {
         self.config.resonance = Some(resonance);
+        self
+    }
+
+    pub fn can_play(mut self, can_play: CanPlay) -> Self {
+        self.config.can_play = Some(can_play);
         self
     }
 
@@ -463,5 +474,9 @@ impl CardDefinition {
 
     pub fn is_minion(&self) -> bool {
         self.card_type == CardType::Minion
+    }
+
+    pub fn is_artifact(&self) -> bool {
+        self.card_type == CardType::Artifact
     }
 }

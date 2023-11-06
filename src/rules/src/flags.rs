@@ -113,6 +113,12 @@ pub fn can_take_play_card_action(
     card_id: CardId,
     target: CardTarget,
 ) -> bool {
+    if let Some(can_play) = game.card(card_id).definition().config.can_play {
+        if !can_play(game, card_id) {
+            return false;
+        }
+    }
+
     if let Some(GamePrompt::PlayCardBrowser(browser)) =
         game.player(card_id.side).prompt_queue.get(0)
     {

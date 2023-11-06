@@ -51,7 +51,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                 this::on_played(|g, s, _| {
                     let cards = g
                         .discard_pile(s.side())
-                        .filter(|c| c.definition().card_type == CardType::Artifact)
+                        .filter(|c| c.definition().is_artifact())
                         .map(|c| c.id)
                         .collect::<Vec<_>>();
 
@@ -85,7 +85,9 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                 ),
             ),
         ]),
-        config: CardConfig::default(),
+        config: CardConfigBuilder::new()
+            .can_play(|g, _| g.discard_pile(Side::Champion).any(|c| c.definition().is_artifact()))
+            .build(),
     }
 }
 
