@@ -47,6 +47,8 @@ pub enum Button {
     CloseIcon,
     StartBattle,
     ReturnToHand,
+    SelectForMultipart,
+    SwapCard,
 }
 
 pub trait TestInterfaceHelpers {
@@ -203,6 +205,8 @@ fn resolve_button(button: Button) -> String {
         Button::CloseIcon => icons::CLOSE,
         Button::StartBattle => "Start",
         Button::ReturnToHand => "Return",
+        Button::SelectForMultipart => "Select",
+        Button::SwapCard => "Swap",
     }
     .to_string()
 }

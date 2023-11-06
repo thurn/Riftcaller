@@ -69,7 +69,6 @@ pub enum RaidStep {
     ChampionScoreEvent(ScoredCard),
     ScoreEvent(ScoredCard),
     MoveToScoredPosition(ScoredCard),
-    CheckForPointsVictory,
     StartRazingCard(CardId, ManaValue),
     RazeCard(CardId, ManaValue),
     FinishRaid,

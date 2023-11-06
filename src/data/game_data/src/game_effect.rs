@@ -49,6 +49,12 @@ pub enum GameEffect {
     /// Prevent *up to* this quantity of incoming curses if there is an active
     /// curse event.
     PreventCurses(CurseCount),
+    /// Adds a card to the 'side' player's 'prompt_selected_cards' list.
+    SelectCardForPrompt(Side, CardId),
+    /// Swap a card's position with the last card in the 'side' player's
+    /// 'prompt_selected_cards' list. Returns an error if no card is selected.
+    /// Removes the chosen card from the 'prompt_selected_cards' list.
+    SwapWithSelected(Side, CardId),
 }
 
 impl GameEffect {

@@ -125,5 +125,11 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
             .build()
         }
         ButtonPromptContext::Card(_) => None,
+        ButtonPromptContext::CardToGiveToOpponent => {
+            GameInstructions::new("Select card to give opponent").build()
+        }
+        ButtonPromptContext::CardToTakeFromOpponent => {
+            GameInstructions::new("Select card to take from opponent").build()
+        }
     }
 }

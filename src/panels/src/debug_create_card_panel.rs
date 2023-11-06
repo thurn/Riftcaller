@@ -112,6 +112,12 @@ impl Component for DebugCreateCardPanel {
                         "Outer Occupant",
                         CardPosition::Room(RoomId::RoomA, RoomLocation::Occupant),
                         false,
+                    ))
+                    .child(self.button("User Scored", CardPosition::Scored(self.user_side), false))
+                    .child(self.button(
+                        "Opponent Scored",
+                        CardPosition::Scored(self.user_side.opponent()),
+                        false,
                     )),
             )
             .build()

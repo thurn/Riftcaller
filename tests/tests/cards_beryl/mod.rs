@@ -16,3 +16,4 @@ mod allies_beryl_tests;
 mod artifacts_beryl_tests;
 mod champion_spells_beryl_tests;
 mod evocations_beryl_tests;
+mod overlord_spells_beryl_tests;

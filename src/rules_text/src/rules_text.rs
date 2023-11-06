@@ -229,6 +229,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::LevelUp => "<b>Level Up</b>".to_string(),
         TextToken::Trap => "<b>Trap</b>".to_string(),
         TextToken::Curse => "curse".to_string(),
+        TextToken::Cursed => "cursed".to_string(),
         TextToken::Slow => "slow".to_string(),
         TextToken::Mortal => assets::resonance_string("mortal"),
         TextToken::Infernal => assets::resonance_string("infernal"),

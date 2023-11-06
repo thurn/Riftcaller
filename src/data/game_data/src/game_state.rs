@@ -62,7 +62,6 @@ pub struct ManaState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GamePlayerData {
     pub id: PlayerId,
-    pub schools: Vec<School>,
     pub mana_state: ManaState,
     pub actions: ActionCount,
     pub curses: CurseCount,
@@ -70,12 +69,22 @@ pub struct GamePlayerData {
     pub leylines: LeylineCount,
     pub bonus_points: PointsValue,
 
+    /// Schools for this player's deck, mostly used to determine which card
+    /// back & card frame assets get shown.
+    pub schools: Vec<School>,
+
     /// A queue of choices this player is facing related to game choices.
     ///
     /// Choices are resolved in a first-in, first-out manner, i.e. the prompt at
     /// index 0 is presented to the user first. All prompts here take precedence
     /// over choices deriving from game rules such as raid actions.
     pub prompt_queue: Vec<GamePrompt>,
+
+    /// Storage area for cards this player has selected. Sometimes we show
+    /// multi-step prompts like "select 2 artifacts" and need a place to store
+    /// the state while that is evaluating, and this seems like a fine enough
+    /// place to put it.
+    pub prompt_selected_cards: Vec<CardId>,
 }
 
 impl GamePlayerData {
@@ -83,14 +92,15 @@ impl GamePlayerData {
     pub fn new(id: PlayerId, schools: Vec<School>) -> Self {
         Self {
             id,
-            schools,
             mana_state: ManaState::default(),
             actions: 0,
             curses: 0,
             wounds: 0,
             leylines: 0,
             bonus_points: 0,
+            schools,
             prompt_queue: vec![],
+            prompt_selected_cards: vec![],
         }
     }
 }
@@ -482,6 +492,19 @@ impl GameState {
     /// Cards in a player's discard pile, in an unspecified order
     pub fn discard_pile(&self, side: Side) -> impl Iterator<Item = &CardState> {
         self.cards(side).iter().filter(|c| c.position().in_discard_pile())
+    }
+
+    /// Cards (owned by either player) in a player's score area, in an
+    /// unspecified order
+    pub fn score_area(&self, side: Side) -> impl Iterator<Item = &CardState> {
+        self.cards(Side::Overlord)
+            .iter()
+            .filter(move |c| c.position() == CardPosition::Scored(side))
+            .chain(
+                self.cards(Side::Champion)
+                    .iter()
+                    .filter(move |c| c.position() == CardPosition::Scored(side)),
+            )
     }
 
     /// Returns Overlord cards defending a given room in an unspecified order

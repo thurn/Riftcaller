@@ -91,6 +91,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::backup_plan);
+    DEFINITIONS.insert(cards_beryl::overlord_spells_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);
@@ -104,6 +105,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_overlord_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_310);
+    DEFINITIONS.insert(cards_test::test_cards::test_scheme_420);
     DEFINITIONS.insert(cards_test::test_cards::test_project_2_cost_3_raze);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_1);

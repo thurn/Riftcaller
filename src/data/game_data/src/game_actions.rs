@@ -100,6 +100,10 @@ pub enum ButtonPromptContext {
     /// the current incoming curse count and display only the lower of the two
     /// values.
     SacrificeToPreventCurses(CardId, CurseCount),
+    /// Prompt for a card to give to the opponent
+    CardToGiveToOpponent,
+    /// Prompt for a card to take from the opponent
+    CardToTakeFromOpponent,
 }
 
 impl ButtonPromptContext {

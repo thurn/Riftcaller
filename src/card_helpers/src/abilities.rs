@@ -39,6 +39,11 @@ pub fn when_upgraded(metadata: CardMetadata, ability: Ability) -> Option<Ability
     metadata.is_upgraded.then_some(ability)
 }
 
+/// Returns the provided [Ability] only for non-upgraded versions of a card.
+pub fn when_not_upgraded(metadata: CardMetadata, ability: Ability) -> Option<Ability> {
+    (!metadata.is_upgraded).then_some(ability)
+}
+
 pub fn silent_ability(ability: Ability) -> Ability {
     Ability { text: text![], ..ability }
 }
@@ -186,7 +191,7 @@ pub fn silent_can_play(predicate: TransformationFn<CardId, Flag>) -> Ability {
     Ability::new_with_delegate(text![], this::can_play(predicate))
 }
 
-/// Text for cards which can only be played as a player's first action
+/// Ability for cards which can only be played as a player's first action
 pub fn play_as_first_action() -> Ability {
     fn is_game_action(event: &HistoryEvent) -> bool {
         match event {
@@ -219,5 +224,13 @@ pub fn play_as_first_action() -> Ability {
         this::can_play(|g, _, _, current| {
             current.with_override(!history::current_turn(g).any(is_game_action))
         }),
+    )
+}
+
+/// Ability for cards that can only be played if the Champion is cursed
+pub fn play_only_if_champion_cursed() -> Ability {
+    Ability::new_with_delegate(
+        text!["Play only if the Champion is", Cursed],
+        this::can_play(|g, _, _, current| current.with_override(g.champion.curses > 0)),
     )
 }

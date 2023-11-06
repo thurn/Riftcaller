@@ -228,6 +228,7 @@ pub struct TestSide {
     in_discard_face_up: Vec<CardName>,
     riftcallers: Vec<CardName>,
     room_occupants: Vec<(RoomId, CardName)>,
+    in_score_area: Vec<CardName>,
     face_up_defenders: Vec<(RoomId, CardName)>,
     face_down_defenders: Vec<(RoomId, CardName)>,
 }
@@ -246,6 +247,7 @@ impl TestSide {
             in_discard_face_up: vec![],
             riftcallers: vec![],
             room_occupants: vec![],
+            in_score_area: vec![],
             face_up_defenders: vec![],
             face_down_defenders: vec![],
         }
@@ -282,6 +284,12 @@ impl TestSide {
     /// Card to be inserted face-up into the player's discard pile.
     pub fn in_discard_face_up(mut self, card: CardName) -> Self {
         self.in_discard_face_up.push(card);
+        self
+    }
+
+    /// Overlord card to be inserted face-up into the player's score area.
+    pub fn in_score_area(mut self, card: CardName) -> Self {
+        self.in_score_area.push(card);
         self
     }
 
@@ -363,6 +371,13 @@ impl TestSide {
                 false,
             );
         }
+        overwrite_positions(
+            game,
+            Side::Overlord,
+            &self.in_score_area,
+            CardPosition::Scored(self.side),
+            true,
+        );
         for (room_id, card_name) in &self.face_up_defenders {
             overwrite_positions(
                 game,

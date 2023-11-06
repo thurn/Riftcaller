@@ -18,6 +18,7 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::game_updates::InitiatedBy;
 use rules::{deal_damage, mana, mutations};
+use with_error::WithError;
 
 use crate::mana::ManaPurpose;
 
@@ -53,6 +54,20 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             if let Some(curses) = &mut game.state_machines.give_curses {
                 curses.quantity = curses.quantity.saturating_sub(quantity);
             }
+        }
+        GameEffect::SelectCardForPrompt(side, card_id) => {
+            game.player_mut(side).prompt_selected_cards.push(card_id);
+        }
+        GameEffect::SwapWithSelected(side, card_id) => {
+            let source_position = game.card(card_id).position();
+            let target = game
+                .player_mut(side)
+                .prompt_selected_cards
+                .pop()
+                .with_error(|| "No card selected")?;
+            let target_position = game.card(target).position();
+            mutations::move_card(game, card_id, target_position)?;
+            mutations::move_card(game, target, source_position)?;
         }
     }
 

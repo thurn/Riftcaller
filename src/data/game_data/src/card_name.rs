@@ -97,8 +97,10 @@ pub enum CardName {
     // Cards for use in tests
     TestChampionSpell,
     TestOverlordSpell,
-    /// Scheme requiring 3 levels to score 15 points
+    /// Scheme requiring 3 progress to score 10 points
     TestScheme3_10,
+    /// Scheme requiring 4 progress to score 20 points
+    TestScheme4_20,
     /// Blank project with a mana cost of 2
     TestProject2Cost3Raze,
     /// Minion with 5 health, 3 mana cost, and an "end the raid" ability.
@@ -280,6 +282,7 @@ pub enum CardName {
     ShieldOfTheFlames,
     EtherealIncursion,
     TimeStop,
+    EquivalentExchange,
 }
 
 impl CardName {

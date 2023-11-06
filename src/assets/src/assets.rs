@@ -347,6 +347,16 @@ pub fn champion_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
     }
 }
 
+pub fn overlord_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
+    Sprite {
+        address: format!(
+            "Cards/{}/{}.png",
+            if meta.full_art { "OverlordFullArt" } else { "Overlord" },
+            name.into()
+        ),
+    }
+}
+
 pub fn misc_card(name: impl Into<String>, full_art: bool) -> Sprite {
     Sprite {
         address: format!(

@@ -69,6 +69,7 @@ pub enum TextToken {
     LevelUp,
     Trap,
     Curse,
+    Cursed,
     Slow,
     Mortal,
     Abyssal,

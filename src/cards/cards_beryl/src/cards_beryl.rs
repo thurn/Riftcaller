@@ -16,3 +16,4 @@ pub mod allies_beryl;
 pub mod artifacts_beryl;
 pub mod champion_spells_beryl;
 pub mod evocations_beryl;
+pub mod overlord_spells_beryl;

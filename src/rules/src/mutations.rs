@@ -85,6 +85,15 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     let old_position = game.card(card_id).position();
     game.move_card_internal(card_id, new_position);
 
+    if new_position.in_score_pile() {
+        if queries::score(game, Side::Overlord) >= game_constants::POINTS_TO_WIN_GAME {
+            game_over(game, Side::Overlord)?;
+        }
+        if queries::score(game, Side::Champion) >= game_constants::POINTS_TO_WIN_GAME {
+            game_over(game, Side::Champion)?;
+        }
+    }
+
     if old_position.in_deck() && new_position.in_hand() {
         dispatch::invoke_event(game, DrawCardEvent(card_id))?;
     }
@@ -446,9 +455,6 @@ pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) ->
             )?;
 
             move_card(game, card_id, CardPosition::Scored(Side::Overlord))?;
-            if queries::score(game, Side::Overlord) >= game_constants::POINTS_TO_WIN_GAME {
-                game_over(game, Side::Overlord)?;
-            }
         }
     }
 

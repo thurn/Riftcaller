@@ -24,8 +24,8 @@ pub struct GameInstructions {
 }
 
 impl GameInstructions {
-    pub fn new(text: String) -> Self {
-        Self { text, metatext: None }
+    pub fn new(text: impl Into<String>) -> Self {
+        Self { text: text.into(), metatext: None }
     }
 
     pub fn metatext(mut self, metatext: impl Into<String>) -> Self {
