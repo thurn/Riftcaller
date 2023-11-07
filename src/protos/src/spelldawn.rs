@@ -859,6 +859,24 @@ pub mod object_position {
         HandStorage(super::ObjectPositionHandStorage),
     }
 }
+/// Object to highlight on info zoom
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct InfoZoomHighlight {
+    #[prost(oneof = "info_zoom_highlight::Highlight", tags = "1, 2")]
+    pub highlight: ::core::option::Option<info_zoom_highlight::Highlight>,
+}
+/// Nested message and enum types in `InfoZoomHighlight`.
+pub mod info_zoom_highlight {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Highlight {
+        #[prost(message, tag = "1")]
+        Card(super::CardIdentifier),
+        #[prost(enumeration = "super::RoomIdentifier", tag = "2")]
+        Room(i32),
+    }
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RevealedCardView {
@@ -905,6 +923,11 @@ pub struct RevealedCardView {
     /// indicating the relationship between these two cards.
     #[prost(message, optional, tag = "12")]
     pub point_to_parent: ::core::option::Option<CardIdentifier>,
+    /// An object to highlight when the info zoom (hover/long press information
+    /// about this card) is being displayed. Typically used to indicate the
+    /// result of a choice, such as a card target.
+    #[prost(message, optional, tag = "13")]
+    pub info_zoom_highlight: ::core::option::Option<InfoZoomHighlight>,
 }
 /// Custom VFX & SFX to apply to a card
 #[allow(clippy::derive_partial_eq_without_eq)]

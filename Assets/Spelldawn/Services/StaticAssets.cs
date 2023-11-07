@@ -24,6 +24,9 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
 
+    [SerializeField] Sprite _selector = null!;
+    public Sprite Selector => _selector;
+
     [SerializeField] AudioClip _drawCardStartSound = null!;
     public void PlayDrawCardStartSound() => Play(_drawCardStartSound);
 

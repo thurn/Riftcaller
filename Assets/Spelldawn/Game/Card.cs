@@ -86,6 +86,7 @@ namespace Spelldawn.Game
     ObjectPosition? _moveTargetPosition;
     ISet<RoomIdentifier>? _validRoomTargets;
     ObjectPosition? _releasePosition;
+    InfoZoomHighlight? _infoZoomHighlight;
     Node? _supplementalInfo;
     ArrowService.Type? _arrowOnDrag;
     CardIdentifier? _pointToParent;
@@ -138,6 +139,8 @@ namespace Spelldawn.Game
     public Transform BottomRightAnchor => _bottomRightAnchor;
 
     public Node? SupplementalInfo => _supplementalInfo;
+    
+    public InfoZoomHighlight? InfoZoomHighlight => _infoZoomHighlight;
 
     public ObjectDisplay ContainedObjects => Errors.CheckNotNull(_containedObjectsDisplay);
 
@@ -261,6 +264,7 @@ namespace Spelldawn.Game
       result._validRoomTargets = _validRoomTargets;
       result._releasePosition = _releasePosition;
       result._supplementalInfo = _supplementalInfo;
+      result._infoZoomHighlight = _infoZoomHighlight;
       result.Registry = Registry;
       return result;
     }
@@ -596,6 +600,11 @@ namespace Spelldawn.Game
       if (revealed.SupplementalInfo is { } info)
       {
         _supplementalInfo = info;
+      }
+
+      if (revealed.InfoZoomHighlight is { } highlight)
+      {
+        _infoZoomHighlight = highlight;
       }
 
       _cardBack.gameObject.SetActive(value: false);

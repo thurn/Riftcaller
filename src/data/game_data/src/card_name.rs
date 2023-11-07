@@ -283,6 +283,7 @@ pub enum CardName {
     EtherealIncursion,
     TimeStop,
     EquivalentExchange,
+    Foebane,
 }
 
 impl CardName {

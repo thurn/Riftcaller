@@ -211,6 +211,7 @@ MonoBehaviour:
   _cardStaging: {fileID: 0}
   _revealedCardsBrowserSmall: {fileID: 0}
   _revealedCardsBrowserLarge: {fileID: 0}
+  _cardChoiceBrowser: {fileID: 0}
   _cardBrowser: {fileID: 0}
   _longPressBrowser: {fileID: 0}
   _gameMessage: {fileID: 0}
@@ -252,6 +253,8 @@ MonoBehaviour:
   _studioManager: {fileID: 5046173552731427907}
   _userRiftcallerDisplay: {fileID: 0}
   _opponentRiftcallerDisplay: {fileID: 0}
+  _browserDragTarget: {fileID: 0}
+  _handStorage: {fileID: 0}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,6 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
+  _selector: {fileID: 21300000, guid: 233e3eea4b54b48a19f41f8586435ca3, type: 3}
   _drawCardStartSound: {fileID: 8300000, guid: 27f97d5953dd5894fa03564e99188e3e, type: 3}
   _drawCardSound: {fileID: 8300000, guid: 51d8f7fd07199b64a9d3cd8102d9eb01, type: 3}
   _addManaSound: {fileID: 8300000, guid: befca752ef9765249867ab9ec20613de, type: 3}

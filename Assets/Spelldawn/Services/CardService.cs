@@ -39,6 +39,7 @@ namespace Spelldawn.Services
     [SerializeField] Card? _optimisticCard;
     SpriteAddress _userCardBack = null!;
     SpriteAddress _opponentCardBack = null!;
+    GameObject? _currentTargetHighlight;
 
     readonly List<Sequence> _optimisticAnimations = new();
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
@@ -246,8 +247,21 @@ namespace Spelldawn.Services
     {
       ClearInfoZoom();
       var showOnLeft = Input.mousePosition.x > Screen.width / 2.0;
-      
       var zoomed = InfoCopy(card);
+      
+      if (zoomed.InfoZoomHighlight != null)
+      {
+        switch (zoomed.InfoZoomHighlight.HighlightCase)
+        {
+          case InfoZoomHighlight.HighlightOneofCase.Card:
+            showOnLeft = ShowCardHighlight(zoomed.InfoZoomHighlight.Card);
+            break;
+          case InfoZoomHighlight.HighlightOneofCase.Room:
+            // TODO: Implement this.
+            throw new NotImplementedException();
+        }
+      }      
+      
       if (zoomed.SupplementalInfo != null)
       {
         zoomed.SupplementalInfo.Style.Margin = MasonUtil.GroupDip(32f, -120f, 0f, -120f);
@@ -290,6 +304,17 @@ namespace Spelldawn.Services
       _registry.DocumentService.RenderInfoZoom(node);
     }
 
+    bool ShowCardHighlight(CardIdentifier cardIdentifier)
+    {
+      var target = FindCard(cardIdentifier);
+      _currentTargetHighlight = new GameObject("Card Info Zoom Highlight");
+      var spriteRenderer = _currentTargetHighlight.AddComponent<SpriteRenderer>();
+      spriteRenderer.sprite = _registry.StaticAssets.Selector;
+      spriteRenderer.transform.eulerAngles = new Vector3(90, 0, 0);
+      spriteRenderer.transform.position = target.transform.position;
+      return _registry.MainCamera.WorldToScreenPoint(target.transform.position).x > Screen.width / 2.0;
+    }
+
     /// <summary>
     /// Creates a clone of a card for display at large size
     /// </summary>
@@ -308,6 +333,10 @@ namespace Spelldawn.Services
     {
       _registry.DocumentService.ClearInfoZoom();
       _registry.Studio.ClearSubject();
+      if (_currentTargetHighlight)
+      {
+        Destroy(_currentTargetHighlight);
+      }
     }
 
     public IEnumerator HandleDestroyCard(CardIdentifier cardId, bool animate)

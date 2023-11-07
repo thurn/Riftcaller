@@ -895,6 +895,14 @@ message ObjectPosition {
     }
 }
 
+// Object to highlight on info zoom
+message InfoZoomHighlight {
+    oneof highlight {
+        CardIdentifier card = 1;
+        RoomIdentifier room = 2;
+    }
+}
+
 message RevealedCardView {
     SpriteAddress card_frame = 1;
     SpriteAddress title_background = 2;
@@ -933,6 +941,11 @@ message RevealedCardView {
     // rendered from this card to its parent while it is being dragged,
     // indicating the relationship between these two cards.
     CardIdentifier point_to_parent = 12;
+
+    // An object to highlight when the info zoom (hover/long press information
+    // about this card) is being displayed. Typically used to indicate the
+    // result of a choice, such as a card target.
+    InfoZoomHighlight info_zoom_highlight = 13;
 }
 
 enum CardPrefab {

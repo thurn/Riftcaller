@@ -149,6 +149,13 @@ pub fn any_outer_room_raid_target<T>() -> TargetRequirement<T> {
     })
 }
 
+/// A [TargetRequirement] targeting rooms with defenders.
+pub fn any_room_with_defenders<T>() -> TargetRequirement<T> {
+    TargetRequirement::TargetRoom(|game, _, room_id| {
+        game.defenders_unordered(room_id).next().is_some()
+    })
+}
+
 /// A `CanPlay` function which only allows a card to be played as a player's
 /// first action in a turn.
 pub fn play_as_first_action(game: &GameState, _: CardId) -> bool {

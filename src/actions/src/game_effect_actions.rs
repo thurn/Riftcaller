@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
+use game_data::card_state::CardChoice;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
@@ -68,6 +69,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             let target_position = game.card(target).position();
             mutations::move_card(game, card_id, target_position)?;
             mutations::move_card(game, target, source_position)?;
+        }
+        GameEffect::SetChosenCard { source, target } => {
+            game.card_mut(source).set_card_choice(CardChoice::Card(target));
         }
     }
 

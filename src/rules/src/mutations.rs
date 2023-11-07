@@ -99,7 +99,7 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     }
 
     if !old_position.in_play() && new_position.in_play() {
-        game.card_mut(card_id).clear_all_counters();
+        game.card_mut(card_id).clear_arena_state();
         dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
     }
 

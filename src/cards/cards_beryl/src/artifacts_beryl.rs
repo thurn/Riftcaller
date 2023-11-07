@@ -14,7 +14,7 @@
 
 use card_helpers::effects::Effects;
 use card_helpers::{
-    abilities, costs, delegates, history, in_play, raids, requirements, text, this,
+    abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -25,7 +25,8 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
-use game_data::game_actions::CardTarget;
+use game_data::game_actions::{CardTarget, PromptChoice};
+use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
@@ -33,6 +34,7 @@ use game_data::primitives::{
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
+use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::{mana, mutations, queries, CardDefinitionExt};
@@ -528,6 +530,51 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
             .resonance(Resonance::infernal())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(9))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles02"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn foebane(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Foebane,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(8),
+        image: assets::champion_card(meta, "foebane"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![Ability::new_with_delegate(
+            text![TextElement::NamedTrigger(Play, text!["Choose a minion in target room"])],
+            this::on_played(|g, s, played| {
+                show_prompt::with_choices(
+                    g,
+                    s,
+                    g.defenders_unordered(played.target.room_id()?)
+                        .map(|card| {
+                            PromptChoice::new()
+                                .effect(GameEffect::SetChosenCard {
+                                    source: s.card_id(),
+                                    target: card.id,
+                                })
+                                .anchor_card(card.id)
+                        })
+                        .collect(),
+                );
+                Ok(())
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .custom_targeting(requirements::any_room_with_defenders())
+            .base_attack(1)
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(meta.upgrade(1, 2)))
+            .resonance(Resonance::infernal())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(17))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles02"))
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
             )

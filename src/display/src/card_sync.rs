@@ -17,7 +17,7 @@ use adapters::CustomCardIdentifier;
 use constants::game_constants;
 use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
-use game_data::card_state::CardState;
+use game_data::card_state::{CardChoice, CardState};
 use game_data::card_view_context::CardViewContext;
 use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::game_state::GameState;
@@ -27,8 +27,9 @@ use game_data::primitives::{
 };
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
-    ArrowTargetRoom, CardEffects, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
-    FlexColor, NoTargeting, PlayInRoom, RevealedCardView, RulesText, TargetingArrow,
+    info_zoom_highlight, ArrowTargetRoom, CardEffects, CardIcons, CardPrefab, CardTargeting,
+    CardTitle, CardView, FlexColor, InfoZoomHighlight, NoTargeting, PlayInRoom, RevealedCardView,
+    RulesText, TargetingArrow,
 };
 use rules::{flags, queries};
 use rules_text::{card_icons, supplemental_info};
@@ -240,7 +241,24 @@ fn revealed_card_view(
         card_move_target: context
             .query_or(None, |game, card| card_selector::move_target(builder, game, card)),
         point_to_parent: None,
+        info_zoom_highlight: context.card().and_then(info_zoom_highlight),
     })
+}
+
+fn info_zoom_highlight(card: &CardState) -> Option<InfoZoomHighlight> {
+    match card.card_choice() {
+        CardChoice::Card(card_id) => Some(InfoZoomHighlight {
+            highlight: Some(info_zoom_highlight::Highlight::Card(adapters::card_identifier(
+                *card_id,
+            ))),
+        }),
+        CardChoice::Room(room_id) => Some(InfoZoomHighlight {
+            highlight: Some(info_zoom_highlight::Highlight::Room(adapters::room_identifier(
+                *room_id,
+            ))),
+        }),
+        _ => None,
+    }
 }
 
 fn revealed_ability_card_view(
@@ -278,6 +296,7 @@ fn revealed_ability_card_view(
         supplemental_info: supplemental_info::build(context, Some(ability_id.index)),
         card_move_target: None,
         point_to_parent: Some(adapters::card_identifier(ability_id.card_id)),
+        info_zoom_highlight: None,
     })
 }
 
@@ -303,6 +322,7 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
         supplemental_info: supplemental_info::build(context, None),
         card_move_target: None,
         point_to_parent: Some(adapters::card_identifier(card_id)),
+        info_zoom_highlight: None,
     })
 }
 
@@ -398,6 +418,7 @@ fn action_card_view(
             supplemental_info: None,
             card_move_target: None,
             point_to_parent: None,
+            info_zoom_highlight: None,
         })),
         create_position: if builder.state.animate { character_position.clone() } else { None },
         destroy_position: character_position,
@@ -465,6 +486,7 @@ fn status_card_view(builder: &ResponseBuilder, side: Side, card: StatusCard) -> 
             supplemental_info: None,
             card_move_target: None,
             point_to_parent: None,
+            info_zoom_highlight: None,
         })),
         create_position: Some(positions::for_custom_card(
             positions::character(builder, side),

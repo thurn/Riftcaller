@@ -15,7 +15,7 @@
 use anyhow::Result;
 
 use crate::card_definition::CardDefinition;
-use crate::card_state::{CardData, CardState};
+use crate::card_state::CardState;
 use crate::game_state::GameState;
 use crate::primitives::CardId;
 
@@ -38,13 +38,6 @@ impl<'a> CardViewContext<'a> {
         match self {
             Self::Default(_) => None,
             Self::Game(_, _, card) => Some(&card),
-        }
-    }
-
-    pub fn card_data(&self) -> Option<&CardData> {
-        match self {
-            Self::Default(_) => None,
-            Self::Game(_, _, card) => Some(&card.data),
         }
     }
 
