@@ -381,3 +381,61 @@ fn shield_of_the_flames() {
     assert!(g.user.cards.discard_pile().contains_card(CardName::ShieldOfTheFlames));
     g.click(Button::EndRaid);
 }
+
+#[test]
+fn foebane() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionShield1Infernal),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::Foebane, RoomId::Vault);
+    g.click(Button::ChooseOnPlay);
+    g.initiate_raid(RoomId::Vault);
+    let mana = g.me().mana();
+    g.click(Button::Evade);
+    assert_eq!(g.me().mana(), mana - 1);
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn foebane_do_not_use() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionShield1Infernal),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::Foebane, RoomId::Vault);
+    g.click(Button::ChooseOnPlay);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoPromptAction);
+    g.click(Button::NoWeapon);
+    assert!(!g.user.data.raid_active());
+}
+
+#[test]
+fn foebane_insufficient_mana() {
+    let cost = 8;
+    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(cost))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionShield1Infernal),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::Foebane, RoomId::Vault);
+    g.click(Button::ChooseOnPlay);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    assert!(!g.user.data.raid_active());
+}
+
+#[test]
+fn foebane_cannot_play_without_target() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let id = g.add_to_hand(CardName::Foebane);
+    assert!(g
+        .play_card_with_result(id, g.user_id(), test_helpers::target_room(RoomId::Vault))
+        .is_err());
+}

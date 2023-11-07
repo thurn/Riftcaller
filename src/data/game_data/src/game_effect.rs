@@ -57,6 +57,8 @@ pub enum GameEffect {
     SwapWithSelected(Side, CardId),
     /// Sets the 'source' card's chosen card to 'target'.
     SetChosenCard { source: CardId, target: CardId },
+    /// Evade the current raid encounter, jumping to the next raid state
+    EvadeCurrentEncounter,
 }
 
 impl GameEffect {

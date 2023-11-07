@@ -234,3 +234,27 @@ pub fn play_only_if_champion_cursed() -> Ability {
         this::can_play(|g, _, _, current| current.with_override(g.champion.curses > 0)),
     )
 }
+
+/// Ability to choose a minion on play and store that choice for later.
+pub fn choose_a_minion_in_target_room() -> Ability {
+    Ability::new_with_delegate(
+        text![TextElement::NamedTrigger(Play, text!["Choose a minion in target room"])],
+        this::on_played(|g, s, played| {
+            show_prompt::with_choices(
+                g,
+                s,
+                g.defenders_unordered(played.target.room_id()?)
+                    .map(|card| {
+                        PromptChoice::new()
+                            .effect(GameEffect::SetChosenCard {
+                                source: s.card_id(),
+                                target: card.id,
+                            })
+                            .anchor_card(card.id)
+                    })
+                    .collect(),
+            );
+            Ok(())
+        }),
+    )
+}

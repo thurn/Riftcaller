@@ -16,7 +16,7 @@ use anyhow::Result;
 use game_data::card_state::CardChoice;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
-use game_data::game_state::GameState;
+use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::game_updates::InitiatedBy;
 use rules::{deal_damage, mana, mutations};
 use with_error::WithError;
@@ -72,6 +72,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::SetChosenCard { source, target } => {
             game.card_mut(source).set_card_choice(CardChoice::Card(target));
+        }
+        GameEffect::EvadeCurrentEncounter => {
+            mutations::apply_raid_jump(game, RaidJumpRequest::EvadeCurrentMinion);
         }
     }
 

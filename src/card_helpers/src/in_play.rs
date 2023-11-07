@@ -76,6 +76,12 @@ pub fn on_raid_started(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidStart(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
+/// A delegate which fires when a card is face up & in play when a minion is
+/// approached.
+pub fn on_minion_approached(mutation: MutationFn<RaidEvent<CardId>>) -> Delegate {
+    delegates::on_minion_approached(requirements::face_up_in_play, mutation)
+}
+
 /// Delegate which fires when the 'access' phase of a raid begins.
 pub fn on_raid_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate {

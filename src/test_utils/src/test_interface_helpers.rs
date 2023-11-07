@@ -49,6 +49,8 @@ pub enum Button {
     ReturnToHand,
     SelectForMultipart,
     SwapCard,
+    ChooseOnPlay,
+    Evade,
 }
 
 pub trait TestInterfaceHelpers {
@@ -207,6 +209,8 @@ fn resolve_button(button: Button) -> String {
         Button::ReturnToHand => "Return",
         Button::SelectForMultipart => "Select",
         Button::SwapCard => "Swap",
+        Button::ChooseOnPlay => "Choose",
+        Button::Evade => "Evade",
     }
     .to_string()
 }

@@ -34,9 +34,9 @@ use game_data::primitives::{
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
-use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use game_data::utils;
+use rules::mana::ManaPurpose;
 use rules::{mana, mutations, queries, CardDefinitionExt};
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
@@ -548,26 +548,31 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Beyond,
         rarity: Rarity::Rare,
-        abilities: vec![Ability::new_with_delegate(
-            text![TextElement::NamedTrigger(Play, text!["Choose a minion in target room"])],
-            this::on_played(|g, s, played| {
-                show_prompt::with_choices(
-                    g,
-                    s,
-                    g.defenders_unordered(played.target.room_id()?)
-                        .map(|card| {
-                            PromptChoice::new()
-                                .effect(GameEffect::SetChosenCard {
-                                    source: s.card_id(),
-                                    target: card.id,
-                                })
-                                .anchor_card(card.id)
-                        })
-                        .collect(),
-                );
-                Ok(())
-            }),
-        )],
+        abilities: vec![
+            abilities::choose_a_minion_in_target_room(),
+            Ability::new_with_delegate(
+                text!["You may evade that minion by paying its shield cost"],
+                in_play::on_minion_approached(|g, s, event| {
+                    if Some(event.data) == g.card(s.card_id()).card_choice().chosen_card() {
+                        let shield = queries::shield(g, event.data, None);
+                        if mana::get(g, s.side(), ManaPurpose::PayForTriggeredAbility) >= shield {
+                            show_prompt::with_choices(
+                                g,
+                                s,
+                                vec![
+                                    PromptChoice::new()
+                                        .effect(GameEffect::LoseMana(s.side(), shield))
+                                        .effect(GameEffect::EvadeCurrentEncounter),
+                                    PromptChoice::new().effect(GameEffect::Continue),
+                                ],
+                            )
+                        }
+                    }
+                    Ok(())
+                }),
+            ),
+            abilities::encounter_boost(),
+        ],
         config: CardConfigBuilder::new()
             .custom_targeting(requirements::any_room_with_defenders())
             .base_attack(1)
