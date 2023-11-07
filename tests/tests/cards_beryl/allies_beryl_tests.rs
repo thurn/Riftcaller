@@ -116,6 +116,13 @@ pub fn stalwart_protector_activate() {
 }
 
 #[test]
+pub fn stalwart_protector_cannot_activate_with_no_curses() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let id = g.create_and_play(CardName::StalwartProtector);
+    assert!(g.activate_ability_with_result(id, 1).is_err());
+}
+
+#[test]
 pub fn dawnwarden() {
     let (cost, gained) = (1, 2);
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();

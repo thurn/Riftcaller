@@ -512,11 +512,11 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             ActivatedAbility::new(text![Evade, "an", Infernal, "minion"], costs::sacrifice())
-                .can_activate(|g, _| {
-                    utils::is_true(|| {
+                .delegate(this::can_activate(|g, _, _, flag| {
+                    flag.with_override(utils::is_true(|| {
                         Some(queries::resonance(g, raids::active_encounter(g)?)?.infernal)
-                    })
-                })
+                    }))
+                }))
                 .delegate(this::on_activated(|g, _, _| {
                     mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
                     Ok(())

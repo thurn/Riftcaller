@@ -195,11 +195,7 @@ pub enum AbilityType {
     Standard,
 
     /// Activated abilities have an associated cost in order to be used.
-    Activated {
-        cost: Cost<AbilityId>,
-        target_requirement: TargetRequirement<AbilityId>,
-        can_activate: Option<CanActivate>,
-    },
+    Activated { cost: Cost<AbilityId>, target_requirement: TargetRequirement<AbilityId> },
 }
 
 /// Abilities are the unit of action in Spelldawn. Their behavior is provided by
@@ -232,28 +228,16 @@ pub struct ActivatedAbility {
     text: Vec<TextElement>,
     cost: Cost<AbilityId>,
     target_requirement: TargetRequirement<AbilityId>,
-    can_activate: Option<CanActivate>,
     delegates: Vec<Delegate>,
 }
 
 impl ActivatedAbility {
     pub fn new(text: Vec<TextElement>, cost: Cost<AbilityId>) -> Self {
-        Self {
-            text,
-            cost,
-            target_requirement: TargetRequirement::None,
-            can_activate: None,
-            delegates: vec![],
-        }
+        Self { text, cost, target_requirement: TargetRequirement::None, delegates: vec![] }
     }
 
     pub fn target_requirement(mut self, requirement: TargetRequirement<AbilityId>) -> Self {
         self.target_requirement = requirement;
-        self
-    }
-
-    pub fn can_activate(mut self, can_activate: CanActivate) -> Self {
-        self.can_activate = Some(can_activate);
         self
     }
 
@@ -267,7 +251,6 @@ impl ActivatedAbility {
             ability_type: AbilityType::Activated {
                 cost: self.cost,
                 target_requirement: self.target_requirement,
-                can_activate: self.can_activate,
             },
             text: self.text,
             delegates: self.delegates,

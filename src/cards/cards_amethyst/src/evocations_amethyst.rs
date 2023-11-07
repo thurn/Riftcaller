@@ -117,7 +117,6 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
                         room_id.is_inner_room()
                             & &history::rooms_raided_this_turn(g).all(|r| r != room_id)
                     }),
-                    can_activate: None,
                 },
                 text: text![
                     text!["Raid an", InnerRoom, "you have not raided this turn"],
@@ -155,7 +154,6 @@ pub fn magical_resonator(_: CardMetadata) -> CardDefinition {
                 ability_type: AbilityType::Activated {
                     cost: Cost { mana: None, actions: 1, custom_cost: once_per_turn() },
                     target_requirement: TargetRequirement::None,
-                    can_activate: None,
                 },
                 text: text![text![TakeMana(3)], text!["Use this ability once per turn"]],
                 delegates: vec![on_activated(|g, s, _| {

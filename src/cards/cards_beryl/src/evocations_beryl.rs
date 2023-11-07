@@ -170,7 +170,9 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
             ],
             costs::sacrifice(),
         )
-        .can_activate(|g, _| raids::active_encounter(g).is_some())
+        .delegate(this::can_activate(|g, _, _, flag| {
+            flag.with_override(raids::active_encounter(g).is_some())
+        }))
         .delegate(this::on_activated(|g, s, _| {
             mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
             mutations::lose_action_points_if_able(

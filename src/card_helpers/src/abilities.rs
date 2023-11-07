@@ -85,11 +85,7 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
 /// Activated ability to take `N` stored mana from this card by paying a cost
 pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability {
     Ability {
-        ability_type: AbilityType::Activated {
-            cost,
-            target_requirement: TargetRequirement::None,
-            can_activate: None,
-        },
+        ability_type: AbilityType::Activated { cost, target_requirement: TargetRequirement::None },
         text: text![TakeMana(N)],
         delegates: vec![on_activated(|g, _s, activated| {
             mutations::take_stored_mana(g, activated.card_id(), N, OnZeroStored::Sacrifice)
@@ -159,7 +155,6 @@ pub fn sacrifice_this() -> AbilityType {
     AbilityType::Activated {
         cost: Cost { mana: None, actions: 0, custom_cost: costs::sacrifice_cost() },
         target_requirement: TargetRequirement::None,
-        can_activate: None,
     }
 }
 

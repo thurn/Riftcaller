@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use game_data::delegate_data::{
-    AbilityActivated, CardPlayed, Delegate, DiscardedCard, EventDelegate, Flag, MutationFn,
-    QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
+    AbilityActivated, CanActivateAbility, CardPlayed, Delegate, DiscardedCard, EventDelegate, Flag,
+    MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{AttackValue, CardId, HasAbilityId, HasCardId};
@@ -39,6 +39,11 @@ pub fn on_played(mutation: MutationFn<CardPlayed>) -> Delegate {
 /// A [Delegate] which triggers when an ability is activated
 pub fn on_activated(mutation: MutationFn<AbilityActivated>) -> Delegate {
     Delegate::ActivateAbility(EventDelegate { requirement: ability, mutation })
+}
+
+/// A [Delegate] which controls whether an ability can be activated.
+pub fn can_activate(transformation: TransformationFn<CanActivateAbility, Flag>) -> Delegate {
+    Delegate::CanActivateAbility(QueryDelegate { requirement: ability, transformation })
 }
 
 /// A delegate which triggers when this card is moved from a deck *or* hand to a

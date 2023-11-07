@@ -385,6 +385,18 @@ pub struct ShieldCardInfo {
     pub weapon_id: Option<CardId>,
 }
 
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+pub struct CanActivateAbility {
+    pub ability_id: AbilityId,
+    pub target: CardTarget,
+}
+
+impl HasAbilityId for CanActivateAbility {
+    fn ability_id(&self) -> AbilityId {
+        self.ability_id
+    }
+}
+
 /// The core of the delegate pattern, used to identify which event or which
 /// query this delegate wishes to respond to. Each enum variant here
 /// automatically gets an associated struct value generated for it by the
@@ -484,7 +496,7 @@ pub enum Delegate {
     /// Query whether a given card can currently be played.
     CanPlayCard(QueryDelegate<CardId, Flag>),
     /// Query whether a given ability can currently be activated.
-    CanActivateAbility(QueryDelegate<AbilityId, Flag>),
+    CanActivateAbility(QueryDelegate<CanActivateAbility, Flag>),
     /// Can a raid currently be started on the indicated room?
     CanInitiateRaid(QueryDelegate<RoomId, Flag>),
     /// Can the indicated player currently level up the indicated room?

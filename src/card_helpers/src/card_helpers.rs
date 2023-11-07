@@ -67,11 +67,7 @@ pub fn riftcaller_cost() -> Cost<CardId> {
 
 /// An [AbilityType] for an ability which costs 1 action and has no target.
 pub fn activate_for_action() -> AbilityType {
-    AbilityType::Activated {
-        cost: costs::actions(1),
-        target_requirement: TargetRequirement::None,
-        can_activate: None,
-    }
+    AbilityType::Activated { cost: costs::actions(1), target_requirement: TargetRequirement::None }
 }
 
 /// RequirementFn which checks if the [Side] parameter is [Side::Champion]

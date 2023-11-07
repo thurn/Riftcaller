@@ -19,9 +19,9 @@ use constants::game_constants;
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery, CanLevelUpCardQuery,
-    CanLevelUpRoomQuery, CanPlayCardQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery,
-    CanUseNoWeaponQuery, Flag,
+    CanActivateAbility, CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery,
+    CanLevelUpCardQuery, CanLevelUpRoomQuery, CanPlayCardQuery, CanTakeDrawCardActionQuery,
+    CanTakeGainManaActionQuery, CanUseNoWeaponQuery, Flag,
 };
 use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
 use game_data::game_state::{GamePhase, GameState, TurnState};
@@ -163,15 +163,11 @@ pub fn can_take_activate_ability_action(
 ) -> bool {
     let card = game.card(ability_id.card_id);
 
-    let AbilityType::Activated { cost, target_requirement, can_activate } =
+    let AbilityType::Activated { cost, target_requirement } =
         &crate::ability_definition(game, ability_id).ability_type
     else {
         return false;
     };
-
-    if !can_activate.map_or(true, |can_activate_fn| can_activate_fn(game, ability_id)) {
-        return false;
-    }
 
     if !matching_targeting(game, target_requirement, ability_id, target) {
         return false;
@@ -201,8 +197,12 @@ pub fn can_take_activate_ability_action(
         can_activate &= cost <= mana::get(game, side, ManaPurpose::ActivateAbility(ability_id));
     }
 
-    dispatch::perform_query(game, CanActivateAbilityQuery(ability_id), Flag::new(can_activate))
-        .into()
+    dispatch::perform_query(
+        game,
+        CanActivateAbilityQuery(CanActivateAbility { ability_id, target }),
+        Flag::new(can_activate),
+    )
+    .into()
 }
 
 /// Returns true if the `ability_id` ability could be activated with a valid
