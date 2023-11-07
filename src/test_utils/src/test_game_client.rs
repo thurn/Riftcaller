@@ -29,9 +29,9 @@ use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation, CommandList,
     GameMessageType, GameObjectIdentifier, NoTargeting, ObjectPosition, ObjectPositionBrowser,
-    ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem, ObjectPositionRaid,
-    ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom, PlayInRoom,
-    PlayerName, PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionCharacter, ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem,
+    ObjectPositionRaid, ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
+    PlayInRoom, PlayerName, PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
 
@@ -475,6 +475,18 @@ impl ClientCards {
 
     pub fn opponent_display_shelf(&self) -> Vec<&ClientCard> {
         self.in_position(Position::Riftcaller(ObjectPositionRiftcallers {
+            owner: PlayerName::Opponent.into(),
+        }))
+    }
+
+    pub fn score_area(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Character(ObjectPositionCharacter {
+            owner: PlayerName::User.into(),
+        }))
+    }
+
+    pub fn opponent_score_area(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Character(ObjectPositionCharacter {
             owner: PlayerName::Opponent.into(),
         }))
     }

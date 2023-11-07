@@ -193,7 +193,11 @@ namespace Spelldawn.Services
         ObjectPosition.PositionOneofCase.CharacterContainer =>
           _registry.CharacterPositionForPlayer(position.CharacterContainer.Owner),
         ObjectPosition.PositionOneofCase.IntoCard =>
-          _registry.CardService.FindCard(position.IntoCard.CardId).ContainedObjects,
+          // Parent card may not exist, e.g. because it has been shuffled into the
+          // deck. In this situation, we fall back to the user character.
+          _registry.CardService.HasCard(position.IntoCard.CardId) ?
+          _registry.CardService.FindCard(position.IntoCard.CardId).ContainedObjects :
+          _registry.CharacterPositionForPlayer(PlayerName.User),
         ObjectPosition.PositionOneofCase.Revealed => position.Revealed.Size switch
         {
           RevealedCardsBrowserSize.Small => _registry.RevealedCardsBrowserSmall,

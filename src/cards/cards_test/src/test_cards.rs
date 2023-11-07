@@ -14,7 +14,7 @@
 
 //! Test cards
 
-use card_helpers::costs::actions;
+use card_helpers::costs::{actions, scheme};
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, text, *};
 use game_data::card_definition::{
@@ -64,10 +64,10 @@ pub fn test_champion_spell(_: CardMetadata) -> CardDefinition {
 pub fn test_scheme_310(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestScheme3_10,
-        cost: scheme_cost(),
+        cost: scheme(),
         card_type: CardType::Scheme,
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 3, points: 10 })
+            .scheme_points(SchemePoints { progress_requirement: 3, points: 10 })
             .build(),
         ..test_overlord_spell(metadata)
     }
@@ -76,10 +76,10 @@ pub fn test_scheme_310(metadata: CardMetadata) -> CardDefinition {
 pub fn test_scheme_420(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestScheme4_20,
-        cost: scheme_cost(),
+        cost: scheme(),
         card_type: CardType::Scheme,
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 4, points: 20 })
+            .scheme_points(SchemePoints { progress_requirement: 4, points: 20 })
             .build(),
         ..test_overlord_spell(metadata)
     }

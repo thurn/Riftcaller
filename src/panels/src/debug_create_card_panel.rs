@@ -113,11 +113,11 @@ impl Component for DebugCreateCardPanel {
                         CardPosition::Room(RoomId::RoomA, RoomLocation::Occupant),
                         false,
                     ))
-                    .child(self.button("User Scored", CardPosition::Scored(self.user_side), false))
+                    .child(self.button("User Scored", CardPosition::Scored(self.user_side), true))
                     .child(self.button(
                         "Opponent Scored",
                         CardPosition::Scored(self.user_side.opponent()),
-                        false,
+                        true,
                     )),
             )
             .build()

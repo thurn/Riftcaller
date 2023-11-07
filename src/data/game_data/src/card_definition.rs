@@ -135,8 +135,8 @@ impl AttackBoost {
 /// Scoring information about a card
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
 pub struct SchemePoints {
-    /// Required number of level counters to score this card
-    pub level_requirement: ProgressValue,
+    /// Required number of progress counters to score this card
+    pub progress_requirement: ProgressValue,
     /// Number of points received for scoring this card
     pub points: PointsValue,
 }

@@ -152,6 +152,8 @@ namespace Spelldawn.Services
     public SpriteAddress GetCardBack(PlayerName playerName) =>
       Errors.CheckNotDefault(playerName) == PlayerName.User ? _userCardBack : _opponentCardBack;
 
+    public bool HasCard(CardIdentifier cardId) => _cards.ContainsKey(cardId);
+
     public Card FindCard(CardIdentifier cardId)
     {
       Errors.CheckState(_cards.ContainsKey(cardId), $"Card Id {cardId} not found");

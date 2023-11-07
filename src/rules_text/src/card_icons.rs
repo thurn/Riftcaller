@@ -70,7 +70,7 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
         } else {
             definition.config.stats.scheme_points.map(|points| CardIcon {
                 background: Some(assets::card_icon(CardIconType::LevelRequirement)),
-                text: Some(points.level_requirement.to_string()),
+                text: Some(points.progress_requirement.to_string()),
                 background_scale: assets::icon_background_scale(CardIconType::LevelRequirement),
             })
         };

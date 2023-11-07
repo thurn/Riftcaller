@@ -163,8 +163,8 @@ pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))
 }
 
-// Shuffles the provided `cards` into the `side` player's deck, clearing their
-// revealed state for both players.
+/// Shuffles the provided `cards` into the `side` player's deck, clearing their
+/// revealed state for both players.
 pub fn shuffle_into_deck(game: &mut GameState, side: Side, cards: &[CardId]) -> Result<()> {
     move_cards(game, cards, CardPosition::DeckUnknown(side))?;
     for card_id in cards {
@@ -444,7 +444,7 @@ pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) ->
     game.card_mut(card_id).add_counters(CardCounter::Progress, amount);
     let card = game.card(card_id);
     if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {
-        if card.counters(CardCounter::Progress) >= scheme_points.level_requirement {
+        if card.counters(CardCounter::Progress) >= scheme_points.progress_requirement {
             turn_face_up(game, card_id);
             move_card(game, card_id, CardPosition::Scoring)?;
             game.add_animation(|| GameAnimation::ScoreCard(Side::Overlord, card_id));

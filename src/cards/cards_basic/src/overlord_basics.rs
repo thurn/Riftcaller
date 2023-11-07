@@ -14,6 +14,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_helpers::costs::scheme;
 use card_helpers::this::on_activated;
 use card_helpers::*;
 use game_data::card_definition::{
@@ -29,7 +30,7 @@ pub fn conspire(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Conspire,
         sets: vec![CardSetName::Basics],
-        cost: scheme_cost(),
+        cost: scheme(),
         image: rexard_images::spell(2, "SpellBook02_17"),
         card_type: CardType::Scheme,
         subtypes: vec![],
@@ -38,7 +39,7 @@ pub fn conspire(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 3, points: 10 })
+            .scheme_points(SchemePoints { progress_requirement: 3, points: 10 })
             .build(),
     }
 }
@@ -47,7 +48,7 @@ pub fn devise(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Devise,
         sets: vec![CardSetName::Basics],
-        cost: scheme_cost(),
+        cost: scheme(),
         image: rexard_images::spell(2, "SpellBook02_27"),
         card_type: CardType::Scheme,
         subtypes: vec![],
@@ -56,7 +57,7 @@ pub fn devise(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 4, points: 20 })
+            .scheme_points(SchemePoints { progress_requirement: 4, points: 20 })
             .build(),
     }
 }
@@ -65,7 +66,7 @@ pub fn machinate(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::Machinate,
         sets: vec![CardSetName::Basics],
-        cost: scheme_cost(),
+        cost: scheme(),
         image: rexard_images::spell(2, "SpellBook02_29"),
         card_type: CardType::Scheme,
         subtypes: vec![],
@@ -74,7 +75,7 @@ pub fn machinate(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 5, points: 30 })
+            .scheme_points(SchemePoints { progress_requirement: 5, points: 30 })
             .build(),
     }
 }

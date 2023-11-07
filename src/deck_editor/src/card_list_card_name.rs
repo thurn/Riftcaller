@@ -61,9 +61,10 @@ impl Component for CardListCardName {
         let definition = rules::get(self.variant);
         let cost = match (definition.cost.mana, definition.config.stats.scheme_points) {
             (Some(mana), _) => Some((mana.to_string(), CardIconType::Mana)),
-            (_, Some(scheme_points)) => {
-                Some((scheme_points.level_requirement.to_string(), CardIconType::LevelRequirement))
-            }
+            (_, Some(scheme_points)) => Some((
+                scheme_points.progress_requirement.to_string(),
+                CardIconType::LevelRequirement,
+            )),
             _ => None,
         };
 

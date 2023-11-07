@@ -64,3 +64,8 @@ pub fn once_per_turn() -> Option<CustomCost<AbilityId>> {
 pub fn actions(actions: ActionCount) -> Cost<AbilityId> {
     Cost { mana: None, actions, custom_cost: None }
 }
+
+/// [Cost] for a scheme card
+pub fn scheme() -> Cost<CardId> {
+    Cost { mana: None, actions: 1, custom_cost: None }
+}

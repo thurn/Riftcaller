@@ -93,6 +93,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::backup_plan);
     DEFINITIONS.insert(cards_beryl::overlord_spells_beryl::equivalent_exchange);
+    DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);

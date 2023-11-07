@@ -55,11 +55,6 @@ pub fn cost(mana: ManaValue) -> Cost<CardId> {
     Cost { mana: Some(mana), actions: 1, custom_cost: None }
 }
 
-/// [Cost] for a scheme card
-pub fn scheme_cost() -> Cost<CardId> {
-    Cost { mana: None, actions: 1, custom_cost: None }
-}
-
 /// [Cost] for a riftcaller card
 pub fn riftcaller_cost() -> Cost<CardId> {
     Cost { mana: None, actions: 0, custom_cost: None }

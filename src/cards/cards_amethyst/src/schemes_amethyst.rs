@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_helpers::costs::scheme;
 use card_helpers::{text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, SchemePoints,
@@ -31,7 +32,7 @@ pub fn gold_mine(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::GoldMine,
         sets: vec![CardSetName::Amethyst],
-        cost: scheme_cost(),
+        cost: scheme(),
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_08_b"),
         card_type: CardType::Scheme,
         subtypes: vec![],
@@ -47,7 +48,7 @@ pub fn gold_mine(_: CardMetadata) -> CardDefinition {
             })],
         }],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 4, points: 20 })
+            .scheme_points(SchemePoints { progress_requirement: 4, points: 20 })
             .build(),
     }
 }
@@ -56,7 +57,7 @@ pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ActivateReinforcements,
         sets: vec![CardSetName::Amethyst],
-        cost: scheme_cost(),
+        cost: scheme(),
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::Scheme,
         subtypes: vec![],
@@ -81,7 +82,7 @@ pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
             })],
         }],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 5, points: 30 })
+            .scheme_points(SchemePoints { progress_requirement: 5, points: 30 })
             .build(),
     }
 }
@@ -90,7 +91,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ResearchProject,
         sets: vec![CardSetName::Amethyst],
-        cost: scheme_cost(),
+        cost: scheme(),
         image: rexard_images::spell(1, "SpellBook01_03"),
         card_type: CardType::Scheme,
         subtypes: vec![],
@@ -118,7 +119,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
             ],
         }],
         config: CardConfigBuilder::new()
-            .scheme_points(SchemePoints { level_requirement: 3, points: 10 })
+            .scheme_points(SchemePoints { progress_requirement: 3, points: 10 })
             .build(),
     }
 }

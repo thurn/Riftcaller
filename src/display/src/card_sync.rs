@@ -85,13 +85,13 @@ pub fn activated_ability_cards(
     card: &CardState,
 ) -> Vec<CardView> {
     let mut result = vec![];
-    if card.side() != builder.user_side || !card.position().in_play() {
+    if card.side() != builder.user_side {
         return result;
     }
 
     let definition = rules::get(card.variant);
 
-    if card.is_face_down() {
+    if card.is_face_down() && card.position().in_play() {
         if builder.user_side == Side::Overlord && definition.card_type == CardType::Project {
             result.push(unveil_card_view(builder, game, card.id));
         }
@@ -102,13 +102,19 @@ pub fn activated_ability_cards(
     for (ability_index, ability) in definition.abilities.iter().enumerate() {
         if let AbilityType::Activated { target_requirement, .. } = &ability.ability_type {
             let ability_id = AbilityId::new(card.id, ability_index);
-            result.push(ability_card_view(
-                builder,
-                game,
-                ability_id,
-                card.variant.metadata.full_art,
-                Some(target_requirement),
-            ));
+            if card.position().in_play()
+                || flags::activated_ability_has_valid_targets(game, builder.user_side, ability_id)
+            {
+                // We show all abilities of cards in play, but otherwise only show them
+                // when they can be activated.
+                result.push(ability_card_view(
+                    builder,
+                    game,
+                    ability_id,
+                    card.variant.metadata.full_art,
+                    Some(target_requirement),
+                ));
+            }
         }
     }
     result

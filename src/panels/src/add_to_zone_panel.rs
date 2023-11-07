@@ -97,7 +97,7 @@ impl Component for AddToZonePanel {
                             .action(UserAction::Debug(DebugAction::AddToZone {
                                 variant: CardVariant { name: n, metadata: self.metadata },
                                 position: self.position,
-                                turn_face_up: false,
+                                turn_face_up: self.turn_face_up,
                             }))
                             .update(self.close()),
                     ),

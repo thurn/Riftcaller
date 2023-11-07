@@ -21,6 +21,8 @@ use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 
+use crate::text::TextElement;
+
 /// Describes function & cosmetic differences for a card with a given name.
 #[derive(
     PartialEq, Eq, Hash, Default, Debug, Copy, Clone, Serialize, Deserialize, PartialOrd, Ord,
@@ -37,6 +39,14 @@ impl CardMetadata {
             upgraded
         } else {
             normal
+        }
+    }
+
+    pub fn upgraded_only_text(&self, text: Vec<TextElement>) -> Vec<TextElement> {
+        if self.is_upgraded {
+            text
+        } else {
+            Vec::new()
         }
     }
 }
@@ -284,6 +294,7 @@ pub enum CardName {
     TimeStop,
     EquivalentExchange,
     Foebane,
+    EtherealForm,
 }
 
 impl CardName {
