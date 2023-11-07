@@ -83,8 +83,8 @@ pub enum GameAnimation {
     SummonMinion(CardId),
     /// A minion card has been turned face-down.
     UnsummonMinion(CardId),
-    /// The Overlord has leveled up a room
-    LevelUpRoom(RoomId, InitiatedBy),
+    /// The Overlord has progressed a room
+    ProgressRoom(RoomId, InitiatedBy),
     /// The Champion has initiated a raid on a room
     InitiateRaid(RoomId, InitiatedBy),
     /// Interaction between two cards during raid combat.

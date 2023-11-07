@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/action_tests.rs
-assertion_line: 344
+assertion_line: 333
 expression: "Summary::run(&response)"
 ---
 
@@ -306,7 +306,7 @@ channel_response:
     VisitRoom: 
         initiator: Opponent
         room_id: RoomA
-        visit_type: LevelUpRoom
+        visit_type: ProgressRoom
     UpdateGameView: 
         user: 
             side: Champion

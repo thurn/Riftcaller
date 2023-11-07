@@ -83,7 +83,7 @@ fn player_view(game: &GameState, side: Side) -> PlayerView {
         player_info: Some(PlayerInfo {
             valid_rooms_to_visit: match side {
                 Side::Overlord => enum_iterator::all::<RoomId>()
-                    .filter(|room_id| flags::can_take_level_up_room_action(game, side, *room_id))
+                    .filter(|room_id| flags::can_take_progress_action(game, side, *room_id))
                     .map(adapters::room_identifier)
                     .collect(),
                 Side::Champion => enum_iterator::all::<RoomId>()

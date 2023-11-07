@@ -20,8 +20,8 @@ use insta::assert_snapshot;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{
-    card_target, CardTarget, DrawCardAction, GainManaAction, GameMessageType, LevelUpRoomAction,
-    ObjectPositionDiscardPile, PlayCardAction, PlayerName,
+    card_target, CardTarget, DrawCardAction, GainManaAction, GameMessageType,
+    ObjectPositionDiscardPile, PlayCardAction, PlayerName, ProgressRoomAction,
 };
 use test_utils::summarize::Summary;
 use test_utils::test_game::{TestGame, TestRaid, TestSide};
@@ -212,11 +212,11 @@ fn cannot_gain_mana_during_raid() {
 }
 
 #[test]
-fn level_up_room() {
+fn progress_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).build();
     g.create_and_play(CardName::TestScheme3_10);
     let response = g.perform_action(
-        Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
+        Action::ProgressRoom(ProgressRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
         g.user_id(),
     );
 
@@ -305,11 +305,11 @@ fn sacrifice_existing_project() {
 fn score_overlord_card() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).actions(5).build();
     let scheme_id = g.create_and_play(CardName::TestScheme3_10);
-    let level_up =
-        Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
-    g.perform(level_up.clone(), g.user_id());
-    g.perform(level_up.clone(), g.user_id());
-    let response = g.perform_action(level_up, g.user_id());
+    let progress =
+        Action::ProgressRoom(ProgressRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
+    g.perform(progress.clone(), g.user_id());
+    g.perform(progress.clone(), g.user_id());
+    let response = g.perform_action(progress, g.user_id());
 
     assert_snapshot!(Summary::run(&response));
     assert!(g.opponent.cards.get(scheme_id).revealed_to_me());
@@ -324,11 +324,11 @@ fn overlord_win_game() {
     let mut g =
         TestGame::new(TestSide::new(Side::Overlord).mana(10).bonus_points(90)).actions(5).build();
     g.create_and_play(CardName::TestScheme3_10);
-    let level_up =
-        Action::LevelUpRoom(LevelUpRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
-    g.perform(level_up.clone(), g.user_id());
-    g.perform(level_up.clone(), g.user_id());
-    let response = g.perform_action(level_up, g.user_id());
+    let progress =
+        Action::ProgressRoom(ProgressRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
+    g.perform(progress.clone(), g.user_id());
+    g.perform(progress.clone(), g.user_id());
+    let response = g.perform_action(progress, g.user_id());
 
     assert_snapshot!(Summary::run(&response));
     assert_eq!(g.user.data.last_message(), GameMessageType::Victory);
@@ -944,12 +944,12 @@ fn legal_actions() {
 }
 
 #[test]
-fn legal_actions_level_up_room() {
+fn legal_actions_progress_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     g.create_and_play(CardName::TestScheme3_10);
     test_helpers::assert_contents_equal(
         g.legal_actions(Side::Overlord),
-        vec![GameAction::GainMana, GameAction::DrawCard, GameAction::LevelUpRoom(RoomId::RoomA)],
+        vec![GameAction::GainMana, GameAction::DrawCard, GameAction::ProgressRoom(RoomId::RoomA)],
     );
 }
 

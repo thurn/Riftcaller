@@ -411,36 +411,37 @@ pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Resu
     Ok(result)
 }
 
-/// Increases the level of all `can_level_up` Overlord cards in a room by 1. If
-/// a Scheme card's level reaches its `level_requirement`, that card is
-/// immediately scored and moved to the Overlord score zone.
+/// Increases the progress level of all `can_progress_card` Overlord cards in a
+/// room by one. If a Scheme card's progress level reaches its
+/// `progress_requirement`, that card is immediately scored and moved to the
+/// Overlord score zone.
 ///
 /// Does not spend mana/actions etc.
-pub fn level_up_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
+pub fn progress_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
     let occupants = game.card_list_for_position(
         Side::Overlord,
         CardPosition::Room(room_id, RoomLocation::Occupant),
     );
-    let can_level = occupants
+    let can_progress = occupants
         .into_iter()
-        .filter(|card_id| flags::can_level_up_card(game, *card_id))
+        .filter(|card_id| flags::can_progress_card(game, *card_id))
         .collect::<Vec<_>>();
 
-    for occupant_id in can_level {
-        add_level_counters(game, occupant_id, 1)?;
+    for occupant_id in can_progress {
+        add_progress_counters(game, occupant_id, 1)?;
     }
 
     Ok(())
 }
 
-/// Adds `amount` level counters to the provided card.
+/// Adds `amount` progress counters to the provided card.
 ///
-/// If the card has scheme points and the level requirement is met, the card is
-/// immediately scored and moved to the Overlord's score zone.
+/// If the card has scheme points and the progress requirement is met, the card
+/// is immediately scored and moved to the Overlord's score zone.
 ///
-/// Returns an error if this card cannot be leveled up.
-pub fn add_level_counters(game: &mut GameState, card_id: CardId, amount: u32) -> Result<()> {
-    verify!(flags::can_level_up_card(game, card_id));
+/// Returns an error if this card cannot be progressed.
+pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32) -> Result<()> {
+    verify!(flags::can_progress_card(game, card_id));
     game.card_mut(card_id).add_counters(CardCounter::Progress, amount);
     let card = game.card(card_id);
     if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {

@@ -20,7 +20,7 @@ use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     CanActivateAbility, CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery,
-    CanLevelUpCardQuery, CanLevelUpRoomQuery, CanPlayCardQuery, CanTakeDrawCardActionQuery,
+    CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery, CanTakeDrawCardActionQuery,
     CanTakeGainManaActionQuery, CanUseNoWeaponQuery, Flag,
 };
 use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
@@ -320,24 +320,24 @@ pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: Room
 }
 
 /// Returns whether the indicated player can currently take the basic game
-/// action to level up a room
-pub fn can_take_level_up_room_action(game: &GameState, side: Side, room_id: RoomId) -> bool {
-    let has_level_card = game
+/// action to progress a room.
+pub fn can_take_progress_action(game: &GameState, side: Side, room_id: RoomId) -> bool {
+    let has_progress_card = game
         .occupants(room_id)
         .chain(game.defenders_unordered(room_id))
-        .any(|card| can_level_up_card(game, card.id));
-    let can_level_up = has_level_card
+        .any(|card| can_progress_card(game, card.id));
+    let can_progress = has_progress_card
         && side == Side::Overlord
-        && mana::get(game, side, ManaPurpose::LevelUpRoom(room_id)) > 0
+        && mana::get(game, side, ManaPurpose::ProgressRoom(room_id)) > 0
         && in_main_phase_with_action_point(game, side);
-    dispatch::perform_query(game, CanLevelUpRoomQuery(room_id), Flag::new(can_level_up)).into()
+    dispatch::perform_query(game, CanProgressRoomQuery(room_id), Flag::new(can_progress)).into()
 }
 
-/// Whether the indicated card can be leveled up when the 'level up' action is
-/// taken for its room.
-pub fn can_level_up_card(game: &GameState, card_id: CardId) -> bool {
-    let can_level_up = game.card(card_id).definition().card_type == CardType::Scheme;
-    dispatch::perform_query(game, CanLevelUpCardQuery(card_id), Flag::new(can_level_up)).into()
+/// Whether the indicated card can be progressed up when the 'progress' action
+/// is taken for its room.
+pub fn can_progress_card(game: &GameState, card_id: CardId) -> bool {
+    let can_progress = game.card(card_id).definition().card_type == CardType::Scheme;
+    dispatch::perform_query(game, CanProgressCardQuery(card_id), Flag::new(can_progress)).into()
 }
 
 /// Whether the indicated player can currently take any type of game state

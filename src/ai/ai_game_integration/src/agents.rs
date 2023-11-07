@@ -24,7 +24,7 @@ use game_data::player_name::AIPlayer;
 use with_error::fail;
 
 use crate::evaluators::{
-    CardsInHandEvaluator, CardsInPlayEvaluator, LevelCountersEvaluator, ManaDifferenceEvaluator,
+    CardsInHandEvaluator, CardsInPlayEvaluator, ManaDifferenceEvaluator, ProgressCountersEvaluator,
     ScoreEvaluator,
 };
 use crate::state_node::SpelldawnState;
@@ -63,7 +63,7 @@ pub fn get(name: AIPlayer) -> Box<dyn Agent<SpelldawnState>> {
                     (10, Box::new(ManaDifferenceEvaluator {})),
                     (5, Box::new(CardsInHandEvaluator {})),
                     (15, Box::new(CardsInPlayEvaluator {})),
-                    (20, Box::new(LevelCountersEvaluator {})),
+                    (20, Box::new(ProgressCountersEvaluator {})),
                 ],
             },
         )),

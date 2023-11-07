@@ -138,12 +138,12 @@ pub fn remove_actions_if_able<const N: ActionCount>() -> Ability {
     }
 }
 
-/// An ability which allows a card to have level counters placed on it.
-pub fn level_up() -> Ability {
+/// An ability which allows a card to have progress counters placed on it.
+pub fn can_progress() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: text![LevelUp],
-        delegates: vec![Delegate::CanLevelUpCard(QueryDelegate {
+        text: text![CanProgress],
+        delegates: vec![Delegate::CanProgressCard(QueryDelegate {
             requirement: this_card,
             transformation: |_g, _, _, current| current.with_override(true),
         })],

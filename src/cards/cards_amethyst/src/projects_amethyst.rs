@@ -71,11 +71,17 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::level_up(),
+            abilities::can_progress(),
             Ability::new_with_delegate(
                 trigger_text(
                     Trap,
-                    text!["If this card is in play,", DealDamage(2), "plus", 1, "per level"],
+                    text![
+                        "If this card is in play,",
+                        DealDamage(2),
+                        "plus",
+                        1,
+                        "per progress counter"
+                    ],
                 ),
                 on_accessed(|g, s, _| {
                     if g.card(s.card_id()).position().in_play() {

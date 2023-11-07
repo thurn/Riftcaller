@@ -499,13 +499,13 @@ pub enum Delegate {
     CanActivateAbility(QueryDelegate<CanActivateAbility, Flag>),
     /// Can a raid currently be started on the indicated room?
     CanInitiateRaid(QueryDelegate<RoomId, Flag>),
-    /// Can the indicated player currently level up the indicated room?
-    CanLevelUpRoom(QueryDelegate<RoomId, Flag>),
-    /// Can the indicated card be leveled up when the level up action is taken
+    /// Can the indicated player currently progress the indicated room?
+    CanProgressRoom(QueryDelegate<RoomId, Flag>),
+    /// Can the indicated card be progressed when the progress action is taken
     /// for a room?
     ///
-    /// Note that Scheme cards can be leveled up by default.
-    CanLevelUpCard(QueryDelegate<CardId, Flag>),
+    /// Note that Scheme cards can be progressed by default.
+    CanProgressCard(QueryDelegate<CardId, Flag>),
     /// Can the source card (typically a weapon) take an encounter action
     /// against the target card (typically a minion) during a raid?
     CanEncounterTarget(QueryDelegate<CardEncounter, Flag>),

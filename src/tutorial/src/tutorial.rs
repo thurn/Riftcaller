@@ -292,19 +292,19 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::Display(vec![
                 user_say_recurring("I should draw a card", Milliseconds(10_000)),
             ]),
-            TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
+            TutorialStep::OpponentAction(TutorialOpponentAction::ProgressRoom(
                 RoomId::RoomA,
             )),
-            TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
+            TutorialStep::OpponentAction(TutorialOpponentAction::ProgressRoom(
                 RoomId::RoomA,
             )),
             TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleClub]),
-            TutorialStep::OpponentAction(TutorialOpponentAction::LevelUpRoom(
+            TutorialStep::OpponentAction(TutorialOpponentAction::ProgressRoom(
                 RoomId::RoomA,
             )),
             TutorialStep::Display(vec![
                 permanent_toast(
-                    format!("Your opponent can <b>level up</b> the cards in a room for {} and 1{}. If the <b>level requirement</b> of a scheme card is met, they score it.", icons::ACTION, icons::MANA),
+                    format!("Your opponent can <b>progress</b> the cards in a room for {} and 1{}. If the <b>progress requirement</b> of a scheme card is met, they score it.", icons::ACTION, icons::MANA),
                     Milliseconds(0),
                 ),
             ]),

@@ -95,7 +95,7 @@ namespace Spelldawn.Services
       ClientAction.ActionOneofCase.GainMana => CanAct(),
       ClientAction.ActionOneofCase.DrawCard => CanAct(),
       ClientAction.ActionOneofCase.PlayCard => CanMoveCards(),
-      ClientAction.ActionOneofCase.LevelUpRoom => CanAct(),
+      ClientAction.ActionOneofCase.ProgressRoom => CanAct(),
       ClientAction.ActionOneofCase.InitiateRaid => CanAct(),
       ClientAction.ActionOneofCase.MoveCard => CanMoveCards(),
       _ => false

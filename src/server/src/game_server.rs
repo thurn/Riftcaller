@@ -22,8 +22,8 @@ use game_data::game_state::GameState;
 use game_data::primitives::{GameId, Side};
 use player_data::PlayerState;
 use protos::spelldawn::{
-    DrawCardAction, GainManaAction, InitiateRaidAction, LevelUpRoomAction, MoveCardAction,
-    PlayCardAction, SpendActionPointAction,
+    DrawCardAction, GainManaAction, InitiateRaidAction, MoveCardAction, PlayCardAction,
+    ProgressRoomAction, SpendActionPointAction,
 };
 use tracing::{debug, info};
 use tutorial::tutorial_actions;
@@ -162,14 +162,14 @@ pub async fn handle_play_card(
     handle_game_action(database, data, &action).await
 }
 
-pub async fn handle_level_up_room(
+pub async fn handle_progress_room(
     database: &impl Database,
     data: &RequestData,
-    action: &LevelUpRoomAction,
+    action: &ProgressRoomAction,
 ) -> Result<GameResponse> {
-    info!(?data.player_id, "Level Up Room");
+    info!(?data.player_id, "Progress Room");
     let room_id = adapters::room_id(action.room_id)?;
-    handle_game_action(database, data, &GameAction::LevelUpRoom(room_id)).await
+    handle_game_action(database, data, &GameAction::ProgressRoom(room_id)).await
 }
 
 pub async fn handle_initiate_raid(

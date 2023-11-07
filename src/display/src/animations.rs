@@ -86,11 +86,11 @@ pub fn render(
                 card_id: Some(adapters::card_identifier(*minion_id)),
             }));
         }
-        GameAnimation::LevelUpRoom(room_id, initiated_by) => {
+        GameAnimation::ProgressRoom(room_id, initiated_by) => {
             if initiated_by.is_ability() || builder.user_side == Side::Champion {
-                // Animation is not required for the Overlord's own 'level up room' action, it's
+                // Animation is not required for the Overlord's own 'progress room' action, it's
                 // handled by the client's optimistic animation system.
-                level_up_room(builder, *room_id)
+                progress_room(builder, *room_id)
             }
         }
         GameAnimation::InitiateRaid(room_id, initiated_by) => {
@@ -189,11 +189,11 @@ fn show_ability(builder: &mut ResponseBuilder, snapshot: &GameState, ability_id:
     builder.push(delay(1500));
 }
 
-fn level_up_room(commands: &mut ResponseBuilder, target: RoomId) {
+fn progress_room(commands: &mut ResponseBuilder, target: RoomId) {
     commands.push(Command::VisitRoom(VisitRoomCommand {
         initiator: commands.to_player_name(Side::Overlord),
         room_id: adapters::room_identifier(target),
-        visit_type: RoomVisitType::LevelUpRoom.into(),
+        visit_type: RoomVisitType::ProgressRoom.into(),
     }));
 }
 

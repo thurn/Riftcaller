@@ -32,12 +32,12 @@ use protos::spelldawn::{
 
 /// Possible types of icons which can appear on a card
 pub enum CardIconType {
-    LevelCounter,
+    ProgressCounter,
     Mana,
     Health,
     Attack,
     Shield,
-    LevelRequirement,
+    ProgressRequirement,
     Points,
     Raze,
     PowerCharge,
@@ -60,7 +60,7 @@ pub fn icon_background_scale(icon_type: CardIconType) -> Option<f32> {
         CardIconType::Health => 1.5,
         CardIconType::Attack => 1.75,
         CardIconType::Shield => 1.1,
-        CardIconType::LevelRequirement => 0.9,
+        CardIconType::ProgressRequirement => 0.9,
         CardIconType::Points => 0.35,
         CardIconType::Raze => 1.5,
         _ => 1.0,
@@ -73,7 +73,7 @@ pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
         address: format!(
             "{}.png",
             match icon_type {
-                CardIconType::LevelCounter => {
+                CardIconType::ProgressCounter => {
                     "LittleSweetDaemon/TCG_Card_Elemental_Design/Number_Icons/Number_Icons_Color_3"
                 }
                 CardIconType::Mana => {
@@ -88,7 +88,7 @@ pub fn card_icon(icon_type: CardIconType) -> SpriteAddress {
                 CardIconType::Shield => {
                     "LittleSweetDaemon/TCG_Card_Elemental_Design/Number_Icons/Number_Icons_Color_6"
                 }
-                CardIconType::LevelRequirement => {
+                CardIconType::ProgressRequirement => {
                     "LittleSweetDaemon/TCG_Card_Elemental_Design/Number_Back/Number_Back_Color_3"
                 }
                 CardIconType::Points => {

@@ -65,7 +65,7 @@ fn spike_trap() {
         .opponent(TestSide::new(Side::Champion).hand_size(5))
         .build();
     g.create_and_play(CardName::SpikeTrap);
-    g.level_up_room_times(2);
+    g.progress_room_times(2);
     g.pass_turn(Side::Overlord);
 
     assert!(g.dawn());
@@ -93,7 +93,7 @@ fn spike_trap_victory() {
         .opponent(TestSide::new(Side::Champion).hand_size(0))
         .build();
     g.create_and_play(CardName::SpikeTrap);
-    g.level_up_room_times(2);
+    g.progress_room_times(2);
     g.pass_turn(Side::Overlord);
 
     assert!(g.dawn());

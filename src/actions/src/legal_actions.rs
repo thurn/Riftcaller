@@ -82,9 +82,9 @@ pub fn evaluate<'a>(
                 .chain(
                     enum_iterator::all::<RoomId>()
                         .filter(move |room_id| {
-                            flags::can_take_level_up_room_action(game, side, *room_id)
+                            flags::can_take_progress_action(game, side, *room_id)
                         })
-                        .map(GameAction::LevelUpRoom),
+                        .map(GameAction::ProgressRoom),
                 )
                 .chain(game.hand(side).flat_map(move |c| legal_card_actions(game, side, c.id)))
                 .chain(flags::can_take_draw_card_action(game, side).then_some(GameAction::DrawCard))

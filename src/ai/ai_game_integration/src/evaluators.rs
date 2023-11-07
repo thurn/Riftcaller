@@ -54,9 +54,9 @@ impl StateEvaluator<SpelldawnState> for CardsInPlayEvaluator {
     }
 }
 
-pub struct LevelCountersEvaluator {}
+pub struct ProgressCountersEvaluator {}
 
-impl StateEvaluator<SpelldawnState> for LevelCountersEvaluator {
+impl StateEvaluator<SpelldawnState> for ProgressCountersEvaluator {
     fn evaluate(&self, game: &SpelldawnState, side: Side) -> Result<i32> {
         if side == Side::Champion {
             return Ok(0);

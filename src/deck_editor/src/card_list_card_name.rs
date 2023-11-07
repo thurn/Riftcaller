@@ -63,7 +63,7 @@ impl Component for CardListCardName {
             (Some(mana), _) => Some((mana.to_string(), CardIconType::Mana)),
             (_, Some(scheme_points)) => Some((
                 scheme_points.progress_requirement.to_string(),
-                CardIconType::LevelRequirement,
+                CardIconType::ProgressRequirement,
             )),
             _ => None,
         };

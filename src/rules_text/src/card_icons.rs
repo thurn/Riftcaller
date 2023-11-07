@@ -28,9 +28,9 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
     match context.card() {
         Some(card) if card.counters(CardCounter::Progress) > 0 => {
             icons.arena_icon = Some(CardIcon {
-                background: Some(assets::card_icon(CardIconType::LevelCounter)),
+                background: Some(assets::card_icon(CardIconType::ProgressCounter)),
                 text: Some(card.counters(CardCounter::Progress).to_string()),
-                background_scale: assets::icon_background_scale(CardIconType::LevelCounter),
+                background_scale: assets::icon_background_scale(CardIconType::ProgressCounter),
             })
         }
         _ => {}
@@ -69,9 +69,9 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
             Some(mana_card_icon(mana_cost))
         } else {
             definition.config.stats.scheme_points.map(|points| CardIcon {
-                background: Some(assets::card_icon(CardIconType::LevelRequirement)),
+                background: Some(assets::card_icon(CardIconType::ProgressRequirement)),
                 text: Some(points.progress_requirement.to_string()),
-                background_scale: assets::icon_background_scale(CardIconType::LevelRequirement),
+                background_scale: assets::icon_background_scale(CardIconType::ProgressRequirement),
             })
         };
 

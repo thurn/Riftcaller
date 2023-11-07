@@ -991,7 +991,7 @@ pub struct CardView {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlayerInfo {
-    /// Rooms which this player can currently visit (raid/level up)
+    /// Rooms which this player can currently visit (raid/progress)
     #[prost(enumeration = "RoomIdentifier", repeated, tag = "1")]
     pub valid_rooms_to_visit: ::prost::alloc::vec::Vec<i32>,
     /// Configuration for appearance of character's avatar
@@ -1283,12 +1283,12 @@ pub struct GainManaAction {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DrawCardAction {}
-/// Spend an action to level up a room.
+/// Spend an action to progress a room.
 ///
 /// Optimistic: Room visit animation plays
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LevelUpRoomAction {
+pub struct ProgressRoomAction {
     #[prost(enumeration = "RoomIdentifier", tag = "1")]
     pub room_id: i32,
 }
@@ -1379,7 +1379,7 @@ pub mod client_action {
         #[prost(message, tag = "5")]
         PlayCard(super::PlayCardAction),
         #[prost(message, tag = "6")]
-        LevelUpRoom(super::LevelUpRoomAction),
+        ProgressRoom(super::ProgressRoomAction),
         #[prost(message, tag = "7")]
         InitiateRaid(super::InitiateRaidAction),
         #[prost(message, tag = "8")]
@@ -3485,7 +3485,7 @@ impl AnchorCorner {
 pub enum RoomVisitType {
     Unspecified = 0,
     InitiateRaid = 1,
-    LevelUpRoom = 2,
+    ProgressRoom = 2,
 }
 impl RoomVisitType {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -3497,7 +3497,7 @@ impl RoomVisitType {
         match self {
             RoomVisitType::Unspecified => "ROOM_VISIT_TYPE_UNSPECIFIED",
             RoomVisitType::InitiateRaid => "ROOM_VISIT_TYPE_INITIATE_RAID",
-            RoomVisitType::LevelUpRoom => "ROOM_VISIT_TYPE_LEVEL_UP_ROOM",
+            RoomVisitType::ProgressRoom => "ROOM_VISIT_TYPE_PROGRESS_ROOM",
         }
     }
 
@@ -3506,7 +3506,7 @@ impl RoomVisitType {
         match value {
             "ROOM_VISIT_TYPE_UNSPECIFIED" => Some(Self::Unspecified),
             "ROOM_VISIT_TYPE_INITIATE_RAID" => Some(Self::InitiateRaid),
-            "ROOM_VISIT_TYPE_LEVEL_UP_ROOM" => Some(Self::LevelUpRoom),
+            "ROOM_VISIT_TYPE_PROGRESS_ROOM" => Some(Self::ProgressRoom),
             _ => None,
         }
     }

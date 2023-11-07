@@ -226,7 +226,7 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
         }
         TutorialOpponentAction::GainMana => GameAction::GainMana,
         TutorialOpponentAction::InitiateRaid(room_id) => GameAction::InitiateRaid(*room_id),
-        TutorialOpponentAction::LevelUpRoom(room_id) => GameAction::LevelUpRoom(*room_id),
+        TutorialOpponentAction::ProgressRoom(room_id) => GameAction::ProgressRoom(*room_id),
         TutorialOpponentAction::SummonMinion(minion_name) => {
             let _minion = game
                 .minions()
@@ -318,7 +318,7 @@ fn trigger_matches(
         }
         (TutorialTrigger::GainManaAction, GameAction::GainMana) => true,
         (TutorialTrigger::InitiateRaid(r1), GameAction::InitiateRaid(r2)) => r1 == r2,
-        (TutorialTrigger::LevelUpRoom(r1), GameAction::LevelUpRoom(r2)) => r1 == r2,
+        (TutorialTrigger::ProgressRoom(r1), GameAction::ProgressRoom(r2)) => r1 == r2,
         (_, GameAction::RaidAction(raid_action)) => {
             raid_prompt::matches_tutorial_trigger(game, *raid_action, trigger)
         }
@@ -340,7 +340,7 @@ fn to_trigger(opponent_action: &TutorialOpponentAction) -> TutorialTrigger {
         TutorialOpponentAction::PlayCard(name, target) => TutorialTrigger::PlayCard(*name, *target),
         TutorialOpponentAction::GainMana => TutorialTrigger::GainManaAction,
         TutorialOpponentAction::InitiateRaid(room_id) => TutorialTrigger::InitiateRaid(*room_id),
-        TutorialOpponentAction::LevelUpRoom(room_id) => TutorialTrigger::LevelUpRoom(*room_id),
+        TutorialOpponentAction::ProgressRoom(room_id) => TutorialTrigger::ProgressRoom(*room_id),
         TutorialOpponentAction::SummonMinion(minion_name) => {
             TutorialTrigger::SummonMinion(*minion_name)
         }

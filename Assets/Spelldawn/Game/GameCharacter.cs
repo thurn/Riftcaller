@@ -147,7 +147,7 @@ namespace Spelldawn.Game
           case PlayerSide.Overlord:
             _registry.ActionService.HandleAction(new ClientAction
             {
-              LevelUpRoom = new LevelUpRoomAction
+              ProgressRoom = new ProgressRoomAction
               {
                 RoomId = selectedRoom.RoomId
               }

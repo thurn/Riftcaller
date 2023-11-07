@@ -192,8 +192,8 @@ pub async fn handle_action(
         Action::PlayCard(a) => {
             game_server::handle_play_card(database, &data, a).instrument(span).await
         }
-        Action::LevelUpRoom(a) => {
-            game_server::handle_level_up_room(database, &data, a).instrument(span).await
+        Action::ProgressRoom(a) => {
+            game_server::handle_progress_room(database, &data, a).instrument(span).await
         }
         Action::InitiateRaid(a) => {
             game_server::handle_initiate_raid(database, &data, a).instrument(span).await

@@ -33,7 +33,7 @@ pub enum ManaPurpose {
     RazeCard(CardId),
     UseWeapon(CardId),
     ActivateAbility(AbilityId),
-    LevelUpRoom(RoomId),
+    ProgressRoom(RoomId),
     PayForTriggeredAbility,
     RemoveCurse,
     DispelEvocation,

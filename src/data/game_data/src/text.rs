@@ -66,7 +66,7 @@ pub enum TextToken {
     Vault,
     Crypt,
     Breach,
-    LevelUp,
+    CanProgress,
     Trap,
     Curse,
     Cursed,

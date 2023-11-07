@@ -142,7 +142,7 @@ namespace Spelldawn.Services
           StartCoroutine(_registry.AssetPoolService.CreateFromReference(command.VisitType switch
           {
             RoomVisitType.InitiateRaid => _initiateRaidPrefabReference,
-            RoomVisitType.LevelUpRoom => _levelUpRoomPrefabReference,
+            RoomVisitType.ProgressRoom => _levelUpRoomPrefabReference,
             _ => throw new ArgumentOutOfRangeException(nameof(command.VisitType), command.VisitType, null)
           }, room.position, onCreate: result => result.transform.localScale = 5f * Vector3.one));
         })

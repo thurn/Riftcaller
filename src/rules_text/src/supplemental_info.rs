@@ -147,8 +147,8 @@ fn token_description(token: TextTokenKind) -> Option<String> {
         TextTokenKind::Breach => {
             entry("Breach", "Allows this weapon to bypass some amount of Shield")
         }
-        TextTokenKind::LevelUp => {
-            entry("Level Up", "This card gets levels when its room is leveled up")
+        TextTokenKind::CanProgress => {
+            entry("Progress", "This card gets progress counters when its room is progressed")
         }
         TextTokenKind::Trap => entry("Trap", "Triggers when this card is accessed during a raid"),
         TextTokenKind::Curse | TextTokenKind::Cursed => entry(

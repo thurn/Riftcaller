@@ -77,7 +77,7 @@ pub fn handle_game_action(
         GameAction::InitiateRaid(room_id) => {
             raid_state::handle_initiate_action(game, user_side, *room_id)
         }
-        GameAction::LevelUpRoom(room_id) => level_up_room_action(game, user_side, *room_id),
+        GameAction::ProgressRoom(room_id) => progress_room_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
         GameAction::MoveSelectorCard(card_id) => move_card_action(game, user_side, *card_id),
         GameAction::RaidAction(action) => raid_state::run(game, Some(*action)),
@@ -191,18 +191,18 @@ fn gain_mana_action(game: &mut GameState, user_side: Side) -> Result<()> {
     Ok(())
 }
 
-fn level_up_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) -> Result<()> {
+fn progress_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) -> Result<()> {
     verify!(
-        flags::can_take_level_up_room_action(game, user_side, room_id),
-        "Cannot level up room for {:?}",
+        flags::can_take_progress_action(game, user_side, room_id),
+        "Cannot progress room for {:?}",
         user_side
     );
-    debug!(?user_side, "Applying level up room action");
+    debug!(?user_side, "Applying progress room action");
     game.add_history_event(HistoryEvent::CardProgress(room_id, 1, InitiatedBy::GameAction));
     mutations::spend_action_points(game, user_side, 1)?;
-    mana::spend(game, user_side, ManaPurpose::LevelUpRoom(room_id), 1)?;
-    game.add_animation(|| GameAnimation::LevelUpRoom(room_id, InitiatedBy::GameAction));
-    mutations::level_up_room(game, room_id)?;
+    mana::spend(game, user_side, ManaPurpose::ProgressRoom(room_id), 1)?;
+    game.add_animation(|| GameAnimation::ProgressRoom(room_id, InitiatedBy::GameAction));
+    mutations::progress_room(game, room_id)?;
     Ok(())
 }
 

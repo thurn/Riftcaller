@@ -1011,7 +1011,7 @@ message CardView {
 }
 
 message PlayerInfo {
-    // Rooms which this player can currently visit (raid/level up)
+    // Rooms which this player can currently visit (raid/progress)
     repeated RoomIdentifier valid_rooms_to_visit = 1;
 
     // Configuration for appearance of character's avatar
@@ -1254,10 +1254,10 @@ message DrawCardAction {
 }
 
 
-// Spend an action to level up a room.
+// Spend an action to progress a room.
 //
 // Optimistic: Room visit animation plays
-message LevelUpRoomAction {
+message ProgressRoomAction {
     RoomIdentifier room_id = 1;
 }
 
@@ -1314,7 +1314,7 @@ message ClientAction {
         GainManaAction gain_mana = 3;
         DrawCardAction draw_card = 4;
         PlayCardAction play_card = 5;
-        LevelUpRoomAction level_up_room = 6;
+        ProgressRoomAction progress_room = 6;
         InitiateRaidAction initiate_raid = 7;
         SpendActionPointAction spend_action_point = 8;
         MoveCardAction move_card = 9;
@@ -1505,7 +1505,7 @@ message UpdateGameViewCommand {
 enum RoomVisitType {
     ROOM_VISIT_TYPE_UNSPECIFIED = 0;
     ROOM_VISIT_TYPE_INITIATE_RAID = 1;
-    ROOM_VISIT_TYPE_LEVEL_UP_ROOM = 2;
+    ROOM_VISIT_TYPE_PROGRESS_ROOM = 2;
 }
 
 // Animates 'initiator' moving to a room and plays a standard particle effect

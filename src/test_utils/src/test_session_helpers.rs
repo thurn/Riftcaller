@@ -21,7 +21,7 @@ use game_data::primitives::{CardType, RoomId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{
     card_target, CardIdentifier, CardTarget, DrawCardAction, GainManaAction, GameMessageType,
-    InitiateRaidAction, LevelUpRoomAction, MoveCardAction, PlayCardAction, SpendActionPointAction,
+    InitiateRaidAction, MoveCardAction, PlayCardAction, ProgressRoomAction, SpendActionPointAction,
 };
 use server::server_data::GameResponseOutput;
 
@@ -68,14 +68,14 @@ pub trait TestSessionHelpers {
     /// `room_id`.
     fn initiate_raid(&mut self, room_id: RoomId) -> GameResponseOutput;
 
-    /// Helper function to perform an action to level up the
+    /// Helper function to perform an action to progress the
     /// provided `room_id`.
-    fn level_up_room(&mut self, room_id: RoomId) -> GameResponseOutput;
+    fn progress_room(&mut self, room_id: RoomId) -> GameResponseOutput;
 
-    /// Levels up the [test_constants::CLIENT_ROOM_ID] room a specified number
+    /// Progresses the [test_constants::CLIENT_ROOM_ID] room a specified number
     /// of `times`. If this requires multiple turns, spends the Champion turns
     /// doing nothing.
-    fn level_up_room_times(&mut self, times: u32);
+    fn progress_room_times(&mut self, times: u32);
 
     /// Helper to take the [PlayCardAction] with a given card ID.
     fn play_card(
@@ -269,22 +269,24 @@ impl TestSessionHelpers for TestSession {
         .expect("Server Error")
     }
 
-    fn level_up_room(&mut self, room_id: RoomId) -> GameResponseOutput {
+    fn progress_room(&mut self, room_id: RoomId) -> GameResponseOutput {
         self.perform_action(
-            Action::LevelUpRoom(LevelUpRoomAction { room_id: adapters::room_identifier(room_id) }),
+            Action::ProgressRoom(ProgressRoomAction {
+                room_id: adapters::room_identifier(room_id),
+            }),
             self.player_id_for_side(Side::Overlord),
         )
         .expect("Server Error")
     }
 
-    fn level_up_room_times(&mut self, times: u32) {
+    fn progress_room_times(&mut self, times: u32) {
         let mut levels = 0;
         let overlord_id = self.player_id_for_side(Side::Overlord);
 
         loop {
             while self.player(overlord_id).this_player.actions() > 0 {
                 self.perform(
-                    Action::LevelUpRoom(LevelUpRoomAction {
+                    Action::ProgressRoom(ProgressRoomAction {
                         room_id: test_constants::CLIENT_ROOM_ID.into(),
                     }),
                     overlord_id,

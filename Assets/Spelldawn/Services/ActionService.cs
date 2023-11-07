@@ -349,15 +349,15 @@ namespace Spelldawn.Services
             }
           });
           break;
-        case ClientAction.ActionOneofCase.LevelUpRoom:
+        case ClientAction.ActionOneofCase.ProgressRoom:
           _registry.ActionDisplayForPlayer(PlayerName.User).SpendActions(1);
           yield return _registry.CommandService.HandleCommands(new GameCommand
           {
             VisitRoom = new VisitRoomCommand
             {
-              RoomId = action.LevelUpRoom.RoomId,
+              RoomId = action.ProgressRoom.RoomId,
               Initiator = PlayerName.User,
-              VisitType = RoomVisitType.LevelUpRoom
+              VisitType = RoomVisitType.ProgressRoom
             }
           });
           break;

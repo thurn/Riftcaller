@@ -59,19 +59,19 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
             text![
-                "Place 2 level counters on each card in target room which didn't enter play this turn"
+                "Place 2 progress counters on each card in target room which didn't enter play this turn"
             ],
             this::on_played(|g, _, played| {
                 let targets = g
                     .defenders_and_occupants(played.target.room_id()?)
                     .filter(|card| {
-                        flags::can_level_up_card(g, card.id)
+                        flags::can_progress_card(g, card.id)
                             && !history::played_this_turn(g, card.id)
                     })
                     .map(|card| card.id)
                     .collect::<Vec<_>>();
                 for card_id in targets {
-                    mutations::add_level_counters(g, card_id, 2)?;
+                    mutations::add_progress_counters(g, card_id, 2)?;
                 }
 
                 Ok(())
@@ -80,7 +80,7 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new().custom_targeting(
             TargetRequirement::TargetRoom(|game, _, room_id| {
                 game.defenders_and_occupants(room_id).any(|card| {
-                    flags::can_level_up_card(game, card.id)
+                    flags::can_progress_card(game, card.id)
                         && !history::played_this_turn(game, card.id)
                 })
             })).build()

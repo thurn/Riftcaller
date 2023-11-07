@@ -226,7 +226,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Breach => {
             format!("breach {}", context.definition().config.stats.breach.unwrap_or_default())
         }
-        TextToken::LevelUp => "<b>Level Up</b>".to_string(),
+        TextToken::CanProgress => "<b>Progress</b>".to_string(),
         TextToken::Trap => "<b>Trap</b>".to_string(),
         TextToken::Curse => "curse".to_string(),
         TextToken::Cursed => "cursed".to_string(),
