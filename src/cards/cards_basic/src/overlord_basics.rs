@@ -92,7 +92,7 @@ pub fn gathering_dark(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text![Gain, Mana(9)],
+            text![GainMana(9)],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())

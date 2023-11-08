@@ -29,7 +29,7 @@ pub fn build(context: &CardViewContext) -> RulesText {
     let mut lines = vec![];
     let abilities = aggregate_named_triggers(&context.definition().abilities);
     for ability in abilities {
-        let mut text = build_text(context, &ability, true);
+        let mut text = build_text(context, &ability, ability.len() > 1);
         text = text.replace(" ,", ",");
         text = text.replace(" .", ".");
 
@@ -180,14 +180,27 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
     match token {
         TextToken::ManaSymbol => icons::MANA.to_string(),
         TextToken::Mana(n) => format!("{n}{}", icons::MANA),
+        TextToken::GainMana(value) => {
+            format!("gain{}{}{}", icons::NON_BREAKING_SPACE, value, icons::MANA)
+        }
         TextToken::ManaMinus(n) => format!("-{n}{}", icons::MANA),
         TextToken::ActionSymbol => icons::ACTION.to_string(),
         TextToken::Actions(n) => icons::ACTION.repeat(*n as usize),
+        TextToken::GainActions(n) => {
+            format!("gain{}{}", icons::NON_BREAKING_SPACE, icons::ACTION.repeat(*n as usize))
+        }
         TextToken::PowerCharges(n) => {
             if *n == 1 {
                 icons::POWER_CHARGE.to_string()
             } else {
-                icons::POWER_CHARGE.repeat(*n as usize)
+                format!("{}{}", n, icons::POWER_CHARGE)
+            }
+        }
+        TextToken::AddPowerCharges(n) => {
+            if *n == 1 {
+                format!("add{}{}", icons::NON_BREAKING_SPACE, icons::POWER_CHARGE)
+            } else {
+                format!("add{}{}{}", icons::NON_BREAKING_SPACE, n, icons::POWER_CHARGE)
             }
         }
         TextToken::Number(n) => n.to_string(),
@@ -201,7 +214,6 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::SacrificeCost => format!("{}Sacrifice", icons::TRIGGER),
         TextToken::Attack => "attack".to_string(),
         TextToken::Health => "health".to_string(),
-        TextToken::Gain => "gain".to_string(),
         TextToken::Lose => "lose".to_string(),
         TextToken::Play => "Play".to_string(),
         TextToken::Dawn => "Dawn".to_string(),

@@ -14,8 +14,8 @@
 
 use card_helpers::effects::Effects;
 use card_helpers::{costs, delegates, in_play, raids, requirements, show_prompt, text, this};
-use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
+use core_ui::{design, icons};
 use game_data::card_definition::{
     Ability, ActivatedAbility, CardConfig, CardDefinition, TargetRequirement,
 };
@@ -28,7 +28,7 @@ use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School,
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-use rules::{flags, mana, mutations, CardDefinitionExt};
+use rules::{curses, flags, mana, mutations, CardDefinitionExt};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -44,12 +44,7 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
         abilities: vec![ActivatedAbility::new(
             text![
                 text!["Raid target outer room"],
-                text![
-                    "If successful",
-                    Gain,
-                    Mana(meta.upgrade(8, 10)),
-                    "instead of accessing cards"
-                ]
+                text!["If successful", GainMana(meta.upgrade(8, 10)), "instead of accessing cards"]
             ],
             costs::sacrifice_for_action(),
         )
@@ -183,6 +178,40 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
             Ok(())
         }))
         .build()],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::PlanarSanctuary,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(2),
+        image: assets::champion_card(meta, "planar_sanctuary"),
+        card_type: CardType::Evocation,
+        subtypes: vec![CardSubtype::Mystic],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new_with_delegate(
+                text!["When a scheme is scored,", AddPowerCharges(2)],
+                in_play::on_card_scored(|g, s, _| mutations::add_power_charges(g, s.card_id(), 2)),
+            ),
+            ActivatedAbility::new(
+                text![text!["Remove a curse"], text!["Draw a card"]],
+                costs::power_charges::<1>(),
+            )
+            .delegate(this::on_activated(|g, s, _| {
+                curses::remove_curses(g, 1)?;
+                mutations::draw_cards(g, s.side(), 1)?;
+                Ok(())
+            }))
+            .build(),
+            Ability::new(text![
+                "You may activate this card after receiving a curse or taking damage"
+            ]),
+        ],
         config: CardConfig::default(),
     }
 }

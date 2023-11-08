@@ -118,7 +118,7 @@ pub fn combat_end_raid() -> Ability {
 pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger_text(Combat, text![Gain, Mana(N)]),
+        text: trigger_text(Combat, text![GainMana(N)]),
         delegates: vec![combat(|g, _, _| {
             mana::gain(g, Side::Overlord, N);
             Ok(())

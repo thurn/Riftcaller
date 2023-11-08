@@ -41,7 +41,7 @@ pub fn gold_mine(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: trigger_text(Score, text![Gain, Mana(7)]),
+            text: trigger_text(Score, text![GainMana(7)]),
             delegates: vec![on_overlord_score(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 Ok(())

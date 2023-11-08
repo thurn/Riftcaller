@@ -36,7 +36,7 @@ pub fn overwhelming_power(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text![Gain, Mana(15)],
+            text![GainMana(15)],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 15);
                 Ok(())

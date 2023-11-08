@@ -15,7 +15,7 @@
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
     CardPlayed, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
-    TransformationFn,
+    ScoreCard, TransformationFn,
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{
@@ -154,6 +154,12 @@ pub fn vault_access_selected(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
         requirement: in_play_with_room::<RoomIdVault>,
         mutation,
     })
+}
+
+/// A delegate which fires when a card is face up & in play when a card is
+/// scored
+pub fn on_card_scored(mutation: MutationFn<ScoreCard>) -> Delegate {
+    Delegate::ScoreCard(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
 /// A delegate which fires when a card is face up & in play when a card is

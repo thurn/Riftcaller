@@ -35,7 +35,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![Ability::new_with_delegate(
-            trigger_text(Dawn, text![Gain, Mana(1), "if you have", 2, "or fewer cards in hand"]),
+            trigger_text(Dawn, text![GainMana(1), "if you have", 2, "or fewer cards in hand"]),
             in_play::at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
                     Effects::new().ability_alert(s).apply(g);

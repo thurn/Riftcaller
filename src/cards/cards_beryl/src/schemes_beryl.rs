@@ -41,7 +41,7 @@ pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
                     "The Overlord may use this ability while this card is",
                     "in the Champion's score area"
                 ],
-                meta.upgraded_only_text(text![Gain, Mana(1)])
+                meta.upgraded_only_text(text![GainMana(1)])
             ],
             costs::actions(1),
         )

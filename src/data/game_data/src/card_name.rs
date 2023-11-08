@@ -295,6 +295,7 @@ pub enum CardName {
     EquivalentExchange,
     Foebane,
     EtherealForm,
+    PlanarSanctuary,
 }
 
 impl CardName {

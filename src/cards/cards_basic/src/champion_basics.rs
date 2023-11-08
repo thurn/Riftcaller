@@ -39,7 +39,7 @@ pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text![Gain, Mana(9)],
+            text![GainMana(9)],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 9);
                 Ok(())
@@ -61,7 +61,7 @@ pub fn eldritch_surge(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text![Gain, Mana(3)],
+            text![GainMana(3)],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 3);
                 Ok(())
@@ -136,7 +136,7 @@ pub fn contemplate(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text![text![Gain, Mana(2)], text!["Draw a card"]],
+            text![text![GainMana(2)], text!["Draw a card"]],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 2);
                 mutations::draw_cards(g, s.side(), 1)?;

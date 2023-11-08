@@ -186,7 +186,7 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability::new_with_delegate(
-                text!["When you access a room, add", PowerCharges(1)],
+                text!["When you access a room,", AddPowerCharges(1)],
                 in_play::on_raid_access_start(|g, s, _| {
                     mutations::add_power_charges(g, s.card_id(), 1)
                 }),
@@ -224,7 +224,7 @@ pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability::new_with_delegate(
-                text!["When you access a room, add", PowerCharges(1)],
+                text!["When you access a room,", AddPowerCharges(1)],
                 in_play::on_raid_access_start(|g, s, _| {
                     mutations::add_power_charges(g, s.card_id(), 1)
                 }),
@@ -350,8 +350,7 @@ pub fn warriors_sign(meta: CardMetadata) -> CardDefinition {
                 ", and",
                 Crypt,
                 "in a single turn,",
-                Gain,
-                Actions(meta.upgrade(1, 2))
+                GainActions(meta.upgrade(1, 2))
             ],
             in_play::on_raid_started(|g, s, raid| {
                 if raid.target.is_inner_room()

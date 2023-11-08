@@ -427,7 +427,7 @@ pub fn time_stop(meta: CardMetadata) -> CardDefinition {
         abilities: vec![
             abilities::play_as_first_action(),
             Ability::new_with_delegate(
-                text![text![Gain, Actions(meta.upgrade(1, 2))], text!["Raid target room"]],
+                text![text![GainActions(meta.upgrade(1, 2))], text!["Raid target room"]],
                 this::on_played(|g, s, played| {
                     mutations::gain_action_points(g, s.side(), s.upgrade(1, 2))?;
                     raids::initiate(g, s, played.target)

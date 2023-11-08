@@ -39,7 +39,7 @@ pub fn meditation(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text![text![Gain, Mana(5)], text![Lose, Actions(1), "if able"]],
+            text![text![GainMana(5)], text![Lose, Actions(1), "if able"]],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 5);
                 mutations::lose_action_points_if_able(g, s.side(), 1)
@@ -98,7 +98,7 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text![text![BeginARaid], text![Gain, Mana(5), "to spend during that raid"]],
+            text![text![BeginARaid], text![GainMana(5), "to spend during that raid"]],
             this::on_played(|g, s, play_card| {
                 raid_state::initiate_with_callback(
                     g,

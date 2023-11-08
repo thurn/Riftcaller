@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use game_data::card_definition::{Cost, CustomCost};
+use game_data::card_state::CardCounter;
 use game_data::primitives::{AbilityId, ActionCount, CardId, ManaValue};
 use game_data::text::{TextElement, TextToken};
 use rules::mutations;
@@ -34,6 +35,19 @@ pub fn sacrifice_for_action() -> Cost<AbilityId> {
 /// Cost for an ability which requires the owning card to be sacrificed.
 pub fn sacrifice() -> Cost<AbilityId> {
     Cost { mana: None, actions: 0, custom_cost: sacrifice_cost() }
+}
+
+/// Cost for an ability which costs power charges to use.
+pub fn power_charges<const N: u32>() -> Cost<AbilityId> {
+    Cost {
+        mana: None,
+        actions: 0,
+        custom_cost: Some(CustomCost {
+            can_pay: |g, id| g.card(id.card_id).counters(CardCounter::PowerCharges) >= N,
+            pay: |g, id| mutations::spend_power_charges(g, id.card_id, N),
+            description: Some(TextElement::Token(TextToken::PowerCharges(N))),
+        }),
+    }
 }
 
 /// A [CustomCost] which allows an ability to be activated by sacrificing the
