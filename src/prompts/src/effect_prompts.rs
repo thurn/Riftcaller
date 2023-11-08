@@ -70,6 +70,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::SelectCardForPrompt(_, _) => "Select".to_string(),
         GameEffect::SwapWithSelected(_, _) => "Swap".to_string(),
         GameEffect::SetEntersPlayTarget { .. } => "Choose".to_string(),
+        GameEffect::RecordCardChoice(_, _) => "Choose".to_string(),
         GameEffect::EvadeCurrentEncounter => "Evade".to_string(),
     }
 }
@@ -80,6 +81,8 @@ fn custom_label(label: PromptChoiceLabel) -> String {
         PromptChoiceLabel::Return(cost) => {
             format!("{}{}: Return", cost, icons::MANA)
         }
+        PromptChoiceLabel::Occupant => "Occupant".to_string(),
+        PromptChoiceLabel::Defender => "Defender".to_string(),
     }
 }
 

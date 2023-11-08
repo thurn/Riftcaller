@@ -34,6 +34,12 @@ pub enum AbilityActivationType {
     FreeAction,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CardChoiceEvent {
+    pub ability_id: AbilityId,
+    pub choice: CardChoice,
+}
+
 /// Records a single event which happened during this game.
 #[derive(Debug, Clone, Serialize, Deserialize, EnumKind)]
 #[enum_kind(HistoryEventKind)]
@@ -78,7 +84,7 @@ pub enum HistoryEvent {
     GiveCurse(CurseCount),
     /// A card ability choice has been made, e.g. naming a target room for a
     /// spell's ongoing effect.
-    CardChoice(AbilityId, CardChoice),
+    CardChoice(CardChoiceEvent),
 }
 
 impl HistoryEvent {

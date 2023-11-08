@@ -75,6 +75,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             game.card_mut(source.card_id).set_enters_play_choice(choice);
             mutations::record_card_choice(game, source, choice);
         }
+        GameEffect::RecordCardChoice(ability_id, choice) => {
+            mutations::record_card_choice(game, ability_id, choice);
+        }
         GameEffect::EvadeCurrentEncounter => {
             mutations::apply_raid_jump(game, RaidJumpRequest::EvadeCurrentMinion);
         }

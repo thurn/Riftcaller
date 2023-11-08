@@ -33,7 +33,7 @@ use game_data::delegate_data::{
     RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
     StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
 };
-use game_data::game_history::HistoryEvent;
+use game_data::game_history::{CardChoiceEvent, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
@@ -581,7 +581,10 @@ pub fn abort_playing_card(game: &mut GameState) {
 
 /// Record a decision for a card ability, typically a targeting decision.
 pub fn record_card_choice(game: &mut GameState, ability: impl HasAbilityId, choice: CardChoice) {
-    game.add_history_event(HistoryEvent::CardChoice(ability.ability_id(), choice));
+    game.add_history_event(HistoryEvent::CardChoice(CardChoiceEvent {
+        ability_id: ability.ability_id(),
+        choice,
+    }));
 }
 
 /// Applies a [RaidJumpRequest] to the provided `game` if there is currently an

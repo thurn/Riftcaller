@@ -14,9 +14,15 @@
 
 use game_data::delegate_data::{
     Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
-    RequirementFn, ShieldCardInfo, TransformationFn,
+    RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
+use game_data::game_state::GameState;
 use game_data::primitives::{CardId, ManaValue, RaidId, ShieldValue};
+
+/// A [TransformationFn] which unconditionally sets a [Flag] to false.
+pub fn set_false<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
+    flag.with_override(false)
+}
 
 pub fn mana_cost(
     requirement: RequirementFn<CardId>,
@@ -65,6 +71,13 @@ pub fn on_raid_successful(
     mutation: MutationFn<RaidEvent<()>>,
 ) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement, mutation })
+}
+
+pub fn can_summon(
+    requirement: RequirementFn<CardId>,
+    transformation: TransformationFn<CardId, Flag>,
+) -> Delegate {
+    Delegate::CanSummon(QueryDelegate { requirement, transformation })
 }
 
 pub fn can_raid_access_cards(

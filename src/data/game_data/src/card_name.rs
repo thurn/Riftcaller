@@ -157,10 +157,11 @@ pub enum CardName {
     /// Artifact which stores mana on play, with the activated ability to take
     /// mana from it
     TestActivatedAbilityTakeMana,
-    /// Project which stores mana on unveil, with a triggered ability to take
-    /// mana at dusk.
+    /// Duskbound project which stores mana on unveil, with a triggered ability
+    /// to take mana at dusk.
     TestProjectTriggeredAbilityTakeManaAtDusk,
-    /// Project which can be unveiled & sacrificed to end the current raid.
+    /// Roombound project which can be unveiled & sacrificed to end the current
+    /// raid.
     TestProjectSacrificeToEndRaid,
     /// Project with two subtypes
     TestDuskAndNightboundProject,
@@ -298,6 +299,7 @@ pub enum CardName {
     Foebane,
     EtherealForm,
     PlanarSanctuary,
+    ChainsOfBinding,
 }
 
 impl CardName {

@@ -21,7 +21,7 @@ use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::CardPosition;
+use game_data::card_state::{CardChoice, CardPosition};
 use game_data::game_actions::{
     CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
 };
@@ -435,5 +435,60 @@ pub fn time_stop(meta: CardMetadata) -> CardDefinition {
             ),
         ],
         config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
+    }
+}
+
+pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::ChainsOfBinding,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(3, 0)),
+        image: assets::champion_card(meta, "chains_of_binding"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            abilities::play_as_first_action(),
+            Ability::new(text![
+                text!["Choose a card defending or occupying target room"],
+                text!["That card cannot be summoned this turn"]
+            ])
+            .delegate(this::on_played(|g, s, played| {
+                show_prompt::with_choices(
+                    g,
+                    s,
+                    g.defenders_and_occupants(played.target.room_id()?)
+                        .map(|card| {
+                            PromptChoice::new()
+                                .effect(GameEffect::RecordCardChoice(
+                                    s.ability_id(),
+                                    CardChoice::Card(card.id),
+                                ))
+                                .anchor_card(card.id)
+                                .custom_label(if card.position().is_occupant() {
+                                    PromptChoiceLabel::Occupant
+                                } else {
+                                    PromptChoiceLabel::Defender
+                                })
+                        })
+                        .collect(),
+                );
+                Ok(())
+            }))
+            .delegate(delegates::can_summon(
+                |g, s, card_id| {
+                    history::card_choices_this_turn(g).any(|event| {
+                        event.ability_id == s.ability_id()
+                            && event.choice.chosen_card() == Some(*card_id)
+                    })
+                },
+                delegates::set_false,
+            )),
+        ],
+        config: CardConfigBuilder::new()
+            .custom_targeting(requirements::any_room_with_defenders_or_occupants())
+            .build(),
     }
 }

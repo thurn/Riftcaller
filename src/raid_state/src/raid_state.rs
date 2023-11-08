@@ -238,7 +238,7 @@ fn populate_summon_prompt(minion_id: CardId) -> Result<RaidState> {
 }
 
 fn summon_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> Result<RaidState> {
-    verify!(defenders::can_summon_defender(game, minion_id), "Cannot summon minion");
+    verify!(flags::can_summon(game, minion_id), "Cannot summon minion");
     mutations::summon_minion(game, minion_id, SummonMinion::PayCosts)?;
     game.add_history_event(HistoryEvent::MinionSummon(info.event(minion_id)));
     RaidState::step(RaidStep::ApproachMinion(minion_id))

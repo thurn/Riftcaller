@@ -315,3 +315,48 @@ fn time_stop_cannot_play_second() {
         .play_card_with_result(id, g.user_id(), test_helpers::target_room(RoomId::Vault))
         .is_err());
 }
+
+#[test]
+fn chains_of_binding() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_down_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::ChainsOfBinding, RoomId::Vault);
+    g.click(Button::ChooseDefenderForPrompt);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn chains_of_binding_multiple_turns() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_down_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::ChainsOfBinding, RoomId::Vault);
+    g.click(Button::ChooseDefenderForPrompt);
+    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(RoomId::Vault);
+    g.opponent_click(Button::Summon);
+    g.click(Button::NoWeapon);
+}
+
+#[test]
+fn chains_of_binding_duskbound_project() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestProjectTriggeredAbilityTakeManaAtDusk),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::ChainsOfBinding, RoomId::RoomA);
+    g.click(Button::ChooseOccupantForPrompt);
+    g.move_to_end_step(Side::Champion);
+    assert!(g.dusk());
+}

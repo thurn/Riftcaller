@@ -88,6 +88,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::keensight);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::ethereal_incursion);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::time_stop);
+    DEFINITIONS.insert(cards_beryl::champion_spells_beryl::chains_of_binding);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);

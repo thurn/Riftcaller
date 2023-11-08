@@ -217,7 +217,7 @@ pub fn play_as_first_action() -> Ability {
     Ability::new_with_delegate(
         text!["Play as your first", TextToken::ActionSymbol],
         this::can_play(|g, _, _, current| {
-            current.with_override(!history::current_turn(g).any(is_game_action))
+            current.override_if_false(!history::current_turn(g).any(is_game_action))
         }),
     )
 }

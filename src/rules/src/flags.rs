@@ -20,8 +20,8 @@ use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     CanActivateAbility, CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery,
-    CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery, CanTakeDrawCardActionQuery,
-    CanTakeGainManaActionQuery, CanUseNoWeaponQuery, Flag,
+    CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery, CanSummonQuery,
+    CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery, Flag,
 };
 use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
 use game_data::game_state::{GamePhase, GameState, TurnState};
@@ -377,6 +377,16 @@ pub fn can_take_game_actions(game: &GameState, side: Side) -> bool {
         && game.player(side.opponent()).prompt_queue.is_empty()
 }
 
+/// Returns true if the `card_id` is currently face down and could be
+/// turned face up by paying its mana cost.
+///
+/// Returns an error if there is no active raid or if this is an invalid
+/// defender.
+pub fn can_summon(game: &GameState, card_id: CardId) -> bool {
+    let can_summon = game.card(card_id).is_face_down() && can_pay_card_cost(game, card_id);
+    dispatch::perform_query(game, CanSummonQuery(card_id), Flag::new(can_summon)).into()
+}
+
 /// Can the Champion choose to not use a weapon ability when encountering
 /// the indicated minion card?
 pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool {
@@ -421,7 +431,7 @@ pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId
         && game.card(card_id).position().in_play()
         && definition.card_type == CardType::Project
         && can_activate_for_subtypes(game, card_id)
-        && can_pay_card_cost(game, card_id)
+        && can_summon(game, card_id)
 }
 
 /// Can the `side` player currently take the standard action to remove a curse?

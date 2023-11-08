@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use game_data::delegate_data::{RaidEvent, UsedWeapon};
-use game_data::game_history::HistoryEvent;
+use game_data::game_history::{CardChoiceEvent, HistoryEvent};
 use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId, RoomId};
 
@@ -130,6 +130,18 @@ pub fn weapons_used_this_turn(
 ) -> impl Iterator<Item = &RaidEvent<UsedWeapon>> + '_ {
     current_turn(game).filter_map(move |h| {
         if let HistoryEvent::UseWeapon(event) = h {
+            Some(event)
+        } else {
+            None
+        }
+    })
+}
+
+/// Returns an iterator over card choices which have been recorded in the
+/// current player's turn so far.
+pub fn card_choices_this_turn(game: &GameState) -> impl Iterator<Item = &CardChoiceEvent> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::CardChoice(event) = h {
             Some(event)
         } else {
             None

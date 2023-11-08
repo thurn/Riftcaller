@@ -14,7 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::card_state::CardPosition;
+use crate::card_state::{CardChoice, CardPosition};
 use crate::primitives::{
     AbilityId, ActionCount, CardId, CurseCount, DamageAmount, ManaValue, RoomId, Side,
 };
@@ -57,6 +57,8 @@ pub enum GameEffect {
     SwapWithSelected(Side, CardId),
     /// Sets the 'source' ability's chosen card target to 'target'.
     SetEntersPlayTarget { source: AbilityId, target: CardId },
+    /// Record a card choice for a given card ability.
+    RecordCardChoice(AbilityId, CardChoice),
     /// Evade the current raid encounter, jumping to the next raid state
     EvadeCurrentEncounter,
 }

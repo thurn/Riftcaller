@@ -101,12 +101,21 @@ impl CardPosition {
         self.kind() == CardPositionKind::DiscardPile
     }
 
-    /// True if this card is current in the indicated room
-    pub fn is_room_occupant(&self, room_id: RoomId) -> bool {
+    /// True if this card is in a room occupant position
+    pub fn is_occupant(&self) -> bool {
         matches!(
             self,
-            CardPosition::Room(room, location)
-            if room_id == *room && *location == RoomLocation::Occupant
+            CardPosition::Room(_, location)
+            if *location == RoomLocation::Occupant
+        )
+    }
+
+    /// True if this card is in a room defender position
+    pub fn is_defender(&self) -> bool {
+        matches!(
+            self,
+            CardPosition::Room(_, location)
+            if *location == RoomLocation::Defender
         )
     }
 

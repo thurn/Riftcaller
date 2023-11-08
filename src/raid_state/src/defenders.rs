@@ -14,30 +14,9 @@
 
 use anyhow::Result;
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, Side};
 use game_data::raid_data::{RaidInfo, RaidStep};
-use rules::mana::ManaPurpose;
-use rules::{mana, queries, CardDefinitionExt};
+use rules::flags;
 use with_error::WithError;
-
-/// Returns true if the raid `defender_id` is currently face down and could be
-/// turned face up automatically by paying its mana cost.
-///
-/// Returns an error if there is no active raid or if this is an invalid
-/// defender.
-pub fn can_summon_defender(game: &GameState, defender_id: CardId) -> bool {
-    let mut can_summon = game.card(defender_id).is_face_down();
-
-    if let Some(cost) = queries::mana_cost(game, defender_id) {
-        can_summon &= cost <= mana::get(game, Side::Overlord, ManaPurpose::PayForCard(defender_id))
-    }
-
-    if let Some(custom_cost) = &game.card(defender_id).definition().cost.custom_cost {
-        can_summon &= (custom_cost.can_pay)(game, defender_id);
-    }
-
-    can_summon
-}
 
 /// Mutates the provided game to update the current raid encounter to the next
 /// available encounter number, if one is available. Returns the next
@@ -69,7 +48,7 @@ fn next_defender(game: &GameState, info: RaidInfo, less_than: usize) -> Option<u
     let defenders = game.defender_list(target);
     let found = defenders.iter().enumerate().rev().find(|(index, card_id)| {
         let in_range = *index < less_than;
-        in_range && (game.card(**card_id).is_face_up() || can_summon_defender(game, **card_id))
+        in_range && (game.card(**card_id).is_face_up() || flags::can_summon(game, **card_id))
     });
 
     found.map(|(index, _)| index)

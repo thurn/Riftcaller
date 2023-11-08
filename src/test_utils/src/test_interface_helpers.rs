@@ -50,6 +50,9 @@ pub enum Button {
     SelectForMultipart,
     SwapCard,
     ChooseOnPlay,
+    ChooseForPrompt,
+    ChooseOccupantForPrompt,
+    ChooseDefenderForPrompt,
     Evade,
     ClosePriorityPrompt,
 }
@@ -150,8 +153,10 @@ impl TestInterfaceHelpers for TestSession {
 
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {
         let string = text.into();
-        self.click_on_with_result(player_id, string.clone())
-            .unwrap_or_else(|e| panic!("Error clicking on {string}.\n{e:?}"))
+        self.click_on_with_result(player_id, string.clone()).unwrap_or_else(|e| {
+            let t = self.player(player_id).interface.all_active_nodes().all_text();
+            panic!("Error clicking on {string}.\nCurrent Text:\n{t}\n{e:?}")
+        })
     }
 
     fn click_on_with_result(
@@ -211,6 +216,9 @@ fn resolve_button(button: Button) -> String {
         Button::SelectForMultipart => "Select",
         Button::SwapCard => "Swap",
         Button::ChooseOnPlay => "Choose",
+        Button::ChooseForPrompt => "Choose",
+        Button::ChooseOccupantForPrompt => "Occupant",
+        Button::ChooseDefenderForPrompt => "Defender",
         Button::Evade => "Evade",
         Button::ClosePriorityPrompt => "Continue",
     }

@@ -222,6 +222,8 @@ pub struct PlayCardBrowser {
 pub enum PromptChoiceLabel {
     Sacrifice,
     Return(ManaValue),
+    Occupant,
+    Defender,
 }
 
 /// A specific card choice shown in a [ButtonPrompt].

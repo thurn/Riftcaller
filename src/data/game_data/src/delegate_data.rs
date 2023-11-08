@@ -225,6 +225,22 @@ impl Flag {
             Self::Override(current) => Self::Override(current && value),
         }
     }
+
+    pub fn override_if_true(self, value: bool) -> Self {
+        if value {
+            self.with_override(value)
+        } else {
+            self
+        }
+    }
+
+    pub fn override_if_false(self, value: bool) -> Self {
+        if value {
+            self
+        } else {
+            self.with_override(value)
+        }
+    }
 }
 
 impl From<Flag> for bool {
@@ -506,6 +522,8 @@ pub enum Delegate {
     ///
     /// Note that Scheme cards can be progressed by default.
     CanProgressCard(QueryDelegate<CardId, Flag>),
+    /// Can the source card currently be summoned?
+    CanSummon(QueryDelegate<CardId, Flag>),
     /// Can the source card (typically a weapon) take an encounter action
     /// against the target card (typically a minion) during a raid?
     CanEncounterTarget(QueryDelegate<CardEncounter, Flag>),
