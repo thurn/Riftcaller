@@ -427,6 +427,9 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         (GamePrompt::PlayCardBrowser(_), PromptAction::SkipPlayingCard) => {
             play_card::invoke_play_card_browser(game, user_side, None)?;
         }
+        (GamePrompt::PriorityPrompt, PromptAction::ButtonPromptSelect(0)) => {
+            game.player_mut(user_side).prompt_queue.remove(0);
+        }
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
 

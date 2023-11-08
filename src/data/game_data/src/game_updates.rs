@@ -138,7 +138,10 @@ pub struct AnimationTracker {
     pub state: AnimationState,
     /// List of update steps with snapshots of the game state
     pub steps: Vec<AnimationStep>,
-    /// Most recent user prompt response, if any
+    /// Most recent user prompt response, if any.
+    ///
+    /// Used to show a speech bubble to the opponent with the result of prompt
+    /// choices.
     pub last_prompt_response: Option<(Side, PromptChoice)>,
 }
 

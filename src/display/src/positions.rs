@@ -363,6 +363,7 @@ fn prompt_position_override(
                 return Some(for_card(card, hand_storage()));
             }
         }
+        GamePrompt::PriorityPrompt => {}
     }
 
     None

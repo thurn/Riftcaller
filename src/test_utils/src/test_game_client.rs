@@ -326,7 +326,9 @@ pub trait CardNamesExt {
 
     fn contains_card(&self, name: CardName) -> bool;
 
-    fn count_with_name(&self, name: &'static str) -> usize;
+    fn curse_count(&self) -> usize;
+
+    fn wound_count(&self) -> usize;
 }
 
 impl CardNamesExt for Vec<&ClientCard> {
@@ -375,9 +377,17 @@ impl CardNamesExt for Vec<&ClientCard> {
         self.iter().any(|c| c.title() == name.displayed_name())
     }
 
-    fn count_with_name(&self, name: &'static str) -> usize {
-        self.iter().filter(|c| c.title() == name).count()
+    fn curse_count(&self) -> usize {
+        count_with_name(self, "Curse")
     }
+
+    fn wound_count(&self) -> usize {
+        count_with_name(self, "Wound")
+    }
+}
+
+fn count_with_name(cards: &[&ClientCard], name: &'static str) -> usize {
+    cards.iter().filter(|c| c.title() == name).count()
 }
 
 /// Simulated card state in an ongoing TestSession

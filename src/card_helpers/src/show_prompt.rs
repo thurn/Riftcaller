@@ -66,3 +66,13 @@ pub fn play_card_browser(
     }));
     Ok(())
 }
+
+/// Show a priority window prompt if one is not already displayed. This prompt
+/// allows a player to activate abilities when they otherwise could not.
+pub fn priority_window(game: &mut GameState, scope: Scope) {
+    if let Some(GamePrompt::PriorityPrompt) = game.player(scope.side()).prompt_queue.get(0) {
+        return;
+    }
+
+    game.player_mut(scope.side()).prompt_queue.push(GamePrompt::PriorityPrompt);
+}

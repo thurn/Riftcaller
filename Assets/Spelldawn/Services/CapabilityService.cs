@@ -24,7 +24,13 @@ namespace Spelldawn.Services
   {
     [SerializeField] Registry _registry = null!;
 
-    public PlayerName CurrentPriority { get; set; }
+    [SerializeField] PlayerName _currentPriority;
+
+    public PlayerName CurrentPriority
+    {
+      get => _currentPriority;
+      set => _currentPriority = value;
+    }
 
     /// <summary>
     /// Can the user *start* performing a character arrow action such as dragging a raid arrow.
@@ -124,9 +130,11 @@ namespace Spelldawn.Services
       {
         case PlayerName.User when CanExecuteAction(ClientAction.ActionOneofCase.PlayCard):
           userLight.SetActive(true);
+          opponentLight.SetActive(false);
           break;
         case PlayerName.Opponent:
           opponentLight.SetActive(true);
+          userLight.SetActive(false);
           break;
         case PlayerName.Unspecified:
         default:

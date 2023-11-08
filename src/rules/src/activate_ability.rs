@@ -19,12 +19,12 @@ use game_data::game_actions::CardTarget;
 use game_data::game_history::{AbilityActivationType, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState};
 use game_data::game_updates::GameAnimation;
-use game_data::primitives::AbilityId;
+use game_data::primitives::{AbilityId, Side};
 use game_data::state_machines::{ActivateAbilityData, ActivateAbilityStep};
 use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, mana, mutations, queries, CardDefinitionExt};
+use crate::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 
 /// Starts a new activate ability action
 pub fn initiate(game: &mut GameState, ability_id: AbilityId, target: CardTarget) -> Result<()> {
@@ -47,7 +47,11 @@ pub fn initiate(game: &mut GameState, ability_id: AbilityId, target: CardTarget)
 /// ignores the run request.
 pub fn run(game: &mut GameState) -> Result<()> {
     loop {
-        if !(game.overlord.prompt_queue.is_empty() & game.champion.prompt_queue.is_empty()) {
+        if !(flags::prompt_queue_empty_or_has_priority_prompt(game, Side::Overlord)
+            && flags::prompt_queue_empty_or_has_priority_prompt(game, Side::Champion))
+        {
+            // Stop the state machine when a prompt is shown. Continue the state machine for
+            // priority prompts, since these are for the purpose of activating abilities.
             break;
         }
 

@@ -173,7 +173,7 @@ pub fn can_take_activate_ability_action(
         return false;
     }
 
-    let mut can_activate = can_take_game_actions(game)
+    let mut can_activate = can_take_game_actions(game, side)
         && side == ability_id.side()
         && has_priority(game, side)
         && card.is_face_up()
@@ -355,19 +355,26 @@ pub fn in_main_phase_with_action_point(game: &GameState, side: Side) -> bool {
 /// Returns true if the provided `side` player is currently in their Main phase
 /// with no pending prompt responses, and thus can take a primary game action.
 pub fn in_main_phase(game: &GameState, side: Side) -> bool {
-    can_take_game_actions(game)
+    can_take_game_actions(game, side)
         && game.info.turn.side == side
         && game.info.turn_state != TurnState::Ended
         && game.raid.is_none()
 }
 
+/// Returns true if the `side` player's prompt queue is current empty *or* if
+/// their current prompt is a [GamePrompt::PriorityPrompt].
+pub fn prompt_queue_empty_or_has_priority_prompt(game: &GameState, side: Side) -> bool {
+    game.player(side).prompt_queue.is_empty()
+        || matches!(game.player(side).prompt_queue.get(0), Some(GamePrompt::PriorityPrompt))
+}
+
 /// Returns true if either player can currently take game standard game actions
 /// This generally means the game is currently in progress and neither player is
 /// facing a card prompt.
-pub fn can_take_game_actions(game: &GameState) -> bool {
+pub fn can_take_game_actions(game: &GameState, side: Side) -> bool {
     game.info.phase.is_playing()
-        && game.overlord.prompt_queue.is_empty()
-        && game.champion.prompt_queue.is_empty()
+        && prompt_queue_empty_or_has_priority_prompt(game, side)
+        && game.player(side.opponent()).prompt_queue.is_empty()
 }
 
 /// Can the Champion choose to not use a weapon ability when encountering
@@ -376,7 +383,7 @@ pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool 
     dispatch::perform_query(
         game,
         CanUseNoWeaponQuery(card_id),
-        Flag::new(can_take_game_actions(game)),
+        Flag::new(can_take_game_actions(game, Side::Champion)),
     )
     .into()
 }
@@ -387,7 +394,7 @@ pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) 
     dispatch::perform_query(
         game,
         CanEndRaidAccessPhaseQuery(raid_id),
-        Flag::new(can_take_game_actions(game)),
+        Flag::new(can_take_game_actions(game, Side::Champion)),
     )
     .into()
 }
@@ -399,7 +406,7 @@ pub fn can_take_end_turn_action(game: &GameState, side: Side) -> bool {
 
 /// Returns whether a player can currently take the 'start turn' action.
 pub fn can_take_start_turn_action(game: &GameState, side: Side) -> bool {
-    can_take_game_actions(game)
+    can_take_game_actions(game, side)
         && game.info.turn.side == side.opponent()
         && game.info.turn_state == TurnState::Ended
 }
@@ -407,7 +414,7 @@ pub fn can_take_start_turn_action(game: &GameState, side: Side) -> bool {
 /// Is the `side` player currently able to unveil the provided card?
 pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId) -> bool {
     let definition = &game.card(card_id).definition();
-    can_take_game_actions(game)
+    can_take_game_actions(game, side)
         && side == Side::Overlord
         && has_priority(game, side)
         && game.card(card_id).is_face_down()

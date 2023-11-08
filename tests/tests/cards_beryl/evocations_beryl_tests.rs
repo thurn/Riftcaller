@@ -140,3 +140,81 @@ pub fn backup_plan_cannot_activate_outside_encounter() {
     g.initiate_raid(RoomId::Vault);
     assert!(g.activate_ability_with_result(id, 0).is_err());
 }
+
+#[test]
+pub fn planar_sanctuary() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+        )
+        .build();
+    let id = g.create_and_play(CardName::PlanarSanctuary);
+    g.initiate_raid(RoomId::RoomA);
+    g.click(Button::Score);
+    g.activate_ability(id, 1);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 1);
+    assert!(g
+        .user
+        .cards
+        .evocations_and_allies()
+        .find_card(CardName::PlanarSanctuary)
+        .arena_icon()
+        .contains('1'));
+    g.click(Button::EndRaid);
+}
+
+#[test]
+pub fn planar_sanctuary_activate_after_curse() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let id = g.create_and_play(CardName::PlanarSanctuary);
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    assert!(g
+        .user
+        .cards
+        .evocations_and_allies()
+        .find_card(CardName::PlanarSanctuary)
+        .arena_icon()
+        .contains('2'));
+    g.create_and_play(CardName::TestSpellGiveCurse);
+    assert!(g.me().can_take_action());
+    assert!(!g.opponent.this_player.can_take_action());
+    assert_eq!(g.user.cards.hand().curse_count(), 1);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 0);
+    g.activate_ability(id, 1);
+    assert_eq!(g.user.cards.hand().curse_count(), 0);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 1);
+    assert!(g.me().can_take_action());
+    assert!(!g.opponent.this_player.can_take_action());
+    assert!(g
+        .user
+        .cards
+        .evocations_and_allies()
+        .find_card(CardName::PlanarSanctuary)
+        .arena_icon()
+        .contains('1'));
+    g.click(Button::ClosePriorityPrompt);
+    assert!(!g.me().can_take_action());
+    assert!(g.opponent.this_player.can_take_action());
+}
+
+#[test]
+pub fn planar_sanctuary_activate_after_damage() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5)).build();
+    let id = g.create_and_play(CardName::PlanarSanctuary);
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    g.create_and_play(CardName::TestSpellDeal1Damage);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 4);
+    assert!(g.me().can_take_action());
+    assert!(!g.opponent.this_player.can_take_action());
+    g.activate_ability(id, 1);
+    assert_eq!(g.user.cards.hand().real_cards().len(), 5);
+    assert!(g.me().can_take_action());
+    assert!(!g.opponent.this_player.can_take_action());
+    g.click(Button::ClosePriorityPrompt);
+    assert!(!g.me().can_take_action());
+    assert!(g.opponent.this_player.can_take_action());
+}

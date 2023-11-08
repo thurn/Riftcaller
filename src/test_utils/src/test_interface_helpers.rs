@@ -51,6 +51,7 @@ pub enum Button {
     SwapCard,
     ChooseOnPlay,
     Evade,
+    ClosePriorityPrompt,
 }
 
 pub trait TestInterfaceHelpers {
@@ -211,6 +212,7 @@ fn resolve_button(button: Button) -> String {
         Button::SwapCard => "Swap",
         Button::ChooseOnPlay => "Choose",
         Button::Evade => "Evade",
+        Button::ClosePriorityPrompt => "Continue",
     }
     .to_string()
 }

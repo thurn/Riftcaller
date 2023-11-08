@@ -111,6 +111,8 @@ pub enum CardName {
     TestScheme3_10,
     /// Scheme requiring 4 progress to score 20 points
     TestScheme4_20,
+    /// Scheme requiring 1 progress to score 10 points
+    TestScheme1_10,
     /// Blank project with a mana cost of 2
     TestProject2Cost3Raze,
     /// Minion with 5 health, 3 mana cost, and an "end the raid" ability.

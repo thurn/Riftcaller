@@ -29,7 +29,7 @@ pub fn build(context: &CardViewContext) -> RulesText {
     let mut lines = vec![];
     let abilities = aggregate_named_triggers(&context.definition().abilities);
     for ability in abilities {
-        let mut text = build_text(context, &ability, ability.len() > 1);
+        let mut text = build_text(context, &ability, should_add_ability_period(&ability));
         text = text.replace(" ,", ",");
         text = text.replace(" .", ".");
 
@@ -251,6 +251,10 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Evade => "evade".to_string(),
         TextToken::Unsummon => "unsummon".to_string(),
     }
+}
+
+fn should_add_ability_period(text: &[TextElement]) -> bool {
+    !(text.len() == 1 && matches!(text[0], TextElement::Token(_)))
 }
 
 fn encounter_boost<'a>(context: &'a CardViewContext) -> Option<&'a AttackBoost> {

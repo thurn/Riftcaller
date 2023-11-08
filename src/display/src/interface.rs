@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::game_actions::{ActionButtons, GamePrompt, GameStateAction};
+use game_data::game_actions::{
+    ActionButtons, ButtonPrompt, ButtonPromptContext, GamePrompt, GameStateAction, PromptChoice,
+};
+use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::primitives::Side;
 use prompts::prompts;
@@ -31,6 +34,14 @@ pub fn render(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
             GamePrompt::ButtonPrompt(prompt) => button_prompt::controls(game, side, prompt),
             GamePrompt::CardSelector(prompt) => card_selector::controls(prompt),
             GamePrompt::PlayCardBrowser(prompt) => play_card_browser::controls(prompt),
+            GamePrompt::PriorityPrompt => button_prompt::controls(
+                game,
+                side,
+                &ButtonPrompt {
+                    context: Some(ButtonPromptContext::PriorityWindow),
+                    choices: vec![PromptChoice::new().effect(GameEffect::Continue)],
+                },
+            ),
         };
     } else if let Some(raid) = &game.raid {
         return raid_prompt::build(game, raid, side);

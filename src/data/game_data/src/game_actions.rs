@@ -92,6 +92,8 @@ pub enum ButtonPromptContext {
     /// limit for cards in play of this type. Player must sacrifice until they
     /// have the provided number of minions in the room.
     CardLimit(CardType, Option<CardSubtype>),
+    /// A player has a priority window in which to activate abilities
+    PriorityWindow,
     /// Sacrifice a card to prevent up to `DamageAmount` damage. Will inspect
     /// the current incoming damage value and display only the lower of the two
     /// values.
@@ -280,6 +282,9 @@ pub enum GamePrompt {
     ButtonPrompt(ButtonPrompt),
     CardSelector(CardSelectorPrompt),
     PlayCardBrowser(PlayCardBrowser),
+    /// Prompt which lets a player activate abilities when they otherwise could
+    /// not
+    PriorityPrompt,
 }
 
 /// Possible actions in response to the [GamePrompt] currently being shown to a

@@ -76,7 +76,7 @@ pub fn stalwart_protector() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
+    assert_eq!(g.user.cards.hand().curse_count(), 0);
     assert!(g.user.cards.discard_pile().contains_card(CardName::StalwartProtector));
 }
 
@@ -87,7 +87,7 @@ pub fn stalwart_protector_pass() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::NoPromptAction);
-    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 1);
+    assert_eq!(g.user.cards.hand().curse_count(), 1);
     assert!(g.user.cards.evocations_and_allies().contains_card(CardName::StalwartProtector));
 }
 
@@ -100,10 +100,10 @@ pub fn stalwart_protector_multiple_copies() {
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::NoPromptAction);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
+    assert_eq!(g.user.cards.hand().curse_count(), 0);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
+    assert_eq!(g.user.cards.hand().curse_count(), 0);
 }
 
 #[test]
@@ -111,7 +111,7 @@ pub fn stalwart_protector_activate() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
     let id = g.create_and_play(CardName::StalwartProtector);
     g.activate_ability(id, 1);
-    assert_eq!(g.user.cards.hand().count_with_name("Curse"), 0);
+    assert_eq!(g.user.cards.hand().curse_count(), 0);
     assert!(g.user.cards.discard_pile().contains_card(CardName::StalwartProtector));
 }
 
@@ -141,7 +141,7 @@ pub fn spellcraft_ritualist() {
     let cost = 2;
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::SpellcraftRitualist);
-    assert_eq!(1, g.user.cards.display_shelf().count_with_name("Wound"));
+    assert_eq!(1, g.user.cards.display_shelf().wound_count());
     g.create_and_play(CardName::TestChampionSpell);
     assert_eq!(
         g.me().mana(),

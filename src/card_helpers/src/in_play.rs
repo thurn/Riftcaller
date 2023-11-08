@@ -61,6 +61,12 @@ pub fn on_will_receive_curses(mutation: MutationFn<CurseCount>) -> Delegate {
     })
 }
 
+/// A delegate which triggers if a card is face up in play when one or more
+/// curses are received.
+pub fn on_curse(mutation: MutationFn<CurseCount>) -> Delegate {
+    Delegate::CursesReceived(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
 /// A `RequirementFn` which matches for face up in play cards and events
 /// targeting a specific room.
 pub fn in_play_with_room<M: RoomIdMarker>(

@@ -14,13 +14,14 @@
 
 use card_helpers::effects::Effects;
 use card_helpers::{costs, delegates, in_play, raids, requirements, show_prompt, text, this};
+use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use core_ui::{design, icons};
 use game_data::card_definition::{
     Ability, ActivatedAbility, CardConfig, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::CardCounter;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
@@ -195,8 +196,19 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Rare,
         abilities: vec![
             Ability::new_with_delegate(
-                text!["When a scheme is scored,", AddPowerCharges(2)],
-                in_play::on_card_scored(|g, s, _| mutations::add_power_charges(g, s.card_id(), 2)),
+                text!["When a scheme is scored,", AddPowerCharges(meta.upgrade(2, 3))],
+                in_play::on_card_scored(|g, s, _| {
+                    Effects::new()
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(3))
+                                .scale(2.0)
+                                .effect_color(design::BLUE_500),
+                        )
+                        .apply(g);
+
+                    mutations::add_power_charges(g, s.card_id(), s.upgrade(2, 3))
+                }),
             ),
             ActivatedAbility::new(
                 text![text!["Remove a curse"], text!["Draw a card"]],
@@ -208,7 +220,19 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }))
             .build(),
-            Ability::new(text!["You may activate this card after receiving a curse or damage"]),
+            Ability::new(text!["You may activate this card after being cursed or damaged"])
+                .delegate(in_play::on_curse(|g, s, _| {
+                    if g.card(s.card_id()).counters(CardCounter::PowerCharges) > 0 {
+                        show_prompt::priority_window(g, s);
+                    }
+                    Ok(())
+                }))
+                .delegate(in_play::on_damage(|g, s, _| {
+                    if g.card(s.card_id()).counters(CardCounter::PowerCharges) > 0 {
+                        show_prompt::priority_window(g, s);
+                    }
+                    Ok(())
+                })),
         ],
         config: CardConfig::default(),
     }

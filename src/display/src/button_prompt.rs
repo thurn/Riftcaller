@@ -79,6 +79,8 @@ fn should_show_bubble(builder: &ResponseBuilder, side: Side, choice: &PromptChoi
 
 fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>) -> Option<Node> {
     match prompt_context? {
+        ButtonPromptContext::Card(_) => None,
+        ButtonPromptContext::PriorityWindow => GameInstructions::new("Activate abilities?").build(),
         ButtonPromptContext::CardLimit(card_type, subtype) => match card_type {
             CardType::Minion => GameInstructions::new(
                 "Minion limit exceeded. You must sacrifice a minion in this room.".to_string(),
@@ -124,7 +126,6 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
             ))
             .build()
         }
-        ButtonPromptContext::Card(_) => None,
         ButtonPromptContext::CardToGiveToOpponent => {
             GameInstructions::new("Select card to give opponent").build()
         }

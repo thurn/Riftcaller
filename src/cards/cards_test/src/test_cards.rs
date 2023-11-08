@@ -85,6 +85,18 @@ pub fn test_scheme_420(metadata: CardMetadata) -> CardDefinition {
     }
 }
 
+pub fn test_scheme_110(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestScheme1_10,
+        cost: scheme(),
+        card_type: CardType::Scheme,
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { progress_requirement: 1, points: 10 })
+            .build(),
+        ..test_overlord_spell(metadata)
+    }
+}
+
 pub fn test_project_2_cost_3_raze(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestProject2Cost3Raze,
