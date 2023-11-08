@@ -55,8 +55,8 @@ pub enum GameEffect {
     /// 'prompt_selected_cards' list. Returns an error if no card is selected.
     /// Removes the chosen card from the 'prompt_selected_cards' list.
     SwapWithSelected(Side, CardId),
-    /// Sets the 'source' card's chosen card to 'target'.
-    SetChosenCard { source: CardId, target: CardId },
+    /// Sets the 'source' ability's chosen card target to 'target'.
+    SetEntersPlayTarget { source: AbilityId, target: CardId },
     /// Evade the current raid encounter, jumping to the next raid state
     EvadeCurrentEncounter,
 }

@@ -241,8 +241,8 @@ pub fn choose_a_minion_in_target_room() -> Ability {
                 g.defenders_unordered(played.target.room_id()?)
                     .map(|card| {
                         PromptChoice::new()
-                            .effect(GameEffect::SetChosenCard {
-                                source: s.card_id(),
+                            .effect(GameEffect::SetEntersPlayTarget {
+                                source: s.ability_id(),
                                 target: card.id,
                             })
                             .anchor_card(card.id)

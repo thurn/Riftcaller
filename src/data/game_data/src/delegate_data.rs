@@ -521,6 +521,10 @@ pub enum Delegate {
     /// Can the Champion choose to use the 'End Raid' button to end the access
     /// phase of a raid?
     CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
+    /// Should an 'end the raid' ability with the given ID be prevented?
+    ShouldPreventEndRaidAbility(QueryDelegate<RaidEvent<AbilityId>, Flag>),
+    /// Should a 'destroy' ability with the given ID be prevented?
+    ShouldPreventDestroyCardAbility(QueryDelegate<RaidEvent<AbilityId>, Flag>),
 
     /// Query the current mana cost of a card. Invoked with [Cost::mana].
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),

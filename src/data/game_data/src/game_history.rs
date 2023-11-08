@@ -18,6 +18,7 @@ use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
+use crate::card_state::CardChoice;
 use crate::delegate_data::{RaidEvent, UsedWeapon};
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
@@ -46,7 +47,7 @@ pub enum HistoryEvent {
     /// Evocation destroyed via the standard game action    
     DispelEvocationAction,
     /// A card was played, either via the standard game action or initiated by
-    /// [an ability of another card.
+    /// an ability of another card.
     PlayCard(CardId, CardTarget, InitiatedBy),
     /// A card ability was activated
     ActivateAbility(AbilityId, CardTarget, AbilityActivationType),
@@ -75,6 +76,9 @@ pub enum HistoryEvent {
     DealDamage(u32),
     /// Curses have been given to the Champion player
     GiveCurse(CurseCount),
+    /// A card ability choice has been made, e.g. naming a target room for a
+    /// spell's ongoing effect.
+    CardChoice(AbilityId, CardChoice),
 }
 
 impl HistoryEvent {

@@ -24,8 +24,7 @@ use serde::{Deserialize, Serialize};
 use crate::card_name::CardVariant;
 use crate::game_actions::CardTarget;
 use crate::primitives::{
-    CardId, CardType, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId,
-    RoomLocation, Side,
+    CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId, RoomLocation, Side,
 };
 
 /// Identifies the location of a card during an active game
@@ -125,12 +124,11 @@ pub enum CardCounter {
     PowerCharges,
 }
 
-#[derive(PartialEq, Eq, Hash, Debug, Clone, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum CardChoice {
     None,
     Card(CardId),
     Room(RoomId),
-    CardType(CardType),
 }
 
 impl CardChoice {
@@ -144,13 +142,6 @@ impl CardChoice {
     pub fn chosen_room(&self) -> Option<RoomId> {
         match self {
             Self::Room(id) => Some(*id),
-            _ => None,
-        }
-    }
-
-    pub fn chosen_card_type(&self) -> Option<CardType> {
-        match self {
-            Self::CardType(card_type) => Some(*card_type),
             _ => None,
         }
     }
@@ -198,7 +189,7 @@ pub struct CardState {
     ///
     /// Prefer to rely on game history instead of adding state here, if at all
     /// possible.
-    card_choice: CardChoice,
+    enters_play_choice: CardChoice,
 }
 
 impl CardState {
@@ -216,7 +207,7 @@ impl CardState {
                 is_face_up: false,
                 ..CardData::default()
             },
-            card_choice: CardChoice::None,
+            enters_play_choice: CardChoice::None,
         }
     }
 
@@ -239,7 +230,7 @@ impl CardState {
                 is_face_up,
                 ..CardData::default()
             },
-            card_choice: CardChoice::None,
+            enters_play_choice: CardChoice::None,
         }
     }
 
@@ -253,16 +244,21 @@ impl CardState {
         }
     }
 
-    pub fn card_choice(&self) -> &CardChoice {
+    /// Returns a [CardChoice] made by the user when a card is played.
+    pub fn enters_play_choice(&self) -> &CardChoice {
         if self.position.in_play() {
-            &self.card_choice
+            &self.enters_play_choice
         } else {
             &CardChoice::None
         }
     }
 
-    pub fn set_card_choice(&mut self, choice: CardChoice) {
-        self.card_choice = choice;
+    /// Sets a [CardChoice] for this card when it is played.
+    ///
+    /// For other instances of card choices & stateful card behavior, prefer to
+    /// rely on game history instead.
+    pub fn set_enters_play_choice(&mut self, choice: CardChoice) {
+        self.enters_play_choice = choice;
     }
 
     /// Retrieves the last known value for a [CardCounter], returning a value
@@ -295,7 +291,7 @@ impl CardState {
         self.data.progress = 0;
         self.data.stored_mana = 0;
         self.data.power_charges = 0;
-        self.card_choice = CardChoice::None;
+        self.enters_play_choice = CardChoice::None;
     }
 
     pub fn side(&self) -> Side {

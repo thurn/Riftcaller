@@ -70,8 +70,10 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             mutations::move_card(game, card_id, target_position)?;
             mutations::move_card(game, target, source_position)?;
         }
-        GameEffect::SetChosenCard { source, target } => {
-            game.card_mut(source).set_card_choice(CardChoice::Card(target));
+        GameEffect::SetEntersPlayTarget { source, target } => {
+            let choice = CardChoice::Card(target);
+            game.card_mut(source.card_id).set_enters_play_choice(choice);
+            mutations::record_card_choice(game, source, choice);
         }
         GameEffect::EvadeCurrentEncounter => {
             mutations::apply_raid_jump(game, RaidJumpRequest::EvadeCurrentMinion);

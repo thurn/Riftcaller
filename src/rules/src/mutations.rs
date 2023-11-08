@@ -24,7 +24,7 @@ use std::cmp;
 use anyhow::Result;
 use constants::game_constants;
 use game_data::card_name::CardVariant;
-use game_data::card_state::{CardCounter, CardState};
+use game_data::card_state::{CardChoice, CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
@@ -37,8 +37,8 @@ use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
-    ActionCount, CardId, ManaValue, PointsValue, PowerChargeValue, RoomId, RoomLocation, Side,
-    TurnNumber,
+    ActionCount, CardId, HasAbilityId, ManaValue, PointsValue, PowerChargeValue, RoomId,
+    RoomLocation, Side, TurnNumber,
 };
 use game_data::{random, undo_tracker};
 use tracing::{debug, instrument};
@@ -577,6 +577,11 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
 /// Stops the currently-active 'play card' game action.
 pub fn abort_playing_card(game: &mut GameState) {
     game.state_machines.play_card = None;
+}
+
+/// Record a decision for a card ability, typically a targeting decision.
+pub fn record_card_choice(game: &mut GameState, ability: impl HasAbilityId, choice: CardChoice) {
+    game.add_history_event(HistoryEvent::CardChoice(ability.ability_id(), choice));
 }
 
 /// Applies a [RaidJumpRequest] to the provided `game` if there is currently an
