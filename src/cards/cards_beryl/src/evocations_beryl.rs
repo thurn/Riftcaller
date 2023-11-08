@@ -208,9 +208,7 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }))
             .build(),
-            Ability::new(text![
-                "You may activate this card after receiving a curse or taking damage"
-            ]),
+            Ability::new(text!["You may activate this card after receiving a curse or damage"]),
         ],
         config: CardConfig::default(),
     }
