@@ -32,7 +32,7 @@ use game_data::delegate_data::{
     CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent,
     DuskEvent, EnterArenaEvent, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
     RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
-    StoredManaTakenEvent, SummonMinionEvent, UnveilCardEvent,
+    StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
 use game_data::game_history::{CardChoiceEvent, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
@@ -463,8 +463,8 @@ pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32)
 }
 
 /// Pays a card's cost and turns it face up, returning an error if the
-/// card is already face-up or cannot be unveiled for any other reason.
-pub fn unveil_card(game: &mut GameState, card_id: CardId) -> Result<()> {
+/// card is already face-up or cannot be summoned for any other reason.
+pub fn summon_project(game: &mut GameState, card_id: CardId) -> Result<()> {
     verify!(game.card(card_id).is_face_down(), "Card is not face-down");
     verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
@@ -484,23 +484,23 @@ pub fn unveil_card(game: &mut GameState, card_id: CardId) -> Result<()> {
             mana::spend(game, card_id.side, ManaPurpose::PayForCard(card_id), cost)?;
             turn_face_up(game, card_id);
         }
-        _ => fail!("Insufficient mana available to unveil project"),
+        _ => fail!("Insufficient mana available to summon project"),
     }
 
-    game.add_animation(|| GameAnimation::UnveilCard(card_id));
-    dispatch::invoke_event(game, UnveilCardEvent(card_id))?;
+    game.add_animation(|| GameAnimation::SummonProject(card_id));
+    dispatch::invoke_event(game, SummonProjectEvent(card_id))?;
 
     Ok(())
 }
 
-/// Equivalent function to [unveil_card] which ignores costs.
-pub fn unveil_card_ignoring_costs(game: &mut GameState, card_id: CardId) -> Result<()> {
+/// Equivalent function to [summon_project] which ignores costs.
+pub fn summon_project_ignoring_costs(game: &mut GameState, card_id: CardId) -> Result<()> {
     verify!(game.card(card_id).is_face_down(), "Card is not face-down");
     verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
     turn_face_up(game, card_id);
-    game.add_animation(|| GameAnimation::UnveilCard(card_id));
-    dispatch::invoke_event(game, UnveilCardEvent(card_id))?;
+    game.add_animation(|| GameAnimation::SummonProject(card_id));
+    dispatch::invoke_event(game, SummonProjectEvent(card_id))?;
 
     Ok(())
 }

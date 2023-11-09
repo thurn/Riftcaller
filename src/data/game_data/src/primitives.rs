@@ -517,18 +517,18 @@ impl Display for CardType {
 /// Subtypes of cards
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, EnumString, Serialize, Deserialize)]
 pub enum CardSubtype {
-    /// Cards with the "Trap" subtype cannot be unveiled
+    /// Cards with the "Trap" subtype cannot be summoned
     Trap,
-    /// Cards with the "Duskbound" subtype can be unveiled at the end of the
+    /// Cards with the "Duskbound" subtype can be summoned at the end of the
     /// Champion's turn.
     Duskbound,
-    /// Cards with the "Nightbound" subtype can be unveiled during the
+    /// Cards with the "Nightbound" subtype can be summoned during the
     /// Overlord's turn.
     Nightbound,
-    /// Cards with the "Roombound" subtype can be unveiled when a room is
+    /// Cards with the "Roombound" subtype can be summoned when a room is
     /// approached by the Champion.
     Roombound,
-    /// Cards with the "Summonbound" subtype can be unveiled when a face-down
+    /// Cards with the "Summonbound" subtype can be summoned when a face-down
     /// minion is approached.
     Summonbound,
 

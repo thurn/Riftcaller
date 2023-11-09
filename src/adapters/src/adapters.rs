@@ -34,7 +34,7 @@ use crate::response_builder::ResponseBuilder;
 /// Possible game actions which can be associated with a client card identifier
 #[derive(Debug, Copy, Clone)]
 pub enum CustomCardIdentifier {
-    Unveil = 1,
+    SummonProject = 1,
     Curse = 2,
     Dispel = 3,
     Wound = 4,
@@ -44,7 +44,7 @@ pub enum CustomCardIdentifier {
 impl CustomCardIdentifier {
     pub fn from_u32(value: u32) -> Option<CustomCardIdentifier> {
         match value {
-            1 => Some(CustomCardIdentifier::Unveil),
+            1 => Some(CustomCardIdentifier::SummonProject),
             2 => Some(CustomCardIdentifier::Curse),
             3 => Some(CustomCardIdentifier::Dispel),
             _ => None,
@@ -84,11 +84,11 @@ pub fn ability_card_identifier(ability_id: AbilityId) -> CardIdentifier {
     }
 }
 
-/// Identifier for a card which provides the ability to unveil a project in
+/// Identifier for a card which provides the ability to summon a project in
 /// play.
-pub fn unveil_card_identifier(card_id: CardId) -> CardIdentifier {
+pub fn summon_project_card_identifier(card_id: CardId) -> CardIdentifier {
     CardIdentifier {
-        game_action: Some(CustomCardIdentifier::Unveil as u32),
+        game_action: Some(CustomCardIdentifier::SummonProject as u32),
         ..card_identifier(card_id)
     }
 }
@@ -109,8 +109,8 @@ pub enum ServerCardId {
     CardId(CardId),
     /// Card representing an ability
     AbilityId(AbilityId),
-    /// Card representing the implicit ability to unveil a project
-    UnveilCard(CardId),
+    /// Card representing the implicit ability to summon a project
+    SummonProject(CardId),
     /// Card representing the ability to remove a curse in hand
     CurseCard,
     /// Card representing the ability to destroy an evocation when the Champion
@@ -124,7 +124,7 @@ pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
 
     if let Some(action) = card_id.game_action.and_then(CustomCardIdentifier::from_u32) {
         return match action {
-            CustomCardIdentifier::Unveil => Ok(ServerCardId::UnveilCard(result)),
+            CustomCardIdentifier::SummonProject => Ok(ServerCardId::SummonProject(result)),
             CustomCardIdentifier::Curse => Ok(ServerCardId::CurseCard),
             CustomCardIdentifier::Dispel => Ok(ServerCardId::DispelCard),
             _ => fail!("Invalid CustomCardIdentifier"),

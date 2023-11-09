@@ -421,8 +421,8 @@ pub fn can_take_start_turn_action(game: &GameState, side: Side) -> bool {
         && game.info.turn_state == TurnState::Ended
 }
 
-/// Is the `side` player currently able to unveil the provided card?
-pub fn can_take_unveil_card_action(game: &GameState, side: Side, card_id: CardId) -> bool {
+/// Is the `side` player currently able to summon the provided project?
+pub fn can_take_summon_project_action(game: &GameState, side: Side, card_id: CardId) -> bool {
     let definition = &game.card(card_id).definition();
     can_take_game_actions(game, side)
         && side == Side::Overlord
@@ -455,12 +455,13 @@ pub fn can_take_dispel_evocation_action(game: &GameState, side: Side) -> bool {
 /// Returns true if the Overlord player currently has access to an effect they
 /// can activate outside of their normal main phase actions.
 pub fn overlord_has_instant_speed_actions(game: &GameState) -> bool {
-    game.occupants_in_all_rooms().any(|c| can_take_unveil_card_action(game, Side::Overlord, c.id))
+    game.occupants_in_all_rooms()
+        .any(|c| can_take_summon_project_action(game, Side::Overlord, c.id))
         || game.all_permanents(Side::Overlord).any(|c| can_use_any_card_ability(game, c.id))
 }
 
 /// Checks whether an Overlord card is currently in its assigned activation
-/// window based on its subtypes and can thus be unveiled or activated.
+/// window based on its subtypes and can thus be summoned or activated.
 ///
 /// Does not check legality of activation beyond the card's subtypes.
 pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {

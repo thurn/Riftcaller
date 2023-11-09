@@ -103,8 +103,8 @@ pub fn this_card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> b
     scope.card_id() == card_id.card_id()
 }
 
-pub fn when_unveiled(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::UnveilCard(EventDelegate { requirement: this_card, mutation })
+pub fn when_project_summoned(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::SummonProject(EventDelegate { requirement: this_card, mutation })
 }
 
 /// A minion delegate which triggers when it is encountered

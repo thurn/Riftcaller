@@ -34,3 +34,5 @@ pub const RAZE: &str = "\u{f0a3}";
 pub const UNDO: &str = "\u{f0e2}";
 pub const REDO: &str = "\u{f01e}";
 pub const EYE: &str = "\u{f06e}";
+pub const CARET_UP: &str = "\u{f0d8}";
+pub const ANGLE_UP: &str = "\u{f106}";

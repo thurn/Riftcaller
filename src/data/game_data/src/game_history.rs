@@ -57,8 +57,8 @@ pub enum HistoryEvent {
     PlayCard(CardId, CardTarget, InitiatedBy),
     /// A card ability was activated
     ActivateAbility(AbilityId, CardTarget, AbilityActivationType),
-    /// A face-down card has been unveiled.
-    UnveilCard(CardId),
+    /// A face-down card has been summoned.
+    SummonProject(CardId),
     /// A raid was started, either via a card effect or the standard game action
     RaidBegin(RaidEvent<InitiatedBy>),
     /// A minion has been summoned during a raid.

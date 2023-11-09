@@ -133,11 +133,13 @@ pub trait TestSessionHelpers {
     /// Activates an ability of a card with a target room
     fn activate_ability_with_target(&mut self, card_id: CardIdentifier, index: u32, target: RoomId);
 
-    /// Unveils a card in play, paying its mana cost and turning it face up.
-    fn unveil_card(&mut self, card_id: CardIdentifier);
+    /// Summons a project card in play, paying its mana cost and turning it face
+    /// up.
+    fn summon_project(&mut self, card_id: CardIdentifier);
 
-    /// Equivalent function to [Self::unveil_card] which returns the result.
-    fn unveil_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput>;
+    /// Equivalent function to [Self::summon_project] which returns the result.
+    fn summon_project_with_result(&mut self, card_id: CardIdentifier)
+        -> Result<GameResponseOutput>;
 
     /// Spends one of the `side` player's action points with no effect
     fn spend_action_point(&mut self, side: Side);
@@ -385,13 +387,18 @@ impl TestSessionHelpers for TestSession {
             .expect("Error activating ability");
     }
 
-    fn unveil_card(&mut self, card_id: CardIdentifier) {
-        self.unveil_card_with_result(card_id).expect("Error unveiling card");
+    fn summon_project(&mut self, card_id: CardIdentifier) {
+        self.summon_project_with_result(card_id).expect("Error summoning project");
     }
 
-    fn unveil_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput> {
-        let id =
-            CardIdentifier { game_action: Some(CustomCardIdentifier::Unveil as u32), ..card_id };
+    fn summon_project_with_result(
+        &mut self,
+        card_id: CardIdentifier,
+    ) -> Result<GameResponseOutput> {
+        let id = CardIdentifier {
+            game_action: Some(CustomCardIdentifier::SummonProject as u32),
+            ..card_id
+        };
         self.perform_action(
             Action::PlayCard(PlayCardAction { card_id: Some(id), target: None }),
             self.player_id_for_side(adapters::side(id.side).expect("Invalid Side")),

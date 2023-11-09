@@ -53,7 +53,6 @@ pub enum TextToken {
     Score,
     Combat,
     Encounter,
-    Unveil,
     BeginARaid,
     StoreMana(ManaValue),
     TakeMana(ManaValue),

@@ -114,7 +114,7 @@ pub fn coinery(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            projects::store_mana_on_unveil::<15>(),
+            projects::store_mana_on_summon::<15>(),
             Ability {
                 ability_type: activate_for_action(),
                 text: text![TakeMana(3)],
@@ -163,7 +163,7 @@ pub fn ore_refinery(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            projects::store_mana_on_unveil::<12>(),
+            projects::store_mana_on_summon::<12>(),
             Ability {
                 ability_type: AbilityType::Standard,
                 text: trigger_text(Dusk, text![TakeMana(3)]),

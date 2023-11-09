@@ -71,7 +71,7 @@ pub fn handle_game_action(
         GameAction::ActivateAbility(ability_id, target) => {
             activate_ability_action(game, user_side, *ability_id, *target)
         }
-        GameAction::UnveilCard(card_id) => unveil_action(game, user_side, *card_id),
+        GameAction::SummonProject(card_id) => summon_project_action(game, user_side, *card_id),
         GameAction::RemoveCurse => remove_curse_action(game, user_side),
         GameAction::DispelEvocation => dispel_evocation_action(game, user_side),
         GameAction::InitiateRaid(room_id) => {
@@ -160,17 +160,17 @@ fn activate_ability_action(
     activate_ability::initiate(game, ability_id, target)
 }
 
-/// The basic game action to unveil a project card in play.
+/// The basic game action to summon a project card in play.
 #[instrument(skip(game))]
-fn unveil_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
+fn summon_project_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
     verify!(
-        flags::can_take_unveil_card_action(game, user_side, card_id),
-        "Cannot unveil card {:?}",
+        flags::can_take_summon_project_action(game, user_side, card_id),
+        "Cannot summon card {:?}",
         card_id
     );
 
-    game.add_history_event(HistoryEvent::UnveilCard(card_id));
-    mutations::unveil_card(game, card_id)?;
+    game.add_history_event(HistoryEvent::SummonProject(card_id));
+    mutations::summon_project(game, card_id)?;
     Ok(())
 }
 
@@ -378,7 +378,7 @@ fn check_start_next_turn(game: &mut GameState) -> Result<()> {
     let ended = game.player(side).actions == 0;
 
     // Next turn immediately starts unless the current player is the Champion
-    // and the Overlord can unveil a Duskbound project.
+    // and the Overlord can summon a Duskbound project.
     if ended && (side == Side::Overlord || !flags::overlord_has_instant_speed_actions(game)) {
         start_next_turn(game)
     } else {

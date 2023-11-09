@@ -62,7 +62,7 @@ impl<T> Debug for CustomCost<T> {
     }
 }
 
-/// Cost to play, unveil, or summon a card, or activate an ability
+/// Cost to play or summon a card, or activate an ability
 #[derive(Debug, Clone)]
 pub struct Cost<T> {
     /// Cost in mana

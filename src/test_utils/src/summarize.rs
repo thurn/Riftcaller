@@ -183,7 +183,9 @@ impl Summarize for CardIdentifier {
         match adapters::server_card_id(self).expect("server_card_id") {
             ServerCardId::CardId(card_id) => summary.primitive(card_id),
             ServerCardId::AbilityId(ability_id) => summary.primitive(ability_id),
-            ServerCardId::UnveilCard(card_id) => summary.primitive(format!("Unveil {card_id:?}")),
+            ServerCardId::SummonProject(card_id) => {
+                summary.primitive(format!("Summon {card_id:?}"))
+            }
             ServerCardId::CurseCard => summary.primitive("RemoveCurse".to_string()),
             ServerCardId::DispelCard => summary.primitive("DispelCard".to_string()),
         }

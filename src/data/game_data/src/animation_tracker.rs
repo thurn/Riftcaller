@@ -76,9 +76,8 @@ pub enum GameAnimation {
     DrawCards(Side, Vec<CardId>),
     /// A player has shuffled cards into their deck
     ShuffleIntoDeck,
-    /// A card has been turned face-up via the unveil mechanic, typically a
-    /// project card
-    UnveilCard(CardId),
+    /// A project card has been turned face-up via the summon action
+    SummonProject(CardId),
     /// A minion card has been turned face-up.
     SummonMinion(CardId),
     /// A minion card has been turned face-down.

@@ -156,7 +156,6 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         TextTokenKind::Encounter => {
             entry("Encounter", "Triggers when this minion is approached during a raid")
         }
-        TextTokenKind::Unveil => entry("Unveil", "Triggers when this card is turned face up"),
         TextTokenKind::StoreMana => {
             entry("Store", format!("Add {} to this card to take later", icons::MANA))
         }

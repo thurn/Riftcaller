@@ -25,12 +25,13 @@ fn test_card_stored_mana() {
     assert!(g.dawn());
     assert_eq!(test_constants::STARTING_MANA, g.me().mana());
     g.move_to_end_step(Side::Champion);
-    g.unveil_card(id);
-    assert_eq!(test_constants::STARTING_MANA - test_constants::UNVEIL_COST, g.me().mana());
+    g.summon_project(id);
+    assert_eq!(test_constants::STARTING_MANA - test_constants::SUMMON_PROJECT_COST, g.me().mana());
     g.click(Button::StartTurn);
     assert!(g.dusk());
     assert_eq!(
-        test_constants::STARTING_MANA - test_constants::UNVEIL_COST + test_constants::MANA_TAKEN,
+        test_constants::STARTING_MANA - test_constants::SUMMON_PROJECT_COST
+            + test_constants::MANA_TAKEN,
         g.me().mana()
     );
     assert_eq!(
@@ -46,7 +47,7 @@ fn gemcarver() {
     let id = g.create_and_play(CardName::Gemcarver);
     g.pass_turn(Side::Overlord);
     g.move_to_end_step(Side::Champion);
-    g.unveil_card(id);
+    g.summon_project(id);
     g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
     g.pass_turn(Side::Overlord);

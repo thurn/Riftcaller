@@ -157,10 +157,10 @@ pub enum CardName {
     /// Artifact which stores mana on play, with the activated ability to take
     /// mana from it
     TestActivatedAbilityTakeMana,
-    /// Duskbound project which stores mana on unveil, with a triggered ability
+    /// Duskbound project which stores mana on summon, with a triggered ability
     /// to take mana at dusk.
     TestProjectTriggeredAbilityTakeManaAtDusk,
-    /// Roombound project which can be unveiled & sacrificed to end the current
+    /// Roombound project which can be summoned & sacrificed to end the current
     /// raid.
     TestProjectSacrificeToEndRaid,
     /// Project with two subtypes

@@ -349,7 +349,7 @@ pub enum GameAction {
     DrawCard,
     PlayCard(CardId, CardTarget),
     ActivateAbility(AbilityId, CardTarget),
-    UnveilCard(CardId),
+    SummonProject(CardId),
     RemoveCurse,
     DispelEvocation,
     InitiateRaid(RoomId),
@@ -374,7 +374,7 @@ impl fmt::Debug for GameAction {
             Self::ActivateAbility(id, target) => {
                 f.debug_tuple("@ActivateAbility").field(id).field(target).finish()
             }
-            Self::UnveilCard(id) => f.debug_tuple("@UnveilCard").field(id).finish(),
+            Self::SummonProject(id) => f.debug_tuple("@SummonProject").field(id).finish(),
             Self::RemoveCurse => write!(f, "@RemoveCurse"),
             Self::DispelEvocation => write!(f, "@DispelEvocation"),
             Self::InitiateRaid(arg0) => f.debug_tuple("@InitiateRaid").field(arg0).finish(),

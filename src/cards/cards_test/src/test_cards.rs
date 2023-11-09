@@ -345,11 +345,11 @@ pub fn activated_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
 pub fn triggered_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestProjectTriggeredAbilityTakeManaAtDusk,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Duskbound],
         abilities: vec![
-            projects::store_mana_on_unveil::<{ test_constants::MANA_STORED }>(),
+            projects::store_mana_on_summon::<{ test_constants::MANA_STORED }>(),
             Ability {
                 ability_type: AbilityType::Standard,
                 text: trigger_text(Dusk, text![TakeMana(test_constants::MANA_TAKEN)]),
@@ -372,7 +372,7 @@ pub fn triggered_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
 pub fn duskbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestDuskboundProject,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Duskbound],
         abilities: vec![],
@@ -384,7 +384,7 @@ pub fn duskbound_project(metadata: CardMetadata) -> CardDefinition {
 pub fn roombound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestRoomboundProject,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Roombound],
         abilities: vec![],
@@ -396,7 +396,7 @@ pub fn roombound_project(metadata: CardMetadata) -> CardDefinition {
 pub fn summonbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSummonboundProject,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Summonbound],
         abilities: vec![],
@@ -408,7 +408,7 @@ pub fn summonbound_project(metadata: CardMetadata) -> CardDefinition {
 pub fn nightbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestNightboundProject,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Nightbound],
         abilities: vec![],
@@ -420,7 +420,7 @@ pub fn nightbound_project(metadata: CardMetadata) -> CardDefinition {
 pub fn dusk_and_nightbound_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestDuskAndNightboundProject,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Duskbound, CardSubtype::Nightbound],
         abilities: vec![],
@@ -432,7 +432,7 @@ pub fn dusk_and_nightbound_project(metadata: CardMetadata) -> CardDefinition {
 pub fn trap_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestTrapProject,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Trap],
         abilities: vec![],
@@ -518,7 +518,7 @@ pub fn test_sacrifice_draw_card_artifact(metadata: CardMetadata) -> CardDefiniti
 pub fn test_sacrifice_end_raid_project(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestProjectSacrificeToEndRaid,
-        cost: cost(test_constants::UNVEIL_COST),
+        cost: cost(test_constants::SUMMON_PROJECT_COST),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Roombound],
         abilities: vec![Ability {

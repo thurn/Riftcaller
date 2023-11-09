@@ -44,7 +44,7 @@ pub const WEAPON_COST: ManaValue = 3;
 
 pub const ARTIFACT_COST: ManaValue = 1;
 
-pub const UNVEIL_COST: ManaValue = 3;
+pub const SUMMON_PROJECT_COST: ManaValue = 3;
 
 pub const EVOCATION_COST: ManaValue = 3;
 

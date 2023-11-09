@@ -221,7 +221,6 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Score => "Score".to_string(),
         TextToken::Combat => "Combat".to_string(),
         TextToken::Encounter => "Encounter".to_string(),
-        TextToken::Unveil => "<b>Unveil</b>".to_string(),
         TextToken::BeginARaid => "Begin a raid".to_string(),
         TextToken::StoreMana(n) => format!("store {n}{}", icons::MANA),
         TextToken::TakeMana(n) => format!("take {n}{}", icons::MANA),

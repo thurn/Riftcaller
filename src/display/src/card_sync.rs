@@ -101,7 +101,7 @@ pub fn activated_ability_cards(
 
     if card.is_face_down() && card.position().in_play() {
         if builder.user_side == Side::Overlord && definition.card_type == CardType::Project {
-            result.push(unveil_card_view(builder, game, card.id));
+            result.push(summon_project_card_view(builder, game, card.id));
         }
 
         return result;
@@ -175,14 +175,18 @@ pub fn ability_card_view(
     }
 }
 
-pub fn unveil_card_view(builder: &ResponseBuilder, game: &GameState, card_id: CardId) -> CardView {
+pub fn summon_project_card_view(
+    builder: &ResponseBuilder,
+    game: &GameState,
+    card_id: CardId,
+) -> CardView {
     let card = game.card(card_id);
     let definition = rules::get(card.variant);
     let context = CardViewContext::Game(definition, game, card);
 
     CardView {
-        card_id: Some(adapters::unveil_card_identifier(card_id)),
-        card_position: Some(positions::for_unveil_card(
+        card_id: Some(adapters::summon_project_card_identifier(card_id)),
+        card_position: Some(positions::for_summon_project_card(
             card,
             positions::hand(builder, card_id.side),
         )),
@@ -197,13 +201,16 @@ pub fn unveil_card_view(builder: &ResponseBuilder, game: &GameState, card_id: Ca
         arena_frame: None,
         face_down_arena_frame: None,
         owning_player: builder.to_player_name(card_id.side),
-        revealed_card: Some(revealed_unveil_card_view(&context, card_id)),
+        revealed_card: Some(revealed_summon_project_card_view(&context, card_id)),
         create_position: if builder.state.animate {
-            Some(positions::for_unveil_card(card, positions::parent_card(card_id)))
+            Some(positions::for_summon_project_card(card, positions::parent_card(card_id)))
         } else {
             None
         },
-        destroy_position: Some(positions::for_unveil_card(card, positions::parent_card(card_id))),
+        destroy_position: Some(positions::for_summon_project_card(
+            card,
+            positions::parent_card(card_id),
+        )),
         effects: None,
     }
 }
@@ -314,7 +321,10 @@ fn revealed_ability_card_view(
     })
 }
 
-fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<RevealedCardView> {
+fn revealed_summon_project_card_view(
+    context: &CardViewContext,
+    card_id: CardId,
+) -> Box<RevealedCardView> {
     let definition = context.definition();
     Box::new(RevealedCardView {
         card_frame: Some(assets::card_frame(definition.school, false)),
@@ -323,15 +333,20 @@ fn revealed_unveil_card_view(context: &CardViewContext, card_id: CardId) -> Box<
         image: Some(adapters::sprite(&definition.image)),
         image_background: definition.config.image_background.as_ref().map(adapters::sprite),
         title: Some(CardTitle {
-            text: format!("Unveil {}", definition.name.displayed_name()),
+            text: format!(
+                "<size=75%>{}</size> {} <size=75%>{}</size>",
+                icons::CARET_UP,
+                definition.name.displayed_name(),
+                icons::CARET_UP
+            ),
             text_color: Some(assets::title_color(None)),
         }),
         rules_text: Some(rules_text::build(context)),
         targeting: context.query_or_none(|game, _| {
-            boolean_target(|_| flags::can_take_unveil_card_action(game, Side::Overlord, card_id))
+            boolean_target(|_| flags::can_take_summon_project_action(game, Side::Overlord, card_id))
         }),
         on_release_position: context.query_or_none(|_, card| {
-            positions::for_unveil_card(card, positions::parent_card(card_id))
+            positions::for_summon_project_card(card, positions::parent_card(card_id))
         }),
         supplemental_info: supplemental_info::build(context, None),
         card_move_target: None,
@@ -445,7 +460,7 @@ pub fn wound_card_view(builder: &ResponseBuilder, count: WoundCount) -> CardView
         builder,
         Side::Champion,
         StatusCard {
-            identifier: CustomCardIdentifier::Unveil,
+            identifier: CustomCardIdentifier::SummonProject,
             counters: count,
             image: "wound".to_string(),
             title: "Wound".to_string(),

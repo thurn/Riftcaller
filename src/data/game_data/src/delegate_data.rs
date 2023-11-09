@@ -463,9 +463,8 @@ pub enum Delegate {
     MoveToDiscardPile(EventDelegate<CardId>),
     /// A card ability with a cost is activated
     ActivateAbility(EventDelegate<AbilityActivated>),
-    /// A card, typically a Project, is unveiled (turned face up by paying its
-    /// cost)
-    UnveilCard(EventDelegate<CardId>),
+    /// A card Project is turned face up by paying its cost
+    SummonProject(EventDelegate<CardId>),
     /// A minion card is turned face up.
     SummonMinion(EventDelegate<CardId>),
     /// A card is scored by the Overlord

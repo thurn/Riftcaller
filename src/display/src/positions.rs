@@ -46,7 +46,7 @@ pub fn for_card(card: &CardState, position: Position) -> ObjectPosition {
     }
 }
 
-pub fn for_unveil_card(card: &CardState, position: Position) -> ObjectPosition {
+pub fn for_summon_project_card(card: &CardState, position: Position) -> ObjectPosition {
     ObjectPosition {
         position: Some(position),
         sorting_key: 1 + card.sorting_key,

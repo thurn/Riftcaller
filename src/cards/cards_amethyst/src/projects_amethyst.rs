@@ -38,7 +38,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            projects::store_mana_on_unveil::<9>(),
+            projects::store_mana_on_summon::<9>(),
             Ability {
                 ability_type: AbilityType::Standard,
                 text: trigger_text(

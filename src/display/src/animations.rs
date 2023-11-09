@@ -67,7 +67,7 @@ pub fn render(
         GameAnimation::ShuffleIntoDeck => {
             // No animation, just acts as a snapshot point.
         }
-        GameAnimation::UnveilCard(card_id) => show_cards(
+        GameAnimation::SummonProject(card_id) => show_cards(
             builder,
             &vec![*card_id],
             ShowCards { show_if_prominent: true, ..ShowCards::default() },
