@@ -53,9 +53,10 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
             r.is_outer_room() && flags::is_valid_raid_target(g, r)
         }))
         .delegate(this::on_activated(|g, s, activated| raids::initiate(g, s, activated.target)))
-        .delegate(delegates::can_raid_access_cards(requirements::matching_raid, |_, _, _, flag| {
-            flag.with_override(false)
-        }))
+        .delegate(delegates::can_raid_access_cards(
+            requirements::matching_raid,
+            delegates::disallow,
+        ))
         .delegate(delegates::on_raid_successful(requirements::matching_raid, |g, s, _| {
             Effects::new()
                 .ability_alert(s)
@@ -167,7 +168,7 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
             costs::sacrifice(),
         )
         .delegate(this::can_activate(|g, _, _, flag| {
-            flag.with_override(raids::active_encounter(g).is_some())
+            flag.add_constraint(raids::active_encounter(g).is_some())
         }))
         .delegate(this::on_activated(|g, s, _| {
             mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);

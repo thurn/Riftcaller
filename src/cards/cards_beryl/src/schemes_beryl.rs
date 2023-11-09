@@ -46,7 +46,7 @@ pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
             costs::actions(1),
         )
         .delegate(this::can_activate(|g, s, _, flag| {
-            flag.with_override(
+            flag.add_permission(
                 g.card(s.card_id()).position() == CardPosition::Scored(Side::Champion),
             )
         }))

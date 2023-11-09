@@ -35,7 +35,7 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
         abilities: abilities::some(vec![
             abilities::when_not_upgraded(meta, abilities::play_only_if_champion_cursed()),
             Some(abilities::silent_can_play(|g, _, _, current| {
-                current.with_override(
+                current.add_constraint(
                     g.score_area(Side::Overlord).filter(|c| c.definition().is_scheme()).count() > 0
                         && g.score_area(Side::Champion)
                             .filter(|c| c.definition().is_scheme())

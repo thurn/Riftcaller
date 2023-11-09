@@ -145,7 +145,7 @@ pub fn can_progress() -> Ability {
         text: text![CanProgress],
         delegates: vec![Delegate::CanProgressCard(QueryDelegate {
             requirement: this_card,
-            transformation: |_g, _, _, current| current.with_override(true),
+            transformation: delegates::allow,
         })],
     }
 }
@@ -217,7 +217,7 @@ pub fn play_as_first_action() -> Ability {
     Ability::new_with_delegate(
         text!["Play as your first", TextToken::ActionSymbol],
         this::can_play(|g, _, _, current| {
-            current.override_if_false(!history::current_turn(g).any(is_game_action))
+            current.add_constraint(!history::current_turn(g).any(is_game_action))
         }),
     )
 }
@@ -226,7 +226,7 @@ pub fn play_as_first_action() -> Ability {
 pub fn play_only_if_champion_cursed() -> Ability {
     Ability::new_with_delegate(
         text!["Play only if the Champion is", Cursed],
-        this::can_play(|g, _, _, current| current.with_override(g.champion.curses > 0)),
+        this::can_play(|g, _, _, current| current.add_constraint(g.champion.curses > 0)),
     )
 }
 

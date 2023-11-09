@@ -22,9 +22,14 @@ use game_data::delegate_data::{
 use game_data::game_state::GameState;
 use game_data::primitives::{CardId, ManaValue, RaidId, ShieldValue};
 
-/// A [TransformationFn] which unconditionally sets a [Flag] to false.
-pub fn set_false<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
-    flag.with_override(false)
+/// A [TransformationFn] which invokes [Flag::allow] to enable an action.
+pub fn allow<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
+    flag.allow()
+}
+
+/// A [TransformationFn] which invokes [Flag::disallow] to prevent an action.
+pub fn disallow<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
+    flag.disallow()
 }
 
 pub fn mana_cost(

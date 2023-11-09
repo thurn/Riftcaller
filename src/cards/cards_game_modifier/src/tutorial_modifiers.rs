@@ -48,7 +48,7 @@ pub fn tutorial_disable_draw_action(_: CardMetadata) -> CardDefinition {
             text!["The Champion cannot take the 'draw card' action"],
             Delegate::CanTakeDrawCardAction(QueryDelegate {
                 requirement: side_is_champion,
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )
@@ -61,7 +61,7 @@ pub fn tutorial_disable_gain_mana(_: CardMetadata) -> CardDefinition {
             text!["The Champion cannot take the 'gain mana' action"],
             Delegate::CanTakeGainManaAction(QueryDelegate {
                 requirement: side_is_champion,
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )
@@ -74,7 +74,7 @@ pub fn tutorial_disable_raid_sanctum(_: CardMetadata) -> CardDefinition {
             text!["The Champion cannot raid the Sanctum"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_sanctum,
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )
@@ -87,7 +87,7 @@ pub fn tutorial_disable_raid_vault(_: CardMetadata) -> CardDefinition {
             text!["The Champion cannot raid the Vault"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_vault,
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )
@@ -100,7 +100,7 @@ pub fn tutorial_disable_raid_crypts(_: CardMetadata) -> CardDefinition {
             text!["The Champion cannot raid the Crypts"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_crypts,
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )
@@ -113,7 +113,7 @@ pub fn tutorial_disable_raid_outer(_: CardMetadata) -> CardDefinition {
             text!["The Champion cannot raid outer rooms"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: |_, _, room_id| room_id.is_outer_room(),
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )
@@ -126,7 +126,7 @@ pub fn tutorial_disable_raid_continue(_: CardMetadata) -> CardDefinition {
             text!["The Champion must use a weapon during raid_state"],
             Delegate::CanUseNoWeapon(QueryDelegate {
                 requirement: always,
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )
@@ -139,7 +139,7 @@ pub fn tutorial_disable_end_raid(_: CardMetadata) -> CardDefinition {
             text!["The Champion cannot end the access phase of raid_state"],
             Delegate::CanEndRaidAccessPhase(QueryDelegate {
                 requirement: always,
-                transformation: |_, _, _, f| f.with_override(false),
+                transformation: delegates::disallow,
             }),
         ),
     )

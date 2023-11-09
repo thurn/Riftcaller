@@ -48,7 +48,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: abilities::some(vec![
             Some(abilities::silent_can_play(|g, _, _, current| {
-                current.with_override(
+                current.add_constraint(
                     g.discard_pile(Side::Champion).any(|c| c.definition().is_artifact()),
                 )
             })),
@@ -480,7 +480,7 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
             }))
             .delegate(delegates::can_summon(
                 requirements::card_chosen_this_turn,
-                delegates::set_false,
+                delegates::disallow,
             ))
             .delegate(delegates::continuous_display_effects(
                 requirements::card_chosen_this_turn,

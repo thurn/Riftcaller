@@ -151,7 +151,7 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
             ),
             ActivatedAbility::new(text!["Remove a curse"], costs::sacrifice())
                 .delegate(this::can_activate(|g, _, _, flag| {
-                    flag.with_override(g.champion.curses > 0)
+                    flag.add_constraint(g.champion.curses > 0)
                 }))
                 .delegate(this::on_activated(|g, _, _| {
                     update(g);
@@ -201,7 +201,7 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
             ),
             ActivatedAbility::new(text!["Take all stored mana"], costs::actions(1))
                 .delegate(this::can_activate(|g, s, _, flag| {
-                    flag.with_override(g.card(s.card_id()).counters(CardCounter::StoredMana) > 0)
+                    flag.add_constraint(g.card(s.card_id()).counters(CardCounter::StoredMana) > 0)
                 }))
                 .delegate(this::on_activated(|g, s, _| {
                     mutations::take_stored_mana(

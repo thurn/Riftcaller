@@ -202,8 +202,8 @@ impl<T, R> QueryDelegate<T, R> {
 /// For example, the 'CanPlay' delegate will be invoked with
 /// `Flag::Default(false)` if a card cannot currently be played according to the
 /// standard game rules (sufficient mana available, correct player's turn, etc).
-/// A delegate could transform this via `with_override(true)` to allow the card
-/// to be played. A second delegate could set `with_override(false)` to prevent
+/// A delegate could transform this via `allow()` to allow the card
+/// to be played. A second delegate could set `disallow()` to prevent
 /// the card from being played, and this would take priority.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
 pub enum Flag {
@@ -218,28 +218,50 @@ impl Flag {
         Self::Default(value)
     }
 
-    /// Incorporates an override into this flag, following the precedence rules
-    /// described for [Flag] above.
-    pub fn with_override(self, value: bool) -> Self {
+    /// Allows some player action or event that would not otherwise happen. This
+    /// has priority over base game rules, but is superseded in turn by
+    /// [Self::disallow] and [Self::add_constraint].
+    pub fn allow(self) -> Self {
+        self.override_unconditionally(true)
+    }
+
+    /// Prevents some player action or event from happening. This is the highest
+    /// priority option and cannot be superseded.
+    pub fn disallow(self) -> Self {
+        self.override_unconditionally(false)
+    }
+
+    /// Overrides this flag if `value` is false. This is used to modify
+    /// something that a player *could otherwise do* with an additional
+    /// constraint that prevents it from happening. It cannot *expand* the
+    /// scope where an event can happen.
+    pub fn add_constraint(self, value: bool) -> Self {
+        if value {
+            self
+        } else {
+            self.override_unconditionally(value)
+        }
+    }
+
+    /// Overrides this flag if `value` is true. This is used to modify
+    /// something that a player *could not* otherwise do with an additional
+    /// capability. It expands the scope of where an action can happen, but
+    /// cannot *restrict* anything that was already allowed.
+    ///
+    /// This has lower priority than [Self::add_constraint]. This behavior is
+    /// sometimes described as the "can't beats can" rule.
+    pub fn add_permission(self, value: bool) -> Self {
+        if value {
+            self.override_unconditionally(value)
+        } else {
+            self
+        }
+    }
+
+    fn override_unconditionally(self, value: bool) -> Self {
         match self {
             Self::Default(_) => Self::Override(value),
             Self::Override(current) => Self::Override(current && value),
-        }
-    }
-
-    pub fn override_if_true(self, value: bool) -> Self {
-        if value {
-            self.with_override(value)
-        } else {
-            self
-        }
-    }
-
-    pub fn override_if_false(self, value: bool) -> Self {
-        if value {
-            self
-        } else {
-            self.with_override(value)
         }
     }
 }
