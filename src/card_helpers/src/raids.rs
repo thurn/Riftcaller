@@ -18,8 +18,7 @@ use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::primitives::{CardId, RaidId};
-use game_data::raid_data::RaidStatus;
-use rules::queries;
+use game_data::raid_data::{RaidState, RaidStatus};
 
 /// Starts a new raid from a card ability associated with the provided [Scope]
 /// and [CardTarget] room.
@@ -47,13 +46,10 @@ pub fn add_sanctum_access<const N: u32>(requirement: RequirementFn<RaidId>) -> D
 }
 
 /// Returns the minion currently being encountered if there is an active raid
-/// encounter in this game.
-pub fn active_encounter(game: &GameState) -> Option<CardId> {
-    game.raid.as_ref().and_then(|r| {
-        if queries::raid_status(r) == RaidStatus::Encounter {
-            game.current_raid_defender()
-        } else {
-            None
-        }
+/// encounter prompt in this game.
+pub fn active_encounter_prompt(game: &GameState) -> Option<CardId> {
+    game.raid.as_ref().and_then(|raid| match &raid.state {
+        RaidState::Prompt(p) if p.status == RaidStatus::Encounter => game.current_raid_defender(),
+        _ => None,
     })
 }

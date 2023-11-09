@@ -513,7 +513,7 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
             ActivatedAbility::new(text![Evade, "an", Infernal, "minion"], costs::sacrifice())
                 .delegate(this::can_activate(|g, _, _, flag| {
                     flag.add_constraint(utils::is_true(|| {
-                        Some(queries::resonance(g, raids::active_encounter(g)?)?.infernal)
+                        Some(queries::resonance(g, raids::active_encounter_prompt(g)?)?.infernal)
                     }))
                 }))
                 .delegate(this::on_activated(|g, _, _| {
