@@ -935,6 +935,9 @@ pub struct RevealedCardView {
 pub struct CardEffects {
     #[prost(message, optional, tag = "1")]
     pub outline_color: ::core::option::Option<FlexColor>,
+    /// Continuous effect to display while this card is in an arena context
+    #[prost(message, optional, tag = "2")]
+    pub arena_effect: ::core::option::Option<EffectAddress>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -1745,6 +1748,10 @@ pub struct PlayEffectCommand {
     /// Tint color to apply to all particle systems in this effect.
     #[prost(message, optional, tag = "7")]
     pub start_color: ::core::option::Option<FlexColor>,
+    /// Optionally, an owner for this effect, used to identify effects later
+    /// for removal via 'ClearEffectsCommands'
+    #[prost(message, optional, tag = "8")]
+    pub owner: ::core::option::Option<GameObjectIdentifier>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -2154,12 +2161,21 @@ pub struct TurnFaceDownArenaAnimationCommand {
     #[prost(message, optional, tag = "1")]
     pub card_id: ::core::option::Option<CardIdentifier>,
 }
+/// Remove all effects owned by a given game object, as specified by the
+/// 'owner' field on 'PlayEffectCommand'.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ClearEffectsCommand {
+    /// Owner for effects to remove
+    #[prost(message, optional, tag = "1")]
+    pub owner: ::core::option::Option<GameObjectIdentifier>,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GameCommand {
     #[prost(
         oneof = "game_command::Command",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25"
     )]
     pub command: ::core::option::Option<game_command::Command>,
 }
@@ -2216,6 +2232,8 @@ pub mod game_command {
         SetKeyboardShortcuts(super::SetKeyboardShortcutsCommand),
         #[prost(message, tag = "24")]
         TurnFaceDownArenaAnimation(super::TurnFaceDownArenaAnimationCommand),
+        #[prost(message, tag = "25")]
+        ClearPersistentEffects(super::ClearEffectsCommand),
     }
 }
 /// Metadata to include with logging for this client, e.g. for crash

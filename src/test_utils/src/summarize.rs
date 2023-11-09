@@ -289,6 +289,7 @@ impl Summarize for Command {
             Self::SetCardMovementEffect(_) => {}
             Self::SetKeyboardShortcuts(_) => {}
             Self::TurnFaceDownArenaAnimation(_) => {}
+            Self::ClearPersistentEffects(_) => {}
         }
     }
 }

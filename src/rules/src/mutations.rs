@@ -23,6 +23,7 @@ use std::cmp;
 
 use anyhow::Result;
 use constants::game_constants;
+use game_data::animation_tracker::GameAnimation;
 use game_data::card_name::CardVariant;
 use game_data::card_state::{CardChoice, CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
@@ -35,7 +36,6 @@ use game_data::delegate_data::{
 };
 use game_data::game_history::{CardChoiceEvent, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
-use game_data::game_updates::GameAnimation;
 use game_data::primitives::{
     ActionCount, CardId, HasAbilityId, ManaValue, PointsValue, PowerChargeValue, RoomId,
     RoomLocation, Side, TurnNumber,

@@ -14,8 +14,8 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
+use game_data::animation_tracker::{GameAnimation, TargetedInteraction};
 use game_data::game_state::GameState;
-use game_data::game_updates::{GameAnimation, TargetedInteraction};
 use game_data::primitives::{AbilityId, CardId, GameObjectId, Milliseconds, RoomId, Side};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, ProjectileData, SoundEffect, SpecialEffect,
@@ -321,6 +321,7 @@ fn play_timed_effect(
             blue: color.blue,
             alpha: color.alpha,
         }),
+        owner: effect.owner.map(|id| adapters::game_object_identifier(builder, id)),
     })
 }
 

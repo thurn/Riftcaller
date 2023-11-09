@@ -247,7 +247,6 @@ namespace Spelldawn.Services
         var rotation = Quaternion.LookRotation(position - _registry.MainCamera.transform.position);
         effect.transform.rotation = rotation;        
       }
-
       
       if (command.Scale is { } scale)
       {

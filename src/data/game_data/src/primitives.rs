@@ -292,7 +292,7 @@ impl HasAbilityId for AbilityId {
 }
 
 /// Represents an entity in the game which can be independently animated.
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize, Hash)]
 pub enum GameObjectId {
     CardId(CardId),
     AbilityId(AbilityId),

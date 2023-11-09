@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashSet;
+
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
 use constants::game_constants;
@@ -19,19 +21,22 @@ use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::{CardChoice, CardState};
 use game_data::card_view_context::CardViewContext;
+use game_data::continuous_visual_effect::ContinuousDisplayEffect;
+use game_data::delegate_data::ContinuousDisplayEffectsQuery;
 use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::game_state::GameState;
 use game_data::primitives::{
     AbilityId, CardId, CardType, ItemLocation, ManaValue, Rarity, RoomId, RoomLocation, School,
     Side, WoundCount,
 };
+use game_data::special_effects::TimedEffect;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{
     info_zoom_highlight, ArrowTargetRoom, CardEffects, CardIcons, CardPrefab, CardTargeting,
-    CardTitle, CardView, FlexColor, InfoZoomHighlight, NoTargeting, PlayInRoom, RevealedCardView,
-    RulesText, TargetingArrow,
+    CardTitle, CardView, EffectAddress, FlexColor, InfoZoomHighlight, NoTargeting, PlayInRoom,
+    RevealedCardView, RulesText, TargetingArrow,
 };
-use rules::{flags, queries};
+use rules::{dispatch, flags, queries};
 use rules_text::{card_icons, supplemental_info};
 use {adapters, assets, rules_text};
 
@@ -75,7 +80,10 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> CardVi
         destroy_position: context.query_or_none(|_, card| {
             positions::for_card(card, positions::deck(builder, card.side()))
         }),
-        effects: Some(CardEffects { outline_color: outline_color(context) }),
+        effects: Some(CardEffects {
+            outline_color: outline_color(context),
+            arena_effect: continuous_display_effects(context),
+        }),
     }
 }
 
@@ -163,7 +171,7 @@ pub fn ability_card_view(
             ability_id,
             positions::parent_card(ability_id),
         )),
-        effects: Some(CardEffects { outline_color: None }),
+        effects: None,
     }
 }
 
@@ -196,7 +204,7 @@ pub fn unveil_card_view(builder: &ResponseBuilder, game: &GameState, card_id: Ca
             None
         },
         destroy_position: Some(positions::for_unveil_card(card, positions::parent_card(card_id))),
-        effects: Some(CardEffects { outline_color: None }),
+        effects: None,
     }
 }
 
@@ -428,7 +436,7 @@ fn action_card_view(
         })),
         create_position: if builder.state.animate { character_position.clone() } else { None },
         destroy_position: character_position,
-        effects: Some(CardEffects { outline_color: None }),
+        effects: None,
     }
 }
 
@@ -549,6 +557,25 @@ fn outline_color(context: &CardViewContext) -> Option<FlexColor> {
                 return Some(design::PLAY_CARD_BROWSER_OUTLINE);
             }
         }
+    }
+
+    None
+}
+
+fn continuous_display_effects(context: &CardViewContext) -> Option<EffectAddress> {
+    let CardViewContext::Game(_, game, card) = context else {
+        return None;
+    };
+
+    let effects =
+        dispatch::perform_query(game, ContinuousDisplayEffectsQuery(card.id), HashSet::new());
+
+    // Effects are not ordered so we just pick an arbitrary element from the set to
+    // display.
+    if let Some(ContinuousDisplayEffect::CannotSummonThisTurn) = effects.iter().next() {
+        return Some(assets::timed_effect(TimedEffect::MagicCircles1Looping(
+            "Magic circle 2 loop",
+        )));
     }
 
     None

@@ -32,7 +32,7 @@ use crate::primitives::{
     HealthValue, ManaValue, PointsValue, PowerChargeValue, ProgressValue, Rarity, RazeCost, RoomId,
     School, ShieldValue, Side, Sprite,
 };
-use crate::special_effects::ProjectileData;
+use crate::special_effects::{ProjectileData, TimedEffectData};
 use crate::text::TextElement;
 
 /// A cost represented by custom functions.
@@ -332,6 +332,9 @@ pub struct CardConfig {
     pub player_portrait: Option<Sprite>,
     /// Content to display behind the main image
     pub image_background: Option<Sprite>,
+    /// A visual effect associated with this card, selected via a prompt choice.
+    /// Used to e.g. indicate targeting.
+    pub choice_effect: Option<TimedEffectData>,
     /// Which card variant does this definition correspond to?
     ///
     /// It is never necessary to specify this value when building a card
@@ -401,6 +404,11 @@ impl CardConfigBuilder {
 
     pub fn combat_projectile(mut self, projectile: ProjectileData) -> Self {
         self.config.combat_projectile = Some(projectile);
+        self
+    }
+
+    pub fn choice_effect(mut self, effect: TimedEffectData) -> Self {
+        self.config.choice_effect = Some(effect);
         self
     }
 }

@@ -18,6 +18,7 @@ pub mod raid_display_state;
 pub mod raid_prompt;
 
 use anyhow::Result;
+use game_data::animation_tracker::{GameAnimation, InitiatedBy, TargetedInteraction};
 use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -29,7 +30,6 @@ use game_data::delegate_data::{
 use game_data::game_actions::RaidAction;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
-use game_data::game_updates::{GameAnimation, InitiatedBy, TargetedInteraction};
 use game_data::primitives::{CardId, GameObjectId, RaidId, RoomId, Side};
 use game_data::raid_data::{
     RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus, RaidStep, ScoredCard,

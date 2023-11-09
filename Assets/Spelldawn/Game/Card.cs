@@ -93,6 +93,8 @@ namespace Spelldawn.Game
     bool _showingArrow;
     bool _isMove;
     GameObject? _movementEffect;
+    EffectAddress? _continuousDisplayEffectAddress;
+    TimedEffect? _continuousDisplayEffect;
 
     [Serializable]
     public sealed class Icon
@@ -165,11 +167,6 @@ namespace Spelldawn.Game
       Registry.AssetService.AssignSprite(_arenaFrame, cardView.ArenaFrame);
       Registry.AssetService.AssignSprite(_faceDownArenaFrame, cardView.FaceDownArenaFrame);
       DestroyPosition = cardView.DestroyPosition;
-
-      if (_cardId.Index == 27)
-      {
-        Debug.Log($"Render: {name} RevealedToViewer {cardView.RevealedToViewer} with _isRevealed {_isRevealed}");
-      }
 
       if (cardView.RevealedToViewer)
       {
@@ -325,6 +322,7 @@ namespace Spelldawn.Game
 
       EnableIconsForContext(newContext);
       UpdateRevealedToOpponent(newContext.ShouldRenderArenaCard());
+      RenderContinuousDisplayEffect();      
     }
 
     public override bool CanHandleMouseDown()
@@ -548,11 +546,7 @@ namespace Spelldawn.Game
       }
       
       UpdateRevealedToOpponent(inArena: GameContext.ShouldRenderArenaCard());
-
-      if (card.Effects != null)
-      {
-        RenderCardEffects(card.Effects);
-      }
+      RenderCardEffects(card.Effects);
     }
 
     void RenderRevealedCard(RevealedCardView revealed)
@@ -635,13 +629,50 @@ namespace Spelldawn.Game
       _pointToParent = revealed.PointToParent;
     }
 
-    void RenderCardEffects(CardEffects effects)
+    void RenderCardEffects(CardEffects? effects)
     {
-      if (effects.OutlineColor != null)
+      if (effects?.OutlineColor != null)
       {
         var color = Mason.ToUnityColor(effects.OutlineColor);
         _outline.material.SetColor(MainOutlineColor, color);
         _outline.material.SetColor(HotOutlineColor, color);
+      }
+
+      if (effects?.ArenaEffect is {} address)
+      {
+        if (_continuousDisplayEffectAddress != null && !address.Equals(_continuousDisplayEffectAddress))
+        {
+          if (_continuousDisplayEffect && _continuousDisplayEffect != null)
+          {
+            Destroy(_continuousDisplayEffect.gameObject);
+          }          
+        }
+      }
+      _continuousDisplayEffectAddress = effects?.ArenaEffect;
+      RenderContinuousDisplayEffect();
+    }
+
+    void RenderContinuousDisplayEffect()
+    {
+      if (_continuousDisplayEffectAddress != null && GameContext.ShouldRenderArenaCard())
+      {
+        if (!_continuousDisplayEffect)
+        {
+          _continuousDisplayEffect = ComponentUtils.Instantiate(
+            Registry.AssetService.GetEffect(_continuousDisplayEffectAddress!));
+          _continuousDisplayEffect.SetGameContext(GameContext.BehindArena);
+          _continuousDisplayEffect.transform.SetParent(transform);
+          _continuousDisplayEffect.transform.localPosition = Vector3.zero;
+          _continuousDisplayEffect.transform.forward = transform.forward;
+          _continuousDisplayEffect.transform.localScale = Vector3.one * 1.1f;          
+        }
+      }
+      else
+      {
+        if (_continuousDisplayEffect && _continuousDisplayEffect != null)
+        {
+          Destroy(_continuousDisplayEffect.gameObject);
+        }
       }
     }
 

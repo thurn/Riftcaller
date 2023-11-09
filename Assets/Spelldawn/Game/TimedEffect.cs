@@ -23,10 +23,14 @@ namespace Spelldawn.Game
   public sealed class TimedEffect : MonoBehaviour
   {
     [SerializeField] float _duration;
+    [SerializeField] bool _looping;
 
     void OnEnable()
     {
-      StartCoroutine(DisableAsync(_duration));
+      if (!_looping)
+      {
+        StartCoroutine(DisableAsync(_duration));
+      }
     }
 
     public void SetGameContext(GameContext gameContext)
@@ -43,7 +47,7 @@ namespace Spelldawn.Game
       {
         var main = ps.main;
         var current = main.startColor.color;
-        Color.RGBToHSV(current, out var h, out var s, out var v);
+        Color.RGBToHSV(current, out _, out var s, out var v);
         if (s > 0.2f && v > 0.2f)
         {
           main.startColor = new Color(color.r, color.g, color.b, current.a);

@@ -22,6 +22,7 @@ use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDef
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardChoice, CardPosition};
+use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::game_actions::{
     CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
 };
@@ -478,17 +479,20 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }))
             .delegate(delegates::can_summon(
-                |g, s, card_id| {
-                    history::card_choices_this_turn(g).any(|event| {
-                        event.ability_id == s.ability_id()
-                            && event.choice.chosen_card() == Some(*card_id)
-                    })
-                },
+                requirements::card_chosen_this_turn,
                 delegates::set_false,
+            ))
+            .delegate(delegates::continuous_display_effects(
+                requirements::card_chosen_this_turn,
+                |_, _, _, mut effects| {
+                    effects.insert(ContinuousDisplayEffect::CannotSummonThisTurn);
+                    effects
+                },
             )),
         ],
         config: CardConfigBuilder::new()
             .custom_targeting(requirements::any_room_with_defenders_or_occupants())
+            .choice_effect(TimedEffectData::new(TimedEffect::MagicCircles1(8)).scale(2.0))
             .build(),
     }
 }

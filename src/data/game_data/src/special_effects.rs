@@ -14,7 +14,7 @@
 
 //! Types which describe custom visual & sound effects used during play
 
-use crate::game_updates::TargetedInteraction;
+use crate::animation_tracker::TargetedInteraction;
 use crate::primitives::{CardId, GameObjectId, Milliseconds};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
@@ -95,6 +95,7 @@ impl ProjectileData {
 pub enum TimedEffect {
     MagicHits(u32),
     MagicCircles1(u32),
+    MagicCircles1Looping(&'static str),
     MagicCircles2(u32),
     SwordSlashes(u32),
 }
@@ -130,7 +131,8 @@ pub struct EffectColor {
 #[derive(Debug, Clone)]
 pub struct TimedEffectData {
     pub effect: TimedEffect,
-    /// How long to play the effect for. Defaults to 300ms.
+    /// How long to wait for the effect before continuing the game. Defaults to
+    /// 300ms.
     pub duration: Milliseconds,
     /// Sound to play with this effect.
     pub sound: Option<SoundEffect>,
@@ -140,6 +142,9 @@ pub struct TimedEffectData {
     pub arena_effect: bool,
     /// Color to apply to the effect
     pub effect_color: Option<EffectColor>,
+    /// Optionally, an owner for this effect, used to remove the effect at a
+    /// later time if needed.
+    pub owner: Option<GameObjectId>,
 }
 
 impl TimedEffectData {
@@ -151,6 +156,7 @@ impl TimedEffectData {
             scale: None,
             arena_effect: true,
             effect_color: None,
+            owner: None,
         }
     }
 
@@ -171,6 +177,11 @@ impl TimedEffectData {
 
     pub fn arena_effect(mut self, arena_effect: bool) -> Self {
         self.arena_effect = arena_effect;
+        self
+    }
+
+    pub fn owner(mut self, owner: GameObjectId) -> Self {
+        self.owner = Some(owner);
         self
     }
 }

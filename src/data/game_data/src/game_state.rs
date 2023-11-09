@@ -23,12 +23,12 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use with_error::{fail, WithError};
 
+use crate::animation_tracker::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};
 use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegate_data::DelegateCache;
 use crate::game_actions::GamePrompt;
 use crate::game_history::{GameHistory, HistoryEvent};
-use crate::game_updates::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};
 use crate::player_name::PlayerId;
 use crate::primitives::{
     ActionCount, CardId, CurseCount, GameId, ItemLocation, LeylineCount, ManaValue, PointsValue,

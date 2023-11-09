@@ -21,6 +21,7 @@ pub mod legal_actions;
 
 use anyhow::Result;
 use constants::game_constants;
+use game_data::animation_tracker::{AnimationState, GameAnimation, InitiatedBy};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
@@ -31,7 +32,6 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
-use game_data::game_updates::{AnimationState, GameAnimation, InitiatedBy};
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{
@@ -409,11 +409,12 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
                 buttons.choices.get(index).with_error(|| format!("Index out of bounds {index}"))?;
 
             let effects = choice.effects.clone();
+            let removed = game.player_mut(user_side).prompt_queue.remove(0);
+
             for effect in effects {
                 game_effect_actions::handle(game, effect)?;
             }
 
-            let removed = game.player_mut(user_side).prompt_queue.remove(0);
             record_prompt_response(game, removed, user_side, index);
         }
         (GamePrompt::CardSelector(browser), PromptAction::CardSelectorSubmit) => {

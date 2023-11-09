@@ -35,12 +35,14 @@ pub const RED_600: FlexColor = color(0.9, 0.22, 0.21, 1.0);
 pub const RED_700: FlexColor = color(0.83, 0.18, 0.18, 1.0);
 pub const RED_800: FlexColor = color(0.78, 0.16, 0.16, 1.0);
 pub const RED_900: FlexColor = color(0.72, 0.11, 0.11, 1.0);
+pub const RED_900_ALPHA_75: FlexColor = color(0.72, 0.11, 0.11, 0.75);
 pub const BLUE_500: FlexColor = color(0.13, 0.59, 0.95, 1.0);
 pub const BLUE_700: FlexColor = color(0.1, 0.46, 0.82, 1.0);
 pub const BLUE_900: FlexColor = color(0.05, 0.28, 0.63, 1.0);
 pub const GREEN_500: FlexColor = color(0.3, 0.69, 0.31, 1.0);
 pub const GREEN_700: FlexColor = color(0.22, 0.56, 0.24, 1.0);
 pub const GREEN_900: FlexColor = color(0.11, 0.37, 0.13, 1.0);
+pub const GREEN_900_ALPHA_75: FlexColor = color(0.11, 0.37, 0.13, 0.75);
 pub const YELLOW_500: FlexColor = color(1.0, 0.92, 0.23, 1.0);
 pub const YELLOW_700: FlexColor = color(0.98, 0.75, 0.18, 1.0);
 pub const YELLOW_900: FlexColor = color(0.96, 0.5, 0.09, 1.0);
@@ -90,6 +92,8 @@ impl From<BorderColor> for FlexColor {
 #[derive(Debug, Clone, Copy)]
 pub enum BackgroundColor {
     CardInfo,
+    PositiveCardInfo,
+    NegativeCardInfo,
     DeckEditorPanel,
     CardCount,
     SafeAreaOverlay,
@@ -110,6 +114,8 @@ impl From<BackgroundColor> for FlexColor {
     fn from(color: BackgroundColor) -> Self {
         match color {
             BackgroundColor::CardInfo => BLACK_ALPHA_75,
+            BackgroundColor::PositiveCardInfo => GREEN_900_ALPHA_75,
+            BackgroundColor::NegativeCardInfo => RED_900_ALPHA_75,
             BackgroundColor::DeckEditorPanel => BLACK,
             BackgroundColor::CardCount => BLACK,
             BackgroundColor::SafeAreaOverlay => BLACK,

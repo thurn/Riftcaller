@@ -15,10 +15,10 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
+use crate::animation_tracker::InitiatedBy;
 use crate::delegate_data::RaidEvent;
 use crate::game_actions::RazeCardActionType;
 use crate::game_state::RaidJumpRequest;
-use crate::game_updates::InitiatedBy;
 use crate::primitives::{CardId, ManaValue, RaidId, RoomId, Side};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

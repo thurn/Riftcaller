@@ -19,7 +19,7 @@ use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
 use game_data::game_history::{HistoryEvent, HistoryEventKind};
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, RaidId, RoomId};
+use game_data::primitives::{CardId, HasCardId, RaidId, RoomId};
 use game_data::utils;
 use rules::flags;
 
@@ -132,6 +132,13 @@ pub fn no_damage_dealt<R: BaseRequirement>(
 ) -> bool {
     R::run(game, scope)
         && history::current_turn(game).all(|e| e.kind() != HistoryEventKind::DealDamage)
+}
+
+/// A [RequirementFn] which matches if the indicated `card_id` was selected this
+/// turn as a card choice for the parent card.
+pub fn card_chosen_this_turn(game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
+    history::card_choices_this_turn(game, scope)
+        .any(|choice| choice.chosen_card() == Some(card_id.card_id()))
 }
 
 /// A `TargetRequirement` for a card which can target any room which is a valid

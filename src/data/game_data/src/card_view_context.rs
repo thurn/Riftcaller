@@ -34,6 +34,13 @@ impl<'a> CardViewContext<'a> {
         }
     }
 
+    pub fn game(&self) -> Option<&GameState> {
+        match self {
+            Self::Default(_) => None,
+            Self::Game(_, game, _) => Some(&game),
+        }
+    }
+
     pub fn card(&self) -> Option<&CardState> {
         match self {
             Self::Default(_) => None,

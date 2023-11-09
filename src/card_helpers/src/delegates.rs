@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashSet;
+
+use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
     Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
     RequirementFn, Scope, ShieldCardInfo, TransformationFn,
@@ -85,4 +88,11 @@ pub fn can_raid_access_cards(
     transformation: TransformationFn<RaidEvent<()>, Flag>,
 ) -> Delegate {
     Delegate::CanRaidAccessCards(QueryDelegate { requirement, transformation })
+}
+
+pub fn continuous_display_effects(
+    requirement: RequirementFn<CardId>,
+    transformation: TransformationFn<CardId, HashSet<ContinuousDisplayEffect>>,
+) -> Delegate {
+    Delegate::ContinuousDisplayEffects(QueryDelegate { requirement, transformation })
 }

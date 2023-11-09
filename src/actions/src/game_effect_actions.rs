@@ -13,12 +13,14 @@
 // limitations under the License.
 
 use anyhow::Result;
+use game_data::animation_tracker::{GameAnimation, InitiatedBy};
 use game_data::card_state::CardChoice;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
-use game_data::game_updates::InitiatedBy;
-use rules::{deal_damage, mana, mutations};
+use game_data::primitives::GameObjectId;
+use game_data::special_effects::SpecialEffect;
+use rules::{deal_damage, mana, mutations, CardDefinitionExt};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
@@ -27,6 +29,22 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
     match effect {
         GameEffect::Continue => {}
         GameEffect::AbortPlayingCard => mutations::abort_playing_card(game),
+        GameEffect::PlayChoiceEffect { owner, target } => {
+            let effect = game
+                .card(owner)
+                .definition()
+                .config
+                .choice_effect
+                .as_ref()
+                .with_error(|| "Expected choice_effect")?;
+
+            game.add_animation(|| {
+                GameAnimation::CustomEffects(vec![SpecialEffect::TimedEffect {
+                    target,
+                    effect: effect.clone().owner(GameObjectId::CardId(owner)),
+                }])
+            })
+        }
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
         GameEffect::DestroyCard(card_id) => mutations::destroy_card(game, card_id)?,
         GameEffect::LoseMana(side, amount) => {

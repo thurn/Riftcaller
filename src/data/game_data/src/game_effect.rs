@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card_state::{CardChoice, CardPosition};
 use crate::primitives::{
-    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, ManaValue, RoomId, Side,
+    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, GameObjectId, ManaValue, RoomId, Side,
 };
 
 /// An arbitrary modification to the state of an ongoing game.
@@ -26,6 +26,9 @@ pub enum GameEffect {
     Continue,
     /// Stop the current 'play card' game action
     AbortPlayingCard,
+    /// Requests to play the `CardConfig::choice_effect` visual effect for
+    /// `owner` on the indicated `target`.
+    PlayChoiceEffect { owner: CardId, target: GameObjectId },
     /// Sacrifice the indicated permanent, moving it to its owner's discard
     /// pile.
     SacrificeCard(CardId),

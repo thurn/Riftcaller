@@ -20,12 +20,37 @@ use core_ui::text::Text;
 use protos::spelldawn::{FlexAlign, FlexJustify, TextAlign, WhiteSpace};
 
 #[derive(Debug)]
+pub enum CardInfoElementKind {
+    Informative,
+    PositiveEffect,
+    NegativeEffect,
+}
+
+#[derive(Debug)]
+pub struct CardInfoElement {
+    pub text: String,
+    pub kind: CardInfoElementKind,
+}
+
+impl CardInfoElement {
+    /// Creates a new 'information' CardInfoElement
+    pub fn new(s: impl Into<String>) -> Self {
+        Self { text: s.into(), kind: CardInfoElementKind::Informative }
+    }
+
+    pub fn kind(mut self, kind: CardInfoElementKind) -> Self {
+        self.kind = kind;
+        self
+    }
+}
+
+#[derive(Debug)]
 pub struct SupplementalCardInfo {
-    info: Vec<String>,
+    info: Vec<CardInfoElement>,
 }
 
 impl SupplementalCardInfo {
-    pub fn new(info: Vec<String>) -> Self {
+    pub fn new(info: Vec<CardInfoElement>) -> Self {
         Self { info }
     }
 }
@@ -41,8 +66,13 @@ impl Component for SupplementalCardInfo {
                 .max_height(600.px()),
         );
 
-        for (i, text) in self.info.into_iter().enumerate() {
-            result = result.child(InfoNode::new(text).first_node(i == 0));
+        for (i, element) in self.info.into_iter().enumerate() {
+            let color = match element.kind {
+                CardInfoElementKind::Informative => BackgroundColor::CardInfo,
+                CardInfoElementKind::PositiveEffect => BackgroundColor::PositiveCardInfo,
+                CardInfoElementKind::NegativeEffect => BackgroundColor::NegativeCardInfo,
+            };
+            result = result.child(InfoNode::new(element.text, color).first_node(i == 0));
         }
 
         result.build()
@@ -54,11 +84,12 @@ impl Component for SupplementalCardInfo {
 pub struct InfoNode {
     first_node: bool,
     text: String,
+    background_color: BackgroundColor,
 }
 
 impl InfoNode {
-    pub fn new(text: impl Into<String>) -> Self {
-        Self { first_node: false, text: text.into() }
+    pub fn new(text: impl Into<String>, background_color: BackgroundColor) -> Self {
+        Self { first_node: false, text: text.into(), background_color }
     }
 
     pub fn first_node(mut self, first_node: bool) -> Self {
@@ -74,7 +105,7 @@ impl Component for InfoNode {
                 Style::new()
                     .margin(Edge::Bottom, 4.px())
                     .margin(Edge::Top, if self.first_node { 0.px() } else { 4.px() })
-                    .background_color(BackgroundColor::CardInfo)
+                    .background_color(self.background_color)
                     .border_radius(Corner::All, 12.px())
                     .justify_content(FlexJustify::Center)
                     .align_items(FlexAlign::Center),

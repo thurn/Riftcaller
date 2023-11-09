@@ -13,13 +13,13 @@
 // limitations under the License.
 
 use anyhow::Result;
+use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::Scope;
 use game_data::game_actions::{
     ButtonPrompt, ButtonPromptContext, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
     UnplayedAction,
 };
 use game_data::game_state::GameState;
-use game_data::game_updates::GameAnimation;
 use game_data::primitives::{CardId, HasSide, Side};
 
 /// Adds a choice prompt for the `side` player containing the choices in

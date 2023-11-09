@@ -141,7 +141,7 @@ pub struct AnimationTracker {
     /// Most recent user prompt response, if any.
     ///
     /// Used to show a speech bubble to the opponent with the result of prompt
-    /// choices.
+    /// choices.gam
     pub last_prompt_response: Option<(Side, PromptChoice)>,
 }
 

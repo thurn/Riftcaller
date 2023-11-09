@@ -14,8 +14,8 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::animation_tracker::InitiatedBy;
 use crate::game_actions::CardTarget;
-use crate::game_updates::InitiatedBy;
 use crate::primitives::{AbilityId, CardId, DamageAmount};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

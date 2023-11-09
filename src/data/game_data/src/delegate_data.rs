@@ -62,7 +62,7 @@
 
 #![allow(clippy::use_self)] // Required to use EnumKind
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 use std::fmt::Formatter;
 
@@ -79,6 +79,7 @@ use crate::card_definition::{AttackBoost, CardStats};
 use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
+use crate::continuous_visual_effect::ContinuousDisplayEffect;
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
@@ -582,6 +583,9 @@ pub enum Delegate {
     /// Queries the maximum hand size of a player. Invoked with the default
     /// maximum hand size.
     MaximumHandSize(QueryDelegate<Side, u32>),
+    /// Queries continuous display effects for a card. This has no effect other
+    /// than to display in the UI which cards have been modified.
+    ContinuousDisplayEffects(QueryDelegate<CardId, HashSet<ContinuousDisplayEffect>>),
 }
 
 impl Delegate {

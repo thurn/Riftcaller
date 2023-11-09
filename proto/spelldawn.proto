@@ -959,6 +959,9 @@ enum CardPrefab {
 // Custom VFX & SFX to apply to a card
 message CardEffects {
     FlexColor outline_color = 1;
+
+    // Continuous effect to display while this card is in an arena context
+    EffectAddress arena_effect = 2;
 }
 
 message CardView {
@@ -1641,6 +1644,10 @@ message PlayEffectCommand {
 
     // Tint color to apply to all particle systems in this effect.
     FlexColor start_color = 7;
+
+    // Optionally, an owner for this effect, used to identify effects later
+    // for removal via 'ClearEffectsCommands'
+    GameObjectIdentifier owner = 8;
 }
 
 enum GameMessageType {
@@ -1977,6 +1984,13 @@ message TurnFaceDownArenaAnimationCommand {
     CardIdentifier card_id = 1;
 }
 
+// Remove all effects owned by a given game object, as specified by the
+// 'owner' field on 'PlayEffectCommand'.
+message ClearEffectsCommand {
+    // Owner for effects to remove
+    GameObjectIdentifier owner = 1;
+}
+
 message GameCommand {
     oneof command {
         ClientDebugCommand debug = 1;
@@ -2003,6 +2017,7 @@ message GameCommand {
         InfoZoomCommand info_zoom = 22;
         SetKeyboardShortcutsCommand set_keyboard_shortcuts = 23;
         TurnFaceDownArenaAnimationCommand turn_face_down_arena_animation = 24;
+        ClearEffectsCommand clear_persistent_effects = 25;
     }
 }
 

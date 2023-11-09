@@ -12,16 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashSet;
+
 use convert_case::{Case, Casing};
 use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::card_view_context::CardViewContext;
+use game_data::continuous_visual_effect::ContinuousDisplayEffect;
+use game_data::delegate_data::ContinuousDisplayEffectsQuery;
 use game_data::primitives::AbilityIndex;
 use game_data::text::{TextElement, TextTokenKind};
-use rules::queries;
+use rules::{dispatch, queries};
 
-use crate::card_info::SupplementalCardInfo;
+use crate::card_info::{CardInfoElement, CardInfoElementKind, SupplementalCardInfo};
 
 /// Builds the supplemental info display for a card, which displays additional
 /// help information and appears on press.
@@ -34,8 +38,10 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
     if ability_index.is_none() {
         add_card_type_line(&mut result, context, definition);
     } else {
-        result.push("Activated Ability".to_string())
+        result.push(CardInfoElement::new("Activated Ability".to_string()))
     }
+
+    add_continuous_display_effects(&mut result, context);
 
     let mut tokens = vec![];
     for (index, ability) in definition.abilities.iter().enumerate() {
@@ -58,7 +64,7 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
 }
 
 fn add_card_type_line(
-    builder: &mut Vec<String>,
+    builder: &mut Vec<CardInfoElement>,
     context: &CardViewContext,
     definition: &CardDefinition,
 ) {
@@ -86,7 +92,24 @@ fn add_card_type_line(
         result.push_str(&format!("{subtype}").from_case(Case::Pascal).to_case(Case::Title));
     }
 
-    builder.push(result);
+    builder.push(CardInfoElement::new(result));
+}
+
+fn add_continuous_display_effects(result: &mut Vec<CardInfoElement>, context: &CardViewContext) {
+    let CardViewContext::Game(_, game, card) = context else {
+        return;
+    };
+
+    let effects =
+        dispatch::perform_query(game, ContinuousDisplayEffectsQuery(card.id), HashSet::new());
+    for effect in effects {
+        result.push(match effect {
+            ContinuousDisplayEffect::CannotSummonThisTurn => {
+                CardInfoElement::new("Cannot be summoned this turn")
+                    .kind(CardInfoElementKind::NegativeEffect)
+            }
+        })
+    }
 }
 
 fn append_resonance(result: &mut String, name: &'static str) {
@@ -117,8 +140,8 @@ fn add_tokens(tokens: &mut Vec<TextTokenKind>, text: &[TextElement]) {
     }
 }
 
-fn token_description(token: TextTokenKind) -> Option<String> {
-    match token {
+fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
+    let result = match token {
         TextTokenKind::PowerCharges => Some(format!(
             "{}: A power charge, stored while in play to spend on abilities", 
             icons::POWER_CHARGE
@@ -166,7 +189,9 @@ fn token_description(token: TextTokenKind) -> Option<String> {
         TextTokenKind::Evade => entry("Evade", "Bypass a minion without combat"),
         TextTokenKind::Unsummon => entry("Unsummon", "Turn a minion face-down"),
         _ => None,
-    }
+    };
+
+    result.map(CardInfoElement::new)
 }
 
 fn entry(name: impl Into<String>, description: impl Into<String>) -> Option<String> {

@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
+use game_data::animation_tracker::InitiatedBy;
 use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
-use game_data::game_updates::InitiatedBy;
 use game_data::primitives::{CardId, RaidId};
 use game_data::raid_data::RaidStatus;
 use rules::queries;

@@ -388,6 +388,7 @@ namespace Spelldawn.Services
         LoadSprite(requests, card.ArenaFrame);
         LoadSprite(requests, card.FaceDownArenaFrame);
         LoadRevealedCardAssets(requests, card.RevealedCard);
+        LoadEffect(requests, card.Effects?.ArenaEffect);
       }
     }
 

@@ -48,6 +48,9 @@ TagManager:
   - name: Riftcallers
     uniqueID: 3809635539
     locked: 0
+  - name: BehindArena
+    uniqueID: 1186539379
+    locked: 0
   - name: Arena
     uniqueID: 1471301815
     locked: 0

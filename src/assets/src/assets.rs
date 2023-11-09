@@ -282,6 +282,9 @@ pub fn timed_effect(effect: TimedEffect) -> EffectAddress {
             TimedEffect::MagicCircles1(number) => {
                 format!("HovlStudio/MagicCircles1/Magic circle {number}.prefab")
             }
+            TimedEffect::MagicCircles1Looping(path) => {
+                format!("HovlStudio/MagicCircles1/Loop version/{path}.prefab")
+            }
             TimedEffect::MagicCircles2(number) => {
                 format!("HovlStudio/MagicCircles2/Magic circle {number}.prefab")
             }

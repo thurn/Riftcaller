@@ -15,19 +15,20 @@
 //! Data types used to represent game state
 
 pub mod agent_definition;
+pub mod animation_tracker;
 pub mod card_definition;
 pub mod card_name;
 pub mod card_set_name;
 pub mod card_state;
 pub mod card_view_context;
 pub mod character_preset;
+pub mod continuous_visual_effect;
 pub mod deck;
 pub mod delegate_data;
 pub mod game_actions;
 pub mod game_effect;
 pub mod game_history;
 pub mod game_state;
-pub mod game_updates;
 pub mod player_name;
 pub mod primitives;
 pub mod raid_data;
