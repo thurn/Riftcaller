@@ -63,7 +63,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
             }
         }
         GameEffect::InitiateRaid(_, _) => "Initiate Raid".to_string(),
-        GameEffect::EndRaid => "End Raid".to_string(),
+        GameEffect::EndRaid(_) => "End Raid".to_string(),
         GameEffect::TakeDamage(_, amount) => format!("Take {amount}"),
         GameEffect::MoveCard(_, _) => "Move".to_string(),
         GameEffect::PreventDamage(_) => "Prevent".to_string(),

@@ -35,6 +35,7 @@ pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![ActivatedAbility::new(
+            costs::actions(1),
             text![
                 text!["Shuffle this card into the vault"],
                 text![
@@ -43,7 +44,6 @@ pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
                 ],
                 meta.upgraded_only_text(text![GainMana(1)])
             ],
-            costs::actions(1),
         )
         .delegate(this::can_activate(|g, s, _, flag| {
             flag.add_permission(

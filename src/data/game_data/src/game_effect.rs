@@ -41,7 +41,7 @@ pub enum GameEffect {
     /// Initiate a new raid on this room.
     InitiateRaid(RoomId, AbilityId),
     /// End the current raid in failure.
-    EndRaid,
+    EndRaid(AbilityId),
     /// Deal damage to the Champion
     TakeDamage(AbilityId, u32),
     /// Move a card to a new target position

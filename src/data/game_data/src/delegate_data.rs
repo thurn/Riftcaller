@@ -562,9 +562,9 @@ pub enum Delegate {
     /// phase of a raid?
     CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
     /// Should an 'end the raid' ability with the given ID be prevented?
-    ShouldPreventEndRaidAbility(QueryDelegate<RaidEvent<AbilityId>, Flag>),
+    CanAbilityEndRaid(QueryDelegate<RaidEvent<AbilityId>, Flag>),
     /// Should a 'destroy' ability with the given ID be prevented?
-    ShouldPreventDestroyCardAbility(QueryDelegate<RaidEvent<AbilityId>, Flag>),
+    CanAbilityDestroyCard(QueryDelegate<AbilityId, Flag>),
 
     /// Query the current mana cost of a card. Invoked with [Cost::mana].
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),

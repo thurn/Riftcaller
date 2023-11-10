@@ -59,7 +59,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             InitiatedBy::Ability(ability_id),
             |_, _| {},
         )?,
-        GameEffect::EndRaid => mutations::end_raid(game, RaidOutcome::Failure)?,
+        GameEffect::EndRaid(ability_id) => {
+            mutations::end_raid(game, InitiatedBy::Ability(ability_id), RaidOutcome::Failure)?
+        }
         GameEffect::TakeDamage(ability_id, amount) => deal_damage::apply(game, ability_id, amount)?,
         GameEffect::MoveCard(card_id, target_position) => {
             mutations::move_card(game, card_id, target_position)?

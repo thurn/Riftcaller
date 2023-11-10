@@ -17,6 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::{abilities, text, *};
+use game_data::animation_tracker::InitiatedBy;
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, Resonance,
 };
@@ -47,12 +48,12 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
                 Encounter,
                 text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
             ),
-            on_encountered(|g, _s, _| {
+            on_encountered(|g, s, _| {
                 show_prompt::with_option_choices(
                     g,
                     Side::Champion,
                     vec![
-                        end_raid_prompt(),
+                        end_raid_prompt(s),
                         lose_mana_prompt(g, Side::Champion, 5),
                         lose_actions_prompt(g, Side::Champion, 2),
                     ],
@@ -105,11 +106,11 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
             ),
             Ability::new_with_delegate(
                 trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
-                combat(|g, _, _| {
+                combat(|g, s, _| {
                     show_prompt::with_option_choices(
                         g,
                         Side::Champion,
-                        vec![end_raid_prompt(), lose_actions_prompt(g, Side::Champion, 2)],
+                        vec![end_raid_prompt(s), lose_actions_prompt(g, Side::Champion, 2)],
                     );
                     Ok(())
                 }),
@@ -180,7 +181,13 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                                 queries::mana_cost(g, *card_id).unwrap_or(0) % 2 != 0
                             })
                     },
-                    mutation: |g, _, _| mutations::end_raid(g, RaidOutcome::Failure),
+                    mutation: |g, s, _| {
+                        mutations::end_raid(
+                            g,
+                            InitiatedBy::Ability(s.ability_id()),
+                            RaidOutcome::Failure,
+                        )
+                    },
                 }),
             ],
         }],
@@ -207,10 +214,14 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
                     text!["If they have", Mana(6), "or less, end the raid"]
                 ],
             ),
-            combat(|g, _, _| {
+            combat(|g, s, _| {
                 mana::lose_upto(g, Side::Champion, ManaPurpose::PayForTriggeredAbility, 3);
                 if mana::get(g, Side::Champion, ManaPurpose::BaseMana) <= 6 {
-                    mutations::end_raid(g, RaidOutcome::Failure)?;
+                    mutations::end_raid(
+                        g,
+                        InitiatedBy::Ability(s.ability_id()),
+                        RaidOutcome::Failure,
+                    )?;
                 }
                 Ok(())
             }),
@@ -243,7 +254,7 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
                 show_prompt::with_option_choices(
                     g,
                     Side::Champion,
-                    vec![take_damage_prompt(g, s, 2), end_raid_prompt()],
+                    vec![take_damage_prompt(g, s, 2), end_raid_prompt(s)],
                 );
                 Ok(())
             }),

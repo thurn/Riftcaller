@@ -244,7 +244,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Slow => "slow".to_string(),
         TextToken::Mortal => assets::resonance_string("mortal"),
         TextToken::Infernal => assets::resonance_string("infernal"),
-        TextToken::Abyssal => assets::resonance_string("abyssal"),
+        TextToken::Astral => assets::resonance_string("astral"),
         TextToken::Prismatic => assets::resonance_string("prismatic"),
         TextToken::Wound => "wound".to_string(),
         TextToken::Evade => "evade".to_string(),

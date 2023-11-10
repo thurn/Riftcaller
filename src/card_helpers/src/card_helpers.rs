@@ -157,8 +157,8 @@ pub fn on_calculate_health(transformation: TransformationFn<CardId, HealthValue>
 }
 
 /// A [PromptChoice] to end the current raid.
-pub fn end_raid_prompt() -> Option<PromptChoice> {
-    Some(PromptChoice::new().effect(GameEffect::EndRaid))
+pub fn end_raid_prompt(scope: Scope) -> Option<PromptChoice> {
+    Some(PromptChoice::new().effect(GameEffect::EndRaid(scope.ability_id())))
 }
 
 /// A [PromptChoice] for the `side` player to lose mana

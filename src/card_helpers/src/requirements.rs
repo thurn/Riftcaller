@@ -19,7 +19,7 @@ use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
 use game_data::game_history::{HistoryEvent, HistoryEventKind};
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, HasCardId, RaidId, RoomId};
+use game_data::primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId};
 use game_data::utils;
 use rules::flags;
 
@@ -136,9 +136,48 @@ pub fn no_damage_dealt<R: BaseRequirement>(
 
 /// A [RequirementFn] which matches if the indicated `card_id` was selected this
 /// turn as a card choice for the parent card.
-pub fn card_chosen_this_turn(game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
-    history::card_choices_this_turn(game, scope)
+pub fn card_chosen_this_turn(
+    game: &GameState,
+    source: impl HasAbilityId,
+    card_id: &impl HasCardId,
+) -> bool {
+    history::card_choices_this_turn(game, source)
         .any(|choice| choice.chosen_card() == Some(card_id.card_id()))
+}
+
+/// A [RequirementFn] which matches if the `source` ability has been activated
+/// during the current raid encounter.
+pub fn ability_activated_this_encounter<T>(
+    game: &GameState,
+    source: impl HasAbilityId,
+    _: &T,
+) -> bool {
+    // This is pretty messy because there's no clean definition of the 'current'
+    // encounter and there's a lot of different weird ways in which encounters can
+    // end. If this sort of thing ends up happening a lot we could investigate e.g.
+    // assigning a unique ID to every encounter.
+
+    let ability_id = source.ability_id();
+    let mut result = false;
+
+    for event in history::current_turn(game) {
+        match event {
+            HistoryEvent::ActivateAbility(id, ..) if *id == ability_id => {
+                result = true;
+            }
+            HistoryEvent::RaidFailure(..)
+            | HistoryEvent::RaidSuccess(..)
+            | HistoryEvent::MinionApproach(..)
+            | HistoryEvent::MinionEncounter(..)
+            | HistoryEvent::UseWeapon(..)
+            | HistoryEvent::MinionCombatAbility(..) => {
+                result = false;
+            }
+            _ => {}
+        }
+    }
+
+    result
 }
 
 /// A `TargetRequirement` for a card which can target any room which is a valid

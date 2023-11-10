@@ -26,6 +26,12 @@ pub fn mana(mana: ManaValue) -> Cost<CardId> {
     Cost { mana: Some(mana), actions: 1, custom_cost: None }
 }
 
+/// Provides the cost for a an ability, with no action points required and
+/// `mana` mana cost.
+pub fn ability_mana(mana: ManaValue) -> Cost<AbilityId> {
+    Cost { mana: Some(mana), actions: 0, custom_cost: None }
+}
+
 /// Cost for an ability which costs 1 action point and requires the owning card
 /// to be sacrificed.
 pub fn sacrifice_for_action() -> Cost<AbilityId> {
@@ -67,7 +73,7 @@ pub fn sacrifice_cost() -> Option<CustomCost<AbilityId>> {
 pub fn once_per_turn() -> Option<CustomCost<AbilityId>> {
     Some(CustomCost {
         can_pay: |g, ability_id| {
-            history::abilities_activated_this_turn(g).all(|id| id != ability_id)
+            history::ability_activations_this_turn(g, ability_id).next().is_none()
         },
         pay: |_, _| Ok(()),
         description: None,

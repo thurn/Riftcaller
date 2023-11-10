@@ -300,6 +300,7 @@ pub enum CardName {
     EtherealForm,
     PlanarSanctuary,
     ChainsOfBinding,
+    WhipOfDisjunction,
 }
 
 impl CardName {

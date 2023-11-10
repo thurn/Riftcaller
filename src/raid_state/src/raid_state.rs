@@ -470,6 +470,6 @@ fn raze_card(game: &mut GameState, card_id: CardId, cost: u32) -> Result<RaidSta
 }
 
 fn finish_raid(game: &mut GameState) -> Result<RaidState> {
-    mutations::end_raid(game, RaidOutcome::Success)?;
+    mutations::end_raid(game, InitiatedBy::GameAction, RaidOutcome::Success)?;
     RaidState::step(RaidStep::FinishRaid)
 }

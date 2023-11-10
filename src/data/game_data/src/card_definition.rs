@@ -225,15 +225,15 @@ impl Ability {
 /// Builder helper for activated abilities
 #[derive(Debug)]
 pub struct ActivatedAbility {
-    text: Vec<TextElement>,
     cost: Cost<AbilityId>,
+    text: Vec<TextElement>,
     target_requirement: TargetRequirement<AbilityId>,
     delegates: Vec<Delegate>,
 }
 
 impl ActivatedAbility {
-    pub fn new(text: Vec<TextElement>, cost: Cost<AbilityId>) -> Self {
-        Self { text, cost, target_requirement: TargetRequirement::None, delegates: vec![] }
+    pub fn new(cost: Cost<AbilityId>, text: Vec<TextElement>) -> Self {
+        Self { cost, text, target_requirement: TargetRequirement::None, delegates: vec![] }
     }
 
     pub fn target_requirement(mut self, requirement: TargetRequirement<AbilityId>) -> Self {

@@ -17,6 +17,7 @@
 use card_helpers::costs::{actions, scheme};
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, text, *};
+use game_data::animation_tracker::InitiatedBy;
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
     SchemePoints,
@@ -524,7 +525,9 @@ pub fn test_sacrifice_end_raid_project(metadata: CardMetadata) -> CardDefinition
         abilities: vec![Ability {
             ability_type: abilities::sacrifice_this(),
             text: text!["End the raid"],
-            delegates: vec![on_activated(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
+            delegates: vec![on_activated(|g, s, _| {
+                mutations::end_raid(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
+            })],
         }],
         config: CardConfig::default(),
         ..test_overlord_spell(metadata)

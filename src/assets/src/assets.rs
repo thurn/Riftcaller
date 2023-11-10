@@ -212,9 +212,9 @@ pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>
             match resonance {
                 Some(r) if r.prismatic => "SpriteWay/Icons/Clean Frames/9047",
                 Some(r) if r.basic_resonance_count() > 1 => "SpriteWay/Icons/Clean Frames/9008",
-                Some(r) if r.mortal => "SpriteWay/Icons/Clean Frames/9048",
+                Some(r) if r.mortal => "SpriteWay/Icons/Clean Frames/9020",
                 Some(r) if r.infernal => "SpriteWay/Icons/Clean Frames/9054",
-                Some(r) if r.astral => "SpriteWay/Icons/Clean Frames/9020",
+                Some(r) if r.astral => "SpriteWay/Icons/Clean Frames/9048",
                 _ => match card_type {
                     CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",

@@ -439,3 +439,45 @@ fn foebane_cannot_play_without_target() {
         .play_card_with_result(id, g.user_id(), test_helpers::target_room(RoomId::Vault))
         .is_err());
 }
+
+#[test]
+fn whip_of_disjunction() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestAstralMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::WhipOfDisjunction);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 0);
+    g.click(Button::NoWeapon);
+    assert!(g.user.data.raid_active());
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn whip_of_disjunction_cannot_activate_mortal() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::WhipOfDisjunction);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+}
+
+#[test]
+fn whip_of_disjunction_cannot_activate_before_encounter() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_down_defender(RoomId::Vault, CardName::TestAstralMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::WhipOfDisjunction);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+}

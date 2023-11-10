@@ -14,9 +14,10 @@
 
 use game_data::card_state::CardChoice;
 use game_data::delegate_data::{RaidEvent, UsedWeapon};
+use game_data::game_actions::CardTarget;
 use game_data::game_history::HistoryEvent;
 use game_data::game_state::GameState;
-use game_data::primitives::{AbilityId, CardId, HasAbilityId, RoomId};
+use game_data::primitives::{CardId, HasAbilityId, RoomId};
 
 /// Returns the record of game events which happened on the current
 /// player's turn so far, not including the game action currently being
@@ -44,17 +45,23 @@ pub fn played_this_turn(game: &GameState, card_id: CardId) -> bool {
     cards_played_this_turn(game).any(|id| id == card_id)
 }
 
-/// Returns an iterator over abilities which have been activated in the current
-/// player's turn so far.
+/// Returns an iterator over instances in which the provided ability has been
+/// activated this turn, returning the selected [CardTarget]s.
 ///
 /// Does not include the current event.
-pub fn abilities_activated_this_turn(game: &GameState) -> impl Iterator<Item = AbilityId> + '_ {
+pub fn ability_activations_this_turn(
+    game: &GameState,
+    source: impl HasAbilityId,
+) -> impl Iterator<Item = CardTarget> + '_ {
+    let ability_id = source.ability_id();
     current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::ActivateAbility(id, _, _) = h {
-            Some(*id)
-        } else {
-            None
+        if let HistoryEvent::ActivateAbility(id, target, _) = h {
+            if *id == ability_id {
+                return Some(*target);
+            }
         }
+
+        None
     })
 }
 

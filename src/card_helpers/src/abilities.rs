@@ -110,7 +110,9 @@ pub fn combat_end_raid() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: trigger_text(Combat, text!["End the raid"]),
-        delegates: vec![combat(|g, _, _| mutations::end_raid(g, RaidOutcome::Failure))],
+        delegates: vec![combat(|g, s, _| {
+            mutations::end_raid(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
+        })],
     }
 }
 

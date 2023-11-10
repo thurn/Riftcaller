@@ -23,16 +23,17 @@ use std::cmp;
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::animation_tracker::GameAnimation;
+use game_data::animation_tracker::{GameAnimation, InitiatedBy};
 use game_data::card_name::CardVariant;
 use game_data::card_state::{CardChoice, CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent,
-    DuskEvent, EnterArenaEvent, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
-    RaidEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
-    StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
+    CanAbilityEndRaidQuery, CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard,
+    DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, Flag, MoveToDiscardPileEvent,
+    OverlordScoreCardEvent, RaidEndEvent, RaidEvent, RaidFailureEvent, RaidOutcome,
+    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
+    SummonProjectEvent,
 };
 use game_data::game_history::{CardChoiceEvent, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
@@ -330,10 +331,25 @@ pub fn spend_power_charges(
 }
 
 /// Ends the current raid. Returns an error if no raid is currently active.
-pub fn end_raid(game: &mut GameState, outcome: RaidOutcome) -> Result<()> {
+pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome) -> Result<()> {
     debug!("Ending raid");
+    let raid_id = game.raid()?.raid_id;
     let target = game.raid()?.target;
-    let event = RaidEvent { raid_id: game.raid()?.raid_id, target, data: () };
+
+    if let InitiatedBy::Ability(ability_id) = source {
+        let can_end: bool = dispatch::perform_query(
+            game,
+            CanAbilityEndRaidQuery(RaidEvent { raid_id, target, data: ability_id }),
+            Flag::new(true),
+        )
+        .into();
+
+        if !can_end {
+            return Ok(());
+        }
+    }
+
+    let event = RaidEvent { raid_id, target, data: () };
     match outcome {
         RaidOutcome::Success => {
             dispatch::invoke_event(game, RaidSuccessEvent(event))?;

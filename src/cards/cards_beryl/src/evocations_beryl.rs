@@ -43,11 +43,11 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![ActivatedAbility::new(
+            costs::sacrifice_for_action(),
             text![
                 text!["Raid target outer room"],
                 text!["If successful", GainMana(meta.upgrade(8, 10)), "instead of accessing cards"]
             ],
-            costs::sacrifice_for_action(),
         )
         .target_requirement(TargetRequirement::TargetRoom(|g, _, r| {
             r.is_outer_room() && flags::is_valid_raid_target(g, r)
@@ -161,11 +161,11 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![ActivatedAbility::new(
+            costs::sacrifice(),
             text![
                 text![Evade, "a minion"],
                 meta.upgrade(text!["Lose all", ActionSymbol], text!["Lose", Actions(1)])
             ],
-            costs::sacrifice(),
         )
         .delegate(this::can_activate(|g, _, _, flag| {
             flag.add_constraint(raids::active_encounter_prompt(g).is_some())
@@ -212,8 +212,8 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
                 }),
             ),
             ActivatedAbility::new(
-                text![text!["Remove a curse"], text!["Draw a card"]],
                 costs::power_charges::<1>(),
+                text![text!["Remove a curse"], text!["Draw a card"]],
             )
             .delegate(this::on_activated(|g, s, _| {
                 curses::remove_curses(g, 1)?;

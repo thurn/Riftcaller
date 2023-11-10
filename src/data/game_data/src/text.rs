@@ -73,7 +73,7 @@ pub enum TextToken {
     Cursed,
     Slow,
     Mortal,
-    Abyssal,
+    Astral,
     Infernal,
     Prismatic,
     Wound,

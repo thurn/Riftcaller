@@ -20,7 +20,7 @@ use game_data::delegate_data::{
     RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, ManaValue, RaidId, ShieldValue};
+use game_data::primitives::{AbilityId, CardId, ManaValue, RaidId, ShieldValue};
 
 /// A [TransformationFn] which invokes [Flag::allow] to enable an action.
 pub fn allow<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
@@ -86,6 +86,13 @@ pub fn can_summon(
     transformation: TransformationFn<CardId, Flag>,
 ) -> Delegate {
     Delegate::CanSummon(QueryDelegate { requirement, transformation })
+}
+
+pub fn can_ability_end_raid(
+    requirement: RequirementFn<RaidEvent<AbilityId>>,
+    transformation: TransformationFn<RaidEvent<AbilityId>, Flag>,
+) -> Delegate {
+    Delegate::CanAbilityEndRaid(QueryDelegate { requirement, transformation })
 }
 
 pub fn can_raid_access_cards(

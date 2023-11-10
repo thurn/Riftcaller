@@ -315,7 +315,7 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            ActivatedAbility::new(text!["Take all stored mana"], costs::sacrifice_for_action())
+            ActivatedAbility::new(costs::sacrifice_for_action(), text!["Take all stored mana"])
                 .delegate(this::on_activated(|g, s, _| {
                     mana::gain(
                         g,
@@ -437,8 +437,8 @@ pub fn phase_door(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![ActivatedAbility::new(
-            text![text!["Raid the", Crypt], text!["If successful, access the", Vault, "instead"]],
             costs::actions(1),
+            text![text!["Raid the", Crypt], text!["If successful, access the", Vault, "instead"]],
         )
         .delegate(this::on_activated(|g, s, _| {
             raids::initiate(g, s, CardTarget::Room(RoomId::Crypts))?;
@@ -510,7 +510,7 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
-            ActivatedAbility::new(text![Evade, "an", Infernal, "minion"], costs::sacrifice())
+            ActivatedAbility::new(costs::sacrifice(), text![Evade, "an", Infernal, "minion"])
                 .delegate(this::can_activate(|g, _, _, flag| {
                     flag.add_constraint(utils::is_true(|| {
                         Some(queries::resonance(g, raids::active_encounter_prompt(g)?)?.infernal)
@@ -583,5 +583,44 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
             )
             .build(),
+    }
+}
+
+pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::WhipOfDisjunction,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::champion_card(meta, "whip_of_disjunction"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon, CardSubtype::Runic],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![ActivatedAbility::new(
+            costs::ability_mana(2),
+            text![
+                "Abilities of",
+                Astral,
+                "minions with",
+                5,
+                "or less health cannot end the raid during the current encounter"
+            ],
+        )
+        .delegate(this::can_activate(|g, _, _, flag| {
+            flag.add_constraint(utils::is_true(|| {
+                Some(queries::resonance(g, raids::active_encounter_prompt(g)?)?.astral)
+            }))
+        }))
+        .delegate(delegates::can_ability_end_raid(
+            requirements::ability_activated_this_encounter,
+            |g, _, event, flag| {
+                let health = queries::health(g, event.data.card_id);
+                let resonance = queries::resonance(g, event.data.card_id);
+                flag.add_constraint(health > 5 || resonance.map_or(true, |r| !r.astral))
+            },
+        ))
+        .build()],
+        config: CardConfigBuilder::new().resonance(Resonance::astral()).build(),
     }
 }

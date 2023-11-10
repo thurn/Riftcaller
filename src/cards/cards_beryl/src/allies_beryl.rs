@@ -149,7 +149,7 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            ActivatedAbility::new(text!["Remove a curse"], costs::sacrifice())
+            ActivatedAbility::new(costs::sacrifice(), text!["Remove a curse"])
                 .delegate(this::can_activate(|g, _, _, flag| {
                     flag.add_constraint(g.champion.curses > 0)
                 }))
@@ -199,7 +199,7 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            ActivatedAbility::new(text!["Take all stored mana"], costs::actions(1))
+            ActivatedAbility::new(costs::actions(1), text!["Take all stored mana"])
                 .delegate(this::can_activate(|g, s, _, flag| {
                     flag.add_constraint(g.card(s.card_id()).counters(CardCounter::StoredMana) > 0)
                 }))
