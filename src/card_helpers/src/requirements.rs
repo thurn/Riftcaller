@@ -152,32 +152,11 @@ pub fn ability_activated_this_encounter<T>(
     source: impl HasAbilityId,
     _: &T,
 ) -> bool {
-    // This is pretty messy because there's no clean definition of the 'current'
-    // encounter and there's a lot of different weird ways in which encounters can
-    // end. If this sort of thing ends up happening a lot we could investigate e.g.
-    // assigning a unique ID to every encounter.
-
-    let ability_id = source.ability_id();
-    let mut result = false;
-
-    for event in history::current_turn(game) {
-        match event {
-            HistoryEvent::ActivateAbility(activation) if activation.ability_id == ability_id => {
-                result = true;
-            }
-            HistoryEvent::RaidFailure(..)
-            | HistoryEvent::RaidSuccess(..)
-            | HistoryEvent::MinionApproach(..)
-            | HistoryEvent::MinionEncounter(..)
-            | HistoryEvent::UseWeapon(..)
-            | HistoryEvent::MinionCombatAbility(..) => {
-                result = false;
-            }
-            _ => {}
-        }
-    }
-
-    result
+    history::ability_activations_this_turn(game, source).any(|activation| {
+        utils::is_true(|| {
+            Some(activation.current_minion_encounter? == game.raid.as_ref()?.minion_encounter_id?)
+        })
+    })
 }
 
 /// A `TargetRequirement` for a card which can target any room which is a valid

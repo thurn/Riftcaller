@@ -343,7 +343,6 @@ pub fn spend_power_charges(
 /// Ends the current raid. Returns an error if no raid is currently active.
 pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome) -> Result<()> {
     debug!("Ending raid");
-    game.raid_mut()?.minion_encounter_id = None;
     let info = game.raid()?.info();
 
     if let InitiatedBy::Ability(ability_id) = source {
@@ -370,6 +369,7 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
             game.add_history_event(HistoryEvent::RaidFailure(event));
         }
     }
+
     dispatch::invoke_event(game, RaidEndEvent(info.event(outcome)))?;
     game.raid = None;
     Ok(())
