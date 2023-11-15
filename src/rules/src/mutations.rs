@@ -29,11 +29,11 @@ use game_data::card_state::{CardChoice, CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CanAbilityEndRaidQuery, CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard,
-    DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, Flag, MoveToDiscardPileEvent,
-    OverlordScoreCardEvent, RaidEndEvent, RaidEvent, RaidFailureEvent, RaidOutcome,
-    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
-    SummonProjectEvent,
+    CanAbilityEndRaidQuery, CardRevealedEvent, CardSacrificedEvent, DawnEvent, DiscardCardEvent,
+    DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, Flag,
+    MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEvent, RaidFailureEvent,
+    RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
+    SummonMinionEvent, SummonProjectEvent,
 };
 use game_data::game_history::{CardChoiceEvent, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
@@ -51,7 +51,7 @@ use crate::{dispatch, flags, mana, queries, CardDefinitionExt};
 /// Change a card to the 'face up' state and makes the card revealed to both
 /// players.
 pub fn turn_face_up(game: &mut GameState, card_id: CardId) {
-    undo_tracker::track_revealed_state(game, card_id, |game| {
+    undo_tracker::track_visible_state(game, card_id, |game| {
         game.card_mut(card_id).internal_turn_face_up()
     })
 }
@@ -62,14 +62,24 @@ pub fn turn_face_down(game: &mut GameState, card_id: CardId) {
     game.card_mut(card_id).internal_turn_face_down();
 }
 
-/// Updates the 'revealed' state of a card to be visible to the indicated
+/// Updates the 'visible' state of a card to be visible to the indicated
 /// `side` player. Note that this is *not* the same as turning a card
 /// face-up, a card can be revealed to both players without being
 /// face-up
-pub fn set_revealed_to(game: &mut GameState, card_id: CardId, side: Side, revealed: bool) {
-    undo_tracker::track_revealed_state(game, card_id, |game| {
-        game.card_mut(card_id).internal_set_revealed_to(side, revealed);
+pub fn set_visible_to(game: &mut GameState, card_id: CardId, side: Side, revealed: bool) {
+    undo_tracker::track_visible_state(game, card_id, |game| {
+        game.card_mut(card_id).internal_set_visible_to(side, revealed);
     })
+}
+
+/// Reveal a card for an ability.
+///
+/// This is a specific game action (described using the word "reveal" on card
+/// text) and does *not* include a card being made visible by normal game rules,
+/// e.g. during a raid.
+pub fn reveal_card(game: &mut GameState, card_id: CardId) -> Result<()> {
+    set_visible_to(game, card_id, card_id.side.opponent(), true);
+    dispatch::invoke_event(game, CardRevealedEvent(card_id))
 }
 
 /// Move a card to a new position. Detects cases like drawing cards, playing
@@ -170,8 +180,8 @@ pub fn shuffle_into_deck(game: &mut GameState, side: Side, cards: &[CardId]) -> 
     move_cards(game, cards, CardPosition::DeckUnknown(side))?;
     for card_id in cards {
         turn_face_down(game, *card_id);
-        set_revealed_to(game, *card_id, Side::Overlord, false);
-        set_revealed_to(game, *card_id, Side::Champion, false);
+        set_visible_to(game, *card_id, Side::Overlord, false);
+        set_visible_to(game, *card_id, Side::Champion, false);
     }
     shuffle_deck(game, side)?;
     game.add_animation(|| GameAnimation::ShuffleIntoDeck);
@@ -205,7 +215,7 @@ pub fn draw_cards(game: &mut GameState, side: Side, count: u32) -> Result<Vec<Ca
     }
 
     for card_id in &card_ids {
-        set_revealed_to(game, *card_id, side, true);
+        set_visible_to(game, *card_id, side, true);
     }
 
     game.add_animation(|| GameAnimation::DrawCards(side, card_ids.clone()));

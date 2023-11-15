@@ -492,7 +492,7 @@ pub fn can_take_undo_action(game: &GameState, side: Side) -> bool {
     if let Some(tracker) = &game.undo_tracker {
         has_priority(game, side)
             && !tracker.random
-            && !tracker.revealed
+            && !tracker.visible
             && tracker.side == Some(side)
     } else {
         false

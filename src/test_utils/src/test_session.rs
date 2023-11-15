@@ -206,7 +206,7 @@ impl TestSession {
         self.database.mutate_game(|game| {
             test_game_client::overwrite_card(game, card_id, card_variant);
             game.move_card_internal(card_id, CardPosition::Hand(side));
-            mutations::set_revealed_to(game, card_id, card_id.side, true);
+            mutations::set_visible_to(game, card_id, card_id.side, true);
         });
 
         self.connect(self.user.id).expect("User connection error");

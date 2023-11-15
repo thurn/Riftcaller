@@ -524,6 +524,10 @@ pub enum Delegate {
     CursesReceived(EventDelegate<CurseCount>),
     /// A card has been sacrificed by its owner
     CardSacrificed(EventDelegate<CardId>),
+    /// A card has been revealed by an ability. This is a specific game action
+    /// (described using the word "reveal" on card text) and does *not* include
+    /// a card being made visible by normal game rules, e.g. during a raid.
+    CardRevealed(EventDelegate<CardId>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

@@ -223,7 +223,7 @@ pub async fn handle_debug_action(
                 let side = rules::get(*variant).side;
                 if let Some(card_id) = mutations::realize_top_of_deck(game, side, 1)?.get(0) {
                     mutations::overwrite_card(game, *card_id, *variant)?;
-                    mutations::set_revealed_to(game, *card_id, card_id.side, true);
+                    mutations::set_visible_to(game, *card_id, card_id.side, true);
 
                     if matches!(position, CardPosition::Hand(s) if *s == side) {
                         mutations::draw_cards(game, side, 1)?;
@@ -419,7 +419,7 @@ fn create_at_position(
         *mutations::realize_top_of_deck(game, side, 1)?.get(0).with_error(|| "Deck is empty")?;
     mutations::overwrite_card(game, card_id, CardVariant::standard(card))?;
     mutations::move_card(game, card_id, position)?;
-    mutations::set_revealed_to(game, card_id, card_id.side, true);
+    mutations::set_visible_to(game, card_id, card_id.side, true);
     Ok(card_id)
 }
 

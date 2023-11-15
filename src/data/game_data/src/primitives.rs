@@ -531,6 +531,9 @@ pub enum CardSubtype {
     /// Cards with the "Summonbound" subtype can be summoned when a face-down
     /// minion is approached.
     Summonbound,
+    /// Cards with the "Enchanted" subtype can have their power charges removed
+    /// by the Overlord.
+    Enchanted,
 
     Weapon,
     Silvered,

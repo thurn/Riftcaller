@@ -210,7 +210,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
         .delegate(this::on_played(|g, s, _| {
             let cards = mutations::realize_top_of_deck(g, s.side(), s.upgrade(4, 6))?;
             for card in &cards {
-                mutations::set_revealed_to(g, *card, s.side(), true);
+                mutations::set_visible_to(g, *card, s.side(), true);
             }
 
             Effects::new()
@@ -361,7 +361,7 @@ pub fn keensight(meta: CardMetadata) -> CardDefinition {
 
             let occupants = g.occupants(target).map(|c| c.id).collect::<Vec<_>>();
             for occupant in occupants {
-                mutations::set_revealed_to(g, occupant, s.side(), true);
+                mutations::reveal_card(g, occupant)?;
             }
 
             show_prompt::with_choices(

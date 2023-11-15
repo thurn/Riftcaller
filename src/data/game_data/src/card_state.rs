@@ -167,10 +167,10 @@ pub struct CardData {
     power_charges: PowerChargeValue,
     /// Is this card face-up?
     is_face_up: bool,
-    /// Is this card revealed to the [CardId.side] user?
-    revealed_to_owner: bool,
-    /// Is this card revealed to opponent of the [CardId.side] user?
-    revealed_to_opponent: bool,
+    /// Is this card visible to the [CardId.side] user?
+    visible_to_owner: bool,
+    /// Is this card visible to opponent of the [CardId.side] user?
+    visible_to_opponent: bool,
 }
 
 /// Stores the state of a Card during an ongoing game. The game rules for a
@@ -211,8 +211,8 @@ impl CardState {
             position: CardPosition::DeckUnknown(id.side),
             sorting_key: 0,
             data: CardData {
-                revealed_to_owner: false,
-                revealed_to_opponent: false,
+                visible_to_owner: false,
+                visible_to_opponent: false,
                 is_face_up: false,
                 ..CardData::default()
             },
@@ -234,8 +234,8 @@ impl CardState {
             position,
             sorting_key,
             data: CardData {
-                revealed_to_owner: is_face_up,
-                revealed_to_opponent: is_face_up,
+                visible_to_owner: is_face_up,
+                visible_to_opponent: is_face_up,
                 is_face_up,
                 ..CardData::default()
             },
@@ -329,15 +329,15 @@ impl CardState {
         !self.data.is_face_up
     }
 
-    /// Returns true if this card is currently revealed to the indicated user
+    /// Returns true if this card is currently visible to the indicated user
     ///
     /// Note that this is not the same as [Self::is_face_up], both players may
     /// know a card without it being the the 'face up' state.
-    pub fn is_revealed_to(&self, side: Side) -> bool {
+    pub fn is_visible_to(&self, side: Side) -> bool {
         if self.id.side == side {
-            self.data.revealed_to_owner
+            self.data.visible_to_owner
         } else {
-            self.data.revealed_to_opponent
+            self.data.visible_to_opponent
         }
     }
 
@@ -345,8 +345,8 @@ impl CardState {
     /// players.
     pub fn internal_turn_face_up(&mut self) {
         self.data.is_face_up = true;
-        self.internal_set_revealed_to(Side::Overlord, true);
-        self.internal_set_revealed_to(Side::Champion, true);
+        self.internal_set_visible_to(Side::Overlord, true);
+        self.internal_set_visible_to(Side::Champion, true);
     }
 
     /// Change a card to the 'face down' state, but does *not* change its
@@ -355,15 +355,15 @@ impl CardState {
         self.data.is_face_up = false;
     }
 
-    /// Updates the 'revealed' state of a card to be visible to the indicated
+    /// Updates the 'visible' state of a card to be visible to the indicated
     /// `side` player. Note that this is *not* the same as turning a card
-    /// face-up, a card can be revealed to both players without being
+    /// face-up, a card can be visible to both players without being
     /// face-up
-    pub fn internal_set_revealed_to(&mut self, side: Side, revealed: bool) {
+    pub fn internal_set_visible_to(&mut self, side: Side, revealed: bool) {
         if self.id.side == side {
-            self.data.revealed_to_owner = revealed
+            self.data.visible_to_owner = revealed
         } else {
-            self.data.revealed_to_opponent = revealed
+            self.data.visible_to_opponent = revealed
         }
     }
 

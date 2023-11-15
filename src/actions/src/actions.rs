@@ -53,7 +53,7 @@ pub fn handle_game_action(
             undo_tracker.undo = Some(Box::new(clone));
             undo_tracker.side = Some(user_side);
             undo_tracker.random = false;
-            undo_tracker.revealed = false;
+            undo_tracker.visible = false;
         }
     }
 

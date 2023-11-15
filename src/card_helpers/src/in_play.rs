@@ -183,6 +183,12 @@ pub fn on_card_moved_to_discard_pile(mutation: MutationFn<CardId>) -> Delegate {
     })
 }
 
+/// A delegate which fires when a card is face up & in play when a card is
+/// revealed by a card ability.
+pub fn on_card_revealed(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::CardRevealed(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
 /// A delegate which transforms the sanctum access count when a card is face up
 /// & in play
 pub fn on_query_sanctum_access_count(transformation: TransformationFn<RaidId, u32>) -> Delegate {

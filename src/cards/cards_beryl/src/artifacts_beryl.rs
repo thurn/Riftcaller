@@ -624,3 +624,35 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new().resonance(Resonance::astral()).build(),
     }
 }
+
+pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Glimmersong,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(3),
+        image: assets::champion_card(meta, "glimmersong"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon, CardSubtype::Enchanted],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![Ability::new_with_delegate(
+            text!["When you reveal a card,", AddPowerCharges(1)],
+            in_play::on_card_revealed(|g, s, card_id| {
+                if card_id.side != s.side() {
+                    g.card_mut(s.card_id()).add_counters(CardCounter::PowerCharges, 1);
+                }
+                Ok(())
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .base_attack(0)
+            .resonance(Resonance::prismatic())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(22))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact03")),
+            )
+            .build(),
+    }
+}

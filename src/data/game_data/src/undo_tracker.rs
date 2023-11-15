@@ -32,26 +32,26 @@ pub struct UndoTracker {
     pub random: bool,
     /// Set to true if the current game state revealed any face-down cards as
     /// part of its action resolution process.
-    pub revealed: bool,
+    pub visible: bool,
     /// Player who acted to produce this game state, or None in the starting
     /// state of a game.
     pub side: Option<Side>,
 }
 
-/// Updates the `revealed` state of the provided game's [UndoTracker] if
+/// Updates the `visible` state of the provided game's [UndoTracker] if
 /// invoking the `action` function caused the `card_id` card to transition from
 /// not-revealed to revealed for the active player.
-pub fn track_revealed_state(
+pub fn track_visible_state(
     game: &mut GameState,
     card_id: CardId,
     action: impl Fn(&mut GameState) -> (),
 ) {
     if let Some(side) = &game.undo_tracker.as_ref().and_then(|u| u.side) {
-        let previously_revealed = game.card(card_id).is_revealed_to(*side);
+        let previously_revealed = game.card(card_id).is_visible_to(*side);
         action(game);
-        if !previously_revealed && game.card(card_id).is_revealed_to(*side) {
+        if !previously_revealed && game.card(card_id).is_visible_to(*side) {
             if let Some(undo_tracker) = &mut game.undo_tracker {
-                undo_tracker.revealed = true;
+                undo_tracker.visible = true;
             }
         }
     } else {

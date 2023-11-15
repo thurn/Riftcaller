@@ -43,7 +43,7 @@ use {adapters, assets, rules_text};
 use crate::{card_selector, positions};
 
 pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> CardView {
-    let revealed = context.query_or(true, |_, card| card.is_revealed_to(builder.user_side));
+    let revealed = context.query_or(true, |_, card| card.is_visible_to(builder.user_side));
     CardView {
         card_id: context.query_or_none(|_, card| adapters::card_identifier(card.id)),
         card_position: context

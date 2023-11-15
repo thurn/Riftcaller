@@ -369,9 +369,9 @@ fn populate_approach_prompt(game: &mut GameState) -> Result<RaidState> {
 }
 
 fn check_can_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    let can_access =
+    let can_access_cards =
         dispatch::perform_query(game, CanRaidAccessCardsQuery(info.event(())), Flag::new(true));
-    if can_access.into() {
+    if can_access_cards.into() {
         RaidState::step(RaidStep::AccessStart)
     } else {
         RaidState::step(RaidStep::FinishRaid)
@@ -399,7 +399,7 @@ fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 fn reveal_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     let accessed = game.raid()?.accessed.clone();
     for card_id in &accessed {
-        mutations::set_revealed_to(game, *card_id, Side::Champion, true);
+        mutations::set_visible_to(game, *card_id, Side::Champion, true);
     }
 
     if info.target == RoomId::Sanctum {
