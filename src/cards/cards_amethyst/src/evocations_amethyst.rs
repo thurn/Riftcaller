@@ -72,7 +72,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
         abilities: vec![
             Ability::new_with_delegate(
                 text!["When you access a room", StoreMana(1)],
-                in_play::after_room_accessed(|g, s, _| {
+                in_play::on_raid_success(|g, s, _| {
                     Effects::new().ability_alert(s).apply(g);
                     add_stored_mana(g, s.card_id(), 1);
                     Ok(())

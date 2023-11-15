@@ -189,6 +189,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::GainActions(n) => {
             format!("gain{}{}", icons::NON_BREAKING_SPACE, icons::ACTION.repeat(*n as usize))
         }
+        TextToken::PowerChargeSymbol => icons::POWER_CHARGE.to_string(),
         TextToken::PowerCharges(n) => {
             if *n == 1 {
                 icons::POWER_CHARGE.to_string()
@@ -249,6 +250,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Wound => "wound".to_string(),
         TextToken::Evade => "evade".to_string(),
         TextToken::Unsummon => "unsummon".to_string(),
+        TextToken::RazeAbility => format!("{} ability", icons::RAZE),
     }
 }
 

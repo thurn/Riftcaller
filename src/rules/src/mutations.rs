@@ -76,10 +76,15 @@ pub fn set_visible_to(game: &mut GameState, card_id: CardId, side: Side, reveale
 ///
 /// This is a specific game action (described using the word "reveal" on card
 /// text) and does *not* include a card being made visible by normal game rules,
-/// e.g. during a raid.
+/// e.g. during a raid. The reveal event only fires if the card was not
+/// previously face-up.
 pub fn reveal_card(game: &mut GameState, card_id: CardId) -> Result<()> {
-    set_visible_to(game, card_id, card_id.side.opponent(), true);
-    dispatch::invoke_event(game, CardRevealedEvent(card_id))
+    if !game.card(card_id).is_face_up() {
+        set_visible_to(game, card_id, card_id.side.opponent(), true);
+        dispatch::invoke_event(game, CardRevealedEvent(card_id))?;
+    }
+
+    Ok(())
 }
 
 /// Move a card to a new position. Detects cases like drawing cards, playing

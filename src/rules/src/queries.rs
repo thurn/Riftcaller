@@ -16,7 +16,9 @@
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::card_definition::{AbilityType, CardStats, Resonance, TargetRequirement};
+use game_data::card_definition::{
+    AbilityType, AttackBoost, CardStats, Resonance, TargetRequirement,
+};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, BaseAttackQuery, BreachValueQuery, HealthValueQuery,
@@ -104,6 +106,11 @@ pub fn base_attack(game: &GameState, card_id: CardId) -> AttackValue {
         BaseAttackQuery(card_id),
         stats(game, card_id).base_attack.unwrap_or(0),
     )
+}
+
+/// Queries the [AttackBoost] for a card.
+pub fn attack_boost(game: &GameState, card_id: CardId) -> Option<&AttackBoost> {
+    game.card(card_id).definition().config.stats.attack_boost.as_ref()
 }
 
 /// Returns the health value for a given card, or 0 by default.
@@ -279,6 +286,7 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::MoveToScoredPosition(_)
             | RaidStep::StartRazingCard(_, _)
             | RaidStep::RazeCard(_, _)
+            | RaidStep::FinishAccess
             | RaidStep::FinishRaid => RaidStatus::Access,
         },
         RaidState::Prompt(prompt) => prompt.status,

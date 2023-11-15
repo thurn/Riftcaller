@@ -23,7 +23,7 @@ use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     ApproachMinionEvent, CanRaidAccessCardsQuery, CardAccessEvent, ChampionScoreCardEvent,
-    EncounterMinionEvent, Flag, MinionCombatAbilityEvent, MinionDefeatedEvent,
+    EncounterMinionEvent, Flag, MinionCombatAbilityEvent, MinionDefeatedEvent, RaidAccessEndEvent,
     RaidAccessSelectedEvent, RaidAccessStartEvent, RaidOutcome, RaidStartEvent, RazeCardEvent,
     ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
@@ -203,12 +203,13 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::RevealAccessedCards => reveal_accessed_cards(game, info),
         RaidStep::AccessCards => access_cards(game),
         RaidStep::PopulateAccessPrompt => populate_access_prompt(game, info),
-        RaidStep::StartScoringCard(scored) => start_scoring_card(game, scored),
+        RaidStep::StartScoringCard(scored) => start_scoring_card(game, info, scored),
         RaidStep::ChampionScoreEvent(scored) => champion_score_event(game, scored),
         RaidStep::ScoreEvent(scored) => score_event(game, scored),
         RaidStep::MoveToScoredPosition(scored) => move_to_scored_position(game, scored),
         RaidStep::StartRazingCard(card_id, cost) => start_razing_card(game, card_id, cost),
-        RaidStep::RazeCard(card_id, cost) => raze_card(game, card_id, cost),
+        RaidStep::RazeCard(card_id, cost) => raze_card(game, info, card_id, cost),
+        RaidStep::FinishAccess => finish_access(game, info),
         RaidStep::FinishRaid => finish_raid(game),
     };
 
@@ -421,12 +422,17 @@ fn populate_access_prompt(game: &mut GameState, info: RaidInfo) -> Result<RaidSt
             .accessed
             .iter()
             .filter_map(|card_id| access::access_action_for_card(game, *card_id))
-            .chain(can_end.then_some(RaidChoice::new(RaidLabel::EndRaid, RaidStep::FinishRaid)))
+            .chain(can_end.then_some(RaidChoice::new(RaidLabel::EndRaid, RaidStep::FinishAccess)))
             .collect(),
     )
 }
 
-fn start_scoring_card(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+fn start_scoring_card(
+    game: &mut GameState,
+    info: RaidInfo,
+    scored: ScoredCard,
+) -> Result<RaidState> {
+    game.add_history_event(HistoryEvent::ScoreAccessedCard(info.event(scored.id)));
     mutations::turn_face_up(game, scored.id);
     mutations::move_card(game, scored.id, CardPosition::Scoring)?;
     game.raid_mut()?.accessed.retain(|c| *c != scored.id);
@@ -458,10 +464,21 @@ fn start_razing_card(game: &mut GameState, card_id: CardId, cost: u32) -> Result
     RaidState::step(RaidStep::RazeCard(card_id, cost))
 }
 
-fn raze_card(game: &mut GameState, card_id: CardId, cost: u32) -> Result<RaidState> {
+fn raze_card(
+    game: &mut GameState,
+    info: RaidInfo,
+    card_id: CardId,
+    cost: u32,
+) -> Result<RaidState> {
+    game.add_history_event(HistoryEvent::ScoreAccessedCard(info.event(card_id)));
     mana::spend(game, Side::Champion, ManaPurpose::RazeCard(card_id), cost)?;
     mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
     RaidState::step(RaidStep::PopulateAccessPrompt)
+}
+
+fn finish_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    dispatch::invoke_event(game, RaidAccessEndEvent(info.event(())))?;
+    RaidState::step(RaidStep::FinishRaid)
 }
 
 fn finish_raid(game: &mut GameState) -> Result<RaidState> {

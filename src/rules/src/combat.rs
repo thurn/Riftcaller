@@ -23,7 +23,7 @@ use game_data::game_state::GameState;
 use game_data::primitives::{AttackValue, CardId, ManaValue};
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, mana, queries, CardDefinitionExt};
+use crate::{dispatch, mana, queries};
 
 /// Records the number of times some [CustomBoostCost] must be paid to defeat a
 /// minion.
@@ -57,12 +57,11 @@ pub fn cost_to_defeat_target(
 ) -> Option<CostToDefeatTarget> {
     let target = queries::health(game, target_id);
     let current = queries::base_attack(game, card_id);
-    let Some(boost) = game.card(card_id).definition().config.stats.attack_boost.as_ref() else {
-        return None;
-    };
 
     // Handle custom weapon costs
-    let custom_weapon_cost = if let Some(custom) = &boost.custom_weapon_cost {
+    let custom_weapon_cost = if let Some(custom) =
+        queries::attack_boost(game, card_id).and_then(|b| b.custom_weapon_cost.as_ref())
+    {
         if !can_pay_custom_weapon_cost(game, card_id, custom) {
             return None;
         }
@@ -79,6 +78,10 @@ pub fn cost_to_defeat_target(
             custom_boost_activation: None,
         }
     } else {
+        let Some(boost) = queries::attack_boost(game, card_id) else {
+            return None;
+        };
+
         let bonus = attack_boost_bonus(game, card_id, boost);
         if bonus == 0 {
             return None;

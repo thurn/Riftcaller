@@ -481,3 +481,102 @@ fn whip_of_disjunction_cannot_activate_before_encounter() {
     g.initiate_raid(RoomId::Vault);
     assert!(g.activate_ability_with_result(id, 0).is_err());
 }
+
+#[test]
+fn glimmersong() {
+    let cost = 3;
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMortalMinion2Health),
+        )
+        .build();
+    g.create_and_play(CardName::Glimmersong);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    assert_eq!(
+        "2".to_string(),
+        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+    );
+    assert!(g.user.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('2'));
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Glimmersong);
+    assert!(g.user.data.raid_active());
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost);
+}
+
+#[test]
+fn glimmersong_does_not_trigger_on_score() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+        )
+        .build();
+    g.create_and_play(CardName::Glimmersong);
+    g.initiate_raid(RoomId::RoomA);
+    g.click(Button::Score);
+    g.click(Button::EndRaid);
+    assert_eq!(
+        "0".to_string(),
+        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+    );
+}
+
+#[test]
+fn glimmersong_does_not_trigger_on_raze() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestDuskboundProject),
+        )
+        .build();
+    g.create_and_play(CardName::Glimmersong);
+    g.initiate_raid(RoomId::RoomA);
+    g.click(Button::Destroy);
+    g.click(Button::EndRaid);
+    assert_eq!(
+        "0".to_string(),
+        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+    );
+}
+
+#[test]
+fn glimmersong_double_reveal() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestDuskboundProject),
+        )
+        .build();
+    g.create_and_play(CardName::Glimmersong);
+    // You *can* reveal the same face-down card twice
+    g.create_and_play_with_target(CardName::Keensight, RoomId::RoomA);
+    g.click(Button::NoPromptAction);
+    g.create_and_play_with_target(CardName::Keensight, RoomId::RoomA);
+    g.click(Button::NoPromptAction);
+    assert_eq!(
+        "2".to_string(),
+        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+    );
+    assert!(g.user.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('2'));
+}
+
+#[test]
+fn glimmersong_cannot_reveal_face_up() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_room_occupant(RoomId::RoomA, CardName::TestDuskboundProject),
+        )
+        .build();
+    g.create_and_play(CardName::Glimmersong);
+    // You *cannot* reveal a face-up card.
+    g.create_and_play_with_target(CardName::Keensight, RoomId::RoomA);
+    g.click(Button::NoPromptAction);
+    assert_eq!(
+        "0".to_string(),
+        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+    );
+}

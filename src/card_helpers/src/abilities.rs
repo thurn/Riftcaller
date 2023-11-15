@@ -255,3 +255,13 @@ pub fn choose_a_minion_in_target_room() -> Ability {
         }),
     )
 }
+
+/// Adds 1 attack to a weapon per power charge counter on it.
+pub fn plus_1_attack_per_power_charge() -> Ability {
+    Ability::new_with_delegate(
+        text![Plus(1), "attack per", PowerCharges(1)],
+        this::base_attack(|g, _, card_id, current| {
+            current + g.card(*card_id).counters(CardCounter::PowerCharges)
+        }),
+    )
+}

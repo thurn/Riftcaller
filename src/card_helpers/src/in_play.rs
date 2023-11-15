@@ -96,7 +96,7 @@ pub fn on_raid_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid
+/// A delegate which fires when its card is face up & in play when a raid
 /// accesses the sanctum
 pub fn on_sanctum_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate {
@@ -105,7 +105,7 @@ pub fn on_sanctum_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate 
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid
+/// A delegate which fires when its card is face up & in play when a raid
 /// accesses the vault
 pub fn on_vault_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate {
@@ -114,7 +114,7 @@ pub fn on_vault_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid
+/// A delegate which fires when its card is face up & in play when a raid
 /// accesses the crypt
 pub fn on_crypt_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate {
@@ -123,7 +123,7 @@ pub fn on_crypt_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid on the
+/// A delegate which fires when its card is face up & in play when a raid on the
 /// sanctum ends in success
 pub fn after_sanctum_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidSuccess(EventDelegate {
@@ -132,13 +132,13 @@ pub fn after_sanctum_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid on the
+/// A delegate which fires when its card is face up & in play when a raid on the
 /// vault ends in success
 pub fn after_vault_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement: in_play_with_room::<RoomIdVault>, mutation })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid on the
+/// A delegate which fires when its card is face up & in play when a raid on the
 /// crypts ends in success
 pub fn after_crypts_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidSuccess(EventDelegate {
@@ -147,13 +147,19 @@ pub fn after_crypts_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid ends in
-/// success
-pub fn after_room_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
+/// A delegate which fires when its card is face up & in play when a raid's
+/// access phase ends.
+pub fn on_raid_access_end(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
+    Delegate::RaidAccessEnd(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
+/// A delegate which fires when its card is face up & in play when a raid ends
+/// in success
+pub fn on_raid_success(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
-/// A delegate which fires when a card is face up & in play when a raid on the
+/// A delegate which fires when its card is face up & in play when a raid on the
 /// vault is selecting cards to access.
 pub fn vault_access_selected(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidAccessSelected(EventDelegate {
@@ -162,19 +168,19 @@ pub fn vault_access_selected(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a card is
+/// A delegate which fires when its card is face up & in play when a card is
 /// scored
 pub fn on_card_scored(mutation: MutationFn<ScoreCard>) -> Delegate {
     Delegate::ScoreCard(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
-/// A delegate which fires when a card is face up & in play when a card is
+/// A delegate which fires when its card is face up & in play when a card is
 /// sacrificed
 pub fn on_card_sacrificed(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::CardSacrificed(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
-/// A delegate which fires when a card is face up & in play when a card is
+/// A delegate which fires when its card is face up & in play when a card is
 /// moved to a discard pile
 pub fn on_card_moved_to_discard_pile(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::MoveToDiscardPile(EventDelegate {
@@ -183,7 +189,7 @@ pub fn on_card_moved_to_discard_pile(mutation: MutationFn<CardId>) -> Delegate {
     })
 }
 
-/// A delegate which fires when a card is face up & in play when a card is
+/// A delegate which fires when its card is face up & in play when a card is
 /// revealed by a card ability.
 pub fn on_card_revealed(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::CardRevealed(EventDelegate { requirement: requirements::face_up_in_play, mutation })

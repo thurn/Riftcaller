@@ -142,7 +142,9 @@ fn add_tokens(tokens: &mut Vec<TextTokenKind>, text: &[TextElement]) {
 
 fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
     let result = match token {
-        TextTokenKind::PowerCharges => Some(format!(
+        TextTokenKind::AddPowerCharges |
+            TextTokenKind::PowerChargeSymbol |
+            TextTokenKind::PowerCharges => Some(format!(
             "{}: A power charge, stored while in play to spend on abilities", 
             icons::POWER_CHARGE
         )),
@@ -187,6 +189,10 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         TextTokenKind::Wound => entry("Wound", "Reduces your maximum hand size by 1"),
         TextTokenKind::Evade => entry("Evade", "Bypass a minion without combat"),
         TextTokenKind::Unsummon => entry("Unsummon", "Turn a minion face-down"),
+        TextTokenKind::RazeAbility => Some(
+            format!("{} <b>Ability</b>: Allows cards to be discarded/destroyed during a raid.",
+                    icons::RAZE)
+        ),
         _ => None,
     };
 

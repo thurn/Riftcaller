@@ -505,6 +505,11 @@ pub enum Delegate {
     /// The card with the provided `card_id` has been accessed and revealed
     /// during a raid (in any zone), but not yet scored/acted on.
     CardAccess(EventDelegate<CardId>),
+    /// Access phase has ended for a raid and the raid is about to end. Unlike
+    /// the `RaidEnd` and `RaidSuccess` events, this does not trigger for raids
+    /// where the access step was prevented (e.g. "instead of accessing that
+    /// room, gain mana" type cards).
+    RaidAccessEnd(EventDelegate<RaidEvent<()>>),
     /// A Raid is completed, either successfully or unsuccessfully.
     ///
     /// Note that this is invoked before `game.data.raid` is cleared.

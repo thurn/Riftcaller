@@ -2004,7 +2004,7 @@ MonoBehaviour:
       m_Y: 249
       m_Width: 18
       m_Height: 18
-    m_Scale: 1
+    m_Scale: 0.75
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
   - m_Index: 223

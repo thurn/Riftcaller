@@ -144,6 +144,34 @@ pub fn weapons_used_this_turn(
     })
 }
 
+/// Returns an iterator over cards which have been razed during a raid access in
+/// the current player's turn so far.
+pub fn accessed_cards_razed_this_turn(
+    game: &GameState,
+) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::RazeAccessedCard(event) = h {
+            Some(event)
+        } else {
+            None
+        }
+    })
+}
+
+/// Returns an iterator over cards which have been scored during a raid access
+/// in the current player's turn so far.
+pub fn accessed_cards_scored_this_turn(
+    game: &GameState,
+) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::ScoreAccessedCard(event) = h {
+            Some(event)
+        } else {
+            None
+        }
+    })
+}
+
 /// Returns an iterator over card choices which have been recorded in the
 /// current player's turn so far for the given `ability_id`.
 pub fn card_choices_this_turn(

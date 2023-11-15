@@ -92,6 +92,10 @@ pub enum HistoryEvent {
     UseWeapon(RaidEvent<UsedWeapon>),
     /// A minion's combat ability has triggered
     MinionCombatAbility(RaidEvent<CardId>),
+    /// A card's raze ability has been activated during a raid access phase
+    RazeAccessedCard(RaidEvent<CardId>),
+    /// A card has been scored during a raid access phase
+    ScoreAccessedCard(RaidEvent<CardId>),
     /// A raid ended in success.
     RaidSuccess(RaidEvent<()>),
     /// A raid ended in failure.

@@ -37,6 +37,7 @@ pub enum TextToken {
     ActionSymbol,
     Actions(ActionCount),
     GainActions(ActionCount),
+    PowerChargeSymbol,
     PowerCharges(PowerChargeValue),
     AddPowerCharges(PowerChargeValue),
     Number(u32),
@@ -79,6 +80,7 @@ pub enum TextToken {
     Wound,
     Evade,
     Unsummon,
+    RazeAbility,
 }
 
 impl TextToken {

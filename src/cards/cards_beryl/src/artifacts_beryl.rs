@@ -25,9 +25,10 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
+use game_data::delegate_data::Scope;
 use game_data::game_actions::{CardTarget, PromptChoice};
 use game_data::game_effect::GameEffect;
-use game_data::game_state::RaidJumpRequest;
+use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
 };
@@ -626,6 +627,18 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
 }
 
 pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
+    fn apply_vfx(game: &mut GameState, scope: Scope) {
+        Effects::new()
+            .timed_effect(
+                GameObjectId::CardId(scope.card_id()),
+                TimedEffectData::new(TimedEffect::MagicCircles1(2))
+                    .scale(2.0)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
+                    .effect_color(design::BLUE_900),
+            )
+            .apply(game);
+    }
+
     CardDefinition {
         name: CardName::Glimmersong,
         sets: vec![CardSetName::Beryl],
@@ -636,20 +649,43 @@ pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Beyond,
         rarity: Rarity::Rare,
-        abilities: vec![Ability::new_with_delegate(
-            text!["When you reveal a card,", AddPowerCharges(1)],
-            in_play::on_card_revealed(|g, s, card_id| {
-                if card_id.side != s.side() {
-                    g.card_mut(s.card_id()).add_counters(CardCounter::PowerCharges, 1);
-                }
-                Ok(())
-            }),
-        )],
+        abilities: vec![
+            Ability::new_with_delegate(
+                text!["When you reveal a card,", AddPowerCharges(1)],
+                in_play::on_card_revealed(|g, s, card_id| {
+                    if card_id.side != s.side() {
+                        g.card_mut(s.card_id()).add_counters(CardCounter::PowerCharges, 1);
+                        apply_vfx(g, s);
+                    }
+                    Ok(())
+                }),
+            ),
+            Ability::new_with_delegate(
+                text![
+                    "When you access a room without scoring or using a",
+                    RazeAbility,
+                    ",",
+                    AddPowerCharges(1)
+                ],
+                in_play::on_raid_access_end(|g, s, event| {
+                    if history::accessed_cards_razed_this_turn(g)
+                        .all(|e| e.room_access_id != event.room_access_id)
+                        && history::accessed_cards_scored_this_turn(g)
+                            .all(|e| e.room_access_id != event.room_access_id)
+                    {
+                        g.card_mut(s.card_id()).add_counters(CardCounter::PowerCharges, 1);
+                        apply_vfx(g, s);
+                    }
+                    Ok(())
+                }),
+            ),
+            abilities::plus_1_attack_per_power_charge(),
+        ],
         config: CardConfigBuilder::new()
-            .base_attack(0)
+            .base_attack(meta.upgrade(0, 1))
             .resonance(Resonance::prismatic())
             .combat_projectile(
-                ProjectileData::new(Projectile::Projectiles1(22))
+                ProjectileData::new(Projectile::Projectiles1(26))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact03")),
             )

@@ -46,7 +46,11 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
             costs::sacrifice_for_action(),
             text![
                 text!["Raid target outer room"],
-                text!["If successful", GainMana(meta.upgrade(8, 10)), "instead of accessing cards"]
+                text![
+                    "If successful",
+                    GainMana(meta.upgrade(8, 10)),
+                    "instead of accessing that room"
+                ]
             ],
         )
         .target_requirement(TargetRequirement::TargetRoom(|g, _, r| {

@@ -230,6 +230,7 @@ pub struct TestSide {
     in_discard_face_up: Vec<CardName>,
     riftcallers: Vec<CardName>,
     room_occupants: Vec<(RoomId, CardName)>,
+    face_up_room_occupants: Vec<(RoomId, CardName)>,
     in_score_area: Vec<CardName>,
     face_up_defenders: Vec<(RoomId, CardName)>,
     face_down_defenders: Vec<(RoomId, CardName)>,
@@ -249,6 +250,7 @@ impl TestSide {
             in_discard_face_up: vec![],
             riftcallers: vec![],
             room_occupants: vec![],
+            face_up_room_occupants: vec![],
             in_score_area: vec![],
             face_up_defenders: vec![],
             face_down_defenders: vec![],
@@ -313,6 +315,12 @@ impl TestSide {
         self
     }
 
+    /// Card to be inserted as a face-up occupant of a room
+    pub fn face_up_room_occupant(mut self, room_id: RoomId, card: CardName) -> Self {
+        self.face_up_room_occupants.push((room_id, card));
+        self
+    }
+
     /// Riftcallers which start in play for this player.
     pub fn riftcaller(mut self, card: CardName) -> Self {
         self.riftcallers.push(card);
@@ -371,6 +379,15 @@ impl TestSide {
                 &[*card_name],
                 CardPosition::Room(*room_id, RoomLocation::Occupant),
                 false,
+            );
+        }
+        for (room_id, card_name) in &self.face_up_room_occupants {
+            overwrite_positions(
+                game,
+                Side::Overlord,
+                &[*card_name],
+                CardPosition::Room(*room_id, RoomLocation::Occupant),
+                true,
             );
         }
         overwrite_positions(
