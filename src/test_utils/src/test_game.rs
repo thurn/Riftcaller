@@ -204,6 +204,8 @@ impl TestRaid {
             target: test_constants::ROOM_ID,
             state: RaidState::Step(RaidStep::Begin),
             encounter: game.defenders_unordered(test_constants::ROOM_ID).count(),
+            minion_encounter_id: None,
+            room_access_id: None,
             accessed: vec![],
             jump_request: None,
         })

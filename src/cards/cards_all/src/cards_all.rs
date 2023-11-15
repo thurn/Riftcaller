@@ -80,6 +80,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::shield_of_the_flames);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::foebane);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::whip_of_disjunction);
+    DEFINITIONS.insert(cards_beryl::artifacts_beryl::glimmersong);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::restoration);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::strike_the_heart);
     DEFINITIONS.insert(cards_beryl::champion_spells_beryl::enduring_radiance);

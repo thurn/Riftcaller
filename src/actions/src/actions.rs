@@ -30,8 +30,8 @@ use game_data::game_actions::{
     PromptChoice, PromptContext,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
+use game_data::history_data::HistoryEvent;
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{

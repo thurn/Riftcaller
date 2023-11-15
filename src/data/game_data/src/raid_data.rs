@@ -19,7 +19,7 @@ use crate::animation_tracker::InitiatedBy;
 use crate::delegate_data::RaidEvent;
 use crate::game_actions::RazeCardActionType;
 use crate::game_state::RaidJumpRequest;
-use crate::primitives::{CardId, ManaValue, RaidId, RoomId, Side};
+use crate::primitives::{CardId, ManaValue, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct WeaponInteraction {
@@ -155,11 +155,19 @@ pub struct RaidInfo {
     pub raid_id: RaidId,
     pub target: RoomId,
     pub encounter: usize,
+    pub minion_encounter_id: Option<MinionEncounterId>,
+    pub room_access_id: Option<RoomAccessId>,
 }
 
 impl RaidInfo {
     pub fn event<T>(&self, data: T) -> RaidEvent<T> {
-        RaidEvent { raid_id: self.raid_id, target: self.target, data }
+        RaidEvent {
+            raid_id: self.raid_id,
+            target: self.target,
+            minion_encounter_id: self.minion_encounter_id,
+            room_access_id: self.room_access_id,
+            data,
+        }
     }
 }
 
@@ -177,6 +185,10 @@ pub struct RaidData {
     pub state: RaidState,
     /// Current encounter position within this raid
     pub encounter: usize,
+    /// Identifier for the current minion encounter, if any
+    pub minion_encounter_id: Option<MinionEncounterId>,
+    /// Identifier for the current room access, if any    
+    pub room_access_id: Option<RoomAccessId>,
     /// Cards which have been accessed as part of this raid's Access phase.
     pub accessed: Vec<CardId>,
     /// Requested new state for this raid. See [RaidJumpRequest] for details.
@@ -185,7 +197,13 @@ pub struct RaidData {
 
 impl RaidData {
     pub fn info(&self) -> RaidInfo {
-        RaidInfo { raid_id: self.raid_id, target: self.target, encounter: self.encounter }
+        RaidInfo {
+            raid_id: self.raid_id,
+            target: self.target,
+            encounter: self.encounter,
+            minion_encounter_id: self.minion_encounter_id,
+            room_access_id: self.room_access_id,
+        }
     }
 }
 

@@ -17,8 +17,8 @@ use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
-use game_data::game_history::{HistoryEvent, HistoryEventKind};
 use game_data::game_state::GameState;
+use game_data::history_data::{HistoryEvent, HistoryEventKind};
 use game_data::primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId};
 use game_data::utils;
 use rules::flags;
@@ -162,7 +162,7 @@ pub fn ability_activated_this_encounter<T>(
 
     for event in history::current_turn(game) {
         match event {
-            HistoryEvent::ActivateAbility(id, ..) if *id == ability_id => {
+            HistoryEvent::ActivateAbility(activation) if activation.ability_id == ability_id => {
                 result = true;
             }
             HistoryEvent::RaidFailure(..)

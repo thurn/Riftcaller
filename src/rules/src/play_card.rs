@@ -24,8 +24,8 @@ use game_data::game_actions::{
     UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState};
+use game_data::history_data::HistoryEvent;
 use game_data::primitives::{CardId, CardSubtype, CardType, Side};
 use game_data::state_machines::{PlayCardData, PlayCardStep};
 use with_error::{verify, WithError};

@@ -84,8 +84,8 @@ use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
-    HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, RaidId, RoomId, ShieldValue, Side,
-    TurnNumber,
+    HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, MinionEncounterId, RaidId, RoomAccessId,
+    RoomId, ShieldValue, Side, TurnNumber,
 };
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -321,11 +321,13 @@ impl CardEncounter {
     }
 }
 
-/// Event data when a raid is initiated
+/// Event data when a raid is in progress
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct RaidEvent<T> {
     pub raid_id: RaidId,
     pub target: RoomId,
+    pub minion_encounter_id: Option<MinionEncounterId>,
+    pub room_access_id: Option<RoomAccessId>,
     pub data: T,
 }
 

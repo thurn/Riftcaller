@@ -17,8 +17,8 @@ use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{AbilityType, Cost};
 use game_data::delegate_data::{AbilityActivated, ActivateAbilityEvent};
 use game_data::game_actions::CardTarget;
-use game_data::game_history::{AbilityActivationType, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState};
+use game_data::history_data::{AbilityActivation, AbilityActivationType, HistoryEvent};
 use game_data::primitives::{AbilityId, Side};
 use game_data::state_machines::{ActivateAbilityData, ActivateAbilityStep};
 use with_error::{fail, verify};
@@ -90,15 +90,20 @@ fn pay_action_points(
 ) -> Result<ActivateAbilityStep> {
     let actions = get_cost(game, activate)?.actions;
 
-    game.add_history_event(HistoryEvent::ActivateAbility(
-        activate.ability_id,
-        activate.target,
-        if actions > 0 {
+    let activation = AbilityActivation {
+        ability_id: activate.ability_id,
+        target: activate.target,
+        activation_type: if actions > 0 {
             AbilityActivationType::GameAction
         } else {
             AbilityActivationType::FreeAction
         },
-    ));
+        current_raid: game.raid.as_ref().map(|r| r.raid_id),
+        current_minion_encounter: game.raid.as_ref().and_then(|r| r.minion_encounter_id),
+        current_room_access: game.raid.as_ref().and_then(|r| r.room_access_id),
+    };
+
+    game.add_history_event(HistoryEvent::ActivateAbility(activation));
 
     mutations::spend_action_points(game, activate.ability_id.side(), actions)?;
     Ok(ActivateAbilityStep::PayManaCost)

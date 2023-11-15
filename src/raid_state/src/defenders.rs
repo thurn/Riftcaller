@@ -23,6 +23,8 @@ use with_error::WithError;
 /// [RaidStep] which should be entered, based on whether a suitable
 /// encounter was found.
 pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> {
+    game.raid_mut()?.minion_encounter_id = None;
+
     Ok(if let Some(encounter) = next_defender(game, info, info.encounter) {
         game.raid_mut()?.encounter = encounter;
         let defender = game.current_raid_defender().with_error(|| "No defender found")?;

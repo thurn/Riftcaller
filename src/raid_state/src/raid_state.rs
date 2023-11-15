@@ -24,13 +24,15 @@ use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     ApproachMinionEvent, CanRaidAccessCardsQuery, CardAccessEvent, ChampionScoreCardEvent,
     EncounterMinionEvent, Flag, MinionCombatAbilityEvent, MinionDefeatedEvent,
-    RaidAccessSelectedEvent, RaidAccessStartEvent, RaidEvent, RaidOutcome, RaidStartEvent,
-    RazeCardEvent, ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
+    RaidAccessSelectedEvent, RaidAccessStartEvent, RaidOutcome, RaidStartEvent, RazeCardEvent,
+    ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
 };
 use game_data::game_actions::RaidAction;
-use game_data::game_history::HistoryEvent;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
-use game_data::primitives::{CardId, GameObjectId, RaidId, RoomId, Side};
+use game_data::history_data::HistoryEvent;
+use game_data::primitives::{
+    CardId, GameObjectId, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
+};
 use game_data::raid_data::{
     RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus, RaidStep, ScoredCard,
     WeaponInteraction,
@@ -67,26 +69,24 @@ pub fn initiate_with_callback(
     initiated_by: InitiatedBy,
     on_begin: impl Fn(&mut GameState, RaidId),
 ) -> Result<()> {
-    let raid_id = RaidId(game.info.next_raid_id);
+    let raid_id = RaidId(game.info.next_event_id());
     let raid = RaidData {
         target,
         initiated_by,
         raid_id,
         state: RaidState::Step(RaidStep::Begin),
         encounter: game.defenders_unordered(target).count(),
+        minion_encounter_id: None,
+        room_access_id: None,
         accessed: vec![],
         jump_request: None,
     };
 
-    game.info.next_raid_id += 1;
+    let info = raid.info();
     game.raid = Some(raid);
     on_begin(game, raid_id);
     game.add_animation(|| GameAnimation::InitiateRaid(target, initiated_by));
-    game.add_history_event(HistoryEvent::RaidBegin(RaidEvent {
-        target,
-        raid_id,
-        data: initiated_by,
-    }));
+    game.add_history_event(HistoryEvent::RaidBegin(info.event(initiated_by)));
 
     run(game, None)
 }
@@ -188,7 +188,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::SummonMinion(minion_id) => summon_minion(game, info, minion_id),
         RaidStep::DoNotSummon(_) => RaidState::step(RaidStep::NextEncounter),
         RaidStep::ApproachMinion(minion_id) => approach_minion(game, info, minion_id),
-        RaidStep::EncounterMinion(minion_id) => encounter_minion(game, info, minion_id),
+        RaidStep::EncounterMinion(minion_id) => encounter_minion(game, minion_id),
         RaidStep::PopulateEncounterPrompt(minion_id) => populate_encounter_prompt(game, minion_id),
         RaidStep::UseWeapon(interaction) => use_weapon(game, info, interaction),
         RaidStep::MinionDefeated(interaction) => minion_defeated(game, interaction),
@@ -197,7 +197,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         }
         RaidStep::PopulateApproachPrompt => populate_approach_prompt(game),
         RaidStep::CheckCanAccess => check_can_access(game, info),
-        RaidStep::AccessStart => access_start(game, info),
+        RaidStep::AccessStart => access_start(game),
         RaidStep::BuildAccessSet => build_access_set(game, info),
         RaidStep::AccessSetBuilt => access_set_built(game, info),
         RaidStep::RevealAccessedCards => reveal_accessed_cards(game, info),
@@ -219,11 +219,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
 }
 
 fn begin_raid(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    dispatch::invoke_event(
-        game,
-        RaidStartEvent(RaidEvent { raid_id: info.raid_id, target: info.target, data: () }),
-    )?;
-
+    dispatch::invoke_event(game, RaidStartEvent(info.event(())))?;
     RaidState::step(RaidStep::NextEncounter)
 }
 
@@ -251,9 +247,10 @@ fn approach_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> R
     RaidState::step(RaidStep::EncounterMinion(minion_id))
 }
 
-fn encounter_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> Result<RaidState> {
+fn encounter_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
     dispatch::invoke_event(game, EncounterMinionEvent(minion_id))?;
-    game.add_history_event(HistoryEvent::MinionEncounter(info.event(minion_id)));
+    game.raid_mut()?.minion_encounter_id = Some(MinionEncounterId(game.info.next_event_id()));
+    game.add_history_event(HistoryEvent::MinionEncounter(game.raid()?.info().event(minion_id)));
     RaidState::step(RaidStep::PopulateEncounterPrompt(minion_id))
 }
 
@@ -378,8 +375,9 @@ fn check_can_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     }
 }
 
-fn access_start(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    dispatch::invoke_event(game, RaidAccessStartEvent(info.event(())))?;
+fn access_start(game: &mut GameState) -> Result<RaidState> {
+    game.raid_mut()?.room_access_id = Some(RoomAccessId(game.info.next_event_id()));
+    dispatch::invoke_event(game, RaidAccessStartEvent(game.raid()?.info().event(())))?;
     RaidState::step(RaidStep::BuildAccessSet)
 }
 
@@ -389,10 +387,7 @@ fn build_access_set(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 }
 
 fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    dispatch::invoke_event(
-        game,
-        RaidAccessSelectedEvent(RaidEvent { raid_id: info.raid_id, target: info.target, data: () }),
-    )?;
+    dispatch::invoke_event(game, RaidAccessSelectedEvent(info.event(())))?;
     RaidState::step(RaidStep::RevealAccessedCards)
 }
 

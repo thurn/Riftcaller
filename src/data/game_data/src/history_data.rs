@@ -23,7 +23,9 @@ use crate::card_state::CardChoice;
 use crate::delegate_data::{RaidEvent, UsedWeapon};
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
-use crate::primitives::{AbilityId, CardId, CurseCount, ProgressValue, RoomId};
+use crate::primitives::{
+    AbilityId, CardId, CurseCount, MinionEncounterId, ProgressValue, RaidId, RoomAccessId, RoomId,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub enum AbilityActivationType {
@@ -32,6 +34,25 @@ pub enum AbilityActivationType {
     GameAction,
     /// Activated ability did not have an action point cost.
     FreeAction,
+}
+
+/// Information about the context in which an ability was activated
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
+pub struct AbilityActivation {
+    /// ID of activated ability
+    pub ability_id: AbilityId,
+    /// Target for the ability, if any
+    pub target: CardTarget,
+    /// Whether the ability was activated as a full game action. This is mostly
+    /// used to determine whether "play only as your first action" cards can
+    /// still be played.
+    pub activation_type: AbilityActivationType,
+    /// RaidId when the ability was activated, if any.
+    pub current_raid: Option<RaidId>,
+    /// Minion encounter when the ability was activated, if any.
+    pub current_minion_encounter: Option<MinionEncounterId>,
+    /// Room access when the ability was activated, if any.
+    pub current_room_access: Option<RoomAccessId>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,7 +77,7 @@ pub enum HistoryEvent {
     /// an ability of another card.
     PlayCard(CardId, CardTarget, InitiatedBy),
     /// A card ability was activated
-    ActivateAbility(AbilityId, CardTarget, AbilityActivationType),
+    ActivateAbility(AbilityActivation),
     /// A face-down card has been summoned.
     SummonProject(CardId),
     /// A raid was started, either via a card effect or the standard game action

@@ -28,7 +28,7 @@ use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegate_data::DelegateCache;
 use crate::game_actions::GamePrompt;
-use crate::game_history::{GameHistory, HistoryEvent};
+use crate::history_data::{GameHistory, HistoryEvent};
 use crate::player_name::PlayerId;
 use crate::primitives::{
     ActionCount, CardId, CurseCount, GameId, ItemLocation, LeylineCount, ManaValue, PointsValue,
@@ -210,12 +210,21 @@ pub struct GameInfo {
     pub turn: TurnData,
     /// State of the current turn
     pub turn_state: TurnState,
-    /// Counter to create unique IDs for raid_state within this game
-    pub next_raid_id: u32,
     /// Position within the game tutorial, if any
     pub tutorial_state: GameTutorialState,
     /// Game options at creation
     pub config: GameConfiguration,
+    /// Counter to create unique IDs for states within this game
+    next_event_id: u32,
+}
+
+impl GameInfo {
+    /// Counter to create unique IDs for states within this game
+    pub fn next_event_id(&mut self) -> u32 {
+        let result = self.next_event_id;
+        self.next_event_id += 1;
+        result
+    }
 }
 
 /// State for an individual room
@@ -292,7 +301,7 @@ impl GameState {
                 phase: GamePhase::ResolveMulligans(MulliganData::default()),
                 turn,
                 turn_state: TurnState::Active,
-                next_raid_id: 1,
+                next_event_id: 1,
                 tutorial_state: GameTutorialState::default(),
                 config,
             },

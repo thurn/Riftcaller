@@ -31,12 +31,12 @@ use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     CanAbilityEndRaidQuery, CardRevealedEvent, CardSacrificedEvent, DawnEvent, DiscardCardEvent,
     DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, Flag,
-    MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent, RaidEvent, RaidFailureEvent,
-    RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent,
-    SummonMinionEvent, SummonProjectEvent,
+    MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome,
+    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
+    SummonProjectEvent,
 };
-use game_data::game_history::{CardChoiceEvent, HistoryEvent};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
+use game_data::history_data::{CardChoiceEvent, HistoryEvent};
 use game_data::primitives::{
     ActionCount, CardId, HasAbilityId, ManaValue, PointsValue, PowerChargeValue, RoomId,
     RoomLocation, Side, TurnNumber,
@@ -343,13 +343,13 @@ pub fn spend_power_charges(
 /// Ends the current raid. Returns an error if no raid is currently active.
 pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome) -> Result<()> {
     debug!("Ending raid");
-    let raid_id = game.raid()?.raid_id;
-    let target = game.raid()?.target;
+    game.raid_mut()?.minion_encounter_id = None;
+    let info = game.raid()?.info();
 
     if let InitiatedBy::Ability(ability_id) = source {
         let can_end: bool = dispatch::perform_query(
             game,
-            CanAbilityEndRaidQuery(RaidEvent { raid_id, target, data: ability_id }),
+            CanAbilityEndRaidQuery(info.event(ability_id)),
             Flag::new(true),
         )
         .into();
@@ -359,7 +359,7 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
         }
     }
 
-    let event = RaidEvent { raid_id, target, data: () };
+    let event = info.event(());
     match outcome {
         RaidOutcome::Success => {
             dispatch::invoke_event(game, RaidSuccessEvent(event))?;
@@ -370,10 +370,7 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
             game.add_history_event(HistoryEvent::RaidFailure(event));
         }
     }
-    dispatch::invoke_event(
-        game,
-        RaidEndEvent(RaidEvent { raid_id: event.raid_id, target: event.target, data: outcome }),
-    )?;
+    dispatch::invoke_event(game, RaidEndEvent(info.event(outcome)))?;
     game.raid = None;
     Ok(())
 }

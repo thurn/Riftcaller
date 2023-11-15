@@ -19,7 +19,7 @@ use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate, RaidOutcome};
-use game_data::game_history::{AbilityActivationType, HistoryEvent};
+use game_data::history_data::{AbilityActivationType, HistoryEvent};
 use game_data::primitives::{AbilityId, DamageAmount, ManaValue};
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
@@ -201,8 +201,8 @@ pub fn play_as_first_action() -> Ability {
             {
                 true
             }
-            HistoryEvent::ActivateAbility(_, _, activation)
-                if *activation == AbilityActivationType::GameAction =>
+            HistoryEvent::ActivateAbility(activation)
+                if activation.activation_type == AbilityActivationType::GameAction =>
             {
                 true
             }

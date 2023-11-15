@@ -323,6 +323,26 @@ impl fmt::Debug for RaidId {
     }
 }
 
+/// Uniquely identifies a minion encounter within a given game
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize)]
+pub struct MinionEncounterId(pub u32);
+
+impl fmt::Debug for MinionEncounterId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "%{}", self.0)
+    }
+}
+
+/// Uniquely identifies a room access within a given game
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize)]
+pub struct RoomAccessId(pub u32);
+
+impl fmt::Debug for RoomAccessId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "%{}", self.0)
+    }
+}
+
 /// Contains the URL of an image asset within a game
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Serialize, Deserialize)]
 pub struct Sprite {
