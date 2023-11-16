@@ -110,7 +110,7 @@ pub fn weapon_used_this_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 /// A [RequirementFn] which matches if there have been no accesses on the
 /// sanctum this turn.
 pub fn no_sanctum_access<R: BaseRequirement>(game: &GameState, scope: Scope, _: &RaidId) -> bool {
-    R::run(game, scope) && history::raid_accesses_this_turn(game).all(|r| r != RoomId::Sanctum)
+    R::run(game, scope) && history::rooms_accessed_this_turn(game).all(|r| r != RoomId::Sanctum)
 }
 
 /// A [RequirementFn] which matches if there have been no 'draw a card' actions

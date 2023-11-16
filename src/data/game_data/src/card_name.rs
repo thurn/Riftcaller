@@ -302,6 +302,7 @@ pub enum CardName {
     ChainsOfBinding,
     WhipOfDisjunction,
     Glimmersong,
+    DelveIntoDarkness,
 }
 
 impl CardName {

@@ -49,7 +49,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
                 delegates: vec![Delegate::ManaCost(QueryDelegate {
                     requirement: this_card,
                     transformation: |g, _, _, value| {
-                        if history::raid_accesses_this_turn(g).count() > 0 {
+                        if history::rooms_accessed_this_turn(g).count() > 0 {
                             value.map(|v| v.saturating_sub(2))
                         } else {
                             value

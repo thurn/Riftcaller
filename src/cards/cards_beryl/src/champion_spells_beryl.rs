@@ -496,3 +496,19 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::DelveIntoDarkness,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(2),
+        image: assets::champion_card(meta, "delve_into_darkness"),
+        card_type: CardType::ChampionSpell,
+        subtypes: vec![CardSubtype::Expedition],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![abilities::play_if_accessed_all_inner_rooms_this_turn()],
+        config: CardConfig::default(),
+    }
+}

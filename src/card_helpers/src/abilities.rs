@@ -20,7 +20,7 @@ use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate, RaidOutcome};
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
-use game_data::primitives::{AbilityId, DamageAmount, ManaValue};
+use game_data::primitives::{AbilityId, DamageAmount, ManaValue, INNER_ROOMS};
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
 use rules::{deal_damage, mutations};
@@ -229,6 +229,21 @@ pub fn play_only_if_champion_cursed() -> Ability {
     Ability::new_with_delegate(
         text!["Play only if the Champion is", Cursed],
         this::can_play(|g, _, _, current| current.add_constraint(g.champion.curses > 0)),
+    )
+}
+
+/// Ability for cards that can only be played if the sanctum, vault, and crypt
+/// have been accessed this turn.
+pub fn play_if_accessed_all_inner_rooms_this_turn() -> Ability {
+    Ability::new_with_delegate(
+        text!["Play only if you accessed the", Sanctum, ",", Vault, ", and", Crypt, "this turn"],
+        this::can_play(|g, _, _, current| {
+            current.add_constraint(
+                INNER_ROOMS
+                    .iter()
+                    .all(|room| history::rooms_accessed_this_turn(g).any(|r| r == *room)),
+            )
+        }),
     )
 }
 

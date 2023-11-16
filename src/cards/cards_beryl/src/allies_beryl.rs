@@ -81,7 +81,7 @@ pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
                 Mana(meta.upgrade(1, 3))
             ],
             in_play::on_sanctum_access_start(|g, s, _| {
-                if history::raid_accesses_this_turn(g).all(|r| r != RoomId::Sanctum) {
+                if history::rooms_accessed_this_turn(g).all(|r| r != RoomId::Sanctum) {
                     Effects::new()
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),
