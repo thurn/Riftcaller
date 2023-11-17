@@ -25,6 +25,8 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
+use game_data::game_actions::PromptChoice;
+use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{CardType, Rarity, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
@@ -49,13 +51,13 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
                 text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
             ),
             on_encountered(|g, s, _| {
-                show_prompt::with_option_choices(
+                show_prompt::with_choices(
                     g,
                     Side::Champion,
                     vec![
-                        end_raid_prompt(s),
-                        lose_mana_prompt(g, Side::Champion, 5),
-                        lose_actions_prompt(g, Side::Champion, 2),
+                        PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
+                        PromptChoice::new().effect(GameEffect::ManaCost(Side::Champion, 5)),
+                        PromptChoice::new().effect(GameEffect::ActionCost(Side::Champion, 2)),
                     ],
                 );
                 Ok(())
@@ -107,10 +109,13 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
                 combat(|g, s, _| {
-                    show_prompt::with_option_choices(
+                    show_prompt::with_choices(
                         g,
                         Side::Champion,
-                        vec![end_raid_prompt(s), lose_actions_prompt(g, Side::Champion, 2)],
+                        vec![
+                            PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
+                            PromptChoice::new().effect(GameEffect::ActionCost(Side::Champion, 2)),
+                        ],
                     );
                     Ok(())
                 }),
@@ -251,10 +256,13 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
             ),
             combat(|g, s, _| {
                 deal_damage::apply(g, s, 2)?;
-                show_prompt::with_option_choices(
+                show_prompt::with_choices(
                     g,
                     Side::Champion,
-                    vec![take_damage_prompt(g, s, 2), end_raid_prompt(s)],
+                    vec![
+                        PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
+                        PromptChoice::new().effect(GameEffect::TakeDamageCost(s.ability_id(), 2)),
+                    ],
                 );
                 Ok(())
             }),

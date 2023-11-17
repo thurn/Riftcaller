@@ -34,16 +34,19 @@ pub enum GameEffect {
     SacrificeCard(CardId),
     /// Destroy the indicated permanent
     DestroyCard(CardId),
-    /// A player loses mana
-    LoseMana(Side, ManaValue),
-    /// A player loses action points
-    LoseActions(Side, ActionCount),
+    /// A mana cost for a prompt choice. Choices will not be shown if the player
+    /// is unable to pay their costs.
+    ManaCost(Side, ManaValue),
+    /// An action point cost for a prompt choice. Choices will not be shown if
+    /// the player is unable to pay their costs.
+    ActionCost(Side, ActionCount),
+    /// Deal damage to the Champion as a cost. Choice will not be shown if it
+    /// would cause this player to lose the game.
+    TakeDamageCost(AbilityId, u32),
     /// Initiate a new raid on this room.
     InitiateRaid(RoomId, AbilityId),
     /// End the current raid in failure.
     EndRaid(AbilityId),
-    /// Deal damage to the Champion
-    TakeDamage(AbilityId, u32),
     /// Move a card to a new target position
     MoveCard(CardId, CardPosition),
     /// Prevent *up to* this amount of incoming damage if there is an active

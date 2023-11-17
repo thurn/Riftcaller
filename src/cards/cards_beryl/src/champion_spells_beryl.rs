@@ -177,7 +177,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                                     s.card_id(),
                                     CardPosition::Hand(s.side()),
                                 ))
-                                .effect(GameEffect::LoseMana(s.side(), 1))
+                                .effect(GameEffect::ManaCost(s.side(), 1))
                                 .custom_label(PromptChoiceLabel::Return(1)),
                             PromptChoice::new().effect(GameEffect::Continue),
                         ],
@@ -508,7 +508,31 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
         side: Side::Champion,
         school: School::Beyond,
         rarity: Rarity::Uncommon,
-        abilities: vec![abilities::play_if_accessed_all_inner_rooms_this_turn()],
+        abilities: vec![
+            abilities::play_if_accessed_all_inner_rooms_this_turn(),
+            Ability::new_with_delegate(
+                text![
+                    text!["Access a card in the top", 8, "cards of the", Vault],
+                    text!["You may pay", Actions(1), "to access another"],
+                    text!["Shuffle the", Vault]
+                ],
+                this::on_played(|g, s, _| {
+                    let cards = mutations::realize_top_of_deck(g, Side::Overlord, 8)?;
+                    cards.iter().for_each(|id| mutations::set_visible_to(g, *id, s.side(), true));
+                    show_prompt::with_choices(
+                        g,
+                        s,
+                        cards
+                            .iter()
+                            .map(|id| {
+                                PromptChoice::new().anchor_card(*id).effect(GameEffect::Continue)
+                            })
+                            .collect(),
+                    );
+                    Ok(())
+                }),
+            ),
+        ],
         config: CardConfig::default(),
     }
 }

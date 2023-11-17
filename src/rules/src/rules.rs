@@ -33,6 +33,7 @@ pub mod flags;
 pub mod mana;
 pub mod mutations;
 pub mod play_card;
+pub mod prompt_monitor;
 pub mod queries;
 pub mod wounds;
 

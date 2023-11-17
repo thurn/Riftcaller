@@ -37,13 +37,10 @@ use game_data::delegate_data::{
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::primitives::{
-    ActionCount, CardId, HasAbilityId, HasCardId, HealthValue, ManaValue, RoomId, Side,
-};
+use game_data::primitives::{ActionCount, CardId, HasCardId, HealthValue, ManaValue, RoomId, Side};
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
 use rules::mana;
-use rules::mana::ManaPurpose;
 
 pub fn trigger_text(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElement> {
     vec![TextElement::NamedTrigger(name, effect)]
@@ -154,45 +151,4 @@ pub fn on_raid_success(
 /// Delegate which transforms how a minion's health is calculated
 pub fn on_calculate_health(transformation: TransformationFn<CardId, HealthValue>) -> Delegate {
     Delegate::HealthValue(QueryDelegate { requirement: this_card, transformation })
-}
-
-/// A [PromptChoice] to end the current raid.
-pub fn end_raid_prompt(scope: Scope) -> Option<PromptChoice> {
-    Some(PromptChoice::new().effect(GameEffect::EndRaid(scope.ability_id())))
-}
-
-/// A [PromptChoice] for the `side` player to lose mana
-pub fn lose_mana_prompt(game: &GameState, side: Side, amount: ActionCount) -> Option<PromptChoice> {
-    if mana::get(game, side, ManaPurpose::PayForTriggeredAbility) >= amount {
-        Some(PromptChoice::new().effect(GameEffect::LoseMana(side, amount)))
-    } else {
-        None
-    }
-}
-
-/// A [PromptChoice] for the `side` player to lose action points.
-pub fn lose_actions_prompt(
-    game: &GameState,
-    side: Side,
-    amount: ActionCount,
-) -> Option<PromptChoice> {
-    if game.player(side).actions >= amount {
-        Some(PromptChoice::new().effect(GameEffect::LoseActions(side, amount)))
-    } else {
-        None
-    }
-}
-
-/// A [PromptChoice] for the Champion player to take damage if they are able
-/// to without losing the game
-pub fn take_damage_prompt(
-    game: &GameState,
-    ability_id: impl HasAbilityId,
-    amount: u32,
-) -> Option<PromptChoice> {
-    if game.hand(Side::Champion).count() >= amount as usize {
-        Some(PromptChoice::new().effect(GameEffect::TakeDamage(ability_id.ability_id(), amount)))
-    } else {
-        None
-    }
 }

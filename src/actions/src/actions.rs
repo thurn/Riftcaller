@@ -35,7 +35,8 @@ use game_data::history_data::HistoryEvent;
 use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, deal_damage, dispatch, flags, mana, mutations, play_card, queries,
+    activate_ability, curses, deal_damage, dispatch, flags, mana, mutations, play_card,
+    prompt_monitor, queries,
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
@@ -86,7 +87,7 @@ pub fn handle_game_action(
     }?;
 
     if action != &GameAction::Undo {
-        resume_all_state_machines(game)?;
+        run_state_based_actions(game)?;
     }
 
     // Clear & store the 'current event' in game history
@@ -438,7 +439,8 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
 }
 
 /// Attempt to start all active game state machines to process further actions
-fn resume_all_state_machines(game: &mut GameState) -> Result<()> {
+fn run_state_based_actions(game: &mut GameState) -> Result<()> {
+    prompt_monitor::run(game)?;
     deal_damage::run_state_machine(game)?;
     curses::run_state_machine(game)?;
     raid_state::run(game, None)?;

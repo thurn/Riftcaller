@@ -47,12 +47,10 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
         GameEffect::DestroyCard(card_id) => mutations::destroy_card(game, card_id)?,
-        GameEffect::LoseMana(side, amount) => {
+        GameEffect::ManaCost(side, amount) => {
             mana::spend(game, side, ManaPurpose::PayForTriggeredAbility, amount)?
         }
-        GameEffect::LoseActions(side, amount) => {
-            mutations::spend_action_points(game, side, amount)?
-        }
+        GameEffect::ActionCost(side, amount) => mutations::spend_action_points(game, side, amount)?,
         GameEffect::InitiateRaid(room_id, ability_id) => raid_state::initiate_with_callback(
             game,
             room_id,
@@ -62,7 +60,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::EndRaid(ability_id) => {
             mutations::end_raid(game, InitiatedBy::Ability(ability_id), RaidOutcome::Failure)?
         }
-        GameEffect::TakeDamage(ability_id, amount) => deal_damage::apply(game, ability_id, amount)?,
+        GameEffect::TakeDamageCost(ability_id, amount) => {
+            deal_damage::apply(game, ability_id, amount)?
+        }
         GameEffect::MoveCard(card_id, target_position) => {
             mutations::move_card(game, card_id, target_position)?
         }
