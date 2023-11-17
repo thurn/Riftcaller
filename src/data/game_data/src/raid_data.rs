@@ -44,6 +44,14 @@ impl ScoredCard {
     }
 }
 
+/// Identifies the reason why we have entered the 'populate access prompt' step.
+#[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum PopulateAccessPromptSource {
+    Initial,
+    FromScore,
+    FromRaze,
+}
+
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum RaidStep {
     Begin,
@@ -64,6 +72,7 @@ pub enum RaidStep {
     AccessSetBuilt,
     RevealAccessedCards,
     AccessCards,
+    WillPopulateAccessPrompt(PopulateAccessPromptSource),
     PopulateAccessPrompt,
     StartScoringCard(ScoredCard),
     ChampionScoreEvent(ScoredCard),
@@ -85,6 +94,7 @@ pub enum RaidLabel {
     ScoreCard(CardId),
     RazeCard(CardId, RazeCardActionType),
     EndRaid,
+    EndAccess,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -154,10 +164,12 @@ impl RaidState {
 #[derive(Debug, Clone, Copy)]
 pub struct RaidInfo {
     pub raid_id: RaidId,
+    pub initiated_by: InitiatedBy,
     pub target: RoomId,
     pub encounter: usize,
     pub minion_encounter_id: Option<MinionEncounterId>,
     pub room_access_id: Option<RoomAccessId>,
+    pub is_custom_access: bool,
 }
 
 impl RaidInfo {
@@ -184,7 +196,8 @@ pub struct RaidData {
     /// Current state of this raid. Use the functions in the `raid_state` crate
     /// instead of directly inspecting this value.
     pub state: RaidState,
-    /// Current encounter position within this raid
+    /// Current encounter position within this raid. Index 0 is the innermost
+    /// defender.
     pub encounter: usize,
     /// Identifier for the current minion encounter, if any
     pub minion_encounter_id: Option<MinionEncounterId>,
@@ -194,16 +207,21 @@ pub struct RaidData {
     pub accessed: Vec<CardId>,
     /// Requested new state for this raid. See [RaidJumpRequest] for details.
     pub jump_request: Option<RaidJumpRequest>,
+    /// A custom access raid plays out only the 'access' phase of a raid,
+    /// accessing a specific set of cards.
+    pub is_custom_access: bool,
 }
 
 impl RaidData {
     pub fn info(&self) -> RaidInfo {
         RaidInfo {
             raid_id: self.raid_id,
+            initiated_by: self.initiated_by,
             target: self.target,
             encounter: self.encounter,
             minion_encounter_id: self.minion_encounter_id,
             room_access_id: self.room_access_id,
+            is_custom_access: self.is_custom_access,
         }
     }
 }

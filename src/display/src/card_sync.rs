@@ -267,7 +267,7 @@ fn revealed_card_view(
 }
 
 fn info_zoom_highlight(card: &CardState) -> Option<InfoZoomHighlight> {
-    match card.enters_play_choice() {
+    match card.card_choice() {
         CardChoice::Card(card_id) => Some(InfoZoomHighlight {
             highlight: Some(info_zoom_highlight::Highlight::Card(adapters::card_identifier(
                 *card_id,

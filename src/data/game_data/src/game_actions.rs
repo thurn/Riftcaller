@@ -218,12 +218,14 @@ pub struct PlayCardBrowser {
     pub unplayed_action: UnplayedAction,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum PromptChoiceLabel {
     Sacrifice,
     Return(ManaValue),
     Occupant,
     Defender,
+    PayActionAccessAnother,
+    EndAccess,
 }
 
 /// A specific card choice shown in a [ButtonPrompt].
@@ -245,6 +247,10 @@ impl PromptChoice {
         Self { effects: vec![], anchor_card: None, custom_label: None }
     }
 
+    pub fn new_continue() -> Self {
+        Self { effects: vec![GameEffect::Continue], anchor_card: None, custom_label: None }
+    }
+
     pub fn effect(mut self, effect: GameEffect) -> Self {
         self.effects.push(effect);
         self
@@ -264,6 +270,7 @@ impl PromptChoice {
     /// (e.g. rendered with a gray button).
     pub fn is_secondary(&self) -> bool {
         self.effects.iter().any(|effect| effect.is_secondary())
+            || self.custom_label == Some(PromptChoiceLabel::EndAccess)
     }
 }
 

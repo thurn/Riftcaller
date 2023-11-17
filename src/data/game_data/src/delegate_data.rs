@@ -71,6 +71,7 @@ use enum_kinds::EnumKind;
 use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
 
+use crate::animation_tracker::InitiatedBy;
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
 use crate::card_definition::Resonance;
@@ -87,6 +88,7 @@ use crate::primitives::{
     HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, MinionEncounterId, RaidId, RoomAccessId,
     RoomId, ShieldValue, Side, TurnNumber,
 };
+use crate::raid_data::PopulateAccessPromptSource;
 
 /// Identifies the context for a given request to a delegate: which player,
 /// card, & card ability owns the delegate.
@@ -502,6 +504,9 @@ pub enum Delegate {
     /// the expected place to modify the set of accessed cards if it was not
     /// possible earlier.
     RaidAccessSelected(EventDelegate<RaidEvent<()>>),
+    /// The game is about to populate an access prompt for the current set of
+    /// accessed cards.
+    WillPopulateAccessPrompt(EventDelegate<RaidEvent<PopulateAccessPromptSource>>),
     /// The card with the provided `card_id` has been accessed and revealed
     /// during a raid (in any zone), but not yet scored/acted on.
     CardAccess(EventDelegate<CardId>),
@@ -510,6 +515,8 @@ pub enum Delegate {
     /// where the access step was prevented (e.g. "instead of accessing that
     /// room, gain mana" type cards).
     RaidAccessEnd(EventDelegate<RaidEvent<()>>),
+    /// A Custom Access raid has completed its access phase
+    CustomAccessEnd(EventDelegate<InitiatedBy>),
     /// A Raid is completed, either successfully or unsuccessfully.
     ///
     /// Note that this is invoked before `game.data.raid` is cleared.

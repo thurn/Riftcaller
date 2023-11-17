@@ -182,12 +182,7 @@ pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
 /// Shuffles the provided `cards` into the `side` player's deck, clearing their
 /// revealed state for both players.
 pub fn shuffle_into_deck(game: &mut GameState, side: Side, cards: &[CardId]) -> Result<()> {
-    move_cards(game, cards, CardPosition::DeckUnknown(side))?;
-    for card_id in cards {
-        turn_face_down(game, *card_id);
-        set_visible_to(game, *card_id, Side::Overlord, false);
-        set_visible_to(game, *card_id, Side::Champion, false);
-    }
+    move_cards(game, cards, CardPosition::DeckTop(side))?;
     shuffle_deck(game, side)?;
     game.add_animation(|| GameAnimation::ShuffleIntoDeck);
     Ok(())
@@ -198,6 +193,11 @@ pub fn shuffle_into_deck(game: &mut GameState, side: Side, cards: &[CardId]) -> 
 pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
     let cards =
         game.cards_in_position(side, CardPosition::DeckTop(side)).map(|c| c.id).collect::<Vec<_>>();
+    for card_id in &cards {
+        turn_face_down(game, *card_id);
+        set_visible_to(game, *card_id, Side::Overlord, false);
+        set_visible_to(game, *card_id, Side::Champion, false);
+    }
     move_cards(game, &cards, CardPosition::DeckUnknown(side))
 }
 

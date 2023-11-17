@@ -18,6 +18,7 @@ use card_helpers::{
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
+use game_data::animation_tracker::InitiatedBy;
 use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -31,8 +32,10 @@ use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::primitives::{
     AbilityId, CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
 };
+use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
+use raid_state::custom_access;
 use rules::{curses, mutations, CardDefinitionExt};
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
@@ -510,28 +513,58 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Uncommon,
         abilities: vec![
             abilities::play_if_accessed_all_inner_rooms_this_turn(),
-            Ability::new_with_delegate(
-                text![
-                    text!["Access a card in the top", 8, "cards of the", Vault],
-                    text!["You may pay", Actions(1), "to access another"],
-                    text!["Shuffle the", Vault]
-                ],
-                this::on_played(|g, s, _| {
-                    let cards = mutations::realize_top_of_deck(g, Side::Overlord, 8)?;
-                    cards.iter().for_each(|id| mutations::set_visible_to(g, *id, s.side(), true));
-                    show_prompt::with_choices(
-                        g,
-                        s,
-                        cards
-                            .iter()
-                            .map(|id| {
-                                PromptChoice::new().anchor_card(*id).effect(GameEffect::Continue)
-                            })
-                            .collect(),
-                    );
+            Ability::new(text![
+                text!["Access a card in the top", 8, "cards of the", Vault],
+                text!["You may pay", Actions(1), "to access another"],
+                text!["Shuffle the", Vault]
+            ])
+            .delegate(this::on_played(|g, s, _| {
+                let cards = mutations::realize_top_of_deck(g, Side::Overlord, 8)?;
+                custom_access::initiate(
+                    g,
+                    RoomId::Vault,
+                    InitiatedBy::Ability(s.ability_id()),
+                    cards,
+                )?;
+
+                Ok(())
+            }))
+            .delegate(delegates::on_will_populate_access_prompt(
+                requirements::matching_raid,
+                |g, s, source| {
+                    if source.data != PopulateAccessPromptSource::Initial {
+                        if g.player(s.side()).actions > 0
+                            && g.card(s.card_id()).card_choice().is_none()
+                        {
+                            // Prompt for second access
+                            show_prompt::with_choices(
+                                g,
+                                s.side(),
+                                vec![
+                                    PromptChoice::new()
+                                        .effect(GameEffect::ActionCost(s.side(), 1))
+                                        .effect(GameEffect::RecordCardChoice(
+                                            s.ability_id(),
+                                            CardChoice::PaidForEnhancement,
+                                        ))
+                                        .custom_label(PromptChoiceLabel::PayActionAccessAnother),
+                                    PromptChoice::new()
+                                        .effect(GameEffect::EndRaid(s.ability_id()))
+                                        .custom_label(PromptChoiceLabel::EndAccess),
+                                ],
+                            );
+                        } else {
+                            custom_access::end(g, InitiatedBy::Ability(s.ability_id()))?;
+                        }
+                    }
+
                     Ok(())
-                }),
-            ),
+                },
+            ))
+            .delegate(delegates::on_custom_access_end(
+                |_, s, initiated_by| Some(s.ability_id()) == initiated_by.ability_id(),
+                |g, _, _| mutations::shuffle_deck(g, Side::Overlord),
+            )),
         ],
         config: CardConfig::default(),
     }

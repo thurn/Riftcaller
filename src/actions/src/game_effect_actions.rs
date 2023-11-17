@@ -92,7 +92,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::SetEntersPlayTarget { source, target } => {
             let choice = CardChoice::Card(target);
-            game.card_mut(source.card_id).set_enters_play_choice(choice);
+            game.card_mut(source.card_id).set_card_choice(choice);
             mutations::record_card_choice(game, source, choice);
         }
         GameEffect::RecordCardChoice(ability_id, choice) => {

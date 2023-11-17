@@ -167,6 +167,7 @@ fn render_button(game: &GameState, index: usize, choice: &RaidChoice) -> Respons
         RaidLabel::ScoreCard(card_id) => ResponseButton::new("Score!").anchor_to(card_id),
         RaidLabel::RazeCard(card_id, action) => raze_button(game, card_id, action),
         RaidLabel::EndRaid => ResponseButton::new("End Raid").primary(false).shift_down(true),
+        RaidLabel::EndAccess => ResponseButton::new("End Access").primary(false).shift_down(true),
     };
 
     button.action(GameAction::RaidAction(RaidAction { index }))

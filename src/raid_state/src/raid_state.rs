@@ -13,6 +13,7 @@
 // limitations under the License.
 
 pub mod access;
+pub mod custom_access;
 pub mod defenders;
 pub mod raid_display_state;
 pub mod raid_prompt;
@@ -25,7 +26,7 @@ use game_data::delegate_data::{
     ApproachMinionEvent, CanRaidAccessCardsQuery, CardAccessEvent, ChampionScoreCardEvent,
     EncounterMinionEvent, Flag, MinionCombatAbilityEvent, MinionDefeatedEvent, RaidAccessEndEvent,
     RaidAccessSelectedEvent, RaidAccessStartEvent, RaidOutcome, RaidStartEvent, RazeCardEvent,
-    ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent,
+    ScoreCard, ScoreCardEvent, UsedWeapon, UsedWeaponEvent, WillPopulateAccessPromptEvent,
 };
 use game_data::game_actions::RaidAction;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
@@ -34,8 +35,8 @@ use game_data::primitives::{
     CardId, GameObjectId, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
 };
 use game_data::raid_data::{
-    RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus, RaidStep, ScoredCard,
-    WeaponInteraction,
+    PopulateAccessPromptSource, RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus,
+    RaidStep, ScoredCard, WeaponInteraction,
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
@@ -80,6 +81,7 @@ pub fn initiate_with_callback(
         room_access_id: None,
         accessed: vec![],
         jump_request: None,
+        is_custom_access: false,
     };
 
     let info = raid.info();
@@ -202,6 +204,9 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::AccessSetBuilt => access_set_built(game, info),
         RaidStep::RevealAccessedCards => reveal_accessed_cards(game, info),
         RaidStep::AccessCards => access_cards(game),
+        RaidStep::WillPopulateAccessPrompt(source) => {
+            will_populate_access_prompt(game, info, source)
+        }
         RaidStep::PopulateAccessPrompt => populate_access_prompt(game, info),
         RaidStep::StartScoringCard(scored) => start_scoring_card(game, info, scored),
         RaidStep::ChampionScoreEvent(scored) => champion_score_event(game, scored),
@@ -411,6 +416,15 @@ fn access_cards(game: &mut GameState) -> Result<RaidState> {
         dispatch::invoke_event(game, CardAccessEvent(*card_id))?;
     }
 
+    RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::Initial))
+}
+
+fn will_populate_access_prompt(
+    game: &mut GameState,
+    info: RaidInfo,
+    source: PopulateAccessPromptSource,
+) -> Result<RaidState> {
+    dispatch::invoke_event(game, WillPopulateAccessPromptEvent(info.event(source)))?;
     RaidState::step(RaidStep::PopulateAccessPrompt)
 }
 
@@ -422,7 +436,10 @@ fn populate_access_prompt(game: &mut GameState, info: RaidInfo) -> Result<RaidSt
             .accessed
             .iter()
             .filter_map(|card_id| access::access_action_for_card(game, *card_id))
-            .chain(can_end.then_some(RaidChoice::new(RaidLabel::EndRaid, RaidStep::FinishAccess)))
+            .chain(can_end.then_some(RaidChoice::new(
+                if info.is_custom_access { RaidLabel::EndAccess } else { RaidLabel::EndRaid },
+                RaidStep::FinishAccess,
+            )))
             .collect(),
     )
 }
@@ -455,7 +472,7 @@ fn score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
 
 fn move_to_scored_position(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
     mutations::move_card(game, scored.id, CardPosition::Scored(Side::Champion))?;
-    RaidState::step(RaidStep::PopulateAccessPrompt)
+    RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::FromScore))
 }
 
 fn start_razing_card(game: &mut GameState, card_id: CardId, cost: u32) -> Result<RaidState> {
@@ -470,14 +487,19 @@ fn raze_card(
     card_id: CardId,
     cost: u32,
 ) -> Result<RaidState> {
-    game.add_history_event(HistoryEvent::ScoreAccessedCard(info.event(card_id)));
+    game.add_history_event(HistoryEvent::RazeAccessedCard(info.event(card_id)));
     mana::spend(game, Side::Champion, ManaPurpose::RazeCard(card_id), cost)?;
     mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
-    RaidState::step(RaidStep::PopulateAccessPrompt)
+    RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::FromRaze))
 }
 
 fn finish_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    dispatch::invoke_event(game, RaidAccessEndEvent(info.event(())))?;
+    if info.is_custom_access {
+        custom_access::end(game, info.initiated_by)?;
+    } else {
+        dispatch::invoke_event(game, RaidAccessEndEvent(info.event(())))?;
+    }
+
     RaidState::step(RaidStep::FinishRaid)
 }
 

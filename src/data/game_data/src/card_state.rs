@@ -138,6 +138,11 @@ pub enum CardChoice {
     None,
     Card(CardId),
     Room(RoomId),
+
+    /// The user has paid some optional cost to add additional effects to an
+    /// ability. For example, "Access a card. You may pay <action point> to
+    /// access another card."
+    PaidForEnhancement,
 }
 
 impl CardChoice {
@@ -153,6 +158,10 @@ impl CardChoice {
             Self::Room(id) => Some(*id),
             _ => None,
         }
+    }
+
+    pub fn is_none(&self) -> bool {
+        self == &CardChoice::None
     }
 }
 
@@ -192,13 +201,11 @@ pub struct CardState {
     pub sorting_key: u32,
     position: CardPosition,
     /// Choice made for this card which must be persisted while it is in play,
-    /// used to implement ">Play: Choose a minion." style effects. Like with
-    /// counters, the value here persists even after the card is discarded, but
-    /// is cleared when the card enters play.
+    /// used to implement things like ">Play: Choose a minion." style effects.
     ///
     /// Prefer to rely on game history instead of adding state here, if at all
     /// possible.
-    enters_play_choice: CardChoice,
+    card_choice: CardChoice,
 }
 
 impl CardState {
@@ -216,7 +223,7 @@ impl CardState {
                 is_face_up: false,
                 ..CardData::default()
             },
-            enters_play_choice: CardChoice::None,
+            card_choice: CardChoice::None,
         }
     }
 
@@ -239,7 +246,7 @@ impl CardState {
                 is_face_up,
                 ..CardData::default()
             },
-            enters_play_choice: CardChoice::None,
+            card_choice: CardChoice::None,
         }
     }
 
@@ -253,21 +260,22 @@ impl CardState {
         }
     }
 
-    /// Returns a [CardChoice] made by the user when a card is played.
-    pub fn enters_play_choice(&self) -> &CardChoice {
+    /// Returns a [CardChoice] made by the user, typically when a card is
+    /// played.
+    pub fn card_choice(&self) -> &CardChoice {
         if self.position.in_play() {
-            &self.enters_play_choice
+            &self.card_choice
         } else {
             &CardChoice::None
         }
     }
 
-    /// Sets a [CardChoice] for this card when it is played.
+    /// Sets a [CardChoice] for this card, typically when it is played.
     ///
     /// For other instances of card choices & stateful card behavior, prefer to
     /// rely on game history instead.
-    pub fn set_enters_play_choice(&mut self, choice: CardChoice) {
-        self.enters_play_choice = choice;
+    pub fn set_card_choice(&mut self, choice: CardChoice) {
+        self.card_choice = choice;
     }
 
     /// Retrieves the last known value for a [CardCounter], returning a value
@@ -300,7 +308,7 @@ impl CardState {
         self.data.progress = 0;
         self.data.stored_mana = 0;
         self.data.power_charges = 0;
-        self.enters_play_choice = CardChoice::None;
+        self.card_choice = CardChoice::None;
     }
 
     pub fn side(&self) -> Side {

@@ -14,6 +14,7 @@
 
 use std::collections::HashSet;
 
+use game_data::animation_tracker::InitiatedBy;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
     Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
@@ -21,6 +22,7 @@ use game_data::delegate_data::{
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId, ManaValue, RaidId, ShieldValue};
+use game_data::raid_data::PopulateAccessPromptSource;
 
 /// A [TransformationFn] which invokes [Flag::allow] to enable an action.
 pub fn allow<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
@@ -65,6 +67,20 @@ pub fn on_raid_access_start(
     mutation: MutationFn<RaidEvent<()>>,
 ) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate { requirement, mutation })
+}
+
+pub fn on_will_populate_access_prompt(
+    requirement: RequirementFn<RaidEvent<PopulateAccessPromptSource>>,
+    mutation: MutationFn<RaidEvent<PopulateAccessPromptSource>>,
+) -> Delegate {
+    Delegate::WillPopulateAccessPrompt(EventDelegate { requirement, mutation })
+}
+
+pub fn on_custom_access_end(
+    requirement: RequirementFn<InitiatedBy>,
+    mutation: MutationFn<InitiatedBy>,
+) -> Delegate {
+    Delegate::CustomAccessEnd(EventDelegate { requirement, mutation })
 }
 
 pub fn on_raid_end(

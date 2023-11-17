@@ -553,7 +553,7 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 text!["You may evade that minion by paying its shield cost"],
                 in_play::on_minion_approached(|g, s, event| {
-                    if Some(event.data) == g.card(s.card_id()).enters_play_choice().chosen_card() {
+                    if Some(event.data) == g.card(s.card_id()).card_choice().chosen_card() {
                         let shield = queries::shield(g, event.data, None);
                         if mana::get(g, s.side(), ManaPurpose::PayForTriggeredAbility) >= shield {
                             show_prompt::with_choices(

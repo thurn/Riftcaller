@@ -262,16 +262,16 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
     match &raid.state {
         RaidState::Step(step) => match step {
             RaidStep::Begin => RaidStatus::Begin,
-            RaidStep::PopulateSummonPrompt(_)
-            | RaidStep::SummonMinion(_)
-            | RaidStep::DoNotSummon(_) => RaidStatus::Summon,
+            RaidStep::PopulateSummonPrompt(..)
+            | RaidStep::SummonMinion(..)
+            | RaidStep::DoNotSummon(..) => RaidStatus::Summon,
             RaidStep::NextEncounter
-            | RaidStep::ApproachMinion(_)
-            | RaidStep::EncounterMinion(_)
-            | RaidStep::PopulateEncounterPrompt(_)
-            | RaidStep::UseWeapon(_)
-            | RaidStep::MinionDefeated(_)
-            | RaidStep::FireMinionCombatAbility(_) => RaidStatus::Encounter,
+            | RaidStep::ApproachMinion(..)
+            | RaidStep::EncounterMinion(..)
+            | RaidStep::PopulateEncounterPrompt(..)
+            | RaidStep::UseWeapon(..)
+            | RaidStep::MinionDefeated(..)
+            | RaidStep::FireMinionCombatAbility(..) => RaidStatus::Encounter,
             RaidStep::PopulateApproachPrompt => RaidStatus::ApproachRoom,
             RaidStep::CheckCanAccess
             | RaidStep::AccessStart
@@ -279,13 +279,14 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::AccessSetBuilt
             | RaidStep::RevealAccessedCards
             | RaidStep::AccessCards
+            | RaidStep::WillPopulateAccessPrompt(..)
             | RaidStep::PopulateAccessPrompt
-            | RaidStep::StartScoringCard(_)
-            | RaidStep::ChampionScoreEvent(_)
-            | RaidStep::ScoreEvent(_)
-            | RaidStep::MoveToScoredPosition(_)
-            | RaidStep::StartRazingCard(_, _)
-            | RaidStep::RazeCard(_, _)
+            | RaidStep::StartScoringCard(..)
+            | RaidStep::ChampionScoreEvent(..)
+            | RaidStep::ScoreEvent(..)
+            | RaidStep::MoveToScoredPosition(..)
+            | RaidStep::StartRazingCard(..)
+            | RaidStep::RazeCard(..)
             | RaidStep::FinishAccess
             | RaidStep::FinishRaid => RaidStatus::Access,
         },

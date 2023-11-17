@@ -84,6 +84,8 @@ fn custom_label(label: PromptChoiceLabel) -> String {
         }
         PromptChoiceLabel::Occupant => "Occupant".to_string(),
         PromptChoiceLabel::Defender => "Defender".to_string(),
+        PromptChoiceLabel::PayActionAccessAnother => format!("Access Another? ({})", icons::ACTION),
+        PromptChoiceLabel::EndAccess => "End Access".to_string(),
     }
 }
 
