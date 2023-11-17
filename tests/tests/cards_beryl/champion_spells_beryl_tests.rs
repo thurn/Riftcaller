@@ -15,6 +15,7 @@
 use game_data::card_name::{CardName, CardVariant};
 use game_data::primitives::{RoomId, Side};
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_session::TestSession;
 use test_utils::*;
 
 #[test]
@@ -359,4 +360,112 @@ fn chains_of_binding_duskbound_project() {
     g.click(Button::ChooseOccupantForPrompt);
     g.move_to_end_step(Side::Champion);
     assert!(g.dusk());
+}
+
+fn raid_inner_rooms(g: &mut TestSession) {
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn delve_into_darkness() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .actions(5)
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .deck_top(CardName::TestScheme3_10)
+                .deck_top(CardName::TestDuskboundProject),
+        )
+        .build();
+    raid_inner_rooms(&mut g);
+
+    g.create_and_play(CardName::DelveIntoDarkness);
+    assert!(g.user.data.raid_active());
+    g.click(Button::Score);
+    assert_eq!(g.me().actions(), 1);
+    g.click(Button::AccessAnother);
+    assert_eq!(g.me().actions(), 0);
+    g.click(Button::Discard);
+    assert!(!g.user.data.raid_active());
+    g.click(Button::EndTurn);
+    assert_eq!(g.me().score(), 10);
+    assert!(g.user.cards.opponent_discard_pile().contains_card(CardName::TestDuskboundProject));
+}
+
+#[test]
+fn delve_into_darkness_end_access_after_0() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .actions(5)
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .deck_top(CardName::TestScheme3_10)
+                .deck_top(CardName::TestDuskboundProject),
+        )
+        .build();
+    raid_inner_rooms(&mut g);
+
+    g.create_and_play(CardName::DelveIntoDarkness);
+    assert!(g.user.data.raid_active());
+    g.click(Button::EndAccess);
+    assert!(!g.user.data.raid_active());
+}
+
+#[test]
+fn delve_into_darkness_end_access_after_1() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .actions(5)
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .deck_top(CardName::TestScheme3_10)
+                .deck_top(CardName::TestDuskboundProject),
+        )
+        .build();
+    raid_inner_rooms(&mut g);
+
+    g.create_and_play(CardName::DelveIntoDarkness);
+    g.click(Button::Score);
+    assert_eq!(g.me().actions(), 1);
+    g.click(Button::EndAccess);
+    assert!(!g.user.data.raid_active());
+    assert_eq!(g.me().score(), 10);
+}
+
+#[test]
+fn delve_into_darkness_cannot_play_failed_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionEndRaid),
+        )
+        .build();
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+
+    let id = g.add_to_hand(CardName::DelveIntoDarkness);
+    assert!(g.play_card_with_result(id, g.user_id(), None).is_err());
+}
+
+#[test]
+fn delve_into_darkness_does_not_count_for_glimmersong() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .actions(5)
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .deck_top(CardName::TestScheme3_10)
+                .deck_top(CardName::TestDuskboundProject),
+        )
+        .build();
+    raid_inner_rooms(&mut g);
+    let glimmersong = g.create_and_play(CardName::Glimmersong);
+    g.create_and_play(CardName::DelveIntoDarkness);
+    g.click(Button::EndAccess);
+    assert_eq!(g.user.cards.get(glimmersong).attack_icon(), "0")
 }

@@ -38,6 +38,7 @@ pub enum Button {
     Sacrifice,
     NoPromptAction,
     Destroy,
+    Discard,
     CancelPlayingCard,
     SkipPlayingCard,
     InitiateRaid,
@@ -55,6 +56,8 @@ pub enum Button {
     ChooseDefenderForPrompt,
     Evade,
     ClosePriorityPrompt,
+    AccessAnother,
+    EndAccess,
 }
 
 pub trait TestInterfaceHelpers {
@@ -204,6 +207,7 @@ fn resolve_button(button: Button) -> String {
         Button::Sacrifice => "Sacrifice",
         Button::NoPromptAction => "Continue",
         Button::Destroy => "Destroy",
+        Button::Discard => "Discard",
         Button::CancelPlayingCard => "Cancel",
         Button::SkipPlayingCard => "Skip",
         Button::InitiateRaid => "Initiate Raid",
@@ -221,6 +225,8 @@ fn resolve_button(button: Button) -> String {
         Button::ChooseDefenderForPrompt => "Defender",
         Button::Evade => "Evade",
         Button::ClosePriorityPrompt => "Continue",
+        Button::AccessAnother => "Access Another",
+        Button::EndAccess => "End Access",
     }
     .to_string()
 }
