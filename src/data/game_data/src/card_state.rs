@@ -140,7 +140,7 @@ pub enum CardChoice {
     Room(RoomId),
 
     /// The user has paid some optional cost to add additional effects to an
-    /// ability. For example, "Access a card. You may pay <action point> to
+    /// ability. For example, "Access a card. You may pay {action point} to
     /// access another card."
     PaidForEnhancement,
 }

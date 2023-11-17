@@ -158,7 +158,7 @@ record: finish-screenshots
     mkdir -p ScreenshotTests
     cp "{{screenshot_path}}"/*.png ScreenshotTests/
 
-plugin_out := "Assets/Plugins/MacOS"
+plugin_out := "Assets/Plugins"
 target_arm := "aarch64-apple-darwin"
 target_x86 := "x86_64-apple-darwin"
 
@@ -210,12 +210,11 @@ llvm_toolchain := if os() == "macos" {
 # Need to set up target toolchain, see https://github.com/briansmith/ring/issues/897
 
 toolchains := "toolchains/llvm/prebuilt"
-export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER := join(android_ndk, toolchains, llvm_toolchain, "bin", "aarch64-linux-android29-clang")
-export TARGET_AR := join(android_ndk, toolchains, llvm_toolchain, "bin", "aarch64-linux-android-ar")
-export TARGET_CC := CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER
 
-
-
+# Required for Android build:
+# export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER := join(android_ndk, toolchains, llvm_toolchain, "bin", "aarch64-linux-android29-clang")
+# export TARGET_AR := join(android_ndk, toolchains, llvm_toolchain, "bin", "aarch64-linux-android-ar")
+# export TARGET_CC := CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER
 android-plugin:
     # Note: builds for Android that use native plugins must use IL2CPP
     # This is only arm64, need to do arm7 at some point too

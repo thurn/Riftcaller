@@ -159,7 +159,7 @@ namespace Spelldawn.Services
 
       if (DevelopmentMode())
       {
-        LogUtils.Log($"Connecting to {DevelopmentServerAddress}");
+        LogUtils.Log($"DEV MODE: Connecting to {DevelopmentServerAddress}");
         using var call = _client.Value.Connect(request);
 
         try
@@ -188,7 +188,7 @@ namespace Spelldawn.Services
       }
       else
       {
-        LogUtils.Log($"Connecting to Plugin");
+        LogUtils.Log($"PROD MODE: Connecting to Plugin");
         StartCoroutine(ConnectToOfflineGame(request));        
       }
     }
