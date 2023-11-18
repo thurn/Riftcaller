@@ -19,7 +19,7 @@ use adapters::CustomCardIdentifier;
 use constants::game_constants;
 use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
-use game_data::card_state::{CardChoice, CardState};
+use game_data::card_state::{CardState, OnPlayState};
 use game_data::card_view_context::CardViewContext;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::ContinuousDisplayEffectsQuery;
@@ -267,13 +267,13 @@ fn revealed_card_view(
 }
 
 fn info_zoom_highlight(card: &CardState) -> Option<InfoZoomHighlight> {
-    match card.card_choice() {
-        CardChoice::Card(card_id) => Some(InfoZoomHighlight {
+    match card.on_play_state() {
+        OnPlayState::Card(card_id) => Some(InfoZoomHighlight {
             highlight: Some(info_zoom_highlight::Highlight::Card(adapters::card_identifier(
                 *card_id,
             ))),
         }),
-        CardChoice::Room(room_id) => Some(InfoZoomHighlight {
+        OnPlayState::Room(room_id) => Some(InfoZoomHighlight {
             highlight: Some(info_zoom_highlight::Highlight::Room(adapters::room_identifier(
                 *room_id,
             ))),

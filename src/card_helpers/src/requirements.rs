@@ -18,7 +18,7 @@ use game_data::delegate_data::DealtDamage;
 use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
 use game_data::game_state::GameState;
-use game_data::history_data::{HistoryEvent, HistoryEventKind};
+use game_data::history_data::{CardChoice, HistoryEvent, HistoryEventKind};
 use game_data::primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId};
 use game_data::utils;
 use rules::flags;
@@ -142,7 +142,7 @@ pub fn card_chosen_this_turn(
     card_id: &impl HasCardId,
 ) -> bool {
     history::card_choices_this_turn(game, source)
-        .any(|choice| choice.chosen_card() == Some(card_id.card_id()))
+        .any(|choice| choice == CardChoice::CardId(card_id.card_id()))
 }
 
 /// A [RequirementFn] which matches if the `source` ability has been activated

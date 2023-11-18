@@ -25,7 +25,7 @@ use anyhow::Result;
 use constants::game_constants;
 use game_data::animation_tracker::{GameAnimation, InitiatedBy};
 use game_data::card_name::CardVariant;
-use game_data::card_state::{CardChoice, CardCounter, CardState};
+use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
@@ -36,7 +36,7 @@ use game_data::delegate_data::{
     SummonProjectEvent,
 };
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
-use game_data::history_data::{CardChoiceEvent, HistoryEvent};
+use game_data::history_data::{CardChoice, CardChoiceEvent, HistoryEvent};
 use game_data::primitives::{
     ActionCount, CardId, HasAbilityId, ManaValue, PointsValue, PowerChargeValue, RoomId,
     RoomLocation, Side, TurnNumber,

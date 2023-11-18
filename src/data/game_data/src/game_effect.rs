@@ -14,7 +14,8 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::card_state::{CardChoice, CardPosition};
+use crate::card_state::{CardPosition, OnPlayState};
+use crate::history_data::CardChoice;
 use crate::primitives::{
     AbilityId, ActionCount, CardId, CurseCount, DamageAmount, GameObjectId, ManaValue, RoomId, Side,
 };
@@ -47,6 +48,8 @@ pub enum GameEffect {
     InitiateRaid(RoomId, AbilityId),
     /// End the current raid in failure.
     EndRaid(AbilityId),
+    /// End the current custom access event
+    EndCustomAccess(AbilityId),
     /// Move a card to a new target position
     MoveCard(CardId, CardPosition),
     /// Prevent *up to* this amount of incoming damage if there is an active
@@ -61,8 +64,8 @@ pub enum GameEffect {
     /// 'prompt_selected_cards' list. Returns an error if no card is selected.
     /// Removes the chosen card from the 'prompt_selected_cards' list.
     SwapWithSelected(Side, CardId),
-    /// Sets the 'source' ability's chosen card target to 'target'.
-    SetEntersPlayTarget { source: AbilityId, target: CardId },
+    /// Sets the 'card_id' card's [OnPlayState].
+    SetOnPlayState(CardId, OnPlayState),
     /// Record a card choice for a given card ability.
     RecordCardChoice(AbilityId, CardChoice),
     /// Evade the current raid encounter, jumping to the next raid state
@@ -72,7 +75,7 @@ pub enum GameEffect {
 impl GameEffect {
     pub fn is_secondary(&self) -> bool {
         match self {
-            Self::Continue | Self::AbortPlayingCard => true,
+            Self::Continue | Self::AbortPlayingCard | Self::EndCustomAccess(..) => true,
             _ => false,
         }
     }

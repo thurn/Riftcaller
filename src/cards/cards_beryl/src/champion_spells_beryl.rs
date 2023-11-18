@@ -22,13 +22,14 @@ use game_data::animation_tracker::InitiatedBy;
 use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::{CardChoice, CardPosition};
+use game_data::card_state::{CardPosition, OnPlayState};
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::game_actions::{
     CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
+use game_data::history_data::CardChoice;
 use game_data::primitives::{
     AbilityId, CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
 };
@@ -468,7 +469,7 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
                             PromptChoice::new()
                                 .effect(GameEffect::RecordCardChoice(
                                     s.ability_id(),
-                                    CardChoice::Card(card.id),
+                                    CardChoice::CardId(card.id),
                                 ))
                                 .anchor_card(card.id)
                                 .custom_label(if card.position().is_occupant() {
@@ -534,7 +535,7 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                 |g, s, source| {
                     if source.data != PopulateAccessPromptSource::Initial {
                         if g.player(s.side()).actions > 0
-                            && g.card(s.card_id()).card_choice().is_none()
+                            && g.card(s.card_id()).on_play_state().is_none()
                         {
                             // Prompt for second access
                             show_prompt::with_choices(
@@ -543,14 +544,13 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                                 vec![
                                     PromptChoice::new()
                                         .effect(GameEffect::ActionCost(s.side(), 1))
-                                        .effect(GameEffect::RecordCardChoice(
-                                            s.ability_id(),
-                                            CardChoice::PaidForEnhancement,
+                                        .effect(GameEffect::SetOnPlayState(
+                                            s.card_id(),
+                                            OnPlayState::PaidForEnhancement,
                                         ))
                                         .custom_label(PromptChoiceLabel::PayActionAccessAnother),
                                     PromptChoice::new()
-                                        .effect(GameEffect::EndRaid(s.ability_id()))
-                                        .custom_label(PromptChoiceLabel::EndAccess),
+                                        .effect(GameEffect::EndCustomAccess(s.ability_id())),
                                 ],
                             );
                         } else {

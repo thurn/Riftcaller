@@ -225,7 +225,6 @@ pub enum PromptChoiceLabel {
     Occupant,
     Defender,
     PayActionAccessAnother,
-    EndAccess,
 }
 
 /// A specific card choice shown in a [ButtonPrompt].
@@ -270,7 +269,6 @@ impl PromptChoice {
     /// (e.g. rendered with a gray button).
     pub fn is_secondary(&self) -> bool {
         self.effects.iter().any(|effect| effect.is_secondary())
-            || self.custom_label == Some(PromptChoiceLabel::EndAccess)
     }
 }
 

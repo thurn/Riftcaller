@@ -23,6 +23,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::card_name::CardVariant;
 use crate::game_actions::CardTarget;
+#[allow(unused_imports)] // Used in Rustdocs
+use crate::history_data::HistoryEvent;
 use crate::primitives::{
     CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId, RoomLocation, Side,
 };
@@ -133,19 +135,32 @@ pub enum CardCounter {
     PowerCharges,
 }
 
+/// State associated with resolving a card's "play" ability.
+///
+/// This is intended to track choices & state made as a part of playing a card,
+/// e.g. picking a target. This state is cleared when the card is played, in the
+/// same manner as card counters.
+///
+/// Be careful about using this, especially for timed effects like e.g. "target
+/// minion gets +1 health this turn" -- they can easily break in situations
+/// where a card gets recurred and played multiple times in the same turn.
+///
+/// Prefer to use Game History for state whenever possible. In particular
+/// something like [HistoryEvent::CardChoice] is often the better tool to use
+/// for recording user choices over the scope of a single turn.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
-pub enum CardChoice {
+pub enum OnPlayState {
     None,
     Card(CardId),
     Room(RoomId),
 
-    /// The user has paid some optional cost to add additional effects to an
-    /// ability. For example, "Access a card. You may pay {action point} to
-    /// access another card."
+    /// The user has paid some optional cost to add additional effects to a
+    /// card's ability. For example, "Access a card. You may pay {action point}
+    /// to access another card."
     PaidForEnhancement,
 }
 
-impl CardChoice {
+impl OnPlayState {
     pub fn chosen_card(&self) -> Option<CardId> {
         match self {
             Self::Card(id) => Some(*id),
@@ -161,7 +176,7 @@ impl CardChoice {
     }
 
     pub fn is_none(&self) -> bool {
-        self == &CardChoice::None
+        self == &OnPlayState::None
     }
 }
 
@@ -200,12 +215,12 @@ pub struct CardState {
     /// Higher sorting keys are closer to the 'top' or 'front' of the position.
     pub sorting_key: u32,
     position: CardPosition,
-    /// Choice made for this card which must be persisted while it is in play,
+    /// Custom state for this card which must be persisted while it is in play,
     /// used to implement things like ">Play: Choose a minion." style effects.
     ///
     /// Prefer to rely on game history instead of adding state here, if at all
     /// possible.
-    card_choice: CardChoice,
+    on_play_state: OnPlayState,
 }
 
 impl CardState {
@@ -223,7 +238,7 @@ impl CardState {
                 is_face_up: false,
                 ..CardData::default()
             },
-            card_choice: CardChoice::None,
+            on_play_state: OnPlayState::None,
         }
     }
 
@@ -246,7 +261,7 @@ impl CardState {
                 is_face_up,
                 ..CardData::default()
             },
-            card_choice: CardChoice::None,
+            on_play_state: OnPlayState::None,
         }
     }
 
@@ -260,22 +275,22 @@ impl CardState {
         }
     }
 
-    /// Returns a [CardChoice] made by the user, typically when a card is
-    /// played.
-    pub fn card_choice(&self) -> &CardChoice {
+    /// Returns the [OnPlayState] for this card.
+    ///
+    /// See [OnPlayState] for more information.
+    pub fn on_play_state(&self) -> &OnPlayState {
         if self.position.in_play() {
-            &self.card_choice
+            &self.on_play_state
         } else {
-            &CardChoice::None
+            &OnPlayState::None
         }
     }
 
-    /// Sets a [CardChoice] for this card, typically when it is played.
+    /// Sets a [OnPlayState] for this card.
     ///
-    /// For other instances of card choices & stateful card behavior, prefer to
-    /// rely on game history instead.
-    pub fn set_card_choice(&mut self, choice: CardChoice) {
-        self.card_choice = choice;
+    /// See [OnPlayState] for more information.
+    pub fn set_on_play_state(&mut self, choice: OnPlayState) {
+        self.on_play_state = choice;
     }
 
     /// Retrieves the last known value for a [CardCounter], returning a value
@@ -308,7 +323,7 @@ impl CardState {
         self.data.progress = 0;
         self.data.stored_mana = 0;
         self.data.power_charges = 0;
-        self.card_choice = CardChoice::None;
+        self.on_play_state = OnPlayState::None;
     }
 
     pub fn side(&self) -> Side {

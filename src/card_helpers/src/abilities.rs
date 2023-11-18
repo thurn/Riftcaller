@@ -17,7 +17,7 @@
 use game_data::animation_tracker::InitiatedBy;
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
-use game_data::card_state::{CardCounter, CardPosition};
+use game_data::card_state::{CardCounter, CardPosition, OnPlayState};
 use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate, RaidOutcome};
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
 use game_data::primitives::{AbilityId, DamageAmount, ManaValue, INNER_ROOMS};
@@ -258,10 +258,10 @@ pub fn choose_a_minion_in_target_room() -> Ability {
                 g.defenders_unordered(played.target.room_id()?)
                     .map(|card| {
                         PromptChoice::new()
-                            .effect(GameEffect::SetEntersPlayTarget {
-                                source: s.ability_id(),
-                                target: card.id,
-                            })
+                            .effect(GameEffect::SetOnPlayState(
+                                s.card_id(),
+                                OnPlayState::Card(card.id),
+                            ))
                             .anchor_card(card.id)
                     })
                     .collect(),

@@ -14,12 +14,12 @@
 
 use anyhow::Result;
 use game_data::animation_tracker::{GameAnimation, InitiatedBy};
-use game_data::card_state::CardChoice;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::primitives::GameObjectId;
 use game_data::special_effects::SpecialEffect;
+use raid_state::custom_access;
 use rules::{deal_damage, mana, mutations, CardDefinitionExt};
 use with_error::WithError;
 
@@ -60,6 +60,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::EndRaid(ability_id) => {
             mutations::end_raid(game, InitiatedBy::Ability(ability_id), RaidOutcome::Failure)?
         }
+        GameEffect::EndCustomAccess(ability_id) => {
+            custom_access::end(game, InitiatedBy::Ability(ability_id))?;
+        }
         GameEffect::TakeDamageCost(ability_id, amount) => {
             deal_damage::apply(game, ability_id, amount)?
         }
@@ -90,10 +93,8 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             mutations::move_card(game, card_id, target_position)?;
             mutations::move_card(game, target, source_position)?;
         }
-        GameEffect::SetEntersPlayTarget { source, target } => {
-            let choice = CardChoice::Card(target);
-            game.card_mut(source.card_id).set_card_choice(choice);
-            mutations::record_card_choice(game, source, choice);
+        GameEffect::SetOnPlayState(card_id, state) => {
+            game.card_mut(card_id).set_on_play_state(state);
         }
         GameEffect::RecordCardChoice(ability_id, choice) => {
             mutations::record_card_choice(game, ability_id, choice);

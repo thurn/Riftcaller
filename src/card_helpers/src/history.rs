@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::card_state::CardChoice;
 use game_data::delegate_data::{RaidEvent, UsedWeapon};
 use game_data::game_state::GameState;
-use game_data::history_data::{AbilityActivation, HistoryEvent};
+use game_data::history_data::{AbilityActivation, CardChoice, HistoryEvent};
 use game_data::primitives::{CardId, HasAbilityId, RoomId};
 
 /// Returns the record of game events which happened on the current

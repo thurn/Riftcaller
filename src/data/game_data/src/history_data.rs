@@ -19,7 +19,6 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
 use crate::animation_tracker::InitiatedBy;
-use crate::card_state::CardChoice;
 use crate::delegate_data::{RaidEvent, UsedWeapon};
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
@@ -53,6 +52,11 @@ pub struct AbilityActivation {
     pub current_minion_encounter: Option<MinionEncounterId>,
     /// Room access when the ability was activated, if any.
     pub current_room_access: Option<RoomAccessId>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub enum CardChoice {
+    CardId(CardId),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
