@@ -100,6 +100,7 @@ fn evaluate_play_step(game: &mut GameState, play_card: PlayCardData) -> Result<P
     match play_card.step {
         PlayCardStep::Begin => Ok(PlayCardStep::CheckLimits),
         PlayCardStep::CheckLimits => check_limits(game, play_card),
+        PlayCardStep::ClearPreviousState => clear_previous_state(game, play_card),
         PlayCardStep::AddToHistory => add_to_history(game, play_card),
         PlayCardStep::MoveToPlayedPosition => move_to_played_position(game, play_card),
         PlayCardStep::PayActionPoints => pay_action_points(game, play_card),
@@ -175,6 +176,11 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
         game.player_mut(play_card.card_id.side).prompt_queue.push(p);
     }
 
+    Ok(PlayCardStep::ClearPreviousState)
+}
+
+fn clear_previous_state(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+    game.card_mut(play_card.card_id).clear_played_state();
     Ok(PlayCardStep::AddToHistory)
 }
 

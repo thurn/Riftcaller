@@ -22,6 +22,7 @@ use crate::primitives::{AbilityId, CardId, DamageAmount};
 pub enum PlayCardStep {
     Begin,
     CheckLimits,
+    ClearPreviousState,
     AddToHistory,
     MoveToPlayedPosition,
     PayActionPoints,
