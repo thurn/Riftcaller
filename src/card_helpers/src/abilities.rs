@@ -25,6 +25,7 @@ use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
 use rules::{deal_damage, mutations};
 
+use crate::text::trigger_text;
 use crate::text_macro::text;
 use crate::this::on_activated;
 use crate::*;

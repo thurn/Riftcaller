@@ -15,6 +15,7 @@
 //! Test cards
 
 use card_helpers::costs::{actions, scheme};
+use card_helpers::text::trigger_text;
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, text, *};
 use game_data::animation_tracker::InitiatedBy;

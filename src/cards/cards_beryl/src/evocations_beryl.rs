@@ -242,3 +242,32 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
         config: CardConfig::default(),
     }
 }
+
+pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::KnowledgeOfTheBeyond,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::champion_card(meta, "knowledge_of_the_beyond"),
+        card_type: CardType::Evocation,
+        subtypes: vec![CardSubtype::Augury],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            Ability::new(text::trigger_text(
+                Play,
+                text![Banish, "the top", 3, "cards of your deck"],
+            )),
+            ActivatedAbility::new(
+                costs::sacrifice(),
+                text![
+                    text!["Play a permanent from among those cards, reducing its cost by", Mana(1)],
+                    text!["Discard the rest"]
+                ],
+            )
+            .build(),
+        ],
+        config: CardConfig::default(),
+    }
+}

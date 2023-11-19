@@ -97,6 +97,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::backup_plan);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::planar_sanctuary);
+    DEFINITIONS.insert(cards_beryl::evocations_beryl::knowledge_of_the_beyond);
     DEFINITIONS.insert(cards_beryl::overlord_spells_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);

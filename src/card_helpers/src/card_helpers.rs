@@ -25,6 +25,7 @@ pub mod projects;
 pub mod raids;
 pub mod requirements;
 pub mod show_prompt;
+pub mod text;
 pub mod text_macro;
 pub mod this;
 
@@ -41,10 +42,6 @@ use game_data::primitives::{ActionCount, CardId, HasCardId, HealthValue, ManaVal
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
 use rules::mana;
-
-pub fn trigger_text(name: TextToken, effect: Vec<TextElement>) -> Vec<TextElement> {
-    vec![TextElement::NamedTrigger(name, effect)]
-}
 
 /// Provides the cost for a card, with 1 action point required and `mana` mana
 /// points

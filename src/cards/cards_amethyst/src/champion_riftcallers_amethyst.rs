@@ -15,6 +15,7 @@
 use assets::rexard_images;
 use card_helpers::effects::Effects;
 use card_helpers::requirements::FaceUpInPlay;
+use card_helpers::text::trigger_text;
 use card_helpers::*;
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};

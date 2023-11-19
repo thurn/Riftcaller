@@ -16,6 +16,7 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_helpers::text::trigger_text;
 use card_helpers::{abilities, text, *};
 use game_data::animation_tracker::InitiatedBy;
 use game_data::card_definition::{

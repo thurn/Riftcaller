@@ -81,6 +81,7 @@ pub enum TextToken {
     Evade,
     Unsummon,
     RazeAbility,
+    Banish,
 }
 
 impl TextToken {

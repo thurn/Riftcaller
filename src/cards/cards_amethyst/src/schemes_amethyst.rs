@@ -17,6 +17,7 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::costs::scheme;
+use card_helpers::text::trigger_text;
 use card_helpers::{text, *};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, SchemePoints,

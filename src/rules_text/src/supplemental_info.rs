@@ -193,6 +193,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             format!("{} <b>Ability</b>: Allows cards to be discarded/destroyed during a raid.",
                     icons::RAZE)
         ),
+        TextTokenKind::Banish => entry("Banish", "Remove from play and move to the Banished zone"),
         _ => None,
     };
 

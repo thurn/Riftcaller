@@ -15,6 +15,7 @@
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use card_helpers::costs::actions;
 use card_helpers::effects::Effects;
+use card_helpers::text::trigger_text;
 use card_helpers::this::on_activated;
 use card_helpers::*;
 use game_data::card_definition::{
