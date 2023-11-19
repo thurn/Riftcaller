@@ -553,6 +553,7 @@ impl Summarize for Position {
             Self::Character(v) => summary.primitive(v),
             Self::CharacterContainer(v) => summary.primitive(v),
             Self::IntoCard(v) => summary.primitive(v),
+            Self::StackedBehindCard(v) => summary.primitive(v),
             Self::Revealed(v) => summary.primitive(v),
             Self::Riftcaller(v) => summary.primitive(v),
             Self::BrowserDragTarget(v) => summary.primitive(v),

@@ -914,6 +914,58 @@ Transform:
   m_Father: {fileID: 3484575499145436869}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1564798519486091557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5721086149876652021}
+  - component: {fileID: 8671197631998164897}
+  m_Layer: 0
+  m_Name: CardStackObjectDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5721086149876652021
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564798519486091557}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.3, y: 0.3, z: -0.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3484575499145436869}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8671197631998164897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564798519486091557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71eaa18b8be04ecca84975c855a54803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _parent: {fileID: 0}
+  _gameContext: 25
+  _sortingGroup: {fileID: 0}
+  _objects: []
+  _updateRequired: 0
+  _animateNextUpdate: 0
+  _animationRunning: 0
+  _singleElementY: 0.5
 --- !u!1 &1649997011089986550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1591,6 +1643,7 @@ Transform:
   - {fileID: 8595169476160239374}
   - {fileID: 8233676388300178146}
   - {fileID: 842555327795924163}
+  - {fileID: 5721086149876652021}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 270, y: 0, z: 0}
@@ -1653,6 +1706,7 @@ MonoBehaviour:
   _previousParent: {fileID: 0}
   _contentProtection: {fileID: 0}
   _containedObjectsDisplay: {fileID: 3331682006952615536}
+  _cardStackObjectDisplay: {fileID: 8671197631998164897}
   _arenaCardYOffset: 0.6
   _referenceImageWidth: 243.3
 --- !u!210 &6859622998180740047

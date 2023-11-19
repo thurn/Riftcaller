@@ -72,6 +72,14 @@ pub fn set_visible_to(game: &mut GameState, card_id: CardId, side: Side, reveale
     })
 }
 
+/// Sets the visibility of a list of cards in the same manner as
+/// [set_visible_to].
+pub fn set_cards_visible_to(game: &mut GameState, cards: &[CardId], side: Side, revealed: bool) {
+    for card_id in cards {
+        set_visible_to(game, *card_id, side, revealed);
+    }
+}
+
 /// Reveal a card for an ability.
 ///
 /// This is a specific game action (described using the word "reveal" on card

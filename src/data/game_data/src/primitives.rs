@@ -343,6 +343,16 @@ impl fmt::Debug for RoomAccessId {
     }
 }
 
+/// Uniquely identifies a room access within a given game
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
+pub struct BanishEventId(pub u32);
+
+impl fmt::Debug for BanishEventId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "%{}", self.0)
+    }
+}
+
 /// Contains the URL of an image asset within a game
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Serialize, Deserialize)]
 pub struct Sprite {

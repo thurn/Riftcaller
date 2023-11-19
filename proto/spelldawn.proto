@@ -827,6 +827,11 @@ message ObjectPositionIntoCard {
     CardIdentifier card_id = 1;
 }
 
+/// An object position which represents being stacked behind another card
+message ObjectPositionStackedBehindCard {
+    CardIdentifier card_id = 1;
+}
+
 enum RevealedCardsBrowserSize {
     REVEALED_CARDS_BROWSER_SIZE_UNSPECIFIED = 0;
     REVEALED_CARDS_BROWSER_SIZE_SMALL = 1;
@@ -887,11 +892,12 @@ message ObjectPosition {
         ObjectPositionCharacter character = 15;
         ObjectPositionCharacterContainer character_container = 16;
         ObjectPositionIntoCard into_card = 17;
-        ObjectPositionRevealedCards revealed = 18;
-        ObjectPositionRiftcallers riftcaller = 19;
-        ObjectPositionBrowserDragTarget browser_drag_target = 20;
-        ObjectPositionCardChoiceBrowser card_choice_browser = 21;
-        ObjectPositionHandStorage hand_storage = 22;
+        ObjectPositionStackedBehindCard stacked_behind_card = 18;
+        ObjectPositionRevealedCards revealed = 19;
+        ObjectPositionRiftcallers riftcaller = 20;
+        ObjectPositionBrowserDragTarget browser_drag_target = 21;
+        ObjectPositionCardChoiceBrowser card_choice_browser = 22;
+        ObjectPositionHandStorage hand_storage = 23;
     }
 }
 

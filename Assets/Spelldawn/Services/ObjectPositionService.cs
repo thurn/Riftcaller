@@ -198,6 +198,10 @@ namespace Spelldawn.Services
           _registry.CardService.HasCard(position.IntoCard.CardId) ?
           _registry.CardService.FindCard(position.IntoCard.CardId).ContainedObjects :
           _registry.CharacterPositionForPlayer(PlayerName.User),
+        ObjectPosition.PositionOneofCase.StackedBehindCard =>
+          _registry.CardService.HasCard(position.StackedBehindCard.CardId) ?
+            _registry.CardService.FindCard(position.StackedBehindCard.CardId).CardStackObjectDisplay :
+            _registry.OffscreenCards,
         ObjectPosition.PositionOneofCase.Revealed => position.Revealed.Size switch
         {
           RevealedCardsBrowserSize.Small => _registry.RevealedCardsBrowserSmall,

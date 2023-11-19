@@ -15,7 +15,7 @@
 use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
-use game_data::card_state::{CardPosition, CardState};
+use game_data::card_state::{CardPosition, CardState, OnPlayState};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
 use game_data::primitives::{
@@ -31,7 +31,8 @@ use protos::spelldawn::{
     ObjectPositionDiscardPileContainer, ObjectPositionHand, ObjectPositionHandStorage,
     ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid,
     ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
-    ObjectPositionStaging, RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionStackedBehindCard, ObjectPositionStaging, RevealedCardsBrowserSize,
+    RoomIdentifier,
 };
 use raid_state::raid_display_state;
 use rules::{queries, CardDefinitionExt};
@@ -176,6 +177,12 @@ pub fn parent_card(identifier: impl HasCardId) -> Position {
     })
 }
 
+pub fn stacked_behind_card(identifier: impl HasCardId) -> Position {
+    Position::StackedBehindCard(ObjectPositionStackedBehindCard {
+        card_id: Some(adapters::card_identifier(identifier.card_id())),
+    })
+}
+
 /// The target position for the cards shown in a `CardBrowserPrompt`.
 pub fn card_browser_target_position() -> Position {
     Position::BrowserDragTarget(ObjectPositionBrowserDragTarget {})
@@ -214,8 +221,19 @@ fn adapt_position(
         CardPosition::Riftcaller(side) => Some(riftcaller(builder, side)),
         CardPosition::Scoring => Some(staging()),
         CardPosition::Played(side, target) => played_position(builder, game, side, card_id, target),
-        CardPosition::DeckUnknown(_) => None,
+        CardPosition::DeckUnknown(..) => None,
         CardPosition::GameModifier => Some(offscreen()),
+        CardPosition::Banished(Some(by_card)) => {
+            // If this card is currently banished by the banish event of another card,
+            // render it stacked underneath that card.
+            if let OnPlayState::BanishCards(event_id) = game.card(by_card.source).on_play_state() {
+                if *event_id == by_card.event_id {
+                    return Some(stacked_behind_card(by_card.source));
+                }
+            }
+            Some(offscreen())
+        }
+        CardPosition::Banished(..) => Some(offscreen()),
     }
 }
 

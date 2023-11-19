@@ -90,6 +90,7 @@ namespace Spelldawn.Game
 
     public static bool ShouldRenderArenaCard(this GameContext gameContext) => gameContext switch
     {
+      GameContext.BehindArena => true,
       GameContext.Arena => true,
       GameContext.ArenaRaidParticipant => true,
       GameContext.Riftcallers => true,

@@ -248,9 +248,10 @@ namespace Spelldawn.Services
     IEnumerator InfoZoom(Card card)
     {
       ClearInfoZoom();
+
       var showOnLeft = Input.mousePosition.x > Screen.width / 2.0;
       var zoomed = InfoCopy(card);
-      
+
       if (zoomed.InfoZoomHighlight != null)
       {
         switch (zoomed.InfoZoomHighlight.HighlightCase)
@@ -262,14 +263,14 @@ namespace Spelldawn.Services
             // TODO: Implement this.
             throw new NotImplementedException();
         }
-      }      
+      }
       
       if (zoomed.SupplementalInfo != null)
       {
         zoomed.SupplementalInfo.Style.Margin = MasonUtil.GroupDip(32f, -120f, 0f, -120f);
         zoomed.SupplementalInfo.Style.AlignItems = showOnLeft ? FlexAlign.FlexStart : FlexAlign.FlexEnd;
       }
-
+      
       var node = MasonUtil.Row("InfoZoom",
         new FlexStyle
         {
@@ -296,13 +297,13 @@ namespace Spelldawn.Services
           }),
         showOnLeft ? zoomed.SupplementalInfo : null
       );
-
+      
       yield return _registry.AssetService.LoadAssetsForNode(node);
-
-
+      
+      
       // Always do this second because LoadAssetsForNode takes 1 frame minimum
       _registry.Studio.SetSubject(zoomed.gameObject);
-
+      
       _registry.DocumentService.RenderInfoZoom(node);
     }
 

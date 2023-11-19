@@ -763,6 +763,13 @@ pub struct ObjectPositionIntoCard {
     #[prost(message, optional, tag = "1")]
     pub card_id: ::core::option::Option<CardIdentifier>,
 }
+/// / An object position which represents being stacked behind another card
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ObjectPositionStackedBehindCard {
+    #[prost(message, optional, tag = "1")]
+    pub card_id: ::core::option::Option<CardIdentifier>,
+}
 /// / An object position for newly-revealed cards, appears above other content
 /// / like the staging area.
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -810,7 +817,7 @@ pub struct ObjectPosition {
     pub sorting_subkey: u32,
     #[prost(
         oneof = "object_position::Position",
-        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22"
+        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
     )]
     pub position: ::core::option::Option<object_position::Position>,
 }
@@ -848,14 +855,16 @@ pub mod object_position {
         #[prost(message, tag = "17")]
         IntoCard(super::ObjectPositionIntoCard),
         #[prost(message, tag = "18")]
-        Revealed(super::ObjectPositionRevealedCards),
+        StackedBehindCard(super::ObjectPositionStackedBehindCard),
         #[prost(message, tag = "19")]
-        Riftcaller(super::ObjectPositionRiftcallers),
+        Revealed(super::ObjectPositionRevealedCards),
         #[prost(message, tag = "20")]
-        BrowserDragTarget(super::ObjectPositionBrowserDragTarget),
+        Riftcaller(super::ObjectPositionRiftcallers),
         #[prost(message, tag = "21")]
-        CardChoiceBrowser(super::ObjectPositionCardChoiceBrowser),
+        BrowserDragTarget(super::ObjectPositionBrowserDragTarget),
         #[prost(message, tag = "22")]
+        CardChoiceBrowser(super::ObjectPositionCardChoiceBrowser),
+        #[prost(message, tag = "23")]
         HandStorage(super::ObjectPositionHandStorage),
     }
 }

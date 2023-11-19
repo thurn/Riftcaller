@@ -16,16 +16,19 @@ use card_helpers::effects::Effects;
 use card_helpers::{costs, delegates, in_play, raids, requirements, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
+use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{
     Ability, ActivatedAbility, CardConfig, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::CardCounter;
+use game_data::card_state::{BanishedByCard, CardCounter, CardPosition, OnPlayState};
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
-use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use game_data::primitives::{
+    BanishEventId, CardSubtype, CardType, GameObjectId, Rarity, School, Side,
+};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
@@ -258,7 +261,19 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
             Ability::new(text::trigger_text(
                 Play,
                 text![Banish, "the top", 3, "cards of your deck"],
-            )),
+            ))
+            .delegate(this::on_played(|g, s, _| {
+                let event_id = BanishEventId(g.info.next_event_id());
+                g.card_mut(s.card_id()).set_on_play_state(OnPlayState::BanishCards(event_id));
+                let cards = mutations::realize_top_of_deck(g, s.side(), 3)?;
+                mutations::set_cards_visible_to(g, &cards, s.side(), true);
+                g.add_animation(|| GameAnimation::DrawCards(s.side(), cards.clone()));
+                mutations::move_cards(
+                    g,
+                    &cards,
+                    CardPosition::Banished(Some(BanishedByCard { source: s.card_id(), event_id })),
+                )
+            })),
             ActivatedAbility::new(
                 costs::sacrifice(),
                 text![

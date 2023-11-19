@@ -26,8 +26,20 @@ use crate::game_actions::CardTarget;
 #[allow(unused_imports)] // Used in Rustdocs
 use crate::history_data::HistoryEvent;
 use crate::primitives::{
-    CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId, RoomLocation, Side,
+    BanishEventId, CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId,
+    RoomLocation, Side,
 };
+
+/// Used to record a card position when one card has been banished by another
+/// card for later retrieval.
+///
+/// When this value is provided, the banished card will be rendered stacked
+/// underneath the `source` card.
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
+pub struct BanishedByCard {
+    pub source: CardId,
+    pub event_id: BanishEventId,
+}
 
 /// Identifies the location of a card during an active game
 #[derive(
@@ -56,6 +68,10 @@ pub enum CardPosition {
     Riftcaller(Side),
     /// Global modifier cards which change the rules of the game
     GameModifier,
+    /// A card has been banished, either temporarily or permanently removed from
+    /// the game. A [BanishedByCard] can be provided to record data around how
+    /// the card was banished for later retrieval.
+    Banished(Option<BanishedByCard>),
 }
 
 impl CardPosition {
@@ -158,6 +174,9 @@ pub enum OnPlayState {
     /// card's ability. For example, "Access a card. You may pay {action point}
     /// to access another card."
     PaidForEnhancement,
+
+    /// The card has banished some number of other cards for later retrieval.
+    BanishCards(BanishEventId),
 }
 
 impl OnPlayState {

@@ -68,8 +68,8 @@ namespace Spelldawn.Game
     [SerializeField] Quaternion _initialDragRotation;
     [SerializeField] ObjectDisplay? _previousParent;
     [SerializeField] GameObject? _contentProtection;
-
     [SerializeField] ObjectDisplay? _containedObjectsDisplay;
+    [SerializeField] CardStackObjectDisplay _cardStackObjectDisplay = null!;
 
     // Minor hack: we want to shift the image down to be centered within the card in the arena, so we store
     // the image position here to restore it later.
@@ -145,6 +145,8 @@ namespace Spelldawn.Game
     public InfoZoomHighlight? InfoZoomHighlight => _infoZoomHighlight;
 
     public ObjectDisplay ContainedObjects => Errors.CheckNotNull(_containedObjectsDisplay);
+
+    public CardStackObjectDisplay CardStackObjectDisplay => _cardStackObjectDisplay;
 
     public Sequence? Render(
       CardView cardView,
@@ -252,7 +254,15 @@ namespace Spelldawn.Game
 
     public Card CloneForDisplay()
     {
-      var result = ComponentUtils.GetComponent<Card>(Instantiate(gameObject));
+      var clone = Instantiate(gameObject);
+      var result = ComponentUtils.GetComponent<Card>(clone);
+      
+      // This was really annoying to debug, but basically making a copy of the object
+      // display creates duplicate ownership of the displayed items and moves them
+      // around, even if you immediately set the reference to null.
+      Destroy(result._cardStackObjectDisplay);
+      Destroy(result._containedObjectsDisplay);
+
       result._cardId = _cardId;
       result._outline.enabled = false;
       result._serverCanPlay = false;
@@ -419,6 +429,12 @@ namespace Spelldawn.Game
 
     public override void MouseUp()
     {
+      if (GameContext.ShouldRenderArenaCard() && _cardStackObjectDisplay)
+      {
+        // Browse stacked cards on click.
+        StartCoroutine(Registry.LongPressCardBrowser.BrowseCards(_cardStackObjectDisplay));        
+      }
+      
       if (_showingArrow)
       {
         Registry.ArrowService.HideArrows();
