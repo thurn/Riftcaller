@@ -92,24 +92,22 @@ namespace Spelldawn.Services
 
       if (action.ActionCase == ClientAction.ActionOneofCase.StandardAction)
       {
-        if (_currentlyHandlingAction != null)
+        if (_currentlyHandlingAction == null)
+        {
+          ApplyImmediateResponse(action.StandardAction);
+        }
+        else if (action.StandardAction.Update != null)
         {
           // I would like to eventually handle multiple concurrent StandardActions, but it requires
           // more robust testing, for example to ensure that multiple optimistic interface updates
           // work with any sequence of mutations & responses. For now we simply ignore button clicks
-          // while an RPC is pending.
-          LogUtils.Log($"Silently dropping StandardAction while handling {_currentlyHandlingAction} with {_actionQueue.Count} queued actions");
-        }
-        else
-        {
-          ApplyImmediateResponse(action.StandardAction);
-          _actionQueue.Enqueue(action);          
+          // while an RPC is pending.          
+          LogUtils.Log("Silently dropping ImmediateResponse while handling " + 
+                       $"{_currentlyHandlingAction} with {_actionQueue.Count} queued actions");
         }
       }
-      else
-      {
-        _actionQueue.Enqueue(action);
-      }
+      
+      _actionQueue.Enqueue(action);
     }
 
     void Update()

@@ -17,6 +17,7 @@ use std::fmt::{self, Display};
 use anyhow::Result;
 use core_ui::prelude::*;
 use database::Database;
+use display::set_display_preference;
 use game_data::animation_tracker::{AnimationState, AnimationTracker};
 use game_data::game_actions::DisplayPreference;
 use game_data::game_state::GameState;
@@ -47,9 +48,16 @@ pub async fn with_game(
     // panels with every response. This is something to revisit in the future if
     // the payload size/database queries become a problem.
     let mut game = fetch_game(database, data.game_id).await?;
+    let user_side = game.player_side(data.player_id)?;
     let mut result = fun(&mut game)?;
     let player = fetch_player(database, data.player_id).await?;
-    add_standard_ui(&mut result, &player, Some(&game), None).await?;
+    add_standard_ui(
+        &mut result,
+        &player,
+        Some(&game),
+        set_display_preference::button(&game, user_side, None),
+    )
+    .await?;
     database.write_game(&game).await?;
     Ok(result)
 }
