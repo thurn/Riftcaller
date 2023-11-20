@@ -15,7 +15,7 @@
 use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
-use game_data::card_state::{CardPosition, CardState, OnPlayState};
+use game_data::card_state::{CardPosition, CardState};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
 use game_data::primitives::{
@@ -223,15 +223,13 @@ fn adapt_position(
         CardPosition::Played(side, target) => played_position(builder, game, side, card_id, target),
         CardPosition::DeckUnknown(..) => None,
         CardPosition::GameModifier => Some(offscreen()),
-        CardPosition::Banished(Some(by_card)) => {
+        CardPosition::Banished(Some(by_card))
+            if game.card(by_card.source).on_play_state().banish_event_id()
+                == Some(by_card.event_id) =>
+        {
             // If this card is currently banished by the banish event of another card,
             // render it stacked underneath that card.
-            if let OnPlayState::BanishCards(event_id) = game.card(by_card.source).on_play_state() {
-                if *event_id == by_card.event_id {
-                    return Some(stacked_behind_card(by_card.source));
-                }
-            }
-            Some(offscreen())
+            Some(stacked_behind_card(by_card.source))
         }
         CardPosition::Banished(..) => Some(offscreen()),
     }

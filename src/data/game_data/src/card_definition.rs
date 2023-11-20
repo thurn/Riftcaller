@@ -463,4 +463,8 @@ impl CardDefinition {
     pub fn is_artifact(&self) -> bool {
         self.card_type == CardType::Artifact
     }
+
+    pub fn is_permanent(&self) -> bool {
+        !self.is_spell()
+    }
 }

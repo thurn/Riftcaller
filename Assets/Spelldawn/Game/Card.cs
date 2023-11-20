@@ -329,12 +329,12 @@ namespace Spelldawn.Game
           _contentProtection.SetActive(true);
         }        
       }
-
+      
       EnableIconsForContext(newContext);
       UpdateRevealedToOpponent(newContext.ShouldRenderArenaCard());
       RenderContinuousDisplayEffect();      
     }
-
+    
     public override bool CanHandleMouseDown()
     {
       if (Registry.CapabilityService.CanInfoZoom(this, GameContext) && _isRevealed)

@@ -23,16 +23,17 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{BanishedByCard, CardCounter, CardPosition, OnPlayState};
-use game_data::game_actions::{ButtonPromptContext, PromptChoice};
+use game_data::game_actions::{ButtonPromptContext, PromptChoice, PromptContext, UnplayedAction};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{
     BanishEventId, CardSubtype, CardType, GameObjectId, Rarity, School, Side,
 };
-use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
+use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use rules::{curses, flags, mana, mutations, CardDefinitionExt};
+use with_error::WithError;
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -281,6 +282,36 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                     text!["Discard the rest"]
                 ],
             )
+            .delegate(this::on_activated(|g, s, _| {
+                let event_id = g
+                    .card(s.card_id())
+                    .last_known_on_play_state()
+                    .banish_event_id()
+                    .with_error(|| "Expected banish_event_id")?;
+
+                let cards = g
+                    .cards(s.side())
+                    .iter()
+                    .filter_map(|card| match card.position() {
+                        CardPosition::Banished(Some(banished))
+                            if banished.event_id == event_id
+                                && card.definition().is_permanent() =>
+                        {
+                            Some(card.id)
+                        }
+                        _ => None,
+                    })
+                    .collect::<Vec<_>>();
+                Effects::new().card_movement_effects(Projectile::Projectiles1(2), &cards).apply(g);
+
+                show_prompt::play_card_browser(
+                    g,
+                    s,
+                    cards,
+                    PromptContext::PlayACard,
+                    UnplayedAction::Discard,
+                )
+            }))
             .build(),
         ],
         config: CardConfig::default(),

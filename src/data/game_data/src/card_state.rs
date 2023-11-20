@@ -141,6 +141,11 @@ impl CardPosition {
     pub fn in_score_pile(&self) -> bool {
         self.kind() == CardPositionKind::Scored
     }
+
+    /// Returns true if this card has been banished
+    pub fn is_banished(&self) -> bool {
+        self.kind() == CardPositionKind::Banished
+    }
 }
 
 /// A counter which can be placed on a card to track some kind of numeric state
@@ -190,6 +195,13 @@ impl OnPlayState {
     pub fn chosen_room(&self) -> Option<RoomId> {
         match self {
             Self::Room(id) => Some(*id),
+            _ => None,
+        }
+    }
+
+    pub fn banish_event_id(&self) -> Option<BanishEventId> {
+        match self {
+            Self::BanishCards(id) => Some(*id),
             _ => None,
         }
     }
@@ -303,6 +315,14 @@ impl CardState {
         } else {
             &OnPlayState::None
         }
+    }
+
+    /// Returns the [OnPlayState] for this card, returning a value
+    /// even if this card is not in play.
+    ///
+    /// See [OnPlayState] for more information.
+    pub fn last_known_on_play_state(&self) -> &OnPlayState {
+        &self.on_play_state
     }
 
     /// Sets a [OnPlayState] for this card.
