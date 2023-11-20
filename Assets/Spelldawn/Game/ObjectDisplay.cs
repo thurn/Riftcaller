@@ -24,7 +24,17 @@ using UnityEngine;
 
 namespace Spelldawn.Game
 {
-  public abstract class ObjectDisplay : Displayable
+  public interface IObjectDisplay
+  {
+    public List<Displayable> AllObjects { get; }
+    public IEnumerator AddObject(Displayable displayable, bool animate = true);
+    public void AddObjectImmediate(Displayable displayable);
+    public void RemoveObject(Displayable displayable, bool animate = true);
+    public void RemoveObjectIfPresent(Displayable displayable, bool animate = true);
+    public MonoBehaviour AsMonoBehaviour();
+  }
+  
+  public abstract class ObjectDisplay : Displayable, IObjectDisplay
   {
     [Space(10)] [Header("Object Display")] [SerializeField]
     List<Displayable> _objects = new();
@@ -37,6 +47,8 @@ namespace Spelldawn.Game
 
     public List<Displayable> AllObjects => new(_objects);
 
+    public MonoBehaviour AsMonoBehaviour() => this;
+    
     protected int ObjectCount => _objects.Count;
 
     protected abstract Registry? Registry { get; }
@@ -103,7 +115,7 @@ namespace Spelldawn.Game
       MarkUpdateRequired(animate);
     }
 
-    /// <summary>Tries to remove an object from this ObjectDisplay, returning true if the object was removed.</summary>
+    /// <summary>Tries to remove an object from this ObjectDisplay</summary>
     public void RemoveObjectIfPresent(Displayable displayable, bool animate = true)
     {
       if (_objects.Contains(displayable))
@@ -172,9 +184,9 @@ namespace Spelldawn.Game
 
       if (!_objects.Contains(displayable))
       {
-        if (displayable.Parent)
+        if (displayable.Parent != null && displayable.Parent.AsMonoBehaviour())
         {
-          displayable.Parent!.RemoveObjectIfPresent(displayable, animate);
+          displayable.Parent.RemoveObjectIfPresent(displayable, animate);
         }
 
         displayable.Parent = this;

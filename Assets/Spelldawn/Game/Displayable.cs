@@ -22,12 +22,12 @@ namespace Spelldawn.Game
 {
   public abstract class Displayable : MonoBehaviour
   {
-    [Header("Displayable")] [SerializeField]
-    ObjectDisplay? _parent;
-
+    [Header("Displayable")]
     [SerializeField] GameContext _gameContext;
 
     [SerializeField] SortingGroup? _sortingGroup;
+
+    IObjectDisplay? _parent;    
 
     /// <summary>Provided by the server, used to order items within a display.</summary>
     public uint SortingKey { get; set; }
@@ -35,7 +35,7 @@ namespace Spelldawn.Game
     /// <summary>Tie-breaker key in the case of sorting key ties.</summary>
     public uint SortingSubkey { get; set; }
 
-    public ObjectDisplay? Parent
+    public IObjectDisplay? Parent
     {
       get => _parent;
       set => _parent = value;

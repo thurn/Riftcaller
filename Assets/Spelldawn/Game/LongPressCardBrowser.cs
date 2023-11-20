@@ -25,11 +25,11 @@ namespace Spelldawn.Game
   public sealed class LongPressCardBrowser : CardBrowser
   {
     [SerializeField] GameObject _closeButton = null!;
-    ObjectDisplay? _display;
+    IObjectDisplay? _display;
 
     protected override BackgroundOverlay BackgroundOverlay => Registry.LongPressOverlay;
 
-    public IEnumerator BrowseCards(ObjectDisplay display)
+    public IEnumerator BrowseCards(IObjectDisplay display)
     {
       var cards = display.AllObjects.OfType<Card>().Select(c => c.CloneForDisplay()).Cast<Displayable>().ToList();
       if (cards.Count == 0)
@@ -49,9 +49,9 @@ namespace Spelldawn.Game
       foreach (var item in AllObjects)
       {
         sequence.Insert(0,
-          item.transform.DOMove(_display!.transform.position, TweenUtils.MoveAnimationDurationSeconds));
+          item.transform.DOMove(_display!.AsMonoBehaviour().transform.position, TweenUtils.MoveAnimationDurationSeconds));
         sequence.Insert(0,
-          item.transform.DOLocalRotate(_display!.transform.rotation.eulerAngles,
+          item.transform.DOLocalRotate(_display!.AsMonoBehaviour().transform.rotation.eulerAngles,
             TweenUtils.MoveAnimationDurationSeconds));
       }
 

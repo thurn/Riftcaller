@@ -66,10 +66,9 @@ namespace Spelldawn.Game
     [SerializeField] Vector3 _dragStartPosition;
     [SerializeField] Vector3 _dragOffset;
     [SerializeField] Quaternion _initialDragRotation;
-    [SerializeField] ObjectDisplay? _previousParent;
     [SerializeField] GameObject? _contentProtection;
     [SerializeField] ObjectDisplay? _containedObjectsDisplay;
-    [SerializeField] CardStackObjectDisplay _cardStackObjectDisplay = null!;
+    [SerializeField] CardStackObjectDisplay? _cardStackObjectDisplay;
 
     // Minor hack: we want to shift the image down to be centered within the card in the arena, so we store
     // the image position here to restore it later.
@@ -80,6 +79,7 @@ namespace Spelldawn.Game
     [FormerlySerializedAs("_referenceWidth")] [SerializeField]
     float _referenceImageWidth;
 
+    IObjectDisplay? _previousParent;
     CardIdentifier? _cardId;
     bool? _serverCanPlay;
     bool? _serverRevealedInArena;
@@ -146,7 +146,8 @@ namespace Spelldawn.Game
 
     public ObjectDisplay ContainedObjects => Errors.CheckNotNull(_containedObjectsDisplay);
 
-    public CardStackObjectDisplay CardStackObjectDisplay => _cardStackObjectDisplay;
+    public IObjectDisplay CardStackObjectDisplay => _cardStackObjectDisplay && _cardStackObjectDisplay != null ?
+      _cardStackObjectDisplay : Registry.OffscreenCards;
 
     public Sequence? Render(
       CardView cardView,
@@ -229,7 +230,7 @@ namespace Spelldawn.Game
       }
       _movementEffect = null;
     }
-
+    
     void Update()
     {
       if (Registry.GlobalGameMode == GlobalGameMode.Default)
@@ -258,11 +259,21 @@ namespace Spelldawn.Game
       var result = ComponentUtils.GetComponent<Card>(clone);
       
       // This was really annoying to debug, but basically making a copy of the object
-      // display creates duplicate ownership of the displayed items and moves them
+      // display creates duplicates of the displayed items and moves them
       // around, even if you immediately set the reference to null.
-      Destroy(result._cardStackObjectDisplay);
-      Destroy(result._containedObjectsDisplay);
+      if (result._cardStackObjectDisplay && result._cardStackObjectDisplay != null)
+      {
+        Destroy(result._cardStackObjectDisplay!.gameObject);
+        result._cardStackObjectDisplay = null;
+      }
 
+      if (result._containedObjectsDisplay && result._containedObjectsDisplay != null)
+      {
+        Destroy(result._containedObjectsDisplay);
+        result._containedObjectsDisplay = null;
+      }
+
+      result.gameObject.name = "[IZ]" + gameObject.name;
       result._cardId = _cardId;
       result._outline.enabled = false;
       result._serverCanPlay = false;
@@ -429,7 +440,7 @@ namespace Spelldawn.Game
 
     public override void MouseUp()
     {
-      if (GameContext.ShouldRenderArenaCard() && _cardStackObjectDisplay)
+      if (GameContext.ShouldRenderArenaCard() && _cardStackObjectDisplay && _cardStackObjectDisplay != null)
       {
         // Browse stacked cards on click.
         StartCoroutine(Registry.LongPressCardBrowser.BrowseCards(_cardStackObjectDisplay));        

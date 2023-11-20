@@ -14,16 +14,59 @@
 
 #nullable enable
 
-using Spelldawn.Services;
+using System.Collections;
+using System.Collections.Generic;
+using Spelldawn.Utils;
+using UnityEngine;
 
 namespace Spelldawn.Game
 {
-  public sealed class CardStackObjectDisplay : StackObjectDisplay
+  public sealed class CardStackObjectDisplay : MonoBehaviour, IObjectDisplay
   {
-    protected override Registry? Registry => null;
+    public List<Displayable> _allObjects = null!;
 
-    public override bool CanHandleMouseDown() => false;
+    public List<Displayable> AllObjects => new(_allObjects);
+    
+    public MonoBehaviour AsMonoBehaviour() => this;
 
-    protected override GameContext DefaultGameContext() => GameContext.BehindArena;
+    public IEnumerator AddObject(Displayable displayable, bool animate = true)
+    {
+      AddObjectImmediate(displayable);
+      yield break;
+    }
+
+    public void AddObjectImmediate(Displayable displayable)
+    {
+      if (!_allObjects.Contains(displayable))
+      {
+        _allObjects.Add(displayable);
+        if (displayable.Parent != null && displayable.Parent.AsMonoBehaviour())
+        {
+          displayable.Parent.RemoveObjectIfPresent(displayable, false);
+        }        
+      }
+
+      displayable.transform.SetParent(transform);
+      displayable.transform.localPosition = Vector3.zero;
+      displayable.Parent = this;
+      displayable.SetGameContext(GameContext.BehindArena);      
+    }
+
+    public void RemoveObject(Displayable displayable, bool animate = true)
+    {
+      var index = _allObjects.FindIndex(c => c == displayable);
+      Errors.CheckNonNegative(index);
+      _allObjects.RemoveAt(index);
+      displayable.Parent = null;
+      displayable.transform.SetParent(null);
+    }
+
+    public void RemoveObjectIfPresent(Displayable displayable, bool animate = true)
+    {
+      if (_allObjects.Contains(displayable))
+      {
+        RemoveObject(displayable, animate);
+      }
+    }
   }
 }

@@ -359,7 +359,7 @@ namespace Spelldawn.Services
 
       _cards.Remove(cardId);
 
-      if (card.Parent)
+      if (card.Parent != null && card.Parent.AsMonoBehaviour())
       {
         var parent = card.Parent;
         parent!.RemoveObjectIfPresent(card, animate: false);

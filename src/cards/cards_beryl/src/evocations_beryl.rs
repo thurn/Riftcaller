@@ -278,7 +278,10 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
             ActivatedAbility::new(
                 costs::sacrifice(),
                 text![
-                    text!["Play a permanent from among those cards, reducing its cost by", Mana(1)],
+                    text![
+                        "Play a permanent from among those cards, reducing its cost by",
+                        Mana(meta.upgrade(1, 4))
+                    ],
                     text!["Discard the rest"]
                 ],
             )
@@ -311,6 +314,9 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                     PromptContext::PlayACard,
                     UnplayedAction::Discard,
                 )
+            }))
+            .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, s, _, cost| {
+                cost.map(|c| c.saturating_sub(s.upgrade(1, 4)))
             }))
             .build(),
         ],

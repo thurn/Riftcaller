@@ -132,6 +132,7 @@ namespace Spelldawn.Services
       ObjectPosition targetPosition,
       bool animate = true)
     {
+      Debug.Log($"MoveGameObject: Moving {displayable} to {targetPosition}");
       displayable.SortingKey = targetPosition.SortingKey;
       displayable.SortingSubkey = targetPosition.SortingSubkey;      
       return ObjectDisplayForPosition(targetPosition).AddObject(displayable, animate);
@@ -161,7 +162,7 @@ namespace Spelldawn.Services
       }
     }
 
-    ObjectDisplay ObjectDisplayForPosition(ObjectPosition position)
+    IObjectDisplay ObjectDisplayForPosition(ObjectPosition position)
     {
       Errors.CheckNotNull(position);
       return position.PositionCase switch
