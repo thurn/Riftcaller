@@ -48,7 +48,7 @@ pub fn handle_game_action(
     user_side: Side,
     action: &GameAction,
 ) -> Result<()> {
-    if action != &GameAction::Undo && game.undo_tracker.is_some() {
+    if !action.is_stateless_action() && game.undo_tracker.is_some() {
         let clone = game.clone();
         if let Some(undo_tracker) = &mut game.undo_tracker {
             undo_tracker.undo = Some(Box::new(clone));
@@ -84,14 +84,16 @@ pub fn handle_game_action(
         GameAction::RaidAction(action) => raid_state::run(game, Some(*action)),
         GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
         GameAction::Undo => handle_undo_action(game, user_side),
+        GameAction::SetDisplayPreference(..) => Ok(()),
     }?;
 
-    if action != &GameAction::Undo {
+    if !action.is_stateless_action() {
         run_state_based_actions(game)?;
+
+        // Clear & store the 'current event' in game history
+        game.history.write_events();
     }
 
-    // Clear & store the 'current event' in game history
-    game.history.write_events();
     Ok(())
 }
 

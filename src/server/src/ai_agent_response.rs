@@ -142,7 +142,7 @@ async fn send_snapshot_to_player(
         return Ok(());
     }
 
-    let rendered = render::render_updates(game, game.player_side(player_id)?)?;
+    let rendered = render::render_updates(game, game.player_side(player_id)?, None)?;
 
     // Insert a minimum delay to make actions understandable
     let mut response = GameResponse::new(context);

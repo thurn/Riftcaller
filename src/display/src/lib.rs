@@ -24,5 +24,6 @@ pub mod interface;
 pub mod play_card_browser;
 pub mod positions;
 pub mod render;
+pub mod set_display_preference;
 pub mod sync;
 pub mod tutorial_display;

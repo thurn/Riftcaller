@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adapters::response_builder::ResponseBuilder;
 use game_data::game_actions::{
-    ActionButtons, ButtonPrompt, ButtonPromptContext, GamePrompt, GameStateAction, PromptChoice,
+    ActionButtons, ButtonPrompt, ButtonPromptContext, DisplayPreference, GamePrompt,
+    GameStateAction, PromptChoice,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
-use game_data::primitives::Side;
 use prompts::prompts;
 use protos::spelldawn::InterfaceMainControls;
 use raid_state::raid_prompt;
@@ -27,7 +28,12 @@ use crate::{button_prompt, card_selector, play_card_browser};
 
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
-pub fn render(game: &GameState, side: Side) -> Option<InterfaceMainControls> {
+pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMainControls> {
+    if builder.state.display_preference == Some(DisplayPreference::ShowArenaView(true)) {
+        return None;
+    }
+
+    let side = builder.user_side;
     let current_prompt = &game.player(side).prompt_queue.get(0);
     if let Some(current) = current_prompt {
         return match current {

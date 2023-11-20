@@ -16,7 +16,7 @@ use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
 use game_data::card_state::{CardPosition, CardState};
-use game_data::game_actions::{BrowserPromptTarget, CardTarget, GamePrompt};
+use game_data::game_actions::{BrowserPromptTarget, CardTarget, DisplayPreference, GamePrompt};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
 use game_data::primitives::{
     AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
@@ -188,16 +188,28 @@ pub fn card_browser_target_position() -> Position {
     Position::BrowserDragTarget(ObjectPositionBrowserDragTarget {})
 }
 
+/// Returns true if the provided `card` has an active position override, e.g.
+/// because it is being displayed in a raid browser or as part of a prompt.
+pub fn has_position_override(
+    builder: &ResponseBuilder,
+    game: &GameState,
+    card: &CardState,
+) -> bool {
+    position_override(builder, game, card).is_some()
+}
+
 /// Calculates the game position in which the provided card should be displayed.
 pub fn calculate(builder: &ResponseBuilder, game: &GameState, card: &CardState) -> ObjectPosition {
     if let Some(position_override) = position_override(builder, game, card) {
-        position_override
-    } else {
-        ObjectPosition {
-            sorting_key: card.sorting_key,
-            position: adapt_position(builder, game, card.id, Some(card.position())),
-            ..ObjectPosition::default()
+        if builder.state.display_preference != Some(DisplayPreference::ShowArenaView(true)) {
+            return position_override;
         }
+    }
+
+    ObjectPosition {
+        sorting_key: card.sorting_key,
+        position: adapt_position(builder, game, card.id, Some(card.position())),
+        ..ObjectPosition::default()
     }
 }
 
@@ -313,18 +325,20 @@ fn non_card(
     id: GameObjectId,
 ) -> Option<ObjectPosition> {
     if let Some(position_override) = non_card_position_override(builder, game, id) {
-        Some(position_override)
-    } else {
-        match id {
-            GameObjectId::Deck(side) => Some(for_sorting_key(0, deck_container(builder, side))),
-            GameObjectId::DiscardPile(side) => {
-                Some(for_sorting_key(0, discard_container(builder, side)))
-            }
-            GameObjectId::Character(side) => {
-                Some(for_sorting_key(0, character_container(builder, side)))
-            }
-            _ => None,
+        if builder.state.display_preference != Some(DisplayPreference::ShowArenaView(true)) {
+            return Some(position_override);
         }
+    }
+
+    match id {
+        GameObjectId::Deck(side) => Some(for_sorting_key(0, deck_container(builder, side))),
+        GameObjectId::DiscardPile(side) => {
+            Some(for_sorting_key(0, discard_container(builder, side)))
+        }
+        GameObjectId::Character(side) => {
+            Some(for_sorting_key(0, character_container(builder, side)))
+        }
+        _ => None,
     }
 }
 
@@ -505,7 +519,9 @@ fn character_facing_direction_for_side(
     side: Side,
 ) -> Option<GameCharacterFacingDirection> {
     if let Some(raid) = &game.raid {
-        if matches!(raid_display_state::build(game), RaidDisplayState::Defenders(_)) {
+        if matches!(raid_display_state::build(game), RaidDisplayState::Defenders(_))
+            && builder.state.display_preference != Some(DisplayPreference::ShowArenaView(true))
+        {
             if side == Side::Champion {
                 return Some(GameCharacterFacingDirection::Right);
             }

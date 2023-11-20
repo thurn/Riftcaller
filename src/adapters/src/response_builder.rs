@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 
+use game_data::game_actions::DisplayPreference;
 use game_data::primitives::Side;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{
@@ -23,15 +24,26 @@ use protos::spelldawn::{
 pub struct ResponseState {
     pub animate: bool,
     pub is_final_update: bool,
+
+    /// User configuration for how this response should be rendered.
+    pub display_preference: Option<DisplayPreference>,
 }
 
+/// Primary builder used to render game state.
+///
+/// Tracks a list of [Command]s to update the game client along with things like
+/// which `Side` we are rendering for.
 pub struct ResponseBuilder {
     pub user_side: Side,
     pub state: ResponseState,
     pub commands: Vec<Command>,
 
     /// Tracks the positions of client cards as of the most recently-seen
-    /// snapshot. Can be used to customize animation behavior.
+    /// snapshot.
+    ///
+    /// This is used to customize animation behavior, mostly in order to not
+    /// move cards to the "display" browser when they're already in another
+    /// similar card browser.
     pub last_snapshot_positions: HashMap<CardIdentifier, ObjectPosition>,
 }
 

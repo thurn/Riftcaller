@@ -45,12 +45,10 @@ namespace Spelldawn.Services
               transform.position.y,
               _registry.ArenaService.RoomsOnBottom ? _roomsBottomZ : _roomsTopZ);
             _registry.MusicService.SetMusicState(MusicState.Raid);
-            _registry.RaidOverlay.Enable(translucent: true);
             _registry.ArenaService.LeftItems.SetGameContext(GameContext.ArenaRaidParticipant);
             break;
           case false when _raidActive:
             _registry.MusicService.SetMusicState(MusicState.Gameplay);
-            _registry.RaidOverlay.Disable();
             _registry.ArenaService.LeftItems.SetGameContext(GameContext.Arena);
             break;
         }

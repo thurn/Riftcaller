@@ -434,9 +434,9 @@ async fn debug_update_game(
         let user_side = game.player_side(data.player_id)?;
         function(game, user_side)?;
 
-        let user_result = render::render_updates(game, user_side)?;
+        let user_result = render::render_updates(game, user_side, None)?;
         let opponent_id = game.player(user_side.opponent()).id;
-        let opponent_commands = render::render_updates(game, user_side.opponent())?;
+        let opponent_commands = render::render_updates(game, user_side.opponent(), None)?;
 
         Ok(GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
             .commands(user_result)

@@ -16,8 +16,8 @@ use adapters::ServerCardId;
 use adventure_data::adventure::TileEntity;
 use anyhow::Result;
 use database::Database;
-use display::render;
-use game_data::game_actions::{self, GameAction};
+use display::{render, set_display_preference};
+use game_data::game_actions::{self, DisplayPreference, GameAction};
 use game_data::game_state::GameState;
 use game_data::primitives::{GameId, Side};
 use player_data::PlayerState;
@@ -50,7 +50,13 @@ pub async fn connect(
         game_id: Some(game.id),
     };
     let mut result = GameResponse::new(client_data).commands(commands);
-    requests::add_standard_ui(&mut result, player, Some(&game)).await?;
+    requests::add_standard_ui(
+        &mut result,
+        player,
+        Some(&game),
+        set_display_preference::button(&game, side, None),
+    )
+    .await?;
     Ok(result)
 }
 
@@ -103,20 +109,34 @@ pub async fn handle_game_action(
         // response, we send an empty response when an AI opponent is playing.
         GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
     } else {
-        let user_result = render::render_updates(&game, user_side)?;
+        let display_preference = display_preference_for_action(action);
+        let user_result = render::render_updates(&game, user_side, display_preference)?;
         let opponent_id = game.player(user_side.opponent()).id;
-        let opponent_commands = render::render_updates(&game, user_side.opponent())?;
+        let opponent_commands = render::render_updates(&game, user_side.opponent(), None)?;
 
         let mut result = GameResponse::new(ClientData::with_game_id(data, Some(game.id)))
             .commands(user_result)
             .opponent_response(opponent_id, opponent_commands);
         let player = requests::fetch_player(database, data.player_id).await?;
-        requests::add_standard_ui(&mut result, &player, Some(&game)).await?;
+        requests::add_standard_ui(
+            &mut result,
+            &player,
+            Some(&game),
+            set_display_preference::button(&game, user_side, display_preference),
+        )
+        .await?;
         result
     };
 
     database.write_game(&game).await?;
     Ok(result)
+}
+
+fn display_preference_for_action(action: &GameAction) -> Option<DisplayPreference> {
+    match action {
+        GameAction::SetDisplayPreference(p) => Some(*p),
+        _ => None,
+    }
 }
 
 pub fn apply_game_action(game: &mut GameState, side: Side, action: &GameAction) -> Result<()> {

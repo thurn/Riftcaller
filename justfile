@@ -52,6 +52,7 @@ protos:
     dotnet clean proto/protos.csproj
     rm -r proto/bin
     rm -r proto/obj
+    cargo +nightly fmt
 
 @dropbox-ignore:
     find . -name '*conflicted*' -delete

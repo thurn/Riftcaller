@@ -62,7 +62,7 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
         main_controls: if builder.state.is_final_update {
             // Only include controls on final update to ensure interface doesn't show
             // previous UI after click.
-            interface::render(game, builder.user_side)
+            interface::render(builder, game)
         } else {
             None
         },
@@ -120,7 +120,7 @@ fn player_view(game: &GameState, side: Side) -> PlayerView {
     }
 }
 
-fn skip_sending_to_client(card: &CardState) -> bool {
+pub fn skip_sending_to_client(card: &CardState) -> bool {
     let hidden = !(card.is_visible_to(Side::Champion) || card.is_visible_to(Side::Overlord));
     let position = card.position().kind();
     position == CardPositionKind::DeckUnknown || (position == CardPositionKind::DeckTop && hidden)

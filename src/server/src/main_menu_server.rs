@@ -28,6 +28,6 @@ pub async fn connect(_: &impl Database, player: &PlayerState) -> Result<GameResp
     commands.push(Panels::open(StandardPanel::MainMenu).into());
     let client_data = ClientData { adventure_id: None, game_id: None };
     let mut result = GameResponse::new(client_data).commands(commands);
-    requests::add_standard_ui(&mut result, player, None).await?;
+    requests::add_standard_ui(&mut result, player, None, None).await?;
     Ok(result)
 }

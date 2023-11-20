@@ -18,6 +18,7 @@ use anyhow::Result;
 use core_ui::prelude::*;
 use database::Database;
 use game_data::animation_tracker::{AnimationState, AnimationTracker};
+use game_data::game_actions::DisplayPreference;
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
 use game_data::primitives::GameId;
@@ -48,7 +49,7 @@ pub async fn with_game(
     let mut game = fetch_game(database, data.game_id).await?;
     let mut result = fun(&mut game)?;
     let player = fetch_player(database, data.player_id).await?;
-    add_standard_ui(&mut result, &player, Some(&game)).await?;
+    add_standard_ui(&mut result, &player, Some(&game), None).await?;
     database.write_game(&game).await?;
     Ok(result)
 }
@@ -62,7 +63,7 @@ pub async fn with_player(
 ) -> Result<GameResponse> {
     let mut player = fetch_player(database, data.player_id).await?;
     let mut result = fun(&mut player)?;
-    add_standard_ui(&mut result, &player, None).await?;
+    add_standard_ui(&mut result, &player, None, None).await?;
     database.write_player(&player).await?;
     Ok(result)
 }
@@ -124,11 +125,15 @@ pub async fn add_standard_ui(
     response: &mut GameResponse,
     player: &PlayerState,
     game: Option<&GameState>,
+    set_display_preference: Option<DisplayPreference>,
 ) -> Result<()> {
     response.insert_command(
         0,
         Command::RenderScreenOverlay(RenderScreenOverlayCommand {
-            node: ScreenOverlay::new(player).game(game).build(),
+            node: ScreenOverlay::new(player)
+                .game(game)
+                .set_display_preference_button(set_display_preference)
+                .build(),
         }),
     );
 

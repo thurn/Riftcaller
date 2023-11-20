@@ -25,7 +25,7 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use game_data::game_actions::GameAction;
+use game_data::game_actions::{DisplayPreference, GameAction};
 use game_data::game_state::GameState;
 use game_data::primitives::{DeckId, Side};
 use game_data::tutorial_data::TutorialMessageKey;
@@ -43,6 +43,7 @@ pub struct ScreenOverlay<'a, 'b> {
     show_deck_button: bool,
     show_coin_count: bool,
     show_menu_button: bool,
+    set_display_preference_button: Option<DisplayPreference>,
 }
 
 impl<'a, 'b> ScreenOverlay<'a, 'b> {
@@ -54,6 +55,7 @@ impl<'a, 'b> ScreenOverlay<'a, 'b> {
             show_deck_button: player.current_activity().kind() == PlayerActivityKind::Adventure,
             show_coin_count: player.current_activity().kind() == PlayerActivityKind::Adventure,
             show_menu_button: player.current_activity().kind() != PlayerActivityKind::None,
+            set_display_preference_button: None,
         }
     }
 
@@ -69,6 +71,14 @@ impl<'a, 'b> ScreenOverlay<'a, 'b> {
 
     pub fn show_deck_button(mut self, show_deck_button: bool) -> Self {
         self.show_deck_button = show_deck_button;
+        self
+    }
+
+    pub fn set_display_preference_button(
+        mut self,
+        set_display_preference_button: Option<DisplayPreference>,
+    ) -> Self {
+        self.set_display_preference_button = set_display_preference_button;
         self
     }
 }
@@ -120,6 +130,7 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
                             ))),
                     )
                     .child(self.game.map(|g| undo_button(g, activity.side())))
+                    .child(self.set_display_preference_button.map(set_display_preference_button))
                     .child(self.show_coin_count.then(|| {
                         self.player.adventure.as_ref().map(|adventure| {
                             Row::new("CoinCount")
@@ -193,4 +204,17 @@ fn undo_button(game: &GameState, side: Option<Side>) -> impl Component {
     } else {
         result
     }
+}
+
+fn set_display_preference_button(display_preference: DisplayPreference) -> impl Component {
+    let icon = match display_preference {
+        DisplayPreference::ShowArenaView(true) => icons::EYE_SLASH,
+        DisplayPreference::ShowArenaView(false) => icons::EYE,
+    };
+
+    IconButton::new(icon)
+        .name(&element_names::UNDO_BUTTON)
+        .button_type(IconButtonType::NavBlue)
+        .layout(Layout::new().margin(Edge::All, 12.px()))
+        .action(GameAction::SetDisplayPreference(display_preference))
 }

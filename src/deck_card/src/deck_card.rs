@@ -133,7 +133,7 @@ impl Component for DeckCard {
         let definition = rules::get(self.name);
         let response_builder = ResponseBuilder::new(
             Side::Champion,
-            ResponseState { animate: false, is_final_update: true },
+            ResponseState { animate: false, is_final_update: true, display_preference: None },
         );
         let context = CardViewContext::Default(definition);
         let card_view = card_sync::card_view(&response_builder, &context);

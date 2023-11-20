@@ -26,6 +26,7 @@ namespace Spelldawn.Game
     [SerializeField] float _cardSize;
     [SerializeField] float _rotation = 270;
     [SerializeField] Registry _registry = null!;
+    [SerializeField] bool _active;    
 
     protected override Registry Registry => _registry;
 
@@ -39,6 +40,21 @@ namespace Spelldawn.Game
 
     protected override Vector3? CalculateObjectRotation(int index, int count) =>
       new Vector3(x: _rotation, y: 0, 0);
+    
+    protected override void OnUpdated()
+    {
+      switch (ObjectCount)
+      {
+        case > 0 when !_active:
+          _registry.RaidOverlay.Enable(translucent: true);
+          _active = true;
+          break;
+        case 0 when _active:
+          _registry.RaidOverlay.Disable();
+          _active = false;
+          break;
+      }
+    }    
 
     void OnDrawGizmosSelected()
     {

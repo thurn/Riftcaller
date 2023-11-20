@@ -34,7 +34,7 @@ pub async fn connect(
     commands.append(&mut adventure_display::render(adventure)?);
     let client_data = ClientData { adventure_id: Some(adventure.id), game_id: None };
     let mut result = GameResponse::new(client_data).commands(commands);
-    requests::add_standard_ui(&mut result, player, None).await?;
+    requests::add_standard_ui(&mut result, player, None, None).await?;
     Ok(result)
 }
 
