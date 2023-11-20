@@ -496,7 +496,6 @@ fn summon_project_during_room_approach() {
         test_constants::STARTING_MANA - test_constants::SUMMON_PROJECT_COST,
         g.user.this_player.mana()
     );
-    g.click(Button::ProceedToAccess);
     g.opponent_click(Button::EndRaid);
 }
 

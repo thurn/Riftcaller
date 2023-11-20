@@ -440,12 +440,12 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
 
 /// Attempt to start all active game state machines to process further actions
 fn run_state_based_actions(game: &mut GameState) -> Result<()> {
-    prompt_monitor::run(game)?;
     deal_damage::run_state_machine(game)?;
     curses::run_state_machine(game)?;
     raid_state::run(game, None)?;
     play_card::run(game)?;
-    activate_ability::run(game)
+    activate_ability::run(game)?;
+    prompt_monitor::run(game)
 }
 
 fn record_prompt_response(game: &mut GameState, prompt: GamePrompt, side: Side, index: usize) {

@@ -141,6 +141,12 @@ pub struct RaidPrompt {
     /// picked becomes the new [RaidStep] for this raid and the state machine
     /// continues.
     pub choices: Vec<RaidChoice>,
+    /// Name of the [RaidStep] which populates the prompt choices here.
+    ///
+    /// Because user actions may modify the set of available raid actions, we
+    /// rerun the raid state machine logic to rebuild the prompt after each user
+    /// action while viewing a raid prompt.
+    pub populated_by: RaidStep,
 }
 
 /// State of an ongoing raid
@@ -155,8 +161,12 @@ impl RaidState {
         Ok(Self::Step(step))
     }
 
-    pub fn prompt(prompt_type: RaidStatus, choices: Vec<RaidChoice>) -> Result<RaidState> {
-        Ok(Self::Prompt(RaidPrompt { status: prompt_type, choices }))
+    pub fn prompt(
+        prompt_type: RaidStatus,
+        populated_by: RaidStep,
+        choices: Vec<RaidChoice>,
+    ) -> Result<RaidState> {
+        Ok(Self::Prompt(RaidPrompt { status: prompt_type, populated_by, choices }))
     }
 }
 

@@ -103,6 +103,8 @@ pub fn initiate_with_callback(
 /// state machine cannot currently advance, this function silently ignores the
 /// run request.
 pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
+    let mut regenerated_prompt = false;
+
     loop {
         if !(game.overlord.prompt_queue.is_empty() && game.champion.prompt_queue.is_empty()) {
             break;
@@ -135,8 +137,18 @@ pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
                     }
                     action = None;
                 }
-                _ => {
-                    break;
+                (RaidState::Prompt(prompt), None) => {
+                    // Discard & regenerate prompt state, in case the set of available
+                    // actions has changed.
+                    if regenerated_prompt {
+                        break;
+                    } else {
+                        let state = RaidState::Step(prompt.populated_by);
+                        if let Some(raid) = &mut game.raid {
+                            raid.state = state;
+                        }
+                        regenerated_prompt = true;
+                    }
                 }
             }
         } else {
@@ -232,6 +244,7 @@ fn begin_raid(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 fn populate_summon_prompt(minion_id: CardId) -> Result<RaidState> {
     RaidState::prompt(
         RaidStatus::Summon,
+        RaidStep::PopulateSummonPrompt(minion_id),
         vec![
             RaidChoice::new(RaidLabel::SummonMinion(minion_id), RaidStep::SummonMinion(minion_id)),
             RaidChoice::new(RaidLabel::DoNotSummonMinion, RaidStep::DoNotSummon(minion_id)),
@@ -263,6 +276,7 @@ fn encounter_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState
 fn populate_encounter_prompt(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
     RaidState::prompt(
         RaidStatus::Encounter,
+        RaidStep::PopulateEncounterPrompt(minion_id),
         game.artifacts()
             .filter(|weapon| combat::can_defeat_target(game, weapon.id, minion_id))
             .map(|weapon| {
@@ -364,6 +378,7 @@ fn populate_approach_prompt(game: &mut GameState) -> Result<RaidState> {
     if flags::overlord_has_instant_speed_actions(game) {
         RaidState::prompt(
             RaidStatus::ApproachRoom,
+            RaidStep::PopulateApproachPrompt,
             vec![RaidChoice::new(RaidLabel::ProceedToAccess, RaidStep::CheckCanAccess)],
         )
     } else {
@@ -432,6 +447,7 @@ fn populate_access_prompt(game: &mut GameState, info: RaidInfo) -> Result<RaidSt
     let can_end = flags::can_take_end_raid_access_phase_action(game, info.raid_id);
     RaidState::prompt(
         RaidStatus::Access,
+        RaidStep::PopulateAccessPrompt,
         game.raid()?
             .accessed
             .iter()
