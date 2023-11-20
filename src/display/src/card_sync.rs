@@ -97,6 +97,11 @@ pub fn activated_ability_cards(
         return result;
     }
 
+    if let Some(GamePrompt::PlayCardBrowser(..)) = game.player(card.side()).prompt_queue.get(0) {
+        // Do not show ability activations while the play card browser is open.
+        return result;
+    }
+
     let definition = rules::get(card.variant);
 
     if card.is_face_down() && card.position().in_play() {
