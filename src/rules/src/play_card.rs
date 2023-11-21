@@ -24,7 +24,7 @@ use game_data::game_actions::{
     UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GamePhase, GameState};
+use game_data::game_state::{GamePhase, GameState, PromptStack};
 use game_data::history_data::HistoryEvent;
 use game_data::primitives::{CardId, CardSubtype, CardType, Side};
 use game_data::state_machines::{PlayCardData, PlayCardStep};
@@ -39,7 +39,7 @@ pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Re
     verify!(game.state_machines.play_card.is_none(), "An action is already being resolved!");
 
     let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
-        game.player(card_id.side).prompt_queue.get(0)
+        game.player(card_id.side).prompt_stack.current()
     {
         InitiatedBy::Ability(prompt.initiated_by)
     } else {
@@ -61,8 +61,8 @@ pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Re
 /// run request.
 pub fn run(game: &mut GameState) -> Result<()> {
     loop {
-        if has_non_play_prompt(&game.overlord.prompt_queue)
-            || has_non_play_prompt(&game.champion.prompt_queue)
+        if has_non_play_prompt(&game.overlord.prompt_stack)
+            || has_non_play_prompt(&game.champion.prompt_stack)
         {
             // We pause the state machine if a player has a prompt. We do *not* pause for
             // the PlayCardBrowser prompt since this would prevent anyone from
@@ -88,9 +88,9 @@ pub fn run(game: &mut GameState) -> Result<()> {
 
 /// Returns true if the provided prompt queue currently contains a prompt which
 /// is *not* the PlayCardBrowser prompt.
-fn has_non_play_prompt(queue: &[GamePrompt]) -> bool {
-    if !queue.is_empty() {
-        !matches!(queue.get(0), Some(GamePrompt::PlayCardBrowser(_)))
+fn has_non_play_prompt(stack: &PromptStack) -> bool {
+    if !stack.is_empty() {
+        !matches!(stack.current(), Some(GamePrompt::PlayCardBrowser(_)))
     } else {
         false
     }
@@ -173,7 +173,7 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
     };
 
     if let Some(p) = prompt {
-        game.player_mut(play_card.card_id.side).prompt_queue.push(p);
+        game.player_mut(play_card.card_id.side).prompt_stack.push(p);
     }
 
     Ok(PlayCardStep::ClearPreviousState)
@@ -220,7 +220,7 @@ pub fn invoke_play_card_browser(
     side: Side,
     card_id: Option<CardId>,
 ) -> Result<()> {
-    if let Some(GamePrompt::PlayCardBrowser(prompt)) = game.player(side).prompt_queue.get(0) {
+    if let Some(GamePrompt::PlayCardBrowser(prompt)) = game.player(side).prompt_stack.current() {
         if let Some(id) = card_id {
             verify!(prompt.cards.contains(&id), "Unexpected prompt card");
         }
@@ -240,7 +240,7 @@ pub fn invoke_play_card_browser(
             }
         }
 
-        game.player_mut(side).prompt_queue.remove(0);
+        game.player_mut(side).prompt_stack.pop();
     }
     Ok(())
 }

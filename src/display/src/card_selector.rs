@@ -47,7 +47,8 @@ pub fn move_target(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let Some(GamePrompt::CardSelector(prompt)) = game.player(builder.user_side).prompt_queue.get(0)
+    let Some(GamePrompt::CardSelector(prompt)) =
+        game.player(builder.user_side).prompt_stack.current()
     else {
         return None;
     };

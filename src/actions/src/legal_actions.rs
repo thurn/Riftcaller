@@ -52,7 +52,7 @@ pub fn evaluate<'a>(
         GamePhase::GameOver { .. } => fail!("Game has ended"),
     }
 
-    if let Some(prompt) = &game.player(side).prompt_queue.get(0) {
+    if let Some(prompt) = &game.player(side).prompt_stack.current() {
         if let GamePrompt::ButtonPrompt(buttons) = prompt {
             return Ok(Box::new(
                 buttons

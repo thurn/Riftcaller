@@ -97,7 +97,7 @@ pub fn activated_ability_cards(
         return result;
     }
 
-    if let Some(GamePrompt::PlayCardBrowser(..)) = game.player(card.side()).prompt_queue.get(0) {
+    if let Some(GamePrompt::PlayCardBrowser(..)) = game.player(card.side()).prompt_stack.current() {
         // Do not show ability activations while the play card browser is open.
         return result;
     }
@@ -571,7 +571,7 @@ fn card_targeting<T>(
 fn outline_color(context: &CardViewContext) -> Option<FlexColor> {
     if let CardViewContext::Game(_, game, card) = context {
         if let Some(GamePrompt::PlayCardBrowser(browser)) =
-            &game.player(card.side()).prompt_queue.get(0)
+            &game.player(card.side()).prompt_stack.current()
         {
             if browser.cards.contains(&card.id) {
                 return Some(design::PLAY_CARD_BROWSER_OUTLINE);

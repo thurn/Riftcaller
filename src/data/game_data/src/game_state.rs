@@ -57,6 +57,34 @@ pub struct ManaState {
     pub specific_raid_mana: Option<SpecificRaidMana>,
 }
 
+/// A standard stack data structure for storing [GamePrompt]s.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct PromptStack {
+    stack: Vec<GamePrompt>,
+}
+
+impl PromptStack {
+    pub fn is_empty(&self) -> bool {
+        self.stack.is_empty()
+    }
+
+    pub fn push(&mut self, prompt: GamePrompt) {
+        self.stack.push(prompt);
+    }
+
+    pub fn current(&self) -> Option<&GamePrompt> {
+        self.stack.last()
+    }
+
+    pub fn current_mut(&mut self) -> Option<&mut GamePrompt> {
+        self.stack.last_mut()
+    }
+
+    pub fn pop(&mut self) -> Option<GamePrompt> {
+        self.stack.pop()
+    }
+}
+
 /// State of a player within a game, containing their score and available
 /// resources
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -73,12 +101,13 @@ pub struct GamePlayerData {
     /// back & card frame assets get shown.
     pub schools: Vec<School>,
 
-    /// A queue of choices this player is facing related to game choices.
+    /// A stack of choices this player is facing related to game choices.
     ///
-    /// Choices are resolved in a first-in, first-out manner, i.e. the prompt at
-    /// index 0 is presented to the user first. All prompts here take precedence
-    /// over choices deriving from game rules such as raid actions.
-    pub prompt_queue: Vec<GamePrompt>,
+    /// Choices are resolved in a last-in, first-out manner, i.e. the prompt
+    /// which has been most recently added is shown to the user first. All
+    /// prompts here take precedence over choices deriving from game rules
+    /// such as raid actions.
+    pub prompt_stack: PromptStack,
 
     /// Storage area for cards this player has selected. Sometimes we show
     /// multi-step prompts like "select 2 artifacts" and need a place to store
@@ -99,7 +128,7 @@ impl GamePlayerData {
             leylines: 0,
             bonus_points: 0,
             schools,
-            prompt_queue: vec![],
+            prompt_stack: PromptStack::default(),
             prompt_selected_cards: vec![],
         }
     }

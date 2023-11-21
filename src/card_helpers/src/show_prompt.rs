@@ -31,7 +31,7 @@ pub fn with_context_and_choices(
     choices: Vec<PromptChoice>,
 ) {
     game.player_mut(side.side())
-        .prompt_queue
+        .prompt_stack
         .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: Some(context), choices }))
 }
 
@@ -39,7 +39,7 @@ pub fn with_context_and_choices(
 /// `choices`.
 pub fn with_choices(game: &mut GameState, side: impl HasSide, choices: Vec<PromptChoice>) {
     game.player_mut(side.side())
-        .prompt_queue
+        .prompt_stack
         .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: None, choices }))
 }
 
@@ -52,7 +52,7 @@ pub fn play_card_browser(
 ) -> Result<()> {
     let side = scope.side();
     game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards.clone()));
-    game.player_mut(side).prompt_queue.push(GamePrompt::PlayCardBrowser(PlayCardBrowser {
+    game.player_mut(side).prompt_stack.push(GamePrompt::PlayCardBrowser(PlayCardBrowser {
         context: Some(context),
         initiated_by: scope.ability_id(),
         cards,
@@ -64,9 +64,9 @@ pub fn play_card_browser(
 /// Show a priority window prompt if one is not already displayed. This prompt
 /// allows a player to activate abilities when they otherwise could not.
 pub fn priority_window(game: &mut GameState, scope: Scope) {
-    if let Some(GamePrompt::PriorityPrompt) = game.player(scope.side()).prompt_queue.get(0) {
+    if let Some(GamePrompt::PriorityPrompt) = game.player(scope.side()).prompt_stack.current() {
         return;
     }
 
-    game.player_mut(scope.side()).prompt_queue.push(GamePrompt::PriorityPrompt);
+    game.player_mut(scope.side()).prompt_stack.push(GamePrompt::PriorityPrompt);
 }

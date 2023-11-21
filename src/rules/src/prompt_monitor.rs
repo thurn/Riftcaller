@@ -37,7 +37,7 @@ pub fn run(game: &mut GameState) -> Result<()> {
 }
 
 fn run_for_side(game: &mut GameState, side: Side) -> Result<()> {
-    let Some(GamePrompt::ButtonPrompt(button_prompt)) = game.player(side).prompt_queue.get(0)
+    let Some(GamePrompt::ButtonPrompt(button_prompt)) = game.player(side).prompt_stack.current()
     else {
         return Ok(());
     };
@@ -50,8 +50,9 @@ fn run_for_side(game: &mut GameState, side: Side) -> Result<()> {
         .map(|(i, _)| i)
         .collect::<HashSet<_>>();
     if !indices_to_remove.is_empty() {
-        game.player_mut(side).prompt_queue[0] =
-            GamePrompt::ButtonPrompt(remove_choice_indices(button_prompt, indices_to_remove));
+        let new = GamePrompt::ButtonPrompt(remove_choice_indices(button_prompt, indices_to_remove));
+        game.player_mut(side).prompt_stack.pop();
+        game.player_mut(side).prompt_stack.push(new);
     }
 
     Ok(())

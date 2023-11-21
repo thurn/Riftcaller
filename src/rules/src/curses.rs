@@ -45,7 +45,7 @@ pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
 /// Run the deal damage state machine, if needed.
 pub fn run_state_machine(game: &mut GameState) -> Result<()> {
     loop {
-        if !(game.overlord.prompt_queue.is_empty() & game.champion.prompt_queue.is_empty()) {
+        if !(game.overlord.prompt_stack.is_empty() & game.champion.prompt_stack.is_empty()) {
             break;
         }
 

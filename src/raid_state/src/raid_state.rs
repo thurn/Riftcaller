@@ -106,7 +106,7 @@ pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
     let mut regenerated_prompt = false;
 
     loop {
-        if !(game.overlord.prompt_queue.is_empty() && game.champion.prompt_queue.is_empty()) {
+        if !(game.overlord.prompt_stack.is_empty() && game.champion.prompt_stack.is_empty()) {
             break;
         }
 

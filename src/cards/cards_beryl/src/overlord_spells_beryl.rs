@@ -46,19 +46,7 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
             Some(Ability::new_with_delegate(
                 text!["Swap a scheme in your score area with one in the Champion's score area"],
                 this::on_played(|g, s, _| {
-                    show_prompt::with_context_and_choices(
-                        g,
-                        s,
-                        ButtonPromptContext::CardToGiveToOpponent,
-                        g.score_area(Side::Overlord)
-                            .filter(|c| c.definition().is_scheme())
-                            .map(|c| {
-                                PromptChoice::new()
-                                    .effect(GameEffect::SelectCardForPrompt(s.side(), c.id))
-                                    .anchor_card(c.id)
-                            })
-                            .collect(),
-                    );
+                    // Note that second option is shown first on prompt stack
 
                     show_prompt::with_context_and_choices(
                         g,
@@ -69,6 +57,20 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
                             .map(|c| {
                                 PromptChoice::new()
                                     .effect(GameEffect::SwapWithSelected(s.side(), c.id))
+                                    .anchor_card(c.id)
+                            })
+                            .collect(),
+                    );
+
+                    show_prompt::with_context_and_choices(
+                        g,
+                        s,
+                        ButtonPromptContext::CardToGiveToOpponent,
+                        g.score_area(Side::Overlord)
+                            .filter(|c| c.definition().is_scheme())
+                            .map(|c| {
+                                PromptChoice::new()
+                                    .effect(GameEffect::SelectCardForPrompt(s.side(), c.id))
                                     .anchor_card(c.id)
                             })
                             .collect(),

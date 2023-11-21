@@ -68,7 +68,7 @@ pub fn face_up_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 ///      this card.
 pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -> bool {
     if let Some(GamePrompt::PlayCardBrowser(browser)) =
-        game.player(card_id.side).prompt_queue.get(0)
+        game.player(card_id.side).prompt_stack.current()
     {
         if browser.cards.contains(card_id) && browser.initiated_by.card_id == scope.card_id() {
             return true;

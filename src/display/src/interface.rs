@@ -34,7 +34,7 @@ pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMa
     }
 
     let side = builder.user_side;
-    let current_prompt = &game.player(side).prompt_queue.get(0);
+    let current_prompt = &game.player(side).prompt_stack.current();
     if let Some(current) = current_prompt {
         return match current {
             GamePrompt::ButtonPrompt(prompt) => button_prompt::controls(game, side, prompt),

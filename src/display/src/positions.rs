@@ -368,7 +368,7 @@ fn prompt_position_override(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let current_prompt = game.player(builder.user_side).prompt_queue.get(0)?;
+    let current_prompt = game.player(builder.user_side).prompt_stack.current()?;
 
     match current_prompt {
         GamePrompt::ButtonPrompt(prompt) => {
@@ -404,7 +404,7 @@ fn opponent_prompt_position_override(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let current_prompt = game.player(builder.user_side.opponent()).prompt_queue.get(0)?;
+    let current_prompt = game.player(builder.user_side.opponent()).prompt_stack.current()?;
     if let GamePrompt::ButtonPrompt(prompt) = current_prompt {
         if prompt.context.as_ref().and_then(|c| c.associated_card()) == Some(card.id) {
             return Some(for_card(card, card_browser()));
@@ -419,7 +419,7 @@ fn non_card_position_override(
     game: &GameState,
     id: GameObjectId,
 ) -> Option<ObjectPosition> {
-    let current_prompt = game.player(builder.user_side).prompt_queue.get(0);
+    let current_prompt = game.player(builder.user_side).prompt_stack.current();
     if let Some(GamePrompt::CardSelector(browser)) = current_prompt {
         let target = match browser.target {
             BrowserPromptTarget::DiscardPile => GameObjectId::DiscardPile(builder.user_side),
