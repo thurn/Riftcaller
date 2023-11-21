@@ -278,7 +278,7 @@ pub fn test_weapon_4_attack_12_boost(metadata: CardMetadata) -> CardDefinition {
 
 pub fn test_weapon_abyssal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestWeaponAbyssal,
+        name: CardName::TestAstralWeapon,
         subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
@@ -292,7 +292,7 @@ pub fn test_weapon_abyssal(metadata: CardMetadata) -> CardDefinition {
 
 pub fn test_weapon_infernal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestWeaponInfernal,
+        name: CardName::TestInfernalWeapon,
         subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()
@@ -306,7 +306,7 @@ pub fn test_weapon_infernal(metadata: CardMetadata) -> CardDefinition {
 
 pub fn test_weapon_mortal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestWeaponMortal,
+        name: CardName::TestMortalWeapon,
         subtypes: vec![CardSubtype::Weapon],
         abilities: vec![abilities::encounter_boost()],
         config: CardConfigBuilder::new()

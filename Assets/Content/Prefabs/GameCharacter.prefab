@@ -2018,7 +2018,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d683b6b0bfa7473a89e1d9b48b6e65e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _parent: {fileID: 0}
   _gameContext: 0
   _sortingGroup: {fileID: 1406362785993371206}
   _objects: []

@@ -16,6 +16,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Spelldawn.Utils;
 using UnityEngine;
 
@@ -31,8 +32,21 @@ namespace Spelldawn.Game
 
     public IEnumerator AddObject(Displayable displayable, bool animate = true)
     {
-      AddObjectImmediate(displayable);
-      yield break;
+      if (animate && !_allObjects.Contains(displayable))
+      {
+        yield return TweenUtils.Sequence("CardStack")
+          .Insert(0, displayable.transform.DOMove(transform.position, TweenUtils.MoveAnimationDurationSeconds))
+          .Insert(0, displayable.transform.DOScale(0.1f * Vector3.one, TweenUtils.MoveAnimationDurationSeconds))
+          .InsertCallback(TweenUtils.MoveAnimationDurationSeconds, () =>
+          {
+            AddObjectImmediate(displayable);
+          })
+          .WaitForCompletion();
+      }
+      else
+      {
+        AddObjectImmediate(displayable);
+      }
     }
 
     public void AddObjectImmediate(Displayable displayable)
@@ -48,6 +62,7 @@ namespace Spelldawn.Game
 
       displayable.transform.SetParent(transform);
       displayable.transform.localPosition = Vector3.zero;
+      displayable.transform.localScale = Vector3.one;      
       displayable.Parent = this;
       displayable.SetGameContext(GameContext.BehindArena);      
     }

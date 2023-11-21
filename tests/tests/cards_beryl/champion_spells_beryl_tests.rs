@@ -21,17 +21,16 @@ use test_utils::*;
 #[test]
 fn restoration() {
     let cost = 1;
-    let mut g = TestGame::new(
-        TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
-    )
-    .build();
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
+            .build();
     assert!(g.user.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
-    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponAbyssal);
+    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
+    let id = g.user.cards.hand().find_card_id(CardName::TestAstralWeapon);
     g.play_card(id, g.user_id(), None);
     assert!(g.user.cards.hand().is_empty());
-    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestWeaponAbyssal]);
+    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestAstralWeapon]);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST);
 }
 
@@ -45,44 +44,41 @@ fn restoration_no_targets() {
 
 #[test]
 fn restoration_last_action_point() {
-    let mut g = TestGame::new(
-        TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
-    )
-    .actions(1)
-    .build();
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
+            .actions(1)
+            .build();
     g.create_and_play(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
-    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponAbyssal);
+    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
+    let id = g.user.cards.hand().find_card_id(CardName::TestAstralWeapon);
     g.play_card(id, g.user_id(), None);
     assert!(g.has(Button::EndTurn));
 }
 
 #[test]
 fn restoration_cannot_take_other_action() {
-    let mut g = TestGame::new(
-        TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
-    )
-    .build();
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
+            .build();
     assert!(g.user.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
+    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
     assert!(g.draw_card_with_result().is_err());
 }
 
 #[test]
 fn restoration_upgraded() {
     let (cost, reduction) = (1, 2);
-    let mut g = TestGame::new(
-        TestSide::new(Side::Champion).in_discard_face_up(CardName::TestWeaponAbyssal),
-    )
-    .build();
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
+            .build();
     assert!(g.user.cards.artifacts().is_empty());
     g.create_and_play_upgraded(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestWeaponAbyssal]);
-    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponAbyssal);
+    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
+    let id = g.user.cards.hand().find_card_id(CardName::TestAstralWeapon);
     g.play_card(id, g.user_id(), None);
     assert!(g.user.cards.hand().is_empty());
-    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestWeaponAbyssal]);
+    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestAstralWeapon]);
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST + reduction

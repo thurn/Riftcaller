@@ -132,7 +132,6 @@ namespace Spelldawn.Services
       ObjectPosition targetPosition,
       bool animate = true)
     {
-      Debug.Log($"MoveGameObject: Moving {displayable} to {targetPosition}");
       displayable.SortingKey = targetPosition.SortingKey;
       displayable.SortingSubkey = targetPosition.SortingSubkey;      
       return ObjectDisplayForPosition(targetPosition).AddObject(displayable, animate);

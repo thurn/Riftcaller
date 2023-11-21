@@ -27,7 +27,7 @@ use game_data::game_actions::{ButtonPromptContext, PromptChoice, PromptContext, 
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
 use game_data::primitives::{
-    BanishEventId, CardSubtype, CardType, GameObjectId, Rarity, School, Side,
+    BanishEventId, CardId, CardSubtype, CardType, GameObjectId, Rarity, School, Side,
 };
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
@@ -292,25 +292,27 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                     .banish_event_id()
                     .with_error(|| "Expected banish_event_id")?;
 
-                let cards = g
+                let (permanents, spells): (Vec<CardId>, Vec<CardId>) = g
                     .cards(s.side())
                     .iter()
                     .filter_map(|card| match card.position() {
-                        CardPosition::Banished(Some(banished))
-                            if banished.event_id == event_id
-                                && card.definition().is_permanent() =>
-                        {
+                        CardPosition::Banished(Some(banished)) if banished.event_id == event_id => {
                             Some(card.id)
                         }
                         _ => None,
                     })
-                    .collect::<Vec<_>>();
-                Effects::new().card_movement_effects(Projectile::Projectiles1(2), &cards).apply(g);
+                    .partition(|id| g.card(*id).definition().is_permanent());
+
+                mutations::move_cards(g, &spells, CardPosition::DiscardPile(s.side()))?;
+
+                Effects::new()
+                    .card_movement_effects(Projectile::Projectiles1(2), &permanents)
+                    .apply(g);
 
                 show_prompt::play_card_browser(
                     g,
                     s,
-                    cards,
+                    permanents,
                     PromptContext::PlayACard,
                     UnplayedAction::Discard,
                 )

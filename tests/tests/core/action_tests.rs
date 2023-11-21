@@ -785,7 +785,7 @@ fn undo_gain_mana() {
 #[test]
 fn undo_play_card() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.create_and_play(CardName::TestWeaponAbyssal);
+    g.create_and_play(CardName::TestAstralWeapon);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - test_constants::WEAPON_COST);
     assert_eq!(g.me().actions(), 3);
     g.click(Button::Undo);

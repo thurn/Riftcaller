@@ -344,10 +344,10 @@ fn phase_door_defender() {
                 .face_up_defender(RoomId::Crypts, CardName::TestInfernalMinion),
         )
         .build();
-    g.create_and_play(CardName::TestWeaponInfernal);
+    g.create_and_play(CardName::TestInfernalWeapon);
     let id = g.create_and_play(CardName::PhaseDoor);
     g.activate_ability(id, 0);
-    g.click_card_name(CardName::TestWeaponInfernal);
+    g.click_card_name(CardName::TestInfernalWeapon);
     g.click(Button::Score);
 }
 

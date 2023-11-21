@@ -113,9 +113,9 @@ fn temporal_stalker_defeat() {
     g.add_to_hand(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TemporalStalker);
     g.set_up_minion_combat_with_action(|g| {
-        g.create_and_play(CardName::TestWeaponAbyssal);
+        g.create_and_play(CardName::TestAstralWeapon);
     });
-    g.click_on(g.opponent_id(), "Test Weapon");
+    g.click_on(g.opponent_id(), "Test Astral Weapon");
     assert_eq!(1, g.user.cards.hand().len());
     assert_eq!(
         vec!["Temporal Stalker"],
@@ -132,9 +132,9 @@ fn shadow_lurker_outer_room() {
     let id = g.create_and_play(CardName::ShadowLurker);
     assert_eq!("4", g.user.get_card(id).bottom_right_icon());
     g.set_up_minion_combat_with_action(|g| {
-        g.create_and_play(CardName::TestWeaponAbyssal);
+        g.create_and_play(CardName::TestAstralWeapon);
     });
-    g.click_on(g.opponent_id(), "Test Weapon");
+    g.click_on(g.opponent_id(), "Test Astral Weapon");
     assert_eq!(test_constants::STARTING_MANA - 5, g.opponent.this_player.mana());
 }
 

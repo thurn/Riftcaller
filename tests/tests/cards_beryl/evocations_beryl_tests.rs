@@ -218,3 +218,102 @@ pub fn planar_sanctuary_activate_after_damage() {
     assert!(!g.me().can_take_action());
     assert!(g.opponent.this_player.can_take_action());
 }
+
+#[test]
+pub fn knowledge_of_the_beyond() {
+    let (cost, reduction) = (0, 1);
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion)
+            .deck_top(CardName::TestSacrificeDrawCardArtifact)
+            .deck_top(CardName::TestEvocation),
+    )
+    .build();
+
+    let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    g.activate_ability(id, 1);
+    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestSacrificeDrawCardArtifact);
+    g.play_card(artifact_id, g.user_id(), None);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA - cost - (test_constants::ARTIFACT_COST - reduction)
+    );
+    assert!(g.user.cards.discard_pile().contains_card(CardName::KnowledgeOfTheBeyond));
+    assert!(g.user.cards.discard_pile().contains_card(CardName::TestEvocation));
+    assert!(g.user.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
+}
+
+#[test]
+pub fn knowledge_of_the_beyond_activate_for_weapon_during_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+
+    let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 1);
+    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    g.play_card(artifact_id, g.user_id(), None);
+    g.click_card_name(CardName::TestMortalWeapon);
+    assert!(g.user.data.raid_active());
+    g.click(Button::EndRaid);
+}
+
+#[test]
+pub fn knowledge_of_the_beyond_activate_during_access() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon))
+        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
+        .build();
+
+    let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 1);
+    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    g.play_card(artifact_id, g.user_id(), None);
+    assert!(g.user.cards.artifacts().contains_card(CardName::TestMortalWeapon));
+    g.click(Button::Score);
+}
+
+#[test]
+pub fn knowledge_of_the_beyond_no_hits() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion)
+            .deck_top(CardName::TestChampionSpell)
+            .deck_top(CardName::TestChampionSpell)
+            .deck_top(CardName::TestChampionSpell)
+            .hand_size(5),
+    )
+    .build();
+
+    // You can still activate it with no hits to e.g. put the cards into your
+    // discard pile
+    let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    g.activate_ability(id, 1);
+    assert_eq!(g.user.cards.hand().len(), 0);
+    g.click(Button::SkipPlayingCard);
+    assert_eq!(g.user.cards.discard_pile().len(), 4);
+}
+
+// #[test]
+// pub fn knowledge_of_the_beyond_activate_after_planar_sanctuary() {
+//     let mut g = TestGame::new(
+//         TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon).
+// hand_size(5),     )
+//     .build();
+//     let knowledge_of_the_beyond =
+// g.create_and_play(CardName::KnowledgeOfTheBeyond);     let planar_sanctuary =
+// g.create_and_play(CardName::PlanarSanctuary);
+//     g.pass_turn(Side::Champion);
+//     g.create_and_play(CardName::TestScheme1_10);
+//     g.progress_room(test_constants::ROOM_ID);
+//     g.create_and_play(CardName::TestSpellDeal1Damage);
+//     g.activate_ability(knowledge_of_the_beyond, 1);
+//     let artifact_id =
+// g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+//     g.play_card(artifact_id, g.user_id(), None);
+//     assert!(g.user.cards.artifacts().
+// contains_card(CardName::TestMortalWeapon));
+//     g.click(Button::ClosePriorityPrompt);
+// }
