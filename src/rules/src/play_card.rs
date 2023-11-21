@@ -61,8 +61,8 @@ pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Re
 /// run request.
 pub fn run(game: &mut GameState) -> Result<()> {
     loop {
-        if has_non_play_prompt(&game.overlord.prompt_stack)
-            || has_non_play_prompt(&game.champion.prompt_stack)
+        if has_play_blocking_prompt(&game.overlord.prompt_stack)
+            || has_play_blocking_prompt(&game.champion.prompt_stack)
         {
             // We pause the state machine if a player has a prompt. We do *not* pause for
             // the PlayCardBrowser prompt since this would prevent anyone from
@@ -87,13 +87,9 @@ pub fn run(game: &mut GameState) -> Result<()> {
 }
 
 /// Returns true if the provided prompt queue currently contains a prompt which
-/// is *not* the PlayCardBrowser prompt.
-fn has_non_play_prompt(stack: &PromptStack) -> bool {
-    if !stack.is_empty() {
-        !matches!(stack.current(), Some(GamePrompt::PlayCardBrowser(_)))
-    } else {
-        false
-    }
+/// should block the "Play Card" action
+fn has_play_blocking_prompt(stack: &PromptStack) -> bool {
+    matches!(stack.current(), Some(GamePrompt::ButtonPrompt(..)))
 }
 
 fn evaluate_play_step(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {

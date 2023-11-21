@@ -229,7 +229,7 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }))
             .build(),
-            Ability::new(text!["You may activate this card after being cursed or damaged"])
+            Ability::new(text!["You may activate abilities after being cursed or damaged"])
                 .delegate(in_play::on_curse(|g, s, _| {
                     if g.card(s.card_id()).counters(CardCounter::PowerCharges) > 0 {
                         show_prompt::priority_window(g, s);

@@ -296,24 +296,95 @@ pub fn knowledge_of_the_beyond_no_hits() {
     assert_eq!(g.user.cards.discard_pile().len(), 4);
 }
 
-// #[test]
-// pub fn knowledge_of_the_beyond_activate_after_planar_sanctuary() {
-//     let mut g = TestGame::new(
-//         TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon).
-// hand_size(5),     )
-//     .build();
-//     let knowledge_of_the_beyond =
-// g.create_and_play(CardName::KnowledgeOfTheBeyond);     let planar_sanctuary =
-// g.create_and_play(CardName::PlanarSanctuary);
-//     g.pass_turn(Side::Champion);
-//     g.create_and_play(CardName::TestScheme1_10);
-//     g.progress_room(test_constants::ROOM_ID);
-//     g.create_and_play(CardName::TestSpellDeal1Damage);
-//     g.activate_ability(knowledge_of_the_beyond, 1);
-//     let artifact_id =
-// g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
-//     g.play_card(artifact_id, g.user_id(), None);
-//     assert!(g.user.cards.artifacts().
-// contains_card(CardName::TestMortalWeapon));
-//     g.click(Button::ClosePriorityPrompt);
-// }
+#[test]
+pub fn knowledge_of_the_beyond_activate_planar_sanctuary() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon).hand_size(5),
+    )
+    .build();
+    let knowledge_of_the_beyond = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    g.create_and_play(CardName::PlanarSanctuary);
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.activate_ability(knowledge_of_the_beyond, 1);
+    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    g.play_card(artifact_id, g.user_id(), None);
+    assert!(g.user.cards.artifacts().contains_card(CardName::TestMortalWeapon));
+    assert!(g.user.cards.artifacts().find_card(CardName::TestMortalWeapon).is_face_up());
+    g.click(Button::ClosePriorityPrompt);
+}
+
+#[test]
+pub fn knowledge_of_the_beyond_activate_planar_sanctuary_first() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon).hand_size(5),
+    )
+    .build();
+    let knowledge_of_the_beyond = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    let planar_sanctuary = g.create_and_play(CardName::PlanarSanctuary);
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.activate_ability(planar_sanctuary, 1);
+    g.activate_ability(knowledge_of_the_beyond, 1);
+    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    g.play_card(artifact_id, g.user_id(), None);
+    assert!(g.user.cards.artifacts().contains_card(CardName::TestMortalWeapon));
+    assert!(g.user.cards.artifacts().find_card(CardName::TestMortalWeapon).is_face_up());
+    g.click(Button::ClosePriorityPrompt);
+}
+
+#[test]
+pub fn knowledge_of_the_beyond_card_target_with_foebane() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::Foebane))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+
+    let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 1);
+    let foebane = g.user.cards.hand().find_card_id(CardName::Foebane);
+    g.play_card(foebane, g.user_id(), test_helpers::target_room(RoomId::Vault));
+    g.click(Button::ChooseOnPlay);
+
+    // This is a bit weird, but basically Foebane triggers during the approach step,
+    // which is what allows it to by pass "on encounter" abilities, so you can't put
+    // it into play and then use it immediately during an encounter. We could prompt
+    // *again* to use it on encounter but that would be very annoying.
+    assert!(!g.has(Button::Evade));
+}
+
+#[test]
+pub fn knowledge_of_the_beyond_shield_of_the_flames_evade() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Champion)
+            .deck_top(CardName::ShieldOfTheFlames)
+            .deck_top(CardName::TestSacrificeDrawCardArtifact),
+    )
+    .opponent(
+        TestSide::new(Side::Overlord).face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+    )
+    .build();
+
+    let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 1);
+    let shield = g.user.cards.hand().find_card_id(CardName::ShieldOfTheFlames);
+    g.play_card(shield, g.user_id(), None);
+
+    // Unlike with Foebane you *can* evade a minion with Shield of the Flames
+    // because this ability happens *during* an encounter and does not bypass
+    // encounter triggers.
+    g.activate_ability(shield, 0);
+    assert!(g.user.cards.discard_pile().contains_card(CardName::ShieldOfTheFlames));
+    assert!(g.user.cards.discard_pile().contains_card(CardName::KnowledgeOfTheBeyond));
+    assert!(g.user.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
+    assert!(g.user.data.raid_active());
+    g.click(Button::EndRaid);
+}

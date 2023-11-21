@@ -551,7 +551,7 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
         abilities: vec![
             abilities::choose_a_minion_in_target_room(),
             Ability::new_with_delegate(
-                text!["You may evade that minion by paying its shield cost"],
+                text!["You may evade that minion before encountering it by paying its shield cost"],
                 in_play::on_minion_approached(|g, s, event| {
                     if Some(event.data) == g.card(s.card_id()).on_play_state().chosen_card() {
                         let shield = queries::shield(g, event.data, None);
