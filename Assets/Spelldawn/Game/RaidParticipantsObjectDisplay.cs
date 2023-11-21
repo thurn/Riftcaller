@@ -31,7 +31,13 @@ namespace Spelldawn.Game
     protected override Registry Registry => _registry;
 
     protected override GameContext DefaultGameContext() => GameContext.RaidParticipant;
-
+    
+    protected override void OnStart()
+    {
+      base.OnStart();
+      _registry.RaidOverlay.AddObjectDisplay(this);
+    }    
+    
     protected override Vector3 CalculateObjectPosition(int index, int count) =>
       transform.position + new Vector3(LinearObjectDisplay.CalculateOffset(
         _width, _initialSpacing, _cardSize, index, count,
@@ -40,21 +46,6 @@ namespace Spelldawn.Game
 
     protected override Vector3? CalculateObjectRotation(int index, int count) =>
       new Vector3(x: _rotation, y: 0, 0);
-    
-    protected override void OnUpdated()
-    {
-      switch (ObjectCount)
-      {
-        case > 0 when !_active:
-          _registry.RaidOverlay.Enable(translucent: true);
-          _active = true;
-          break;
-        case 0 when _active:
-          _registry.RaidOverlay.Disable();
-          _active = false;
-          break;
-      }
-    }    
 
     void OnDrawGizmosSelected()
     {

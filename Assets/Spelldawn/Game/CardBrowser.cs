@@ -20,23 +20,12 @@ namespace Spelldawn.Game
 {
   public class CardBrowser : CurveObjectDisplay
   {
-    [SerializeField] bool _active;
-
     protected virtual BackgroundOverlay BackgroundOverlay => Registry.InterfaceOverlay;
 
-    protected override void OnUpdated()
+    protected override void OnStart()
     {
-      switch (ObjectCount)
-      {
-        case > 0 when !_active:
-          BackgroundOverlay.Enable(translucent: true);
-          _active = true;
-          break;
-        case 0 when _active:
-          BackgroundOverlay.Disable();
-            _active = false;
-          break;
-      }
+      base.OnStart();
+      BackgroundOverlay.AddObjectDisplay(this);
     }
   }
 }

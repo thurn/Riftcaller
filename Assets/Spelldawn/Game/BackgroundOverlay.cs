@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
@@ -23,10 +25,40 @@ namespace Spelldawn.Game
   {
     [SerializeField] GameContext _gameContext;
     [SerializeField] SpriteRenderer _renderer = null!;
+    [SerializeField] bool _forceEnabled;
+    readonly List<ObjectDisplay> _displays = new();
 
     public bool Enabled => _renderer.enabled;
 
-    public void Enable(bool translucent)
+    public void AddObjectDisplay(ObjectDisplay display)
+    {
+      _displays.Add(display);
+    }
+
+    void Update()
+    {
+      if (_forceEnabled)
+      {
+        return;
+      }
+      
+      if (_displays.Any(d => d.AllObjects.Count > 0))
+      {
+        Enable(true);
+      }
+      else
+      {
+        Disable();
+      }
+    }
+
+    public void ForceEnable()
+    {
+      _forceEnabled = true;
+      Enable(translucent: false);
+    }
+
+    void Enable(bool translucent)
     {
       if (!Enabled)
       {
@@ -37,7 +69,7 @@ namespace Spelldawn.Game
       }
     }
 
-    public void Disable()
+    void Disable()
     {
       _renderer.enabled = false;
     }

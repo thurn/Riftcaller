@@ -201,9 +201,7 @@ pub fn has_position_override(
 /// Calculates the game position in which the provided card should be displayed.
 pub fn calculate(builder: &ResponseBuilder, game: &GameState, card: &CardState) -> ObjectPosition {
     if let Some(position_override) = position_override(builder, game, card) {
-        if builder.state.display_preference != Some(DisplayPreference::ShowArenaView(true)) {
-            return position_override;
-        }
+        return position_override;
     }
 
     ObjectPosition {
@@ -325,7 +323,7 @@ fn non_card(
     id: GameObjectId,
 ) -> Option<ObjectPosition> {
     if let Some(position_override) = non_card_position_override(builder, game, id) {
-        if builder.state.display_preference != Some(DisplayPreference::ShowArenaView(true)) {
+        if !disable_position_overrides(builder, game) {
             return Some(position_override);
         }
     }
@@ -342,6 +340,14 @@ fn non_card(
     }
 }
 
+fn disable_position_overrides(builder: &ResponseBuilder, game: &GameState) -> bool {
+    builder.state.display_preference == Some(DisplayPreference::ShowArenaView(true))
+        || matches!(
+            game.player(builder.user_side).prompt_stack.current(),
+            Some(GamePrompt::PlayCardBrowser(..))
+        )
+}
+
 fn position_override(
     builder: &ResponseBuilder,
     game: &GameState,
@@ -350,6 +356,11 @@ fn position_override(
     if let Some(o) = prompt_position_override(builder, game, card) {
         return Some(o);
     }
+
+    if disable_position_overrides(builder, game) {
+        return None;
+    }
+
     if let Some(o) = opponent_prompt_position_override(builder, game, card) {
         return Some(o);
     }
@@ -372,6 +383,10 @@ fn prompt_position_override(
 
     match current_prompt {
         GamePrompt::ButtonPrompt(prompt) => {
+            if disable_position_overrides(builder, game) {
+                return None;
+            }
+
             if prompt.context.as_ref().and_then(|c| c.associated_card()) == Some(card.id) {
                 return Some(for_card(card, card_browser()));
             }
@@ -380,6 +395,10 @@ fn prompt_position_override(
             }
         }
         GamePrompt::CardSelector(browser) => {
+            if disable_position_overrides(builder, game) {
+                return None;
+            }
+
             if browser.unchosen_subjects.contains(&card.id) {
                 return Some(for_card(card, card_browser()));
             } else if browser.chosen_subjects.contains(&card.id) {
