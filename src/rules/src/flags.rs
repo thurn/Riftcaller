@@ -486,15 +486,3 @@ pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {
 
     duskbound || nightbound || summonbound || roombound
 }
-
-/// Returns true if the `side` player can currently take the 'undo' action.
-pub fn can_take_undo_action(game: &GameState, side: Side) -> bool {
-    if let Some(tracker) = &game.undo_tracker {
-        has_priority(game, side)
-            && !tracker.random
-            && !tracker.visible
-            && tracker.side == Some(side)
-    } else {
-        false
-    }
-}

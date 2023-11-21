@@ -52,9 +52,6 @@ pub fn handle_game_action(
         let clone = game.clone();
         if let Some(undo_tracker) = &mut game.undo_tracker {
             undo_tracker.undo = Some(Box::new(clone));
-            undo_tracker.side = Some(user_side);
-            undo_tracker.random = false;
-            undo_tracker.visible = false;
         }
     }
 
@@ -83,7 +80,6 @@ pub fn handle_game_action(
         GameAction::MoveSelectorCard(card_id) => move_card_action(game, user_side, *card_id),
         GameAction::RaidAction(action) => raid_state::run(game, Some(*action)),
         GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
-        GameAction::Undo => handle_undo_action(game, user_side),
         GameAction::SetDisplayPreference(..) => Ok(()),
     }?;
 
@@ -478,18 +474,4 @@ fn handle_card_selector_submit(
 
     game.player_mut(user_side).prompt_stack.pop();
     check_start_next_turn(game)
-}
-
-fn handle_undo_action(game: &mut GameState, user_side: Side) -> Result<()> {
-    verify!(flags::can_take_undo_action(game, user_side), "Cannot currently take undo action");
-    let new_state = game
-        .undo_tracker
-        .as_mut()
-        .with_error(|| "Expected undo_tracker")?
-        .undo
-        .take()
-        .with_error(|| "Expected undo state")?;
-    *game = *new_state;
-    dispatch::populate_delegate_cache(game);
-    Ok(())
 }

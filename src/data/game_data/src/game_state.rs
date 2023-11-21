@@ -305,7 +305,7 @@ pub struct GameState {
     /// order to improve performance
     #[serde(skip)]
     pub delegate_cache: DelegateCache,
-    /// Handles state tracking for the 'undo' and 'redo' game actions.
+    /// Handles state tracking for the 'undo' action.
     pub undo_tracker: Option<UndoTracker>,
 }
 

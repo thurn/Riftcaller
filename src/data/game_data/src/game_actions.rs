@@ -370,7 +370,6 @@ pub enum GameAction {
     MoveSelectorCard(CardId),
     RaidAction(RaidAction),
     PromptAction(PromptAction),
-    Undo,
     SetDisplayPreference(DisplayPreference),
 }
 
@@ -378,7 +377,7 @@ impl GameAction {
     /// Returns true if this action should not cause state-based actions to run.
     pub fn is_stateless_action(&self) -> bool {
         match self {
-            Self::Undo | Self::SetDisplayPreference(..) => true,
+            Self::SetDisplayPreference(..) => true,
             _ => false,
         }
     }
@@ -406,7 +405,6 @@ impl fmt::Debug for GameAction {
             Self::MoveSelectorCard(id) => f.debug_tuple("@MoveCard").field(id).finish(),
             Self::RaidAction(action) => f.debug_tuple("@RaidAction").field(&action.index).finish(),
             Self::PromptAction(prompt) => write!(f, "@{prompt:?}"),
-            Self::Undo => write!(f, "@Undo"),
             Self::SetDisplayPreference(preference) => {
                 f.debug_tuple("@SetDisplayPreference").field(preference).finish()
             }

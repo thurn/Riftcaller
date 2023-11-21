@@ -41,7 +41,7 @@ use game_data::primitives::{
     ActionCount, CardId, HasAbilityId, ManaValue, PointsValue, PowerChargeValue, RoomId,
     RoomLocation, Side, TurnNumber,
 };
-use game_data::{random, undo_tracker};
+use game_data::random;
 use tracing::{debug, instrument};
 use with_error::{fail, verify};
 
@@ -51,9 +51,7 @@ use crate::{dispatch, flags, mana, queries, CardDefinitionExt};
 /// Change a card to the 'face up' state and makes the card revealed to both
 /// players.
 pub fn turn_face_up(game: &mut GameState, card_id: CardId) {
-    undo_tracker::track_visible_state(game, card_id, |game| {
-        game.card_mut(card_id).internal_turn_face_up()
-    })
+    game.card_mut(card_id).internal_turn_face_up()
 }
 
 /// Change a card to the 'face down' state, but does *not* change its
@@ -67,9 +65,7 @@ pub fn turn_face_down(game: &mut GameState, card_id: CardId) {
 /// face-up, a card can be revealed to both players without being
 /// face-up
 pub fn set_visible_to(game: &mut GameState, card_id: CardId, side: Side, revealed: bool) {
-    undo_tracker::track_visible_state(game, card_id, |game| {
-        game.card_mut(card_id).internal_set_visible_to(side, revealed);
-    })
+    game.card_mut(card_id).internal_set_visible_to(side, revealed);
 }
 
 /// Sets the visibility of a list of cards in the same manner as

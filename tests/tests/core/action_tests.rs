@@ -772,35 +772,6 @@ fn cannot_discard_too_few_to_hand_size() {
 }
 
 #[test]
-fn undo_gain_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.gain_mana();
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 1);
-    assert_eq!(g.me().actions(), 3);
-    g.click(Button::Undo);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA);
-    assert_eq!(g.me().actions(), 4);
-}
-
-#[test]
-fn undo_play_card() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.create_and_play(CardName::TestAstralWeapon);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - test_constants::WEAPON_COST);
-    assert_eq!(g.me().actions(), 3);
-    g.click(Button::Undo);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA);
-    assert_eq!(g.me().actions(), 4);
-}
-
-#[test]
-fn cannot_undo_draw_card() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    g.draw_card();
-    assert!(g.click_with_result(Button::Undo).is_err());
-}
-
-#[test]
 fn remove_curse() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
     assert_eq!(g.user.cards.hand().token_cards().names(), vec!["Curse"]);

@@ -25,10 +25,6 @@ pub fn card_in_position(
     side: Side,
     position: CardPosition,
 ) -> Option<CardId> {
-    if let Some(undo_tracker) = &mut game.undo_tracker {
-        undo_tracker.random = true;
-    }
-
     if game.rng.is_some() {
         let cards = game.cards_in_position(side, position).map(|c| c.id).collect::<Vec<_>>();
         cards.into_iter().choose(game.rng.as_mut().expect("rng"))
