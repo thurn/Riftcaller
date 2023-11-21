@@ -40,6 +40,7 @@ namespace Spelldawn.Services
     SpriteAddress _userCardBack = null!;
     SpriteAddress _opponentCardBack = null!;
     GameObject? _currentTargetHighlight;
+    bool _showingInfoZoom;
 
     readonly List<Sequence> _optimisticAnimations = new();
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
@@ -216,17 +217,12 @@ namespace Spelldawn.Services
       if (command is { Show: true, Card: {} view })
       {
         var card = CreateCard(view, GameContext.InfoZoom, animate: false);
-        StartCoroutine(InfoZoom(card));
+        InfoZoom(card);
       }
       else
       {
         ClearInfoZoom();
       }
-    }
-
-    public void DisplayInfoZoom(Card card)
-    {
-      StartCoroutine(InfoZoom(card));
     }
 
     public void OnCommandsFinished()
@@ -244,9 +240,32 @@ namespace Spelldawn.Services
         _registry.AssetService.GetProjectile(command.Projectile), card.transform.position);      
       card.SetMovementEffect(projectile.gameObject);
     }
-
-    IEnumerator InfoZoom(Card card)
+    
+    public void DisplayInfoZoom(Card card)
     {
+      if (!_showingInfoZoom)
+      {
+        _showingInfoZoom = true;
+        InfoZoom(card);        
+      }
+    }
+
+    public void ClearInfoZoom()
+    {
+      _registry.DocumentService.ClearInfoZoom();
+      _registry.Studio.ClearSubject();
+      if (_currentTargetHighlight)
+      {
+        Destroy(_currentTargetHighlight);
+      }
+
+      _showingInfoZoom = false;
+    }
+
+    void InfoZoom(Card card)
+    {
+      // Don't make this a coroutine, everything will be terrible
+      
       ClearInfoZoom();
 
       var showOnLeft = Input.mousePosition.x > Screen.width / 2.0;
@@ -297,14 +316,14 @@ namespace Spelldawn.Services
           }),
         showOnLeft ? zoomed.SupplementalInfo : null
       );
-      
-      yield return _registry.AssetService.LoadAssetsForNode(node);
-      
-      
+
       // Always do this second because LoadAssetsForNode takes 1 frame minimum
       _registry.Studio.SetSubject(zoomed.gameObject);
       
       _registry.DocumentService.RenderInfoZoom(node);
+      
+      // HACK: The Card component gets disabled during this process one time in a hundred and I have no idea why  
+      zoomed.enabled = true;
     }
 
     bool ShowCardHighlight(CardIdentifier cardIdentifier)
@@ -331,17 +350,7 @@ namespace Spelldawn.Services
       zoomed.gameObject.name = $"{card.name} Info";
       return zoomed;
     }
-
-    public void ClearInfoZoom()
-    {
-      _registry.DocumentService.ClearInfoZoom();
-      _registry.Studio.ClearSubject();
-      if (_currentTargetHighlight)
-      {
-        Destroy(_currentTargetHighlight);
-      }
-    }
-
+    
     public IEnumerator HandleDestroyCard(CardIdentifier cardId, bool animate)
     {
       var card = FindCard(cardId);

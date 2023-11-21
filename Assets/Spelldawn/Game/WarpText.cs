@@ -15,7 +15,6 @@
 #nullable enable
 
 using UnityEngine;
-using System.Collections;
 using TMPro;
 
 namespace Spelldawn.Game

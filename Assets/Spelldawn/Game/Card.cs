@@ -241,7 +241,7 @@ namespace Spelldawn.Game
         if (_warpText && _warpText != null)
         {
           _warpText.RunWarp();
-        }        
+        }
       }
     }
 
@@ -356,22 +356,30 @@ namespace Spelldawn.Game
       return CanPlay() || CanMove();
     }
 
+    public override void MouseHoverStart()
+    {
+      if (Registry.CapabilityService.CanInfoZoom(this, GameContext) && _isRevealed)
+      {
+        Registry.CardService.DisplayInfoZoom(this);
+      }
+    }
+
+    public override void MouseHoverEnd()
+    {
+      Registry.CardService.ClearInfoZoom();
+    }
+
     // I originally did all of this using Unity's OnMouseDown events, but they were not reliable
     // enough for me in testing and the UI sometimes get stuck. Some person on reddit told me it
     // always works for them and my code is probably wrong... cool.
     public override void MouseDown()
     {
-      if (Registry.CapabilityService.CanInfoZoom(this, GameContext) && _isRevealed)
-      {
-        Registry.StaticAssets.PlayCardSound();
-        Registry.CardService.DisplayInfoZoom(this);
-      }
-
       var canPlay = CanPlay();
       _isMove = !canPlay && CanMove();
-      
+
       if (canPlay || _isMove)
       {
+        Registry.StaticAssets.PlayCardSound();
         Registry.CardService.CurrentlyDragging = true;
         SetGameContext(GameContext.Dragging);
         _previousParent = Parent;

@@ -155,7 +155,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1471301815
   m_SortingLayer: 4
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 46df99c8b413f4c7a9c354746b6a059a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -958,14 +958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71eaa18b8be04ecca84975c855a54803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _parent: {fileID: 0}
-  _gameContext: 25
-  _sortingGroup: {fileID: 0}
-  _objects: []
-  _updateRequired: 0
-  _animateNextUpdate: 0
-  _animationRunning: 0
-  _singleElementY: 0.5
+  _allObjects: []
 --- !u!1 &1649997011089986550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,7 +1652,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a1514c6e064b52b8539d102d7982e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _parent: {fileID: 0}
   _gameContext: 0
   _sortingGroup: {fileID: 6859622998180740047}
   _cardBack: {fileID: 5519798289580742811}
@@ -1703,7 +1695,6 @@ MonoBehaviour:
   _dragStartPosition: {x: 0, y: 0, z: 0}
   _dragOffset: {x: 0, y: 0, z: 0}
   _initialDragRotation: {x: 0, y: 0, z: 0, w: 0}
-  _previousParent: {fileID: 0}
   _contentProtection: {fileID: 0}
   _containedObjectsDisplay: {fileID: 3331682006952615536}
   _cardStackObjectDisplay: {fileID: 8671197631998164897}
@@ -2409,7 +2400,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b2bd280a444878a6c765b2fbdb1ab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _parent: {fileID: 0}
   _gameContext: 0
   _sortingGroup: {fileID: 0}
   _objects: []

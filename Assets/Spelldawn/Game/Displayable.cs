@@ -83,6 +83,18 @@ namespace Spelldawn.Game
     {
     }
 
+    public virtual void MouseHoverStart()
+    {
+    }
+
+    public virtual void MouseHover()
+    {
+    }
+
+    public virtual void MouseHoverEnd()
+    {
+    }
+
     protected virtual void OnStart()
     {
     }

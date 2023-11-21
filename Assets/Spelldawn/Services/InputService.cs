@@ -31,7 +31,8 @@ namespace Spelldawn.Services
   {
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
     readonly List<KeyboardMapping> _keyboardMappings = new();
-    Displayable? _lastClicked;
+    [SerializeField] Displayable? _lastClicked;
+    [SerializeField] Displayable? _lastHovered;
     Draggable? _originalDragSource;
     VisualElement? _currentlyDragging;
     VisualElement? _overTargetIndicator;
@@ -96,8 +97,29 @@ namespace Spelldawn.Services
     void Update()
     {
       // I don't trust any of Unity's event handling code. They couldn't event-handle their way
-      // out of a wet paper bag.      
+      // out of a wet paper bag.
+      
+      HandleDisplayableClickAndDrag();
+      HandleDisplayableHover();
+      HandleVisualElementDrag();
+      HandleKeyboardShortcuts();
+    }
 
+    void HandleVisualElementDrag()
+    {
+      switch (Input.GetMouseButton(0))
+      {
+        case true when _currentlyDragging != null:
+          ElementMouseMove(_currentlyDragging);
+          break;
+        case false when _currentlyDragging != null:
+          ElementMouseUp(_currentlyDragging);
+          break;
+      }
+    }
+
+    void HandleDisplayableClickAndDrag()
+    {
       switch (Input.GetMouseButton(0))
       {
         case true when _lastClicked:
@@ -109,22 +131,39 @@ namespace Spelldawn.Services
         case false when _lastClicked:
           var last = _lastClicked;
           _lastClicked = null;
-          _registry.CardService.ClearInfoZoom();
           last!.MouseUp();
           break;
       }
+    }
 
-      switch (Input.GetMouseButton(0))
+    void HandleDisplayableHover()
+    {
+      if (Input.GetMouseButton(0))
       {
-        case true when _currentlyDragging != null:
-          ElementMouseMove(_currentlyDragging);
-          break;
-        case false when _currentlyDragging != null:
-          ElementMouseUp(_currentlyDragging);
-          break;
+        return;
       }
-
-      HandleKeyboardShortcuts();
+      
+      var current = ObjectAtMousePosition();
+      if (current && current != null && !_lastHovered)
+      {
+        current.MouseHoverStart();
+        _lastHovered = current;
+      }
+      else if (!current && _lastHovered && _lastHovered != null)
+      {
+        _lastHovered.MouseHoverEnd();
+        _lastHovered = null;
+      }
+      else if (current && current != null && _lastHovered && _lastHovered != null && current != _lastHovered)
+      {
+        _lastHovered.MouseHoverEnd();
+        current.MouseHoverStart();
+        _lastHovered = current;
+      }
+      else if (current && current != null && current == _lastHovered)
+      {
+        current.MouseHover();
+      }
     }
 
     void HandleKeyboardShortcuts()
@@ -160,6 +199,18 @@ namespace Spelldawn.Services
         return null;
       }
       
+      var fired = ObjectAtMousePosition();
+
+      if (fired && fired != null)
+      {
+        fired.MouseDown();
+      }
+
+      return fired;
+    }
+
+    Displayable? ObjectAtMousePosition()
+    {
       var ray = _registry.MainCamera.ScreenPointToRay(Input.mousePosition);
       var hits = Physics.RaycastNonAlloc(ray, _raycastHitsTempBuffer, 100);
 
@@ -174,17 +225,12 @@ namespace Spelldawn.Services
         }
       }
 
+      Array.Clear(_raycastHitsTempBuffer, 0, _raycastHitsTempBuffer.Length);
       var fired = candidates
         .OrderBy(c => c.GameContext.SortOrder())
         .ThenBy(c => c.SortingKey)
         .ThenBy(c => c.SortingSubkey)
         .LastOrDefault();
-      if (fired)
-      {
-        fired!.MouseDown();
-      }
-
-      Array.Clear(_raycastHitsTempBuffer, 0, _raycastHitsTempBuffer.Length);
       return fired;
     }
 
