@@ -335,6 +335,8 @@ pub struct CardConfig {
     /// A visual effect associated with this card, selected via a prompt choice.
     /// Used to e.g. indicate targeting.
     pub choice_effect: Option<TimedEffectData>,
+    /// Optionally, a clarifying note about how this card functions.
+    pub note: Option<String>,
     /// Which card variant does this definition correspond to?
     ///
     /// It is never necessary to specify this value when building a card
@@ -409,6 +411,11 @@ impl CardConfigBuilder {
 
     pub fn choice_effect(mut self, effect: TimedEffectData) -> Self {
         self.config.choice_effect = Some(effect);
+        self
+    }
+
+    pub fn note(mut self, note: impl Into<String>) -> Self {
+        self.config.note = Some(note.into());
         self
     }
 }

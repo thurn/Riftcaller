@@ -583,6 +583,11 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles02"))
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
             )
+            .note(
+                "This card only triggers when approaching a minion, meaning that it bypasses \
+                   'on encounter' abilities and cannot be used immediately if played during an \
+                   encounter.",
+            )
             .build(),
     }
 }
