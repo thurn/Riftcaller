@@ -14,7 +14,7 @@
 
 use std::collections::HashMap;
 
-use adventure_data::adventure::TilePosition;
+use core_data::adventure_primitives::TilePosition;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::WorldMapTile;
 

@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{BattleData, Coins};
+use adventure_data::adventure::BattleData;
+use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::Side;
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::player_name::AIPlayer;

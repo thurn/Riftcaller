@@ -16,8 +16,9 @@
 //! [TestSession].
 
 use actions::legal_actions;
-use adventure_data::adventure::{Coins, TilePosition, TileState};
+use adventure_data::adventure::TileState;
 use anyhow::Result;
+use core_data::adventure_primitives::{Coins, TilePosition};
 use core_data::game_primitives::{GameId, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;

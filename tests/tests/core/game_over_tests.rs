@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{BattleData, Coins, TileEntity, TilePosition};
+use adventure_data::adventure::{BattleData, TileEntity};
+use core_data::adventure_primitives::{Coins, TilePosition};
 use core_data::game_primitives::Side;
 use core_ui::actions::InterfaceAction;
 use game_data::card_name::CardName;

@@ -20,9 +20,10 @@ pub mod battle_panel;
 pub mod draft_panel;
 pub mod shop_panel;
 
-use adventure_data::adventure::{AdventureState, TileEntity, TilePosition, TileState};
+use adventure_data::adventure::{AdventureState, TileEntity, TileState};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
+use core_data::adventure_primitives::TilePosition;
 use core_ui::actions::InterfaceAction;
 use core_ui::design;
 use core_ui::panels::Panels;

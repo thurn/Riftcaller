@@ -13,8 +13,9 @@
 // limitations under the License.
 
 use adventure_data::adventure::{
-    AdventureConfiguration, CardChoice, Coins, DraftContext, DraftData, ShopData,
+    AdventureConfiguration, CardChoice, DraftContext, DraftData, ShopData,
 };
+use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::{CardType, Rarity, School, Side, STANDARD_SCHOOLS};
 use game_data::card_name::CardVariant;
 use game_data::card_set_name::CardSetName;

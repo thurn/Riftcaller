@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{TileEntity, TilePosition};
+use adventure_data::adventure::TileEntity;
 use anyhow::Result;
+use core_data::adventure_primitives::TilePosition;
 use panel_address::{Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerState;
 use protos::spelldawn::InterfacePanel;

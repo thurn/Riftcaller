@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::adventure_primitives::TilePosition;
 use serde::{Deserialize, Serialize};
-
-use crate::adventure::TilePosition;
 
 /// Actions which can be taken for the 'adventure' game mode.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

@@ -682,6 +682,7 @@ name = "core_data"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "derive_more",
  "enum-iterator",
  "enum-kinds",
  "serde",

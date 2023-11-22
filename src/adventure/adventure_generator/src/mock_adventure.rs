@@ -16,9 +16,8 @@
 
 use std::collections::{HashMap, HashSet};
 
-use adventure_data::adventure::{
-    AdventureConfiguration, AdventureState, RegionId, TileEntity, TilePosition, TileState,
-};
+use adventure_data::adventure::{AdventureConfiguration, AdventureState, TileEntity, TileState};
+use core_data::adventure_primitives::{RegionId, TilePosition};
 use core_data::game_primitives::AdventureId;
 use game_data::card_name::CardVariant;
 use game_data::deck::Deck;

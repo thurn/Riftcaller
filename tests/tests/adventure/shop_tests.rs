@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{CardChoice, Coins, ShopData, TileEntity};
+use adventure_data::adventure::{CardChoice, ShopData, TileEntity};
+use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::Side;
 use game_data::card_name::{CardName, CardVariant};
 use test_utils::client_interface::{self};

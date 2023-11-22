@@ -16,7 +16,7 @@
 //! development. Typically these options should not be available to production
 //! users.
 
-use adventure_data::adventure::Coins;
+use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::Side;
 use core_ui::actions::InterfaceAction;
 use core_ui::button::Button;

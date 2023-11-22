@@ -13,14 +13,10 @@
 // limitations under the License.
 
 use std::collections::{HashMap, HashSet};
-use std::fmt::{self, Display, Formatter};
-use std::str::FromStr;
 
 use anyhow::Result;
+use core_data::adventure_primitives::{AdventureOutcome, Coins, RegionId, TilePosition};
 use core_data::game_primitives::{AdventureId, Side};
-use derive_more::{
-    Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
-};
 use game_data::card_name::CardVariant;
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::deck::Deck;
@@ -32,73 +28,7 @@ use rand::Rng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DisplayFromStr};
-use with_error::{fail, WithError};
-
-/// Identifies a set of tiles which can be revealed via the 'explore' action.
-pub type RegionId = u32;
-
-#[derive(
-    Debug,
-    Display,
-    Copy,
-    Clone,
-    PartialEq,
-    Eq,
-    Ord,
-    PartialOrd,
-    Hash,
-    From,
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Sum,
-    AddAssign,
-    SubAssign,
-    MulAssign,
-    DivAssign,
-    Into,
-    Serialize,
-    Deserialize,
-)]
-pub struct Coins(pub u32);
-
-#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
-pub enum AdventureOutcome {
-    Victory,
-    Defeat,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub struct TilePosition {
-    pub x: i32,
-    pub y: i32,
-}
-
-impl FromStr for TilePosition {
-    type Err = anyhow::Error;
-
-    fn from_str(s: &str) -> Result<Self> {
-        let vec = s.split(',').collect::<Vec<_>>();
-        if vec.len() == 2 {
-            Ok(TilePosition { x: vec[0].parse::<i32>()?, y: vec[1].parse::<i32>()? })
-        } else {
-            fail!("Expected exactly one ',' character")
-        }
-    }
-}
-
-impl Display for TilePosition {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{},{}", self.x, self.y)
-    }
-}
-
-impl TilePosition {
-    pub fn new(x: i32, y: i32) -> Self {
-        Self { x, y }
-    }
-}
+use with_error::WithError;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardChoice {

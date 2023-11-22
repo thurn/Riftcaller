@@ -14,7 +14,8 @@
 
 use std::sync::atomic::{AtomicI32, Ordering};
 
-use adventure_data::adventure::{TileEntity, TilePosition, TileState};
+use adventure_data::adventure::{TileEntity, TileState};
+use core_data::adventure_primitives::TilePosition;
 
 use crate::test_session::TestSession;
 use crate::TestSessionHelpers;

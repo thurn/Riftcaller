@@ -14,4 +14,5 @@
 
 //! Low-level types & enums
 
+pub mod adventure_primitives;
 pub mod game_primitives;

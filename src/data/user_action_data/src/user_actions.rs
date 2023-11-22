@@ -14,9 +14,9 @@
 
 use std::fmt;
 
-use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
 use convert_case::{Case, Casing};
+use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::{
     ActionCount, CurseCount, DeckId, GameId, ManaValue, PointsValue, Side, WoundCount,
 };

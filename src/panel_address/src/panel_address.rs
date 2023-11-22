@@ -14,7 +14,7 @@
 
 //! Addresses for user interface panels
 
-use adventure_data::adventure::TilePosition;
+use core_data::adventure_primitives::TilePosition;
 use core_data::game_primitives::{DeckId, Side};
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;

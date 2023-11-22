@@ -14,7 +14,7 @@
 
 //! Standard values used in unit tests.
 
-use adventure_data::adventure::Coins;
+use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::{HealthValue, ManaValue, RaidId, RoomId};
 use game_data::card_definition::Resonance;
 use protos::spelldawn::RoomIdentifier;

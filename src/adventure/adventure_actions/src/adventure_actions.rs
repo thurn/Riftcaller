@@ -14,11 +14,10 @@
 
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
-use adventure_data::adventure::{
-    AdventureOutcome, AdventureState, Coins, TileEntity, TilePosition,
-};
+use adventure_data::adventure::{AdventureState, TileEntity};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
+use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
 use core_data::game_primitives::CardType;
 use with_error::{fail, verify};
 
