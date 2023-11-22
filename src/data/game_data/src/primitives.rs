@@ -596,3 +596,33 @@ pub enum ResponseContext {
     LeaveAdventure,
     LeaveGame,
 }
+
+/// Identifies whether some game update was caused by a player taking an
+/// explicit game action such as the 'initiate raid' action, or by a card
+/// effect.
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize)]
+pub enum InitiatedBy {
+    GameAction,
+    Ability(AbilityId),
+}
+
+impl InitiatedBy {
+    pub fn is_game_action(&self) -> bool {
+        matches!(self, InitiatedBy::GameAction)
+    }
+
+    pub fn is_ability(&self) -> bool {
+        matches!(self, InitiatedBy::Ability(_))
+    }
+
+    pub fn ability_id(&self) -> Option<AbilityId> {
+        match self {
+            InitiatedBy::GameAction => None,
+            InitiatedBy::Ability(id) => Some(*id),
+        }
+    }
+
+    pub fn card_id(&self) -> Option<CardId> {
+        self.ability_id().map(|a| a.card_id)
+    }
+}

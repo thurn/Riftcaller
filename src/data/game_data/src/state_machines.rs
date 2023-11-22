@@ -14,7 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::animation_tracker::InitiatedBy;
+use crate::primitives::InitiatedBy;
 use crate::game_actions::CardTarget;
 use crate::primitives::{AbilityId, CardId, DamageAmount};
 

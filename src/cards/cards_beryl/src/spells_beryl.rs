@@ -18,7 +18,7 @@ use card_helpers::{
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::animation_tracker::InitiatedBy;
+use game_data::primitives::InitiatedBy;
 use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;

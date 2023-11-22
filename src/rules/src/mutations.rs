@@ -23,7 +23,7 @@ use std::cmp;
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::animation_tracker::{GameAnimation, InitiatedBy};
+use game_data::animation_tracker::GameAnimation;
 use game_data::card_name::CardVariant;
 use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
@@ -38,8 +38,8 @@ use game_data::delegate_data::{
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::history_data::{CardChoice, CardChoiceEvent, HistoryEvent};
 use game_data::primitives::{
-    ActionCount, CardId, HasAbilityId, ManaValue, PointsValue, PowerChargeValue, RoomId,
-    RoomLocation, Side, TurnNumber,
+    ActionCount, CardId, HasAbilityId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue,
+    RoomId, RoomLocation, Side, TurnNumber,
 };
 use game_data::random;
 use tracing::{debug, instrument};
@@ -403,8 +403,8 @@ pub fn check_start_game(game: &mut GameState) -> Result<()> {
         GamePhase::ResolveMulligans(mulligans)
             if mulligans.overlord.is_some() && mulligans.champion.is_some() =>
         {
-            mana::set(game, Side::Overlord, game_constants::STARTING_MANA);
-            mana::set(game, Side::Champion, game_constants::STARTING_MANA);
+            mana::set_initial(game, Side::Overlord, game_constants::STARTING_MANA);
+            mana::set_initial(game, Side::Champion, game_constants::STARTING_MANA);
             start_turn(game, Side::Overlord, 1)?;
         }
         _ => {}

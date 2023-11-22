@@ -21,7 +21,7 @@ pub mod legal_actions;
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::animation_tracker::{AnimationState, GameAnimation, InitiatedBy};
+use game_data::animation_tracker::{AnimationState, GameAnimation};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
@@ -32,7 +32,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::history_data::HistoryEvent;
-use game_data::primitives::{AbilityId, CardId, RoomId, Side};
+use game_data::primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
 use rules::mana::ManaPurpose;
 use rules::{
     activate_ability, curses, deal_damage, dispatch, flags, mana, mutations, play_card,

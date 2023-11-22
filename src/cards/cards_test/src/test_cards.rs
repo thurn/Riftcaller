@@ -18,7 +18,7 @@ use card_helpers::costs::{actions, scheme};
 use card_helpers::text::trigger_text;
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, text, *};
-use game_data::animation_tracker::InitiatedBy;
+use game_data::primitives::InitiatedBy;
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
     SchemePoints,

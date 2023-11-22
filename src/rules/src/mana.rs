@@ -112,8 +112,8 @@ pub fn gain(game: &mut GameState, side: Side, amount: ManaValue) {
     game.player_mut(side).mana_state.base_mana += amount
 }
 
-/// Sets an amount of base mana for the `side` player.
-pub fn set(game: &mut GameState, side: Side, amount: ManaValue) {
+/// Sets an initial amount of base mana for the `side` player.
+pub fn set_initial(game: &mut GameState, side: Side, amount: ManaValue) {
     debug!(?amount, ?side, "Setting mana");
     game.player_mut(side).mana_state.base_mana = amount;
 }

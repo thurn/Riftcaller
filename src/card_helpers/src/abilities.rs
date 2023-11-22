@@ -14,13 +14,12 @@
 
 //! Helpers for defining common card abilities
 
-use game_data::animation_tracker::InitiatedBy;
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition, OnPlayState};
 use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate, RaidOutcome};
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
-use game_data::primitives::{AbilityId, DamageAmount, ManaValue, INNER_ROOMS};
+use game_data::primitives::{AbilityId, DamageAmount, InitiatedBy, ManaValue, INNER_ROOMS};
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
 use rules::{deal_damage, mutations};

@@ -29,14 +29,14 @@
 use std::iter;
 
 use constants::game_constants;
-use game_data::animation_tracker::InitiatedBy;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::{CardPosition, CardPositionKind};
 use game_data::deck::Deck;
 use game_data::game_state::{GameConfiguration, GamePhase, GameState, TurnData};
 use game_data::player_name::PlayerId;
 use game_data::primitives::{
-    ActionCount, CurseCount, GameId, ManaValue, PointsValue, RoomId, RoomLocation, Side, WoundCount,
+    ActionCount, CurseCount, GameId, InitiatedBy, ManaValue, PointsValue, RoomId, RoomLocation,
+    Side, WoundCount,
 };
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use maplit::hashmap;

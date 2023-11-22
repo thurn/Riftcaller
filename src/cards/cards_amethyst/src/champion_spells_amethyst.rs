@@ -17,7 +17,7 @@
 use assets::rexard_images;
 use card_helpers::raids::{add_sanctum_access, add_vault_access};
 use card_helpers::{text, *};
-use game_data::animation_tracker::InitiatedBy;
+use game_data::primitives::InitiatedBy;
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };

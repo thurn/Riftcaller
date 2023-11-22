@@ -16,7 +16,7 @@ use std::iter;
 
 use anyhow::Result;
 use constants::game_constants;
-use game_data::animation_tracker::{GameAnimation, InitiatedBy};
+use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent};
 use game_data::game_actions::{
@@ -26,7 +26,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, PromptStack};
 use game_data::history_data::HistoryEvent;
-use game_data::primitives::{CardId, CardSubtype, CardType, Side};
+use game_data::primitives::{CardId, CardSubtype, CardType, InitiatedBy, Side};
 use game_data::state_machines::{PlayCardData, PlayCardStep};
 use with_error::{verify, WithError};
 

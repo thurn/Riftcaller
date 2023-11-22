@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::animation_tracker::{GameAnimation, InitiatedBy};
+use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
-use game_data::primitives::GameObjectId;
+use game_data::primitives::{GameObjectId, InitiatedBy};
 use game_data::special_effects::SpecialEffect;
 use raid_state::custom_access;
 use rules::{deal_damage, mana, mutations, CardDefinitionExt};

@@ -13,10 +13,9 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::animation_tracker::InitiatedBy;
 use game_data::delegate_data::CustomAccessEndEvent;
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, RaidId, RoomId};
+use game_data::primitives::{CardId, InitiatedBy, RaidId, RoomId};
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use rules::dispatch;
 

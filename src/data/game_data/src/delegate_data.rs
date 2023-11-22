@@ -71,7 +71,7 @@ use enum_kinds::EnumKind;
 use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
 
-use crate::animation_tracker::InitiatedBy;
+use crate::primitives::InitiatedBy;
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
 use crate::card_definition::Resonance;
