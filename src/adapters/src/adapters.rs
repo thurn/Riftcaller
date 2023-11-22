@@ -14,8 +14,6 @@
 
 //! Helpers for converting between server & client data formats.
 
-pub mod response_builder;
-
 use anyhow::Result;
 use core_data::adventure_primitives::TilePosition;
 use core_data::game_primitives::{
@@ -30,6 +28,8 @@ use protos::spelldawn::{
 use with_error::fail;
 
 use crate::response_builder::ResponseBuilder;
+
+pub mod response_builder;
 
 /// Possible game actions which can be associated with a client card identifier
 #[derive(Debug, Copy, Clone)]

@@ -19,6 +19,7 @@ use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
 use core_data::game_primitives::CardType;
+
 use with_error::{fail, verify};
 
 /// Handles an incoming [AdventureAction] and produces a client response.

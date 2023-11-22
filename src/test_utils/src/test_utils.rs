@@ -15,6 +15,11 @@
 //! Tools to facilitate testing. Should be included via wildcard import in all
 //! tests.
 
+pub use test_adventure_helpers::TestAdventureHelpers;
+pub use test_game_client::CardNamesExt;
+pub use test_interface_helpers::{Button, TestInterfaceHelpers};
+pub use test_session_helpers::TestSessionHelpers;
+
 pub mod client_interface;
 pub mod fake_database;
 pub mod summarize;
@@ -28,8 +33,3 @@ pub mod test_session;
 pub mod test_session_builder;
 pub mod test_session_helpers;
 pub mod test_world_map;
-
-pub use test_adventure_helpers::TestAdventureHelpers;
-pub use test_game_client::CardNamesExt;
-pub use test_interface_helpers::{Button, TestInterfaceHelpers};
-pub use test_session_helpers::TestSessionHelpers;

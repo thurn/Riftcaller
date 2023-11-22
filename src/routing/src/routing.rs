@@ -15,8 +15,6 @@
 //! Panel rendering. A 'panel' is a discrete rectangular piece of UI which can
 //! be opened or closed by the user, such as a game menu or window.
 
-pub mod all_panels;
-
 use adventure_display::adventure_over_panel::AdventureOverPanel;
 use adventure_display::adventure_panels;
 use anyhow::Result;
@@ -40,6 +38,8 @@ use panels::settings_panel::SettingsPanel;
 use panels::side_select_panel::SideSelectPanel;
 use player_data::PlayerState;
 use protos::spelldawn::InterfacePanel;
+
+pub mod all_panels;
 
 pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePanel>> {
     Ok(match panel {

@@ -73,14 +73,15 @@ use core_data::game_primitives::{
     RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
 };
 use enum_kinds::EnumKind;
-use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
 
+use macros::DelegateEnum;
+
+#[allow(unused)] // Used in rustdocs
+use crate::card_definition::{AttackBoost, CardStats};
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
 use crate::card_definition::Resonance;
-#[allow(unused)] // Used in rustdocs
-use crate::card_definition::{AttackBoost, CardStats};
 use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
@@ -467,7 +468,9 @@ pub struct CardStatusMarker {
 
 #[derive(Debug, Clone)]
 pub struct ManaLostToOpponentAbility {
+    /// The player who lost mana
     pub side: Side,
+    /// The amount of mana lost
     pub amount: ManaValue,
 }
 
@@ -573,7 +576,8 @@ pub enum Delegate {
     /// (described using the word "reveal" on card text) and does *not* include
     /// a card being made visible by normal game rules, e.g. during a raid.
     CardRevealed(EventDelegate<CardId>),
-    /// Mana has been paid or lost due to an opponent ability.
+    /// Mana has been paid or lost by either player due to their opponent's
+    /// ability.
     ManaLostToOpponentAbility(EventDelegate<ManaLostToOpponentAbility>),
 
     /// Query whether the indicated player can currently take the basic game

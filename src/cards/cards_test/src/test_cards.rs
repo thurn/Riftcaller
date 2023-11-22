@@ -14,10 +14,6 @@
 
 //! Test cards
 
-use card_helpers::costs::{actions, scheme};
-use card_helpers::text::trigger_text;
-use card_helpers::this::on_activated;
-use card_helpers::{abilities, text, *};
 use core_data::game_primitives::{
     CardSubtype, CardType, InitiatedBy, Rarity, School, Side, Sprite,
 };
@@ -29,8 +25,13 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-use rules::mutations::OnZeroStored;
+
+use card_helpers::{*, abilities, combat_abilities};
+use card_helpers::costs::{actions, scheme};
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::on_activated;
 use rules::{curses, deal_damage, mutations};
+use rules::mutations::OnZeroStored;
 
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -114,7 +115,7 @@ pub fn test_minion_end_raid(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionEndRaid,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::combat_end_raid()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -128,7 +129,7 @@ pub fn test_minion_shield_1(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield1Infernal,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::combat_end_raid()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -143,7 +144,7 @@ pub fn test_minion_shield_2_abyssal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield2Abyssal,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::combat_end_raid()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -158,7 +159,21 @@ pub fn test_minion_deal_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionDealDamage,
         cost: cost(1),
-        abilities: vec![abilities::combat_deal_damage::<1>()],
+        abilities: vec![combat_abilities::combat_deal_damage::<1>()],
+        card_type: CardType::Minion,
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .resonance(test_constants::TEST_RESONANCE)
+            .build(),
+        ..test_overlord_spell(metadata)
+    }
+}
+
+pub fn test_minion_lose_mana(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestMinionLoseMana,
+        cost: cost(1),
+        abilities: vec![combat_abilities::combat_lose_mana::<1>()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -355,7 +370,7 @@ pub fn triggered_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
             projects::store_mana_on_summon::<{ test_constants::MANA_STORED }>(),
             Ability {
                 ability_type: AbilityType::Standard,
-                text: trigger_text(Dusk, text![TakeMana(test_constants::MANA_TAKEN)]),
+                text: named_trigger(Dusk, text![TakeMana(test_constants::MANA_TAKEN)]),
                 delegates: vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(
                         g,
@@ -468,7 +483,7 @@ pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![abilities::combat_deal_damage::<1>(), abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::combat_deal_damage::<1>(), combat_abilities::combat_end_raid()],
         config: CardConfigBuilder::new()
             .health(5)
             .shield(1)

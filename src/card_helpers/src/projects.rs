@@ -17,7 +17,7 @@ use game_data::delegate_data::Scope;
 use game_data::game_state::GameState;
 use game_data::text::TextToken;
 
-use crate::text;
+use crate::text_macro::text;
 
 /// RequirementFn that this delegate's card is currently in play, either face-up
 /// or face-down.
@@ -28,7 +28,7 @@ pub fn either_face_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 /// Ability to store a fixed amount of mana in a card when it is summoned.
 pub fn store_mana_on_summon<const N: u32>() -> Ability {
     Ability::new_with_delegate(
-        crate::text::trigger_text(TextToken::Play, text![TextToken::StoreMana(N)]),
+        crate::text_helpers::named_trigger(TextToken::Play, text![TextToken::StoreMana(N)]),
         crate::when_project_summoned(|g, s, _| {
             rules::mutations::add_stored_mana(g, s.card_id(), N);
             Ok(())

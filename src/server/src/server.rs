@@ -12,17 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod adventure_server;
-pub mod ai_agent_response;
-pub mod debug_server;
-pub mod game_server;
-pub mod keyboard_shortcuts;
-pub mod main_menu_server;
-pub mod new_game;
-pub mod player_server;
-pub mod requests;
-pub mod server_data;
-
 use anyhow::Result;
 use concurrent_queue::ConcurrentQueue;
 use dashmap::DashMap;
@@ -47,6 +36,17 @@ use user_action_data::UserAction;
 use with_error::{fail, WithError};
 
 use crate::server_data::{ClientData, GameResponse, RequestData};
+
+pub mod adventure_server;
+pub mod ai_agent_response;
+pub mod debug_server;
+pub mod game_server;
+pub mod keyboard_shortcuts;
+pub mod main_menu_server;
+pub mod new_game;
+pub mod player_server;
+pub mod requests;
+pub mod server_data;
 
 /// Stores active channels for each user.
 static CHANNELS: Lazy<DashMap<PlayerId, ChannelType>> = Lazy::new(DashMap::new);

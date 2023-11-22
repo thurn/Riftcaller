@@ -16,9 +16,6 @@
 //! from the client. The `handle_user_action` function is the primary
 //! entry-point into the rules engine.
 
-pub mod game_effect_actions;
-pub mod legal_actions;
-
 use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
@@ -40,6 +37,9 @@ use rules::{
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
+
+pub mod game_effect_actions;
+pub mod legal_actions;
 
 /// Top level dispatch function responsible for mutating [GameState] in response
 /// to all [GameAction]s

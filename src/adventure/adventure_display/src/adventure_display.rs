@@ -14,25 +14,26 @@
 
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
+use adventure_data::adventure::{AdventureState, TileEntity, TileState};
+use adventure_data::adventure_action::AdventureAction;
+use anyhow::Result;
+use core_data::adventure_primitives::TilePosition;
+
+use core_ui::actions::InterfaceAction;
+use core_ui::design;
+use core_ui::panels::Panels;
+use panel_address::{PanelAddress, PlayerPanel};
+use protos::spelldawn::{
+    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
+    WorldMapCharacter, WorldMapSprite, WorldMapTile,
+};
+use protos::spelldawn::game_command::Command;
+
 pub mod adventure_over_panel;
 pub mod adventure_panels;
 pub mod battle_panel;
 pub mod draft_panel;
 pub mod shop_panel;
-
-use adventure_data::adventure::{AdventureState, TileEntity, TileState};
-use adventure_data::adventure_action::AdventureAction;
-use anyhow::Result;
-use core_data::adventure_primitives::TilePosition;
-use core_ui::actions::InterfaceAction;
-use core_ui::design;
-use core_ui::panels::Panels;
-use panel_address::{PanelAddress, PlayerPanel};
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{
-    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
-    WorldMapCharacter, WorldMapSprite, WorldMapTile,
-};
 
 /// Returns a sequence of game Commands to display the provided
 /// [AdventureState].

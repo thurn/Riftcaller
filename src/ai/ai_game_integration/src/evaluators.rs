@@ -16,8 +16,9 @@ use ai_core::state_evaluator::StateEvaluator;
 use anyhow::Result;
 use core_data::game_primitives::Side;
 use game_data::card_state::CardCounter;
-use rules::mana::ManaPurpose;
+
 use rules::{mana, queries};
+use rules::mana::ManaPurpose;
 
 use crate::state_node::SpelldawnState;
 

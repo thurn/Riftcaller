@@ -25,6 +25,7 @@ use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
+
 use with_error::{fail, WithError};
 
 use crate::animation_tracker::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};

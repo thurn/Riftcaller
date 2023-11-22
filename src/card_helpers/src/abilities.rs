@@ -14,19 +14,18 @@
 
 //! Helpers for defining common card abilities
 
-use core_data::game_primitives::{AbilityId, DamageAmount, InitiatedBy, ManaValue, INNER_ROOMS};
+use core_data::game_primitives::{AbilityId, InitiatedBy, ManaValue, INNER_ROOMS};
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition, OnPlayState};
-use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate, RaidOutcome};
+use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate};
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
 use game_data::text::TextToken::*;
+use rules::mutations;
 use rules::mutations::OnZeroStored;
-use rules::{deal_damage, mutations};
 
-use crate::text::trigger_text;
+use crate::text_helpers::named_trigger;
 use crate::text_macro::text;
-use crate::this::on_activated;
 use crate::*;
 
 /// Helper to flatten a list of `Option` and remove `None` values.
@@ -65,7 +64,7 @@ pub fn breach() -> Ability {
 pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: trigger_text(Play, text![StoreMana(N)]),
+        text: named_trigger(Play, text![StoreMana(N)]),
         delegates: vec![
             Delegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
                 g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);
@@ -87,55 +86,9 @@ pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability
     Ability {
         ability_type: AbilityType::Activated { cost, target_requirement: TargetRequirement::None },
         text: text![TakeMana(N)],
-        delegates: vec![on_activated(|g, _s, activated| {
+        delegates: vec![this::on_activated(|g, _s, activated| {
             mutations::take_stored_mana(g, activated.card_id(), N, OnZeroStored::Sacrifice)
                 .map(|_| ())
-        })],
-    }
-}
-
-/// Minion combat ability which deals damage to the Champion player during
-/// combat, causing them to discard `N` random cards and lose the game if they
-/// cannot.
-pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
-    Ability {
-        ability_type: AbilityType::Standard,
-        text: trigger_text(Combat, text![DealDamage(N)]),
-        delegates: vec![combat(|g, s, _| deal_damage::apply(g, s, N))],
-    }
-}
-
-/// Minion combat ability which ends the current raid in failure.
-pub fn combat_end_raid() -> Ability {
-    Ability {
-        ability_type: AbilityType::Standard,
-        text: trigger_text(Combat, text!["End the raid"]),
-        delegates: vec![combat(|g, s, _| {
-            mutations::end_raid(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
-        })],
-    }
-}
-
-/// Minion combat ability which gains mana
-pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
-    Ability {
-        ability_type: AbilityType::Standard,
-        text: trigger_text(Combat, text![GainMana(N)]),
-        delegates: vec![combat(|g, _, _| {
-            mana::gain(g, Side::Overlord, N);
-            Ok(())
-        })],
-    }
-}
-
-/// Minion combat ability which causes the Champion player to lose action
-/// points.
-pub fn remove_actions_if_able<const N: ActionCount>() -> Ability {
-    Ability {
-        ability_type: AbilityType::Standard,
-        text: trigger_text(Combat, text!["Remove", Actions(1)]),
-        delegates: vec![combat(|g, _s, _| {
-            mutations::lose_action_points_if_able(g, Side::Champion, N)
         })],
     }
 }

@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use assets::rexard_images::{self, RexardPack, RexardWeaponType};
-use card_helpers::costs::actions;
-use card_helpers::effects::Effects;
-use card_helpers::text::trigger_text;
-use card_helpers::this::on_activated;
-use card_helpers::*;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
@@ -25,8 +19,15 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-use rules::mutations::{add_stored_mana, OnZeroStored};
+
+use assets::rexard_images::{self, RexardPack, RexardWeaponType};
+use card_helpers::*;
+use card_helpers::costs::actions;
+use card_helpers::effects::Effects;
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::on_activated;
 use rules::{mana, mutations};
+use rules::mutations::{add_stored_mana, OnZeroStored};
 
 pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -104,7 +105,7 @@ pub fn mana_battery(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability::new_with_delegate(
-                trigger_text(Dawn, text![TakeMana(1)]),
+                named_trigger(Dawn, text![TakeMana(1)]),
                 in_play::at_dawn(|g, s, _| {
                     let taken =
                         mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;

@@ -32,6 +32,7 @@ pub enum TextToken {
     ManaSymbol,
     Mana(ManaValue),
     GainMana(ManaValue),
+    LosesMana(ManaValue),
     ManaMinus(ManaValue),
     ActionSymbol,
     Actions(ActionCount),

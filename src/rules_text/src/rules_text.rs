@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod card_icons;
-pub mod card_info;
-pub mod supplemental_info;
-
 use core_data::game_primitives::AbilityId;
 use core_ui::icons;
 use game_data::card_definition::{Ability, AbilityType, AttackBoost, Cost};
@@ -23,6 +19,10 @@ use game_data::card_view_context::CardViewContext;
 use game_data::delegate_data::CardStatusMarker;
 use game_data::text::{TextElement, TextToken};
 use protos::spelldawn::RulesText;
+
+pub mod card_icons;
+pub mod card_info;
+pub mod supplemental_info;
 
 /// Primary function which turns the current state of a card into its client
 /// [RulesText] representation
@@ -188,6 +188,9 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Mana(n) => format!("{n}{}", icons::MANA),
         TextToken::GainMana(value) => {
             format!("gain{}{}{}", icons::NON_BREAKING_SPACE, value, icons::MANA)
+        }
+        TextToken::LosesMana(value) => {
+            format!("loses{}{}{}", icons::NON_BREAKING_SPACE, value, icons::MANA)
         }
         TextToken::ManaMinus(n) => format!("-{n}{}", icons::MANA),
         TextToken::ActionSymbol => icons::ACTION.to_string(),

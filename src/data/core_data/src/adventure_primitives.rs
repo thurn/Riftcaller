@@ -20,6 +20,7 @@ use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
 use serde::{Deserialize, Serialize};
+
 use with_error::fail;
 
 /// Identifies a set of tiles which can be revealed via the 'explore' action.
@@ -86,4 +87,13 @@ impl TilePosition {
     pub fn new(x: i32, y: i32) -> Self {
         Self { x, y }
     }
+}
+
+/// Skills which a Riftcaller can use to overcome narrative encounters
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
+pub enum Skill {
+    Brawn,
+    Stealth,
+    Lore,
+    Persuasion,
 }

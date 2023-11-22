@@ -14,18 +14,19 @@
 
 //! Card definitions for the Project card type
 
-use assets::rexard_images;
-use assets::rexard_images::RexardPack;
-use card_helpers::effects::Effects;
-use card_helpers::text::trigger_text;
-use card_helpers::{abilities, text, *};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
-use rules::mutations::OnZeroStored;
+
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
+use card_helpers::{*, abilities};
+use card_helpers::effects::Effects;
+use card_helpers::text_helpers::named_trigger;
 use rules::{deal_damage, mutations};
+use rules::mutations::OnZeroStored;
 
 pub fn gemcarver(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -42,7 +43,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
             projects::store_mana_on_summon::<9>(),
             Ability {
                 ability_type: AbilityType::Standard,
-                text: trigger_text(
+                text: named_trigger(
                     Dusk,
                     text![text![TakeMana(3)], text!["When empty, draw a card"]],
                 ),
@@ -74,7 +75,7 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
         abilities: vec![
             abilities::can_progress(),
             Ability::new_with_delegate(
-                trigger_text(
+                named_trigger(
                     Trap,
                     text![
                         "If this card is in play,",

@@ -38,6 +38,7 @@ pub enum ManaPurpose {
     ActivateAbility(AbilityId),
     ProgressRoom(RoomId),
     PayForTriggeredAbility,
+    CombatAbility,
     RemoveCurse,
     DispelEvocation,
     AllSources,
@@ -119,10 +120,9 @@ pub fn lose_upto(
     initiated_by: InitiatedBy,
     purpose: ManaPurpose,
     amount: ManaValue,
-) {
+) -> Result<()> {
     debug!(?amount, ?side, "Losing up to 'amount' mana");
     spend(game, side, initiated_by, purpose, cmp::min(get(game, side, purpose), amount))
-        .expect("Error spending mana");
 }
 
 /// Adds the specified amount of base mana (no restrictions on use) for the

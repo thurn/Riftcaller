@@ -14,8 +14,6 @@
 
 //! Helper functions for constructing resource URLs used during a game
 
-pub mod rexard_images;
-
 use core_data::game_primitives::{CardType, Rarity, School, Side, Sprite};
 use core_ui::design;
 use core_ui::design::FontColor;
@@ -29,6 +27,8 @@ use protos::spelldawn::{
     AudioClipAddress, CharacterPresetAddress, EffectAddress, FlexColor, ProjectileAddress,
     SpriteAddress,
 };
+
+pub mod rexard_images;
 
 /// Possible types of icons which can appear on a card
 pub enum CardIconType {

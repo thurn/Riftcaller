@@ -121,6 +121,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_1);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_2_abyssal);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_deal_damage);
+    DEFINITIONS.insert(cards_test::test_cards::test_minion_lose_mana);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_infernal);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_astral);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_astral_1_shield);

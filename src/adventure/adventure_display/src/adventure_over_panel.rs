@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use user_action_data::UserAction;
+
 use core_ui::prelude::*;
 use panel_address::{Panel, PanelAddress, PlayerPanel};
 use panels::button_menu::ButtonMenu;
-use user_action_data::UserAction;
 
 #[derive(Default)]
 pub struct AdventureOverPanel {}

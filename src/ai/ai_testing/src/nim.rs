@@ -20,6 +20,7 @@ use ai_core::agent::{Agent, AgentConfig};
 use ai_core::game_state_node::{GameStateNode, GameStatus};
 use ai_core::state_evaluator::StateEvaluator;
 use anyhow::Result;
+
 use with_error::verify;
 
 /// Asserts that a given `agent` picks an optimal game action for the provided

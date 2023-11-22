@@ -18,8 +18,8 @@ use core_data::game_primitives::{
 };
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
-    CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate,
-    RaidEvent, Scope, ScoreCard, TransformationFn,
+    CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate, ManaLostToOpponentAbility,
+    MutationFn, QueryDelegate, RaidEvent, Scope, ScoreCard, TransformationFn,
 };
 use game_data::game_state::GameState;
 
@@ -193,6 +193,17 @@ pub fn on_card_moved_to_discard_pile(mutation: MutationFn<CardId>) -> Delegate {
 /// revealed by a card ability.
 pub fn on_card_revealed(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::CardRevealed(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
+/// A delegate which fires when its card is face up & in play when one player
+/// loses mana to an opponent ability.
+pub fn on_mana_lost_to_opponent_ability(
+    mutation: MutationFn<ManaLostToOpponentAbility>,
+) -> Delegate {
+    Delegate::ManaLostToOpponentAbility(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
 }
 
 /// A delegate which transforms the sanctum access count when a card is face up

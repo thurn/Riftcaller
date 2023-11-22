@@ -14,15 +14,15 @@
 
 //! Core database implementation, handles querying and storing game state.
 
-pub mod firestore_database;
-pub mod sled_database;
-
 use anyhow::Result;
 use async_trait::async_trait;
 use core_data::game_primitives::GameId;
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
 use player_data::PlayerState;
+
+pub mod firestore_database;
+pub mod sled_database;
 
 #[async_trait]
 pub trait Database: Send + Sync {

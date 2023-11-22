@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod access;
-pub mod custom_access;
-pub mod defenders;
-pub mod raid_display_state;
-pub mod raid_prompt;
-
 use anyhow::Result;
 use core_data::game_primitives::{
     CardId, GameObjectId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
@@ -43,6 +37,12 @@ use rules::mutations::SummonMinion;
 use rules::{combat, dispatch, flags, mana, mutations, queries};
 use tracing::debug;
 use with_error::{fail, verify, WithError};
+
+pub mod access;
+pub mod custom_access;
+pub mod defenders;
+pub mod raid_display_state;
+pub mod raid_prompt;
 
 /// Handle a client request to initiate a new raid. Deducts action points and
 /// then invokes [initiate_with_callback].

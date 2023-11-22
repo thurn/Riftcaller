@@ -15,6 +15,10 @@
 use adventure_data::adventure::BattleData;
 use adventure_data::adventure_action::AdventureAction;
 use core_data::game_primitives::{DeckId, School};
+use game_data::player_name::PlayerId;
+use player_data::PlayerState;
+use user_action_data::{NewGameAction, NewGameDeck, UserAction};
+
 use core_ui::button::Button;
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::full_screen_image::FullScreenImage;
@@ -24,12 +28,9 @@ use core_ui::prelude::*;
 use core_ui::style::{self, Corner};
 use core_ui::text::Text;
 use deck_card::CARD_ASPECT_RATIO;
-use game_data::player_name::PlayerId;
 use panel_address::{Panel, PanelAddress};
-use player_data::PlayerState;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};
 use screen_overlay::ScreenOverlay;
-use user_action_data::{NewGameAction, NewGameDeck, UserAction};
 
 pub struct BattlePanel<'a> {
     pub player: &'a PlayerState,

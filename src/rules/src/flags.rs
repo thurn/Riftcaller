@@ -310,6 +310,15 @@ pub fn is_valid_raid_target(game: &GameState, room_id: RoomId) -> bool {
     dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(valid)).into()
 }
 
+/// Returns whether a raid is currently active in this game.
+pub fn raid_active(game: &GameState) -> bool {
+    let Some(raid) = &game.raid else {
+        return false;
+    };
+
+    !raid.is_custom_access
+}
+
 /// Returns whether the indicated player can currently take the basic game
 /// action to initiate a raid on the target [RoomId].
 pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: RoomId) -> bool {

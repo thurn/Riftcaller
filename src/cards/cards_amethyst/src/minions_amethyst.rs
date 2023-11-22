@@ -14,10 +14,6 @@
 
 //! Card definitions for the Minion card type
 
-use assets::rexard_images;
-use assets::rexard_images::RexardPack;
-use card_helpers::text::trigger_text;
-use card_helpers::{abilities, text, *};
 use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomLocation, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, Resonance,
@@ -29,9 +25,15 @@ use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
+
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
+use card_helpers::{*, combat_abilities};
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::combat;
+use rules::{CardDefinitionExt, deal_damage, mana, mutations, queries};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{deal_damage, mana, mutations, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
@@ -46,7 +48,7 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            trigger_text(
+            named_trigger(
                 Encounter,
                 text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
             ),
@@ -84,7 +86,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![
             Ability::new_with_delegate(
-                trigger_text(
+                named_trigger(
                     Combat,
                     text!["Summon a minion from the", Sanctum, "or", Crypt, "for free"],
                 ),
@@ -116,7 +118,7 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
                 }),
             ),
             Ability::new_with_delegate(
-                trigger_text(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
+                named_trigger(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
                 combat(|g, s, _| {
                     show_prompt::with_choices(
                         g,
@@ -153,7 +155,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
                     _ => current,
                 }),
             ),
-            abilities::combat_end_raid(),
+            combat_abilities::combat_end_raid(),
         ],
         config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::astral()).build(),
     }
@@ -172,7 +174,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
-            text: trigger_text(
+            text: named_trigger(
                 Combat,
                 text![
                     text![DealDamage(1)],
@@ -221,7 +223,7 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            trigger_text(
+            named_trigger(
                 Combat,
                 text![
                     text!["The Champion loses", Mana(3)],
@@ -235,7 +237,7 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
                     s.initiated_by(),
                     ManaPurpose::PayForTriggeredAbility,
                     3,
-                );
+                )?;
                 if mana::get(g, Side::Champion, ManaPurpose::BaseMana) <= 6 {
                     mutations::end_raid(
                         g,
@@ -262,7 +264,7 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            trigger_text(
+            named_trigger(
                 Combat,
                 text![
                     text![DealDamage(2)],

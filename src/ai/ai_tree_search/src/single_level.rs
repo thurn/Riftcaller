@@ -17,6 +17,7 @@ use ai_core::game_state_node::GameStateNode;
 use ai_core::selection_algorithm::SelectionAlgorithm;
 use ai_core::state_evaluator::StateEvaluator;
 use anyhow::Result;
+
 use with_error::WithError;
 
 /// An agent which does a depth 1 search of legal actions, returning the one

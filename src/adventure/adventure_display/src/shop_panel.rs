@@ -14,6 +14,9 @@
 
 use adventure_data::adventure::{CardChoice, ShopData};
 use adventure_data::adventure_action::AdventureAction;
+use player_data::PlayerState;
+
+use core_ui::{icons, style};
 use core_ui::action_builder::ActionBuilder;
 use core_ui::animations::{
     self, AnimateStyle, AnimateToElement, CloneElement, DestroyElement, InterfaceAnimation,
@@ -22,15 +25,13 @@ use core_ui::button::Button;
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use core_ui::{icons, style};
-use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
+use deck_card::deck_card_slot::DeckCardSlot;
 use element_names::ElementName;
 use panel_address::{Panel, PanelAddress};
-use player_data::PlayerState;
+use protos::spelldawn::{FlexAlign, FlexJustify, FlexVector2};
 use protos::spelldawn::animate_element_style::Property;
 use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexVector2};
 use screen_overlay::ScreenOverlay;
 
 pub struct ShopPanel<'a> {

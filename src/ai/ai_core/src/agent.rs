@@ -15,14 +15,15 @@
 use std::time::{Duration, Instant};
 
 use anyhow::Result;
+
 use with_error::fail;
 
+use crate::{state_combiner, state_predictor};
 use crate::game_state_node::{GameStateNode, GameStatus};
 use crate::selection_algorithm::SelectionAlgorithm;
 use crate::state_combiner::StateCombiner;
 use crate::state_evaluator::StateEvaluator;
 use crate::state_predictor::StatePredictor;
-use crate::{state_combiner, state_predictor};
 
 #[derive(Debug, Clone, Copy)]
 pub struct AgentConfig {

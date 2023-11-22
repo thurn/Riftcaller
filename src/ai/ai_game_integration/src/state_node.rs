@@ -14,12 +14,13 @@
 
 use std::ops::{Deref, DerefMut};
 
-use actions::legal_actions;
 use ai_core::game_state_node::{GameStateNode, GameStatus};
 use anyhow::Result;
 use core_data::game_primitives::Side;
 use game_data::game_actions::GameAction;
 use game_data::game_state::{GamePhase, GameState};
+
+use actions::legal_actions;
 use rules::flags;
 
 /// Wrapper over [GameState] to allow trait to be implemented in this crate.

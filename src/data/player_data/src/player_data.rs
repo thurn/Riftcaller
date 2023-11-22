@@ -21,6 +21,7 @@ use game_data::player_name::PlayerId;
 use game_data::tutorial_data::TutorialData;
 use serde::{Deserialize, Serialize};
 use user_action_data::NewGameAction;
+
 use with_error::{fail, WithError};
 
 /// Represents the state of a game the player is participating in.

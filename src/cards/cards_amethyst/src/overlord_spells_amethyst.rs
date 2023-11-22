@@ -14,14 +14,15 @@
 
 //! Card definitions for the Spell card type & Overlord player
 
-use assets::rexard_images;
-use card_helpers::{text, *};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+
+use assets::rexard_images;
+use card_helpers::{*};
 use rules::{flags, mana, mutations};
 
 pub fn overwhelming_power(_: CardMetadata) -> CardDefinition {

@@ -21,6 +21,7 @@ use std::fmt;
 use std::fmt::{Debug, Formatter};
 
 use anyhow::Result;
+use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
     HealthValue, ManaValue, PointsValue, PowerChargeValue, ProgressValue, Rarity, RazeCost, RoomId,
@@ -314,6 +315,14 @@ impl Resonance {
     }
 }
 
+/// Configuration for a Riftcaller card
+#[derive(Debug)]
+pub struct RiftcallerConfig {
+    pub starting_coins: Coins,
+    pub secondary_schools: Vec<School>,
+    pub skills: Vec<Skill>,
+}
+
 /// Individual card configuration; properties which are not universal for all
 /// cards
 #[derive(Debug, Default)]
@@ -333,6 +342,8 @@ pub struct CardConfig {
     pub choice_effect: Option<TimedEffectData>,
     /// Optionally, a clarifying note about how this card functions.
     pub note: Option<String>,
+    /// Configuration for a Riftcaller card
+    pub riftcaller: Option<RiftcallerConfig>,
     /// Which card variant does this definition correspond to?
     ///
     /// It is never necessary to specify this value when building a card
@@ -412,6 +423,11 @@ impl CardConfigBuilder {
 
     pub fn note(mut self, note: impl Into<String>) -> Self {
         self.config.note = Some(note.into());
+        self
+    }
+
+    pub fn riftcaller(mut self, config: RiftcallerConfig) -> Self {
+        self.config.riftcaller = Some(config);
         self
     }
 }

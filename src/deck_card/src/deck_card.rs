@@ -14,10 +14,6 @@
 
 //! Renders cards as they're seen in the deck editor and adventure UI
 
-pub mod deck_card_slot;
-
-pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
-
 use adapters::response_builder::{ResponseBuilder, ResponseState};
 use core_data::game_primitives::{Milliseconds, Side};
 use core_ui::draggable::Draggable;
@@ -33,6 +29,10 @@ use protos::spelldawn::{
     CardIcon, CardView, Dimension, FlexAlign, FlexPosition, ImageScaleMode, InfoZoomCommand,
     StudioAppearEffect, StudioDisplay, StudioDisplayCard,
 };
+
+pub mod deck_card_slot;
+
+pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
 /// Abstraction representing the height of a card, allowing other measurments to
 /// be scaled proportionately.

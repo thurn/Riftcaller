@@ -15,23 +15,7 @@
 //! Helpers for defining card behaviors. This file is intended be be used via
 //! wildcard import in card definition files.
 
-pub mod abilities;
-pub mod costs;
-pub mod delegates;
-pub mod effects;
-pub mod history;
-pub mod in_play;
-pub mod projects;
-pub mod raids;
-pub mod requirements;
-pub mod show_prompt;
-pub mod text;
-pub mod text_macro;
-pub mod this;
-
-use core_data::game_primitives::{
-    ActionCount, CardId, HasCardId, HealthValue, ManaValue, RoomId, Side,
-};
+use core_data::game_primitives::{CardId, HasCardId, HealthValue, ManaValue, RoomId, Side};
 use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -43,7 +27,21 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
-use rules::mana;
+
+pub mod abilities;
+pub mod combat_abilities;
+pub mod costs;
+pub mod delegates;
+pub mod effects;
+pub mod history;
+pub mod in_play;
+pub mod projects;
+pub mod raids;
+pub mod requirements;
+pub mod show_prompt;
+pub mod text_helpers;
+pub mod text_macro;
+pub mod this;
 
 /// Provides the cost for a card, with 1 action point required and `mana` mana
 /// points
@@ -101,11 +99,6 @@ pub fn when_project_summoned(mutation: MutationFn<CardId>) -> Delegate {
 /// A minion delegate which triggers when it is encountered
 pub fn on_encountered(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::EncounterMinion(EventDelegate { requirement: this_card, mutation })
-}
-
-/// A minion combat delegate
-pub fn combat(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::MinionCombatAbility(EventDelegate { requirement: this_card, mutation })
 }
 
 /// A delegate when a card is scored

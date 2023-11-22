@@ -46,6 +46,11 @@ pub fn can_activate(transformation: TransformationFn<CanActivateAbility, Flag>) 
     Delegate::CanActivateAbility(QueryDelegate { requirement: ability, transformation })
 }
 
+/// A minion combat delegate
+pub fn combat(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::MinionCombatAbility(EventDelegate { requirement: card, mutation })
+}
+
 /// A delegate which triggers when this card is moved from a deck *or* hand to a
 /// discard pile.
 pub fn on_discarded(mutation: MutationFn<DiscardedCard>) -> Delegate {

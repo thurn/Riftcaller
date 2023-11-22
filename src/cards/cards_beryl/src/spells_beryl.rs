@@ -12,15 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
-use card_helpers::{
-    abilities, costs, delegates, history, raids, requirements, show_prompt, text, this,
-};
 use core_data::game_primitives::{
     AbilityId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
 };
-use core_ui::design;
-use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -35,8 +29,13 @@ use game_data::history_data::CardChoice;
 use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
+
+use card_helpers::{abilities, costs, delegates, history, raids, requirements, show_prompt, text, this};
+use card_helpers::effects::Effects;
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use raid_state::custom_access;
-use rules::{curses, mutations, CardDefinitionExt};
+use rules::{CardDefinitionExt, curses, mutations};
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

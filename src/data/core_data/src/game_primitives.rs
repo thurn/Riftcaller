@@ -24,6 +24,7 @@ use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 use ulid::Ulid;
+
 use with_error::fail;
 
 pub type TurnNumber = u32;

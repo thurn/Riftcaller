@@ -14,13 +14,13 @@
 
 //! Generates world maps for the 'adventure' game mode
 
-pub mod battle_generator;
-pub mod card_generator;
-pub mod mock_adventure;
-
 use adventure_data::adventure::{AdventureConfiguration, AdventureState, TileEntity};
 use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::{AdventureId, Side};
+
+pub mod battle_generator;
+pub mod card_generator;
+pub mod mock_adventure;
 
 pub const STARTING_COINS: Coins = Coins(500);
 

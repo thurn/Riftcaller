@@ -12,13 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
-use card_helpers::{costs, delegates, in_play, raids, requirements, show_prompt, text, this};
 use core_data::game_primitives::{
     BanishEventId, CardId, CardSubtype, CardType, GameObjectId, Rarity, School, Side,
 };
-use core_ui::design;
-use core_ui::design::TimedEffectDataExt;
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{
     Ability, ActivatedAbility, CardConfig, CardDefinition, TargetRequirement,
@@ -32,7 +28,12 @@ use game_data::game_state::RaidJumpRequest;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-use rules::{curses, flags, mana, mutations, CardDefinitionExt};
+
+use card_helpers::{costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this};
+use card_helpers::effects::Effects;
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
+use rules::{CardDefinitionExt, curses, flags, mana, mutations};
 use with_error::WithError;
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
@@ -259,7 +260,7 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
         school: School::Beyond,
         rarity: Rarity::Uncommon,
         abilities: vec![
-            Ability::new(text::trigger_text(
+            Ability::new(text_helpers::named_trigger(
                 Play,
                 text![Banish, "the top", 3, "cards of your deck"],
             ))

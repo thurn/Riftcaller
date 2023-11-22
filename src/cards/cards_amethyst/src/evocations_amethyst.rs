@@ -14,14 +14,6 @@
 
 //! Card definitions for the Weapon card type
 
-use assets::rexard_images;
-use assets::rexard_images::{RexardArtifactType, RexardPack};
-use card_helpers::costs::{actions, once_per_turn};
-use card_helpers::effects::Effects;
-use card_helpers::raids::add_sanctum_access;
-use card_helpers::requirements::FaceUpInPlay;
-use card_helpers::this::on_activated;
-use card_helpers::{abilities, text, *};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
@@ -29,6 +21,15 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
+
+use assets::rexard_images;
+use assets::rexard_images::{RexardArtifactType, RexardPack};
+use card_helpers::{*, abilities};
+use card_helpers::costs::{actions, once_per_turn};
+use card_helpers::effects::Effects;
+use card_helpers::raids::add_sanctum_access;
+use card_helpers::requirements::FaceUpInPlay;
+use card_helpers::this::on_activated;
 use rules::mutations;
 use rules::mutations::{add_stored_mana, OnZeroStored};
 

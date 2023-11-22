@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod tutorial_actions;
-
 use core_data::game_primitives::{Milliseconds, RoomId, Side};
 use core_ui::design::{self, FontColor};
 use core_ui::icons;
@@ -25,6 +23,8 @@ use game_data::tutorial_data::{
     TutorialStep, TutorialTrigger,
 };
 use once_cell::sync::Lazy;
+
+pub mod tutorial_actions;
 
 pub const PLAYER_SIDE: Side = Side::Champion;
 pub const OPPONENT_SIDE: Side = Side::Overlord;

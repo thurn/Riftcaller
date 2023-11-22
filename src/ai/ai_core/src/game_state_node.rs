@@ -15,6 +15,7 @@
 use std::hash::Hash;
 
 use anyhow::Result;
+
 use with_error::fail;
 
 #[derive(Debug, PartialEq, Eq)]

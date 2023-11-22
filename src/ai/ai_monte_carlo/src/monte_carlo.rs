@@ -26,9 +26,10 @@ use ai_core::game_state_node::{GameStateNode, GameStatus};
 use ai_core::selection_algorithm::SelectionAlgorithm;
 use ai_core::state_evaluator::StateEvaluator;
 use anyhow::Result;
-use petgraph::prelude::{EdgeRef, NodeIndex};
 use petgraph::{Direction, Graph};
+use petgraph::prelude::{EdgeRef, NodeIndex};
 use rand::prelude::IteratorRandom;
+
 use with_error::WithError;
 
 use crate::child_score::{ChildScoreAlgorithm, SelectionMode};

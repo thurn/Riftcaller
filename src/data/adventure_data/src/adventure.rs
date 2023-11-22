@@ -23,11 +23,12 @@ use game_data::deck::Deck;
 use game_data::player_name::{AIPlayer, PlayerId};
 use rand::distributions::uniform::{SampleRange, SampleUniform};
 use rand::prelude::IteratorRandom;
-use rand::seq::SliceRandom;
 use rand::Rng;
+use rand::seq::SliceRandom;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
+use serde_with::{DisplayFromStr, serde_as};
+
 use with_error::WithError;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

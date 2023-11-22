@@ -14,9 +14,6 @@
 
 //! Card definitions for the Spell card type & Champion player
 
-use assets::rexard_images;
-use card_helpers::raids::{add_sanctum_access, add_vault_access};
-use card_helpers::{text, *};
 use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomId, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
@@ -24,7 +21,11 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate};
-use rules::{flags, mana, mutations, CardDefinitionExt};
+
+use assets::rexard_images;
+use card_helpers::{*};
+use card_helpers::raids::{add_sanctum_access, add_vault_access};
+use rules::{CardDefinitionExt, flags, mana, mutations};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {
     CardDefinition {

@@ -15,8 +15,9 @@
 use adventure_data::adventure::TileEntity;
 use anyhow::Result;
 use core_data::adventure_primitives::TilePosition;
-use panel_address::{Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerState;
+
+use panel_address::{Panel, PanelAddress, PlayerPanel};
 use protos::spelldawn::InterfacePanel;
 use with_error::WithError;
 

@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{abilities, costs, show_prompt, text, this};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
+
+use card_helpers::{abilities, costs, show_prompt, text, this};
 use rules::CardDefinitionExt;
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {

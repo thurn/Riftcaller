@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use assets::rexard_images;
-use card_helpers::effects::Effects;
-use card_helpers::requirements::FaceUpInPlay;
-use card_helpers::text::trigger_text;
-use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
-use rules::{mana, mutations, CardDefinitionExt};
+
+use assets::rexard_images;
+use card_helpers::*;
+use card_helpers::effects::Effects;
+use card_helpers::requirements::FaceUpInPlay;
+use card_helpers::text_helpers::named_trigger;
+use rules::{CardDefinitionExt, mana, mutations};
 
 pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -36,7 +37,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![Ability::new_with_delegate(
-            trigger_text(Dawn, text![GainMana(1), "if you have", 2, "or fewer cards in hand"]),
+            named_trigger(Dawn, text![GainMana(1), "if you have", 2, "or fewer cards in hand"]),
             in_play::at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
                     Effects::new().ability_alert(s).apply(g);
