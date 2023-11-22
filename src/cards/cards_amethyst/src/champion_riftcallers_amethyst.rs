@@ -28,7 +28,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::EnneraImrisBloodBound,
         sets: vec![CardSetName::Amethyst],
-        cost: riftcaller_cost(),
+        cost: costs::riftcaller(),
         image: rexard_images::spell(8, "SpellBook08_09"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
@@ -53,7 +53,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ArisFeyTheRadiantSun,
         sets: vec![CardSetName::Amethyst],
-        cost: riftcaller_cost(),
+        cost: costs::riftcaller(),
         image: rexard_images::spell(8, "SpellBook08_73"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
@@ -79,7 +79,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TelantesDugothEarthbreaker,
         sets: vec![CardSetName::Amethyst],
-        cost: riftcaller_cost(),
+        cost: costs::riftcaller(),
         image: rexard_images::spell(8, "SpellBook08_76"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
@@ -101,7 +101,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::AndvariEstNightsWarden,
         sets: vec![CardSetName::Amethyst],
-        cost: riftcaller_cost(),
+        cost: costs::riftcaller(),
         image: rexard_images::spell(8, "SpellBook08_119"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],

@@ -49,11 +49,6 @@ pub fn cost(mana: ManaValue) -> Cost<CardId> {
     Cost { mana: Some(mana), actions: 1, custom_cost: None }
 }
 
-/// [Cost] for a riftcaller card
-pub fn riftcaller_cost() -> Cost<CardId> {
-    Cost { mana: None, actions: 0, custom_cost: None }
-}
-
 /// An [AbilityType] for an ability which costs 1 action and has no target.
 pub fn activate_for_action() -> AbilityType {
     AbilityType::Activated { cost: costs::actions(1), target_requirement: TargetRequirement::None }

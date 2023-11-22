@@ -304,6 +304,8 @@ pub enum CardName {
     Glimmersong,
     DelveIntoDarkness,
     KnowledgeOfTheBeyond,
+
+    ZainCuningDiplomat,
 }
 
 impl CardName {
@@ -313,6 +315,7 @@ impl CardName {
             Self::MaraudersAxe => "Marauder's Axe",
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath",
             Self::WarriorsSign => "Warrior's Sign",
+            Self::ZainCuningDiplomat => "Zain, Cunning Diplomat",
             _ => "",
         };
 

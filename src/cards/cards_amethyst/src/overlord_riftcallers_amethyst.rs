@@ -24,7 +24,7 @@ pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::UbrasEfarisTimeShaper,
         sets: vec![CardSetName::Amethyst],
-        cost: riftcaller_cost(),
+        cost: costs::riftcaller(),
         image: rexard_images::spell(8, "SpellBook08_22"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],

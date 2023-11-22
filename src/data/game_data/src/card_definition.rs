@@ -258,7 +258,7 @@ impl ActivatedAbility {
     }
 }
 
-/// The Possible resonances of weapons and minions. Minions can only be
+/// The possible resonances of weapons and minions. Minions can only be
 /// damaged by weapons from the same resonance, or by Prismatic weapons.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Resonance {
@@ -313,10 +313,6 @@ impl Resonance {
             + (if self.astral { 1 } else { 0 })
     }
 }
-
-/// Predicate which provides additional restrictions on whether a card can
-/// be played. If not specified, normal rules apply.
-pub type CanPlay = fn(&GameState, CardId) -> bool;
 
 /// Individual card configuration; properties which are not universal for all
 /// cards

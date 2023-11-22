@@ -18,10 +18,13 @@
 use std::cmp;
 
 use anyhow::Result;
+use game_data::delegate_data::{ManaLostToOpponentAbility, ManaLostToOpponentAbilityEvent};
 use game_data::game_state::{GameState, SpecificRaidMana};
 use game_data::primitives::{AbilityId, CardId, InitiatedBy, ManaValue, RaidId, RoomId, Side};
 use tracing::debug;
 use with_error::{verify, WithError};
+
+use crate::dispatch;
 
 /// Identifies possible reasons why a player's mana value would need to be
 /// queried or spent.
@@ -71,7 +74,7 @@ pub fn get(game: &GameState, side: Side, purpose: ManaPurpose) -> ManaValue {
 pub fn spend(
     game: &mut GameState,
     side: Side,
-    _: InitiatedBy,
+    initiated_by: InitiatedBy,
     purpose: ManaPurpose,
     amount: ManaValue,
 ) -> Result<()> {
@@ -96,6 +99,16 @@ pub fn spend(
     }
 
     game.player_mut(side).mana_state.base_mana -= to_spend;
+
+    match initiated_by {
+        InitiatedBy::Ability(ability_id) if ability_id.side() != side => {
+            dispatch::invoke_event(
+                game,
+                ManaLostToOpponentAbilityEvent(ManaLostToOpponentAbility { side, amount }),
+            )?;
+        }
+        _ => {}
+    }
     Ok(())
 }
 

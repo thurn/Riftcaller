@@ -465,6 +465,12 @@ pub struct CardStatusMarker {
     pub text: Vec<TextElement>,
 }
 
+#[derive(Debug, Clone)]
+pub struct ManaLostToOpponentAbility {
+    pub side: Side,
+    pub amount: ManaValue,
+}
+
 /// The core of the delegate pattern, used to identify which event or which
 /// query this delegate wishes to respond to. Each enum variant here
 /// automatically gets an associated struct value generated for it by the
@@ -567,6 +573,8 @@ pub enum Delegate {
     /// (described using the word "reveal" on card text) and does *not* include
     /// a card being made visible by normal game rules, e.g. during a raid.
     CardRevealed(EventDelegate<CardId>),
+    /// Mana has been paid or lost due to an opponent ability.
+    ManaLostToOpponentAbility(EventDelegate<ManaLostToOpponentAbility>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

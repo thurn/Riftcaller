@@ -32,6 +32,16 @@ pub fn ability_mana(mana: ManaValue) -> Cost<AbilityId> {
     Cost { mana: Some(mana), actions: 0, custom_cost: None }
 }
 
+/// [Cost] for a scheme card
+pub fn scheme() -> Cost<CardId> {
+    Cost { mana: None, actions: 1, custom_cost: None }
+}
+
+/// [Cost] for a riftcaller card
+pub fn riftcaller() -> Cost<CardId> {
+    Cost { mana: None, actions: 0, custom_cost: None }
+}
+
 /// Cost for an ability which costs 1 action point and requires the owning card
 /// to be sacrificed.
 pub fn sacrifice_for_action() -> Cost<AbilityId> {
@@ -83,9 +93,4 @@ pub fn once_per_turn() -> Option<CustomCost<AbilityId>> {
 /// A [Cost] which requires no mana and `actions` action points.
 pub fn actions(actions: ActionCount) -> Cost<AbilityId> {
     Cost { mana: None, actions, custom_cost: None }
-}
-
-/// [Cost] for a scheme card
-pub fn scheme() -> Cost<CardId> {
-    Cost { mana: None, actions: 1, custom_cost: None }
 }

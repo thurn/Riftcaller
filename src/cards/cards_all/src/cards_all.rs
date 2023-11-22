@@ -87,6 +87,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::backup_plan);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::planar_sanctuary);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::knowledge_of_the_beyond);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::zain_cunning_diplomat);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);
     DEFINITIONS.insert(cards_beryl::spells_beryl::restoration);
