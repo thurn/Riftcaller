@@ -219,7 +219,7 @@ namespace Spelldawn.Services
       {
         var hit = _raycastHitsTempBuffer[i];
         var displayable = hit.collider.GetComponent<Displayable>();
-        if (displayable && displayable.CanHandleMouseDown())
+        if (displayable && displayable.CanHandleMouseEvents())
         {
           candidates.Add(displayable);
         }

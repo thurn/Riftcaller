@@ -39,6 +39,7 @@ pub enum CustomCardIdentifier {
     Dispel = 3,
     Wound = 4,
     Leyline = 5,
+    StatusMarker = 6,
 }
 
 impl CustomCardIdentifier {

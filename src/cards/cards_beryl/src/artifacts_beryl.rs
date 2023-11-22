@@ -25,7 +25,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
-use game_data::delegate_data::Scope;
+use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::{CardTarget, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
@@ -570,7 +570,19 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
                     }
                     Ok(())
                 }),
-            ),
+            )
+            .delegate(in_play::on_query_card_status_markers(
+                |g, s, card_id, mut markers| {
+                    if Some(*card_id) == g.card(s.card_id()).on_play_state().chosen_card() {
+                        markers.push(CardStatusMarker {
+                            source: s.ability_id(),
+                            marker_kind: CardInfoElementKind::NegativeEffect,
+                            text: text!["Can evade by paying shield cost"],
+                        });
+                    }
+                    markers
+                },
+            )),
             abilities::encounter_boost(),
         ],
         config: CardConfigBuilder::new()

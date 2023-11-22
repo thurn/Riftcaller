@@ -89,6 +89,7 @@ use crate::primitives::{
     RoomId, ShieldValue, Side, TurnNumber,
 };
 use crate::raid_data::PopulateAccessPromptSource;
+use crate::text::TextElement;
 
 /// Identifies the context for a given request to a delegate: which player,
 /// card, & card ability owns the delegate.
@@ -440,6 +441,26 @@ impl HasAbilityId for CanActivateAbility {
     }
 }
 
+#[derive(Debug, Clone)]
+pub enum CardInfoElementKind {
+    Informative,
+    PositiveEffect,
+    NegativeEffect,
+}
+
+/// Marker for a card's ongoing status
+#[derive(Debug, Clone)]
+pub struct CardStatusMarker {
+    /// Ability which created the status. Used to determine the title, image and
+    /// card frame used on the marker card.
+    pub source: AbilityId,
+    /// Whether this effect is positive, negative, etc. Used to determine color
+    /// used in supplemental info.
+    pub marker_kind: CardInfoElementKind,
+    /// Text describing the status.
+    pub text: Vec<TextElement>,
+}
+
 /// The core of the delegate pattern, used to identify which event or which
 /// query this delegate wishes to respond to. Each enum variant here
 /// automatically gets an associated struct value generated for it by the
@@ -625,6 +646,9 @@ pub enum Delegate {
     /// Queries continuous display effects for a card. This has no effect other
     /// than to display in the UI which cards have been modified.
     ContinuousDisplayEffects(QueryDelegate<CardId, HashSet<ContinuousDisplayEffect>>),
+    /// Queries card status markers, which are visual indications of ongoing
+    /// effects.
+    CardStatusMarkers(QueryDelegate<CardId, Vec<CardStatusMarker>>),
 }
 
 impl Delegate {

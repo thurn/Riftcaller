@@ -14,8 +14,8 @@
 
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
-    CardPlayed, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
-    ScoreCard, TransformationFn,
+    CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate,
+    RaidEvent, Scope, ScoreCard, TransformationFn,
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{
@@ -220,6 +220,17 @@ pub fn on_query_mana_cost(transformation: TransformationFn<CardId, Option<ManaVa
 /// face up & in play.
 pub fn on_query_resonance(transformation: TransformationFn<CardId, Resonance>) -> Delegate {
     Delegate::Resonance(QueryDelegate {
+        requirement: requirements::face_up_in_play,
+        transformation,
+    })
+}
+
+/// A delegate which intercepts queries for a card's [CardStatusMarker]s when
+/// its card is face up & in play.
+pub fn on_query_card_status_markers(
+    transformation: TransformationFn<CardId, Vec<CardStatusMarker>>,
+) -> Delegate {
+    Delegate::CardStatusMarkers(QueryDelegate {
         requirement: requirements::face_up_in_play,
         transformation,
     })

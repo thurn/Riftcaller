@@ -90,6 +90,12 @@ namespace Spelldawn.Services
     }
 
     /// <summary>
+    /// Can the user currently browse cards stacked behind a given card. 
+    /// </summary>    
+    public bool CanBrowseStackedCards(Displayable displayable) =>
+      !AnyOverlayOpen() && displayable.GameContext.ShouldRenderArenaCard();    
+    
+    /// <summary>
     /// Can the user currently perform a game action of the provided type?
     /// </summary>
     public bool CanExecuteAction(ClientAction.ActionOneofCase actionType) => actionType switch

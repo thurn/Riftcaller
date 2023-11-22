@@ -23,7 +23,7 @@ use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDef
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardPosition, OnPlayState};
-use game_data::continuous_visual_effect::ContinuousDisplayEffect;
+use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::{
     CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
 };
@@ -486,11 +486,15 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
                 requirements::card_chosen_this_turn,
                 delegates::disallow,
             ))
-            .delegate(delegates::continuous_display_effects(
+            .delegate(delegates::status_markers(
                 requirements::card_chosen_this_turn,
-                |_, _, _, mut effects| {
-                    effects.insert(ContinuousDisplayEffect::CannotSummonThisTurn);
-                    effects
+                |_, s, _, mut markers| {
+                    markers.push(CardStatusMarker {
+                        source: s.ability_id(),
+                        marker_kind: CardInfoElementKind::NegativeEffect,
+                        text: text!["Cannot be summoned this turn"],
+                    });
+                    markers
                 },
             )),
         ],

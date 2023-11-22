@@ -56,13 +56,12 @@ namespace Spelldawn.Game
     }
 
     /// <summary>
-    /// Should return true if this game object can currently handle a MouseDown event.
-    /// <see cref="MouseDown"/> method will only be invoked if this method returns true.
+    /// Should return true if this game object can currently handle a MouseDown or MouseHoverStart event.
     /// </summary>
-    public virtual bool CanHandleMouseDown() => false;
+    public virtual bool CanHandleMouseEvents() => false;
 
     /// <summary>
-    /// Invoked on mouse down. Will only be invoked if <see cref="CanHandleMouseDown"/>
+    /// Invoked on mouse down. Will only be invoked if <see cref="CanHandleMouseEvents"/>
     /// returns true and this is the topmost object hit by the on click raycast.
     /// </summary>
     public virtual void MouseDown()
@@ -83,6 +82,10 @@ namespace Spelldawn.Game
     {
     }
 
+    /// <summary>
+    /// Invoked on mouse hover start. Will only be invoked if <see cref="CanHandleMouseEvents"/>
+    /// returns true and this is the topmost object hit by the on click raycast.
+    /// </summary>    
     public virtual void MouseHoverStart()
     {
     }

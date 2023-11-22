@@ -59,7 +59,7 @@ namespace Spelldawn.Game
       StartCoroutine(_registry.LongPressCardBrowser.BrowseCards(this));
     }
     
-    public override bool CanHandleMouseDown() => true;
+    public override bool CanHandleMouseEvents() => true;
     
     public override void MouseUp()
     {

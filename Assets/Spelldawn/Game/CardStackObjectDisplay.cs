@@ -62,7 +62,8 @@ namespace Spelldawn.Game
 
       displayable.transform.SetParent(transform);
       displayable.transform.localPosition = Vector3.zero;
-      displayable.transform.localScale = Vector3.one;      
+      displayable.transform.localScale = Vector3.one;
+      displayable.transform.localRotation = Quaternion.identity;
       displayable.Parent = this;
       displayable.SetGameContext(GameContext.BehindArena);      
     }

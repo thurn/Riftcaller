@@ -95,7 +95,7 @@ namespace Spelldawn.Game
       _character.SetFacingDirection(direction);
     }
 
-    public override bool CanHandleMouseDown() => !Registry.CapabilityService.AnyOverlayOpen();
+    public override bool CanHandleMouseEvents() => !Registry.CapabilityService.AnyOverlayOpen();
 
     public override void MouseDown()
     {

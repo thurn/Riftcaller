@@ -461,10 +461,10 @@ fn action_card_view(
 }
 
 pub fn wound_card_view(builder: &ResponseBuilder, count: WoundCount) -> CardView {
-    status_card_view(
+    counter_card_view(
         builder,
         Side::Champion,
-        StatusCard {
+        CounterCard {
             identifier: CustomCardIdentifier::SummonProject,
             counters: count,
             image: "wound".to_string(),
@@ -474,7 +474,7 @@ pub fn wound_card_view(builder: &ResponseBuilder, count: WoundCount) -> CardView
     )
 }
 
-pub struct StatusCard {
+pub struct CounterCard {
     pub identifier: CustomCardIdentifier,
     pub counters: u32,
     pub image: String,
@@ -482,7 +482,7 @@ pub struct StatusCard {
     pub text: String,
 }
 
-fn status_card_view(builder: &ResponseBuilder, side: Side, card: StatusCard) -> CardView {
+fn counter_card_view(builder: &ResponseBuilder, side: Side, card: CounterCard) -> CardView {
     CardView {
         card_id: Some(adapters::custom_card_identifier(card.identifier, 0)),
         card_position: Some(positions::for_custom_card(

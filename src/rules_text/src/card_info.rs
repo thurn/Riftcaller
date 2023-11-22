@@ -17,14 +17,8 @@ use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
+use game_data::delegate_data::CardInfoElementKind;
 use protos::spelldawn::{FlexAlign, FlexJustify, TextAlign, WhiteSpace};
-
-#[derive(Debug)]
-pub enum CardInfoElementKind {
-    Informative,
-    PositiveEffect,
-    NegativeEffect,
-}
 
 #[derive(Debug)]
 pub struct CardInfoElement {

@@ -255,7 +255,7 @@ namespace Spelldawn.Game
 
     public Card CloneForDisplay()
     {
-      var clone = Instantiate(gameObject);
+      var clone = Instantiate(gameObject, transform.position, transform.rotation);
       var result = ComponentUtils.GetComponent<Card>(clone);
       
       // This was really annoying to debug, but basically making a copy of the object
@@ -345,16 +345,12 @@ namespace Spelldawn.Game
       UpdateRevealedToOpponent(newContext.ShouldRenderArenaCard());
       RenderContinuousDisplayEffect();      
     }
-    
-    public override bool CanHandleMouseDown()
-    {
-      if (Registry.CapabilityService.CanInfoZoom(this, GameContext) && _isRevealed)
-      {
-        return true;
-      }
 
-      return CanPlay() || CanMove();
-    }
+    public override bool CanHandleMouseEvents() => 
+      GameContext.ShouldRenderArenaCard() || 
+      CanPlay() || 
+      CanMove() || 
+      Registry.CapabilityService.CanInfoZoom(this, GameContext);
 
     public override void MouseHoverStart()
     {
@@ -448,7 +444,9 @@ namespace Spelldawn.Game
 
     public override void MouseUp()
     {
-      if (GameContext.ShouldRenderArenaCard() && _cardStackObjectDisplay && _cardStackObjectDisplay != null)
+      if (Registry.CapabilityService.CanBrowseStackedCards(this) &&
+          _cardStackObjectDisplay &&
+          _cardStackObjectDisplay != null)
       {
         // Browse stacked cards on click.
         StartCoroutine(Registry.LongPressCardBrowser.BrowseCards(_cardStackObjectDisplay));        

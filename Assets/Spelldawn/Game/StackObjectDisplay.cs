@@ -35,8 +35,7 @@ namespace Spelldawn.Game
 
     protected override Vector3? CalculateObjectRotation(int index, int count) => transform.rotation.eulerAngles;
 
-    public override bool CanHandleMouseDown() =>
-      !Errors.CheckNotNull(Registry).CapabilityService.AnyOverlayOpen();
+    public override bool CanHandleMouseEvents() => !Errors.CheckNotNull(Registry).CapabilityService.AnyOverlayOpen();
 
     public override void MouseDown()
     {

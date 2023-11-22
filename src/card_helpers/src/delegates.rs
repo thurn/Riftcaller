@@ -17,8 +17,8 @@ use std::collections::HashSet;
 use game_data::animation_tracker::InitiatedBy;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
-    Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
-    RequirementFn, Scope, ShieldCardInfo, TransformationFn,
+    CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent,
+    RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
 use game_data::game_state::GameState;
 use game_data::primitives::{AbilityId, CardId, ManaValue, RaidId, ShieldValue};
@@ -116,6 +116,13 @@ pub fn can_raid_access_cards(
     transformation: TransformationFn<RaidEvent<()>, Flag>,
 ) -> Delegate {
     Delegate::CanRaidAccessCards(QueryDelegate { requirement, transformation })
+}
+
+pub fn status_markers(
+    requirement: RequirementFn<CardId>,
+    transformation: TransformationFn<CardId, Vec<CardStatusMarker>>,
+) -> Delegate {
+    Delegate::CardStatusMarkers(QueryDelegate { requirement, transformation })
 }
 
 pub fn continuous_display_effects(

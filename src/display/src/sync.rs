@@ -28,18 +28,19 @@ use rules::mana::ManaPurpose;
 use rules::{flags, mana, queries};
 use {adapters, assets};
 
-use crate::{button_prompt, card_sync, interface, positions, tutorial_display};
+use crate::{button_prompt, card_sync, interface, positions, status_markers, tutorial_display};
 
 pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
     let cards = game
         .all_cards()
         .filter(|c| !skip_sending_to_client(c))
         .flat_map(|c| {
-            let mut cards = card_sync::activated_ability_cards(builder, game, c);
-            cards.push(card_sync::card_view(
+            let mut cards = vec![card_sync::card_view(
                 builder,
                 &CardViewContext::Game(rules::get(c.variant), game, c),
-            ));
+            )];
+            cards.append(&mut card_sync::activated_ability_cards(builder, game, c));
+            cards.append(&mut status_markers::build(builder, game, c));
             cards
         })
         .chain(

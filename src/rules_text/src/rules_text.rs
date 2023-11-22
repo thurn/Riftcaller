@@ -19,6 +19,7 @@ pub mod supplemental_info;
 use core_ui::icons;
 use game_data::card_definition::{Ability, AbilityType, AttackBoost, Cost};
 use game_data::card_view_context::CardViewContext;
+use game_data::delegate_data::CardStatusMarker;
 use game_data::primitives::AbilityId;
 use game_data::text::{TextElement, TextToken};
 use protos::spelldawn::RulesText;
@@ -93,6 +94,11 @@ pub fn ability_text(context: &CardViewContext, ability: &Ability) -> String {
     } else {
         build_text(context, &ability.text, true)
     }
+}
+
+/// Builds text for a status marker card.
+pub fn status_marker_text(context: &CardViewContext, status_marker: CardStatusMarker) -> String {
+    build_text(context, &status_marker.text, true)
 }
 
 fn ability_cost_string(cost: &Cost<AbilityId>) -> Vec<TextElement> {

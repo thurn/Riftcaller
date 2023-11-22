@@ -20,12 +20,12 @@ use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::card_view_context::CardViewContext;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
-use game_data::delegate_data::ContinuousDisplayEffectsQuery;
+use game_data::delegate_data::{CardInfoElementKind, ContinuousDisplayEffectsQuery};
 use game_data::primitives::AbilityIndex;
 use game_data::text::{TextElement, TextTokenKind};
 use rules::{dispatch, queries};
 
-use crate::card_info::{CardInfoElement, CardInfoElementKind, SupplementalCardInfo};
+use crate::card_info::{CardInfoElement, SupplementalCardInfo};
 
 /// Builds the supplemental info display for a card, which displays additional
 /// help information and appears on press.
