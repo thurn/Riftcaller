@@ -68,6 +68,10 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(500),
                 secondary_schools: vec![School::Shadow],
                 skills: vec![Skill::Lore, Skill::Persuasion],
+                bio: "Born in the gilded courts of Elandor, Zain's silver tongue and sharp mind \
+                mask a heart marred by treachery. His diplomacy is a chess game, each move \
+                calculated to weave a web of deceit, turning allies into pawns in his quest for \
+                power.",
             })
             .build(),
     }
@@ -125,6 +129,9 @@ pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(500),
                 secondary_schools: vec![School::Law],
                 skills: vec![Skill::Lore, Skill::Persuasion],
+                bio: "Illeas's wisdom was nurtured in the ancient libraries of Elandor, where the \
+                whispers of the past and future converge. A guardian of knowledge, his mind is a \
+                living archive of the ages, every word a thread in the tapestry of history.",
             })
             .build(),
     }

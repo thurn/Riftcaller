@@ -321,6 +321,7 @@ pub struct RiftcallerConfig {
     pub starting_coins: Coins,
     pub secondary_schools: Vec<School>,
     pub skills: Vec<Skill>,
+    pub bio: &'static str,
 }
 
 /// Individual card configuration; properties which are not universal for all
