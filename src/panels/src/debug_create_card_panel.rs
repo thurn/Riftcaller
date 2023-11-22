@@ -118,6 +118,16 @@ impl Component for DebugCreateCardPanel {
                         "Opponent Scored",
                         CardPosition::Scored(self.user_side.opponent()),
                         true,
+                    ))
+                    .child(self.button(
+                        "User Riftcaller",
+                        CardPosition::Riftcaller(self.user_side),
+                        true,
+                    ))
+                    .child(self.button(
+                        "Opponent Riftcaller",
+                        CardPosition::Riftcaller(self.user_side.opponent()),
+                        true,
                     )),
             )
             .build()

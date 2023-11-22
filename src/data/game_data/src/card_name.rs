@@ -124,7 +124,7 @@ pub enum CardName {
     TestMinionShield2Abyssal,
     /// Minion with 5 health, 1 mana cost, and a "deal 1 damage" ability.
     TestMinionDealDamage,
-    /// Minion with 5 health, 1 mana cost, and a "the Champion loses 1 mana"
+    /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the Champion loses 1 mana"
     /// ability.
     TestMinionLoseMana,
     /// Minion with the 'infernal' resonance, MINION_HEALTH health, and an 'end

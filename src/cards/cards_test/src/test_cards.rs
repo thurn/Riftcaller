@@ -26,12 +26,12 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 
-use card_helpers::{*, abilities, combat_abilities};
 use card_helpers::costs::{actions, scheme};
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
-use rules::{curses, deal_damage, mutations};
+use card_helpers::{abilities, combat_abilities, *};
 use rules::mutations::OnZeroStored;
+use rules::{curses, deal_damage, mutations};
 
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -172,7 +172,7 @@ pub fn test_minion_deal_damage(metadata: CardMetadata) -> CardDefinition {
 pub fn test_minion_lose_mana(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionLoseMana,
-        cost: cost(1),
+        cost: cost(test_constants::MINION_COST),
         abilities: vec![combat_abilities::combat_lose_mana::<1>()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
@@ -483,7 +483,10 @@ pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![combat_abilities::combat_deal_damage::<1>(), combat_abilities::combat_end_raid()],
+        abilities: vec![
+            combat_abilities::combat_deal_damage::<1>(),
+            combat_abilities::combat_end_raid(),
+        ],
         config: CardConfigBuilder::new()
             .health(5)
             .shield(1)

@@ -48,7 +48,7 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),
                             TimedEffectData::new(TimedEffect::MagicCircles1(4))
-                                .scale(4.0)
+                                .scale(1.0)
                                 .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Buff01"))
                                 .effect_color(design::BLUE_500),
                         )
