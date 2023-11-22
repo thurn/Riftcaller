@@ -309,6 +309,7 @@ pub enum CardName {
     KnowledgeOfTheBeyond,
     ZainCunningDiplomat,
     IlleasTheHighSage,
+    MagistratesThronehall,
 }
 
 impl CardName {
@@ -320,6 +321,7 @@ impl CardName {
             Self::WarriorsSign => "Warrior's Sign",
             Self::ZainCunningDiplomat => "Zain, Cunning Diplomat",
             Self::IlleasTheHighSage => "Illeas, The High Sage",
+            Self::MagistratesThronehall => "Magistrate's Thronehall",
             _ => "",
         };
 

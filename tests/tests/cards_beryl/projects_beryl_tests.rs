@@ -12,11 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod allies_beryl;
-pub mod artifacts_beryl;
-pub mod evocations_beryl;
-pub mod projects_beryl;
-pub mod riftcallers_beryl;
-pub mod rituals_beryl;
-pub mod schemes_beryl;
-pub mod spells_beryl;
+#[test]
+pub fn magistrates_thronehall() {}

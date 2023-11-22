@@ -578,6 +578,7 @@ pub enum CardSubtype {
     Mage,
     Expedition,
     Augury,
+    Dictate,
 }
 
 /// An interval of time in milliseconds
