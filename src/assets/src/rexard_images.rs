@@ -14,7 +14,7 @@
 
 //! Helpers to construct URLs for card images
 
-use game_data::primitives::Sprite;
+use core_data::game_primitives::Sprite;
 
 /// Builds a sprite URL for a given card image
 pub fn get(pack: RexardPack, name: impl Into<String>) -> Sprite {

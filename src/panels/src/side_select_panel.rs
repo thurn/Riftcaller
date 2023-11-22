@@ -14,11 +14,11 @@
 
 //! Allows the user to select the Side they are playing as in an adventure
 
+use core_data::game_primitives::Side;
 use core_ui::button::Button;
 use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
-use game_data::primitives::Side;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify};
 use user_action_data::UserAction;

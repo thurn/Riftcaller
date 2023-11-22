@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{HasAbilityId, WoundCount};
 use game_data::game_state::GameState;
-use game_data::primitives::{HasAbilityId, WoundCount};
 
 /// Give the Champion player `quantity` wounds, which decreases their maximum
 /// hand size.

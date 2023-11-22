@@ -67,6 +67,11 @@ use std::fmt;
 use std::fmt::Formatter;
 
 use anyhow::Result;
+use core_data::game_primitives::{
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
+    HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue, MinionEncounterId, RaidId,
+    RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
+};
 use enum_kinds::EnumKind;
 use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
@@ -82,11 +87,6 @@ use crate::card_state::{CardData, CardPosition};
 use crate::continuous_visual_effect::ContinuousDisplayEffect;
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
-use crate::primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
-    HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue, MinionEncounterId, RaidId,
-    RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
-};
 use crate::raid_data::PopulateAccessPromptSource;
 use crate::text::TextElement;
 

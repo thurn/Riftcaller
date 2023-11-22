@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{ActionCount, DamageAmount, ManaValue, PowerChargeValue};
 use enum_kinds::EnumKind;
-
-use crate::primitives::{ActionCount, DamageAmount, ManaValue, PowerChargeValue};
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TextElement {

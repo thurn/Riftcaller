@@ -19,7 +19,7 @@ use adventure_data::adventure::{
 };
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
-use game_data::primitives::CardType;
+use core_data::game_primitives::CardType;
 use with_error::{fail, verify};
 
 /// Handles an incoming [AdventureAction] and produces a client response.

@@ -14,8 +14,8 @@
 
 use std::sync::Mutex;
 
+use core_data::game_primitives::GameId;
 use game_data::player_name::PlayerId;
-use game_data::primitives::GameId;
 use game_data::tutorial_data::TutorialData;
 use maplit::hashmap;
 use player_data::{PlayerState, PlayerStatus};

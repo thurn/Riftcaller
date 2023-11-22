@@ -16,6 +16,7 @@
 //! action can currently be taken
 
 use constants::game_constants;
+use core_data::game_primitives::{AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, Side};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -25,7 +26,6 @@ use game_data::delegate_data::{
 };
 use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
 use game_data::game_state::{GamePhase, GameState, TurnState};
-use game_data::primitives::{AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, Side};
 use game_data::raid_data::RaidStatus;
 use game_data::utils;
 

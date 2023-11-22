@@ -12,6 +12,7 @@ test = false
 
 [dependencies]
 game_data = { path = "../data/game_data", version = "0.0.0" }
+core_data = { path = "../data/core_data", version = "0.0.0" }
 player_data = { path = "../data/player_data", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
 

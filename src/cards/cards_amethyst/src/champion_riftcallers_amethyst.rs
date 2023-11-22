@@ -17,11 +17,11 @@ use card_helpers::effects::Effects;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::text::trigger_text;
 use card_helpers::*;
+use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
-use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::{mana, mutations, CardDefinitionExt};
 
 pub fn ennera_imris(_: CardMetadata) -> CardDefinition {

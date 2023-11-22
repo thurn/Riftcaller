@@ -13,13 +13,13 @@
 // limitations under the License.
 
 use card_helpers::{costs, text, this};
+use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
     ActivatedAbility, CardConfigBuilder, CardDefinition, SchemePoints,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
-use game_data::primitives::{CardType, Rarity, School, Side};
 use game_data::text::TextToken::*;
 use rules::{mana, mutations};
 

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::Side;
 use core_ui::icons;
 use game_data::game_actions::{GameAction, PromptAction, PromptChoice, PromptChoiceLabel};
 use game_data::game_effect::GameEffect;
-use game_data::primitives::Side;
 
 use crate::response_button::ResponseButton;
 

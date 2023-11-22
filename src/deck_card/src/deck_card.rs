@@ -19,13 +19,13 @@ pub mod deck_card_slot;
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
 use adapters::response_builder::{ResponseBuilder, ResponseState};
+use core_data::game_primitives::{Milliseconds, Side};
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
 use display::card_sync;
 use game_data::card_name::CardVariant;
 use game_data::card_view_context::CardViewContext;
-use game_data::primitives::{Milliseconds, Side};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::studio_appear_effect::StudioAppear;
 use protos::spelldawn::studio_display::Display;

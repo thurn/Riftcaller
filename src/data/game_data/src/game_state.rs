@@ -17,6 +17,10 @@
 #![allow(clippy::use_self)] // Required to use EnumKind
 
 use anyhow::Result;
+use core_data::game_primitives::{
+    ActionCount, CardId, CurseCount, GameId, ItemLocation, LeylineCount, ManaValue, PointsValue,
+    RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
+};
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
@@ -30,10 +34,6 @@ use crate::delegate_data::DelegateCache;
 use crate::game_actions::GamePrompt;
 use crate::history_data::{GameHistory, HistoryEvent};
 use crate::player_name::PlayerId;
-use crate::primitives::{
-    ActionCount, CardId, CurseCount, GameId, ItemLocation, LeylineCount, ManaValue, PointsValue,
-    RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
-};
 use crate::raid_data::RaidData;
 use crate::state_machines::StateMachines;
 use crate::tutorial_data::GameTutorialState;

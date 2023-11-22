@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{AbilityId, CardId, GameObjectId, HasAbilityId, HasCardId};
 use game_data::animation_tracker::GameAnimation;
 use game_data::game_state::GameState;
-use game_data::primitives::{AbilityId, CardId, GameObjectId, HasAbilityId, HasCardId};
 use game_data::special_effects::{Projectile, SpecialEffect, TimedEffectData};
 
 #[derive(Clone, Debug, Default)]
@@ -60,7 +60,7 @@ impl Effects {
     }
 
     /// Creates a [SpecialEffect::TimedEffect] playing a visual effect on the
-    /// indicated target.    
+    /// indicated target.
     pub fn timed_effect(
         mut self,
         target: impl Into<GameObjectId>,

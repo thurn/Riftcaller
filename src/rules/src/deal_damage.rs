@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{HasAbilityId, Side};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DealtDamage, DealtDamageEvent, WillDealDamageEvent};
 use game_data::game_state::{GamePhase, GameState};
 use game_data::history_data::HistoryEvent;
-use game_data::primitives::{HasAbilityId, Side};
 use game_data::random;
 use game_data::state_machines::{DealDamageData, DealDamageStep};
 use with_error::{verify, WithError};

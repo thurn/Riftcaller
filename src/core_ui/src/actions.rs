@@ -16,8 +16,8 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 
 use adventure_data::adventure_action::AdventureAction;
+use core_data::game_primitives::ResponseContext;
 use game_data::game_actions::{GameAction, GameStateAction};
-use game_data::primitives::ResponseContext;
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, CommandList, GameCommand, LoggingMetadata, StandardAction};

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::Side;
 use core_ui::button::Button;
 use core_ui::list_cell::ListCell;
 use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use game_data::player_name::AIPlayer;
-use game_data::primitives::Side;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use user_action_data::DebugAction;
 

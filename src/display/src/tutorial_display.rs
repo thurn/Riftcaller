@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use adapters::response_builder::ResponseBuilder;
+use core_data::game_primitives::{Milliseconds, RoomId};
 use core_ui::design::{BackgroundColor, BorderColor, FontColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use game_data::primitives::{Milliseconds, RoomId};
 use game_data::tutorial_data::{GameTutorialState, TooltipAnchor, TutorialDisplay};
 use protos::spelldawn::arrow_bubble_anchor::BubbleAnchor;
 use protos::spelldawn::tutorial_effect::TutorialEffectType;

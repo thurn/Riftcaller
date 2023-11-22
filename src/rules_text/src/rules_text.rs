@@ -16,11 +16,11 @@ pub mod card_icons;
 pub mod card_info;
 pub mod supplemental_info;
 
+use core_data::game_primitives::AbilityId;
 use core_ui::icons;
 use game_data::card_definition::{Ability, AbilityType, AttackBoost, Cost};
 use game_data::card_view_context::CardViewContext;
 use game_data::delegate_data::CardStatusMarker;
-use game_data::primitives::AbilityId;
 use game_data::text::{TextElement, TextToken};
 use protos::spelldawn::RulesText;
 

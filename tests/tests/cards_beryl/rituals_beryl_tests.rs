@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::Side;
 use game_data::card_name::CardName;
 use game_data::card_name::CardName::TestScheme3_10;
-use game_data::primitives::Side;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 

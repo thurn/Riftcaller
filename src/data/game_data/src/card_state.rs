@@ -18,6 +18,10 @@
 
 use std::cmp::Ordering;
 
+use core_data::game_primitives::{
+    BanishEventId, CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId,
+    RoomLocation, Side,
+};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 
@@ -25,10 +29,6 @@ use crate::card_name::CardVariant;
 use crate::game_actions::CardTarget;
 #[allow(unused_imports)] // Used in Rustdocs
 use crate::history_data::HistoryEvent;
-use crate::primitives::{
-    BanishEventId, CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId,
-    RoomLocation, Side,
-};
 
 /// Used to record a card position when one card has been banished by another
 /// card for later retrieval.

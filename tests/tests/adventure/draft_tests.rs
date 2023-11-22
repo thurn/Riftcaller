@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use adventure_data::adventure::{CardChoice, Coins, DraftData, TileEntity};
+use core_data::game_primitives::Side;
 use game_data::card_name::{CardName, CardVariant};
-use game_data::primitives::Side;
 use test_utils::client_interface::{self};
 use test_utils::test_adventure::TestAdventure;
 use test_utils::*;

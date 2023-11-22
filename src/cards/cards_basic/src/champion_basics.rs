@@ -18,12 +18,12 @@ use card_helpers::effects::Effects;
 use card_helpers::text::trigger_text;
 use card_helpers::this::on_activated;
 use card_helpers::*;
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::{add_stored_mana, OnZeroStored};
 use rules::{mana, mutations};

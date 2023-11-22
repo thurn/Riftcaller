@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{CardId, Side};
 use rand::prelude::{IteratorRandom, SliceRandom};
 
 use crate::card_state::CardPosition;
 use crate::game_state::GameState;
-use crate::primitives::{CardId, Side};
 
 /// Return a randomly-selected [CardId] of cards owned by the `side` player in
 /// the given [CardPosition], or None if no such card exists.

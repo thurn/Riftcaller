@@ -14,11 +14,11 @@
 
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
+use core_data::game_primitives::{HasAbilityId, School};
 use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::delegate_data::{CardStatusMarker, CardStatusMarkersQuery};
 use game_data::game_state::GameState;
-use game_data::primitives::{HasAbilityId, School};
 use protos::spelldawn::{
     CardIdentifier, CardPrefab, CardTitle, CardView, RevealedCardView, RulesText,
 };

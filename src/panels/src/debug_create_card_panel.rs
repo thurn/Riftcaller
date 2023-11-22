@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{RoomId, RoomLocation, Side};
 use core_ui::button::Button;
 use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
-use game_data::primitives::{RoomId, RoomLocation, Side};
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexWrap};
 

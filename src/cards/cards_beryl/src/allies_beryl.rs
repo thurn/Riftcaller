@@ -14,6 +14,9 @@
 
 use card_helpers::effects::Effects;
 use card_helpers::{costs, history, in_play, show_prompt, text, this};
+use core_data::game_primitives::{
+    CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
+};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{Ability, ActivatedAbility, CardConfig, CardDefinition};
@@ -23,7 +26,6 @@ use game_data::card_state::CardCounter;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::primitives::{CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;

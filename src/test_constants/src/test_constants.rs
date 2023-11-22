@@ -15,8 +15,8 @@
 //! Standard values used in unit tests.
 
 use adventure_data::adventure::Coins;
+use core_data::game_primitives::{HealthValue, ManaValue, RaidId, RoomId};
 use game_data::card_definition::Resonance;
-use game_data::primitives::{HealthValue, ManaValue, RaidId, RoomId};
 use protos::spelldawn::RoomIdentifier;
 
 /// The title returned for hidden cards

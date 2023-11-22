@@ -12,4 +12,5 @@ test = false
 
 [dependencies]
 game_data = { path = "../data/game_data", version = "0.0.0" }
+core_data = { path = "../data/core_data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }

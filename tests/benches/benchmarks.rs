@@ -25,12 +25,12 @@ use ai_testing::run_matchup_impl::{self, Args, Verbosity};
 use ai_tree_search::alpha_beta::AlphaBetaAlgorithm;
 use ai_tree_search::minimax::MinimaxAlgorithm;
 use anyhow::Result;
+use core_data::game_primitives::{GameId, Side};
 use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{GameId, Side};
 use rules::{dispatch, mutations};
 
 criterion_group!(

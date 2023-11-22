@@ -13,13 +13,14 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{
+    CardId, InitiatedBy, ManaValue, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
+};
 use serde::{Deserialize, Serialize};
 
-use crate::primitives::InitiatedBy;
 use crate::delegate_data::RaidEvent;
 use crate::game_actions::RazeCardActionType;
 use crate::game_state::RaidJumpRequest;
-use crate::primitives::{CardId, ManaValue, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct WeaponInteraction {
@@ -211,7 +212,7 @@ pub struct RaidData {
     pub encounter: usize,
     /// Identifier for the current minion encounter, if any
     pub minion_encounter_id: Option<MinionEncounterId>,
-    /// Identifier for the current room access, if any    
+    /// Identifier for the current room access, if any
     pub room_access_id: Option<RoomAccessId>,
     /// Cards which have been accessed as part of this raid's Access phase.
     pub accessed: Vec<CardId>,

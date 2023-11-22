@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{CurseCount, HasAbilityId};
 use game_data::delegate_data::{CursesReceivedEvent, WillReceiveCursesEvent};
 use game_data::game_state::{GamePhase, GameState};
 use game_data::history_data::HistoryEvent;
-use game_data::primitives::{CurseCount, HasAbilityId};
 use game_data::state_machines::{GiveCursesData, GiveCursesStep};
 use with_error::verify;
 

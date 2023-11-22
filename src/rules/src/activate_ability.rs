@@ -13,13 +13,13 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{AbilityId, InitiatedBy, Side};
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{AbilityType, Cost};
 use game_data::delegate_data::{AbilityActivated, ActivateAbilityEvent};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::{GamePhase, GameState};
 use game_data::history_data::{AbilityActivation, AbilityActivationType, HistoryEvent};
-use game_data::primitives::{AbilityId, InitiatedBy, Side};
 use game_data::state_machines::{ActivateAbilityData, ActivateAbilityStep};
 use with_error::{fail, verify};
 

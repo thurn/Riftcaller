@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, ManaValue, RaidId, ShieldValue};
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
     CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent,
     RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::{AbilityId, CardId, InitiatedBy, ManaValue, RaidId, ShieldValue};
 use game_data::raid_data::PopulateAccessPromptSource;
 
 /// A [TransformationFn] which invokes [Flag::allow] to enable an action.

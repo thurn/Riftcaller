@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{CardId, HasAbilityId, RoomId};
 use game_data::delegate_data::{RaidEvent, UsedWeapon};
 use game_data::game_state::GameState;
 use game_data::history_data::{AbilityActivation, CardChoice, HistoryEvent};
-use game_data::primitives::{CardId, HasAbilityId, RoomId};
 
 /// Returns the record of game events which happened on the current
 /// player's turn so far, not including the game action currently being

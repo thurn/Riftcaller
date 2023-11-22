@@ -13,6 +13,7 @@ doctest = false
 [dependencies]
 constants = { path = "../constants", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
+core_data = { path = "../data/core_data", version = "0.0.0" }
 with_error = { path = "../with_error", version = "0.0.0" }
 
 anyhow = { features = ["backtrace"], version = "1.0.75" }

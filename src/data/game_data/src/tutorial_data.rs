@@ -14,11 +14,11 @@
 
 use std::collections::HashSet;
 
+use core_data::game_primitives::{Milliseconds, RoomId, Side};
 use serde::{Deserialize, Serialize};
 
 use crate::card_name::CardName;
 use crate::game_actions::CardTarget;
-use crate::primitives::{Milliseconds, RoomId, Side};
 
 /// Displays an arrow pointing to a specific piece of the user interface
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq)]

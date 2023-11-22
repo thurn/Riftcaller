@@ -16,12 +16,12 @@
 
 pub mod rexard_images;
 
+use core_data::game_primitives::{CardType, Rarity, School, Side, Sprite};
 use core_ui::design;
 use core_ui::design::FontColor;
 use game_data::card_definition::Resonance;
 use game_data::card_name::CardMetadata;
 use game_data::character_preset::CharacterPreset;
-use game_data::primitives::{CardType, Rarity, School, Side, Sprite};
 use game_data::special_effects::{
     FantasyEventSounds, FireworksSound, Projectile, SoundEffect, TimedEffect,
 };

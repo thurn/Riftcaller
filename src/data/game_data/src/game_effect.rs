@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{
+    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, GameObjectId, InitiatedBy, ManaValue,
+    RoomId, Side,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::card_state::{CardPosition, OnPlayState};
 use crate::history_data::CardChoice;
-use crate::primitives::{
-    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, GameObjectId, InitiatedBy, ManaValue,
-    RoomId, Side,
-};
 
 /// An arbitrary modification to the state of an ongoing game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

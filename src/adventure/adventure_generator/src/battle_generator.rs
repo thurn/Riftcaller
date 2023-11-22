@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use adventure_data::adventure::{BattleData, Coins};
+use core_data::game_primitives::Side;
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::player_name::AIPlayer;
-use game_data::primitives::Side;
 
 pub fn create(side: Side) -> BattleData {
     BattleData {

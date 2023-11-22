@@ -14,6 +14,7 @@
 
 use adventure_data::adventure::BattleData;
 use adventure_data::adventure_action::AdventureAction;
+use core_data::game_primitives::{DeckId, School};
 use core_ui::button::Button;
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::full_screen_image::FullScreenImage;
@@ -24,7 +25,6 @@ use core_ui::style::{self, Corner};
 use core_ui::text::Text;
 use deck_card::CARD_ASPECT_RATIO;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{DeckId, School};
 use panel_address::{Panel, PanelAddress};
 use player_data::PlayerState;
 use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition};

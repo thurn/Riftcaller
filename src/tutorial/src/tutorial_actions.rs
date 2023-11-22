@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{CardId, RoomLocation, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game_actions::{GameAction, GameStateAction, RaidAction};
 use game_data::game_state::{GameState, MulliganDecision};
-use game_data::primitives::{CardId, RoomLocation, Side};
 use game_data::tutorial_data::{
     TutorialDisplay, TutorialGameStateTrigger, TutorialOpponentAction, TutorialStep,
     TutorialTrigger,

@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use card_helpers::costs;
+use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardType, Rarity, School, Side};
 
 pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

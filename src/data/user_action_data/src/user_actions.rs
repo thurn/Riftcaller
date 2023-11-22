@@ -17,14 +17,14 @@ use std::fmt;
 use adventure_data::adventure::Coins;
 use adventure_data::adventure_action::AdventureAction;
 use convert_case::{Case, Casing};
+use core_data::game_primitives::{
+    ActionCount, CurseCount, DeckId, GameId, ManaValue, PointsValue, Side, WoundCount,
+};
 use enum_iterator::Sequence;
 use game_data::card_name::{CardMetadata, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game_actions::GameAction;
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{
-    ActionCount, CurseCount, DeckId, GameId, ManaValue, PointsValue, Side, WoundCount,
-};
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;
 

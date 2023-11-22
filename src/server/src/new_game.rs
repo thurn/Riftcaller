@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::Side;
 use database::Database;
 use game_data::deck::Deck;
 use game_data::game_state::{GameConfiguration, GameState};
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::Side;
 use player_data::{PlayerState, PlayerStatus};
 use rules::{dispatch, mutations};
 use tracing::info;

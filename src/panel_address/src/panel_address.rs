@@ -15,12 +15,12 @@
 //! Addresses for user interface panels
 
 use adventure_data::adventure::TilePosition;
+use core_data::game_primitives::{DeckId, Side};
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
 use enum_kinds::EnumKind;
 use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
-use game_data::primitives::{DeckId, Side};
 use player_data::PlayerActivityKind;
 use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};

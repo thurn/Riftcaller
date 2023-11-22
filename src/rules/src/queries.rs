@@ -16,6 +16,10 @@
 
 use anyhow::Result;
 use constants::game_constants;
+use core_data::game_primitives::{
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardType, HealthValue, ItemLocation,
+    ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
+};
 use game_data::card_definition::{
     AbilityType, AttackBoost, CardStats, Resonance, TargetRequirement,
 };
@@ -27,10 +31,6 @@ use game_data::delegate_data::{
 };
 use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
 use game_data::game_state::GameState;
-use game_data::primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardType, HealthValue, ItemLocation,
-    ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
-};
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
 use crate::{dispatch, CardDefinitionExt};

@@ -14,9 +14,9 @@
 
 use adapters::response_builder::{ResponseBuilder, ResponseState};
 use anyhow::Result;
+use core_data::game_primitives::Side;
 use game_data::game_actions::DisplayPreference;
 use game_data::game_state::GameState;
-use game_data::primitives::Side;
 use protos::spelldawn::game_command::Command;
 
 use crate::{animations, game_over, sync};

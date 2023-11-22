@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{
+    ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypts, RoomIdMarker,
+    RoomIdSanctum, RoomIdVault, TurnNumber,
+};
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
     CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate, MutationFn, QueryDelegate,
     RaidEvent, Scope, ScoreCard, TransformationFn,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::{
-    ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypts, RoomIdMarker,
-    RoomIdSanctum, RoomIdVault, TurnNumber,
-};
 
 use crate::{delegates, requirements};
 

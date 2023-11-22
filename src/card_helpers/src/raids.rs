@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{CardId, InitiatedBy, RaidId};
 use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, InitiatedBy, RaidId};
 use game_data::raid_data::{RaidState, RaidStatus};
 
 /// Starts a new raid from a card ability associated with the provided [Scope]

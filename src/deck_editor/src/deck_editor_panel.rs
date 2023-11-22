@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 
+use core_data::game_primitives::DeckId;
 use core_ui::button::{IconButton, IconButtonType};
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::panels::Panels;
@@ -21,7 +22,6 @@ use core_ui::prelude::*;
 use core_ui::{icons, style};
 use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
-use game_data::primitives::DeckId;
 use panel_address::{CollectionBrowserFilters, DeckEditorData, Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerState;
 use protos::spelldawn::FlexJustify;

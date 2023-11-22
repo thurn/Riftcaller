@@ -14,12 +14,12 @@
 
 //! Shows an initial introduction screen to the deck editor window
 
+use core_data::game_primitives::DeckId;
 use core_ui::button::{Button, ButtonType};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::prompt_panel::PromptPanel;
 use core_ui::style;
-use game_data::primitives::DeckId;
 use panel_address::{DeckEditorData, Panel, PanelAddress, PlayerPanel, StandardPanel};
 use player_data::PlayerState;
 use screen_overlay::ScreenOverlay;

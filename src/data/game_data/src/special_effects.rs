@@ -14,8 +14,9 @@
 
 //! Types which describe custom visual & sound effects used during play
 
+use core_data::game_primitives::{CardId, GameObjectId, Milliseconds};
+
 use crate::animation_tracker::TargetedInteraction;
-use crate::primitives::{CardId, GameObjectId, Milliseconds};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum Projectile {

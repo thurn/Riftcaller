@@ -21,17 +21,17 @@ use std::fmt;
 use std::fmt::{Debug, Formatter};
 
 use anyhow::Result;
+use core_data::game_primitives::{
+    AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
+    HealthValue, ManaValue, PointsValue, PowerChargeValue, ProgressValue, Rarity, RazeCost, RoomId,
+    School, ShieldValue, Side, Sprite,
+};
 use enum_kinds::EnumKind;
 
 use crate::card_name::{CardMetadata, CardName, CardVariant};
 use crate::card_set_name::CardSetName;
 use crate::delegate_data::Delegate;
 use crate::game_state::GameState;
-use crate::primitives::{
-    AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
-    HealthValue, ManaValue, PointsValue, PowerChargeValue, ProgressValue, Rarity, RazeCost, RoomId,
-    School, ShieldValue, Side, Sprite,
-};
 use crate::special_effects::{ProjectileData, TimedEffectData};
 use crate::text::TextElement;
 

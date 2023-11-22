@@ -21,6 +21,7 @@ core_ui = { path = "../core_ui", version = "0.0.0" }
 database = { path = "../database", version = "0.0.0" }
 decklists = { path = "../decklists", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
+core_data = { path = "../data/core_data", version = "0.0.0" }
 player_data = { path = "../data/player_data", version = "0.0.0" }
 protos = { path = "../protos", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }

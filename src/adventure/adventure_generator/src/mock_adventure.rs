@@ -19,9 +19,9 @@ use std::collections::{HashMap, HashSet};
 use adventure_data::adventure::{
     AdventureConfiguration, AdventureState, RegionId, TileEntity, TilePosition, TileState,
 };
+use core_data::game_primitives::AdventureId;
 use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
-use game_data::primitives::AdventureId;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;

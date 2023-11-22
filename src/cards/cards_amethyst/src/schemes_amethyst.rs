@@ -19,13 +19,13 @@ use assets::rexard_images::RexardPack;
 use card_helpers::costs::scheme;
 use card_helpers::text::trigger_text;
 use card_helpers::{text, *};
+use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, SchemePoints,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate};
-use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::mutations::SummonMinion;
 use rules::{mana, mutations, queries};
 

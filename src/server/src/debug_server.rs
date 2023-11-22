@@ -17,6 +17,9 @@ use std::mem;
 
 use ::panels::add_to_zone_panel::AddToZonePanel;
 use anyhow::Result;
+use core_data::game_primitives::{
+    AbilityId, AbilityIndex, CardId, GameId, InitiatedBy, RoomId, RoomLocation, Side,
+};
 use core_ui::actions::InterfaceAction;
 use core_ui::panels;
 use database::Database;
@@ -26,9 +29,6 @@ use game_data::card_state::CardPosition;
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{
-    AbilityId, AbilityIndex, CardId, GameId, InitiatedBy, RoomId, RoomLocation, Side,
-};
 use once_cell::sync::Lazy;
 use panel_address::Panel;
 use player_data::PlayerStatus;

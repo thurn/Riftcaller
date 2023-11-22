@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::{CardName, CardVariant};
-use game_data::primitives::{RoomId, Side};
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_session::TestSession;
 use test_utils::*;

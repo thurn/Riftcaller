@@ -14,17 +14,17 @@
 
 use std::collections::HashMap;
 
+use core_data::game_primitives::{
+    AbilityId, CardId, CurseCount, InitiatedBy, MinionEncounterId, ProgressValue, RaidId,
+    RoomAccessId, RoomId,
+};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::primitives::InitiatedBy;
 use crate::delegate_data::{RaidEvent, UsedWeapon};
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
-use crate::primitives::{
-    AbilityId, CardId, CurseCount, MinionEncounterId, ProgressValue, RaidId, RoomAccessId, RoomId,
-};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub enum AbilityActivationType {
@@ -75,7 +75,7 @@ pub enum HistoryEvent {
     DrawCardAction(CardId),
     /// Curse removed via the standard game action
     RemoveCurseAction,
-    /// Evocation destroyed via the standard game action    
+    /// Evocation destroyed via the standard game action
     DispelEvocationAction,
     /// A card was played, either via the standard game action or initiated by
     /// an ability of another card.

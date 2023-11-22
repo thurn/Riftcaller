@@ -15,12 +15,12 @@
 use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
+use core_data::game_primitives::{
+    AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
+};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, DisplayPreference, GamePrompt};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
-use game_data::primitives::{
-    AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
-};
 use game_data::raid_data::{RaidData, RaidDisplayState};
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{

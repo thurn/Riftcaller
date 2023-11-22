@@ -17,6 +17,7 @@
 //! users.
 
 use adventure_data::adventure::Coins;
+use core_data::game_primitives::Side;
 use core_ui::actions::InterfaceAction;
 use core_ui::button::Button;
 use core_ui::icons;
@@ -24,7 +25,6 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use game_data::card_name::CardMetadata;
-use game_data::primitives::Side;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use player_data::PlayerActivityKind;
 use protos::spelldawn::client_debug_command::DebugCommand;

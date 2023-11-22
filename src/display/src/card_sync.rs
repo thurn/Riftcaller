@@ -15,6 +15,10 @@
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
 use constants::game_constants;
+use core_data::game_primitives::{
+    AbilityId, CardId, CardType, ItemLocation, ManaValue, Rarity, RoomId, RoomLocation, School,
+    Side, WoundCount,
+};
 use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::{CardState, OnPlayState};
@@ -23,10 +27,6 @@ use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::ContinuousDisplayEffectQuery;
 use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::game_state::GameState;
-use game_data::primitives::{
-    AbilityId, CardId, CardType, ItemLocation, ManaValue, Rarity, RoomId, RoomLocation, School,
-    Side, WoundCount,
-};
 use game_data::special_effects::TimedEffect;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{

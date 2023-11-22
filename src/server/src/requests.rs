@@ -15,6 +15,7 @@
 use std::fmt::{self, Display};
 
 use anyhow::Result;
+use core_data::game_primitives::GameId;
 use core_ui::prelude::*;
 use database::Database;
 use display::set_display_preference;
@@ -22,7 +23,6 @@ use game_data::animation_tracker::{AnimationState, AnimationTracker};
 use game_data::game_actions::DisplayPreference;
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
-use game_data::primitives::GameId;
 use panel_address::PanelAddress;
 use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;

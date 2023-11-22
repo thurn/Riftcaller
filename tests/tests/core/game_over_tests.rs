@@ -13,12 +13,12 @@
 // limitations under the License.
 
 use adventure_data::adventure::{BattleData, Coins, TileEntity, TilePosition};
+use core_data::game_primitives::Side;
 use core_ui::actions::InterfaceAction;
 use game_data::card_name::CardName;
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::game_actions::GameAction;
 use game_data::player_name::AIPlayer;
-use game_data::primitives::Side;
 use insta::assert_snapshot;
 use test_utils::summarize::Summary;
 use test_utils::test_adventure::TestAdventure;

@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use adapters;
+use core_data::game_primitives::CardId;
 use core_ui::actions::{InterfaceAction, NoAction};
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use game_data::primitives::CardId;
 use protos::spelldawn::{AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify};
 
 pub struct ResponseButton {

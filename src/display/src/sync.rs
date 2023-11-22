@@ -16,11 +16,11 @@
 
 use adapters::response_builder::ResponseBuilder;
 use constants::game_constants;
+use core_data::game_primitives::{RoomId, School, Side};
 use game_data::card_state::{CardPositionKind, CardState};
 use game_data::card_view_context::CardViewContext;
 use game_data::character_preset::CharacterPreset;
 use game_data::game_state::GameState;
-use game_data::primitives::{RoomId, School, Side};
 use protos::spelldawn::{
     ActionTrackerView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
 };

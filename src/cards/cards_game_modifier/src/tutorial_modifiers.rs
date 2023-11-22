@@ -15,11 +15,11 @@
 use assets::rexard_images;
 use card_helpers::requirements::always;
 use card_helpers::{text, *};
+use core_data::game_primitives::{CardType, Rarity, RoomId, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition, Cost};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate};
-use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
 
 fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
     CardDefinition {

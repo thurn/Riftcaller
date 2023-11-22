@@ -17,14 +17,13 @@
 use assets::rexard_images;
 use card_helpers::raids::{add_sanctum_access, add_vault_access};
 use card_helpers::{text, *};
-use game_data::primitives::InitiatedBy;
+use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomId, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate};
-use game_data::primitives::{CardType, Rarity, RoomId, School, Side};
 use rules::{flags, mana, mutations, CardDefinitionExt};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {

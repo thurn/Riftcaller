@@ -17,6 +17,7 @@ use std::fmt::{self, Display, Formatter};
 use std::str::FromStr;
 
 use anyhow::Result;
+use core_data::game_primitives::{AdventureId, Side};
 use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
@@ -24,7 +25,6 @@ use game_data::card_name::CardVariant;
 use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::deck::Deck;
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{AdventureId, Side};
 use rand::distributions::uniform::{SampleRange, SampleUniform};
 use rand::prelude::IteratorRandom;
 use rand::seq::SliceRandom;

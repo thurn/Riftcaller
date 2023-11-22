@@ -18,10 +18,10 @@ pub mod response_builder;
 
 use adventure_data::adventure::TilePosition;
 use anyhow::Result;
-use game_data::character_preset::CharacterFacing;
-use game_data::primitives::{
+use core_data::game_primitives::{
     AbilityId, AbilityIndex, CardId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
 };
+use game_data::character_preset::CharacterFacing;
 use protos::spelldawn::game_object_identifier::Id;
 use protos::spelldawn::{
     CardIdentifier, GameCharacterFacingDirection, GameObjectIdentifier, MapPosition, PlayerSide,

@@ -18,12 +18,12 @@ use card_helpers::costs::scheme;
 use card_helpers::text::trigger_text;
 use card_helpers::this::on_activated;
 use card_helpers::*;
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, Resonance, SchemePoints,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{mana, mutations};
 

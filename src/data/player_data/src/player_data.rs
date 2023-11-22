@@ -14,10 +14,10 @@
 
 use adventure_data::adventure::{AdventureState, BattleData, TileEntity};
 use anyhow::Result;
+use core_data::game_primitives::{DeckId, GameId, Side};
 use enum_kinds::EnumKind;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{DeckId, GameId, Side};
 use game_data::tutorial_data::TutorialData;
 use serde::{Deserialize, Serialize};
 use user_action_data::NewGameAction;

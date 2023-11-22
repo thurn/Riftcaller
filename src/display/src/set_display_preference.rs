@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use adapters::response_builder::{ResponseBuilder, ResponseState};
+use core_data::game_primitives::Side;
 use game_data::game_actions::DisplayPreference;
 use game_data::game_state::{GamePhase, GameState};
-use game_data::primitives::Side;
 
 use crate::{positions, sync};
 

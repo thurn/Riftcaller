@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{AttackValue, CardId, HasAbilityId, HasCardId};
 use game_data::delegate_data::{
     AbilityActivated, CanActivateAbility, CardPlayed, Delegate, DiscardedCard, EventDelegate, Flag,
     MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::{AttackValue, CardId, HasAbilityId, HasCardId};
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.

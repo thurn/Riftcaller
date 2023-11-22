@@ -18,13 +18,13 @@
 use actions::legal_actions;
 use adventure_data::adventure::{Coins, TilePosition, TileState};
 use anyhow::Result;
+use core_data::game_primitives::{GameId, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
 use game_data::game_actions::GameAction;
 #[allow(unused_imports)] // Used in docs
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{GameId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{CardIdentifier, ClientAction, ClientMetadata, CommandList, GameRequest};
 use rules::mutations;
@@ -187,7 +187,7 @@ impl TestSession {
     /// will correctly update the card's sorting key, however.
     ///
     /// Returns the client [CardIdentifier] for the drawn card. Panics if no
-    /// test cards remain in the user's deck.    
+    /// test cards remain in the user's deck.
     pub fn add_to_hand(&mut self, card_name: CardName) -> CardIdentifier {
         self.add_variant_to_hand(CardVariant::standard(card_name))
     }

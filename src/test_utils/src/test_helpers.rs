@@ -18,10 +18,10 @@ use std::hash::Hash;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use adapters::ServerCardId;
+use core_data::game_primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue, RoomId};
 use game_data::card_definition::Resonance;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue, RoomId};
 use protos::spelldawn::{card_target, CardIdentifier, CardTarget};
 use ulid::Ulid;
 

@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::CardId;
 
 use crate::card_definition::CardDefinition;
 use crate::card_state::CardState;
 use crate::game_state::GameState;
-use crate::primitives::CardId;
 
 /// Provides the context in which a card view is being displayed, i.e. either
 /// during an active game or in a deck editor.

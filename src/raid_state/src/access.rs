@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::{CardId, CardType, RoomId, Side};
 use game_data::card_state::CardPosition;
 use game_data::game_actions::RazeCardActionType;
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, CardType, RoomId, Side};
 use game_data::raid_data::{RaidChoice, RaidInfo, RaidLabel, RaidStep, ScoredCard};
 use game_data::random;
 use rules::mana::ManaPurpose;

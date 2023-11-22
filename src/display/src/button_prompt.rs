@@ -15,10 +15,10 @@
 use std::cmp;
 
 use adapters::response_builder::ResponseBuilder;
+use core_data::game_primitives::{CardSubtype, CardType, Milliseconds, Side};
 use core_ui::prelude::*;
 use game_data::game_actions::{ButtonPrompt, ButtonPromptContext, PromptChoice};
 use game_data::game_state::GameState;
-use game_data::primitives::{CardSubtype, CardType, Milliseconds, Side};
 use game_data::tutorial_data::{SpeechBubble, TutorialDisplay};
 use prompts::effect_prompts;
 use prompts::game_instructions::GameInstructions;

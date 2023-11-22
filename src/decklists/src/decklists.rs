@@ -16,9 +16,9 @@
 
 use std::collections::HashMap;
 
+use core_data::game_primitives::{School, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::deck::Deck;
-use game_data::primitives::{School, Side};
 use maplit::hashmap;
 use once_cell::sync::Lazy;
 use user_action_data::NamedDeck;

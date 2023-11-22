@@ -18,13 +18,13 @@ use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
 use card_helpers::abilities::encounter_ability_text;
 use card_helpers::{abilities, text, *};
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate};
-use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 
 pub fn marauders_axe(_: CardMetadata) -> CardDefinition {

@@ -14,10 +14,10 @@
 
 use anyhow::Result;
 use async_trait::async_trait;
+use core_data::game_primitives::GameId;
 use firestore::FirestoreDb;
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
-use game_data::primitives::GameId;
 use player_data::PlayerState;
 use with_error::{fail, WithError};
 

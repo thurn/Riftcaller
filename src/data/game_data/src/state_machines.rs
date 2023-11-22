@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{AbilityId, CardId, DamageAmount, InitiatedBy};
 use serde::{Deserialize, Serialize};
 
-use crate::primitives::InitiatedBy;
 use crate::game_actions::CardTarget;
-use crate::primitives::{AbilityId, CardId, DamageAmount};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PlayCardStep {

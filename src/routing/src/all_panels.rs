@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use adventure_data::adventure::AdventureState;
-use game_data::primitives::{DeckId, Side};
+use core_data::game_primitives::{DeckId, Side};
 use panel_address::{CollectionBrowserFilters, DeckEditorData, PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState};
 

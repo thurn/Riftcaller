@@ -16,6 +16,9 @@ use card_helpers::effects::Effects;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
+use core_data::game_primitives::{
+    CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
+};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
@@ -29,9 +32,6 @@ use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::{CardTarget, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
-use game_data::primitives::{
-    CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
-};
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };

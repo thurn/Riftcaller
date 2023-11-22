@@ -22,13 +22,13 @@ use card_helpers::raids::add_sanctum_access;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, text, *};
+use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
-use game_data::primitives::{CardType, Rarity, School, Side};
 use rules::mutations;
 use rules::mutations::{add_stored_mana, OnZeroStored};
 

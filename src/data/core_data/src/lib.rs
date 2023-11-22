@@ -12,29 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Data types used to represent game state
+//! Low-level types & enums
 
-pub mod agent_definition;
-pub mod animation_tracker;
-pub mod card_definition;
-pub mod card_name;
-pub mod card_set_name;
-pub mod card_state;
-pub mod card_view_context;
-pub mod character_preset;
-pub mod continuous_visual_effect;
-pub mod deck;
-pub mod delegate_data;
-pub mod game_actions;
-pub mod game_effect;
-pub mod game_state;
-pub mod history_data;
-pub mod player_name;
-pub mod raid_data;
-pub mod random;
-pub mod special_effects;
-pub mod state_machines;
-pub mod text;
-pub mod tutorial_data;
-pub mod undo_tracker;
-pub mod utils;
+pub mod game_primitives;

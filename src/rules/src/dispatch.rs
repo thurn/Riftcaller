@@ -18,11 +18,11 @@
 use std::fmt::Debug;
 
 use anyhow::Result;
+use core_data::game_primitives::{AbilityId, CardId};
 use game_data::card_definition::CardDefinition;
 use game_data::card_name::CardMetadata;
 use game_data::delegate_data::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
 use game_data::game_state::GameState;
-use game_data::primitives::{AbilityId, CardId};
 
 /// Adds a [DelegateCache] for this game in order to improve lookup performance.
 pub fn populate_delegate_cache(game: &mut GameState) {

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{AdventureId, GameId};
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{AdventureId, GameId};
 use player_data::PlayerState;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientMetadata, CommandList, GameCommand};

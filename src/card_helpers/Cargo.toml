@@ -15,5 +15,6 @@ anyhow = { features = ["backtrace"], version = "1.0.75" }
 
 prompts = { path = "../prompts", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }
+core_data = { path = "../data/core_data", version = "0.0.0" }
 raid_state = { path = "../raid_state", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }

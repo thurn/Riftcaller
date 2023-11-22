@@ -15,11 +15,11 @@
 use adapters::ServerCardId;
 use adventure_data::adventure::TileEntity;
 use anyhow::Result;
+use core_data::game_primitives::{GameId, Side};
 use database::Database;
 use display::{render, set_display_preference};
 use game_data::game_actions::{self, DisplayPreference, GameAction};
 use game_data::game_state::GameState;
-use game_data::primitives::{GameId, Side};
 use player_data::PlayerState;
 use protos::spelldawn::{
     DrawCardAction, GainManaAction, InitiateRaidAction, MoveCardAction, PlayCardAction,

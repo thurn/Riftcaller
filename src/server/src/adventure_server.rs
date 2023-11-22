@@ -15,8 +15,8 @@
 use adventure_data::adventure::{AdventureConfiguration, AdventureState};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
+use core_data::game_primitives::Side;
 use database::Database;
-use game_data::primitives::Side;
 use player_data::PlayerState;
 use tracing::info;
 use with_error::WithError;

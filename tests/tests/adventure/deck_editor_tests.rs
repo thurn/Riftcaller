@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::Side;
 use core_ui::prelude::Node;
 use element_names::ElementName;
 use game_data::card_name::{CardName, CardVariant};
-use game_data::primitives::Side;
 use test_utils::client_interface::{self, find_card_view, HasText};
 use test_utils::test_adventure::TestAdventure;
 use test_utils::test_session::TestSession;

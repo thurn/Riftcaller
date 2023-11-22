@@ -15,9 +15,9 @@
 use adventure_data::adventure::{
     AdventureConfiguration, CardChoice, Coins, DraftContext, DraftData, ShopData,
 };
+use core_data::game_primitives::{CardType, Rarity, School, Side, STANDARD_SCHOOLS};
 use game_data::card_name::CardVariant;
 use game_data::card_set_name::CardSetName;
-use game_data::primitives::{CardType, Rarity, School, Side, STANDARD_SCHOOLS};
 
 /// Generates options for drafting a card during an adventure
 pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {

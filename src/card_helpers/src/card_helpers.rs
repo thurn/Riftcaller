@@ -29,6 +29,9 @@ pub mod text;
 pub mod text_macro;
 pub mod this;
 
+use core_data::game_primitives::{
+    ActionCount, CardId, HasCardId, HealthValue, ManaValue, RoomId, Side,
+};
 use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -38,7 +41,6 @@ use game_data::delegate_data::{
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::primitives::{ActionCount, CardId, HasCardId, HealthValue, ManaValue, RoomId, Side};
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
 use rules::mana;

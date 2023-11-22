@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{CardId, RoomId, Side};
 use core_ui::design::BackgroundColor;
 use core_ui::icons;
 use core_ui::prelude::*;
@@ -20,7 +21,6 @@ use core_ui::text::Text;
 use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
 use game_data::game_state::GameState;
-use game_data::primitives::{CardId, RoomId, Side};
 use game_data::raid_data::{
     RaidChoice, RaidData, RaidLabel, RaidPrompt, RaidState, RaidStep, WeaponInteraction,
 };

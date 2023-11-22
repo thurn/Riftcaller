@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{RoomId, Side};
 use game_data::card_definition::Resonance;
 use game_data::card_name::CardName;
-use game_data::primitives::{RoomId, Side};
 use protos::spelldawn::client_action::Action;
 use protos::spelldawn::{DrawCardAction, RoomIdentifier};
 use test_utils::client_interface::HasText;

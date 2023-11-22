@@ -16,6 +16,7 @@
 //! and provide navigation
 
 use constants::ui_constants;
+use core_data::game_primitives::DeckId;
 use core_ui::action_builder::ActionBuilder;
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{IconButton, IconButtonType};
@@ -27,7 +28,6 @@ use core_ui::style::Corner;
 use core_ui::text::Text;
 use game_data::game_actions::{DisplayPreference, GameAction};
 use game_data::game_state::GameState;
-use game_data::primitives::DeckId;
 use game_data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState, PlayerStatus};

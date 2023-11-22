@@ -18,7 +18,9 @@ use card_helpers::costs::{actions, scheme};
 use card_helpers::text::trigger_text;
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, text, *};
-use game_data::primitives::InitiatedBy;
+use core_data::game_primitives::{
+    CardSubtype, CardType, InitiatedBy, Rarity, School, Side, Sprite,
+};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
     SchemePoints,
@@ -26,7 +28,6 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
-use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side, Sprite};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::OnZeroStored;
 use rules::{curses, deal_damage, mutations};

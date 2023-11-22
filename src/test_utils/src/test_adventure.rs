@@ -15,10 +15,10 @@
 use std::collections::{HashMap, HashSet};
 
 use adventure_data::adventure::{AdventureConfiguration, AdventureState, Coins, TilePosition};
+use core_data::game_primitives::{AdventureId, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
-use game_data::primitives::{AdventureId, Side};
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 

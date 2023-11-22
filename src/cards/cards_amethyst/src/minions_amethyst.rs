@@ -18,6 +18,7 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::text::trigger_text;
 use card_helpers::{abilities, text, *};
+use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomLocation, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, Resonance,
 };
@@ -28,7 +29,6 @@ use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
-use game_data::primitives::{CardType, InitiatedBy, Rarity, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{deal_damage, mana, mutations, queries, CardDefinitionExt};

@@ -19,11 +19,11 @@ use assets::rexard_images::RexardPack;
 use card_helpers::effects::Effects;
 use card_helpers::text::trigger_text;
 use card_helpers::{abilities, text, *};
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
-use game_data::primitives::{CardSubtype, CardType, Rarity, School, Side};
 use rules::mutations::OnZeroStored;
 use rules::{deal_damage, mutations};
 

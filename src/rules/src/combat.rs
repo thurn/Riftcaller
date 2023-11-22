@@ -14,13 +14,13 @@
 
 //! Calculations for using weapons during combat
 
+use core_data::game_primitives::{AttackValue, CardId, ManaValue};
 use game_data::card_definition::{AttackBoost, CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
     AttackBoostBonusQuery, CanDefeatTargetQuery, CanEncounterTargetQuery, CardEncounter, Flag,
 };
 use game_data::game_state::GameState;
-use game_data::primitives::{AttackValue, CardId, ManaValue};
 
 use crate::mana::ManaPurpose;
 use crate::{dispatch, mana, queries};
@@ -38,7 +38,7 @@ pub struct CostToDefeatTarget {
     pub mana_cost: ManaValue,
     /// Attack value added to this weapon to defeat this minion
     pub attack_boost: AttackValue,
-    /// Additional cost to use this weapon    
+    /// Additional cost to use this weapon
     pub custom_weapon_cost: Option<CustomWeaponCost>,
     /// Custom boost costs required to defeat this minion, if any.
     pub custom_boost_activation: Option<CustomBoostActivation>,

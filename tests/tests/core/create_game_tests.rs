@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::Side;
 use core_ui::actions::InterfaceAction;
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::MulliganDecision;
-use game_data::primitives::Side;
 use insta::assert_snapshot;
 use test_utils::client_interface::HasText;
 use test_utils::summarize::Summary;

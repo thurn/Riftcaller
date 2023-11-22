@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId};
 use game_data::card_definition::TargetRequirement;
 use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
@@ -19,7 +20,6 @@ use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
 use game_data::game_state::GameState;
 use game_data::history_data::{CardChoice, HistoryEvent, HistoryEventKind};
-use game_data::primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId};
 use game_data::utils;
 use rules::flags;
 

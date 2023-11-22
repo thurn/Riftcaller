@@ -14,11 +14,11 @@
 
 pub mod tutorial_actions;
 
+use core_data::game_primitives::{Milliseconds, RoomId, Side};
 use core_ui::design::{self, FontColor};
 use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::game_actions::CardTarget;
-use game_data::primitives::{Milliseconds, RoomId, Side};
 use game_data::tutorial_data::{
     SpeechBubble, Toast, Tooltip, TooltipAnchor, TutorialDisplay, TutorialGameStateTrigger,
     TutorialMessageKey, TutorialMessageTrigger, TutorialOpponentAction, TutorialSequence,

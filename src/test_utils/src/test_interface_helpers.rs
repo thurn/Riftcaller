@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
+use core_data::game_primitives::Side;
 use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
-use game_data::primitives::Side;
 use protos::spelldawn::client_action::Action;
 use server::server_data::GameResponseOutput;
 use with_error::{verify, WithError};

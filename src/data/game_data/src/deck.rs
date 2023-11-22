@@ -17,11 +17,11 @@
 use std::collections::HashMap;
 use std::iter;
 
+use core_data::game_primitives::{School, Side};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
 use crate::card_name::CardVariant;
-use crate::primitives::{School, Side};
 
 /// Represents a player deck outside of an active game
 #[serde_as]

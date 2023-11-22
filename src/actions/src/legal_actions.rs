@@ -17,12 +17,12 @@
 use std::iter;
 
 use anyhow::Result;
+use core_data::game_primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::game_actions::{
     CardTarget, CardTargetKind, GameAction, GamePrompt, GameStateAction, PromptAction,
 };
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
-use game_data::primitives::{AbilityId, CardId, RoomId, Side};
 use raid_state::raid_prompt;
 use rules::{flags, queries, CardDefinitionExt};
 use with_error::fail;

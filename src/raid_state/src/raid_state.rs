@@ -19,6 +19,9 @@ pub mod raid_display_state;
 pub mod raid_prompt;
 
 use anyhow::Result;
+use core_data::game_primitives::{
+    CardId, GameObjectId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
+};
 use game_data::animation_tracker::{GameAnimation, TargetedInteraction};
 use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
@@ -31,9 +34,6 @@ use game_data::delegate_data::{
 use game_data::game_actions::RaidAction;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
 use game_data::history_data::HistoryEvent;
-use game_data::primitives::{
-    CardId, GameObjectId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
-};
 use game_data::raid_data::{
     PopulateAccessPromptSource, RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus,
     RaidStep, ScoredCard, WeaponInteraction,
