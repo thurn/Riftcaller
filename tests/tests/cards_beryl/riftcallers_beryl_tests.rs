@@ -17,6 +17,10 @@ use game_data::card_name::CardName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
+// ========================================== //
+// ========== Overlord Riftcallers ========== //
+// ========================================== //
+
 #[test]
 pub fn zain_cunning_diplomat() {
     let mut g =
@@ -31,4 +35,26 @@ pub fn zain_cunning_diplomat() {
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::NoWeapon);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - test_constants::MINION_COST + 2);
+}
+
+// ========================================== //
+// ========== Champion Riftcallers ========== //
+// ========================================== //
+
+#[test]
+pub fn illeas_the_high_sage() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
+            .build();
+    g.create_and_play(CardName::AncestralKnowledge);
+    assert_eq!(g.user.cards.hand().len(), 4);
+}
+
+#[test]
+pub fn illeas_the_high_sage_does_not_trigger_on_action() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
+            .build();
+    g.draw_card();
+    assert_eq!(g.user.cards.hand().len(), 1);
 }

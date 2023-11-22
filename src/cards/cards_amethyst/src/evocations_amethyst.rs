@@ -24,12 +24,12 @@ use game_data::delegate_data::{Delegate, EventDelegate};
 
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
-use card_helpers::{*, abilities};
 use card_helpers::costs::{actions, once_per_turn};
 use card_helpers::effects::Effects;
 use card_helpers::raids::add_sanctum_access;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::this::on_activated;
+use card_helpers::{abilities, *};
 use rules::mutations;
 use rules::mutations::{add_stored_mana, OnZeroStored};
 
@@ -183,7 +183,7 @@ pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
             Delegate::DrawCardAction(EventDelegate {
                 requirement: requirements::no_card_draw_actions::<FaceUpInPlay>,
                 mutation: |g, s, _| {
-                    mutations::draw_cards(g, s.side(), 1)?;
+                    mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
                     Ok(())
                 },
             }),

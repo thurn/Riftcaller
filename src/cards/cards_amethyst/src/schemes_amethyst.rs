@@ -24,11 +24,11 @@ use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate};
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{*};
 use card_helpers::costs::scheme;
 use card_helpers::text_helpers::named_trigger;
-use rules::{mana, mutations, queries};
+use card_helpers::*;
 use rules::mutations::SummonMinion;
+use rules::{mana, mutations, queries};
 
 pub fn gold_mine(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -112,7 +112,9 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
                 text![text!["Draw", 2, "cards"], text!["You get", Plus(2), "maximum hand size"]],
             ),
             delegates: vec![
-                on_overlord_score(|g, s, _| mutations::draw_cards(g, s.side(), 2).map(|_| ())),
+                on_overlord_score(|g, s, _| {
+                    mutations::draw_cards(g, s.side(), 2, s.initiated_by()).map(|_| ())
+                }),
                 Delegate::MaximumHandSize(QueryDelegate {
                     requirement: scored_by_owner,
                     transformation: |_, s, side, current| {

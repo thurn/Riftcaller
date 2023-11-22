@@ -14,7 +14,7 @@
 
 use core_data::game_primitives::{
     ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypts, RoomIdMarker,
-    RoomIdSanctum, RoomIdVault, TurnNumber,
+    RoomIdSanctum, RoomIdVault, Side, TurnNumber,
 };
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
@@ -201,6 +201,15 @@ pub fn on_mana_lost_to_opponent_ability(
     mutation: MutationFn<ManaLostToOpponentAbility>,
 ) -> Delegate {
     Delegate::ManaLostToOpponentAbility(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
+}
+
+/// A delegate which fires when its card is face up & in play when a player
+/// draws cards via an ability.
+pub fn on_draw_cards_via_ability(mutation: MutationFn<Side>) -> Delegate {
+    Delegate::DrawCardsViaAbility(EventDelegate {
         requirement: requirements::face_up_in_play,
         mutation,
     })

@@ -16,7 +16,7 @@ use std::collections::HashMap;
 
 use core_data::game_primitives::{
     AbilityId, CardId, CurseCount, InitiatedBy, MinionEncounterId, ProgressValue, RaidId,
-    RoomAccessId, RoomId,
+    RoomAccessId, RoomId, Side,
 };
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
@@ -130,6 +130,23 @@ struct HistoryEntry {
     event: HistoryEvent,
 }
 
+/// Counters for events that happen during a given turn. Each player has their
+/// own set of counters for game events.
+///
+/// All counters default to 0 at start of turn. History counters should always
+/// be updated as the final step in any game mutation, for example the "draw
+/// cards" event should draw the cards and fire related game events *before*
+/// updating the counter.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct HistoryCounters {
+    /// Cards drawn so far this turn by this player. This records the actual
+    /// number of cards drawn, e.g. if a player attempts to draw from an empty
+    /// deck no draw is recorded.
+    pub cards_drawn: u32,
+    /// Cards drawn this turn via card abilities by this player
+    pub cards_drawn_via_abilities: u32,
+}
+
 /// History of events which have happened during this game.
 ///
 /// This operates via a two-phase system where history entries are collected
@@ -144,6 +161,10 @@ pub struct GameHistory {
     current: Vec<HistoryEntry>,
     #[serde_as(as = "Vec<(_, _)>")]
     entries: HashMap<TurnData, Vec<HistoryEvent>>,
+    #[serde_as(as = "Vec<(_, _)>")]
+    overlord_counters: HashMap<TurnData, HistoryCounters>,
+    #[serde_as(as = "Vec<(_, _)>")]
+    champion_counters: HashMap<TurnData, HistoryCounters>,
 }
 
 impl GameHistory {
@@ -151,6 +172,15 @@ impl GameHistory {
     /// event.
     pub fn for_turn(&self, turn: TurnData) -> impl Iterator<Item = &HistoryEvent> {
         self.entries.get(&turn).into_iter().flatten()
+    }
+
+    /// Returns a mutable reference to the [HistoryCounters] entry for the
+    /// provided turn.
+    pub fn counters_for_turn(&mut self, turn: TurnData, side: Side) -> &mut HistoryCounters {
+        match side {
+            Side::Overlord => self.overlord_counters.entry(turn).or_default(),
+            Side::Champion => self.champion_counters.entry(turn).or_default(),
+        }
     }
 
     /// Adds a new history entry to the 'current events' buffer. Events do

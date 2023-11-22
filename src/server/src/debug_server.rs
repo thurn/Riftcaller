@@ -228,7 +228,7 @@ pub async fn handle_debug_action(
                     mutations::set_visible_to(game, *card_id, card_id.side, true);
 
                     if matches!(position, CardPosition::Hand(s) if *s == side) {
-                        mutations::draw_cards(game, side, 1)?;
+                        mutations::draw_cards(game, side, 1, InitiatedBy::GameAction)?;
                     } else if matches!(position, CardPosition::DiscardPile(_)) {
                         mutations::discard_card(game, *card_id)?;
                     } else {

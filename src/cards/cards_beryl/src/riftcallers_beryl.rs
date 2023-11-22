@@ -12,18 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::effects::Effects;
+use card_helpers::{costs, in_play, text};
 use core_data::adventure_primitives::{Coins, Skill};
-use core_data::game_primitives::{CardType, GameObjectId, Rarity, School, Side};
+use core_data::game_primitives::{CardType, GameObjectId, InitiatedBy, Rarity, School, Side};
+use core_ui::design::{self, TimedEffectDataExt};
 use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, RiftcallerConfig};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
+use rules::{flags, mana, mutations};
 
-use card_helpers::{costs, in_play, text};
-use card_helpers::effects::Effects;
-use core_ui::design::{self, TimedEffectDataExt};
-use rules::{flags, mana};
+// ========================================== //
+// ========== Overlord Riftcallers ========== //
+// ========================================== //
 
 pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -47,10 +50,10 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
                         .ability_alert(s)
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),
-                            TimedEffectData::new(TimedEffect::MagicCircles1(4))
+                            TimedEffectData::new(TimedEffect::MagicCircles1(5))
                                 .scale(1.0)
-                                .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Buff01"))
-                                .effect_color(design::BLUE_500),
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff01"))
+                                .effect_color(design::YELLOW_900),
                         )
                         .apply(g);
 
@@ -64,6 +67,63 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
             .riftcaller(RiftcallerConfig {
                 starting_coins: Coins(500),
                 secondary_schools: vec![School::Shadow],
+                skills: vec![Skill::Lore, Skill::Persuasion],
+            })
+            .build(),
+    }
+}
+
+// ========================================== //
+// ========== Champion Riftcallers ========== //
+// ========================================== //
+
+pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::IlleasTheHighSage,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::riftcaller(),
+        image: assets::champion_card(meta, "illeas"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![Ability::new_with_delegate(
+            text![
+                "The first time each turn you draw cards through a card ability,",
+                "draw an additional card"
+            ],
+            in_play::on_draw_cards_via_ability(|g, s, side| {
+                if s.side() == *side
+                    && g.current_history_counters(s.side()).cards_drawn_via_abilities == 0
+                {
+                    Effects::new()
+                        .ability_alert(s)
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(4))
+                                .scale(1.0)
+                                .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Buff01"))
+                                .effect_color(design::BLUE_500),
+                        )
+                        .apply(g);
+
+                    // Must use SilentAbility to prevent infinite loop
+                    mutations::draw_cards(
+                        g,
+                        s.side(),
+                        1,
+                        InitiatedBy::SilentAbility(s.ability_id()),
+                    )?;
+                }
+
+                Ok(())
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .riftcaller(RiftcallerConfig {
+                starting_coins: Coins(500),
+                secondary_schools: vec![School::Law],
                 skills: vec![Skill::Lore, Skill::Persuasion],
             })
             .build(),

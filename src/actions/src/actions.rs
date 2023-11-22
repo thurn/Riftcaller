@@ -113,7 +113,7 @@ fn draw_card_action(game: &mut GameState, user_side: Side) -> Result<()> {
 
     debug!(?user_side, "Applying draw card action");
     mutations::spend_action_points(game, user_side, 1)?;
-    let cards = mutations::draw_cards(game, user_side, 1)?;
+    let cards = mutations::draw_cards(game, user_side, 1, InitiatedBy::GameAction)?;
     if let Some(card_id) = cards.get(0) {
         game.add_history_event(HistoryEvent::DrawCardAction(*card_id));
         dispatch::invoke_event(game, DrawCardActionEvent(*card_id))?;
@@ -337,7 +337,7 @@ fn handle_mulligan_decision(
         MulliganDecision::Keep => {}
         MulliganDecision::Mulligan => {
             mutations::shuffle_into_deck(game, user_side, &hand)?;
-            mutations::draw_cards(game, user_side, 5)?;
+            mutations::draw_cards(game, user_side, 5, InitiatedBy::GameAction)?;
         }
     }
 

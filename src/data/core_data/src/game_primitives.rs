@@ -24,7 +24,6 @@ use enum_iterator::Sequence;
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 use ulid::Ulid;
-
 use with_error::fail;
 
 pub type TurnNumber = u32;
@@ -605,6 +604,11 @@ pub enum ResponseContext {
 pub enum InitiatedBy {
     GameAction,
     Ability(AbilityId),
+
+    /// Action initiated by an ability which should *not* trigger "via ability"
+    /// events. Primarily used to prevent infinite loops like "when you draw a
+    /// card via an ability, draw a card".
+    SilentAbility(AbilityId),
 }
 
 impl InitiatedBy {
@@ -620,6 +624,7 @@ impl InitiatedBy {
         match self {
             InitiatedBy::GameAction => None,
             InitiatedBy::Ability(id) => Some(*id),
+            InitiatedBy::SilentAbility(id) => Some(*id),
         }
     }
 

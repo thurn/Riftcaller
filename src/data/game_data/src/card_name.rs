@@ -124,8 +124,8 @@ pub enum CardName {
     TestMinionShield2Abyssal,
     /// Minion with 5 health, 1 mana cost, and a "deal 1 damage" ability.
     TestMinionDealDamage,
-    /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the Champion loses 1 mana"
-    /// ability.
+    /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the
+    /// Champion loses 1 mana" ability.
     TestMinionLoseMana,
     /// Minion with the 'infernal' resonance, MINION_HEALTH health, and an 'end
     /// raid' ability.
@@ -308,6 +308,7 @@ pub enum CardName {
     DelveIntoDarkness,
     KnowledgeOfTheBeyond,
     ZainCunningDiplomat,
+    IlleasTheHighSage,
 }
 
 impl CardName {
@@ -318,6 +319,7 @@ impl CardName {
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath",
             Self::WarriorsSign => "Warrior's Sign",
             Self::ZainCunningDiplomat => "Zain, Cunning Diplomat",
+            Self::IlleasTheHighSage => "Illeas, The High Sage",
             _ => "",
         };
 

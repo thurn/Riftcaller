@@ -34,10 +34,10 @@ use game_data::card_state::{CardCounter, CardState};
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     CanAbilityEndRaidQuery, CardRevealedEvent, CardSacrificedEvent, DawnEvent, DiscardCardEvent,
-    DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, Flag,
-    MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome,
-    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
-    SummonProjectEvent,
+    DiscardedCard, DiscardedFrom, DrawCardEvent, DrawCardsViaAbilityEvent, DuskEvent,
+    EnterArenaEvent, Flag, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
+    RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
+    StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::history_data::{CardChoice, CardChoiceEvent, HistoryEvent};
@@ -215,7 +215,12 @@ pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
 ///
 /// Cards are marked as revealed to the `side` player. Returns a vector of the
 /// newly-drawn [CardId]s.
-pub fn draw_cards(game: &mut GameState, side: Side, count: u32) -> Result<Vec<CardId>> {
+pub fn draw_cards(
+    game: &mut GameState,
+    side: Side,
+    count: u32,
+    source: InitiatedBy,
+) -> Result<Vec<CardId>> {
     let card_ids = realize_top_of_deck(game, side, count)?;
 
     if card_ids.len() != count as usize && side == Side::Overlord {
@@ -233,6 +238,14 @@ pub fn draw_cards(game: &mut GameState, side: Side, count: u32) -> Result<Vec<Ca
         move_card(game, *card_id, CardPosition::Hand(side))?;
     }
 
+    if matches!(source, InitiatedBy::Ability(..)) {
+        dispatch::invoke_event(game, DrawCardsViaAbilityEvent(side))?;
+    }
+
+    game.current_history_counters(side).cards_drawn += card_ids.len() as u32;
+    if matches!(source, InitiatedBy::Ability(..) | InitiatedBy::SilentAbility(..)) {
+        game.current_history_counters(side).cards_drawn_via_abilities += card_ids.len() as u32;
+    }
     Ok(card_ids)
 }
 
@@ -388,8 +401,8 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
 #[instrument(skip(game))]
 pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
     debug!("Dealing opening hands");
-    draw_cards(game, Side::Overlord, game_constants::STARTING_HAND_SIZE)?;
-    draw_cards(game, Side::Champion, game_constants::STARTING_HAND_SIZE)?;
+    draw_cards(game, Side::Overlord, game_constants::STARTING_HAND_SIZE, InitiatedBy::GameAction)?;
+    draw_cards(game, Side::Champion, game_constants::STARTING_HAND_SIZE, InitiatedBy::GameAction)?;
     Ok(())
 }
 
@@ -558,7 +571,7 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     game.player_mut(next_side).actions = queries::start_of_turn_action_count(game, next_side);
 
     if next_side == Side::Overlord {
-        draw_cards(game, next_side, 1)?;
+        draw_cards(game, next_side, 1, InitiatedBy::GameAction)?;
     }
 
     Ok(())

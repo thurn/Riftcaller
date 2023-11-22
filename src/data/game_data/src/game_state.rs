@@ -25,7 +25,6 @@ use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
-
 use with_error::{fail, WithError};
 
 use crate::animation_tracker::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};
@@ -33,7 +32,7 @@ use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegate_data::DelegateCache;
 use crate::game_actions::GamePrompt;
-use crate::history_data::{GameHistory, HistoryEvent};
+use crate::history_data::{GameHistory, HistoryCounters, HistoryEvent};
 use crate::player_name::PlayerId;
 use crate::raid_data::RaidData;
 use crate::state_machines::StateMachines;
@@ -662,6 +661,12 @@ impl GameState {
     /// Adds a current [HistoryEvent] for the current turn.
     pub fn add_history_event(&mut self, event: HistoryEvent) {
         self.history.add_event(self.info.turn, event)
+    }
+
+    /// Returns a mutable reference to the [HistoryCounters] for the `side`
+    /// player in the current turn.
+    pub fn current_history_counters(&mut self, side: Side) -> &mut HistoryCounters {
+        self.history.counters_for_turn(self.info.turn, side)
     }
 
     /// Create card states for a deck

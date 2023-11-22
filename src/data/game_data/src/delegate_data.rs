@@ -73,15 +73,14 @@ use core_data::game_primitives::{
     RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
 };
 use enum_kinds::EnumKind;
+use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
 
-use macros::DelegateEnum;
-
-#[allow(unused)] // Used in rustdocs
-use crate::card_definition::{AttackBoost, CardStats};
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
 use crate::card_definition::Resonance;
+#[allow(unused)] // Used in rustdocs
+use crate::card_definition::{AttackBoost, CardStats};
 use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
@@ -579,6 +578,8 @@ pub enum Delegate {
     /// Mana has been paid or lost by either player due to their opponent's
     /// ability.
     ManaLostToOpponentAbility(EventDelegate<ManaLostToOpponentAbility>),
+    /// The [Side] player has drawn cards via a card ability.
+    DrawCardsViaAbility(EventDelegate<Side>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

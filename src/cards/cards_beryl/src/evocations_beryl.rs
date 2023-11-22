@@ -29,11 +29,13 @@ use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffe
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 
-use card_helpers::{costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this};
 use card_helpers::effects::Effects;
+use card_helpers::{
+    costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
+};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use rules::{CardDefinitionExt, curses, flags, mana, mutations};
+use rules::{curses, flags, mana, mutations, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
@@ -110,7 +112,7 @@ pub fn starfield_omen(meta: CardMetadata) -> CardDefinition {
                         )
                         .apply(g);
 
-                    mutations::draw_cards(g, s.side(), 1)?;
+                    mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
                 }
                 Ok(())
             }),
@@ -226,7 +228,7 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
             )
             .delegate(this::on_activated(|g, s, _| {
                 curses::remove_curses(g, 1)?;
-                mutations::draw_cards(g, s.side(), 1)?;
+                mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
                 Ok(())
             }))
             .build(),

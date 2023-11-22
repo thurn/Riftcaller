@@ -22,11 +22,11 @@ use game_data::card_state::CardCounter;
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::{*, abilities};
 use card_helpers::effects::Effects;
 use card_helpers::text_helpers::named_trigger;
-use rules::{deal_damage, mutations};
+use card_helpers::{abilities, *};
 use rules::mutations::OnZeroStored;
+use rules::{deal_damage, mutations};
 
 pub fn gemcarver(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -50,7 +50,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
                 delegates: vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     if g.card(s.card_id()).counters(CardCounter::StoredMana) == 0 {
-                        mutations::draw_cards(g, s.side(), 1)?;
+                        mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
                     }
                     Effects::new().ability_alert(s).apply(g);
                     Ok(())

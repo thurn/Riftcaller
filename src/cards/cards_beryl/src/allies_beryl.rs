@@ -26,12 +26,12 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 
-use card_helpers::{costs, history, in_play, show_prompt, text, this};
 use card_helpers::effects::Effects;
+use card_helpers::{costs, history, in_play, show_prompt, text, this};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use rules::{CardDefinitionExt, curses, mana, mutations, wounds};
 use rules::mutations::OnZeroStored;
+use rules::{curses, mana, mutations, wounds, CardDefinitionExt};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -99,7 +99,7 @@ pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
                         .apply(g);
 
                     mana::gain(g, s.side(), s.upgrade(1, 3));
-                    mutations::draw_cards(g, s.side(), 1)?;
+                    mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
                 }
                 Ok(())
             }),

@@ -23,9 +23,9 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate};
 
 use assets::rexard_images;
-use card_helpers::{*};
 use card_helpers::raids::{add_sanctum_access, add_vault_access};
-use rules::{CardDefinitionExt, flags, mana, mutations};
+use card_helpers::*;
+use rules::{flags, mana, mutations, CardDefinitionExt};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -73,7 +73,7 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
                 add_vault_access::<1>(requirements::matching_raid),
                 add_sanctum_access::<1>(requirements::matching_raid),
                 on_raid_success(requirements::matching_raid, |g, s, _| {
-                    mutations::draw_cards(g, s.side(), 1).map(|_| ())
+                    mutations::draw_cards(g, s.side(), 1, s.initiated_by()).map(|_| ())
                 }),
             ],
         }],
@@ -165,7 +165,7 @@ pub fn preparation(_: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new_with_delegate(
             text![text!["Draw", 4, "cards"], text!["Lose", Actions(1), "if able"]],
             this::on_played(|g, s, _| {
-                mutations::draw_cards(g, s.side(), 4)?;
+                mutations::draw_cards(g, s.side(), 4, s.initiated_by())?;
                 mutations::lose_action_points_if_able(g, s.side(), 1)
             }),
         )],

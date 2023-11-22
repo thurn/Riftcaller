@@ -527,7 +527,7 @@ pub fn test_sacrifice_draw_card_artifact(metadata: CardMetadata) -> CardDefiniti
             ability_type: abilities::sacrifice_this(),
             text: text!["Draw a card"],
             delegates: vec![on_activated(|g, s, _| {
-                mutations::draw_cards(g, s.side(), 1)?;
+                mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
                 Ok(())
             })],
         }],
