@@ -87,7 +87,7 @@ pub fn gathering_dark(_: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Basics],
         cost: cost(5),
         image: rexard_images::spell(1, "SpellBook01_88"),
-        card_type: CardType::OverlordSpell,
+        card_type: CardType::Ritual,
         subtypes: vec![],
         side: Side::Overlord,
         school: School::Neutral,

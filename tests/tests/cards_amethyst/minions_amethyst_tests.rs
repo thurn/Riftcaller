@@ -148,30 +148,30 @@ fn shadow_lurker_inner_room() {
 #[test]
 fn sphinx_of_winters_breath_discard_even() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).deck_top(CardName::Test0CostChampionSpell))
+        .opponent(TestSide::new(Side::Champion).deck_top(CardName::Test0CostSpell))
         .build();
 
     g.create_and_play(CardName::SphinxOfWintersBreath);
     g.set_up_minion_combat_with_action(|g| {
-        g.add_to_hand(CardName::Test0CostChampionSpell);
+        g.add_to_hand(CardName::Test0CostSpell);
     });
     g.opponent_click(Button::NoWeapon);
-    assert_eq!(vec!["Test 0 Cost Champion Spell"], g.opponent.cards.discard_pile().names());
+    assert_eq!(vec!["Test 0 Cost Spell"], g.opponent.cards.discard_pile().names());
     assert!(g.user.data.raid_active());
 }
 
 #[test]
 fn sphinx_of_winters_breath_discard_odd() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).deck_top(CardName::Test1CostChampionSpell))
+        .opponent(TestSide::new(Side::Champion).deck_top(CardName::Test1CostSpell))
         .build();
 
     g.create_and_play(CardName::SphinxOfWintersBreath);
     g.set_up_minion_combat_with_action(|g| {
-        g.add_to_hand(CardName::Test1CostChampionSpell);
+        g.add_to_hand(CardName::Test1CostSpell);
     });
     g.opponent_click(Button::NoWeapon);
-    assert_eq!(vec!["Test 1 Cost Champion Spell"], g.opponent.cards.discard_pile().names());
+    assert_eq!(vec!["Test 1 Cost Spell"], g.opponent.cards.discard_pile().names());
     assert!(!g.user.data.raid_active());
 }
 

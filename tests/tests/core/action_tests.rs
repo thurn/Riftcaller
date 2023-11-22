@@ -886,7 +886,7 @@ fn legal_actions() {
         vec![GameAction::GainMana, GameAction::DrawCard],
     );
 
-    let spell_id = test_helpers::server_card_id(g.add_to_hand(CardName::TestOverlordSpell));
+    let spell_id = test_helpers::server_card_id(g.add_to_hand(CardName::TestRitual));
 
     test_helpers::assert_contents_equal(
         g.legal_actions(Side::Overlord),

@@ -67,11 +67,11 @@ fn andvari_est_nights_warden() {
         TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::AndvariEstNightsWarden))
             .opponent(
                 TestSide::new(Side::Overlord)
-                    .deck_top(CardName::TestChampionSpell)
-                    .deck_top(CardName::TestChampionSpell)
+                    .deck_top(CardName::TestSpell)
+                    .deck_top(CardName::TestSpell)
                     .deck_top(CardName::TestScheme3_10)
-                    .deck_top(CardName::TestChampionSpell)
-                    .deck_top(CardName::TestChampionSpell),
+                    .deck_top(CardName::TestSpell)
+                    .deck_top(CardName::TestSpell),
             )
             .build();
 

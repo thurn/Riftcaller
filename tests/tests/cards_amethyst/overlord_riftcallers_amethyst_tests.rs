@@ -24,10 +24,10 @@ fn ubras_efaris() {
             .build();
 
     assert_eq!(3, g.me().actions());
-    g.create_and_play(CardName::TestOverlordSpell);
+    g.create_and_play(CardName::TestRitual);
     assert_eq!(2, g.me().actions());
-    g.create_and_play(CardName::TestOverlordSpell);
+    g.create_and_play(CardName::TestRitual);
     assert_eq!(2, g.me().actions());
-    g.create_and_play(CardName::TestOverlordSpell);
+    g.create_and_play(CardName::TestRitual);
     assert_eq!(1, g.me().actions());
 }

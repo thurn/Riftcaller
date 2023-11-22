@@ -244,7 +244,7 @@ pub fn played_position(
     target: CardTarget,
 ) -> Option<CardPosition> {
     Some(match game.card(card_id).definition().card_type {
-        CardType::ChampionSpell | CardType::OverlordSpell => CardPosition::DiscardPile(side),
+        CardType::Spell | CardType::Ritual => CardPosition::DiscardPile(side),
         CardType::Artifact => CardPosition::ArenaItem(ItemLocation::Artifacts),
         CardType::Ally => CardPosition::ArenaItem(ItemLocation::Evocations),
         CardType::Evocation => CardPosition::ArenaItem(ItemLocation::Evocations),

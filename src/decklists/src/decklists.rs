@@ -36,7 +36,7 @@ pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Overlord,
     schools: vec![],
     riftcallers: vec![],
-    cards: hashmap! {CardVariant::standard(CardName::TestOverlordSpell) => 45},
+    cards: hashmap! {CardVariant::standard(CardName::TestRitual) => 45},
 });
 
 /// Basic Overlord starter deck in adventure mode
@@ -103,7 +103,7 @@ pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Champion,
     schools: vec![],
     riftcallers: vec![],
-    cards: hashmap! {CardVariant::standard(CardName::TestChampionSpell) => 45},
+    cards: hashmap! {CardVariant::standard(CardName::TestSpell) => 45},
 });
 
 /// Basic Champion starter deck in adventure mode

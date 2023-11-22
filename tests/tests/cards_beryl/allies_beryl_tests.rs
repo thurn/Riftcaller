@@ -142,12 +142,12 @@ pub fn spellcraft_ritualist() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::SpellcraftRitualist);
     assert_eq!(1, g.user.cards.display_shelf().wound_count());
-    g.create_and_play(CardName::TestChampionSpell);
+    g.create_and_play(CardName::TestSpell);
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA - cost - (test_constants::SPELL_COST - 1)
     );
-    g.create_and_play(CardName::TestChampionSpell);
+    g.create_and_play(CardName::TestSpell);
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA - cost - 2 * (test_constants::SPELL_COST - 1)

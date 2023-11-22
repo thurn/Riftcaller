@@ -497,26 +497,26 @@ pub enum Rarity {
 pub enum CardType {
     Riftcaller,
     GameModifier,
-    ChampionSpell,
+    Spell,
     Artifact,
     Evocation,
     Ally,
     Scheme,
-    OverlordSpell,
+    Ritual,
     Project,
     Minion,
 }
 
 impl CardType {
     pub fn is_spell(&self) -> bool {
-        matches!(self, CardType::ChampionSpell | CardType::OverlordSpell)
+        matches!(self, CardType::Spell | CardType::Ritual)
     }
 
     /// Returns the english article 'a' or 'an' appropriate for this card type.
     pub fn article(&self) -> &'static str {
         match self {
-            Self::ChampionSpell
-            | Self::OverlordSpell
+            Self::Spell
+            | Self::Ritual
             | Self::Minion
             | Self::Project
             | Self::Scheme
@@ -530,11 +530,11 @@ impl CardType {
 impl Display for CardType {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            CardType::ChampionSpell => write!(f, "Spell"),
+            CardType::Spell => write!(f, "Spell"),
             CardType::Artifact => write!(f, "Artifact"),
             CardType::Evocation => write!(f, "Evocation"),
             CardType::Ally => write!(f, "Ally"),
-            CardType::OverlordSpell => write!(f, "Spell"),
+            CardType::Ritual => write!(f, "Spell"),
             CardType::Minion => write!(f, "Minion"),
             CardType::Project => write!(f, "Project"),
             CardType::Scheme => write!(f, "Scheme"),

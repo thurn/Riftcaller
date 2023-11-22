@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/create_game_tests.rs
-assertion_line: 141
+assertion_line: 177
 expression: "Summary::summarize(&response)"
 ---
 
@@ -85,7 +85,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -104,7 +104,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -123,7 +123,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -142,7 +142,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -161,7 +161,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -255,7 +255,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -274,7 +274,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -293,7 +293,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -312,7 +312,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -331,7 +331,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -424,7 +424,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -443,7 +443,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -462,7 +462,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -481,7 +481,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -500,7 +500,7 @@ command_list:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Champion Spell"
+            title: "Test Spell"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -558,7 +558,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -577,7 +577,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -596,7 +596,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -615,7 +615,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -634,7 +634,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -722,7 +722,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -741,7 +741,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -760,7 +760,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -779,7 +779,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -798,7 +798,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -817,7 +817,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -909,7 +909,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -928,7 +928,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -947,7 +947,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -966,7 +966,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -985,7 +985,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true
@@ -1004,7 +1004,7 @@ channel_response:
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: true

@@ -27,7 +27,7 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
         image: assets::overlord_card(meta, "equivalent_exchange"),
-        card_type: CardType::OverlordSpell,
+        card_type: CardType::Ritual,
         subtypes: vec![],
         side: Side::Overlord,
         school: School::Beyond,

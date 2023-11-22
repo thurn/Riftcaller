@@ -105,8 +105,8 @@ pub enum CardName {
     // serialization
 
     // Cards for use in tests
-    TestChampionSpell,
-    TestOverlordSpell,
+    TestSpell,
+    TestRitual,
     /// Scheme requiring 3 progress to score 10 points
     TestScheme3_10,
     /// Scheme requiring 4 progress to score 20 points
@@ -176,9 +176,9 @@ pub enum CardName {
     /// Project with the "Roombound" subtype
     TestRoomboundProject,
     /// Champion spell with a mana cost of 0
-    Test0CostChampionSpell,
+    Test0CostSpell,
     /// Champion spell with a mana cost of 1
-    Test1CostChampionSpell,
+    Test1CostSpell,
     TestMinionDealDamageEndRaid,
     TestAttackWeapon,
     TestSacrificeDrawCardArtifact,

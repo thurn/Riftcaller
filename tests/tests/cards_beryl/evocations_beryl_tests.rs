@@ -280,9 +280,9 @@ pub fn knowledge_of_the_beyond_activate_during_access() {
 pub fn knowledge_of_the_beyond_no_hits() {
     let mut g = TestGame::new(
         TestSide::new(Side::Champion)
-            .deck_top(CardName::TestChampionSpell)
-            .deck_top(CardName::TestChampionSpell)
-            .deck_top(CardName::TestChampionSpell)
+            .deck_top(CardName::TestSpell)
+            .deck_top(CardName::TestSpell)
+            .deck_top(CardName::TestSpell)
             .hand_size(5),
     )
     .build();

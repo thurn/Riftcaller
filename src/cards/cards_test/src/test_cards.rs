@@ -33,9 +33,9 @@ use rules::{curses, deal_damage, mutations};
 
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestOverlordSpell,
+        name: CardName::TestRitual,
         cost: cost(test_constants::SPELL_COST),
-        card_type: CardType::OverlordSpell,
+        card_type: CardType::Ritual,
         subtypes: vec![],
         sets: vec![CardSetName::Test],
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/3.png"),
@@ -49,9 +49,9 @@ pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
 
 pub fn test_champion_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestChampionSpell,
+        name: CardName::TestSpell,
         cost: cost(test_constants::SPELL_COST),
-        card_type: CardType::ChampionSpell,
+        card_type: CardType::Spell,
         subtypes: vec![],
         sets: vec![CardSetName::Test],
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/2.png"),
@@ -445,7 +445,7 @@ pub fn trap_project(metadata: CardMetadata) -> CardDefinition {
 
 pub fn test_0_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::Test0CostChampionSpell,
+        name: CardName::Test0CostSpell,
         cost: cost(0),
         ..test_champion_spell(metadata)
     }
@@ -453,7 +453,7 @@ pub fn test_0_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
 
 pub fn test_1_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::Test1CostChampionSpell,
+        name: CardName::Test1CostSpell,
         cost: cost(1),
         ..test_champion_spell(metadata)
     }
@@ -577,7 +577,7 @@ pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSpellGiveCurse,
         cost: cost(0),
-        card_type: CardType::OverlordSpell,
+        card_type: CardType::Ritual,
         sets: vec![CardSetName::Test],
         abilities: vec![Ability::new_with_delegate(
             text!["Give the Champion a curse"],
@@ -602,7 +602,7 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSpellDeal1Damage,
         cost: cost(0),
-        card_type: CardType::OverlordSpell,
+        card_type: CardType::Ritual,
         sets: vec![CardSetName::Test],
         abilities: vec![Ability::new_with_delegate(
             text!["Deal 1 damage"],
@@ -616,7 +616,7 @@ pub fn test_spell_deal_5_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSpellDeal5Damage,
         cost: cost(0),
-        card_type: CardType::OverlordSpell,
+        card_type: CardType::Ritual,
         sets: vec![CardSetName::Test],
         abilities: vec![Ability::new_with_delegate(
             text!["Deal 5 damage"],

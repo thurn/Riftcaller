@@ -146,13 +146,13 @@ impl TestGame {
             side: Side::Overlord,
             schools: vec![],
             riftcallers: overlord_riftcallers.into_iter().map(CardVariant::standard).collect(),
-            cards: hashmap! {CardVariant::standard(CardName::TestOverlordSpell) => self.deck_sizes},
+            cards: hashmap! {CardVariant::standard(CardName::TestRitual) => self.deck_sizes},
         };
         let champion_deck = Deck {
             side: Side::Champion,
             schools: vec![],
             riftcallers: champion_riftcallers.into_iter().map(CardVariant::standard).collect(),
-            cards: hashmap! {CardVariant::standard(CardName::TestChampionSpell) => self.deck_sizes},
+            cards: hashmap! {CardVariant::standard(CardName::TestSpell) => self.deck_sizes},
         };
 
         let mut game = GameState::new(
@@ -417,11 +417,8 @@ impl TestSide {
             );
         }
 
-        let hand_card = if self.side == Side::Overlord {
-            CardName::TestOverlordSpell
-        } else {
-            CardName::TestChampionSpell
-        };
+        let hand_card =
+            if self.side == Side::Overlord { CardName::TestRitual } else { CardName::TestSpell };
         let hand = iter::repeat(hand_card).take(self.hand_size).collect::<Vec<_>>();
         overwrite_positions(game, self.side, &hand, CardPosition::Hand(self.side), false);
     }

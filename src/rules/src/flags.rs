@@ -241,11 +241,11 @@ fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> boo
     }
 
     match definition.card_type {
-        CardType::ChampionSpell
+        CardType::Spell
         | CardType::Artifact
         | CardType::Evocation
         | CardType::Ally
-        | CardType::OverlordSpell => target == CardTarget::None,
+        | CardType::Ritual => target == CardTarget::None,
         CardType::Minion => matches!(target, CardTarget::Room(_)),
         CardType::Project | CardType::Scheme => {
             matches!(target, CardTarget::Room(room_id) if room_id.is_outer_room())

@@ -21,7 +21,7 @@ use test_utils::test_adventure::TestAdventure;
 use test_utils::test_session::TestSession;
 use test_utils::*;
 
-const EXAMPLE_CARD: CardName = CardName::TestChampionSpell;
+const EXAMPLE_CARD: CardName = CardName::TestSpell;
 
 #[test]
 fn test_open_deck_editor() {

@@ -20,7 +20,7 @@ use test_utils::test_adventure::TestAdventure;
 use test_utils::*;
 
 const BUY_COST: Coins = Coins(75);
-const EXAMPLE_CARD: CardVariant = CardVariant::standard(CardName::TestChampionSpell);
+const EXAMPLE_CARD: CardVariant = CardVariant::standard(CardName::TestSpell);
 
 #[test]
 fn test_visit_shop() {

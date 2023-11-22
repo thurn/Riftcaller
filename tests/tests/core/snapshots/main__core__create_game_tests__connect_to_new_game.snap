@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/create_game_tests.rs
-assertion_line: 73
+assertion_line: 72
 expression: "Summary::run(&response)"
 ---
 
@@ -62,7 +62,7 @@ expression: "Summary::run(&response)"
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -81,7 +81,7 @@ expression: "Summary::run(&response)"
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -100,7 +100,7 @@ expression: "Summary::run(&response)"
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -119,7 +119,7 @@ expression: "Summary::run(&response)"
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
@@ -138,7 +138,7 @@ expression: "Summary::run(&response)"
             title_background: "<SpriteAddress>"
             jewel: "<SpriteAddress>"
             image: "<SpriteAddress>"
-            title: "Test Overlord Spell"
+            title: "Test Ritual"
             rules_text: "<RulesText>"
             targeting: 
                 can_play: false
