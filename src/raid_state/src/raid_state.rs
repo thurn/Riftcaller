@@ -254,7 +254,7 @@ fn populate_summon_prompt(minion_id: CardId) -> Result<RaidState> {
 
 fn summon_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> Result<RaidState> {
     verify!(flags::can_summon(game, minion_id), "Cannot summon minion");
-    mutations::summon_minion(game, minion_id, SummonMinion::PayCosts)?;
+    mutations::summon_minion(game, minion_id, InitiatedBy::GameAction, SummonMinion::PayCosts)?;
     game.add_history_event(HistoryEvent::MinionSummon(info.event(minion_id)));
     RaidState::step(RaidStep::ApproachMinion(minion_id))
 }
@@ -307,6 +307,7 @@ fn use_weapon(
     mana::spend(
         game,
         Side::Champion,
+        InitiatedBy::GameAction,
         ManaPurpose::UseWeapon(interaction.weapon_id),
         cost_to_defeat.mana_cost,
     )?;
@@ -504,7 +505,13 @@ fn raze_card(
     cost: u32,
 ) -> Result<RaidState> {
     game.add_history_event(HistoryEvent::RazeAccessedCard(info.event(card_id)));
-    mana::spend(game, Side::Champion, ManaPurpose::RazeCard(card_id), cost)?;
+    mana::spend(
+        game,
+        Side::Champion,
+        InitiatedBy::GameAction,
+        ManaPurpose::RazeCard(card_id),
+        cost,
+    )?;
     mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
     RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::FromRaze))
 }

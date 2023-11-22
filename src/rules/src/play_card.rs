@@ -248,6 +248,7 @@ fn pay_mana_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCa
         mana::spend(
             game,
             play_card.card_id.side,
+            InitiatedBy::GameAction,
             ManaPurpose::PayForCard(play_card.card_id),
             amount,
         )?;

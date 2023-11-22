@@ -17,7 +17,8 @@ use serde::{Deserialize, Serialize};
 use crate::card_state::{CardPosition, OnPlayState};
 use crate::history_data::CardChoice;
 use crate::primitives::{
-    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, GameObjectId, ManaValue, RoomId, Side,
+    AbilityId, ActionCount, CardId, CurseCount, DamageAmount, GameObjectId, InitiatedBy, ManaValue,
+    RoomId, Side,
 };
 
 /// An arbitrary modification to the state of an ongoing game.
@@ -37,7 +38,7 @@ pub enum GameEffect {
     DestroyCard(CardId),
     /// A mana cost for a prompt choice. Choices will not be shown if the player
     /// is unable to pay their costs.
-    ManaCost(Side, ManaValue),
+    ManaCost(Side, ManaValue, InitiatedBy),
     /// An action point cost for a prompt choice. Choices will not be shown if
     /// the player is unable to pay their costs.
     ActionCost(Side, ActionCount),

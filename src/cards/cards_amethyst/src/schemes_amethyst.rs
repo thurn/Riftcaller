@@ -72,11 +72,16 @@ pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
             ],
             delegates: vec![Delegate::ScoreCard(EventDelegate {
                 requirement: this_card,
-                mutation: |g, _, _| {
+                mutation: |g, s, _| {
                     if let Some(minion_id) =
                         queries::highest_cost(g.minions().filter(|c| c.is_face_down()))
                     {
-                        mutations::summon_minion(g, minion_id, SummonMinion::IgnoreCosts)?;
+                        mutations::summon_minion(
+                            g,
+                            minion_id,
+                            s.initiated_by(),
+                            SummonMinion::IgnoreCosts,
+                        )?;
                     }
                     Ok(())
                 },

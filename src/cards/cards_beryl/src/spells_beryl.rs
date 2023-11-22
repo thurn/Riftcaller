@@ -18,7 +18,6 @@ use card_helpers::{
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::primitives::InitiatedBy;
 use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -31,7 +30,7 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::history_data::CardChoice;
 use game_data::primitives::{
-    AbilityId, CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
+    AbilityId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
 };
 use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
@@ -181,7 +180,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                                     s.card_id(),
                                     CardPosition::Hand(s.side()),
                                 ))
-                                .effect(GameEffect::ManaCost(s.side(), 1))
+                                .effect(GameEffect::ManaCost(s.side(), 1, s.initiated_by()))
                                 .custom_label(PromptChoiceLabel::Return(1)),
                             PromptChoice::new().effect(GameEffect::Continue),
                         ],

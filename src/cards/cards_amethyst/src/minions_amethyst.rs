@@ -18,7 +18,6 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::text::trigger_text;
 use card_helpers::{abilities, text, *};
-use game_data::primitives::InitiatedBy;
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, Resonance,
 };
@@ -29,7 +28,7 @@ use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
-use game_data::primitives::{CardType, Rarity, RoomLocation, School, Side};
+use game_data::primitives::{CardType, InitiatedBy, Rarity, RoomLocation, School, Side};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
 use rules::{deal_damage, mana, mutations, queries, CardDefinitionExt};
@@ -57,7 +56,11 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
                     Side::Champion,
                     vec![
                         PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
-                        PromptChoice::new().effect(GameEffect::ManaCost(Side::Champion, 5)),
+                        PromptChoice::new().effect(GameEffect::ManaCost(
+                            Side::Champion,
+                            5,
+                            s.initiated_by(),
+                        )),
                         PromptChoice::new().effect(GameEffect::ActionCost(Side::Champion, 2)),
                     ],
                 );
@@ -100,7 +103,12 @@ pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
                             CardPosition::Room(room_id, RoomLocation::Defender),
                         )?;
                         g.move_card_to_index(minion_id, index);
-                        mutations::summon_minion(g, minion_id, SummonMinion::IgnoreCosts)?;
+                        mutations::summon_minion(
+                            g,
+                            minion_id,
+                            s.initiated_by(),
+                            SummonMinion::IgnoreCosts,
+                        )?;
                         g.raid_mut()?.jump_request =
                             Some(RaidJumpRequest::EncounterMinion(minion_id));
                     }
@@ -221,7 +229,13 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
                 ],
             ),
             combat(|g, s, _| {
-                mana::lose_upto(g, Side::Champion, ManaPurpose::PayForTriggeredAbility, 3);
+                mana::lose_upto(
+                    g,
+                    Side::Champion,
+                    s.initiated_by(),
+                    ManaPurpose::PayForTriggeredAbility,
+                    3,
+                );
                 if mana::get(g, Side::Champion, ManaPurpose::BaseMana) <= 6 {
                     mutations::end_raid(
                         g,

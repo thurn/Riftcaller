@@ -26,7 +26,9 @@ use game_data::card_state::CardPosition;
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
-use game_data::primitives::{AbilityId, AbilityIndex, CardId, GameId, RoomId, RoomLocation, Side};
+use game_data::primitives::{
+    AbilityId, AbilityIndex, CardId, GameId, InitiatedBy, RoomId, RoomLocation, Side,
+};
 use once_cell::sync::Lazy;
 use panel_address::Panel;
 use player_data::PlayerStatus;
@@ -366,7 +368,7 @@ fn vs_minion_and_scheme(game: &mut GameState, minion: CardName) -> Result<()> {
         minion,
         CardPosition::Room(RoomId::RoomA, RoomLocation::Defender),
     )?;
-    mutations::summon_minion(game, minion_id, SummonMinion::IgnoreCosts)
+    mutations::summon_minion(game, minion_id, InitiatedBy::GameAction, SummonMinion::IgnoreCosts)
 }
 
 fn scenario_game(game_id: GameId, player_id: PlayerId, side: Side) -> Result<GameState> {

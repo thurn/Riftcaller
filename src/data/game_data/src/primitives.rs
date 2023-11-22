@@ -600,7 +600,7 @@ pub enum ResponseContext {
 /// Identifies whether some game update was caused by a player taking an
 /// explicit game action such as the 'initiate raid' action, or by a card
 /// effect.
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub enum InitiatedBy {
     GameAction,
     Ability(AbilityId),

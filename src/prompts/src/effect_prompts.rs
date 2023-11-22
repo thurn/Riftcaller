@@ -52,7 +52,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::PlayChoiceEffect { .. } => String::new(),
         GameEffect::SacrificeCard(_) => "Sacrifice".to_string(),
         GameEffect::DestroyCard(_) => "Destroy".to_string(),
-        GameEffect::ManaCost(side, amount) => {
+        GameEffect::ManaCost(side, amount, ..) => {
             format!("{} {}{}", lose_text(user_side, *side), amount, icons::MANA)
         }
         GameEffect::ActionCost(side, amount) => {

@@ -496,7 +496,11 @@ pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32)
 
 /// Pays a card's cost and turns it face up, returning an error if the
 /// card is already face-up or cannot be summoned for any other reason.
-pub fn summon_project(game: &mut GameState, card_id: CardId) -> Result<()> {
+pub fn summon_project(
+    game: &mut GameState,
+    card_id: CardId,
+    initiated_by: InitiatedBy,
+) -> Result<()> {
     verify!(game.card(card_id).is_face_down(), "Card is not face-down");
     verify!(game.card(card_id).position().in_play(), "Card is not in play");
 
@@ -513,7 +517,7 @@ pub fn summon_project(game: &mut GameState, card_id: CardId) -> Result<()> {
             turn_face_up(game, card_id);
         }
         Some(cost) if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)) => {
-            mana::spend(game, card_id.side, ManaPurpose::PayForCard(card_id), cost)?;
+            mana::spend(game, card_id.side, initiated_by, ManaPurpose::PayForCard(card_id), cost)?;
             turn_face_up(game, card_id);
         }
         _ => fail!("Insufficient mana available to summon project"),
@@ -571,11 +575,22 @@ pub enum SummonMinion {
 /// [SummonMinion] value provided.
 ///
 /// Returns an error if the indicated card is already face-up.
-pub fn summon_minion(game: &mut GameState, card_id: CardId, costs: SummonMinion) -> Result<()> {
+pub fn summon_minion(
+    game: &mut GameState,
+    card_id: CardId,
+    initiated_by: InitiatedBy,
+    costs: SummonMinion,
+) -> Result<()> {
     verify!(game.card(card_id).is_face_down());
     if costs == SummonMinion::PayCosts {
         if let Some(cost) = queries::mana_cost(game, card_id) {
-            mana::spend(game, Side::Overlord, ManaPurpose::PayForCard(card_id), cost)?;
+            mana::spend(
+                game,
+                Side::Overlord,
+                initiated_by,
+                ManaPurpose::PayForCard(card_id),
+                cost,
+            )?;
         }
 
         if let Some(custom_cost) = &game.card(card_id).definition().cost.custom_cost {

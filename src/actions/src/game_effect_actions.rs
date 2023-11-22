@@ -47,8 +47,8 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
         GameEffect::DestroyCard(card_id) => mutations::destroy_card(game, card_id)?,
-        GameEffect::ManaCost(side, amount) => {
-            mana::spend(game, side, ManaPurpose::PayForTriggeredAbility, amount)?
+        GameEffect::ManaCost(side, amount, initiated_by) => {
+            mana::spend(game, side, initiated_by, ManaPurpose::PayForTriggeredAbility, amount)?
         }
         GameEffect::ActionCost(side, amount) => mutations::spend_action_points(game, side, amount)?,
         GameEffect::InitiateRaid(room_id, ability_id) => raid_state::initiate_with_callback(

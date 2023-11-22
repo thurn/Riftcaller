@@ -19,7 +19,7 @@ use game_data::delegate_data::{AbilityActivated, ActivateAbilityEvent};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::{GamePhase, GameState};
 use game_data::history_data::{AbilityActivation, AbilityActivationType, HistoryEvent};
-use game_data::primitives::{AbilityId, Side};
+use game_data::primitives::{AbilityId, InitiatedBy, Side};
 use game_data::state_machines::{ActivateAbilityData, ActivateAbilityStep};
 use with_error::{fail, verify};
 
@@ -117,6 +117,7 @@ fn pay_mana_cost(
         mana::spend(
             game,
             activate.ability_id.side(),
+            InitiatedBy::Ability(activate.ability_id),
             ManaPurpose::ActivateAbility(activate.ability_id),
             mana,
         )?;

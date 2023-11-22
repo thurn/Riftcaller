@@ -79,7 +79,7 @@ fn can_pay_prompt_cost(game: &GameState, choice: &PromptChoice) -> bool {
 
 fn can_pay_effect_cost(game: &GameState, effect: &GameEffect) -> bool {
     match effect {
-        GameEffect::ManaCost(side, cost) => {
+        GameEffect::ManaCost(side, cost, ..) => {
             mana::get(game, *side, ManaPurpose::PayForTriggeredAbility) >= *cost
         }
         GameEffect::ActionCost(side, cost) => game.player(*side).actions >= *cost,

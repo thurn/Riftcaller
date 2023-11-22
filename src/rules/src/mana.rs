@@ -19,7 +19,7 @@ use std::cmp;
 
 use anyhow::Result;
 use game_data::game_state::{GameState, SpecificRaidMana};
-use game_data::primitives::{AbilityId, CardId, ManaValue, RaidId, RoomId, Side};
+use game_data::primitives::{AbilityId, CardId, InitiatedBy, ManaValue, RaidId, RoomId, Side};
 use tracing::debug;
 use with_error::{verify, WithError};
 
@@ -71,6 +71,7 @@ pub fn get(game: &GameState, side: Side, purpose: ManaPurpose) -> ManaValue {
 pub fn spend(
     game: &mut GameState,
     side: Side,
+    _: InitiatedBy,
     purpose: ManaPurpose,
     amount: ManaValue,
 ) -> Result<()> {
@@ -99,9 +100,15 @@ pub fn spend(
 }
 
 /// Causes a player to lose up to a given amount of mana.
-pub fn lose_upto(game: &mut GameState, side: Side, purpose: ManaPurpose, amount: ManaValue) {
+pub fn lose_upto(
+    game: &mut GameState,
+    side: Side,
+    initiated_by: InitiatedBy,
+    purpose: ManaPurpose,
+    amount: ManaValue,
+) {
     debug!(?amount, ?side, "Losing up to 'amount' mana");
-    spend(game, side, purpose, cmp::min(get(game, side, purpose), amount))
+    spend(game, side, initiated_by, purpose, cmp::min(get(game, side, purpose), amount))
         .expect("Error spending mana");
 }
 

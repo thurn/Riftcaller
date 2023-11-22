@@ -169,7 +169,7 @@ fn summon_project_action(game: &mut GameState, user_side: Side, card_id: CardId)
     );
 
     game.add_history_event(HistoryEvent::SummonProject(card_id));
-    mutations::summon_project(game, card_id)?;
+    mutations::summon_project(game, card_id, InitiatedBy::GameAction)?;
     Ok(())
 }
 
@@ -199,7 +199,7 @@ fn progress_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) 
     debug!(?user_side, "Applying progress room action");
     game.add_history_event(HistoryEvent::CardProgress(room_id, 1, InitiatedBy::GameAction));
     mutations::spend_action_points(game, user_side, 1)?;
-    mana::spend(game, user_side, ManaPurpose::ProgressRoom(room_id), 1)?;
+    mana::spend(game, user_side, InitiatedBy::GameAction, ManaPurpose::ProgressRoom(room_id), 1)?;
     game.add_animation(|| GameAnimation::ProgressRoom(room_id, InitiatedBy::GameAction));
     mutations::progress_room(game, room_id)?;
     Ok(())
@@ -226,7 +226,13 @@ fn remove_curse_action(game: &mut GameState, user_side: Side) -> Result<()> {
     debug!(?user_side, "Applying remove curse action");
     game.add_history_event(HistoryEvent::RemoveCurseAction);
     mutations::spend_action_points(game, user_side, 1)?;
-    mana::spend(game, user_side, ManaPurpose::RemoveCurse, game_constants::COST_TO_REMOVE_CURSE)?;
+    mana::spend(
+        game,
+        user_side,
+        InitiatedBy::GameAction,
+        ManaPurpose::RemoveCurse,
+        game_constants::COST_TO_REMOVE_CURSE,
+    )?;
     curses::remove_curses(game, 1)?;
     Ok(())
 }
@@ -245,6 +251,7 @@ fn dispel_evocation_action(game: &mut GameState, user_side: Side) -> Result<()> 
     mana::spend(
         game,
         user_side,
+        InitiatedBy::GameAction,
         ManaPurpose::RemoveCurse,
         game_constants::COST_TO_DISPEL_EVOCATION,
     )?;

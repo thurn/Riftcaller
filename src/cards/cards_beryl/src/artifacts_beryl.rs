@@ -561,7 +561,11 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
                                 s,
                                 vec![
                                     PromptChoice::new()
-                                        .effect(GameEffect::ManaCost(s.side(), shield))
+                                        .effect(GameEffect::ManaCost(
+                                            s.side(),
+                                            shield,
+                                            s.initiated_by(),
+                                        ))
                                         .effect(GameEffect::EvadeCurrentEncounter),
                                     PromptChoice::new().effect(GameEffect::Continue),
                                 ],

@@ -71,7 +71,6 @@ use enum_kinds::EnumKind;
 use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
 
-use crate::primitives::InitiatedBy;
 #[allow(unused)] // Used in rustdocs
 use crate::card_definition::Cost;
 use crate::card_definition::Resonance;
@@ -85,8 +84,8 @@ use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
-    HasRaidId, HasRoomId, HasSide, HealthValue, ManaValue, MinionEncounterId, RaidId, RoomAccessId,
-    RoomId, ShieldValue, Side, TurnNumber,
+    HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue, MinionEncounterId, RaidId,
+    RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
 };
 use crate::raid_data::PopulateAccessPromptSource;
 use crate::text::TextElement;
@@ -132,6 +131,11 @@ impl Scope {
     /// Returns one of two values based on whether the card is upgraded
     pub fn upgrade<T>(&self, normal: T, upgraded: T) -> T {
         self.metadata.upgrade(normal, upgraded)
+    }
+
+    /// Builds an [InitiatedBy] struct for this scope's ability.
+    pub fn initiated_by(&self) -> InitiatedBy {
+        InitiatedBy::Ability(self.ability_id)
     }
 }
 
