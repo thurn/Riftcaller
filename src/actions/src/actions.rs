@@ -197,7 +197,7 @@ fn progress_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) 
         user_side
     );
     debug!(?user_side, "Applying progress room action");
-    game.add_history_event(HistoryEvent::CardProgress(room_id, 1, InitiatedBy::GameAction));
+    game.add_history_event(HistoryEvent::CardProgressAction(room_id));
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, InitiatedBy::GameAction, ManaPurpose::ProgressRoom(room_id), 1)?;
     game.add_animation(|| GameAnimation::ProgressRoom(room_id, InitiatedBy::GameAction));

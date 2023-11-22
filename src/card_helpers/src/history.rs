@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardId, HasAbilityId, RoomId};
+use core_data::game_primitives::{CardId, HasAbilityId, RoomId, Side};
 use game_data::delegate_data::{RaidEvent, UsedWeapon};
 use game_data::game_state::GameState;
-use game_data::history_data::{AbilityActivation, CardChoice, HistoryEvent};
+use game_data::history_data::{AbilityActivation, CardChoice, HistoryCounters, HistoryEvent};
 
 /// Returns the record of game events which happened on the current
 /// player's turn so far, not including the game action currently being
 /// processed.
 pub fn current_turn(game: &GameState) -> impl Iterator<Item = &HistoryEvent> + '_ {
     game.history.for_turn(game.info.turn)
+}
+
+/// Returns the [HistoryCounters] reference for the current game turn.
+pub fn counters(game: &GameState, side: Side) -> &HistoryCounters {
+    game.history.counters_for_turn(game.info.turn, side)
 }
 
 /// Returns an iterator over cards which have been played in the current

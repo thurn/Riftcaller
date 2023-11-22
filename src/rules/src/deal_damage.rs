@@ -17,7 +17,6 @@ use core_data::game_primitives::{HasAbilityId, Side};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DealtDamage, DealtDamageEvent, WillDealDamageEvent};
 use game_data::game_state::{GamePhase, GameState};
-use game_data::history_data::HistoryEvent;
 use game_data::random;
 use game_data::state_machines::{DealDamageData, DealDamageStep};
 use with_error::{verify, WithError};
@@ -99,7 +98,7 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
                     DealDamageStep::Finish
                 }
                 DealDamageStep::Finish => {
-                    game.add_history_event(HistoryEvent::DealDamage(data.amount));
+                    game.current_history_counters(Side::Champion).damage_received += data.amount;
                     game.state_machines.deal_damage = None;
                     DealDamageStep::Finish
                 }

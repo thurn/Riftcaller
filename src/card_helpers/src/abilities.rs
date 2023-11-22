@@ -146,7 +146,8 @@ pub fn play_as_first_action() -> Ability {
     fn is_game_action(event: &HistoryEvent) -> bool {
         match event {
             HistoryEvent::GainManaAction
-            | HistoryEvent::DrawCardAction(_)
+            | HistoryEvent::DrawCardAction(..)
+            | HistoryEvent::CardProgressAction(..)
             | HistoryEvent::RemoveCurseAction
             | HistoryEvent::DispelEvocationAction => true,
             HistoryEvent::PlayCard(_, _, initiated_by)
@@ -160,11 +161,6 @@ pub fn play_as_first_action() -> Ability {
                 true
             }
             HistoryEvent::RaidBegin(e) if e.data == InitiatedBy::GameAction => true,
-            HistoryEvent::CardProgress(_, _, initiated_by)
-                if *initiated_by == InitiatedBy::GameAction =>
-            {
-                true
-            }
             _ => false,
         }
     }

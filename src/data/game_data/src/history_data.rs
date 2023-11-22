@@ -15,8 +15,7 @@
 use std::collections::HashMap;
 
 use core_data::game_primitives::{
-    AbilityId, CardId, CurseCount, InitiatedBy, MinionEncounterId, ProgressValue, RaidId,
-    RoomAccessId, RoomId, Side,
+    AbilityId, CardId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
 };
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
@@ -84,6 +83,8 @@ pub enum HistoryEvent {
     ActivateAbility(AbilityActivation),
     /// A face-down card has been summoned.
     SummonProject(CardId),
+    /// A room was progressed some number of times via the standard game action
+    CardProgressAction(RoomId),
     /// A raid was started, either via a card effect or the standard game action
     RaidBegin(RaidEvent<InitiatedBy>),
     /// A minion has been summoned during a raid.
@@ -104,13 +105,6 @@ pub enum HistoryEvent {
     RaidSuccess(RaidEvent<()>),
     /// A raid ended in failure.
     RaidFailure(RaidEvent<()>),
-    /// A card was progressed some number of times, either via a card effect or
-    /// the standard game action
-    CardProgress(RoomId, ProgressValue, InitiatedBy),
-    /// The Champion has been dealt damage
-    DealDamage(u32),
-    /// Curses have been given to the Champion player
-    GiveCurse(CurseCount),
     /// A card ability choice has been made, e.g. naming a target room for a
     /// spell's ongoing effect.
     CardChoice(CardChoiceEvent),
@@ -130,6 +124,13 @@ struct HistoryEntry {
     event: HistoryEvent,
 }
 
+static DEFAULT_COUNTERS: HistoryCounters = HistoryCounters {
+    cards_drawn: 0,
+    cards_drawn_via_abilities: 0,
+    curses_received: 0,
+    damage_received: 0,
+};
+
 /// Counters for events that happen during a given turn. Each player has their
 /// own set of counters for game events.
 ///
@@ -145,6 +146,10 @@ pub struct HistoryCounters {
     pub cards_drawn: u32,
     /// Cards drawn this turn via card abilities by this player
     pub cards_drawn_via_abilities: u32,
+    /// Number of curses received this turn, only valid for the Champion player.
+    pub curses_received: u32,
+    /// Amount of damage received this turn, only valid for the Champion player.
+    pub damage_received: u32,
 }
 
 /// History of events which have happened during this game.
@@ -174,9 +179,18 @@ impl GameHistory {
         self.entries.get(&turn).into_iter().flatten()
     }
 
+    /// Returns a  reference to the [HistoryCounters] entry for the provided
+    /// turn.
+    pub fn counters_for_turn(&self, turn: TurnData, side: Side) -> &HistoryCounters {
+        match side {
+            Side::Overlord => self.overlord_counters.get(&turn).unwrap_or(&DEFAULT_COUNTERS),
+            Side::Champion => self.champion_counters.get(&turn).unwrap_or(&DEFAULT_COUNTERS),
+        }
+    }
+
     /// Returns a mutable reference to the [HistoryCounters] entry for the
     /// provided turn.
-    pub fn counters_for_turn(&mut self, turn: TurnData, side: Side) -> &mut HistoryCounters {
+    pub fn counters_for_turn_mut(&mut self, turn: TurnData, side: Side) -> &mut HistoryCounters {
         match side {
             Side::Overlord => self.overlord_counters.entry(turn).or_default(),
             Side::Champion => self.champion_counters.entry(turn).or_default(),

@@ -13,10 +13,9 @@
 // limitations under the License.
 
 use anyhow::Result;
-use core_data::game_primitives::{CurseCount, HasAbilityId};
+use core_data::game_primitives::{CurseCount, HasAbilityId, Side};
 use game_data::delegate_data::{CursesReceivedEvent, WillReceiveCursesEvent};
 use game_data::game_state::{GamePhase, GameState};
-use game_data::history_data::HistoryEvent;
 use game_data::state_machines::{GiveCursesData, GiveCursesStep};
 use with_error::verify;
 
@@ -69,7 +68,7 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
                     GiveCursesStep::Finish
                 }
                 GiveCursesStep::Finish => {
-                    game.add_history_event(HistoryEvent::GiveCurse(data.quantity));
+                    game.current_history_counters(Side::Champion).curses_received += data.quantity;
                     game.state_machines.give_curses = None;
                     GiveCursesStep::Finish
                 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId};
+use core_data::game_primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId, Side};
 use game_data::card_definition::TargetRequirement;
 use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
@@ -130,8 +130,7 @@ pub fn no_damage_dealt<R: BaseRequirement>(
     scope: Scope,
     _: &DealtDamage,
 ) -> bool {
-    R::run(game, scope)
-        && history::current_turn(game).all(|e| e.kind() != HistoryEventKind::DealDamage)
+    R::run(game, scope) && history::counters(game, Side::Champion).damage_received == 0
 }
 
 /// A [RequirementFn] which matches if the indicated `card_id` was selected this

@@ -666,7 +666,7 @@ impl GameState {
     /// Returns a mutable reference to the [HistoryCounters] for the `side`
     /// player in the current turn.
     pub fn current_history_counters(&mut self, side: Side) -> &mut HistoryCounters {
-        self.history.counters_for_turn(self.info.turn, side)
+        self.history.counters_for_turn_mut(self.info.turn, side)
     }
 
     /// Create card states for a deck
