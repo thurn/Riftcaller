@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashSet;
-
 use game_data::animation_tracker::InitiatedBy;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
@@ -125,9 +123,9 @@ pub fn status_markers(
     Delegate::CardStatusMarkers(QueryDelegate { requirement, transformation })
 }
 
-pub fn continuous_display_effects(
+pub fn continuous_display_effect(
     requirement: RequirementFn<CardId>,
-    transformation: TransformationFn<CardId, HashSet<ContinuousDisplayEffect>>,
+    transformation: TransformationFn<CardId, ContinuousDisplayEffect>,
 ) -> Delegate {
-    Delegate::ContinuousDisplayEffects(QueryDelegate { requirement, transformation })
+    Delegate::ContinuousDisplayEffect(QueryDelegate { requirement, transformation })
 }

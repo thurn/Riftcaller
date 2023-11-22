@@ -62,7 +62,7 @@
 
 #![allow(clippy::use_self)] // Required to use EnumKind
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Formatter;
 
@@ -441,7 +441,7 @@ impl HasAbilityId for CanActivateAbility {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum CardInfoElementKind {
     Informative,
     PositiveEffect,
@@ -643,9 +643,10 @@ pub enum Delegate {
     /// Queries the maximum hand size of a player. Invoked with the default
     /// maximum hand size.
     MaximumHandSize(QueryDelegate<Side, u32>),
-    /// Queries continuous display effects for a card. This has no effect other
-    /// than to display in the UI which cards have been modified.
-    ContinuousDisplayEffects(QueryDelegate<CardId, HashSet<ContinuousDisplayEffect>>),
+    /// Queries continuous display effect for a card. This has no effect other
+    /// than to display VFX on the cardin the UI. Only one effect can be shown
+    /// at a time.
+    ContinuousDisplayEffect(QueryDelegate<CardId, ContinuousDisplayEffect>),
     /// Queries card status markers, which are visual indications of ongoing
     /// effects.
     CardStatusMarkers(QueryDelegate<CardId, Vec<CardStatusMarker>>),

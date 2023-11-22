@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashSet;
-
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
 use constants::game_constants;
@@ -22,7 +20,7 @@ use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::{CardState, OnPlayState};
 use game_data::card_view_context::CardViewContext;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
-use game_data::delegate_data::ContinuousDisplayEffectsQuery;
+use game_data::delegate_data::ContinuousDisplayEffectQuery;
 use game_data::game_actions::{CardTarget, GamePrompt};
 use game_data::game_state::GameState;
 use game_data::primitives::{
@@ -82,7 +80,7 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> CardVi
         }),
         effects: Some(CardEffects {
             outline_color: outline_color(context),
-            arena_effect: continuous_display_effects(context),
+            arena_effect: continuous_display_effect(context),
         }),
     }
 }
@@ -582,21 +580,21 @@ fn outline_color(context: &CardViewContext) -> Option<FlexColor> {
     None
 }
 
-fn continuous_display_effects(context: &CardViewContext) -> Option<EffectAddress> {
+fn continuous_display_effect(context: &CardViewContext) -> Option<EffectAddress> {
     let CardViewContext::Game(_, game, card) = context else {
         return None;
     };
 
-    let effects =
-        dispatch::perform_query(game, ContinuousDisplayEffectsQuery(card.id), HashSet::new());
+    let effect = dispatch::perform_query(
+        game,
+        ContinuousDisplayEffectQuery(card.id),
+        ContinuousDisplayEffect::None,
+    );
 
-    // Effects are not ordered so we just pick an arbitrary element from the set to
-    // display.
-    if let Some(ContinuousDisplayEffect::CannotSummonThisTurn) = effects.iter().next() {
-        return Some(assets::timed_effect(TimedEffect::MagicCircles1Looping(
-            "Magic circle 2 loop",
-        )));
+    match effect {
+        ContinuousDisplayEffect::None => None,
+        ContinuousDisplayEffect::CannotSummonThisTurn => {
+            Some(assets::timed_effect(TimedEffect::MagicCircles1Looping("Magic circle 2 loop")))
+        }
     }
-
-    None
 }

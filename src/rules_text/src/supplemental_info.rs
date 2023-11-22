@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::HashSet;
-
 use convert_case::{Case, Casing};
 use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::card_definition::CardDefinition;
 use game_data::card_view_context::CardViewContext;
-use game_data::continuous_visual_effect::ContinuousDisplayEffect;
-use game_data::delegate_data::{CardInfoElementKind, ContinuousDisplayEffectsQuery};
+use game_data::delegate_data::CardStatusMarkersQuery;
 use game_data::primitives::AbilityIndex;
 use game_data::text::{TextElement, TextTokenKind};
 use rules::{dispatch, queries};
@@ -100,15 +97,10 @@ fn add_continuous_display_effects(result: &mut Vec<CardInfoElement>, context: &C
         return;
     };
 
-    let effects =
-        dispatch::perform_query(game, ContinuousDisplayEffectsQuery(card.id), HashSet::new());
-    for effect in effects {
-        result.push(match effect {
-            ContinuousDisplayEffect::CannotSummonThisTurn => {
-                CardInfoElement::new("Cannot be summoned this turn")
-                    .kind(CardInfoElementKind::NegativeEffect)
-            }
-        })
+    let markers = dispatch::perform_query(game, CardStatusMarkersQuery(card.id), vec![]);
+    for marker in markers {
+        let kind = marker.marker_kind;
+        result.push(CardInfoElement { text: crate::status_marker_text(context, marker), kind });
     }
 }
 
@@ -145,7 +137,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         TextTokenKind::AddPowerCharges |
             TextTokenKind::PowerChargeSymbol |
             TextTokenKind::PowerCharges => Some(format!(
-            "{}: A power charge, stored while in play to spend on abilities", 
+            "{}: A power charge, stored while in play to spend on abilities",
             icons::POWER_CHARGE
         )),
         TextTokenKind::Play => entry("Play", "Triggers when this card enters the arena"),
