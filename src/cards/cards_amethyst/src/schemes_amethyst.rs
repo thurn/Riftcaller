@@ -14,6 +14,11 @@
 
 //! Card definitions for the Scheme card type
 
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
+use card_helpers::costs::scheme;
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, SchemePoints,
@@ -21,14 +26,8 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate};
-
-use assets::rexard_images;
-use assets::rexard_images::RexardPack;
-use card_helpers::costs::scheme;
-use card_helpers::text_helpers::named_trigger;
-use card_helpers::*;
 use rules::mutations::SummonMinion;
-use rules::{mana, mutations, queries};
+use rules::{draw_cards, mana, mutations, queries};
 
 pub fn gold_mine(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -113,7 +112,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
             ),
             delegates: vec![
                 on_overlord_score(|g, s, _| {
-                    mutations::draw_cards(g, s.side(), 2, s.initiated_by()).map(|_| ())
+                    draw_cards::run(g, s.side(), 2, s.initiated_by()).map(|_| ())
                 }),
                 Delegate::MaximumHandSize(QueryDelegate {
                     requirement: scored_by_owner,

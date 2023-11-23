@@ -12,18 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardType, Rarity, School, Side};
-use game_data::card_definition::{Ability, CardConfig, CardDefinition};
-use game_data::card_name::{CardMetadata, CardName};
-use game_data::card_set_name::CardSetName;
-use game_data::delegate_data::{Delegate, EventDelegate};
-
 use assets::rexard_images;
 use card_helpers::effects::Effects;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::*;
-use rules::{mana, mutations, CardDefinitionExt};
+use core_data::game_primitives::{CardType, Rarity, School, Side};
+use game_data::card_definition::{Ability, CardConfig, CardDefinition};
+use game_data::card_name::{CardMetadata, CardName};
+use game_data::card_set_name::CardSetName;
+use game_data::delegate_data::{Delegate, EventDelegate};
+use rules::{draw_cards, mana, mutations, CardDefinitionExt};
 
 pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -67,7 +66,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
                 requirement: requirements::no_damage_dealt::<FaceUpInPlay>,
                 mutation: |g, s, _| {
                     Effects::new().ability_alert(s).apply(g);
-                    mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
+                    draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                     Ok(())
                 },
             }),

@@ -34,10 +34,10 @@ use game_data::card_state::{CardCounter, CardState};
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     CanAbilityEndRaidQuery, CardRevealedEvent, CardSacrificedEvent, DawnEvent, DiscardCardEvent,
-    DiscardedCard, DiscardedFrom, DrawCardEvent, DrawCardsViaAbilityEvent, DuskEvent,
-    EnterArenaEvent, Flag, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
-    RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
-    StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
+    DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, Flag,
+    MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome,
+    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
+    SummonProjectEvent,
 };
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::history_data::{CardChoice, CardChoiceEvent, HistoryEvent};
@@ -46,7 +46,7 @@ use tracing::{debug, instrument};
 use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, flags, mana, queries, CardDefinitionExt};
+use crate::{dispatch, draw_cards, flags, mana, queries, CardDefinitionExt};
 
 /// Change a card to the 'face up' state and makes the card revealed to both
 /// players.
@@ -210,44 +210,39 @@ pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
 ///
 /// If there are insufficient cards available:
 ///  - If `side == Overlord`, the Overlord player loses the game and no cards
-///    are returned.
-///  - If `side == Champion`, all remaining cards are returned.
+///    are drawn.
+///  - If `side == Champion`, all remaining cards are drawn.
 ///
-/// Cards are marked as revealed to the `side` player. Returns a vector of the
-/// newly-drawn [CardId]s.
-pub fn draw_cards(
-    game: &mut GameState,
-    side: Side,
-    count: u32,
-    source: InitiatedBy,
-) -> Result<Vec<CardId>> {
-    let card_ids = realize_top_of_deck(game, side, count)?;
-
-    if card_ids.len() != count as usize && side == Side::Overlord {
-        game_over(game, side.opponent())?;
-        return Ok(vec![]);
-    }
-
-    for card_id in &card_ids {
-        set_visible_to(game, *card_id, side, true);
-    }
-
-    game.add_animation(|| GameAnimation::DrawCards(side, card_ids.clone()));
-
-    for card_id in &card_ids {
-        move_card(game, *card_id, CardPosition::Hand(side))?;
-    }
-
-    if matches!(source, InitiatedBy::Ability(..)) {
-        dispatch::invoke_event(game, DrawCardsViaAbilityEvent(side))?;
-    }
-
-    game.current_history_counters(side).cards_drawn += card_ids.len() as u32;
-    if matches!(source, InitiatedBy::Ability(..) | InitiatedBy::SilentAbility(..)) {
-        game.current_history_counters(side).cards_drawn_via_abilities += card_ids.len() as u32;
-    }
-    Ok(card_ids)
-}
+/// Cards are marked as revealed to the `side` player.
+// pub fn draw_cards(game: &mut GameState, side: Side, count: u32, source: InitiatedBy) ->
+// Result<()> {     let card_ids = realize_top_of_deck(game, side, count)?;
+//
+//     if card_ids.len() != count as usize && side == Side::Overlord {
+//         game_over(game, side.opponent())?;
+//         return Ok(());
+//     }
+//
+//     for card_id in &card_ids {
+//         set_visible_to(game, *card_id, side, true);
+//     }
+//
+//     game.add_animation(|| GameAnimation::DrawCards(side, card_ids.clone()));
+//
+//     for card_id in &card_ids {
+//         move_card(game, *card_id, CardPosition::Hand(side))?;
+//     }
+//
+//     if matches!(source, InitiatedBy::Ability(..)) {
+//         dispatch::invoke_event(game, DrawCardsViaAbilityEvent(side))?;
+//     }
+//
+//     game.current_history_counters(side).cards_drawn += card_ids.len() as u32;
+//     if matches!(source, InitiatedBy::Ability(..) | InitiatedBy::SilentAbility(..)) {
+//         game.current_history_counters(side).cards_drawn_via_abilities += card_ids.len() as u32;
+//     }
+//
+//     Ok(())
+// }
 
 /// Lose action points if a player has more than 0.
 pub fn lose_action_points_if_able(
@@ -401,8 +396,18 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
 #[instrument(skip(game))]
 pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
     debug!("Dealing opening hands");
-    draw_cards(game, Side::Overlord, game_constants::STARTING_HAND_SIZE, InitiatedBy::GameAction)?;
-    draw_cards(game, Side::Champion, game_constants::STARTING_HAND_SIZE, InitiatedBy::GameAction)?;
+    draw_cards::run(
+        game,
+        Side::Overlord,
+        game_constants::STARTING_HAND_SIZE,
+        InitiatedBy::GameAction,
+    )?;
+    draw_cards::run(
+        game,
+        Side::Champion,
+        game_constants::STARTING_HAND_SIZE,
+        InitiatedBy::GameAction,
+    )?;
     Ok(())
 }
 
@@ -571,7 +576,7 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     game.player_mut(next_side).actions = queries::start_of_turn_action_count(game, next_side);
 
     if next_side == Side::Overlord {
-        draw_cards(game, next_side, 1, InitiatedBy::GameAction)?;
+        draw_cards::run(game, next_side, 1, InitiatedBy::GameAction)?;
     }
 
     Ok(())

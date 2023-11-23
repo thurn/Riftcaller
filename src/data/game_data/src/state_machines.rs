@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{AbilityId, CardId, DamageAmount, InitiatedBy};
+use core_data::game_primitives::{AbilityId, CardId, DamageAmount, InitiatedBy, Side};
 use serde::{Deserialize, Serialize};
 
 use crate::game_actions::CardTarget;
@@ -108,6 +108,31 @@ pub struct GiveCursesData {
     pub step: GiveCursesStep,
 }
 
+type DrawCardsCount = u32;
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum DrawCardsStep {
+    Begin,
+    WillDrawCardsEvent,
+    DrawCards,
+    DrawCardsViaAbilityEvent(DrawCardsCount),
+    AddToHistory(DrawCardsCount),
+    Finish,
+}
+
+/// State data for drawing cards
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DrawCardsData {
+    /// Which player is drawing cards?
+    pub side: Side,
+    /// Number of cards to draw
+    pub quantity: u32,
+    /// Source of the card draw
+    pub source: InitiatedBy,
+    /// Current state machine state
+    pub step: DrawCardsStep,
+}
+
 /// Data related to ongoing game events. Some types of updates are handled via a
 /// resumable state machine in order to allow interruptions in the resolution
 /// process when a player is required to make a prompt decision.
@@ -117,4 +142,5 @@ pub struct StateMachines {
     pub activate_ability: Option<ActivateAbilityData>,
     pub deal_damage: Option<DealDamageData>,
     pub give_curses: Option<GiveCursesData>,
+    pub draw_cards: Vec<DrawCardsData>,
 }

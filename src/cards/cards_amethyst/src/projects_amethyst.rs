@@ -14,19 +14,18 @@
 
 //! Card definitions for the Project card type
 
-use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
-use game_data::card_name::{CardMetadata, CardName};
-use game_data::card_set_name::CardSetName;
-use game_data::card_state::CardCounter;
-
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::effects::Effects;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::{abilities, *};
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
+use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
+use game_data::card_name::{CardMetadata, CardName};
+use game_data::card_set_name::CardSetName;
+use game_data::card_state::CardCounter;
 use rules::mutations::OnZeroStored;
-use rules::{deal_damage, mutations};
+use rules::{deal_damage, draw_cards, mutations};
 
 pub fn gemcarver(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -50,7 +49,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
                 delegates: vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     if g.card(s.card_id()).counters(CardCounter::StoredMana) == 0 {
-                        mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
+                        draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                     }
                     Effects::new().ability_alert(s).apply(g);
                     Ok(())

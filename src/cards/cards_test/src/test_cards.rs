@@ -14,6 +14,10 @@
 
 //! Test cards
 
+use card_helpers::costs::{actions, scheme};
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::on_activated;
+use card_helpers::{abilities, combat_abilities, *};
 use core_data::game_primitives::{
     CardSubtype, CardType, InitiatedBy, Rarity, School, Side, Sprite,
 };
@@ -25,13 +29,8 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-
-use card_helpers::costs::{actions, scheme};
-use card_helpers::text_helpers::named_trigger;
-use card_helpers::this::on_activated;
-use card_helpers::{abilities, combat_abilities, *};
 use rules::mutations::OnZeroStored;
-use rules::{curses, deal_damage, mutations};
+use rules::{curses, deal_damage, draw_cards, mutations};
 
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -527,7 +526,7 @@ pub fn test_sacrifice_draw_card_artifact(metadata: CardMetadata) -> CardDefiniti
             ability_type: abilities::sacrifice_this(),
             text: text!["Draw a card"],
             delegates: vec![on_activated(|g, s, _| {
-                mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
+                draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                 Ok(())
             })],
         }],

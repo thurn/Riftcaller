@@ -32,7 +32,7 @@ use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::history_data::HistoryEvent;
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, deal_damage, dispatch, flags, mana, mutations, play_card,
+    activate_ability, curses, deal_damage, dispatch, draw_cards, flags, mana, mutations, play_card,
     prompt_monitor, queries,
 };
 use tracing::{debug, instrument};
@@ -113,12 +113,9 @@ fn draw_card_action(game: &mut GameState, user_side: Side) -> Result<()> {
 
     debug!(?user_side, "Applying draw card action");
     mutations::spend_action_points(game, user_side, 1)?;
-    let cards = mutations::draw_cards(game, user_side, 1, InitiatedBy::GameAction)?;
-    if let Some(card_id) = cards.get(0) {
-        game.add_history_event(HistoryEvent::DrawCardAction(*card_id));
-        dispatch::invoke_event(game, DrawCardActionEvent(*card_id))?;
-    }
-
+    draw_cards::run(game, user_side, 1, InitiatedBy::GameAction)?;
+    game.add_history_event(HistoryEvent::DrawCardAction(user_side));
+    dispatch::invoke_event(game, DrawCardActionEvent(user_side))?;
     Ok(())
 }
 
@@ -337,7 +334,7 @@ fn handle_mulligan_decision(
         MulliganDecision::Keep => {}
         MulliganDecision::Mulligan => {
             mutations::shuffle_into_deck(game, user_side, &hand)?;
-            mutations::draw_cards(game, user_side, 5, InitiatedBy::GameAction)?;
+            draw_cards::run(game, user_side, 5, InitiatedBy::GameAction)?;
         }
     }
 
@@ -447,6 +444,7 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
 
 /// Attempt to start all active game state machines to process further actions
 fn run_state_based_actions(game: &mut GameState) -> Result<()> {
+    draw_cards::run_state_machine(game)?;
     deal_damage::run_state_machine(game)?;
     curses::run_state_machine(game)?;
     raid_state::run(game, None)?;

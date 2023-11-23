@@ -12,9 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::effects::Effects;
+use card_helpers::{
+    costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
+};
 use core_data::game_primitives::{
     BanishEventId, CardId, CardSubtype, CardType, GameObjectId, Rarity, School, Side,
 };
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{
     Ability, ActivatedAbility, CardConfig, CardDefinition, TargetRequirement,
@@ -28,14 +34,7 @@ use game_data::game_state::RaidJumpRequest;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-
-use card_helpers::effects::Effects;
-use card_helpers::{
-    costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
-};
-use core_ui::design;
-use core_ui::design::TimedEffectDataExt;
-use rules::{curses, flags, mana, mutations, CardDefinitionExt};
+use rules::{curses, draw_cards, flags, mana, mutations, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
@@ -112,7 +111,7 @@ pub fn starfield_omen(meta: CardMetadata) -> CardDefinition {
                         )
                         .apply(g);
 
-                    mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
+                    draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                 }
                 Ok(())
             }),
@@ -228,7 +227,7 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
             )
             .delegate(this::on_activated(|g, s, _| {
                 curses::remove_curses(g, 1)?;
-                mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
+                draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                 Ok(())
             }))
             .build(),

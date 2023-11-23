@@ -36,7 +36,7 @@ use protos::spelldawn::client_debug_command::DebugCommand;
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mutations::SummonMinion;
-use rules::{curses, dispatch, mana, mutations, wounds};
+use rules::{curses, dispatch, draw_cards, mana, mutations, wounds};
 use serde_json::{de, ser};
 use sled::Db;
 use ulid::Ulid;
@@ -228,7 +228,7 @@ pub async fn handle_debug_action(
                     mutations::set_visible_to(game, *card_id, card_id.side, true);
 
                     if matches!(position, CardPosition::Hand(s) if *s == side) {
-                        mutations::draw_cards(game, side, 1, InitiatedBy::GameAction)?;
+                        draw_cards::run(game, side, 1, InitiatedBy::GameAction)?;
                     } else if matches!(position, CardPosition::DiscardPile(_)) {
                         mutations::discard_card(game, *card_id)?;
                     } else {

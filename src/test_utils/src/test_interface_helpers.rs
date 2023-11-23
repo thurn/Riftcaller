@@ -157,7 +157,7 @@ impl TestInterfaceHelpers for TestSession {
         let string = text.into();
         self.click_on_with_result(player_id, string.clone()).unwrap_or_else(|e| {
             let t = self.player(player_id).interface.all_active_nodes().all_text();
-            panic!("Error clicking on {string}.\nCurrent Text:\n{t}\n{e:?}")
+            panic!("Error clicking on {string}.\nCurrent Text:\n{t}\nError: {e:?}")
         })
     }
 

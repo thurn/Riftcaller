@@ -487,8 +487,8 @@ pub enum Delegate {
     Dusk(EventDelegate<TurnNumber>),
     /// A card is moved from a Deck position to a Hand position
     DrawCard(EventDelegate<CardId>),
-    /// A user takes the explicit 'draw card' game action
-    DrawCardAction(EventDelegate<CardId>),
+    /// The 'draw card' standard game action was taken by the [Side] player.
+    DrawCardAction(EventDelegate<Side>),
     /// A card has been played via the Play Card action and has had its costs
     /// paid
     PlayCard(EventDelegate<CardPlayed>),
@@ -578,6 +578,9 @@ pub enum Delegate {
     /// Mana has been paid or lost by either player due to their opponent's
     /// ability.
     ManaLostToOpponentAbility(EventDelegate<ManaLostToOpponentAbility>),
+    /// The [Side] player is about to draw one or more cards as specified in the
+    /// `draw_cards` state machine.
+    WillDrawCards(EventDelegate<Side>),
     /// The [Side] player has drawn cards via a card ability.
     DrawCardsViaAbility(EventDelegate<Side>),
 

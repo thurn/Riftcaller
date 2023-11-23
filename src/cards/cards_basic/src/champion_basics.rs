@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use assets::rexard_images::{self, RexardPack, RexardWeaponType};
+use card_helpers::costs::actions;
+use card_helpers::effects::Effects;
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::on_activated;
+use card_helpers::*;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
@@ -19,15 +25,8 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-
-use assets::rexard_images::{self, RexardPack, RexardWeaponType};
-use card_helpers::costs::actions;
-use card_helpers::effects::Effects;
-use card_helpers::text_helpers::named_trigger;
-use card_helpers::this::on_activated;
-use card_helpers::*;
 use rules::mutations::{add_stored_mana, OnZeroStored};
-use rules::{mana, mutations};
+use rules::{draw_cards, mana, mutations};
 
 pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -141,7 +140,7 @@ pub fn contemplate(_: CardMetadata) -> CardDefinition {
             text![text![GainMana(2)], text!["Draw a card"]],
             this::on_played(|g, s, _| {
                 mana::gain(g, s.side(), 2);
-                mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
+                draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                 Ok(())
             }),
         )],
@@ -163,7 +162,7 @@ pub fn ancestral_knowledge(_: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new_with_delegate(
             text!["Draw", 3, "cards"],
             this::on_played(|g, s, _| {
-                mutations::draw_cards(g, s.side(), 3, s.initiated_by())?;
+                draw_cards::run(g, s.side(), 3, s.initiated_by())?;
                 Ok(())
             }),
         )],

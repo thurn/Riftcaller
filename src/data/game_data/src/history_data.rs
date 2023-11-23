@@ -70,8 +70,8 @@ pub struct CardChoiceEvent {
 pub enum HistoryEvent {
     /// Mana was gained via the standard game action
     GainManaAction,
-    /// A card was drawn via the standard game action
-    DrawCardAction(CardId),
+    /// The 'draw card' standard game action was taken by the [Side] player.
+    DrawCardAction(Side),
     /// Curse removed via the standard game action
     RemoveCurseAction,
     /// Evocation destroyed via the standard game action

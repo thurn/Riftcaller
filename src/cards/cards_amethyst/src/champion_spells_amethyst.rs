@@ -14,6 +14,9 @@
 
 //! Card definitions for the Spell card type & Champion player
 
+use assets::rexard_images;
+use card_helpers::raids::{add_sanctum_access, add_vault_access};
+use card_helpers::*;
 use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomId, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
@@ -21,11 +24,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate};
-
-use assets::rexard_images;
-use card_helpers::raids::{add_sanctum_access, add_vault_access};
-use card_helpers::*;
-use rules::{flags, mana, mutations, CardDefinitionExt};
+use rules::{draw_cards, flags, mana, mutations, CardDefinitionExt};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -67,13 +66,11 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
                 text!["If successful, draw a card"]
             ],
             delegates: vec![
-                this::on_played(|g, s, play_card| {
-                    card_helpers::raids::initiate(g, s, play_card.target)
-                }),
+                this::on_played(|g, s, play_card| raids::initiate(g, s, play_card.target)),
                 add_vault_access::<1>(requirements::matching_raid),
                 add_sanctum_access::<1>(requirements::matching_raid),
                 on_raid_success(requirements::matching_raid, |g, s, _| {
-                    mutations::draw_cards(g, s.side(), 1, s.initiated_by()).map(|_| ())
+                    draw_cards::run(g, s.side(), 1, s.initiated_by()).map(|_| ())
                 }),
             ],
         }],
@@ -165,7 +162,7 @@ pub fn preparation(_: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new_with_delegate(
             text![text!["Draw", 4, "cards"], text!["Lose", Actions(1), "if able"]],
             this::on_played(|g, s, _| {
-                mutations::draw_cards(g, s.side(), 4, s.initiated_by())?;
+                draw_cards::run(g, s.side(), 4, s.initiated_by())?;
                 mutations::lose_action_points_if_able(g, s.side(), 1)
             }),
         )],

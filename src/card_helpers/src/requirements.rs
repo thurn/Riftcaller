@@ -115,11 +115,7 @@ pub fn no_sanctum_access<R: BaseRequirement>(game: &GameState, scope: Scope, _: 
 
 /// A [RequirementFn] which matches if there have been no 'draw a card' actions
 /// this turn
-pub fn no_card_draw_actions<R: BaseRequirement>(
-    game: &GameState,
-    scope: Scope,
-    _: &CardId,
-) -> bool {
+pub fn no_card_draw_actions<R: BaseRequirement>(game: &GameState, scope: Scope, _: &Side) -> bool {
     R::run(game, scope)
         && history::current_turn(game).all(|e| e.kind() != HistoryEventKind::DrawCardAction)
 }

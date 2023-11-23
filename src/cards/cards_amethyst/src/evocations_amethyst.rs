@@ -14,14 +14,6 @@
 
 //! Card definitions for the Weapon card type
 
-use core_data::game_primitives::{CardType, Rarity, School, Side};
-use game_data::card_definition::{
-    Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
-};
-use game_data::card_name::{CardMetadata, CardName};
-use game_data::card_set_name::CardSetName;
-use game_data::delegate_data::{Delegate, EventDelegate};
-
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::costs::{actions, once_per_turn};
@@ -30,8 +22,15 @@ use card_helpers::raids::add_sanctum_access;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, *};
-use rules::mutations;
+use core_data::game_primitives::{CardType, Rarity, School, Side};
+use game_data::card_definition::{
+    Ability, AbilityType, CardConfig, CardDefinition, Cost, TargetRequirement,
+};
+use game_data::card_name::{CardMetadata, CardName};
+use game_data::card_set_name::CardSetName;
+use game_data::delegate_data::{Delegate, EventDelegate};
 use rules::mutations::{add_stored_mana, OnZeroStored};
+use rules::{draw_cards, mutations};
 
 pub fn invisibility_ring(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -179,11 +178,14 @@ pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
-            text!["The first time each turn you take the 'draw card' action, draw another card"],
+            text![
+                "The first time each turn you take the 'draw card' action,
+draw another card"
+            ],
             Delegate::DrawCardAction(EventDelegate {
                 requirement: requirements::no_card_draw_actions::<FaceUpInPlay>,
                 mutation: |g, s, _| {
-                    mutations::draw_cards(g, s.side(), 1, s.initiated_by())?;
+                    draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                     Ok(())
                 },
             }),

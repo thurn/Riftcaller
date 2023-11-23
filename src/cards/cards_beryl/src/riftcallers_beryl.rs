@@ -22,7 +22,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
-use rules::{flags, mana, mutations};
+use rules::{draw_cards, flags, mana};
 
 // ========================================== //
 // ========== Overlord Riftcallers ========== //
@@ -113,12 +113,7 @@ pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
                         .apply(g);
 
                     // Must use SilentAbility to prevent infinite loop
-                    mutations::draw_cards(
-                        g,
-                        s.side(),
-                        1,
-                        InitiatedBy::SilentAbility(s.ability_id()),
-                    )?;
+                    draw_cards::run(g, s.side(), 1, InitiatedBy::SilentAbility(s.ability_id()))?;
                 }
 
                 Ok(())

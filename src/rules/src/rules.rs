@@ -29,6 +29,7 @@ pub mod combat;
 pub mod curses;
 pub mod deal_damage;
 pub mod dispatch;
+pub mod draw_cards;
 pub mod flags;
 pub mod mana;
 pub mod mutations;
