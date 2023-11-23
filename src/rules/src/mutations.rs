@@ -205,45 +205,6 @@ pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
     move_cards(game, &cards, CardPosition::DeckUnknown(side))
 }
 
-/// Helper function to draw `count` cards from the top of a player's deck and
-/// place them into their hand.
-///
-/// If there are insufficient cards available:
-///  - If `side == Overlord`, the Overlord player loses the game and no cards
-///    are drawn.
-///  - If `side == Champion`, all remaining cards are drawn.
-///
-/// Cards are marked as revealed to the `side` player.
-// pub fn draw_cards(game: &mut GameState, side: Side, count: u32, source: InitiatedBy) ->
-// Result<()> {     let card_ids = realize_top_of_deck(game, side, count)?;
-//
-//     if card_ids.len() != count as usize && side == Side::Overlord {
-//         game_over(game, side.opponent())?;
-//         return Ok(());
-//     }
-//
-//     for card_id in &card_ids {
-//         set_visible_to(game, *card_id, side, true);
-//     }
-//
-//     game.add_animation(|| GameAnimation::DrawCards(side, card_ids.clone()));
-//
-//     for card_id in &card_ids {
-//         move_card(game, *card_id, CardPosition::Hand(side))?;
-//     }
-//
-//     if matches!(source, InitiatedBy::Ability(..)) {
-//         dispatch::invoke_event(game, DrawCardsViaAbilityEvent(side))?;
-//     }
-//
-//     game.current_history_counters(side).cards_drawn += card_ids.len() as u32;
-//     if matches!(source, InitiatedBy::Ability(..) | InitiatedBy::SilentAbility(..)) {
-//         game.current_history_counters(side).cards_drawn_via_abilities += card_ids.len() as u32;
-//     }
-//
-//     Ok(())
-// }
-
 /// Lose action points if a player has more than 0.
 pub fn lose_action_points_if_able(
     game: &mut GameState,
