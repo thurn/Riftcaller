@@ -455,6 +455,7 @@ dependencies = [
 name = "cards_beryl"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "assets",
  "card_helpers",
  "core_data",

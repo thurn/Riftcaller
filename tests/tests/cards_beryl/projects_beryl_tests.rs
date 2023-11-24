@@ -12,5 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core_data::game_primitives::Side;
+use game_data::card_name::CardName;
+use protos::spelldawn::client_action::Action;
+use protos::spelldawn::DrawCardAction;
+use test_utils::test_game::{TestGame, TestSide};
+use test_utils::TestSessionHelpers;
+
 #[test]
-pub fn magistrates_thronehall() {}
+pub fn magistrates_thronehall() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::MagistratesThronehall);
+    g.summon_project(id);
+    g.pass_turn(Side::Overlord);
+    g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
+    g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
+    assert_eq!(g.user.cards.opponent_hand().len(), 2);
+    g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
+    assert_eq!(g.user.cards.opponent_hand().len(), 2);
+}
+
+#[test]
+pub fn magistrates_thronehall_ancestral_knowledge() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let id = g.create_and_play(CardName::MagistratesThronehall);
+    g.summon_project(id);
+    g.pass_turn(Side::Overlord);
+    g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
+    g.create_and_play(CardName::AncestralKnowledge);
+    assert_eq!(g.user.cards.opponent_hand().len(), 2);
+}

@@ -12,24 +12,61 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::costs;
-use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::card_definition::{CardConfigBuilder, CardDefinition};
+use std::cmp;
+
+use card_helpers::effects::Effects;
+use card_helpers::{costs, history, in_play, text};
+use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
+use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
+use with_error::fail;
 
 pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::MagistratesThronehall,
         sets: vec![CardSetName::Beryl],
-        cost: costs::mana(1),
+        cost: costs::mana(meta.upgrade(1, 0)),
         image: assets::overlord_card(meta, "magistrates_thronehall"),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Nightbound, CardSubtype::Dictate],
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Rare,
-        abilities: vec![],
+        abilities: vec![Ability::new_with_delegate(
+            text!["The Champion cannot draw more than", 2, "cards during their turn"],
+            in_play::on_will_draw_cards(|g, s, _| {
+                let drawn_this_turn = history::counters(g, Side::Champion).cards_drawn;
+                let mut show_vfx = false;
+                let Some(state) = g.state_machines.draw_cards.last_mut() else {
+                    fail!("Expected active draw_cards state machine");
+                };
+                if state.side == Side::Champion {
+                    let new = cmp::min(2u32.saturating_sub(drawn_this_turn), state.quantity);
+                    if new < state.quantity {
+                        show_vfx = true;
+                    }
+                    state.quantity = new;
+                }
+
+                if show_vfx {
+                    Effects::new()
+                        .ability_alert(s)
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(6))
+                                .scale(2.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff01"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .apply(g);
+                }
+                Ok(())
+            }),
+        )],
         config: CardConfigBuilder::new().raze_cost(5).build(),
     }
 }
