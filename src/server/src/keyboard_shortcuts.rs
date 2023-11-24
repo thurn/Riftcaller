@@ -18,7 +18,7 @@ use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
 use game_data::game_state::GameState;
 use panel_address::StandardPanel;
-use player_data::{PlayerActivity, PlayerState};
+use player_data::{PlayerActivity, PlayerActivityKind, PlayerState};
 use protos::spelldawn::game_command::Command;
 use protos::spelldawn::{KeyboardMapping, KeyboardShortcut, SetKeyboardShortcutsCommand};
 use user_action_data::DebugAction;
@@ -40,10 +40,16 @@ pub fn build(player: &PlayerState, _: Option<&GameState>) -> Command {
 
         mapping_list
             .push(alt_command("s", Panels::open(StandardPanel::ApplyScenario).wait_to_load(true)));
-
         mapping_list.push(alt_command("m", DebugAction::AddMana(10)));
-
         mapping_list.push(alt_command("z", DebugAction::DebugUndo));
+        mapping_list.push(alt_command(
+            "d",
+            Panels::open(StandardPanel::DebugPanel(
+                PlayerActivityKind::PlayingGame,
+                Some(user_side),
+            ))
+            .wait_to_load(true),
+        ));
     }
 
     Command::SetKeyboardShortcuts(SetKeyboardShortcutsCommand { mapping_list })

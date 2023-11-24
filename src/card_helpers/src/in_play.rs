@@ -209,7 +209,7 @@ pub fn on_mana_lost_to_opponent_ability(
 /// A delegate which fires when its card is face up & in play when a player
 /// is about to draw cards.
 pub fn on_will_draw_cards(mutation: MutationFn<Side>) -> Delegate {
-    Delegate::WillDrawCards(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+    delegates::on_will_draw_cards(requirements::face_up_in_play, mutation)
 }
 
 /// A delegate which fires when its card is face up & in play when a player

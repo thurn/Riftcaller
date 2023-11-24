@@ -15,6 +15,7 @@
 mod allies_beryl_tests;
 mod artifacts_beryl_tests;
 mod evocations_beryl_tests;
+mod minions_beryl_tests;
 mod projects_beryl_tests;
 mod riftcallers_beryl_tests;
 mod rituals_beryl_tests;

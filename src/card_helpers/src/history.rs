@@ -148,6 +148,20 @@ pub fn weapons_used_this_turn(
     })
 }
 
+/// Returns an iterator over minions whose combat abilities have fired in the
+/// current player's turn so far.
+pub fn minion_combat_abilities_this_turn(
+    game: &GameState,
+) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
+    current_turn(game).filter_map(move |h| {
+        if let HistoryEvent::MinionCombatAbility(event) = h {
+            Some(event)
+        } else {
+            None
+        }
+    })
+}
+
 /// Returns an iterator over cards which have been razed during a raid access in
 /// the current player's turn so far.
 pub fn accessed_cards_razed_this_turn(

@@ -36,6 +36,7 @@ pub fn run(game: &mut GameState, side: Side, quantity: u32, source: InitiatedBy)
     game.state_machines.draw_cards.push(DrawCardsData {
         side,
         quantity,
+        draw_is_prevented: false,
         source,
         step: DrawCardsStep::Begin,
     });
@@ -64,7 +65,14 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
                 DrawCardsStep::Begin => Some(DrawCardsStep::WillDrawCardsEvent),
                 DrawCardsStep::WillDrawCardsEvent => {
                     dispatch::invoke_event(game, WillDrawCardsEvent(side))?;
-                    Some(DrawCardsStep::DrawCards)
+                    Some(DrawCardsStep::CheckIfDrawPrevented)
+                }
+                DrawCardsStep::CheckIfDrawPrevented => {
+                    if data.draw_is_prevented {
+                        None
+                    } else {
+                        Some(DrawCardsStep::DrawCards)
+                    }
                 }
                 DrawCardsStep::DrawCards => {
                     let card_ids = mutations::realize_top_of_deck(game, side, quantity)?;

@@ -310,6 +310,7 @@ pub enum CardName {
     ZainCunningDiplomat,
     IlleasTheHighSage,
     MagistratesThronehall,
+    IncarnationOfJustice,
 }
 
 impl CardName {

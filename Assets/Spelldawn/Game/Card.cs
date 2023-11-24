@@ -640,7 +640,6 @@ namespace Spelldawn.Game
       Registry.AssetService.AssignSprite(_image, revealed.Image, 
         referenceWidth:  _referenceImageWidth);
       _image.gameObject.SetActive(true);
-      Debug.Log($"{name} RenderRevealedCard: Setting Card Frame to {revealed.CardFrame.Address}");
       Registry.AssetService.AssignSprite(_frame, revealed.CardFrame);
       Registry.AssetService.AssignSprite(_titleBackground, revealed.TitleBackground);
       SetTitle(revealed.Title.Text);

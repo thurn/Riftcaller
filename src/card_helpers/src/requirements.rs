@@ -107,6 +107,12 @@ pub fn weapon_used_this_raid<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     })
 }
 
+/// A [RequirementFn] which matches if this minion's combat ability has fired
+/// during the current turn.
+pub fn combat_ability_fired_this_turn<T>(game: &GameState, scope: Scope, _: &T) -> bool {
+    history::minion_combat_abilities_this_turn(game).any(|card_id| card_id.data == scope.card_id())
+}
+
 /// A [RequirementFn] which matches if there have been no accesses on the
 /// sanctum this turn.
 pub fn no_sanctum_access<R: BaseRequirement>(game: &GameState, scope: Scope, _: &RaidId) -> bool {

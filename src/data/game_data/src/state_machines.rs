@@ -114,6 +114,7 @@ type DrawCardsCount = u32;
 pub enum DrawCardsStep {
     Begin,
     WillDrawCardsEvent,
+    CheckIfDrawPrevented,
     DrawCards,
     DrawCardsViaAbilityEvent(DrawCardsCount),
     AddToHistory(DrawCardsCount),
@@ -127,6 +128,8 @@ pub struct DrawCardsData {
     pub side: Side,
     /// Number of cards to draw
     pub quantity: u32,
+    /// If true, the draw event has been prevented and no cards will be drawn.
+    pub draw_is_prevented: bool,
     /// Source of the card draw
     pub source: InitiatedBy,
     /// Current state machine state

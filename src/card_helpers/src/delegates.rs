@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, ManaValue, RaidId, ShieldValue};
+use core_data::game_primitives::{
+    AbilityId, CardId, InitiatedBy, ManaValue, RaidId, ShieldValue, Side,
+};
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
     CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent,
@@ -92,6 +94,13 @@ pub fn on_raid_successful(
     mutation: MutationFn<RaidEvent<()>>,
 ) -> Delegate {
     Delegate::RaidSuccess(EventDelegate { requirement, mutation })
+}
+
+pub fn on_will_draw_cards(
+    requirement: RequirementFn<Side>,
+    mutation: MutationFn<Side>,
+) -> Delegate {
+    Delegate::WillDrawCards(EventDelegate { requirement, mutation })
 }
 
 pub fn can_summon(

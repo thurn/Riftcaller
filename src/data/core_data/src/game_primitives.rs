@@ -564,21 +564,28 @@ pub enum CardSubtype {
     /// Cards with the "Enchanted" subtype can have their power charges removed
     /// by the Overlord.
     Enchanted,
-
+    /// Cards with the "Weapon" subtype have the ability to defeat or resolve
+    /// minion encounters.
     Weapon,
+
     Silvered,
     Conjuration,
     Raid,
     Runic,
     Charge,
+    Expedition,
+    Augury,
+    Dictate,
+
+    // Ally subtypes
     Warrior,
     Cleric,
     Noble,
     Mystic,
     Mage,
-    Expedition,
-    Augury,
-    Dictate,
+
+    // Minion Subtypes
+    Fey,
 }
 
 /// An interval of time in milliseconds
