@@ -324,8 +324,6 @@ namespace Spelldawn.Services
           break;
         case ClientAction.ActionOneofCase.DrawCard:
           _registry.StaticAssets.PlayDrawCardStartSound();
-          _registry.ActionDisplayForPlayer(PlayerName.User).SpendActions(1);
-          _registry.CardService.DrawOptimisticCard();
           break;
         case ClientAction.ActionOneofCase.PlayCard:
           yield return HandlePlayCard(action.PlayCard);
