@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{CardId, HasAbilityId, RoomId, Side};
-use game_data::delegate_data::{RaidEvent, UsedWeapon};
+use game_data::delegate_data::{AccessEvent, RaidEvent, UsedWeapon};
 use game_data::game_state::GameState;
 use game_data::history_data::{AbilityActivation, CardChoice, HistoryCounters, HistoryEvent};
 
@@ -166,7 +166,7 @@ pub fn minion_combat_abilities_this_turn(
 /// the current player's turn so far.
 pub fn accessed_cards_razed_this_turn(
     game: &GameState,
-) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
+) -> impl Iterator<Item = &AccessEvent<CardId>> + '_ {
     current_turn(game).filter_map(move |h| {
         if let HistoryEvent::RazeAccessedCard(event) = h {
             Some(event)
@@ -180,7 +180,7 @@ pub fn accessed_cards_razed_this_turn(
 /// in the current player's turn so far.
 pub fn accessed_cards_scored_this_turn(
     game: &GameState,
-) -> impl Iterator<Item = &RaidEvent<CardId>> + '_ {
+) -> impl Iterator<Item = &AccessEvent<CardId>> + '_ {
     current_turn(game).filter_map(move |h| {
         if let HistoryEvent::ScoreAccessedCard(event) = h {
             Some(event)

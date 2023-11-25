@@ -12,9 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{
-    CardSubtype, CardType, GameObjectId, INNER_ROOMS, Rarity, RoomId, School, Side,
+use card_helpers::effects::Effects;
+use card_helpers::{
+    abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
+use core_data::game_primitives::{
+    CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
+};
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
     Ability, ActivatedAbility, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
     CustomBoostCost, CustomWeaponCost, Resonance,
@@ -31,13 +37,8 @@ use game_data::special_effects::{
 };
 use game_data::text::TextToken::*;
 use game_data::utils;
-
-use card_helpers::{abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this};
-use card_helpers::effects::Effects;
-use core_ui::design;
-use core_ui::design::TimedEffectDataExt;
-use rules::{CardDefinitionExt, mana, mutations, queries};
 use rules::mana::ManaPurpose;
+use rules::{mana, mutations, queries, CardDefinitionExt};
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -689,9 +690,9 @@ pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
                 ],
                 in_play::on_raid_access_end(|g, s, event| {
                     if history::accessed_cards_razed_this_turn(g)
-                        .all(|e| e.room_access_id != event.room_access_id)
+                        .all(|e| e.room_access_id() != event.room_access_id)
                         && history::accessed_cards_scored_this_turn(g)
-                            .all(|e| e.room_access_id != event.room_access_id)
+                            .all(|e| e.room_access_id() != event.room_access_id)
                     {
                         g.card_mut(s.card_id()).add_counters(CardCounter::PowerCharges, 1);
                         apply_vfx(g, s);

@@ -215,7 +215,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::BuildAccessSet => build_access_set(game, info),
         RaidStep::AccessSetBuilt => access_set_built(game, info),
         RaidStep::RevealAccessedCards => reveal_accessed_cards(game, info),
-        RaidStep::AccessCards => access_cards(game),
+        RaidStep::AccessCards => access_cards(game, info),
         RaidStep::WillPopulateAccessPrompt(source) => {
             will_populate_access_prompt(game, info, source)
         }
@@ -426,10 +426,10 @@ fn reveal_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<RaidSta
     RaidState::step(RaidStep::AccessCards)
 }
 
-fn access_cards(game: &mut GameState) -> Result<RaidState> {
+fn access_cards(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     let accessed = game.raid()?.accessed.clone();
     for card_id in &accessed {
-        dispatch::invoke_event(game, CardAccessEvent(*card_id))?;
+        dispatch::invoke_event(game, CardAccessEvent(info.access_event(*card_id)))?;
     }
 
     RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::Initial))
@@ -466,7 +466,7 @@ fn start_scoring_card(
     info: RaidInfo,
     scored: ScoredCard,
 ) -> Result<RaidState> {
-    game.add_history_event(HistoryEvent::ScoreAccessedCard(info.event(scored.id)));
+    game.add_history_event(HistoryEvent::ScoreAccessedCard(info.access_event(scored.id)));
     mutations::turn_face_up(game, scored.id);
     mutations::move_card(game, scored.id, CardPosition::Scoring)?;
     game.raid_mut()?.accessed.retain(|c| *c != scored.id);
@@ -504,7 +504,7 @@ fn raze_card(
     card_id: CardId,
     cost: u32,
 ) -> Result<RaidState> {
-    game.add_history_event(HistoryEvent::RazeAccessedCard(info.event(card_id)));
+    game.add_history_event(HistoryEvent::RazeAccessedCard(info.access_event(card_id)));
     mana::spend(
         game,
         Side::Champion,

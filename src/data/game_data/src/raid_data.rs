@@ -18,7 +18,7 @@ use core_data::game_primitives::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::delegate_data::RaidEvent;
+use crate::delegate_data::{AccessEvent, RaidEvent};
 use crate::game_actions::RazeCardActionType;
 use crate::game_state::RaidJumpRequest;
 
@@ -191,6 +191,14 @@ impl RaidInfo {
             minion_encounter_id: self.minion_encounter_id,
             room_access_id: self.room_access_id,
             data,
+        }
+    }
+
+    pub fn access_event<T>(&self, data: T) -> AccessEvent<T> {
+        if self.is_custom_access {
+            AccessEvent::CustomCardAccess(data)
+        } else {
+            AccessEvent::RaidAccess(self.event(data))
         }
     }
 }

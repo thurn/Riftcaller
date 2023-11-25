@@ -21,7 +21,7 @@ use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::delegate_data::{RaidEvent, UsedWeapon};
+use crate::delegate_data::{AccessEvent, RaidEvent, UsedWeapon};
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
 
@@ -98,9 +98,9 @@ pub enum HistoryEvent {
     /// A minion's combat ability has triggered
     MinionCombatAbility(RaidEvent<CardId>),
     /// A card's raze ability has been activated during a raid access phase
-    RazeAccessedCard(RaidEvent<CardId>),
+    RazeAccessedCard(AccessEvent<CardId>),
     /// A card has been scored during a raid access phase
-    ScoreAccessedCard(RaidEvent<CardId>),
+    ScoreAccessedCard(AccessEvent<CardId>),
     /// A raid ended in success.
     RaidSuccess(RaidEvent<()>),
     /// A raid ended in failure.

@@ -350,6 +350,32 @@ impl<T> HasRaidId for RaidEvent<T> {
     }
 }
 
+/// Event data for an access operation, either a raid access or a custom card
+/// access.
+///
+/// See the `custom_access` module for more information.
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+pub enum AccessEvent<T> {
+    RaidAccess(RaidEvent<T>),
+    CustomCardAccess(T),
+}
+
+impl<T> AccessEvent<T> {
+    pub fn data(&self) -> &T {
+        match self {
+            AccessEvent::RaidAccess(e) => &e.data,
+            AccessEvent::CustomCardAccess(data) => data,
+        }
+    }
+
+    pub fn room_access_id(&self) -> Option<RoomAccessId> {
+        match self {
+            AccessEvent::RaidAccess(e) => e.room_access_id,
+            AccessEvent::CustomCardAccess(_) => None,
+        }
+    }
+}
+
 /// Event data when a weapon is used
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct UsedWeapon {
@@ -540,9 +566,9 @@ pub enum Delegate {
     /// The game is about to populate an access prompt for the current set of
     /// accessed cards.
     WillPopulateAccessPrompt(EventDelegate<RaidEvent<PopulateAccessPromptSource>>),
-    /// The card with the provided `card_id` has been accessed and revealed
-    /// during a raid (in any zone), but not yet scored/acted on.
-    CardAccess(EventDelegate<CardId>),
+    /// The card with the provided `card_id` has been accessed and revealed, but
+    /// not yet scored/acted on.
+    CardAccess(EventDelegate<AccessEvent<CardId>>),
     /// Access phase has ended for a raid and the raid is about to end. Unlike
     /// the `RaidEnd` and `RaidSuccess` events, this does not trigger for raids
     /// where the access step was prevented (e.g. "instead of accessing that

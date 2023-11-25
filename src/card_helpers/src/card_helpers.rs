@@ -19,8 +19,8 @@ use core_data::game_primitives::{CardId, HasCardId, HealthValue, ManaValue, Room
 use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome, RequirementFn,
-    Scope, TransformationFn, UsedWeapon,
+    AccessEvent, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
+    RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
@@ -115,8 +115,11 @@ pub fn on_weapon_used(
 }
 
 /// Delegate which fires when its card is accessed
-pub fn on_accessed(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::CardAccess(EventDelegate { requirement: this_card, mutation })
+pub fn on_accessed(mutation: MutationFn<AccessEvent<CardId>>) -> Delegate {
+    Delegate::CardAccess(EventDelegate {
+        requirement: |_, s, event| *event.data() == s.card_id(),
+        mutation,
+    })
 }
 
 /// A delegate which fires when a raid ends in any way (except the game ending).
