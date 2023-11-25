@@ -536,7 +536,7 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
             .delegate(delegates::on_will_populate_access_prompt(
                 requirements::matching_raid,
                 |g, s, source| {
-                    if source.data != PopulateAccessPromptSource::Initial {
+                    if source.data() != &PopulateAccessPromptSource::Initial {
                         if g.player(s.side()).actions > 0
                             && g.card(s.card_id()).on_play_state().is_none()
                         {

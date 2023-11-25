@@ -17,8 +17,8 @@ use core_data::game_primitives::{
 };
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
-    CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn, QueryDelegate, RaidEvent,
-    RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
+    AccessEvent, CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn, QueryDelegate,
+    RaidEvent, RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
 use game_data::game_state::GameState;
 use game_data::raid_data::PopulateAccessPromptSource;
@@ -69,8 +69,8 @@ pub fn on_raid_access_start(
 }
 
 pub fn on_will_populate_access_prompt(
-    requirement: RequirementFn<RaidEvent<PopulateAccessPromptSource>>,
-    mutation: MutationFn<RaidEvent<PopulateAccessPromptSource>>,
+    requirement: RequirementFn<AccessEvent<PopulateAccessPromptSource>>,
+    mutation: MutationFn<AccessEvent<PopulateAccessPromptSource>>,
 ) -> Delegate {
     Delegate::WillPopulateAccessPrompt(EventDelegate { requirement, mutation })
 }

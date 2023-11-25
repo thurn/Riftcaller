@@ -440,7 +440,7 @@ fn will_populate_access_prompt(
     info: RaidInfo,
     source: PopulateAccessPromptSource,
 ) -> Result<RaidState> {
-    dispatch::invoke_event(game, WillPopulateAccessPromptEvent(info.event(source)))?;
+    dispatch::invoke_event(game, WillPopulateAccessPromptEvent(info.access_event(source)))?;
     RaidState::step(RaidStep::PopulateAccessPrompt)
 }
 

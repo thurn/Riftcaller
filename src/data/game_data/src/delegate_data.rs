@@ -565,7 +565,7 @@ pub enum Delegate {
     RaidAccessSelected(EventDelegate<RaidEvent<()>>),
     /// The game is about to populate an access prompt for the current set of
     /// accessed cards.
-    WillPopulateAccessPrompt(EventDelegate<RaidEvent<PopulateAccessPromptSource>>),
+    WillPopulateAccessPrompt(EventDelegate<AccessEvent<PopulateAccessPromptSource>>),
     /// The card with the provided `card_id` has been accessed and revealed, but
     /// not yet scored/acted on.
     CardAccess(EventDelegate<AccessEvent<CardId>>),
