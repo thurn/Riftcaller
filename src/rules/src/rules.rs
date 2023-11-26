@@ -36,6 +36,7 @@ pub mod mutations;
 pub mod play_card;
 pub mod prompt_monitor;
 pub mod queries;
+pub mod state_machine;
 pub mod wounds;
 
 pub type CardFn = fn(CardMetadata) -> CardDefinition;

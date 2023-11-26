@@ -17,11 +17,93 @@ use core_data::game_primitives::{InitiatedBy, Side};
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DrawCardsViaAbilityEvent, WillDrawCardsEvent};
-use game_data::game_actions::GamePrompt;
-use game_data::game_state::{GamePhase, GameState, PromptStack};
+use game_data::game_state::GameState;
 use game_data::state_machines::{DrawCardsData, DrawCardsStep};
 
-use crate::{dispatch, mutations};
+use crate::state_machine::StateMachine;
+use crate::{dispatch, mutations, state_machine};
+
+impl StateMachine for DrawCardsData {
+    type Data = DrawCardsData;
+    type Step = DrawCardsStep;
+
+    fn get(game: &GameState) -> &Vec<Self> {
+        &game.state_machines.draw_cards
+    }
+
+    fn get_mut(game: &mut GameState) -> &mut Vec<Self> {
+        &mut game.state_machines.draw_cards
+    }
+
+    fn step(&self) -> Self::Step {
+        self.step
+    }
+
+    fn step_mut(&mut self) -> &mut Self::Step {
+        &mut self.step
+    }
+
+    fn data(&self) -> Self::Data {
+        *self
+    }
+
+    fn evaluate(
+        game: &mut GameState,
+        step: DrawCardsStep,
+        data: DrawCardsData,
+    ) -> Result<Option<Self::Step>> {
+        Ok(match step {
+            DrawCardsStep::Begin => Some(DrawCardsStep::WillDrawCardsEvent),
+            DrawCardsStep::WillDrawCardsEvent => {
+                dispatch::invoke_event(game, WillDrawCardsEvent(data.side))?;
+                Some(DrawCardsStep::CheckIfDrawPrevented)
+            }
+            DrawCardsStep::CheckIfDrawPrevented => {
+                if data.draw_is_prevented {
+                    None
+                } else {
+                    Some(DrawCardsStep::DrawCards)
+                }
+            }
+            DrawCardsStep::DrawCards => {
+                let card_ids = mutations::realize_top_of_deck(game, data.side, data.quantity)?;
+
+                if card_ids.len() != data.quantity as usize && data.side == Side::Overlord {
+                    mutations::game_over(game, data.side.opponent())?;
+                    None
+                } else {
+                    for card_id in &card_ids {
+                        mutations::set_visible_to(game, *card_id, data.side, true);
+                    }
+                    game.add_animation(|| GameAnimation::DrawCards(data.side, card_ids.clone()));
+
+                    for card_id in &card_ids {
+                        mutations::move_card(game, *card_id, CardPosition::Hand(data.side))?;
+                    }
+
+                    Some(DrawCardsStep::DrawCardsViaAbilityEvent(card_ids.len() as u32))
+                }
+            }
+            DrawCardsStep::DrawCardsViaAbilityEvent(count) => {
+                if matches!(data.source, InitiatedBy::Ability(..)) {
+                    dispatch::invoke_event(game, DrawCardsViaAbilityEvent(data.side))?;
+                }
+
+                Some(DrawCardsStep::AddToHistory(count))
+            }
+            DrawCardsStep::AddToHistory(count) => {
+                let source = data.source;
+                game.current_history_counters(data.side).cards_drawn += count;
+                if matches!(source, InitiatedBy::Ability(..) | InitiatedBy::SilentAbility(..)) {
+                    game.current_history_counters(data.side).cards_drawn_via_abilities += count;
+                }
+
+                Some(DrawCardsStep::Finish)
+            }
+            DrawCardsStep::Finish => None,
+        })
+    }
+}
 
 /// Function to draw `count` cards from the top of a player's deck and
 /// place them into their hand.
@@ -33,101 +115,19 @@ use crate::{dispatch, mutations};
 ///
 /// Cards are marked as revealed to the `side` player.
 pub fn run(game: &mut GameState, side: Side, quantity: u32, source: InitiatedBy) -> Result<()> {
-    game.state_machines.draw_cards.push(DrawCardsData {
-        side,
-        quantity,
-        draw_is_prevented: false,
-        source,
-        step: DrawCardsStep::Begin,
-    });
-
-    run_state_machine(game)
+    state_machine::initiate(
+        game,
+        DrawCardsData {
+            side,
+            quantity,
+            draw_is_prevented: false,
+            source,
+            step: DrawCardsStep::Begin,
+        },
+    )
 }
 
 /// Run the draw cards state machine, if needed.
 pub fn run_state_machine(game: &mut GameState) -> Result<()> {
-    loop {
-        if has_blocking_prompt(&game.overlord.prompt_stack)
-            || has_blocking_prompt(&game.champion.prompt_stack)
-        {
-            break;
-        }
-
-        if matches!(game.info.phase, GamePhase::GameOver { .. }) {
-            break;
-        }
-
-        if let Some(data) = game.state_machines.draw_cards.last() {
-            let quantity = data.quantity;
-            let side = data.side;
-
-            let step = match data.step {
-                DrawCardsStep::Begin => Some(DrawCardsStep::WillDrawCardsEvent),
-                DrawCardsStep::WillDrawCardsEvent => {
-                    dispatch::invoke_event(game, WillDrawCardsEvent(side))?;
-                    Some(DrawCardsStep::CheckIfDrawPrevented)
-                }
-                DrawCardsStep::CheckIfDrawPrevented => {
-                    if data.draw_is_prevented {
-                        None
-                    } else {
-                        Some(DrawCardsStep::DrawCards)
-                    }
-                }
-                DrawCardsStep::DrawCards => {
-                    let card_ids = mutations::realize_top_of_deck(game, side, quantity)?;
-
-                    if card_ids.len() != quantity as usize && side == Side::Overlord {
-                        mutations::game_over(game, side.opponent())?;
-                        None
-                    } else {
-                        for card_id in &card_ids {
-                            mutations::set_visible_to(game, *card_id, side, true);
-                        }
-                        game.add_animation(|| GameAnimation::DrawCards(side, card_ids.clone()));
-
-                        for card_id in &card_ids {
-                            mutations::move_card(game, *card_id, CardPosition::Hand(side))?;
-                        }
-
-                        Some(DrawCardsStep::DrawCardsViaAbilityEvent(card_ids.len() as u32))
-                    }
-                }
-                DrawCardsStep::DrawCardsViaAbilityEvent(count) => {
-                    if matches!(data.source, InitiatedBy::Ability(..)) {
-                        dispatch::invoke_event(game, DrawCardsViaAbilityEvent(side))?;
-                    }
-
-                    Some(DrawCardsStep::AddToHistory(count))
-                }
-                DrawCardsStep::AddToHistory(count) => {
-                    let source = data.source;
-                    game.current_history_counters(side).cards_drawn += count;
-                    if matches!(source, InitiatedBy::Ability(..) | InitiatedBy::SilentAbility(..)) {
-                        game.current_history_counters(side).cards_drawn_via_abilities += count;
-                    }
-
-                    Some(DrawCardsStep::Finish)
-                }
-                DrawCardsStep::Finish => None,
-            };
-
-            if let Some(s) = step {
-                if let Some(updated) = game.state_machines.draw_cards.last_mut() {
-                    updated.step = s;
-                }
-            } else {
-                game.state_machines.draw_cards.pop();
-            }
-        } else {
-            break;
-        }
-    }
-    Ok(())
-}
-
-/// Returns true if the provided prompt queue currently contains a prompt which
-/// should block drawing cards
-fn has_blocking_prompt(stack: &PromptStack) -> bool {
-    matches!(stack.current(), Some(GamePrompt::ButtonPrompt(..)))
+    state_machine::run::<DrawCardsData>(game)
 }

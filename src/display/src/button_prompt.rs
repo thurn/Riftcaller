@@ -24,6 +24,7 @@ use prompts::effect_prompts;
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
 use protos::spelldawn::{InterfaceMainControls, TutorialEffect};
+use rules::curses;
 
 use crate::tutorial_display;
 
@@ -115,10 +116,7 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
             .build()
         }
         ButtonPromptContext::SacrificeToPreventCurses(card_id, amount) => {
-            let quantity = cmp::min(
-                *amount,
-                game.state_machines.give_curses.as_ref().map(|d| d.quantity).unwrap_or_default(),
-            );
+            let quantity = cmp::min(*amount, curses::current_quantity(game).unwrap_or_default());
             GameInstructions::new(format!(
                 "Sacrifice {} to prevent {}?",
                 game.card(*card_id).variant.name.displayed_name(),

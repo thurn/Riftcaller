@@ -15,11 +15,62 @@
 use anyhow::Result;
 use core_data::game_primitives::{CurseCount, HasAbilityId, Side};
 use game_data::delegate_data::{CursesReceivedEvent, WillReceiveCursesEvent};
-use game_data::game_state::{GamePhase, GameState};
+use game_data::game_state::GameState;
 use game_data::state_machines::{GiveCursesData, GiveCursesStep};
-use with_error::verify;
 
-use crate::dispatch;
+use crate::state_machine::StateMachine;
+use crate::{dispatch, state_machine};
+
+impl StateMachine for GiveCursesData {
+    type Data = Self;
+    type Step = GiveCursesStep;
+
+    fn get(game: &GameState) -> &Vec<Self> {
+        &game.state_machines.give_curses
+    }
+
+    fn get_mut(game: &mut GameState) -> &mut Vec<Self> {
+        &mut game.state_machines.give_curses
+    }
+
+    fn step(&self) -> Self::Step {
+        self.step
+    }
+
+    fn step_mut(&mut self) -> &mut Self::Step {
+        &mut self.step
+    }
+
+    fn data(&self) -> Self::Data {
+        *self
+    }
+
+    fn evaluate(
+        game: &mut GameState,
+        step: Self::Step,
+        data: Self::Data,
+    ) -> Result<Option<Self::Step>> {
+        Ok(match step {
+            GiveCursesStep::Begin => Some(GiveCursesStep::WillReceiveCursesEvent),
+            GiveCursesStep::WillReceiveCursesEvent => {
+                dispatch::invoke_event(game, WillReceiveCursesEvent(data.quantity))?;
+                Some(GiveCursesStep::AddCurses)
+            }
+            GiveCursesStep::AddCurses => {
+                game.champion.curses += data.quantity;
+                Some(GiveCursesStep::CursesReceivedEvent)
+            }
+            GiveCursesStep::CursesReceivedEvent => {
+                dispatch::invoke_event(game, CursesReceivedEvent(data.quantity))?;
+                Some(GiveCursesStep::Finish)
+            }
+            GiveCursesStep::Finish => {
+                game.current_history_counters(Side::Champion).curses_received += data.quantity;
+                None
+            }
+        })
+    }
+}
 
 /// Gives curses to the Champion player.
 pub fn give_curses(
@@ -27,12 +78,10 @@ pub fn give_curses(
     source: impl HasAbilityId,
     quantity: CurseCount,
 ) -> Result<()> {
-    verify!(game.state_machines.give_curses.is_none(), "Curse is already being resolved!");
-
-    game.state_machines.give_curses =
-        Some(GiveCursesData { quantity, source: source.ability_id(), step: GiveCursesStep::Begin });
-
-    run_state_machine(game)
+    state_machine::initiate(
+        game,
+        GiveCursesData { quantity, source: source.ability_id(), step: GiveCursesStep::Begin },
+    )
 }
 
 /// Remove *up to* `amount` curses from the Champion player.
@@ -41,45 +90,17 @@ pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
     Ok(())
 }
 
-/// Run the deal damage state machine, if needed.
-pub fn run_state_machine(game: &mut GameState) -> Result<()> {
-    loop {
-        if !(game.overlord.prompt_stack.is_empty() & game.champion.prompt_stack.is_empty()) {
-            break;
-        }
+pub fn current_quantity(game: &GameState) -> Option<CurseCount> {
+    game.state_machines.give_curses.last().map(|d| d.quantity)
+}
 
-        if game.info.phase != GamePhase::Play {
-            break;
-        }
-
-        if let Some(data) = &game.state_machines.give_curses {
-            let step = match data.step {
-                GiveCursesStep::Begin => GiveCursesStep::WillReceiveCursesEvent,
-                GiveCursesStep::WillReceiveCursesEvent => {
-                    dispatch::invoke_event(game, WillReceiveCursesEvent(data.quantity))?;
-                    GiveCursesStep::AddCurses
-                }
-                GiveCursesStep::AddCurses => {
-                    game.champion.curses += data.quantity;
-                    GiveCursesStep::CursesReceivedEvent
-                }
-                GiveCursesStep::CursesReceivedEvent => {
-                    dispatch::invoke_event(game, CursesReceivedEvent(data.quantity))?;
-                    GiveCursesStep::Finish
-                }
-                GiveCursesStep::Finish => {
-                    game.current_history_counters(Side::Champion).curses_received += data.quantity;
-                    game.state_machines.give_curses = None;
-                    GiveCursesStep::Finish
-                }
-            };
-
-            if let Some(updated) = &mut game.state_machines.give_curses {
-                updated.step = step;
-            }
-        } else {
-            break;
-        }
+pub fn prevent_curses(game: &mut GameState, quantity: CurseCount) {
+    if let Some(curses) = &mut game.state_machines.give_curses.last_mut() {
+        curses.quantity = curses.quantity.saturating_sub(quantity);
     }
-    Ok(())
+}
+
+/// Run the give curses state machine, if needed.
+pub fn run_state_machine(game: &mut GameState) -> Result<()> {
+    state_machine::run::<GiveCursesData>(game)
 }

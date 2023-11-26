@@ -107,7 +107,7 @@ pub enum GiveCursesStep {
 }
 
 /// State data for giving a curse to the Champion player
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct GiveCursesData {
     /// Number of curses to add
     pub quantity: u32,
@@ -131,7 +131,7 @@ pub enum DrawCardsStep {
 }
 
 /// State data for drawing cards
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct DrawCardsData {
     /// Which player is drawing cards?
     pub side: Side,
@@ -153,6 +153,6 @@ pub struct StateMachines {
     pub play_card: Option<PlayCardData>,
     pub activate_ability: Option<ActivateAbilityData>,
     pub deal_damage: Option<DealDamageData>,
-    pub give_curses: Option<GiveCursesData>,
+    pub give_curses: Vec<GiveCursesData>,
     pub draw_cards: Vec<DrawCardsData>,
 }

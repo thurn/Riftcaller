@@ -21,7 +21,7 @@ use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machines::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
-use rules::{deal_damage, mana, mutations, play_card, CardDefinitionExt};
+use rules::{curses, deal_damage, mana, mutations, play_card, CardDefinitionExt};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
@@ -76,11 +76,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
                 damage.amount = damage.amount.saturating_sub(amount);
             }
         }
-        GameEffect::PreventCurses(quantity) => {
-            if let Some(curses) = &mut game.state_machines.give_curses {
-                curses.quantity = curses.quantity.saturating_sub(quantity);
-            }
-        }
+        GameEffect::PreventCurses(quantity) => curses::prevent_curses(game, quantity),
         GameEffect::SelectCardForPrompt(side, card_id) => {
             game.player_mut(side).prompt_selected_cards.push(card_id);
         }
