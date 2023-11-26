@@ -18,14 +18,27 @@ use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidState, RaidStatus};
+use raid_state::InitiateRaidOptions;
 
 /// Starts a new raid from a card ability associated with the provided [Scope]
 /// and [CardTarget] room.
 pub fn initiate(game: &mut GameState, scope: Scope, target: CardTarget) -> Result<()> {
+    initiate_with_options(game, scope, target, InitiateRaidOptions::default())
+}
+
+/// Starts a new raid from a card ability associated with the provided [Scope],
+/// [CardTarget] room, and given [InitiateRaidOptions].
+pub fn initiate_with_options(
+    game: &mut GameState,
+    scope: Scope,
+    target: CardTarget,
+    options: InitiateRaidOptions,
+) -> Result<()> {
     raid_state::initiate_with_callback(
         game,
         target.room_id()?,
         InitiatedBy::Ability(scope.ability_id()),
+        options,
         |_, _| {},
     )
 }

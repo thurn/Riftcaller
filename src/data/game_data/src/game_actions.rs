@@ -220,6 +220,7 @@ pub struct PlayCardBrowser {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum PromptChoiceLabel {
+    Play,
     Sacrifice,
     Return(ManaValue),
     Occupant,

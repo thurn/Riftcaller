@@ -14,6 +14,7 @@
 
 use core_data::game_primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId, Side};
 use game_data::card_definition::TargetRequirement;
+use game_data::card_state::CardPosition;
 use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegate_data::{RequirementFn, Scope};
@@ -59,6 +60,11 @@ pub fn always<T>(_: &GameState, _: Scope, _: &T) -> bool {
 pub fn face_up_in_play<T>(game: &GameState, scope: Scope, _: &T) -> bool {
     let card = game.card(scope.card_id());
     card.is_face_up() && card.position().in_play()
+}
+
+/// RequirementFn that matches if this card is currently in hand
+pub fn in_hand<T>(game: &GameState, scope: Scope, _: &T) -> bool {
+    game.card(scope.card_id()).position() == CardPosition::Hand(scope.side())
 }
 
 /// A [RequirementFn] which matches while the `card_id` card is either:

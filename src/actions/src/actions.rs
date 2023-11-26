@@ -30,6 +30,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::history_data::HistoryEvent;
+use game_data::state_machines::PlayCardOptions;
 use rules::mana::ManaPurpose;
 use rules::{
     activate_ability, curses, deal_damage, dispatch, draw_cards, flags, mana, mutations, play_card,
@@ -136,7 +137,7 @@ fn play_card_action(
         card_id
     );
 
-    play_card::initiate(game, card_id, target)
+    play_card::initiate(game, card_id, target, PlayCardOptions::default())
 }
 
 /// The basic game action to activate an ability of a card in play.

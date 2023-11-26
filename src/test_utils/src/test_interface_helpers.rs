@@ -57,6 +57,7 @@ pub enum Button {
     ClosePriorityPrompt,
     AccessAnother,
     EndAccess,
+    Play,
 }
 
 pub trait TestInterfaceHelpers {
@@ -225,6 +226,7 @@ fn resolve_button(button: Button) -> String {
         Button::ClosePriorityPrompt => "Continue",
         Button::AccessAnother => "Access Another",
         Button::EndAccess => "End Access",
+        Button::Play => "Play",
     }
     .to_string()
 }

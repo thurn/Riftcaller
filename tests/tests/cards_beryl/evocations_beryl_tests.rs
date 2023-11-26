@@ -18,7 +18,7 @@ use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
-pub fn empyreal_chorus() {
+fn empyreal_chorus() {
     let (cost, gained) = (1, 8);
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .opponent(
@@ -34,7 +34,7 @@ pub fn empyreal_chorus() {
 }
 
 #[test]
-pub fn starfield_omen() {
+fn starfield_omen() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::StarfieldOmen);
     let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
@@ -45,7 +45,7 @@ pub fn starfield_omen() {
 }
 
 #[test]
-pub fn visitation() {
+fn visitation() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(1)).build();
     g.create_and_play(CardName::Visitation);
     g.pass_turn(Side::Champion);
@@ -56,7 +56,7 @@ pub fn visitation() {
 }
 
 #[test]
-pub fn visitation_pass() {
+fn visitation_pass() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(1)).build();
     g.create_and_play(CardName::Visitation);
     g.pass_turn(Side::Champion);
@@ -67,7 +67,7 @@ pub fn visitation_pass() {
 }
 
 #[test]
-pub fn visitation_multiple_copies() {
+fn visitation_multiple_copies() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(1)).build();
     g.create_and_play(CardName::Visitation);
     g.create_and_play(CardName::Visitation);
@@ -81,7 +81,7 @@ pub fn visitation_multiple_copies() {
 }
 
 #[test]
-pub fn visitation_prevent_partial() {
+fn visitation_prevent_partial() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5)).build();
     g.create_and_play(CardName::Visitation);
     g.pass_turn(Side::Champion);
@@ -91,7 +91,7 @@ pub fn visitation_prevent_partial() {
 }
 
 #[test]
-pub fn visitation_upgraded() {
+fn visitation_upgraded() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5)).build();
     g.create_and_play_upgraded(CardName::Visitation);
     g.pass_turn(Side::Champion);
@@ -101,7 +101,7 @@ pub fn visitation_upgraded() {
 }
 
 #[test]
-pub fn backup_plan() {
+fn backup_plan() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .opponent(
             TestSide::new(Side::Overlord)
@@ -117,7 +117,7 @@ pub fn backup_plan() {
 }
 
 #[test]
-pub fn backup_plan_upgraded() {
+fn backup_plan_upgraded() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .actions(4)
         .opponent(
@@ -132,7 +132,7 @@ pub fn backup_plan_upgraded() {
 }
 
 #[test]
-pub fn backup_plan_cannot_activate_outside_encounter() {
+fn backup_plan_cannot_activate_outside_encounter() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .opponent(TestSide::new(Side::Overlord))
         .build();
@@ -142,7 +142,7 @@ pub fn backup_plan_cannot_activate_outside_encounter() {
 }
 
 #[test]
-pub fn planar_sanctuary() {
+fn planar_sanctuary() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .opponent(
             TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
@@ -164,7 +164,7 @@ pub fn planar_sanctuary() {
 }
 
 #[test]
-pub fn planar_sanctuary_activate_after_curse() {
+fn planar_sanctuary_activate_after_curse() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::PlanarSanctuary);
     g.pass_turn(Side::Champion);
@@ -200,7 +200,7 @@ pub fn planar_sanctuary_activate_after_curse() {
 }
 
 #[test]
-pub fn planar_sanctuary_activate_after_damage() {
+fn planar_sanctuary_activate_after_damage() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5)).build();
     let id = g.create_and_play(CardName::PlanarSanctuary);
     g.pass_turn(Side::Champion);
@@ -220,7 +220,7 @@ pub fn planar_sanctuary_activate_after_damage() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond() {
+fn knowledge_of_the_beyond() {
     let (cost, reduction) = (0, 1);
     let mut g = TestGame::new(
         TestSide::new(Side::Champion)
@@ -243,7 +243,7 @@ pub fn knowledge_of_the_beyond() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond_activate_for_weapon_during_raid() {
+fn knowledge_of_the_beyond_activate_for_weapon_during_raid() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon))
         .opponent(
             TestSide::new(Side::Overlord)
@@ -262,7 +262,7 @@ pub fn knowledge_of_the_beyond_activate_for_weapon_during_raid() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond_activate_during_access() {
+fn knowledge_of_the_beyond_activate_during_access() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon))
         .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
         .build();
@@ -277,7 +277,7 @@ pub fn knowledge_of_the_beyond_activate_during_access() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond_no_hits() {
+fn knowledge_of_the_beyond_no_hits() {
     let mut g = TestGame::new(
         TestSide::new(Side::Champion)
             .deck_top(CardName::TestSpell)
@@ -297,7 +297,7 @@ pub fn knowledge_of_the_beyond_no_hits() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond_activate_planar_sanctuary() {
+fn knowledge_of_the_beyond_activate_planar_sanctuary() {
     let mut g = TestGame::new(
         TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon).hand_size(5),
     )
@@ -317,7 +317,7 @@ pub fn knowledge_of_the_beyond_activate_planar_sanctuary() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond_activate_planar_sanctuary_first() {
+fn knowledge_of_the_beyond_activate_planar_sanctuary_first() {
     let mut g = TestGame::new(
         TestSide::new(Side::Champion).deck_top(CardName::TestMortalWeapon).hand_size(5),
     )
@@ -338,7 +338,7 @@ pub fn knowledge_of_the_beyond_activate_planar_sanctuary_first() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond_card_target_with_foebane() {
+fn knowledge_of_the_beyond_card_target_with_foebane() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::Foebane))
         .opponent(
             TestSide::new(Side::Overlord)
@@ -361,7 +361,7 @@ pub fn knowledge_of_the_beyond_card_target_with_foebane() {
 }
 
 #[test]
-pub fn knowledge_of_the_beyond_shield_of_the_flames_evade() {
+fn knowledge_of_the_beyond_shield_of_the_flames_evade() {
     let mut g = TestGame::new(
         TestSide::new(Side::Champion)
             .deck_top(CardName::ShieldOfTheFlames)
@@ -387,4 +387,36 @@ pub fn knowledge_of_the_beyond_shield_of_the_flames_evade() {
     assert!(g.user.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
     assert!(g.user.data.raid_active());
     g.click(Button::EndRaid);
+}
+
+#[test]
+fn splinter_of_twilight_play_for_free() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.add_to_hand(CardName::SplinterOfTwilight);
+    g.initiate_raid(RoomId::Crypts);
+    g.click(Button::Play);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA);
+    assert!(g.user.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));
+}
+
+#[test]
+fn splinter_of_twilight_access_crypt() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).in_discard_face_down(CardName::TestScheme3_10))
+        .build();
+    let id = g.create_and_play(CardName::SplinterOfTwilight);
+    g.activate_ability(id, 1);
+    g.click(Button::Score);
+    assert_eq!(g.me().score(), 10);
+    assert!(g.user.cards.discard_pile().contains_card(CardName::SplinterOfTwilight));
+}
+
+#[test]
+fn splinter_of_twilight_play_from_phase_door() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    g.add_to_hand(CardName::SplinterOfTwilight);
+    let id = g.create_and_play(CardName::PhaseDoor);
+    g.activate_ability(id, 0);
+    g.click(Button::Play);
+    assert!(g.user.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));
 }

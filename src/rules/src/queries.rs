@@ -273,8 +273,9 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::MinionDefeated(..)
             | RaidStep::FireMinionCombatAbility(..) => RaidStatus::Encounter,
             RaidStep::PopulateApproachPrompt => RaidStatus::ApproachRoom,
-            RaidStep::CheckCanAccess
-            | RaidStep::AccessStart
+
+            RaidStep::AccessStart
+            | RaidStep::CheckIfCardAccessPrevented
             | RaidStep::BuildAccessSet
             | RaidStep::AccessSetBuilt
             | RaidStep::RevealAccessedCards

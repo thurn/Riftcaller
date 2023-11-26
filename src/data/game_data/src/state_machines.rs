@@ -34,6 +34,13 @@ pub enum PlayCardStep {
 }
 
 /// Data related to an ongoing action to play a card.
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
+pub struct PlayCardOptions {
+    pub ignore_action_cost: bool,
+    pub ignore_mana_cost: bool,
+}
+
+/// Data related to an ongoing action to play a card.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct PlayCardData {
     /// Card being played
@@ -42,6 +49,8 @@ pub struct PlayCardData {
     pub initiated_by: InitiatedBy,
     /// Room being targeted, if any
     pub target: CardTarget,
+    /// Configuration options for playing this card.
+    pub options: PlayCardOptions,
     /// Current state machine state
     pub step: PlayCardStep,
 }

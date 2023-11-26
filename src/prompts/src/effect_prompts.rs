@@ -50,8 +50,8 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::Continue => "Continue".to_string(),
         GameEffect::AbortPlayingCard => "Cancel".to_string(),
         GameEffect::PlayChoiceEffect { .. } => String::new(),
-        GameEffect::SacrificeCard(_) => "Sacrifice".to_string(),
-        GameEffect::DestroyCard(_) => "Destroy".to_string(),
+        GameEffect::SacrificeCard(..) => "Sacrifice".to_string(),
+        GameEffect::DestroyCard(..) => "Destroy".to_string(),
         GameEffect::ManaCost(side, amount, ..) => {
             format!("{} {}{}", lose_text(user_side, *side), amount, icons::MANA)
         }
@@ -62,23 +62,26 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
                 format!("{} {}", lose_text(user_side, *side), icons::ACTION)
             }
         }
-        GameEffect::InitiateRaid(_, _) => "Initiate Raid".to_string(),
-        GameEffect::EndRaid(_) => "End Raid".to_string(),
+        GameEffect::InitiateRaid(..) => "Initiate Raid".to_string(),
+        GameEffect::EndRaid(..) => "End Raid".to_string(),
         GameEffect::EndCustomAccess(..) => "End Access".to_string(),
         GameEffect::TakeDamageCost(_, amount) => format!("Take {amount}"),
-        GameEffect::MoveCard(_, _) => "Move".to_string(),
-        GameEffect::PreventDamage(_) => "Prevent".to_string(),
-        GameEffect::PreventCurses(_) => "Prevent".to_string(),
-        GameEffect::SelectCardForPrompt(_, _) => "Select".to_string(),
-        GameEffect::SwapWithSelected(_, _) => "Swap".to_string(),
+        GameEffect::MoveCard(..) => "Move".to_string(),
+        GameEffect::PreventDamage(..) => "Prevent".to_string(),
+        GameEffect::PreventCurses(..) => "Prevent".to_string(),
+        GameEffect::SelectCardForPrompt(..) => "Select".to_string(),
+        GameEffect::SwapWithSelected(..) => "Swap".to_string(),
         GameEffect::SetOnPlayState { .. } => "Choose".to_string(),
-        GameEffect::RecordCardChoice(_, _) => "Choose".to_string(),
+        GameEffect::RecordCardChoice(..) => "Choose".to_string(),
         GameEffect::EvadeCurrentEncounter => "Evade".to_string(),
+        GameEffect::PlayCardForNoMana(..) => "Play".to_string(),
+        GameEffect::PreventRaidCardAccess => "Do not Access".to_string(),
     }
 }
 
 fn custom_label(label: PromptChoiceLabel) -> String {
     match label {
+        PromptChoiceLabel::Play => "Play".to_string(),
         PromptChoiceLabel::Sacrifice => "Sacrifice".to_string(),
         PromptChoiceLabel::Return(cost) => {
             format!("{}{}: Return", cost, icons::MANA)

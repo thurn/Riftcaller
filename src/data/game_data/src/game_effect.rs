@@ -19,6 +19,7 @@ use core_data::game_primitives::{
 use serde::{Deserialize, Serialize};
 
 use crate::card_state::{CardPosition, OnPlayState};
+use crate::game_actions::CardTarget;
 use crate::history_data::CardChoice;
 
 /// An arbitrary modification to the state of an ongoing game.
@@ -71,6 +72,10 @@ pub enum GameEffect {
     RecordCardChoice(AbilityId, CardChoice),
     /// Evade the current raid encounter, jumping to the next raid state
     EvadeCurrentEncounter,
+    /// Put a card into play for no mana cost
+    PlayCardForNoMana(CardId, CardTarget),
+    /// Prevent the current raid, if any, from accessing cards
+    PreventRaidCardAccess,
 }
 
 impl GameEffect {

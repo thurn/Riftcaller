@@ -27,7 +27,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, PromptStack};
 use game_data::history_data::HistoryEvent;
-use game_data::state_machines::{PlayCardData, PlayCardStep};
+use game_data::state_machines::{PlayCardData, PlayCardOptions, PlayCardStep};
 use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
@@ -35,7 +35,12 @@ use crate::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
 
 /// Starts a new play card action, either as a result the explicit game action
 /// or as an effect of another card.
-pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Result<()> {
+pub fn initiate(
+    game: &mut GameState,
+    card_id: CardId,
+    target: CardTarget,
+    options: PlayCardOptions,
+) -> Result<()> {
     verify!(game.state_machines.play_card.is_none(), "An action is already being resolved!");
 
     let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
@@ -47,7 +52,7 @@ pub fn initiate(game: &mut GameState, card_id: CardId, target: CardTarget) -> Re
     };
 
     game.state_machines.play_card =
-        Some(PlayCardData { card_id, initiated_by, target, step: PlayCardStep::Begin });
+        Some(PlayCardData { card_id, initiated_by, target, options, step: PlayCardStep::Begin });
 
     run(game)
 }
@@ -199,8 +204,11 @@ fn move_to_played_position(game: &mut GameState, play_card: PlayCardData) -> Res
 }
 
 fn pay_action_points(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    let actions = queries::action_cost(game, play_card.card_id);
-    mutations::spend_action_points(game, play_card.card_id.side, actions)?;
+    if !play_card.options.ignore_action_cost {
+        let actions = queries::action_cost(game, play_card.card_id);
+        mutations::spend_action_points(game, play_card.card_id.side, actions)?;
+    }
+
     Ok(PlayCardStep::ApplyPlayCardBrowser)
 }
 
@@ -243,17 +251,21 @@ pub fn invoke_play_card_browser(
 
 fn pay_mana_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
     if flags::enters_play_face_up(game, play_card.card_id) {
-        let amount =
-            queries::mana_cost(game, play_card.card_id).with_error(|| "Card has no mana cost")?;
-        mana::spend(
-            game,
-            play_card.card_id.side,
-            InitiatedBy::GameAction,
-            ManaPurpose::PayForCard(play_card.card_id),
-            amount,
-        )?;
+        if play_card.options.ignore_mana_cost {
+            Ok(PlayCardStep::PayCustomCost)
+        } else {
+            let amount = queries::mana_cost(game, play_card.card_id)
+                .with_error(|| "Card has no mana cost")?;
+            mana::spend(
+                game,
+                play_card.card_id.side,
+                InitiatedBy::GameAction,
+                ManaPurpose::PayForCard(play_card.card_id),
+                amount,
+            )?;
 
-        Ok(PlayCardStep::PayCustomCost)
+            Ok(PlayCardStep::PayCustomCost)
+        }
     } else {
         Ok(PlayCardStep::MoveToTargetPosition)
     }

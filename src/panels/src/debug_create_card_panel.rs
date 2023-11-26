@@ -77,10 +77,25 @@ impl Component for DebugCreateCardPanel {
                         CardPosition::DeckTop(self.user_side),
                         false,
                     ))
+                    .child(self.button(
+                        "Opponent Deck Top",
+                        CardPosition::DeckTop(self.user_side.opponent()),
+                        false,
+                    ))
                     .child(self.button("User Hand", CardPosition::Hand(self.user_side), false))
+                    .child(self.button(
+                        "Opponent Hand",
+                        CardPosition::Hand(self.user_side.opponent()),
+                        false,
+                    ))
                     .child(self.button(
                         "User Discard",
                         CardPosition::DiscardPile(self.user_side),
+                        false,
+                    ))
+                    .child(self.button(
+                        "Opponent Discard",
+                        CardPosition::DiscardPile(self.user_side.opponent()),
                         false,
                     ))
                     .child(self.button(

@@ -19,8 +19,9 @@ use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::special_effects::SpecialEffect;
-use raid_state::custom_access;
-use rules::{deal_damage, mana, mutations, CardDefinitionExt};
+use game_data::state_machines::PlayCardOptions;
+use raid_state::{custom_access, InitiateRaidOptions};
+use rules::{deal_damage, mana, mutations, play_card, CardDefinitionExt};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
@@ -55,6 +56,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             game,
             room_id,
             InitiatedBy::Ability(ability_id),
+            InitiateRaidOptions::default(),
             |_, _| {},
         )?,
         GameEffect::EndRaid(ability_id) => {
@@ -101,6 +103,19 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::EvadeCurrentEncounter => {
             mutations::apply_raid_jump(game, RaidJumpRequest::EvadeCurrentMinion);
+        }
+        GameEffect::PlayCardForNoMana(card_id, target) => {
+            play_card::initiate(
+                game,
+                card_id,
+                target,
+                PlayCardOptions { ignore_action_cost: true, ignore_mana_cost: true },
+            )?;
+        }
+        GameEffect::PreventRaidCardAccess => {
+            if let Some(raid) = game.raid.as_mut() {
+                raid.is_card_access_prevented = true;
+            }
         }
     }
 

@@ -311,6 +311,7 @@ pub enum CardName {
     IlleasTheHighSage,
     MagistratesThronehall,
     IncarnationOfJustice,
+    SplinterOfTwilight,
 }
 
 impl CardName {

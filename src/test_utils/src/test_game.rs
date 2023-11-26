@@ -208,6 +208,7 @@ impl TestRaid {
             room_access_id: None,
             accessed: vec![],
             jump_request: None,
+            is_card_access_prevented: false,
             is_custom_access: false,
         })
     }

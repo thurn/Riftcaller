@@ -67,8 +67,8 @@ pub enum RaidStep {
     MinionDefeated(WeaponInteraction),
     FireMinionCombatAbility(CardId),
     PopulateApproachPrompt,
-    CheckCanAccess,
     AccessStart,
+    CheckIfCardAccessPrevented,
     BuildAccessSet,
     AccessSetBuilt,
     RevealAccessedCards,
@@ -180,6 +180,7 @@ pub struct RaidInfo {
     pub encounter: usize,
     pub minion_encounter_id: Option<MinionEncounterId>,
     pub room_access_id: Option<RoomAccessId>,
+    pub is_card_access_prevented: bool,
     pub is_custom_access: bool,
 }
 
@@ -226,6 +227,18 @@ pub struct RaidData {
     pub accessed: Vec<CardId>,
     /// Requested new state for this raid. See [RaidJumpRequest] for details.
     pub jump_request: Option<RaidJumpRequest>,
+    /// True if card access is prevented for this raid.
+    ///
+    /// This is usually described with the phrase "instead of accessing cards,
+    /// do X". This will still fire `RaidAccessStartEvent` and
+    /// `RaidAccessEndEvent`, but will not trigger e.g.
+    /// `RaidAccessSelectedEvent`.
+    ///
+    /// It is fine to stack multiple replacement effects like this for one raid.
+    /// Other raid steps still happen, e.g. the raid is still considered
+    /// "successful", you have still "accessed the room this turn", and you
+    /// can retarget the raid to different rooms.
+    pub is_card_access_prevented: bool,
     /// A custom access raid plays out only the 'access' phase of a raid,
     /// accessing a specific set of cards.
     pub is_custom_access: bool,
@@ -240,6 +253,7 @@ impl RaidData {
             encounter: self.encounter,
             minion_encounter_id: self.minion_encounter_id,
             room_access_id: self.room_access_id,
+            is_card_access_prevented: self.is_card_access_prevented,
             is_custom_access: self.is_custom_access,
         }
     }

@@ -17,7 +17,8 @@ use card_helpers::{
     costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
 };
 use core_data::game_primitives::{
-    BanishEventId, CardId, CardSubtype, CardType, GameObjectId, Rarity, School, Side,
+    BanishEventId, CardId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId,
+    School, Side,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -28,12 +29,15 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{BanishedByCard, CardCounter, CardPosition, OnPlayState};
-use game_data::game_actions::{ButtonPromptContext, PromptChoice, PromptContext, UnplayedAction};
+use game_data::game_actions::{
+    ButtonPromptContext, CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
+};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
+use raid_state::{custom_access, InitiateRaidOptions};
 use rules::{curses, draw_cards, flags, mana, mutations, CardDefinitionExt};
 use with_error::WithError;
 
@@ -53,20 +57,23 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
             text![
                 text!["Raid target outer room"],
                 text![
-                    "If successful",
+                    "If successful,",
                     GainMana(meta.upgrade(8, 10)),
-                    "instead of accessing that room"
+                    "instead of accessing cards"
                 ]
             ],
         )
         .target_requirement(TargetRequirement::TargetRoom(|g, _, r| {
             r.is_outer_room() && flags::is_valid_raid_target(g, r)
         }))
-        .delegate(this::on_activated(|g, s, activated| raids::initiate(g, s, activated.target)))
-        .delegate(delegates::can_raid_access_cards(
-            requirements::matching_raid,
-            delegates::disallow,
-        ))
+        .delegate(this::on_activated(|g, s, activated| {
+            raids::initiate_with_options(
+                g,
+                s,
+                activated.target,
+                InitiateRaidOptions { is_card_access_prevented: true },
+            )
+        }))
         .delegate(delegates::on_raid_successful(requirements::matching_raid, |g, s, _| {
             Effects::new()
                 .ability_alert(s)
@@ -321,6 +328,66 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
             }))
             .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, s, _, cost| {
                 cost.map(|c| c.saturating_sub(s.upgrade(1, 4)))
+            }))
+            .build(),
+        ],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SplinterOfTwilight,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(7, 4)),
+        image: assets::champion_card(meta, "splinter_of_twilight"),
+        card_type: CardType::Evocation,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new_with_delegate(
+                text![
+                    "When you successfully raid the",
+                    Crypt,
+                    ", instead of accessing cards, you may play this card for",
+                    Mana(0)
+                ],
+                delegates::on_raid_access_start(requirements::in_hand, |g, s, event| {
+                    if event.target == RoomId::Crypts {
+                        show_prompt::with_choices(
+                            g,
+                            s,
+                            vec![
+                                PromptChoice::new()
+                                    .custom_label(PromptChoiceLabel::Play)
+                                    .effect(GameEffect::PlayCardForNoMana(
+                                        s.card_id(),
+                                        CardTarget::None,
+                                    ))
+                                    .effect(GameEffect::PreventRaidCardAccess)
+                                    .anchor_card(s.card_id()),
+                                PromptChoice::new_continue(),
+                            ],
+                        )
+                    }
+                    Ok(())
+                }),
+            ),
+            ActivatedAbility::new(
+                costs::sacrifice_for_action(),
+                text![text!["Access all cards in the", Crypt], text![GainActions(1)]],
+            )
+            .delegate(this::on_activated(|g, s, _| {
+                custom_access::initiate(
+                    g,
+                    RoomId::Crypts,
+                    InitiatedBy::Ability(s.ability_id()),
+                    g.discard_pile(Side::Overlord).map(|c| c.id).collect(),
+                )?;
+
+                mutations::gain_action_points(g, s.side(), 1)
             }))
             .build(),
         ],

@@ -117,13 +117,6 @@ pub fn can_ability_end_raid(
     Delegate::CanAbilityEndRaid(QueryDelegate { requirement, transformation })
 }
 
-pub fn can_raid_access_cards(
-    requirement: RequirementFn<RaidEvent<()>>,
-    transformation: TransformationFn<RaidEvent<()>, Flag>,
-) -> Delegate {
-    Delegate::CanRaidAccessCards(QueryDelegate { requirement, transformation })
-}
-
 pub fn status_markers(
     requirement: RequirementFn<CardId>,
     transformation: TransformationFn<CardId, Vec<CardStatusMarker>>,

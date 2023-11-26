@@ -24,6 +24,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate};
+use raid_state::InitiateRaidOptions;
 use rules::{draw_cards, flags, mana, mutations, CardDefinitionExt};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {
@@ -101,6 +102,7 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
                     g,
                     play_card.target.room_id()?,
                     InitiatedBy::Ability(s.ability_id()),
+                    InitiateRaidOptions::default(),
                     |game, raid_id| {
                         mana::add_raid_specific_mana(game, s.side(), raid_id, 5);
                     },

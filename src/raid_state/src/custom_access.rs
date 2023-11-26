@@ -67,6 +67,7 @@ pub fn initiate(
         room_access_id: None,
         accessed,
         jump_request: None,
+        is_card_access_prevented: false,
         is_custom_access: true,
     });
 
