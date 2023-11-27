@@ -169,7 +169,7 @@ pub struct DrawCardsData {
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct StateMachines {
     pub play_card: Vec<PlayCardData>,
-    pub activate_ability: Option<ActivateAbilityData>,
+    pub activate_ability: Vec<ActivateAbilityData>,
     pub deal_damage: Vec<DealDamageState>,
     pub give_curses: Vec<GiveCursesData>,
     pub draw_cards: Vec<DrawCardsData>,

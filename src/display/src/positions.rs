@@ -35,7 +35,7 @@ use protos::spelldawn::{
     RoomIdentifier,
 };
 use raid_state::raid_display_state;
-use rules::{queries, CardDefinitionExt};
+use rules::{activate_ability, queries, CardDefinitionExt};
 
 pub const RELEASE_SORTING_KEY: u32 = 100;
 
@@ -278,12 +278,8 @@ pub fn ability_card_position(
     for_ability(
         game,
         ability_id,
-        if let Some(activate) = game.state_machines.activate_ability {
-            if activate.ability_id == ability_id {
-                staging()
-            } else {
-                hand(builder, ability_id.side())
-            }
+        if activate_ability::is_current_ability(game, ability_id) {
+            staging()
         } else {
             hand(builder, ability_id.side())
         },
