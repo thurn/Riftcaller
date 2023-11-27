@@ -25,7 +25,7 @@ use protos::spelldawn::{
     ActionTrackerView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
 };
 use rules::mana::ManaPurpose;
-use rules::{flags, mana, queries};
+use rules::{curses, flags, mana, queries};
 use {adapters, assets};
 
 use crate::{button_prompt, card_sync, interface, positions, status_markers, tutorial_display};
@@ -44,10 +44,13 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
             cards
         })
         .chain(
-            (0..game.champion.curses)
+            (0..curses::get(game))
                 .map(|number| card_sync::curse_card_view(builder, Some(game), number)),
         )
-        .chain((game.champion.curses > 0).then(|| card_sync::dispel_card_view(builder, Some(game))))
+        .chain(
+            curses::is_champion_cursed(game)
+                .then(|| card_sync::dispel_card_view(builder, Some(game))),
+        )
         .chain(
             (game.champion.wounds > 0)
                 .then(|| card_sync::wound_card_view(builder, game.champion.wounds)),

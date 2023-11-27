@@ -153,7 +153,7 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
             ),
             ActivatedAbility::new(costs::sacrifice(), text!["Remove a curse"])
                 .delegate(this::can_activate(|g, _, _, flag| {
-                    flag.add_constraint(g.champion.curses > 0)
+                    flag.add_constraint(curses::is_champion_cursed(g))
                 }))
                 .delegate(this::on_activated(|g, _, _| {
                     update(g);

@@ -39,3 +39,15 @@ pub fn fallible<T>(
 ) -> Convert<impl Iterator<Item = Result<T, Error>>> {
     fallible_iterator::convert(all_ok(input))
 }
+
+/// Adds a tagged value to a current value if the tags match, otherwise replaces
+/// the current value.
+pub fn add_matching<T: PartialEq + Copy>(current: &mut Option<(T, u32)>, tag: T, value: u32) {
+    if let Some((t, v)) = *current {
+        if tag == t {
+            *current = Some((tag, value + v));
+        }
+    }
+
+    *current = Some((tag, value));
+}

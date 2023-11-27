@@ -30,7 +30,7 @@ use game_data::raid_data::RaidStatus;
 use game_data::utils;
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, mana, queries, CardDefinitionExt};
+use crate::{curses, dispatch, mana, queries, CardDefinitionExt};
 
 /// Returns the player that is currently able to take actions in the provided
 /// game. If no player can act, e.g. because the game has ended, returns None.
@@ -455,7 +455,7 @@ pub fn can_take_remove_curse_action(game: &GameState, side: Side) -> bool {
 pub fn can_take_dispel_evocation_action(game: &GameState, side: Side) -> bool {
     side == Side::Overlord
         && in_main_phase_with_action_point(game, side)
-        && game.champion.curses > 0
+        && curses::get(game) > 0
         && game.evocations().count() > 0
         && mana::get(game, side, ManaPurpose::DispelEvocation)
             >= game_constants::COST_TO_DISPEL_EVOCATION

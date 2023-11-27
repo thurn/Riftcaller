@@ -16,10 +16,76 @@ use anyhow::Result;
 use core_data::game_primitives::{CurseCount, HasAbilityId, Side};
 use game_data::delegate_data::{CursesReceivedEvent, WillReceiveCursesEvent};
 use game_data::game_state::GameState;
-use game_data::state_machines::{GiveCursesData, GiveCursesStep};
+use game_data::state_machines::{GiveCurseOptions, GiveCursesData, GiveCursesStep};
+use game_data::utils;
 
 use crate::state_machine::StateMachine;
 use crate::{dispatch, state_machine};
+
+/// Returns the number of curses the Champion player currently has
+pub fn get(game: &GameState) -> CurseCount {
+    let mut base = game.champion.curse_state.base_curses;
+    if let Some((turn, count)) = game.champion.curse_state.turn_curses {
+        if turn == game.info.turn {
+            base += count;
+        }
+    }
+    base
+}
+
+/// Returns true if the Champion player is currently cursed
+pub fn is_champion_cursed(game: &GameState) -> bool {
+    get(game) > 0
+}
+
+/// Gives curses to the Champion player.
+pub fn give_curses(
+    game: &mut GameState,
+    source: impl HasAbilityId,
+    quantity: CurseCount,
+) -> Result<()> {
+    give_curses_with_options(game, source, quantity, GiveCurseOptions::default())
+}
+
+/// Gives curses to the Champion player with the provided configuration options.
+pub fn give_curses_with_options(
+    game: &mut GameState,
+    source: impl HasAbilityId,
+    quantity: CurseCount,
+    options: GiveCurseOptions,
+) -> Result<()> {
+    state_machine::initiate(
+        game,
+        GiveCursesData {
+            quantity,
+            source: source.ability_id(),
+            options,
+            step: GiveCursesStep::Begin,
+        },
+    )
+}
+
+/// Remove *up to* `amount` curses from the Champion player.
+pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
+    game.champion.curse_state.base_curses =
+        game.champion.curse_state.base_curses.saturating_sub(amount);
+    Ok(())
+}
+
+pub fn current_quantity(game: &GameState) -> Option<CurseCount> {
+    game.state_machines.give_curses.last().map(|d| d.quantity)
+}
+
+pub fn prevent_curses(game: &mut GameState, quantity: CurseCount) {
+    if let Some(curses) = &mut game.state_machines.give_curses.last_mut() {
+        curses.quantity = curses.quantity.saturating_sub(quantity);
+    }
+}
+
+/// Run the give curses state machine, if needed.
+pub fn run_state_machine(game: &mut GameState) -> Result<()> {
+    state_machine::run::<GiveCursesData>(game)
+}
 
 impl StateMachine for GiveCursesData {
     type Data = Self;
@@ -57,7 +123,15 @@ impl StateMachine for GiveCursesData {
                 Some(GiveCursesStep::AddCurses)
             }
             GiveCursesStep::AddCurses => {
-                game.champion.curses += data.quantity;
+                if let Some(for_turn) = data.options.for_turn {
+                    utils::add_matching(
+                        &mut game.champion.curse_state.turn_curses,
+                        for_turn,
+                        data.quantity,
+                    );
+                } else {
+                    game.champion.curse_state.base_curses += data.quantity;
+                }
                 Some(GiveCursesStep::CursesReceivedEvent)
             }
             GiveCursesStep::CursesReceivedEvent => {
@@ -70,37 +144,4 @@ impl StateMachine for GiveCursesData {
             }
         })
     }
-}
-
-/// Gives curses to the Champion player.
-pub fn give_curses(
-    game: &mut GameState,
-    source: impl HasAbilityId,
-    quantity: CurseCount,
-) -> Result<()> {
-    state_machine::initiate(
-        game,
-        GiveCursesData { quantity, source: source.ability_id(), step: GiveCursesStep::Begin },
-    )
-}
-
-/// Remove *up to* `amount` curses from the Champion player.
-pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
-    game.champion.curses = game.champion.curses.saturating_sub(amount);
-    Ok(())
-}
-
-pub fn current_quantity(game: &GameState) -> Option<CurseCount> {
-    game.state_machines.give_curses.last().map(|d| d.quantity)
-}
-
-pub fn prevent_curses(game: &mut GameState, quantity: CurseCount) {
-    if let Some(curses) = &mut game.state_machines.give_curses.last_mut() {
-        curses.quantity = curses.quantity.saturating_sub(quantity);
-    }
-}
-
-/// Run the give curses state machine, if needed.
-pub fn run_state_machine(game: &mut GameState) -> Result<()> {
-    state_machine::run::<GiveCursesData>(game)
 }

@@ -16,6 +16,7 @@ use core_data::game_primitives::{AbilityId, CardId, DamageAmount, InitiatedBy, S
 use serde::{Deserialize, Serialize};
 
 use crate::game_actions::CardTarget;
+use crate::game_state::TurnData;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PlayCardStep {
@@ -106,6 +107,12 @@ pub enum GiveCursesStep {
     Finish,
 }
 
+/// Options for giving curses to the Champion
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
+pub struct GiveCurseOptions {
+    pub for_turn: Option<TurnData>,
+}
+
 /// State data for giving a curse to the Champion player
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct GiveCursesData {
@@ -113,6 +120,8 @@ pub struct GiveCursesData {
     pub quantity: u32,
     /// Source of the curses
     pub source: AbilityId,
+    /// Configuration options
+    pub options: GiveCurseOptions,
     /// Current state machine state
     pub step: GiveCursesStep,
 }

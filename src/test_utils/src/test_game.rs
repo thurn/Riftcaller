@@ -350,7 +350,7 @@ impl TestSide {
     pub fn apply_to(&self, game: &mut GameState) {
         game.player_mut(self.side).mana_state.base_mana = self.mana;
         game.player_mut(self.side).bonus_points = self.bonus_points;
-        game.player_mut(self.side).curses = self.curses;
+        game.player_mut(self.side).curse_state.base_curses = self.curses;
         game.player_mut(self.side).wounds = self.wounds;
 
         overwrite_positions(

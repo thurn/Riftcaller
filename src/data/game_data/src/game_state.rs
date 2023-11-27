@@ -57,6 +57,16 @@ pub struct ManaState {
     pub specific_raid_mana: Option<SpecificRaidMana>,
 }
 
+/// Stores state for a player's curses. Please use the `curses` module instead
+/// of interacting directly with this data.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct CurseState {
+    /// General curse count.
+    pub base_curses: CurseCount,
+    /// Curses given for the duration of a specific turn.
+    pub turn_curses: Option<(TurnData, CurseCount)>,
+}
+
 /// A standard stack data structure for storing [GamePrompt]s.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PromptStack {
@@ -92,7 +102,7 @@ pub struct GamePlayerData {
     pub id: PlayerId,
     pub mana_state: ManaState,
     pub actions: ActionCount,
-    pub curses: CurseCount,
+    pub curse_state: CurseState,
     pub wounds: WoundCount,
     pub leylines: LeylineCount,
     pub bonus_points: PointsValue,
@@ -123,7 +133,7 @@ impl GamePlayerData {
             id,
             mana_state: ManaState::default(),
             actions: 0,
-            curses: 0,
+            curse_state: CurseState::default(),
             wounds: 0,
             leylines: 0,
             bonus_points: 0,

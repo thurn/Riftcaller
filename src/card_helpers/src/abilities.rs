@@ -21,8 +21,8 @@ use game_data::card_state::{CardCounter, CardPosition, OnPlayState};
 use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate};
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
 use game_data::text::TextToken::*;
-use rules::mutations;
 use rules::mutations::OnZeroStored;
+use rules::{curses, mutations};
 
 use crate::text_helpers::named_trigger;
 use crate::text_macro::text;
@@ -177,7 +177,7 @@ pub fn play_as_first_action() -> Ability {
 pub fn play_only_if_champion_cursed() -> Ability {
     Ability::new_with_delegate(
         text!["Play only if the Champion is", Cursed],
-        this::can_play(|g, _, _, current| current.add_constraint(g.champion.curses > 0)),
+        this::can_play(|g, _, _, current| current.add_constraint(curses::get(g) > 0)),
     )
 }
 
