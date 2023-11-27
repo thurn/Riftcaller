@@ -20,7 +20,7 @@ use game_data::delegate_data::{AbilityActivated, ActivateAbilityEvent};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::{GamePhase, GameState};
 use game_data::history_data::{AbilityActivation, AbilityActivationType, HistoryEvent};
-use game_data::state_machines::{ActivateAbilityData, ActivateAbilityStep};
+use game_data::state_machine_data::{ActivateAbilityData, ActivateAbilityStep};
 use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;

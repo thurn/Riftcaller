@@ -600,11 +600,6 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
     Ok(())
 }
 
-/// Stops the currently-active 'play card' game action.
-pub fn abort_playing_card(game: &mut GameState) {
-    game.state_machines.play_card = None;
-}
-
 /// Record a decision for a card ability, typically a targeting decision.
 pub fn record_card_choice(game: &mut GameState, ability: impl HasAbilityId, choice: CardChoice) {
     game.add_history_event(HistoryEvent::CardChoice(CardChoiceEvent {

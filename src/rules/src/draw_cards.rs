@@ -18,7 +18,7 @@ use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DrawCardsViaAbilityEvent, WillDrawCardsEvent};
 use game_data::game_state::GameState;
-use game_data::state_machines::{DrawCardsData, DrawCardsStep};
+use game_data::state_machine_data::{DrawCardsData, DrawCardsStep};
 
 use crate::state_machine::StateMachine;
 use crate::{dispatch, mutations, state_machine};

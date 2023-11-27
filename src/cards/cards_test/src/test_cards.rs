@@ -30,7 +30,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::OnZeroStored;
-use rules::{curses, deal_damage, draw_cards, mutations};
+use rules::{curses, damage, draw_cards, mutations};
 
 pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -624,7 +624,7 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Test],
         abilities: vec![Ability::new_with_delegate(
             text!["Deal 1 damage"],
-            this::on_played(|g, s, _| deal_damage::apply(g, s, 1)),
+            this::on_played(|g, s, _| damage::deal(g, s, 1)),
         )],
         ..test_overlord_spell(metadata)
     }
@@ -638,7 +638,7 @@ pub fn test_spell_deal_5_damage(metadata: CardMetadata) -> CardDefinition {
         sets: vec![CardSetName::Test],
         abilities: vec![Ability::new_with_delegate(
             text!["Deal 5 damage"],
-            this::on_played(|g, s, _| deal_damage::apply(g, s, 5)),
+            this::on_played(|g, s, _| damage::deal(g, s, 5)),
         )],
         ..test_overlord_spell(metadata)
     }

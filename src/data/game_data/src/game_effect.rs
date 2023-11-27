@@ -73,7 +73,7 @@ pub enum GameEffect {
     /// Evade the current raid encounter, jumping to the next raid state
     EvadeCurrentEncounter,
     /// Put a card into play for no mana cost
-    PlayCardForNoMana(CardId, CardTarget),
+    PlayCardForNoMana(CardId, CardTarget, InitiatedBy),
     /// Prevent the current raid, if any, from accessing cards
     PreventRaidCardAccess,
 }

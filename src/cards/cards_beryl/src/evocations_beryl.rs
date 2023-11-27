@@ -365,6 +365,7 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
                                     .effect(GameEffect::PlayCardForNoMana(
                                         s.card_id(),
                                         CardTarget::None,
+                                        s.initiated_by(),
                                     ))
                                     .effect(GameEffect::PreventRaidCardAccess)
                                     .anchor_card(s.card_id()),

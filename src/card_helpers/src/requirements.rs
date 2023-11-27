@@ -22,7 +22,7 @@ use game_data::game_actions::GamePrompt;
 use game_data::game_state::GameState;
 use game_data::history_data::{CardChoice, HistoryEvent, HistoryEventKind};
 use game_data::utils;
-use rules::flags;
+use rules::{flags, play_card};
 
 use crate::{face_down_in_play, history};
 
@@ -81,11 +81,7 @@ pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -
         }
     }
 
-    if let Some(data) = game.state_machines.play_card {
-        return data.card_id == *card_id && data.initiated_by.card_id() == Some(scope.card_id());
-    }
-
-    false
+    play_card::currently_being_played_by(game, *card_id, scope)
 }
 
 /// A [RequirementFn] which matches if there is a current raid which was

@@ -20,7 +20,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
-use game_data::state_machines::GiveCurseOptions;
+use game_data::state_machine_data::GiveCurseOptions;
 use game_data::text::TextToken::*;
 use rules::{curses, mana, mutations};
 

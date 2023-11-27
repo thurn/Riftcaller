@@ -32,7 +32,7 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{deal_damage, mana, mutations, queries, CardDefinitionExt};
+use rules::{damage, mana, mutations, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
@@ -181,10 +181,10 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                 ],
             ),
             delegates: vec![
-                combat(|g, s, _| deal_damage::apply(g, s, 1)),
+                combat(|g, s, _| damage::deal(g, s, 1)),
                 Delegate::DealtDamage(EventDelegate {
                     requirement: |g, s, data| {
-                        let discarded = deal_damage::discarded_to_current_event(g);
+                        let discarded = damage::discarded_to_current_event(g);
                         s.ability_id() == data.source
                             && discarded.iter().any(|card_id| {
                                 queries::mana_cost(g, *card_id).unwrap_or(0) % 2 != 0
@@ -265,7 +265,7 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
                 ],
             ),
             combat(|g, s, _| {
-                deal_damage::apply(g, s, 2)?;
+                damage::deal(g, s, 2)?;
                 show_prompt::with_choices(
                     g,
                     Side::Champion,

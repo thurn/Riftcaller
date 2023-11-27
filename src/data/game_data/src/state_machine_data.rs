@@ -166,7 +166,7 @@ pub struct DrawCardsData {
 /// process when a player is required to make a prompt decision.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct StateMachines {
-    pub play_card: Option<PlayCardData>,
+    pub play_card: Vec<PlayCardData>,
     pub activate_ability: Option<ActivateAbilityData>,
     pub deal_damage: Vec<DealDamageState>,
     pub give_curses: Vec<GiveCursesData>,

@@ -35,7 +35,7 @@ use crate::game_actions::GamePrompt;
 use crate::history_data::{GameHistory, HistoryCounters, HistoryEvent};
 use crate::player_name::PlayerId;
 use crate::raid_data::RaidData;
-use crate::state_machines::StateMachines;
+use crate::state_machine_data::StateMachines;
 use crate::tutorial_data::GameTutorialState;
 use crate::undo_tracker::UndoTracker;
 

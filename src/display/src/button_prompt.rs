@@ -24,7 +24,7 @@ use prompts::effect_prompts;
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
 use protos::spelldawn::{InterfaceMainControls, TutorialEffect};
-use rules::{curses, deal_damage};
+use rules::{curses, damage};
 
 use crate::tutorial_display;
 
@@ -108,7 +108,7 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
                 "Sacrifice {} to prevent {} damage?",
                 game.card(*card_id).variant.name.displayed_name(),
                 // Show the total incoming damage if it is lower than the amount to prevent
-                cmp::min(*amount, deal_damage::incoming_damage_amount(game).unwrap_or_default())
+                cmp::min(*amount, damage::incoming_amount(game).unwrap_or_default())
             ))
             .build()
         }

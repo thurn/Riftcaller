@@ -16,7 +16,7 @@ use anyhow::Result;
 use core_data::game_primitives::{CurseCount, HasAbilityId, Side};
 use game_data::delegate_data::{CursesReceivedEvent, WillReceiveCursesEvent};
 use game_data::game_state::GameState;
-use game_data::state_machines::{GiveCurseOptions, GiveCursesData, GiveCursesStep};
+use game_data::state_machine_data::{GiveCurseOptions, GiveCursesData, GiveCursesStep};
 use game_data::utils;
 
 use crate::state_machine::StateMachine;

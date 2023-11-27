@@ -17,7 +17,7 @@ use game_data::card_definition::{Ability, AbilityType};
 use game_data::delegate_data::RaidOutcome;
 use game_data::text::TextToken::*;
 use rules::mana::ManaPurpose;
-use rules::{deal_damage, mana, mutations};
+use rules::{damage, mana, mutations};
 
 use crate::text_macro::text;
 use crate::{text_helpers, this};
@@ -29,7 +29,7 @@ pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text![DealDamage(N)]),
-        delegates: vec![this::combat(|g, s, _| deal_damage::apply(g, s, N))],
+        delegates: vec![this::combat(|g, s, _| damage::deal(g, s, N))],
     }
 }
 

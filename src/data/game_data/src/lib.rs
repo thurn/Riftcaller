@@ -33,7 +33,7 @@ pub mod player_name;
 pub mod raid_data;
 pub mod random;
 pub mod special_effects;
-pub mod state_machines;
+pub mod state_machine_data;
 pub mod text;
 pub mod tutorial_data;
 pub mod undo_tracker;

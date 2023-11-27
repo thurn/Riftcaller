@@ -18,7 +18,7 @@ use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DealtDamage, DealtDamageEvent, WillDealDamageEvent};
 use game_data::game_state::GameState;
 use game_data::random;
-use game_data::state_machines::{DealDamageData, DealDamageState, DealDamageStep};
+use game_data::state_machine_data::{DealDamageData, DealDamageState, DealDamageStep};
 use with_error::WithError;
 
 use crate::state_machine::StateMachine;
@@ -26,7 +26,7 @@ use crate::{dispatch, mutations, state_machine};
 
 /// Deals damage. Discards random card from the hand of the Champion player for
 /// each point of damage. If no cards remain, they lose the game.
-pub fn apply(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Result<()> {
+pub fn deal(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Result<()> {
     state_machine::initiate(
         game,
         DealDamageState {
@@ -47,7 +47,7 @@ pub fn prevent(game: &mut GameState, amount: u32) {
 
 /// Returns the amount of damage currently scheduled to be dealt to the
 /// Champion in the topmost active `deal_damage` state machine.
-pub fn incoming_damage_amount(game: &GameState) -> Option<u32> {
+pub fn incoming_amount(game: &GameState) -> Option<u32> {
     game.state_machines.deal_damage.last().map(|d| d.data.amount)
 }
 

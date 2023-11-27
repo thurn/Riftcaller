@@ -19,19 +19,20 @@ use constants::game_constants;
 use core_data::game_primitives::{CardId, CardSubtype, CardType, InitiatedBy, Side};
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::{CardPosition, CardState};
-use game_data::delegate_data::{CardPlayed, PlayCardEvent};
+use game_data::delegate_data::{CardPlayed, PlayCardEvent, Scope};
 use game_data::game_actions::{
     ButtonPrompt, ButtonPromptContext, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel,
     UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GamePhase, GameState, PromptStack};
+use game_data::game_state::GameState;
 use game_data::history_data::HistoryEvent;
-use game_data::state_machines::{PlayCardData, PlayCardOptions, PlayCardStep};
+use game_data::state_machine_data::{PlayCardData, PlayCardOptions, PlayCardStep};
 use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, flags, mana, mutations, queries, CardDefinitionExt};
+use crate::state_machine::StateMachine;
+use crate::{dispatch, flags, mana, mutations, queries, state_machine, CardDefinitionExt};
 
 /// Starts a new play card action, either as a result the explicit game action
 /// or as an effect of another card.
@@ -39,22 +40,13 @@ pub fn initiate(
     game: &mut GameState,
     card_id: CardId,
     target: CardTarget,
+    initiated_by: InitiatedBy,
     options: PlayCardOptions,
 ) -> Result<()> {
-    verify!(game.state_machines.play_card.is_none(), "An action is already being resolved!");
-
-    let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
-        game.player(card_id.side).prompt_stack.current()
-    {
-        InitiatedBy::Ability(prompt.initiated_by)
-    } else {
-        InitiatedBy::GameAction
-    };
-
-    game.state_machines.play_card =
-        Some(PlayCardData { card_id, initiated_by, target, options, step: PlayCardStep::Begin });
-
-    run(game)
+    state_machine::initiate(
+        game,
+        PlayCardData { card_id, initiated_by, target, options, step: PlayCardStep::Begin },
+    )
 }
 
 /// Run the play card state machine, if needed.
@@ -65,56 +57,72 @@ pub fn initiate(
 /// state machine cannot currently advance, this function silently ignores the
 /// run request.
 pub fn run(game: &mut GameState) -> Result<()> {
-    loop {
-        if has_play_blocking_prompt(&game.overlord.prompt_stack)
-            || has_play_blocking_prompt(&game.champion.prompt_stack)
-        {
-            // We pause the state machine if a player has a prompt. We do *not* pause for
-            // the PlayCardBrowser prompt since this would prevent anyone from
-            // being able to play cards from that browser.
-            break;
-        }
-
-        if game.info.phase != GamePhase::Play {
-            break;
-        }
-
-        if let Some(play_card) = game.state_machines.play_card {
-            let step = evaluate_play_step(game, play_card)?;
-            if let Some(play) = &mut game.state_machines.play_card {
-                play.step = step;
-            }
-        } else {
-            break;
-        }
-    }
-    Ok(())
+    state_machine::run::<PlayCardData>(game)
 }
 
-/// Returns true if the provided prompt queue currently contains a prompt which
-/// should block the "Play Card" action
-fn has_play_blocking_prompt(stack: &PromptStack) -> bool {
-    matches!(stack.current(), Some(GamePrompt::ButtonPrompt(..)))
+/// Stops the currently-active 'play card' game action, if any
+pub fn abort(game: &mut GameState) {
+    game.state_machines.play_card.pop();
 }
 
-fn evaluate_play_step(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
-    match play_card.step {
-        PlayCardStep::Begin => Ok(PlayCardStep::CheckLimits),
-        PlayCardStep::CheckLimits => check_limits(game, play_card),
-        PlayCardStep::ClearPreviousState => clear_previous_state(game, play_card),
-        PlayCardStep::AddToHistory => add_to_history(game, play_card),
-        PlayCardStep::MoveToPlayedPosition => move_to_played_position(game, play_card),
-        PlayCardStep::PayActionPoints => pay_action_points(game, play_card),
-        PlayCardStep::ApplyPlayCardBrowser => apply_play_card_browser(game, play_card),
-        PlayCardStep::PayManaCost => pay_mana_cost(game, play_card),
-        PlayCardStep::PayCustomCost => pay_custom_cost(game, play_card),
-        PlayCardStep::TurnFaceUp => turn_face_up(game, play_card),
-        PlayCardStep::MoveToTargetPosition => move_to_target_position(game, play_card),
-        PlayCardStep::Finish => finish(game, play_card),
+/// Returns true if the `card_id` card is currently part of the active
+/// `play_card` state machine, and this game action was initiated by the card
+/// with the provided [Scope].
+pub fn currently_being_played_by(game: &GameState, card_id: CardId, scope: Scope) -> bool {
+    if let Some(data) = game.state_machines.play_card.last() {
+        data.card_id == card_id && data.initiated_by.card_id() == Some(scope.card_id())
+    } else {
+        false
     }
 }
 
-fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+impl StateMachine for PlayCardData {
+    type Data = Self;
+    type Step = PlayCardStep;
+
+    fn get(game: &GameState) -> &Vec<Self> {
+        &game.state_machines.play_card
+    }
+
+    fn get_mut(game: &mut GameState) -> &mut Vec<Self> {
+        &mut game.state_machines.play_card
+    }
+
+    fn step(&self) -> Self::Step {
+        self.step
+    }
+
+    fn step_mut(&mut self) -> &mut Self::Step {
+        &mut self.step
+    }
+
+    fn data(&self) -> Self::Data {
+        *self
+    }
+
+    fn evaluate(
+        game: &mut GameState,
+        step: PlayCardStep,
+        data: PlayCardData,
+    ) -> Result<Option<Self::Step>> {
+        match step {
+            PlayCardStep::Begin => Ok(Some(PlayCardStep::CheckLimits)),
+            PlayCardStep::CheckLimits => check_limits(game, data),
+            PlayCardStep::ClearPreviousState => clear_previous_state(game, data),
+            PlayCardStep::AddToHistory => add_to_history(game, data),
+            PlayCardStep::MoveToPlayedPosition => move_to_played_position(game, data),
+            PlayCardStep::PayActionPoints => pay_action_points(game, data),
+            PlayCardStep::ApplyPlayCardBrowser => apply_play_card_browser(game, data),
+            PlayCardStep::PayManaCost => pay_mana_cost(game, data),
+            PlayCardStep::PayCustomCost => pay_custom_cost(game, data),
+            PlayCardStep::TurnFaceUp => turn_face_up(game, data),
+            PlayCardStep::MoveToTargetPosition => move_to_target_position(game, data),
+            PlayCardStep::Finish => finish(game, data),
+        }
+    }
+}
+
+fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCardStep>> {
     let definition = game.card(play_card.card_id).definition();
     let prompt = match play_card.target {
         CardTarget::None => match definition.card_type {
@@ -177,44 +185,56 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCar
         game.player_mut(play_card.card_id.side).prompt_stack.push(p);
     }
 
-    Ok(PlayCardStep::ClearPreviousState)
+    Ok(Some(PlayCardStep::ClearPreviousState))
 }
 
-fn clear_previous_state(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn clear_previous_state(
+    game: &mut GameState,
+    play_card: PlayCardData,
+) -> Result<Option<PlayCardStep>> {
     game.card_mut(play_card.card_id).clear_played_state();
-    Ok(PlayCardStep::AddToHistory)
+    Ok(Some(PlayCardStep::AddToHistory))
 }
 
-fn add_to_history(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn add_to_history(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCardStep>> {
     game.add_history_event(HistoryEvent::PlayCard(
         play_card.card_id,
         play_card.target,
         play_card.initiated_by,
     ));
-    Ok(PlayCardStep::MoveToPlayedPosition)
+    Ok(Some(PlayCardStep::MoveToPlayedPosition))
 }
 
-fn move_to_played_position(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn move_to_played_position(
+    game: &mut GameState,
+    play_card: PlayCardData,
+) -> Result<Option<PlayCardStep>> {
     mutations::move_card(
         game,
         play_card.card_id,
         CardPosition::Played(play_card.card_id.side, play_card.target),
     )?;
-    Ok(PlayCardStep::PayActionPoints)
+    Ok(Some(PlayCardStep::PayActionPoints))
 }
 
-fn pay_action_points(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn pay_action_points(
+    game: &mut GameState,
+    play_card: PlayCardData,
+) -> Result<Option<PlayCardStep>> {
     if !play_card.options.ignore_action_cost {
         let actions = queries::action_cost(game, play_card.card_id);
         mutations::spend_action_points(game, play_card.card_id.side, actions)?;
     }
 
-    Ok(PlayCardStep::ApplyPlayCardBrowser)
+    Ok(Some(PlayCardStep::ApplyPlayCardBrowser))
 }
 
-fn apply_play_card_browser(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn apply_play_card_browser(
+    game: &mut GameState,
+    play_card: PlayCardData,
+) -> Result<Option<PlayCardStep>> {
     invoke_play_card_browser(game, play_card.card_id.side, Some(play_card.card_id))?;
-    Ok(PlayCardStep::PayManaCost)
+    Ok(Some(PlayCardStep::PayManaCost))
 }
 
 /// Handles resolution of a [GamePrompt] with a `PlayCardBrowser`. Fires the
@@ -249,10 +269,10 @@ pub fn invoke_play_card_browser(
     Ok(())
 }
 
-fn pay_mana_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn pay_mana_cost(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCardStep>> {
     if flags::enters_play_face_up(game, play_card.card_id) {
         if play_card.options.ignore_mana_cost {
-            Ok(PlayCardStep::PayCustomCost)
+            Ok(Some(PlayCardStep::PayCustomCost))
         } else {
             let amount = queries::mana_cost(game, play_card.card_id)
                 .with_error(|| "Card has no mana cost")?;
@@ -264,45 +284,47 @@ fn pay_mana_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCa
                 amount,
             )?;
 
-            Ok(PlayCardStep::PayCustomCost)
+            Ok(Some(PlayCardStep::PayCustomCost))
         }
     } else {
-        Ok(PlayCardStep::MoveToTargetPosition)
+        Ok(Some(PlayCardStep::MoveToTargetPosition))
     }
 }
 
-fn pay_custom_cost(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn pay_custom_cost(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCardStep>> {
     let definition = game.card(play_card.card_id).definition();
     if let Some(custom_cost) = &definition.cost.custom_cost {
         (custom_cost.pay)(game, play_card.card_id)?;
     }
-    Ok(PlayCardStep::TurnFaceUp)
+    Ok(Some(PlayCardStep::TurnFaceUp))
 }
 
-fn turn_face_up(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn turn_face_up(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCardStep>> {
     mutations::turn_face_up(game, play_card.card_id);
     game.add_animation(|| GameAnimation::PlayCard(play_card.card_id.side, play_card.card_id));
-    Ok(PlayCardStep::MoveToTargetPosition)
+    Ok(Some(PlayCardStep::MoveToTargetPosition))
 }
 
-fn move_to_target_position(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn move_to_target_position(
+    game: &mut GameState,
+    play_card: PlayCardData,
+) -> Result<Option<PlayCardStep>> {
     mutations::move_card(
         game,
         play_card.card_id,
         queries::played_position(game, play_card.card_id.side, play_card.card_id, play_card.target)
             .with_error(|| "No valid position")?,
     )?;
-    Ok(PlayCardStep::Finish)
+    Ok(Some(PlayCardStep::Finish))
 }
 
-fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<PlayCardStep> {
+fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCardStep>> {
     dispatch::invoke_event(
         game,
         PlayCardEvent(CardPlayed { card_id: play_card.card_id, target: play_card.target }),
     )?;
 
-    game.state_machines.play_card = None;
-    Ok(PlayCardStep::Finish)
+    Ok(None)
 }
 
 fn game_weapons(game: &GameState) -> impl Iterator<Item = &CardState> {

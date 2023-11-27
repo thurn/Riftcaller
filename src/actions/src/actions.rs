@@ -30,10 +30,10 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::history_data::HistoryEvent;
-use game_data::state_machines::PlayCardOptions;
+use game_data::state_machine_data::PlayCardOptions;
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, deal_damage, dispatch, draw_cards, flags, mana, mutations, play_card,
+    activate_ability, curses, damage, dispatch, draw_cards, flags, mana, mutations, play_card,
     prompt_monitor, queries,
 };
 use tracing::{debug, instrument};
@@ -137,7 +137,15 @@ fn play_card_action(
         card_id
     );
 
-    play_card::initiate(game, card_id, target, PlayCardOptions::default())
+    let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
+        game.player(card_id.side).prompt_stack.current()
+    {
+        InitiatedBy::Ability(prompt.initiated_by)
+    } else {
+        InitiatedBy::GameAction
+    };
+
+    play_card::initiate(game, card_id, target, initiated_by, PlayCardOptions::default())
 }
 
 /// The basic game action to activate an ability of a card in play.
@@ -446,7 +454,7 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
 /// Attempt to start all active game state machines to process further actions
 fn run_state_based_actions(game: &mut GameState) -> Result<()> {
     draw_cards::run_state_machine(game)?;
-    deal_damage::run_state_machine(game)?;
+    damage::run_state_machine(game)?;
     curses::run_state_machine(game)?;
     raid_state::run(game, None)?;
     play_card::run(game)?;

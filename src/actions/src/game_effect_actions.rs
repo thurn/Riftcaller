@@ -19,9 +19,9 @@ use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::special_effects::SpecialEffect;
-use game_data::state_machines::PlayCardOptions;
+use game_data::state_machine_data::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
-use rules::{curses, deal_damage, mana, mutations, play_card, CardDefinitionExt};
+use rules::{curses, damage, mana, mutations, play_card, CardDefinitionExt};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
@@ -29,7 +29,7 @@ use crate::mana::ManaPurpose;
 pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
     match effect {
         GameEffect::Continue => {}
-        GameEffect::AbortPlayingCard => mutations::abort_playing_card(game),
+        GameEffect::AbortPlayingCard => play_card::abort(game),
         GameEffect::PlayChoiceEffect { owner, target } => {
             let effect = game
                 .card(owner)
@@ -65,13 +65,11 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::EndCustomAccess(ability_id) => {
             custom_access::end(game, InitiatedBy::Ability(ability_id))?;
         }
-        GameEffect::TakeDamageCost(ability_id, amount) => {
-            deal_damage::apply(game, ability_id, amount)?
-        }
+        GameEffect::TakeDamageCost(ability_id, amount) => damage::deal(game, ability_id, amount)?,
         GameEffect::MoveCard(card_id, target_position) => {
             mutations::move_card(game, card_id, target_position)?
         }
-        GameEffect::PreventDamage(amount) => deal_damage::prevent(game, amount),
+        GameEffect::PreventDamage(amount) => damage::prevent(game, amount),
         GameEffect::PreventCurses(quantity) => curses::prevent_curses(game, quantity),
         GameEffect::SelectCardForPrompt(side, card_id) => {
             game.player_mut(side).prompt_selected_cards.push(card_id);
@@ -96,11 +94,12 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::EvadeCurrentEncounter => {
             mutations::apply_raid_jump(game, RaidJumpRequest::EvadeCurrentMinion);
         }
-        GameEffect::PlayCardForNoMana(card_id, target) => {
+        GameEffect::PlayCardForNoMana(card_id, target, initiated_by) => {
             play_card::initiate(
                 game,
                 card_id,
                 target,
+                initiated_by,
                 PlayCardOptions { ignore_action_cost: true, ignore_mana_cost: true },
             )?;
         }

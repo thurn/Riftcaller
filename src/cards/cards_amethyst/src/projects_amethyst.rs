@@ -25,7 +25,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
 use rules::mutations::OnZeroStored;
-use rules::{deal_damage, draw_cards, mutations};
+use rules::{damage, draw_cards, mutations};
 
 pub fn gemcarver(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -86,7 +86,7 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
                 ),
                 on_accessed(|g, s, _| {
                     if g.card(s.card_id()).position().in_play() {
-                        deal_damage::apply(
+                        damage::deal(
                             g,
                             s,
                             2 + g.card(s.card_id()).counters(CardCounter::Progress),
