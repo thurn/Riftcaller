@@ -312,6 +312,7 @@ pub enum CardName {
     MagistratesThronehall,
     IncarnationOfJustice,
     SplinterOfTwilight,
+    EchoingCacophony,
 }
 
 impl CardName {

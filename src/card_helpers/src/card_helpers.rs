@@ -101,11 +101,6 @@ pub fn on_encountered(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::EncounterMinion(EventDelegate { requirement: this_card, mutation })
 }
 
-/// A delegate when a card is scored
-pub fn on_overlord_score(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::OverlordScoreCard(EventDelegate { requirement: this_card, mutation })
-}
-
 /// Delegate which fires when a weapon is used
 pub fn on_weapon_used(
     requirement: RequirementFn<RaidEvent<UsedWeapon>>,

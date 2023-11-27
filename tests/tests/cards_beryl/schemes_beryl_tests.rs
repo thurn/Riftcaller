@@ -39,3 +39,24 @@ fn ethereal_form_cannot_activate_in_play() {
     let id = g.create_and_play(CardName::EtherealForm);
     assert!(g.activate_ability_with_result(id, 0).is_err());
 }
+
+#[test]
+fn echoing_cacophony() {
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::EchoingCacophony);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.user.cards.opponent_hand().curse_count(), 2);
+    g.click(Button::EndTurn);
+    assert_eq!(g.user.cards.opponent_hand().curse_count(), 0);
+}
+
+#[test]
+fn echoing_cacophony_upgraded() {
+    let gained = 2;
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play_upgraded(CardName::EchoingCacophony);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 2 + gained);
+}

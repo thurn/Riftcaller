@@ -65,6 +65,11 @@ pub fn on_weapon_used(mutation: MutationFn<RaidEvent<UsedWeapon>>) -> Delegate {
     })
 }
 
+/// A delegate when a card is scored by the Overlord player
+pub fn on_scored_by_overlord(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::OverlordScoreCard(EventDelegate { requirement: card, mutation })
+}
+
 /// A delegate which prevents a card from being able to be played
 pub fn can_play(transformation: TransformationFn<CardId, Flag>) -> Delegate {
     Delegate::CanPlayCard(QueryDelegate { requirement: card, transformation })

@@ -94,6 +94,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illeas_the_high_sage);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);
+    DEFINITIONS.insert(cards_beryl::schemes_beryl::echoing_cacophony);
     DEFINITIONS.insert(cards_beryl::spells_beryl::restoration);
     DEFINITIONS.insert(cards_beryl::spells_beryl::strike_the_heart);
     DEFINITIONS.insert(cards_beryl::spells_beryl::enduring_radiance);

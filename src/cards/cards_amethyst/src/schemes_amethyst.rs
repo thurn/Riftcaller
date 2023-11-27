@@ -18,6 +18,7 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::costs::scheme;
 use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::on_scored_by_overlord;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
@@ -43,7 +44,7 @@ pub fn gold_mine(_: CardMetadata) -> CardDefinition {
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
             text: named_trigger(Score, text![GainMana(7)]),
-            delegates: vec![on_overlord_score(|g, s, _| {
+            delegates: vec![on_scored_by_overlord(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 Ok(())
             })],
@@ -111,7 +112,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
                 text![text!["Draw", 2, "cards"], text!["You get", Plus(2), "maximum hand size"]],
             ),
             delegates: vec![
-                on_overlord_score(|g, s, _| {
+                on_scored_by_overlord(|g, s, _| {
                     draw_cards::run(g, s.side(), 2, s.initiated_by()).map(|_| ())
                 }),
                 Delegate::MaximumHandSize(QueryDelegate {

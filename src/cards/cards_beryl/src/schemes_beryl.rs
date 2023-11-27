@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::{abilities, costs, text, text_helpers, this};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
-    ActivatedAbility, CardConfigBuilder, CardDefinition, SchemePoints,
+    Ability, ActivatedAbility, CardConfigBuilder, CardDefinition, SchemePoints,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
+use game_data::state_machines::GiveCurseOptions;
 use game_data::text::TextToken::*;
-
-use card_helpers::{costs, text, this};
-use rules::{mana, mutations};
+use rules::{curses, mana, mutations};
 
 pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -59,6 +59,45 @@ pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
             Ok(())
         }))
         .build()],
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { progress_requirement: 2, points: 10 })
+            .build(),
+    }
+}
+
+pub fn echoing_cacophony(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::EchoingCacophony,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::scheme(),
+        image: assets::overlord_card(meta, "echoing_cacophony"),
+        card_type: CardType::Scheme,
+        subtypes: vec![],
+        side: Side::Overlord,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: abilities::some(vec![
+            Some(Ability::new_with_delegate(
+                text_helpers::named_trigger(Score, text!["Give the Champion 2 curses until", Dawn]),
+                this::on_scored_by_overlord(|g, s, _| {
+                    curses::give_curses_with_options(
+                        g,
+                        s,
+                        2,
+                        GiveCurseOptions { for_turn: Some(g.info.turn) },
+                    )
+                }),
+            )),
+            meta.is_upgraded.then(|| {
+                Ability::new_with_delegate(
+                    text_helpers::named_trigger(Score, text![GainMana(2)]),
+                    this::on_scored_by_overlord(|g, s, _| {
+                        mana::gain(g, s.side(), 2);
+                        Ok(())
+                    }),
+                )
+            }),
+        ]),
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 2, points: 10 })
             .build(),

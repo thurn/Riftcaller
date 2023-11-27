@@ -72,10 +72,14 @@ pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
     Ok(())
 }
 
-pub fn current_quantity(game: &GameState) -> Option<CurseCount> {
+/// Returns the number of curses currently scheduled to be assigned to the
+/// Champion in the topmost active `give_curse` state machine.
+pub fn incoming_curse_count(game: &GameState) -> Option<CurseCount> {
     game.state_machines.give_curses.last().map(|d| d.quantity)
 }
 
+/// Prevents up to `quantity` curses from being assigned to the Champion in the
+/// topmost active `give_curse` state machine.
 pub fn prevent_curses(game: &mut GameState, quantity: CurseCount) {
     if let Some(curses) = &mut game.state_machines.give_curses.last_mut() {
         curses.quantity = curses.quantity.saturating_sub(quantity);
