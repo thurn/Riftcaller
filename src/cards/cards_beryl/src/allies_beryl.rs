@@ -234,7 +234,7 @@ pub fn spellcraft_ritualist(meta: CardMetadata) -> CardDefinition {
         abilities: vec![
             Ability::new_with_delegate(
                 text![TextElement::NamedTrigger(Play, text!["Take a", Wound])],
-                this::on_played(|g, s, _| wounds::give_wounds(g, s, 1)),
+                this::on_played(|g, s, _| wounds::give(g, s.ability_id(), 1)),
             ),
             Ability::new_with_delegate(
                 text!["Your spells cost", Mana(meta.upgrade(1, 2)), "less"],

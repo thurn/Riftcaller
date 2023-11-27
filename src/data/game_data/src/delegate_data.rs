@@ -70,7 +70,7 @@ use anyhow::Result;
 use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
     HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue, MinionEncounterId, RaidId,
-    RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
+    RoomAccessId, RoomId, ShieldValue, Side, TurnNumber, WoundCount,
 };
 use enum_kinds::EnumKind;
 use macros::DelegateEnum;
@@ -597,6 +597,8 @@ pub enum Delegate {
     CursesReceived(EventDelegate<CurseCount>),
     /// The Champion player has received one or more leylines
     LeylinesReceived(EventDelegate<u32>),
+    /// The Champion player has received one or more wounds
+    WoundsReceived(EventDelegate<WoundCount>),
     /// A card has been sacrificed by its owner
     CardSacrificed(EventDelegate<CardId>),
     /// A card has been revealed by an ability. This is a specific game action

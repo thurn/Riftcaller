@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{AbilityId, CardId, DamageAmount, InitiatedBy, Side};
+use core_data::game_primitives::{AbilityId, CardId, DamageAmount, InitiatedBy, Side, WoundCount};
 use serde::{Deserialize, Serialize};
 
 use crate::game_actions::CardTarget;
@@ -174,10 +174,29 @@ pub enum GiveLeylinesStep {
 pub struct GiveLeylinesData {
     /// Number of leylines to add
     pub quantity: u32,
-    /// Source of the curses
+    /// Source of the leylines
     pub source: AbilityId,
     /// Current state machine state
     pub step: GiveLeylinesStep,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum GiveWoundsStep {
+    Begin,
+    AddWounds,
+    WoundsReceivedEvent,
+    Finish,
+}
+
+/// State data for giving a wound to the Champion player
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct GiveWoundsData {
+    /// Number of wounds to give
+    pub quantity: WoundCount,
+    /// Source of the wounds
+    pub source: AbilityId,
+    /// Current state machine state
+    pub step: GiveWoundsStep,
 }
 
 /// Data related to ongoing game events. Some types of updates are handled via a
@@ -193,4 +212,5 @@ pub struct StateMachines {
     pub give_curses: Vec<GiveCursesData>,
     pub draw_cards: Vec<DrawCardsData>,
     pub give_leylines: Vec<GiveLeylinesData>,
+    pub give_wounds: Vec<GiveWoundsData>,
 }

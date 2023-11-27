@@ -13,18 +13,71 @@
 // limitations under the License.
 
 use anyhow::Result;
-use core_data::game_primitives::{HasAbilityId, WoundCount};
+use core_data::game_primitives::{AbilityId, WoundCount};
+use game_data::delegate_data::WoundsReceivedEvent;
 use game_data::game_state::GameState;
+use game_data::state_machine_data::{GiveWoundsData, GiveWoundsStep};
+
+use crate::state_machine::StateMachine;
+use crate::{dispatch, state_machine};
 
 /// Give the Champion player `quantity` wounds, which decreases their maximum
 /// hand size.
-pub fn give_wounds(game: &mut GameState, _: impl HasAbilityId, quantity: WoundCount) -> Result<()> {
-    game.champion.wounds += quantity;
-    Ok(())
+pub fn give(game: &mut GameState, source: AbilityId, quantity: WoundCount) -> Result<()> {
+    state_machine::initiate(game, GiveWoundsData { quantity, source, step: GiveWoundsStep::Begin })
 }
 
 /// Remove `quantity` wounds from the Champion player.
 pub fn remove_wounds(game: &mut GameState, quantity: WoundCount) -> Result<()> {
     game.champion.wounds = game.champion.wounds.saturating_sub(quantity);
     Ok(())
+}
+
+/// Run the state machine, if needed
+pub fn run_state_machine(game: &mut GameState) -> Result<()> {
+    state_machine::run::<GiveWoundsData>(game)
+}
+
+impl StateMachine for GiveWoundsData {
+    type Data = Self;
+    type Step = GiveWoundsStep;
+
+    fn get(game: &GameState) -> &Vec<Self> {
+        &game.state_machines.give_wounds
+    }
+
+    fn get_mut(game: &mut GameState) -> &mut Vec<Self> {
+        &mut game.state_machines.give_wounds
+    }
+
+    fn step(&self) -> Self::Step {
+        self.step
+    }
+
+    fn step_mut(&mut self) -> &mut Self::Step {
+        &mut self.step
+    }
+
+    fn data(&self) -> Self::Data {
+        *self
+    }
+
+    fn evaluate(
+        game: &mut GameState,
+        step: GiveWoundsStep,
+        data: GiveWoundsData,
+    ) -> Result<Option<GiveWoundsStep>> {
+        Ok(match step {
+            GiveWoundsStep::Begin => Some(GiveWoundsStep::AddWounds),
+            GiveWoundsStep::AddWounds => {
+                game.champion.wounds += data.quantity;
+                Some(GiveWoundsStep::WoundsReceivedEvent)
+            }
+            GiveWoundsStep::WoundsReceivedEvent => {
+                dispatch::invoke_event(game, WoundsReceivedEvent(data.quantity))?;
+                Some(GiveWoundsStep::Finish)
+            }
+            GiveWoundsStep::Finish => None,
+        })
+    }
 }

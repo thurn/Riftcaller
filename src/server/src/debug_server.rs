@@ -200,7 +200,7 @@ pub async fn handle_debug_action(
         }
         DebugAction::AddWounds(amount) => {
             debug_update_game(database, data, |game, _| {
-                wounds::give_wounds(game, DEBUG_ABILITY_ID, *amount)?;
+                wounds::give(game, DEBUG_ABILITY_ID, *amount)?;
                 Ok(())
             })
             .await
