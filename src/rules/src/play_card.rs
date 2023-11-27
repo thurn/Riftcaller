@@ -104,7 +104,7 @@ impl StateMachine for PlayCardData {
         game: &mut GameState,
         step: PlayCardStep,
         data: PlayCardData,
-    ) -> Result<Option<Self::Step>> {
+    ) -> Result<Option<PlayCardStep>> {
         match step {
             PlayCardStep::Begin => Ok(Some(PlayCardStep::CheckLimits)),
             PlayCardStep::CheckLimits => check_limits(game, data),

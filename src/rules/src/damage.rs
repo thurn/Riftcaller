@@ -97,7 +97,7 @@ impl StateMachine for DealDamageState {
         game: &mut GameState,
         step: DealDamageStep,
         data: DealDamageData,
-    ) -> Result<Option<Self::Step>> {
+    ) -> Result<Option<DealDamageStep>> {
         Ok(match step {
             DealDamageStep::Begin => Some(DealDamageStep::WillDealDamageEvent),
             DealDamageStep::WillDealDamageEvent => {

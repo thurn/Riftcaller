@@ -78,7 +78,7 @@ impl StateMachine for DrawCardsData {
         game: &mut GameState,
         step: DrawCardsStep,
         data: DrawCardsData,
-    ) -> Result<Option<Self::Step>> {
+    ) -> Result<Option<DrawCardsStep>> {
         Ok(match step {
             DrawCardsStep::Begin => Some(DrawCardsStep::WillDrawCardsEvent),
             DrawCardsStep::WillDrawCardsEvent => {

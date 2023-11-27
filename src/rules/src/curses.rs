@@ -119,7 +119,7 @@ impl StateMachine for GiveCursesData {
         game: &mut GameState,
         step: GiveCursesStep,
         data: GiveCursesData,
-    ) -> Result<Option<Self::Step>> {
+    ) -> Result<Option<GiveCursesStep>> {
         Ok(match step {
             GiveCursesStep::Begin => Some(GiveCursesStep::WillReceiveCursesEvent),
             GiveCursesStep::WillReceiveCursesEvent => {
