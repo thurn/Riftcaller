@@ -463,11 +463,25 @@ pub fn wound_card_view(builder: &ResponseBuilder, count: WoundCount) -> CardView
         builder,
         Side::Champion,
         CounterCard {
-            identifier: CustomCardIdentifier::SummonProject,
+            identifier: CustomCardIdentifier::Wound,
             counters: count,
             image: "wound".to_string(),
             title: "Wound".to_string(),
-            text: "-1 maximum hand size".to_string(),
+            text: "-1 maximum hand size.".to_string(),
+        },
+    )
+}
+
+pub fn leyline_card_view(builder: &ResponseBuilder, count: u32) -> CardView {
+    counter_card_view(
+        builder,
+        Side::Champion,
+        CounterCard {
+            identifier: CustomCardIdentifier::Leyline,
+            counters: count,
+            image: "leyline".to_string(),
+            title: "Leyline".to_string(),
+            text: format!("Gain 1{} to use during each raid.", icons::MANA),
         },
     )
 }

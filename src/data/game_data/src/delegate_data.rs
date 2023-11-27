@@ -595,6 +595,8 @@ pub enum Delegate {
     WillReceiveCurses(EventDelegate<CurseCount>),
     /// The Champion player has been given one or more curses
     CursesReceived(EventDelegate<CurseCount>),
+    /// The Champion player has received one or more leylines
+    LeylinesReceived(EventDelegate<u32>),
     /// A card has been sacrificed by its owner
     CardSacrificed(EventDelegate<CardId>),
     /// A card has been revealed by an ability. This is a specific game action

@@ -257,6 +257,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Astral => assets::resonance_string("astral"),
         TextToken::Prismatic => assets::resonance_string("prismatic"),
         TextToken::Wound => "wound".to_string(),
+        TextToken::Leyline => "leyline".to_string(),
         TextToken::Evade => "evade".to_string(),
         TextToken::Unsummon => "unsummon".to_string(),
         TextToken::RazeAbility => format!("{} ability", icons::RAZE),

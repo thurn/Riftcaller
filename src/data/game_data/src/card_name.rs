@@ -313,6 +313,7 @@ pub enum CardName {
     IncarnationOfJustice,
     SplinterOfTwilight,
     EchoingCacophony,
+    Solidarity,
 }
 
 impl CardName {

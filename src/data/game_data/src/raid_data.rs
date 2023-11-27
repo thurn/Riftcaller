@@ -56,6 +56,8 @@ pub enum PopulateAccessPromptSource {
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum RaidStep {
     Begin,
+    GainLeylineMana,
+    RaidStartEvent,
     NextEncounter,
     PopulateSummonPrompt(CardId),
     SummonMinion(CardId),

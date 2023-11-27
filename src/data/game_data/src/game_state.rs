@@ -39,22 +39,14 @@ use crate::state_machine_data::StateMachines;
 use crate::tutorial_data::GameTutorialState;
 use crate::undo_tracker::UndoTracker;
 
-/// Mana to be spent only during the `raid_id` raid
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SpecificRaidMana {
-    pub raid_id: RaidId,
-    pub mana: ManaValue,
-}
-
 /// Stores a player's mana, both a general-purpose pool and various
 /// restricted-purpose pools.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ManaState {
     /// General mana, can be used for any purpose.
     pub base_mana: ManaValue,
-
     /// Mana which can be used only during a specific raid.
-    pub specific_raid_mana: Option<SpecificRaidMana>,
+    pub raid_mana: Option<(RaidId, ManaValue)>,
 }
 
 /// Stores state for a player's curses. Please use the `curses` module instead

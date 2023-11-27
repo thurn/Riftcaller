@@ -20,9 +20,10 @@ use std::cmp;
 use anyhow::Result;
 use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, ManaValue, RaidId, RoomId, Side};
 use game_data::delegate_data::{ManaLostToOpponentAbility, ManaLostToOpponentAbilityEvent};
-use game_data::game_state::{GameState, SpecificRaidMana};
+use game_data::game_state::GameState;
+use game_data::utils;
 use tracing::debug;
-use with_error::{verify, WithError};
+use with_error::verify;
 
 use crate::dispatch;
 
@@ -51,9 +52,9 @@ pub enum ManaPurpose {
 pub fn get(game: &GameState, side: Side, purpose: ManaPurpose) -> ManaValue {
     let base_mana = game.player(side).mana_state.base_mana;
     let mut result = game.player(side).mana_state.base_mana;
-    match (&game.raid, &game.player(side).mana_state.specific_raid_mana) {
-        (Some(raid_data), Some(raid_mana)) if raid_data.raid_id == raid_mana.raid_id => {
-            result += raid_mana.mana;
+    match (&game.raid, &game.player(side).mana_state.raid_mana) {
+        (Some(raid_data), Some((raid_id, raid_mana))) if raid_data.raid_id == *raid_id => {
+            result += raid_mana;
         }
         _ => {}
     }
@@ -83,20 +84,13 @@ pub fn spend(
     verify!(get(game, side, purpose) >= amount);
     let mut to_spend = amount;
 
-    match (&game.raid, &game.player(side).mana_state.specific_raid_mana) {
-        (Some(raid_data), Some(raid_mana)) if raid_data.raid_id == raid_mana.raid_id => {
-            to_spend = try_spend(
-                &mut game
-                    .player_mut(side)
-                    .mana_state
-                    .specific_raid_mana
-                    .as_mut()
-                    .with_error(|| "Expected raid-specific mana")?
-                    .mana,
-                to_spend,
-            );
+    if let Some(current_raid_id) = game.raid.as_ref().map(|r| r.raid_id) {
+        if let Some((raid_id, mana)) = &mut game.player_mut(side).mana_state.raid_mana {
+            if *raid_id == current_raid_id {
+                // Sure wish Rust would stabilize if_chains already...
+                to_spend = try_spend(mana, to_spend);
+            }
         }
-        _ => {}
     }
 
     game.player_mut(side).mana_state.base_mana -= to_spend;
@@ -147,13 +141,7 @@ pub fn add_raid_specific_mana(
     amount: ManaValue,
 ) {
     debug!(?amount, ?side, ?raid_id, "Adding raid-specific mana");
-    match &mut game.player_mut(side).mana_state.specific_raid_mana {
-        Some(raid_mana) if raid_mana.raid_id == raid_id => raid_mana.mana += amount,
-        _ => {
-            game.player_mut(side).mana_state.specific_raid_mana =
-                Some(SpecificRaidMana { raid_id, mana: amount });
-        }
-    }
+    utils::add_matching(&mut game.player_mut(side).mana_state.raid_mana, raid_id, amount);
 }
 
 fn try_spend(source: &mut ManaValue, amount: ManaValue) -> ManaValue {

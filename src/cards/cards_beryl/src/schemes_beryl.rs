@@ -22,7 +22,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::state_machine_data::GiveCurseOptions;
 use game_data::text::TextToken::*;
-use rules::{curses, mana, mutations};
+use rules::{curses, leylines, mana, mutations};
 
 pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -98,6 +98,33 @@ pub fn echoing_cacophony(meta: CardMetadata) -> CardDefinition {
                 )
             }),
         ]),
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { progress_requirement: 2, points: 10 })
+            .build(),
+    }
+}
+
+pub fn solidarity(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Solidarity,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::scheme(),
+        image: assets::overlord_card(meta, "solidarity"),
+        card_type: CardType::Scheme,
+        subtypes: vec![],
+        side: Side::Overlord,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![Ability::new_with_delegate(
+            text_helpers::named_trigger(
+                Score,
+                text![text![GainMana(7)], text!["Give the Champion a", Leyline]],
+            ),
+            this::on_scored_by_overlord(|g, s, _| {
+                mana::gain(g, s.side(), 7);
+                leylines::give(g, s.ability_id(), 1)
+            }),
+        )],
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 2, points: 10 })
             .build(),

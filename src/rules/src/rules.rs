@@ -31,6 +31,7 @@ pub mod damage;
 pub mod dispatch;
 pub mod draw_cards;
 pub mod flags;
+pub mod leylines;
 pub mod mana;
 pub mod mutations;
 pub mod play_card;

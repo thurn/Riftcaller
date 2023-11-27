@@ -33,8 +33,8 @@ use game_data::history_data::HistoryEvent;
 use game_data::state_machine_data::PlayCardOptions;
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, damage, dispatch, draw_cards, flags, mana, mutations, play_card,
-    prompt_monitor, queries,
+    activate_ability, curses, damage, dispatch, draw_cards, flags, leylines, mana, mutations,
+    play_card, prompt_monitor, queries,
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
@@ -456,6 +456,7 @@ fn run_state_based_actions(game: &mut GameState) -> Result<()> {
     draw_cards::run_state_machine(game)?;
     damage::run_state_machine(game)?;
     curses::run_state_machine(game)?;
+    leylines::run_state_machine(game)?;
     raid_state::run(game, None)?;
     play_card::run(game)?;
     activate_ability::run(game)?;

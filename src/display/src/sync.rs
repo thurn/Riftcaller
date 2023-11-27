@@ -55,6 +55,10 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
             (game.champion.wounds > 0)
                 .then(|| card_sync::wound_card_view(builder, game.champion.wounds)),
         )
+        .chain(
+            (game.champion.leylines > 0)
+                .then(|| card_sync::leyline_card_view(builder, game.champion.leylines)),
+        )
         .collect::<Vec<_>>();
 
     builder.push_game_view(GameView {

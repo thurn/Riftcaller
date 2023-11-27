@@ -209,7 +209,9 @@ fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
 fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> Result<RaidState> {
     debug!(?step, ?info.target, ?info.raid_id, ?info.encounter, "Evaluating raid step");
     let result = match step {
-        RaidStep::Begin => begin_raid(game, info),
+        RaidStep::Begin => RaidState::step(RaidStep::GainLeylineMana),
+        RaidStep::GainLeylineMana => gain_leyline_mana(game, info),
+        RaidStep::RaidStartEvent => raid_start_event(game, info),
         RaidStep::NextEncounter => RaidState::step(defenders::next_encounter(game, info)?),
         RaidStep::PopulateSummonPrompt(minion_id) => populate_summon_prompt(minion_id),
         RaidStep::SummonMinion(minion_id) => summon_minion(game, info, minion_id),
@@ -249,7 +251,14 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
     result
 }
 
-fn begin_raid(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+fn gain_leyline_mana(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
+    if game.champion.leylines > 0 {
+        mana::add_raid_specific_mana(game, Side::Champion, info.raid_id, game.champion.leylines);
+    }
+    RaidState::step(RaidStep::RaidStartEvent)
+}
+
+fn raid_start_event(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     dispatch::invoke_event(game, RaidStartEvent(info.event(())))?;
     RaidState::step(RaidStep::NextEncounter)
 }

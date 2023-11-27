@@ -161,6 +161,25 @@ pub struct DrawCardsData {
     pub step: DrawCardsStep,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum GiveLeylinesStep {
+    Begin,
+    AddLeylines,
+    LeylinesReceivedEvent,
+    Finish,
+}
+
+/// State data for giving a leyline to the Champion player
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct GiveLeylinesData {
+    /// Number of leylines to add
+    pub quantity: u32,
+    /// Source of the curses
+    pub source: AbilityId,
+    /// Current state machine state
+    pub step: GiveLeylinesStep,
+}
+
 /// Data related to ongoing game events. Some types of updates are handled via a
 /// resumable state machine in order to allow interruptions in the resolution
 /// process when a player is required to make a prompt decision.
@@ -173,4 +192,5 @@ pub struct StateMachines {
     pub deal_damage: Vec<DealDamageState>,
     pub give_curses: Vec<GiveCursesData>,
     pub draw_cards: Vec<DrawCardsData>,
+    pub give_leylines: Vec<GiveLeylinesData>,
 }

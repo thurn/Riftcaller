@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::Side;
+use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::CardName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
@@ -59,4 +59,76 @@ fn echoing_cacophony_upgraded() {
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 2 + gained);
+}
+
+#[test]
+fn solidarity() {
+    let gained = 7;
+    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    g.create_and_play(CardName::Solidarity);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + gained - 2);
+    assert_eq!(g.user.cards.opponent_display_shelf().leyline_count(), 1);
+}
+
+#[test]
+fn solidarity_use_mana() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).deck_top(CardName::TestProject2Cost3Raze))
+            .build();
+    g.create_and_play(CardName::Solidarity);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    g.pass_turn(Side::Overlord);
+    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    g.initiate_raid(RoomId::Vault);
+    assert_eq!(g.user.other_player.bonus_mana(), 1);
+    g.opponent_click(Button::Discard);
+    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA - (3 - 1));
+    g.opponent_click(Button::EndRaid);
+    assert_eq!(g.user.other_player.bonus_mana(), 0);
+}
+
+#[test]
+fn solidarity_two_raids() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).deck_top(CardName::TestProject2Cost3Raze))
+            .build();
+    g.create_and_play(CardName::Solidarity);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(RoomId::Vault);
+    assert_eq!(g.user.other_player.bonus_mana(), 1);
+    g.opponent_click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    assert_eq!(g.user.other_player.bonus_mana(), 1);
+    g.opponent_click(Button::Discard);
+    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    g.opponent_click(Button::EndRaid);
+}
+
+#[test]
+fn solidarity_two_copies() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).deck_top(CardName::TestProject2Cost3Raze))
+            .actions(6)
+            .build();
+    g.create_and_play(CardName::Solidarity);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    g.create_and_play(CardName::Solidarity);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    g.pass_turn(Side::Overlord);
+    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    g.initiate_raid(RoomId::Vault);
+    assert_eq!(g.user.other_player.bonus_mana(), 2);
+    g.opponent_click(Button::Discard);
+    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA - (3 - 2));
+    g.opponent_click(Button::EndRaid);
+    assert_eq!(g.user.other_player.bonus_mana(), 0);
 }

@@ -261,7 +261,9 @@ pub fn played_position(
 pub fn raid_status(raid: &RaidData) -> RaidStatus {
     match &raid.state {
         RaidState::Step(step) => match step {
-            RaidStep::Begin => RaidStatus::Begin,
+            RaidStep::Begin | RaidStep::GainLeylineMana | RaidStep::RaidStartEvent => {
+                RaidStatus::Begin
+            }
             RaidStep::PopulateSummonPrompt(..)
             | RaidStep::SummonMinion(..)
             | RaidStep::DoNotSummon(..) => RaidStatus::Summon,

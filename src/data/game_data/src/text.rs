@@ -78,6 +78,7 @@ pub enum TextToken {
     Infernal,
     Prismatic,
     Wound,
+    Leyline,
     Evade,
     Unsummon,
     RazeAbility,

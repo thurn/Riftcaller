@@ -329,6 +329,8 @@ pub trait CardNamesExt {
     fn curse_count(&self) -> usize;
 
     fn wound_count(&self) -> usize;
+
+    fn leyline_count(&self) -> usize;
 }
 
 impl CardNamesExt for Vec<&ClientCard> {
@@ -383,6 +385,10 @@ impl CardNamesExt for Vec<&ClientCard> {
 
     fn wound_count(&self) -> usize {
         count_with_name(self, "Wound")
+    }
+
+    fn leyline_count(&self) -> usize {
+        count_with_name(self, "Leyline")
     }
 }
 
