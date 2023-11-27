@@ -85,13 +85,20 @@ pub enum DealDamageStep {
     Finish,
 }
 
-/// State data for dealing damage to the Champion player
-#[derive(Debug, Clone, Serialize, Deserialize)]
+/// Data about an ongoing damage event
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct DealDamageData {
     /// Amount of damage to deal
     pub amount: DamageAmount,
     /// Source of the damage
     pub source: AbilityId,
+}
+
+/// State data for dealing damage to the Champion player
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DealDamageState {
+    /// Information about how much damage to deal
+    pub data: DealDamageData,
     /// Cards which have been discarded to this damage event, if any
     pub discarded: Vec<CardId>,
     /// Current state machine state
@@ -161,7 +168,7 @@ pub struct DrawCardsData {
 pub struct StateMachines {
     pub play_card: Option<PlayCardData>,
     pub activate_ability: Option<ActivateAbilityData>,
-    pub deal_damage: Option<DealDamageData>,
+    pub deal_damage: Vec<DealDamageState>,
     pub give_curses: Vec<GiveCursesData>,
     pub draw_cards: Vec<DrawCardsData>,
 }

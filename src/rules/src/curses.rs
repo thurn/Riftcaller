@@ -117,8 +117,8 @@ impl StateMachine for GiveCursesData {
 
     fn evaluate(
         game: &mut GameState,
-        step: Self::Step,
-        data: Self::Data,
+        step: GiveCursesStep,
+        data: GiveCursesData,
     ) -> Result<Option<Self::Step>> {
         Ok(match step {
             GiveCursesStep::Begin => Some(GiveCursesStep::WillReceiveCursesEvent),

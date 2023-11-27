@@ -14,6 +14,11 @@
 
 //! Card definitions for the Minion card type
 
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::combat;
+use card_helpers::{combat_abilities, *};
 use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomLocation, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, Resonance,
@@ -25,15 +30,9 @@ use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
-
-use assets::rexard_images;
-use assets::rexard_images::RexardPack;
-use card_helpers::{*, combat_abilities};
-use card_helpers::text_helpers::named_trigger;
-use card_helpers::this::combat;
-use rules::{CardDefinitionExt, deal_damage, mana, mutations, queries};
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
+use rules::{deal_damage, mana, mutations, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
@@ -185,13 +184,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                 combat(|g, s, _| deal_damage::apply(g, s, 1)),
                 Delegate::DealtDamage(EventDelegate {
                     requirement: |g, s, data| {
-                        let discarded = &g
-                            .state_machines
-                            .deal_damage
-                            .as_ref()
-                            .expect("Active damage event")
-                            .discarded;
-
+                        let discarded = deal_damage::discarded_to_current_event(g);
                         s.ability_id() == data.source
                             && discarded.iter().any(|card_id| {
                                 queries::mana_cost(g, *card_id).unwrap_or(0) % 2 != 0

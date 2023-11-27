@@ -13,103 +13,138 @@
 // limitations under the License.
 
 use anyhow::Result;
-use core_data::game_primitives::{HasAbilityId, Side};
+use core_data::game_primitives::{CardId, HasAbilityId, Side};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DealtDamage, DealtDamageEvent, WillDealDamageEvent};
-use game_data::game_state::{GamePhase, GameState};
+use game_data::game_state::GameState;
 use game_data::random;
-use game_data::state_machines::{DealDamageData, DealDamageStep};
-use with_error::{verify, WithError};
+use game_data::state_machines::{DealDamageData, DealDamageState, DealDamageStep};
+use with_error::WithError;
 
-use crate::{dispatch, mutations};
+use crate::state_machine::StateMachine;
+use crate::{dispatch, mutations, state_machine};
 
 /// Deals damage. Discards random card from the hand of the Champion player for
 /// each point of damage. If no cards remain, they lose the game.
 pub fn apply(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Result<()> {
-    verify!(game.state_machines.deal_damage.is_none(), "Damage is already being resolved!");
+    state_machine::initiate(
+        game,
+        DealDamageState {
+            data: DealDamageData { amount, source: source.ability_id() },
+            discarded: vec![],
+            step: DealDamageStep::Begin,
+        },
+    )
+}
 
-    game.state_machines.deal_damage = Some(DealDamageData {
-        amount,
-        source: source.ability_id(),
-        discarded: vec![],
-        step: DealDamageStep::Begin,
-    });
+/// Prevents up to `amount` damage from being dealt to the Champion in the
+/// topmost active `deal_damage` state machine.
+pub fn prevent(game: &mut GameState, amount: u32) {
+    if let Some(damage) = &mut game.state_machines.deal_damage.last_mut() {
+        damage.data.amount = damage.data.amount.saturating_sub(amount);
+    }
+}
 
-    run_state_machine(game)
+/// Returns the amount of damage currently scheduled to be dealt to the
+/// Champion in the topmost active `deal_damage` state machine.
+pub fn incoming_damage_amount(game: &GameState) -> Option<u32> {
+    game.state_machines.deal_damage.last().map(|d| d.data.amount)
+}
+
+/// Returns a list of [CardId]s which have been discarded to the topmost active
+/// `deal_damage` state machine event, or an empty slice if no such event
+/// exists.
+pub fn discarded_to_current_event(game: &GameState) -> &[CardId] {
+    static NO_CARDS: &Vec<CardId> = &Vec::new();
+    game.state_machines
+        .deal_damage
+        .last()
+        .as_ref()
+        .map(|state| &state.discarded)
+        .unwrap_or(NO_CARDS)
 }
 
 /// Run the deal damage state machine, if needed.
 pub fn run_state_machine(game: &mut GameState) -> Result<()> {
-    loop {
-        if !(game.overlord.prompt_stack.is_empty() & game.champion.prompt_stack.is_empty()) {
-            break;
-        }
+    state_machine::run::<DealDamageState>(game)
+}
 
-        if game.info.phase != GamePhase::Play {
-            break;
-        }
+impl StateMachine for DealDamageState {
+    type Data = DealDamageData;
+    type Step = DealDamageStep;
 
-        if let Some(data) = &game.state_machines.deal_damage {
-            let step = match data.step {
-                DealDamageStep::Begin => DealDamageStep::WillDealDamageEvent,
-                DealDamageStep::WillDealDamageEvent => {
-                    dispatch::invoke_event(
-                        game,
-                        WillDealDamageEvent(DealtDamage {
-                            source: data.source,
-                            amount: data.amount,
-                        }),
-                    )?;
-                    DealDamageStep::DiscardCards
-                }
-                DealDamageStep::DiscardCards => {
-                    let mut discarded = vec![];
-                    for _ in 0..data.amount {
-                        if let Some(card_id) = random::card_in_position(
-                            game,
-                            Side::Champion,
-                            CardPosition::Hand(Side::Champion),
-                        ) {
-                            mutations::move_card(
-                                game,
-                                card_id,
-                                CardPosition::DiscardPile(Side::Champion),
-                            )?;
-                            discarded.push(card_id);
-                        } else {
-                            mutations::game_over(game, Side::Overlord)?;
-                        }
-                    }
-
-                    game.state_machines
-                        .deal_damage
-                        .as_mut()
-                        .with_error(|| "deal_damage")?
-                        .discarded = discarded;
-
-                    DealDamageStep::DealtDamageEvent
-                }
-                DealDamageStep::DealtDamageEvent => {
-                    dispatch::invoke_event(
-                        game,
-                        DealtDamageEvent(DealtDamage { source: data.source, amount: data.amount }),
-                    )?;
-
-                    DealDamageStep::Finish
-                }
-                DealDamageStep::Finish => {
-                    game.current_history_counters(Side::Champion).damage_received += data.amount;
-                    game.state_machines.deal_damage = None;
-                    DealDamageStep::Finish
-                }
-            };
-
-            if let Some(updated) = &mut game.state_machines.deal_damage {
-                updated.step = step;
-            }
-        } else {
-            break;
-        }
+    fn get(game: &GameState) -> &Vec<Self> {
+        &game.state_machines.deal_damage
     }
-    Ok(())
+
+    fn get_mut(game: &mut GameState) -> &mut Vec<Self> {
+        &mut game.state_machines.deal_damage
+    }
+
+    fn step(&self) -> Self::Step {
+        self.step
+    }
+
+    fn step_mut(&mut self) -> &mut Self::Step {
+        &mut self.step
+    }
+
+    fn data(&self) -> Self::Data {
+        self.data
+    }
+
+    fn evaluate(
+        game: &mut GameState,
+        step: DealDamageStep,
+        data: DealDamageData,
+    ) -> Result<Option<Self::Step>> {
+        Ok(match step {
+            DealDamageStep::Begin => Some(DealDamageStep::WillDealDamageEvent),
+            DealDamageStep::WillDealDamageEvent => {
+                dispatch::invoke_event(
+                    game,
+                    WillDealDamageEvent(DealtDamage { source: data.source, amount: data.amount }),
+                )?;
+                Some(DealDamageStep::DiscardCards)
+            }
+            DealDamageStep::DiscardCards => {
+                let mut discarded = vec![];
+                for _ in 0..data.amount {
+                    if let Some(card_id) = random::card_in_position(
+                        game,
+                        Side::Champion,
+                        CardPosition::Hand(Side::Champion),
+                    ) {
+                        mutations::move_card(
+                            game,
+                            card_id,
+                            CardPosition::DiscardPile(Side::Champion),
+                        )?;
+                        discarded.push(card_id);
+                    } else {
+                        mutations::game_over(game, Side::Overlord)?;
+                    }
+                }
+
+                game.state_machines
+                    .deal_damage
+                    .last_mut()
+                    .with_error(|| "deal_damage")?
+                    .discarded = discarded;
+                Some(DealDamageStep::DealtDamageEvent)
+            }
+            DealDamageStep::DealtDamageEvent => {
+                dispatch::invoke_event(
+                    game,
+                    DealtDamageEvent(DealtDamage { source: data.source, amount: data.amount }),
+                )?;
+
+                Some(DealDamageStep::Finish)
+            }
+            DealDamageStep::Finish => {
+                game.current_history_counters(Side::Champion).damage_received += data.amount;
+                None
+            }
+        })
+    }
 }

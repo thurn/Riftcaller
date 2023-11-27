@@ -23,6 +23,33 @@ use game_data::state_machines::{DrawCardsData, DrawCardsStep};
 use crate::state_machine::StateMachine;
 use crate::{dispatch, mutations, state_machine};
 
+/// Function to draw `count` cards from the top of a player's deck and
+/// place them into their hand.
+///
+/// If there are insufficient cards available:
+///  - If `side == Overlord`, the Overlord player loses the game and no cards
+///    are returned.
+///  - If `side == Champion`, all remaining cards are returned.
+///
+/// Cards are marked as revealed to the `side` player.
+pub fn run(game: &mut GameState, side: Side, quantity: u32, source: InitiatedBy) -> Result<()> {
+    state_machine::initiate(
+        game,
+        DrawCardsData {
+            side,
+            quantity,
+            draw_is_prevented: false,
+            source,
+            step: DrawCardsStep::Begin,
+        },
+    )
+}
+
+/// Run the draw cards state machine, if needed.
+pub fn run_state_machine(game: &mut GameState) -> Result<()> {
+    state_machine::run::<DrawCardsData>(game)
+}
+
 impl StateMachine for DrawCardsData {
     type Data = DrawCardsData;
     type Step = DrawCardsStep;
@@ -103,31 +130,4 @@ impl StateMachine for DrawCardsData {
             DrawCardsStep::Finish => None,
         })
     }
-}
-
-/// Function to draw `count` cards from the top of a player's deck and
-/// place them into their hand.
-///
-/// If there are insufficient cards available:
-///  - If `side == Overlord`, the Overlord player loses the game and no cards
-///    are returned.
-///  - If `side == Champion`, all remaining cards are returned.
-///
-/// Cards are marked as revealed to the `side` player.
-pub fn run(game: &mut GameState, side: Side, quantity: u32, source: InitiatedBy) -> Result<()> {
-    state_machine::initiate(
-        game,
-        DrawCardsData {
-            side,
-            quantity,
-            draw_is_prevented: false,
-            source,
-            step: DrawCardsStep::Begin,
-        },
-    )
-}
-
-/// Run the draw cards state machine, if needed.
-pub fn run_state_machine(game: &mut GameState) -> Result<()> {
-    state_machine::run::<DrawCardsData>(game)
 }

@@ -71,11 +71,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::MoveCard(card_id, target_position) => {
             mutations::move_card(game, card_id, target_position)?
         }
-        GameEffect::PreventDamage(amount) => {
-            if let Some(damage) = &mut game.state_machines.deal_damage {
-                damage.amount = damage.amount.saturating_sub(amount);
-            }
-        }
+        GameEffect::PreventDamage(amount) => deal_damage::prevent(game, amount),
         GameEffect::PreventCurses(quantity) => curses::prevent_curses(game, quantity),
         GameEffect::SelectCardForPrompt(side, card_id) => {
             game.player_mut(side).prompt_selected_cards.push(card_id);
