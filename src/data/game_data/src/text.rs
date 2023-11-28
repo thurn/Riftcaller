@@ -71,6 +71,7 @@ pub enum TextToken {
     CanProgress,
     Trap,
     Curse,
+    Curses,
     Cursed,
     Slow,
     Mortal,

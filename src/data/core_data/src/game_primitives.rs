@@ -568,7 +568,6 @@ pub enum CardSubtype {
     /// minion encounters.
     Weapon,
 
-    Silvered,
     Conjuration,
     Raid,
     Runic,
@@ -576,6 +575,7 @@ pub enum CardSubtype {
     Expedition,
     Augury,
     Dictate,
+    Fabrication,
 
     // Ally subtypes
     Warrior,

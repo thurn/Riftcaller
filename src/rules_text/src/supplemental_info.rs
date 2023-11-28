@@ -167,7 +167,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             entry("Progress", "This card gets progress counters when its room is progressed")
         }
         TextTokenKind::Trap => entry("Trap", "Triggers when this card is accessed during a raid"),
-        TextTokenKind::Curse | TextTokenKind::Cursed => entry(
+        TextTokenKind::Curse | TextTokenKind::Curses | TextTokenKind::Cursed => entry(
             "Curse",
             format!(
                 "Allows Overlord to pay {} and 2{} to destroy evocations. Can be removed for {} and 2{}",

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardType, Rarity, School, Side};
+use card_helpers::{abilities, costs, show_prompt, text, this};
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
-
-use card_helpers::{abilities, costs, show_prompt, text, this};
+use game_data::text::TextToken::*;
 use rules::CardDefinitionExt;
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
@@ -80,6 +80,31 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             )),
+        ]),
+        config: CardConfig::default(),
+    }
+}
+
+pub fn lightbond(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Lightbond,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::overlord_card(meta, "lightbond"),
+        card_type: CardType::Ritual,
+        subtypes: vec![CardSubtype::Fabrication],
+        side: Side::Overlord,
+        school: School::Law,
+        rarity: Rarity::Rare,
+        abilities: abilities::some(vec![
+            Some(Ability::new(text![
+                text!["Play a scheme face-up"],
+                text!["When the Champion accesses this scheme, give them", 2, Curses],
+            ])),
+            Some(abilities::silent_can_play(|g, s, _, current| {
+                current.add_constraint(g.hand(s.side()).any(|card| card.definition().is_scheme()))
+            })),
+            meta.is_upgraded.then(|| abilities::gain_mana_on_play::<2>()),
         ]),
         config: CardConfig::default(),
     }

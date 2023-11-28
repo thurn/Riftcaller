@@ -250,6 +250,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::CanProgress => "<b>Progress</b>".to_string(),
         TextToken::Trap => "<b>Trap</b>".to_string(),
         TextToken::Curse => "curse".to_string(),
+        TextToken::Curses => "curses".to_string(),
         TextToken::Cursed => "cursed".to_string(),
         TextToken::Slow => "slow".to_string(),
         TextToken::Mortal => assets::resonance_string("mortal"),

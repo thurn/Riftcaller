@@ -314,6 +314,7 @@ pub enum CardName {
     SplinterOfTwilight,
     EchoingCacophony,
     Solidarity,
+    Lightbond,
 }
 
 impl CardName {

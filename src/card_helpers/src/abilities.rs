@@ -22,7 +22,7 @@ use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate};
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
-use rules::{curses, mutations};
+use rules::{curses, mana, mutations};
 
 use crate::text_helpers::named_trigger;
 use crate::text_macro::text;
@@ -57,6 +57,17 @@ pub fn encounter_boost() -> Ability {
 /// definition.
 pub fn breach() -> Ability {
     Ability::new(text![Breach])
+}
+
+/// Ability to gain mana when a card is played.
+pub fn gain_mana_on_play<const N: ManaValue>() -> Ability {
+    Ability::new_with_delegate(
+        text![GainMana(N)],
+        this::on_played(|g, s, _| {
+            mana::gain(g, s.side(), N);
+            Ok(())
+        }),
+    )
 }
 
 /// Store `N` mana in this card when played. Move it to the discard pile when
