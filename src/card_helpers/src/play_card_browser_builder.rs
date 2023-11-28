@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use anyhow::Result;
 use core_data::game_primitives::{CardId, GameObjectId};
 use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::Scope;
@@ -21,7 +22,7 @@ use game_data::special_effects::{Projectile, TimedEffectData};
 
 use crate::visual_effects::VisualEffects;
 
-pub fn show(game: &mut GameState, builder: PlayCardBrowserBuilder) {
+pub fn show(game: &mut GameState, builder: PlayCardBrowserBuilder) -> Result<()> {
     let mut effects = VisualEffects::new();
     let cards = builder.cards.clone();
     if let Some((id, data)) = builder.visual_effect {
@@ -39,6 +40,8 @@ pub fn show(game: &mut GameState, builder: PlayCardBrowserBuilder) {
             unplayed_action: builder.unplayed_action,
         },
     ));
+
+    Ok(())
 }
 
 pub struct PlayCardBrowserBuilder {

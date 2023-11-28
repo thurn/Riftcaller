@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardId, HasAbilityId, HasCardId, RaidId, RoomId, Side};
+use core_data::game_primitives::{HasAbilityId, HasCardId, RaidId, RoomId, Side};
 use game_data::card_definition::TargetRequirement;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DealtDamage;
@@ -72,16 +72,17 @@ pub fn in_hand<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 ///   1) Displayed in a PlayCardBrowser initiated by the this card, or
 ///   2) Currently being played as part of a 'play card' action initiated by
 ///      this card.
-pub fn matching_play_browser(game: &GameState, scope: Scope, card_id: &CardId) -> bool {
+pub fn matching_play_browser(game: &GameState, scope: Scope, id: &impl HasCardId) -> bool {
+    let card_id = id.card_id();
     if let Some(GamePrompt::PlayCardBrowser(browser)) =
         game.player(card_id.side).prompt_stack.current()
     {
-        if browser.cards.contains(card_id) && browser.initiated_by.card_id == scope.card_id() {
+        if browser.cards.contains(&card_id) && browser.initiated_by.card_id == scope.card_id() {
             return true;
         }
     }
 
-    play_card::currently_being_played_by(game, *card_id, scope)
+    play_card::currently_being_played_by(game, card_id, scope)
 }
 
 /// A [RequirementFn] which matches if there is a current raid which was

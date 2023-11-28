@@ -28,7 +28,9 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardPosition, OnPlayState};
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
-use game_data::game_actions::{CardTarget, PromptChoice, PromptChoiceLabel, PromptContext};
+use game_data::game_actions::{
+    CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
+};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::history_data::CardChoice;
@@ -76,9 +78,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                                 .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff03_P1"))
                                 .effect_color(design::YELLOW_900),
                         ),
-                    );
-
-                    Ok(())
+                    )
                 }),
             )),
             abilities::when_upgraded(
@@ -223,10 +223,9 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
                             .scale(2.0)
                             .sound(SoundEffect::LightMagic("RPG3_LightMagic4_P1_Cast"))
                             .effect_color(design::YELLOW_900),
-                    ),
-            );
-
-            Ok(())
+                    )
+                    .unplayed_action(UnplayedAction::Discard),
+            )
         }))
         .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, _, _, cost| {
             cost.map(|c| c.saturating_sub(3))

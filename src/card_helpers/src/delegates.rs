@@ -17,8 +17,8 @@ use core_data::game_primitives::{
 };
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
-    AccessEvent, CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn, QueryDelegate,
-    RaidEvent, RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
+    AccessEvent, CardPlayed, CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn,
+    QueryDelegate, RaidEvent, RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
 use game_data::game_state::GameState;
 use game_data::raid_data::PopulateAccessPromptSource;
@@ -52,6 +52,13 @@ pub fn shield_value(
     transformation: TransformationFn<ShieldCardInfo, ShieldValue>,
 ) -> Delegate {
     Delegate::ShieldValue(QueryDelegate { requirement, transformation })
+}
+
+pub fn on_played(
+    requirement: RequirementFn<CardPlayed>,
+    mutation: MutationFn<CardPlayed>,
+) -> Delegate {
+    Delegate::PlayCard(EventDelegate { requirement, mutation })
 }
 
 pub fn on_minion_approached(

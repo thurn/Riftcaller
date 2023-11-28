@@ -321,9 +321,7 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                     PlayCardBrowserBuilder::new(s, permanents)
                         .movement_effect(Projectile::Projectiles1(2))
                         .unplayed_action(UnplayedAction::Discard),
-                );
-
-                Ok(())
+                )
             }))
             .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, s, _, cost| {
                 cost.map(|c| c.saturating_sub(s.upgrade(1, 4)))

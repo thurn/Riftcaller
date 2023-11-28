@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{abilities, costs, show_prompt, text, this};
+use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
+use card_helpers::{
+    abilities, costs, delegates, play_card_browser_builder, requirements, show_prompt, text, this,
+};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::CardIdsExt;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::text::TextToken::*;
-use rules::CardDefinitionExt;
+use rules::{mutations, CardDefinitionExt};
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -97,10 +101,28 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: abilities::some(vec![
-            Some(Ability::new(text![
-                text!["Play a scheme face-up"],
-                text!["When the Champion accesses this scheme, give them", 2, Curses],
-            ])),
+            Some(
+                Ability::new(text![
+                    text!["Play a scheme face-up"],
+                    text!["When the Champion accesses this scheme, give them", 2, Curses],
+                ])
+                .delegate(this::on_played(|g, s, _| {
+                    play_card_browser_builder::show(
+                        g,
+                        PlayCardBrowserBuilder::new(
+                            s,
+                            g.hand(s.side()).filter(|c| c.definition().is_scheme()).card_ids(),
+                        ),
+                    )
+                }))
+                .delegate(delegates::on_played(
+                    requirements::matching_play_browser,
+                    |g, _, played| {
+                        mutations::turn_face_up(g, played.card_id);
+                        Ok(())
+                    },
+                )),
+            ),
             Some(abilities::silent_can_play(|g, s, _, current| {
                 current.add_constraint(g.hand(s.side()).any(|card| card.definition().is_scheme()))
             })),

@@ -254,6 +254,20 @@ pub struct CardState {
     on_play_state: OnPlayState,
 }
 
+/// Helper trait to build a vector of card IDs from a card state iterator.
+pub trait CardIdsExt {
+    fn card_ids(self) -> Vec<CardId>;
+}
+
+impl<'a, T> CardIdsExt for T
+where
+    T: Iterator<Item = &'a CardState>,
+{
+    fn card_ids(self) -> Vec<CardId> {
+        self.map(|c| c.id).collect()
+    }
+}
+
 impl CardState {
     /// Creates a new card state, placing the card into the `side` player's
     /// deck.
