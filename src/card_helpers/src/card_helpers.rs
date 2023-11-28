@@ -32,7 +32,6 @@ pub mod abilities;
 pub mod combat_abilities;
 pub mod costs;
 pub mod delegates;
-pub mod effects;
 pub mod history;
 pub mod in_play;
 pub mod projects;
@@ -42,6 +41,7 @@ pub mod show_prompt;
 pub mod text_helpers;
 pub mod text_macro;
 pub mod this;
+pub mod visual_effects;
 
 /// Provides the cost for a card, with 1 action point required and `mana` mana
 /// points

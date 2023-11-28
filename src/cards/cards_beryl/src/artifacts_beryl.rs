@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
@@ -139,7 +139,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
             ],
                 this::on_weapon_used(|g, s, weapon| {
                     if history::weapons_used_this_turn(g).all(|w| w.data.weapon_id != s.card_id()) {
-                        Effects::new()
+                        VisualEffects::new()
                             .timed_effect(
                                 GameObjectId::CardId(weapon.data.target_id),
                                 TimedEffectData::new(TimedEffect::MagicCircles1(6))
@@ -266,7 +266,7 @@ pub fn resolution(meta: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 text!["When this weapon defeats a minion, sacrifice it"],
                 this::on_weapon_used(|g, s, _| {
-                    Effects::new().ability_alert(s).apply(g);
+                    VisualEffects::new().ability_alert(s).apply(g);
                     mutations::sacrifice_card(g, s.card_id())
                 }),
             ),
@@ -302,7 +302,7 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
                 text!["When you play an artifact, including this card,", StoreMana(1)],
                 in_play::on_card_played(|g, s, played| {
                     if g.card(played.card_id).definition().card_type == CardType::Artifact {
-                        Effects::new()
+                        VisualEffects::new()
                             .timed_effect(
                                 GameObjectId::CardId(s.card_id()),
                                 TimedEffectData::new(TimedEffect::MagicCircles1(7))
@@ -360,7 +360,7 @@ pub fn warriors_sign(meta: CardMetadata) -> CardDefinition {
                         .filter(|room_id| **room_id != raid.target)
                         .all(|room_id| history::rooms_raided_this_turn(g).any(|r| r == *room_id))
                 {
-                    Effects::new()
+                    VisualEffects::new()
                         .timed_effect(
                             GameObjectId::Character(Side::Champion),
                             TimedEffectData::new(TimedEffect::MagicCircles1(9))
@@ -446,7 +446,7 @@ pub fn phase_door(meta: CardMetadata) -> CardDefinition {
             Ok(())
         }))
         .delegate(delegates::on_raid_access_start(requirements::matching_raid, |g, s, _| {
-            Effects::new()
+            VisualEffects::new()
                 .timed_effect(
                     GameObjectId::CardId(s.card_id()),
                     TimedEffectData::new(TimedEffect::MagicCircles1(1))
@@ -649,7 +649,7 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
 
 pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
     fn apply_vfx(game: &mut GameState, scope: Scope) {
-        Effects::new()
+        VisualEffects::new()
             .timed_effect(
                 GameObjectId::CardId(scope.card_id()),
                 TimedEffectData::new(TimedEffect::MagicCircles1(2))

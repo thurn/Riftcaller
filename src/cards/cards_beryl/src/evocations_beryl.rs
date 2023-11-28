@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
 };
@@ -75,7 +75,7 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
             )
         }))
         .delegate(delegates::on_raid_successful(requirements::matching_raid, |g, s, _| {
-            Effects::new()
+            VisualEffects::new()
                 .ability_alert(s)
                 .timed_effect(
                     GameObjectId::Character(Side::Champion),
@@ -108,7 +108,7 @@ pub fn starfield_omen(meta: CardMetadata) -> CardDefinition {
             text!["When you sacrifice an artifact, draw a card"],
             in_play::on_card_sacrificed(|g, s, card_id| {
                 if g.card(*card_id).definition().card_type == CardType::Artifact {
-                    Effects::new()
+                    VisualEffects::new()
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),
                             TimedEffectData::new(TimedEffect::MagicCircles2(12))
@@ -216,7 +216,7 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 text!["When a scheme is scored,", AddPowerCharges(meta.upgrade(2, 3))],
                 in_play::on_card_scored(|g, s, _| {
-                    Effects::new()
+                    VisualEffects::new()
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),
                             TimedEffectData::new(TimedEffect::MagicCircles1(3))
@@ -314,7 +314,7 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
 
                 mutations::move_cards(g, &spells, CardPosition::DiscardPile(s.side()))?;
 
-                Effects::new()
+                VisualEffects::new()
                     .card_movement_effects(Projectile::Projectiles1(2), &permanents)
                     .apply(g);
 

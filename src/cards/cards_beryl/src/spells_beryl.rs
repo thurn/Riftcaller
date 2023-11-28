@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     abilities, costs, delegates, history, raids, requirements, show_prompt, text, this,
 };
@@ -64,7 +64,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                         .map(|c| c.id)
                         .collect::<Vec<_>>();
 
-                    Effects::new()
+                    VisualEffects::new()
                         .timed_effect(
                             GameObjectId::DiscardPile(Side::Champion),
                             TimedEffectData::new(TimedEffect::MagicCircles1(2))
@@ -117,7 +117,7 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
             "additional cards"
         ])
         .delegate(this::on_played(|g, s, _| {
-            Effects::new()
+            VisualEffects::new()
                 .timed_effect(
                     GameObjectId::Character(Side::Overlord),
                     TimedEffectData::new(TimedEffect::MagicCircles1(1))
@@ -158,7 +158,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
             this::on_played(|g, s, _| {
                 curses::remove_curses(g, 1)?;
 
-                Effects::new()
+                VisualEffects::new()
                     .timed_effect(
                         GameObjectId::Character(Side::Champion),
                         TimedEffectData::new(TimedEffect::MagicCircles1(3))
@@ -216,7 +216,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
                 mutations::set_visible_to(g, *card, s.side(), true);
             }
 
-            Effects::new()
+            VisualEffects::new()
                 .timed_effect(
                     GameObjectId::Deck(Side::Champion),
                     TimedEffectData::new(TimedEffect::MagicCircles1(4))
@@ -246,7 +246,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
 
 pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
     fn update(game: &mut GameState, alert: Option<AbilityId>) {
-        Effects::new()
+        VisualEffects::new()
             .timed_effect(
                 GameObjectId::Deck(Side::Champion),
                 TimedEffectData::new(TimedEffect::MagicCircles1(5))
@@ -306,7 +306,7 @@ pub fn voidstep(meta: CardMetadata) -> CardDefinition {
             text![Evade, "the first minion you encounter"]
         ])
         .delegate(this::on_played(|g, s, play_card| {
-            Effects::new()
+            VisualEffects::new()
                 .timed_effect(
                     GameObjectId::Character(Side::Champion),
                     TimedEffectData::new(TimedEffect::MagicCircles1(2))
@@ -352,7 +352,7 @@ pub fn keensight(meta: CardMetadata) -> CardDefinition {
         ])
         .delegate(this::on_played(|g, s, play_card| {
             let target = play_card.target.room_id()?;
-            Effects::new()
+            VisualEffects::new()
                 .timed_effect(
                     GameObjectId::Character(s.side()),
                     TimedEffectData::new(TimedEffect::MagicCircles1(2))
@@ -401,7 +401,7 @@ pub fn ethereal_incursion(meta: CardMetadata) -> CardDefinition {
         ])
         .delegate(this::on_played(|g, s, play_card| raids::initiate(g, s, play_card.target)))
         .delegate(delegates::on_raid_end(requirements::matching_raid, |g, s, outcome| {
-            Effects::new().ability_alert(s).apply(g);
+            VisualEffects::new().ability_alert(s).apply(g);
 
             let minions = history::minions_summoned_this_turn(g)
                 .filter(|event| event.raid_id == outcome.raid_id)

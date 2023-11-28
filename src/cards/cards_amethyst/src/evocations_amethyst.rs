@@ -17,10 +17,10 @@
 use assets::rexard_images;
 use assets::rexard_images::{RexardArtifactType, RexardPack};
 use card_helpers::costs::{actions, once_per_turn};
-use card_helpers::effects::Effects;
 use card_helpers::raids::add_sanctum_access;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::this::on_activated;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{abilities, *};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
@@ -73,7 +73,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 text!["When you access a room", StoreMana(1)],
                 in_play::on_raid_success(|g, s, _| {
-                    Effects::new().ability_alert(s).apply(g);
+                    VisualEffects::new().ability_alert(s).apply(g);
                     add_stored_mana(g, s.card_id(), 1);
                     Ok(())
                 }),

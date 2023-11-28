@@ -16,8 +16,8 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
-use card_helpers::effects::Effects;
 use card_helpers::text_helpers::named_trigger;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{abilities, *};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
@@ -51,7 +51,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
                     if g.card(s.card_id()).counters(CardCounter::StoredMana) == 0 {
                         draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                     }
-                    Effects::new().ability_alert(s).apply(g);
+                    VisualEffects::new().ability_alert(s).apply(g);
                     Ok(())
                 })],
             },
@@ -91,7 +91,7 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
                             s,
                             2 + g.card(s.card_id()).counters(CardCounter::Progress),
                         )?;
-                        Effects::new().ability_alert(s).apply(g);
+                        VisualEffects::new().ability_alert(s).apply(g);
                     }
 
                     Ok(())

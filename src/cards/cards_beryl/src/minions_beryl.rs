@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{costs, delegates, requirements, text, text_helpers};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
@@ -47,7 +47,7 @@ pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
                     };
                     state.draw_is_prevented = true;
 
-                    Effects::new()
+                    VisualEffects::new()
                         .ability_alert(s)
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),

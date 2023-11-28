@@ -14,7 +14,7 @@
 
 use std::cmp;
 
-use card_helpers::effects::Effects;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{costs, history, in_play, text};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
@@ -53,7 +53,7 @@ pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
                 }
 
                 if show_vfx {
-                    Effects::new()
+                    VisualEffects::new()
                         .ability_alert(s)
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),

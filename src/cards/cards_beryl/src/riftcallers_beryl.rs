@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{costs, in_play, text};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{CardType, GameObjectId, InitiatedBy, Rarity, School, Side};
@@ -46,7 +46,7 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
             ],
             in_play::on_mana_lost_to_opponent_ability(|g, s, lost| {
                 if lost.side == Side::Champion && flags::raid_active(g) {
-                    Effects::new()
+                    VisualEffects::new()
                         .ability_alert(s)
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),
@@ -101,7 +101,7 @@ pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
                 if s.side() == *side
                     && g.current_history_counters(s.side()).cards_drawn_via_abilities == 0
                 {
-                    Effects::new()
+                    VisualEffects::new()
                         .ability_alert(s)
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),

@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use assets::rexard_images;
-use card_helpers::effects::Effects;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::text_helpers::named_trigger;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
@@ -39,7 +39,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
             named_trigger(Dawn, text![GainMana(1), "if you have", 2, "or fewer cards in hand"]),
             in_play::at_dawn(|g, s, _| {
                 if g.hand(s.side()).count() <= 2 {
-                    Effects::new().ability_alert(s).apply(g);
+                    VisualEffects::new().ability_alert(s).apply(g);
                     mana::gain(g, s.side(), 1);
                 }
                 Ok(())
@@ -65,7 +65,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
             Delegate::DealtDamage(EventDelegate {
                 requirement: requirements::no_damage_dealt::<FaceUpInPlay>,
                 mutation: |g, s, _| {
-                    Effects::new().ability_alert(s).apply(g);
+                    VisualEffects::new().ability_alert(s).apply(g);
                     draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                     Ok(())
                 },
@@ -89,7 +89,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new_with_delegate(
             text!["After you access the", Sanctum, ", discard the top card of the", Vault],
             in_play::after_sanctum_accessed(|g, s, _| {
-                Effects::new().ability_alert(s).apply(g);
+                VisualEffects::new().ability_alert(s).apply(g);
                 mutations::discard_from_vault(g, 1)
             }),
         )],

@@ -18,12 +18,12 @@ use game_data::game_state::GameState;
 use game_data::special_effects::{Projectile, SpecialEffect, TimedEffectData};
 
 #[derive(Clone, Debug, Default)]
-pub struct Effects {
+pub struct VisualEffects {
     ability_triggered: Option<AbilityId>,
     effects: Vec<SpecialEffect>,
 }
 
-impl Effects {
+impl VisualEffects {
     pub fn new() -> Self {
         Self::default()
     }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::effects::Effects;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{costs, history, in_play, show_prompt, text, this};
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
@@ -52,7 +52,7 @@ pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
             current + s.upgrade(1, 2)
         }))
         .delegate(in_play::on_sanctum_access_start(|g, s, _| {
-            Effects::new()
+            VisualEffects::new()
                 .timed_effect(
                     GameObjectId::CardId(s.card_id()),
                     TimedEffectData::new(TimedEffect::MagicCircles2(15))
@@ -84,7 +84,7 @@ pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
             ],
             in_play::on_sanctum_access_start(|g, s, _| {
                 if history::rooms_accessed_this_turn(g).all(|r| r != RoomId::Sanctum) {
-                    Effects::new()
+                    VisualEffects::new()
                         .timed_effect(
                             GameObjectId::CardId(s.card_id()),
                             TimedEffectData::new(TimedEffect::MagicCircles2(14))
@@ -109,7 +109,7 @@ pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
 
 pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
     fn update(game: &mut GameState) {
-        Effects::new()
+        VisualEffects::new()
             .timed_effect(
                 GameObjectId::Character(Side::Champion),
                 TimedEffectData::new(TimedEffect::MagicCircles1(7))
@@ -184,7 +184,7 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
                 ],
                 in_play::on_card_moved_to_discard_pile(|g, s, card_id| {
                     if g.card(*card_id).definition().card_type == CardType::Artifact {
-                        Effects::new()
+                        VisualEffects::new()
                             .timed_effect(
                                 GameObjectId::CardId(s.card_id()),
                                 TimedEffectData::new(TimedEffect::MagicCircles2(13))
