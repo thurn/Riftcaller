@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
-    costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
+    costs, delegates, in_play, play_card_browser_builder, raids, requirements, show_prompt, text,
+    text_helpers, this,
 };
 use core_data::game_primitives::{
     BanishEventId, CardId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId,
@@ -30,7 +32,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{BanishedByCard, CardCounter, CardPosition, OnPlayState};
 use game_data::game_actions::{
-    ButtonPromptContext, CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
+    ButtonPromptContext, CardTarget, PromptChoice, PromptChoiceLabel, UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_state::RaidJumpRequest;
@@ -314,17 +316,14 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
 
                 mutations::move_cards(g, &spells, CardPosition::DiscardPile(s.side()))?;
 
-                VisualEffects::new()
-                    .card_movement_effects(Projectile::Projectiles1(2), &permanents)
-                    .apply(g);
-
-                show_prompt::play_card_browser(
+                play_card_browser_builder::show(
                     g,
-                    s,
-                    permanents,
-                    PromptContext::PlayACard,
-                    UnplayedAction::Discard,
-                )
+                    PlayCardBrowserBuilder::new(s, permanents)
+                        .movement_effect(Projectile::Projectiles1(2))
+                        .unplayed_action(UnplayedAction::Discard),
+                );
+
+                Ok(())
             }))
             .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, s, _, cost| {
                 cost.map(|c| c.saturating_sub(s.upgrade(1, 4)))

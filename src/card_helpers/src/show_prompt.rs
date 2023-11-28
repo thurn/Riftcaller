@@ -12,14 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use anyhow::Result;
-use core_data::game_primitives::{CardId, HasSide};
-use game_data::animation_tracker::GameAnimation;
+use core_data::game_primitives::HasSide;
 use game_data::delegate_data::Scope;
-use game_data::game_actions::{
-    ButtonPrompt, ButtonPromptContext, GamePrompt, PlayCardBrowser, PromptChoice, PromptContext,
-    UnplayedAction,
-};
+use game_data::game_actions::{ButtonPrompt, ButtonPromptContext, GamePrompt, PromptChoice};
 use game_data::game_state::GameState;
 
 /// Adds a choice prompt for the `side` player containing the choices in
@@ -41,24 +36,6 @@ pub fn with_choices(game: &mut GameState, side: impl HasSide, choices: Vec<Promp
     game.player_mut(side.side())
         .prompt_stack
         .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: None, choices }))
-}
-
-pub fn play_card_browser(
-    game: &mut GameState,
-    scope: Scope,
-    cards: Vec<CardId>,
-    context: PromptContext,
-    unplayed_action: UnplayedAction,
-) -> Result<()> {
-    let side = scope.side();
-    game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards.clone()));
-    game.player_mut(side).prompt_stack.push(GamePrompt::PlayCardBrowser(PlayCardBrowser {
-        context: Some(context),
-        initiated_by: scope.ability_id(),
-        cards,
-        unplayed_action,
-    }));
-    Ok(())
 }
 
 /// Show a priority window prompt if one is not already displayed. This prompt

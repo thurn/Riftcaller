@@ -34,6 +34,7 @@ pub mod costs;
 pub mod delegates;
 pub mod history;
 pub mod in_play;
+pub mod play_card_browser_builder;
 pub mod projects;
 pub mod raids;
 pub mod requirements;
