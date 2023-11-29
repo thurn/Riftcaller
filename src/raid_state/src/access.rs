@@ -15,12 +15,13 @@
 use anyhow::Result;
 use core_data::game_primitives::{CardId, CardType, RoomId, Side};
 use game_data::card_state::CardPosition;
+use game_data::delegate_data::{CanScoreAccessedCardQuery, Flag};
 use game_data::game_actions::RazeCardActionType;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidChoice, RaidInfo, RaidLabel, RaidStep, ScoredCard};
 use game_data::random;
 use rules::mana::ManaPurpose;
-use rules::{mana, mutations, queries, CardDefinitionExt};
+use rules::{dispatch, mana, mutations, queries, CardDefinitionExt};
 
 /// Returns a vector of the cards accessed for the current raid target, mutating
 /// the [GameState] to store the results of random zone selections.
@@ -54,10 +55,14 @@ pub fn select_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<Vec
 
 /// Returns a [RaidChoice] for the Champion to access the provided
 /// `card_id`, if any action can be taken.
-pub fn access_action_for_card(game: &GameState, card_id: CardId) -> Option<RaidChoice> {
+pub fn access_action_for_card(
+    game: &GameState,
+    info: RaidInfo,
+    card_id: CardId,
+) -> Option<RaidChoice> {
     let definition = game.card(card_id).definition();
     match definition.card_type {
-        CardType::Scheme if can_score_card(game, card_id) => Some(RaidChoice::new(
+        CardType::Scheme if can_score_card(game, info, card_id) => Some(RaidChoice::new(
             RaidLabel::ScoreCard(card_id),
             RaidStep::StartScoringCard(ScoredCard { id: card_id }),
         )),
@@ -78,13 +83,20 @@ pub fn access_action_for_card(game: &GameState, card_id: CardId) -> Option<RaidC
 
 /// Can the Champion player score the `card_id` card when accessed during a
 /// raid?
-fn can_score_card(game: &GameState, card_id: CardId) -> bool {
+fn can_score_card(game: &GameState, info: RaidInfo, card_id: CardId) -> bool {
     let Some(raid) = &game.raid else {
         return false;
     };
 
-    raid.accessed.contains(&card_id)
-        && game.card(card_id).definition().config.stats.scheme_points.is_some()
+    let result = raid.accessed.contains(&card_id)
+        && game.card(card_id).definition().config.stats.scheme_points.is_some();
+
+    dispatch::perform_query(
+        game,
+        CanScoreAccessedCardQuery(info.access_event(card_id)),
+        Flag::new(result),
+    )
+    .into()
 }
 
 /// Can the Champion player raze the `card_id` project when accessed during a

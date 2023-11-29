@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::Side;
+use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::CardName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
@@ -35,6 +35,26 @@ pub fn zain_cunning_diplomat() {
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::NoWeapon);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - test_constants::MINION_COST + 2);
+}
+
+#[test]
+pub fn algrak_councils_enforcer() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::AlgrakCouncilsEnforcer))
+            .build();
+    let scheme1 = g.add_to_hand(CardName::TestScheme3_10);
+    g.play_card(scheme1, g.user_id(), Some(RoomId::RoomA));
+    let scheme2 = g.add_to_hand(CardName::TestScheme4_20);
+    g.play_card(scheme2, g.user_id(), Some(RoomId::RoomB));
+    g.pass_turn(Side::Overlord);
+
+    g.initiate_raid(RoomId::RoomA);
+    assert!(g.side_has(Button::Score, Side::Champion));
+    g.opponent_click(Button::Score);
+    g.opponent_click(Button::EndRaid);
+
+    g.initiate_raid(RoomId::RoomB);
+    assert!(!g.side_has(Button::Score, Side::Champion));
 }
 
 // ========================================== //

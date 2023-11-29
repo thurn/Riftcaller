@@ -435,9 +435,7 @@ fn foebane_insufficient_mana() {
 fn foebane_cannot_play_without_target() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.add_to_hand(CardName::Foebane);
-    assert!(g
-        .play_card_with_result(id, g.user_id(), test_helpers::target_room(RoomId::Vault))
-        .is_err());
+    assert!(g.play_card_with_result(id, g.user_id(), Some(RoomId::Vault)).is_err());
 }
 
 #[test]

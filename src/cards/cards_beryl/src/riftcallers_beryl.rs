@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use card_helpers::visual_effects::VisualEffects;
-use card_helpers::{costs, in_play, text};
+use card_helpers::{costs, history, in_play, text};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{CardType, GameObjectId, InitiatedBy, Rarity, School, Side};
 use core_ui::design::{self, TimedEffectDataExt};
@@ -88,7 +88,27 @@ pub fn algrak_councils_enforcer(meta: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Riftcaller,
-        abilities: vec![],
+        abilities: vec![Ability::new(text![
+            "The Champion cannot score more than one scheme per turn"
+        ])
+        .delegate(in_play::can_score_accessed_card(|g, _, _, current| {
+            current.add_constraint(history::counters(g, Side::Champion).schemes_scored == 0)
+        }))
+        .delegate(in_play::on_will_populate_access_prompt(|g, s, _| {
+            if history::counters(g, Side::Champion).schemes_scored > 0 {
+                VisualEffects::new()
+                    .ability_alert(s)
+                    .timed_effect(
+                        GameObjectId::CardId(s.card_id()),
+                        TimedEffectData::new(TimedEffect::MagicCircles1(6))
+                            .scale(2.0)
+                            .sound(SoundEffect::LightMagic("RPG3_LightMagic_Debuff02"))
+                            .effect_color(design::YELLOW_900),
+                    )
+                    .apply(g);
+            }
+            Ok(())
+        }))],
         config: CardConfigBuilder::new()
             .riftcaller(RiftcallerConfig {
                 starting_coins: Coins(475),

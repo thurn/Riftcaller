@@ -18,10 +18,12 @@ use core_data::game_primitives::{
 };
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
-    CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate, ManaLostToOpponentAbility,
-    MutationFn, QueryDelegate, RaidEvent, Scope, ScoreCard, TransformationFn,
+    AccessEvent, CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate, Flag,
+    ManaLostToOpponentAbility, MutationFn, QueryDelegate, RaidEvent, Scope, ScoreCard,
+    TransformationFn,
 };
 use game_data::game_state::GameState;
+use game_data::raid_data::PopulateAccessPromptSource;
 
 use crate::{delegates, requirements};
 
@@ -221,6 +223,17 @@ pub fn on_draw_cards_via_ability(mutation: MutationFn<Side>) -> Delegate {
     })
 }
 
+/// A delegate which fires when its card is face up & in play when the raid
+/// access prompt is being populated.
+pub fn on_will_populate_access_prompt(
+    mutation: MutationFn<AccessEvent<PopulateAccessPromptSource>>,
+) -> Delegate {
+    Delegate::WillPopulateAccessPrompt(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
+}
+
 /// A delegate which transforms the sanctum access count when a card is face up
 /// & in play
 pub fn on_query_sanctum_access_count(transformation: TransformationFn<RaidId, u32>) -> Delegate {
@@ -257,4 +270,15 @@ pub fn on_query_card_status_markers(
     transformation: TransformationFn<CardId, Vec<CardStatusMarker>>,
 ) -> Delegate {
     delegates::on_query_card_status_markers(requirements::face_up_in_play, transformation)
+}
+
+/// A delegate which intercepts queries for whether an accessed card can be
+/// scored while its card is face up & in play.
+pub fn can_score_accessed_card(
+    transformation: TransformationFn<AccessEvent<CardId>, Flag>,
+) -> Delegate {
+    Delegate::CanScoreAccessedCard(QueryDelegate {
+        requirement: requirements::face_up_in_play,
+        transformation,
+    })
 }

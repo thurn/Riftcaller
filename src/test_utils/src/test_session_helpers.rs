@@ -78,19 +78,14 @@ pub trait TestSessionHelpers {
     fn progress_room_times(&mut self, times: u32);
 
     /// Helper to take the [PlayCardAction] with a given card ID.
-    fn play_card(
-        &mut self,
-        card_id: CardIdentifier,
-        player_id: PlayerId,
-        target: Option<CardTarget>,
-    );
+    fn play_card(&mut self, card_id: CardIdentifier, player_id: PlayerId, target: Option<RoomId>);
 
     /// Equivalent function to [Self::play_card] which returns a result.
     fn play_card_with_result(
         &mut self,
         card_id: CardIdentifier,
         player_id: PlayerId,
-        target: Option<CardTarget>,
+        target: Option<RoomId>,
     ) -> Result<GameResponseOutput>;
 
     /// Creates and then plays a named card as the user who owns this card.
@@ -307,14 +302,16 @@ impl TestSessionHelpers for TestSession {
         }
     }
 
-    fn play_card(
-        &mut self,
-        card_id: CardIdentifier,
-        player_id: PlayerId,
-        target: Option<CardTarget>,
-    ) {
+    fn play_card(&mut self, card_id: CardIdentifier, player_id: PlayerId, target: Option<RoomId>) {
         self.perform(
-            Action::PlayCard(PlayCardAction { card_id: Some(card_id), target }),
+            Action::PlayCard(PlayCardAction {
+                card_id: Some(card_id),
+                target: target.map(|room_id| CardTarget {
+                    card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(
+                        room_id,
+                    ))),
+                }),
+            }),
             player_id,
         );
     }
@@ -323,10 +320,17 @@ impl TestSessionHelpers for TestSession {
         &mut self,
         card_id: CardIdentifier,
         player_id: PlayerId,
-        target: Option<CardTarget>,
+        target: Option<RoomId>,
     ) -> Result<GameResponseOutput> {
         self.perform_action(
-            Action::PlayCard(PlayCardAction { card_id: Some(card_id), target }),
+            Action::PlayCard(PlayCardAction {
+                card_id: Some(card_id),
+                target: target.map(|room_id| CardTarget {
+                    card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(
+                        room_id,
+                    ))),
+                }),
+            }),
             player_id,
         )
     }
@@ -495,16 +499,11 @@ fn play_impl(
     room_id: Option<RoomId>,
 ) -> CardIdentifier {
     let card_id = session.add_variant_to_hand(card_variant);
-    let target = room_id.map(|room_id| CardTarget {
-        card_target: Some(card_target::CardTarget::RoomId(adapters::room_identifier(room_id))),
-    });
-
     session.play_card(
         card_id,
         session.player_id_for_side(test_game_client::side_for_card_name(card_variant.name)),
-        target,
+        room_id,
     );
-
     card_id
 }
 

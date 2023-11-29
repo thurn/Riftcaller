@@ -93,7 +93,7 @@ fn lightbond() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let scheme = g.add_to_hand(CardName::TestScheme3_10);
     g.create_and_play(CardName::Lightbond);
-    g.play_card(scheme, g.user_id(), test_helpers::target_room(RoomId::RoomA));
+    g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
     assert!(g
         .user
         .cards
@@ -111,7 +111,7 @@ fn lightbond_upgraded() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let scheme = g.add_to_hand(CardName::TestScheme3_10);
     g.create_and_play_upgraded(CardName::Lightbond);
-    g.play_card(scheme, g.user_id(), test_helpers::target_room(RoomId::RoomA));
+    g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
 }
 
@@ -122,10 +122,10 @@ fn lightbond_recur_from_discard() {
     let scheme2 = g.add_to_hand(CardName::TestScheme4_20);
     let lightbond = g.add_to_hand(CardName::Lightbond);
     g.play_card(lightbond, g.user_id(), None);
-    g.play_card(scheme1, g.user_id(), test_helpers::target_room(RoomId::RoomA));
+    g.play_card(scheme1, g.user_id(), Some(RoomId::RoomA));
     g.create_and_play(CardName::TestRitualReturnDiscardToHand);
     g.play_card(lightbond, g.user_id(), None);
-    g.play_card(scheme2, g.user_id(), test_helpers::target_room(RoomId::RoomB));
+    g.play_card(scheme2, g.user_id(), Some(RoomId::RoomB));
 
     assert!(g
         .user
@@ -147,11 +147,11 @@ fn lightbond_return_scheme_to_hand() {
     let scheme = g.add_to_hand(CardName::TestScheme3_10);
     let lightbond = g.add_to_hand(CardName::Lightbond);
     g.play_card(lightbond, g.user_id(), None);
-    g.play_card(scheme, g.user_id(), test_helpers::target_room(RoomId::RoomA));
+    g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
     g.create_and_play(CardName::TestRitualReturnAllOccupantsToHand);
     let lightbond2 = g.add_to_hand(CardName::Lightbond);
     g.play_card(lightbond2, g.user_id(), None);
-    g.play_card(scheme, g.user_id(), test_helpers::target_room(RoomId::RoomA));
+    g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
 
     assert!(g
         .user

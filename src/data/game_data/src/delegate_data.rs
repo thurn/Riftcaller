@@ -640,6 +640,8 @@ pub enum Delegate {
     ///
     /// Note that Scheme cards can be progressed by default.
     CanProgressCard(QueryDelegate<CardId, Flag>),
+    /// Can the indicated card be scored when accessed?
+    CanScoreAccessedCard(QueryDelegate<AccessEvent<CardId>, Flag>),
     /// Can the source card currently be summoned?
     CanSummon(QueryDelegate<CardId, Flag>),
     /// Can the source card (typically a weapon) take an encounter action

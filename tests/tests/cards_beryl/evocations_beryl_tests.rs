@@ -350,7 +350,7 @@ fn knowledge_of_the_beyond_card_target_with_foebane() {
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(id, 1);
     let foebane = g.user.cards.hand().find_card_id(CardName::Foebane);
-    g.play_card(foebane, g.user_id(), test_helpers::target_room(RoomId::Vault));
+    g.play_card(foebane, g.user_id(), Some(RoomId::Vault));
     g.click(Button::ChooseOnPlay);
 
     // This is a bit weird, but basically Foebane triggers during the approach step,

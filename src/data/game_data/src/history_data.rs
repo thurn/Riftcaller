@@ -118,6 +118,7 @@ static DEFAULT_COUNTERS: HistoryCounters = HistoryCounters {
     cards_drawn_via_abilities: 0,
     curses_received: 0,
     damage_received: 0,
+    schemes_scored: 0,
 };
 
 /// Counters for events that happen during a given turn. Each player has their
@@ -139,6 +140,8 @@ pub struct HistoryCounters {
     pub curses_received: u32,
     /// Amount of damage received this turn, only valid for the Champion player.
     pub damage_received: u32,
+    /// Number of schemes scored this turn by this player
+    pub schemes_scored: u32,
 }
 
 /// History of events which have happened during this game.

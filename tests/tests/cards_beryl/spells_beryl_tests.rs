@@ -308,9 +308,7 @@ fn time_stop_cannot_play_second() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.gain_mana();
     let id = g.add_to_hand(CardName::TimeStop);
-    assert!(g
-        .play_card_with_result(id, g.user_id(), test_helpers::target_room(RoomId::Vault))
-        .is_err());
+    assert!(g.play_card_with_result(id, g.user_id(), Some(RoomId::Vault)).is_err());
 }
 
 #[test]

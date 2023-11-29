@@ -472,7 +472,7 @@ fn populate_access_prompt(game: &mut GameState, info: RaidInfo) -> Result<RaidSt
         game.raid()?
             .accessed
             .iter()
-            .filter_map(|card_id| access::access_action_for_card(game, *card_id))
+            .filter_map(|card_id| access::access_action_for_card(game, info, *card_id))
             .chain(can_end.then_some(RaidChoice::new(
                 if info.is_custom_access { RaidLabel::EndAccess } else { RaidLabel::EndRaid },
                 RaidStep::FinishAccess,
@@ -487,6 +487,7 @@ fn start_scoring_card(
     scored: ScoredCard,
 ) -> Result<RaidState> {
     game.add_history_event(HistoryEvent::ScoreAccessedCard(info.access_event(scored.id)));
+    game.current_history_counters(Side::Champion).schemes_scored += 1;
     mutations::turn_face_up(game, scored.id);
     mutations::move_card(game, scored.id, CardPosition::Scoring)?;
     game.raid_mut()?.accessed.retain(|c| *c != scored.id);
