@@ -40,6 +40,7 @@ use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffe
 use game_data::text::TextToken::*;
 use raid_state::custom_access;
 use rules::{curses, draw_cards, mutations, CardDefinitionExt};
+use with_error::fail;
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -513,10 +514,7 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                 text!["You may pay", Actions(1), "to access another"],
                 text!["Shuffle the", Vault]
             ])
-            .delegate(this::on_played(|g, s, played| {
-                g.card_mut(s)
-                    .custom_state
-                    .push(CustomCardState::RecordCardPlay { play_id: played.card_play_id });
+            .delegate(this::on_played(|g, s, _| {
                 let cards = mutations::realize_top_of_deck(g, Side::Overlord, 8)?;
                 custom_access::initiate(
                     g,
@@ -530,8 +528,8 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
             .delegate(delegates::on_will_populate_access_prompt(
                 requirements::matching_raid,
                 |g, s, source| {
-                    let Some(play_id) = g.card(s).custom_state.last_recorded_card_play_id() else {
-                        return Ok(());
+                    let Some(play_id) = g.card(s).last_card_play_id else {
+                        fail!("Expected CardPlayId");
                     };
 
                     if source.data() != &PopulateAccessPromptSource::Initial {

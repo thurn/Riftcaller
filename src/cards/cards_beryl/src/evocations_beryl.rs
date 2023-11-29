@@ -19,8 +19,7 @@ use card_helpers::{
     text_helpers, this,
 };
 use core_data::game_primitives::{
-    BanishEventId, CardId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId,
-    School, Side,
+    CardId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -30,7 +29,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::{BanishedByCard, CardCounter, CardPosition, OnPlayState};
+use game_data::card_state::{BanishedByCard, CardCounter, CardPosition};
 use game_data::game_actions::{
     ButtonPromptContext, CardTarget, PromptChoice, PromptChoiceLabel, UnplayedAction,
 };
@@ -41,7 +40,6 @@ use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use raid_state::{custom_access, InitiateRaidOptions};
 use rules::{curses, draw_cards, flags, mana, mutations, CardDefinitionExt};
-use with_error::WithError;
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -274,16 +272,18 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                 Play,
                 text![Banish, "the top", 3, "cards of your deck"],
             ))
-            .delegate(this::on_played(|g, s, _| {
-                let event_id = BanishEventId(g.info.next_event_id());
-                g.card_mut(s.card_id()).set_on_play_state(OnPlayState::BanishCards(event_id));
+            .delegate(this::on_played(|g, s, play_card| {
                 let cards = mutations::realize_top_of_deck(g, s.side(), 3)?;
                 mutations::set_cards_visible_to(g, &cards, s.side(), true);
                 g.add_animation(|| GameAnimation::DrawCards(s.side(), cards.clone()));
+                g.card_mut(s).custom_state.record_targets(play_card.card_play_id, &cards);
                 mutations::move_cards(
                     g,
                     &cards,
-                    CardPosition::Banished(Some(BanishedByCard { source: s.card_id(), event_id })),
+                    CardPosition::Banished(Some(BanishedByCard {
+                        source: s.card_id(),
+                        play_id: play_card.card_play_id,
+                    })),
                 )
             })),
             ActivatedAbility::new(
@@ -297,21 +297,11 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                 ],
             )
             .delegate(this::on_activated(|g, s, _| {
-                let event_id = g
-                    .card(s.card_id())
-                    .last_known_on_play_state()
-                    .banish_event_id()
-                    .with_error(|| "Expected banish_event_id")?;
-
+                let Some(play_id) = g.card(s).last_card_play_id else { return Ok(()) };
                 let (permanents, spells): (Vec<CardId>, Vec<CardId>) = g
-                    .cards(s.side())
-                    .iter()
-                    .filter_map(|card| match card.position() {
-                        CardPosition::Banished(Some(banished)) if banished.event_id == event_id => {
-                            Some(card.id)
-                        }
-                        _ => None,
-                    })
+                    .card(s)
+                    .custom_state
+                    .targets(play_id)
                     .partition(|id| g.card(*id).definition().is_permanent());
 
                 mutations::move_cards(g, &spells, CardPosition::DiscardPile(s.side()))?;

@@ -123,6 +123,13 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
         dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
     }
 
+    game.card_mut(card_id).last_card_play_id =
+        match (old_position.card_play_id(), new_position.card_play_id()) {
+            (Some(old_id), None) => Some(old_id),
+            (_, Some(new_id)) => Some(new_id),
+            _ => None,
+        };
+
     if new_position.in_discard_pile() {
         dispatch::invoke_event(game, MoveToDiscardPileEvent(card_id))?;
     }

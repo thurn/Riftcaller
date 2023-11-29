@@ -237,8 +237,7 @@ fn adapt_position(
         CardPosition::DeckUnknown(..) => None,
         CardPosition::GameModifier => Some(offscreen()),
         CardPosition::Banished(Some(by_card))
-            if game.card(by_card.source).on_play_state().banish_event_id()
-                == Some(by_card.event_id) =>
+            if game.card(by_card.source).card_play_id() == Some(by_card.play_id) =>
         {
             // If this card is currently banished by the banish event of another card,
             // render it stacked underneath that card.

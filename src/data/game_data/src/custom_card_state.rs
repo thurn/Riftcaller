@@ -31,17 +31,9 @@ pub enum CustomCardState {
     /// Apply an effect to a card for the duration of a single turn.
     TargetCardForTurn { target_card: CardId, turn: TurnData },
 
-    /// Records an instance of this card being played.
-    ///
-    /// Cards store their [CardPlayId] while they are in play, but sometimes
-    /// this information needs to persist longer. The most common example of
-    /// this are spell cards, which go to a discard pile immediately but
-    /// sometimes have ongoing effects on the game.
-    RecordCardPlay { play_id: CardPlayId },
-
     /// Record that an enhancement cost has been paid for a given instance of
     /// playing this card. This is used to implement effects like "access the
-    /// top 8 cards of the vault, you may pay <action> to access another."
+    /// top 8 cards of the vault, you may pay an action to access another."
     PaidForEnhancement { play_id: CardPlayId },
 }
 
@@ -55,25 +47,29 @@ impl CustomCardStateList {
         self.list.push(state);
     }
 
-    /// Returns the most recently recorded [CardPlayId] supplied via
-    /// [CustomCardState::RecordCardPlay].
-    pub fn last_recorded_card_play_id(&self) -> Option<CardPlayId> {
-        self.list
-            .iter()
-            .rev()
-            .filter_map(|state| match state {
-                CustomCardState::RecordCardPlay { play_id } => Some(*play_id),
-                _ => None,
-            })
-            .next()
+    pub fn record_targets(&mut self, play_id: CardPlayId, targets: &[CardId]) {
+        for target_card in targets {
+            self.push(CustomCardState::TargetCard { target_card: *target_card, play_id })
+        }
+    }
+
+    /// Returns an iterator over all [CustomCardState::TargetCard] targets which
+    /// have been recorded for a given [CardPlayId].
+    pub fn targets(&self, id: CardPlayId) -> impl Iterator<Item = CardId> + '_ {
+        self.list.iter().filter_map(move |state| match state {
+            CustomCardState::TargetCard { target_card, play_id } if *play_id == id => {
+                Some(*target_card)
+            }
+            _ => None,
+        })
     }
 
     /// Returns true if a [CustomCardState::PaidForEnhancement] entry has been
     /// recorded for this [CardPlayId].
     pub fn paid_for_enhancement(&self, id: CardPlayId) -> bool {
-        self.list.iter().rev().any(
-            |state| matches!(state,
-                CustomCardState::PaidForEnhancement { play_id } if id == *play_id),
-        )
+        self.list.iter().rev().any(|state| {
+            matches!(state,
+                CustomCardState::PaidForEnhancement { play_id } if id == *play_id)
+        })
     }
 }

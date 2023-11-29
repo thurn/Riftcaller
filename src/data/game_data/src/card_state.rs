@@ -19,8 +19,8 @@
 use std::cmp::Ordering;
 
 use core_data::game_primitives::{
-    BanishEventId, CardId, CardPlayId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue,
-    RoomId, RoomLocation, Side,
+    CardId, CardPlayId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId,
+    RoomLocation, Side,
 };
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
@@ -31,15 +31,10 @@ use crate::game_actions::CardTarget;
 #[allow(unused_imports)] // Used in Rustdocs
 use crate::history_data::HistoryEvent;
 
-/// Used to record a card position when one card has been banished by another
-/// card for later retrieval.
-///
-/// When this value is provided, the banished card will be rendered stacked
-/// underneath the `source` card.
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub struct BanishedByCard {
     pub source: CardId,
-    pub event_id: BanishEventId,
+    pub play_id: CardPlayId,
 }
 
 /// Identifies the location of a card during an active game
@@ -71,7 +66,7 @@ pub enum CardPosition {
     GameModifier,
     /// A card has been banished, either temporarily or permanently removed from
     /// the game. A [BanishedByCard] can be provided to record data around how
-    /// the card was banished for later retrieval.
+    /// the card was banished.
     Banished(Option<BanishedByCard>),
 }
 
@@ -82,6 +77,9 @@ impl CardPosition {
     }
 
     /// Returns the [CardPlayId] if this position currently contains one.
+    ///
+    /// Prefer to use [CardState::card_play_id] instead of referencing this
+    /// directly.
     pub fn card_play_id(&self) -> Option<CardPlayId> {
         match self {
             CardPosition::Room(id, ..)
@@ -208,9 +206,6 @@ pub enum OnPlayState {
     None,
     Card(CardId),
     Room(RoomId),
-
-    /// The card has banished some number of other cards for later retrieval.
-    BanishCards(BanishEventId),
 }
 
 impl OnPlayState {
@@ -224,13 +219,6 @@ impl OnPlayState {
     pub fn chosen_room(&self) -> Option<RoomId> {
         match self {
             Self::Room(id) => Some(*id),
-            _ => None,
-        }
-    }
-
-    pub fn banish_event_id(&self) -> Option<BanishEventId> {
-        match self {
-            Self::BanishCards(id) => Some(*id),
             _ => None,
         }
     }
@@ -282,6 +270,8 @@ pub struct CardState {
     /// possible.
     on_play_state: OnPlayState,
 
+    pub last_card_play_id: Option<CardPlayId>,
+
     pub custom_state: CustomCardStateList,
 }
 
@@ -314,6 +304,7 @@ impl CardState {
                 ..CardData::default()
             },
             on_play_state: OnPlayState::None,
+            last_card_play_id: None,
             custom_state: CustomCardStateList::default(),
         }
     }
@@ -338,6 +329,7 @@ impl CardState {
                 ..CardData::default()
             },
             on_play_state: OnPlayState::None,
+            last_card_play_id: None,
             custom_state: CustomCardStateList::default(),
         }
     }
@@ -361,6 +353,12 @@ impl CardState {
         } else {
             &OnPlayState::None
         }
+    }
+
+    /// Returns the [CardPlayId] for this card if it currently has one, a unique
+    /// identifier for an instance of this card being played.
+    pub fn card_play_id(&self) -> Option<CardPlayId> {
+        self.position.card_play_id()
     }
 
     /// Returns the [OnPlayState] for this card, returning a value
