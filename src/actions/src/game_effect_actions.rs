@@ -88,6 +88,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::SetOnPlayState(card_id, state) => {
             game.card_mut(card_id).set_on_play_state(state);
         }
+        GameEffect::AppendCustomCardState(card_id, state) => {
+            game.card_mut(card_id).custom_state.push(state);
+        }
         GameEffect::RecordCardChoice(ability_id, choice) => {
             mutations::record_card_choice(game, ability_id, choice);
         }

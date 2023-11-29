@@ -26,7 +26,8 @@ use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::{CardPosition, OnPlayState};
+use game_data::card_state::CardPosition;
+use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::{
     CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
@@ -512,7 +513,10 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                 text!["You may pay", Actions(1), "to access another"],
                 text!["Shuffle the", Vault]
             ])
-            .delegate(this::on_played(|g, s, _| {
+            .delegate(this::on_played(|g, s, played| {
+                g.card_mut(s)
+                    .custom_state
+                    .push(CustomCardState::RecordCardPlay { play_id: played.card_play_id });
                 let cards = mutations::realize_top_of_deck(g, Side::Overlord, 8)?;
                 custom_access::initiate(
                     g,
@@ -526,9 +530,13 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
             .delegate(delegates::on_will_populate_access_prompt(
                 requirements::matching_raid,
                 |g, s, source| {
+                    let Some(play_id) = g.card(s).custom_state.last_recorded_card_play_id() else {
+                        return Ok(());
+                    };
+
                     if source.data() != &PopulateAccessPromptSource::Initial {
                         if g.player(s.side()).actions > 0
-                            && g.card(s.card_id()).on_play_state().is_none()
+                            && !g.card(s).custom_state.paid_for_enhancement(play_id)
                         {
                             // Prompt for second access
                             show_prompt::with_choices(
@@ -537,9 +545,9 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                                 vec![
                                     PromptChoice::new()
                                         .effect(GameEffect::ActionCost(s.side(), 1))
-                                        .effect(GameEffect::SetOnPlayState(
+                                        .effect(GameEffect::AppendCustomCardState(
                                             s.card_id(),
-                                            OnPlayState::PaidForEnhancement,
+                                            CustomCardState::PaidForEnhancement { play_id },
                                         ))
                                         .custom_label(PromptChoiceLabel::PayActionAccessAnother),
                                     PromptChoice::new()

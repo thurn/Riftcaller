@@ -18,8 +18,8 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{
-    ActionCount, CardId, CurseCount, GameId, ItemLocation, LeylineCount, ManaValue, PointsValue,
-    RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
+    ActionCount, CardId, CurseCount, GameId, HasCardId, ItemLocation, LeylineCount, ManaValue,
+    PointsValue, RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
 };
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
@@ -407,12 +407,14 @@ impl GameState {
 
     /// Look up [CardState] for a card. Panics if this card is not present in
     /// the game.
-    pub fn card(&self, card_id: CardId) -> &CardState {
+    pub fn card(&self, id: impl HasCardId) -> &CardState {
+        let card_id = id.card_id();
         &self.cards(card_id.side)[card_id.index]
     }
 
     /// Mutable version of [Self::card]
-    pub fn card_mut(&mut self, card_id: CardId) -> &mut CardState {
+    pub fn card_mut(&mut self, id: impl HasCardId) -> &mut CardState {
+        let card_id = id.card_id();
         &mut self.cards_mut(card_id.side)[card_id.index]
     }
 

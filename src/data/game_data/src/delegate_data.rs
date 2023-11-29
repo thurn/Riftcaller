@@ -68,9 +68,9 @@ use std::fmt::Formatter;
 
 use anyhow::Result;
 use core_data::game_primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CurseCount, HasAbilityId, HasCardId,
-    HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue, MinionEncounterId, RaidId,
-    RoomAccessId, RoomId, ShieldValue, Side, TurnNumber, WoundCount,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CurseCount, HasAbilityId,
+    HasCardId, HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue,
+    MinionEncounterId, RaidId, RoomAccessId, RoomId, ShieldValue, Side, TurnNumber, WoundCount,
 };
 use enum_kinds::EnumKind;
 use macros::DelegateEnum;
@@ -286,6 +286,7 @@ impl From<Flag> for bool {
 pub struct CardPlayed {
     pub card_id: CardId,
     pub target: CardTarget,
+    pub card_play_id: CardPlayId,
 }
 
 impl HasCardId for CardPlayed {

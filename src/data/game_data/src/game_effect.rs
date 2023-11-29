@@ -19,6 +19,7 @@ use core_data::game_primitives::{
 use serde::{Deserialize, Serialize};
 
 use crate::card_state::{CardPosition, OnPlayState};
+use crate::custom_card_state::CustomCardState;
 use crate::game_actions::CardTarget;
 use crate::history_data::CardChoice;
 
@@ -68,6 +69,8 @@ pub enum GameEffect {
     SwapWithSelected(Side, CardId),
     /// Sets the 'card_id' card's [OnPlayState].
     SetOnPlayState(CardId, OnPlayState),
+    /// Appends a new [CustomCardState] entry for this card.
+    AppendCustomCardState(CardId, CustomCardState),
     /// Record a card choice for a given card ability.
     RecordCardChoice(AbilityId, CardChoice),
     /// Evade the current raid encounter, jumping to the next raid state

@@ -73,6 +73,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::SwapWithSelected(..) => "Swap".to_string(),
         GameEffect::SetOnPlayState { .. } => "Choose".to_string(),
         GameEffect::RecordCardChoice(..) => "Choose".to_string(),
+        GameEffect::AppendCustomCardState(..) => "Choose".to_string(),
         GameEffect::EvadeCurrentEncounter => "Evade".to_string(),
         GameEffect::PlayCardForNoMana(..) => "Play".to_string(),
         GameEffect::PreventRaidCardAccess => "Do not Access".to_string(),

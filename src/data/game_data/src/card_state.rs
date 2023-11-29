@@ -26,6 +26,7 @@ use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 
 use crate::card_name::CardVariant;
+use crate::custom_card_state::CustomCardStateList;
 use crate::game_actions::CardTarget;
 #[allow(unused_imports)] // Used in Rustdocs
 use crate::history_data::HistoryEvent;
@@ -208,11 +209,6 @@ pub enum OnPlayState {
     Card(CardId),
     Room(RoomId),
 
-    /// The user has paid some optional cost to add additional effects to a
-    /// card's ability. For example, "Access a card. You may pay {action point}
-    /// to access another card."
-    PaidForEnhancement,
-
     /// The card has banished some number of other cards for later retrieval.
     BanishCards(BanishEventId),
 }
@@ -285,6 +281,8 @@ pub struct CardState {
     /// Prefer to rely on game history instead of adding state here, if at all
     /// possible.
     on_play_state: OnPlayState,
+
+    pub custom_state: CustomCardStateList,
 }
 
 /// Helper trait to build a vector of card IDs from a card state iterator.
@@ -302,8 +300,7 @@ where
 }
 
 impl CardState {
-    /// Creates a new card state, placing the card into the `side` player's
-    /// deck.
+    /// Creates a new card state
     pub fn new(id: CardId, variant: CardVariant) -> Self {
         Self {
             id,
@@ -317,6 +314,7 @@ impl CardState {
                 ..CardData::default()
             },
             on_play_state: OnPlayState::None,
+            custom_state: CustomCardStateList::default(),
         }
     }
 
@@ -340,6 +338,7 @@ impl CardState {
                 ..CardData::default()
             },
             on_play_state: OnPlayState::None,
+            custom_state: CustomCardStateList::default(),
         }
     }
 
