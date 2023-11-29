@@ -256,8 +256,5 @@ pub fn on_query_resonance(transformation: TransformationFn<CardId, Resonance>) -
 pub fn on_query_card_status_markers(
     transformation: TransformationFn<CardId, Vec<CardStatusMarker>>,
 ) -> Delegate {
-    Delegate::CardStatusMarkers(QueryDelegate {
-        requirement: requirements::face_up_in_play,
-        transformation,
-    })
+    delegates::on_query_card_status_markers(requirements::face_up_in_play, transformation)
 }

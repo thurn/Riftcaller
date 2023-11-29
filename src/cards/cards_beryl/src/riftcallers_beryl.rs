@@ -77,6 +77,31 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
     }
 }
 
+pub fn algrak_councils_enforcer(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::AlgrakCouncilsEnforcer,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::riftcaller(),
+        image: assets::overlord_card(meta, "algrak"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Overlord,
+        school: School::Law,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![],
+        config: CardConfigBuilder::new()
+            .riftcaller(RiftcallerConfig {
+                starting_coins: Coins(475),
+                secondary_schools: vec![School::Beyond],
+                skills: vec![Skill::Brawn, Skill::Lore],
+                bio: "From the stern halls of Khazpar, Algrak emerged, an unyielding embodiment \
+                of the council's will. His mere presence quells dissent, his iron fist enforcing \
+                order with a resolve as relentless as the volcanic land he hails from.",
+            })
+            .build(),
+    }
+}
+
 // ========================================== //
 // ========== Champion Riftcallers ========== //
 // ========================================== //

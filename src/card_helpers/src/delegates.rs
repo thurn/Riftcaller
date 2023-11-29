@@ -117,6 +117,13 @@ pub fn on_will_draw_cards(
     Delegate::WillDrawCards(EventDelegate { requirement, mutation })
 }
 
+pub fn on_query_card_status_markers(
+    requirement: RequirementFn<CardId>,
+    transformation: TransformationFn<CardId, Vec<CardStatusMarker>>,
+) -> Delegate {
+    Delegate::CardStatusMarkers(QueryDelegate { requirement, transformation })
+}
+
 pub fn can_summon(
     requirement: RequirementFn<CardId>,
     transformation: TransformationFn<CardId, Flag>,

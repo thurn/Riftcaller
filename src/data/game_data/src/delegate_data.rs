@@ -377,6 +377,12 @@ impl<T> AccessEvent<T> {
     }
 }
 
+impl HasCardId for AccessEvent<CardId> {
+    fn card_id(&self) -> CardId {
+        *self.data()
+    }
+}
+
 /// Event data when a weapon is used
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct UsedWeapon {

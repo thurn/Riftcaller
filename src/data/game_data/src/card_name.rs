@@ -318,6 +318,7 @@ pub enum CardName {
     EchoingCacophony,
     Solidarity,
     Lightbond,
+    AlgrakCouncilsEnforcer,
 }
 
 impl CardName {
@@ -330,6 +331,7 @@ impl CardName {
             Self::ZainCunningDiplomat => "Zain, Cunning Diplomat",
             Self::IlleasTheHighSage => "Illeas, The High Sage",
             Self::MagistratesThronehall => "Magistrate's Thronehall",
+            Self::AlgrakCouncilsEnforcer => "Algrak, Council's Enforcer",
             _ => "",
         };
 

@@ -17,14 +17,16 @@ use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     abilities, costs, delegates, play_card_browser_builder, requirements, show_prompt, text, this,
 };
-use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
+use core_data::game_primitives::{CardSubtype, CardType, HasCardId, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
 use game_data::custom_card_state::CustomCardState;
+use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
+use game_data::game_state::GameState;
 use game_data::text::TextToken::*;
 use rules::{curses, mutations, CardDefinitionExt};
 
@@ -92,6 +94,13 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
 }
 
 pub fn lightbond(meta: CardMetadata) -> CardDefinition {
+    fn targeted(game: &GameState, scope: Scope, id: &impl HasCardId) -> bool {
+        let accessed = id.card_id();
+        game.card(scope)
+            .custom_state
+            .targets_contain(game.card(accessed).last_card_play_id, accessed)
+    }
+
     CardDefinition {
         name: CardName::Lightbond,
         sets: vec![CardSetName::Beryl],
@@ -128,16 +137,23 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
                         Ok(())
                     },
                 ))
-                .delegate(delegates::on_card_access(
-                    |g, s, event| {
-                        let accessed = event.data();
-                        g.card(s)
-                            .custom_state
-                            .targets_contain(g.card(*accessed).last_card_play_id, *accessed)
-                    },
-                    |g, s, _| {
-                        VisualEffects::new().ability_alert(s).apply(g);
-                        curses::give_curses(g, s.ability_id(), 2)
+                .delegate(delegates::on_card_access(targeted, |g, s, _| {
+                    VisualEffects::new().ability_alert(s).apply(g);
+                    curses::give_curses(g, s.ability_id(), 2)
+                }))
+                .delegate(delegates::on_query_card_status_markers(
+                    targeted,
+                    |_, s, _, mut markers| {
+                        markers.push(CardStatusMarker {
+                            source: s.ability_id(),
+                            marker_kind: CardInfoElementKind::NegativeEffect,
+                            text: text![
+                                "When the Champion accesses this scheme, give them",
+                                2,
+                                Curses
+                            ],
+                        });
+                        markers
                     },
                 )),
             ),
