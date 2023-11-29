@@ -82,6 +82,8 @@ pub enum PromptContext {
     PlayACard,
     /// Play a card of a given type the discard pile
     PlayFromDiscard(CardType),
+    /// Move a card to the top of the vault
+    MoveToTopOfVault,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -144,7 +146,7 @@ impl fmt::Debug for GameStateAction {
 
 /// Target game object for a [CardSelectorPrompt] to which cards must be
 /// dragged.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum BrowserPromptTarget {
     DiscardPile,
     Deck,
@@ -156,14 +158,8 @@ pub enum BrowserPromptTarget {
 pub enum BrowserPromptValidation {
     /// User must select an exact quantity of cards.
     ExactlyCount(usize),
-}
-
-/// Describes the action which should be performed for a [CardSelectorPrompt] on
-/// the `chosen_subjects` cards once the user submits their final choice.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
-pub enum BrowserPromptAction {
-    /// Move the chosen subjects to the discard pile.
-    DiscardCards,
+    /// User must select at most this many cards.
+    LessThanOrEqualTo(usize),
 }
 
 /// A prompt which displays a selection of cards to the user and requests that
@@ -190,10 +186,7 @@ pub struct CardSelectorPrompt {
     pub target: BrowserPromptTarget,
     /// Describes which configurations of subjects are valid and should allow
     /// the prompt to be exited.
-    pub validation: BrowserPromptValidation,
-    /// Describes the action which should be performed on the `chosen_subjects`
-    /// cards once the user submits their final choice.
-    pub action: BrowserPromptAction,
+    pub validation: Option<BrowserPromptValidation>,
 }
 
 /// Action to take on cards which are *not* played via the [PlayCardBrowser].

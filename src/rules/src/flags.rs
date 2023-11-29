@@ -24,7 +24,9 @@ use game_data::delegate_data::{
     CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery, CanSummonQuery,
     CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery, Flag,
 };
-use game_data::game_actions::{CardTarget, GamePrompt, PlayCardBrowser};
+use game_data::game_actions::{
+    BrowserPromptValidation, CardSelectorPrompt, CardTarget, GamePrompt, PlayCardBrowser,
+};
 use game_data::game_state::{GamePhase, GameState, TurnState};
 use game_data::raid_data::RaidStatus;
 use game_data::utils;
@@ -494,4 +496,16 @@ pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {
         });
 
     duskbound || nightbound || summonbound || roombound
+}
+
+/// Returns true if the validation logic for this [CardSelectorPrompt] is
+/// currently satisfied.
+pub fn card_selector_state_is_valid(prompt: &CardSelectorPrompt) -> bool {
+    match prompt.validation {
+        Some(BrowserPromptValidation::ExactlyCount(count)) => prompt.chosen_subjects.len() == count,
+        Some(BrowserPromptValidation::LessThanOrEqualTo(count)) => {
+            prompt.chosen_subjects.len() <= count
+        }
+        None => true,
+    }
 }

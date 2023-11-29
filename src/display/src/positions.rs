@@ -402,6 +402,8 @@ fn prompt_position_override(
                 return Some(for_card(card, card_browser()));
             } else if browser.chosen_subjects.contains(&card.id) {
                 return Some(for_card(card, card_browser_target_position()));
+            } else if card.position() == CardPosition::Hand(builder.user_side) {
+                return Some(for_card(card, hand_storage()));
             }
         }
         GamePrompt::PlayCardBrowser(play_card) => {

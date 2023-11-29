@@ -720,6 +720,8 @@ fn discard_to_hand_size() {
     let discard_id = g.user.cards.hand()[0].id();
 
     assert_eq!(g.user.cards.hand().real_cards().len(), 6);
+    let ids = g.user.cards.hand().real_cards().iter().map(|c| c.id()).collect::<Vec<_>>();
+    eprintln!("Hand IDs: {:?}", ids);
     g.move_to_end_step(Side::Overlord);
 
     g.move_selector_card(discard_id);

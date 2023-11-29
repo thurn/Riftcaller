@@ -91,6 +91,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::zain_cunning_diplomat);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::algrak_councils_enforcer);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::eria_time_conduit);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illeas_the_high_sage);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
@@ -118,8 +119,8 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_continue);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_end_raid);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_force_sanctum_score);
-    DEFINITIONS.insert(cards_test::test_cards::test_overlord_spell);
-    DEFINITIONS.insert(cards_test::test_cards::test_champion_spell);
+    DEFINITIONS.insert(cards_test::test_cards::test_ritual);
+    DEFINITIONS.insert(cards_test::test_cards::test_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_310);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_420);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_110);
@@ -129,6 +130,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_2_abyssal);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_deal_damage);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_lose_mana);
+    DEFINITIONS.insert(cards_test::test_cards::test_minion_lose_action_points);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_infernal);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_astral);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_astral_1_shield);
@@ -150,7 +152,8 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::nightbound_project);
     DEFINITIONS.insert(cards_test::test_cards::dusk_and_nightbound_project);
     DEFINITIONS.insert(cards_test::test_cards::trap_project);
-    DEFINITIONS.insert(cards_test::test_cards::test_0_cost_champion_spell);
+    DEFINITIONS.insert(cards_test::test_cards::test_0_cost_spell);
+    DEFINITIONS.insert(cards_test::test_cards::test_0_cost_ritual);
     DEFINITIONS.insert(cards_test::test_cards::test_1_cost_champion_spell);
     DEFINITIONS.insert(cards_test::test_cards::deal_damage_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_attack_weapon);

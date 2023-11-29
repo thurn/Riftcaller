@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::visual_effects::VisualEffects;
-use card_helpers::{costs, history, in_play, text};
+use card_helpers::{card_selector_prompt_builder, costs, history, in_play, text};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{CardType, GameObjectId, InitiatedBy, Rarity, School, Side};
 use core_ui::design::{self, TimedEffectDataExt};
 use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, RiftcallerConfig};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
+use game_data::card_state::CardIdsExt;
+use game_data::custom_card_state::CustomCardState;
+use game_data::game_actions::{BrowserPromptTarget, BrowserPromptValidation, PromptContext};
+use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::{draw_cards, flags, mana};
 
@@ -117,6 +121,68 @@ pub fn algrak_councils_enforcer(meta: CardMetadata) -> CardDefinition {
                 bio: "From the stern halls of Khazpar, Algrak emerged, an unyielding embodiment \
                 of the council's will. His mere presence quells dissent, his iron fist enforcing \
                 order with a resolve as relentless as the volcanic land he hails from.",
+            })
+            .build(),
+    }
+}
+
+pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::EriaTimeConduit,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::riftcaller(),
+        image: assets::overlord_card(meta, "eria"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Overlord,
+        school: School::Beyond,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![Ability::new_with_delegate(
+            text![
+                "The first time each turn the Champion loses or spends",
+                ActionSymbol,
+                "during a raid, you may add a card from the",
+                Crypt,
+                "to the top of the",
+                Vault
+            ],
+            in_play::on_action_points_lost_during_raid(|g, s, side| {
+                let turn = g.info.turn;
+                if *side == Side::Champion
+                    && !g.card(s).custom_state.riftcaller_triggered_for_turn(turn)
+                {
+                    card_selector_prompt_builder::show(
+                        g,
+                        CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
+                            .subjects(g.discard_pile(Side::Overlord).card_ids())
+                            .movement_effect(Projectile::Projectiles1(2))
+                            .context(PromptContext::MoveToTopOfVault)
+                            .show_ability_alert(true)
+                            .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
+                            .visual_effect(
+                                GameObjectId::CardId(s.card_id()),
+                                TimedEffectData::new(TimedEffect::MagicCircles1(5))
+                                    .scale(2.0)
+                                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
+                                    .effect_color(design::BLUE_500),
+                            ),
+                    )?;
+
+                    g.card_mut(s)
+                        .custom_state
+                        .push(CustomCardState::RiftcallerTriggeredForTurn { turn });
+                }
+                Ok(())
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .riftcaller(RiftcallerConfig {
+                starting_coins: Coins(525),
+                secondary_schools: vec![School::Law],
+                skills: vec![Skill::Stealth, Skill::Lore],
+                bio: "Eria’s essence is intertwined with the fleeting threads of time, born under \
+                the cosmic alignments of Frostreach. Her journey through the ages is a dance on \
+                the edge of now and then, a reluctant guardian of time’s fragile tapestry.",
             })
             .build(),
     }

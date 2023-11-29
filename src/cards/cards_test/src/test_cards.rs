@@ -33,7 +33,7 @@ use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::OnZeroStored;
 use rules::{curses, damage, draw_cards, mutations};
 
-pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
+pub fn test_ritual(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestRitual,
         cost: cost(test_constants::SPELL_COST),
@@ -49,7 +49,7 @@ pub fn test_overlord_spell(_: CardMetadata) -> CardDefinition {
     }
 }
 
-pub fn test_champion_spell(_: CardMetadata) -> CardDefinition {
+pub fn test_spell(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSpell,
         cost: cost(test_constants::SPELL_COST),
@@ -73,7 +73,7 @@ pub fn test_scheme_310(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 3, points: 10 })
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -85,7 +85,7 @@ pub fn test_scheme_420(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 4, points: 20 })
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -97,7 +97,7 @@ pub fn test_scheme_110(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 1, points: 10 })
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -107,7 +107,7 @@ pub fn test_project_2_cost_3_raze(metadata: CardMetadata) -> CardDefinition {
         cost: cost(2),
         card_type: CardType::Project,
         config: CardConfigBuilder::new().raze_cost(3).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -121,7 +121,7 @@ pub fn test_minion_end_raid(metadata: CardMetadata) -> CardDefinition {
             .health(test_constants::MINION_HEALTH)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -136,7 +136,7 @@ pub fn test_minion_shield_1(metadata: CardMetadata) -> CardDefinition {
             .shield(1)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -151,7 +151,7 @@ pub fn test_minion_shield_2_abyssal(metadata: CardMetadata) -> CardDefinition {
             .shield(2)
             .resonance(Resonance::astral())
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -165,7 +165,7 @@ pub fn test_minion_deal_damage(metadata: CardMetadata) -> CardDefinition {
             .health(test_constants::MINION_HEALTH)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -179,7 +179,21 @@ pub fn test_minion_lose_mana(metadata: CardMetadata) -> CardDefinition {
             .health(test_constants::MINION_HEALTH)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
+    }
+}
+
+pub fn test_minion_lose_action_points(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestMinionLoseActionPoints,
+        cost: cost(test_constants::MINION_COST),
+        abilities: vec![combat_abilities::combat_lose_action_points::<1>()],
+        card_type: CardType::Minion,
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .resonance(test_constants::TEST_RESONANCE)
+            .build(),
+        ..test_ritual(metadata)
     }
 }
 
@@ -246,7 +260,7 @@ pub fn test_weapon_2_attack(metadata: CardMetadata) -> CardDefinition {
             .base_attack(2)
             .resonance(test_constants::TEST_RESONANCE)
             .build(),
-        ..test_champion_spell(metadata)
+        ..test_spell(metadata)
     }
 }
 
@@ -356,7 +370,7 @@ pub fn activated_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
             abilities::activated_take_mana::<{ test_constants::MANA_TAKEN }>(actions(1)),
         ],
         config: CardConfig::default(),
-        ..test_champion_spell(metadata)
+        ..test_spell(metadata)
     }
 }
 
@@ -383,7 +397,7 @@ pub fn triggered_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
             },
         ],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -395,7 +409,7 @@ pub fn duskbound_project(metadata: CardMetadata) -> CardDefinition {
         subtypes: vec![CardSubtype::Duskbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -407,7 +421,7 @@ pub fn roombound_project(metadata: CardMetadata) -> CardDefinition {
         subtypes: vec![CardSubtype::Roombound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -419,7 +433,7 @@ pub fn summonbound_project(metadata: CardMetadata) -> CardDefinition {
         subtypes: vec![CardSubtype::Summonbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -431,7 +445,7 @@ pub fn nightbound_project(metadata: CardMetadata) -> CardDefinition {
         subtypes: vec![CardSubtype::Nightbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -443,7 +457,7 @@ pub fn dusk_and_nightbound_project(metadata: CardMetadata) -> CardDefinition {
         subtypes: vec![CardSubtype::Duskbound, CardSubtype::Nightbound],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -455,24 +469,20 @@ pub fn trap_project(metadata: CardMetadata) -> CardDefinition {
         subtypes: vec![CardSubtype::Trap],
         abilities: vec![],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
-pub fn test_0_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
-    CardDefinition {
-        name: CardName::Test0CostSpell,
-        cost: cost(0),
-        ..test_champion_spell(metadata)
-    }
+pub fn test_0_cost_spell(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition { name: CardName::Test0CostSpell, cost: cost(0), ..test_spell(metadata) }
+}
+
+pub fn test_0_cost_ritual(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition { name: CardName::Test0CostRitual, cost: cost(0), ..test_ritual(metadata) }
 }
 
 pub fn test_1_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
-    CardDefinition {
-        name: CardName::Test1CostSpell,
-        cost: cost(1),
-        ..test_champion_spell(metadata)
-    }
+    CardDefinition { name: CardName::Test1CostSpell, cost: cost(1), ..test_spell(metadata) }
 }
 
 pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
@@ -492,7 +502,7 @@ pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
             .shield(1)
             .resonance(Resonance::infernal())
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -514,7 +524,7 @@ pub fn test_attack_weapon(metadata: CardMetadata) -> CardDefinition {
                     .additional_hit(TimedEffect::SwordSlashes(1)),
             )
             .build(),
-        ..test_champion_spell(metadata)
+        ..test_spell(metadata)
     }
 }
 
@@ -532,7 +542,7 @@ pub fn test_sacrifice_draw_card_artifact(metadata: CardMetadata) -> CardDefiniti
             })],
         }],
         config: CardConfig::default(),
-        ..test_champion_spell(metadata)
+        ..test_spell(metadata)
     }
 }
 
@@ -550,7 +560,7 @@ pub fn test_sacrifice_end_raid_project(metadata: CardMetadata) -> CardDefinition
             })],
         }],
         config: CardConfig::default(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -588,7 +598,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
             .resonance(Resonance::infernal())
             .build(),
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -602,7 +612,7 @@ pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
             text!["Give the Champion a curse"],
             this::on_played(|g, s, _| curses::give_curses(g, s, 1)),
         )],
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -613,7 +623,7 @@ pub fn test_evocation(metadata: CardMetadata) -> CardDefinition {
         card_type: CardType::Evocation,
         sets: vec![CardSetName::Test],
         abilities: vec![],
-        ..test_champion_spell(metadata)
+        ..test_spell(metadata)
     }
 }
 
@@ -627,7 +637,7 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
             text!["Deal 1 damage"],
             this::on_played(|g, s, _| damage::deal(g, s, 1)),
         )],
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -641,7 +651,7 @@ pub fn test_spell_deal_5_damage(metadata: CardMetadata) -> CardDefinition {
             text!["Deal 5 damage"],
             this::on_played(|g, s, _| damage::deal(g, s, 5)),
         )],
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -661,7 +671,7 @@ pub fn test_ritual_return_discard_to_hand(metadata: CardMetadata) -> CardDefinit
                 )
             }),
         )],
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }
 
@@ -681,6 +691,6 @@ pub fn test_ritual_return_all_occupants_to_hand(metadata: CardMetadata) -> CardD
                 )
             }),
         )],
-        ..test_overlord_spell(metadata)
+        ..test_ritual(metadata)
     }
 }

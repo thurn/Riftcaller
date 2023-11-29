@@ -29,6 +29,7 @@ pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
 
 pub mod abilities;
+pub mod card_selector_prompt_builder;
 pub mod combat_abilities;
 pub mod costs;
 pub mod delegates;

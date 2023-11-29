@@ -23,9 +23,8 @@ use game_data::animation_tracker::{AnimationState, GameAnimation};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
-    BrowserPromptAction, BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt,
-    CardSelectorPrompt, CardTarget, GameAction, GamePrompt, GameStateAction, PromptAction,
-    PromptChoice, PromptContext,
+    BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, CardTarget,
+    GameAction, GamePrompt, GameStateAction, PromptAction, PromptChoice, PromptContext,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
@@ -376,8 +375,7 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
                 unchosen_subjects: hand,
                 chosen_subjects: vec![],
                 target: BrowserPromptTarget::DiscardPile,
-                validation: BrowserPromptValidation::ExactlyCount(discard),
-                action: BrowserPromptAction::DiscardCards,
+                validation: Some(BrowserPromptValidation::ExactlyCount(discard)),
             },
         ));
         Ok(())
@@ -432,11 +430,12 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
             record_prompt_response(game, removed, user_side, index);
         }
         (GamePrompt::CardSelector(browser), PromptAction::CardSelectorSubmit) => {
+            verify!(flags::card_selector_state_is_valid(browser), "Invalid prompt selector state");
             handle_card_selector_submit(
                 game,
                 user_side,
                 browser.chosen_subjects.clone(),
-                browser.action,
+                browser.target,
             )?;
         }
         (GamePrompt::PlayCardBrowser(_), PromptAction::SkipPlayingCard) => {
@@ -478,13 +477,14 @@ fn handle_card_selector_submit(
     game: &mut GameState,
     user_side: Side,
     subjects: Vec<CardId>,
-    action: BrowserPromptAction,
+    target: BrowserPromptTarget,
 ) -> Result<()> {
-    match action {
-        BrowserPromptAction::DiscardCards => {
-            for card_id in subjects {
-                mutations::move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
-            }
+    match target {
+        BrowserPromptTarget::DiscardPile => {
+            mutations::move_cards(game, &subjects, CardPosition::DiscardPile(user_side))?;
+        }
+        BrowserPromptTarget::Deck => {
+            mutations::move_cards(game, &subjects, CardPosition::DeckTop(user_side))?;
         }
     }
 

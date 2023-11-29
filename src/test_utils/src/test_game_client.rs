@@ -29,9 +29,10 @@ use protos::spelldawn::tutorial_effect::TutorialEffectType;
 use protos::spelldawn::{
     ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation, CommandList,
     GameMessageType, GameObjectIdentifier, NoTargeting, ObjectPosition, ObjectPositionBrowser,
-    ObjectPositionCharacter, ObjectPositionDiscardPile, ObjectPositionHand, ObjectPositionItem,
-    ObjectPositionRaid, ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
-    PlayInRoom, PlayerName, PlayerView, RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionCharacter, ObjectPositionDeck, ObjectPositionDiscardPile, ObjectPositionHand,
+    ObjectPositionItem, ObjectPositionRaid, ObjectPositionRevealedCards, ObjectPositionRiftcallers,
+    ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView, RevealedCardView,
+    RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
 
@@ -455,6 +456,14 @@ impl ClientCards {
         self.in_position(Position::DiscardPile(ObjectPositionDiscardPile {
             owner: PlayerName::Opponent.into(),
         }))
+    }
+
+    pub fn deck_top(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Deck(ObjectPositionDeck { owner: PlayerName::User.into() }))
+    }
+
+    pub fn opponent_deck_top(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Deck(ObjectPositionDeck { owner: PlayerName::Opponent.into() }))
     }
 
     pub fn artifacts(&self) -> Vec<&ClientCard> {

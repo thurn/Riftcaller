@@ -125,8 +125,11 @@ pub enum CardName {
     /// Minion with 5 health, 1 mana cost, and a "deal 1 damage" ability.
     TestMinionDealDamage,
     /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the
-    /// Champion loses 1 mana" ability.
+    /// Champion loses 1 mana" combat ability.
     TestMinionLoseMana,
+    /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the
+    /// Champion loses 1 action points" combat ability.
+    TestMinionLoseActionPoints,
     /// Minion with the 'infernal' resonance, MINION_HEALTH health, and an 'end
     /// raid' ability.
     TestInfernalMinion,
@@ -180,6 +183,8 @@ pub enum CardName {
     TestRoomboundProject,
     /// Champion spell with a mana cost of 0
     Test0CostSpell,
+    /// Overlord ritual with a mana cost of 0
+    Test0CostRitual,
     /// Champion spell with a mana cost of 1
     Test1CostSpell,
     TestMinionDealDamageEndRaid,
@@ -319,6 +324,7 @@ pub enum CardName {
     Solidarity,
     Lightbond,
     AlgrakCouncilsEnforcer,
+    EriaTimeConduit,
 }
 
 impl CardName {
@@ -332,6 +338,7 @@ impl CardName {
             Self::IlleasTheHighSage => "Illeas, The High Sage",
             Self::MagistratesThronehall => "Magistrate's Thronehall",
             Self::AlgrakCouncilsEnforcer => "Algrak, Council's Enforcer",
+            Self::EriaTimeConduit => "Eria, Time Conduit",
             _ => "",
         };
 

@@ -16,28 +16,47 @@ use adapters::response_builder::ResponseBuilder;
 use core_ui::prelude::*;
 use game_data::card_state::CardState;
 use game_data::game_actions::{
-    BrowserPromptValidation, CardSelectorPrompt, GameAction, GamePrompt, PromptAction,
-    PromptContext,
+    CardSelectorPrompt, GameAction, GamePrompt, PromptAction, PromptContext,
 };
 use game_data::game_state::GameState;
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;
 use protos::spelldawn::{InterfaceMainControls, ObjectPosition};
+use rules::flags;
 
 use crate::positions;
 
 pub fn controls(prompt: &CardSelectorPrompt) -> Option<InterfaceMainControls> {
-    match prompt.context {
-        Some(PromptContext::DiscardToHandSize(amount)) => Some(InterfaceMainControls {
-            node: buttons(prompt).build(),
-            overlay: GameInstructions::new(format!(
-                "You must discard until you have {amount} cards in hand."
-            ))
-            .metatext("<i>(Drag cards down from your hand to your discard pile.)</i>")
-            .build(),
-            card_anchor_nodes: vec![],
+    Some(InterfaceMainControls {
+        node: buttons(prompt).build(),
+        overlay: instructions(prompt.context).and_then(|text| {
+            GameInstructions::new(text).metatext_optional(metatext(prompt.context)).build()
         }),
+        card_anchor_nodes: vec![],
+    })
+}
+
+fn instructions(context: Option<PromptContext>) -> Option<String> {
+    match context {
+        Some(PromptContext::DiscardToHandSize(amount)) => {
+            Some(format!("You must discard until you have {amount} cards in hand."))
+        }
+        Some(PromptContext::MoveToTopOfVault) => {
+            Some("Put a card from the crypt on top of the vault?".to_string())
+        }
+        _ => None,
+    }
+}
+
+fn metatext(context: Option<PromptContext>) -> Option<String> {
+    match context {
+        Some(PromptContext::DiscardToHandSize(..)) => {
+            Some("<i>(Drag cards down from your hand to your deck.)</i>".to_string())
+        }
+        Some(PromptContext::MoveToTopOfVault) => {
+            Some("<i>(Drag cards down from the crypt to the sanctum.)</i>".to_string())
+        }
         _ => None,
     }
 }
@@ -63,15 +82,9 @@ pub fn move_target(
 }
 
 fn buttons(prompt: &CardSelectorPrompt) -> PromptContainer {
-    let show_submit = is_valid(prompt);
+    let show_submit = flags::card_selector_state_is_valid(prompt);
     PromptContainer::new().child(show_submit.then(|| {
         ResponseButton::new("Submit")
             .action(GameAction::PromptAction(PromptAction::CardSelectorSubmit))
     }))
-}
-
-fn is_valid(prompt: &CardSelectorPrompt) -> bool {
-    match prompt.validation {
-        BrowserPromptValidation::ExactlyCount(count) => prompt.chosen_subjects.len() == count,
-    }
 }

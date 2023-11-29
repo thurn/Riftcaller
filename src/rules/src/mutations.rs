@@ -33,11 +33,11 @@ use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    CanAbilityEndRaidQuery, CardRevealedEvent, CardSacrificedEvent, DawnEvent, DiscardCardEvent,
-    DiscardedCard, DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, Flag,
-    MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome,
-    RaidSuccessEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
-    SummonProjectEvent,
+    ActionPointsLostDuringRaidEvent, CanAbilityEndRaidQuery, CardRevealedEvent,
+    CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent,
+    DuskEvent, EnterArenaEvent, Flag, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
+    RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
+    StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::history_data::HistoryEvent;
@@ -231,6 +231,11 @@ pub fn spend_action_points(game: &mut GameState, side: Side, amount: ActionCount
     debug!(?side, ?amount, "Spending action points");
     verify!(game.player(side).actions >= amount, "Insufficient action points available");
     game.player_mut(side).actions -= amount;
+
+    if flags::raid_active(game) && amount > 0 {
+        dispatch::invoke_event(game, ActionPointsLostDuringRaidEvent(side))?;
+    }
+
     Ok(())
 }
 

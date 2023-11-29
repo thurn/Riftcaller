@@ -57,6 +57,59 @@ pub fn algrak_councils_enforcer() {
     assert!(!g.side_has(Button::Score, Side::Champion));
 }
 
+#[test]
+pub fn eria_time_conduit() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Overlord)
+            .riftcaller(CardName::EriaTimeConduit)
+            .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
+    )
+    .build();
+    let discarded = g.create_and_play(CardName::Test0CostRitual);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(RoomId::Vault);
+    g.opponent_click(Button::NoWeapon);
+    g.move_selector_card(discarded);
+    g.click(Button::SubmitCardSelector);
+    g.opponent_click(Button::EndRaid);
+    assert!(g.user.cards.deck_top().contains_card(CardName::Test0CostRitual))
+}
+
+#[test]
+pub fn eria_time_conduit_does_not_trigger_twice() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Overlord)
+            .riftcaller(CardName::EriaTimeConduit)
+            .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
+    )
+    .build();
+    let discarded1 = g.create_and_play(CardName::Test0CostRitual);
+    g.create_and_play(CardName::Test0CostRitual);
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(RoomId::Vault);
+    g.opponent_click(Button::NoWeapon);
+    g.move_selector_card(discarded1);
+    g.click(Button::SubmitCardSelector);
+    g.opponent_click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.opponent_click(Button::NoWeapon);
+    g.opponent_click(Button::EndRaid);
+}
+
+#[test]
+pub fn eria_time_conduit_does_not_trigger_with_no_cards_in_crypt() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Overlord)
+            .riftcaller(CardName::EriaTimeConduit)
+            .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
+    )
+    .build();
+    g.pass_turn(Side::Overlord);
+    g.initiate_raid(RoomId::Vault);
+    g.opponent_click(Button::NoWeapon);
+    assert!(!g.has(Button::SubmitCardSelector));
+}
+
 // ========================================== //
 // ========== Champion Riftcallers ========== //
 // ========================================== //

@@ -615,6 +615,8 @@ pub enum Delegate {
     /// Mana has been paid or lost by either player due to their opponent's
     /// ability.
     ManaLostToOpponentAbility(EventDelegate<ManaLostToOpponentAbility>),
+    /// The [Side] player has lost or spent action points during an active raid.
+    ActionPointsLostDuringRaid(EventDelegate<Side>),
     /// The [Side] player is about to draw one or more cards as specified in the
     /// `draw_cards` state machine.
     WillDrawCards(EventDelegate<Side>),

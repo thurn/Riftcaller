@@ -32,6 +32,11 @@ impl GameInstructions {
         self.metatext = Some(metatext.into());
         self
     }
+
+    pub fn metatext_optional(mut self, metatext: Option<String>) -> Self {
+        self.metatext = metatext;
+        self
+    }
 }
 
 impl Component for GameInstructions {

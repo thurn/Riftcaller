@@ -14,66 +14,87 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{CardId, GameObjectId};
-use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::Scope;
-use game_data::game_actions::{GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction};
+use game_data::game_actions::{
+    BrowserPromptTarget, BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PromptContext,
+};
 use game_data::game_state::GameState;
 use game_data::special_effects::{Projectile, TimedEffectData};
 
 use crate::visual_effects::VisualEffects;
 
-pub fn show(game: &mut GameState, builder: PlayCardBrowserBuilder) -> Result<()> {
+/// Display a new Card Selector prompt a [CardSelectorPromptBuilder].
+///
+/// Has no effect if no subject cards have been specified for this selector.
+pub fn show(game: &mut GameState, builder: CardSelectorPromptBuilder) -> Result<()> {
+    if builder.subjects.is_empty() {
+        return Ok(());
+    }
+
     let mut effects = VisualEffects::new();
-    let cards = builder.cards.clone();
+    let cards = builder.subjects.clone();
     if let Some((id, data)) = builder.visual_effect {
         effects = effects.timed_effect(id, data);
+    }
+
+    if builder.show_ability_alert {
+        effects = effects.ability_alert(builder.scope);
     }
 
     if let Some(movement_effects) = builder.movement_effect {
         effects.card_movement_effects(movement_effects, &cards).apply(game);
     }
 
-    game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards));
-    game.player_mut(builder.scope.side()).prompt_stack.push(GamePrompt::PlayCardBrowser(
-        PlayCardBrowser {
-            context: Some(builder.context),
-            initiated_by: builder.scope.ability_id(),
-            cards: builder.cards,
-            unplayed_action: builder.unplayed_action,
+    game.player_mut(builder.scope.side()).prompt_stack.push(GamePrompt::CardSelector(
+        CardSelectorPrompt {
+            context: builder.context,
+            unchosen_subjects: builder.subjects,
+            chosen_subjects: vec![],
+            target: builder.target,
+            validation: builder.validation,
         },
     ));
 
     Ok(())
 }
 
-pub struct PlayCardBrowserBuilder {
+pub struct CardSelectorPromptBuilder {
     scope: Scope,
-    cards: Vec<CardId>,
-    context: PromptContext,
-    unplayed_action: UnplayedAction,
+    target: BrowserPromptTarget,
+    subjects: Vec<CardId>,
+    context: Option<PromptContext>,
+    validation: Option<BrowserPromptValidation>,
     movement_effect: Option<Projectile>,
     visual_effect: Option<(GameObjectId, TimedEffectData)>,
+    show_ability_alert: bool,
 }
 
-impl PlayCardBrowserBuilder {
-    pub fn new(scope: Scope, cards: Vec<CardId>) -> Self {
+impl CardSelectorPromptBuilder {
+    pub fn new(scope: Scope, target: BrowserPromptTarget) -> Self {
         Self {
             scope,
-            cards,
-            context: PromptContext::PlayACard,
-            unplayed_action: UnplayedAction::None,
+            target,
+            subjects: vec![],
+            context: None,
+            validation: None,
             movement_effect: None,
             visual_effect: None,
+            show_ability_alert: false,
         }
     }
 
-    pub fn context(mut self, context: PromptContext) -> Self {
-        self.context = context;
+    pub fn subjects(mut self, subjects: Vec<CardId>) -> Self {
+        self.subjects = subjects;
         self
     }
 
-    pub fn unplayed_action(mut self, unplayed_action: UnplayedAction) -> Self {
-        self.unplayed_action = unplayed_action;
+    pub fn context(mut self, context: PromptContext) -> Self {
+        self.context = Some(context);
+        self
+    }
+
+    pub fn validation(mut self, validation: BrowserPromptValidation) -> Self {
+        self.validation = Some(validation);
         self
     }
 
@@ -84,6 +105,11 @@ impl PlayCardBrowserBuilder {
 
     pub fn visual_effect(mut self, id: GameObjectId, effect: TimedEffectData) -> Self {
         self.visual_effect = Some((id, effect));
+        self
+    }
+
+    pub fn show_ability_alert(mut self, show_ability_alert: bool) -> Self {
+        self.show_ability_alert = show_ability_alert;
         self
     }
 }
