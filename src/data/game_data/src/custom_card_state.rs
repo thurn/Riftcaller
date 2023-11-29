@@ -64,6 +64,17 @@ impl CustomCardStateList {
         })
     }
 
+    /// Returns an iterator over [CustomCardState::TargetCardForTurn] targets
+    /// which have been recorded for a given [TurnData].
+    pub fn targets_for_turn(&self, t: TurnData) -> impl Iterator<Item = CardId> + '_ {
+        self.list.iter().filter_map(move |state| match state {
+            CustomCardState::TargetCardForTurn { target_card, turn } if *turn == t => {
+                Some(*target_card)
+            }
+            _ => None,
+        })
+    }
+
     /// Checks if the provided [CardId] is registered as a target for the given
     /// [CardPlayId].
     ///

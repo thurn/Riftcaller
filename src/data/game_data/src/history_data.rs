@@ -105,9 +105,6 @@ pub enum HistoryEvent {
     RaidSuccess(RaidEvent<()>),
     /// A raid ended in failure.
     RaidFailure(RaidEvent<()>),
-    /// A card ability choice has been made, e.g. naming a target room for a
-    /// spell's ongoing effect.
-    CardChoice(CardChoiceEvent),
 }
 
 impl HistoryEvent {

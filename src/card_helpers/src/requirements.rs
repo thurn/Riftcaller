@@ -20,7 +20,7 @@ use game_data::delegate_data::DealtDamage;
 use game_data::delegate_data::{RequirementFn, Scope};
 use game_data::game_actions::GamePrompt;
 use game_data::game_state::GameState;
-use game_data::history_data::{CardChoice, HistoryEvent, HistoryEventKind};
+use game_data::history_data::{HistoryEvent, HistoryEventKind};
 use game_data::utils;
 use rules::{flags, play_card};
 
@@ -138,15 +138,18 @@ pub fn no_damage_dealt<R: BaseRequirement>(
     R::run(game, scope) && history::counters(game, Side::Champion).damage_received == 0
 }
 
-/// A [RequirementFn] which matches if the indicated `card_id` was selected this
-/// turn as a card choice for the parent card.
-pub fn card_chosen_this_turn(
+/// A [RequirementFn] which matches if the indicated `card_id` was targeted by
+/// the parent card for the current turn via
+/// `CustomCardState::TargetCardForTurn`.
+pub fn card_targeted_for_this_turn(
     game: &GameState,
-    source: impl HasAbilityId,
+    source: impl HasCardId,
     card_id: &impl HasCardId,
 ) -> bool {
-    history::card_choices_this_turn(game, source)
-        .any(|choice| choice == CardChoice::CardId(card_id.card_id()))
+    game.card(source)
+        .custom_state
+        .targets_for_turn(game.info.turn)
+        .any(|id| id == card_id.card_id())
 }
 
 /// A [RequirementFn] which matches if the `source` ability has been activated

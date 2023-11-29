@@ -34,7 +34,6 @@ use game_data::game_actions::{
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
-use game_data::history_data::CardChoice;
 use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
@@ -458,9 +457,12 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
                     g.defenders_and_occupants(played.target.room_id()?)
                         .map(|card| {
                             PromptChoice::new()
-                                .effect(GameEffect::RecordCardChoice(
-                                    s.ability_id(),
-                                    CardChoice::CardId(card.id),
+                                .effect(GameEffect::AppendCustomCardState(
+                                    s.card_id(),
+                                    CustomCardState::TargetCardForTurn {
+                                        target_card: card.id,
+                                        turn: g.info.turn,
+                                    },
                                 ))
                                 .anchor_card(card.id)
                                 .custom_label(if card.position().is_occupant() {
@@ -474,11 +476,11 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }))
             .delegate(delegates::can_summon(
-                requirements::card_chosen_this_turn,
+                requirements::card_targeted_for_this_turn,
                 delegates::disallow,
             ))
             .delegate(delegates::status_markers(
-                requirements::card_chosen_this_turn,
+                requirements::card_targeted_for_this_turn,
                 |_, s, _, mut markers| {
                     markers.push(CardStatusMarker {
                         source: s.ability_id(),

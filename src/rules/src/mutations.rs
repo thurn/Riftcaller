@@ -24,8 +24,8 @@ use std::cmp;
 use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{
-    ActionCount, CardId, HasAbilityId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue,
-    RoomId, Side, TurnNumber,
+    ActionCount, CardId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue, RoomId, Side,
+    TurnNumber,
 };
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_name::CardVariant;
@@ -40,7 +40,7 @@ use game_data::delegate_data::{
     SummonProjectEvent,
 };
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
-use game_data::history_data::{CardChoice, CardChoiceEvent, HistoryEvent};
+use game_data::history_data::HistoryEvent;
 use game_data::random;
 use tracing::{debug, instrument};
 use with_error::{fail, verify};
@@ -602,14 +602,6 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
         move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
     }
     Ok(())
-}
-
-/// Record a decision for a card ability, typically a targeting decision.
-pub fn record_card_choice(game: &mut GameState, ability: impl HasAbilityId, choice: CardChoice) {
-    game.add_history_event(HistoryEvent::CardChoice(CardChoiceEvent {
-        ability_id: ability.ability_id(),
-        choice,
-    }));
 }
 
 /// Applies a [RaidJumpRequest] to the provided `game` if there is currently an

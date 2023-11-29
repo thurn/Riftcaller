@@ -188,25 +188,6 @@ pub enum CardCounter {
     PowerCharges,
 }
 
-/// State associated with resolving a card's "play" ability.
-///
-/// This is intended to track choices & state made as a part of playing a card,
-/// e.g. picking a target. This state is cleared when the card is played, in the
-/// same manner as card counters.
-///
-/// Be careful about using this, especially for timed effects like e.g. "target
-/// minion gets +1 health this turn" -- they can easily break in situations
-/// where a card gets recurred and played multiple times in the same turn.
-///
-/// Prefer to use Game History for state whenever possible. In particular
-/// something like [HistoryEvent::CardChoice] is often the better tool to use
-/// for recording user choices over the scope of a single turn.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
-pub enum OnPlayState {
-    None,
-    Card(CardId),
-}
-
 /// Optional card state, properties which have a default.
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CardData {

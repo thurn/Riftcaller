@@ -15,7 +15,7 @@
 use core_data::game_primitives::{CardId, HasAbilityId, RoomId, Side};
 use game_data::delegate_data::{AccessEvent, RaidEvent, UsedWeapon};
 use game_data::game_state::GameState;
-use game_data::history_data::{AbilityActivation, CardChoice, HistoryCounters, HistoryEvent};
+use game_data::history_data::{AbilityActivation, HistoryCounters, HistoryEvent};
 
 /// Returns the record of game events which happened on the current
 /// player's turn so far, not including the game action currently being
@@ -187,22 +187,5 @@ pub fn accessed_cards_scored_this_turn(
         } else {
             None
         }
-    })
-}
-
-/// Returns an iterator over card choices which have been recorded in the
-/// current player's turn so far for the given `ability_id`.
-pub fn card_choices_this_turn(
-    game: &GameState,
-    has_ability_id: impl HasAbilityId,
-) -> impl Iterator<Item = CardChoice> + '_ {
-    let ability_id = has_ability_id.ability_id();
-    current_turn(game).filter_map(move |h| {
-        if let HistoryEvent::CardChoice(event) = h {
-            if event.ability_id == ability_id {
-                return Some(event.choice);
-            }
-        }
-        None
     })
 }

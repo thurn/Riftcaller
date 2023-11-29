@@ -71,7 +71,6 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::PreventCurses(..) => "Prevent".to_string(),
         GameEffect::SelectCardForPrompt(..) => "Select".to_string(),
         GameEffect::SwapWithSelected(..) => "Swap".to_string(),
-        GameEffect::RecordCardChoice(..) => "Choose".to_string(),
         GameEffect::AppendCustomCardState(..) => "Choose".to_string(),
         GameEffect::EvadeCurrentEncounter => "Evade".to_string(),
         GameEffect::PlayCardForNoMana(..) => "Play".to_string(),

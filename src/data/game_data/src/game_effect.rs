@@ -21,7 +21,6 @@ use serde::{Deserialize, Serialize};
 use crate::card_state::CardPosition;
 use crate::custom_card_state::CustomCardState;
 use crate::game_actions::CardTarget;
-use crate::history_data::CardChoice;
 
 /// An arbitrary modification to the state of an ongoing game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -69,8 +68,6 @@ pub enum GameEffect {
     SwapWithSelected(Side, CardId),
     /// Appends a new [CustomCardState] entry for this card.
     AppendCustomCardState(CardId, CustomCardState),
-    /// Record a card choice for a given card ability.
-    RecordCardChoice(AbilityId, CardChoice),
     /// Evade the current raid encounter, jumping to the next raid state
     EvadeCurrentEncounter,
     /// Put a card into play for no mana cost
