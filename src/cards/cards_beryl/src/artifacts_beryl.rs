@@ -553,7 +553,8 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 text!["You may evade that minion by paying its shield cost"],
                 in_play::on_minion_approached(|g, s, event| {
-                    if Some(event.data) == g.card(s.card_id()).on_play_state().chosen_card() {
+                    let card = g.card(s);
+                    if card.custom_state.targets_contain(card.last_card_play_id, event.data) {
                         let shield = queries::shield(g, event.data, None);
                         if mana::get(g, s.side(), ManaPurpose::PayForTriggeredAbility) >= shield {
                             show_prompt::with_choices(
@@ -577,7 +578,8 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
             )
             .delegate(in_play::on_query_card_status_markers(
                 |g, s, card_id, mut markers| {
-                    if Some(*card_id) == g.card(s.card_id()).on_play_state().chosen_card() {
+                    let card = g.card(s);
+                    if card.custom_state.targets_contain(card.last_card_play_id, *card_id) {
                         markers.push(CardStatusMarker {
                             source: s.ability_id(),
                             marker_kind: CardInfoElementKind::NegativeEffect,

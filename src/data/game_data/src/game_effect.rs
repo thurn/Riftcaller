@@ -18,7 +18,7 @@ use core_data::game_primitives::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::card_state::{CardPosition, OnPlayState};
+use crate::card_state::CardPosition;
 use crate::custom_card_state::CustomCardState;
 use crate::game_actions::CardTarget;
 use crate::history_data::CardChoice;
@@ -67,8 +67,6 @@ pub enum GameEffect {
     /// 'prompt_selected_cards' list. Returns an error if no card is selected.
     /// Removes the chosen card from the 'prompt_selected_cards' list.
     SwapWithSelected(Side, CardId),
-    /// Sets the 'card_id' card's [OnPlayState].
-    SetOnPlayState(CardId, OnPlayState),
     /// Appends a new [CustomCardState] entry for this card.
     AppendCustomCardState(CardId, CustomCardState),
     /// Record a card choice for a given card ability.

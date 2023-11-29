@@ -78,8 +78,8 @@ impl CardPosition {
 
     /// Returns the [CardPlayId] if this position currently contains one.
     ///
-    /// Prefer to use [CardState::card_play_id] instead of referencing this
-    /// directly.
+    /// Prefer to use [CardState]'s `last_card_play_id` instead of referencing
+    /// this directly.
     pub fn card_play_id(&self) -> Option<CardPlayId> {
         match self {
             CardPosition::Room(id, ..)
@@ -205,27 +205,6 @@ pub enum CardCounter {
 pub enum OnPlayState {
     None,
     Card(CardId),
-    Room(RoomId),
-}
-
-impl OnPlayState {
-    pub fn chosen_card(&self) -> Option<CardId> {
-        match self {
-            Self::Card(id) => Some(*id),
-            _ => None,
-        }
-    }
-
-    pub fn chosen_room(&self) -> Option<RoomId> {
-        match self {
-            Self::Room(id) => Some(*id),
-            _ => None,
-        }
-    }
-
-    pub fn is_none(&self) -> bool {
-        self == &OnPlayState::None
-    }
 }
 
 /// Optional card state, properties which have a default.
@@ -263,12 +242,6 @@ pub struct CardState {
     /// Higher sorting keys are closer to the 'top' or 'front' of the position.
     pub sorting_key: u32,
     position: CardPosition,
-    /// Custom state for this card which must be persisted while it is in play,
-    /// used to implement things like ">Play: Choose a minion." style effects.
-    ///
-    /// Prefer to rely on game history instead of adding state here, if at all
-    /// possible.
-    on_play_state: OnPlayState,
 
     pub last_card_play_id: Option<CardPlayId>,
 
@@ -303,7 +276,6 @@ impl CardState {
                 is_face_up: false,
                 ..CardData::default()
             },
-            on_play_state: OnPlayState::None,
             last_card_play_id: None,
             custom_state: CustomCardStateList::default(),
         }
@@ -328,7 +300,6 @@ impl CardState {
                 is_face_up,
                 ..CardData::default()
             },
-            on_play_state: OnPlayState::None,
             last_card_play_id: None,
             custom_state: CustomCardStateList::default(),
         }
@@ -342,38 +313,6 @@ impl CardState {
         } else {
             0
         }
-    }
-
-    /// Returns the [OnPlayState] for this card.
-    ///
-    /// See [OnPlayState] for more information.
-    pub fn on_play_state(&self) -> &OnPlayState {
-        if self.position.in_play() {
-            &self.on_play_state
-        } else {
-            &OnPlayState::None
-        }
-    }
-
-    /// Returns the [CardPlayId] for this card if it currently has one, a unique
-    /// identifier for an instance of this card being played.
-    pub fn card_play_id(&self) -> Option<CardPlayId> {
-        self.position.card_play_id()
-    }
-
-    /// Returns the [OnPlayState] for this card, returning a value
-    /// even if this card is not in play.
-    ///
-    /// See [OnPlayState] for more information.
-    pub fn last_known_on_play_state(&self) -> &OnPlayState {
-        &self.on_play_state
-    }
-
-    /// Sets a [OnPlayState] for this card.
-    ///
-    /// See [OnPlayState] for more information.
-    pub fn set_on_play_state(&mut self, choice: OnPlayState) {
-        self.on_play_state = choice;
     }
 
     /// Retrieves the last known value for a [CardCounter], returning a value
@@ -401,12 +340,11 @@ impl CardState {
         *self.counters_mut(counter) = amount;
     }
 
-    /// Clears all stored counters & choices on this card.
+    /// Clears all stored counters for this card.
     pub fn clear_played_state(&mut self) {
         self.data.progress = 0;
         self.data.stored_mana = 0;
         self.data.power_charges = 0;
-        self.on_play_state = OnPlayState::None;
     }
 
     pub fn side(&self) -> Side {

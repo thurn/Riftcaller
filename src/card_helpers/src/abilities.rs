@@ -17,7 +17,8 @@
 use core_data::game_primitives::{AbilityId, InitiatedBy, ManaValue, INNER_ROOMS};
 use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
-use game_data::card_state::{CardCounter, CardPosition, OnPlayState};
+use game_data::card_state::{CardCounter, CardPosition};
+use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{Delegate, EventDelegate, Flag, QueryDelegate};
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
 use game_data::text::TextToken::*;
@@ -218,9 +219,12 @@ pub fn choose_a_minion_in_target_room() -> Ability {
                 g.defenders_unordered(played.target.room_id()?)
                     .map(|card| {
                         PromptChoice::new()
-                            .effect(GameEffect::SetOnPlayState(
+                            .effect(GameEffect::AppendCustomCardState(
                                 s.card_id(),
-                                OnPlayState::Card(card.id),
+                                CustomCardState::TargetCard {
+                                    target_card: card.id,
+                                    play_id: played.card_play_id,
+                                },
                             ))
                             .anchor_card(card.id)
                     })

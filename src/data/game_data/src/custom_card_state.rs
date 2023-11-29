@@ -64,6 +64,19 @@ impl CustomCardStateList {
         })
     }
 
+    /// Checks if the provided [CardId] is registered as a target for the given
+    /// [CardPlayId].
+    ///
+    /// Returns false if the [CardPlayId] is `None`, e.g. because the parent
+    /// card is no longer in play.
+    pub fn targets_contain(&self, id: Option<CardPlayId>, card_id: CardId) -> bool {
+        if let Some(play_id) = id {
+            self.targets(play_id).any(|id| id == card_id)
+        } else {
+            false
+        }
+    }
+
     /// Returns true if a [CustomCardState::PaidForEnhancement] entry has been
     /// recorded for this [CardPlayId].
     pub fn paid_for_enhancement(&self, id: CardPlayId) -> bool {

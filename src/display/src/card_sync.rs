@@ -21,7 +21,7 @@ use core_data::game_primitives::{
 };
 use core_ui::{design, icons};
 use game_data::card_definition::{AbilityType, TargetRequirement};
-use game_data::card_state::{CardState, OnPlayState};
+use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::ContinuousDisplayEffectQuery;
@@ -270,19 +270,17 @@ fn revealed_card_view(
 }
 
 fn info_zoom_highlight(card: &CardState) -> Option<InfoZoomHighlight> {
-    match card.on_play_state() {
-        OnPlayState::Card(card_id) => Some(InfoZoomHighlight {
-            highlight: Some(info_zoom_highlight::Highlight::Card(adapters::card_identifier(
-                *card_id,
-            ))),
-        }),
-        OnPlayState::Room(room_id) => Some(InfoZoomHighlight {
-            highlight: Some(info_zoom_highlight::Highlight::Room(adapters::room_identifier(
-                *room_id,
-            ))),
-        }),
-        _ => None,
+    if card.position().in_play() {
+        if let Some(card_id) = card.custom_state.targets(card.last_card_play_id?).next() {
+            return Some(InfoZoomHighlight {
+                highlight: Some(info_zoom_highlight::Highlight::Card(adapters::card_identifier(
+                    card_id,
+                ))),
+            });
+        }
     }
+
+    None
 }
 
 fn revealed_ability_card_view(

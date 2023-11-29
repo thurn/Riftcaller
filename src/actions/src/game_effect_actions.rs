@@ -85,9 +85,6 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             mutations::move_card(game, card_id, target_position)?;
             mutations::move_card(game, target, source_position)?;
         }
-        GameEffect::SetOnPlayState(card_id, state) => {
-            game.card_mut(card_id).set_on_play_state(state);
-        }
         GameEffect::AppendCustomCardState(card_id, state) => {
             game.card_mut(card_id).custom_state.push(state);
         }
