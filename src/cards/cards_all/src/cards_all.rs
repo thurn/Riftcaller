@@ -160,4 +160,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_evocation);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_1_damage);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_5_damage);
+    DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_discard_to_hand);
+    DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_all_occupants_to_hand);
 }

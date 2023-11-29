@@ -190,6 +190,10 @@ pub enum CardName {
     TestEvocation,
     TestSpellDeal1Damage,
     TestSpellDeal5Damage,
+    /// Ritual to return all discarded cards to the Overlord's hand
+    TestRitualReturnDiscardToHand,
+    /// Ritual to return all 'occupant' cards to the Overlord's hand
+    TestRitualReturnAllOccupantsToHand,
 
     // Proof of Concept
     GoldMine,

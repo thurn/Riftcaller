@@ -82,6 +82,13 @@ pub fn on_will_populate_access_prompt(
     Delegate::WillPopulateAccessPrompt(EventDelegate { requirement, mutation })
 }
 
+pub fn on_card_access(
+    requirement: RequirementFn<AccessEvent<CardId>>,
+    mutation: MutationFn<AccessEvent<CardId>>,
+) -> Delegate {
+    Delegate::CardAccess(EventDelegate { requirement, mutation })
+}
+
 pub fn on_custom_access_end(
     requirement: RequirementFn<InitiatedBy>,
     mutation: MutationFn<InitiatedBy>,

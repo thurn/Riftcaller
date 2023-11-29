@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
+use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     abilities, costs, delegates, play_card_browser_builder, requirements, show_prompt, text, this,
 };
@@ -21,10 +22,11 @@ use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
+use game_data::custom_card_state::CustomCardState;
 use game_data::game_actions::{ButtonPromptContext, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::text::TextToken::*;
-use rules::{mutations, CardDefinitionExt};
+use rules::{curses, mutations, CardDefinitionExt};
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -117,9 +119,25 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
                 }))
                 .delegate(delegates::on_played(
                     requirements::matching_play_browser,
-                    |g, _, played| {
+                    |g, s, played| {
                         mutations::turn_face_up(g, played.card_id);
+                        g.card_mut(s).custom_state.push(CustomCardState::TargetCard {
+                            target_card: played.card_id,
+                            play_id: played.card_play_id,
+                        });
                         Ok(())
+                    },
+                ))
+                .delegate(delegates::on_card_access(
+                    |g, s, event| {
+                        let accessed = event.data();
+                        g.card(s)
+                            .custom_state
+                            .targets_contain(g.card(*accessed).last_card_play_id, *accessed)
+                    },
+                    |g, s, _| {
+                        VisualEffects::new().ability_alert(s).apply(g);
+                        curses::give_curses(g, s.ability_id(), 2)
                     },
                 )),
             ),

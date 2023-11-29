@@ -27,6 +27,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::OnZeroStored;
@@ -639,6 +640,46 @@ pub fn test_spell_deal_5_damage(metadata: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new_with_delegate(
             text!["Deal 5 damage"],
             this::on_played(|g, s, _| damage::deal(g, s, 5)),
+        )],
+        ..test_overlord_spell(metadata)
+    }
+}
+
+pub fn test_ritual_return_discard_to_hand(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestRitualReturnDiscardToHand,
+        cost: cost(0),
+        card_type: CardType::Ritual,
+        sets: vec![CardSetName::Test],
+        abilities: vec![Ability::new_with_delegate(
+            text!["Return all cards from the crypt to the sanctum"],
+            this::on_played(|g, s, _| {
+                mutations::move_cards(
+                    g,
+                    &g.discard_pile(s.side()).card_ids(),
+                    CardPosition::Hand(s.side()),
+                )
+            }),
+        )],
+        ..test_overlord_spell(metadata)
+    }
+}
+
+pub fn test_ritual_return_all_occupants_to_hand(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestRitualReturnAllOccupantsToHand,
+        cost: cost(0),
+        card_type: CardType::Ritual,
+        sets: vec![CardSetName::Test],
+        abilities: vec![Ability::new_with_delegate(
+            text!["Return all cards occupying rooms to the sanctum"],
+            this::on_played(|g, s, _| {
+                mutations::move_cards(
+                    g,
+                    &g.occupants_in_all_rooms().card_ids(),
+                    CardPosition::Hand(s.side()),
+                )
+            }),
         )],
         ..test_overlord_spell(metadata)
     }
