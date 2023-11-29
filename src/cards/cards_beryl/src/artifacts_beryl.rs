@@ -28,6 +28,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
+use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::{CardTarget, PromptChoice};
 use game_data::game_effect::GameEffect;
@@ -39,6 +40,7 @@ use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{mana, mutations, queries, CardDefinitionExt};
+use with_error::WithError;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -636,8 +638,14 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
                 Some(queries::resonance(g, raids::active_encounter_prompt(g)?)?.astral)
             }))
         }))
+        .delegate(this::on_activated(|g, s, _| {
+            let encounter_id =
+                g.raid()?.minion_encounter_id.with_error(|| "Expected active minion encounter")?;
+            g.card_mut(s).custom_state.push(CustomCardState::ActiveForEncounter { encounter_id });
+            Ok(())
+        }))
         .delegate(delegates::can_ability_end_raid(
-            requirements::ability_activated_this_encounter,
+            requirements::active_this_encounter,
             |g, _, event, flag| {
                 let health = queries::health(g, event.data.card_id);
                 let resonance = queries::resonance(g, event.data.card_id);

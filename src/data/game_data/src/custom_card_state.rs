@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardId, CardPlayId};
+use core_data::game_primitives::{CardId, CardPlayId, MinionEncounterId};
 use serde::{Deserialize, Serialize};
 
 use crate::game_state::TurnData;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CustomCardState {
-    /// Affect some card for the duration of the provided [CardPlayId] being
-    /// valid.
+    /// Affect some card based on the scope of a given [CardPlayId].
     ///
-    /// The source of provided ID is unspecified. It may for example be from the
-    /// parent card for "while this card is in play, do X" effects, but it could
-    /// also be from the target card for "while this target is in play, apply
-    /// X".
+    /// The source of provided [CardPlayId] is unspecified -- it may be
+    /// associated with either the parent card or the target card, for example.
     TargetCard { target_card: CardId, play_id: CardPlayId },
 
     /// Apply an effect to a card for the duration of a single turn.
@@ -35,18 +32,31 @@ pub enum CustomCardState {
     /// playing this card. This is used to implement effects like "access the
     /// top 8 cards of the vault, you may pay an action to access another."
     PaidForEnhancement { play_id: CardPlayId },
+
+    /// A card or ability's effect should be applied for the duration of the
+    /// minion encounter with the provided [MinionEncounterId].
+    ActiveForEncounter { encounter_id: MinionEncounterId },
 }
 
+/// Records custom state entries for a given card.
+///
+/// This keeps track of miscellaneous state related to resolving a card's
+/// abilities, such as targets which have been selected for this card. It is
+/// designed as an "append-only" data structure, meaning that state entries are
+/// never removed.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct CustomCardStateList {
     list: Vec<CustomCardState>,
 }
 
 impl CustomCardStateList {
+    /// Add a new [CustomCardState] entry.
     pub fn push(&mut self, state: CustomCardState) {
         self.list.push(state);
     }
 
+    /// Mark all of the provided cards as targets for the given [CardPlayId] via
+    /// [CustomCardState::TargetCard].
     pub fn record_targets(&mut self, play_id: CardPlayId, targets: &[CardId]) {
         for target_card in targets {
             self.push(CustomCardState::TargetCard { target_card: *target_card, play_id })
@@ -94,6 +104,15 @@ impl CustomCardStateList {
         self.list.iter().rev().any(|state| {
             matches!(state,
                 CustomCardState::PaidForEnhancement { play_id } if id == *play_id)
+        })
+    }
+
+    /// Returns true if a [CustomCardState::ActiveForEncounter] entry has been
+    /// recorded for this [MinionEncounterId].
+    pub fn is_active_for_encounter(&self, id: MinionEncounterId) -> bool {
+        self.list.iter().rev().any(|state| {
+            matches!(state,
+                CustomCardState::ActiveForEncounter { encounter_id } if id == *encounter_id)
         })
     }
 }

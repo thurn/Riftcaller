@@ -105,9 +105,6 @@ fn pay_action_points(
         } else {
             AbilityActivationType::FreeAction
         },
-        current_raid: game.raid.as_ref().map(|r| r.raid_id),
-        current_minion_encounter: game.raid.as_ref().and_then(|r| r.minion_encounter_id),
-        current_room_access: game.raid.as_ref().and_then(|r| r.room_access_id),
     };
 
     game.add_history_event(HistoryEvent::ActivateAbility(activation));

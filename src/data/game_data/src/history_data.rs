@@ -14,9 +14,7 @@
 
 use std::collections::HashMap;
 
-use core_data::game_primitives::{
-    AbilityId, CardId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
-};
+use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
@@ -45,12 +43,6 @@ pub struct AbilityActivation {
     /// used to determine whether "play only as your first action" cards can
     /// still be played.
     pub activation_type: AbilityActivationType,
-    /// RaidId when the ability was activated, if any.
-    pub current_raid: Option<RaidId>,
-    /// Minion encounter when the ability was activated, if any.
-    pub current_minion_encounter: Option<MinionEncounterId>,
-    /// Room access when the ability was activated, if any.
-    pub current_room_access: Option<RoomAccessId>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]

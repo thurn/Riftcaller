@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{HasAbilityId, HasCardId, RaidId, RoomId, Side};
+use core_data::game_primitives::{HasCardId, RaidId, RoomId, Side};
 use game_data::card_definition::TargetRequirement;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DealtDamage;
@@ -152,17 +152,15 @@ pub fn card_targeted_for_this_turn(
         .any(|id| id == card_id.card_id())
 }
 
-/// A [RequirementFn] which matches if the `source` ability has been activated
-/// during the current raid encounter.
-pub fn ability_activated_this_encounter<T>(
-    game: &GameState,
-    source: impl HasAbilityId,
-    _: &T,
-) -> bool {
-    history::ability_activations_this_turn(game, source).any(|activation| {
-        utils::is_true(|| {
-            Some(activation.current_minion_encounter? == game.raid.as_ref()?.minion_encounter_id?)
-        })
+/// A [RequirementFn] which matches if the `source` card has been marked as
+/// active during the current raid encounter.
+pub fn active_this_encounter<T>(game: &GameState, source: impl HasCardId, _: &T) -> bool {
+    utils::is_true(|| {
+        Some(
+            game.card(source.card_id())
+                .custom_state
+                .is_active_for_encounter(game.raid.as_ref()?.minion_encounter_id?),
+        )
     })
 }
 

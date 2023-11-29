@@ -223,9 +223,16 @@ pub struct CardState {
     /// Higher sorting keys are closer to the 'top' or 'front' of the position.
     pub sorting_key: u32,
     position: CardPosition,
-
+    /// A unique identifier for an instance of this card being played.
+    ///
+    /// This stores the last-known [CardPlayId]. If this card is currently in
+    /// play, this is the ID which was assigned when the card was played. If the
+    /// card was moved from play to a non-play zone, this contains the most
+    /// recent in-play ID. Otherwise, it contains None.
     pub last_card_play_id: Option<CardPlayId>,
-
+    /// Stores custom state entries for this card.
+    ///
+    /// See [CustomCardStateList].
     pub custom_state: CustomCardStateList,
 }
 
