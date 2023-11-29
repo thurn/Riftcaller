@@ -19,8 +19,8 @@
 use std::cmp::Ordering;
 
 use core_data::game_primitives::{
-    BanishEventId, CardId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue, RoomId,
-    RoomLocation, Side,
+    BanishEventId, CardId, CardPlayId, ItemLocation, ManaValue, PowerChargeValue, ProgressValue,
+    RoomId, RoomLocation, Side,
 };
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
@@ -53,8 +53,8 @@ pub enum CardPosition {
     /// A card which is known to at least one player to be on the top of a deck
     DeckTop(Side),
     Hand(Side),
-    Room(RoomId, RoomLocation),
-    ArenaItem(ItemLocation),
+    Room(CardPlayId, RoomId, RoomLocation),
+    ArenaItem(CardPlayId, ItemLocation),
     DiscardPile(Side),
     /// A card has been scored and is currently resolving its scoring effects
     /// before moving to a score pile.
@@ -63,7 +63,7 @@ pub enum CardPosition {
     Scored(Side),
     /// A card has been played by the [Side] player and is in the process of
     /// resolving with the provided target
-    Played(Side, CardTarget),
+    Played(CardPlayId, Side, CardTarget),
     /// A riftcaller card owned by a player in the game.
     Riftcaller(Side),
     /// Global modifier cards which change the rules of the game
@@ -80,6 +80,16 @@ impl CardPosition {
         self.into()
     }
 
+    /// Returns the [CardPlayId] if this position currently contains one.
+    pub fn card_play_id(&self) -> Option<CardPlayId> {
+        match self {
+            CardPosition::Room(id, ..)
+            | CardPosition::ArenaItem(id, ..)
+            | CardPosition::Played(id, ..) => Some(*id),
+            _ => None,
+        }
+    }
+
     /// Returns true if this card is a riftcaller, is in a room, or has been
     /// played as an item.
     pub fn in_play(&self) -> bool {
@@ -92,6 +102,11 @@ impl CardPosition {
     /// Returns true if this card is in a room
     pub fn in_room(&self) -> bool {
         self.kind() == CardPositionKind::Room
+    }
+
+    /// Returns true if this card is in a specific room
+    pub fn in_specified_room(&self, room_id: RoomId) -> bool {
+        matches!(self, CardPosition::Room(_, r, _) if *r == room_id)
     }
 
     /// Returns true if this card is in a user's hand
@@ -123,8 +138,17 @@ impl CardPosition {
     pub fn is_occupant(&self) -> bool {
         matches!(
             self,
-            CardPosition::Room(_, location)
+            CardPosition::Room(_, _, location)
             if *location == RoomLocation::Occupant
+        )
+    }
+
+    /// True if this card is an occupant of the specified room    
+    pub fn is_occupant_of(&self, room_id: RoomId) -> bool {
+        matches!(
+            self,
+            CardPosition::Room(_, r, location)
+            if *location == RoomLocation::Occupant && *r == room_id
         )
     }
 
@@ -132,8 +156,17 @@ impl CardPosition {
     pub fn is_defender(&self) -> bool {
         matches!(
             self,
-            CardPosition::Room(_, location)
+            CardPosition::Room(_, _, location)
             if *location == RoomLocation::Defender
+        )
+    }
+
+    /// True if this card is a defender of the specified room
+    pub fn is_defender_of(&self, room_id: RoomId) -> bool {
+        matches!(
+            self,
+            CardPosition::Room(_, r, location)
+            if *location == RoomLocation::Defender && *r == room_id
         )
     }
 

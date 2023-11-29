@@ -323,6 +323,16 @@ impl fmt::Debug for RaidId {
     }
 }
 
+/// Uniquely identifies an instance of a card being played.
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
+pub struct CardPlayId(pub u32);
+
+impl fmt::Debug for CardPlayId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "%{}", self.0)
+    }
+}
+
 /// Uniquely identifies a minion encounter within a given game
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize)]
 pub struct MinionEncounterId(pub u32);

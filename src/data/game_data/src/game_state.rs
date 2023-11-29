@@ -519,6 +519,15 @@ impl GameState {
         result.iter().map(|c| c.id).collect()
     }
 
+    pub fn card_list_for_iterator<'a>(
+        &self,
+        iterator: impl Iterator<Item = &'a CardState>,
+    ) -> Vec<CardId> {
+        let mut result = iterator.collect::<Vec<_>>();
+        result.sort();
+        result.iter().map(|c| c.id).collect()
+    }
+
     /// Cards in a player's hand, in an unspecified order
     pub fn hand(&self, side: Side) -> impl Iterator<Item = &CardState> {
         self.cards(side).iter().filter(|c| c.position().in_hand())
@@ -549,29 +558,26 @@ impl GameState {
 
     /// Returns Overlord cards defending a given room in an unspecified order
     pub fn defenders_unordered(&self, room_id: RoomId) -> impl Iterator<Item = &CardState> {
-        self.cards_in_position(Side::Overlord, CardPosition::Room(room_id, RoomLocation::Defender))
+        self.cards(Side::Overlord).iter().filter(move |c| c.position().is_defender_of(room_id))
     }
 
     /// Overlord cards defending a given room, in sorting-key order (higher
     /// array indices are closer to the front of the room).
     pub fn defender_list(&self, room_id: RoomId) -> Vec<CardId> {
-        self.card_list_for_position(
-            Side::Overlord,
-            CardPosition::Room(room_id, RoomLocation::Defender),
+        self.card_list_for_iterator(
+            self.cards(Side::Overlord).iter().filter(move |c| c.position().is_defender_of(room_id)),
         )
     }
 
     /// Overlord cards in a given room (not defenders), in an unspecified order
     pub fn occupants(&self, room_id: RoomId) -> impl Iterator<Item = &CardState> {
-        self.cards_in_position(Side::Overlord, CardPosition::Room(room_id, RoomLocation::Occupant))
+        self.cards(Side::Overlord).iter().filter(move |c| c.position().is_occupant_of(room_id))
     }
 
     /// All overlord cards which occupy rooms (not defenders), in an unspecified
     /// order
     pub fn occupants_in_all_rooms(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord)
-            .iter()
-            .filter(move |c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Occupant)))
+        self.cards(Side::Overlord).iter().filter(move |c| c.position().is_occupant())
     }
 
     /// All Overlord cards located within a given room, defenders and occupants,
@@ -579,7 +585,7 @@ impl GameState {
     pub fn defenders_and_occupants(&self, room_id: RoomId) -> impl Iterator<Item = &CardState> {
         self.cards(Side::Overlord)
             .iter()
-            .filter(move |c| matches!(c.position(), CardPosition::Room(r, _) if r == room_id))
+            .filter(move |c| matches!(c.position(), CardPosition::Room(_, r, _) if r == room_id))
     }
 
     /// All cards in play for the given side.
@@ -589,27 +595,36 @@ impl GameState {
 
     /// All overlord defenders in play, whether face-up or face-down.
     pub fn minions(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord)
-            .iter()
-            .filter(move |c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Defender)))
+        self.cards(Side::Overlord).iter().filter(move |c| {
+            matches!(c.position(), CardPosition::Room(_, _, RoomLocation::Defender))
+        })
     }
 
     /// Champion cards which have been played as artifacts, in an unspecified
     /// order.
     pub fn artifacts(&self) -> impl Iterator<Item = &CardState> {
-        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Artifacts))
+        self.cards(Side::Champion).iter().filter(move |c| {
+            matches!(c.position(),
+                CardPosition::ArenaItem(_, l) if l == ItemLocation::Artifacts)
+        })
     }
 
     /// Champion cards which have been played as evocations, in an unspecified
     /// order.
     pub fn evocations(&self) -> impl Iterator<Item = &CardState> {
-        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Evocations))
+        self.cards(Side::Champion).iter().filter(move |c| {
+            matches!(c.position(),
+                CardPosition::ArenaItem(_, l) if l == ItemLocation::Evocations)
+        })
     }
 
     /// Champion cards which have been played as allies, in an unspecified
     /// order.
     pub fn allies(&self) -> impl Iterator<Item = &CardState> {
-        self.cards_in_position(Side::Champion, CardPosition::ArenaItem(ItemLocation::Allies))
+        self.cards(Side::Champion).iter().filter(move |c| {
+            matches!(c.position(),
+                CardPosition::ArenaItem(_, l) if l == ItemLocation::Allies)
+        })
     }
 
     /// All global game modifier cards, in an unspecified order

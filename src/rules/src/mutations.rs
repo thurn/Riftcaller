@@ -25,7 +25,7 @@ use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{
     ActionCount, CardId, HasAbilityId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue,
-    RoomId, RoomLocation, Side, TurnNumber,
+    RoomId, Side, TurnNumber,
 };
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_name::CardVariant;
@@ -429,13 +429,10 @@ pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Resu
 ///
 /// Does not spend mana/actions etc.
 pub fn progress_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
-    let occupants = game.card_list_for_position(
-        Side::Overlord,
-        CardPosition::Room(room_id, RoomLocation::Occupant),
-    );
-    let can_progress = occupants
-        .into_iter()
-        .filter(|card_id| flags::can_progress_card(game, *card_id))
+    let can_progress = game
+        .occupants(room_id)
+        .map(|c| c.id)
+        .filter(|id| flags::can_progress_card(game, *id))
         .collect::<Vec<_>>();
 
     for occupant_id in can_progress {

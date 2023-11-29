@@ -68,63 +68,6 @@ fn time_golem_end_raid() {
 }
 
 #[test]
-fn temporal_stalker_end_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    g.add_to_hand(CardName::TestMinionEndRaid);
-    g.create_and_play(CardName::TemporalStalker);
-    g.set_up_minion_combat();
-    assert_eq!(1, g.user.cards.hand().len());
-    g.opponent_click(Button::NoWeapon);
-    g.click_on(g.opponent_id(), "End Raid");
-    assert!(!g.user.data.raid_active());
-    assert_eq!(
-        vec!["Temporal Stalker", "Test Minion End Raid"],
-        g.user.cards.room_defenders(test_constants::ROOM_ID).names()
-    );
-    assert_eq!(0, g.user.cards.hand().len());
-    assert_eq!(3, g.opponent.this_player.actions());
-}
-
-#[test]
-fn temporal_stalker_pay_actions() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    g.add_to_hand(CardName::TestMinionEndRaid);
-    g.create_and_play(CardName::TemporalStalker);
-    g.set_up_minion_combat();
-    g.opponent_click(Button::NoWeapon);
-    g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
-    assert_eq!(1, g.opponent.this_player.actions());
-    assert!(g.user.data.raid_active());
-    assert_eq!(
-        vec!["Test Minion End Raid", "Test Scheme 3_10"],
-        g.user.cards.raid_display().names()
-    );
-    assert_eq!(
-        vec!["Temporal Stalker"],
-        g.user.cards.room_defenders(test_constants::ROOM_ID).names()
-    );
-    assert_eq!(0, g.user.cards.hand().len());
-    assert!(g.opponent.interface.controls().has_text("Continue"));
-}
-
-#[test]
-fn temporal_stalker_defeat() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    g.add_to_hand(CardName::TestMinionEndRaid);
-    g.create_and_play(CardName::TemporalStalker);
-    g.set_up_minion_combat_with_action(|g| {
-        g.create_and_play(CardName::TestAstralWeapon);
-    });
-    g.click_on(g.opponent_id(), "Test Astral Weapon");
-    assert_eq!(1, g.user.cards.hand().len());
-    assert_eq!(
-        vec!["Temporal Stalker"],
-        g.user.cards.room_defenders(test_constants::ROOM_ID).names()
-    );
-    assert!(g.opponent.interface.controls().has_text("Score"));
-}
-
-#[test]
 fn shadow_lurker_outer_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.add_to_hand(CardName::ShadowLurker);

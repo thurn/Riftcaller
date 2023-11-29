@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::sync::atomic::AtomicU32;
+
 use anyhow::{Error, Result};
 use fallible_iterator::Convert;
 
@@ -51,3 +53,7 @@ pub fn add_matching<T: PartialEq + Copy>(current: &mut Option<(T, u32)>, tag: T,
 
     *current = Some((tag, value));
 }
+
+/// An incrementing counter for assigning event IDs for debug utils. There are
+/// only 294,967,295 IDs before this overflows so don't go crazy with it :)
+pub static DEBUG_EVENT_ID: AtomicU32 = AtomicU32::new(4000000000);

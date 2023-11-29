@@ -213,7 +213,6 @@ pub enum CardName {
     OverwhelmingPower,
     ForcedMarch,
     TimeGolem,
-    TemporalStalker,
     ShadowLurker,
     SphinxOfWintersBreath,
     BridgeTroll,

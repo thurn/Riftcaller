@@ -27,11 +27,12 @@
 // limitations under the License.
 
 use std::iter;
+use std::sync::atomic::Ordering;
 
 use constants::game_constants;
 use core_data::game_primitives::{
-    ActionCount, CurseCount, GameId, InitiatedBy, ManaValue, PointsValue, RoomId, RoomLocation,
-    Side, WoundCount,
+    ActionCount, CardPlayId, CurseCount, GameId, InitiatedBy, ManaValue, PointsValue, RoomId,
+    RoomLocation, Side, WoundCount,
 };
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::{CardPosition, CardPositionKind};
@@ -39,6 +40,7 @@ use game_data::deck::Deck;
 use game_data::game_state::{GameConfiguration, GamePhase, GameState, TurnData};
 use game_data::player_name::PlayerId;
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
+use game_data::utils;
 use maplit::hashmap;
 use rules::dispatch;
 
@@ -379,7 +381,7 @@ impl TestSide {
                 game,
                 Side::Overlord,
                 &[*card_name],
-                CardPosition::Room(*room_id, RoomLocation::Occupant),
+                CardPosition::Room(card_play_id(), *room_id, RoomLocation::Occupant),
                 false,
             );
         }
@@ -388,7 +390,7 @@ impl TestSide {
                 game,
                 Side::Overlord,
                 &[*card_name],
-                CardPosition::Room(*room_id, RoomLocation::Occupant),
+                CardPosition::Room(card_play_id(), *room_id, RoomLocation::Occupant),
                 true,
             );
         }
@@ -404,7 +406,7 @@ impl TestSide {
                 game,
                 Side::Overlord,
                 &[*card_name],
-                CardPosition::Room(*room_id, RoomLocation::Defender),
+                CardPosition::Room(card_play_id(), *room_id, RoomLocation::Defender),
                 true,
             );
         }
@@ -413,7 +415,7 @@ impl TestSide {
                 game,
                 Side::Overlord,
                 &[*card_name],
-                CardPosition::Room(*room_id, RoomLocation::Defender),
+                CardPosition::Room(card_play_id(), *room_id, RoomLocation::Defender),
                 false,
             );
         }
@@ -448,4 +450,8 @@ fn overwrite_positions(
             game.card_mut(target_id).internal_turn_face_down();
         }
     }
+}
+
+fn card_play_id() -> CardPlayId {
+    CardPlayId(utils::DEBUG_EVENT_ID.fetch_add(1, Ordering::Relaxed))
 }

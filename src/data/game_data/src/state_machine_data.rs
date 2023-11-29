@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{AbilityId, CardId, DamageAmount, InitiatedBy, Side, WoundCount};
+use core_data::game_primitives::{
+    AbilityId, CardId, CardPlayId, DamageAmount, InitiatedBy, Side, WoundCount,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::game_actions::CardTarget;
@@ -50,6 +52,8 @@ pub struct PlayCardData {
     pub initiated_by: InitiatedBy,
     /// Room being targeted, if any
     pub target: CardTarget,
+    /// Unique identifier for this instance of this card being played.
+    pub card_play_id: CardPlayId,
     /// Configuration options for playing this card.
     pub options: PlayCardOptions,
     /// Current state machine state

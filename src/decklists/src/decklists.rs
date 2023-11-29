@@ -81,7 +81,6 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
         CardVariant::standard(CardName::GatheringDark) => 3,
         CardVariant::standard(CardName::ForcedMarch) => 2,
         CardVariant::standard(CardName::TimeGolem) => 1,
-        CardVariant::standard(CardName::TemporalStalker) => 2,
         CardVariant::standard(CardName::ShadowLurker) => 3,
         CardVariant::standard(CardName::SphinxOfWintersBreath) => 2,
         CardVariant::standard(CardName::BridgeTroll) => 2,

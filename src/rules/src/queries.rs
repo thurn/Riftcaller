@@ -17,8 +17,8 @@
 use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardType, HealthValue, ItemLocation,
-    ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CardType, HealthValue,
+    ItemLocation, ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
 use game_data::card_definition::{
     AbilityType, AttackBoost, CardStats, Resonance, TargetRequirement,
@@ -226,7 +226,7 @@ pub fn maximum_hand_size(game: &GameState, side: Side) -> u32 {
 /// within that room, if any.
 pub fn minion_position(game: &GameState, minion_id: CardId) -> Option<(RoomId, usize)> {
     match game.card(minion_id).position() {
-        CardPosition::Room(room_id, location) if location == RoomLocation::Defender => {
+        CardPosition::Room(_, room_id, location) if location == RoomLocation::Defender => {
             let index = game.defender_list(room_id).iter().position(|cid| *cid == minion_id);
             index.map(|i| (room_id, i))
         }
@@ -242,15 +242,18 @@ pub fn played_position(
     side: Side,
     card_id: CardId,
     target: CardTarget,
+    card_play_id: CardPlayId,
 ) -> Option<CardPosition> {
     Some(match game.card(card_id).definition().card_type {
         CardType::Spell | CardType::Ritual => CardPosition::DiscardPile(side),
-        CardType::Artifact => CardPosition::ArenaItem(ItemLocation::Artifacts),
-        CardType::Ally => CardPosition::ArenaItem(ItemLocation::Evocations),
-        CardType::Evocation => CardPosition::ArenaItem(ItemLocation::Evocations),
-        CardType::Minion => CardPosition::Room(target.room_id().ok()?, RoomLocation::Defender),
+        CardType::Artifact => CardPosition::ArenaItem(card_play_id, ItemLocation::Artifacts),
+        CardType::Ally => CardPosition::ArenaItem(card_play_id, ItemLocation::Evocations),
+        CardType::Evocation => CardPosition::ArenaItem(card_play_id, ItemLocation::Evocations),
+        CardType::Minion => {
+            CardPosition::Room(card_play_id, target.room_id().ok()?, RoomLocation::Defender)
+        }
         CardType::Project | CardType::Scheme => {
-            CardPosition::Room(target.room_id().ok()?, RoomLocation::Occupant)
+            CardPosition::Room(card_play_id, target.room_id().ok()?, RoomLocation::Occupant)
         }
         CardType::Riftcaller => CardPosition::Riftcaller(side),
         CardType::GameModifier => CardPosition::GameModifier,

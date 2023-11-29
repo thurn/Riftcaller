@@ -250,7 +250,9 @@ fn to_game_action(game: &GameState, action: &TutorialOpponentAction) -> Result<G
             let _id = game
                 .cards(crate::OPPONENT_SIDE)
                 .iter()
-                .filter(|c| matches!(c.position(), CardPosition::Room(_, RoomLocation::Occupant)))
+                .filter(|c| {
+                    matches!(c.position(), CardPosition::Room(_, _, RoomLocation::Occupant))
+                })
                 .find(|c| c.variant.name == *name)
                 .with_error(|| format!("Scheme not found {name}"))?
                 .id;

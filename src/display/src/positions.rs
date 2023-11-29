@@ -16,7 +16,8 @@ use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
 use core_data::game_primitives::{
-    AbilityId, CardId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation, Side,
+    AbilityId, CardId, CardPlayId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation,
+    Side,
 };
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game_actions::{BrowserPromptTarget, CardTarget, DisplayPreference, GamePrompt};
@@ -222,15 +223,17 @@ fn adapt_position(
     };
 
     match p {
-        CardPosition::Room(room_id, location) => Some(room(room_id, location)),
-        CardPosition::ArenaItem(location) => Some(item(location)),
+        CardPosition::Room(_, room_id, location) => Some(room(room_id, location)),
+        CardPosition::ArenaItem(_, location) => Some(item(location)),
         CardPosition::Hand(side) => Some(hand(builder, side)),
         CardPosition::DeckTop(side) => Some(deck(builder, side)),
         CardPosition::DiscardPile(side) => Some(discard(builder, side)),
         CardPosition::Scored(side) => Some(character(builder, side)),
         CardPosition::Riftcaller(side) => Some(riftcaller(builder, side)),
         CardPosition::Scoring => Some(staging()),
-        CardPosition::Played(side, target) => played_position(builder, game, side, card_id, target),
+        CardPosition::Played(card_play_id, side, target) => {
+            played_position(builder, game, side, card_id, target, card_play_id)
+        }
         CardPosition::DeckUnknown(..) => None,
         CardPosition::GameModifier => Some(offscreen()),
         CardPosition::Banished(Some(by_card))
@@ -257,6 +260,7 @@ pub fn played_position(
     side: Side,
     card_id: CardId,
     target: CardTarget,
+    card_play_id: CardPlayId,
 ) -> Option<Position> {
     if builder.user_side != side || game.card(card_id).definition().card_type.is_spell() {
         Some(staging())
@@ -265,7 +269,7 @@ pub fn played_position(
             builder,
             game,
             card_id,
-            queries::played_position(game, side, card_id, target),
+            queries::played_position(game, side, card_id, target, card_play_id),
         )
     }
 }

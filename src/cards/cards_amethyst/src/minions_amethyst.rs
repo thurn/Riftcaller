@@ -19,7 +19,7 @@ use assets::rexard_images::RexardPack;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::combat;
 use card_helpers::{combat_abilities, *};
-use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomLocation, School, Side};
+use core_data::game_primitives::{CardType, InitiatedBy, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfigBuilder, CardDefinition, Resonance,
 };
@@ -29,11 +29,8 @@ use game_data::card_state::CardPosition;
 use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
-use game_data::game_state::RaidJumpRequest;
 use rules::mana::ManaPurpose;
-use rules::mutations::SummonMinion;
-use rules::{damage, mana, mutations, queries, CardDefinitionExt};
-use with_error::WithError;
+use rules::{damage, mana, mutations, queries};
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -72,69 +69,6 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
     }
 }
 
-pub fn temporal_stalker(_: CardMetadata) -> CardDefinition {
-    CardDefinition {
-        name: CardName::TemporalStalker,
-        sets: vec![CardSetName::Amethyst],
-        cost: cost(6),
-        image: rexard_images::get(RexardPack::MonstersAvatars, "87"),
-        card_type: CardType::Minion,
-        subtypes: vec![],
-        side: Side::Overlord,
-        school: School::Law,
-        rarity: Rarity::Common,
-        abilities: vec![
-            Ability::new_with_delegate(
-                named_trigger(
-                    Combat,
-                    text!["Summon a minion from the", Sanctum, "or", Crypt, "for free"],
-                ),
-                combat(|g, s, _| {
-                    let cards = g
-                        .hand(Side::Overlord)
-                        .chain(g.discard_pile(Side::Overlord))
-                        .filter(|c| g.card(c.id).definition().card_type == CardType::Minion);
-                    if let Some(minion_id) = queries::highest_cost(cards) {
-                        let (room_id, index) = queries::minion_position(g, s.card_id())
-                            .with_error(|| "Minion not found")?;
-                        mutations::turn_face_down(g, minion_id); // Card may be face-up in Crypt
-                        mutations::move_card(
-                            g,
-                            minion_id,
-                            CardPosition::Room(room_id, RoomLocation::Defender),
-                        )?;
-                        g.move_card_to_index(minion_id, index);
-                        mutations::summon_minion(
-                            g,
-                            minion_id,
-                            s.initiated_by(),
-                            SummonMinion::IgnoreCosts,
-                        )?;
-                        g.raid_mut()?.jump_request =
-                            Some(RaidJumpRequest::EncounterMinion(minion_id));
-                    }
-                    Ok(())
-                }),
-            ),
-            Ability::new_with_delegate(
-                named_trigger(Combat, text!["End the raid unless the Champion pays", Actions(2)]),
-                combat(|g, s, _| {
-                    show_prompt::with_choices(
-                        g,
-                        Side::Champion,
-                        vec![
-                            PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
-                            PromptChoice::new().effect(GameEffect::ActionCost(Side::Champion, 2)),
-                        ],
-                    );
-                    Ok(())
-                }),
-            ),
-        ],
-        config: CardConfigBuilder::new().health(6).shield(3).resonance(Resonance::astral()).build(),
-    }
-}
-
 pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::ShadowLurker,
@@ -150,7 +84,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 text!["While this minion is in an", OuterRoom, "it has", Plus(2), Health],
                 on_calculate_health(|g, s, _, current| match g.card(s.card_id()).position() {
-                    CardPosition::Room(room_id, _) if !room_id.is_inner_room() => current + 2,
+                    CardPosition::Room(_, room_id, _) if !room_id.is_inner_room() => current + 2,
                     _ => current,
                 }),
             ),

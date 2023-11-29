@@ -22,7 +22,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::evocations_amethyst::magical_resonator);
     DEFINITIONS.insert(cards_amethyst::evocations_amethyst::dark_grimoire);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::time_golem);
-    DEFINITIONS.insert(cards_amethyst::minions_amethyst::temporal_stalker);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::shadow_lurker);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::sphinx_of_winters_breath);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::bridge_troll);

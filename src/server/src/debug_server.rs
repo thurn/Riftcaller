@@ -14,11 +14,12 @@
 
 use std::collections::HashMap;
 use std::mem;
+use std::sync::atomic::Ordering;
 
 use ::panels::add_to_zone_panel::AddToZonePanel;
 use anyhow::Result;
 use core_data::game_primitives::{
-    AbilityId, AbilityIndex, CardId, GameId, InitiatedBy, RoomId, RoomLocation, Side,
+    AbilityId, AbilityIndex, CardId, CardPlayId, GameId, InitiatedBy, RoomId, RoomLocation, Side,
 };
 use core_ui::actions::InterfaceAction;
 use core_ui::panels;
@@ -29,6 +30,7 @@ use game_data::card_state::CardPosition;
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
+use game_data::utils;
 use once_cell::sync::Lazy;
 use panel_address::Panel;
 use player_data::PlayerStatus;
@@ -361,12 +363,20 @@ fn vs_minion_and_scheme(game: &mut GameState, minion: CardName) -> Result<()> {
     create_at_position(
         game,
         CardName::TestScheme3_10,
-        CardPosition::Room(RoomId::RoomA, RoomLocation::Occupant),
+        CardPosition::Room(
+            CardPlayId(utils::DEBUG_EVENT_ID.fetch_add(1, Ordering::Relaxed)),
+            RoomId::RoomA,
+            RoomLocation::Occupant,
+        ),
     )?;
     let minion_id = create_at_position(
         game,
         minion,
-        CardPosition::Room(RoomId::RoomA, RoomLocation::Defender),
+        CardPosition::Room(
+            CardPlayId(utils::DEBUG_EVENT_ID.fetch_add(1, Ordering::Relaxed)),
+            RoomId::RoomA,
+            RoomLocation::Defender,
+        ),
     )?;
     mutations::summon_minion(game, minion_id, InitiatedBy::GameAction, SummonMinion::IgnoreCosts)
 }

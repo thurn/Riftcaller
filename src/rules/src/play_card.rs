@@ -16,7 +16,7 @@ use std::iter;
 
 use anyhow::Result;
 use constants::game_constants;
-use core_data::game_primitives::{CardId, CardSubtype, CardType, InitiatedBy, Side};
+use core_data::game_primitives::{CardId, CardPlayId, CardSubtype, CardType, InitiatedBy, Side};
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent, Scope};
@@ -43,9 +43,17 @@ pub fn initiate(
     initiated_by: InitiatedBy,
     options: PlayCardOptions,
 ) -> Result<()> {
+    let card_play_id = CardPlayId(game.info.next_event_id());
     state_machine::initiate(
         game,
-        PlayCardData { card_id, initiated_by, target, options, step: PlayCardStep::Begin },
+        PlayCardData {
+            card_id,
+            initiated_by,
+            target,
+            card_play_id,
+            options,
+            step: PlayCardStep::Begin,
+        },
     )
 }
 
@@ -212,7 +220,7 @@ fn move_to_played_position(
     mutations::move_card(
         game,
         play_card.card_id,
-        CardPosition::Played(play_card.card_id.side, play_card.target),
+        CardPosition::Played(play_card.card_play_id, play_card.card_id.side, play_card.target),
     )?;
     Ok(Some(PlayCardStep::PayActionPoints))
 }
@@ -312,8 +320,14 @@ fn move_to_target_position(
     mutations::move_card(
         game,
         play_card.card_id,
-        queries::played_position(game, play_card.card_id.side, play_card.card_id, play_card.target)
-            .with_error(|| "No valid position")?,
+        queries::played_position(
+            game,
+            play_card.card_id.side,
+            play_card.card_id,
+            play_card.target,
+            play_card.card_play_id,
+        )
+        .with_error(|| "No valid position")?,
     )?;
     Ok(Some(PlayCardStep::Finish))
 }
