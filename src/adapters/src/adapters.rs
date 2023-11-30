@@ -31,15 +31,16 @@ use crate::response_builder::ResponseBuilder;
 
 pub mod response_builder;
 
-/// Possible game actions which can be associated with a client card identifier
+/// Possible custom cards which can be associated with a client card identifier
 #[derive(Debug, Copy, Clone)]
 pub enum CustomCardIdentifier {
     SummonProject = 1,
     Curse = 2,
     Dispel = 3,
-    Wound = 4,
-    Leyline = 5,
-    StatusMarker = 6,
+    RoomSelector = 4,
+    Wound = 5,
+    Leyline = 6,
+    StatusMarker = 7,
 }
 
 impl CustomCardIdentifier {
@@ -48,6 +49,7 @@ impl CustomCardIdentifier {
             1 => Some(CustomCardIdentifier::SummonProject),
             2 => Some(CustomCardIdentifier::Curse),
             3 => Some(CustomCardIdentifier::Dispel),
+            4 => Some(CustomCardIdentifier::RoomSelector),
             _ => None,
         }
     }
@@ -117,6 +119,8 @@ pub enum ServerCardId {
     /// Card representing the ability to destroy an evocation when the Champion
     /// is cursed
     DispelCard,
+    /// Card representing selecting a room during a room selector prompt.
+    RoomSelectorCard,
 }
 
 /// Converts a client [CardIdentifier] into a server [CardId] or [AbilityId].
@@ -128,6 +132,7 @@ pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
             CustomCardIdentifier::SummonProject => Ok(ServerCardId::SummonProject(result)),
             CustomCardIdentifier::Curse => Ok(ServerCardId::CurseCard),
             CustomCardIdentifier::Dispel => Ok(ServerCardId::DispelCard),
+            CustomCardIdentifier::RoomSelector => Ok(ServerCardId::RoomSelectorCard),
             _ => fail!("Invalid CustomCardIdentifier"),
         };
     }

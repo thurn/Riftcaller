@@ -188,6 +188,7 @@ impl Summarize for CardIdentifier {
             }
             ServerCardId::CurseCard => summary.primitive("RemoveCurse".to_string()),
             ServerCardId::DispelCard => summary.primitive("DispelCard".to_string()),
+            ServerCardId::RoomSelectorCard => summary.primitive("RoomSelector".to_string()),
         }
     }
 }

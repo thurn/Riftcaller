@@ -28,7 +28,10 @@ use rules::mana::ManaPurpose;
 use rules::{curses, flags, mana, queries};
 use {adapters, assets};
 
-use crate::{button_prompt, card_sync, interface, positions, status_markers, tutorial_display};
+use crate::{
+    button_prompt, card_sync, custom_card_views, interface, positions, status_markers,
+    tutorial_display,
+};
 
 pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
     let cards = game
@@ -45,20 +48,21 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
         })
         .chain(
             (0..curses::get(game))
-                .map(|number| card_sync::curse_card_view(builder, Some(game), number)),
+                .map(|number| custom_card_views::curse_card_view(builder, Some(game), number)),
         )
         .chain(
             curses::is_champion_cursed(game)
-                .then(|| card_sync::dispel_card_view(builder, Some(game))),
+                .then(|| custom_card_views::dispel_card_view(builder, Some(game))),
         )
         .chain(
             (game.champion.wounds > 0)
-                .then(|| card_sync::wound_card_view(builder, game.champion.wounds)),
+                .then(|| custom_card_views::wound_card_view(builder, game.champion.wounds)),
         )
         .chain(
             (game.champion.leylines > 0)
-                .then(|| card_sync::leyline_card_view(builder, game.champion.leylines)),
+                .then(|| custom_card_views::leyline_card_view(builder, game.champion.leylines)),
         )
+        .chain(custom_card_views::room_selector_card_view(builder, game))
         .collect::<Vec<_>>();
 
     builder.push_game_view(GameView {

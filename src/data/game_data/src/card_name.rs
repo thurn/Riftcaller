@@ -325,6 +325,7 @@ pub enum CardName {
     Lightbond,
     AlgrakCouncilsEnforcer,
     EriaTimeConduit,
+    LiminalTransposition,
 }
 
 impl CardName {

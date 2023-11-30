@@ -304,12 +304,22 @@ pub fn can_take_gain_mana_action(game: &GameState, side: Side) -> bool {
     dispatch::perform_query(game, CanTakeGainManaActionQuery(side), Flag::new(can_gain_mana)).into()
 }
 
+/// Returns whether the indicated room could be accessed by an ability based on
+/// its properties (e.g. whether it is occupied).
+pub fn is_valid_access_target(game: &GameState, room_id: RoomId) -> bool {
+    room_id.is_inner_room() || game.occupants(room_id).next().is_some()
+}
+
 /// Returns whether the indicated room could be the target of a raid based on
 /// its properties (occupancy, etc). To check whether the 'initiate raid' action
 /// itself can be performed, call [can_take_initiate_raid_action] instead.
 pub fn is_valid_raid_target(game: &GameState, room_id: RoomId) -> bool {
-    let valid = room_id.is_inner_room() || game.occupants(room_id).next().is_some();
-    dispatch::perform_query(game, CanInitiateRaidQuery(room_id), Flag::new(valid)).into()
+    dispatch::perform_query(
+        game,
+        CanInitiateRaidQuery(room_id),
+        Flag::new(is_valid_access_target(game, room_id)),
+    )
+    .into()
 }
 
 /// Returns whether a raid is currently active in this game.

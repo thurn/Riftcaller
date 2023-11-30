@@ -412,7 +412,21 @@ pub enum RoomId {
     RoomE,
 }
 
+pub static ROOMS: &'static [RoomId] = &[
+    RoomId::Vault,
+    RoomId::Sanctum,
+    RoomId::Crypts,
+    RoomId::RoomA,
+    RoomId::RoomB,
+    RoomId::RoomC,
+    RoomId::RoomD,
+    RoomId::RoomE,
+];
+
 pub static INNER_ROOMS: &'static [RoomId] = &[RoomId::Vault, RoomId::Sanctum, RoomId::Crypts];
+
+pub static OUTER_ROOMS: &'static [RoomId] =
+    &[RoomId::RoomA, RoomId::RoomB, RoomId::RoomC, RoomId::RoomD, RoomId::RoomE];
 
 impl RoomId {
     /// An 'inner room' is one of the three predefined rooms for the Overlord

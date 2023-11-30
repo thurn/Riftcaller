@@ -343,7 +343,7 @@ fn disable_position_overrides(builder: &ResponseBuilder, game: &GameState) -> bo
     builder.state.display_preference == Some(DisplayPreference::ShowArenaView(true))
         || matches!(
             game.player(builder.user_side).prompt_stack.current(),
-            Some(GamePrompt::PlayCardBrowser(..))
+            Some(GamePrompt::PlayCardBrowser(..)) | Some(GamePrompt::RoomSelector(..))
         )
 }
 
@@ -414,6 +414,11 @@ fn prompt_position_override(
             }
         }
         GamePrompt::PriorityPrompt => {}
+        GamePrompt::RoomSelector(..) => {
+            if card.position() == CardPosition::Hand(builder.user_side) {
+                return Some(for_card(card, hand_storage()));
+            }
+        }
     }
 
     None

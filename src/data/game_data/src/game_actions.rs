@@ -276,6 +276,27 @@ pub struct ButtonPrompt {
     pub choices: Vec<PromptChoice>,
 }
 
+/// Reason why a [RoomSelectorPrompt] is being shown
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+pub enum RoomSelectorPromptContext {
+    Access,
+}
+
+/// Mutation to apply to the room chosen via a [RoomSelectorPrompt].
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+pub enum RoomSelectorPromptEffect {
+    ChangeRaidTarget,
+}
+
+/// Shows a prompt to pick a target room.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RoomSelectorPrompt {
+    pub initiated_by: AbilityId,
+    pub effect: RoomSelectorPromptEffect,
+    pub valid_rooms: Vec<RoomId>,
+    pub context: Option<RoomSelectorPromptContext>,
+}
+
 /// Possible types of prompts which might be displayed to a user during the
 /// game.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -283,9 +304,13 @@ pub enum GamePrompt {
     ButtonPrompt(ButtonPrompt),
     CardSelector(CardSelectorPrompt),
     PlayCardBrowser(PlayCardBrowser),
+
     /// Prompt which lets a player activate abilities when they otherwise could
     /// not
     PriorityPrompt,
+
+    /// Prompt to pick a room
+    RoomSelector(RoomSelectorPrompt),
 }
 
 /// Possible actions in response to the [GamePrompt] currently being shown to a
@@ -298,6 +323,8 @@ pub enum PromptAction {
     CardSelectorSubmit,
     /// Button to avoid playing a card when shown a 'Play Card' browser
     SkipPlayingCard,
+    /// Select a room via a [RoomSelectorPrompt].
+    RoomPromptSelect(RoomId),
 }
 
 /// Presents a choice to a user, typically communicated via a series of buttons

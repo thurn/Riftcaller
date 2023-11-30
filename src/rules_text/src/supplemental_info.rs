@@ -158,7 +158,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         }
         TextTokenKind::InnerRoom | TextTokenKind::InnerRooms => entry("Inner Room", "The sanctum, vault or crypt"),
         TextTokenKind::OuterRoom | TextTokenKind::OuterRooms => {
-            entry("Outer Room", "Room other than the sanctum, vault or crypts")
+            entry("Outer Room", "Room other than the sanctum, vault or crypt")
         }
         TextTokenKind::Breach => {
             entry("Breach", "Allows this weapon to bypass some amount of Shield")

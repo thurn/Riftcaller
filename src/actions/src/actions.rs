@@ -25,9 +25,10 @@ use game_data::delegate_data::DrawCardActionEvent;
 use game_data::game_actions::{
     BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, CardTarget,
     GameAction, GamePrompt, GameStateAction, PromptAction, PromptChoice, PromptContext,
+    RoomSelectorPromptEffect,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
+use game_data::game_state::{GamePhase, GameState, MulliganDecision, RaidJumpRequest, TurnState};
 use game_data::history_data::HistoryEvent;
 use game_data::state_machine_data::PlayCardOptions;
 use rules::mana::ManaPurpose;
@@ -444,6 +445,10 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         (GamePrompt::PriorityPrompt, PromptAction::ButtonPromptSelect(0)) => {
             game.player_mut(user_side).prompt_stack.pop();
         }
+        (GamePrompt::RoomSelector(room_prompt), PromptAction::RoomPromptSelect(room_id)) => {
+            verify!(room_prompt.valid_rooms.contains(&room_id), "Invalid room selected");
+            handle_room_selector_submit(game, user_side, room_prompt.effect, room_id)?;
+        }
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
 
@@ -485,6 +490,22 @@ fn handle_card_selector_submit(
         }
         BrowserPromptTarget::Deck => {
             mutations::move_cards(game, &subjects, CardPosition::DeckTop(user_side))?;
+        }
+    }
+
+    game.player_mut(user_side).prompt_stack.pop();
+    check_start_next_turn(game)
+}
+
+fn handle_room_selector_submit(
+    game: &mut GameState,
+    user_side: Side,
+    effect: RoomSelectorPromptEffect,
+    room_id: RoomId,
+) -> Result<()> {
+    match effect {
+        RoomSelectorPromptEffect::ChangeRaidTarget => {
+            mutations::apply_raid_jump(game, RaidJumpRequest::ChangeTarget(room_id));
         }
     }
 

@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use anyhow::Result;
 use core_data::game_primitives::HasSide;
 use game_data::delegate_data::Scope;
-use game_data::game_actions::{ButtonPrompt, ButtonPromptContext, GamePrompt, PromptChoice};
+use game_data::game_actions::{
+    ButtonPrompt, ButtonPromptContext, GamePrompt, PromptChoice, RoomSelectorPrompt,
+};
 use game_data::game_state::GameState;
 
 /// Adds a choice prompt for the `side` player containing the choices in
@@ -46,4 +49,16 @@ pub fn priority_window(game: &mut GameState, scope: Scope) {
     }
 
     game.player_mut(scope.side()).prompt_stack.push(GamePrompt::PriorityPrompt);
+}
+
+/// Show a room selector prompt to a player.
+///
+/// Has no effect if the `valid_rooms` on the provided prompt is empty.
+pub fn room_selector(game: &mut GameState, prompt: RoomSelectorPrompt) -> Result<()> {
+    if prompt.valid_rooms.is_empty() {
+        return Ok(());
+    }
+
+    game.player_mut(prompt.initiated_by.side()).prompt_stack.push(GamePrompt::RoomSelector(prompt));
+    Ok(())
 }

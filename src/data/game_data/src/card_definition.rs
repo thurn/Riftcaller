@@ -22,6 +22,7 @@ use std::fmt::{Debug, Formatter};
 
 use anyhow::Result;
 use core_data::adventure_primitives::{Coins, Skill};
+use core_data::game_primitives;
 use core_data::game_primitives::{
     AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
     HealthValue, ManaValue, PointsValue, PowerChargeValue, ProgressValue, Rarity, RazeCost, RoomId,
@@ -175,6 +176,19 @@ pub enum TargetRequirement<T> {
     /// predicate is expected to check room identity based on the card's text,
     /// it does not need to verify that e.g. the card can currently be played.
     TargetRoom(RoomPredicate<T>),
+}
+
+impl<T: Copy> TargetRequirement<T> {
+    /// Returns true if there are currently any valid targets for this
+    /// TargetRequirement in the current game state.
+    pub fn has_valid_targets(&self, game: &GameState, id: T) -> bool {
+        match self {
+            TargetRequirement::None => true,
+            TargetRequirement::TargetRoom(predicate) => {
+                game_primitives::ROOMS.iter().any(|room_id| predicate(game, id, *room_id))
+            }
+        }
+    }
 }
 
 impl<T> Debug for TargetRequirement<T> {

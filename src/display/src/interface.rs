@@ -24,7 +24,7 @@ use protos::spelldawn::InterfaceMainControls;
 use raid_state::raid_prompt;
 use rules::flags;
 
-use crate::{button_prompt, card_selector, play_card_browser};
+use crate::{button_prompt, card_selector, play_card_browser, room_selector_prompt};
 
 /// Returns a [InterfaceMainControls] to render the interface state for the
 /// provided `game`.
@@ -48,6 +48,7 @@ pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMa
                     choices: vec![PromptChoice::new().effect(GameEffect::Continue)],
                 },
             ),
+            GamePrompt::RoomSelector(prompt) => room_selector_prompt::controls(prompt),
         };
     } else if let Some(raid) = &game.raid {
         return raid_prompt::build(game, raid, side);

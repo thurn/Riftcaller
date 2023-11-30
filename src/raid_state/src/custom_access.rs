@@ -17,7 +17,8 @@ use core_data::game_primitives::{CardId, InitiatedBy, RaidId, RoomId};
 use game_data::delegate_data::CustomAccessEndEvent;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
-use rules::dispatch;
+use rules::{dispatch, flags};
+use with_error::verify;
 
 /// Initiates a "Custom Access" raid.
 ///
@@ -57,6 +58,8 @@ pub fn initiate(
     initiated_by: InitiatedBy,
     accessed: Vec<CardId>,
 ) -> Result<()> {
+    verify!(!flags::raid_active(game), "Raid is already active");
+
     game.raid = Some(RaidData {
         target,
         initiated_by,

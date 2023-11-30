@@ -18,7 +18,7 @@ use anyhow::Result;
 use core_data::game_primitives::{GameId, Side};
 use database::Database;
 use display::{render, set_display_preference};
-use game_data::game_actions::{self, DisplayPreference, GameAction};
+use game_data::game_actions::{self, DisplayPreference, GameAction, PromptAction};
 use game_data::game_state::GameState;
 use player_data::PlayerState;
 use protos::spelldawn::{
@@ -178,6 +178,9 @@ pub async fn handle_play_card(
         ServerCardId::SummonProject(card_id) => GameAction::SummonProject(card_id),
         ServerCardId::CurseCard => GameAction::RemoveCurse,
         ServerCardId::DispelCard => GameAction::DispelEvocation,
+        ServerCardId::RoomSelectorCard => GameAction::PromptAction(PromptAction::RoomPromptSelect(
+            card_target(&action.target).room_id()?,
+        )),
     };
     handle_game_action(database, data, &action).await
 }

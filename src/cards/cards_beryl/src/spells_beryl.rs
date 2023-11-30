@@ -18,19 +18,23 @@ use card_helpers::{
     abilities, costs, delegates, history, play_card_browser_builder, raids, requirements,
     show_prompt, text, this,
 };
+use core_data::game_primitives;
 use core_data::game_primitives::{
     AbilityId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
+use game_data::card_definition::{
+    Ability, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
+};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::{
-    CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, UnplayedAction,
+    CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, RoomSelectorPrompt,
+    RoomSelectorPromptContext, RoomSelectorPromptEffect, UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
@@ -38,7 +42,7 @@ use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use raid_state::custom_access;
-use rules::{curses, draw_cards, mutations, CardDefinitionExt};
+use rules::{curses, draw_cards, flags, mutations, CardDefinitionExt};
 use with_error::fail;
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
@@ -568,5 +572,82 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
             )),
         ],
         config: CardConfig::default(),
+    }
+}
+
+pub fn liminal_transposition(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::LiminalTransposition,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(1, 0)),
+        image: assets::champion_card(meta, "liminal_transposition"),
+        card_type: CardType::Spell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new(text![
+                text!["Raid target room"],
+                text!["If successful, instead of accessing that room, access another", OuterRoom],
+                text!["You cannot score cards accessed"]
+            ])
+            .delegate(this::on_played(|g, s, played| raids::initiate(g, s, played.target)))
+            .delegate(delegates::on_raid_access_start(
+                requirements::matching_raid,
+                |g, s, event| {
+                    VisualEffects::new()
+                        .timed_effect(
+                            GameObjectId::Character(Side::Champion),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(2))
+                                .scale(2.0)
+                                .sound(SoundEffect::WaterMagic("RPG3_WaterMagic2_Cast"))
+                                .effect_color(design::BLUE_900),
+                        )
+                        .ability_alert(s)
+                        .apply(g);
+
+                    show_prompt::room_selector(
+                        g,
+                        RoomSelectorPrompt {
+                            initiated_by: s.ability_id(),
+                            effect: RoomSelectorPromptEffect::ChangeRaidTarget,
+                            valid_rooms: game_primitives::OUTER_ROOMS
+                                .iter()
+                                .map(|r| *r)
+                                .filter(|room_id| {
+                                    *room_id != event.target
+                                        && flags::is_valid_access_target(g, *room_id)
+                                })
+                                .collect(),
+                            context: Some(RoomSelectorPromptContext::Access),
+                        },
+                    )
+                },
+            ))
+            .delegate(delegates::can_score_accessed_card(
+                requirements::matching_raid,
+                |_, _, _, current| current.disallow(),
+            )),
+            abilities::silent_can_play(|g, _, _, current| {
+                current.add_constraint(
+                    game_primitives::OUTER_ROOMS
+                        .iter()
+                        .any(|r| flags::is_valid_access_target(g, *r)),
+                )
+            }),
+        ],
+        config: CardConfigBuilder::new()
+            .custom_targeting(TargetRequirement::TargetRoom(|g, _, room_id| {
+                // Must either target an inner room *or* an outer room when there is at least
+                // one other valid outer room to access.
+                room_id.is_inner_room()
+                    || game_primitives::OUTER_ROOMS
+                        .iter()
+                        .filter(|r| flags::is_valid_access_target(g, **r))
+                        .count()
+                        >= 2
+            }))
+            .build(),
     }
 }

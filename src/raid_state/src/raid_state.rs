@@ -82,6 +82,7 @@ pub fn initiate_with_callback(
     options: InitiateRaidOptions,
     on_begin: impl Fn(&mut GameState, RaidId),
 ) -> Result<()> {
+    verify!(!flags::raid_active(game), "Raid is already active");
     let raid_id = RaidId(game.info.next_event_id());
     let raid = RaidData {
         target,

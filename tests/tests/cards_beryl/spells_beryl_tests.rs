@@ -463,3 +463,107 @@ fn delve_into_darkness_does_not_count_for_glimmersong() {
     g.click(Button::EndAccess);
     assert_eq!(g.user.cards.get(glimmersong).attack_icon(), "0")
 }
+
+#[test]
+fn liminal_transposition() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestProject2Cost3Raze),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
+    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
+    g.click(Button::Destroy);
+    g.click(Button::EndRaid);
+    assert!(g.user.cards.opponent_discard_pile().contains_card(CardName::TestProject2Cost3Raze));
+}
+
+#[test]
+fn liminal_transposition_cannot_score() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
+    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
+    assert!(!g.has(Button::Score));
+}
+
+#[test]
+fn liminal_transposition_cannot_target_single_outer_room() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+        )
+        .build();
+    let id = g.add_to_hand(CardName::LiminalTransposition);
+    assert!(g.play_card_with_result(id, g.user_id(), Some(RoomId::RoomA)).is_err());
+}
+
+#[test]
+fn liminal_transposition_can_target_outer_room_with_2_occupied() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
+                .room_occupant(RoomId::RoomB, CardName::TestProject2Cost3Raze),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::RoomA);
+    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    g.play_card(room_selector, g.user_id(), Some(RoomId::RoomB));
+    g.click(Button::Destroy);
+}
+
+#[test]
+fn liminal_transposition_cannot_target_same_room() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
+                .room_occupant(RoomId::RoomB, CardName::TestProject2Cost3Raze),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::RoomA);
+    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    assert!(g.play_card_with_result(room_selector, g.user_id(), Some(RoomId::RoomA)).is_err());
+}
+
+#[test]
+fn liminal_transposition_counts_for_warriors_sign() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+        )
+        .actions(4)
+        .build();
+    g.create_and_play(CardName::WarriorsSign);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Crypts);
+    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn liminal_transposition_counts_for_glimmersong() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(
+            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+        )
+        .build();
+    g.create_and_play(CardName::Glimmersong);
+    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
+    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
+    g.click(Button::EndRaid);
+    assert!(g.user.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('1'));
+}

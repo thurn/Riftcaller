@@ -286,8 +286,5 @@ pub fn on_query_card_status_markers(
 pub fn can_score_accessed_card(
     transformation: TransformationFn<AccessEvent<CardId>, Flag>,
 ) -> Delegate {
-    Delegate::CanScoreAccessedCard(QueryDelegate {
-        requirement: requirements::face_up_in_play,
-        transformation,
-    })
+    delegates::can_score_accessed_card(requirements::face_up_in_play, transformation)
 }
