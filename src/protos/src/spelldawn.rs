@@ -3192,7 +3192,7 @@ pub enum RoomIdentifier {
     Unspecified = 0,
     Vault = 1,
     Sanctum = 2,
-    Crypts = 3,
+    Crypt = 3,
     RoomA = 4,
     RoomB = 5,
     RoomC = 6,
@@ -3210,7 +3210,7 @@ impl RoomIdentifier {
             RoomIdentifier::Unspecified => "ROOM_IDENTIFIER_UNSPECIFIED",
             RoomIdentifier::Vault => "ROOM_IDENTIFIER_VAULT",
             RoomIdentifier::Sanctum => "ROOM_IDENTIFIER_SANCTUM",
-            RoomIdentifier::Crypts => "ROOM_IDENTIFIER_CRYPTS",
+            RoomIdentifier::Crypt => "ROOM_IDENTIFIER_CRYPT",
             RoomIdentifier::RoomA => "ROOM_IDENTIFIER_ROOM_A",
             RoomIdentifier::RoomB => "ROOM_IDENTIFIER_ROOM_B",
             RoomIdentifier::RoomC => "ROOM_IDENTIFIER_ROOM_C",
@@ -3225,7 +3225,7 @@ impl RoomIdentifier {
             "ROOM_IDENTIFIER_UNSPECIFIED" => Some(Self::Unspecified),
             "ROOM_IDENTIFIER_VAULT" => Some(Self::Vault),
             "ROOM_IDENTIFIER_SANCTUM" => Some(Self::Sanctum),
-            "ROOM_IDENTIFIER_CRYPTS" => Some(Self::Crypts),
+            "ROOM_IDENTIFIER_CRYPT" => Some(Self::Crypt),
             "ROOM_IDENTIFIER_ROOM_A" => Some(Self::RoomA),
             "ROOM_IDENTIFIER_ROOM_B" => Some(Self::RoomB),
             "ROOM_IDENTIFIER_ROOM_C" => Some(Self::RoomC),
@@ -3754,9 +3754,7 @@ impl MapTileType {
 /// Generated server implementations.
 pub mod spelldawn_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-
     use tonic::codegen::*;
-
     /// Generated trait containing gRPC methods that should be implemented for
     /// use with SpelldawnServer.
     #[async_trait]

@@ -341,7 +341,7 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
                     Mana(0)
                 ],
                 delegates::on_raid_access_start(requirements::in_hand, |g, s, event| {
-                    if event.target == RoomId::Crypts {
+                    if event.target == RoomId::Crypt {
                         show_prompt::with_choices(
                             g,
                             s,
@@ -369,7 +369,7 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
             .delegate(this::on_activated(|g, s, _| {
                 custom_access::initiate(
                     g,
-                    RoomId::Crypts,
+                    RoomId::Crypt,
                     InitiatedBy::Ability(s.ability_id()),
                     g.discard_pile(Side::Overlord).map(|c| c.id).collect(),
                 )?;

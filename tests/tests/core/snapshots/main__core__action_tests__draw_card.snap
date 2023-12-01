@@ -1,6 +1,6 @@
 ---
 source: tests/tests/core/action_tests.rs
-assertion_line: 71
+assertion_line: 67
 expression: "Summary::run(&response)"
 ---
 
@@ -124,7 +124,7 @@ command_list:
             title: "Test Minion Deal Damage End Raid"
             rules_text: "<RulesText>"
             targeting: 
-            valid_rooms: VaultSanctumCryptsRoomARoomBRoomCRoomDRoomE
+            valid_rooms: VaultSanctumCryptRoomARoomBRoomCRoomDRoomE
             on_release_position: 
                 sorting_key: 101
                 position: ObjectPositionRoom { room_id: Unspecified, room_location: Front }

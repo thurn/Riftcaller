@@ -514,7 +514,7 @@ fn raid_browser(game: &GameState, raid: &RaidData, defenders: Vec<CardId>) -> Ve
         RoomId::Sanctum => {
             result.push(GameObjectId::Character(Side::Overlord));
         }
-        RoomId::Crypts => {
+        RoomId::Crypt => {
             result.push(GameObjectId::DiscardPile(Side::Overlord));
         }
         _ => {}
@@ -531,7 +531,7 @@ fn raid_access_browser(game: &GameState, raid: &RaidData) -> Vec<GameObjectId> {
         RoomId::Sanctum => {
             game.hand(Side::Overlord).map(|card| GameObjectId::CardId(card.id)).collect()
         }
-        RoomId::Crypts => {
+        RoomId::Crypt => {
             game.discard_pile(Side::Overlord).map(|card| GameObjectId::CardId(card.id)).collect()
         }
         _ => raid.accessed.iter().map(|card_id| GameObjectId::CardId(*card_id)).collect(),

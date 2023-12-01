@@ -444,7 +444,7 @@ pub fn phase_door(meta: CardMetadata) -> CardDefinition {
             text![text!["Raid the", Crypt], text!["If successful, access the", Vault, "instead"]],
         )
         .delegate(this::on_activated(|g, s, _| {
-            raids::initiate(g, s, CardTarget::Room(RoomId::Crypts))?;
+            raids::initiate(g, s, CardTarget::Room(RoomId::Crypt))?;
             Ok(())
         }))
         .delegate(delegates::on_raid_access_start(requirements::matching_raid, |g, s, _| {

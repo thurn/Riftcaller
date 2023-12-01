@@ -164,7 +164,7 @@ pub fn room_identifier(room_id: RoomId) -> i32 {
     (match room_id {
         RoomId::Vault => RoomIdentifier::Vault,
         RoomId::Sanctum => RoomIdentifier::Sanctum,
-        RoomId::Crypts => RoomIdentifier::Crypts,
+        RoomId::Crypt => RoomIdentifier::Crypt,
         RoomId::RoomA => RoomIdentifier::RoomA,
         RoomId::RoomB => RoomIdentifier::RoomB,
         RoomId::RoomC => RoomIdentifier::RoomC,
@@ -177,7 +177,7 @@ pub fn room_id(identifier: i32) -> Result<RoomId> {
     match RoomIdentifier::from_i32(identifier) {
         Some(RoomIdentifier::Vault) => Ok(RoomId::Vault),
         Some(RoomIdentifier::Sanctum) => Ok(RoomId::Sanctum),
-        Some(RoomIdentifier::Crypts) => Ok(RoomId::Crypts),
+        Some(RoomIdentifier::Crypt) => Ok(RoomId::Crypt),
         Some(RoomIdentifier::RoomA) => Ok(RoomId::RoomA),
         Some(RoomIdentifier::RoomB) => Ok(RoomId::RoomB),
         Some(RoomIdentifier::RoomC) => Ok(RoomId::RoomC),

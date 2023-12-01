@@ -94,7 +94,7 @@ fn restoration_upgraded_stacking() {
     )
     .build();
     assert!(g.user.cards.artifacts().is_empty());
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.create_and_play_upgraded(CardName::Restoration);
     let id = g.user.cards.hand().find_card_id(CardName::TestWeaponReduceCostOnSuccessfulRaid);
@@ -361,7 +361,7 @@ fn raid_inner_rooms(g: &mut TestSession) {
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Sanctum);
     g.click(Button::EndRaid);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
 }
 
@@ -438,7 +438,7 @@ fn delve_into_darkness_cannot_play_failed_raid() {
         .build();
     g.initiate_raid(RoomId::Sanctum);
     g.click(Button::EndRaid);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Vault);
     g.click(Button::NoWeapon);
@@ -546,7 +546,7 @@ fn liminal_transposition_counts_for_warriors_sign() {
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Vault);
     g.click(Button::EndRaid);
-    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Crypts);
+    g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Crypt);
     let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
     g.click(Button::EndRaid);

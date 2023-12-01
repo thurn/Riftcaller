@@ -909,7 +909,7 @@ fn legal_actions() {
             GameAction::PlayCard(spell_id, game_actions::CardTarget::None),
             GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Sanctum)),
             GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Vault)),
-            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Crypts)),
+            GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::Crypt)),
             GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomA)),
             GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomB)),
             GameAction::PlayCard(minion_id, game_actions::CardTarget::Room(RoomId::RoomC)),
@@ -940,7 +940,7 @@ fn champion_legal_actions() {
             GameAction::DrawCard,
             GameAction::InitiateRaid(RoomId::Sanctum),
             GameAction::InitiateRaid(RoomId::Vault),
-            GameAction::InitiateRaid(RoomId::Crypts),
+            GameAction::InitiateRaid(RoomId::Crypt),
         ],
     );
 }

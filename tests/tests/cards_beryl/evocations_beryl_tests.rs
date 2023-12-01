@@ -393,7 +393,7 @@ fn knowledge_of_the_beyond_shield_of_the_flames_evade() {
 fn splinter_of_twilight_play_for_free() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.add_to_hand(CardName::SplinterOfTwilight);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::Play);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA);
     assert!(g.user.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));

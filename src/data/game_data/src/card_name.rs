@@ -240,7 +240,7 @@ pub enum CardName {
     TutorialDisableGainMana,
     TutorialDisableRaidSanctum,
     TutorialDisableRaidVault,
-    TutorialDisableRaidCrypts,
+    TutorialDisableRaidCrypt,
     TutorialDisableRaidOuter,
     TutorialDisableRaidContinue,
     TutorialDisableEndRaid,

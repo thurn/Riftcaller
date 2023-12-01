@@ -43,7 +43,7 @@ fn accumulator() {
     let card_cost = 3;
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::Accumulator);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert_eq!("1", g.user.get_card(id).arena_icon());
     g.activate_ability(id, 1);
@@ -57,10 +57,10 @@ fn mage_gloves() {
     let id = g.create_and_play(CardName::MageGloves);
     assert_eq!("12", g.user.get_card(id).arena_icon());
     assert_eq!(
-        vec![RoomIdentifier::Vault, RoomIdentifier::Sanctum, RoomIdentifier::Crypts],
+        vec![RoomIdentifier::Vault, RoomIdentifier::Sanctum, RoomIdentifier::Crypt],
         g.user.cards.get(test_helpers::ability_id(id, 1)).valid_rooms()
     );
-    g.activate_ability_with_target(id, 1, RoomId::Crypts);
+    g.activate_ability_with_target(id, 1, RoomId::Crypt);
     g.click(Button::EndRaid);
     assert_eq!(test_constants::STARTING_MANA + 3 - card_cost, g.me().mana());
     assert_eq!("9", g.user.get_card(id).arena_icon());
@@ -79,7 +79,7 @@ fn mage_gloves_play_after_raid() {
     g.play_card(id, g.user_id(), None);
     assert_eq!("12", g.user.get_card(id).arena_icon());
     assert_eq!(
-        vec![RoomIdentifier::Vault, RoomIdentifier::Crypts],
+        vec![RoomIdentifier::Vault, RoomIdentifier::Crypt],
         g.user.cards.get(test_helpers::ability_id(id, 1)).valid_rooms()
     );
 }
@@ -89,9 +89,9 @@ fn mage_gloves_play_after_raid() {
 fn mage_gloves_repeat_panic() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::MageGloves);
-    g.activate_ability_with_target(id, 1, RoomId::Crypts);
+    g.activate_ability_with_target(id, 1, RoomId::Crypt);
     g.click(Button::EndRaid);
-    g.activate_ability_with_target(id, 1, RoomId::Crypts);
+    g.activate_ability_with_target(id, 1, RoomId::Crypt);
 }
 
 #[test]
@@ -142,7 +142,7 @@ fn marauders_axe() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.add_to_hand(CardName::MaraudersAxe);
     assert_eq!(card_cost.to_string(), g.user.cards.get(id).top_left_icon());
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert_eq!((card_cost - 2).to_string(), g.user.cards.get(id).top_left_icon());
     g.play_card(id, g.user_id(), None);

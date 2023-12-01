@@ -71,9 +71,9 @@ pub fn room_is_vault(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
     *room_id == RoomId::Vault
 }
 
-/// RequirementFn which checks if the [RoomId] parameter is [RoomId::Crypts]
-pub fn room_is_crypts(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
-    *room_id == RoomId::Crypts
+/// RequirementFn which checks if the [RoomId] parameter is [RoomId::Crypt]
+pub fn room_is_crypt(_: &GameState, _: Scope, room_id: &RoomId) -> bool {
+    *room_id == RoomId::Crypt
 }
 
 /// RequirementFn that this delegate's card is currently face down & in play

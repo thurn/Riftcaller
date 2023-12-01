@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypts, RoomIdMarker,
+    ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypt, RoomIdMarker,
     RoomIdSanctum, RoomIdVault, Side, TurnNumber,
 };
 use game_data::card_definition::Resonance;
@@ -120,7 +120,7 @@ pub fn on_vault_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
 /// accesses the crypt
 pub fn on_crypt_access_start(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     Delegate::RaidAccessStart(EventDelegate {
-        requirement: in_play_with_room::<RoomIdCrypts>,
+        requirement: in_play_with_room::<RoomIdCrypt>,
         mutation,
     })
 }
@@ -141,12 +141,9 @@ pub fn after_vault_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
 }
 
 /// A delegate which fires when its card is face up & in play when a raid on the
-/// crypts ends in success
-pub fn after_crypts_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
-    Delegate::RaidSuccess(EventDelegate {
-        requirement: in_play_with_room::<RoomIdCrypts>,
-        mutation,
-    })
+/// crypt ends in success
+pub fn after_crypt_accessed(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
+    Delegate::RaidSuccess(EventDelegate { requirement: in_play_with_room::<RoomIdCrypt>, mutation })
 }
 
 /// A delegate which fires when its card is face up & in play when a raid's

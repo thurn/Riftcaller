@@ -114,7 +114,7 @@ impl Component for DebugCreateCardPanel {
                     ))
                     .child(self.button(
                         "Crypt Defender",
-                        CardPosition::Room(id, RoomId::Crypts, RoomLocation::Defender),
+                        CardPosition::Room(id, RoomId::Crypt, RoomLocation::Defender),
                         true,
                     ))
                     .child(self.button(

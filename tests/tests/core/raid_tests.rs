@@ -407,18 +407,18 @@ fn raid_sanctum() {
 }
 
 #[test]
-fn raid_crypts() {
+fn raid_crypt() {
     let mut g = TestGame::new(TestSide::new(Side::Champion))
         .current_turn(Side::Overlord)
         .actions(1)
         .opponent(TestSide::new(Side::Overlord).in_discard_face_down(CardName::TestScheme3_10))
         .build();
 
-    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Crypts);
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Crypt);
     g.pass_turn(Side::Overlord);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.opponent_click(Button::Summon);
 
     let response = g.click_on(g.user_id(), "Test Weapon");

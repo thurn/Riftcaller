@@ -143,7 +143,7 @@ fn spear_of_conquest() {
         .build();
     g.create_and_play(CardName::SpearOfConquest);
 
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert!(g
         .user
@@ -153,7 +153,7 @@ fn spear_of_conquest() {
         .arena_icon()
         .contains('1'));
 
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert!(g
         .user
@@ -197,11 +197,11 @@ fn blade_of_reckoning() {
         )
         .build();
     g.create_and_play(CardName::BladeOfReckoning);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert!(g
         .user
@@ -244,7 +244,7 @@ fn warriors_sign() {
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Vault);
     g.click(Button::EndRaid);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert_eq!(g.me().actions(), 1);
 }
@@ -266,7 +266,7 @@ fn warriors_sign_two_of_same() {
 fn warriors_sign_alternate_order() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(4).build();
     g.create_and_play_upgraded(CardName::WarriorsSign);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Sanctum);
     g.click(Button::EndRaid);
@@ -341,7 +341,7 @@ fn phase_door_defender() {
         .opponent(
             TestSide::new(Side::Overlord)
                 .deck_top(CardName::TestScheme3_10)
-                .face_up_defender(RoomId::Crypts, CardName::TestInfernalMinion),
+                .face_up_defender(RoomId::Crypt, CardName::TestInfernalMinion),
         )
         .build();
     g.create_and_play(CardName::TestInfernalWeapon);
@@ -492,7 +492,7 @@ fn glimmersong() {
     g.create_and_play(CardName::Glimmersong);
     g.initiate_raid(RoomId::Sanctum);
     g.click(Button::EndRaid);
-    g.initiate_raid(RoomId::Crypts);
+    g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert_eq!(
         "2".to_string(),

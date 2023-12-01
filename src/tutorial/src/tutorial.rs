@@ -44,7 +44,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardName::TutorialDisableGainMana,
                 CardName::TutorialDisableRaidSanctum,
                 CardName::TutorialDisableRaidVault,
-                CardName::TutorialDisableRaidCrypts,
+                CardName::TutorialDisableRaidCrypt,
                 CardName::TutorialDisableRaidOuter,
                 CardName::TutorialDisableRaidContinue,
                 CardName::TutorialDisableEndRaid

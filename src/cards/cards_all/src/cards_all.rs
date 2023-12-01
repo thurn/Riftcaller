@@ -116,7 +116,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_sanctum);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_vault);
-    DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_crypts);
+    DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_crypt);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_outer);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_continue);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_end_raid);

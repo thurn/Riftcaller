@@ -404,7 +404,7 @@ pub enum RoomId {
     /// The Overlord's hand
     Sanctum,
     /// The Overlord's discard pile
-    Crypts,
+    Crypt,
     RoomA,
     RoomB,
     RoomC,
@@ -415,7 +415,7 @@ pub enum RoomId {
 pub static ROOMS: &'static [RoomId] = &[
     RoomId::Vault,
     RoomId::Sanctum,
-    RoomId::Crypts,
+    RoomId::Crypt,
     RoomId::RoomA,
     RoomId::RoomB,
     RoomId::RoomC,
@@ -423,7 +423,7 @@ pub static ROOMS: &'static [RoomId] = &[
     RoomId::RoomE,
 ];
 
-pub static INNER_ROOMS: &'static [RoomId] = &[RoomId::Vault, RoomId::Sanctum, RoomId::Crypts];
+pub static INNER_ROOMS: &'static [RoomId] = &[RoomId::Vault, RoomId::Sanctum, RoomId::Crypt];
 
 pub static OUTER_ROOMS: &'static [RoomId] =
     &[RoomId::RoomA, RoomId::RoomB, RoomId::RoomC, RoomId::RoomD, RoomId::RoomE];
@@ -433,7 +433,7 @@ impl RoomId {
     /// player's deck, hand, and discard pile. Inner rooms cannot contain
     /// Schemes or Projects.
     pub fn is_inner_room(&self) -> bool {
-        matches!(self, RoomId::Vault | RoomId::Sanctum | RoomId::Crypts)
+        matches!(self, RoomId::Vault | RoomId::Sanctum | RoomId::Crypt)
     }
 
     /// An 'outer room' is any room other than the three pre-defined inner rooms
@@ -466,10 +466,10 @@ impl RoomIdMarker for RoomIdSanctum {
     }
 }
 
-pub struct RoomIdCrypts;
-impl RoomIdMarker for RoomIdCrypts {
+pub struct RoomIdCrypt;
+impl RoomIdMarker for RoomIdCrypt {
     fn room_id() -> RoomId {
-        RoomId::Crypts
+        RoomId::Crypt
     }
 }
 

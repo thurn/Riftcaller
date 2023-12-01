@@ -105,7 +105,7 @@ command_list:
         user: 
             side: Champion
             player_info: 
-            valid_rooms_to_visit: VaultSanctumCryptsRoomA
+            valid_rooms_to_visit: VaultSanctumCryptRoomA
             mana: 996
             action_tracker: 3
             score: 0
@@ -327,7 +327,7 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-            valid_rooms_to_visit: VaultSanctumCryptsRoomA
+            valid_rooms_to_visit: VaultSanctumCryptRoomA
             mana: 996
             action_tracker: 3
             score: 0

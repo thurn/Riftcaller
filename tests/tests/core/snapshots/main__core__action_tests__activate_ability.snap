@@ -9,7 +9,7 @@ command_list:
         user: 
             side: Champion
             player_info: 
-            valid_rooms_to_visit: VaultSanctumCrypts
+            valid_rooms_to_visit: VaultSanctumCrypt
             mana: 998
             action_tracker: 1
             score: 0
@@ -84,7 +84,7 @@ command_list:
         user: 
             side: Champion
             player_info: 
-            valid_rooms_to_visit: VaultSanctumCrypts
+            valid_rooms_to_visit: VaultSanctumCrypt
             mana: 1000
             action_tracker: 1
             score: 0
@@ -168,7 +168,7 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-            valid_rooms_to_visit: VaultSanctumCrypts
+            valid_rooms_to_visit: VaultSanctumCrypt
             mana: 998
             action_tracker: 1
             score: 0
@@ -246,7 +246,7 @@ channel_response:
         opponent: 
             side: Champion
             player_info: 
-            valid_rooms_to_visit: VaultSanctumCrypts
+            valid_rooms_to_visit: VaultSanctumCrypt
             mana: 1000
             action_tracker: 1
             score: 0

@@ -44,7 +44,7 @@ pub fn select_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<Vec
                 count as usize,
             )
         }
-        RoomId::Crypts => {
+        RoomId::Crypt => {
             game.card_list_for_position(Side::Overlord, CardPosition::DiscardPile(Side::Overlord))
         }
         _ => game.occupants(target).map(|c| c.id).collect(),
