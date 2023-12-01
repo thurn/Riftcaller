@@ -16,9 +16,9 @@ use std::collections::HashSet;
 
 use anyhow::Result;
 use core_data::game_primitives::Side;
-use game_data::game_actions::{ButtonPrompt, GamePrompt, PromptChoice};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
+use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice};
 
 use crate::mana;
 use crate::mana::ManaPurpose;

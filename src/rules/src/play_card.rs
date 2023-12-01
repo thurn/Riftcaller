@@ -20,13 +20,13 @@ use core_data::game_primitives::{CardId, CardPlayId, CardSubtype, CardType, Init
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent, Scope};
-use game_data::game_actions::{
-    ButtonPrompt, ButtonPromptContext, CardTarget, GamePrompt, PromptChoice, PromptChoiceLabel,
-    UnplayedAction,
-};
+use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::history_data::HistoryEvent;
+use game_data::prompt_data::{
+    ButtonPrompt, GamePrompt, PromptChoice, PromptChoiceLabel, UnplayedAction,
+};
 use game_data::state_machine_data::{PlayCardData, PlayCardOptions, PlayCardStep};
 use with_error::{verify, WithError};
 

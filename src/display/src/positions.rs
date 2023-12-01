@@ -20,8 +20,9 @@ use core_data::game_primitives::{
     Side,
 };
 use game_data::card_state::{CardPosition, CardState};
-use game_data::game_actions::{BrowserPromptTarget, CardTarget, DisplayPreference, GamePrompt};
+use game_data::game_actions::{CardTarget, DisplayPreference};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
+use game_data::prompt_data::{BrowserPromptTarget, GamePrompt};
 use game_data::raid_data::{RaidData, RaidDisplayState};
 use protos::spelldawn::object_position::Position;
 use protos::spelldawn::{

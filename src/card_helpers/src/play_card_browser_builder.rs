@@ -16,8 +16,8 @@ use anyhow::Result;
 use core_data::game_primitives::{CardId, GameObjectId};
 use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::Scope;
-use game_data::game_actions::{GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction};
 use game_data::game_state::GameState;
+use game_data::prompt_data::{GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction};
 use game_data::special_effects::{Projectile, TimedEffectData};
 
 use crate::visual_effects::VisualEffects;

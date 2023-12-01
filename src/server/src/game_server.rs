@@ -18,8 +18,9 @@ use anyhow::Result;
 use core_data::game_primitives::{GameId, Side};
 use database::Database;
 use display::{render, set_display_preference};
-use game_data::game_actions::{self, DisplayPreference, GameAction, PromptAction};
+use game_data::game_actions::{self, DisplayPreference, GameAction};
 use game_data::game_state::GameState;
+use game_data::prompt_data::PromptAction;
 use player_data::PlayerState;
 use protos::spelldawn::{
     DrawCardAction, GainManaAction, InitiateRaidAction, MoveCardAction, PlayCardAction,

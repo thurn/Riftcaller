@@ -23,9 +23,10 @@ use game_data::card_definition::{Ability, ActivatedAbility, CardConfig, CardDefi
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
-use game_data::game_actions::{ButtonPromptContext, PromptChoice};
+use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
+use game_data::prompt_data::PromptChoice;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;

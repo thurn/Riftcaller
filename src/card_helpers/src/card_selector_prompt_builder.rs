@@ -15,10 +15,10 @@
 use anyhow::Result;
 use core_data::game_primitives::{CardId, GameObjectId};
 use game_data::delegate_data::Scope;
-use game_data::game_actions::{
+use game_data::game_state::GameState;
+use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PromptContext,
 };
-use game_data::game_state::GameState;
 use game_data::special_effects::{Projectile, TimedEffectData};
 
 use crate::visual_effects::VisualEffects;

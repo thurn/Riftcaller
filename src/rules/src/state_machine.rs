@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::game_actions::GamePrompt;
 use game_data::game_state::{GamePhase, GameState, PromptStack};
+use game_data::prompt_data::GamePrompt;
 
 /// Implements a simple state machine pattern. State machines have associated
 /// general data as well as named individual steps. A state machine

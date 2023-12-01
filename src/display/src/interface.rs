@@ -14,11 +14,11 @@
 
 use adapters::response_builder::ResponseBuilder;
 use game_data::game_actions::{
-    ActionButtons, ButtonPrompt, ButtonPromptContext, DisplayPreference, GamePrompt,
-    GameStateAction, PromptChoice,
+    ActionButtons, ButtonPromptContext, DisplayPreference, GameStateAction,
 };
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
+use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice};
 use prompts::prompts;
 use protos::spelldawn::InterfaceMainControls;
 use raid_state::raid_prompt;

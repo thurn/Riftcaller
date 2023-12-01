@@ -31,9 +31,9 @@ use crate::animation_tracker::{AnimationState, AnimationStep, AnimationTracker, 
 use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
 use crate::delegate_data::DelegateCache;
-use crate::game_actions::GamePrompt;
 use crate::history_data::{GameHistory, HistoryCounters, HistoryEvent};
 use crate::player_name::PlayerId;
+use crate::prompt_data::GamePrompt;
 use crate::raid_data::RaidData;
 use crate::state_machine_data::StateMachines;
 use crate::tutorial_data::GameTutorialState;

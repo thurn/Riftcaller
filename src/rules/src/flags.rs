@@ -25,10 +25,11 @@ use game_data::delegate_data::{
     CanSummonQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
     Flag,
 };
-use game_data::game_actions::{
-    BrowserPromptValidation, CardSelectorPrompt, CardTarget, GamePrompt, PlayCardBrowser,
-};
+use game_data::game_actions::CardTarget;
 use game_data::game_state::{GamePhase, GameState, TurnState};
+use game_data::prompt_data::{
+    BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PlayCardBrowser,
+};
 use game_data::raid_data::RaidStatus;
 use game_data::utils;
 

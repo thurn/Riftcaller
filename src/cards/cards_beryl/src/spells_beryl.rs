@@ -32,12 +32,13 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
-use game_data::game_actions::{
-    CardTarget, PromptChoice, PromptChoiceLabel, PromptContext, RoomSelectorPrompt,
-    RoomSelectorPromptContext, RoomSelectorPromptEffect, UnplayedAction,
-};
+use game_data::game_actions::CardTarget;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
+use game_data::prompt_data::{
+    PromptChoice, PromptChoiceLabel, PromptContext, RoomSelectorPrompt, RoomSelectorPromptContext,
+    RoomSelectorPromptEffect, UnplayedAction,
+};
 use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;

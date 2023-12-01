@@ -29,8 +29,9 @@ use game_data::delegate_data::{
     ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, ResonanceQuery, SanctumAccessCountQuery,
     ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
-use game_data::game_actions::{CardTarget, CardTargetKind, GamePrompt};
+use game_data::game_actions::{CardTarget, CardTargetKind};
 use game_data::game_state::GameState;
+use game_data::prompt_data::GamePrompt;
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
 use crate::{dispatch, CardDefinitionExt};

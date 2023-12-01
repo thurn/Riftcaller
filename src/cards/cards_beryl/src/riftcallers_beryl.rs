@@ -23,7 +23,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
 use game_data::custom_card_state::CustomCardState;
-use game_data::game_actions::{BrowserPromptTarget, BrowserPromptValidation, PromptContext};
+use game_data::prompt_data::{BrowserPromptTarget, BrowserPromptValidation, PromptContext};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::{draw_cards, flags, mana};

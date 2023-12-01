@@ -22,8 +22,9 @@ use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::ContinuousDisplayEffectQuery;
-use game_data::game_actions::{CardTarget, GamePrompt};
+use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
+use game_data::prompt_data::GamePrompt;
 use game_data::special_effects::TimedEffect;
 use protos::spelldawn::card_targeting::Targeting;
 use protos::spelldawn::{

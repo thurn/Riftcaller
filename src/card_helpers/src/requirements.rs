@@ -18,9 +18,9 @@ use game_data::card_state::CardPosition;
 use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs
 use game_data::delegate_data::{RequirementFn, Scope};
-use game_data::game_actions::GamePrompt;
 use game_data::game_state::GameState;
 use game_data::history_data::{HistoryEvent, HistoryEventKind};
+use game_data::prompt_data::GamePrompt;
 use game_data::utils;
 use rules::{flags, play_card};
 

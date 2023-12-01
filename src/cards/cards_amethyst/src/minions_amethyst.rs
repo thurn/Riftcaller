@@ -27,8 +27,8 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
-use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
+use game_data::prompt_data::PromptChoice;
 use rules::mana::ManaPurpose;
 use rules::{damage, mana, mutations, queries};
 

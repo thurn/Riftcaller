@@ -30,9 +30,10 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
-use game_data::game_actions::{CardTarget, PromptChoice};
+use game_data::game_actions::CardTarget;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
+use game_data::prompt_data::PromptChoice;
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };

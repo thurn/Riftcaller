@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use game_data::game_actions::{GameAction, PlayCardBrowser, PromptAction, PromptContext};
+use game_data::game_actions::GameAction;
+use game_data::prompt_data::{PlayCardBrowser, PromptAction, PromptContext};
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;

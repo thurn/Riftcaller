@@ -15,10 +15,9 @@
 use anyhow::Result;
 use core_data::game_primitives::HasSide;
 use game_data::delegate_data::Scope;
-use game_data::game_actions::{
-    ButtonPrompt, ButtonPromptContext, GamePrompt, PromptChoice, RoomSelectorPrompt,
-};
+use game_data::game_actions::ButtonPromptContext;
 use game_data::game_state::GameState;
+use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice, RoomSelectorPrompt};
 
 /// Adds a choice prompt for the `side` player containing the choices in
 /// `choices`.

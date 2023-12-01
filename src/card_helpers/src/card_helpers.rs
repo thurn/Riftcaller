@@ -22,9 +22,9 @@ use game_data::delegate_data::{
     AccessEvent, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
     RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
-use game_data::game_actions::PromptChoice;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
+use game_data::prompt_data::PromptChoice;
 pub use game_data::text::TextToken::*;
 use game_data::text::{TextElement, TextToken};
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use game_data::game_actions::{RoomSelectorPrompt, RoomSelectorPromptContext};
+use game_data::prompt_data::{RoomSelectorPrompt, RoomSelectorPromptContext};
 use prompts::game_instructions::GameInstructions;
 use protos::spelldawn::InterfaceMainControls;
 

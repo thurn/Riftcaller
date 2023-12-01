@@ -19,8 +19,9 @@ use core_data::game_primitives::{CardId, CardType, ManaValue, Rarity, School, Si
 use core_ui::icons;
 use game_data::card_definition::TargetRequirement;
 use game_data::card_view_context::CardViewContext;
-use game_data::game_actions::{CardTarget, GamePrompt, RoomSelectorPrompt};
+use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
+use game_data::prompt_data::{GamePrompt, RoomSelectorPrompt};
 use protos::spelldawn::{
     card_targeting, ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
     RevealedCardView, RulesText, TargetingArrow,

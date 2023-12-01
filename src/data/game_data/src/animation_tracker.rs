@@ -14,8 +14,8 @@
 
 use core_data::game_primitives::{AbilityId, CardId, GameObjectId, InitiatedBy, RoomId, Side};
 
-use crate::game_actions::PromptChoice;
 use crate::game_state::GameState;
+use crate::prompt_data::PromptChoice;
 use crate::special_effects::SpecialEffect;
 
 /// Indicates one game object targeted another with an effect.

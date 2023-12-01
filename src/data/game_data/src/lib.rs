@@ -31,6 +31,7 @@ pub mod game_effect;
 pub mod game_state;
 pub mod history_data;
 pub mod player_name;
+pub mod prompt_data;
 pub mod raid_data;
 pub mod random;
 pub mod special_effects;

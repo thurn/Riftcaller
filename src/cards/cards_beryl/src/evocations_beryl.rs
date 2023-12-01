@@ -30,10 +30,9 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{BanishedByCard, CardCounter, CardPosition};
-use game_data::game_actions::{
-    ButtonPromptContext, CardTarget, PromptChoice, PromptChoiceLabel, UnplayedAction,
-};
+use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
+use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, UnplayedAction};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;

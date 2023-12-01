@@ -22,14 +22,14 @@ use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
 use game_data::animation_tracker::{AnimationState, GameAnimation};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DrawCardActionEvent;
-use game_data::game_actions::{
-    BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, CardTarget,
-    GameAction, GamePrompt, GameStateAction, PromptAction, PromptChoice, PromptContext,
-    RoomSelectorPromptEffect,
-};
+use game_data::game_actions::{CardTarget, GameAction, GameStateAction};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, RaidJumpRequest, TurnState};
 use game_data::history_data::HistoryEvent;
+use game_data::prompt_data::{
+    BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, GamePrompt,
+    PromptAction, PromptChoice, PromptContext, RoomSelectorPromptEffect,
+};
 use game_data::state_machine_data::PlayCardOptions;
 use rules::mana::ManaPurpose;
 use rules::{
