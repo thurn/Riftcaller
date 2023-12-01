@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -213,7 +213,7 @@ pub enum AbilityType {
     Activated { cost: Cost<AbilityId>, target_requirement: TargetRequirement<AbilityId> },
 }
 
-/// Abilities are the unit of action in Spelldawn. Their behavior is provided by
+/// Abilities are the unit of action in Riftcaller. Their behavior is provided by
 /// the Delegate system, see delegate_data for more information.
 #[derive(Debug)]
 pub struct Ability {
@@ -447,7 +447,7 @@ impl CardConfigBuilder {
     }
 }
 
-/// The fundamental object defining the behavior of a given card in Spelldawn
+/// The fundamental object defining the behavior of a given card in Riftcaller
 ///
 /// This struct's top-level fields should be universal properties which need to
 /// be set by every card

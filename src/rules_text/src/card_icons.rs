@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ use core_data::game_primitives::ManaValue;
 use core_ui::icons;
 use game_data::card_state::CardCounter;
 use game_data::card_view_context::CardViewContext;
-use protos::spelldawn::{CardIcon, CardIcons};
+use protos::riftcaller::{CardIcon, CardIcons};
 use rules::queries;
 
 pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {

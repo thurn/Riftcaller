@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use constants::ui_constants;
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress};
+use protos::riftcaller::{FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress};
 
 use crate::component::EmptyComponent;
 use crate::design::BackgroundColor;

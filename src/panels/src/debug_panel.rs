@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ use core_ui::prelude::*;
 use game_data::card_name::CardMetadata;
 use panel_address::{Panel, PanelAddress, StandardPanel};
 use player_data::PlayerActivityKind;
-use protos::spelldawn::client_debug_command::DebugCommand;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
+use protos::riftcaller::client_debug_command::DebugCommand;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{ClientDebugCommand, FlexAlign, FlexJustify, FlexWrap};
 use user_action_data::DebugAction;
 
 #[derive(Debug)]

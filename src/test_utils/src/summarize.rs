@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@ use std::fmt::{Debug, Write as _};
 use adapters;
 use adapters::ServerCardId;
 use anyhow::Result;
-use protos::spelldawn::card_targeting::Targeting;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::game_object_identifier::Id;
-use protos::spelldawn::object_position::Position;
-use protos::spelldawn::play_effect_position::EffectPosition;
-use protos::spelldawn::{
+use protos::riftcaller::card_targeting::Targeting;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::game_object_identifier::Id;
+use protos::riftcaller::object_position::Position;
+use protos::riftcaller::play_effect_position::EffectPosition;
+use protos::riftcaller::{
     node_type, ActionTrackerView, AnchorCorner, ArrowTargetRoom, AudioClipAddress, CardAnchor,
     CardAnchorNode, CardCreationAnimation, CardIcon, CardIcons, CardIdentifier, CardTargeting,
     CardTitle, CardView, CommandList, CreateTokenCardCommand, DelayCommand,

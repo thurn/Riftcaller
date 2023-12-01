@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ use game_data::tutorial_data::{SpeechBubble, TutorialDisplay};
 use prompts::effect_prompts;
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
-use protos::spelldawn::{InterfaceMainControls, TutorialEffect};
+use protos::riftcaller::{InterfaceMainControls, TutorialEffect};
 use rules::{curses, damage};
 
 use crate::tutorial_display;

@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ use game_data::raid_data::{
 use game_data::tutorial_data::TutorialTrigger;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;
-use protos::spelldawn::{
+use protos::riftcaller::{
     AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify, InterfaceMainControls,
 };
 use rules::combat::CustomBoostActivation;

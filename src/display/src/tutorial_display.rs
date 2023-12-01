@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
 use game_data::tutorial_data::{GameTutorialState, TooltipAnchor, TutorialDisplay};
-use protos::spelldawn::arrow_bubble_anchor::BubbleAnchor;
-use protos::spelldawn::tutorial_effect::TutorialEffectType;
-use protos::spelldawn::{
+use protos::riftcaller::arrow_bubble_anchor::BubbleAnchor;
+use protos::riftcaller::tutorial_effect::TutorialEffectType;
+use protos::riftcaller::{
     ArrowBubbleAnchor, ArrowBubbleCorner, PlayerName, ShowArrowBubble, ShowToast, TextAlign,
     TutorialEffect, WhiteSpace,
 };

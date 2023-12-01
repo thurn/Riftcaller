@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ use game_data::game_actions::GameAction;
 #[allow(unused_imports)] // Used in docs
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::{CardIdentifier, ClientAction, ClientMetadata, CommandList, GameRequest};
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::{CardIdentifier, ClientAction, ClientMetadata, CommandList, GameRequest};
 use rules::mutations;
 use server::ai_agent_response;
 use server::server_data::{ClientData, GameResponse, GameResponseOutput};

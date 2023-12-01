@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use element_names::{ElementNameSelector, TargetName};
-use protos::spelldawn::animate_element_style::Property;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::interface_update::Update;
-use protos::spelldawn::{
+use protos::riftcaller::animate_element_style::Property;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::interface_update::Update;
+use protos::riftcaller::{
     AnimateElementStyle, AnimateToPosition, CreateTargetAtChildIndex, EasingMode, ElementAnimation,
     ElementSelector, InterfaceUpdate, TimeValue, UpdateInterfaceCommand, UpdateInterfaceStep,
 };

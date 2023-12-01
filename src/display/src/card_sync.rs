@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::prompt_data::GamePrompt;
 use game_data::special_effects::TimedEffect;
-use protos::spelldawn::card_targeting::Targeting;
-use protos::spelldawn::{
+use protos::riftcaller::card_targeting::Targeting;
+use protos::riftcaller::{
     info_zoom_highlight, ArrowTargetRoom, CardEffects, CardIcons, CardPrefab, CardTargeting,
     CardTitle, CardView, EffectAddress, FlexColor, InfoZoomHighlight, NoTargeting, PlayInRoom,
     RevealedCardView, RulesText, TargetingArrow,

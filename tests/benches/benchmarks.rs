@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ use std::time::Duration;
 use actions::legal_actions;
 use ai_core::agent::{Agent, AgentConfig, AgentData};
 use ai_game_integration::evaluators::ScoreEvaluator;
-use ai_game_integration::state_node::SpelldawnState;
+use ai_game_integration::state_node::RiftcallerState;
 use ai_monte_carlo::monte_carlo::{MonteCarloAlgorithm, RandomPlayoutEvaluator};
 use ai_monte_carlo::uct1::Uct1;
 use ai_testing::nim::{NimState, NimWinLossEvaluator};
@@ -139,7 +139,7 @@ pub fn uct1_nim(c: &mut Criterion) {
 pub fn uct1_search(c: &mut Criterion) {
     let mut group = c.benchmark_group("uct1_search");
     configure(&mut group);
-    let game = SpelldawnState(create_canonical_game().unwrap());
+    let game = RiftcallerState(create_canonical_game().unwrap());
     let evaluator = RandomPlayoutEvaluator {};
     let monte_carlo = MonteCarloAlgorithm { child_score_algorithm: Uct1 {} };
 
@@ -155,7 +155,7 @@ pub fn uct1_search(c: &mut Criterion) {
 pub fn alpha_beta_search(c: &mut Criterion) {
     let mut group = c.benchmark_group("alpha_beta_search");
     configure(&mut group);
-    let game = SpelldawnState(create_canonical_game().unwrap());
+    let game = RiftcallerState(create_canonical_game().unwrap());
     let agent = AgentData::omniscient(
         "ALPHA_BETA",
         AlphaBetaAlgorithm { search_depth: 3 },

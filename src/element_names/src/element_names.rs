@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 //! Unique identifiers for UI elements
 
 use game_data::card_name::CardVariant;
-use protos::spelldawn::element_selector::Selector;
-use protos::spelldawn::ElementSelector;
+use protos::riftcaller::element_selector::Selector;
+use protos::riftcaller::ElementSelector;
 
 /// Represents a globally unique identifier for a UI element.
 #[derive(Clone, Copy, Debug)]

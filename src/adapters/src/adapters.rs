@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ use core_data::game_primitives::{
     AbilityId, AbilityIndex, CardId, GameObjectId, Milliseconds, RoomId, Side, Sprite,
 };
 use game_data::character_preset::CharacterFacing;
-use protos::spelldawn::game_object_identifier::Id;
-use protos::spelldawn::{
+use protos::riftcaller::game_object_identifier::Id;
+use protos::riftcaller::{
     CardIdentifier, GameCharacterFacingDirection, GameObjectIdentifier, MapPosition, PlayerSide,
     RoomIdentifier, SpriteAddress, TimeValue,
 };

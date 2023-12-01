@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@ use adapters::response_builder::ResponseBuilder;
 use core_ui::panels::Panels;
 use game_data::game_state::{GamePhase, GameState};
 use panel_address::PlayerPanel;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand};
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{
+    DisplayGameMessageCommand, GameMessageType, SetGameObjectsEnabledCommand,
+};
 
 pub fn check_game_over(builder: &mut ResponseBuilder, game: &GameState) {
     if let GamePhase::GameOver { winner } = game.info.phase {

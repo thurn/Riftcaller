@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::text::Text;
 use panel_address::{Panel, PanelAddress, StandardPanel};
-use protos::spelldawn::{FlexAlign, FlexJustify, WhiteSpace};
+use protos::riftcaller::{FlexAlign, FlexJustify, WhiteSpace};
 
-pub const TEXT: &str = "Welcome to the developer early access build of Spelldawn.
+pub const TEXT: &str = "Welcome to the developer early access build of Riftcaller.
 
 This is a version of the game primarily intended for contributors to the project to explore. It is a work in progress.";
 

@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ use enum_kinds::EnumKind;
 use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
 use player_data::PlayerActivityKind;
-use protos::spelldawn::{InterfacePanel, InterfacePanelAddress, Node};
+use protos::riftcaller::{InterfacePanel, InterfacePanelAddress, Node};
 use serde::{Deserialize, Serialize};
 use serde_json::ser;
 

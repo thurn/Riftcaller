@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ use game_data::card_name::CardName;
 use game_data::game_actions;
 use game_data::game_actions::GameAction;
 use insta::assert_snapshot;
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::object_position::Position;
-use protos::spelldawn::{
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::object_position::Position;
+use protos::riftcaller::{
     card_target, CardTarget, DrawCardAction, GainManaAction, GameMessageType,
     ObjectPositionDiscardPile, PlayCardAction, PlayerName, ProgressRoomAction,
 };

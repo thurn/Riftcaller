@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ use game_data::card_state::CardPosition;
 use game_data::game_state::GameState;
 use panel_address::StandardPanel;
 use player_data::{PlayerActivity, PlayerActivityKind, PlayerState};
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{KeyboardMapping, KeyboardShortcut, SetKeyboardShortcutsCommand};
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{KeyboardMapping, KeyboardShortcut, SetKeyboardShortcutsCommand};
 use user_action_data::DebugAction;
 
 pub fn build(player: &PlayerState, _: Option<&GameState>) -> Command {

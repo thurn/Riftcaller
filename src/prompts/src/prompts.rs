@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 
 use core_ui::prelude::*;
 use game_data::game_actions::ActionButtons;
-use protos::spelldawn::InterfaceMainControls;
+use protos::riftcaller::InterfaceMainControls;
 
 use crate::action_buttons;
 use crate::prompt_container::PromptContainer;

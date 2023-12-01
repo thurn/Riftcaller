@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ use core_data::game_primitives::{AttackValue, CardId, GameId, HealthValue, ManaV
 use game_data::card_definition::Resonance;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
-use protos::spelldawn::CardIdentifier;
+use protos::riftcaller::CardIdentifier;
 use ulid::Ulid;
 
 use crate::test_game_client::ClientCard;

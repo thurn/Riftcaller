@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::toggle_panel_command::ToggleCommand;
-use protos::spelldawn::{
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::toggle_panel_command::ToggleCommand;
+use protos::riftcaller::{
     FlexAlign, FlexJustify, FlexPosition, InterfacePanelAddress, TogglePanelCommand,
 };
 

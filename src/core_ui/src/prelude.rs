@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 //! Re-exports commonly-used types for UI rendering, intended to be used via
 //! wildcard import.
 
-pub use protos::spelldawn::Node;
+pub use protos::riftcaller::Node;
 
 pub use crate::component::{Component, ComponentObject};
 pub use crate::flexbox::{Column, HasNodeChildren, HasRenderNode, Row};

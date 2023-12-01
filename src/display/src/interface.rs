@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice};
 use prompts::prompts;
-use protos::spelldawn::InterfaceMainControls;
+use protos::riftcaller::InterfaceMainControls;
 use raid_state::raid_prompt;
 use rules::flags;
 

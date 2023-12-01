@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use element_names::ElementName;
-use protos::spelldawn::{Dimension, FlexAlign, FlexJustify, FlexPosition, TextAlign};
+use protos::riftcaller::{Dimension, FlexAlign, FlexJustify, FlexPosition, TextAlign};
 
 use crate::actions::{InterfaceAction, NoAction};
 use crate::design::{Font, FontColor, FontSize};

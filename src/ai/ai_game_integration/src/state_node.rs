@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ use actions::legal_actions;
 use rules::flags;
 
 /// Wrapper over [GameState] to allow trait to be implemented in this crate.
-pub struct SpelldawnState(pub GameState);
+pub struct RiftcallerState(pub GameState);
 
-impl Deref for SpelldawnState {
+impl Deref for RiftcallerState {
     type Target = GameState;
 
     fn deref(&self) -> &Self::Target {
@@ -34,13 +34,13 @@ impl Deref for SpelldawnState {
     }
 }
 
-impl DerefMut for SpelldawnState {
+impl DerefMut for RiftcallerState {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl GameStateNode for SpelldawnState {
+impl GameStateNode for RiftcallerState {
     type Action = GameAction;
     type PlayerName = Side;
 

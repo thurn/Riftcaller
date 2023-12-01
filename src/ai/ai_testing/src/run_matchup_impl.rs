@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ use std::time::{Duration, Instant};
 use ai_core::agent::AgentConfig;
 use ai_core::game_state_node::{GameStateNode, GameStatus};
 use ai_game_integration::agents;
-use ai_game_integration::state_node::SpelldawnState;
+use ai_game_integration::state_node::RiftcallerState;
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
 use core_data::game_primitives::{GameId, Side};
@@ -85,7 +85,7 @@ pub fn run(args: Args) -> Result<()> {
         dispatch::populate_delegate_cache(&mut game);
         mutations::deal_opening_hands(&mut game)?;
 
-        let mut state = SpelldawnState(game);
+        let mut state = RiftcallerState(game);
         if args.verbosity > Verbosity::None {
             println!("Starting game");
         }

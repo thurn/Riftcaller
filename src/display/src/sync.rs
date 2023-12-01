@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ use game_data::card_state::{CardPositionKind, CardState};
 use game_data::card_view_context::CardViewContext;
 use game_data::character_preset::CharacterPreset;
 use game_data::game_state::GameState;
-use protos::spelldawn::{
+use protos::riftcaller::{
     ActionTrackerView, DeckView, GameView, ManaView, PlayerInfo, PlayerView, ScoreView,
 };
 use rules::mana::ManaPurpose;

@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
 
 use std::collections::HashMap;
 
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::toggle_panel_command::ToggleCommand;
-use protos::spelldawn::{
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::toggle_panel_command::ToggleCommand;
+use protos::riftcaller::{
     InterfacePanel, InterfacePanelAddress, PanelTransitionOptions, StandardAction,
     TogglePanelCommand, UpdatePanelsCommand,
 };

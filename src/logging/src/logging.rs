@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ pub fn initialize(logging_type: LoggingType) {
         LoggingType::Stackdriver => {
             let stackdriver =
                 tracing_stackdriver::layer().enable_cloud_trace(CloudTraceConfiguration {
-                    project_id: "spelldawn".to_string(),
+                    project_id: "riftcaller".to_string(),
                 });
             let subscriber = Registry::default().with(stackdriver).with(env_filter);
             tracing::subscriber::set_global_default(subscriber).unwrap();

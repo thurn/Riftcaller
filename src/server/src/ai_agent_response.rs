@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ use std::time::Instant;
 
 use ai_core::agent::{Agent, AgentConfig};
 use ai_game_integration::agents;
-use ai_game_integration::state_node::SpelldawnState;
+use ai_game_integration::state_node::RiftcallerState;
 use anyhow::Result;
 use core_data::game_primitives::{GameId, Milliseconds, Side};
 use database::Database;
@@ -41,8 +41,8 @@ use game_data::animation_tracker::{AnimationState, AnimationTracker};
 use game_data::game_actions::GameAction;
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::DelayCommand;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::DelayCommand;
 use rules::flags;
 use tracing::{debug, info, info_span, subscriber, Instrument, Level};
 use tutorial::tutorial_actions;
@@ -116,7 +116,7 @@ async fn run_agent_loop(
 
         let agent_name = agent.name();
         info!(?agent_name, ?player_id, ?game.id, "Picking agent action");
-        let action = pick_action(&SpelldawnState(game.clone()), agent).await?;
+        let action = pick_action(&RiftcallerState(game.clone()), agent).await?;
         {
             let _span = info_span!("apply_agent_action", ?action, ?player_id, ?game.id).entered();
             info!(?action, ?player_id, ?game.id, "Got agent action");
@@ -162,7 +162,7 @@ async fn send_snapshot_to_player(
 
 /// Returns a ([Side], [Agent]) tuple for an agent that can currently act in
 /// this game, if one exists.
-fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>>)> {
+fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<RiftcallerState>>)> {
     for side in enum_iterator::all::<Side>() {
         if let PlayerId::AI(name) = game.player(side).id {
             if flags::has_priority(game, side) {
@@ -177,8 +177,8 @@ fn active_agent(game: &GameState) -> Option<(Side, Box<dyn Agent<SpelldawnState>
 }
 
 async fn pick_action(
-    game: &SpelldawnState,
-    agent: Box<dyn Agent<SpelldawnState>>,
+    game: &RiftcallerState,
+    agent: Box<dyn Agent<RiftcallerState>>,
 ) -> Result<GameAction> {
     let error_subscriber = tracing_subscriber::fmt().with_max_level(Level::WARN).finish();
     subscriber::with_default(error_subscriber, || {

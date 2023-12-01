@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
 use core_ui::slider::Slider;
 use panel_address::{Panel, PanelAddress, StandardPanel};
-use protos::spelldawn::{FlexAlign, FlexJustify};
+use protos::riftcaller::{FlexAlign, FlexJustify};
 
 use crate::main_menu_panel::{MAIN_MENU_HEIGHT, MAIN_MENU_WIDTH};
 

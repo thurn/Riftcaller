@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 
 #![allow(clippy::missing_safety_doc)] // You only live once, that's the motto - Drake
 
-//! Implements a DLL for Unity to call into the Spelldawn API
+//! Implements a DLL for Unity to call into the Riftcaller API
 
 use std::panic::UnwindSafe;
 use std::{panic, str};
@@ -24,9 +24,9 @@ use database::sled_database::SledDatabase;
 use logging::LoggingType;
 use once_cell::sync::Lazy;
 use prost::Message;
-use protos::spelldawn::client_debug_command::DebugCommand;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{
+use protos::riftcaller::client_debug_command::DebugCommand;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{
     ClientDebugCommand, CommandList, ConnectRequest, GameCommand, GameRequest, LogMessage,
     LogMessageLevel, PollRequest,
 };
@@ -40,7 +40,7 @@ static DATABASE: Lazy<Mutex<Option<SledDatabase>>> = Lazy::new(|| Mutex::new(Non
 ///
 /// Returns 0 on success and -1 on error.
 #[no_mangle]
-pub unsafe extern "C" fn spelldawn_initialize(path: *const u8, path_length: i32) -> i32 {
+pub unsafe extern "C" fn riftcaller_initialize(path: *const u8, path_length: i32) -> i32 {
     panic::catch_unwind(|| initialize_impl(path, path_length).unwrap_or(-1)).unwrap_or(-1)
 }
 
@@ -69,7 +69,7 @@ async unsafe fn initialize_impl(path: *const u8, path_length: i32) -> Result<i32
 /// Returns the number of bytes written to the `response` buffer, or -1 on
 /// error.
 #[no_mangle]
-pub unsafe extern "C" fn spelldawn_connect(
+pub unsafe extern "C" fn riftcaller_connect(
     request: *const u8,
     request_length: i32,
     response: *mut u8,
@@ -112,7 +112,7 @@ async unsafe fn connect_impl(
 /// Returns the number of bytes written to the `response` buffer, 0 if no update
 /// is available, or -1 on error.
 #[no_mangle]
-pub unsafe extern "C" fn spelldawn_poll(
+pub unsafe extern "C" fn riftcaller_poll(
     request: *const u8,
     request_length: i32,
     response: *mut u8,
@@ -152,7 +152,7 @@ unsafe fn poll_impl(
 /// Returns the number of bytes written to the `response` buffer, or -1 on
 /// error.
 #[no_mangle]
-pub unsafe extern "C" fn spelldawn_perform_action(
+pub unsafe extern "C" fn riftcaller_perform_action(
     request: *const u8,
     request_length: i32,
     response: *mut u8,
@@ -219,14 +219,14 @@ unsafe fn error_boundary(
 // Basically you need to make a rust function like this:
 //
 // #[no_mangle]
-// pub unsafe extern "C" fn spelldawn_callback(
+// pub unsafe extern "C" fn riftcaller_callback(
 //     callback: unsafe extern "C" fn(i32)) {}
 //
 // And then you make a delegate in C# like this:
 // [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 // public delegate void CallbackDelegate(int writtenBytes);
 //
-// public static extern void spelldawn_callback(CallbackDelegate callback);
+// public static extern void riftcaller_callback(CallbackDelegate callback);
 //
 // The callback can only be a static function like this:
 //     [MonoPInvokeCallback(typeof(CallbackDelegate))]

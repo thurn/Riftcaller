@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ use deck_card::{CardHeight, DeckCard};
 use deck_card::deck_card_slot::DeckCardSlot;
 use element_names::ElementName;
 use panel_address::{Panel, PanelAddress};
-use protos::spelldawn::{FlexAlign, FlexJustify, FlexVector2};
-use protos::spelldawn::animate_element_style::Property;
-use protos::spelldawn::game_command::Command;
+use protos::riftcaller::{FlexAlign, FlexJustify, FlexVector2};
+use protos::riftcaller::animate_element_style::Property;
+use protos::riftcaller::game_command::Command;
 use screen_overlay::ScreenOverlay;
 
 pub struct ShopPanel<'a> {

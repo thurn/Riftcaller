@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 //! Core design primitives
 
 use game_data::special_effects::{EffectColor, TimedEffectData};
-use protos::spelldawn::{Dimension, FlexColor, FontAddress};
+use protos::riftcaller::{Dimension, FlexColor, FontAddress};
 
 use crate::style::DimensionExt;
 

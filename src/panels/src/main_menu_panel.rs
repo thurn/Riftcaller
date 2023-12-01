@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use game_data::player_name::{AIPlayer, PlayerId};
 use panel_address::{Panel, PanelAddress, StandardPanel};
-use protos::spelldawn::{FlexAlign, FlexJustify};
+use protos::riftcaller::{FlexAlign, FlexJustify};
 use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
 
 #[derive(Debug, Default)]
@@ -47,7 +47,7 @@ impl MainMenuPanel {
 impl Component for MainMenuPanel {
     fn build(self) -> Option<Node> {
         PanelWindow::new(StandardPanel::MainMenu, MAIN_MENU_WIDTH.px(), MAIN_MENU_HEIGHT.px())
-            .title("Spelldawn")
+            .title("Riftcaller")
             .content(
                 Column::new("MeuButtons")
                     .style(

@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardState;
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
-use protos::spelldawn::card_targeting::Targeting;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::game_object_identifier::Id;
-use protos::spelldawn::object_position::Position;
-use protos::spelldawn::tutorial_effect::TutorialEffectType;
-use protos::spelldawn::{
+use protos::riftcaller::card_targeting::Targeting;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::game_object_identifier::Id;
+use protos::riftcaller::object_position::Position;
+use protos::riftcaller::tutorial_effect::TutorialEffectType;
+use protos::riftcaller::{
     ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation, CommandList,
     GameMessageType, GameObjectIdentifier, NoTargeting, ObjectPosition, ObjectPositionBrowser,
     ObjectPositionCharacter, ObjectPositionDeck, ObjectPositionDiscardPile, ObjectPositionHand,

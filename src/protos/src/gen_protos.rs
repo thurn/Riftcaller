@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,19 +26,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     tonic_build::configure()
         .build_client(false)
         .type_attribute(
-            "spelldawn.GameObjectIdentifier",
+            "riftcaller.GameObjectIdentifier",
             "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]",
         )
-        .type_attribute("spelldawn.DeckIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
-        .type_attribute("spelldawn.GameIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
-        .type_attribute("spelldawn.CardIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
-        .type_attribute("spelldawn.InterfacePanelAddress", "#[derive(Eq, Hash)]")
-        .type_attribute("spelldawn.InterfacePanelAddress.address_type", "#[derive(Eq, Hash)]")
+        .type_attribute("riftcaller.DeckIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
+        .type_attribute("riftcaller.GameIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
+        .type_attribute("riftcaller.CardIdentifier", "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]")
+        .type_attribute("riftcaller.InterfacePanelAddress", "#[derive(Eq, Hash)]")
+        .type_attribute("riftcaller.InterfacePanelAddress.address_type", "#[derive(Eq, Hash)]")
         .type_attribute(
-            "spelldawn.GameObjectIdentifier.id",
+            "riftcaller.GameObjectIdentifier.id",
             "#[derive(Eq, Hash, Copy, Ord, PartialOrd)]",
         )
         .out_dir("src/protos/src")
-        .compile(&["proto/spelldawn.proto"], &["proto/"])?;
+        .compile(&["proto/riftcaller.proto"], &["proto/"])?;
     Ok(())
 }

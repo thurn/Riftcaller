@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ use crate::evaluators::{
     CardsInHandEvaluator, CardsInPlayEvaluator, ManaDifferenceEvaluator, ProgressCountersEvaluator,
     ScoreEvaluator,
 };
-use crate::state_node::SpelldawnState;
+use crate::state_node::RiftcallerState;
 
-pub fn get(name: AIPlayer) -> Box<dyn Agent<SpelldawnState>> {
+pub fn get(name: AIPlayer) -> Box<dyn Agent<RiftcallerState>> {
     match name {
         AIPlayer::NoAction => Box::new(NoActionAgent {}),
         AIPlayer::TutorialOpponent => Box::new(AgentData::omniscient(
@@ -78,12 +78,12 @@ pub fn get(name: AIPlayer) -> Box<dyn Agent<SpelldawnState>> {
 
 pub struct NoActionAgent {}
 
-impl Agent<SpelldawnState> for NoActionAgent {
+impl Agent<RiftcallerState> for NoActionAgent {
     fn name(&self) -> &'static str {
         "NO_ACTION"
     }
 
-    fn pick_action(&self, _: AgentConfig, _: &SpelldawnState) -> Result<GameAction> {
+    fn pick_action(&self, _: AgentConfig, _: &RiftcallerState) -> Result<GameAction> {
         fail!("No Action")
     }
 

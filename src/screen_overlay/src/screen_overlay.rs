@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ use game_data::game_state::GameState;
 use game_data::tutorial_data::TutorialMessageKey;
 use panel_address::{DeckEditorData, PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState, PlayerStatus};
-use protos::spelldawn::client_debug_command::DebugCommand;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPosition};
+use protos::riftcaller::client_debug_command::DebugCommand;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPosition};
 
 pub struct ScreenOverlay<'a, 'b> {
     player: &'a PlayerState,

@@ -1,7 +1,7 @@
 [package]
 name = "ai_game_integration"
 version = "0.0.0"
-description = "Implements generic game AI algorithms specifically for spelldawn"
+description = "Implements generic game AI algorithms specifically for riftcaller"
 license = "Apache-2.0"
 edition = "2021"
 

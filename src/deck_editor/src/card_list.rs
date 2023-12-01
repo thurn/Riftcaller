@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ use core_ui::prelude::*;
 use element_names::CurrentDraggable;
 use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
-use protos::spelldawn::animate_element_style::Property;
-use protos::spelldawn::{FlexAlign, FlexDirection, FlexVector2};
+use protos::riftcaller::animate_element_style::Property;
+use protos::riftcaller::{FlexAlign, FlexDirection, FlexVector2};
 use user_action_data::DeckEditorAction;
 
 use crate::card_list_card_name::CardListCardName;

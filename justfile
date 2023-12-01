@@ -9,10 +9,10 @@ build:
     cargo build --all-targets --all-features
 
 run:
-    cargo run --bin spelldawn -- sled local forest
+    cargo run --bin riftcaller -- sled local forest
 
 run-firestore:
-    cargo run --bin spelldawn -- firestore local forest
+    cargo run --bin riftcaller -- firestore local forest
 
 test:
     cargo test
@@ -22,11 +22,11 @@ disallowed:
 
 # Build a local docker image
 docker-build:
-    docker build -t spelldawn .
+    docker build -t riftcaller .
 
 # Run local docker image
 docker-run:
-    docker run -it --rm -p 50052:50052 --name spelldawn spelldawn
+    docker run -it --rm -p 50052:50052 --name riftcaller riftcaller
 
 # Submit docker build to Google Cloud Build
 cloud-build: git-status
@@ -37,7 +37,7 @@ cloud-build: git-status
 
 # Updates current google cloud image
 cloud-update:
-    gcloud compute instances update-container spelldawn-trunk --zone us-central1-a --container-image us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+    gcloud compute instances update-container riftcaller-trunk --zone us-central1-a --container-image us-central1-docker.pkg.dev/riftcaller/riftcaller/riftcaller:latest
 
 protos:
     cargo run --bin gen_protos
@@ -48,7 +48,7 @@ protos:
     - rm -r proto/obj
     dotnet clean proto/protos.csproj
     dotnet build proto/protos.csproj
-    mv proto/*.cs Assets/Spelldawn/Protos/
+    mv proto/*.cs Assets/Riftcaller/Protos/
     dotnet clean proto/protos.csproj
     rm -r proto/bin
     rm -r proto/obj
@@ -89,8 +89,8 @@ screenshots-message:
     @ sleep 3
 
 rsync:
-    mkdir -p /tmp/spelldawn
-    rsync -a . --delete --exclude=Temp --exclude=target --exclude=out /tmp/spelldawn
+    mkdir -p /tmp/riftcaller
+    rsync -a . --delete --exclude=Temp --exclude=target --exclude=out /tmp/riftcaller
 
 build_flag := if os() == "macos" {
     "-buildOSXUniversalPlayer"
@@ -99,13 +99,13 @@ build_flag := if os() == "macos" {
   }
 
 app_path := if os() == "macos" {
-    "/tmp/spelldawn/out/spelldawn.app"
+    "/tmp/riftcaller/out/riftcaller.app"
   } else {
     "OS not supported"
   }
 
 bin_path := if os() == "macos" {
-    "/tmp/spelldawn/out/spelldawn.app/Contents/MacOS/Spelldawn"
+    "/tmp/riftcaller/out/riftcaller.app/Contents/MacOS/Riftcaller"
   } else {
     "OS not supported"
   }
@@ -125,9 +125,9 @@ unity := if os() == "macos" {
 # You can't run tests on a project you have open in Unity, so we rsync the project to a tmp dir
 # before running end to end tests.
 run-screenshots: screenshots-message rsync
-    rm -rf /tmp/spelldawn/out/
-    mkdir -p /tmp/spelldawn/out/
-    "{{unity}}" -batchMode -quit -projectPath "/tmp/spelldawn" {{build_flag}} "{{app_path}}"
+    rm -rf /tmp/riftcaller/out/
+    mkdir -p /tmp/riftcaller/out/
+    "{{unity}}" -batchMode -quit -projectPath "/tmp/riftcaller" {{build_flag}} "{{app_path}}"
     "{{bin_path}}" -test -monitor 2 -screen-width 1334 -screen-height 750 -screen-quality "High" -screen-fullscreen 0
 
 finish-screenshots: run-screenshots
@@ -138,7 +138,7 @@ finish-screenshots: run-screenshots
 
 screenshot-tests: finish-screenshots
   #!/usr/bin/env sh
-  image_diffs="/tmp/spelldawn/image_diffs"
+  image_diffs="/tmp/riftcaller/image_diffs"
   rm -r $image_diffs
   mkdir $image_diffs
   failed=0
@@ -167,7 +167,7 @@ clean-plugin:
     rm -r Assets/Plugins/
 
 mac-plugin:
-    # you may need to run codesign --deep -s - -f spelldawn.app before running
+    # you may need to run codesign --deep -s - -f riftcaller.app before running
     cargo build -p plugin --release --target={{target_arm}}
     cargo build -p plugin --release --target={{target_x86}}
     # lib prefix breaks on mac standalone
@@ -311,7 +311,7 @@ machete:
 remove-unused-deps: machete
 
 time-passes: clean-dropbox
-    cargo +nightly rustc -p spelldawn --bin spelldawn -- -Z time-passes
+    cargo +nightly rustc -p riftcaller --bin riftcaller -- -Z time-passes
 
 timings: clean-dropbox
     cargo build --timings
@@ -320,7 +320,7 @@ timings: clean-dropbox
 gen-gcda: clean-dropbox
     #!/usr/bin/env sh
     set -euxo pipefail
-    export LLVM_PROFILE_FILE='spelldawn-%p-%m.profraw'
+    export LLVM_PROFILE_FILE='riftcaller-%p-%m.profraw'
     export RUSTFLAGS='-Zinstrument-coverage'
     cargo +nightly build
     cargo +nightly test # Generates .profraw files in the current working directory
@@ -368,34 +368,34 @@ clean-dropbox:
     find . -name "*.profraw" -delete
 
 just paths:
-    echo "Asset Bundle Downloads: ~/Library/Caches/com.spelldawn.Spelldawn/"
-    echo "Log Files: ~/Library/Logs/Spelldawn/Spelldawn"
-    echo "Game Data: ~/Library/Application Support/Spelldawn/Spelldawn"
+    echo "Asset Bundle Downloads: ~/Library/Caches/com.riftcaller.Riftcaller/"
+    echo "Log Files: ~/Library/Logs/Riftcaller/Riftcaller"
+    echo "Game Data: ~/Library/Application Support/Riftcaller/Riftcaller"
 
 # GCloud
 #
 # Log into GCloud:
 # gcloud auth login
 # Settting GCloud Project:
-# gcloud config set project spelldawn
+# gcloud config set project riftcaller
 # Creating GCloud Artifact:
-# gcloud artifacts repositories create spelldawn --repository-format=docker
-#     --location=us-central1 --description="Spelldawn repository"
+# gcloud artifacts repositories create riftcaller --repository-format=docker
+#     --location=us-central1 --description="Riftcaller repository"
 # Authorizing Docker:
 # gcloud auth configure-docker us-central1-docker.pkg.dev
 # SSH into server:
-# gcloud compute ssh --zone "us-central1-a" "spelldawn-trunk"  --project
-#     "spelldawn"
+# gcloud compute ssh --zone "us-central1-a" "riftcaller-trunk"  --project
+#     "riftcaller"
 # Running GCloud Build:
 # gcloud builds submit --region=us-central1 --tag
-#     us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+#     us-central1-docker.pkg.dev/riftcaller/riftcaller/riftcaller:latest
 
 # IP Addresses
 # gcloud compute addresses list
 # gcloud compute addresses create trunk-regional --region=us-central1
-# gcloud compute instances describe spelldawn-trunk
-# gcloud compute instances delete-access-config spelldawn-trunk --access-config-name "External NAT"
-# gcloud compute instances add-access-config spelldawn-trunk  --access-config-name='trunk' --address "34.29.1.131"
+# gcloud compute instances describe riftcaller-trunk
+# gcloud compute instances delete-access-config riftcaller-trunk --access-config-name "External NAT"
+# gcloud compute instances add-access-config riftcaller-trunk  --access-config-name='trunk' --address "34.29.1.131"
 
 # Docker
 # List Containers:
@@ -407,10 +407,10 @@ just paths:
 # Attach to container:
 # docker attach 184dfc90b290
 # Adding Docker Tag:
-# docker tag spelldawn:latest
-#     us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+# docker tag riftcaller:latest
+#     us-central1-docker.pkg.dev/riftcaller/riftcaller/riftcaller:latest
 # Pushing Local Docker Image:
-# docker push us-central1-docker.pkg.dev/spelldawn/spelldawn/spelldawn:latest
+# docker push us-central1-docker.pkg.dev/riftcaller/riftcaller/riftcaller:latest
 # Running commands on container:
 #  docker exec 7458a883c1b9 rm -r db
 # Restart container
@@ -418,7 +418,7 @@ just paths:
 
 # GRPC CLI
 # grpc_cli ls 35.184.200.62:50052 -l
-# grpc_cli ls trunk.spelldawn.com:80 -l
+# grpc_cli ls trunk.riftcaller.com:80 -l
 
 # iOS App Store
 # Uploading: https://help.apple.com/xcode/mac/current/#/dev442d7f2ca

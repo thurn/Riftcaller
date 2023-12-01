@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ use core_data::game_primitives::{CardType, RoomId, Side};
 use game_data::card_definition::Resonance;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::player_name::PlayerId;
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::{
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::{
     card_target, CardIdentifier, CardTarget, DrawCardAction, GainManaAction, GameMessageType,
     InitiateRaidAction, MoveCardAction, PlayCardAction, ProgressRoomAction, SpendActionPointAction,
 };

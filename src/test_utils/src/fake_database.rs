@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ use database::Database;
 use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
 use player_data::PlayerState;
-use protos::spelldawn::PlayerIdentifier;
+use protos::riftcaller::PlayerIdentifier;
 
 #[derive(Debug, Default)]
 pub struct FakeDatabase {

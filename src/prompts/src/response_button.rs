@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ use core_data::game_primitives::CardId;
 use core_ui::actions::{InterfaceAction, NoAction};
 use core_ui::button::{Button, ButtonType};
 use core_ui::prelude::*;
-use protos::spelldawn::{AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify};
+use protos::riftcaller::{AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify};
 
 pub struct ResponseButton {
     label: String,

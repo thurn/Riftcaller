@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ use game_data::game_actions::{CardTarget, DisplayPreference};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
 use game_data::prompt_data::{BrowserPromptTarget, GamePrompt};
 use game_data::raid_data::{RaidData, RaidDisplayState};
-use protos::spelldawn::object_position::Position;
-use protos::spelldawn::{
+use protos::riftcaller::object_position::Position;
+use protos::riftcaller::{
     ClientItemLocation, ClientRoomLocation, GameCharacterFacingDirection, GameObjectPositions,
     ObjectPosition, ObjectPositionBrowser, ObjectPositionBrowserDragTarget,
     ObjectPositionCardChoiceBrowser, ObjectPositionCharacter, ObjectPositionCharacterContainer,

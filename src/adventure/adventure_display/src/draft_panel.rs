@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ use core_ui::style;
 use core_ui::text::Text;
 use deck_card::{CardHeight, DeckCard};
 use panel_address::{Panel, PanelAddress};
-use protos::spelldawn::FlexJustify;
+use protos::riftcaller::FlexJustify;
 
 const BACKGROUND: &'static str =
     "TPR/EnvironmentsHQ/Dungeons, Shrines & Altars/Images/MountainTomb/ScenerySnowMountain_1";

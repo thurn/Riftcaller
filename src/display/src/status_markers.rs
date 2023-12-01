@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::delegate_data::{CardStatusMarker, CardStatusMarkersQuery};
 use game_data::game_state::GameState;
-use protos::spelldawn::{
+use protos::riftcaller::{
     CardIdentifier, CardPrefab, CardTitle, CardView, RevealedCardView, RulesText,
 };
 use rules::{dispatch, CardDefinitionExt};

@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ use game_data::player_name::PlayerId;
 use once_cell::sync::Lazy;
 use panel_address::PanelAddress;
 use player_data::PlayerState;
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::spelldawn_server::Spelldawn;
-use protos::spelldawn::{
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::riftcaller_server::Riftcaller;
+use protos::riftcaller::{
     CommandList, ConnectRequest, FetchPanelAction, GameRequest, PlayerIdentifier, StandardAction,
 };
 use serde_json::de;
@@ -61,7 +61,7 @@ pub enum ChannelType {
 }
 
 #[tonic::async_trait]
-impl<T: Database + 'static> Spelldawn for GameService<T> {
+impl<T: Database + 'static> Riftcaller for GameService<T> {
     type ConnectStream = ReceiverStream<Result<CommandList, Status>>;
 
     async fn connect(

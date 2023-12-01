@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ use game_data::utils;
 use once_cell::sync::Lazy;
 use panel_address::Panel;
 use player_data::PlayerStatus;
-use protos::spelldawn::client_debug_command::DebugCommand;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
+use protos::riftcaller::client_debug_command::DebugCommand;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mutations::SummonMinion;
 use rules::{curses, dispatch, draw_cards, mana, mutations, wounds};
 use serde_json::{de, ser};

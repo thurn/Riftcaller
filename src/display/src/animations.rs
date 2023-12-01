@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ use game_data::special_effects::{
     TimedEffect, TimedEffectData,
 };
 use game_data::utils;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::object_position::Position;
-use protos::spelldawn::play_effect_position::EffectPosition;
-use protos::spelldawn::{
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::object_position::Position;
+use protos::riftcaller::play_effect_position::EffectPosition;
+use protos::riftcaller::{
     CreateTokenCardCommand, DelayCommand, DisplayGameMessageCommand, FireProjectileCommand,
     FlexColor, GameMessageType, GameObjectMove, MoveGameObjectsCommand, MusicState,
     PlayEffectCommand, PlayEffectPosition, PlaySoundCommand, RoomVisitType,

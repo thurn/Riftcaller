@@ -1,0 +1,19 @@
+{
+    "name": "RiftcallerEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ef7ffe6d73794495e9482dbc3236050a",
+        "GUID:eebf37e8d9842449d8e02d95e5d12f3d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

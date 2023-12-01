@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ pub enum AnimationState {
 
 /// Tracks game mutations for a game action.
 ///
-/// Some game state changes in Spelldawn require custom animations in the UI in
+/// Some game state changes in Riftcaller require custom animations in the UI in
 /// order to communicate their effects clearly. In order to implement the
 /// animation system, code which mutates game state can also call
 /// [GameState::add_animation] and provide a [GameAnimation] to record the

@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ use core_ui::style;
 use display::card_sync;
 use game_data::card_name::CardVariant;
 use game_data::card_view_context::CardViewContext;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::studio_appear_effect::StudioAppear;
-use protos::spelldawn::studio_display::Display;
-use protos::spelldawn::{
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::studio_appear_effect::StudioAppear;
+use protos::riftcaller::studio_display::Display;
+use protos::riftcaller::{
     CardIcon, CardView, Dimension, FlexAlign, FlexPosition, ImageScaleMode, InfoZoomCommand,
     StudioAppearEffect, StudioDisplay, StudioDisplayCard,
 };

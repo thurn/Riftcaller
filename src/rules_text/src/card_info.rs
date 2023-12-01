@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
 use game_data::delegate_data::CardInfoElementKind;
-use protos::spelldawn::{FlexAlign, FlexJustify, TextAlign, WhiteSpace};
+use protos::riftcaller::{FlexAlign, FlexJustify, TextAlign, WhiteSpace};
 
 #[derive(Debug)]
 pub struct CardInfoElement {

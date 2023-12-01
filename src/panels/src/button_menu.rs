@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style::WidthMode;
 use panel_address::PanelAddress;
-use protos::spelldawn::{FlexAlign, FlexJustify};
+use protos::riftcaller::{FlexAlign, FlexJustify};
 
 /// Displays a panel menu consisting of a series of buttons
 pub struct ButtonMenu {

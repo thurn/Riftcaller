@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 
 use core_data::game_primitives::Side;
 use game_data::card_name::CardName;
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::DrawCardAction;
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::DrawCardAction;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::TestSessionHelpers;
 

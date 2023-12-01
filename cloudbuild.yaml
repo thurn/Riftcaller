@@ -1,20 +1,20 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', "--build-arg", "SDVERSION=$SHORT_SHA", '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA', '.' ]
+  args: [ 'build', "--build-arg", "SDVERSION=$SHORT_SHA", '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/riftcaller/riftcaller:$COMMIT_SHA', '.' ]
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA']
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/riftcaller/riftcaller:$COMMIT_SHA']
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
    - 'run'
    - 'deploy'
-   - 'spelldawn'
+   - 'riftcaller'
    - '--image'
-   - 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA'
+   - 'us-central1-docker.pkg.dev/$PROJECT_ID/riftcaller/riftcaller:$COMMIT_SHA'
    - '--region'
    - 'us-central1'
 
 images:
-- 'us-central1-docker.pkg.dev/$PROJECT_ID/spelldawn/spelldawn:$COMMIT_SHA'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/riftcaller/riftcaller:$COMMIT_SHA'

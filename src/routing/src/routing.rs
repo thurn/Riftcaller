@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ use panels::set_player_name_panel::SetPlayerNamePanel;
 use panels::settings_panel::SettingsPanel;
 use panels::side_select_panel::SideSelectPanel;
 use player_data::PlayerState;
-use protos::spelldawn::InterfacePanel;
+use protos::riftcaller::InterfacePanel;
 
 pub mod all_panels;
 

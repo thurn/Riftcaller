@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ use game_data::game_actions::{self, DisplayPreference, GameAction};
 use game_data::game_state::GameState;
 use game_data::prompt_data::PromptAction;
 use player_data::PlayerState;
-use protos::spelldawn::{
+use protos::riftcaller::{
     DrawCardAction, GainManaAction, InitiateRaidAction, MoveCardAction, PlayCardAction,
     ProgressRoomAction, SpendActionPointAction,
 };
@@ -229,10 +229,10 @@ pub async fn handle_move_card(
     handle_game_action(database, data, &GameAction::MoveSelectorCard(card_id)).await
 }
 
-fn card_target(target: &Option<protos::spelldawn::CardTarget>) -> game_actions::CardTarget {
+fn card_target(target: &Option<protos::riftcaller::CardTarget>) -> game_actions::CardTarget {
     target.as_ref().map_or(game_actions::CardTarget::None, |t| {
         t.card_target.as_ref().map_or(game_actions::CardTarget::None, |t2| match t2 {
-            protos::spelldawn::card_target::CardTarget::RoomId(room_id) => {
+            protos::riftcaller::card_target::CardTarget::RoomId(room_id) => {
                 adapters::room_id(*room_id)
                     .map_or(game_actions::CardTarget::None, game_actions::CardTarget::Room)
             }

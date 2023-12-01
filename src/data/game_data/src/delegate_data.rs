@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! 'Delegates' are the core abstraction of the Spelldawn rules engine.
+//! 'Delegates' are the core abstraction of the Riftcaller rules engine.
 //!
 //! There are two types of delegates: 'Events' and 'Queries'. Event delegates
 //! allow cards to respond to specific events which occur during a game, such as

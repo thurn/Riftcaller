@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 use core_ui::prelude::*;
 use game_data::prompt_data::{RoomSelectorPrompt, RoomSelectorPromptContext};
 use prompts::game_instructions::GameInstructions;
-use protos::spelldawn::InterfaceMainControls;
+use protos::riftcaller::InterfaceMainControls;
 
 pub fn controls(prompt: &RoomSelectorPrompt) -> Option<InterfaceMainControls> {
     Some(InterfaceMainControls {

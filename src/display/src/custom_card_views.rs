@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ use game_data::card_view_context::CardViewContext;
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{GamePrompt, RoomSelectorPrompt};
-use protos::spelldawn::{
+use protos::riftcaller::{
     card_targeting, ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
     RevealedCardView, RulesText, TargetingArrow,
 };

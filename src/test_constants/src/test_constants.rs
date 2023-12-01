@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::{HealthValue, ManaValue, RaidId, RoomId};
 use game_data::card_definition::Resonance;
-use protos::spelldawn::RoomIdentifier;
+use protos::riftcaller::RoomIdentifier;
 
 /// The title returned for hidden cards
 pub const HIDDEN_CARD: &str = "Hidden Card";

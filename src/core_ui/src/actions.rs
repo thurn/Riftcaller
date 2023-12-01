@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ use std::fmt::Debug;
 use adventure_data::adventure_action::AdventureAction;
 use core_data::game_primitives::ResponseContext;
 use game_data::game_actions::{GameAction, GameStateAction};
-use protos::spelldawn::client_action::Action;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{ClientAction, CommandList, GameCommand, LoggingMetadata, StandardAction};
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{ClientAction, CommandList, GameCommand, LoggingMetadata, StandardAction};
 use serde_json::ser;
 use user_action_data::{DebugAction, UserAction};
 

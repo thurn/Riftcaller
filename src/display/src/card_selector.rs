@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ use game_data::prompt_data::{CardSelectorPrompt, GamePrompt, PromptAction, Promp
 use prompts::game_instructions::GameInstructions;
 use prompts::prompt_container::PromptContainer;
 use prompts::response_button::ResponseButton;
-use protos::spelldawn::{InterfaceMainControls, ObjectPosition};
+use protos::riftcaller::{InterfaceMainControls, ObjectPosition};
 use rules::flags;
 
 use crate::positions;

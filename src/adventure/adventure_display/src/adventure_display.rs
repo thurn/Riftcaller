@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ use core_ui::actions::InterfaceAction;
 use core_ui::design;
 use core_ui::panels::Panels;
 use panel_address::{PanelAddress, PlayerPanel};
-use protos::spelldawn::{
+use protos::riftcaller::{
     FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
     WorldMapCharacter, WorldMapSprite, WorldMapTile,
 };
-use protos::spelldawn::game_command::Command;
+use protos::riftcaller::game_command::Command;
 
 pub mod adventure_over_panel;
 pub mod adventure_panels;

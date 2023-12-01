@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use protos::spelldawn::{FlexPosition, WhiteSpace};
+use protos::riftcaller::{FlexPosition, WhiteSpace};
 
 pub struct GameInstructions {
     text: String,

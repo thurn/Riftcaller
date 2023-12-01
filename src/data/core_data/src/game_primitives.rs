@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Fundamental types and data structures for Spelldawn
+//! Fundamental types and data structures for Riftcaller
 
 #![allow(clippy::copy_iterator)] // Suppress IntoEnumIterator warning
 

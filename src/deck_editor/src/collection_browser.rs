@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
 use panel_address::CollectionBrowserFilters;
 use player_data::PlayerState;
-use protos::spelldawn::game_command::Command;
-use protos::spelldawn::{FlexAlign, FlexDirection, FlexJustify, FlexPosition, InfoZoomCommand};
+use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{FlexAlign, FlexDirection, FlexJustify, FlexPosition, InfoZoomCommand};
 use user_action_data::DeckEditorAction;
 
 use crate::card_list;

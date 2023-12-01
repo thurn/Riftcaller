@@ -1,4 +1,4 @@
-// Copyright © Spelldawn 2021-present
+// Copyright © Riftcaller 2021-present
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,20 +20,20 @@ use game_data::card_state::CardCounter;
 use rules::{mana, queries};
 use rules::mana::ManaPurpose;
 
-use crate::state_node::SpelldawnState;
+use crate::state_node::RiftcallerState;
 
 pub struct ScoreEvaluator {}
 
-impl StateEvaluator<SpelldawnState> for ScoreEvaluator {
-    fn evaluate(&self, node: &SpelldawnState, side: Side) -> Result<i32> {
+impl StateEvaluator<RiftcallerState> for ScoreEvaluator {
+    fn evaluate(&self, node: &RiftcallerState, side: Side) -> Result<i32> {
         Ok(queries::score(node, side) as i32 - (queries::score(node, side.opponent()) as i32))
     }
 }
 
 pub struct ManaDifferenceEvaluator {}
 
-impl StateEvaluator<SpelldawnState> for ManaDifferenceEvaluator {
-    fn evaluate(&self, game: &SpelldawnState, side: Side) -> Result<i32> {
+impl StateEvaluator<RiftcallerState> for ManaDifferenceEvaluator {
+    fn evaluate(&self, game: &RiftcallerState, side: Side) -> Result<i32> {
         Ok(mana::get(game, side, ManaPurpose::AllSources) as i32
             - mana::get(game, side.opponent(), ManaPurpose::AllSources) as i32)
     }
@@ -41,24 +41,24 @@ impl StateEvaluator<SpelldawnState> for ManaDifferenceEvaluator {
 
 pub struct CardsInHandEvaluator {}
 
-impl StateEvaluator<SpelldawnState> for CardsInHandEvaluator {
-    fn evaluate(&self, game: &SpelldawnState, side: Side) -> Result<i32> {
+impl StateEvaluator<RiftcallerState> for CardsInHandEvaluator {
+    fn evaluate(&self, game: &RiftcallerState, side: Side) -> Result<i32> {
         Ok(game.hand(side).count() as i32)
     }
 }
 
 pub struct CardsInPlayEvaluator {}
 
-impl StateEvaluator<SpelldawnState> for CardsInPlayEvaluator {
-    fn evaluate(&self, game: &SpelldawnState, side: Side) -> Result<i32> {
+impl StateEvaluator<RiftcallerState> for CardsInPlayEvaluator {
+    fn evaluate(&self, game: &RiftcallerState, side: Side) -> Result<i32> {
         Ok(game.cards(side).iter().filter(|c| c.position().in_play()).count() as i32)
     }
 }
 
 pub struct ProgressCountersEvaluator {}
 
-impl StateEvaluator<SpelldawnState> for ProgressCountersEvaluator {
-    fn evaluate(&self, game: &SpelldawnState, side: Side) -> Result<i32> {
+impl StateEvaluator<RiftcallerState> for ProgressCountersEvaluator {
+    fn evaluate(&self, game: &RiftcallerState, side: Side) -> Result<i32> {
         if side == Side::Champion {
             return Ok(0);
         }

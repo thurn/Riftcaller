@@ -2410,6 +2410,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "riftcaller"
+version = "0.0.0"
+dependencies = [
+ "cards_all",
+ "database",
+ "logging",
+ "protos",
+ "rusty-hook",
+ "server",
+ "tokio",
+ "tonic",
+ "tonic-web",
+ "tracing",
+]
+
+[[package]]
 name = "ring"
 version = "0.16.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2852,22 +2868,6 @@ checksum = "66d72b759436ae32898a2af0a14218dbf55efde3feeb170eb623637db85ee1e0"
 dependencies = [
  "libc",
  "winapi",
-]
-
-[[package]]
-name = "spelldawn"
-version = "0.0.0"
-dependencies = [
- "cards_all",
- "database",
- "logging",
- "protos",
- "rusty-hook",
- "server",
- "tokio",
- "tonic",
- "tonic-web",
- "tracing",
 ]
 
 [[package]]
