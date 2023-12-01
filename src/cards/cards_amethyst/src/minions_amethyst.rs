@@ -88,7 +88,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
                     _ => current,
                 }),
             ),
-            combat_abilities::combat_end_raid(),
+            combat_abilities::end_raid(),
         ],
         config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::astral()).build(),
     }

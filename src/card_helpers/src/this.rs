@@ -75,6 +75,11 @@ pub fn can_play(transformation: TransformationFn<CardId, Flag>) -> Delegate {
     Delegate::CanPlayCard(QueryDelegate { requirement: card, transformation })
 }
 
+/// A delegate which prevents a card from being able to be evaded
+pub fn can_evade(transformation: TransformationFn<CardId, Flag>) -> Delegate {
+    Delegate::CanEvadeMinion(QueryDelegate { requirement: card, transformation })
+}
+
 /// A delegate which modifies this card's base attack value
 pub fn base_attack(transformation: TransformationFn<CardId, AttackValue>) -> Delegate {
     Delegate::BaseAttack(QueryDelegate { requirement: card, transformation })

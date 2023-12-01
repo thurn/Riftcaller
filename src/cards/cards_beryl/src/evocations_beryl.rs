@@ -34,7 +34,6 @@ use game_data::game_actions::{
     ButtonPromptContext, CardTarget, PromptChoice, PromptChoiceLabel, UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_state::RaidJumpRequest;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
@@ -186,15 +185,15 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
         )
         .delegate(this::can_activate(|g, _, _, flag| {
             flag.add_constraint(raids::active_encounter_prompt(g).is_some())
+                .add_constraint(flags::can_evade_current_minion(g))
         }))
         .delegate(this::on_activated(|g, s, _| {
-            mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
+            mutations::evade_current_minion(g)?;
             mutations::lose_action_points_if_able(
                 g,
                 Side::Champion,
                 s.upgrade(g.champion.actions, 1),
-            )?;
-            Ok(())
+            )
         }))
         .build()],
         config: CardConfig::default(),

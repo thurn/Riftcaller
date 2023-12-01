@@ -39,7 +39,7 @@ use game_data::special_effects::{
 use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mana::ManaPurpose;
-use rules::{mana, mutations, queries, CardDefinitionExt};
+use rules::{flags, mana, mutations, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
@@ -518,11 +518,9 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
                     flag.add_constraint(utils::is_true(|| {
                         Some(queries::resonance(g, raids::active_encounter_prompt(g)?)?.infernal)
                     }))
+                    .add_constraint(flags::can_evade_current_minion(g))
                 }))
-                .delegate(this::on_activated(|g, _, _| {
-                    mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
-                    Ok(())
-                }))
+                .delegate(this::on_activated(|g, _, _| mutations::evade_current_minion(g)))
                 .build(),
             abilities::encounter_boost(),
         ],
@@ -556,7 +554,9 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
                 text!["You may evade that minion by paying its shield cost"],
                 in_play::on_minion_approached(|g, s, event| {
                     let card = g.card(s);
-                    if card.custom_state.targets_contain(card.last_card_play_id, event.data) {
+                    if card.custom_state.targets_contain(card.last_card_play_id, event.data)
+                        && flags::can_evade_current_minion(g)
+                    {
                         let shield = queries::shield(g, event.data, None);
                         if mana::get(g, s.side(), ManaPurpose::PayForTriggeredAbility) >= shield {
                             show_prompt::with_choices(

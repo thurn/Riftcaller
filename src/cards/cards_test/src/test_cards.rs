@@ -115,7 +115,7 @@ pub fn test_minion_end_raid(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionEndRaid,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![combat_abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::end_raid()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -129,7 +129,7 @@ pub fn test_minion_shield_1(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield1Infernal,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![combat_abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::end_raid()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -144,7 +144,7 @@ pub fn test_minion_shield_2_abyssal(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionShield2Abyssal,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![combat_abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::end_raid()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -159,7 +159,7 @@ pub fn test_minion_deal_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionDealDamage,
         cost: cost(1),
-        abilities: vec![combat_abilities::combat_deal_damage::<1>()],
+        abilities: vec![combat_abilities::deal_damage::<1>()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -173,7 +173,7 @@ pub fn test_minion_lose_mana(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMinionLoseMana,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![combat_abilities::combat_lose_mana::<1>()],
+        abilities: vec![combat_abilities::lose_mana::<1>()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -187,7 +187,7 @@ pub fn test_minion_lose_action_points(metadata: CardMetadata) -> CardDefinition 
     CardDefinition {
         name: CardName::TestMinionLoseActionPoints,
         cost: cost(test_constants::MINION_COST),
-        abilities: vec![combat_abilities::combat_lose_action_points::<1>()],
+        abilities: vec![combat_abilities::lose_action_points::<1>()],
         card_type: CardType::Minion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
@@ -493,10 +493,7 @@ pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![
-            combat_abilities::combat_deal_damage::<1>(),
-            combat_abilities::combat_end_raid(),
-        ],
+        abilities: vec![combat_abilities::deal_damage::<1>(), combat_abilities::end_raid()],
         config: CardConfigBuilder::new()
             .health(5)
             .shield(1)

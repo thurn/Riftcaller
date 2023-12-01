@@ -81,6 +81,7 @@ pub enum TextToken {
     Wound,
     Leyline,
     Evade,
+    Evaded,
     Unsummon,
     RazeAbility,
     Banish,

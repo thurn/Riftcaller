@@ -216,8 +216,12 @@ impl<T, R> QueryDelegate<T, R> {
 pub enum Flag {
     /// Initial value of this flag
     Default(bool),
-    /// Override for this flag set by a delegate
-    Override(bool),
+    /// Override for this flag set by a delegate.
+    ///
+    /// Optionally, an [AbilityId] may be provided to identify the ability
+    /// triggering this state, which will in most cases cause that card's
+    /// FlagAbilityTriggeredEvent to fire.
+    Override(bool, Option<AbilityId>),
 }
 
 impl Flag {
@@ -229,13 +233,13 @@ impl Flag {
     /// has priority over base game rules, but is superseded in turn by
     /// [Self::disallow] and [Self::add_constraint].
     pub fn allow(self) -> Self {
-        self.override_unconditionally(true)
+        self.override_unconditionally(true, None)
     }
 
     /// Prevents some player action or event from happening. This is the highest
     /// priority option and cannot be superseded.
     pub fn disallow(self) -> Self {
-        self.override_unconditionally(false)
+        self.override_unconditionally(false, None)
     }
 
     /// Overrides this flag if `value` is false. This is used to modify
@@ -246,7 +250,7 @@ impl Flag {
         if value {
             self
         } else {
-            self.override_unconditionally(value)
+            self.override_unconditionally(value, None)
         }
     }
 
@@ -259,16 +263,18 @@ impl Flag {
     /// sometimes described as the "can't beats can" rule.
     pub fn add_permission(self, value: bool) -> Self {
         if value {
-            self.override_unconditionally(value)
+            self.override_unconditionally(value, None)
         } else {
             self
         }
     }
 
-    fn override_unconditionally(self, value: bool) -> Self {
+    fn override_unconditionally(self, value: bool, ability_id: Option<AbilityId>) -> Self {
         match self {
-            Self::Default(_) => Self::Override(value),
-            Self::Override(current) => Self::Override(current && value),
+            Self::Default(_) => Self::Override(value, ability_id),
+            Self::Override(current, current_ability) => {
+                Self::Override(current && value, ability_id.or(current_ability))
+            }
         }
     }
 }
@@ -276,7 +282,7 @@ impl Flag {
 impl From<Flag> for bool {
     fn from(flag: Flag) -> Self {
         match flag {
-            Flag::Default(value) | Flag::Override(value) => value,
+            Flag::Default(value) | Flag::Override(value, _) => value,
         }
     }
 }
@@ -662,6 +668,8 @@ pub enum Delegate {
     CanAbilityEndRaid(QueryDelegate<RaidEvent<AbilityId>, Flag>),
     /// Should a 'destroy' ability with the given ID be prevented?
     CanAbilityDestroyCard(QueryDelegate<AbilityId, Flag>),
+    /// Can the minion with the given ID be evaded?
+    CanEvadeMinion(QueryDelegate<CardId, Flag>),
 
     /// Query the current mana cost of a card. Invoked with [Cost::mana].
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),

@@ -37,7 +37,7 @@ use game_data::game_actions::{
     RoomSelectorPromptContext, RoomSelectorPromptEffect, UnplayedAction,
 };
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GameState, RaidJumpRequest};
+use game_data::game_state::GameState;
 use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
@@ -321,7 +321,7 @@ pub fn voidstep(meta: CardMetadata) -> CardDefinition {
                     .next()
                     .is_none()
                 {
-                    mutations::apply_raid_jump(g, RaidJumpRequest::EvadeCurrentMinion);
+                    mutations::evade_current_minion(g)?;
                 }
                 Ok(())
             },

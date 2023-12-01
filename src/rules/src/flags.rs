@@ -20,9 +20,10 @@ use core_data::game_primitives::{AbilityId, CardId, CardSubtype, CardType, RaidI
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    CanActivateAbility, CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanInitiateRaidQuery,
-    CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery, CanSummonQuery,
-    CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery, Flag,
+    CanActivateAbility, CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanEvadeMinionQuery,
+    CanInitiateRaidQuery, CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery,
+    CanSummonQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
+    Flag,
 };
 use game_data::game_actions::{
     BrowserPromptValidation, CardSelectorPrompt, CardTarget, GamePrompt, PlayCardBrowser,
@@ -417,6 +418,14 @@ pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool 
         Flag::new(can_take_game_actions(game, Side::Champion)),
     )
     .into()
+}
+
+/// Can the minion currently being encountered be evaded?
+pub fn can_evade_current_minion(game: &GameState) -> bool {
+    let Some(minion_id) = game.current_raid_defender() else {
+        return false;
+    };
+    dispatch::perform_query(game, CanEvadeMinionQuery(minion_id), Flag::new(true)).into()
 }
 
 /// Can the Champion choose to use the 'End Raid' button to end the access

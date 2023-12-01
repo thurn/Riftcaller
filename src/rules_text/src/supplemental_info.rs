@@ -183,7 +183,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             "Gives the Champion 1{} to use during each raid.",
             icons::MANA
         )),
-        TextTokenKind::Evade => entry("Evade", "Bypass a minion without combat"),
+        TextTokenKind::Evade | TextTokenKind::Evaded => entry("Evade", "Bypass a minion without combat"),
         TextTokenKind::Unsummon => entry("Unsummon", "Turn a minion face-down"),
         TextTokenKind::RazeAbility => Some(
             format!("{} <b>Ability</b>: Allows cards to be discarded/destroyed during a raid.",

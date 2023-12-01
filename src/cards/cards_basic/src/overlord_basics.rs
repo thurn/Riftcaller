@@ -12,22 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use assets::rexard_images;
+use assets::rexard_images::RexardPack;
+use card_helpers::costs::scheme;
+use card_helpers::text_helpers::named_trigger;
+use card_helpers::this::on_activated;
+use card_helpers::{combat_abilities, *};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, CardConfig, CardConfigBuilder, CardDefinition, Resonance, SchemePoints,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-
-use assets::rexard_images;
-use assets::rexard_images::RexardPack;
-use card_helpers::*;
-use card_helpers::combat_abilities;
-use card_helpers::costs::scheme;
-use card_helpers::text_helpers::named_trigger;
-use card_helpers::this::on_activated;
-use rules::{mana, mutations};
 use rules::mutations::OnZeroStored;
+use rules::{mana, mutations};
 
 pub fn conspire(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -191,7 +189,7 @@ pub fn crab(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![combat_abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::end_raid()],
         config: CardConfigBuilder::new().health(2).resonance(Resonance::infernal()).build(),
     }
 }
@@ -207,7 +205,7 @@ pub fn fire_goblin(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![combat_abilities::combat_deal_damage::<1>(), combat_abilities::combat_gain_mana::<1>()],
+        abilities: vec![combat_abilities::deal_damage::<1>(), combat_abilities::gain_mana::<1>()],
         config: CardConfigBuilder::new()
             .health(1)
             .shield(2)
@@ -227,7 +225,7 @@ pub fn toucan(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![combat_abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::end_raid()],
         config: CardConfigBuilder::new().health(3).resonance(Resonance::astral()).build(),
     }
 }
@@ -243,7 +241,7 @@ pub fn frog(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![combat_abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::end_raid()],
         config: CardConfigBuilder::new().health(4).resonance(Resonance::astral()).build(),
     }
 }
@@ -259,7 +257,7 @@ pub fn captain(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![combat_abilities::combat_end_raid(), combat_abilities::combat_lose_action_points::<1>()],
+        abilities: vec![combat_abilities::end_raid(), combat_abilities::lose_action_points::<1>()],
         config: CardConfigBuilder::new().health(2).resonance(Resonance::mortal()).build(),
     }
 }
@@ -275,7 +273,7 @@ pub fn scout(_: CardMetadata) -> CardDefinition {
         side: Side::Overlord,
         school: School::Neutral,
         rarity: Rarity::Common,
-        abilities: vec![combat_abilities::combat_end_raid()],
+        abilities: vec![combat_abilities::end_raid()],
         config: CardConfigBuilder::new().health(4).resonance(Resonance::mortal()).build(),
     }
 }

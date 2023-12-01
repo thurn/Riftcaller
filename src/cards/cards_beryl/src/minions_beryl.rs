@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use card_helpers::visual_effects::VisualEffects;
-use card_helpers::{costs, delegates, requirements, text, text_helpers};
+use card_helpers::{combat_abilities, costs, delegates, requirements, text, text_helpers, this};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -71,6 +71,37 @@ pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
                 ProjectileData::new(Projectile::Projectiles1(4))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic3_Projectile01"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn sentinel_sphinx(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SentinelSphinx,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::overlord_card(meta, "sentinel_sphinx"),
+        card_type: CardType::Minion,
+        subtypes: vec![CardSubtype::Beast],
+        side: Side::Overlord,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![
+            Ability::new_with_delegate(
+                text!["This minion cannot be", Evaded],
+                this::can_evade(delegates::disallow),
+            ),
+            combat_abilities::end_raid(),
+        ],
+        config: CardConfigBuilder::new()
+            .health(meta.upgrade(2, 3))
+            .shield(meta.upgrade(1, 2))
+            .resonance(Resonance::infernal())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(6))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
             )
             .build(),
     }

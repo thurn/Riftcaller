@@ -17,7 +17,7 @@ use core_data::game_primitives::{GameObjectId, InitiatedBy};
 use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GameState, RaidJumpRequest};
+use game_data::game_state::GameState;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
@@ -89,7 +89,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             game.card_mut(card_id).custom_state.push(state);
         }
         GameEffect::EvadeCurrentEncounter => {
-            mutations::apply_raid_jump(game, RaidJumpRequest::EvadeCurrentMinion);
+            mutations::evade_current_minion(game)?;
         }
         GameEffect::PlayCardForNoMana(card_id, target, initiated_by) => {
             play_card::initiate(

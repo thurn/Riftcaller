@@ -323,6 +323,8 @@ pub trait CardNamesExt {
 
     fn find_card(&self, name: CardName) -> &ClientCard;
 
+    fn find_ability_card(&self, name: CardName) -> &ClientCard;
+
     fn find_card_id(&self, name: CardName) -> CardIdentifier;
 
     fn contains_card(&self, name: CardName) -> bool;
@@ -370,6 +372,10 @@ impl CardNamesExt for Vec<&ClientCard> {
 
     fn find_card(&self, name: CardName) -> &ClientCard {
         self.iter().find(|c| c.title() == name.displayed_name()).expect("Card not found")
+    }
+
+    fn find_ability_card(&self, name: CardName) -> &ClientCard {
+        self.iter().find(|c| c.title().contains(&name.displayed_name())).expect("Card not found")
     }
 
     fn find_card_id(&self, name: CardName) -> CardIdentifier {

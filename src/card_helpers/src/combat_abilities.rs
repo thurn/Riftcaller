@@ -25,7 +25,7 @@ use crate::{text_helpers, this};
 /// Minion combat ability which deals damage to the Champion player during
 /// combat, causing them to discard `N` random cards and lose the game if they
 /// cannot.
-pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
+pub fn deal_damage<const N: DamageAmount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text![DealDamage(N)]),
@@ -34,7 +34,7 @@ pub fn combat_deal_damage<const N: DamageAmount>() -> Ability {
 }
 
 /// Minion combat ability which causes the Champion to lose `N` mana.
-pub fn combat_lose_mana<const N: ManaValue>() -> Ability {
+pub fn lose_mana<const N: ManaValue>() -> Ability {
     Ability::new_with_delegate(
         text![text_helpers::named_trigger(Combat, text!["The Champion", LosesMana(N)])],
         this::combat(|g, s, _| {
@@ -44,7 +44,7 @@ pub fn combat_lose_mana<const N: ManaValue>() -> Ability {
 }
 
 /// Minion combat ability which ends the current raid in failure.
-pub fn combat_end_raid() -> Ability {
+pub fn end_raid() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text!["End the raid"]),
@@ -55,7 +55,7 @@ pub fn combat_end_raid() -> Ability {
 }
 
 /// Minion combat ability which gains mana
-pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
+pub fn gain_mana<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text![GainMana(N)]),
@@ -68,7 +68,7 @@ pub fn combat_gain_mana<const N: ManaValue>() -> Ability {
 
 /// Minion combat ability which causes the Champion player to lose action
 /// points.
-pub fn combat_lose_action_points<const N: ActionCount>() -> Ability {
+pub fn lose_action_points<const N: ActionCount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text!["Remove", Actions(1)]),

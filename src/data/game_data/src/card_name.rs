@@ -326,6 +326,7 @@ pub enum CardName {
     AlgrakCouncilsEnforcer,
     EriaTimeConduit,
     LiminalTransposition,
+    SentinelSphinx,
 }
 
 impl CardName {

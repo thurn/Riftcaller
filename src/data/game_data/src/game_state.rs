@@ -150,6 +150,9 @@ impl GamePlayerData {
 pub enum RaidJumpRequest {
     EncounterMinion(CardId),
     ChangeTarget(RoomId),
+
+    /// Evades a minion during a raid. Use `mutations::evade_current_minion`
+    /// instead of applying this directly.
     EvadeCurrentMinion,
 }
 

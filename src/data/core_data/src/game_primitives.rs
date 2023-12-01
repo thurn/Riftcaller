@@ -600,6 +600,7 @@ pub enum CardSubtype {
 
     // Minion Subtypes
     Fey,
+    Beast,
 }
 
 /// An interval of time in milliseconds
