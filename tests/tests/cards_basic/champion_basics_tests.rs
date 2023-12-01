@@ -39,11 +39,11 @@ fn eldritch_surge() {
 fn lodestone() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     let id = g.create_and_play(CardName::Lodestone);
-    assert_eq!("12", g.user.get_card(id).arena_icon());
+    assert_eq!("12", g.client.get_card(id).arena_icon());
     g.activate_ability(id, 1);
     assert_eq!(test_constants::STARTING_MANA - 1 + 2, g.me().mana());
     assert_eq!(2, g.me().actions());
-    assert_eq!("10", g.user.get_card(id).arena_icon());
+    assert_eq!("10", g.client.get_card(id).arena_icon());
 }
 
 #[test]
@@ -70,18 +70,18 @@ fn mana_battery() {
 #[test]
 fn contemplate() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    assert_eq!(0, g.user.cards.hand().len());
+    assert_eq!(0, g.client.cards.hand().len());
     g.create_and_play(CardName::Contemplate);
-    assert_eq!(1, g.user.cards.hand().len());
+    assert_eq!(1, g.client.cards.hand().len());
     assert_eq!(test_constants::STARTING_MANA + 2, g.me().mana());
 }
 
 #[test]
 fn ancestral_knowledge() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
-    assert_eq!(0, g.user.cards.hand().len());
+    assert_eq!(0, g.client.cards.hand().len());
     g.create_and_play(CardName::AncestralKnowledge);
-    assert_eq!(3, g.user.cards.hand().len());
+    assert_eq!(3, g.client.cards.hand().len());
     assert_eq!(test_constants::STARTING_MANA - 1, g.me().mana());
 }
 
@@ -171,9 +171,9 @@ fn ethereal_blade() {
     g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::EtherealBlade);
     assert_eq!(test_constants::STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
     g.click(Button::Score);
-    assert_eq!(0, g.user.cards.discard_pile().len());
-    assert_eq!(1, g.user.cards.artifacts().len());
+    assert_eq!(0, g.client.cards.discard_pile().len());
+    assert_eq!(1, g.client.cards.artifacts().len());
     g.click(Button::EndRaid);
-    assert_eq!(1, g.user.cards.discard_pile().len());
-    assert_eq!(0, g.user.cards.artifacts().len());
+    assert_eq!(1, g.client.cards.discard_pile().len());
+    assert_eq!(0, g.client.cards.artifacts().len());
 }

@@ -53,7 +53,7 @@ use crate::{fake_database, TestSessionHelpers};
 pub struct TestSession {
     /// This is the perspective of the player identified by the `user_id`
     /// parameter to [Self::new].
-    pub user: TestGameClient,
+    pub client: TestGameClient,
     /// This is the perspective of the player identified by the `opponent_id`
     /// parameter to [Self::new].
     pub opponent: TestGameClient,
@@ -71,7 +71,7 @@ impl TestSession {
         connect: bool,
     ) -> Self {
         let mut result = Self {
-            user: TestGameClient::new(user_id),
+            client: TestGameClient::new(user_id),
             opponent: TestGameClient::new(opponent_id),
             metadata: ClientMetadata::default(),
             database,
@@ -96,7 +96,7 @@ impl TestSession {
     pub async fn connect(&mut self, user_id: PlayerId) -> Result<CommandList> {
         let result = server::handle_connect(&self.database, user_id).await?.build();
         let to_update = match () {
-            _ if user_id == self.user.id => &mut self.user,
+            _ if user_id == self.client.id => &mut self.client,
             _ if user_id == self.opponent.id => &mut self.opponent,
             _ => panic!("Unknown user id: {user_id:?}"),
         };
@@ -131,7 +131,7 @@ impl TestSession {
         if let Action::StandardAction(standard) = &action {
             if let Some(update) = &standard.update {
                 // Handle optimistic update
-                self.user.handle_command_list(update.clone());
+                self.client.handle_command_list(update.clone());
             }
 
             if standard.payload.is_empty() {
@@ -210,7 +210,7 @@ impl TestSession {
             mutations::set_visible_to(game, card_id, card_id.side, true);
         });
 
-        self.connect(self.user.id).expect("User connection error");
+        self.connect(self.client.id).expect("User connection error");
         self.connect(self.opponent.id).expect("Opponent connection error");
 
         adapters::card_identifier(card_id)
@@ -219,7 +219,7 @@ impl TestSession {
     /// Inserts an adventure tile in the indicated tile `position`. Panics if
     /// there is no currently-active adventure in the database.
     pub fn overwrite_adventure_tile(&mut self, position: TilePosition, state: TileState) {
-        self.database.mutate_player(self.user.id, |player| {
+        self.database.mutate_player(self.client.id, |player| {
             player
                 .adventure
                 .as_mut()
@@ -228,13 +228,13 @@ impl TestSession {
                 .insert(position, state.clone());
         });
 
-        self.connect(self.user.id).expect("User connection error");
+        self.connect(self.client.id).expect("User connection error");
     }
 
     /// Looks up the [PlayerId] for the [Side] player.
     pub fn player_id_for_side(&self, side: Side) -> PlayerId {
-        if self.database.game().player(side).id == self.user.id {
-            self.user.id
+        if self.database.game().player(side).id == self.client.id {
+            self.client.id
         } else if self.database.game().player(side).id == self.opponent.id {
             self.opponent.id
         } else {
@@ -280,11 +280,11 @@ impl TestSession {
         player_id: PlayerId,
     ) -> (PlayerId, &mut TestGameClient, &mut TestGameClient) {
         match () {
-            _ if player_id == self.user.id => {
-                (self.opponent.id, &mut self.user, &mut self.opponent)
+            _ if player_id == self.client.id => {
+                (self.opponent.id, &mut self.client, &mut self.opponent)
             }
             _ if player_id == self.opponent.id => {
-                (self.user.id, &mut self.opponent, &mut self.user)
+                (self.client.id, &mut self.opponent, &mut self.client)
             }
             _ => panic!("Unknown user id: {player_id:?}"),
         }

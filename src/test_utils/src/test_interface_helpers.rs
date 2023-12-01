@@ -134,14 +134,14 @@ impl TestInterfaceHelpers for TestSession {
 
     fn has(&self, button: Button) -> bool {
         let text = resolve_button(button);
-        self.user.interface.all_active_nodes().has_text(text)
+        self.client.interface.all_active_nodes().has_text(text)
     }
 
     fn side_has(&self, button: Button, side: Side) -> bool {
         let id = self.player_id_for_side(side);
         let text = resolve_button(button);
         if id == self.user_id() {
-            self.user.interface.all_active_nodes().has_text(text)
+            self.client.interface.all_active_nodes().has_text(text)
         } else {
             self.opponent.interface.all_active_nodes().has_text(text)
         }
@@ -186,11 +186,11 @@ impl TestInterfaceHelpers for TestSession {
     }
 
     fn has_text(&self, text: impl Into<String>) -> bool {
-        self.user.interface.all_active_nodes().has_text(text.into())
+        self.client.interface.all_active_nodes().has_text(text.into())
     }
 
     fn open_panel_count(&self) -> usize {
-        self.user.interface.panel_count()
+        self.client.interface.panel_count()
     }
 }
 

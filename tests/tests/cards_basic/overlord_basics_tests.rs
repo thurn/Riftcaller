@@ -58,7 +58,7 @@ fn coinery() {
     g.summon_project(id);
     g.activate_ability(id, 1);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
-    assert!(g.user.get_card(id).is_face_up());
+    assert!(g.client.get_card(id).is_face_up());
     g.activate_ability(id, 1);
     assert_eq!(test_constants::STARTING_MANA - card_cost + (taken * 2), g.me().mana());
 }
@@ -93,7 +93,7 @@ fn ore_refinery() {
     assert_eq!(test_constants::STARTING_MANA - card_cost, g.me().mana());
     g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
-    assert_eq!((stored - taken).to_string(), g.user.get_card(id).arena_icon());
+    assert_eq!((stored - taken).to_string(), g.client.get_card(id).arena_icon());
 }
 
 #[test]
@@ -102,7 +102,7 @@ fn crab() {
     g.create_and_play(CardName::Crab);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
@@ -125,7 +125,7 @@ fn toucan() {
     g.create_and_play(CardName::Toucan);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
@@ -134,7 +134,7 @@ fn frog() {
     g.create_and_play(CardName::Frog);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
@@ -143,7 +143,7 @@ fn captain() {
     g.create_and_play(CardName::Captain);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
     assert_eq!(2, g.opponent.this_player.actions());
 }
 
@@ -153,6 +153,6 @@ fn scout() {
     g.create_and_play(CardName::Scout);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
     assert_eq!(3, g.opponent.this_player.actions());
 }

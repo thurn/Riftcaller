@@ -26,11 +26,11 @@ fn ethereal_form() {
     g.opponent_click(Button::Score);
     g.opponent_click(Button::EndRaid);
     g.pass_turn(Side::Champion);
-    assert_eq!(g.user.other_player.score(), 10);
-    assert!(g.user.cards.opponent_score_area().contains_card(CardName::EtherealForm));
+    assert_eq!(g.client.other_player.score(), 10);
+    assert!(g.client.cards.opponent_score_area().contains_card(CardName::EtherealForm));
     g.activate_ability(id, 0);
-    assert_eq!(g.user.other_player.score(), 0);
-    assert_eq!(g.user.cards.opponent_score_area().len(), 0);
+    assert_eq!(g.client.other_player.score(), 0);
+    assert_eq!(g.client.cards.opponent_score_area().len(), 0);
 }
 
 #[test]
@@ -46,9 +46,9 @@ fn echoing_cacophony() {
     g.create_and_play(CardName::EchoingCacophony);
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
-    assert_eq!(g.user.cards.opponent_hand().curse_count(), 2);
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
     g.click(Button::EndTurn);
-    assert_eq!(g.user.cards.opponent_hand().curse_count(), 0);
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 0);
 }
 
 #[test]
@@ -69,7 +69,7 @@ fn solidarity() {
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA + gained - 2);
-    assert_eq!(g.user.cards.opponent_display_shelf().leyline_count(), 1);
+    assert_eq!(g.client.cards.opponent_display_shelf().leyline_count(), 1);
 }
 
 #[test]
@@ -81,14 +81,14 @@ fn solidarity_use_mana() {
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
     g.pass_turn(Side::Overlord);
-    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    assert_eq!(g.client.other_player.bonus_mana(), 0);
     g.initiate_raid(RoomId::Vault);
-    assert_eq!(g.user.other_player.bonus_mana(), 1);
+    assert_eq!(g.client.other_player.bonus_mana(), 1);
     g.opponent_click(Button::Discard);
-    assert_eq!(g.user.other_player.bonus_mana(), 0);
-    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA - (3 - 1));
+    assert_eq!(g.client.other_player.bonus_mana(), 0);
+    assert_eq!(g.client.other_player.mana(), test_constants::STARTING_MANA - (3 - 1));
     g.opponent_click(Button::EndRaid);
-    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    assert_eq!(g.client.other_player.bonus_mana(), 0);
 }
 
 #[test]
@@ -101,12 +101,12 @@ fn solidarity_two_raids() {
     g.progress_room(test_constants::ROOM_ID);
     g.pass_turn(Side::Overlord);
     g.initiate_raid(RoomId::Vault);
-    assert_eq!(g.user.other_player.bonus_mana(), 1);
+    assert_eq!(g.client.other_player.bonus_mana(), 1);
     g.opponent_click(Button::EndRaid);
     g.initiate_raid(RoomId::Vault);
-    assert_eq!(g.user.other_player.bonus_mana(), 1);
+    assert_eq!(g.client.other_player.bonus_mana(), 1);
     g.opponent_click(Button::Discard);
-    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    assert_eq!(g.client.other_player.bonus_mana(), 0);
     g.opponent_click(Button::EndRaid);
 }
 
@@ -123,12 +123,12 @@ fn solidarity_two_copies() {
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
     g.pass_turn(Side::Overlord);
-    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    assert_eq!(g.client.other_player.bonus_mana(), 0);
     g.initiate_raid(RoomId::Vault);
-    assert_eq!(g.user.other_player.bonus_mana(), 2);
+    assert_eq!(g.client.other_player.bonus_mana(), 2);
     g.opponent_click(Button::Discard);
-    assert_eq!(g.user.other_player.bonus_mana(), 0);
-    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA - (3 - 2));
+    assert_eq!(g.client.other_player.bonus_mana(), 0);
+    assert_eq!(g.client.other_player.mana(), test_constants::STARTING_MANA - (3 - 2));
     g.opponent_click(Button::EndRaid);
-    assert_eq!(g.user.other_player.bonus_mana(), 0);
+    assert_eq!(g.client.other_player.bonus_mana(), 0);
 }

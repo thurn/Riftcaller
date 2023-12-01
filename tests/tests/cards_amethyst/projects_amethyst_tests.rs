@@ -36,7 +36,7 @@ fn test_card_stored_mana() {
     );
     assert_eq!(
         (test_constants::MANA_STORED - test_constants::MANA_TAKEN).to_string(),
-        g.user.get_card(id).arena_icon()
+        g.client.get_card(id).arena_icon()
     );
 }
 
@@ -53,11 +53,11 @@ fn gemcarver() {
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken * 2, g.me().mana());
-    assert_eq!(2, g.user.cards.hand().len());
+    assert_eq!(2, g.client.cards.hand().len());
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken * 3, g.me().mana());
-    assert_eq!(4, g.user.cards.hand().len());
+    assert_eq!(4, g.client.cards.hand().len());
 }
 
 #[test]
@@ -70,9 +70,9 @@ fn spike_trap() {
     g.pass_turn(Side::Overlord);
 
     assert!(g.dawn());
-    assert_eq!(5, g.user.cards.opponent_hand().len());
+    assert_eq!(5, g.client.cards.opponent_hand().len());
     g.initiate_raid(test_constants::ROOM_ID);
-    assert_eq!(1, g.user.cards.opponent_hand().len());
+    assert_eq!(1, g.client.cards.opponent_hand().len());
 }
 
 #[test]
@@ -83,9 +83,9 @@ fn spike_trap_no_counters() {
     g.create_and_play(CardName::SpikeTrap);
     g.pass_turn(Side::Overlord);
     assert!(g.dawn());
-    assert_eq!(5, g.user.cards.opponent_hand().len());
+    assert_eq!(5, g.client.cards.opponent_hand().len());
     g.initiate_raid(test_constants::ROOM_ID);
-    assert_eq!(3, g.user.cards.opponent_hand().len());
+    assert_eq!(3, g.client.cards.opponent_hand().len());
 }
 
 #[test]

@@ -57,7 +57,7 @@ fn test_start_battle() {
 
     adventure.visit_tile(battle);
 
-    assert_eq!("World", adventure.user.current_scene());
+    assert_eq!("World", adventure.client.current_scene());
     adventure.click(Button::StartBattle);
-    assert_eq!("Game", adventure.user.current_scene());
+    assert_eq!("Game", adventure.client.current_scene());
 }

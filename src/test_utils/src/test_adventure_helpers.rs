@@ -51,7 +51,7 @@ impl TestAdventureHelpers for TestSession {
     }
 
     fn visit_tile(&mut self, position: TilePosition) {
-        let tile = self.user.map.tile(position);
+        let tile = self.client.map.tile(position);
         let action = tile.tile.on_visit.as_ref().expect("No visit action found");
         self.perform(action.action.as_ref().expect("action").clone(), self.user_id())
     }

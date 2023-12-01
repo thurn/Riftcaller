@@ -24,10 +24,10 @@ fn ennera_imris_blood_bound() {
         TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::EnneraImrisBloodBound))
             .build();
 
-    assert_eq!(0, g.user.cards.hand().len());
+    assert_eq!(0, g.client.cards.hand().len());
     g.pass_turn(Side::Champion);
     g.pass_turn(Side::Overlord);
-    assert_eq!(0, g.user.cards.hand().len());
+    assert_eq!(0, g.client.cards.hand().len());
     assert_eq!(test_constants::STARTING_MANA + gained, g.me().mana());
 }
 
@@ -41,11 +41,11 @@ fn aris_fey_the_radiant_sun() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestMinionDealDamage);
     g.set_up_minion_combat();
-    assert_eq!(1, g.user.cards.hand().len());
-    assert_eq!(0, g.user.cards.discard_pile().len());
+    assert_eq!(1, g.client.cards.hand().len());
+    assert_eq!(0, g.client.cards.discard_pile().len());
     g.click(Button::NoWeapon);
-    assert_eq!(1, g.user.cards.hand().len());
-    assert_eq!(1, g.user.cards.discard_pile().len());
+    assert_eq!(1, g.client.cards.hand().len());
+    assert_eq!(1, g.client.cards.discard_pile().len());
 }
 
 #[test]
@@ -56,9 +56,9 @@ fn telantes_dugoth_earthbreaker() {
     .build();
 
     g.initiate_raid(RoomId::Sanctum);
-    assert_eq!(0, g.user.cards.opponent_discard_pile().len());
+    assert_eq!(0, g.client.cards.opponent_discard_pile().len());
     g.click(Button::EndRaid);
-    assert_eq!(1, g.user.cards.opponent_discard_pile().len());
+    assert_eq!(1, g.client.cards.opponent_discard_pile().len());
 }
 
 #[test]

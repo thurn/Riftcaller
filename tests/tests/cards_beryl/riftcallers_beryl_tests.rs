@@ -72,7 +72,7 @@ pub fn eria_time_conduit() {
     g.move_selector_card(discarded);
     g.click(Button::SubmitCardSelector);
     g.opponent_click(Button::EndRaid);
-    assert!(g.user.cards.deck_top().contains_card(CardName::Test0CostRitual))
+    assert!(g.client.cards.deck_top().contains_card(CardName::Test0CostRitual))
 }
 
 #[test]
@@ -120,7 +120,7 @@ pub fn illeas_the_high_sage() {
         TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
             .build();
     g.create_and_play(CardName::AncestralKnowledge);
-    assert_eq!(g.user.cards.hand().len(), 4);
+    assert_eq!(g.client.cards.hand().len(), 4);
 }
 
 #[test]
@@ -129,5 +129,5 @@ pub fn illeas_the_high_sage_does_not_trigger_on_action() {
         TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
             .build();
     g.draw_card();
-    assert_eq!(g.user.cards.hand().len(), 1);
+    assert_eq!(g.client.cards.hand().len(), 1);
 }

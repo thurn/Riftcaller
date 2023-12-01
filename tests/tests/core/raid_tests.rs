@@ -42,15 +42,15 @@ fn initiate_raid() {
 
     assert_eq!(3, g.me().actions());
 
-    assert!(g.user.this_player.can_take_action());
-    assert!(!g.user.other_player.can_take_action());
+    assert!(g.client.this_player.can_take_action());
+    assert!(!g.client.other_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     assert!(g.opponent.data.raid_active());
 
     assert_eq!(
-        g.user.data.object_index_position(Id::CardId(scheme_id)),
+        g.client.data.object_index_position(Id::CardId(scheme_id)),
         (0, Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
@@ -58,7 +58,7 @@ fn initiate_raid() {
         (0, Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
-        g.user.data.object_index_position(Id::CardId(minion_id)),
+        g.client.data.object_index_position(Id::CardId(minion_id)),
         (1, Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
@@ -66,7 +66,7 @@ fn initiate_raid() {
         (1, Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
-        g.user.data.object_index_position(Id::Character(PlayerName::User.into())),
+        g.client.data.object_index_position(Id::Character(PlayerName::User.into())),
         (2, Position::Raid(ObjectPositionRaid {}))
     );
     assert_eq!(
@@ -74,8 +74,8 @@ fn initiate_raid() {
         (2, Position::Raid(ObjectPositionRaid {}))
     );
 
-    assert!(g.user.interface.controls().has_text("Test Weapon"));
-    assert!(g.user.interface.controls().has_text("Continue"));
+    assert!(g.client.interface.controls().has_text("Test Weapon"));
+    assert!(g.client.interface.controls().has_text("Continue"));
 
     assert_eq!(
         g.legal_actions(Side::Champion),
@@ -95,23 +95,23 @@ fn summon_minion() {
 
     g.initiate_raid(test_constants::ROOM_ID);
 
-    assert!(!g.user.this_player.can_take_action());
-    assert!(g.user.other_player.can_take_action());
+    assert!(!g.client.this_player.can_take_action());
+    assert!(g.client.other_player.can_take_action());
     assert!(!g.opponent.other_player.can_take_action());
     assert!(g.opponent.this_player.can_take_action());
 
-    assert!(!g.user.cards.get(minion_id).is_face_up());
-    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA);
+    assert!(!g.client.cards.get(minion_id).is_face_up());
+    assert_eq!(g.client.other_player.mana(), test_constants::STARTING_MANA);
 
     g.opponent_click(Button::Summon);
 
-    assert!(g.user.cards.get(minion_id).is_face_up());
+    assert!(g.client.cards.get(minion_id).is_face_up());
     assert_eq!(
-        g.user.other_player.mana(),
+        g.client.other_player.mana(),
         test_constants::STARTING_MANA - test_constants::MINION_COST
     );
-    assert!(g.user.this_player.can_take_action());
-    assert!(!g.user.other_player.can_take_action());
+    assert!(g.client.this_player.can_take_action());
+    assert!(!g.client.other_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
 }
@@ -124,10 +124,10 @@ fn do_not_summon_minion() {
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::NoSummon);
 
-    assert!(!g.user.cards.get(minion_id).is_face_up());
-    assert_eq!(g.user.other_player.mana(), test_constants::STARTING_MANA);
-    assert!(g.user.this_player.can_take_action());
-    assert!(!g.user.other_player.can_take_action());
+    assert!(!g.client.cards.get(minion_id).is_face_up());
+    assert_eq!(g.client.other_player.mana(), test_constants::STARTING_MANA);
+    assert!(g.client.this_player.can_take_action());
+    assert!(!g.client.other_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
 }
@@ -141,30 +141,30 @@ fn use_weapon() {
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
 
-    assert_eq!(g.user.this_player.mana(), 996); // Minion costs 3 to summon
+    assert_eq!(g.client.this_player.mana(), 996); // Minion costs 3 to summon
     let response = g.click_on(g.user_id(), "Test Weapon");
-    assert_eq!(g.user.this_player.mana(), 995); // Weapon costs 1 to use
+    assert_eq!(g.client.this_player.mana(), 995); // Weapon costs 1 to use
     assert_eq!(g.opponent.other_player.mana(), 995); // Weapon costs 1 to use
-    assert!(g.user.cards.get(scheme_id).revealed_to_me());
+    assert!(g.client.cards.get(scheme_id).revealed_to_me());
     assert!(g.opponent.cards.get(scheme_id).revealed_to_me());
-    assert!(g.user.this_player.can_take_action());
+    assert!(g.client.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
-    assert!(g.user.interface.card_anchor_nodes().has_text("Score!"));
-    assert!(g.user.interface.controls().has_text("End Raid"));
+    assert!(g.client.interface.card_anchor_nodes().has_text("Score!"));
+    assert!(g.client.interface.controls().has_text("End Raid"));
 
     assert_eq!(
-        g.user.data.object_index_position(Id::CardId(scheme_id)),
+        g.client.data.object_index_position(Id::CardId(scheme_id)),
         (0, Position::Browser(ObjectPositionBrowser {}))
     );
     assert_eq!(
-        g.user.data.object_position(Id::CardId(minion_id)),
+        g.client.data.object_position(Id::CardId(minion_id)),
         Position::Room(ObjectPositionRoom {
             room_id: test_constants::CLIENT_ROOM_ID.into(),
             room_location: ClientRoomLocation::Front.into()
         })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        g.client.data.object_position(Id::Character(PlayerName::User.into())),
         Position::CharacterContainer(ObjectPositionCharacterContainer {
             owner: PlayerName::User.into()
         })
@@ -181,12 +181,12 @@ fn minion_with_shield() {
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
     assert_eq!(
-        g.user.this_player.mana(),
+        g.client.this_player.mana(),
         test_constants::STARTING_MANA - test_constants::WEAPON_COST
     );
     g.click_on(g.user_id(), "Test Weapon");
     assert_eq!(
-        g.user.this_player.mana(),
+        g.client.this_player.mana(),
         test_constants::STARTING_MANA - test_constants::WEAPON_COST - 1
     );
 }
@@ -200,35 +200,35 @@ fn fire_combat_ability() {
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
 
-    assert_eq!(g.user.this_player.mana(), 996); // Minion costs 3 to summon
+    assert_eq!(g.client.this_player.mana(), 996); // Minion costs 3 to summon
     let response = g.click_on(g.user_id(), "Continue");
-    assert_eq!(g.user.this_player.mana(), 996); // Mana is unchanged
+    assert_eq!(g.client.this_player.mana(), 996); // Mana is unchanged
     assert_eq!(g.opponent.other_player.mana(), 996);
-    assert!(!g.user.cards.get(scheme_id).revealed_to_me()); // Scheme is not revealed
+    assert!(!g.client.cards.get(scheme_id).revealed_to_me()); // Scheme is not revealed
 
     // Still Champion turn
-    assert!(g.user.this_player.can_take_action());
+    assert!(g.client.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
 
-    assert!(!g.user.data.raid_active()); // No raid active due to End Raid ability
+    assert!(!g.client.data.raid_active()); // No raid active due to End Raid ability
     assert!(!g.opponent.data.raid_active());
 
     assert_eq!(
-        g.user.data.object_position(Id::CardId(minion_id)),
+        g.client.data.object_position(Id::CardId(minion_id)),
         Position::Room(ObjectPositionRoom {
             room_id: test_constants::CLIENT_ROOM_ID.into(),
             room_location: ClientRoomLocation::Front.into()
         })
     );
     assert_eq!(
-        g.user.data.object_position(Id::CardId(scheme_id)),
+        g.client.data.object_position(Id::CardId(scheme_id)),
         Position::Room(ObjectPositionRoom {
             room_id: test_constants::CLIENT_ROOM_ID.into(),
             room_location: ClientRoomLocation::Back.into()
         })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        g.client.data.object_position(Id::Character(PlayerName::User.into())),
         Position::CharacterContainer(ObjectPositionCharacterContainer {
             owner: PlayerName::User.into()
         })
@@ -257,20 +257,20 @@ fn score_scheme_card() {
 
     let response = g.click_on(g.user_id(), "Score");
 
-    assert_eq!(g.user.this_player.score(), 10);
+    assert_eq!(g.client.this_player.score(), 10);
     assert_eq!(g.opponent.other_player.score(), 10);
-    assert!(g.user.this_player.can_take_action());
+    assert!(g.client.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
-    assert!(g.user.data.raid_active()); // Raid still active
+    assert!(g.client.data.raid_active()); // Raid still active
     assert!(g.opponent.data.raid_active());
-    assert!(g.user.interface.controls().has_text("End Raid"));
+    assert!(g.client.interface.controls().has_text("End Raid"));
 
     assert_eq!(
-        g.user.data.object_position(Id::CardId(scheme_id)),
+        g.client.data.object_position(Id::CardId(scheme_id)),
         Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        g.client.data.object_position(Id::Character(PlayerName::User.into())),
         Position::CharacterContainer(ObjectPositionCharacterContainer {
             owner: PlayerName::User.into()
         })
@@ -301,20 +301,20 @@ fn complete_raid() {
     g.click_on(g.user_id(), "Score");
     let response = g.click_on(g.user_id(), "End Raid");
 
-    assert_eq!(g.user.this_player.score(), 10);
+    assert_eq!(g.client.this_player.score(), 10);
     assert_eq!(g.opponent.other_player.score(), 10);
-    assert!(g.user.this_player.can_take_action());
+    assert!(g.client.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
     assert!(g.has_text("End Turn"));
-    assert!(!g.user.data.raid_active()); // Raid no longer active
+    assert!(!g.client.data.raid_active()); // Raid no longer active
     assert!(!g.opponent.data.raid_active());
 
     assert_eq!(
-        g.user.data.object_position(Id::CardId(scheme_id)),
+        g.client.data.object_position(Id::CardId(scheme_id)),
         Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })
     );
     assert_eq!(
-        g.user.data.object_position(Id::Character(PlayerName::User.into())),
+        g.client.data.object_position(Id::Character(PlayerName::User.into())),
         Position::CharacterContainer(ObjectPositionCharacterContainer {
             owner: PlayerName::User.into()
         })
@@ -337,8 +337,8 @@ fn cannot_activate() {
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let response = g.initiate_raid(test_constants::ROOM_ID);
-    assert!(g.user.interface.controls().has_text("Score"));
-    assert!(g.user.interface.controls().has_text("End Raid"));
+    assert!(g.client.interface.controls().has_text("Score"));
+    assert!(g.client.interface.controls().has_text("End Raid"));
     assert_snapshot!(Summary::summarize(&response));
 }
 
@@ -349,12 +349,12 @@ fn raze_project() {
     g.pass_turn(Side::Overlord);
     g.initiate_raid(test_constants::ROOM_ID);
 
-    assert!(g.user.interface.controls().has_text("Destroy"));
-    assert!(g.user.interface.controls().has_text(format!("3{}", icons::MANA)));
+    assert!(g.client.interface.controls().has_text("Destroy"));
+    assert!(g.client.interface.controls().has_text(format!("3{}", icons::MANA)));
 
     let response = g.click_on(g.user_id(), "Destroy");
     assert_eq!(
-        g.user.data.object_position(Id::CardId(project_id)),
+        g.client.data.object_position(Id::CardId(project_id)),
         Position::DiscardPile(ObjectPositionDiscardPile { owner: PlayerName::Opponent.into() })
     );
     assert_eq!(
@@ -362,7 +362,7 @@ fn raze_project() {
         Position::DiscardPile(ObjectPositionDiscardPile { owner: PlayerName::User.into() })
     );
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 3);
-    assert!(g.user.interface.controls().has_text("End Raid"));
+    assert!(g.client.interface.controls().has_text("End Raid"));
 
     assert_snapshot!(Summary::summarize(&response));
 }
@@ -382,7 +382,7 @@ fn raid_vault() {
     g.initiate_raid(RoomId::Vault);
     g.opponent_click(Button::Summon);
     let response = g.click_on(g.user_id(), "Test Weapon");
-    assert!(g.user.interface.controls().has_text("Score"));
+    assert!(g.client.interface.controls().has_text("Score"));
     assert_snapshot!(Summary::summarize(&response));
 }
 
@@ -402,7 +402,7 @@ fn raid_sanctum() {
     g.opponent_click(Button::Summon);
 
     let response = g.click_on(g.user_id(), "Test Weapon");
-    assert!(g.user.interface.controls().has_text("Score"));
+    assert!(g.client.interface.controls().has_text("Score"));
     assert_snapshot!(Summary::summarize(&response));
 }
 
@@ -422,7 +422,7 @@ fn raid_crypt() {
     g.opponent_click(Button::Summon);
 
     let response = g.click_on(g.user_id(), "Test Weapon");
-    assert!(g.user.interface.controls().has_text("Score"));
+    assert!(g.client.interface.controls().has_text("Score"));
     assert_snapshot!(Summary::summarize(&response));
 }
 
@@ -451,7 +451,7 @@ fn raid_vault_twice() {
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 4);
     assert_eq!(g.you().mana(), test_constants::STARTING_MANA - 3);
 
-    assert!(g.user.interface.controls().has_text("Test Weapon"));
+    assert!(g.client.interface.controls().has_text("Test Weapon"));
     g.click_on(g.user_id(), "Test Weapon");
 
     // Champion spends mana again to use weapon, Overlord mana is unchanged.
@@ -459,8 +459,8 @@ fn raid_vault_twice() {
     assert_eq!(g.you().mana(), test_constants::STARTING_MANA - 3);
 
     // Scheme should not longer be on top for second raid
-    assert!(g.user.interface.controls().has_text("End Raid"));
-    assert!(!g.user.interface.controls().has_text("Score"));
+    assert!(g.client.interface.controls().has_text("End Raid"));
+    assert!(!g.client.interface.controls().has_text("Score"));
 }
 
 #[test]
@@ -475,8 +475,8 @@ fn raid_no_defenders() {
 
     let response = g.initiate_raid(test_constants::ROOM_ID);
     // Should immediately jump to the Score action
-    assert!(g.user.interface.controls().has_text("Score"));
-    assert!(g.user.interface.controls().has_text("End Raid"));
+    assert!(g.client.interface.controls().has_text("Score"));
+    assert!(g.client.interface.controls().has_text("End Raid"));
     assert_snapshot!(Summary::summarize(&response));
 }
 
@@ -488,8 +488,8 @@ fn raid_vault_no_defenders() {
 
     g.initiate_raid(RoomId::Vault);
     // Should immediately jump to the Score action
-    assert!(g.user.interface.controls().has_text("Score"));
-    assert!(g.user.interface.controls().has_text("End Raid"));
+    assert!(g.client.interface.controls().has_text("Score"));
+    assert!(g.client.interface.controls().has_text("End Raid"));
 }
 
 #[test]
@@ -540,7 +540,7 @@ fn raid_two_defenders() {
     let response = g.click_on(g.user_id(), "Test Weapon");
     g.opponent_click(Button::Summon);
 
-    assert!(g.user.interface.controls().has_text("Continue"));
+    assert!(g.client.interface.controls().has_text("Continue"));
     assert_snapshot!(Summary::summarize(&response));
 }
 
@@ -624,7 +624,7 @@ fn raid_add_defender() {
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
     g.click_on(g.user_id(), "Continue");
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
 
@@ -633,7 +633,7 @@ fn raid_add_defender() {
     g.click_on(g.user_id(), "Test Weapon");
     g.click_on(g.user_id(), "Score");
     g.click_on(g.user_id(), "End Raid");
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
     g.pass_turn(Side::Champion);
 
     // Opponent Turn

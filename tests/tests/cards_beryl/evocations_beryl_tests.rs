@@ -29,8 +29,8 @@ fn empyreal_chorus() {
     let id = g.create_and_play(CardName::EmpyrealChorus);
     g.activate_ability_with_target(id, 0, test_constants::ROOM_ID);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
-    assert!(!g.user.data.raid_active());
-    assert!(!g.user.cards.room_occupants(test_constants::ROOM_ID)[0].revealed_to_me());
+    assert!(!g.client.data.raid_active());
+    assert!(!g.client.cards.room_occupants(test_constants::ROOM_ID)[0].revealed_to_me());
 }
 
 #[test]
@@ -38,10 +38,10 @@ fn starfield_omen() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::StarfieldOmen);
     let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
-    assert_eq!(g.user.cards.hand().real_cards().len(), 0);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 0);
     g.activate_ability(id, 0);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
-    assert_eq!(g.user.cards.hand().real_cards().len(), 2);
+    assert!(g.client.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
+    assert_eq!(g.client.cards.hand().real_cards().len(), 2);
 }
 
 #[test]
@@ -51,8 +51,8 @@ fn visitation() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellDeal1Damage);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().len(), 1);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::Visitation));
+    assert_eq!(g.client.cards.hand().len(), 1);
+    assert!(g.client.cards.discard_pile().contains_card(CardName::Visitation));
 }
 
 #[test]
@@ -62,8 +62,8 @@ fn visitation_pass() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellDeal1Damage);
     g.click(Button::NoPromptAction);
-    assert_eq!(g.user.cards.hand().len(), 0);
-    assert!(g.user.cards.evocations_and_allies().contains_card(CardName::Visitation));
+    assert_eq!(g.client.cards.hand().len(), 0);
+    assert!(g.client.cards.evocations_and_allies().contains_card(CardName::Visitation));
 }
 
 #[test]
@@ -75,9 +75,9 @@ fn visitation_multiple_copies() {
     g.create_and_play(CardName::TestSpellDeal1Damage);
     g.click(Button::NoPromptAction);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().len(), 1);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::Visitation));
-    assert!(g.user.cards.evocations_and_allies().contains_card(CardName::Visitation));
+    assert_eq!(g.client.cards.hand().len(), 1);
+    assert!(g.client.cards.discard_pile().contains_card(CardName::Visitation));
+    assert!(g.client.cards.evocations_and_allies().contains_card(CardName::Visitation));
 }
 
 #[test]
@@ -87,7 +87,7 @@ fn visitation_prevent_partial() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellDeal5Damage);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().len(), 2);
+    assert_eq!(g.client.cards.hand().len(), 2);
 }
 
 #[test]
@@ -97,7 +97,7 @@ fn visitation_upgraded() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellDeal5Damage);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().len(), 5);
+    assert_eq!(g.client.cards.hand().len(), 5);
 }
 
 #[test]
@@ -111,7 +111,7 @@ fn backup_plan() {
     let id = g.create_and_play(CardName::BackupPlan);
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(id, 0);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     g.click(Button::EndRaid);
     assert_eq!(g.me().actions(), 0);
 }
@@ -152,9 +152,9 @@ fn planar_sanctuary() {
     g.initiate_raid(RoomId::RoomA);
     g.click(Button::Score);
     g.activate_ability(id, 1);
-    assert_eq!(g.user.cards.hand().real_cards().len(), 1);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 1);
     assert!(g
-        .user
+        .client
         .cards
         .evocations_and_allies()
         .find_card(CardName::PlanarSanctuary)
@@ -171,7 +171,7 @@ fn planar_sanctuary_activate_after_curse() {
     g.create_and_play(CardName::TestScheme1_10);
     g.progress_room(test_constants::ROOM_ID);
     assert!(g
-        .user
+        .client
         .cards
         .evocations_and_allies()
         .find_card(CardName::PlanarSanctuary)
@@ -180,15 +180,15 @@ fn planar_sanctuary_activate_after_curse() {
     g.create_and_play(CardName::TestSpellGiveCurse);
     assert!(g.me().can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
-    assert_eq!(g.user.cards.hand().curse_count(), 1);
-    assert_eq!(g.user.cards.hand().real_cards().len(), 0);
+    assert_eq!(g.client.cards.hand().curse_count(), 1);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 0);
     g.activate_ability(id, 1);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
-    assert_eq!(g.user.cards.hand().real_cards().len(), 1);
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 1);
     assert!(g.me().can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
     assert!(g
-        .user
+        .client
         .cards
         .evocations_and_allies()
         .find_card(CardName::PlanarSanctuary)
@@ -207,11 +207,11 @@ fn planar_sanctuary_activate_after_damage() {
     g.create_and_play(CardName::TestScheme1_10);
     g.progress_room(test_constants::ROOM_ID);
     g.create_and_play(CardName::TestSpellDeal1Damage);
-    assert_eq!(g.user.cards.hand().real_cards().len(), 4);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 4);
     assert!(g.me().can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
     g.activate_ability(id, 1);
-    assert_eq!(g.user.cards.hand().real_cards().len(), 5);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 5);
     assert!(g.me().can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
     g.click(Button::ClosePriorityPrompt);
@@ -231,15 +231,15 @@ fn knowledge_of_the_beyond() {
 
     let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
     g.activate_ability(id, 1);
-    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestSacrificeDrawCardArtifact);
+    let artifact_id = g.client.cards.hand().find_card_id(CardName::TestSacrificeDrawCardArtifact);
     g.play_card(artifact_id, g.user_id(), None);
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA - cost - (test_constants::ARTIFACT_COST - reduction)
     );
-    assert!(g.user.cards.discard_pile().contains_card(CardName::KnowledgeOfTheBeyond));
-    assert!(g.user.cards.discard_pile().contains_card(CardName::TestEvocation));
-    assert!(g.user.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::KnowledgeOfTheBeyond));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::TestEvocation));
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
 }
 
 #[test]
@@ -254,10 +254,10 @@ fn knowledge_of_the_beyond_activate_for_weapon_during_raid() {
     let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(id, 1);
-    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    let artifact_id = g.client.cards.hand().find_card_id(CardName::TestMortalWeapon);
     g.play_card(artifact_id, g.user_id(), None);
     g.click_card_name(CardName::TestMortalWeapon);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     g.click(Button::EndRaid);
 }
 
@@ -270,9 +270,9 @@ fn knowledge_of_the_beyond_activate_during_access() {
     let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(id, 1);
-    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    let artifact_id = g.client.cards.hand().find_card_id(CardName::TestMortalWeapon);
     g.play_card(artifact_id, g.user_id(), None);
-    assert!(g.user.cards.artifacts().contains_card(CardName::TestMortalWeapon));
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestMortalWeapon));
     g.click(Button::Score);
 }
 
@@ -291,9 +291,9 @@ fn knowledge_of_the_beyond_no_hits() {
     // discard pile
     let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
     g.activate_ability(id, 1);
-    assert_eq!(g.user.cards.hand().len(), 0);
+    assert_eq!(g.client.cards.hand().len(), 0);
     g.click(Button::SkipPlayingCard);
-    assert_eq!(g.user.cards.discard_pile().len(), 4);
+    assert_eq!(g.client.cards.discard_pile().len(), 4);
 }
 
 #[test]
@@ -309,10 +309,10 @@ fn knowledge_of_the_beyond_activate_planar_sanctuary() {
     g.progress_room(test_constants::ROOM_ID);
     g.create_and_play(CardName::TestSpellDeal1Damage);
     g.activate_ability(knowledge_of_the_beyond, 1);
-    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    let artifact_id = g.client.cards.hand().find_card_id(CardName::TestMortalWeapon);
     g.play_card(artifact_id, g.user_id(), None);
-    assert!(g.user.cards.artifacts().contains_card(CardName::TestMortalWeapon));
-    assert!(g.user.cards.artifacts().find_card(CardName::TestMortalWeapon).is_face_up());
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestMortalWeapon));
+    assert!(g.client.cards.artifacts().find_card(CardName::TestMortalWeapon).is_face_up());
     g.click(Button::ClosePriorityPrompt);
 }
 
@@ -330,10 +330,10 @@ fn knowledge_of_the_beyond_activate_planar_sanctuary_first() {
     g.create_and_play(CardName::TestSpellDeal1Damage);
     g.activate_ability(planar_sanctuary, 1);
     g.activate_ability(knowledge_of_the_beyond, 1);
-    let artifact_id = g.user.cards.hand().find_card_id(CardName::TestMortalWeapon);
+    let artifact_id = g.client.cards.hand().find_card_id(CardName::TestMortalWeapon);
     g.play_card(artifact_id, g.user_id(), None);
-    assert!(g.user.cards.artifacts().contains_card(CardName::TestMortalWeapon));
-    assert!(g.user.cards.artifacts().find_card(CardName::TestMortalWeapon).is_face_up());
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestMortalWeapon));
+    assert!(g.client.cards.artifacts().find_card(CardName::TestMortalWeapon).is_face_up());
     g.click(Button::ClosePriorityPrompt);
 }
 
@@ -349,7 +349,7 @@ fn knowledge_of_the_beyond_card_target_with_foebane() {
     let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(id, 1);
-    let foebane = g.user.cards.hand().find_card_id(CardName::Foebane);
+    let foebane = g.client.cards.hand().find_card_id(CardName::Foebane);
     g.play_card(foebane, g.user_id(), Some(RoomId::Vault));
     g.click(Button::ChooseOnPlay);
 
@@ -375,17 +375,17 @@ fn knowledge_of_the_beyond_shield_of_the_flames_evade() {
     let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(id, 1);
-    let shield = g.user.cards.hand().find_card_id(CardName::ShieldOfTheFlames);
+    let shield = g.client.cards.hand().find_card_id(CardName::ShieldOfTheFlames);
     g.play_card(shield, g.user_id(), None);
 
     // Unlike with Foebane you *can* evade a minion with Shield of the Flames
     // because this ability happens *during* an encounter and does not bypass
     // encounter triggers.
     g.activate_ability(shield, 0);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::ShieldOfTheFlames));
-    assert!(g.user.cards.discard_pile().contains_card(CardName::KnowledgeOfTheBeyond));
-    assert!(g.user.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
-    assert!(g.user.data.raid_active());
+    assert!(g.client.cards.discard_pile().contains_card(CardName::ShieldOfTheFlames));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::KnowledgeOfTheBeyond));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
+    assert!(g.client.data.raid_active());
     g.click(Button::EndRaid);
 }
 
@@ -396,7 +396,7 @@ fn splinter_of_twilight_play_for_free() {
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::Play);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA);
-    assert!(g.user.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));
+    assert!(g.client.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));
 }
 
 #[test]
@@ -408,7 +408,7 @@ fn splinter_of_twilight_access_crypt() {
     g.activate_ability(id, 1);
     g.click(Button::Score);
     assert_eq!(g.me().score(), 10);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::SplinterOfTwilight));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::SplinterOfTwilight));
 }
 
 #[test]
@@ -418,5 +418,5 @@ fn splinter_of_twilight_play_from_phase_door() {
     let id = g.create_and_play(CardName::PhaseDoor);
     g.activate_ability(id, 0);
     g.click(Button::Play);
-    assert!(g.user.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));
+    assert!(g.client.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));
 }

@@ -33,11 +33,11 @@ fn meditation() {
 fn coup_de_grace() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play_with_target(CardName::CoupDeGrace, RoomId::Vault);
-    assert!(g.user.data.raid_active());
-    assert_eq!(2, g.user.cards.browser().len());
-    assert_eq!(0, g.user.cards.hand().len());
+    assert!(g.client.data.raid_active());
+    assert_eq!(2, g.client.cards.browser().len());
+    assert_eq!(0, g.client.cards.hand().len());
     g.click_on(g.user_id(), "End Raid");
-    assert_eq!(1, g.user.cards.hand().len());
+    assert_eq!(1, g.client.cards.hand().len());
 }
 
 #[test]
@@ -54,15 +54,15 @@ fn charged_strike() {
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     assert_eq!(test_constants::STARTING_MANA - 3, g.me().mana());
     g.create_and_play_with_target(CardName::ChargedStrike, test_constants::ROOM_ID);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     assert_eq!(test_constants::STARTING_MANA - 4, g.me().mana());
-    assert_eq!(5, g.user.this_player.bonus_mana());
+    assert_eq!(5, g.client.this_player.bonus_mana());
     assert_eq!(5, g.opponent.other_player.bonus_mana());
 
     g.opponent_click(Button::Summon);
     g.click_on(g.user_id(), "Test Weapon");
     assert_eq!(test_constants::STARTING_MANA - 4, g.me().mana());
-    assert_eq!(4, g.user.this_player.bonus_mana());
+    assert_eq!(4, g.client.this_player.bonus_mana());
     assert_eq!(4, g.opponent.other_player.bonus_mana());
 }
 
@@ -84,9 +84,9 @@ fn preparation() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
     assert_eq!(4, g.me().actions());
     g.create_and_play(CardName::Preparation);
-    assert_eq!(4, g.user.cards.hand().len());
+    assert_eq!(4, g.client.cards.hand().len());
     assert_eq!(2, g.me().actions());
     g.create_and_play(CardName::Preparation);
-    assert_eq!(8, g.user.cards.hand().len());
+    assert_eq!(8, g.client.cards.hand().len());
     assert_eq!(0, g.me().actions());
 }

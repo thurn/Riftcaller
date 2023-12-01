@@ -29,11 +29,11 @@ fn test_open_deck_editor() {
     adventure.click(Button::ShowDeck);
 
     client_interface::assert_has_element_name(
-        adventure.user.interface.top_panel(),
+        adventure.client.interface.top_panel(),
         element_names::COLLECTION_BROWSER,
     );
     client_interface::assert_has_element_name(
-        adventure.user.interface.top_panel(),
+        adventure.client.interface.top_panel(),
         element_names::CARD_LIST,
     );
 }
@@ -105,7 +105,7 @@ fn find_card_quantity(node: &Node) -> Option<&String> {
 
 fn find_card_node(adventure: &TestSession, f: impl Fn(CardVariant) -> ElementName) -> &Node {
     client_interface::find_element_name(
-        adventure.user.interface.top_panel(),
+        adventure.client.interface.top_panel(),
         f(CardVariant::standard(EXAMPLE_CARD)),
     )
     .expect("Node not found")

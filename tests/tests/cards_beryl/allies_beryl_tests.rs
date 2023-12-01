@@ -24,7 +24,7 @@ pub fn astrian_oracle() {
         .build();
     g.create_and_play(CardName::AstrianOracle);
     g.initiate_raid(RoomId::Sanctum);
-    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 2);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 2);
 }
 
 #[test]
@@ -38,7 +38,7 @@ pub fn astrian_oracle_two_copies() {
 
     g.initiate_raid(RoomId::Sanctum);
 
-    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
 }
 
 #[test]
@@ -51,7 +51,7 @@ pub fn astrian_oracle_upgraded() {
 
     g.initiate_raid(RoomId::Sanctum);
 
-    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
 }
 
 #[test]
@@ -61,12 +61,12 @@ pub fn resplendent_channeler() {
     g.create_and_play(CardName::ResplendentChanneler);
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
-    assert_eq!(g.user.cards.hand().len(), 1);
+    assert_eq!(g.client.cards.hand().len(), 1);
     g.click(Button::EndRaid);
 
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
-    assert_eq!(g.user.cards.hand().len(), 1);
+    assert_eq!(g.client.cards.hand().len(), 1);
 }
 
 #[test]
@@ -76,8 +76,8 @@ pub fn stalwart_protector() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::StalwartProtector));
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
+    assert!(g.client.cards.discard_pile().contains_card(CardName::StalwartProtector));
 }
 
 #[test]
@@ -87,8 +87,8 @@ pub fn stalwart_protector_pass() {
     g.pass_turn(Side::Champion);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::NoPromptAction);
-    assert_eq!(g.user.cards.hand().curse_count(), 1);
-    assert!(g.user.cards.evocations_and_allies().contains_card(CardName::StalwartProtector));
+    assert_eq!(g.client.cards.hand().curse_count(), 1);
+    assert!(g.client.cards.evocations_and_allies().contains_card(CardName::StalwartProtector));
 }
 
 #[test]
@@ -100,10 +100,10 @@ pub fn stalwart_protector_multiple_copies() {
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::NoPromptAction);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::Sacrifice);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
 }
 
 #[test]
@@ -111,8 +111,8 @@ pub fn stalwart_protector_activate() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
     let id = g.create_and_play(CardName::StalwartProtector);
     g.activate_ability(id, 1);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::StalwartProtector));
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
+    assert!(g.client.cards.discard_pile().contains_card(CardName::StalwartProtector));
 }
 
 #[test]
@@ -141,7 +141,7 @@ pub fn spellcraft_ritualist() {
     let cost = 2;
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::SpellcraftRitualist);
-    assert_eq!(1, g.user.cards.display_shelf().wound_count());
+    assert_eq!(1, g.client.cards.display_shelf().wound_count());
     g.create_and_play(CardName::TestSpell);
     assert_eq!(
         g.me().mana(),

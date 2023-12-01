@@ -34,7 +34,7 @@ fn pathfinder() {
     g.initiate_raid(RoomId::RoomA);
     assert_eq!(
         (base_attack + bonus).to_string(),
-        g.user.cards.artifacts().find_card(CardName::Pathfinder).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::Pathfinder).attack_icon()
     );
 }
 
@@ -46,7 +46,7 @@ fn pathfinder_inner_room() {
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(
         base_attack.to_string(),
-        g.user.cards.artifacts().find_card(CardName::Pathfinder).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::Pathfinder).attack_icon()
     );
 }
 
@@ -69,21 +69,21 @@ fn staff_of_the_valiant() {
     assert_eq!(g.me().mana(), mana,);
     assert_eq!(
         test_constants::MINION_HEALTH.to_string(),
-        g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
     );
 
     g.click_on(g.user_id(), CardName::StaffOfTheValiant.displayed_name());
     assert_eq!(g.me().mana(), mana,);
     assert_eq!(
         test_constants::MINION_HEALTH.to_string(),
-        g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
     );
 
     g.click(Button::Score);
     assert_eq!(g.me().mana(), mana,);
     assert_eq!(
         test_constants::MINION_HEALTH.to_string(),
-        g.user.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::StaffOfTheValiant).attack_icon()
     );
 }
 
@@ -101,13 +101,13 @@ fn triumph_return_to_hand() {
     g.click_card_name(CardName::Triumph);
     g.click(Button::EndRaid);
 
-    assert_eq!(g.user.cards.room_defenders(RoomId::Sanctum).len(), 0);
+    assert_eq!(g.client.cards.room_defenders(RoomId::Sanctum).len(), 0);
     assert!(g.opponent.cards.hand().contains_card(CardName::TestAstralMinion));
 
     g.initiate_raid(RoomId::Vault);
     g.click_card_name(CardName::Triumph);
     g.click(Button::EndRaid);
-    assert!(g.user.cards.room_defenders(RoomId::Vault).contains_card(CardName::TestAstralMinion));
+    assert!(g.client.cards.room_defenders(RoomId::Vault).contains_card(CardName::TestAstralMinion));
 }
 
 #[test]
@@ -146,7 +146,7 @@ fn spear_of_conquest() {
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert!(g
-        .user
+        .client
         .cards
         .artifacts()
         .find_card(CardName::SpearOfConquest)
@@ -156,7 +156,7 @@ fn spear_of_conquest() {
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert!(g
-        .user
+        .client
         .cards
         .artifacts()
         .find_card(CardName::SpearOfConquest)
@@ -166,7 +166,7 @@ fn spear_of_conquest() {
     g.initiate_raid(RoomId::Sanctum);
     g.click_card_name(CardName::SpearOfConquest);
     assert!(g
-        .user
+        .client
         .cards
         .artifacts()
         .find_card(CardName::SpearOfConquest)
@@ -184,7 +184,11 @@ fn spear_of_conquest_insufficient_charges() {
         .build();
     g.create_and_play(CardName::SpearOfConquest);
     g.initiate_raid(RoomId::Sanctum);
-    assert!(!g.user.interface.main_controls().has_text(CardName::SpearOfConquest.displayed_name()))
+    assert!(!g
+        .client
+        .interface
+        .main_controls()
+        .has_text(CardName::SpearOfConquest.displayed_name()))
 }
 
 #[test]
@@ -204,7 +208,7 @@ fn blade_of_reckoning() {
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     assert!(g
-        .user
+        .client
         .cards
         .artifacts()
         .find_card(CardName::BladeOfReckoning)
@@ -219,7 +223,7 @@ fn resolution() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::Resolution);
     g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::Resolution);
-    assert!(g.user.cards.discard_pile().contains_card(CardName::Resolution));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::Resolution));
 }
 
 #[test]
@@ -233,7 +237,7 @@ fn starlight_lantern() {
         g.me().mana(),
         test_constants::STARTING_MANA - cost - test_constants::ARTIFACT_COST + 2
     );
-    assert!(g.user.cards.discard_pile().contains_card(CardName::StarlightLantern));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::StarlightLantern));
 }
 
 #[test]
@@ -286,7 +290,7 @@ fn chains_of_mortality() {
     g.create_and_play(CardName::ChainsOfMortality);
     g.initiate_raid(RoomId::Sanctum);
     g.click_card_name(CardName::ChainsOfMortality);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
 }
 
 #[test]
@@ -318,7 +322,7 @@ fn chains_of_mortality_mortal_minion() {
     g.create_and_play(CardName::ChainsOfMortality);
     g.initiate_raid(RoomId::Sanctum);
     g.click_card_name(CardName::ChainsOfMortality);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
 }
 
 #[test]
@@ -377,8 +381,8 @@ fn shield_of_the_flames() {
     let shield_id = g.create_and_play(CardName::ShieldOfTheFlames);
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(shield_id, 0);
-    assert!(g.user.data.raid_active());
-    assert!(g.user.cards.discard_pile().contains_card(CardName::ShieldOfTheFlames));
+    assert!(g.client.data.raid_active());
+    assert!(g.client.cards.discard_pile().contains_card(CardName::ShieldOfTheFlames));
     g.click(Button::EndRaid);
 }
 
@@ -412,7 +416,7 @@ fn foebane_do_not_use() {
     g.initiate_raid(RoomId::Vault);
     g.click(Button::NoPromptAction);
     g.click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
@@ -428,7 +432,7 @@ fn foebane_insufficient_mana() {
     g.click(Button::ChooseOnPlay);
     g.initiate_raid(RoomId::Vault);
     g.click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
@@ -450,7 +454,7 @@ fn whip_of_disjunction() {
     g.initiate_raid(RoomId::Vault);
     g.activate_ability(id, 0);
     g.click(Button::NoWeapon);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     g.click(Button::EndRaid);
 }
 
@@ -496,12 +500,12 @@ fn glimmersong() {
     g.click(Button::EndRaid);
     assert_eq!(
         "2".to_string(),
-        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
     );
-    assert!(g.user.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('2'));
+    assert!(g.client.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('2'));
     g.initiate_raid(RoomId::Vault);
     g.click_card_name(CardName::Glimmersong);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost);
 }
 
@@ -518,7 +522,7 @@ fn glimmersong_does_not_trigger_on_score() {
     g.click(Button::EndRaid);
     assert_eq!(
         "0".to_string(),
-        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
     );
 }
 
@@ -536,7 +540,7 @@ fn glimmersong_does_not_trigger_on_raze() {
     g.click(Button::EndRaid);
     assert_eq!(
         "0".to_string(),
-        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
     );
 }
 
@@ -556,9 +560,9 @@ fn glimmersong_double_reveal() {
     g.click(Button::NoPromptAction);
     assert_eq!(
         "2".to_string(),
-        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
     );
-    assert!(g.user.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('2'));
+    assert!(g.client.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('2'));
 }
 
 #[test]
@@ -575,6 +579,6 @@ fn glimmersong_cannot_reveal_face_up() {
     g.click(Button::NoPromptAction);
     assert_eq!(
         "0".to_string(),
-        g.user.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
+        g.client.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
     );
 }

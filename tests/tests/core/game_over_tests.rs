@@ -33,8 +33,8 @@ fn resign() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let response = g
         .perform_action(UserAction::GameAction(GameAction::Resign).as_client_action(), g.user_id());
-    assert!(!g.user.this_player.can_take_action());
-    assert!(!g.user.other_player.can_take_action());
+    assert!(!g.client.this_player.can_take_action());
+    assert!(!g.client.other_player.can_take_action());
     assert!(g.is_victory_for_player(Side::Champion));
     assert_snapshot!(Summary::run(&response));
 }
@@ -55,12 +55,12 @@ fn draw_all_overlord_cards() {
 
     loop {
         g.pass_turn(Side::Champion);
-        if g.user.cards.hand().real_cards().is_empty() {
+        if g.client.cards.hand().real_cards().is_empty() {
             assert!(g.is_victory_for_player(Side::Champion));
             break;
         }
 
-        let card_id = g.user.cards.hand()[0].id();
+        let card_id = g.client.cards.hand()[0].id();
         g.play_card(card_id, g.user_id(), None);
         g.pass_turn(Side::Overlord);
     }

@@ -24,6 +24,6 @@ fn test_keyword_aggregation() {
     let id = g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     assert_eq!(
         format!("{}Combat: Deal 1 damage. End the raid.", icons::TRIGGER),
-        g.user.cards.get(id).rules_text()
+        g.client.cards.get(id).rules_text()
     );
 }

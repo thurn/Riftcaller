@@ -27,9 +27,9 @@ fn test_minion_deal_damage_end_raid() {
     g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
-    assert_eq!(1, g.user.cards.opponent_discard_pile().len());
-    assert_eq!(4, g.user.cards.opponent_hand().len());
+    assert!(!g.client.data.raid_active());
+    assert_eq!(1, g.client.cards.opponent_discard_pile().len());
+    assert_eq!(4, g.client.cards.opponent_hand().len());
 }
 
 #[test]
@@ -64,16 +64,16 @@ fn time_golem_end_raid() {
     g.set_up_minion_combat();
     g.click_on(g.opponent_id(), "End Raid");
     assert_eq!(3, g.opponent.this_player.actions());
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
 fn shadow_lurker_outer_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.add_to_hand(CardName::ShadowLurker);
-    assert_eq!("2", g.user.get_card(id).bottom_right_icon());
+    assert_eq!("2", g.client.get_card(id).bottom_right_icon());
     let id = g.create_and_play(CardName::ShadowLurker);
-    assert_eq!("4", g.user.get_card(id).bottom_right_icon());
+    assert_eq!("4", g.client.get_card(id).bottom_right_icon());
     g.set_up_minion_combat_with_action(|g| {
         g.create_and_play(CardName::TestAstralWeapon);
     });
@@ -85,7 +85,7 @@ fn shadow_lurker_outer_room() {
 fn shadow_lurker_inner_room() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play_with_target(CardName::ShadowLurker, RoomId::Sanctum);
-    assert_eq!("2", g.user.get_card(id).bottom_right_icon());
+    assert_eq!("2", g.client.get_card(id).bottom_right_icon());
 }
 
 #[test]
@@ -100,7 +100,7 @@ fn sphinx_of_winters_breath_discard_even() {
     });
     g.opponent_click(Button::NoWeapon);
     assert_eq!(vec!["Test 0 Cost Spell"], g.opponent.cards.discard_pile().names());
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
 }
 
 #[test]
@@ -115,7 +115,7 @@ fn sphinx_of_winters_breath_discard_odd() {
     });
     g.opponent_click(Button::NoWeapon);
     assert_eq!(vec!["Test 1 Cost Spell"], g.opponent.cards.discard_pile().names());
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
@@ -124,7 +124,7 @@ fn bridge_troll_continue() {
     g.create_and_play(CardName::BridgeTroll);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     assert_eq!(test_constants::STARTING_MANA - 3, g.opponent.this_player.mana());
 }
 
@@ -136,7 +136,7 @@ fn bridge_troll_end_raid() {
     g.create_and_play(CardName::BridgeTroll);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
     assert_eq!(0, g.opponent.this_player.mana());
 }
 
@@ -149,7 +149,7 @@ fn stormcaller_take_2() {
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
     g.click_on(g.opponent_id(), "End Raid");
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
     assert_eq!(2, g.opponent.cards.discard_pile().len());
 }
 
@@ -162,7 +162,7 @@ fn stormcaller_take_4() {
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
     g.click_on(g.opponent_id(), "Take 2");
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     assert_eq!(4, g.opponent.cards.discard_pile().len());
 }
 

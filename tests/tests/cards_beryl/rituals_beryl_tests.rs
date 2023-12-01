@@ -26,12 +26,12 @@ fn equivalent_exchange() {
             )
             .build();
     assert_eq!(g.me().score(), 10);
-    assert_eq!(g.user.other_player.score(), 20);
+    assert_eq!(g.client.other_player.score(), 20);
     g.create_and_play(CardName::EquivalentExchange);
     g.click(Button::SelectForMultipart);
     g.click(Button::SwapCard);
     assert_eq!(g.me().score(), 20);
-    assert_eq!(g.user.other_player.score(), 10);
+    assert_eq!(g.client.other_player.score(), 10);
 }
 
 #[test]
@@ -95,14 +95,14 @@ fn lightbond() {
     g.create_and_play(CardName::Lightbond);
     g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
     assert!(g
-        .user
+        .client
         .cards
         .room_occupants(RoomId::RoomA)
         .find_card(CardName::TestScheme3_10)
         .is_face_up());
     g.pass_turn(Side::Overlord);
     g.initiate_raid(RoomId::RoomA);
-    assert_eq!(g.user.cards.opponent_hand().curse_count(), 2);
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
 }
 
 #[test]
@@ -128,17 +128,17 @@ fn lightbond_recur_from_discard() {
     g.play_card(scheme2, g.user_id(), Some(RoomId::RoomB));
 
     assert!(g
-        .user
+        .client
         .cards
         .room_occupants(RoomId::RoomB)
         .find_card(CardName::TestScheme4_20)
         .is_face_up());
     g.pass_turn(Side::Overlord);
     g.initiate_raid(RoomId::RoomA);
-    assert_eq!(g.user.cards.opponent_hand().curse_count(), 2);
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
     g.opponent_click(Button::EndRaid);
     g.initiate_raid(RoomId::RoomB);
-    assert_eq!(g.user.cards.opponent_hand().curse_count(), 4);
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 4);
 }
 
 #[test]
@@ -154,12 +154,12 @@ fn lightbond_return_scheme_to_hand() {
     g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
 
     assert!(g
-        .user
+        .client
         .cards
         .room_occupants(RoomId::RoomA)
         .find_card(CardName::TestScheme3_10)
         .is_face_up());
     g.pass_turn(Side::Overlord);
     g.initiate_raid(RoomId::RoomA);
-    assert_eq!(g.user.cards.opponent_hand().curse_count(), 2);
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
 }

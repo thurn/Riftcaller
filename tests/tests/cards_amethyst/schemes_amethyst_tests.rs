@@ -31,7 +31,7 @@ fn gold_mine() {
         g.me().mana()
     );
     assert_eq!(
-        g.user.get_card(id).position(),
+        g.client.get_card(id).position(),
         Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })
     );
 }
@@ -41,13 +41,13 @@ fn activate_reinforcements() {
     let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
     let id = g.create_and_play(CardName::ActivateReinforcements);
     let minion = g.create_and_play(CardName::TestMinionEndRaid);
-    assert!(!g.user.get_card(minion).is_face_up());
+    assert!(!g.client.get_card(minion).is_face_up());
     g.progress_room_times(5);
     assert_eq!(g.me().score(), 30);
-    assert!(g.user.get_card(minion).is_face_up());
+    assert!(g.client.get_card(minion).is_face_up());
     assert_eq!(test_constants::STARTING_MANA - 5, g.me().mana());
     assert_eq!(
-        g.user.get_card(id).position(),
+        g.client.get_card(id).position(),
         Position::Character(ObjectPositionCharacter { owner: PlayerName::User.into() })
     );
 }
@@ -59,12 +59,12 @@ fn research_project() {
     g.progress_room_times(2);
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
-    assert_eq!(1, g.user.cards.hand().len());
+    assert_eq!(1, g.client.cards.hand().len());
     g.progress_room_times(1);
-    assert_eq!(3, g.user.cards.hand().len());
+    assert_eq!(3, g.client.cards.hand().len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
-    assert_eq!(6, g.user.cards.hand().len());
+    assert_eq!(6, g.client.cards.hand().len());
 }

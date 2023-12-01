@@ -209,7 +209,7 @@ pub trait TestSessionHelpers {
 
 impl TestSessionHelpers for TestSession {
     fn user_id(&self) -> PlayerId {
-        self.user.id
+        self.client.id
     }
 
     fn opponent_id(&self) -> PlayerId {
@@ -218,7 +218,7 @@ impl TestSessionHelpers for TestSession {
 
     fn player(&self, player_id: PlayerId) -> &TestGameClient {
         match () {
-            _ if player_id == self.user.id => &self.user,
+            _ if player_id == self.client.id => &self.client,
             _ if player_id == self.opponent.id => &self.opponent,
             _ => panic!("Unknown player id: {player_id:?}"),
         }
@@ -229,7 +229,7 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn me(&self) -> &ClientPlayer {
-        &self.user.this_player
+        &self.client.this_player
     }
 
     fn you(&self) -> &ClientPlayer {
@@ -447,13 +447,13 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn dawn(&self) -> bool {
-        assert_eq!(self.user.data.last_message(), self.opponent.data.last_message());
-        self.user.data.last_message() == GameMessageType::Dawn
+        assert_eq!(self.client.data.last_message(), self.opponent.data.last_message());
+        self.client.data.last_message() == GameMessageType::Dawn
     }
 
     fn dusk(&self) -> bool {
-        assert_eq!(self.user.data.last_message(), self.opponent.data.last_message());
-        self.user.data.last_message() == GameMessageType::Dusk
+        assert_eq!(self.client.data.last_message(), self.opponent.data.last_message());
+        self.client.data.last_message() == GameMessageType::Dusk
     }
 
     fn is_victory_for_player(&self, winner: Side) -> bool {

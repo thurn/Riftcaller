@@ -27,9 +27,9 @@ pub fn magistrates_thronehall() {
     g.pass_turn(Side::Overlord);
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
-    assert_eq!(g.user.cards.opponent_hand().len(), 2);
+    assert_eq!(g.client.cards.opponent_hand().len(), 2);
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
-    assert_eq!(g.user.cards.opponent_hand().len(), 2);
+    assert_eq!(g.client.cards.opponent_hand().len(), 2);
 }
 
 #[test]
@@ -40,5 +40,5 @@ pub fn magistrates_thronehall_ancestral_knowledge() {
     g.pass_turn(Side::Overlord);
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
     g.create_and_play(CardName::AncestralKnowledge);
-    assert_eq!(g.user.cards.opponent_hand().len(), 2);
+    assert_eq!(g.client.cards.opponent_hand().len(), 2);
 }

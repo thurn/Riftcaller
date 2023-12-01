@@ -32,7 +32,7 @@ fn forced_march() {
     g.pass_turn(Side::Overlord);
     g.pass_turn(Side::Champion);
     g.create_and_play_with_target(CardName::ForcedMarch, test_constants::ROOM_ID);
-    assert_eq!("2", g.user.get_card(scheme).arena_icon());
+    assert_eq!("2", g.client.get_card(scheme).arena_icon());
 }
 
 #[test]

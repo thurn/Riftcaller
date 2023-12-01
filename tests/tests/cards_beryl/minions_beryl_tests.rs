@@ -27,9 +27,9 @@ pub fn incarnation_of_justice() {
     g.opponent_click(Button::NoWeapon);
     g.opponent_click(Button::EndRaid);
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
-    assert_eq!(g.user.cards.opponent_hand().len(), 0);
+    assert_eq!(g.client.cards.opponent_hand().len(), 0);
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
-    assert_eq!(g.user.cards.opponent_hand().len(), 0);
+    assert_eq!(g.client.cards.opponent_hand().len(), 0);
 }
 
 #[test]
@@ -40,7 +40,7 @@ pub fn incarnation_of_justice_ancestral_knowledge() {
     g.opponent_click(Button::NoWeapon);
     g.opponent_click(Button::EndRaid);
     g.create_and_play(CardName::AncestralKnowledge);
-    assert_eq!(g.user.cards.opponent_hand().len(), 0);
+    assert_eq!(g.client.cards.opponent_hand().len(), 0);
 }
 
 #[test]

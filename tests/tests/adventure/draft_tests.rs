@@ -52,7 +52,7 @@ fn test_pick_card() {
     assert_eq!(adventure.open_panel_count(), 1);
 
     client_interface::assert_has_element_name(
-        adventure.user.interface.top_panel(),
+        adventure.client.interface.top_panel(),
         element_names::deck_card(EXAMPLE_CARD),
     );
 }

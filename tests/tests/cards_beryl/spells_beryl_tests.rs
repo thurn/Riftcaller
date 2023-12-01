@@ -24,20 +24,20 @@ fn restoration() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
             .build();
-    assert!(g.user.cards.artifacts().is_empty());
+    assert!(g.client.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
-    let id = g.user.cards.hand().find_card_id(CardName::TestAstralWeapon);
+    test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
+    let id = g.client.cards.hand().find_card_id(CardName::TestAstralWeapon);
     g.play_card(id, g.user_id(), None);
-    assert!(g.user.cards.hand().is_empty());
-    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestAstralWeapon]);
+    assert!(g.client.cards.hand().is_empty());
+    test_helpers::assert_cards_match(g.client.cards.artifacts(), vec![CardName::TestAstralWeapon]);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST);
 }
 
 #[test]
 fn restoration_no_targets() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(3)).build();
-    assert_eq!(g.user.cards.hand().len(), 3);
+    assert_eq!(g.client.cards.hand().len(), 3);
     let id = g.add_to_hand(CardName::Restoration);
     assert!(g.play_card_with_result(id, g.user_id(), None).is_err());
 }
@@ -49,8 +49,8 @@ fn restoration_last_action_point() {
             .actions(1)
             .build();
     g.create_and_play(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
-    let id = g.user.cards.hand().find_card_id(CardName::TestAstralWeapon);
+    test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
+    let id = g.client.cards.hand().find_card_id(CardName::TestAstralWeapon);
     g.play_card(id, g.user_id(), None);
     assert!(g.has(Button::EndTurn));
 }
@@ -60,9 +60,9 @@ fn restoration_cannot_take_other_action() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
             .build();
-    assert!(g.user.cards.artifacts().is_empty());
+    assert!(g.client.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
+    test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
     assert!(g.draw_card_with_result().is_err());
 }
 
@@ -72,13 +72,13 @@ fn restoration_upgraded() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
             .build();
-    assert!(g.user.cards.artifacts().is_empty());
+    assert!(g.client.cards.artifacts().is_empty());
     g.create_and_play_upgraded(CardName::Restoration);
-    test_helpers::assert_cards_match(g.user.cards.hand(), vec![CardName::TestAstralWeapon]);
-    let id = g.user.cards.hand().find_card_id(CardName::TestAstralWeapon);
+    test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
+    let id = g.client.cards.hand().find_card_id(CardName::TestAstralWeapon);
     g.play_card(id, g.user_id(), None);
-    assert!(g.user.cards.hand().is_empty());
-    test_helpers::assert_cards_match(g.user.cards.artifacts(), vec![CardName::TestAstralWeapon]);
+    assert!(g.client.cards.hand().is_empty());
+    test_helpers::assert_cards_match(g.client.cards.artifacts(), vec![CardName::TestAstralWeapon]);
     assert_eq!(
         g.me().mana(),
         test_constants::STARTING_MANA - cost - test_constants::WEAPON_COST + reduction
@@ -93,13 +93,13 @@ fn restoration_upgraded_stacking() {
             .in_discard_face_up(CardName::TestWeaponReduceCostOnSuccessfulRaid),
     )
     .build();
-    assert!(g.user.cards.artifacts().is_empty());
+    assert!(g.client.cards.artifacts().is_empty());
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.create_and_play_upgraded(CardName::Restoration);
-    let id = g.user.cards.hand().find_card_id(CardName::TestWeaponReduceCostOnSuccessfulRaid);
+    let id = g.client.cards.hand().find_card_id(CardName::TestWeaponReduceCostOnSuccessfulRaid);
     g.play_card(id, g.user_id(), None);
-    assert!(g.user.cards.hand().is_empty());
+    assert!(g.client.cards.hand().is_empty());
     // Test weapon costs 5 and reduces cost by 2 on raid access
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - 5 + reduction + 2);
 }
@@ -110,7 +110,7 @@ fn strike_the_heart() {
         .opponent(TestSide::new(Side::Overlord).hand_size(5))
         .build();
     g.create_and_play(CardName::StrikeTheHeart);
-    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
 }
 
 #[test]
@@ -119,21 +119,21 @@ fn strike_the_heart_upgraded() {
         .opponent(TestSide::new(Side::Overlord).hand_size(5))
         .build();
     g.create_and_play_upgraded(CardName::StrikeTheHeart);
-    assert_eq!(g.user.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 4);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 4);
 }
 
 #[test]
 fn enduring_radiance() {
     let (cost, return_cost) = (0, 1);
     let mut g = TestGame::new(TestSide::new(Side::Champion).curses(2)).build();
-    assert_eq!(g.user.cards.hand().curse_count(), 2);
+    assert_eq!(g.client.cards.hand().curse_count(), 2);
     g.create_and_play(CardName::EnduringRadiance);
-    assert_eq!(g.user.cards.hand().curse_count(), 1);
+    assert_eq!(g.client.cards.hand().curse_count(), 1);
     g.click(Button::ReturnToHand);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - return_cost);
-    let id = g.user.cards.hand().find_card_id(CardName::EnduringRadiance);
+    let id = g.client.cards.hand().find_card_id(CardName::EnduringRadiance);
     g.play_card(id, g.user_id(), None);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
 }
 
 #[test]
@@ -141,23 +141,23 @@ fn enduring_radiance_no_curses() {
     let (cost, return_cost) = (0, 1);
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::EnduringRadiance);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
     g.click(Button::ReturnToHand);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost - return_cost);
-    let id = g.user.cards.hand().find_card_id(CardName::EnduringRadiance);
+    let id = g.client.cards.hand().find_card_id(CardName::EnduringRadiance);
     g.play_card(id, g.user_id(), None);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
 }
 
 #[test]
 fn enduring_radiance_upgraded() {
     let mut g = TestGame::new(TestSide::new(Side::Champion).curses(2)).build();
-    assert_eq!(g.user.cards.hand().curse_count(), 2);
+    assert_eq!(g.client.cards.hand().curse_count(), 2);
     g.create_and_play_upgraded(CardName::EnduringRadiance);
-    assert_eq!(g.user.cards.hand().curse_count(), 1);
-    let id = g.user.cards.hand().find_card_id(CardName::EnduringRadiance);
+    assert_eq!(g.client.cards.hand().curse_count(), 1);
+    let id = g.client.cards.hand().find_card_id(CardName::EnduringRadiance);
     g.play_card(id, g.user_id(), None);
-    assert_eq!(g.user.cards.hand().curse_count(), 0);
+    assert_eq!(g.client.cards.hand().curse_count(), 0);
 }
 
 #[test]
@@ -166,12 +166,12 @@ fn sift_the_sands() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestEvocation)).build();
     g.create_and_play(CardName::SiftTheSands);
-    assert_eq!(g.user.cards.hand().len(), 4);
-    let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
+    assert_eq!(g.client.cards.hand().len(), 4);
+    let id = g.client.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
     g.play_card(id, g.user_id(), None);
-    assert_eq!(g.user.cards.discard_pile().len(), 4);
+    assert_eq!(g.client.cards.discard_pile().len(), 4);
     test_helpers::assert_cards_match(
-        g.user.cards.evocations_and_allies(),
+        g.client.cards.evocations_and_allies(),
         vec![CardName::TestEvocation],
     );
     assert_eq!(
@@ -185,8 +185,8 @@ fn sift_the_sands_upgraded() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestEvocation)).build();
     g.create_and_play_upgraded(CardName::SiftTheSands);
-    assert_eq!(g.user.cards.hand().len(), 6);
-    let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
+    assert_eq!(g.client.cards.hand().len(), 6);
+    let id = g.client.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
     g.play_card(id, g.user_id(), None);
 }
 
@@ -194,14 +194,14 @@ fn sift_the_sands_upgraded() {
 fn holy_aura() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play(CardName::HolyAura);
-    assert_eq!(g.user.cards.hand().len(), 3);
+    assert_eq!(g.client.cards.hand().len(), 3);
 }
 
 #[test]
 fn holy_aura_upgraded() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.create_and_play_upgraded(CardName::HolyAura);
-    assert_eq!(g.user.cards.hand().len(), 4);
+    assert_eq!(g.client.cards.hand().len(), 4);
 }
 
 #[test]
@@ -209,10 +209,10 @@ fn holy_aura_discard_to_damage() {
     let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
     g.add_to_hand(CardName::HolyAura);
     g.pass_turn(Side::Champion);
-    assert_eq!(g.user.cards.hand().len(), 1);
+    assert_eq!(g.client.cards.hand().len(), 1);
     g.create_and_play(CardName::TestSpellDeal1Damage);
-    assert_eq!(g.user.cards.hand().len(), 2);
-    test_helpers::assert_cards_match(g.user.cards.discard_pile(), vec![CardName::HolyAura]);
+    assert_eq!(g.client.cards.hand().len(), 2);
+    test_helpers::assert_cards_match(g.client.cards.discard_pile(), vec![CardName::HolyAura]);
 }
 
 #[test]
@@ -222,8 +222,8 @@ fn holy_aura_discard_to_hand_size() {
     g.move_to_end_step(Side::Champion);
     g.move_selector_card(id);
     g.click(Button::SubmitDiscard);
-    assert_eq!(g.user.cards.hand().len(), 7);
-    test_helpers::assert_cards_match(g.user.cards.discard_pile(), vec![CardName::HolyAura]);
+    assert_eq!(g.client.cards.hand().len(), 7);
+    test_helpers::assert_cards_match(g.client.cards.discard_pile(), vec![CardName::HolyAura]);
 }
 
 #[test]
@@ -235,9 +235,9 @@ fn holy_aura_discard_to_sift_the_sands() {
     )
     .build();
     g.create_and_play(CardName::SiftTheSands);
-    let id = g.user.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
+    let id = g.client.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
     g.play_card(id, g.user_id(), None);
-    assert_eq!(g.user.cards.hand().len(), 2);
+    assert_eq!(g.client.cards.hand().len(), 2);
 }
 
 #[test]
@@ -250,7 +250,7 @@ fn voidstep() {
         .build();
     g.create_and_play_with_target(CardName::Voidstep, RoomId::Vault);
     assert!(g.has(Button::EndRaid));
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
 }
 
 #[test]
@@ -263,7 +263,7 @@ fn voidstep_two_defenders() {
         )
         .build();
     g.create_and_play_with_target(CardName::Voidstep, RoomId::Vault);
-    assert_eq!(g.user.cards.raid_display().len(), 1);
+    assert_eq!(g.client.cards.raid_display().len(), 1);
 }
 
 #[test]
@@ -273,11 +273,11 @@ fn keensight() {
             TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .build();
-    assert!(!g.user.cards.room_occupants(RoomId::RoomA)[0].revealed_to_me());
+    assert!(!g.client.cards.room_occupants(RoomId::RoomA)[0].revealed_to_me());
     g.create_and_play_with_target(CardName::Keensight, RoomId::RoomA);
-    assert!(g.user.cards.room_occupants(RoomId::RoomA)[0].revealed_to_me());
+    assert!(g.client.cards.room_occupants(RoomId::RoomA)[0].revealed_to_me());
     g.click(Button::InitiateRaid);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
 }
 
 #[test]
@@ -291,8 +291,8 @@ fn ethereal_incursion() {
     g.create_and_play_with_target(CardName::EtherealIncursion, RoomId::Vault);
     g.click_as_side(Button::Summon, Side::Overlord);
     g.click(Button::NoWeapon);
-    assert!(!g.user.data.raid_active());
-    assert!(!g.user.cards.room_defenders(RoomId::Vault)[0].is_face_up())
+    assert!(!g.client.data.raid_active());
+    assert!(!g.client.cards.room_defenders(RoomId::Vault)[0].is_face_up())
 }
 
 #[test]
@@ -378,16 +378,16 @@ fn delve_into_darkness() {
     raid_inner_rooms(&mut g);
 
     g.create_and_play(CardName::DelveIntoDarkness);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     g.click(Button::Score);
     assert_eq!(g.me().actions(), 1);
     g.click(Button::AccessAnother);
     assert_eq!(g.me().actions(), 0);
     g.click(Button::Discard);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
     g.click(Button::EndTurn);
     assert_eq!(g.me().score(), 10);
-    assert!(g.user.cards.opponent_discard_pile().contains_card(CardName::TestDuskboundProject));
+    assert!(g.client.cards.opponent_discard_pile().contains_card(CardName::TestDuskboundProject));
 }
 
 #[test]
@@ -403,9 +403,9 @@ fn delve_into_darkness_end_access_after_0() {
     raid_inner_rooms(&mut g);
 
     g.create_and_play(CardName::DelveIntoDarkness);
-    assert!(g.user.data.raid_active());
+    assert!(g.client.data.raid_active());
     g.click(Button::EndAccess);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
 }
 
 #[test]
@@ -424,7 +424,7 @@ fn delve_into_darkness_end_access_after_1() {
     g.click(Button::Score);
     assert_eq!(g.me().actions(), 1);
     g.click(Button::EndAccess);
-    assert!(!g.user.data.raid_active());
+    assert!(!g.client.data.raid_active());
     assert_eq!(g.me().score(), 10);
 }
 
@@ -461,7 +461,7 @@ fn delve_into_darkness_does_not_count_for_glimmersong() {
     let glimmersong = g.create_and_play(CardName::Glimmersong);
     g.create_and_play(CardName::DelveIntoDarkness);
     g.click(Button::EndAccess);
-    assert_eq!(g.user.cards.get(glimmersong).attack_icon(), "0")
+    assert_eq!(g.client.cards.get(glimmersong).attack_icon(), "0")
 }
 
 #[test]
@@ -473,11 +473,11 @@ fn liminal_transposition() {
         )
         .build();
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
-    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::LiminalTransposition);
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
     g.click(Button::Destroy);
     g.click(Button::EndRaid);
-    assert!(g.user.cards.opponent_discard_pile().contains_card(CardName::TestProject2Cost3Raze));
+    assert!(g.client.cards.opponent_discard_pile().contains_card(CardName::TestProject2Cost3Raze));
 }
 
 #[test]
@@ -488,7 +488,7 @@ fn liminal_transposition_cannot_score() {
         )
         .build();
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
-    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::LiminalTransposition);
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
     assert!(!g.has(Button::Score));
 }
@@ -514,7 +514,7 @@ fn liminal_transposition_can_target_outer_room_with_2_occupied() {
         )
         .build();
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::RoomA);
-    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::LiminalTransposition);
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomB));
     g.click(Button::Destroy);
 }
@@ -529,7 +529,7 @@ fn liminal_transposition_cannot_target_same_room() {
         )
         .build();
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::RoomA);
-    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::LiminalTransposition);
     assert!(g.play_card_with_result(room_selector, g.user_id(), Some(RoomId::RoomA)).is_err());
 }
 
@@ -547,7 +547,7 @@ fn liminal_transposition_counts_for_warriors_sign() {
     g.initiate_raid(RoomId::Vault);
     g.click(Button::EndRaid);
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Crypt);
-    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::LiminalTransposition);
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
     g.click(Button::EndRaid);
     assert_eq!(g.me().actions(), 1);
@@ -562,8 +562,8 @@ fn liminal_transposition_counts_for_glimmersong() {
         .build();
     g.create_and_play(CardName::Glimmersong);
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
-    let room_selector = g.user.cards.hand().find_card_id(CardName::LiminalTransposition);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::LiminalTransposition);
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
     g.click(Button::EndRaid);
-    assert!(g.user.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('1'));
+    assert!(g.client.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('1'));
 }
