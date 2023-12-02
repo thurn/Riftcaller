@@ -81,6 +81,11 @@ pub fn render(
                 )
             }
         }
+        GameAnimation::RevealCard(card_id) => show_cards(
+            builder,
+            &vec![*card_id],
+            ShowCards { show_if_prominent: true, ..ShowCards::default() },
+        ),
         GameAnimation::UnsummonMinion(minion_id) => {
             builder.push(Command::TurnFaceDownArenaAnimation(TurnFaceDownArenaAnimationCommand {
                 card_id: Some(adapters::card_identifier(*minion_id)),

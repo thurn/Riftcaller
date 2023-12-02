@@ -105,6 +105,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
                 raid.is_card_access_prevented = true;
             }
         }
+        GameEffect::RevealCard(card_id) => {
+            mutations::reveal_card(game, card_id)?;
+        }
     }
 
     Ok(())

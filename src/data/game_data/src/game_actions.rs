@@ -92,6 +92,8 @@ pub enum ButtonPromptContext {
     CardToGiveToOpponent,
     /// Prompt for a card to take from the opponent
     CardToTakeFromOpponent,
+    /// Prompt to pay mana to prevent revealing a card
+    PayToPreventRevealing(ManaValue),
 }
 
 impl ButtonPromptContext {

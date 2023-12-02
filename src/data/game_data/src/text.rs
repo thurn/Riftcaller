@@ -33,6 +33,7 @@ pub enum TextToken {
     Mana(ManaValue),
     GainMana(ManaValue),
     LosesMana(ManaValue),
+    PayMana(ManaValue),
     ManaMinus(ManaValue),
     ActionSymbol,
     Actions(ActionCount),
@@ -85,6 +86,7 @@ pub enum TextToken {
     Unsummon,
     RazeAbility,
     Banish,
+    Permanent,
 }
 
 impl TextToken {

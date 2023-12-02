@@ -75,7 +75,8 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::AppendCustomCardState(..) => "Choose".to_string(),
         GameEffect::EvadeCurrentEncounter => "Evade".to_string(),
         GameEffect::PlayCardForNoMana(..) => "Play".to_string(),
-        GameEffect::PreventRaidCardAccess => "Do not Access".to_string(),
+        GameEffect::PreventRaidCardAccess => "Don't Access".to_string(),
+        GameEffect::RevealCard(..) => "Reveal".to_string(),
     }
 }
 

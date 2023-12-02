@@ -94,6 +94,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::algrak_councils_enforcer);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::eria_time_conduit);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illeas_the_high_sage);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);

@@ -327,6 +327,7 @@ pub enum CardName {
     EriaTimeConduit,
     LiminalTransposition,
     SentinelSphinx,
+    StraziharTheAllSeeing,
 }
 
 impl CardName {
@@ -341,6 +342,7 @@ impl CardName {
             Self::MagistratesThronehall => "Magistrate's Thronehall",
             Self::AlgrakCouncilsEnforcer => "Algrak, Council's Enforcer",
             Self::EriaTimeConduit => "Eria, Time Conduit",
+            Self::StraziharTheAllSeeing => "Strazihar, The All-Seeing",
             _ => "",
         };
 

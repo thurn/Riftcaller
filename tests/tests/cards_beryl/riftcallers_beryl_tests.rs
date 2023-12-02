@@ -22,7 +22,7 @@ use test_utils::*;
 // ========================================== //
 
 #[test]
-pub fn zain_cunning_diplomat() {
+pub fn zain() {
     let mut g =
         TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::ZainCunningDiplomat))
             .build();
@@ -38,7 +38,7 @@ pub fn zain_cunning_diplomat() {
 }
 
 #[test]
-pub fn algrak_councils_enforcer() {
+pub fn algrak() {
     let mut g =
         TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::AlgrakCouncilsEnforcer))
             .build();
@@ -58,7 +58,7 @@ pub fn algrak_councils_enforcer() {
 }
 
 #[test]
-pub fn eria_time_conduit() {
+pub fn eria() {
     let mut g = TestGame::new(
         TestSide::new(Side::Overlord)
             .riftcaller(CardName::EriaTimeConduit)
@@ -76,7 +76,7 @@ pub fn eria_time_conduit() {
 }
 
 #[test]
-pub fn eria_time_conduit_does_not_trigger_twice() {
+pub fn eria_does_not_trigger_twice() {
     let mut g = TestGame::new(
         TestSide::new(Side::Overlord)
             .riftcaller(CardName::EriaTimeConduit)
@@ -97,7 +97,7 @@ pub fn eria_time_conduit_does_not_trigger_twice() {
 }
 
 #[test]
-pub fn eria_time_conduit_does_not_trigger_with_no_cards_in_crypt() {
+pub fn eria_does_not_trigger_with_no_cards_in_crypt() {
     let mut g = TestGame::new(
         TestSide::new(Side::Overlord)
             .riftcaller(CardName::EriaTimeConduit)
@@ -115,7 +115,7 @@ pub fn eria_time_conduit_does_not_trigger_with_no_cards_in_crypt() {
 // ========================================== //
 
 #[test]
-pub fn illeas_the_high_sage() {
+pub fn illeas() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
             .build();
@@ -124,10 +124,57 @@ pub fn illeas_the_high_sage() {
 }
 
 #[test]
-pub fn illeas_the_high_sage_does_not_trigger_on_action() {
+pub fn illeas_does_not_trigger_on_action() {
     let mut g =
         TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
             .build();
     g.draw_card();
     assert_eq!(g.client.cards.hand().len(), 1);
+}
+
+#[test]
+pub fn strazihar() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+            .current_turn(Side::Overlord)
+            .build();
+    let id = g.create_and_play(CardName::TestMinionEndRaid);
+    g.opponent_click(Button::Reveal);
+    assert!(g.client.cards.get(id).revealed_to_me());
+}
+
+#[test]
+pub fn strazihar_pay_to_prevent() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+            .current_turn(Side::Overlord)
+            .build();
+    let id = g.create_and_play(CardName::TestMinionEndRaid);
+    g.opponent_click(Button::Pay);
+    assert!(!g.client.cards.get(id).revealed_to_me());
+    assert_eq!(g.client.other_player.mana(), test_constants::STARTING_MANA - 1);
+}
+
+#[test]
+pub fn strazihar_insufficient_mana() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+            .opponent(TestSide::new(Side::Overlord).mana(0))
+            .current_turn(Side::Overlord)
+            .build();
+    g.create_and_play(CardName::TestMinionEndRaid);
+    assert!(g.side_has(Button::Reveal, Side::Overlord));
+    assert!(!g.side_has(Button::Pay, Side::Overlord));
+}
+
+#[test]
+pub fn strazihar_glimmersong() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+            .build();
+    let id = g.create_and_play(CardName::Glimmersong);
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestMinionEndRaid);
+    g.opponent_click(Button::Reveal);
+    assert!(g.client.cards.get(id).arena_icon().contains('1'));
 }

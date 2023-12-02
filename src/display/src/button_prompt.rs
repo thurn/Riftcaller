@@ -16,6 +16,7 @@ use std::cmp;
 
 use adapters::response_builder::ResponseBuilder;
 use core_data::game_primitives::{CardSubtype, CardType, Milliseconds, Side};
+use core_ui::icons;
 use core_ui::prelude::*;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_state::GameState;
@@ -128,6 +129,10 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
         }
         ButtonPromptContext::CardToTakeFromOpponent => {
             GameInstructions::new("Select card to take from opponent").build()
+        }
+        ButtonPromptContext::PayToPreventRevealing(cost) => {
+            GameInstructions::new(format!("Pay {}{} to prevent revealing?", cost, icons::MANA))
+                .build()
         }
     }
 }

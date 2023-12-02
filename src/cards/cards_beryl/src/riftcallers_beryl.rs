@@ -14,7 +14,7 @@
 
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::visual_effects::VisualEffects;
-use card_helpers::{card_selector_prompt_builder, costs, history, in_play, text};
+use card_helpers::{card_selector_prompt_builder, costs, history, in_play, show_prompt, text};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{CardType, GameObjectId, InitiatedBy, Rarity, School, Side};
 use core_ui::design::{self, TimedEffectDataExt};
@@ -22,11 +22,14 @@ use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, Rif
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
-use game_data::custom_card_state::CustomCardState;
-use game_data::prompt_data::{BrowserPromptTarget, BrowserPromptValidation, PromptContext};
+use game_data::game_actions::ButtonPromptContext;
+use game_data::game_effect::GameEffect;
+use game_data::prompt_data::{
+    BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptContext,
+};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
-use rules::{draw_cards, flags, mana};
+use rules::{custom_state, draw_cards, flags, mana, CardDefinitionExt};
 
 // ========================================== //
 // ========== Overlord Riftcallers ========== //
@@ -147,31 +150,27 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
                 Vault
             ],
             in_play::on_action_points_lost_during_raid(|g, s, side| {
-                let turn = g.info.turn;
-                if *side == Side::Champion
-                    && !g.card(s).custom_state.riftcaller_triggered_for_turn(turn)
-                {
-                    card_selector_prompt_builder::show(
-                        g,
-                        CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
-                            .subjects(g.discard_pile(Side::Overlord).card_ids())
-                            .movement_effect(Projectile::Projectiles1(2))
-                            .context(PromptContext::MoveToTopOfVault)
-                            .show_ability_alert(true)
-                            .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
-                            .visual_effect(
-                                GameObjectId::CardId(s.card_id()),
-                                TimedEffectData::new(TimedEffect::MagicCircles1(5))
-                                    .scale(2.0)
-                                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
-                                    .effect_color(design::BLUE_500),
-                            ),
-                    )?;
-
-                    g.card_mut(s)
-                        .custom_state
-                        .push(CustomCardState::RiftcallerTriggeredForTurn { turn });
+                if *side == Side::Champion {
+                    custom_state::riftcaller_once_per_turn(g, s, |g, s| {
+                        card_selector_prompt_builder::show(
+                            g,
+                            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
+                                .subjects(g.discard_pile(Side::Overlord).card_ids())
+                                .movement_effect(Projectile::Projectiles1(2))
+                                .context(PromptContext::MoveToTopOfVault)
+                                .show_ability_alert(true)
+                                .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
+                                .visual_effect(
+                                    GameObjectId::CardId(s.card_id()),
+                                    TimedEffectData::new(TimedEffect::MagicCircles1(5))
+                                        .scale(2.0)
+                                        .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
+                                        .effect_color(design::BLUE_500),
+                                ),
+                        )
+                    })?;
                 }
+
                 Ok(())
             }),
         )],
@@ -238,6 +237,74 @@ pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
                 bio: "Illeas's wisdom was nurtured in the ancient libraries of Elandor, where the \
                 whispers of the past and future converge. A guardian of knowledge, his mind is a \
                 living archive of the ages, every word a thread in the tapestry of history.",
+            })
+            .build(),
+    }
+}
+
+pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::StraziharTheAllSeeing,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::riftcaller(),
+        image: assets::champion_card(meta, "strazihar"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Beyond,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![Ability::new_with_delegate(
+            text![
+                "The first time the Overlord plays a",
+                Permanent,
+                "each turn, reveal that card unless they",
+                PayMana(1)
+            ],
+            in_play::on_card_played(|g, s, played| {
+                if played.card_id.side == Side::Overlord
+                    && g.card(played.card_id).definition().is_permanent()
+                {
+                    custom_state::riftcaller_once_per_turn(g, s, |g, s| {
+                        VisualEffects::new()
+                            .ability_alert(s)
+                            .timed_effect(
+                                GameObjectId::CardId(s.card_id()),
+                                TimedEffectData::new(TimedEffect::MagicCircles1(5))
+                                    .scale(2.0)
+                                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Buff02"))
+                                    .effect_color(design::BLUE_500),
+                            )
+                            .apply(g);
+
+                        show_prompt::with_context_and_choices(
+                            g,
+                            Side::Overlord,
+                            ButtonPromptContext::PayToPreventRevealing(1),
+                            vec![
+                                PromptChoice::new().effect(GameEffect::ManaCost(
+                                    Side::Overlord,
+                                    1,
+                                    s.initiated_by(),
+                                )),
+                                PromptChoice::new().effect(GameEffect::RevealCard(played.card_id)),
+                            ],
+                        );
+                        Ok(())
+                    })?;
+                }
+
+                Ok(())
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .riftcaller(RiftcallerConfig {
+                starting_coins: Coins(400),
+                secondary_schools: vec![School::Law],
+                skills: vec![Skill::Stealth, Skill::Lore],
+                bio: "Born atop the highest peak of Frostreach, Strazihar's eyes were opened to \
+                the cosmos during a rare alignment of celestial bodies. Gifted with sight that \
+                pierces through realms and time, his gaze unveils the veiled secrets of Ayanor, \
+                each blink a revelation.",
             })
             .build(),
     }

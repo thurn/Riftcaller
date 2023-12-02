@@ -190,6 +190,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
                     icons::RAZE)
         ),
         TextTokenKind::Banish => entry("Banish", "Remove from play and move to the Banished zone"),
+        TextTokenKind::Permanent => entry("Permanent", "A card that is not a spell or ritual"),        
         _ => None,
     };
 

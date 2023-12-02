@@ -192,6 +192,9 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::LosesMana(value) => {
             format!("loses{}{}{}", icons::NON_BREAKING_SPACE, value, icons::MANA)
         }
+        TextToken::PayMana(value) => {
+            format!("pay{}{}{}", icons::NON_BREAKING_SPACE, value, icons::MANA)
+        }
         TextToken::ManaMinus(n) => format!("-{n}{}", icons::MANA),
         TextToken::ActionSymbol => icons::ACTION.to_string(),
         TextToken::Actions(n) => icons::ACTION.repeat(*n as usize),
@@ -264,6 +267,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Unsummon => "unsummon".to_string(),
         TextToken::RazeAbility => format!("{} ability", icons::RAZE),
         TextToken::Banish => "banish".to_string(),
+        TextToken::Permanent => "permanent".to_string(),
     }
 }
 

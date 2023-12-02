@@ -85,6 +85,7 @@ pub fn set_cards_visible_to(game: &mut GameState, cards: &[CardId], side: Side, 
 pub fn reveal_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     if !game.card(card_id).is_face_up() {
         set_visible_to(game, card_id, card_id.side.opponent(), true);
+        game.add_animation(|| GameAnimation::RevealCard(card_id));
         dispatch::invoke_event(game, CardRevealedEvent(card_id))?;
     }
 

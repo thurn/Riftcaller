@@ -59,6 +59,8 @@ pub enum Button {
     AccessAnother,
     EndAccess,
     Play,
+    Reveal,
+    Pay,
 }
 
 pub trait TestInterfaceHelpers {
@@ -229,6 +231,8 @@ fn resolve_button(button: Button) -> String {
         Button::AccessAnother => "Access Another",
         Button::EndAccess => "End Access",
         Button::Play => "Play",
+        Button::Reveal => "Reveal",
+        Button::Pay => "Pay",
     }
     .to_string()
 }

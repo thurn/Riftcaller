@@ -51,6 +51,8 @@ pub enum GameAnimation {
     SummonMinion(CardId),
     /// A minion card has been turned face-down.
     UnsummonMinion(CardId),
+    /// A face-down card has been revealed to the Champion
+    RevealCard(CardId),
     /// The Overlord has progressed a room
     ProgressRoom(RoomId, InitiatedBy),
     /// The Champion has initiated a raid on a room

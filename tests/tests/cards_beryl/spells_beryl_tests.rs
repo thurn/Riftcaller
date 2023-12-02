@@ -560,10 +560,10 @@ fn liminal_transposition_counts_for_glimmersong() {
             TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .build();
-    g.create_and_play(CardName::Glimmersong);
+    let glimmersong = g.create_and_play(CardName::Glimmersong);
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
     let room_selector = g.client.cards.hand().find_card_id(CardName::LiminalTransposition);
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
     g.click(Button::EndRaid);
-    assert!(g.client.cards.artifacts().find_card(CardName::Glimmersong).arena_icon().contains('1'));
+    assert!(g.client.cards.get(glimmersong).arena_icon().contains('1'));
 }
