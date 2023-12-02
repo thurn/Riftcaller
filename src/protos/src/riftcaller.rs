@@ -546,6 +546,8 @@ pub struct Node {
     pub hover_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
     #[prost(message, optional, boxed, tag = "7")]
     pub pressed_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    #[prost(message, optional, boxed, tag = "8")]
+    pub on_attach_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

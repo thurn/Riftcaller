@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using Riftcaller.Protos;
 using Riftcaller.Services;
 using Riftcaller.Utils;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 #nullable enable
@@ -58,7 +57,8 @@ namespace Riftcaller.Masonry
       MouseLeave,
       LongPress,
       Change,
-      FieldChanged
+      FieldChanged,
+      AttachToPanel
     }
 
     readonly HashSet<Event> _registered = new();
@@ -104,6 +104,9 @@ namespace Riftcaller.Masonry
           break;
         case Event.FieldChanged:
           e.RegisterCallback<ChangeEvent<string>>(OnFieldChange);
+          break;
+        case Event.AttachToPanel:
+          e.RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
           break;
         default:
           throw new ArgumentOutOfRangeException(nameof(eventType), eventType, "Unknown event type");
@@ -159,6 +162,11 @@ namespace Riftcaller.Masonry
     {
       _actions.GetValueOrDefault(Event.FieldChanged)?.Invoke();
     }
+    
+    void OnAttachToPanel(AttachToPanelEvent evt)
+    {
+      _actions.GetValueOrDefault(Event.AttachToPanel)?.Invoke();
+    }    
   }
 
   public sealed class NodeVisualElement : VisualElement, INodeCallbacks

@@ -109,6 +109,13 @@ pub trait HasRenderNode: Sized {
         self
     }
 
+    /// [Style] to merge into this component's base style when it is first
+    /// attached to a panel.
+    fn on_attach_style(mut self, style: Style) -> Self {
+        self.render_node().on_attach_style = Some(style.wrapped_style());
+        self
+    }
+
     /// Action to invoke when this component is clicked/tapped
     fn on_click(mut self, action: impl InterfaceAction + 'static) -> Self {
         self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_click =

@@ -25,6 +25,8 @@ const fn color(red: f32, green: f32, blue: f32, alpha: f32) -> FlexColor {
 
 // Converted from hex using https://www.tydac.ch/color/
 pub const WHITE: FlexColor = color(1.0, 1.0, 1.0, 1.0);
+pub const WHITE_ALPHA_25: FlexColor = color(1.0, 1.0, 1.0, 0.25);
+pub const WHITE_ALPHA_75: FlexColor = color(1.0, 1.0, 1.0, 0.75);
 pub const BLACK: FlexColor = color(0.0, 0.0, 0.0, 1.0);
 pub const BLACK_ALPHA_25: FlexColor = color(0.0, 0.0, 0.0, 0.25);
 pub const BLACK_ALPHA_50: FlexColor = color(0.0, 0.0, 0.0, 0.5);
@@ -139,6 +141,9 @@ pub enum FontColor {
     PrimaryText,
     ButtonLabel,
     ButtonLabelDisabled,
+    MainMenuButton,
+    MainMenuButtonHover,
+    MainMenuButtonPress,
     PanelTitle,
     NormalCardTitle,
     MortalCardTitle,
@@ -159,6 +164,9 @@ impl From<FontColor> for FlexColor {
             FontColor::PrimaryText => WHITE,
             FontColor::ButtonLabel => WHITE,
             FontColor::ButtonLabelDisabled => GRAY_500,
+            FontColor::MainMenuButton => WHITE,
+            FontColor::MainMenuButtonHover => WHITE_ALPHA_75,
+            FontColor::MainMenuButtonPress => GRAY_500,
             FontColor::PanelTitle => WHITE,
             FontColor::NormalCardTitle => BLACK,
             FontColor::MortalCardTitle => GREEN_700,
@@ -179,6 +187,7 @@ impl From<FontColor> for FlexColor {
 pub enum FontSize {
     ButtonLabel,
     ButtonLabelTwoLines,
+    MainMenuButton,
     ButtonIcon,
     PanelTitle,
     PromptContext,
@@ -201,6 +210,7 @@ impl From<FontSize> for Dimension {
         (match size {
             FontSize::ButtonLabel => 32,
             FontSize::ButtonLabelTwoLines => 28,
+            FontSize::MainMenuButton => 64,
             FontSize::ButtonIcon => 48,
             FontSize::PanelTitle => 48,
             FontSize::PromptContext => 48,
@@ -245,6 +255,7 @@ pub enum Font {
     ButtonLabel,
     CardIcon,
     CardVariant,
+    MainMenuButton,
 }
 
 impl From<Font> for FontAddress {
@@ -255,6 +266,7 @@ impl From<Font> for FontAddress {
             Font::ButtonLabel => roboto(),
             Font::CardIcon => impact(),
             Font::CardVariant => bona_nova(),
+            Font::MainMenuButton => bluu_next(),
         }
     }
 }

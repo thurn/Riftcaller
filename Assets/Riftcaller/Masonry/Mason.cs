@@ -106,9 +106,19 @@ namespace Riftcaller.Masonry
         {
           var hoverStyle = new FlexStyle();
           hoverStyle.MergeFrom(node.Style);
+          hoverStyle.MergeFrom(node.OnAttachStyle);
           hoverStyle.MergeFrom(node.HoverStyle);
-          callbacks.SetCallback(Callbacks.Event.MouseEnter, () => { ApplyStyle(registry, element, hoverStyle); });
-          callbacks.SetCallback(Callbacks.Event.MouseLeave, () => { ApplyStyle(registry, element, node.Style); });
+          callbacks.SetCallback(Callbacks.Event.MouseEnter, () =>
+          {
+            ApplyStyle(registry, element, hoverStyle);
+          });
+          callbacks.SetCallback(Callbacks.Event.MouseLeave, () =>
+          {
+            var originalStyle = new FlexStyle();
+            originalStyle.MergeFrom(node.Style);
+            originalStyle.MergeFrom(node.OnAttachStyle);            
+            ApplyStyle(registry, element, originalStyle);
+          });
         }
         else
         {
@@ -120,6 +130,7 @@ namespace Riftcaller.Masonry
         {
           var pressedStyle = new FlexStyle();
           pressedStyle.MergeFrom(node.Style);
+          pressedStyle.MergeFrom(node.OnAttachStyle);
           pressedStyle.MergeFrom(node.PressedStyle);
           callbacks.SetCallback(Callbacks.Event.MouseDown, () =>
           {
@@ -132,11 +143,15 @@ namespace Riftcaller.Masonry
           });
           callbacks.SetCallback(Callbacks.Event.MouseUp, () =>
           {
-            var style = node.Style;
+            var style = new FlexStyle();
+            style.MergeFrom(node.Style);
+            style.MergeFrom(node.OnAttachStyle);
+            
             if (node.HoverStyle != null)
             {
               style = new FlexStyle();
               style.MergeFrom(node.Style);
+              style.MergeFrom(node.OnAttachStyle);
               style.MergeFrom(node.HoverStyle);
             }
 
@@ -152,6 +167,32 @@ namespace Riftcaller.Masonry
         {
           SetCallback(registry, callbacks, node.EventHandlers?.OnMouseDown, Callbacks.Event.MouseDown);
           SetCallback(registry, callbacks, node.EventHandlers?.OnMouseUp, Callbacks.Event.MouseUp);
+        }
+
+        if (node.OnAttachStyle != null)
+        {
+          var attachStyle = new FlexStyle();
+          attachStyle.MergeFrom(node.Style);
+          attachStyle.MergeFrom(node.OnAttachStyle);
+
+          if (element.panel != null)
+          {
+            ApplyStyle(registry, element, attachStyle);            
+          }
+          else
+          {
+            callbacks.SetCallback(Callbacks.Event.AttachToPanel, () =>
+            {
+              TweenUtils.ExecuteAfter(0.01f, () =>
+              {
+                ApplyStyle(registry, element, attachStyle);
+              });
+            });        
+          }
+        }
+        else
+        {
+          callbacks.SetCallback(Callbacks.Event.AttachToPanel, null);
         }
 
         SetCallback(registry, callbacks, node.EventHandlers?.OnClick, Callbacks.Event.Click);

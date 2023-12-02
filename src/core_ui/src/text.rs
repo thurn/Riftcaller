@@ -26,7 +26,7 @@ use crate::style::{Pixels, WidthMode};
 pub struct Text {
     text: String,
     size: Dimension,
-    color: FlexColor,
+    color: Option<FlexColor>,
     font: Font,
     layout: Layout,
     font_style: FontStyle,
@@ -46,7 +46,7 @@ impl Text {
     pub fn new(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
-            color: FontColor::PrimaryText.into(),
+            color: Some(FontColor::PrimaryText.into()),
             size: FontSize::Body.into(),
             font: Font::PrimaryText,
             layout: Layout::default(),
@@ -80,11 +80,11 @@ impl Text {
     }
 
     pub fn color(mut self, color: FontColor) -> Self {
-        self.color = color.into();
+        self.color = Some(color.into());
         self
     }
 
-    pub fn raw_color(mut self, color: FlexColor) -> Self {
+    pub fn raw_color(mut self, color: Option<FlexColor>) -> Self {
         self.color = color;
         self
     }
@@ -162,7 +162,7 @@ impl Component for Text {
             .style(
                 style
                     .font_size(self.size)
-                    .color(self.color)
+                    .color_option(self.color)
                     .font(self.font)
                     .font_style(self.font_style)
                     .text_align(self.text_align)

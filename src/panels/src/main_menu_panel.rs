@@ -15,16 +15,15 @@
 //! The main menu is the first panel seen after startup, providing the
 //! option to start a new game.
 
+use core_data::game_primitives::Milliseconds;
 use core_ui::actions::InterfaceAction;
-use core_ui::button::{Button, ButtonType};
-use core_ui::panel_window::PanelWindow;
+use core_ui::design;
+use core_ui::design::{Font, FontColor, FontSize};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use core_ui::style::WidthMode;
-use game_data::player_name::{AIPlayer, PlayerId};
+use core_ui::text::Text;
 use panel_address::{Panel, PanelAddress, StandardPanel};
-use protos::riftcaller::{FlexAlign, FlexJustify};
-use user_action_data::{NamedDeck, NewGameAction, NewGameDeck, UserAction};
+use protos::riftcaller::{EasingMode, FlexJustify, FontStyle};
 
 #[derive(Debug, Default)]
 pub struct MainMenuPanel {}
@@ -46,37 +45,51 @@ impl MainMenuPanel {
 
 impl Component for MainMenuPanel {
     fn build(self) -> Option<Node> {
-        PanelWindow::new(StandardPanel::MainMenu, MAIN_MENU_WIDTH.px(), MAIN_MENU_HEIGHT.px())
-            .title("Riftcaller")
-            .content(
-                Column::new("MeuButtons")
-                    .style(
-                        Style::new()
-                            .width(100.pct())
-                            .align_items(FlexAlign::Stretch)
-                            .justify_content(FlexJustify::Center),
-                    )
-                    .child(menu_button(
-                        "Tutorial",
-                        self.close().action(UserAction::NewGame(NewGameAction {
-                            deck: NewGameDeck::NamedDeck(NamedDeck::TutorialChampion),
-                            opponent: PlayerId::AI(AIPlayer::TutorialOpponent),
-                            tutorial: true,
-                            debug_options: None,
-                        })),
-                    ))
-                    .child(menu_button("New Adventure", Panels::open(StandardPanel::SideSelect)))
-                    .child(menu_button("Settings", Panels::open(StandardPanel::Settings)))
-                    .child(menu_button("About", Panels::open(StandardPanel::About))),
+        Column::new("MainMenu")
+            .style(
+                Style::new()
+                    .position(Edge::Left, 48.px())
+                    .position(Edge::Bottom, 48.px())
+                    .justify_content(FlexJustify::FlexEnd),
             )
+            .child(menu_button("Play", 0, Panels::open(StandardPanel::Settings)))
+            .child(menu_button("Codex", 1, Panels::open(StandardPanel::Settings)))
+            .child(menu_button("Get Involved", 2, Panels::open(StandardPanel::Settings)))
+            .child(menu_button("Settings", 3, Panels::open(StandardPanel::Settings)))
+            .child(menu_button("Quit", 4, Panels::open(StandardPanel::Settings)))
             .build()
     }
 }
 
-fn menu_button(label: impl Into<String>, action: impl InterfaceAction + 'static) -> Button {
-    Button::new(label)
-        .action(action)
-        .button_type(ButtonType::Primary)
-        .width_mode(WidthMode::Flexible)
-        .layout(Layout::new().margin(Edge::All, 16.px()))
+fn menu_button(
+    label: &'static str,
+    index: u32,
+    action: impl InterfaceAction + 'static,
+) -> impl Component {
+    Row::new(format!("{}Button", label))
+        .style(
+            Style::new()
+                .position(Edge::Left, (-200).px())
+                .height(80.px())
+                .margin(Edge::All, 4.px())
+                .color(FontColor::MainMenuButton)
+                .opacity(0.0)
+                .transition_properties(vec!["opacity".to_string()])
+                .transition_durations(vec![adapters::time_value(Milliseconds(200))])
+                .transition_easing_modes(vec![EasingMode::EaseInCubic])
+                .transition_delays(vec![adapters::time_value(Milliseconds(index * 100))]),
+        )
+        .hover_style(Style::new().color(FontColor::MainMenuButtonHover))
+        .pressed_style(Style::new().color(FontColor::MainMenuButtonPress))
+        .on_attach_style(Style::new().position(Edge::Left, 4.px()).opacity(1.0))
+        .on_click(action)
+        .child(
+            Text::new(label)
+                .font(Font::MainMenuButton)
+                .font_size(FontSize::MainMenuButton)
+                .font_style(FontStyle::Bold)
+                .outline_color(design::BLACK)
+                .raw_color(None)
+                .outline_width(2.px()),
+        )
 }

@@ -360,8 +360,12 @@ impl Style {
         self
     }
 
-    pub fn color(mut self, color: impl Into<FlexColor>) -> Self {
-        self.wrapped_style.color = Some(color.into());
+    pub fn color(self, color: impl Into<FlexColor>) -> Self {
+        self.color_option(Some(color.into()))
+    }
+
+    pub fn color_option(mut self, color: Option<FlexColor>) -> Self {
+        self.wrapped_style.color = color;
         self
     }
 
