@@ -43,15 +43,17 @@ pub async fn handle_new_adventure(
     data: &RequestData,
     side: Side,
 ) -> Result<GameResponse> {
-    requests::with_player(database, data, |player| {
+    let mut result = requests::with_player(database, data, |player| {
         let adventure =
             adventure_generator::new_adventure(AdventureConfiguration::new(player.id, side));
         let id = adventure.id;
         player.adventure = Some(adventure);
-        Ok(GameResponse::new(ClientData::with_adventure_id(data, Some(id)))
-            .command(requests::load_scene(SceneName::World)))
+        Ok(GameResponse::new(ClientData::with_adventure_id(data, Some(id))))
     })
-    .await
+    .await?;
+
+    result.insert_command(0, requests::load_scene(SceneName::World));
+    Ok(result)
 }
 
 pub async fn handle_adventure_action(

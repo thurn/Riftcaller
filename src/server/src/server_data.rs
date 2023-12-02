@@ -54,7 +54,7 @@ impl GameResponse {
     }
 
     pub fn insert_command(&mut self, index: usize, command: impl Into<Command>) {
-        self.commands.insert(index, command.into());
+        self.commands.insert(index, command.into())
     }
 
     pub fn push_command(&mut self, command: impl Into<Command>) {

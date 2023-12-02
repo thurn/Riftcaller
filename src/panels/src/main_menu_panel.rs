@@ -15,7 +15,7 @@
 //! The main menu is the first panel seen after startup, providing the
 //! option to start a new game.
 
-use core_data::game_primitives::Milliseconds;
+use core_data::game_primitives::{Milliseconds, Side};
 use core_ui::actions::InterfaceAction;
 use core_ui::design;
 use core_ui::design::{Font, FontColor, FontSize};
@@ -23,7 +23,8 @@ use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::text::Text;
 use panel_address::{Panel, PanelAddress, StandardPanel};
-use protos::riftcaller::{EasingMode, FlexJustify, FontStyle};
+use protos::riftcaller::{EasingMode, FlexAlign, FlexJustify, FlexPosition, FontStyle};
+use user_action_data::UserAction;
 
 #[derive(Debug, Default)]
 pub struct MainMenuPanel {}
@@ -45,43 +46,51 @@ impl MainMenuPanel {
 
 impl Component for MainMenuPanel {
     fn build(self) -> Option<Node> {
-        Column::new("MainMenu")
-            .style(
-                Style::new()
-                    .position(Edge::Left, 48.px())
-                    .position(Edge::Bottom, 48.px())
-                    .justify_content(FlexJustify::FlexEnd),
+        Row::new("MainMenuPanel")
+            .style(Style::new().position(Edge::All, 0.px()).position_type(FlexPosition::Absolute))
+            .child(
+                Column::new("MainMenu")
+                    .style(
+                        Style::new()
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::Left, 48.px())
+                            .position(Edge::Bottom, 48.px())
+                            .justify_content(FlexJustify::FlexEnd),
+                    )
+                    .child(menu_button("Play", 0, UserAction::NewAdventure(Side::Champion)))
+                    .child(menu_button("Codex", 1, Panels::open(StandardPanel::Settings)))
+                    .child(menu_button("Community", 2, Panels::open(StandardPanel::About)))
+                    .child(menu_button("Settings", 3, Panels::open(StandardPanel::Settings)))
+                    .child(menu_button("Quit", 4, Panels::open(StandardPanel::Settings))),
             )
-            .child(menu_button("Play", 0, Panels::open(StandardPanel::Settings)))
-            .child(menu_button("Codex", 1, Panels::open(StandardPanel::Settings)))
-            .child(menu_button("Get Involved", 2, Panels::open(StandardPanel::Settings)))
-            .child(menu_button("Settings", 3, Panels::open(StandardPanel::Settings)))
-            .child(menu_button("Quit", 4, Panels::open(StandardPanel::Settings)))
             .build()
     }
 }
 
 fn menu_button(
-    label: &'static str,
+    into_label: impl Into<String>,
     index: u32,
     action: impl InterfaceAction + 'static,
 ) -> impl Component {
+    let label = into_label.into();
     Row::new(format!("{}Button", label))
         .style(
             Style::new()
-                .position(Edge::Left, (-200).px())
                 .height(80.px())
                 .margin(Edge::All, 4.px())
                 .color(FontColor::MainMenuButton)
                 .opacity(0.0)
+                .align_items(FlexAlign::Center)
                 .transition_properties(vec!["opacity".to_string()])
                 .transition_durations(vec![adapters::time_value(Milliseconds(200))])
                 .transition_easing_modes(vec![EasingMode::EaseInCubic])
                 .transition_delays(vec![adapters::time_value(Milliseconds(index * 100))]),
         )
-        .hover_style(Style::new().color(FontColor::MainMenuButtonHover))
-        .pressed_style(Style::new().color(FontColor::MainMenuButtonPress))
-        .on_attach_style(Style::new().position(Edge::Left, 4.px()).opacity(1.0))
+        .hover_style(Style::new().color(FontColor::MainMenuButtonHover).margin(Edge::Left, 6.px()))
+        .pressed_style(
+            Style::new().color(FontColor::MainMenuButtonPress).margin(Edge::Left, 6.px()),
+        )
+        .on_attach_style(Style::new().opacity(1.0))
         .on_click(action)
         .child(
             Text::new(label)

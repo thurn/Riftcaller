@@ -37,3 +37,4 @@ pub const EYE: &str = "\u{f06e}";
 pub const EYE_SLASH: &str = "\u{f070}";
 pub const CARET_UP: &str = "\u{f0d8}";
 pub const ANGLE_UP: &str = "\u{f106}";
+pub const LINK: &str = "\u{f0c1}";
