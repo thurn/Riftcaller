@@ -199,6 +199,8 @@ pub enum CardName {
     TestRitualReturnDiscardToHand,
     /// Ritual to return all 'occupant' cards to the Overlord's hand
     TestRitualReturnAllOccupantsToHand,
+    /// Summon all minion cards currently in play
+    TestRitualSummonAllMinions,
 
     // Proof of Concept
     GoldMine,
@@ -329,6 +331,7 @@ pub enum CardName {
     SentinelSphinx,
     StraziharTheAllSeeing,
     MerethylLoreSeeker,
+    OleusTheWatcher,
 }
 
 impl CardName {
@@ -339,12 +342,13 @@ impl CardName {
             Self::SphinxOfWintersBreath => "Sphinx of Winter's Breath",
             Self::WarriorsSign => "Warrior's Sign",
             Self::ZainCunningDiplomat => "Zain, Cunning Diplomat",
-            Self::IlleasTheHighSage => "Illeas, The High Sage",
+            Self::IlleasTheHighSage => "Illeas, the High Sage",
             Self::MagistratesThronehall => "Magistrate's Thronehall",
             Self::AlgrakCouncilsEnforcer => "Algrak, Council's Enforcer",
             Self::EriaTimeConduit => "Eria, Time Conduit",
-            Self::StraziharTheAllSeeing => "Strazihar, The All-Seeing",
+            Self::StraziharTheAllSeeing => "Strazihar, the All-Seeing",
             Self::MerethylLoreSeeker => "Merethyl, Lore Seeker",
+            Self::OleusTheWatcher => "Oleus, the Watcher",
             _ => "",
         };
 

@@ -235,3 +235,29 @@ pub fn merethyl_effect_does_not_increase_delve_into_darkness() {
     g.create_and_play(CardName::DelveIntoDarkness);
     assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 8);
 }
+
+#[test]
+pub fn oleus() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::OleusTheWatcher))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_down_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),
+        )
+        .build();
+    g.initiate_raid(RoomId::Sanctum);
+    g.opponent_click(Button::Summon);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
+}
+
+#[test]
+pub fn oleus_trigger_on_opponent_turn() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::OleusTheWatcher))
+        .opponent(
+            TestSide::new(Side::Overlord)
+                .face_down_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),
+        )
+        .current_turn(Side::Overlord)
+        .build();
+    g.create_and_play(CardName::TestRitualSummonAllMinions);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
+}

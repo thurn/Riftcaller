@@ -30,8 +30,8 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-use rules::mutations::OnZeroStored;
-use rules::{curses, damage, draw_cards, mutations};
+use rules::mutations::{OnZeroStored, SummonMinion};
+use rules::{curses, damage, draw_cards, mutations, CardDefinitionExt};
 
 pub fn test_ritual(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -686,6 +686,34 @@ pub fn test_ritual_return_all_occupants_to_hand(metadata: CardMetadata) -> CardD
                     &g.occupants_in_all_rooms().card_ids(),
                     CardPosition::Hand(s.side()),
                 )
+            }),
+        )],
+        ..test_ritual(metadata)
+    }
+}
+
+pub fn test_ritual_summon_all_minions(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestRitualSummonAllMinions,
+        cost: cost(0),
+        card_type: CardType::Ritual,
+        sets: vec![CardSetName::Test],
+        abilities: vec![Ability::new_with_delegate(
+            text!["Summon all minions, ignoring all costs"],
+            this::on_played(|g, s, _| {
+                let minions = g
+                    .all_permanents(Side::Overlord)
+                    .filter(|c| c.definition().is_minion())
+                    .card_ids();
+                for minion in minions {
+                    mutations::summon_minion(
+                        g,
+                        minion,
+                        s.initiated_by(),
+                        SummonMinion::IgnoreCosts,
+                    )?;
+                }
+                Ok(())
             }),
         )],
         ..test_ritual(metadata)

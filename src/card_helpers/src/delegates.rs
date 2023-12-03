@@ -68,6 +68,13 @@ pub fn on_played(
     Delegate::PlayCard(EventDelegate { requirement, mutation })
 }
 
+pub fn on_minion_summoned(
+    requirement: RequirementFn<CardId>,
+    mutation: MutationFn<CardId>,
+) -> Delegate {
+    Delegate::SummonMinion(EventDelegate { requirement, mutation })
+}
+
 pub fn on_minion_approached(
     requirement: RequirementFn<RaidEvent<CardId>>,
     mutation: MutationFn<RaidEvent<CardId>>,

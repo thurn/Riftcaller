@@ -377,3 +377,48 @@ pub fn merethyl_lore_seeker(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn oleus_the_watcher(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::OleusTheWatcher,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::riftcaller(),
+        image: assets::champion_card(meta, "oleus"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![Ability::new_with_delegate(
+            text!["The first time each turn the Overlord summons a minion,", GainMana(2)],
+            in_play::on_minion_summoned(|g, s, _| {
+                custom_state::riftcaller_once_per_turn(g, s, |g, _| {
+                    VisualEffects::new()
+                        .ability_alert(s)
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(9))
+                                .scale(1.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff02"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .apply(g);
+
+                    mana::gain(g, Side::Champion, 2);
+                    Ok(())
+                })?;
+                Ok(())
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .riftcaller(RiftcallerConfig {
+                starting_coins: Coins(475),
+                secondary_schools: vec![School::Beyond],
+                skills: vec![Skill::Lore, Skill::Persuasion],
+                bio: "Growing up in Elandor's Luminous Glades, Oleus was marked by an ancient \
+                prophecy. His gaze, sharper than the keenest blade, has unveiled secrets long \
+                buried beneath the whispering breeze of Mystwind Tower.",
+            })
+            .build(),
+    }
+}

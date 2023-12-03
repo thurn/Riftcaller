@@ -96,6 +96,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illeas_the_high_sage);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::merethyl_lore_seeker);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::oleus_the_watcher);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);
@@ -170,4 +171,5 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_5_damage);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_discard_to_hand);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_all_occupants_to_hand);
+    DEFINITIONS.insert(cards_test::test_cards::test_ritual_summon_all_minions);
 }
