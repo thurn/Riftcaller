@@ -47,6 +47,13 @@ pub fn sanctum_access_count(
     Delegate::SanctumAccessCount(QueryDelegate { requirement, transformation })
 }
 
+pub fn vault_access_count(
+    requirement: RequirementFn<RaidId>,
+    transformation: TransformationFn<RaidId, u32>,
+) -> Delegate {
+    Delegate::VaultAccessCount(QueryDelegate { requirement, transformation })
+}
+
 pub fn shield_value(
     requirement: RequirementFn<ShieldCardInfo>,
     transformation: TransformationFn<ShieldCardInfo, ShieldValue>,

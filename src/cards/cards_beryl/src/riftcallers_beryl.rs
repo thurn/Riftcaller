@@ -16,7 +16,9 @@ use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{card_selector_prompt_builder, costs, history, in_play, show_prompt, text};
 use core_data::adventure_primitives::{Coins, Skill};
-use core_data::game_primitives::{CardType, GameObjectId, InitiatedBy, Rarity, School, Side};
+use core_data::game_primitives::{
+    CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
+};
 use core_ui::design::{self, TimedEffectDataExt};
 use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, RiftcallerConfig};
 use game_data::card_name::{CardMetadata, CardName};
@@ -24,6 +26,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
+use game_data::game_state::GameState;
 use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptContext,
 };
@@ -305,6 +308,71 @@ pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
                 the cosmos during a rare alignment of celestial bodies. Gifted with sight that \
                 pierces through realms and time, his gaze unveils the veiled secrets of Ayanor, \
                 each blink a revelation.",
+            })
+            .build(),
+    }
+}
+
+pub fn merethyl_lore_seeker(meta: CardMetadata) -> CardDefinition {
+    fn should_fire(g: &GameState) -> bool {
+        history::accessed_this_turn(g, RoomId::Crypt)
+            && history::accessed_this_turn(g, RoomId::Sanctum)
+    }
+
+    CardDefinition {
+        name: CardName::MerethylLoreSeeker,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::riftcaller(),
+        image: assets::champion_card(meta, "merethyl"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![Ability::new_with_delegate(
+            text![
+                "When you access the",
+                Vault,
+                ", if you have accessed the",
+                Crypt,
+                "and",
+                Sanctum,
+                "this turn, access",
+                2,
+                "additional cards"
+            ],
+            in_play::on_query_vault_access_count(|g, _, _, current| {
+                if should_fire(g) {
+                    current + 2
+                } else {
+                    current
+                }
+            }),
+        )
+        .delegate(in_play::on_vault_access_start(|g, s, _| {
+            if should_fire(g) {
+                VisualEffects::new()
+                    .ability_alert(s)
+                    .timed_effect(
+                        GameObjectId::CardId(s.card_id()),
+                        TimedEffectData::new(TimedEffect::MagicCircles1(8))
+                            .scale(1.0)
+                            .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff01"))
+                            .effect_color(design::YELLOW_900),
+                    )
+                    .apply(g);
+            }
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .riftcaller(RiftcallerConfig {
+                starting_coins: Coins(425),
+                secondary_schools: vec![School::Beyond],
+                skills: vec![Skill::Brawn, Skill::Lore],
+                bio: "From the verdant depths of the Seban Empire, Merethyl grew up amidst the \
+                ancient stones of the Temple of Whispering Vines. Her thirst for ancient knowledge \
+                led her through forgotten paths, where the very leaves seemed to murmur arcane \
+                secrets into her soul.",
             })
             .build(),
     }

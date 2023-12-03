@@ -92,6 +92,11 @@ pub fn rooms_accessed_this_turn(game: &GameState) -> impl Iterator<Item = RoomId
     })
 }
 
+/// Returns true if the indicated room has been accessed this turn.
+pub fn accessed_this_turn(game: &GameState, room_id: RoomId) -> bool {
+    rooms_accessed_this_turn(game).any(|r| r == room_id)
+}
+
 /// Returns an iterator over minions which have been summoned in the current
 /// player's turn so far.
 pub fn minions_summoned_this_turn(

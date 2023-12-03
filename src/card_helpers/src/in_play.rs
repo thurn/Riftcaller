@@ -246,6 +246,12 @@ pub fn on_query_sanctum_access_count(transformation: TransformationFn<RaidId, u3
     delegates::sanctum_access_count(requirements::face_up_in_play, transformation)
 }
 
+/// A delegate which transforms the vault access count when a card is face up
+/// & in play
+pub fn on_query_vault_access_count(transformation: TransformationFn<RaidId, u32>) -> Delegate {
+    delegates::vault_access_count(requirements::face_up_in_play, transformation)
+}
+
 /// A delegate which intercepts queries for the action costs of cards while its
 /// parent is face up and in play.
 pub fn on_query_action_cost(transformation: TransformationFn<CardId, ActionCount>) -> Delegate {

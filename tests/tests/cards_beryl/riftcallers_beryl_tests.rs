@@ -178,3 +178,60 @@ pub fn strazihar_glimmersong() {
     g.opponent_click(Button::Reveal);
     assert!(g.client.cards.get(id).arena_icon().contains('1'));
 }
+
+#[test]
+pub fn merethyl() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
+            .build();
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+}
+
+#[test]
+pub fn merethyl_trigger_twice() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
+            .build();
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+}
+
+#[test]
+pub fn merethyl_works_with_raid_spell() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
+            .build();
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.create_and_play(CardName::StrikeTheHeart);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
+}
+
+#[test]
+pub fn merethyl_effect_does_not_increase_delve_into_darkness() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
+            .build();
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::EndRaid);
+    g.create_and_play(CardName::DelveIntoDarkness);
+    assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 8);
+}

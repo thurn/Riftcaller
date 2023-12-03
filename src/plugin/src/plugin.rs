@@ -31,6 +31,7 @@ use protos::riftcaller::{
     LogMessageLevel, PollRequest,
 };
 use tokio::sync::Mutex;
+
 static DATABASE: Lazy<Mutex<Option<SledDatabase>>> = Lazy::new(|| Mutex::new(None));
 
 /// Initialize the plugin. Must be called immediately at application start.
