@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 6a604b77a93d24fd0bf7ed348435598b
   m_SerializeEntries:
   - m_GUID: 207a8dd1a9c40469b871174e9e555431
-    m_Address: Assets/Scenes/Labyrinth.unity
+    m_Address: Assets/Scenes/LabyrinthArena.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

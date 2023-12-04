@@ -20,7 +20,6 @@ using Riftcaller.Assets;
 using Riftcaller.Game;
 using Riftcaller.Protos;
 using Riftcaller.Utils;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
@@ -39,12 +38,11 @@ namespace Riftcaller.Services
     [SerializeField] AssetReferenceGameObject _levelUpRoomPrefabReference = null!;
     [SerializeField] Room? _curentRoomSelector;
     [SerializeField] AssetReference _arenaScene = null!;
+    bool _arenaSceneLoaded;
 
     public Room? CurrentRoomSelector => _curentRoomSelector;
-    
     public ObjectDisplay LeftItems => _leftItems;
     public ObjectDisplay RightIems => _rightItems;
-
     public bool RoomsOnBottom { get; private set; }
 
     readonly RaycastHit[] _raycastHitsTempBuffer = new RaycastHit[8];
@@ -54,6 +52,7 @@ namespace Riftcaller.Services
       if (UseProductionAssets.ShouldUseProductionAssets)
       {
         yield return Addressables.LoadSceneAsync(_arenaScene, LoadSceneMode.Additive);
+        _arenaSceneLoaded = true;
         FlipView();
         foreach (var target in GameObject.FindGameObjectsWithTag("RemoveOnLoad"))
         {
@@ -170,7 +169,22 @@ namespace Riftcaller.Services
 
     void FlipView()
     {
-      foreach (var background in FindObjectsOfType<SceneBackground>())
+      if (!_arenaSceneLoaded)
+      {
+        return;
+      }
+      
+      // The main ArenaService has a SceneBackground object, as does the loaded visual scene, so we find
+      // them all here. There's probably a less hacky way to do this. 
+      var backgrounds = FindObjectsOfType<SceneBackground>();
+      if (backgrounds.Length != 2)
+      {
+        // If this is failing, check whether the target scene is correctly in an asset bundle. It does not
+        // need to be in the "build settings" panel
+        LogUtils.LogError($"Expected two SceneBackground objects but found {backgrounds.Length}");
+      }
+
+      foreach (var background in backgrounds)
       {
         background.SetRoomsOnBottom(RoomsOnBottom);
       }      
