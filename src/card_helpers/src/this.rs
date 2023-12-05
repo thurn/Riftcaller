@@ -37,6 +37,11 @@ pub fn on_played(mutation: MutationFn<CardPlayed>) -> Delegate {
     Delegate::PlayCard(EventDelegate { requirement: card, mutation })
 }
 
+/// A delegate which triggers when this card leaves play
+pub fn on_leaves_play(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::LeaveArena(EventDelegate { requirement: card, mutation })
+}
+
 /// A [Delegate] which triggers when an ability is activated
 pub fn on_activated(mutation: MutationFn<AbilityActivated>) -> Delegate {
     Delegate::ActivateAbility(EventDelegate { requirement: ability, mutation })

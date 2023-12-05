@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     abilities, costs, delegates, play_card_browser_builder, requirements, show_prompt, text, this,
 };
@@ -29,6 +28,7 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::PromptChoice;
 use game_data::text::TextToken::*;
+use rules::visual_effects::VisualEffects;
 use rules::{curses, mutations, CardDefinitionExt};
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {

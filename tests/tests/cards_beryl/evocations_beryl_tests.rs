@@ -420,3 +420,38 @@ fn splinter_of_twilight_play_from_phase_door() {
     g.click(Button::Play);
     assert!(g.client.cards.evocations_and_allies().contains_card(CardName::SplinterOfTwilight));
 }
+
+#[test]
+fn a_moments_peace() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).bonus_points(50))
+        .build();
+    let id = g.create_and_play(CardName::AMomentsPeace);
+    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Overlord);
+    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.client.other_player.score(), 60);
+    g.pass_turn(Side::Overlord);
+    assert!(g.client.cards.get(id).arena_icon().contains("2"));
+    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Overlord);
+    assert!(g.is_victory_for_player(Side::Overlord));
+}
+
+#[test]
+fn a_moments_peace_return_to_hand() {
+    let mut g = TestGame::new(TestSide::new(Side::Champion))
+        .opponent(TestSide::new(Side::Overlord).bonus_points(50))
+        .build();
+    g.create_and_play(CardName::AMomentsPeace);
+    g.pass_turn(Side::Champion);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.client.other_player.score(), 60);
+    g.pass_turn(Side::Overlord);
+    g.create_and_play(CardName::TestSpellReturnAllPermanentsToHand);
+    assert!(g.is_victory_for_player(Side::Overlord));
+}

@@ -20,8 +20,7 @@ use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PromptContext,
 };
 use game_data::special_effects::{Projectile, TimedEffectData};
-
-use crate::visual_effects::VisualEffects;
+use rules::visual_effects::VisualEffects;
 
 /// Display a new Card Selector prompt a [CardSelectorPromptBuilder].
 ///

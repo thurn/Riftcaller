@@ -19,8 +19,7 @@ use game_data::delegate_data::Scope;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction};
 use game_data::special_effects::{Projectile, TimedEffectData};
-
-use crate::visual_effects::VisualEffects;
+use rules::visual_effects::VisualEffects;
 
 pub fn show(game: &mut GameState, builder: PlayCardBrowserBuilder) -> Result<()> {
     let mut effects = VisualEffects::new();

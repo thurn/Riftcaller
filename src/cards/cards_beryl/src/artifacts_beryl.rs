@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
@@ -40,6 +39,7 @@ use game_data::special_effects::{
 use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mana::ManaPurpose;
+use rules::visual_effects::VisualEffects;
 use rules::{flags, mana, mutations, queries, CardDefinitionExt};
 use with_error::WithError;
 

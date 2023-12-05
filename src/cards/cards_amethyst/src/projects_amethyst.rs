@@ -17,7 +17,6 @@
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::text_helpers::named_trigger;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{abilities, *};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, AbilityType, CardConfigBuilder, CardDefinition};
@@ -25,6 +24,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
 use rules::mutations::OnZeroStored;
+use rules::visual_effects::VisualEffects;
 use rules::{damage, draw_cards, mutations};
 
 pub fn gemcarver(_: CardMetadata) -> CardDefinition {

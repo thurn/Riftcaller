@@ -14,7 +14,6 @@
 
 use std::cmp;
 
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{costs, history, in_play, text};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
@@ -23,6 +22,7 @@ use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
+use rules::visual_effects::VisualEffects;
 use with_error::fail;
 
 pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {

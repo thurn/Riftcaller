@@ -201,6 +201,8 @@ pub enum CardName {
     TestRitualReturnAllOccupantsToHand,
     /// Summon all minion cards currently in play
     TestRitualSummonAllMinions,
+    /// Spell to return all Champion permanents to their hand
+    TestSpellReturnAllPermanentsToHand,
 
     // Proof of Concept
     GoldMine,

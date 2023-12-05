@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     abilities, costs, delegates, history, play_card_browser_builder, raids, requirements,
     show_prompt, text, this,
@@ -43,6 +42,7 @@ use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use raid_state::custom_access;
+use rules::visual_effects::VisualEffects;
 use rules::{curses, draw_cards, flags, mutations, CardDefinitionExt};
 use with_error::fail;
 

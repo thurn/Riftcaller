@@ -200,7 +200,7 @@ fn clear_previous_state(
     game: &mut GameState,
     play_card: PlayCardData,
 ) -> Result<Option<PlayCardStep>> {
-    game.card_mut(play_card.card_id).clear_played_state();
+    game.card_mut(play_card.card_id).clear_counters();
     Ok(Some(PlayCardStep::AddToHistory))
 }
 

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     card_selector_prompt_builder, costs, history, in_play, show_prompt, text, text_helpers,
 };
@@ -35,6 +34,7 @@ use game_data::prompt_data::{
 };
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
+use rules::visual_effects::VisualEffects;
 use rules::{custom_state, draw_cards, flags, mana, CardDefinitionExt};
 
 // ========================================== //

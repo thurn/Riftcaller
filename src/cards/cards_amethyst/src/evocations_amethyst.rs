@@ -20,7 +20,6 @@ use card_helpers::costs::{actions, once_per_turn};
 use card_helpers::raids::add_sanctum_access;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::this::on_activated;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{abilities, *};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
@@ -30,6 +29,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
 use rules::mutations::{add_stored_mana, OnZeroStored};
+use rules::visual_effects::VisualEffects;
 use rules::{draw_cards, mutations};
 
 pub fn invisibility_ring(_: CardMetadata) -> CardDefinition {

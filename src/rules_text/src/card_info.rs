@@ -20,7 +20,7 @@ use core_ui::text::Text;
 use game_data::delegate_data::CardInfoElementKind;
 use protos::riftcaller::{FlexAlign, FlexJustify, TextAlign, WhiteSpace};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct CardInfoElement {
     pub text: String,
     pub kind: CardInfoElementKind,

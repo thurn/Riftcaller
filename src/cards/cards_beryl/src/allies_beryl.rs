@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{costs, history, in_play, show_prompt, text, this};
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
@@ -31,6 +30,7 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
+use rules::visual_effects::VisualEffects;
 use rules::{curses, draw_cards, mana, mutations, wounds, CardDefinitionExt};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {

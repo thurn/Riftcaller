@@ -174,4 +174,5 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_discard_to_hand);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_all_occupants_to_hand);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_summon_all_minions);
+    DEFINITIONS.insert(cards_test::test_cards::test_spell_return_all_permanents_to_hand);
 }

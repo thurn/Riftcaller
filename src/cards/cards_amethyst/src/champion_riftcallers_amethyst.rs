@@ -15,13 +15,13 @@
 use assets::rexard_images;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::text_helpers::named_trigger;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
+use rules::visual_effects::VisualEffects;
 use rules::{draw_cards, mana, mutations, CardDefinitionExt};
 
 pub fn ennera_imris(_: CardMetadata) -> CardDefinition {

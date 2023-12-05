@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{combat_abilities, costs, delegates, requirements, text, text_helpers, this};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
@@ -24,6 +23,7 @@ use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
 use game_data::text::TextToken::*;
+use rules::visual_effects::VisualEffects;
 use with_error::fail;
 
 pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {

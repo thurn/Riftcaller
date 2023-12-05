@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::{
     costs, delegates, in_play, play_card_browser_builder, raids, requirements, show_prompt, text,
     text_helpers, this,
@@ -25,7 +24,7 @@ use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{
-    Ability, ActivatedAbility, CardConfig, CardDefinition, TargetRequirement,
+    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -37,6 +36,7 @@ use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffe
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use raid_state::{custom_access, InitiateRaidOptions};
+use rules::visual_effects::VisualEffects;
 use rules::{curses, draw_cards, flags, mana, mutations, CardDefinitionExt};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
@@ -393,23 +393,46 @@ pub fn a_moments_peace(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![
-            Ability::new(text!["The Covenant cannot win the game by scoring points"]),
+            Ability::new_with_delegate(
+                text!["The Covenant cannot win the game by scoring points"],
+                in_play::can_win_by_scoring_points(|_, s, side, current| {
+                    if *side == Side::Overlord {
+                        current.disallow(s)
+                    } else {
+                        current
+                    }
+                }),
+            ),
             Ability::new(text_helpers::named_trigger(
                 Dawn,
                 text![
                     text![AddPowerCharges(1)],
                     text![
                         "If there are",
-                        3,
+                        meta.upgrade(3, 4),
                         "or more",
                         PowerChargeSymbol,
                         ",",
                         Banish,
                         "this card"
-                    ]
+                    ],
                 ],
-            )),
+            ))
+            .delegate(in_play::at_dawn(|g, s, _| {
+                mutations::add_power_charges(g, s.card_id(), 1)?;
+                if g.card(s.card_id()).counters(CardCounter::PowerCharges) >= s.upgrade(3, 4) {
+                    mutations::banish_card(g, s.card_id())?;
+                }
+                Ok(())
+            }))
+            .delegate(this::on_leaves_play(|g, _, _| mutations::check_for_score_victory(g))),
         ],
-        config: CardConfig::default(),
+        config: CardConfigBuilder::new()
+            .choice_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(12))
+                    .scale(1.0)
+                    .effect_color(design::YELLOW_900),
+            )
+            .build(),
     }
 }

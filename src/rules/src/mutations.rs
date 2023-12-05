@@ -35,11 +35,11 @@ use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     ActionPointsLostDuringRaidEvent, CanAbilityEndRaidQuery, CardRevealedEvent,
     CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent,
-    DuskEvent, EnterArenaEvent, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
-    RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
+    DuskEvent, EnterArenaEvent, LeaveArenaEvent, MoveToDiscardPileEvent, OverlordScoreCardEvent,
+    RaidEndEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
     StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
-use game_data::flag_data::Flag;
+use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::history_data::HistoryEvent;
 use game_data::random;
@@ -47,6 +47,7 @@ use tracing::{debug, instrument};
 use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
+use crate::visual_effects::VisualEffects;
 use crate::{dispatch, draw_cards, flags, mana, queries, CardDefinitionExt};
 
 /// Change a card to the 'face up' state and makes the card revealed to both
@@ -108,12 +109,7 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     game.move_card_internal(card_id, new_position);
 
     if new_position.in_score_pile() {
-        if queries::score(game, Side::Overlord) >= game_constants::POINTS_TO_WIN_GAME {
-            game_over(game, Side::Overlord)?;
-        }
-        if queries::score(game, Side::Champion) >= game_constants::POINTS_TO_WIN_GAME {
-            game_over(game, Side::Champion)?;
-        }
+        check_for_score_victory(game)?;
     }
 
     if old_position.in_deck() && new_position.in_hand() {
@@ -121,8 +117,12 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     }
 
     if !old_position.in_play() && new_position.in_play() {
-        game.card_mut(card_id).clear_played_state();
+        game.card_mut(card_id).clear_counters();
         dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
+    }
+
+    if old_position.in_play() && !new_position.in_play() {
+        dispatch::invoke_event(game, LeaveArenaEvent(card_id))?;
     }
 
     game.card_mut(card_id).last_card_play_id =
@@ -192,6 +192,13 @@ pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))
 }
 
+/// Moves a card to the banished zone. This is precisely identical to calling
+/// [move_card] for the banished zone and only exists to improve readability of
+/// code.
+pub fn banish_card(game: &mut GameState, card_id: CardId) -> Result<()> {
+    move_card(game, card_id, CardPosition::Banished(None))
+}
+
 /// Shuffles the provided `cards` into the `side` player's deck, clearing their
 /// revealed state for both players.
 pub fn shuffle_into_deck(game: &mut GameState, side: Side, cards: &[CardId]) -> Result<()> {
@@ -212,6 +219,23 @@ pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
         set_visible_to(game, *card_id, Side::Champion, false);
     }
     move_cards(game, &cards, CardPosition::DeckUnknown(side))
+}
+
+/// Runs a function that returns an [AbilityFlag], returning the boolean value
+/// and showing a visual effect on the card which modified this flag value, if
+/// any.
+pub fn query_flag(game: &mut GameState, function: impl FnOnce(&GameState) -> AbilityFlag) -> bool {
+    let flag = function(game);
+    if let Some(ability_id) = flag.ability_id() {
+        let mut effects = VisualEffects::new().ability_alert(ability_id);
+        if let Some(timed_effect) =
+            game.card(ability_id.card_id).definition().config.choice_effect.as_ref()
+        {
+            effects = effects.timed_effect(ability_id.card_id, timed_effect.clone());
+        }
+        effects.apply(game);
+    }
+    flag.value()
 }
 
 /// Lose action points if a player has more than 0.
@@ -252,10 +276,7 @@ pub fn gain_action_points(game: &mut GameState, side: Side, amount: ActionCount)
 /// condition.
 pub fn score_bonus_points(game: &mut GameState, side: Side, amount: PointsValue) -> Result<()> {
     game.player_mut(side).bonus_points += amount;
-    if queries::score(game, side) >= game_constants::POINTS_TO_WIN_GAME {
-        game_over(game, side)?;
-    }
-    Ok(())
+    check_for_score_victory(game)
 }
 
 /// Mark the game as won by the `winner` player.
@@ -552,6 +573,22 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     }
 
     Ok(())
+}
+
+/// Checks if either player has won the game based on their score, ending the
+/// game and marking them as the victor in that case.
+pub fn check_for_score_victory(game: &mut GameState) -> Result<()> {
+    fn check(game: &mut GameState, side: Side) -> Result<()> {
+        if queries::score(game, side) >= game_constants::POINTS_TO_WIN_GAME
+            && query_flag(game, |g| flags::can_win_game_via_points(g, side))
+        {
+            game_over(game, side)?;
+        }
+        Ok(())
+    }
+
+    check(game, Side::Overlord)?;
+    check(game, Side::Champion)
 }
 
 /// Options when invoking [summon_minion]

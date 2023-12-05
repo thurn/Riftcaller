@@ -16,7 +16,6 @@ use assets::rexard_images::{self, RexardPack, RexardWeaponType};
 use card_helpers::costs::actions;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
-use card_helpers::visual_effects::VisualEffects;
 use card_helpers::*;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
@@ -26,6 +25,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::{add_stored_mana, OnZeroStored};
+use rules::visual_effects::VisualEffects;
 use rules::{draw_cards, mana, mutations};
 
 pub fn arcane_recovery(_: CardMetadata) -> CardDefinition {

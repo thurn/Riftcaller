@@ -43,7 +43,6 @@ pub mod show_prompt;
 pub mod text_helpers;
 pub mod text_macro;
 pub mod this;
-pub mod visual_effects;
 
 /// Provides the cost for a card, with 1 action point required and `mana` mana
 /// points

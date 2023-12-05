@@ -85,7 +85,7 @@ use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
 use crate::continuous_visual_effect::ContinuousDisplayEffect;
-use crate::flag_data::Flag;
+use crate::flag_data::{AbilityFlag, Flag};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::raid_data::PopulateAccessPromptSource;
@@ -398,7 +398,7 @@ impl HasAbilityId for CanActivateAbility {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 pub enum CardInfoElementKind {
     Informative,
     PositiveEffect,
@@ -445,8 +445,10 @@ pub enum Delegate {
     /// A card has been played via the Play Card action and has had its costs
     /// paid
     PlayCard(EventDelegate<CardPlayed>),
-    /// A card has been moved from any non-arena zone to an arena zone.
+    /// A card has been moved from any non-play zone to an in-play zone.
     EnterArena(EventDelegate<CardId>),
+    /// A card has been moved from any in-play zone to a non-play zone.
+    LeaveArena(EventDelegate<CardId>),
     /// A card has been moved from a deck or hand to a discard pile.
     DiscardCard(EventDelegate<DiscardedCard>),
     /// A card is moved to the discard pile from anywhere
@@ -584,6 +586,12 @@ pub enum Delegate {
     CanAbilityDestroyCard(QueryDelegate<AbilityId, Flag>),
     /// Can the minion with the given ID be evaded?
     CanEvadeMinion(QueryDelegate<CardId, Flag>),
+    /// Can the [Side] player currently win the game by scoring points?
+    ///
+    /// Note that if you prevent a player from winning via points, you are
+    /// responsible for checking for score victory if that effect ends, e.g. by
+    /// invoking `mutations::check_for_score_victory()`
+    CanWinGameViaPoints(QueryDelegate<Side, AbilityFlag>),
 
     /// Query the current mana cost of a card. Invoked with [Cost::mana].
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),

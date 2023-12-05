@@ -22,7 +22,7 @@ use game_data::delegate_data::{
     ManaLostToOpponentAbility, MutationFn, QueryDelegate, RaidEvent, Scope, ScoreCard,
     TransformationFn,
 };
-use game_data::flag_data::Flag;
+use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_state::GameState;
 use game_data::raid_data::PopulateAccessPromptSource;
 
@@ -297,4 +297,17 @@ pub fn can_score_accessed_card(
     transformation: TransformationFn<AccessEvent<CardId>, Flag>,
 ) -> Delegate {
     delegates::can_score_accessed_card(requirements::face_up_in_play, transformation)
+}
+
+/// A delegate which intercepts queries for whether a player can currently win
+/// the game by scoring points.
+///
+/// Note that if you prevent a player from winning via points, you are
+/// responsible for checking for score victory if that effect ends, e.g. by
+/// invoking `mutations::check_for_score_victory()`
+pub fn can_win_by_scoring_points(transformation: TransformationFn<Side, AbilityFlag>) -> Delegate {
+    Delegate::CanWinGameViaPoints(QueryDelegate {
+        requirement: requirements::face_up_in_play,
+        transformation,
+    })
 }

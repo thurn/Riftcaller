@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashSet;
+
 use convert_case::{Case, Casing};
 use core_data::game_primitives::AbilityIndex;
 use core_ui::icons;
@@ -53,9 +55,11 @@ pub fn build(context: &CardViewContext, ability_index: Option<AbilityIndex>) -> 
         tokens.push(TextTokenKind::Breach);
     }
 
-    tokens.sort();
-    tokens.dedup();
     result.extend(tokens.into_iter().filter_map(token_description));
+
+    // Remove duplicate entries
+    let mut seen = HashSet::new();
+    result.retain(|item| seen.insert(item.clone()));
 
     SupplementalCardInfo::new(result).build().map(Box::new)
 }
@@ -137,7 +141,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         TextTokenKind::AddPowerCharges |
             TextTokenKind::PowerChargeSymbol |
             TextTokenKind::PowerCharges => Some(format!(
-            "{}: A power charge, stored while in play to spend on abilities",
+            "{}: A power charge. Stored while in play to spend on abilities", 
             icons::POWER_CHARGE
         )),
         TextTokenKind::Play => entry("Play", "Triggers when this card enters the arena"),

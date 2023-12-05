@@ -329,7 +329,7 @@ impl CardState {
     }
 
     /// Clears all stored counters for this card.
-    pub fn clear_played_state(&mut self) {
+    pub fn clear_counters(&mut self) {
         self.data.progress = 0;
         self.data.stored_mana = 0;
         self.data.power_charges = 0;

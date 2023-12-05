@@ -719,3 +719,23 @@ pub fn test_ritual_summon_all_minions(metadata: CardMetadata) -> CardDefinition 
         ..test_ritual(metadata)
     }
 }
+
+pub fn test_spell_return_all_permanents_to_hand(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestSpellReturnAllPermanentsToHand,
+        cost: cost(0),
+        card_type: CardType::Spell,
+        sets: vec![CardSetName::Test],
+        abilities: vec![Ability::new_with_delegate(
+            text!["Return all Champion permanents to hand"],
+            this::on_played(|g, s, _| {
+                mutations::move_cards(
+                    g,
+                    &g.all_permanents(Side::Champion).card_ids(),
+                    CardPosition::Hand(s.side()),
+                )
+            }),
+        )],
+        ..test_spell(metadata)
+    }
+}
