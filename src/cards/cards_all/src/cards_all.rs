@@ -87,6 +87,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::planar_sanctuary);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::knowledge_of_the_beyond);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::splinter_of_twilight);
+    DEFINITIONS.insert(cards_beryl::evocations_beryl::a_moments_peace);
     DEFINITIONS.insert(cards_beryl::minions_beryl::incarnation_of_justice);
     DEFINITIONS.insert(cards_beryl::minions_beryl::sentinel_sphinx);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);

@@ -380,3 +380,36 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
         config: CardConfig::default(),
     }
 }
+
+pub fn a_moments_peace(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::AMomentsPeace,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(5),
+        image: assets::champion_card(meta, "a_moments_peace"),
+        card_type: CardType::Evocation,
+        subtypes: vec![],
+        side: Side::Champion,
+        school: School::Law,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new(text!["The Covenant cannot win the game by scoring points"]),
+            Ability::new(text_helpers::named_trigger(
+                Dawn,
+                text![
+                    text![AddPowerCharges(1)],
+                    text![
+                        "If there are",
+                        3,
+                        "or more",
+                        PowerChargeSymbol,
+                        ",",
+                        Banish,
+                        "this card"
+                    ]
+                ],
+            )),
+        ],
+        config: CardConfig::default(),
+    }
+}

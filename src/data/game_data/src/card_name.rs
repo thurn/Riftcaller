@@ -333,6 +333,7 @@ pub enum CardName {
     MerethylLoreSeeker,
     OleusTheWatcher,
     VendocSeerInStarlight,
+    AMomentsPeace,
 }
 
 impl CardName {
@@ -351,6 +352,7 @@ impl CardName {
             Self::MerethylLoreSeeker => "Merethyl, Lore Seeker",
             Self::OleusTheWatcher => "Oleus, the Watcher",
             Self::VendocSeerInStarlight => "Vendoc, Seer in Starlight",
+            Self::AMomentsPeace => "A Moment's Peace",
             _ => "",
         };
 
