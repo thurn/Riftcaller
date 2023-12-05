@@ -23,8 +23,8 @@ use game_data::delegate_data::{
     CanActivateAbility, CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanEvadeMinionQuery,
     CanInitiateRaidQuery, CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery,
     CanSummonQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
-    Flag,
 };
+use game_data::flag_data::Flag;
 use game_data::game_actions::CardTarget;
 use game_data::game_state::{GamePhase, GameState, TurnState};
 use game_data::prompt_data::{

@@ -18,8 +18,9 @@ use core_data::game_primitives::{AttackValue, CardId, ManaValue};
 use game_data::card_definition::{AttackBoost, CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
-    AttackBoostBonusQuery, CanDefeatTargetQuery, CanEncounterTargetQuery, CardEncounter, Flag,
+    AttackBoostBonusQuery, CanDefeatTargetQuery, CanEncounterTargetQuery, CardEncounter,
 };
+use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 
 use crate::mana::ManaPurpose;

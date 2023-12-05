@@ -18,10 +18,11 @@ use core_data::game_primitives::{
 };
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
-    AccessEvent, CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate, Flag,
+    AccessEvent, CardPlayed, CardStatusMarker, DealtDamage, Delegate, EventDelegate,
     ManaLostToOpponentAbility, MutationFn, QueryDelegate, RaidEvent, Scope, ScoreCard,
     TransformationFn,
 };
+use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 use game_data::raid_data::PopulateAccessPromptSource;
 

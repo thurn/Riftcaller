@@ -85,6 +85,7 @@ use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};
 use crate::continuous_visual_effect::ContinuousDisplayEffect;
+use crate::flag_data::Flag;
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::raid_data::PopulateAccessPromptSource;
@@ -197,93 +198,6 @@ pub struct QueryDelegate<T, R> {
 impl<T, R> QueryDelegate<T, R> {
     pub fn new(requirement: RequirementFn<T>, transformation: TransformationFn<T, R>) -> Self {
         Self { requirement, transformation }
-    }
-}
-
-/// A Flag is a variant of boolean which typically indicates whether some game
-/// action can currently be taken. Flags have a 'default' state, which is the
-/// value of the flag based on standard game rules, and an 'override' state,
-/// which is a value set by specific delegates. An override of 'false' takes
-/// precedence over an override of 'true'.
-///
-/// For example, the 'CanPlay' delegate will be invoked with
-/// `Flag::Default(false)` if a card cannot currently be played according to the
-/// standard game rules (sufficient mana available, correct player's turn, etc).
-/// A delegate could transform this via `allow()` to allow the card
-/// to be played. A second delegate could set `disallow()` to prevent
-/// the card from being played, and this would take priority.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
-pub enum Flag {
-    /// Initial value of this flag
-    Default(bool),
-    /// Override for this flag set by a delegate.
-    ///
-    /// Optionally, an [AbilityId] may be provided to identify the ability
-    /// triggering this state, which will in most cases cause that card's
-    /// FlagAbilityTriggeredEvent to fire.
-    Override(bool, Option<AbilityId>),
-}
-
-impl Flag {
-    pub fn new(value: bool) -> Self {
-        Self::Default(value)
-    }
-
-    /// Allows some player action or event that would not otherwise happen. This
-    /// has priority over base game rules, but is superseded in turn by
-    /// [Self::disallow] and [Self::add_constraint].
-    pub fn allow(self) -> Self {
-        self.override_unconditionally(true, None)
-    }
-
-    /// Prevents some player action or event from happening. This is the highest
-    /// priority option and cannot be superseded.
-    pub fn disallow(self) -> Self {
-        self.override_unconditionally(false, None)
-    }
-
-    /// Overrides this flag if `value` is false. This is used to modify
-    /// something that a player *could otherwise do* with an additional
-    /// constraint that prevents it from happening. It cannot *expand* the
-    /// scope where an event can happen.
-    pub fn add_constraint(self, value: bool) -> Self {
-        if value {
-            self
-        } else {
-            self.override_unconditionally(value, None)
-        }
-    }
-
-    /// Overrides this flag if `value` is true. This is used to modify
-    /// something that a player *could not* otherwise do with an additional
-    /// capability. It expands the scope of where an action can happen, but
-    /// cannot *restrict* anything that was already allowed.
-    ///
-    /// This has lower priority than [Self::add_constraint]. This behavior is
-    /// sometimes described as the "can't beats can" rule.
-    pub fn add_permission(self, value: bool) -> Self {
-        if value {
-            self.override_unconditionally(value, None)
-        } else {
-            self
-        }
-    }
-
-    fn override_unconditionally(self, value: bool, ability_id: Option<AbilityId>) -> Self {
-        match self {
-            Self::Default(_) => Self::Override(value, ability_id),
-            Self::Override(current, current_ability) => {
-                Self::Override(current && value, ability_id.or(current_ability))
-            }
-        }
-    }
-}
-
-impl From<Flag> for bool {
-    fn from(flag: Flag) -> Self {
-        match flag {
-            Flag::Default(value) | Flag::Override(value, _) => value,
-        }
     }
 }
 

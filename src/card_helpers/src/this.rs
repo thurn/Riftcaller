@@ -14,9 +14,10 @@
 
 use core_data::game_primitives::{AttackValue, CardId, HasAbilityId, HasCardId};
 use game_data::delegate_data::{
-    AbilityActivated, CanActivateAbility, CardPlayed, Delegate, DiscardedCard, EventDelegate, Flag,
+    AbilityActivated, CanActivateAbility, CardPlayed, Delegate, DiscardedCard, EventDelegate,
     MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
 };
+use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 
 /// A RequirementFn which restricts delegates to only listen to events for their

@@ -15,7 +15,8 @@
 use anyhow::Result;
 use core_data::game_primitives::{CardId, CardType, RoomId, Side};
 use game_data::card_state::CardPosition;
-use game_data::delegate_data::{CanScoreAccessedCardQuery, Flag};
+use game_data::delegate_data::CanScoreAccessedCardQuery;
+use game_data::flag_data::Flag;
 use game_data::game_actions::RazeCardActionType;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidChoice, RaidInfo, RaidLabel, RaidStep, ScoredCard};

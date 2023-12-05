@@ -35,10 +35,11 @@ use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     ActionPointsLostDuringRaidEvent, CanAbilityEndRaidQuery, CardRevealedEvent,
     CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent,
-    DuskEvent, EnterArenaEvent, Flag, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
+    DuskEvent, EnterArenaEvent, MoveToDiscardPileEvent, OverlordScoreCardEvent, RaidEndEvent,
     RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
     StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
+use game_data::flag_data::Flag;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::history_data::HistoryEvent;
 use game_data::random;

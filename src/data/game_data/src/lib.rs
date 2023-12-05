@@ -26,6 +26,7 @@ pub mod continuous_visual_effect;
 pub mod custom_card_state;
 pub mod deck;
 pub mod delegate_data;
+pub mod flag_data;
 pub mod game_actions;
 pub mod game_effect;
 pub mod game_state;

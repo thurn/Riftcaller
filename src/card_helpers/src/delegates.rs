@@ -17,9 +17,10 @@ use core_data::game_primitives::{
 };
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
-    AccessEvent, CardPlayed, CardStatusMarker, Delegate, EventDelegate, Flag, MutationFn,
-    QueryDelegate, RaidEvent, RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
+    AccessEvent, CardPlayed, CardStatusMarker, Delegate, EventDelegate, MutationFn, QueryDelegate,
+    RaidEvent, RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
+use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 use game_data::raid_data::PopulateAccessPromptSource;
 
