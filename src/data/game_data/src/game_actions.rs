@@ -94,6 +94,8 @@ pub enum ButtonPromptContext {
     CardToTakeFromOpponent,
     /// Prompt to pay mana to prevent revealing a card
     PayToPreventRevealing(ManaValue),
+    /// Prompt from the indicated card to pick a card type
+    ChooseCardType(CardId),
 }
 
 impl ButtonPromptContext {
@@ -103,6 +105,7 @@ impl ButtonPromptContext {
             Self::Card(id) => Some(*id),
             Self::SacrificeToPreventDamage(id, _) => Some(*id),
             Self::SacrificeToPreventCurses(id, _) => Some(*id),
+            Self::ChooseCardType(id) => Some(*id),
             _ => None,
         }
     }

@@ -14,7 +14,9 @@
 
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::visual_effects::VisualEffects;
-use card_helpers::{card_selector_prompt_builder, costs, history, in_play, show_prompt, text};
+use card_helpers::{
+    card_selector_prompt_builder, costs, history, in_play, show_prompt, text, text_helpers,
+};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{
     CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
@@ -24,11 +26,12 @@ use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, Rif
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
+use game_data::custom_card_state::CustomCardState;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptContext,
+    BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptChoiceLabel, PromptContext,
 };
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
@@ -185,6 +188,98 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
                 bio: "Eria’s essence is intertwined with the fleeting threads of time, born under \
                 the cosmic alignments of Frostreach. Her journey through the ages is a dance on \
                 the edge of now and then, a reluctant guardian of time’s fragile tapestry.",
+            })
+            .build(),
+    }
+}
+
+pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::VendocSeerInStarlight,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::riftcaller(),
+        image: assets::overlord_card(meta, "vendoc"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Overlord,
+        school: School::Beyond,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![
+            Ability::new_with_delegate(
+                text_helpers::named_trigger(Dawn, text![text!["Choose a card type"],]),
+                in_play::at_dawn(|g, s, _| {
+                    let types = vec![
+                        CardType::Artifact,
+                        CardType::Evocation,
+                        CardType::Ally,
+                        CardType::Spell,
+                    ];
+                    show_prompt::with_context_and_choices(
+                        g,
+                        Side::Overlord,
+                        ButtonPromptContext::ChooseCardType(s.card_id()),
+                        types
+                            .into_iter()
+                            .map(|t| {
+                                PromptChoice::new()
+                                    .effect(GameEffect::AppendCustomCardState(
+                                        s.card_id(),
+                                        CustomCardState::CardTypeForTurn {
+                                            card_type: t,
+                                            turn: g.info.turn,
+                                        },
+                                    ))
+                                    .custom_label(PromptChoiceLabel::CardType(t))
+                            })
+                            .collect(),
+                    );
+                    Ok(())
+                }),
+            ),
+            Ability::new_with_delegate(
+                text![
+                    "The first time the Champion plays a card of the chosen type each turn,",
+                    GainMana(2),
+                ],
+                in_play::on_card_played(|g, s, played| {
+                    let Some(chosen) =
+                        g.card(s.card_id()).custom_state.card_type_for_turn(g.info.turn)
+                    else {
+                        return Ok(());
+                    };
+
+                    if g.card(played.card_id).definition().card_type == chosen {
+                        custom_state::riftcaller_once_per_turn(g, s, |g, s| {
+                            VisualEffects::new()
+                                .ability_alert(s)
+                                .timed_effect(
+                                    GameObjectId::CardId(s.card_id()),
+                                    TimedEffectData::new(TimedEffect::MagicCircles1(8))
+                                        .scale(1.0)
+                                        .sound(SoundEffect::WaterMagic(
+                                            "RPG3_WaterMagic2_HeavyImpact03",
+                                        ))
+                                        .effect_color(design::BLUE_500),
+                                )
+                                .apply(g);
+
+                            mana::gain(g, Side::Overlord, 2);
+                            Ok(())
+                        })?;
+                    }
+                    Ok(())
+                }),
+            ),
+        ],
+        config: CardConfigBuilder::new()
+            .riftcaller(RiftcallerConfig {
+                starting_coins: Coins(400),
+                secondary_schools: vec![School::Shadow],
+                skills: vec![Skill::Lore, Skill::Persuasion],
+                bio: "Vendoc’s eyes were opened to the celestial secrets in the starlit valleys \
+                of Frostreach. His visions, woven from the fabric of starlight, reveal truths \
+                that are as much a curse as they are a gift, a seer's burden carried under the \
+                cold gaze of the cosmos.",
             })
             .build(),
     }

@@ -109,6 +109,7 @@ pub enum PromptChoiceLabel {
     Occupant,
     Defender,
     PayActionAccessAnother,
+    CardType(CardType),
 }
 
 /// A specific card choice shown in a [ButtonPrompt].

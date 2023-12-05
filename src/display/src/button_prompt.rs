@@ -134,5 +134,8 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
             GameInstructions::new(format!("Pay {}{} to prevent revealing?", cost, icons::MANA))
                 .build()
         }
+        ButtonPromptContext::ChooseCardType(_) => {
+            GameInstructions::new("Choose a card type".to_string()).build()
+        }
     }
 }

@@ -110,6 +110,32 @@ pub fn eria_does_not_trigger_with_no_cards_in_crypt() {
     assert!(!g.has(Button::SubmitCardSelector));
 }
 
+#[test]
+pub fn vendoc() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::VendocSeerInStarlight))
+            .build();
+    g.pass_turn(Side::Overlord);
+    g.click(Button::ChooseCardTypeSpell);
+    g.create_and_play(CardName::Test0CostSpell);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
+    g.create_and_play(CardName::Test0CostSpell);
+    // Only triggers once
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
+}
+
+#[test]
+pub fn vendoc_play_different_card_first() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::VendocSeerInStarlight))
+            .build();
+    g.pass_turn(Side::Overlord);
+    g.click(Button::ChooseCardTypeSpell);
+    g.create_and_play(CardName::TestEvocation);
+    g.create_and_play(CardName::Test0CostSpell);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
+}
+
 // ========================================== //
 // ========== Champion Riftcallers ========== //
 // ========================================== //

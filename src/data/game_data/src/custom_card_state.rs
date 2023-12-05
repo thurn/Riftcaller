@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardId, CardPlayId, MinionEncounterId};
+use core_data::game_primitives::{CardId, CardPlayId, CardType, MinionEncounterId};
 use serde::{Deserialize, Serialize};
 
 use crate::game_state::TurnData;
@@ -39,6 +39,9 @@ pub enum CustomCardState {
 
     /// A Riftcaller's ability has triggered in the indicated turn.
     RiftcallerTriggeredForTurn { turn: TurnData },
+
+    /// A card type selected for the duration of a given turn
+    CardTypeForTurn { card_type: CardType, turn: TurnData },
 }
 
 /// Records custom state entries for a given card.
@@ -126,5 +129,20 @@ impl CustomCardStateList {
             matches!(state,
                 CustomCardState::RiftcallerTriggeredForTurn { turn } if turn_data == *turn)
         })
+    }
+
+    /// Returns the chosen card type if a [CustomCardState::CardTypeForTurn]
+    /// entry has been recorded for the provided turn.
+    pub fn card_type_for_turn(&self, turn_data: TurnData) -> Option<CardType> {
+        self.list
+            .iter()
+            .rev()
+            .filter_map(|state| match state {
+                CustomCardState::CardTypeForTurn { card_type, turn } if *turn == turn_data => {
+                    Some(*card_type)
+                }
+                _ => None,
+            })
+            .next()
     }
 }

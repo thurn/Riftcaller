@@ -93,6 +93,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::zain_cunning_diplomat);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::algrak_councils_enforcer);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::eria_time_conduit);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::vendoc_seer_in_starlight);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illeas_the_high_sage);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::merethyl_lore_seeker);
