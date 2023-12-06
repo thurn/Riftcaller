@@ -253,3 +253,31 @@ pub fn spellcraft_ritualist(meta: CardMetadata) -> CardDefinition {
         config: CardConfig::default(),
     }
 }
+
+pub fn blue_warden(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::BlueWarden,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(3, 2)),
+        image: assets::riftcaller_card(meta, "blue_warden"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Warrior],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            ActivatedAbility::new(costs::sacrifice(), text!["Draw", meta.upgrade(3, 4), "cards"])
+                .delegate(this::on_activated(|g, s, _| {
+                    draw_cards::run(g, s.side(), s.upgrade(3, 4), s.initiated_by())
+                }))
+                .build(),
+            Ability::new(text!["You may activate abilities after being damaged"]).delegate(
+                in_play::on_damage(|g, s, _| {
+                    show_prompt::priority_window(g, s);
+                    Ok(())
+                }),
+            ),
+        ],
+        config: CardConfig::default(),
+    }
+}

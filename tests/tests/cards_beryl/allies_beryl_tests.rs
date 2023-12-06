@@ -18,7 +18,7 @@ use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
-pub fn astrian_oracle() {
+fn astrian_oracle() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
@@ -28,7 +28,7 @@ pub fn astrian_oracle() {
 }
 
 #[test]
-pub fn astrian_oracle_two_copies() {
+fn astrian_oracle_two_copies() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
@@ -42,7 +42,7 @@ pub fn astrian_oracle_two_copies() {
 }
 
 #[test]
-pub fn astrian_oracle_upgraded() {
+fn astrian_oracle_upgraded() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
@@ -55,7 +55,7 @@ pub fn astrian_oracle_upgraded() {
 }
 
 #[test]
-pub fn resplendent_channeler() {
+fn resplendent_channeler() {
     let (cost, gained) = (3, 1);
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::ResplendentChanneler);
@@ -70,7 +70,7 @@ pub fn resplendent_channeler() {
 }
 
 #[test]
-pub fn stalwart_protector() {
+fn stalwart_protector() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
     g.pass_turn(Side::Riftcaller);
@@ -81,7 +81,7 @@ pub fn stalwart_protector() {
 }
 
 #[test]
-pub fn stalwart_protector_pass() {
+fn stalwart_protector_pass() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
     g.pass_turn(Side::Riftcaller);
@@ -92,7 +92,7 @@ pub fn stalwart_protector_pass() {
 }
 
 #[test]
-pub fn stalwart_protector_multiple_copies() {
+fn stalwart_protector_multiple_copies() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
     g.create_and_play(CardName::StalwartProtector);
@@ -107,7 +107,7 @@ pub fn stalwart_protector_multiple_copies() {
 }
 
 #[test]
-pub fn stalwart_protector_activate() {
+fn stalwart_protector_activate() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller).curses(1)).build();
     let id = g.create_and_play(CardName::StalwartProtector);
     g.activate_ability(id, 1);
@@ -116,14 +116,14 @@ pub fn stalwart_protector_activate() {
 }
 
 #[test]
-pub fn stalwart_protector_cannot_activate_with_no_curses() {
+fn stalwart_protector_cannot_activate_with_no_curses() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::StalwartProtector);
     assert!(g.activate_ability_with_result(id, 1).is_err());
 }
 
 #[test]
-pub fn dawnwarden() {
+fn dawnwarden() {
     let (cost, gained) = (1, 2);
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::Dawnwarden);
@@ -137,7 +137,7 @@ pub fn dawnwarden() {
 }
 
 #[test]
-pub fn spellcraft_ritualist() {
+fn spellcraft_ritualist() {
     let cost = 2;
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SpellcraftRitualist);
@@ -152,4 +152,24 @@ pub fn spellcraft_ritualist() {
         g.me().mana(),
         test_constants::STARTING_MANA - cost - 2 * (test_constants::SPELL_COST - 1)
     );
+}
+
+#[test]
+fn blue_warden() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    let id = g.create_and_play(CardName::BlueWarden);
+    g.activate_ability(id, 0);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 3);
+}
+
+#[test]
+fn blue_warden_activate_after_damage() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    let id = g.create_and_play(CardName::BlueWarden);
+    g.draw_card();
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.activate_ability(id, 0);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 3);
+    g.click(Button::ClosePriorityPrompt);
 }

@@ -336,6 +336,7 @@ pub enum CardName {
     OleusTheWatcher,
     VendocSeerInStarlight,
     AMomentsPeace,
+    BlueWarden,
 }
 
 impl CardName {

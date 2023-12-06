@@ -65,6 +65,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::allies_beryl::stalwart_protector);
     DEFINITIONS.insert(cards_beryl::allies_beryl::dawnwarden);
     DEFINITIONS.insert(cards_beryl::allies_beryl::spellcraft_ritualist);
+    DEFINITIONS.insert(cards_beryl::allies_beryl::blue_warden);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::pathfinder);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::staff_of_the_valiant);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::triumph);
