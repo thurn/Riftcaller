@@ -641,8 +641,8 @@ message PlayerIdentifier {
 
 enum PlayerSide {
     PLAYER_SIDE_UNSPECIFIED = 0;
-    PLAYER_SIDE_OVERLORD = 1;
-    PLAYER_SIDE_CHAMPION = 2;
+    PLAYER_SIDE_COVENANT = 1;
+    PLAYER_SIDE_RIFTCALLER = 2;
 }
 
 enum PlayerName {
@@ -1287,7 +1287,7 @@ message PlayCardAction {
     CardTarget target = 2;
 }
 
-// Spend an action to initiate a raid on one of the overlord's rooms
+// Spend an action to initiate a raid on one of the covenant's rooms
 //
 // Optimistic: Room visit animation plays
 message InitiateRaidAction {

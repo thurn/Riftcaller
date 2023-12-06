@@ -23,25 +23,25 @@ use maplit::hashmap;
 use once_cell::sync::Lazy;
 use user_action_data::NamedDeck;
 
-/// Empty Overlord deck for use in tests
-pub static EMPTY_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Overlord,
+/// Empty Covenant deck for use in tests
+pub static EMPTY_COVENANT: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Covenant,
     schools: vec![],
     identities: vec![],
     cards: HashMap::new(),
 });
 
-/// Spell Overlord deck for use in tests
-pub static OVERLORD_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Overlord,
+/// Spell Covenant deck for use in tests
+pub static COVENANT_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Covenant,
     schools: vec![],
     identities: vec![],
     cards: hashmap! {CardVariant::standard(CardName::TestRitual) => 45},
 });
 
-/// Basic Overlord starter deck in adventure mode
-pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Overlord,
+/// Basic Covenant starter deck in adventure mode
+pub static BASIC_COVENANT: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Covenant,
     schools: vec![],
     identities: vec![],
     cards: hashmap! {
@@ -61,13 +61,13 @@ pub static BASIC_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     },
 });
 
-/// Basic Champion starter deck in adventure mode
-pub static TUTORIAL_OVERLORD: Lazy<Deck> =
-    Lazy::new(|| Deck { identities: vec![], ..BASIC_OVERLORD.clone() });
+/// Basic Riftcaller starter deck in adventure mode
+pub static TUTORIAL_COVENANT: Lazy<Deck> =
+    Lazy::new(|| Deck { identities: vec![], ..BASIC_COVENANT.clone() });
 
-/// Standard Overlord deck for use in benchmarks
-pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Overlord,
+/// Standard Covenant deck for use in benchmarks
+pub static CANONICAL_COVENANT: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Covenant,
     schools: vec![School::Law],
     identities: vec![],
     cards: hashmap! {
@@ -89,25 +89,25 @@ pub static CANONICAL_OVERLORD: Lazy<Deck> = Lazy::new(|| Deck {
     },
 });
 
-/// Empty Champion deck for use in tests
-pub static EMPTY_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Champion,
+/// Empty Riftcaller deck for use in tests
+pub static EMPTY_RIFTCALLER: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Riftcaller,
     schools: vec![],
     identities: vec![],
     cards: HashMap::new(),
 });
 
-/// Spell Overlord deck for use in tests
-pub static CHAMPION_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Champion,
+/// Spell Covenant deck for use in tests
+pub static RIFTCALLER_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Riftcaller,
     schools: vec![],
     identities: vec![],
     cards: hashmap! {CardVariant::standard(CardName::TestSpell) => 45},
 });
 
-/// Basic Champion starter deck in adventure mode
-pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Champion,
+/// Basic Riftcaller starter deck in adventure mode
+pub static BASIC_RIFTCALLER: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Riftcaller,
     schools: vec![],
     identities: vec![],
     cards: hashmap! {
@@ -127,13 +127,13 @@ pub static BASIC_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
     },
 });
 
-/// Basic Champion starter deck in adventure mode
-pub static TUTORIAL_CHAMPION: Lazy<Deck> =
-    Lazy::new(|| Deck { identities: vec![], ..BASIC_CHAMPION.clone() });
+/// Basic Riftcaller starter deck in adventure mode
+pub static TUTORIAL_RIFTCALLER: Lazy<Deck> =
+    Lazy::new(|| Deck { identities: vec![], ..BASIC_RIFTCALLER.clone() });
 
-/// Standard Champion deck for use in benchmarks
-pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
-    side: Side::Champion,
+/// Standard Riftcaller deck for use in benchmarks
+pub static CANONICAL_RIFTCALLER: Lazy<Deck> = Lazy::new(|| Deck {
+    side: Side::Riftcaller,
     schools: vec![School::Primal],
     identities: vec![],
     cards: hashmap! {
@@ -158,34 +158,34 @@ pub static CANONICAL_CHAMPION: Lazy<Deck> = Lazy::new(|| Deck {
 
 /// Returns the basic deck associated with the given [Side].
 pub fn basic_deck(side: Side) -> Deck {
-    if side == Side::Champion {
-        BASIC_CHAMPION.clone()
+    if side == Side::Riftcaller {
+        BASIC_RIFTCALLER.clone()
     } else {
-        BASIC_OVERLORD.clone()
+        BASIC_COVENANT.clone()
     }
 }
 
 /// Returns a canonical deck associated with the given [Side].
 pub fn canonical_deck(side: Side) -> Deck {
-    if side == Side::Champion {
-        CANONICAL_CHAMPION.clone()
+    if side == Side::Riftcaller {
+        CANONICAL_RIFTCALLER.clone()
     } else {
-        CANONICAL_OVERLORD.clone()
+        CANONICAL_COVENANT.clone()
     }
 }
 
 /// Returns a canonical deck associated with the given [NamedDeck].
 pub fn named_deck(name: NamedDeck) -> Deck {
     match name {
-        NamedDeck::EmptyChampion => EMPTY_CHAMPION.clone(),
-        NamedDeck::ChampionTestSpells => CHAMPION_TEST_SPELLS.clone(),
-        NamedDeck::BasicChampion => BASIC_CHAMPION.clone(),
-        NamedDeck::TutorialChampion => TUTORIAL_CHAMPION.clone(),
-        NamedDeck::CanonicalChampion => CANONICAL_CHAMPION.clone(),
-        NamedDeck::EmptyOverlord => EMPTY_OVERLORD.clone(),
-        NamedDeck::OverlordTestSpells => OVERLORD_TEST_SPELLS.clone(),
-        NamedDeck::CanonicalOverlord => CANONICAL_OVERLORD.clone(),
-        NamedDeck::BasicOverlord => BASIC_OVERLORD.clone(),
-        NamedDeck::TutorialOverlord => TUTORIAL_OVERLORD.clone(),
+        NamedDeck::EmptyRiftcaller => EMPTY_RIFTCALLER.clone(),
+        NamedDeck::RiftcallerTestSpells => RIFTCALLER_TEST_SPELLS.clone(),
+        NamedDeck::BasicRiftcaller => BASIC_RIFTCALLER.clone(),
+        NamedDeck::TutorialRiftcaller => TUTORIAL_RIFTCALLER.clone(),
+        NamedDeck::CanonicalRiftcaller => CANONICAL_RIFTCALLER.clone(),
+        NamedDeck::EmptyCovenant => EMPTY_COVENANT.clone(),
+        NamedDeck::CovenantTestSpells => COVENANT_TEST_SPELLS.clone(),
+        NamedDeck::CanonicalCovenant => CANONICAL_COVENANT.clone(),
+        NamedDeck::BasicCovenant => BASIC_COVENANT.clone(),
+        NamedDeck::TutorialCovenant => TUTORIAL_COVENANT.clone(),
     }
 }

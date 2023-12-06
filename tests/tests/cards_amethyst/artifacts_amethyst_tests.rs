@@ -23,7 +23,7 @@ use test_utils::*;
 
 #[test]
 fn invisibility_ring() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.add_to_hand(CardName::TestScheme3_10);
     g.add_to_hand(CardName::TestScheme3_10);
 
@@ -41,7 +41,7 @@ fn invisibility_ring() {
 #[test]
 fn accumulator() {
     let card_cost = 3;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::Accumulator);
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
@@ -53,7 +53,7 @@ fn accumulator() {
 #[test]
 fn mage_gloves() {
     let card_cost = 5;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::MageGloves);
     assert_eq!("12", g.client.get_card(id).arena_icon());
     assert_eq!(
@@ -72,7 +72,7 @@ fn mage_gloves() {
 
 #[test]
 fn mage_gloves_play_after_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.add_to_hand(CardName::MageGloves);
     g.initiate_raid(RoomId::Sanctum);
     g.click(Button::EndRaid);
@@ -87,7 +87,7 @@ fn mage_gloves_play_after_raid() {
 #[test]
 #[should_panic]
 fn mage_gloves_repeat_panic() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::MageGloves);
     g.activate_ability_with_target(id, 1, RoomId::Crypt);
     g.click(Button::EndRaid);
@@ -97,7 +97,7 @@ fn mage_gloves_repeat_panic() {
 #[test]
 fn magical_resonator() {
     let card_cost = 1;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::MagicalResonator);
     g.activate_ability(id, 1);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
@@ -107,7 +107,7 @@ fn magical_resonator() {
 #[test]
 #[should_panic]
 fn magical_resonator_cannot_activate_twice() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::MagicalResonator);
     g.activate_ability(id, 1);
     g.activate_ability(id, 1);
@@ -115,7 +115,7 @@ fn magical_resonator_cannot_activate_twice() {
 
 #[test]
 fn dark_grimoire() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::DarkGrimoire);
     assert_eq!(0, g.client.cards.hand().len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
@@ -128,7 +128,7 @@ fn dark_grimoire() {
 fn test_attack_weapon() {
     let card_cost = 3;
     let ability_cost = 1;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::TestAttackWeapon);
     g.fire_weapon_combat_abilities(Resonance::infernal(), CardName::TestAttackWeapon);
     assert_eq!(test_constants::STARTING_MANA - card_cost - ability_cost, g.me().mana());
@@ -139,7 +139,7 @@ fn test_attack_weapon() {
 #[test]
 fn marauders_axe() {
     let card_cost = 5;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.add_to_hand(CardName::MaraudersAxe);
     assert_eq!(card_cost.to_string(), g.client.cards.get(id).top_left_icon());
     g.initiate_raid(RoomId::Crypt);
@@ -152,7 +152,7 @@ fn marauders_axe() {
 #[test]
 fn keen_halberd() {
     let (card_cost, activation_cost) = (3, 2);
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::KeenHalberd);
     g.setup_raid_target(CardName::TestMinionShield2Abyssal);
     g.initiate_raid(test_constants::ROOM_ID);
@@ -167,7 +167,7 @@ fn keen_halberd() {
 #[test]
 fn bow_of_the_alliance() {
     let (card_cost, activation_cost) = (3, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::BowOfTheAlliance);
     g.create_and_play(CardName::BowOfTheAlliance);
     g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::BowOfTheAlliance);

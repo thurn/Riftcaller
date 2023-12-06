@@ -48,10 +48,10 @@ pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
         name: CardName::Pathfinder,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(3),
-        image: assets::champion_card(meta, "pathfinder"),
+        image: assets::riftcaller_card(meta, "pathfinder"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -85,10 +85,10 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
         name: CardName::StaffOfTheValiant,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::champion_card(meta, "staff_of_the_valiant"),
+        image: assets::riftcaller_card(meta, "staff_of_the_valiant"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon, CardSubtype::Runic],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -128,10 +128,10 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
         name: CardName::Triumph,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(8, 5)),
-        image: assets::champion_card(meta, "triumph"),
+        image: assets::riftcaller_card(meta, "triumph"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -156,7 +156,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
                         mutations::move_card(
                             g,
                             weapon.data.target_id,
-                            CardPosition::Hand(Side::Overlord),
+                            CardPosition::Hand(Side::Covenant),
                         )?;
                     }
                     Ok(())
@@ -182,10 +182,10 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
         name: CardName::SpearOfConquest,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
-        image: assets::champion_card(meta, "spear_of_conquest"),
+        image: assets::riftcaller_card(meta, "spear_of_conquest"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon, CardSubtype::Charge],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -220,10 +220,10 @@ pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
         name: CardName::BladeOfReckoning,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(2),
-        image: assets::champion_card(meta, "blade_of_reckoning"),
+        image: assets::riftcaller_card(meta, "blade_of_reckoning"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon, CardSubtype::Charge],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -258,10 +258,10 @@ pub fn resolution(meta: CardMetadata) -> CardDefinition {
         name: CardName::Resolution,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::champion_card(meta, "resolution"),
+        image: assets::riftcaller_card(meta, "resolution"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -294,10 +294,10 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
         name: CardName::StarlightLantern,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::champion_card(meta, "starlight_lantern"),
+        image: assets::riftcaller_card(meta, "starlight_lantern"),
         card_type: CardType::Artifact,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -339,10 +339,10 @@ pub fn warriors_sign(meta: CardMetadata) -> CardDefinition {
         name: CardName::WarriorsSign,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(3),
-        image: assets::champion_card(meta, "warriors_sign"),
+        image: assets::riftcaller_card(meta, "warriors_sign"),
         card_type: CardType::Artifact,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -365,7 +365,7 @@ pub fn warriors_sign(meta: CardMetadata) -> CardDefinition {
                 {
                     VisualEffects::new()
                         .timed_effect(
-                            GameObjectId::Character(Side::Champion),
+                            GameObjectId::Character(Side::Riftcaller),
                             TimedEffectData::new(TimedEffect::MagicCircles1(9))
                                 .scale(2.0)
                                 .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff03_FULL"))
@@ -389,10 +389,10 @@ pub fn chains_of_mortality(meta: CardMetadata) -> CardDefinition {
         name: CardName::ChainsOfMortality,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(5, 3)),
-        image: assets::champion_card(meta, "chains_of_mortality"),
+        image: assets::riftcaller_card(meta, "chains_of_mortality"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
@@ -434,10 +434,10 @@ pub fn phase_door(meta: CardMetadata) -> CardDefinition {
         name: CardName::PhaseDoor,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(5, 3)),
-        image: assets::champion_card(meta, "phase_door"),
+        image: assets::riftcaller_card(meta, "phase_door"),
         card_type: CardType::Artifact,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![ActivatedAbility::new(
@@ -474,10 +474,10 @@ pub fn skyprism(meta: CardMetadata) -> CardDefinition {
         name: CardName::Skyprism,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(5),
-        image: assets::champion_card(meta, "skyprism"),
+        image: assets::riftcaller_card(meta, "skyprism"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
@@ -507,10 +507,10 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
         name: CardName::ShieldOfTheFlames,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(4),
-        image: assets::champion_card(meta, "shield_of_the_flames"),
+        image: assets::riftcaller_card(meta, "shield_of_the_flames"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
@@ -543,10 +543,10 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
         name: CardName::Foebane,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(8),
-        image: assets::champion_card(meta, "foebane"),
+        image: assets::riftcaller_card(meta, "foebane"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![
@@ -618,10 +618,10 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
         name: CardName::WhipOfDisjunction,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(4),
-        image: assets::champion_card(meta, "whip_of_disjunction"),
+        image: assets::riftcaller_card(meta, "whip_of_disjunction"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon, CardSubtype::Runic],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![ActivatedAbility::new(
@@ -675,10 +675,10 @@ pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
         name: CardName::Glimmersong,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(3),
-        image: assets::champion_card(meta, "glimmersong"),
+        image: assets::riftcaller_card(meta, "glimmersong"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon, CardSubtype::Enchanted],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![

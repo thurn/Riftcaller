@@ -182,19 +182,19 @@ pub enum MulliganDecision {
 /// [MulliganDecision]s for both players.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, Eq, PartialEq)]
 pub struct MulliganData {
-    /// The mulligan decision for the Overlord player, or None if no decision
+    /// The mulligan decision for the Covenant player, or None if no decision
     /// has been made.
-    pub overlord: Option<MulliganDecision>,
-    /// The mulligan decision for the Champion player, or None if no decision
+    pub covenant: Option<MulliganDecision>,
+    /// The mulligan decision for the Riftcaller player, or None if no decision
     /// has been made.
-    pub champion: Option<MulliganDecision>,
+    pub riftcaller: Option<MulliganDecision>,
 }
 
 impl MulliganData {
     pub fn decision(&self, side: Side) -> Option<&MulliganDecision> {
         match side {
-            Side::Overlord => &self.overlord,
-            Side::Champion => &self.champion,
+            Side::Covenant => &self.covenant,
+            Side::Riftcaller => &self.riftcaller,
         }
         .as_ref()
     }
@@ -285,16 +285,16 @@ pub struct GameState {
     /// [AnimationTracker] for more information.
     #[serde(skip)]
     pub animations: AnimationTracker,
-    /// Cards for the overlord player. In general, code should use one of the
+    /// Cards for the covenant player. In general, code should use one of the
     /// helper methods below instead of accessing this directly.
-    pub overlord_cards: Vec<CardState>,
-    /// Cards for the champion player. In general, code should use one of the
+    pub covenant_cards: Vec<CardState>,
+    /// Cards for the riftcaller player. In general, code should use one of the
     /// helper methods below instead of accessing this directly.
-    pub champion_cards: Vec<CardState>,
-    /// State for the overlord player
-    pub overlord: GamePlayerData,
-    /// State for the champion player
-    pub champion: GamePlayerData,
+    pub riftcaller_cards: Vec<CardState>,
+    /// State for the covenant player
+    pub covenant: GamePlayerData,
+    /// State for the riftcaller player
+    pub riftcaller: GamePlayerData,
     ///  History of events which have happened during this game. See
     /// [GameHistory].
     pub history: GameHistory,
@@ -322,13 +322,13 @@ impl GameState {
     /// decisions, assigning starting mana, etc.
     pub fn new(
         id: GameId,
-        overlord: PlayerId,
-        overlord_deck: Deck,
-        champion: PlayerId,
-        champion_deck: Deck,
+        covenant: PlayerId,
+        covenant_deck: Deck,
+        riftcaller: PlayerId,
+        riftcaller_deck: Deck,
         config: GameConfiguration,
     ) -> Self {
-        let turn = TurnData { side: Side::Overlord, turn_number: 0 };
+        let turn = TurnData { side: Side::Covenant, turn_number: 0 };
         Self {
             id,
             info: GameInfo {
@@ -341,10 +341,10 @@ impl GameState {
             },
             state_machines: StateMachines::default(),
             raid: None,
-            overlord_cards: Self::make_deck(&overlord_deck, Side::Overlord),
-            champion_cards: Self::make_deck(&champion_deck, Side::Champion),
-            overlord: GamePlayerData::new(overlord, overlord_deck.schools),
-            champion: GamePlayerData::new(champion, champion_deck.schools),
+            covenant_cards: Self::make_deck(&covenant_deck, Side::Covenant),
+            riftcaller_cards: Self::make_deck(&riftcaller_deck, Side::Riftcaller),
+            covenant: GamePlayerData::new(covenant, covenant_deck.schools),
+            riftcaller: GamePlayerData::new(riftcaller, riftcaller_deck.schools),
             history: GameHistory::default(),
             animations: AnimationTracker::new(if config.simulation {
                 AnimationState::Ignore
@@ -372,10 +372,10 @@ impl GameState {
                 state_machines: self.state_machines.clone(),
                 raid: self.raid.clone(),
                 animations: AnimationTracker::new(AnimationState::Ignore),
-                overlord_cards: self.overlord_cards.clone(),
-                champion_cards: self.champion_cards.clone(),
-                overlord: self.overlord.clone(),
-                champion: self.champion.clone(),
+                covenant_cards: self.covenant_cards.clone(),
+                riftcaller_cards: self.riftcaller_cards.clone(),
+                covenant: self.covenant.clone(),
+                riftcaller: self.riftcaller.clone(),
                 history: self.history.clone(),
                 next_sorting_key: self.next_sorting_key,
                 rng: None,
@@ -396,10 +396,10 @@ impl GameState {
             state_machines: self.state_machines.clone(),
             raid: self.raid.clone(),
             animations: AnimationTracker::default(),
-            overlord_cards: self.overlord_cards.clone(),
-            champion_cards: self.champion_cards.clone(),
-            overlord: self.overlord.clone(),
-            champion: self.champion.clone(),
+            covenant_cards: self.covenant_cards.clone(),
+            riftcaller_cards: self.riftcaller_cards.clone(),
+            covenant: self.covenant.clone(),
+            riftcaller: self.riftcaller.clone(),
             history: self.history.clone(),
             next_sorting_key: self.next_sorting_key,
             rng: self.rng.clone(),
@@ -424,41 +424,41 @@ impl GameState {
     /// Cards for a player, in an unspecified order
     pub fn cards(&self, side: Side) -> &Vec<CardState> {
         match side {
-            Side::Overlord => &self.overlord_cards,
-            Side::Champion => &self.champion_cards,
+            Side::Covenant => &self.covenant_cards,
+            Side::Riftcaller => &self.riftcaller_cards,
         }
     }
 
     /// Mutable version of [Self::cards]
     pub fn cards_mut(&mut self, side: Side) -> &mut Vec<CardState> {
         match side {
-            Side::Overlord => &mut self.overlord_cards,
-            Side::Champion => &mut self.champion_cards,
+            Side::Covenant => &mut self.covenant_cards,
+            Side::Riftcaller => &mut self.riftcaller_cards,
         }
     }
 
     /// State for the players in the game
     pub fn player(&self, side: Side) -> &GamePlayerData {
         match side {
-            Side::Overlord => &self.overlord,
-            Side::Champion => &self.champion,
+            Side::Covenant => &self.covenant,
+            Side::Riftcaller => &self.riftcaller,
         }
     }
 
     /// Mutable version of [Self::player]
     pub fn player_mut(&mut self, side: Side) -> &mut GamePlayerData {
         match side {
-            Side::Overlord => &mut self.overlord,
-            Side::Champion => &mut self.champion,
+            Side::Covenant => &mut self.covenant,
+            Side::Riftcaller => &mut self.riftcaller,
         }
     }
 
     /// Returns the [Side] the indicated player is representing in this game
     pub fn player_side(&self, player_id: PlayerId) -> Result<Side> {
-        if player_id == self.champion.id {
-            Ok(Side::Champion)
-        } else if player_id == self.overlord.id {
-            Ok(Side::Overlord)
+        if player_id == self.riftcaller.id {
+            Ok(Side::Riftcaller)
+        } else if player_id == self.covenant.id {
+            Ok(Side::Covenant)
         } else {
             fail!("Player {:?} is not a participant in game {:?}", player_id, self.id)
         }
@@ -551,44 +551,44 @@ impl GameState {
     /// Cards (owned by either player) in a player's score area, in an
     /// unspecified order
     pub fn score_area(&self, side: Side) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord)
+        self.cards(Side::Covenant)
             .iter()
             .filter(move |c| c.position() == CardPosition::Scored(side))
             .chain(
-                self.cards(Side::Champion)
+                self.cards(Side::Riftcaller)
                     .iter()
                     .filter(move |c| c.position() == CardPosition::Scored(side)),
             )
     }
 
-    /// Returns Overlord cards defending a given room in an unspecified order
+    /// Returns Covenant cards defending a given room in an unspecified order
     pub fn defenders_unordered(&self, room_id: RoomId) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord).iter().filter(move |c| c.position().is_defender_of(room_id))
+        self.cards(Side::Covenant).iter().filter(move |c| c.position().is_defender_of(room_id))
     }
 
-    /// Overlord cards defending a given room, in sorting-key order (higher
+    /// Covenant cards defending a given room, in sorting-key order (higher
     /// array indices are closer to the front of the room).
     pub fn defender_list(&self, room_id: RoomId) -> Vec<CardId> {
         self.card_list_for_iterator(
-            self.cards(Side::Overlord).iter().filter(move |c| c.position().is_defender_of(room_id)),
+            self.cards(Side::Covenant).iter().filter(move |c| c.position().is_defender_of(room_id)),
         )
     }
 
-    /// Overlord cards in a given room (not defenders), in an unspecified order
+    /// Covenant cards in a given room (not defenders), in an unspecified order
     pub fn occupants(&self, room_id: RoomId) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord).iter().filter(move |c| c.position().is_occupant_of(room_id))
+        self.cards(Side::Covenant).iter().filter(move |c| c.position().is_occupant_of(room_id))
     }
 
-    /// All overlord cards which occupy rooms (not defenders), in an unspecified
+    /// All covenant cards which occupy rooms (not defenders), in an unspecified
     /// order
     pub fn occupants_in_all_rooms(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord).iter().filter(move |c| c.position().is_occupant())
+        self.cards(Side::Covenant).iter().filter(move |c| c.position().is_occupant())
     }
 
-    /// All Overlord cards located within a given room, defenders and occupants,
+    /// All Covenant cards located within a given room, defenders and occupants,
     /// in an unspecified order.
     pub fn defenders_and_occupants(&self, room_id: RoomId) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord)
+        self.cards(Side::Covenant)
             .iter()
             .filter(move |c| matches!(c.position(), CardPosition::Room(_, r, _) if r == room_id))
     }
@@ -598,35 +598,35 @@ impl GameState {
         self.cards(side).iter().filter(move |c| c.position().in_play())
     }
 
-    /// All overlord defenders in play, whether face-up or face-down.
+    /// All covenant defenders in play, whether face-up or face-down.
     pub fn minions(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Overlord).iter().filter(move |c| {
+        self.cards(Side::Covenant).iter().filter(move |c| {
             matches!(c.position(), CardPosition::Room(_, _, RoomLocation::Defender))
         })
     }
 
-    /// Champion cards which have been played as artifacts, in an unspecified
+    /// Riftcaller cards which have been played as artifacts, in an unspecified
     /// order.
     pub fn artifacts(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Champion).iter().filter(move |c| {
+        self.cards(Side::Riftcaller).iter().filter(move |c| {
             matches!(c.position(),
                 CardPosition::ArenaItem(_, l) if l == ItemLocation::Artifacts)
         })
     }
 
-    /// Champion cards which have been played as evocations, in an unspecified
+    /// Riftcaller cards which have been played as evocations, in an unspecified
     /// order.
     pub fn evocations(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Champion).iter().filter(move |c| {
+        self.cards(Side::Riftcaller).iter().filter(move |c| {
             matches!(c.position(),
                 CardPosition::ArenaItem(_, l) if l == ItemLocation::Evocations)
         })
     }
 
-    /// Champion cards which have been played as allies, in an unspecified
+    /// Riftcaller cards which have been played as allies, in an unspecified
     /// order.
     pub fn allies(&self) -> impl Iterator<Item = &CardState> {
-        self.cards(Side::Champion).iter().filter(move |c| {
+        self.cards(Side::Riftcaller).iter().filter(move |c| {
             matches!(c.position(),
                 CardPosition::ArenaItem(_, l) if l == ItemLocation::Allies)
         })
@@ -639,20 +639,20 @@ impl GameState {
 
     /// All Card IDs present in this game.
     ///
-    /// Overlord cards in an unspecified order followed by Champion cards in
+    /// Covenant cards in an unspecified order followed by Riftcaller cards in
     /// an unspecified order.
     pub fn all_card_ids(&self) -> impl Iterator<Item = CardId> {
-        (0..self.overlord_cards.len())
-            .map(|index| CardId::new(Side::Overlord, index))
-            .chain((0..self.champion_cards.len()).map(|index| CardId::new(Side::Champion, index)))
+        (0..self.covenant_cards.len())
+            .map(|index| CardId::new(Side::Covenant, index))
+            .chain((0..self.riftcaller_cards.len()).map(|index| CardId::new(Side::Riftcaller, index)))
     }
 
     /// All cards in this game.
     ///
-    /// Overlord cards in an unspecified order followed by Champion cards in
+    /// Covenant cards in an unspecified order followed by Riftcaller cards in
     /// an unspecified order.
     pub fn all_cards(&self) -> impl Iterator<Item = &CardState> {
-        self.overlord_cards.iter().chain(self.champion_cards.iter())
+        self.covenant_cards.iter().chain(self.riftcaller_cards.iter())
     }
 
     /// Returns the [RaidId] of the ongoing raid, if any.

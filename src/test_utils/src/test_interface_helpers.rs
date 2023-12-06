@@ -155,7 +155,7 @@ impl TestInterfaceHelpers for TestSession {
     }
 
     fn click_card_name(&mut self, card_name: CardName) {
-        self.click_on(self.player_id_for_side(Side::Champion), card_name.displayed_name());
+        self.click_on(self.player_id_for_side(Side::Riftcaller), card_name.displayed_name());
     }
 
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {

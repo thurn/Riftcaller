@@ -2,6 +2,7 @@
 
 use rules::DEFINITIONS;
 
+
 pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::marauders_axe);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::keen_halberd);
@@ -33,32 +34,32 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::spells_amethyst::charged_strike);
     DEFINITIONS.insert(cards_amethyst::spells_amethyst::stealth_mission);
     DEFINITIONS.insert(cards_amethyst::spells_amethyst::preparation);
-    DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
-    DEFINITIONS.insert(cards_basic::champion_basics::eldritch_surge);
-    DEFINITIONS.insert(cards_basic::champion_basics::lodestone);
-    DEFINITIONS.insert(cards_basic::champion_basics::mana_battery);
-    DEFINITIONS.insert(cards_basic::champion_basics::contemplate);
-    DEFINITIONS.insert(cards_basic::champion_basics::ancestral_knowledge);
-    DEFINITIONS.insert(cards_basic::champion_basics::simple_blade);
-    DEFINITIONS.insert(cards_basic::champion_basics::simple_axe);
-    DEFINITIONS.insert(cards_basic::champion_basics::simple_bow);
-    DEFINITIONS.insert(cards_basic::champion_basics::simple_club);
-    DEFINITIONS.insert(cards_basic::champion_basics::simple_hammer);
-    DEFINITIONS.insert(cards_basic::champion_basics::simple_spear);
-    DEFINITIONS.insert(cards_basic::champion_basics::ethereal_blade);
-    DEFINITIONS.insert(cards_basic::overlord_basics::conspire);
-    DEFINITIONS.insert(cards_basic::overlord_basics::devise);
-    DEFINITIONS.insert(cards_basic::overlord_basics::machinate);
-    DEFINITIONS.insert(cards_basic::overlord_basics::gathering_dark);
-    DEFINITIONS.insert(cards_basic::overlord_basics::coinery);
-    DEFINITIONS.insert(cards_basic::overlord_basics::leyline);
-    DEFINITIONS.insert(cards_basic::overlord_basics::ore_refinery);
-    DEFINITIONS.insert(cards_basic::overlord_basics::crab);
-    DEFINITIONS.insert(cards_basic::overlord_basics::fire_goblin);
-    DEFINITIONS.insert(cards_basic::overlord_basics::toucan);
-    DEFINITIONS.insert(cards_basic::overlord_basics::frog);
-    DEFINITIONS.insert(cards_basic::overlord_basics::captain);
-    DEFINITIONS.insert(cards_basic::overlord_basics::scout);
+    DEFINITIONS.insert(cards_basic::covenant_basics::conspire);
+    DEFINITIONS.insert(cards_basic::covenant_basics::devise);
+    DEFINITIONS.insert(cards_basic::covenant_basics::machinate);
+    DEFINITIONS.insert(cards_basic::covenant_basics::gathering_dark);
+    DEFINITIONS.insert(cards_basic::covenant_basics::coinery);
+    DEFINITIONS.insert(cards_basic::covenant_basics::leyline);
+    DEFINITIONS.insert(cards_basic::covenant_basics::ore_refinery);
+    DEFINITIONS.insert(cards_basic::covenant_basics::crab);
+    DEFINITIONS.insert(cards_basic::covenant_basics::fire_goblin);
+    DEFINITIONS.insert(cards_basic::covenant_basics::toucan);
+    DEFINITIONS.insert(cards_basic::covenant_basics::frog);
+    DEFINITIONS.insert(cards_basic::covenant_basics::captain);
+    DEFINITIONS.insert(cards_basic::covenant_basics::scout);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::arcane_recovery);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::eldritch_surge);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::lodestone);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::mana_battery);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::contemplate);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::ancestral_knowledge);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::simple_blade);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::simple_axe);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::simple_bow);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::simple_club);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::simple_hammer);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::simple_spear);
+    DEFINITIONS.insert(cards_basic::riftcaller_basics::ethereal_blade);
     DEFINITIONS.insert(cards_beryl::allies_beryl::astrian_oracle);
     DEFINITIONS.insert(cards_beryl::allies_beryl::resplendent_channeler);
     DEFINITIONS.insert(cards_beryl::allies_beryl::stalwart_protector);
@@ -115,7 +116,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::spells_beryl::chains_of_binding);
     DEFINITIONS.insert(cards_beryl::spells_beryl::delve_into_darkness);
     DEFINITIONS.insert(cards_beryl::spells_beryl::liminal_transposition);
-    DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::overlord_empty_modifier);
+    DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::covenant_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_raid_sanctum);
@@ -160,7 +161,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::trap_project);
     DEFINITIONS.insert(cards_test::test_cards::test_0_cost_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_0_cost_ritual);
-    DEFINITIONS.insert(cards_test::test_cards::test_1_cost_champion_spell);
+    DEFINITIONS.insert(cards_test::test_cards::test_1_cost_riftcaller_spell);
     DEFINITIONS.insert(cards_test::test_cards::deal_damage_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_attack_weapon);
     DEFINITIONS.insert(cards_test::test_cards::test_sacrifice_draw_card_artifact);

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Card definitions for the Spell card type & Champion player
+//! Card definitions for the Spell card type & Riftcaller player
 
 use assets::rexard_images;
 use card_helpers::raids::{add_sanctum_access, add_vault_access};
@@ -35,7 +35,7 @@ pub fn meditation(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_98"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -57,7 +57,7 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_76"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
@@ -92,7 +92,7 @@ pub fn charged_strike(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_67"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -121,7 +121,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_89"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
@@ -158,7 +158,7 @@ pub fn preparation(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_79"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(

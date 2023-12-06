@@ -34,10 +34,10 @@ use game_data::card_state::{CardCounter, CardState};
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     ActionPointsLostDuringRaidEvent, CanAbilityEndRaidQuery, CardRevealedEvent,
-    CardSacrificedEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom, DrawCardEvent,
-    DuskEvent, EnterArenaEvent, LeaveArenaEvent, MoveToDiscardPileEvent, OverlordScoreCardEvent,
-    RaidEndEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent, ScoreCard, ScoreCardEvent,
-    StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
+    CardSacrificedEvent, CovenantScoreCardEvent, DawnEvent, DiscardCardEvent, DiscardedCard,
+    DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, LeaveArenaEvent,
+    MoveToDiscardPileEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent,
+    ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
 use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
@@ -150,7 +150,7 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
         )?;
     }
 
-    if new_position.in_discard_pile() && card_id.side == Side::Champion {
+    if new_position.in_discard_pile() && card_id.side == Side::Riftcaller {
         turn_face_up(game, card_id);
     }
 
@@ -169,7 +169,7 @@ pub fn move_cards(game: &mut GameState, cards: &[CardId], to_position: CardPosit
 /// opponent's effect uses the word 'destroy'.
 pub fn destroy_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
-    if card_id.side == Side::Champion {
+    if card_id.side == Side::Riftcaller {
         turn_face_up(game, card_id);
     }
     Ok(())
@@ -179,7 +179,7 @@ pub fn destroy_card(game: &mut GameState, card_id: CardId) -> Result<()> {
 /// player's *own* effect causes their card to be discarded.
 pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
-    if card_id.side == Side::Champion {
+    if card_id.side == Side::Riftcaller {
         turn_face_up(game, card_id);
     }
     dispatch::invoke_event(game, CardSacrificedEvent(card_id))
@@ -215,8 +215,8 @@ pub fn shuffle_deck(game: &mut GameState, side: Side) -> Result<()> {
         game.cards_in_position(side, CardPosition::DeckTop(side)).map(|c| c.id).collect::<Vec<_>>();
     for card_id in &cards {
         turn_face_down(game, *card_id);
-        set_visible_to(game, *card_id, Side::Overlord, false);
-        set_visible_to(game, *card_id, Side::Champion, false);
+        set_visible_to(game, *card_id, Side::Covenant, false);
+        set_visible_to(game, *card_id, Side::Riftcaller, false);
     }
     move_cards(game, &cards, CardPosition::DeckUnknown(side))
 }
@@ -394,13 +394,13 @@ pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
     debug!("Dealing opening hands");
     draw_cards::run(
         game,
-        Side::Overlord,
+        Side::Covenant,
         game_constants::STARTING_HAND_SIZE,
         InitiatedBy::GameAction,
     )?;
     draw_cards::run(
         game,
-        Side::Champion,
+        Side::Riftcaller,
         game_constants::STARTING_HAND_SIZE,
         InitiatedBy::GameAction,
     )?;
@@ -415,11 +415,11 @@ pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
 pub fn check_start_game(game: &mut GameState) -> Result<()> {
     match &game.info.phase {
         GamePhase::ResolveMulligans(mulligans)
-            if mulligans.overlord.is_some() && mulligans.champion.is_some() =>
+            if mulligans.covenant.is_some() && mulligans.riftcaller.is_some() =>
         {
-            mana::set_initial(game, Side::Overlord, game_constants::STARTING_MANA);
-            mana::set_initial(game, Side::Champion, game_constants::STARTING_MANA);
-            start_turn(game, Side::Overlord, 1)?;
+            mana::set_initial(game, Side::Covenant, game_constants::STARTING_MANA);
+            mana::set_initial(game, Side::Riftcaller, game_constants::STARTING_MANA);
+            start_turn(game, Side::Covenant, 1)?;
         }
         _ => {}
     }
@@ -457,10 +457,10 @@ pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Resu
     Ok(result)
 }
 
-/// Increases the progress level of all `can_progress_card` Overlord cards in a
+/// Increases the progress level of all `can_progress_card` Covenant cards in a
 /// room by one. If a Scheme card's progress level reaches its
 /// `progress_requirement`, that card is immediately scored and moved to the
-/// Overlord score zone.
+/// Covenant score zone.
 ///
 /// Does not spend mana/actions etc.
 pub fn progress_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
@@ -480,7 +480,7 @@ pub fn progress_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
 /// Adds `amount` progress counters to the provided card.
 ///
 /// If the card has scheme points and the progress requirement is met, the card
-/// is immediately scored and moved to the Overlord's score zone.
+/// is immediately scored and moved to the Covenant's score zone.
 ///
 /// Returns an error if this card cannot be progressed.
 pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32) -> Result<()> {
@@ -491,14 +491,14 @@ pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32)
         if card.counters(CardCounter::Progress) >= scheme_points.progress_requirement {
             turn_face_up(game, card_id);
             move_card(game, card_id, CardPosition::Scoring)?;
-            game.add_animation(|| GameAnimation::ScoreCard(Side::Overlord, card_id));
-            dispatch::invoke_event(game, OverlordScoreCardEvent(card_id))?;
+            game.add_animation(|| GameAnimation::ScoreCard(Side::Covenant, card_id));
+            dispatch::invoke_event(game, CovenantScoreCardEvent(card_id))?;
             dispatch::invoke_event(
                 game,
-                ScoreCardEvent(ScoreCard { player: Side::Overlord, card_id }),
+                ScoreCardEvent(ScoreCard { player: Side::Covenant, card_id }),
             )?;
 
-            move_card(game, card_id, CardPosition::Scored(Side::Overlord))?;
+            move_card(game, card_id, CardPosition::Scored(Side::Covenant))?;
         }
     }
 
@@ -561,14 +561,14 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     debug!(?next_side, "Starting player turn");
     game.add_animation(|| GameAnimation::StartTurn(next_side));
 
-    if next_side == Side::Overlord {
+    if next_side == Side::Covenant {
         dispatch::invoke_event(game, DuskEvent(turn_number))?;
     } else {
         dispatch::invoke_event(game, DawnEvent(turn_number))?;
     }
     game.player_mut(next_side).actions = queries::start_of_turn_action_count(game, next_side);
 
-    if next_side == Side::Overlord {
+    if next_side == Side::Covenant {
         draw_cards::run(game, next_side, 1, InitiatedBy::GameAction)?;
     }
 
@@ -587,8 +587,8 @@ pub fn check_for_score_victory(game: &mut GameState) -> Result<()> {
         Ok(())
     }
 
-    check(game, Side::Overlord)?;
-    check(game, Side::Champion)
+    check(game, Side::Covenant)?;
+    check(game, Side::Riftcaller)
 }
 
 /// Options when invoking [summon_minion]
@@ -613,7 +613,7 @@ pub fn summon_minion(
         if let Some(cost) = queries::mana_cost(game, card_id) {
             mana::spend(
                 game,
-                Side::Overlord,
+                Side::Covenant,
                 initiated_by,
                 ManaPurpose::PayForCard(card_id),
                 cost,
@@ -638,12 +638,12 @@ pub fn unsummon_minion(game: &mut GameState, card_id: CardId) -> Result<()> {
     Ok(())
 }
 
-/// Discards `amount` cards from the top of the Overlord's deck.
+/// Discards `amount` cards from the top of the Covenant's deck.
 ///
 /// If insufficient cards are present, discards all available cards.
 pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
-    for card_id in realize_top_of_deck(game, Side::Overlord, amount)? {
-        move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
+    for card_id in realize_top_of_deck(game, Side::Covenant, amount)? {
+        move_card(game, card_id, CardPosition::DiscardPile(Side::Covenant))?;
     }
     Ok(())
 }

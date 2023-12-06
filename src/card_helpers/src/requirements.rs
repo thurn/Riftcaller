@@ -135,7 +135,7 @@ pub fn no_damage_dealt<R: BaseRequirement>(
     scope: Scope,
     _: &DealtDamage,
 ) -> bool {
-    R::run(game, scope) && history::counters(game, Side::Champion).damage_received == 0
+    R::run(game, scope) && history::counters(game, Side::Riftcaller).damage_received == 0
 }
 
 /// A [RequirementFn] which matches if the indicated `card_id` was targeted by

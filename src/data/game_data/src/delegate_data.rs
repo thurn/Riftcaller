@@ -346,11 +346,11 @@ impl HasAbilityId for DealtDamage {
     }
 }
 
-/// Actions to show the Champion during combat in addition to their weapon
+/// Actions to show the Riftcaller during combat in addition to their weapon
 /// actions
 #[derive(Clone, Debug)]
 pub struct MinionCombatPrompt {
-    /// Combat actions to show the Champion
+    /// Combat actions to show the Riftcaller
     pub actions: Vec<GameStateAction>,
     /// Whether to show the default continue/don't use a weapon option
     pub include_no_action: bool,
@@ -434,9 +434,9 @@ pub struct ManaLostToOpponentAbility {
 #[derive(EnumKind, DelegateEnum, Clone)]
 #[enum_kind(DelegateKind, derive(Hash))]
 pub enum Delegate {
-    /// The Champion's turn begins
+    /// The Riftcaller's turn begins
     Dawn(EventDelegate<TurnNumber>),
-    /// The Overlord's turn begins
+    /// The Covenant's turn begins
     Dusk(EventDelegate<TurnNumber>),
     /// A card is moved from a Deck position to a Hand position
     DrawCard(EventDelegate<CardId>),
@@ -459,13 +459,13 @@ pub enum Delegate {
     SummonProject(EventDelegate<CardId>),
     /// A minion card is turned face up.
     SummonMinion(EventDelegate<CardId>),
-    /// A card is scored by the Overlord
-    OverlordScoreCard(EventDelegate<CardId>),
-    /// A card is scored by the Champion
-    ChampionScoreCard(EventDelegate<CardId>),
+    /// A card is scored by the Covenant
+    CovenantScoreCard(EventDelegate<CardId>),
+    /// A card is scored by the Riftcaller
+    RiftcallerScoreCard(EventDelegate<CardId>),
     /// Either player scores a card
     ScoreCard(EventDelegate<ScoreCard>),
-    /// A card is razed (discarded by paying its raze cost) by the Champion
+    /// A card is razed (discarded by paying its raze cost) by the Riftcaller
     RazeCard(EventDelegate<CardId>),
     /// A Raid is initiated
     RaidStart(EventDelegate<RaidEvent<()>>),
@@ -479,7 +479,7 @@ pub enum Delegate {
     /// to its health
     MinionDefeated(EventDelegate<CardId>),
     /// A minion's 'combat' ability is triggered during an encounter, typically
-    /// because the minion was not defeated by the Champion.
+    /// because the minion was not defeated by the Riftcaller.
     MinionCombatAbility(EventDelegate<CardId>),
     /// A minion finishes being encountered during a raid. Invokes regardless of
     /// whether the encounter was successful.
@@ -515,18 +515,18 @@ pub enum Delegate {
     RaidSuccess(EventDelegate<RaidEvent<()>>),
     /// Stored mana is taken from a card
     StoredManaTaken(EventDelegate<CardId>),
-    /// Damage is about to be dealt to the Champion player in a given amount.
+    /// Damage is about to be dealt to the Riftcaller player in a given amount.
     WillDealDamage(EventDelegate<DealtDamage>),
-    /// Damage has been dealt to the Champion player (in the form of discarded
+    /// Damage has been dealt to the Riftcaller player (in the form of discarded
     /// cards).
     DealtDamage(EventDelegate<DealtDamage>),
-    /// Curses are about to be given to the Champion player
+    /// Curses are about to be given to the Riftcaller player
     WillReceiveCurses(EventDelegate<CurseCount>),
-    /// The Champion player has been given one or more curses
+    /// The Riftcaller player has been given one or more curses
     CursesReceived(EventDelegate<CurseCount>),
-    /// The Champion player has received one or more leylines
+    /// The Riftcaller player has received one or more leylines
     LeylinesReceived(EventDelegate<u32>),
-    /// The Champion player has received one or more wounds
+    /// The Riftcaller player has received one or more wounds
     WoundsReceived(EventDelegate<WoundCount>),
     /// A card has been sacrificed by its owner
     CardSacrificed(EventDelegate<CardId>),
@@ -574,10 +574,10 @@ pub enum Delegate {
     /// Can the source card (typically a weapon) apply an encounter
     /// action to defeat the target (typically a minion) during a raid?
     CanDefeatTarget(QueryDelegate<CardEncounter, Flag>),
-    /// Can the Champion choose to not use a weapon ability when encountering
+    /// Can the Riftcaller choose to not use a weapon ability when encountering
     /// the indicated minion card?
     CanUseNoWeapon(QueryDelegate<CardId, Flag>),
-    /// Can the Champion choose to use the 'End Raid' button to end the access
+    /// Can the Riftcaller choose to use the 'End Raid' button to end the access
     /// phase of a raid?
     CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
     /// Should an 'end the raid' ability with the given ID be prevented?
@@ -622,10 +622,10 @@ pub enum Delegate {
     RazeCost(QueryDelegate<CardId, BreachValue>),
     /// Get the number of actions a player gets at the start of their turn.
     StartOfTurnActions(QueryDelegate<Side, ActionCount>),
-    /// Gets the number of cards the Champion player can access from the Vault
+    /// Gets the number of cards the Riftcaller player can access from the Vault
     /// during this raid
     VaultAccessCount(QueryDelegate<RaidId, u32>),
-    /// Gets the number of cards the Champion player can access from the Sanctum
+    /// Gets the number of cards the Riftcaller player can access from the Sanctum
     /// during this raid
     SanctumAccessCount(QueryDelegate<RaidId, u32>),
     /// Queries the maximum hand size of a player. Invoked with the default

@@ -12,5 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod champion_basics_tests;
-mod overlord_basics_tests;
+mod covenant_basics_tests;
+mod riftcaller_basics_tests;

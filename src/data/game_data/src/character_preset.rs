@@ -17,8 +17,8 @@ use serde::{Deserialize, Serialize};
 /// Controls the appearance of animated characters
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum CharacterPreset {
-    Champion,
-    Overlord,
+    Riftcaller,
+    Covenant,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

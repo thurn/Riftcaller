@@ -32,7 +32,7 @@ pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(8, "SpellBook08_09"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![Ability::new_with_delegate(
@@ -57,7 +57,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(8, "SpellBook08_73"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Pact,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
@@ -83,7 +83,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(8, "SpellBook08_76"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Primal,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
@@ -105,7 +105,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(8, "SpellBook08_119"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Shadow,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
@@ -117,7 +117,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
                 "cards, if present"
             ],
             in_play::vault_access_selected(|g, _, _| {
-                let cards = mutations::realize_top_of_deck(g, Side::Overlord, 5)?;
+                let cards = mutations::realize_top_of_deck(g, Side::Covenant, 5)?;
                 if let Some(card_id) =
                     cards.into_iter().find(|id| g.card(*id).definition().is_scheme())
                 {

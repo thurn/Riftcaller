@@ -40,26 +40,26 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MonstersAvatars, "10"),
         card_type: CardType::Minion,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
             named_trigger(
                 Encounter,
-                text!["End the raid unless the Champion pays", Mana(5), "or", Actions(2)],
+                text!["End the raid unless the Riftcaller pays", Mana(5), "or", Actions(2)],
             ),
             on_encountered(|g, s, _| {
                 show_prompt::with_choices(
                     g,
-                    Side::Champion,
+                    Side::Riftcaller,
                     vec![
                         PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
                         PromptChoice::new().effect(GameEffect::ManaCost(
-                            Side::Champion,
+                            Side::Riftcaller,
                             5,
                             s.initiated_by(),
                         )),
-                        PromptChoice::new().effect(GameEffect::ActionCost(Side::Champion, 2)),
+                        PromptChoice::new().effect(GameEffect::ActionCost(Side::Riftcaller, 2)),
                     ],
                 );
                 Ok(())
@@ -77,7 +77,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MonstersAvatars, "80"),
         card_type: CardType::Minion,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -102,7 +102,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MonstersAvatars, "17"),
         card_type: CardType::Minion,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
@@ -146,26 +146,26 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MonstersAvatars, "29"),
         card_type: CardType::Minion,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
             named_trigger(
                 Combat,
                 text![
-                    text!["The Champion loses", Mana(3)],
+                    text!["The Riftcaller loses", Mana(3)],
                     text!["If they have", Mana(6), "or less, end the raid"]
                 ],
             ),
             combat(|g, s, _| {
                 mana::lose_upto(
                     g,
-                    Side::Champion,
+                    Side::Riftcaller,
                     s.initiated_by(),
                     ManaPurpose::PayForTriggeredAbility,
                     3,
                 )?;
-                if mana::get(g, Side::Champion, ManaPurpose::BaseMana) <= 6 {
+                if mana::get(g, Side::Riftcaller, ManaPurpose::BaseMana) <= 6 {
                     mutations::end_raid(
                         g,
                         InitiatedBy::Ability(s.ability_id()),
@@ -187,7 +187,7 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MonstersAvatars, "53"),
         card_type: CardType::Minion,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -195,14 +195,14 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
                 Combat,
                 text![
                     text![DealDamage(2)],
-                    text!["The Champion must end the raid or take 2 more damage"]
+                    text!["The Riftcaller must end the raid or take 2 more damage"]
                 ],
             ),
             combat(|g, s, _| {
                 damage::deal(g, s, 2)?;
                 show_prompt::with_choices(
                     g,
-                    Side::Champion,
+                    Side::Riftcaller,
                     vec![
                         PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
                         PromptChoice::new().effect(GameEffect::TakeDamageCost(s.ability_id(), 2)),

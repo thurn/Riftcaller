@@ -73,7 +73,7 @@ pub fn render(
             ShowCards { show_if_prominent: true, ..ShowCards::default() },
         ),
         GameAnimation::SummonMinion(card_id) => {
-            if builder.user_side == Side::Champion {
+            if builder.user_side == Side::Riftcaller {
                 show_cards(
                     builder,
                     &vec![*card_id],
@@ -92,16 +92,16 @@ pub fn render(
             }));
         }
         GameAnimation::ProgressRoom(room_id, initiated_by) => {
-            if initiated_by.is_ability() || builder.user_side == Side::Champion {
-                // Animation is not required for the Overlord's own 'progress room' action, it's
+            if initiated_by.is_ability() || builder.user_side == Side::Riftcaller {
+                // Animation is not required for the Covenant's own 'progress room' action, it's
                 // handled by the client's optimistic animation system.
                 progress_room(builder, *room_id)
             }
         }
         GameAnimation::InitiateRaid(room_id, initiated_by) => {
-            if initiated_by.is_ability() || builder.user_side == Side::Overlord {
-                // Animation is not required for the Champion's own 'initiate raid' action, it's
-                // handled by the client's optimistic animation system.
+            if initiated_by.is_ability() || builder.user_side == Side::Covenant {
+                // Animation is not required for the Riftcaller's own 'initiate raid' action,
+                // it's handled by the client's optimistic animation system.
                 initiate_raid(builder, *room_id)
             }
         }
@@ -120,8 +120,8 @@ pub fn render(
 fn start_turn(builder: &mut ResponseBuilder, side: Side) {
     builder.push(Command::DisplayGameMessage(DisplayGameMessageCommand {
         message_type: match side {
-            Side::Overlord => GameMessageType::Dusk.into(),
-            Side::Champion => GameMessageType::Dawn.into(),
+            Side::Covenant => GameMessageType::Dusk.into(),
+            Side::Riftcaller => GameMessageType::Dawn.into(),
         },
     }))
 }
@@ -196,7 +196,7 @@ fn show_ability(builder: &mut ResponseBuilder, snapshot: &GameState, ability_id:
 
 fn progress_room(commands: &mut ResponseBuilder, target: RoomId) {
     commands.push(Command::VisitRoom(VisitRoomCommand {
-        initiator: commands.to_player_name(Side::Overlord),
+        initiator: commands.to_player_name(Side::Covenant),
         room_id: adapters::room_identifier(target),
         visit_type: RoomVisitType::ProgressRoom.into(),
     }));
@@ -204,7 +204,7 @@ fn progress_room(commands: &mut ResponseBuilder, target: RoomId) {
 
 fn initiate_raid(commands: &mut ResponseBuilder, target: RoomId) {
     commands.push(Command::VisitRoom(VisitRoomCommand {
-        initiator: commands.to_player_name(Side::Champion),
+        initiator: commands.to_player_name(Side::Riftcaller),
         room_id: adapters::room_identifier(target),
         visit_type: RoomVisitType::InitiateRaid.into(),
     }));

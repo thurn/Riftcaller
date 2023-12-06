@@ -61,8 +61,8 @@ pub struct TestGame {
 impl TestGame {
     /// Creates a new test game. Mulligans will be skipped and the game will be
     /// advanced directly to the `user_side` player's first turn without
-    /// intervening events (e.g. the Overlord will not draw a card for their
-    /// first turn if you pass [Side::Champion]).
+    /// intervening events (e.g. the Covenant will not draw a card for their
+    /// first turn if you pass [Side::Riftcaller]).
     pub fn new(user_side: TestSide) -> Self {
         cards_all::initialize();
         let opponent = user_side.side.opponent();
@@ -130,28 +130,28 @@ impl TestGame {
         user_id: PlayerId,
         opponent_id: PlayerId,
     ) -> GameState {
-        let (overlord_user, champion_user) = match self.user_side.side {
-            Side::Overlord => (user_id, opponent_id),
-            Side::Champion => (opponent_id, user_id),
+        let (covenant_user, riftcaller_user) = match self.user_side.side {
+            Side::Covenant => (user_id, opponent_id),
+            Side::Riftcaller => (opponent_id, user_id),
         };
 
         let (chapters, riftcallers) = match self.user_side.side {
-            Side::Overlord => {
+            Side::Covenant => {
                 (self.user_side.identities.clone(), self.opponent_side.identities.clone())
             }
-            Side::Champion => {
+            Side::Riftcaller => {
                 (self.opponent_side.identities.clone(), self.user_side.identities.clone())
             }
         };
 
-        let overlord_deck = Deck {
-            side: Side::Overlord,
+        let covenant_deck = Deck {
+            side: Side::Covenant,
             schools: vec![],
             identities: chapters.into_iter().map(CardVariant::standard).collect(),
             cards: hashmap! {CardVariant::standard(CardName::TestRitual) => self.deck_sizes},
         };
-        let champion_deck = Deck {
-            side: Side::Champion,
+        let riftcaller_deck = Deck {
+            side: Side::Riftcaller,
             schools: vec![],
             identities: riftcallers.into_iter().map(CardVariant::standard).collect(),
             cards: hashmap! {CardVariant::standard(CardName::TestSpell) => self.deck_sizes},
@@ -159,10 +159,10 @@ impl TestGame {
 
         let mut game = GameState::new(
             game_id,
-            overlord_user,
-            overlord_deck,
-            champion_user,
-            champion_deck,
+            covenant_user,
+            covenant_deck,
+            riftcaller_user,
+            riftcaller_deck,
             GameConfiguration {
                 deterministic: true,
                 scripted_tutorial: self.tutorial_mode,
@@ -178,10 +178,10 @@ impl TestGame {
         self.user_side.apply_to(&mut game);
         self.opponent_side.apply_to(&mut game);
         game.player_mut(self.current_turn).actions =
-            self.actions.unwrap_or(if self.user_side.side == Side::Overlord {
-                game_constants::OVERLORD_START_OF_TURN_ACTIONS
+            self.actions.unwrap_or(if self.user_side.side == Side::Covenant {
+                game_constants::COVENANT_START_OF_TURN_ACTIONS
             } else {
-                game_constants::CHAMPION_START_OF_TURN_ACTIONS
+                game_constants::RIFTCALLER_START_OF_TURN_ACTIONS
             });
 
         if let Some(r) = self.raid {
@@ -295,7 +295,7 @@ impl TestSide {
         self
     }
 
-    /// Overlord card to be inserted face-up into the player's score area.
+    /// Covenant card to be inserted face-up into the player's score area.
     pub fn in_score_area(mut self, card: CardName) -> Self {
         self.in_score_area.push(card);
         self
@@ -379,7 +379,7 @@ impl TestSide {
         for (room_id, card_name) in &self.room_occupants {
             overwrite_positions(
                 game,
-                Side::Overlord,
+                Side::Covenant,
                 &[*card_name],
                 CardPosition::Room(card_play_id(), *room_id, RoomLocation::Occupant),
                 false,
@@ -388,7 +388,7 @@ impl TestSide {
         for (room_id, card_name) in &self.face_up_room_occupants {
             overwrite_positions(
                 game,
-                Side::Overlord,
+                Side::Covenant,
                 &[*card_name],
                 CardPosition::Room(card_play_id(), *room_id, RoomLocation::Occupant),
                 true,
@@ -396,7 +396,7 @@ impl TestSide {
         }
         overwrite_positions(
             game,
-            Side::Overlord,
+            Side::Covenant,
             &self.in_score_area,
             CardPosition::Scored(self.side),
             true,
@@ -404,7 +404,7 @@ impl TestSide {
         for (room_id, card_name) in &self.face_up_defenders {
             overwrite_positions(
                 game,
-                Side::Overlord,
+                Side::Covenant,
                 &[*card_name],
                 CardPosition::Room(card_play_id(), *room_id, RoomLocation::Defender),
                 true,
@@ -413,7 +413,7 @@ impl TestSide {
         for (room_id, card_name) in &self.face_down_defenders {
             overwrite_positions(
                 game,
-                Side::Overlord,
+                Side::Covenant,
                 &[*card_name],
                 CardPosition::Room(card_play_id(), *room_id, RoomLocation::Defender),
                 false,
@@ -421,7 +421,7 @@ impl TestSide {
         }
 
         let hand_card =
-            if self.side == Side::Overlord { CardName::TestRitual } else { CardName::TestSpell };
+            if self.side == Side::Covenant { CardName::TestRitual } else { CardName::TestSpell };
         let hand = iter::repeat(hand_card).take(self.hand_size).collect::<Vec<_>>();
         overwrite_positions(game, self.side, &hand, CardPosition::Hand(self.side), false);
     }

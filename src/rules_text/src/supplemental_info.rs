@@ -145,9 +145,9 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             icons::POWER_CHARGE
         )),
         TextTokenKind::Play => entry("Play", "Triggers when this card enters the arena"),
-        TextTokenKind::Dawn => entry("Dawn", "Triggers at the start of the Champion's turn"),
-        TextTokenKind::Dusk => entry("Dusk", "Triggers at the start of the Overlord's turn"),
-        TextTokenKind::Score => entry("Score", "Triggers when the Overlord scores this card"),
+        TextTokenKind::Dawn => entry("Dawn", "Triggers at the start of the Riftcaller's turn"),
+        TextTokenKind::Dusk => entry("Dusk", "Triggers at the start of the Covenant's turn"),
+        TextTokenKind::Score => entry("Score", "Triggers when the Covenant scores this card"),
         TextTokenKind::Combat => {
             entry("Combat", "Triggers if this minion is not defeated during a raid")
         }
@@ -158,7 +158,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             entry("Store", format!("Add {} to this card to take later", icons::MANA))
         }
         TextTokenKind::Damage | TextTokenKind::DealDamage => {
-            entry("Damage", "Causes the Champion to discard cards at random")
+            entry("Damage", "Causes the Riftcaller to discard cards at random")
         }
         TextTokenKind::InnerRoom | TextTokenKind::InnerRooms => entry("Inner Room", "The sanctum, vault or crypt"),
         TextTokenKind::OuterRoom | TextTokenKind::OuterRooms => {
@@ -174,7 +174,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         TextTokenKind::Curse | TextTokenKind::Curses | TextTokenKind::Cursed => entry(
             "Curse",
             format!(
-                "Allows Overlord to pay {} and 2{} to destroy evocations. Can be removed for {} and 2{}",
+                "Allows Covenant to pay {} and 2{} to destroy evocations. Can be removed for {} and 2{}",
                 icons::ACTION,
                 icons::MANA,
                 icons::ACTION,
@@ -184,7 +184,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         TextTokenKind::Slow => entry("Slow", "Shield costs are doubled when using this weapon"),
         TextTokenKind::Wound => entry("Wound", "Reduces your maximum hand size by 1"),
         TextTokenKind::Leyline => entry("Leyline", format!(
-            "Gives the Champion 1{} to use during each raid.",
+            "Gives the Riftcaller 1{} to use during each raid.",
             icons::MANA
         )),
         TextTokenKind::Evade | TextTokenKind::Evaded => entry("Evade", "Bypass a minion without combat"),

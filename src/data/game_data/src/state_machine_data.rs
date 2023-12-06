@@ -98,7 +98,7 @@ pub struct DealDamageData {
     pub source: AbilityId,
 }
 
-/// State data for dealing damage to the Champion player
+/// State data for dealing damage to the Riftcaller player
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DealDamageState {
     /// Information about how much damage to deal
@@ -118,13 +118,13 @@ pub enum GiveCursesStep {
     Finish,
 }
 
-/// Options for giving curses to the Champion
+/// Options for giving curses to the Riftcaller
 #[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
 pub struct GiveCurseOptions {
     pub for_turn: Option<TurnData>,
 }
 
-/// State data for giving a curse to the Champion player
+/// State data for giving a curse to the Riftcaller player
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct GiveCursesData {
     /// Number of curses to add
@@ -173,7 +173,7 @@ pub enum GiveLeylinesStep {
     Finish,
 }
 
-/// State data for giving a leyline to the Champion player
+/// State data for giving a leyline to the Riftcaller player
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct GiveLeylinesData {
     /// Number of leylines to add
@@ -192,7 +192,7 @@ pub enum GiveWoundsStep {
     Finish,
 }
 
-/// State data for giving a wound to the Champion player
+/// State data for giving a wound to the Riftcaller player
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct GiveWoundsData {
     /// Number of wounds to give

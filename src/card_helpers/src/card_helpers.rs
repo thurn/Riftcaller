@@ -55,9 +55,9 @@ pub fn activate_for_action() -> AbilityType {
     AbilityType::Activated { cost: costs::actions(1), target_requirement: TargetRequirement::None }
 }
 
-/// RequirementFn which checks if the [Side] parameter is [Side::Champion]
-pub fn side_is_champion(_: &GameState, _: Scope, side: &Side) -> bool {
-    *side == Side::Champion
+/// RequirementFn which checks if the [Side] parameter is [Side::Riftcaller]
+pub fn side_is_riftcaller(_: &GameState, _: Scope, side: &Side) -> bool {
+    *side == Side::Riftcaller
 }
 
 /// RequirementFn which checks if the [RoomId] parameter is [RoomId::Sanctum]

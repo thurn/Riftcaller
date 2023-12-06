@@ -21,9 +21,10 @@ use test_utils::*;
 #[test]
 fn restoration() {
     let cost = 1;
-    let mut g =
-        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
-            .build();
+    let mut g = TestGame::new(
+        TestSide::new(Side::Riftcaller).in_discard_face_up(CardName::TestAstralWeapon),
+    )
+    .build();
     assert!(g.client.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
     test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
@@ -36,7 +37,7 @@ fn restoration() {
 
 #[test]
 fn restoration_no_targets() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(3)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(3)).build();
     assert_eq!(g.client.cards.hand().len(), 3);
     let id = g.add_to_hand(CardName::Restoration);
     assert!(g.play_card_with_result(id, g.user_id(), None).is_err());
@@ -44,10 +45,11 @@ fn restoration_no_targets() {
 
 #[test]
 fn restoration_last_action_point() {
-    let mut g =
-        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
-            .actions(1)
-            .build();
+    let mut g = TestGame::new(
+        TestSide::new(Side::Riftcaller).in_discard_face_up(CardName::TestAstralWeapon),
+    )
+    .actions(1)
+    .build();
     g.create_and_play(CardName::Restoration);
     test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
     let id = g.client.cards.hand().find_card_id(CardName::TestAstralWeapon);
@@ -57,9 +59,10 @@ fn restoration_last_action_point() {
 
 #[test]
 fn restoration_cannot_take_other_action() {
-    let mut g =
-        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
-            .build();
+    let mut g = TestGame::new(
+        TestSide::new(Side::Riftcaller).in_discard_face_up(CardName::TestAstralWeapon),
+    )
+    .build();
     assert!(g.client.cards.artifacts().is_empty());
     g.create_and_play(CardName::Restoration);
     test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
@@ -69,9 +72,10 @@ fn restoration_cannot_take_other_action() {
 #[test]
 fn restoration_upgraded() {
     let (cost, reduction) = (1, 2);
-    let mut g =
-        TestGame::new(TestSide::new(Side::Champion).in_discard_face_up(CardName::TestAstralWeapon))
-            .build();
+    let mut g = TestGame::new(
+        TestSide::new(Side::Riftcaller).in_discard_face_up(CardName::TestAstralWeapon),
+    )
+    .build();
     assert!(g.client.cards.artifacts().is_empty());
     g.create_and_play_upgraded(CardName::Restoration);
     test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralWeapon]);
@@ -89,7 +93,7 @@ fn restoration_upgraded() {
 fn restoration_upgraded_stacking() {
     let (cost, reduction) = (1, 2);
     let mut g = TestGame::new(
-        TestSide::new(Side::Champion)
+        TestSide::new(Side::Riftcaller)
             .in_discard_face_up(CardName::TestWeaponReduceCostOnSuccessfulRaid),
     )
     .build();
@@ -106,8 +110,8 @@ fn restoration_upgraded_stacking() {
 
 #[test]
 fn strike_the_heart() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
     g.create_and_play(CardName::StrikeTheHeart);
     assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 3);
@@ -115,8 +119,8 @@ fn strike_the_heart() {
 
 #[test]
 fn strike_the_heart_upgraded() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
     g.create_and_play_upgraded(CardName::StrikeTheHeart);
     assert_eq!(g.client.cards.browser().iter().filter(|c| c.revealed_to_me()).count(), 4);
@@ -125,7 +129,7 @@ fn strike_the_heart_upgraded() {
 #[test]
 fn enduring_radiance() {
     let (cost, return_cost) = (0, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(2)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).curses(2)).build();
     assert_eq!(g.client.cards.hand().curse_count(), 2);
     g.create_and_play(CardName::EnduringRadiance);
     assert_eq!(g.client.cards.hand().curse_count(), 1);
@@ -139,7 +143,7 @@ fn enduring_radiance() {
 #[test]
 fn enduring_radiance_no_curses() {
     let (cost, return_cost) = (0, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::EnduringRadiance);
     assert_eq!(g.client.cards.hand().curse_count(), 0);
     g.click(Button::ReturnToHand);
@@ -151,7 +155,7 @@ fn enduring_radiance_no_curses() {
 
 #[test]
 fn enduring_radiance_upgraded() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(2)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).curses(2)).build();
     assert_eq!(g.client.cards.hand().curse_count(), 2);
     g.create_and_play_upgraded(CardName::EnduringRadiance);
     assert_eq!(g.client.cards.hand().curse_count(), 1);
@@ -164,7 +168,7 @@ fn enduring_radiance_upgraded() {
 fn sift_the_sands() {
     let (cost, reduction) = (1, 3);
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestEvocation)).build();
+        TestGame::new(TestSide::new(Side::Riftcaller).deck_top(CardName::TestEvocation)).build();
     g.create_and_play(CardName::SiftTheSands);
     assert_eq!(g.client.cards.hand().len(), 4);
     let id = g.client.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
@@ -183,7 +187,7 @@ fn sift_the_sands() {
 #[test]
 fn sift_the_sands_upgraded() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).deck_top(CardName::TestEvocation)).build();
+        TestGame::new(TestSide::new(Side::Riftcaller).deck_top(CardName::TestEvocation)).build();
     g.create_and_play_upgraded(CardName::SiftTheSands);
     assert_eq!(g.client.cards.hand().len(), 6);
     let id = g.client.cards.find_in_hand(CardVariant::standard(CardName::TestEvocation));
@@ -192,23 +196,23 @@ fn sift_the_sands_upgraded() {
 
 #[test]
 fn holy_aura() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::HolyAura);
     assert_eq!(g.client.cards.hand().len(), 3);
 }
 
 #[test]
 fn holy_aura_upgraded() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play_upgraded(CardName::HolyAura);
     assert_eq!(g.client.cards.hand().len(), 4);
 }
 
 #[test]
 fn holy_aura_discard_to_damage() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.add_to_hand(CardName::HolyAura);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(g.client.cards.hand().len(), 1);
     g.create_and_play(CardName::TestSpellDeal1Damage);
     assert_eq!(g.client.cards.hand().len(), 2);
@@ -217,9 +221,9 @@ fn holy_aura_discard_to_damage() {
 
 #[test]
 fn holy_aura_discard_to_hand_size() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5)).build();
     let id = g.add_to_hand(CardName::HolyAura);
-    g.move_to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Riftcaller);
     g.move_selector_card(id);
     g.click(Button::SubmitDiscard);
     assert_eq!(g.client.cards.hand().len(), 7);
@@ -229,7 +233,7 @@ fn holy_aura_discard_to_hand_size() {
 #[test]
 fn holy_aura_discard_to_sift_the_sands() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Champion)
+        TestSide::new(Side::Riftcaller)
             .deck_top(CardName::HolyAura)
             .deck_top(CardName::TestEvocation),
     )
@@ -242,9 +246,9 @@ fn holy_aura_discard_to_sift_the_sands() {
 
 #[test]
 fn voidstep() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
         )
         .build();
@@ -255,9 +259,9 @@ fn voidstep() {
 
 #[test]
 fn voidstep_two_defenders() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion)
                 .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
         )
@@ -268,9 +272,9 @@ fn voidstep_two_defenders() {
 
 #[test]
 fn keensight() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .build();
     assert!(!g.client.cards.room_occupants(RoomId::RoomA)[0].revealed_to_me());
@@ -282,14 +286,14 @@ fn keensight() {
 
 #[test]
 fn ethereal_incursion() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_down_defender(RoomId::Vault, CardName::TestMortalMinion),
         )
         .build();
     g.create_and_play_with_target(CardName::EtherealIncursion, RoomId::Vault);
-    g.click_as_side(Button::Summon, Side::Overlord);
+    g.click_as_side(Button::Summon, Side::Covenant);
     g.click(Button::NoWeapon);
     assert!(!g.client.data.raid_active());
     assert!(!g.client.cards.room_defenders(RoomId::Vault)[0].is_face_up())
@@ -297,7 +301,7 @@ fn ethereal_incursion() {
 
 #[test]
 fn time_stop() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play_with_target(CardName::TimeStop, RoomId::Vault);
     g.click(Button::EndRaid);
     assert_eq!(g.me().actions(), 4);
@@ -305,7 +309,7 @@ fn time_stop() {
 
 #[test]
 fn time_stop_cannot_play_second() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.gain_mana();
     let id = g.add_to_hand(CardName::TimeStop);
     assert!(g.play_card_with_result(id, g.user_id(), Some(RoomId::Vault)).is_err());
@@ -313,9 +317,9 @@ fn time_stop_cannot_play_second() {
 
 #[test]
 fn chains_of_binding() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_down_defender(RoomId::Vault, CardName::TestMortalMinion),
         )
         .build();
@@ -327,16 +331,16 @@ fn chains_of_binding() {
 
 #[test]
 fn chains_of_binding_multiple_turns() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_down_defender(RoomId::Vault, CardName::TestMortalMinion),
         )
         .build();
     g.create_and_play_with_target(CardName::ChainsOfBinding, RoomId::Vault);
     g.click(Button::ChooseDefenderForPrompt);
-    g.pass_turn(Side::Champion);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::Vault);
     g.opponent_click(Button::Summon);
     g.click(Button::NoWeapon);
@@ -344,15 +348,15 @@ fn chains_of_binding_multiple_turns() {
 
 #[test]
 fn chains_of_binding_duskbound_project() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestProjectTriggeredAbilityTakeManaAtDusk),
         )
         .build();
     g.create_and_play_with_target(CardName::ChainsOfBinding, RoomId::RoomA);
     g.click(Button::ChooseOccupantForPrompt);
-    g.move_to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Riftcaller);
     assert!(g.dusk());
 }
 
@@ -367,10 +371,10 @@ fn raid_inner_rooms(g: &mut TestSession) {
 
 #[test]
 fn delve_into_darkness() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .actions(5)
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .deck_top(CardName::TestScheme3_10)
                 .deck_top(CardName::TestDuskboundProject),
         )
@@ -392,10 +396,10 @@ fn delve_into_darkness() {
 
 #[test]
 fn delve_into_darkness_end_access_after_0() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .actions(5)
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .deck_top(CardName::TestScheme3_10)
                 .deck_top(CardName::TestDuskboundProject),
         )
@@ -410,10 +414,10 @@ fn delve_into_darkness_end_access_after_0() {
 
 #[test]
 fn delve_into_darkness_end_access_after_1() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .actions(5)
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .deck_top(CardName::TestScheme3_10)
                 .deck_top(CardName::TestDuskboundProject),
         )
@@ -430,9 +434,9 @@ fn delve_into_darkness_end_access_after_1() {
 
 #[test]
 fn delve_into_darkness_cannot_play_failed_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestMinionEndRaid),
         )
         .build();
@@ -449,10 +453,10 @@ fn delve_into_darkness_cannot_play_failed_raid() {
 
 #[test]
 fn delve_into_darkness_does_not_count_for_glimmersong() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .actions(5)
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .deck_top(CardName::TestScheme3_10)
                 .deck_top(CardName::TestDuskboundProject),
         )
@@ -466,9 +470,9 @@ fn delve_into_darkness_does_not_count_for_glimmersong() {
 
 #[test]
 fn liminal_transposition() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestProject2Cost3Raze),
         )
         .build();
@@ -482,9 +486,9 @@ fn liminal_transposition() {
 
 #[test]
 fn liminal_transposition_cannot_score() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .build();
     g.create_and_play_with_target(CardName::LiminalTransposition, RoomId::Sanctum);
@@ -495,9 +499,9 @@ fn liminal_transposition_cannot_score() {
 
 #[test]
 fn liminal_transposition_cannot_target_single_outer_room() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .build();
     let id = g.add_to_hand(CardName::LiminalTransposition);
@@ -506,9 +510,9 @@ fn liminal_transposition_cannot_target_single_outer_room() {
 
 #[test]
 fn liminal_transposition_can_target_outer_room_with_2_occupied() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
                 .room_occupant(RoomId::RoomB, CardName::TestProject2Cost3Raze),
         )
@@ -521,9 +525,9 @@ fn liminal_transposition_can_target_outer_room_with_2_occupied() {
 
 #[test]
 fn liminal_transposition_cannot_target_same_room() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
                 .room_occupant(RoomId::RoomB, CardName::TestProject2Cost3Raze),
         )
@@ -535,9 +539,9 @@ fn liminal_transposition_cannot_target_same_room() {
 
 #[test]
 fn liminal_transposition_counts_for_warriors_sign() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .actions(4)
         .build();
@@ -555,9 +559,9 @@ fn liminal_transposition_counts_for_warriors_sign() {
 
 #[test]
 fn liminal_transposition_counts_for_glimmersong() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .build();
     let glimmersong = g.create_and_play(CardName::Glimmersong);

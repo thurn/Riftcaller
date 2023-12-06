@@ -25,7 +25,7 @@ const EXAMPLE_CARD: CardName = CardName::TestSpell;
 
 #[test]
 fn test_open_deck_editor() {
-    let mut adventure = TestAdventure::new(Side::Champion).build();
+    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
     adventure.click(Button::ShowDeck);
 
     client_interface::assert_has_element_name(
@@ -40,7 +40,7 @@ fn test_open_deck_editor() {
 
 #[test]
 fn test_remove_from_deck() {
-    let mut adventure = TestAdventure::new(Side::Champion)
+    let mut adventure = TestAdventure::new(Side::Riftcaller)
         .deck_card(EXAMPLE_CARD, 2)
         .collection_card(EXAMPLE_CARD, 3)
         .build();
@@ -70,7 +70,7 @@ fn test_remove_from_deck() {
 
 #[test]
 fn test_add_to_deck() {
-    let mut adventure = TestAdventure::new(Side::Champion)
+    let mut adventure = TestAdventure::new(Side::Riftcaller)
         .deck_card(EXAMPLE_CARD, 2)
         .collection_card(EXAMPLE_CARD, 3)
         .build();

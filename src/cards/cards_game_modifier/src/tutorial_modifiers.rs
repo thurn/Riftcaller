@@ -29,7 +29,7 @@ fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::GameModifier,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![ability],
@@ -37,17 +37,17 @@ fn tutorial_modifier(name: CardName, ability: Ability) -> CardDefinition {
     }
 }
 
-pub fn overlord_empty_modifier(_: CardMetadata) -> CardDefinition {
-    tutorial_modifier(CardName::OverlordEmptyModifier, Ability::new(text!["No effect"]))
+pub fn covenant_empty_modifier(_: CardMetadata) -> CardDefinition {
+    tutorial_modifier(CardName::CovenantEmptyModifier, Ability::new(text!["No effect"]))
 }
 
 pub fn tutorial_disable_draw_action(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableDrawAction,
         Ability::new_with_delegate(
-            text!["The Champion cannot take the 'draw card' action"],
+            text!["The Riftcaller cannot take the 'draw card' action"],
             Delegate::CanTakeDrawCardAction(QueryDelegate {
-                requirement: side_is_champion,
+                requirement: side_is_riftcaller,
                 transformation: delegates::disallow,
             }),
         ),
@@ -58,9 +58,9 @@ pub fn tutorial_disable_gain_mana(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableGainMana,
         Ability::new_with_delegate(
-            text!["The Champion cannot take the 'gain mana' action"],
+            text!["The Riftcaller cannot take the 'gain mana' action"],
             Delegate::CanTakeGainManaAction(QueryDelegate {
-                requirement: side_is_champion,
+                requirement: side_is_riftcaller,
                 transformation: delegates::disallow,
             }),
         ),
@@ -71,7 +71,7 @@ pub fn tutorial_disable_raid_sanctum(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidSanctum,
         Ability::new_with_delegate(
-            text!["The Champion cannot raid the Sanctum"],
+            text!["The Riftcaller cannot raid the Sanctum"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_sanctum,
                 transformation: delegates::disallow,
@@ -84,7 +84,7 @@ pub fn tutorial_disable_raid_vault(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidVault,
         Ability::new_with_delegate(
-            text!["The Champion cannot raid the Vault"],
+            text!["The Riftcaller cannot raid the Vault"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_vault,
                 transformation: delegates::disallow,
@@ -97,7 +97,7 @@ pub fn tutorial_disable_raid_crypt(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidCrypt,
         Ability::new_with_delegate(
-            text!["The Champion cannot raid the Crypt"],
+            text!["The Riftcaller cannot raid the Crypt"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: room_is_crypt,
                 transformation: delegates::disallow,
@@ -110,7 +110,7 @@ pub fn tutorial_disable_raid_outer(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidOuter,
         Ability::new_with_delegate(
-            text!["The Champion cannot raid outer rooms"],
+            text!["The Riftcaller cannot raid outer rooms"],
             Delegate::CanInitiateRaid(QueryDelegate {
                 requirement: |_, _, room_id| room_id.is_outer_room(),
                 transformation: delegates::disallow,
@@ -123,7 +123,7 @@ pub fn tutorial_disable_raid_continue(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidContinue,
         Ability::new_with_delegate(
-            text!["The Champion must use a weapon during raid_state"],
+            text!["The Riftcaller must use a weapon during raid_state"],
             Delegate::CanUseNoWeapon(QueryDelegate {
                 requirement: always,
                 transformation: delegates::disallow,
@@ -136,7 +136,7 @@ pub fn tutorial_disable_end_raid(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableEndRaid,
         Ability::new_with_delegate(
-            text!["The Champion cannot end the access phase of raid_state"],
+            text!["The Riftcaller cannot end the access phase of raid_state"],
             Delegate::CanEndRaidAccessPhase(QueryDelegate {
                 requirement: always,
                 transformation: delegates::disallow,
@@ -149,12 +149,12 @@ pub fn tutorial_force_sanctum_score(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialForceSanctumScore,
         Ability::new_with_delegate(
-            text!["The Champion always accesses a scheme card when raiding the Sanctum"],
+            text!["The Riftcaller always accesses a scheme card when raiding the Sanctum"],
             Delegate::RaidAccessSelected(EventDelegate {
                 requirement: |_, _, event| event.target == RoomId::Sanctum,
                 mutation: |g, _, _| {
                     let scheme = g
-                        .hand(Side::Overlord)
+                        .hand(Side::Covenant)
                         .find(|card| rules::get(card.variant).card_type == CardType::Scheme)
                         .map(|c| c.id);
                     if let Some(id) = scheme {

@@ -54,12 +54,16 @@ pub async fn create(
     };
 
     let (user_side, opponent_side) = (user_deck.side, opponent_deck.side);
-    let (overlord_deck, champion_deck, overlord_id, champion_id) = match (user_side, opponent_side)
-    {
-        (Side::Overlord, Side::Champion) => (user_deck, opponent_deck, player.id, opponent_id),
-        (Side::Champion, Side::Overlord) => (opponent_deck, user_deck, opponent_id, player.id),
-        _ => fail!("Deck side mismatch!"),
-    };
+    let (covenant_deck, riftcaller_deck, covenant_id, riftcaller_id) =
+        match (user_side, opponent_side) {
+            (Side::Covenant, Side::Riftcaller) => {
+                (user_deck, opponent_deck, player.id, opponent_id)
+            }
+            (Side::Riftcaller, Side::Covenant) => {
+                (opponent_deck, user_deck, opponent_id, player.id)
+            }
+            _ => fail!("Deck side mismatch!"),
+        };
 
     let game_id = if let Some(id) = debug_options.override_game_id {
         id
@@ -70,10 +74,10 @@ pub async fn create(
 
     let mut game = GameState::new(
         game_id,
-        overlord_id,
-        overlord_deck,
-        champion_id,
-        champion_deck,
+        covenant_id,
+        covenant_deck,
+        riftcaller_id,
+        riftcaller_deck,
         GameConfiguration {
             deterministic: debug_options.deterministic,
             scripted_tutorial: action.tutorial,
@@ -126,9 +130,9 @@ fn requested_deck(opponent: &OpponentData, side: Side) -> Result<Option<Deck>> {
         },
         // TODO: Each named player should have their own decklist
         OpponentData::NamedPlayer(name) => match name {
-            AIPlayer::TutorialOpponent => Some(decklists::TUTORIAL_OVERLORD.clone()),
-            AIPlayer::DebugChampion => Some(decklists::CANONICAL_CHAMPION.clone()),
-            AIPlayer::DebugOverlord => Some(decklists::CANONICAL_OVERLORD.clone()),
+            AIPlayer::TutorialOpponent => Some(decklists::TUTORIAL_COVENANT.clone()),
+            AIPlayer::DebugRiftcaller => Some(decklists::CANONICAL_RIFTCALLER.clone()),
+            AIPlayer::DebugCovenant => Some(decklists::CANONICAL_COVENANT.clone()),
             _ => Some(decklists::basic_deck(side)),
         },
     })

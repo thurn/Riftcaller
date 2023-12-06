@@ -22,10 +22,10 @@ use game_data::utils;
 use crate::state_machine::StateMachine;
 use crate::{dispatch, state_machine};
 
-/// Returns the number of curses the Champion player currently has
+/// Returns the number of curses the Riftcaller player currently has
 pub fn get(game: &GameState) -> CurseCount {
-    let mut base = game.champion.curse_state.base_curses;
-    if let Some((turn, count)) = game.champion.curse_state.turn_curses {
+    let mut base = game.riftcaller.curse_state.base_curses;
+    if let Some((turn, count)) = game.riftcaller.curse_state.turn_curses {
         if turn == game.info.turn {
             base += count;
         }
@@ -33,12 +33,12 @@ pub fn get(game: &GameState) -> CurseCount {
     base
 }
 
-/// Returns true if the Champion player is currently cursed
-pub fn is_champion_cursed(game: &GameState) -> bool {
+/// Returns true if the Riftcaller player is currently cursed
+pub fn is_riftcaller_cursed(game: &GameState) -> bool {
     get(game) > 0
 }
 
-/// Gives curses to the Champion player.
+/// Gives curses to the Riftcaller player.
 pub fn give_curses(
     game: &mut GameState,
     source: impl HasAbilityId,
@@ -47,7 +47,8 @@ pub fn give_curses(
     give_curses_with_options(game, source, quantity, GiveCurseOptions::default())
 }
 
-/// Gives curses to the Champion player with the provided configuration options.
+/// Gives curses to the Riftcaller player with the provided configuration
+/// options.
 pub fn give_curses_with_options(
     game: &mut GameState,
     source: impl HasAbilityId,
@@ -65,21 +66,21 @@ pub fn give_curses_with_options(
     )
 }
 
-/// Remove *up to* `amount` curses from the Champion player.
+/// Remove *up to* `amount` curses from the Riftcaller player.
 pub fn remove_curses(game: &mut GameState, amount: CurseCount) -> Result<()> {
-    game.champion.curse_state.base_curses =
-        game.champion.curse_state.base_curses.saturating_sub(amount);
+    game.riftcaller.curse_state.base_curses =
+        game.riftcaller.curse_state.base_curses.saturating_sub(amount);
     Ok(())
 }
 
 /// Returns the number of curses currently scheduled to be assigned to the
-/// Champion in the topmost active `give_curse` state machine.
+/// Riftcaller in the topmost active `give_curse` state machine.
 pub fn incoming_curse_count(game: &GameState) -> Option<CurseCount> {
     game.state_machines.give_curses.last().map(|d| d.quantity)
 }
 
-/// Prevents up to `quantity` curses from being assigned to the Champion in the
-/// topmost active `give_curse` state machine.
+/// Prevents up to `quantity` curses from being assigned to the Riftcaller in
+/// the topmost active `give_curse` state machine.
 pub fn prevent_curses(game: &mut GameState, quantity: CurseCount) {
     if let Some(curses) = &mut game.state_machines.give_curses.last_mut() {
         curses.quantity = curses.quantity.saturating_sub(quantity);
@@ -129,12 +130,12 @@ impl StateMachine for GiveCursesData {
             GiveCursesStep::AddCurses => {
                 if let Some(for_turn) = data.options.for_turn {
                     utils::add_matching(
-                        &mut game.champion.curse_state.turn_curses,
+                        &mut game.riftcaller.curse_state.turn_curses,
                         for_turn,
                         data.quantity,
                     );
                 } else {
-                    game.champion.curse_state.base_curses += data.quantity;
+                    game.riftcaller.curse_state.base_curses += data.quantity;
                 }
                 Some(GiveCursesStep::CursesReceivedEvent)
             }
@@ -143,7 +144,7 @@ impl StateMachine for GiveCursesData {
                 Some(GiveCursesStep::Finish)
             }
             GiveCursesStep::Finish => {
-                game.current_history_counters(Side::Champion).curses_received += data.quantity;
+                game.current_history_counters(Side::Riftcaller).curses_received += data.quantity;
                 None
             }
         })

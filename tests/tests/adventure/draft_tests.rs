@@ -24,7 +24,7 @@ const EXAMPLE_CARD: CardVariant = CardVariant::standard(CardName::TestSpell);
 
 #[test]
 fn test_initiate_draft() {
-    let mut adventure = TestAdventure::new(Side::Champion).build();
+    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
     let draft = adventure.insert_tile(TileEntity::Draft(DraftData {
         context: None,
@@ -38,7 +38,7 @@ fn test_initiate_draft() {
 
 #[test]
 fn test_pick_card() {
-    let mut adventure = TestAdventure::new(Side::Champion).build();
+    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
     let draft = adventure.insert_tile(TileEntity::Draft(DraftData {
         context: None,

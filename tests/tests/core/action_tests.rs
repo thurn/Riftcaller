@@ -32,7 +32,7 @@ use test_utils::*;
 fn connect() {
     let mut g = TestSessionBuilder::new()
         .do_not_connect(true)
-        .game(TestGame::new(TestSide::new(Side::Overlord)))
+        .game(TestGame::new(TestSide::new(Side::Covenant)))
         .build();
     let response = g.connect(g.user_id());
     assert_snapshot!(Summary::run(&response));
@@ -41,7 +41,7 @@ fn connect() {
 #[test]
 fn connect_to_ongoing() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Overlord).deck_top(CardName::TestMinionDealDamageEndRaid),
+        TestSide::new(Side::Covenant).deck_top(CardName::TestMinionDealDamageEndRaid),
     )
     .build();
     let r1 = g.connect(g.user_id());
@@ -60,7 +60,7 @@ fn connect_to_ongoing() {
 #[test]
 fn draw_card() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Overlord).deck_top(CardName::TestMinionDealDamageEndRaid),
+        TestSide::new(Side::Covenant).deck_top(CardName::TestMinionDealDamageEndRaid),
     )
     .build();
     let response = g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id());
@@ -77,7 +77,7 @@ fn draw_card() {
 
 #[test]
 fn cannot_draw_card_on_opponent_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     test_helpers::assert_error(
         g.perform_action(Action::DrawCard(DrawCardAction {}), g.opponent_id()),
     );
@@ -85,20 +85,20 @@ fn cannot_draw_card_on_opponent_turn() {
 
 #[test]
 fn cannot_draw_when_out_of_action_points() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(0).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(0).build();
     test_helpers::assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
 }
 
 #[test]
 fn cannot_draw_during_raid() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord)).actions(0).raid(TestRaid::new()).build();
+        TestGame::new(TestSide::new(Side::Covenant)).actions(0).raid(TestRaid::new()).build();
     test_helpers::assert_error(g.perform_action(Action::DrawCard(DrawCardAction {}), g.user_id()));
 }
 
 #[test]
 fn play_card() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).mana(5)).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     let response = g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -119,7 +119,7 @@ fn play_card() {
 
 #[test]
 fn play_hidden_card() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(0)).build();
     let card_id = g.add_to_hand(CardName::GoldMine);
     let response = g.perform_action(
         Action::PlayCard(PlayCardAction {
@@ -150,7 +150,7 @@ fn play_hidden_card() {
 
 #[test]
 fn cannot_play_card_on_opponent_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     test_helpers::assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -160,7 +160,7 @@ fn cannot_play_card_on_opponent_turn() {
 
 #[test]
 fn cannot_play_card_when_out_of_action_points() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(0).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(0).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     test_helpers::assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -170,7 +170,7 @@ fn cannot_play_card_when_out_of_action_points() {
 
 #[test]
 fn cannot_play_card_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).raid(TestRaid::new()).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).raid(TestRaid::new()).build();
     let card_id = g.add_to_hand(CardName::ArcaneRecovery);
     test_helpers::assert_error(g.perform_action(
         Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -180,7 +180,7 @@ fn cannot_play_card_during_raid() {
 
 #[test]
 fn gain_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(5)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(5)).build();
     let response = g.perform_action(Action::GainMana(GainManaAction {}), g.user_id());
 
     assert_eq!(2, g.me().actions());
@@ -193,7 +193,7 @@ fn gain_mana() {
 
 #[test]
 fn cannot_gain_mana_on_opponent_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     test_helpers::assert_error(
         g.perform_action(Action::GainMana(GainManaAction {}), g.opponent_id()),
     );
@@ -201,19 +201,19 @@ fn cannot_gain_mana_on_opponent_turn() {
 
 #[test]
 fn cannot_gain_mana_when_out_of_action_points() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(0).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(0).build();
     test_helpers::assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
 }
 
 #[test]
 fn cannot_gain_mana_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).raid(TestRaid::new()).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).raid(TestRaid::new()).build();
     test_helpers::assert_error(g.perform_action(Action::GainMana(GainManaAction {}), g.user_id()));
 }
 
 #[test]
 fn progress_room() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(10)).build();
     g.create_and_play(CardName::TestScheme3_10);
     let response = g.perform_action(
         Action::ProgressRoom(ProgressRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
@@ -227,7 +227,7 @@ fn progress_room() {
 
 #[test]
 fn minion_limit() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(6).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestInfernalMinion);
     g.create_and_play(CardName::TestAstralMinion);
@@ -241,7 +241,7 @@ fn minion_limit() {
 
 #[test]
 fn minion_limit_cannot_take_other_actions() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(6).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestInfernalMinion);
     g.create_and_play(CardName::TestAstralMinion);
@@ -252,7 +252,7 @@ fn minion_limit_cannot_take_other_actions() {
 
 #[test]
 fn minion_limit_cancel_playing() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(6).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(6).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestInfernalMinion);
     g.create_and_play(CardName::TestAstralMinion);
@@ -266,7 +266,7 @@ fn minion_limit_cancel_playing() {
 
 #[test]
 fn weapon_limit() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(6).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(6).build();
     g.create_and_play(CardName::TestWeapon2Attack);
     g.create_and_play(CardName::TestWeapon2Attack);
     g.create_and_play(CardName::TestWeapon2Attack);
@@ -279,7 +279,7 @@ fn weapon_limit() {
 
 #[test]
 fn evocation_limit() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(6).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(6).build();
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
@@ -293,7 +293,7 @@ fn evocation_limit() {
 
 #[test]
 fn sacrifice_existing_project() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestProject2Cost3Raze);
     assert_eq!(g.client.cards.discard_pile().len(), 0);
@@ -302,8 +302,8 @@ fn sacrifice_existing_project() {
 }
 
 #[test]
-fn score_overlord_card() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(10)).actions(5).build();
+fn score_covenant_card() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(10)).actions(5).build();
     let scheme_id = g.create_and_play(CardName::TestScheme3_10);
     let progress =
         Action::ProgressRoom(ProgressRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
@@ -320,9 +320,9 @@ fn score_overlord_card() {
 }
 
 #[test]
-fn overlord_win_game() {
+fn covenant_win_game() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).mana(10).bonus_points(90)).actions(5).build();
+        TestGame::new(TestSide::new(Side::Covenant).mana(10).bonus_points(90)).actions(5).build();
     g.create_and_play(CardName::TestScheme3_10);
     let progress =
         Action::ProgressRoom(ProgressRoomAction { room_id: test_constants::CLIENT_ROOM_ID.into() });
@@ -337,7 +337,7 @@ fn overlord_win_game() {
 
 #[test]
 fn switch_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(5)).actions(3).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(5)).actions(3).build();
     g.perform(Action::GainMana(GainManaAction {}), g.user_id());
     g.perform(Action::GainMana(GainManaAction {}), g.user_id());
     g.perform(Action::GainMana(GainManaAction {}), g.user_id());
@@ -357,7 +357,7 @@ fn switch_turn() {
 
 #[test]
 fn activate_ability() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(3).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(3).build();
     g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     let ability_card_id = g
         .client
@@ -386,7 +386,7 @@ fn activate_ability() {
 
 #[test]
 fn activate_ability_take_all_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(3).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(3).build();
     let id = g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     let ability_card_id = g
         .client
@@ -405,9 +405,9 @@ fn activate_ability_take_all_mana() {
         );
         taken += test_constants::MANA_TAKEN;
 
-        g.pass_turn(Side::Champion);
+        g.pass_turn(Side::Riftcaller);
         assert!(g.dusk());
-        g.pass_turn(Side::Overlord);
+        g.pass_turn(Side::Covenant);
         assert!(g.dawn());
     }
 
@@ -431,12 +431,12 @@ fn activate_ability_take_all_mana() {
 
 #[test]
 fn summon_project_at_end_of_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert!(g.dawn());
-    g.spend_all_action_points(Side::Champion);
+    g.spend_all_action_points(Side::Riftcaller);
     g.opponent_click(Button::EndTurn);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
     g.summon_project(id);
@@ -460,10 +460,10 @@ fn summon_project_at_end_of_turn() {
 
 #[test]
 fn summon_project_during_minion_summon_decision() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     let id = g.create_and_play(CardName::TestSummonboundProject);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
@@ -476,19 +476,19 @@ fn summon_project_during_minion_summon_decision() {
 
 #[test]
 fn cannot_summon_duskbound_during_minion_summon_decision() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     let id = g.create_and_play(CardName::TestDuskboundProject);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
     assert!(g.summon_project_with_result(id).is_err());
 }
 
 #[test]
 fn summon_project_during_room_approach() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestRoomboundProject);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
     g.summon_project(id);
@@ -501,9 +501,9 @@ fn summon_project_during_room_approach() {
 
 #[test]
 fn cannot_summon_summonbound_during_room_approach() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestSummonboundProject);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
     assert!(g.summon_project_with_result(id).is_err());
@@ -511,10 +511,10 @@ fn cannot_summon_summonbound_during_room_approach() {
 
 #[test]
 fn cannot_summon_duskbound_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     let id = g.create_and_play(CardName::TestDuskboundProject);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
@@ -523,10 +523,10 @@ fn cannot_summon_duskbound_during_raid() {
 
 #[test]
 fn cannot_summon_nightbound_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     let id = g.create_and_play(CardName::TestNightboundProject);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
@@ -535,10 +535,10 @@ fn cannot_summon_nightbound_during_raid() {
 
 #[test]
 fn cannot_summon_trap_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestMinionEndRaid);
     let id = g.create_and_play(CardName::TestTrapProject);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.initiate_raid(test_constants::ROOM_ID);
     assert_eq!(test_constants::STARTING_MANA, g.client.this_player.mana());
@@ -547,12 +547,12 @@ fn cannot_summon_trap_during_raid() {
 
 #[test]
 fn triggered_ability_cannot_summon_project() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0)).actions(1).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(0)).actions(1).build();
     g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert!(g.dawn());
     assert_eq!(0, g.client.this_player.mana());
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     assert!(g.dusk());
     assert_eq!(0, g.client.this_player.mana());
     assert_eq!(0, g.opponent.other_player.mana());
@@ -560,60 +560,60 @@ fn triggered_ability_cannot_summon_project() {
 
 #[test]
 fn cannot_summon_duskbound_immediately() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestDuskboundProject);
     assert!(g.summon_project_with_result(id).is_err());
 }
 
 #[test]
 fn cannot_summon_trap_immediately() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestTrapProject);
     assert!(g.summon_project_with_result(id).is_err());
 }
 
 #[test]
 fn summon_nightbound_immediately() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestNightboundProject);
     assert!(g.summon_project_with_result(id).is_ok());
 }
 
 #[test]
 fn summon_duskbound_at_end_of_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestDuskboundProject);
-    g.pass_turn(Side::Overlord);
-    g.move_to_end_step(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
     assert!(g.dawn()); // Game should pause on end step
-    assert!(g.side_has(Button::StartTurn, Side::Overlord));
+    assert!(g.side_has(Button::StartTurn, Side::Covenant));
     assert!(g.summon_project_with_result(id).is_ok());
 }
 
 #[test]
 fn cannot_summon_nightbound_at_end_of_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestNightboundProject);
-    g.pass_turn(Side::Overlord);
-    g.move_to_end_step(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
     assert!(g.dusk()); // Game should *not* pause on end step
 }
 
 #[test]
 fn cannot_summon_trap_at_end_of_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestTrapProject);
-    g.pass_turn(Side::Overlord);
-    g.move_to_end_step(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
     assert!(g.dusk()); // Game should *not* pause on end step
 }
 
 #[test]
 fn triggered_ability_take_all_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).actions(1).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(1).build();
     let id = g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
-    g.pass_turn(Side::Overlord);
-    g.move_to_end_step(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
     g.summon_project(id);
     g.click(Button::StartTurn);
 
@@ -621,9 +621,9 @@ fn triggered_ability_take_all_mana() {
     while taken < test_constants::MANA_STORED {
         assert!(g.dusk());
         taken += test_constants::MANA_TAKEN;
-        g.pass_turn(Side::Overlord);
+        g.pass_turn(Side::Covenant);
         assert!(g.dawn());
-        g.pass_turn(Side::Champion);
+        g.pass_turn(Side::Riftcaller);
     }
 
     assert_eq!(
@@ -648,10 +648,10 @@ fn triggered_ability_take_all_mana() {
 
 #[test]
 fn use_artifact_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).current_turn(Side::Covenant).build();
     g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestMinionEndRaid);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
@@ -664,10 +664,10 @@ fn use_artifact_during_raid() {
 
 #[test]
 fn cannot_use_action_artifact_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).current_turn(Side::Covenant).build();
     g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestMinionEndRaid);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     let id = g.create_and_play(CardName::TestActivatedAbilityTakeMana);
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
@@ -676,9 +676,9 @@ fn cannot_use_action_artifact_during_raid() {
 
 #[test]
 fn use_project_ability_during_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestProjectSacrificeToEndRaid);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
     g.summon_project(id);
     g.activate_ability(id, 0);
@@ -687,9 +687,9 @@ fn use_project_ability_during_raid() {
 
 #[test]
 fn use_project_ability_during_subsequent_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestProjectSacrificeToEndRaid);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
     g.summon_project(id);
     g.click(Button::ProceedToAccess);
@@ -701,28 +701,28 @@ fn use_project_ability_during_subsequent_raid() {
 
 #[test]
 fn cannot_use_project_ability_during_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestProjectSacrificeToEndRaid);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
     g.summon_project(id);
     g.click(Button::ProceedToAccess);
     g.opponent_click(Button::EndRaid);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     assert!(g.dusk());
     assert!(g.activate_ability_with_result(id, 0).is_err());
 }
 
 #[test]
 fn discard_to_hand_size() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).hand_size(5)).build();
     g.draw_card();
     let discard_id = g.client.cards.hand()[0].id();
 
     assert_eq!(g.client.cards.hand().real_cards().len(), 6);
     let ids = g.client.cards.hand().real_cards().iter().map(|c| c.id()).collect::<Vec<_>>();
     eprintln!("Hand IDs: {:?}", ids);
-    g.move_to_end_step(Side::Overlord);
+    g.move_to_end_step(Side::Covenant);
 
     g.move_selector_card(discard_id);
     g.click(Button::SubmitDiscard);
@@ -734,11 +734,11 @@ fn discard_to_hand_size() {
 
 #[test]
 fn discard_to_hand_size_wounds() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).hand_size(5).wounds(1)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5).wounds(1)).build();
     let discard_id = g.client.cards.hand()[0].id();
 
     assert_eq!(g.client.cards.hand().real_cards().len(), 5);
-    g.move_to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Riftcaller);
 
     g.move_selector_card(discard_id);
     g.click(Button::SubmitDiscard);
@@ -750,14 +750,14 @@ fn discard_to_hand_size_wounds() {
 
 #[test]
 fn cannot_discard_extra_to_hand_size() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).hand_size(5)).build();
     g.draw_card();
     let hand = g.client.cards.hand();
     let d1 = hand[0].id();
     let d2 = hand[1].id();
 
     assert_eq!(g.client.cards.hand().real_cards().len(), 6);
-    g.move_to_end_step(Side::Overlord);
+    g.move_to_end_step(Side::Covenant);
 
     g.move_selector_card(d1);
     g.move_selector_card(d2);
@@ -766,16 +766,16 @@ fn cannot_discard_extra_to_hand_size() {
 
 #[test]
 fn cannot_discard_too_few_to_hand_size() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).hand_size(5)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).hand_size(5)).build();
     g.draw_card();
     assert_eq!(g.client.cards.hand().real_cards().len(), 6);
-    g.move_to_end_step(Side::Overlord);
+    g.move_to_end_step(Side::Covenant);
     assert!(g.click_with_result(Button::SubmitDiscard).is_err());
 }
 
 #[test]
 fn remove_curse() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).curses(1)).build();
     assert_eq!(g.client.cards.hand().token_cards().names(), vec!["Curse"]);
     assert_eq!(g.opponent.cards.opponent_hand().token_cards().names(), vec!["Curse"]);
     let card_id = g.client.cards.hand().token_cards()[0].id();
@@ -789,7 +789,7 @@ fn remove_curse() {
 
 #[test]
 fn cannot_remove_curse_without_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1).mana(0)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).curses(1).mana(0)).build();
     let card_id = g.client.cards.hand().token_cards()[0].id();
     assert!(g
         .perform_action(
@@ -801,9 +801,9 @@ fn cannot_remove_curse_without_mana() {
 
 #[test]
 fn cannot_remove_curse_opponent_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).curses(1)).build();
     let card_id = g.client.cards.hand().token_cards()[0].id();
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     assert!(g
         .perform_action(
             Action::PlayCard(PlayCardAction { card_id: Some(card_id), target: None }),
@@ -814,12 +814,12 @@ fn cannot_remove_curse_opponent_turn() {
 
 #[test]
 fn destroy_evocation_while_cursed() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).curses(1))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).curses(1))
         .build();
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     let evocation_id = g.create_and_play(CardName::TestEvocation);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(g.client.cards.hand().token_cards().names(), vec!["Dispel Evocation"]);
     assert_eq!(g.opponent.cards.opponent_hand().token_cards().names(), vec!["Dispel Evocation"]);
     let dispel_card_id = g.client.cards.hand().token_cards()[0].id();
@@ -834,12 +834,12 @@ fn destroy_evocation_while_cursed() {
 
 #[test]
 fn cannot_destroy_evocation_without_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0))
-        .opponent(TestSide::new(Side::Champion).curses(1))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(0))
+        .opponent(TestSide::new(Side::Riftcaller).curses(1))
         .build();
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.create_and_play(CardName::TestEvocation);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     let dispel_card_id = g.client.cards.hand().token_cards()[0].id();
     assert!(g
         .perform_action(
@@ -851,8 +851,8 @@ fn cannot_destroy_evocation_without_mana() {
 
 #[test]
 fn cannot_destroy_evocation_without_targets() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).curses(1))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).curses(1))
         .build();
     let dispel_card_id = g.client.cards.hand().token_cards()[0].id();
     assert!(g
@@ -865,10 +865,10 @@ fn cannot_destroy_evocation_without_targets() {
 
 #[test]
 fn cannot_destroy_evocation_opponent_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord).mana(0))
-        .opponent(TestSide::new(Side::Champion).curses(1))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).mana(0))
+        .opponent(TestSide::new(Side::Riftcaller).curses(1))
         .build();
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.create_and_play(CardName::TestEvocation);
     let dispel_card_id = g.client.cards.hand().token_cards()[0].id();
     assert!(g
@@ -881,17 +881,17 @@ fn cannot_destroy_evocation_opponent_turn() {
 
 #[test]
 fn legal_actions() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
-    assert!(g.legal_actions_result(Side::Champion).is_err());
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    assert!(g.legal_actions_result(Side::Riftcaller).is_err());
     test_helpers::assert_contents_equal(
-        g.legal_actions(Side::Overlord),
+        g.legal_actions(Side::Covenant),
         vec![GameAction::GainMana, GameAction::DrawCard],
     );
 
     let spell_id = test_helpers::server_card_id(g.add_to_hand(CardName::TestRitual));
 
     test_helpers::assert_contents_equal(
-        g.legal_actions(Side::Overlord),
+        g.legal_actions(Side::Covenant),
         vec![
             GameAction::GainMana,
             GameAction::DrawCard,
@@ -902,7 +902,7 @@ fn legal_actions() {
     let minion_id = test_helpers::server_card_id(g.add_to_hand(CardName::TestMinionEndRaid));
 
     test_helpers::assert_contents_equal(
-        g.legal_actions(Side::Overlord),
+        g.legal_actions(Side::Covenant),
         vec![
             GameAction::GainMana,
             GameAction::DrawCard,
@@ -921,20 +921,20 @@ fn legal_actions() {
 
 #[test]
 fn legal_actions_progress_room() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestScheme3_10);
     test_helpers::assert_contents_equal(
-        g.legal_actions(Side::Overlord),
+        g.legal_actions(Side::Covenant),
         vec![GameAction::GainMana, GameAction::DrawCard, GameAction::ProgressRoom(RoomId::RoomA)],
     );
 }
 
 #[test]
-fn champion_legal_actions() {
-    let g = TestGame::new(TestSide::new(Side::Champion)).build();
-    assert!(g.legal_actions_result(Side::Overlord).is_err());
+fn riftcaller_legal_actions() {
+    let g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    assert!(g.legal_actions_result(Side::Covenant).is_err());
     test_helpers::assert_contents_equal(
-        g.legal_actions(Side::Champion),
+        g.legal_actions(Side::Riftcaller),
         vec![
             GameAction::GainMana,
             GameAction::DrawCard,

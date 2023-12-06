@@ -9,7 +9,7 @@ expression: "Summary::run(&r3)"
         mode: Single
     UpdateGameView: 
         user: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 999
@@ -17,7 +17,7 @@ expression: "Summary::run(&r3)"
             score: 0
             can_take_action: false
         opponent: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 999

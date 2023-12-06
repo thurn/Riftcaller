@@ -52,10 +52,10 @@ impl GameStateNode for RiftcallerState {
         match self.info.phase {
             GamePhase::GameOver { winner } => GameStatus::Completed { winner },
             _ => {
-                if flags::has_priority(self, Side::Overlord) {
-                    GameStatus::InProgress { current_turn: Side::Overlord }
+                if flags::has_priority(self, Side::Covenant) {
+                    GameStatus::InProgress { current_turn: Side::Covenant }
                 } else {
-                    GameStatus::InProgress { current_turn: Side::Champion }
+                    GameStatus::InProgress { current_turn: Side::Riftcaller }
                 }
             }
         }

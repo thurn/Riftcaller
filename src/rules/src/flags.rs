@@ -42,25 +42,25 @@ use crate::{curses, dispatch, mana, queries, CardDefinitionExt};
 pub fn current_priority(game: &GameState) -> Option<Side> {
     match &game.info.phase {
         GamePhase::ResolveMulligans(_) => {
-            if can_make_mulligan_decision(game, Side::Overlord) {
-                Some(Side::Overlord)
-            } else if can_make_mulligan_decision(game, Side::Champion) {
-                Some(Side::Champion)
+            if can_make_mulligan_decision(game, Side::Covenant) {
+                Some(Side::Covenant)
+            } else if can_make_mulligan_decision(game, Side::Riftcaller) {
+                Some(Side::Riftcaller)
             } else {
                 None
             }
         }
         GamePhase::Play => {
-            if !game.overlord.prompt_stack.is_empty() {
-                Some(Side::Overlord)
-            } else if !game.champion.prompt_stack.is_empty() {
-                Some(Side::Champion)
+            if !game.covenant.prompt_stack.is_empty() {
+                Some(Side::Covenant)
+            } else if !game.riftcaller.prompt_stack.is_empty() {
+                Some(Side::Riftcaller)
             } else if let Some(raid) = &game.raid {
                 Some(match queries::raid_status(raid) {
                     RaidStatus::Begin | RaidStatus::Encounter | RaidStatus::Access => {
-                        Side::Champion
+                        Side::Riftcaller
                     }
-                    RaidStatus::Summon | RaidStatus::ApproachRoom => Side::Overlord,
+                    RaidStatus::Summon | RaidStatus::ApproachRoom => Side::Covenant,
                 })
             } else if game.info.turn_state == TurnState::Active {
                 Some(game.info.turn.side)
@@ -84,9 +84,9 @@ pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
         GamePhase::ResolveMulligans(mulligans) => {
             if mulligans.decision(side).is_none() {
                 match side {
-                    // Overlord resolves mulligans first
-                    Side::Overlord => true,
-                    Side::Champion => mulligans.decision(Side::Overlord).is_some(),
+                    // Covenant resolves mulligans first
+                    Side::Covenant => true,
+                    Side::Riftcaller => mulligans.decision(Side::Covenant).is_some(),
                 }
             } else {
                 false
@@ -187,8 +187,8 @@ pub fn can_take_activate_ability_action(
         // speed
         && (cost.actions == 0 || in_main_phase_with_action_point(game, side));
 
-    if side == Side::Overlord && cost.actions == 0 {
-        // Overlord abilities with no action point cost can only be activated
+    if side == Side::Covenant && cost.actions == 0 {
+        // Covenant abilities with no action point cost can only be activated
         // when their activation window is open, as determined by their
         // subtypes.
         can_activate &= can_activate_for_subtypes(game, ability_id.card_id)
@@ -337,7 +337,7 @@ pub fn raid_active(game: &GameState) -> bool {
 /// Returns whether the indicated player can currently take the basic game
 /// action to initiate a raid on the target [RoomId].
 pub fn can_take_initiate_raid_action(game: &GameState, side: Side, room_id: RoomId) -> bool {
-    side == Side::Champion
+    side == Side::Riftcaller
         && game.raid.is_none()
         && in_main_phase_with_action_point(game, side)
         && is_valid_raid_target(game, room_id)
@@ -351,7 +351,7 @@ pub fn can_take_progress_action(game: &GameState, side: Side, room_id: RoomId) -
         .chain(game.defenders_unordered(room_id))
         .any(|card| can_progress_card(game, card.id));
     let can_progress = has_progress_card
-        && side == Side::Overlord
+        && side == Side::Covenant
         && mana::get(game, side, ManaPurpose::ProgressRoom(room_id)) > 0
         && in_main_phase_with_action_point(game, side);
     dispatch::perform_query(game, CanProgressRoomQuery(room_id), Flag::new(can_progress)).into()
@@ -411,13 +411,13 @@ pub fn can_summon(game: &GameState, card_id: CardId) -> bool {
     dispatch::perform_query(game, CanSummonQuery(card_id), Flag::new(can_summon)).into()
 }
 
-/// Can the Champion choose to not use a weapon ability when encountering
+/// Can the Riftcaller choose to not use a weapon ability when encountering
 /// the indicated minion card?
 pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool {
     dispatch::perform_query(
         game,
         CanUseNoWeaponQuery(card_id),
-        Flag::new(can_take_game_actions(game, Side::Champion)),
+        Flag::new(can_take_game_actions(game, Side::Riftcaller)),
     )
     .into()
 }
@@ -430,13 +430,13 @@ pub fn can_evade_current_minion(game: &GameState) -> bool {
     dispatch::perform_query(game, CanEvadeMinionQuery(minion_id), Flag::new(true)).into()
 }
 
-/// Can the Champion choose to use the 'End Raid' button to end the access
+/// Can the Riftcaller choose to use the 'End Raid' button to end the access
 /// phase of a raid?
 pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) -> bool {
     dispatch::perform_query(
         game,
         CanEndRaidAccessPhaseQuery(raid_id),
-        Flag::new(can_take_game_actions(game, Side::Champion)),
+        Flag::new(can_take_game_actions(game, Side::Riftcaller)),
     )
     .into()
 }
@@ -457,7 +457,7 @@ pub fn can_take_start_turn_action(game: &GameState, side: Side) -> bool {
 pub fn can_take_summon_project_action(game: &GameState, side: Side, card_id: CardId) -> bool {
     let definition = &game.card(card_id).definition();
     can_take_game_actions(game, side)
-        && side == Side::Overlord
+        && side == Side::Covenant
         && has_priority(game, side)
         && game.card(card_id).is_face_down()
         && game.card(card_id).position().in_play()
@@ -468,7 +468,7 @@ pub fn can_take_summon_project_action(game: &GameState, side: Side, card_id: Car
 
 /// Can the `side` player currently take the standard action to remove a curse?
 pub fn can_take_remove_curse_action(game: &GameState, side: Side) -> bool {
-    side == Side::Champion
+    side == Side::Riftcaller
         && in_main_phase_with_action_point(game, side)
         && mana::get(game, side, ManaPurpose::RemoveCurse) >= game_constants::COST_TO_REMOVE_CURSE
 }
@@ -476,7 +476,7 @@ pub fn can_take_remove_curse_action(game: &GameState, side: Side) -> bool {
 /// Can the `side` player currently take the standard action to dispel an
 /// evocation?
 pub fn can_take_dispel_evocation_action(game: &GameState, side: Side) -> bool {
-    side == Side::Overlord
+    side == Side::Covenant
         && in_main_phase_with_action_point(game, side)
         && curses::get(game) > 0
         && game.evocations().count() > 0
@@ -484,15 +484,15 @@ pub fn can_take_dispel_evocation_action(game: &GameState, side: Side) -> bool {
             >= game_constants::COST_TO_DISPEL_EVOCATION
 }
 
-/// Returns true if the Overlord player currently has access to an effect they
+/// Returns true if the Covenant player currently has access to an effect they
 /// can activate outside of their normal main phase actions.
-pub fn overlord_has_instant_speed_actions(game: &GameState) -> bool {
+pub fn covenant_has_instant_speed_actions(game: &GameState) -> bool {
     game.occupants_in_all_rooms()
-        .any(|c| can_take_summon_project_action(game, Side::Overlord, c.id))
-        || game.all_permanents(Side::Overlord).any(|c| can_use_any_card_ability(game, c.id))
+        .any(|c| can_take_summon_project_action(game, Side::Covenant, c.id))
+        || game.all_permanents(Side::Covenant).any(|c| can_use_any_card_ability(game, c.id))
 }
 
-/// Checks whether an Overlord card is currently in its assigned activation
+/// Checks whether a Covenant card is currently in its assigned activation
 /// window based on its subtypes and can thus be summoned or activated.
 ///
 /// Does not check legality of activation beyond the card's subtypes.
@@ -502,16 +502,16 @@ pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {
     let turn_state = game.info.turn_state;
 
     let duskbound = subtypes.contains(&CardSubtype::Duskbound)
-        && current_turn == Side::Champion
+        && current_turn == Side::Riftcaller
         && turn_state == TurnState::Ended;
     let nightbound = subtypes.contains(&CardSubtype::Nightbound)
-        && current_turn == Side::Overlord
+        && current_turn == Side::Covenant
         && turn_state != TurnState::Ended;
     let summonbound = subtypes.contains(&CardSubtype::Summonbound)
-        && current_turn == Side::Champion
+        && current_turn == Side::Riftcaller
         && utils::is_true(|| Some(queries::raid_status(game.raid.as_ref()?) == RaidStatus::Summon));
     let roombound = subtypes.contains(&CardSubtype::Roombound)
-        && current_turn == Side::Champion
+        && current_turn == Side::Riftcaller
         && utils::is_true(|| {
             Some(queries::raid_status(game.raid.as_ref()?) == RaidStatus::ApproachRoom)
         });

@@ -30,18 +30,18 @@ use user_action_data::{GameOutcome, UserAction};
 
 #[test]
 fn resign() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let response = g
         .perform_action(UserAction::GameAction(GameAction::Resign).as_client_action(), g.user_id());
     assert!(!g.client.this_player.can_take_action());
     assert!(!g.client.other_player.can_take_action());
-    assert!(g.is_victory_for_player(Side::Champion));
+    assert!(g.is_victory_for_player(Side::Riftcaller));
     assert_snapshot!(Summary::run(&response));
 }
 
 #[test]
 fn leave_game() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.perform(UserAction::GameAction(GameAction::Resign).as_client_action(), g.user_id());
     let response = g
         .perform_action(UserAction::LeaveGame(GameOutcome::Defeat).as_client_action(), g.user_id());
@@ -49,20 +49,20 @@ fn leave_game() {
 }
 
 #[test]
-fn draw_all_overlord_cards() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).deck_sizes(3).build();
-    g.pass_turn(Side::Overlord);
+fn draw_all_covenant_cards() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).deck_sizes(3).build();
+    g.pass_turn(Side::Covenant);
 
     loop {
-        g.pass_turn(Side::Champion);
+        g.pass_turn(Side::Riftcaller);
         if g.client.cards.hand().real_cards().is_empty() {
-            assert!(g.is_victory_for_player(Side::Champion));
+            assert!(g.is_victory_for_player(Side::Riftcaller));
             break;
         }
 
         let card_id = g.client.cards.hand()[0].id();
         g.play_card(card_id, g.user_id(), None);
-        g.pass_turn(Side::Overlord);
+        g.pass_turn(Side::Covenant);
     }
 }
 
@@ -70,16 +70,16 @@ fn draw_all_overlord_cards() {
 fn win_game() {
     let position = TilePosition::new(1, 1);
     let mut session = TestSessionBuilder::new()
-        .game(TestGame::new(TestSide::new(Side::Overlord).bonus_points(95)))
-        .adventure(TestAdventure::new(Side::Overlord).coins(Coins(500)).visiting_position(position))
+        .game(TestGame::new(TestSide::new(Side::Covenant).bonus_points(95)))
+        .adventure(TestAdventure::new(Side::Covenant).coins(Coins(500)).visiting_position(position))
         .build();
     session.insert_tile_at_position(
         TileEntity::Battle(BattleData {
             opponent_id: AIPlayer::NoAction,
-            opponent_deck: decklists::canonical_deck(Side::Overlord),
+            opponent_deck: decklists::canonical_deck(Side::Covenant),
             opponent_name: "Opponent Name".to_string(),
             reward: Coins(250),
-            character: CharacterPreset::Overlord,
+            character: CharacterPreset::Covenant,
             character_facing: CharacterFacing::Down,
             region_to_reveal: 2,
         }),
@@ -89,10 +89,10 @@ fn win_game() {
     session.create_and_play(CardName::TestScheme3_10);
     session.progress_room(test_constants::ROOM_ID);
     session.progress_room(test_constants::ROOM_ID);
-    session.pass_turn(Side::Overlord);
-    session.pass_turn(Side::Champion);
+    session.pass_turn(Side::Covenant);
+    session.pass_turn(Side::Riftcaller);
     session.progress_room(test_constants::ROOM_ID);
-    assert!(session.is_victory_for_player(Side::Overlord));
+    assert!(session.is_victory_for_player(Side::Covenant));
     assert_eq!(Coins(500), session.current_coins());
     session.click_on(session.user_id(), "Continue");
     assert_eq!(Coins(750), session.current_coins());

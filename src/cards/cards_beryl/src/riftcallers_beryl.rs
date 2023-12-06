@@ -35,10 +35,10 @@ pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
         name: CardName::IlleasTheHighSage,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::champion_card(meta, "illeas"),
+        image: assets::riftcaller_card(meta, "illeas"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
@@ -86,21 +86,21 @@ pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
         name: CardName::StraziharTheAllSeeing,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::champion_card(meta, "strazihar"),
+        image: assets::riftcaller_card(meta, "strazihar"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
             text![
-                "The first time the Overlord plays a",
+                "The first time the Covenant plays a",
                 Permanent,
                 "each turn, reveal that card unless they",
                 PayMana(1)
             ],
             in_play::on_card_played(|g, s, played| {
-                if played.card_id.side == Side::Overlord
+                if played.card_id.side == Side::Covenant
                     && g.card(played.card_id).definition().is_permanent()
                 {
                     custom_state::identity_once_per_turn(g, s, |g, s| {
@@ -117,11 +117,11 @@ pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
 
                         show_prompt::with_context_and_choices(
                             g,
-                            Side::Overlord,
+                            Side::Covenant,
                             ButtonPromptContext::PayToPreventRevealing(1),
                             vec![
                                 PromptChoice::new().effect(GameEffect::ManaCost(
-                                    Side::Overlord,
+                                    Side::Covenant,
                                     1,
                                     s.initiated_by(),
                                 )),
@@ -159,10 +159,10 @@ pub fn merethyl_lore_seeker(meta: CardMetadata) -> CardDefinition {
         name: CardName::MerethylLoreSeeker,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::champion_card(meta, "merethyl"),
+        image: assets::riftcaller_card(meta, "merethyl"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
@@ -219,14 +219,14 @@ pub fn oleus_the_watcher(meta: CardMetadata) -> CardDefinition {
         name: CardName::OleusTheWatcher,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::champion_card(meta, "oleus"),
+        image: assets::riftcaller_card(meta, "oleus"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
-            text!["The first time each turn the Overlord summons a minion,", GainMana(2)],
+            text!["The first time each turn the Covenant summons a minion,", GainMana(2)],
             in_play::on_minion_summoned(|g, s, _| {
                 custom_state::identity_once_per_turn(g, s, |g, _| {
                     VisualEffects::new()
@@ -240,7 +240,7 @@ pub fn oleus_the_watcher(meta: CardMetadata) -> CardDefinition {
                         )
                         .apply(g);
 
-                    mana::gain(g, Side::Champion, 2);
+                    mana::gain(g, Side::Riftcaller, 2);
                     Ok(())
                 })?;
                 Ok(())

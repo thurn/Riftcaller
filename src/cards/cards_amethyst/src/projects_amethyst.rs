@@ -35,7 +35,7 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_30_b"),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Duskbound],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -68,7 +68,7 @@ pub fn spike_trap(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_45_b"),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Trap],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![

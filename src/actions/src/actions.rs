@@ -334,8 +334,8 @@ fn handle_mulligan_decision(
     };
 
     match user_side {
-        Side::Overlord => mulligans.overlord = Some(decision),
-        Side::Champion => mulligans.champion = Some(decision),
+        Side::Covenant => mulligans.covenant = Some(decision),
+        Side::Riftcaller => mulligans.riftcaller = Some(decision),
     }
 
     let hand = game.card_list_for_position(user_side, CardPosition::Hand(user_side));
@@ -389,9 +389,9 @@ fn check_start_next_turn(game: &mut GameState) -> Result<()> {
     let side = game.info.turn.side;
     let ended = game.player(side).actions == 0;
 
-    // Next turn immediately starts unless the current player is the Champion
-    // and the Overlord can summon a Duskbound project.
-    if ended && (side == Side::Overlord || !flags::overlord_has_instant_speed_actions(game)) {
+    // Next turn immediately starts unless the current player is the Riftcaller
+    // and the Covenant can summon a Duskbound project.
+    if ended && (side == Side::Covenant || !flags::covenant_has_instant_speed_actions(game)) {
         start_next_turn(game)
     } else {
         Ok(())
@@ -404,8 +404,8 @@ fn start_next_turn(game: &mut GameState) -> Result<()> {
         game,
         current_side.opponent(),
         match current_side {
-            Side::Overlord => game.info.turn.turn_number,
-            Side::Champion => game.info.turn.turn_number + 1,
+            Side::Covenant => game.info.turn.turn_number,
+            Side::Riftcaller => game.info.turn.turn_number + 1,
         },
     )
 }

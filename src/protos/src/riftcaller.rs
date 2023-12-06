@@ -1334,7 +1334,7 @@ pub struct PlayCardAction {
     #[prost(message, optional, tag = "2")]
     pub target: ::core::option::Option<CardTarget>,
 }
-/// Spend an action to initiate a raid on one of the overlord's rooms
+/// Spend an action to initiate a raid on one of the covenant's rooms
 ///
 /// Optimistic: Room visit animation plays
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -3130,8 +3130,8 @@ impl SliderDirection {
 #[repr(i32)]
 pub enum PlayerSide {
     Unspecified = 0,
-    Overlord = 1,
-    Champion = 2,
+    Covenant = 1,
+    Riftcaller = 2,
 }
 impl PlayerSide {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -3142,8 +3142,8 @@ impl PlayerSide {
     pub fn as_str_name(&self) -> &'static str {
         match self {
             PlayerSide::Unspecified => "PLAYER_SIDE_UNSPECIFIED",
-            PlayerSide::Overlord => "PLAYER_SIDE_OVERLORD",
-            PlayerSide::Champion => "PLAYER_SIDE_CHAMPION",
+            PlayerSide::Covenant => "PLAYER_SIDE_COVENANT",
+            PlayerSide::Riftcaller => "PLAYER_SIDE_RIFTCALLER",
         }
     }
 
@@ -3151,8 +3151,8 @@ impl PlayerSide {
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
             "PLAYER_SIDE_UNSPECIFIED" => Some(Self::Unspecified),
-            "PLAYER_SIDE_OVERLORD" => Some(Self::Overlord),
-            "PLAYER_SIDE_CHAMPION" => Some(Self::Champion),
+            "PLAYER_SIDE_COVENANT" => Some(Self::Covenant),
+            "PLAYER_SIDE_RIFTCALLER" => Some(Self::Riftcaller),
             _ => None,
         }
     }
@@ -3756,9 +3756,7 @@ impl MapTileType {
 /// Generated server implementations.
 pub mod riftcaller_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-
     use tonic::codegen::*;
-
     /// Generated trait containing gRPC methods that should be implemented for
     /// use with RiftcallerServer.
     #[async_trait]

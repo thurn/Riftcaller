@@ -21,10 +21,10 @@ use test_utils::TestSessionHelpers;
 
 #[test]
 pub fn magistrates_thronehall() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::MagistratesThronehall);
     g.summon_project(id);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
     assert_eq!(g.client.cards.opponent_hand().len(), 2);
@@ -34,10 +34,10 @@ pub fn magistrates_thronehall() {
 
 #[test]
 pub fn magistrates_thronehall_ancestral_knowledge() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::MagistratesThronehall);
     g.summon_project(id);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
     g.create_and_play(CardName::AncestralKnowledge);
     assert_eq!(g.client.cards.opponent_hand().len(), 2);

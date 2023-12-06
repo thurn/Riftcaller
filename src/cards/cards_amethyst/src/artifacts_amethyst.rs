@@ -36,7 +36,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
         image: rexard_images::weapon(RexardWeaponType::Axes, "a_n_b_01"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -80,7 +80,7 @@ pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
         image: rexard_images::weapon(RexardWeaponType::Polearms, "sp_b_04"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
@@ -102,7 +102,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
         image: rexard_images::weapon(RexardWeaponType::Bows, "b_b_01"),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(

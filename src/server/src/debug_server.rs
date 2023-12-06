@@ -73,7 +73,7 @@ fn set_current_game_id(game_id: GameId) -> Result<()> {
 }
 
 const DEBUG_ABILITY_ID: AbilityId = AbilityId {
-    card_id: CardId { side: Side::Overlord, index: usize::MAX },
+    card_id: CardId { side: Side::Covenant, index: usize::MAX },
     index: AbilityIndex(0),
 };
 
@@ -89,8 +89,8 @@ pub async fn handle_debug_action(
             let game_id = get_current_game_id()?;
             let mut game = requests::fetch_game(database, Some(game_id)).await?;
             match side {
-                Side::Overlord => game.overlord.id = data.player_id,
-                Side::Champion => game.champion.id = data.player_id,
+                Side::Covenant => game.covenant.id = data.player_id,
+                Side::Riftcaller => game.riftcaller.id = data.player_id,
             }
             let result = reload_scene(data, &game);
             database.write_game(&game).await?;
@@ -106,14 +106,14 @@ pub async fn handle_debug_action(
             )
             .await?;
             let mut player = requests::fetch_player(database, data.player_id).await?;
-            if data.player_id == game.overlord.id {
-                player.status = Some(PlayerStatus::Playing(game.id, Side::Champion));
+            if data.player_id == game.covenant.id {
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Riftcaller));
                 database.write_player(&player).await?;
             } else {
-                player.status = Some(PlayerStatus::Playing(game.id, Side::Overlord));
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Covenant));
                 database.write_player(&player).await?;
             }
-            mem::swap(&mut game.champion.id, &mut game.overlord.id);
+            mem::swap(&mut game.riftcaller.id, &mut game.covenant.id);
             database.write_game(&game).await?;
 
             reload_scene(data, &game)
@@ -250,11 +250,11 @@ pub async fn handle_debug_action(
             let game_id = game.id;
 
             let mut player = requests::fetch_player(database, data.player_id).await?;
-            if data.player_id == game.overlord.id {
-                player.status = Some(PlayerStatus::Playing(game.id, Side::Overlord));
+            if data.player_id == game.covenant.id {
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Covenant));
                 database.write_player(&player).await?;
             } else {
-                player.status = Some(PlayerStatus::Playing(game.id, Side::Champion));
+                player.status = Some(PlayerStatus::Playing(game.id, Side::Riftcaller));
                 database.write_player(&player).await?;
             }
 
@@ -296,12 +296,14 @@ fn create_debug_game(data: &RequestData, side: Side) -> Result<GameResponse> {
                 action: Some(
                     UserAction::NewGame(NewGameAction {
                         opponent: PlayerId::AI(match side {
-                            Side::Overlord => AIPlayer::DebugChampion,
-                            Side::Champion => AIPlayer::DebugOverlord,
+                            Side::Covenant => AIPlayer::DebugRiftcaller,
+                            Side::Riftcaller => AIPlayer::DebugCovenant,
                         }),
                         deck: match side {
-                            Side::Overlord => NewGameDeck::NamedDeck(NamedDeck::CanonicalOverlord),
-                            Side::Champion => NewGameDeck::NamedDeck(NamedDeck::CanonicalChampion),
+                            Side::Covenant => NewGameDeck::NamedDeck(NamedDeck::CanonicalCovenant),
+                            Side::Riftcaller => {
+                                NewGameDeck::NamedDeck(NamedDeck::CanonicalRiftcaller)
+                            }
                         },
                         debug_options: Some(NewGameDebugOptions {
                             deterministic: false,
@@ -343,8 +345,8 @@ fn apply_scenario(scenario: DebugScenario, data: &RequestData) -> Result<GameSta
     let mut game = scenario_game(id, data.player_id, scenario.side())?;
 
     match scenario {
-        DebugScenario::NewGameOverlord => {}
-        DebugScenario::NewGameChampion => {}
+        DebugScenario::NewGameCovenant => {}
+        DebugScenario::NewGameRiftcaller => {}
         DebugScenario::VsInfernalMinionAndScheme => {
             vs_minion_and_scheme(&mut game, CardName::TestInfernalMinion)?;
         }
@@ -384,36 +386,36 @@ fn vs_minion_and_scheme(game: &mut GameState, minion: CardName) -> Result<()> {
 fn scenario_game(game_id: GameId, player_id: PlayerId, side: Side) -> Result<GameState> {
     let mut result = GameState::new(
         game_id,
-        if side == Side::Overlord { player_id } else { PlayerId::AI(AIPlayer::NoAction) },
-        decklists::CANONICAL_OVERLORD.clone(),
-        if side == Side::Champion { player_id } else { PlayerId::AI(AIPlayer::NoAction) },
-        decklists::CANONICAL_CHAMPION.clone(),
+        if side == Side::Covenant { player_id } else { PlayerId::AI(AIPlayer::NoAction) },
+        decklists::CANONICAL_COVENANT.clone(),
+        if side == Side::Riftcaller { player_id } else { PlayerId::AI(AIPlayer::NoAction) },
+        decklists::CANONICAL_RIFTCALLER.clone(),
         GameConfiguration::default(),
     );
     dispatch::populate_delegate_cache(&mut result);
     actions::handle_game_action(
         &mut result,
-        Side::Overlord,
+        Side::Covenant,
         &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
     actions::handle_game_action(
         &mut result,
-        Side::Champion,
+        Side::Riftcaller,
         &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
 
-    if side == Side::Champion {
+    if side == Side::Riftcaller {
         for _ in 0..3 {
             actions::handle_game_action(
                 &mut result,
-                Side::Overlord,
+                Side::Covenant,
                 &GameAction::SpendActionPoint,
             )?;
         }
 
         actions::handle_game_action(
             &mut result,
-            Side::Overlord,
+            Side::Covenant,
             &GameAction::GameStateAction(GameStateAction::EndTurnAction),
         )?;
     }

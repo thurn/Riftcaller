@@ -346,8 +346,8 @@ MonoBehaviour:
   _registry: {fileID: 205228965686964167}
   _studioRenderTexture: {fileID: 8400000, guid: 7bfc4a7c7b8f645e3a6c465eaa238802, type: 2}
   _developmentAssets: {fileID: 205228965686964221}
-  _championPreset: {fileID: 11400000, guid: b469bf1b5ef184f6ead11b1d866a00e9, type: 2}
-  _overlordPreset: {fileID: 11400000, guid: 7fa3b849ce0c4420f9b8459ce9f132cf, type: 2}
+  _riftcallerPreset: {fileID: 11400000, guid: b469bf1b5ef184f6ead11b1d866a00e9, type: 2}
+  _covenantPreset: {fileID: 11400000, guid: 7fa3b849ce0c4420f9b8459ce9f132cf, type: 2}
 --- !u!114 &205228965686964169
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -510,30 +510,30 @@ fn raid_browser(game: &GameState, raid: &RaidData, defenders: Vec<CardId>) -> Ve
 
     match raid.target {
         RoomId::Vault => {
-            result.push(GameObjectId::Deck(Side::Overlord));
+            result.push(GameObjectId::Deck(Side::Covenant));
         }
         RoomId::Sanctum => {
-            result.push(GameObjectId::Character(Side::Overlord));
+            result.push(GameObjectId::Character(Side::Covenant));
         }
         RoomId::Crypt => {
-            result.push(GameObjectId::DiscardPile(Side::Overlord));
+            result.push(GameObjectId::DiscardPile(Side::Covenant));
         }
         _ => {}
     }
 
     result.extend(game.occupants(raid.target).map(|card| GameObjectId::CardId(card.id)));
     result.extend(defenders.iter().map(|card_id| GameObjectId::CardId(*card_id)));
-    result.push(GameObjectId::Character(Side::Champion));
+    result.push(GameObjectId::Character(Side::Riftcaller));
     result
 }
 
 fn raid_access_browser(game: &GameState, raid: &RaidData) -> Vec<GameObjectId> {
     match raid.target {
         RoomId::Sanctum => {
-            game.hand(Side::Overlord).map(|card| GameObjectId::CardId(card.id)).collect()
+            game.hand(Side::Covenant).map(|card| GameObjectId::CardId(card.id)).collect()
         }
         RoomId::Crypt => {
-            game.discard_pile(Side::Overlord).map(|card| GameObjectId::CardId(card.id)).collect()
+            game.discard_pile(Side::Covenant).map(|card| GameObjectId::CardId(card.id)).collect()
         }
         _ => raid.accessed.iter().map(|card_id| GameObjectId::CardId(*card_id)).collect(),
     }
@@ -548,11 +548,11 @@ fn character_facing_direction_for_side(
         if matches!(raid_display_state::build(game), RaidDisplayState::Defenders(_))
             && builder.state.display_preference != Some(DisplayPreference::ShowArenaView(true))
         {
-            if side == Side::Champion {
+            if side == Side::Riftcaller {
                 return Some(GameCharacterFacingDirection::Right);
             }
 
-            if side == Side::Overlord && raid.target == RoomId::Sanctum {
+            if side == Side::Covenant && raid.target == RoomId::Sanctum {
                 return Some(GameCharacterFacingDirection::Left);
             }
         }

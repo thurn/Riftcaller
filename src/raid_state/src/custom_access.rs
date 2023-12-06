@@ -30,7 +30,7 @@ use with_error::verify;
 /// scoring and accessing cards:
 ///
 ///  - CardAccessEvent
-///  - ChampionScoreCardEvent
+///  - RiftcallerScoreCardEvent
 ///  - ScoreCardEvent
 ///  - RazeCardEvent
 ///  - HistoryEvent::ScoreAccessedCard

@@ -89,8 +89,8 @@ pub fn initiate<T: StateMachine>(game: &mut GameState, data: T) -> Result<()> {
 /// see if they have further required updates.
 pub fn run<T: StateMachine>(game: &mut GameState) -> Result<()> {
     loop {
-        if T::has_blocking_prompt(&game.overlord.prompt_stack)
-            || T::has_blocking_prompt(&game.champion.prompt_stack)
+        if T::has_blocking_prompt(&game.covenant.prompt_stack)
+            || T::has_blocking_prompt(&game.riftcaller.prompt_stack)
         {
             break;
         }

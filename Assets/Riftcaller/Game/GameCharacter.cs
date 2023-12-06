@@ -106,10 +106,10 @@ namespace Riftcaller.Game
         _registry.StaticAssets.PlayCardSound();
         switch (Side)
         {
-          case PlayerSide.Champion:
+          case PlayerSide.Riftcaller:
             _registry.ArrowService.ShowMouseArrow(ArrowService.Type.Red, transform, this);
             break;
-          case PlayerSide.Overlord:
+          case PlayerSide.Covenant:
             _registry.ArrowService.ShowMouseArrow(ArrowService.Type.Green, transform, this);
             break;
         }
@@ -135,7 +135,7 @@ namespace Riftcaller.Game
       {
         switch (Side)
         {
-          case PlayerSide.Champion:
+          case PlayerSide.Riftcaller:
             _registry.ActionService.HandleAction(new ClientAction
             {
               InitiateRaid = new InitiateRaidAction
@@ -144,7 +144,7 @@ namespace Riftcaller.Game
               }
             });
             break;
-          case PlayerSide.Overlord:
+          case PlayerSide.Covenant:
             _registry.ActionService.HandleAction(new ClientAction
             {
               ProgressRoom = new ProgressRoomAction

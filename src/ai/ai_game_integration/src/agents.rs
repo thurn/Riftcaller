@@ -38,8 +38,8 @@ pub fn get(name: AIPlayer) -> Box<dyn Agent<RiftcallerState>> {
             MinimaxAlgorithm { search_depth: 4 },
             ScoreEvaluator {},
         )),
-        AIPlayer::DebugChampion => Box::new(NoActionAgent {}),
-        AIPlayer::DebugOverlord => Box::new(NoActionAgent {}),
+        AIPlayer::DebugRiftcaller => Box::new(NoActionAgent {}),
+        AIPlayer::DebugCovenant => Box::new(NoActionAgent {}),
         AIPlayer::TestMinimax => Box::new(AgentData::omniscient(
             "MINIMAX",
             MinimaxAlgorithm { search_depth: 4 },

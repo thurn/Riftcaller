@@ -39,19 +39,19 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
         name: CardName::ZainCunningDiplomat,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::overlord_card(meta, "zain"),
+        image: assets::covenant_card(meta, "zain"),
         card_type: CardType::Chapter,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
             text![
-                "When the Champion spends or loses mana during a raid due to an Overlord ability,",
+                "When the Riftcaller spends or loses mana during a raid due to a Covenant ability,",
                 GainMana(1)
             ],
             in_play::on_mana_lost_to_opponent_ability(|g, s, lost| {
-                if lost.side == Side::Champion && flags::raid_active(g) {
+                if lost.side == Side::Riftcaller && flags::raid_active(g) {
                     VisualEffects::new()
                         .ability_alert(s)
                         .timed_effect(
@@ -88,20 +88,20 @@ pub fn algrak_councils_enforcer(meta: CardMetadata) -> CardDefinition {
         name: CardName::AlgrakCouncilsEnforcer,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::overlord_card(meta, "algrak"),
+        image: assets::covenant_card(meta, "algrak"),
         card_type: CardType::Chapter,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new(text![
-            "The Champion cannot score more than one scheme per turn"
+            "The Riftcaller cannot score more than one scheme per turn"
         ])
         .delegate(in_play::can_score_accessed_card(|g, _, _, current| {
-            current.add_constraint(history::counters(g, Side::Champion).schemes_scored == 0)
+            current.add_constraint(history::counters(g, Side::Riftcaller).schemes_scored == 0)
         }))
         .delegate(in_play::on_will_populate_access_prompt(|g, s, _| {
-            if history::counters(g, Side::Champion).schemes_scored > 0 {
+            if history::counters(g, Side::Riftcaller).schemes_scored > 0 {
                 VisualEffects::new()
                     .ability_alert(s)
                     .timed_effect(
@@ -133,15 +133,15 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
         name: CardName::EriaTimeConduit,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::overlord_card(meta, "eria"),
+        image: assets::covenant_card(meta, "eria"),
         card_type: CardType::Chapter,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Beyond,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(
             text![
-                "The first time each turn the Champion loses or spends",
+                "The first time each turn the Riftcaller loses or spends",
                 ActionSymbol,
                 "during a raid, you may add a card from the",
                 Crypt,
@@ -149,12 +149,12 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
                 Vault
             ],
             in_play::on_action_points_lost_during_raid(|g, s, side| {
-                if *side == Side::Champion {
+                if *side == Side::Riftcaller {
                     custom_state::identity_once_per_turn(g, s, |g, s| {
                         card_selector_prompt_builder::show(
                             g,
                             CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
-                                .subjects(g.discard_pile(Side::Overlord).card_ids())
+                                .subjects(g.discard_pile(Side::Covenant).card_ids())
                                 .movement_effect(Projectile::Projectiles1(2))
                                 .context(PromptContext::MoveToTopOfVault)
                                 .show_ability_alert(true)
@@ -191,10 +191,10 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
         name: CardName::VendocSeerInStarlight,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::overlord_card(meta, "vendoc"),
+        image: assets::covenant_card(meta, "vendoc"),
         card_type: CardType::Chapter,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Beyond,
         rarity: Rarity::Riftcaller,
         abilities: vec![
@@ -209,7 +209,7 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
                     ];
                     show_prompt::with_context_and_choices(
                         g,
-                        Side::Overlord,
+                        Side::Covenant,
                         ButtonPromptContext::ChooseCardType(s.card_id()),
                         types
                             .into_iter()
@@ -231,7 +231,7 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
             ),
             Ability::new_with_delegate(
                 text![
-                    "The first time the Champion plays a card of the chosen type each turn,",
+                    "The first time the Riftcaller plays a card of the chosen type each turn,",
                     GainMana(2),
                 ],
                 in_play::on_card_played(|g, s, played| {
@@ -256,7 +256,7 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
                                 )
                                 .apply(g);
 
-                            mana::gain(g, Side::Overlord, 2);
+                            mana::gain(g, Side::Covenant, 2);
                             Ok(())
                         })?;
                     }

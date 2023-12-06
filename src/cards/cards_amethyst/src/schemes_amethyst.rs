@@ -18,7 +18,7 @@ use assets::rexard_images;
 use assets::rexard_images::RexardPack;
 use card_helpers::costs::scheme;
 use card_helpers::text_helpers::named_trigger;
-use card_helpers::this::on_scored_by_overlord;
+use card_helpers::this::on_scored_by_covenant;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
@@ -38,13 +38,13 @@ pub fn gold_mine(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MiningIcons, "MiningIcons_08_b"),
         card_type: CardType::Scheme,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
             text: named_trigger(Score, text![GainMana(7)]),
-            delegates: vec![on_scored_by_overlord(|g, s, _| {
+            delegates: vec![on_scored_by_covenant(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 Ok(())
             })],
@@ -63,7 +63,7 @@ pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_01"),
         card_type: CardType::Scheme,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
@@ -102,7 +102,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_03"),
         card_type: CardType::Scheme,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
@@ -112,7 +112,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
                 text![text!["Draw", 2, "cards"], text!["You get", Plus(2), "maximum hand size"]],
             ),
             delegates: vec![
-                on_scored_by_overlord(|g, s, _| {
+                on_scored_by_covenant(|g, s, _| {
                     draw_cards::run(g, s.side(), 2, s.initiated_by()).map(|_| ())
                 }),
                 Delegate::MaximumHandSize(QueryDelegate {

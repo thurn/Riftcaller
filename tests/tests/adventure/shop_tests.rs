@@ -25,7 +25,7 @@ const EXAMPLE_CARD: CardVariant = CardVariant::standard(CardName::TestSpell);
 
 #[test]
 fn test_visit_shop() {
-    let mut adventure = TestAdventure::new(Side::Champion).build();
+    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
     let shop = adventure.insert_tile(TileEntity::Shop(ShopData {
         choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: BUY_COST, sold: false }],
@@ -38,7 +38,7 @@ fn test_visit_shop() {
 
 #[test]
 fn test_buy_card() {
-    let mut adventure = TestAdventure::new(Side::Champion).build();
+    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
     let shop = adventure.insert_tile(TileEntity::Shop(ShopData {
         choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: BUY_COST, sold: false }],

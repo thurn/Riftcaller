@@ -20,7 +20,7 @@ use test_utils::*;
 
 #[test]
 fn conspire() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Conspire);
     g.progress_room_times(3);
     assert_eq!(g.me().score(), 10);
@@ -28,7 +28,7 @@ fn conspire() {
 
 #[test]
 fn devise() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Devise);
     g.progress_room_times(4);
     assert_eq!(g.me().score(), 20);
@@ -36,7 +36,7 @@ fn devise() {
 
 #[test]
 fn machinate() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Machinate);
     g.progress_room_times(5);
     assert_eq!(g.me().score(), 30);
@@ -45,7 +45,7 @@ fn machinate() {
 #[test]
 fn gathering_dark() {
     let (cost, gained) = (5, 9);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::GatheringDark);
     assert_eq!(test_constants::STARTING_MANA - cost + gained, g.me().mana());
 }
@@ -53,7 +53,7 @@ fn gathering_dark() {
 #[test]
 fn coinery() {
     let (card_cost, taken) = (2, 3);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::Coinery);
     g.summon_project(id);
     g.activate_ability(id, 1);
@@ -66,29 +66,29 @@ fn coinery() {
 #[test]
 fn leyline() {
     let (card_cost, gained) = (2, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::Leyline);
-    g.pass_turn(Side::Overlord);
-    g.move_to_end_step(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
     g.summon_project(id);
     g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained, g.me().mana());
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained * 2, g.me().mana());
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(test_constants::STARTING_MANA - card_cost + gained * 3, g.me().mana());
 }
 
 #[test]
 fn ore_refinery() {
     let (card_cost, stored, taken) = (4, 12, 3);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::OreRefinery);
     assert_eq!(test_constants::STARTING_MANA, g.me().mana());
-    g.pass_turn(Side::Overlord);
-    g.move_to_end_step(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
     g.summon_project(id);
     assert_eq!(test_constants::STARTING_MANA - card_cost, g.me().mana());
     g.click(Button::StartTurn);
@@ -98,7 +98,7 @@ fn ore_refinery() {
 
 #[test]
 fn crab() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Crab);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -108,8 +108,8 @@ fn crab() {
 #[test]
 fn fire_goblin() {
     let (cost, gained) = (1, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(1))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(1))
         .build();
     g.create_and_play(CardName::FireGoblin);
     g.set_up_minion_combat();
@@ -121,7 +121,7 @@ fn fire_goblin() {
 
 #[test]
 fn toucan() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Toucan);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -130,7 +130,7 @@ fn toucan() {
 
 #[test]
 fn frog() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Frog);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -139,7 +139,7 @@ fn frog() {
 
 #[test]
 fn captain() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Captain);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -149,7 +149,7 @@ fn captain() {
 
 #[test]
 fn scout() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Scout);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);

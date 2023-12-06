@@ -53,8 +53,8 @@ impl Component for SideSelectPanel {
                             .align_items(FlexAlign::Center)
                             .justify_content(FlexJustify::Center),
                     )
-                    .child(side_select(Side::Overlord, "Overlord".to_string()))
-                    .child(side_select(Side::Champion, "Champion".to_string())),
+                    .child(side_select(Side::Covenant, "Covenant".to_string()))
+                    .child(side_select(Side::Riftcaller, "Riftcaller".to_string())),
             )
             .build()
     }

@@ -32,7 +32,7 @@ use test_utils::*;
 
 #[test]
 fn initiate_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
@@ -78,7 +78,7 @@ fn initiate_raid() {
     assert!(g.client.interface.controls().has_text("Continue"));
 
     assert_eq!(
-        g.legal_actions(Side::Champion),
+        g.legal_actions(Side::Riftcaller),
         vec![
             GameAction::RaidAction(RaidAction { index: 0 }),
             GameAction::RaidAction(RaidAction { index: 1 }),
@@ -90,7 +90,7 @@ fn initiate_raid() {
 
 #[test]
 fn summon_minion() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let (_, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
     g.initiate_raid(test_constants::ROOM_ID);
@@ -118,7 +118,7 @@ fn summon_minion() {
 
 #[test]
 fn do_not_summon_minion() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let (_, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
     g.initiate_raid(test_constants::ROOM_ID);
@@ -134,7 +134,7 @@ fn do_not_summon_minion() {
 
 #[test]
 fn use_weapon() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
@@ -175,7 +175,7 @@ fn use_weapon() {
 
 #[test]
 fn minion_with_shield() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.setup_raid_target(CardName::TestMinionEndRaid);
     g.initiate_raid(test_constants::ROOM_ID);
@@ -193,7 +193,7 @@ fn minion_with_shield() {
 
 #[test]
 fn fire_combat_ability() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, minion_id) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
@@ -206,7 +206,7 @@ fn fire_combat_ability() {
     assert_eq!(g.opponent.other_player.mana(), 996);
     assert!(!g.client.cards.get(scheme_id).revealed_to_me()); // Scheme is not revealed
 
-    // Still Champion turn
+    // Still Riftcaller turn
     assert!(g.client.this_player.can_take_action());
     assert!(g.opponent.other_player.can_take_action());
 
@@ -239,7 +239,7 @@ fn fire_combat_ability() {
 
 #[test]
 fn score_scheme_card() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let (scheme_id, _) = g.setup_raid_target(CardName::TestMinionEndRaid);
     g.initiate_raid(test_constants::ROOM_ID);
@@ -248,7 +248,7 @@ fn score_scheme_card() {
     g.click_on(g.user_id(), "Test Weapon");
 
     assert_eq!(
-        g.legal_actions(Side::Champion),
+        g.legal_actions(Side::Riftcaller),
         vec![
             GameAction::RaidAction(RaidAction { index: 0 }),
             GameAction::RaidAction(RaidAction { index: 1 })
@@ -277,7 +277,7 @@ fn score_scheme_card() {
     );
 
     assert_eq!(
-        g.legal_actions(Side::Champion),
+        g.legal_actions(Side::Riftcaller),
         vec![GameAction::RaidAction(RaidAction { index: 0 })]
     );
 
@@ -286,13 +286,13 @@ fn score_scheme_card() {
 
 #[test]
 fn complete_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let (scheme_id, _) = g.setup_raid_target(CardName::TestMinionEndRaid);
 
     // Set up the raid to be the last action of a turn
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
-    g.spend_action_point(Side::Champion);
-    g.spend_action_point(Side::Champion);
+    g.spend_action_point(Side::Riftcaller);
+    g.spend_action_point(Side::Riftcaller);
 
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
@@ -325,15 +325,15 @@ fn complete_raid() {
 
 #[test]
 fn cannot_activate() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(2)
-        .opponent(TestSide::new(Side::Overlord).mana(0))
+        .opponent(TestSide::new(Side::Covenant).mana(0))
         .build();
 
     g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play(CardName::TestMinionEndRaid);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let response = g.initiate_raid(test_constants::ROOM_ID);
@@ -344,9 +344,9 @@ fn cannot_activate() {
 
 #[test]
 fn raze_project() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).current_turn(Side::Overlord).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).current_turn(Side::Covenant).build();
     let project_id = g.create_and_play(CardName::TestProject2Cost3Raze);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
 
     assert!(g.client.interface.controls().has_text("Destroy"));
@@ -369,14 +369,14 @@ fn raze_project() {
 
 #[test]
 fn raid_vault() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(1)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
+        .opponent(TestSide::new(Side::Covenant).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
@@ -388,14 +388,14 @@ fn raid_vault() {
 
 #[test]
 fn raid_sanctum() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(1)
         .build();
 
     g.add_to_hand(CardName::TestScheme3_10);
     g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Sanctum);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Sanctum);
@@ -408,14 +408,14 @@ fn raid_sanctum() {
 
 #[test]
 fn raid_crypt() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(1)
-        .opponent(TestSide::new(Side::Overlord).in_discard_face_down(CardName::TestScheme3_10))
+        .opponent(TestSide::new(Side::Covenant).in_discard_face_down(CardName::TestScheme3_10))
         .build();
 
     g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Crypt);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Crypt);
@@ -428,14 +428,14 @@ fn raid_crypt() {
 
 #[test]
 fn raid_vault_twice() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(1)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
+        .opponent(TestSide::new(Side::Covenant).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
@@ -446,7 +446,7 @@ fn raid_vault_twice() {
 
     g.initiate_raid(RoomId::Vault);
 
-    // Champion spent mana on playing + using weapon, overlord on summoning
+    // Riftcaller spent mana on playing + using weapon, covenant on summoning
     // minion
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 4);
     assert_eq!(g.you().mana(), test_constants::STARTING_MANA - 3);
@@ -454,7 +454,7 @@ fn raid_vault_twice() {
     assert!(g.client.interface.controls().has_text("Test Weapon"));
     g.click_on(g.user_id(), "Test Weapon");
 
-    // Champion spends mana again to use weapon, Overlord mana is unchanged.
+    // Riftcaller spends mana again to use weapon, Covenant mana is unchanged.
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 5);
     assert_eq!(g.you().mana(), test_constants::STARTING_MANA - 3);
 
@@ -465,13 +465,13 @@ fn raid_vault_twice() {
 
 #[test]
 fn raid_no_defenders() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(1)
         .build();
 
     g.create_and_play(CardName::TestScheme3_10);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     let response = g.initiate_raid(test_constants::ROOM_ID);
     // Should immediately jump to the Score action
@@ -482,8 +482,8 @@ fn raid_no_defenders() {
 
 #[test]
 fn raid_vault_no_defenders() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(TestSide::new(Side::Covenant).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.initiate_raid(RoomId::Vault);
@@ -494,13 +494,13 @@ fn raid_vault_no_defenders() {
 
 #[test]
 fn raid_no_occupants() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(1)
         .build();
 
     g.create_and_play(CardName::TestMinionEndRaid);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     let result = g.perform_action(
@@ -512,7 +512,7 @@ fn raid_no_occupants() {
 
 #[test]
 fn raid_no_occupants_or_defenders() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
 
     let response = g.perform_action(
         Action::InitiateRaid(InitiateRaidAction { room_id: test_constants::CLIENT_ROOM_ID.into() }),
@@ -524,15 +524,15 @@ fn raid_no_occupants_or_defenders() {
 
 #[test]
 fn raid_two_defenders() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(2)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
+        .opponent(TestSide::new(Side::Covenant).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
     g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
@@ -546,15 +546,15 @@ fn raid_two_defenders() {
 
 #[test]
 fn raid_two_defenders_full_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(2)
-        .opponent(TestSide::new(Side::Overlord).deck_top(CardName::TestScheme3_10))
+        .opponent(TestSide::new(Side::Covenant).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
     g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
@@ -570,30 +570,30 @@ fn raid_two_defenders_full_raid() {
 
 #[test]
 fn raid_deal_damage_game_over() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
 
     g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert!(g.dawn());
 
     g.initiate_raid(RoomId::Vault);
     g.click(Button::Summon);
     g.click_on(g.opponent_id(), "Continue");
 
-    assert!(g.is_victory_for_player(Side::Overlord));
+    assert!(g.is_victory_for_player(Side::Covenant));
 }
 
 #[test]
 fn raid_two_defenders_cannot_afford_second() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(2)
-        .opponent(TestSide::new(Side::Overlord).mana(1).deck_top(CardName::TestScheme3_10))
+        .opponent(TestSide::new(Side::Covenant).mana(1).deck_top(CardName::TestScheme3_10))
         .build();
 
     g.create_and_play_with_target(CardName::TestMinionDealDamage, RoomId::Vault);
     g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.create_and_play(CardName::TestWeapon3Attack12Boost3Cost);
     g.initiate_raid(RoomId::Vault);
@@ -607,18 +607,18 @@ fn raid_two_defenders_cannot_afford_second() {
 
 #[test]
 fn raid_add_defender() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .current_turn(Side::Overlord)
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .current_turn(Side::Covenant)
         .actions(2)
         .build();
 
     g.create_and_play(CardName::TestMinionEndRaid);
     g.create_and_play(CardName::TestScheme3_10);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert!(g.dawn());
 
     // Skip one action point.
-    g.spend_action_point(Side::Champion);
+    g.spend_action_point(Side::Riftcaller);
 
     // Raid 1
     g.initiate_raid(test_constants::ROOM_ID);
@@ -634,14 +634,14 @@ fn raid_add_defender() {
     g.click_on(g.user_id(), "Score");
     g.click_on(g.user_id(), "End Raid");
     assert!(!g.client.data.raid_active());
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
 
     // Opponent Turn
     assert!(g.dusk());
     g.create_and_play(CardName::TestMinionDealDamage);
     g.create_and_play(CardName::TestScheme3_10);
     g.perform(Action::GainMana(GainManaAction {}), g.opponent_id());
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     // User Turn, Raid 3
     assert!(g.dawn());

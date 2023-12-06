@@ -22,7 +22,7 @@ use test_utils::*;
 
 #[test]
 fn gold_mine() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::GoldMine);
     g.progress_room_times(4);
     assert_eq!(g.me().score(), 20);
@@ -38,7 +38,7 @@ fn gold_mine() {
 
 #[test]
 fn activate_reinforcements() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::ActivateReinforcements);
     let minion = g.create_and_play(CardName::TestMinionEndRaid);
     assert!(!g.client.get_card(minion).is_face_up());
@@ -54,17 +54,17 @@ fn activate_reinforcements() {
 
 #[test]
 fn research_project() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::ResearchProject);
     g.progress_room_times(2);
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(1, g.client.cards.hand().len());
     g.progress_room_times(1);
     assert_eq!(3, g.client.cards.hand().len());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
     g.perform(Action::DrawCard(DrawCardAction {}), g.user_id());
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(6, g.client.cards.hand().len());
 }

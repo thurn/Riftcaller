@@ -23,9 +23,9 @@ use test_utils::*;
 #[test]
 fn pathfinder() {
     let (base_attack, bonus) = (1, 2);
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
                 .face_up_defender(RoomId::RoomA, CardName::TestInfernalMinion),
         )
@@ -41,7 +41,7 @@ fn pathfinder() {
 #[test]
 fn pathfinder_inner_room() {
     let base_attack = 1;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::Pathfinder);
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(
@@ -53,9 +53,9 @@ fn pathfinder_inner_room() {
 #[test]
 fn staff_of_the_valiant() {
     let stats = WeaponStats { cost: 0, attack: 1, boost_cost: 2, boost: 1 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestScheme3_10)
                 .face_up_defender(RoomId::RoomA, CardName::TestInfernalMinion)
                 .face_up_defender(RoomId::RoomA, CardName::TestInfernalMinion),
@@ -89,9 +89,9 @@ fn staff_of_the_valiant() {
 
 #[test]
 fn triumph_return_to_hand() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion)
                 .face_up_defender(RoomId::Vault, CardName::TestAstralMinion),
         )
@@ -114,9 +114,9 @@ fn triumph_return_to_hand() {
 fn triumph_slow() {
     let stats = WeaponStats { cost: 8, attack: 0, boost_cost: 1, boost: 1 };
     let minion_shield = 1;
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion1Shield),
         )
         .build();
@@ -133,10 +133,10 @@ fn triumph_slow() {
 
 #[test]
 fn spear_of_conquest() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .actions(4)
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion)
                 .face_up_defender(RoomId::Sanctum, CardName::TestMortalMinion2Health),
         )
@@ -176,9 +176,9 @@ fn spear_of_conquest() {
 
 #[test]
 fn spear_of_conquest_insufficient_charges() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestMortalMinion),
         )
         .build();
@@ -193,10 +193,10 @@ fn spear_of_conquest_insufficient_charges() {
 
 #[test]
 fn blade_of_reckoning() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .actions(5)
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion),
         )
         .build();
@@ -220,7 +220,7 @@ fn blade_of_reckoning() {
 
 #[test]
 fn resolution() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::Resolution);
     g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::Resolution);
     assert!(g.client.cards.discard_pile().contains_card(CardName::Resolution));
@@ -229,7 +229,7 @@ fn resolution() {
 #[test]
 fn starlight_lantern() {
     let cost = 0;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::StarlightLantern);
     g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
     g.activate_ability(id, 1);
@@ -242,7 +242,7 @@ fn starlight_lantern() {
 
 #[test]
 fn warriors_sign() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(4).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(4).build();
     g.create_and_play(CardName::WarriorsSign);
     g.initiate_raid(RoomId::Sanctum);
     g.click(Button::EndRaid);
@@ -255,7 +255,7 @@ fn warriors_sign() {
 
 #[test]
 fn warriors_sign_two_of_same() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(4).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(4).build();
     g.create_and_play(CardName::WarriorsSign);
     g.initiate_raid(RoomId::Sanctum);
     g.click(Button::EndRaid);
@@ -268,7 +268,7 @@ fn warriors_sign_two_of_same() {
 
 #[test]
 fn warriors_sign_alternate_order() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).actions(4).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).actions(4).build();
     g.create_and_play_upgraded(CardName::WarriorsSign);
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
@@ -281,9 +281,9 @@ fn warriors_sign_alternate_order() {
 
 #[test]
 fn chains_of_mortality() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestInfernalMinion),
         )
         .build();
@@ -295,9 +295,9 @@ fn chains_of_mortality() {
 
 #[test]
 fn chains_of_mortality_two_raids() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestInfernalMinion),
         )
         .build();
@@ -313,9 +313,9 @@ fn chains_of_mortality_two_raids() {
 
 #[test]
 fn chains_of_mortality_mortal_minion() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Sanctum, CardName::TestMortalMinion),
         )
         .build();
@@ -327,9 +327,9 @@ fn chains_of_mortality_mortal_minion() {
 
 #[test]
 fn phase_door() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .deck_top(CardName::TestScheme3_10)
                 .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
         )
@@ -341,9 +341,9 @@ fn phase_door() {
 
 #[test]
 fn phase_door_defender() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .deck_top(CardName::TestScheme3_10)
                 .face_up_defender(RoomId::Crypt, CardName::TestInfernalMinion),
         )
@@ -357,9 +357,9 @@ fn phase_door_defender() {
 
 #[test]
 fn skyprism() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestAstralMinion),
         )
         .build();
@@ -371,9 +371,9 @@ fn skyprism() {
 
 #[test]
 fn shield_of_the_flames() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
         )
         .build();
@@ -388,9 +388,9 @@ fn shield_of_the_flames() {
 
 #[test]
 fn foebane() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestMinionShield1Infernal),
         )
         .build();
@@ -405,9 +405,9 @@ fn foebane() {
 
 #[test]
 fn foebane_do_not_use() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestMinionShield1Infernal),
         )
         .build();
@@ -422,9 +422,9 @@ fn foebane_do_not_use() {
 #[test]
 fn foebane_insufficient_mana() {
     let cost = 8;
-    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(cost))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).mana(cost))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestMinionShield1Infernal),
         )
         .build();
@@ -437,16 +437,16 @@ fn foebane_insufficient_mana() {
 
 #[test]
 fn foebane_cannot_play_without_target() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.add_to_hand(CardName::Foebane);
     assert!(g.play_card_with_result(id, g.user_id(), Some(RoomId::Vault)).is_err());
 }
 
 #[test]
 fn whip_of_disjunction() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestAstralMinion),
         )
         .build();
@@ -460,9 +460,9 @@ fn whip_of_disjunction() {
 
 #[test]
 fn whip_of_disjunction_cannot_activate_mortal() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
         )
         .build();
@@ -473,9 +473,9 @@ fn whip_of_disjunction_cannot_activate_mortal() {
 
 #[test]
 fn whip_of_disjunction_cannot_activate_before_encounter() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_down_defender(RoomId::Vault, CardName::TestAstralMinion),
         )
         .build();
@@ -487,9 +487,9 @@ fn whip_of_disjunction_cannot_activate_before_encounter() {
 #[test]
 fn glimmersong() {
     let cost = 3;
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_defender(RoomId::Vault, CardName::TestMortalMinion2Health),
         )
         .build();
@@ -511,9 +511,9 @@ fn glimmersong() {
 
 #[test]
 fn glimmersong_does_not_trigger_on_score() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::TestScheme3_10),
         )
         .build();
     g.create_and_play(CardName::Glimmersong);
@@ -528,9 +528,9 @@ fn glimmersong_does_not_trigger_on_score() {
 
 #[test]
 fn glimmersong_does_not_trigger_on_raze() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestDuskboundProject),
         )
         .build();
@@ -546,9 +546,9 @@ fn glimmersong_does_not_trigger_on_raze() {
 
 #[test]
 fn glimmersong_double_reveal() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .room_occupant(RoomId::RoomA, CardName::TestDuskboundProject),
         )
         .build();
@@ -567,9 +567,9 @@ fn glimmersong_double_reveal() {
 
 #[test]
 fn glimmersong_cannot_reveal_face_up() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord)
+            TestSide::new(Side::Covenant)
                 .face_up_room_occupant(RoomId::RoomA, CardName::TestDuskboundProject),
         )
         .build();

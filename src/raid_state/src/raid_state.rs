@@ -20,10 +20,10 @@ use game_data::animation_tracker::{GameAnimation, TargetedInteraction};
 use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    ApproachMinionEvent, CardAccessEvent, ChampionScoreCardEvent, EncounterMinionEvent,
-    MinionCombatAbilityEvent, MinionDefeatedEvent, RaidAccessEndEvent, RaidAccessSelectedEvent,
-    RaidAccessStartEvent, RaidOutcome, RaidStartEvent, RazeCardEvent, ScoreCard, ScoreCardEvent,
-    UsedWeapon, UsedWeaponEvent, WillPopulateAccessPromptEvent,
+    ApproachMinionEvent, CardAccessEvent, EncounterMinionEvent, MinionCombatAbilityEvent,
+    MinionDefeatedEvent, RaidAccessEndEvent, RaidAccessSelectedEvent, RaidAccessStartEvent,
+    RaidOutcome, RaidStartEvent, RazeCardEvent, RiftcallerScoreCardEvent, ScoreCard,
+    ScoreCardEvent, UsedWeapon, UsedWeaponEvent, WillPopulateAccessPromptEvent,
 };
 use game_data::game_actions::RaidAction;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
@@ -120,7 +120,7 @@ pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
     let mut regenerated_prompt = false;
 
     loop {
-        if !(game.overlord.prompt_stack.is_empty() && game.champion.prompt_stack.is_empty()) {
+        if !(game.covenant.prompt_stack.is_empty() && game.riftcaller.prompt_stack.is_empty()) {
             break;
         }
 
@@ -237,7 +237,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         }
         RaidStep::PopulateAccessPrompt => populate_access_prompt(game, info),
         RaidStep::StartScoringCard(scored) => start_scoring_card(game, info, scored),
-        RaidStep::ChampionScoreEvent(scored) => champion_score_event(game, scored),
+        RaidStep::RiftcallerScoreEvent(scored) => riftcaller_score_event(game, scored),
         RaidStep::ScoreEvent(scored) => score_event(game, scored),
         RaidStep::MoveToScoredPosition(scored) => move_to_scored_position(game, scored),
         RaidStep::StartRazingCard(card_id, cost) => start_razing_card(game, card_id, cost),
@@ -253,8 +253,13 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
 }
 
 fn gain_leyline_mana(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    if game.champion.leylines > 0 {
-        mana::add_raid_specific_mana(game, Side::Champion, info.raid_id, game.champion.leylines);
+    if game.riftcaller.leylines > 0 {
+        mana::add_raid_specific_mana(
+            game,
+            Side::Riftcaller,
+            info.raid_id,
+            game.riftcaller.leylines,
+        );
     }
     RaidState::step(RaidStep::RaidStartEvent)
 }
@@ -329,7 +334,7 @@ fn use_weapon(
 
     mana::spend(
         game,
-        Side::Champion,
+        Side::Riftcaller,
         InitiatedBy::GameAction,
         ManaPurpose::UseWeapon(interaction.weapon_id),
         cost_to_defeat.mana_cost,
@@ -338,7 +343,7 @@ fn use_weapon(
     if let Some(custom_weapon_cost) = cost_to_defeat.custom_weapon_cost.as_ref() {
         match custom_weapon_cost {
             CustomWeaponCost::ActionPoints(points) => {
-                mutations::spend_action_points(game, Side::Champion, *points)?;
+                mutations::spend_action_points(game, Side::Riftcaller, *points)?;
             }
         }
     }
@@ -390,7 +395,7 @@ fn fire_minion_combat_ability(
     game.add_animation(|| {
         GameAnimation::CombatInteraction(TargetedInteraction {
             source: GameObjectId::CardId(minion_id),
-            target: GameObjectId::Character(Side::Champion),
+            target: GameObjectId::Character(Side::Riftcaller),
         })
     });
 
@@ -399,7 +404,7 @@ fn fire_minion_combat_ability(
 }
 
 fn populate_approach_prompt(game: &mut GameState) -> Result<RaidState> {
-    if flags::overlord_has_instant_speed_actions(game) {
+    if flags::covenant_has_instant_speed_actions(game) {
         RaidState::prompt(
             RaidStatus::ApproachRoom,
             RaidStep::PopulateApproachPrompt,
@@ -437,7 +442,7 @@ fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 fn reveal_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     let accessed = game.raid()?.accessed.clone();
     for card_id in &accessed {
-        mutations::set_visible_to(game, *card_id, Side::Champion, true);
+        mutations::set_visible_to(game, *card_id, Side::Riftcaller, true);
     }
 
     if info.target == RoomId::Sanctum {
@@ -488,29 +493,29 @@ fn start_scoring_card(
     scored: ScoredCard,
 ) -> Result<RaidState> {
     game.add_history_event(HistoryEvent::ScoreAccessedCard(info.access_event(scored.id)));
-    game.current_history_counters(Side::Champion).schemes_scored += 1;
+    game.current_history_counters(Side::Riftcaller).schemes_scored += 1;
     mutations::turn_face_up(game, scored.id);
     mutations::move_card(game, scored.id, CardPosition::Scoring)?;
     game.raid_mut()?.accessed.retain(|c| *c != scored.id);
-    game.add_animation(|| GameAnimation::ScoreCard(Side::Champion, scored.id));
-    RaidState::step(RaidStep::ChampionScoreEvent(scored))
+    game.add_animation(|| GameAnimation::ScoreCard(Side::Riftcaller, scored.id));
+    RaidState::step(RaidStep::RiftcallerScoreEvent(scored))
 }
 
-fn champion_score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
-    dispatch::invoke_event(game, ChampionScoreCardEvent(scored.id))?;
+fn riftcaller_score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+    dispatch::invoke_event(game, RiftcallerScoreCardEvent(scored.id))?;
     RaidState::step(RaidStep::ScoreEvent(scored))
 }
 
 fn score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
     dispatch::invoke_event(
         game,
-        ScoreCardEvent(ScoreCard { player: Side::Champion, card_id: scored.id }),
+        ScoreCardEvent(ScoreCard { player: Side::Riftcaller, card_id: scored.id }),
     )?;
     RaidState::step(RaidStep::MoveToScoredPosition(scored))
 }
 
 fn move_to_scored_position(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
-    mutations::move_card(game, scored.id, CardPosition::Scored(Side::Champion))?;
+    mutations::move_card(game, scored.id, CardPosition::Scored(Side::Riftcaller))?;
     RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::FromScore))
 }
 
@@ -529,12 +534,12 @@ fn raze_card(
     game.add_history_event(HistoryEvent::RazeAccessedCard(info.access_event(card_id)));
     mana::spend(
         game,
-        Side::Champion,
+        Side::Riftcaller,
         InitiatedBy::GameAction,
         ManaPurpose::RazeCard(card_id),
         cost,
     )?;
-    mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Overlord))?;
+    mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Covenant))?;
     RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::FromRaze))
 }
 

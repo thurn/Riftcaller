@@ -93,7 +93,7 @@ fn revealed_summon_project_card_view(
         }),
         rules_text: Some(rules_text::build(context)),
         targeting: context.query_or_none(|game, _| {
-            boolean_target(|_| flags::can_take_summon_project_action(game, Side::Overlord, card_id))
+            boolean_target(|_| flags::can_take_summon_project_action(game, Side::Covenant, card_id))
         }),
         on_release_position: context.query_or_none(|_, card| {
             positions::for_summon_project_card(card, positions::parent_card(card_id))
@@ -120,11 +120,11 @@ pub fn curse_card_view(
             image: "curse".to_string(),
             title: "Curse".to_string(),
             text: format!(
-                "While this is held, the Overlord may pay {},2{} to destroy an evocation.",
+                "While this is held, the Covenant may pay {},2{} to destroy an evocation.",
                 icons::ACTION,
                 icons::MANA
             ),
-            side: Side::Champion,
+            side: Side::Riftcaller,
             can_play_fn: flags::can_take_remove_curse_action,
         },
     )
@@ -140,8 +140,8 @@ pub fn dispel_card_view(builder: &ResponseBuilder, game: Option<&GameState>) -> 
             cost: game_constants::COST_TO_DISPEL_EVOCATION,
             image: "dispel".to_string(),
             title: "Dispel Evocation".to_string(),
-            text: "Play only if the Champion is cursed.\nDestroy target evocation.".to_string(),
-            side: Side::Overlord,
+            text: "Play only if the Riftcaller is cursed.\nDestroy target evocation.".to_string(),
+            side: Side::Covenant,
             can_play_fn: flags::can_take_dispel_evocation_action,
         },
     )
@@ -209,7 +209,7 @@ fn action_card_view(
 pub fn wound_card_view(builder: &ResponseBuilder, count: WoundCount) -> CardView {
     counter_card_view(
         builder,
-        Side::Champion,
+        Side::Riftcaller,
         CounterCard {
             identifier: CustomCardIdentifier::Wound,
             counters: count,
@@ -223,7 +223,7 @@ pub fn wound_card_view(builder: &ResponseBuilder, count: WoundCount) -> CardView
 pub fn leyline_card_view(builder: &ResponseBuilder, count: u32) -> CardView {
     counter_card_view(
         builder,
-        Side::Champion,
+        Side::Riftcaller,
         CounterCard {
             identifier: CustomCardIdentifier::Leyline,
             counters: count,
@@ -261,7 +261,7 @@ fn counter_card_view(builder: &ResponseBuilder, side: Side, card: CounterCard) -
         } else {
             None
         },
-        arena_frame: Some(assets::arena_frame(Side::Champion, CardType::GameModifier, None)),
+        arena_frame: Some(assets::arena_frame(Side::Riftcaller, CardType::GameModifier, None)),
         face_down_arena_frame: None,
         owning_player: builder.to_player_name(side),
         revealed_card: Some(Box::new(RevealedCardView {

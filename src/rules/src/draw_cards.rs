@@ -27,9 +27,9 @@ use crate::{dispatch, mutations, state_machine};
 /// place them into their hand.
 ///
 /// If there are insufficient cards available:
-///  - If `side == Overlord`, the Overlord player loses the game and no cards
+///  - If `side == Covenant`, the Covenant player loses the game and no cards
 ///    are returned.
-///  - If `side == Champion`, all remaining cards are returned.
+///  - If `side == Riftcaller`, all remaining cards are returned.
 ///
 /// Cards are marked as revealed to the `side` player.
 pub fn run(game: &mut GameState, side: Side, quantity: u32, source: InitiatedBy) -> Result<()> {
@@ -95,7 +95,7 @@ impl StateMachine for DrawCardsData {
             DrawCardsStep::DrawCards => {
                 let card_ids = mutations::realize_top_of_deck(game, data.side, data.quantity)?;
 
-                if card_ids.len() != data.quantity as usize && data.side == Side::Overlord {
+                if card_ids.len() != data.quantity as usize && data.side == Side::Covenant {
                     mutations::game_over(game, data.side.opponent())?;
                     None
                 } else {

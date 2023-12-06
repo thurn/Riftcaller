@@ -19,8 +19,8 @@ use test_utils::*;
 
 #[test]
 pub fn astrian_oracle() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
     g.create_and_play(CardName::AstrianOracle);
     g.initiate_raid(RoomId::Sanctum);
@@ -29,8 +29,8 @@ pub fn astrian_oracle() {
 
 #[test]
 pub fn astrian_oracle_two_copies() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
 
     g.create_and_play(CardName::AstrianOracle);
@@ -43,8 +43,8 @@ pub fn astrian_oracle_two_copies() {
 
 #[test]
 pub fn astrian_oracle_upgraded() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
-        .opponent(TestSide::new(Side::Overlord).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(TestSide::new(Side::Covenant).hand_size(5))
         .build();
 
     g.create_and_play_upgraded(CardName::AstrianOracle);
@@ -57,7 +57,7 @@ pub fn astrian_oracle_upgraded() {
 #[test]
 pub fn resplendent_channeler() {
     let (cost, gained) = (3, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::ResplendentChanneler);
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + gained);
@@ -71,9 +71,9 @@ pub fn resplendent_channeler() {
 
 #[test]
 pub fn stalwart_protector() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().curse_count(), 0);
@@ -82,9 +82,9 @@ pub fn stalwart_protector() {
 
 #[test]
 pub fn stalwart_protector_pass() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::NoPromptAction);
     assert_eq!(g.client.cards.hand().curse_count(), 1);
@@ -93,10 +93,10 @@ pub fn stalwart_protector_pass() {
 
 #[test]
 pub fn stalwart_protector_multiple_copies() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
     g.create_and_play(CardName::StalwartProtector);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestSpellGiveCurse);
     g.click(Button::NoPromptAction);
     g.click(Button::Sacrifice);
@@ -108,7 +108,7 @@ pub fn stalwart_protector_multiple_copies() {
 
 #[test]
 pub fn stalwart_protector_activate() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).curses(1)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).curses(1)).build();
     let id = g.create_and_play(CardName::StalwartProtector);
     g.activate_ability(id, 1);
     assert_eq!(g.client.cards.hand().curse_count(), 0);
@@ -117,7 +117,7 @@ pub fn stalwart_protector_activate() {
 
 #[test]
 pub fn stalwart_protector_cannot_activate_with_no_curses() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::StalwartProtector);
     assert!(g.activate_ability_with_result(id, 1).is_err());
 }
@@ -125,7 +125,7 @@ pub fn stalwart_protector_cannot_activate_with_no_curses() {
 #[test]
 pub fn dawnwarden() {
     let (cost, gained) = (1, 2);
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::Dawnwarden);
     let test_sacrifice = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
     g.activate_ability(test_sacrifice, 0);
@@ -139,7 +139,7 @@ pub fn dawnwarden() {
 #[test]
 pub fn spellcraft_ritualist() {
     let cost = 2;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SpellcraftRitualist);
     assert_eq!(1, g.client.cards.display_shelf().wound_count());
     g.create_and_play(CardName::TestSpell);

@@ -21,7 +21,7 @@ use test_utils::*;
 
 #[test]
 fn arcane_recovery() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(5)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).mana(5)).build();
     g.create_and_play(CardName::ArcaneRecovery);
     assert_eq!(9, g.me().mana());
     assert_eq!(9, g.opponent.other_player.mana())
@@ -29,7 +29,7 @@ fn arcane_recovery() {
 
 #[test]
 fn eldritch_surge() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).mana(0)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).mana(0)).build();
     g.create_and_play(CardName::EldritchSurge);
     assert_eq!(3, g.me().mana());
     assert_eq!(3, g.opponent.other_player.mana())
@@ -37,7 +37,7 @@ fn eldritch_surge() {
 
 #[test]
 fn lodestone() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::Lodestone);
     assert_eq!("12", g.client.get_card(id).arena_icon());
     g.activate_ability(id, 1);
@@ -49,27 +49,27 @@ fn lodestone() {
 #[test]
 fn mana_battery() {
     let card_cost = 0;
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     let id = g.create_and_play(CardName::ManaBattery);
     g.activate_ability(id, 1);
-    g.pass_turn(Side::Champion);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
     assert!(g.dawn());
     assert_eq!(test_constants::STARTING_MANA - card_cost + 1, g.me().mana());
-    g.pass_turn(Side::Champion);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 2, g.me().mana());
-    g.pass_turn(Side::Champion);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
-    g.pass_turn(Side::Champion);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
     assert_eq!(test_constants::STARTING_MANA - card_cost + 3, g.me().mana());
 }
 
 #[test]
 fn contemplate() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     assert_eq!(0, g.client.cards.hand().len());
     g.create_and_play(CardName::Contemplate);
     assert_eq!(1, g.client.cards.hand().len());
@@ -78,7 +78,7 @@ fn contemplate() {
 
 #[test]
 fn ancestral_knowledge() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     assert_eq!(0, g.client.cards.hand().len());
     g.create_and_play(CardName::AncestralKnowledge);
     assert_eq!(3, g.client.cards.hand().len());
@@ -88,7 +88,7 @@ fn ancestral_knowledge() {
 #[test]
 fn simple_blade() {
     let stats = WeaponStats { cost: 4, attack: 2, boost_cost: 1, boost: 1 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleBlade);
     g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::SimpleBlade);
     assert_eq!(
@@ -101,7 +101,7 @@ fn simple_blade() {
 #[test]
 fn simple_axe() {
     let stats = WeaponStats { cost: 4, attack: 3, boost_cost: 3, boost: 1 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleAxe);
     g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::SimpleAxe);
     assert_eq!(
@@ -114,7 +114,7 @@ fn simple_axe() {
 #[test]
 fn simple_bow() {
     let stats = WeaponStats { cost: 0, attack: 1, boost_cost: 2, boost: 1 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleBow);
     g.fire_weapon_combat_abilities(Resonance::astral(), CardName::SimpleBow);
     assert_eq!(
@@ -127,7 +127,7 @@ fn simple_bow() {
 #[test]
 fn simple_club() {
     let stats = WeaponStats { cost: 2, attack: 2, boost_cost: 1, boost: 1 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleClub);
     g.fire_weapon_combat_abilities(Resonance::astral(), CardName::SimpleClub);
     assert_eq!(
@@ -140,7 +140,7 @@ fn simple_club() {
 #[test]
 fn simple_hammer() {
     let stats = WeaponStats { cost: 3, attack: 1, boost_cost: 1, boost: 1 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleHammer);
     g.fire_weapon_combat_abilities(Resonance::infernal(), CardName::SimpleHammer);
     assert_eq!(
@@ -153,7 +153,7 @@ fn simple_hammer() {
 #[test]
 fn simple_spear() {
     let stats = WeaponStats { cost: 4, attack: 0, boost_cost: 3, boost: 5 };
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleSpear);
     g.fire_weapon_combat_abilities(Resonance::infernal(), CardName::SimpleSpear);
     assert_eq!(
@@ -166,7 +166,7 @@ fn simple_spear() {
 #[test]
 fn ethereal_blade() {
     let (card_cost, activation_cost) = (1, 1);
-    let mut g = TestGame::new(TestSide::new(Side::Champion)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::EtherealBlade);
     g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::EtherealBlade);
     assert_eq!(test_constants::STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());

@@ -32,7 +32,7 @@ pub fn select_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<Vec
     let accessed = match target {
         RoomId::Vault => mutations::realize_top_of_deck(
             game,
-            Side::Overlord,
+            Side::Covenant,
             queries::vault_access_count(game)?,
         )?,
         RoomId::Sanctum => {
@@ -40,13 +40,13 @@ pub fn select_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<Vec
 
             random::cards_in_position(
                 game,
-                Side::Overlord,
-                CardPosition::Hand(Side::Overlord),
+                Side::Covenant,
+                CardPosition::Hand(Side::Covenant),
                 count as usize,
             )
         }
         RoomId::Crypt => {
-            game.card_list_for_position(Side::Overlord, CardPosition::DiscardPile(Side::Overlord))
+            game.card_list_for_position(Side::Covenant, CardPosition::DiscardPile(Side::Covenant))
         }
         _ => game.occupants(target).map(|c| c.id).collect(),
     };
@@ -54,7 +54,7 @@ pub fn select_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<Vec
     Ok(accessed)
 }
 
-/// Returns a [RaidChoice] for the Champion to access the provided
+/// Returns a [RaidChoice] for the Riftcaller to access the provided
 /// `card_id`, if any action can be taken.
 pub fn access_action_for_card(
     game: &GameState,
@@ -82,7 +82,7 @@ pub fn access_action_for_card(
     }
 }
 
-/// Can the Champion player score the `card_id` card when accessed during a
+/// Can the Riftcaller player score the `card_id` card when accessed during a
 /// raid?
 fn can_score_card(game: &GameState, info: RaidInfo, card_id: CardId) -> bool {
     let Some(raid) = &game.raid else {
@@ -100,10 +100,10 @@ fn can_score_card(game: &GameState, info: RaidInfo, card_id: CardId) -> bool {
     .into()
 }
 
-/// Can the Champion player raze the `card_id` project when accessed during a
+/// Can the Riftcaller player raze the `card_id` project when accessed during a
 /// raid?
 fn can_raze_project(game: &GameState, card_id: CardId) -> bool {
     !game.card(card_id).position().in_discard_pile()
         && queries::raze_cost(game, card_id)
-            <= mana::get(game, Side::Champion, ManaPurpose::RazeCard(card_id))
+            <= mana::get(game, Side::Riftcaller, ManaPurpose::RazeCard(card_id))
 }

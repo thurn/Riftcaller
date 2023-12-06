@@ -36,25 +36,25 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
         name: CardName::EquivalentExchange,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::overlord_card(meta, "equivalent_exchange"),
+        image: assets::covenant_card(meta, "equivalent_exchange"),
         card_type: CardType::Ritual,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: abilities::some(vec![
-            abilities::when_not_upgraded(meta, abilities::play_only_if_champion_cursed()),
+            abilities::when_not_upgraded(meta, abilities::play_only_if_riftcaller_cursed()),
             Some(abilities::silent_can_play(|g, _, _, current| {
                 current.add_constraint(
-                    g.score_area(Side::Overlord).filter(|c| c.definition().is_scheme()).count() > 0
-                        && g.score_area(Side::Champion)
+                    g.score_area(Side::Covenant).filter(|c| c.definition().is_scheme()).count() > 0
+                        && g.score_area(Side::Riftcaller)
                             .filter(|c| c.definition().is_scheme())
                             .count()
                             > 0,
                 )
             })),
             Some(Ability::new_with_delegate(
-                text!["Swap a scheme in your score area with one in the Champion's score area"],
+                text!["Swap a scheme in your score area with one in the Riftcaller's score area"],
                 this::on_played(|g, s, _| {
                     // Note that second option is shown first on prompt stack
 
@@ -62,7 +62,7 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
                         g,
                         s,
                         ButtonPromptContext::CardToTakeFromOpponent,
-                        g.score_area(Side::Champion)
+                        g.score_area(Side::Riftcaller)
                             .filter(|c| c.definition().is_scheme())
                             .map(|c| {
                                 PromptChoice::new()
@@ -76,7 +76,7 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
                         g,
                         s,
                         ButtonPromptContext::CardToGiveToOpponent,
-                        g.score_area(Side::Overlord)
+                        g.score_area(Side::Covenant)
                             .filter(|c| c.definition().is_scheme())
                             .map(|c| {
                                 PromptChoice::new()
@@ -106,17 +106,17 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
         name: CardName::Lightbond,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::overlord_card(meta, "lightbond"),
+        image: assets::covenant_card(meta, "lightbond"),
         card_type: CardType::Ritual,
         subtypes: vec![CardSubtype::Fabrication],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: abilities::some(vec![
             Some(
                 Ability::new(text![
                     text!["Play a scheme face-up"],
-                    text!["When the Champion accesses this scheme, give them", 2, Curses],
+                    text!["When the Riftcaller accesses this scheme, give them", 2, Curses],
                 ])
                 .delegate(this::on_played(|g, s, _| {
                     play_card_browser_builder::show(
@@ -149,7 +149,7 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
                             source: s.ability_id(),
                             marker_kind: CardInfoElementKind::NegativeEffect,
                             text: text![
-                                "When the Champion accesses this scheme, give them",
+                                "When the Riftcaller accesses this scheme, give them",
                                 2,
                                 Curses
                             ],

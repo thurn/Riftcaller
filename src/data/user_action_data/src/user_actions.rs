@@ -39,16 +39,16 @@ pub struct NewGameDebugOptions {
 /// Canonical decklists which can be used in new games
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub enum NamedDeck {
-    EmptyChampion,
-    EmptyOverlord,
-    ChampionTestSpells,
-    OverlordTestSpells,
-    BasicChampion,
-    TutorialChampion,
-    BasicOverlord,
-    TutorialOverlord,
-    CanonicalChampion,
-    CanonicalOverlord,
+    EmptyRiftcaller,
+    EmptyCovenant,
+    RiftcallerTestSpells,
+    CovenantTestSpells,
+    BasicRiftcaller,
+    TutorialRiftcaller,
+    BasicCovenant,
+    TutorialCovenant,
+    CanonicalRiftcaller,
+    CanonicalCovenant,
 }
 
 /// Identifies deck to be used in a new game
@@ -73,8 +73,8 @@ pub struct NewGameAction {
 
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Sequence, Display)]
 pub enum DebugScenario {
-    NewGameOverlord,
-    NewGameChampion,
+    NewGameCovenant,
+    NewGameRiftcaller,
     VsInfernalMinionAndScheme,
     VsAstralMinionAndScheme,
     VsMortalMinionAndScheme,
@@ -83,11 +83,11 @@ pub enum DebugScenario {
 impl DebugScenario {
     pub fn side(&self) -> Side {
         match self {
-            DebugScenario::NewGameOverlord => Side::Overlord,
-            DebugScenario::NewGameChampion => Side::Champion,
-            DebugScenario::VsInfernalMinionAndScheme => Side::Champion,
-            DebugScenario::VsAstralMinionAndScheme => Side::Champion,
-            DebugScenario::VsMortalMinionAndScheme => Side::Champion,
+            DebugScenario::NewGameCovenant => Side::Covenant,
+            DebugScenario::NewGameRiftcaller => Side::Riftcaller,
+            DebugScenario::VsInfernalMinionAndScheme => Side::Riftcaller,
+            DebugScenario::VsAstralMinionAndScheme => Side::Riftcaller,
+            DebugScenario::VsMortalMinionAndScheme => Side::Riftcaller,
         }
     }
 

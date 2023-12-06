@@ -41,7 +41,7 @@ pub fn test_ritual(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         sets: vec![CardSetName::Test],
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/3.png"),
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::None,
         abilities: vec![],
@@ -57,7 +57,7 @@ pub fn test_spell(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         sets: vec![CardSetName::Test],
         image: Sprite::new("Enixion/Fantasy Art Pack 2/Resized/2.png"),
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Primal,
         rarity: Rarity::None,
         abilities: vec![],
@@ -481,7 +481,7 @@ pub fn test_0_cost_ritual(metadata: CardMetadata) -> CardDefinition {
     CardDefinition { name: CardName::Test0CostRitual, cost: cost(0), ..test_ritual(metadata) }
 }
 
-pub fn test_1_cost_champion_spell(metadata: CardMetadata) -> CardDefinition {
+pub fn test_1_cost_riftcaller_spell(metadata: CardMetadata) -> CardDefinition {
     CardDefinition { name: CardName::Test1CostSpell, cost: cost(1), ..test_spell(metadata) }
 }
 
@@ -490,7 +490,7 @@ pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
         name: CardName::TestMinionDealDamageEndRaid,
         cost: cost(3),
         card_type: CardType::Minion,
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![combat_abilities::deal_damage::<1>(), combat_abilities::end_raid()],
@@ -508,7 +508,7 @@ pub fn test_attack_weapon(metadata: CardMetadata) -> CardDefinition {
         name: CardName::TestAttackWeapon,
         cost: cost(3),
         card_type: CardType::Artifact,
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![abilities::encounter_boost()],
@@ -567,7 +567,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
         cost: cost(5),
         card_type: CardType::Artifact,
         subtypes: vec![CardSubtype::Weapon],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         abilities: vec![
             Ability {
@@ -606,7 +606,7 @@ pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
         card_type: CardType::Ritual,
         sets: vec![CardSetName::Test],
         abilities: vec![Ability::new_with_delegate(
-            text!["Give the Champion a curse"],
+            text!["Give the Riftcaller a curse"],
             this::on_played(|g, s, _| curses::give_curses(g, s, 1)),
         )],
         ..test_ritual(metadata)
@@ -702,7 +702,7 @@ pub fn test_ritual_summon_all_minions(metadata: CardMetadata) -> CardDefinition 
             text!["Summon all minions, ignoring all costs"],
             this::on_played(|g, s, _| {
                 let minions = g
-                    .all_permanents(Side::Overlord)
+                    .all_permanents(Side::Covenant)
                     .filter(|c| c.definition().is_minion())
                     .card_ids();
                 for minion in minions {
@@ -727,11 +727,11 @@ pub fn test_spell_return_all_permanents_to_hand(metadata: CardMetadata) -> CardD
         card_type: CardType::Spell,
         sets: vec![CardSetName::Test],
         abilities: vec![Ability::new_with_delegate(
-            text!["Return all Champion permanents to hand"],
+            text!["Return all Riftcaller permanents to hand"],
             this::on_played(|g, s, _| {
                 mutations::move_cards(
                     g,
-                    &g.all_permanents(Side::Champion).card_ids(),
+                    &g.all_permanents(Side::Riftcaller).card_ids(),
                     CardPosition::Hand(s.side()),
                 )
             }),

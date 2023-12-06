@@ -20,9 +20,9 @@ use test_utils::*;
 #[test]
 fn equivalent_exchange() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).in_score_area(CardName::TestScheme3_10))
+        TestGame::new(TestSide::new(Side::Covenant).in_score_area(CardName::TestScheme3_10))
             .opponent(
-                TestSide::new(Side::Champion).curses(1).in_score_area(CardName::TestScheme4_20),
+                TestSide::new(Side::Riftcaller).curses(1).in_score_area(CardName::TestScheme4_20),
             )
             .build();
     assert_eq!(g.me().score(), 10);
@@ -37,22 +37,22 @@ fn equivalent_exchange() {
 #[test]
 fn equivalent_exchange_win_game() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Overlord).in_score_area(CardName::TestScheme3_10).bonus_points(40),
+        TestSide::new(Side::Covenant).in_score_area(CardName::TestScheme3_10).bonus_points(40),
     )
-    .opponent(TestSide::new(Side::Champion).curses(1).in_score_area(CardName::TestScheme4_20))
+    .opponent(TestSide::new(Side::Riftcaller).curses(1).in_score_area(CardName::TestScheme4_20))
     .build();
     assert_eq!(g.me().score(), 50);
     g.create_and_play(CardName::EquivalentExchange);
     g.click(Button::SelectForMultipart);
     g.click(Button::SwapCard);
-    assert!(g.is_victory_for_player(Side::Overlord));
+    assert!(g.is_victory_for_player(Side::Covenant));
 }
 
 #[test]
 fn equivalent_exchange_no_curse() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).in_score_area(CardName::TestScheme3_10))
-            .opponent(TestSide::new(Side::Champion).in_score_area(CardName::TestScheme4_20))
+        TestGame::new(TestSide::new(Side::Covenant).in_score_area(CardName::TestScheme3_10))
+            .opponent(TestSide::new(Side::Riftcaller).in_score_area(CardName::TestScheme4_20))
             .build();
     let id = g.add_to_hand(CardName::EquivalentExchange);
     assert!(g.play_card_with_result(id, g.user_id(), None).is_err());
@@ -61,8 +61,8 @@ fn equivalent_exchange_no_curse() {
 #[test]
 fn equivalent_exchange_upgraded() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).in_score_area(CardName::TestScheme3_10))
-            .opponent(TestSide::new(Side::Champion).in_score_area(CardName::TestScheme4_20))
+        TestGame::new(TestSide::new(Side::Covenant).in_score_area(CardName::TestScheme3_10))
+            .opponent(TestSide::new(Side::Riftcaller).in_score_area(CardName::TestScheme4_20))
             .build();
     g.create_and_play_upgraded(CardName::EquivalentExchange);
     g.click(Button::SelectForMultipart);
@@ -71,18 +71,18 @@ fn equivalent_exchange_upgraded() {
 }
 
 #[test]
-fn equivalent_exchange_no_overlord_scheme() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).in_score_area(CardName::TestScheme4_20))
+fn equivalent_exchange_no_covenant_scheme() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).in_score_area(CardName::TestScheme4_20))
         .build();
     let id = g.add_to_hand(CardName::EquivalentExchange);
     assert!(g.play_card_with_result(id, g.user_id(), None).is_err());
 }
 
 #[test]
-fn equivalent_exchange_no_champion_scheme() {
+fn equivalent_exchange_no_riftcaller_scheme() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).in_score_area(CardName::TestScheme4_20))
+        TestGame::new(TestSide::new(Side::Covenant).in_score_area(CardName::TestScheme4_20))
             .build();
     let id = g.add_to_hand(CardName::EquivalentExchange);
     assert!(g.play_card_with_result(id, g.user_id(), None).is_err());
@@ -90,7 +90,7 @@ fn equivalent_exchange_no_champion_scheme() {
 
 #[test]
 fn lightbond() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let scheme = g.add_to_hand(CardName::TestScheme3_10);
     g.create_and_play(CardName::Lightbond);
     g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
@@ -100,7 +100,7 @@ fn lightbond() {
         .room_occupants(RoomId::RoomA)
         .find_card(CardName::TestScheme3_10)
         .is_face_up());
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::RoomA);
     assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
 }
@@ -108,7 +108,7 @@ fn lightbond() {
 #[test]
 fn lightbond_upgraded() {
     let (cost, gained) = (0, 2);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let scheme = g.add_to_hand(CardName::TestScheme3_10);
     g.create_and_play_upgraded(CardName::Lightbond);
     g.play_card(scheme, g.user_id(), Some(RoomId::RoomA));
@@ -117,7 +117,7 @@ fn lightbond_upgraded() {
 
 #[test]
 fn lightbond_recur_from_discard() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let scheme1 = g.add_to_hand(CardName::TestScheme3_10);
     let scheme2 = g.add_to_hand(CardName::TestScheme4_20);
     let lightbond = g.add_to_hand(CardName::Lightbond);
@@ -133,7 +133,7 @@ fn lightbond_recur_from_discard() {
         .room_occupants(RoomId::RoomB)
         .find_card(CardName::TestScheme4_20)
         .is_face_up());
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::RoomA);
     assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
     g.opponent_click(Button::EndRaid);
@@ -143,7 +143,7 @@ fn lightbond_recur_from_discard() {
 
 #[test]
 fn lightbond_return_scheme_to_hand() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let scheme = g.add_to_hand(CardName::TestScheme3_10);
     let lightbond = g.add_to_hand(CardName::Lightbond);
     g.play_card(lightbond, g.user_id(), None);
@@ -159,7 +159,7 @@ fn lightbond_return_scheme_to_hand() {
         .room_occupants(RoomId::RoomA)
         .find_card(CardName::TestScheme3_10)
         .is_face_up());
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::RoomA);
     assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
 }

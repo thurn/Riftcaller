@@ -51,16 +51,16 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
                 .map(|number| custom_card_views::curse_card_view(builder, Some(game), number)),
         )
         .chain(
-            curses::is_champion_cursed(game)
+            curses::is_riftcaller_cursed(game)
                 .then(|| custom_card_views::dispel_card_view(builder, Some(game))),
         )
         .chain(
-            (game.champion.wounds > 0)
-                .then(|| custom_card_views::wound_card_view(builder, game.champion.wounds)),
+            (game.riftcaller.wounds > 0)
+                .then(|| custom_card_views::wound_card_view(builder, game.riftcaller.wounds)),
         )
         .chain(
-            (game.champion.leylines > 0)
-                .then(|| custom_card_views::leyline_card_view(builder, game.champion.leylines)),
+            (game.riftcaller.leylines > 0)
+                .then(|| custom_card_views::leyline_card_view(builder, game.riftcaller.leylines)),
         )
         .chain(custom_card_views::room_selector_card_view(builder, game))
         .collect::<Vec<_>>();
@@ -94,18 +94,18 @@ fn player_view(game: &GameState, side: Side) -> PlayerView {
         side: adapters::player_side(side),
         player_info: Some(PlayerInfo {
             valid_rooms_to_visit: match side {
-                Side::Overlord => enum_iterator::all::<RoomId>()
+                Side::Covenant => enum_iterator::all::<RoomId>()
                     .filter(|room_id| flags::can_take_progress_action(game, side, *room_id))
                     .map(adapters::room_identifier)
                     .collect(),
-                Side::Champion => enum_iterator::all::<RoomId>()
+                Side::Riftcaller => enum_iterator::all::<RoomId>()
                     .filter(|room_id| flags::can_take_initiate_raid_action(game, side, *room_id))
                     .map(adapters::room_identifier)
                     .collect(),
             },
             appearance: Some(assets::character_preset(match side {
-                Side::Overlord => CharacterPreset::Overlord,
-                Side::Champion => CharacterPreset::Champion,
+                Side::Covenant => CharacterPreset::Covenant,
+                Side::Riftcaller => CharacterPreset::Riftcaller,
             })),
         }),
         score: Some(ScoreView { score: queries::score(game, side) }),
@@ -117,8 +117,8 @@ fn player_view(game: &GameState, side: Side) -> PlayerView {
         action_tracker: Some(ActionTrackerView {
             available_action_count: game.player(side).actions,
             default_action_count: match side {
-                Side::Overlord => game_constants::OVERLORD_START_OF_TURN_ACTIONS,
-                Side::Champion => game_constants::CHAMPION_START_OF_TURN_ACTIONS,
+                Side::Covenant => game_constants::COVENANT_START_OF_TURN_ACTIONS,
+                Side::Riftcaller => game_constants::RIFTCALLER_START_OF_TURN_ACTIONS,
             },
         }),
         deck_view: Some(DeckView {
@@ -133,7 +133,7 @@ fn player_view(game: &GameState, side: Side) -> PlayerView {
 }
 
 pub fn skip_sending_to_client(card: &CardState) -> bool {
-    let hidden = !(card.is_visible_to(Side::Champion) || card.is_visible_to(Side::Overlord));
+    let hidden = !(card.is_visible_to(Side::Riftcaller) || card.is_visible_to(Side::Covenant));
     let position = card.position().kind();
     position == CardPositionKind::DeckUnknown || (position == CardPositionKind::DeckTop && hidden)
 }

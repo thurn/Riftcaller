@@ -59,7 +59,7 @@ pub struct ProgressCountersEvaluator {}
 
 impl StateEvaluator<RiftcallerState> for ProgressCountersEvaluator {
     fn evaluate(&self, game: &RiftcallerState, side: Side) -> Result<i32> {
-        if side == Side::Champion {
+        if side == Side::Riftcaller {
             return Ok(0);
         }
 

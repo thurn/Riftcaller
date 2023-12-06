@@ -24,8 +24,8 @@ use with_error::WithError;
 use crate::state_machine::StateMachine;
 use crate::{dispatch, mutations, state_machine};
 
-/// Deals damage. Discards random card from the hand of the Champion player for
-/// each point of damage. If no cards remain, they lose the game.
+/// Deals damage. Discards random card from the hand of the Riftcaller player
+/// for each point of damage. If no cards remain, they lose the game.
 pub fn deal(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Result<()> {
     state_machine::initiate(
         game,
@@ -37,7 +37,7 @@ pub fn deal(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Res
     )
 }
 
-/// Prevents up to `amount` damage from being dealt to the Champion in the
+/// Prevents up to `amount` damage from being dealt to the Riftcaller in the
 /// topmost active `deal_damage` state machine.
 pub fn prevent(game: &mut GameState, amount: u32) {
     if let Some(damage) = &mut game.state_machines.deal_damage.last_mut() {
@@ -46,7 +46,7 @@ pub fn prevent(game: &mut GameState, amount: u32) {
 }
 
 /// Returns the amount of damage currently scheduled to be dealt to the
-/// Champion in the topmost active `deal_damage` state machine.
+/// Riftcaller in the topmost active `deal_damage` state machine.
 pub fn incoming_amount(game: &GameState) -> Option<u32> {
     game.state_machines.deal_damage.last().map(|d| d.data.amount)
 }
@@ -112,17 +112,17 @@ impl StateMachine for DealDamageState {
                 for _ in 0..data.amount {
                     if let Some(card_id) = random::card_in_position(
                         game,
-                        Side::Champion,
-                        CardPosition::Hand(Side::Champion),
+                        Side::Riftcaller,
+                        CardPosition::Hand(Side::Riftcaller),
                     ) {
                         mutations::move_card(
                             game,
                             card_id,
-                            CardPosition::DiscardPile(Side::Champion),
+                            CardPosition::DiscardPile(Side::Riftcaller),
                         )?;
                         discarded.push(card_id);
                     } else {
-                        mutations::game_over(game, Side::Overlord)?;
+                        mutations::game_over(game, Side::Covenant)?;
                     }
                 }
 
@@ -142,7 +142,7 @@ impl StateMachine for DealDamageState {
                 Some(DealDamageStep::Finish)
             }
             DealDamageStep::Finish => {
-                game.current_history_counters(Side::Champion).damage_received += data.amount;
+                game.current_history_counters(Side::Riftcaller).damage_received += data.amount;
                 None
             }
         })

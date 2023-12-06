@@ -117,34 +117,34 @@ impl fmt::Display for AdventureId {
     }
 }
 
-/// The two players in a game: Overlord & Champion
+/// The two players in a game: Covenant & Riftcaller
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd, Sequence)]
 pub enum Side {
-    Overlord,
-    Champion,
+    Covenant,
+    Riftcaller,
 }
 
 impl Side {
     /// Gets the opponent of the provided player
     pub fn opponent(&self) -> Self {
         match self {
-            Side::Champion => Self::Overlord,
-            Side::Overlord => Self::Champion,
+            Side::Riftcaller => Self::Covenant,
+            Side::Covenant => Self::Riftcaller,
         }
     }
 
     pub fn letter(&self) -> &'static str {
         match self {
-            Side::Overlord => "O",
-            Side::Champion => "C",
+            Side::Covenant => "O",
+            Side::Riftcaller => "C",
         }
     }
 
     pub fn from_letter(s: impl Into<String>) -> Result<Side> {
         let letter = s.into();
         match () {
-            _ if letter == "O" => Ok(Side::Overlord),
-            _ if letter == "C" => Ok(Side::Champion),
+            _ if letter == "O" => Ok(Side::Covenant),
+            _ if letter == "C" => Ok(Side::Riftcaller),
             _ => fail!("Invalid side identifier"),
         }
     }
@@ -156,8 +156,8 @@ impl fmt::Debug for Side {
             f,
             "{}",
             match self {
-                Side::Overlord => "Overlord",
-                Side::Champion => "Champion",
+                Side::Covenant => "Covenant",
+                Side::Riftcaller => "Riftcaller",
             }
         )
     }
@@ -394,16 +394,16 @@ impl School {
 pub static STANDARD_SCHOOLS: &'static [School] =
     &[School::Law, School::Shadow, School::Primal, School::Pact, School::Beyond];
 
-/// The possible Rooms in which the Overlord player may play their cards.
+/// The possible Rooms in which the Covenant player may play their cards.
 #[derive(
     Copy, Clone, Eq, PartialEq, Hash, Debug, Serialize, Deserialize, Sequence, Ord, PartialOrd,
 )]
 pub enum RoomId {
-    /// The Overlord's deck
+    /// The Covenant's deck
     Vault,
-    /// The Overlord's hand
+    /// The Covenant's hand
     Sanctum,
-    /// The Overlord's discard pile
+    /// The Covenant's discard pile
     Crypt,
     RoomA,
     RoomB,
@@ -429,7 +429,7 @@ pub static OUTER_ROOMS: &'static [RoomId] =
     &[RoomId::RoomA, RoomId::RoomB, RoomId::RoomC, RoomId::RoomD, RoomId::RoomE];
 
 impl RoomId {
-    /// An 'inner room' is one of the three predefined rooms for the Overlord
+    /// An 'inner room' is one of the three predefined rooms for the Covenant
     /// player's deck, hand, and discard pile. Inner rooms cannot contain
     /// Schemes or Projects.
     pub fn is_inner_room(&self) -> bool {
@@ -485,7 +485,7 @@ pub enum RoomLocation {
     Occupant,
 }
 
-/// Used to control where an item is rendered within the Champion's item display
+/// Used to control where an item is rendered within the Riftcaller's item display
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum ItemLocation {
     Artifacts,
@@ -571,19 +571,19 @@ pub enum CardSubtype {
     /// Cards with the "Trap" subtype cannot be summoned
     Trap,
     /// Cards with the "Duskbound" subtype can be summoned at the end of the
-    /// Champion's turn.
+    /// Riftcaller's turn.
     Duskbound,
     /// Cards with the "Nightbound" subtype can be summoned during the
-    /// Overlord's turn.
+    /// Covenant's turn.
     Nightbound,
     /// Cards with the "Roombound" subtype can be summoned when a room is
-    /// approached by the Champion.
+    /// approached by the Riftcaller.
     Roombound,
     /// Cards with the "Summonbound" subtype can be summoned when a face-down
     /// minion is approached.
     Summonbound,
     /// Cards with the "Enchanted" subtype can have their power charges removed
-    /// by the Overlord.
+    /// by the Covenant.
     Enchanted,
     /// Cards with the "Weapon" subtype have the ability to defeat or resolve
     /// minion encounters.

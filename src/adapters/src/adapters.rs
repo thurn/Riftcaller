@@ -99,7 +99,7 @@ pub fn summon_project_card_identifier(card_id: CardId) -> CardIdentifier {
 /// Identifier for a card representing an implicit game ability
 pub fn custom_card_identifier(action: CustomCardIdentifier, number: u32) -> CardIdentifier {
     CardIdentifier {
-        side: player_side(Side::Champion),
+        side: player_side(Side::Riftcaller),
         index: number,
         game_action: Some(action as u32),
         ability_id: None,
@@ -116,8 +116,8 @@ pub enum ServerCardId {
     SummonProject(CardId),
     /// Card representing the ability to remove a curse in hand
     CurseCard,
-    /// Card representing the ability to destroy an evocation when the Champion
-    /// is cursed
+    /// Card representing the ability to destroy an evocation when the
+    /// Riftcaller is cursed
     DispelCard,
     /// Card representing selecting a room during a room selector prompt.
     RoomSelectorCard,
@@ -147,15 +147,15 @@ pub fn server_card_id(card_id: CardIdentifier) -> Result<ServerCardId> {
 
 pub fn player_side(side: Side) -> i32 {
     match side {
-        Side::Overlord => PlayerSide::Overlord as i32,
-        Side::Champion => PlayerSide::Champion as i32,
+        Side::Covenant => PlayerSide::Covenant as i32,
+        Side::Riftcaller => PlayerSide::Riftcaller as i32,
     }
 }
 
 pub fn side(side: i32) -> Result<Side> {
     match PlayerSide::from_i32(side) {
-        Some(PlayerSide::Overlord) => Ok(Side::Overlord),
-        Some(PlayerSide::Champion) => Ok(Side::Champion),
+        Some(PlayerSide::Covenant) => Ok(Side::Covenant),
+        Some(PlayerSide::Riftcaller) => Ok(Side::Riftcaller),
         _ => fail!("Invalid player side"),
     }
 }

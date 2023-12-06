@@ -63,7 +63,7 @@ namespace Riftcaller.Services
 
     public void UpdateViewForSide(PlayerSide side)
     {
-      RoomsOnBottom = side == PlayerSide.Overlord;
+      RoomsOnBottom = side == PlayerSide.Covenant;
       FlipView();
     }
 

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: CardsOverlordFull
+  m_Name: CardsCovenantFull
   m_EditorClassIdentifier: 
-  m_GroupName: CardsOverlordFull
+  m_GroupName: CardsCovenantFull
   m_Data:
     m_SerializedData: []
   m_GUID: ddfbe3d7458064886a118d76f3d03dae
   m_SerializeEntries:
   - m_GUID: 2825f7970da524b819e23202b18e2a89
-    m_Address: Cards/OverlordFullArt
+    m_Address: Cards/CovenantFullArt
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

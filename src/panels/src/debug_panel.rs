@@ -45,10 +45,10 @@ impl DebugPanel {
 
     fn main_menu_buttons(&self, row: Row) -> Row {
         let close = Panels::close(self.address());
-        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
-            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Champion)))
-            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Overlord)))
-            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Champion)))
+        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Covenant)))
+            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Riftcaller)))
+            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Covenant)))
+            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Riftcaller)))
             .child(debug_button(
                 "Show Logs",
                 vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
@@ -72,10 +72,10 @@ impl DebugPanel {
 
     fn game_mode_buttons(&self, row: Row, user_side: Side) -> Row {
         let close = Panels::close(self.address());
-        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Overlord)))
-            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Champion)))
-            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Overlord)))
-            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Champion)))
+        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Covenant)))
+            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Riftcaller)))
+            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Covenant)))
+            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Riftcaller)))
             .child(debug_button(
                 "Show Logs",
                 vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
@@ -116,14 +116,14 @@ impl DebugPanel {
                     .and_close(self.address()),
             ))
             .child(debug_button(
-                "Overlord AI",
-                Panels::open(StandardPanel::SetPlayerName(Side::Overlord))
+                "Covenant AI",
+                Panels::open(StandardPanel::SetPlayerName(Side::Covenant))
                     .wait_to_load(true)
                     .and_close(self.address()),
             ))
             .child(debug_button(
-                "Champion AI",
-                Panels::open(StandardPanel::SetPlayerName(Side::Champion))
+                "Riftcaller AI",
+                Panels::open(StandardPanel::SetPlayerName(Side::Riftcaller))
                     .wait_to_load(true)
                     .and_close(self.address()),
             ))

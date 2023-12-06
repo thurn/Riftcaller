@@ -44,10 +44,10 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
         name: CardName::EmpyrealChorus,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
-        image: assets::champion_card(meta, "empyreal_chorus"),
+        image: assets::riftcaller_card(meta, "empyreal_chorus"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![ActivatedAbility::new(
@@ -76,7 +76,7 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
             VisualEffects::new()
                 .ability_alert(s)
                 .timed_effect(
-                    GameObjectId::Character(Side::Champion),
+                    GameObjectId::Character(Side::Riftcaller),
                     TimedEffectData::new(TimedEffect::MagicCircles1(10))
                         .scale(4.0)
                         .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02"))
@@ -96,10 +96,10 @@ pub fn starfield_omen(meta: CardMetadata) -> CardDefinition {
         name: CardName::StarfieldOmen,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(4),
-        image: assets::champion_card(meta, "starfield_omen"),
+        image: assets::riftcaller_card(meta, "starfield_omen"),
         card_type: CardType::Evocation,
         subtypes: vec![CardSubtype::Mystic],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -130,10 +130,10 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
         name: CardName::Visitation,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(3),
-        image: assets::champion_card(meta, "visitation"),
+        image: assets::riftcaller_card(meta, "visitation"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -144,7 +144,7 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
                 effect: text!["Prevent up to", meta.upgrade(2, 5), Damage]
             }],
             in_play::on_will_deal_damage(|g, s, damage| {
-                if damage.source.side() == Side::Overlord {
+                if damage.source.side() == Side::Covenant {
                     show_prompt::with_context_and_choices(
                         g,
                         s,
@@ -169,10 +169,10 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
         name: CardName::BackupPlan,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::champion_card(meta, "backup_plan"),
+        image: assets::riftcaller_card(meta, "backup_plan"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![ActivatedAbility::new(
@@ -190,8 +190,8 @@ pub fn backup_plan(meta: CardMetadata) -> CardDefinition {
             mutations::evade_current_minion(g)?;
             mutations::lose_action_points_if_able(
                 g,
-                Side::Champion,
-                s.upgrade(g.champion.actions, 1),
+                Side::Riftcaller,
+                s.upgrade(g.riftcaller.actions, 1),
             )
         }))
         .build()],
@@ -204,10 +204,10 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
         name: CardName::PlanarSanctuary,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(2),
-        image: assets::champion_card(meta, "planar_sanctuary"),
+        image: assets::riftcaller_card(meta, "planar_sanctuary"),
         card_type: CardType::Evocation,
         subtypes: vec![CardSubtype::Mystic],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![
@@ -259,10 +259,10 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
         name: CardName::KnowledgeOfTheBeyond,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::champion_card(meta, "knowledge_of_the_beyond"),
+        image: assets::riftcaller_card(meta, "knowledge_of_the_beyond"),
         card_type: CardType::Evocation,
         subtypes: vec![CardSubtype::Augury],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Uncommon,
         abilities: vec![
@@ -325,10 +325,10 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
         name: CardName::SplinterOfTwilight,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(7, 4)),
-        image: assets::champion_card(meta, "splinter_of_twilight"),
+        image: assets::riftcaller_card(meta, "splinter_of_twilight"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![
@@ -370,7 +370,7 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
                     g,
                     RoomId::Crypt,
                     InitiatedBy::Ability(s.ability_id()),
-                    g.discard_pile(Side::Overlord).map(|c| c.id).collect(),
+                    g.discard_pile(Side::Covenant).map(|c| c.id).collect(),
                 )?;
 
                 mutations::gain_action_points(g, s.side(), 1)
@@ -386,17 +386,17 @@ pub fn a_moments_peace(meta: CardMetadata) -> CardDefinition {
         name: CardName::AMomentsPeace,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(5),
-        image: assets::champion_card(meta, "a_moments_peace"),
+        image: assets::riftcaller_card(meta, "a_moments_peace"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![
             Ability::new_with_delegate(
                 text!["The Covenant cannot win the game by scoring points"],
                 in_play::can_win_by_scoring_points(|_, s, side, current| {
-                    if *side == Side::Overlord {
+                    if *side == Side::Covenant {
                         current.disallow(s)
                     } else {
                         current

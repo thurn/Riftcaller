@@ -101,7 +101,7 @@ pub fn activated_ability_cards(
     let definition = rules::get(card.variant);
 
     if card.is_face_down() && card.position().in_play() {
-        if builder.user_side == Side::Overlord && definition.card_type == CardType::Project {
+        if builder.user_side == Side::Covenant && definition.card_type == CardType::Project {
             result.push(custom_card_views::summon_project_card_view(builder, game, card.id));
         }
 

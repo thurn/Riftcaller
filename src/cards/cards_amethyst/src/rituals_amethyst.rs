@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Card definitions for the Spell card type & Overlord player
+//! Card definitions for the Spell card type & Covenant player
 
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
@@ -33,7 +33,7 @@ pub fn overwhelming_power(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(1, "SpellBook01_92"),
         card_type: CardType::Ritual,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -55,7 +55,7 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(3, "SpellBook03_04"),
         card_type: CardType::Ritual,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: CardsChampion
+  m_Name: CardsRiftcaller
   m_EditorClassIdentifier: 
-  m_GroupName: CardsChampion
+  m_GroupName: CardsRiftcaller
   m_Data:
     m_SerializedData: []
   m_GUID: 7cae46d5144e84f8ebde69691b87c8ba
   m_SerializeEntries:
   - m_GUID: 5e9ea4097d1764d0d9dfbc89397dbcf0
-    m_Address: Cards/Champion
+    m_Address: Cards/Riftcaller
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

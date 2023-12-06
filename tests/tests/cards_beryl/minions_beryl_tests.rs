@@ -21,7 +21,7 @@ use test_utils::*;
 
 #[test]
 pub fn incarnation_of_justice() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::IncarnationOfJustice);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -34,7 +34,7 @@ pub fn incarnation_of_justice() {
 
 #[test]
 pub fn incarnation_of_justice_ancestral_knowledge() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::IncarnationOfJustice);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -46,12 +46,12 @@ pub fn incarnation_of_justice_ancestral_knowledge() {
 #[test]
 pub fn sentinel_sphinx() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Overlord)
+        TestSide::new(Side::Covenant)
             .face_up_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),
     )
     .build();
     g.create_and_play_with_target(CardName::SentinelSphinx, RoomId::Vault);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.create_and_play(CardName::BackupPlan);
 
     g.initiate_raid(RoomId::Sanctum);
@@ -67,9 +67,9 @@ pub fn sentinel_sphinx() {
 
 #[test]
 fn sentinel_sphinx_voidstep() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).face_up_defender(RoomId::Vault, CardName::SentinelSphinx),
+            TestSide::new(Side::Covenant).face_up_defender(RoomId::Vault, CardName::SentinelSphinx),
         )
         .build();
     g.create_and_play_with_target(CardName::Voidstep, RoomId::Vault);
@@ -78,9 +78,9 @@ fn sentinel_sphinx_voidstep() {
 
 #[test]
 fn sentinel_sphinx_foebane() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion))
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
         .opponent(
-            TestSide::new(Side::Overlord).face_up_defender(RoomId::Vault, CardName::SentinelSphinx),
+            TestSide::new(Side::Covenant).face_up_defender(RoomId::Vault, CardName::SentinelSphinx),
         )
         .build();
     g.create_and_play_with_target(CardName::Foebane, RoomId::Vault);

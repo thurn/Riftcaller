@@ -125,10 +125,10 @@ pub enum CardName {
     /// Minion with 5 health, 1 mana cost, and a "deal 1 damage" ability.
     TestMinionDealDamage,
     /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the
-    /// Champion loses 1 mana" combat ability.
+    /// Riftcaller loses 1 mana" combat ability.
     TestMinionLoseMana,
     /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the
-    /// Champion loses 1 action points" combat ability.
+    /// Riftcaller loses 1 action points" combat ability.
     TestMinionLoseActionPoints,
     /// Minion with the 'infernal' resonance, MINION_HEALTH health, and an 'end
     /// raid' ability.
@@ -181,11 +181,11 @@ pub enum CardName {
     TestSummonboundProject,
     /// Project with the "Roombound" subtype
     TestRoomboundProject,
-    /// Champion spell with a mana cost of 0
+    /// Riftcaller spell with a mana cost of 0
     Test0CostSpell,
-    /// Overlord ritual with a mana cost of 0
+    /// Covenant ritual with a mana cost of 0
     Test0CostRitual,
-    /// Champion spell with a mana cost of 1
+    /// Riftcaller spell with a mana cost of 1
     Test1CostSpell,
     TestMinionDealDamageEndRaid,
     TestAttackWeapon,
@@ -195,13 +195,13 @@ pub enum CardName {
     TestEvocation,
     TestSpellDeal1Damage,
     TestSpellDeal5Damage,
-    /// Ritual to return all discarded cards to the Overlord's hand
+    /// Ritual to return all discarded cards to the Covenant's hand
     TestRitualReturnDiscardToHand,
-    /// Ritual to return all 'occupant' cards to the Overlord's hand
+    /// Ritual to return all 'occupant' cards to the Covenant's hand
     TestRitualReturnAllOccupantsToHand,
     /// Summon all minion cards currently in play
     TestRitualSummonAllMinions,
-    /// Spell to return all Champion permanents to their hand
+    /// Spell to return all Riftcaller permanents to their hand
     TestSpellReturnAllPermanentsToHand,
 
     // Proof of Concept
@@ -237,7 +237,7 @@ pub enum CardName {
     UbrasEfarisTimeShaper,
 
     // Modifier card which has no effect
-    OverlordEmptyModifier,
+    CovenantEmptyModifier,
 
     // Tutorial Effects
     TutorialDisableDrawAction,

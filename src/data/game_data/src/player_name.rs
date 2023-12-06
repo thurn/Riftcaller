@@ -71,8 +71,8 @@ impl fmt::Display for PlayerId {
 )]
 pub enum AIPlayer {
     NoAction,
-    DebugOverlord,
-    DebugChampion,
+    DebugCovenant,
+    DebugRiftcaller,
     TutorialOpponent,
     TestMinimax,
     TestAlphaBetaScores,
@@ -88,7 +88,7 @@ impl AIPlayer {
 
     pub fn has_no_actions(self) -> bool {
         match self {
-            Self::NoAction | Self::DebugOverlord | Self::DebugChampion => true,
+            Self::NoAction | Self::DebugCovenant | Self::DebugRiftcaller => true,
             _ => false,
         }
     }

@@ -26,8 +26,8 @@ use once_cell::sync::Lazy;
 
 pub mod tutorial_actions;
 
-pub const PLAYER_SIDE: Side = Side::Champion;
-pub const OPPONENT_SIDE: Side = Side::Overlord;
+pub const PLAYER_SIDE: Side = Side::Riftcaller;
+pub const OPPONENT_SIDE: Side = Side::Covenant;
 
 /// Definition for the game tutorial
 pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
@@ -36,9 +36,9 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
         /// The first few turns of the tutorial game are pre-scripted and
         /// defined here
         steps: vec![
-            TutorialStep::SetHand(Side::Overlord, vec![CardName::Frog]),
-            TutorialStep::SetHand(Side::Champion, vec![CardName::EldritchSurge, CardName::SimpleAxe]),
-            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Captain, CardName::Machinate]),
+            TutorialStep::SetHand(Side::Covenant, vec![CardName::Frog]),
+            TutorialStep::SetHand(Side::Riftcaller, vec![CardName::EldritchSurge, CardName::SimpleAxe]),
+            TutorialStep::SetTopOfDeck(Side::Covenant, vec![CardName::Captain, CardName::Machinate]),
             TutorialStep::AddGameModifiers(vec![
                 CardName::TutorialDisableDrawAction,
                 CardName::TutorialDisableGainMana,
@@ -49,8 +49,8 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardName::TutorialDisableRaidContinue,
                 CardName::TutorialDisableEndRaid
             ]),
-            TutorialStep::KeepOpeningHand(Side::Champion),
-            TutorialStep::KeepOpeningHand(Side::Overlord),
+            TutorialStep::KeepOpeningHand(Side::Riftcaller),
+            TutorialStep::KeepOpeningHand(Side::Covenant),
             TutorialStep::OpponentAction(TutorialOpponentAction::DrawCard),
             TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
                 CardName::Machinate,
@@ -140,14 +140,14 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::Display(vec![opponent_say("Curse you!", Milliseconds(0))]),
             TutorialStep::AwaitTriggers(vec![TutorialTrigger::SuccessfullyEndRaid]),
             // User -> 4 mana
-            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::GatheringDark]),
+            TutorialStep::SetTopOfDeck(Side::Covenant, vec![CardName::GatheringDark]),
             TutorialStep::Display(vec![opponent_say("My power grows.", Milliseconds(0))]),
             TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::OpponentAction(TutorialOpponentAction::GainMana),
             // Opponent -> 5 mana
             TutorialStep::SetTopOfDeck(
-                Side::Champion,
+                Side::Riftcaller,
                 vec![CardName::Lodestone, CardName::ArcaneRecovery],
             ),
             TutorialStep::RemoveGameModifiers(vec![
@@ -185,7 +185,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 tooltip("Tap to draw card", TooltipAnchor::DrawCard, Milliseconds(4000)),
             ]),
             TutorialStep::AwaitTriggers(vec![TutorialTrigger::DrawCardAction]),
-            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Devise]),
+            TutorialStep::SetTopOfDeck(Side::Covenant, vec![CardName::Devise]),
             TutorialStep::OpponentAction(TutorialOpponentAction::PlayCard(
                 CardName::GatheringDark,
                 CardTarget::None,
@@ -200,7 +200,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                 CardTarget::Room(RoomId::RoomA),
             )),
             TutorialStep::SetTopOfDeck(
-                Side::Champion,
+                Side::Riftcaller,
                 vec![
                     // We set up the deck in such a way that an Abyssal weapon
                     // cannot be drawn to defeat the Frog, in order to
@@ -277,7 +277,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0),
                 ),
             ]),
-            TutorialStep::SetTopOfDeck(Side::Overlord, vec![CardName::Machinate, CardName::Conspire]),
+            TutorialStep::SetTopOfDeck(Side::Covenant, vec![CardName::Machinate, CardName::Conspire]),
             TutorialStep::AwaitTriggers(vec![TutorialTrigger::SuccessfullyEndRaid]),
             TutorialStep::AddGameModifiers(vec![
                 CardName::TutorialDisableRaidVault,
@@ -298,7 +298,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::OpponentAction(TutorialOpponentAction::ProgressRoom(
                 RoomId::RoomA,
             )),
-            TutorialStep::SetTopOfDeck(Side::Champion, vec![CardName::SimpleClub]),
+            TutorialStep::SetTopOfDeck(Side::Riftcaller, vec![CardName::SimpleClub]),
             TutorialStep::OpponentAction(TutorialOpponentAction::ProgressRoom(
                 RoomId::RoomA,
             )),
@@ -308,7 +308,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
                     Milliseconds(0),
                 ),
             ]),
-            TutorialStep::AwaitGameState(TutorialGameStateTrigger::HandContainsCard(Side::Champion, CardName::SimpleClub)),
+            TutorialStep::AwaitGameState(TutorialGameStateTrigger::HandContainsCard(Side::Riftcaller, CardName::SimpleClub)),
             TutorialStep::Display(vec![
                 user_say("The weapon I need!", Milliseconds(0)),
                 user_say_recurring("I should play this Simple Club", Milliseconds(10_000)),
@@ -384,7 +384,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
 fn user_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
     TutorialDisplay::SpeechBubble(SpeechBubble {
         text: text.into(),
-        side: Side::Champion,
+        side: Side::Riftcaller,
         delay,
         recurring: false,
     })
@@ -393,7 +393,7 @@ fn user_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
 fn user_say_recurring(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
     TutorialDisplay::SpeechBubble(SpeechBubble {
         text: text.into(),
-        side: Side::Champion,
+        side: Side::Riftcaller,
         delay,
         recurring: true,
     })
@@ -402,7 +402,7 @@ fn user_say_recurring(text: impl Into<String>, delay: Milliseconds) -> TutorialD
 fn opponent_say(text: impl Into<String>, delay: Milliseconds) -> TutorialDisplay {
     TutorialDisplay::SpeechBubble(SpeechBubble {
         text: text.into(),
-        side: Side::Overlord,
+        side: Side::Covenant,
         delay,
         recurring: false,
     })

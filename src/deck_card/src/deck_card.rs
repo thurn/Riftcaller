@@ -132,7 +132,7 @@ impl Component for DeckCard {
     fn build(self) -> Option<Node> {
         let definition = rules::get(self.name);
         let response_builder = ResponseBuilder::new(
-            Side::Champion,
+            Side::Riftcaller,
             ResponseState { animate: false, is_final_update: true, display_preference: None },
         );
         let context = CardViewContext::Default(definition);

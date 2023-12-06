@@ -36,8 +36,8 @@ namespace Riftcaller.Services
     [SerializeField] Registry _registry = null!;
     [SerializeField] RenderTexture _studioRenderTexture = null!;
     [SerializeField] DevelopmentAssets _developmentAssets = null!;
-    [SerializeField] CharacterPreset _championPreset = null!;
-    [SerializeField] CharacterPreset _overlordPreset = null!; 
+    [SerializeField] CharacterPreset _riftcallerPreset = null!;
+    [SerializeField] CharacterPreset _covenantPreset = null!; 
     bool _anyCompleted;
 
     readonly Dictionary<string, Object> _assets = new();
@@ -108,13 +108,13 @@ namespace Riftcaller.Services
         return null;
       }
 
-      if (address.Address.Contains("Champion"))
+      if (address.Address.Contains("Riftcaller"))
       {
-        return _championPreset;
+        return _riftcallerPreset;
       }
       else
       {
-        return _overlordPreset;
+        return _covenantPreset;
       }
     }
     

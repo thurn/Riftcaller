@@ -20,17 +20,17 @@ use test_utils::*;
 #[test]
 fn overwhelming_power() {
     let (cost, gained) = (10, 15);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::OverwhelmingPower);
     assert_eq!(test_constants::STARTING_MANA - cost + gained, g.me().mana());
 }
 
 #[test]
 fn forced_march() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let scheme = g.create_and_play(CardName::TestScheme3_10);
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
     g.create_and_play_with_target(CardName::ForcedMarch, test_constants::ROOM_ID);
     assert_eq!("2", g.client.get_card(scheme).arena_icon());
 }
@@ -38,7 +38,7 @@ fn forced_march() {
 #[test]
 #[should_panic]
 fn forced_march_same_turn_panic() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TestScheme3_10);
     g.create_and_play_with_target(CardName::ForcedMarch, test_constants::ROOM_ID);
 }

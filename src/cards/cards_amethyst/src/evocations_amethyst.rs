@@ -40,7 +40,7 @@ pub fn invisibility_ring(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::JeweleryRings, "rn_b_03"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability {
@@ -66,7 +66,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::JeweleryNecklaces, "07_ob"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -105,7 +105,7 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
         image: rexard_images::artifact(RexardArtifactType::Gloves, "gloves_20"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -145,7 +145,7 @@ pub fn magical_resonator(_: CardMetadata) -> CardDefinition {
         image: rexard_images::artifact(RexardArtifactType::Bracers, "bracers_2"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -174,7 +174,7 @@ pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
         image: rexard_images::get(RexardPack::MagicItems, "book_06_b"),
         card_type: CardType::Evocation,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(

@@ -78,7 +78,7 @@ pub enum RaidStep {
     WillPopulateAccessPrompt(PopulateAccessPromptSource),
     PopulateAccessPrompt,
     StartScoringCard(ScoredCard),
-    ChampionScoreEvent(ScoredCard),
+    RiftcallerScoreEvent(ScoredCard),
     ScoreEvent(ScoredCard),
     MoveToScoredPosition(ScoredCard),
     StartRazingCard(CardId, ManaValue),
@@ -126,11 +126,11 @@ pub enum RaidStatus {
 impl RaidStatus {
     pub fn side(&self) -> Side {
         match self {
-            RaidStatus::Begin => Side::Champion,
-            RaidStatus::Summon => Side::Overlord,
-            RaidStatus::Encounter => Side::Champion,
-            RaidStatus::ApproachRoom => Side::Overlord,
-            RaidStatus::Access => Side::Champion,
+            RaidStatus::Begin => Side::Riftcaller,
+            RaidStatus::Summon => Side::Covenant,
+            RaidStatus::Encounter => Side::Riftcaller,
+            RaidStatus::ApproachRoom => Side::Covenant,
+            RaidStatus::Access => Side::Riftcaller,
         }
     }
 }

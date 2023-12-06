@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb1436996484437ba088e125e09f1ff0, type: 3}
-  m_Name: Ovelord
+  m_Name: Covenant
   m_EditorClassIdentifier: 
   _bodyColor: {r: 0.93333334, g: 0.8156863, b: 0.70980394, a: 1}
   _customizations:

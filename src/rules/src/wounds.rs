@@ -21,15 +21,15 @@ use game_data::state_machine_data::{GiveWoundsData, GiveWoundsStep};
 use crate::state_machine::StateMachine;
 use crate::{dispatch, state_machine};
 
-/// Give the Champion player `quantity` wounds, which decreases their maximum
+/// Give the Riftcaller player `quantity` wounds, which decreases their maximum
 /// hand size.
 pub fn give(game: &mut GameState, source: AbilityId, quantity: WoundCount) -> Result<()> {
     state_machine::initiate(game, GiveWoundsData { quantity, source, step: GiveWoundsStep::Begin })
 }
 
-/// Remove `quantity` wounds from the Champion player.
+/// Remove `quantity` wounds from the Riftcaller player.
 pub fn remove_wounds(game: &mut GameState, quantity: WoundCount) -> Result<()> {
-    game.champion.wounds = game.champion.wounds.saturating_sub(quantity);
+    game.riftcaller.wounds = game.riftcaller.wounds.saturating_sub(quantity);
     Ok(())
 }
 
@@ -70,7 +70,7 @@ impl StateMachine for GiveWoundsData {
         Ok(match step {
             GiveWoundsStep::Begin => Some(GiveWoundsStep::AddWounds),
             GiveWoundsStep::AddWounds => {
-                game.champion.wounds += data.quantity;
+                game.riftcaller.wounds += data.quantity;
                 Some(GiveWoundsStep::WoundsReceivedEvent)
             }
             GiveWoundsStep::WoundsReceivedEvent => {

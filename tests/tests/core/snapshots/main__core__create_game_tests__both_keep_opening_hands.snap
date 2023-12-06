@@ -7,7 +7,7 @@ expression: "Summary::summarize(&response)"
 command_list: 
     UpdateGameView: 
         user: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -15,7 +15,7 @@ command_list:
             score: 0
             can_take_action: false
         opponent: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -171,7 +171,7 @@ command_list:
     DisplayGameMessage: Dusk
     UpdateGameView: 
         user: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -179,7 +179,7 @@ command_list:
             score: 0
             can_take_action: false
         opponent: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -340,7 +340,7 @@ command_list:
                 position: ObjectPositionStaging
     UpdateGameView: 
         user: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -348,7 +348,7 @@ command_list:
             score: 0
             can_take_action: false
         opponent: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -510,7 +510,7 @@ command_list:
 channel_response: 
     UpdateGameView: 
         user: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -518,7 +518,7 @@ channel_response:
             score: 0
             can_take_action: true
         opponent: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -674,7 +674,7 @@ channel_response:
     DisplayGameMessage: Dusk
     UpdateGameView: 
         user: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -682,7 +682,7 @@ channel_response:
             score: 0
             can_take_action: true
         opponent: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -861,7 +861,7 @@ channel_response:
             position: ObjectPositionRevealedCards { size: Small }
     UpdateGameView: 
         user: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 5
@@ -869,7 +869,7 @@ channel_response:
             score: 0
             can_take_action: true
         opponent: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 5

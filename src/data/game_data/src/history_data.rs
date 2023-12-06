@@ -136,9 +136,9 @@ pub struct HistoryCounters {
     pub cards_drawn: u32,
     /// Cards drawn this turn via card abilities by this player
     pub cards_drawn_via_abilities: u32,
-    /// Number of curses received this turn, only valid for the Champion player.
+    /// Number of curses received this turn, only valid for the Riftcaller player.
     pub curses_received: u32,
-    /// Amount of damage received this turn, only valid for the Champion player.
+    /// Amount of damage received this turn, only valid for the Riftcaller player.
     pub damage_received: u32,
     /// Number of schemes scored this turn by this player
     pub schemes_scored: u32,
@@ -159,9 +159,9 @@ pub struct GameHistory {
     #[serde_as(as = "Vec<(_, _)>")]
     entries: HashMap<TurnData, Vec<HistoryEvent>>,
     #[serde_as(as = "Vec<(_, _)>")]
-    overlord_counters: HashMap<TurnData, HistoryCounters>,
+    covenant_counters: HashMap<TurnData, HistoryCounters>,
     #[serde_as(as = "Vec<(_, _)>")]
-    champion_counters: HashMap<TurnData, HistoryCounters>,
+    riftcaller_counters: HashMap<TurnData, HistoryCounters>,
 }
 
 impl GameHistory {
@@ -175,8 +175,8 @@ impl GameHistory {
     /// turn.
     pub fn counters_for_turn(&self, turn: TurnData, side: Side) -> &HistoryCounters {
         match side {
-            Side::Overlord => self.overlord_counters.get(&turn).unwrap_or(&DEFAULT_COUNTERS),
-            Side::Champion => self.champion_counters.get(&turn).unwrap_or(&DEFAULT_COUNTERS),
+            Side::Covenant => self.covenant_counters.get(&turn).unwrap_or(&DEFAULT_COUNTERS),
+            Side::Riftcaller => self.riftcaller_counters.get(&turn).unwrap_or(&DEFAULT_COUNTERS),
         }
     }
 
@@ -184,8 +184,8 @@ impl GameHistory {
     /// provided turn.
     pub fn counters_for_turn_mut(&mut self, turn: TurnData, side: Side) -> &mut HistoryCounters {
         match side {
-            Side::Overlord => self.overlord_counters.entry(turn).or_default(),
-            Side::Champion => self.champion_counters.entry(turn).or_default(),
+            Side::Covenant => self.covenant_counters.entry(turn).or_default(),
+            Side::Riftcaller => self.riftcaller_counters.entry(turn).or_default(),
         }
     }
 

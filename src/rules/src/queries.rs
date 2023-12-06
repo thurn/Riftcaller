@@ -43,8 +43,8 @@ pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
 
 /// Returns the current score for the `side` player.
 pub fn score(game: &GameState, side: Side) -> PointsValue {
-    // All scored cards are owned by the Overlord
-    game.cards_in_position(Side::Overlord, CardPosition::Scored(side))
+    // All scored cards are owned by the Covenant
+    game.cards_in_position(Side::Covenant, CardPosition::Scored(side))
         .filter_map(|c| Some(c.definition().config.stats.scheme_points?.points))
         .sum::<u32>()
         + game.player(side).bonus_points
@@ -158,22 +158,22 @@ pub fn raze_cost(game: &GameState, card_id: CardId) -> RazeCost {
 /// turn
 pub fn start_of_turn_action_count(game: &GameState, side: Side) -> ActionCount {
     let default = match side {
-        Side::Overlord => game_constants::OVERLORD_START_OF_TURN_ACTIONS,
-        Side::Champion => game_constants::CHAMPION_START_OF_TURN_ACTIONS,
+        Side::Covenant => game_constants::COVENANT_START_OF_TURN_ACTIONS,
+        Side::Riftcaller => game_constants::RIFTCALLER_START_OF_TURN_ACTIONS,
     };
 
     dispatch::perform_query(game, StartOfTurnActionsQuery(side), default)
 }
 
-/// Look up the number of cards the Champion player can access from the Vault
+/// Look up the number of cards the Riftcaller player can access from the Vault
 /// during the current raid
 pub fn vault_access_count(game: &GameState) -> Result<u32> {
     let raid_id = game.raid()?.raid_id;
     Ok(dispatch::perform_query(game, VaultAccessCountQuery(raid_id), 1))
 }
 
-/// Look up the number of cards the Champion player can access from the Sanctum
-/// during the current raid
+/// Look up the number of cards the Riftcaller player can access from the
+/// Sanctum during the current raid
 pub fn sanctum_access_count(game: &GameState) -> Result<u32> {
     let raid_id = game.raid()?.raid_id;
     Ok(dispatch::perform_query(game, SanctumAccessCountQuery(raid_id), 1))
@@ -289,7 +289,7 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::WillPopulateAccessPrompt(..)
             | RaidStep::PopulateAccessPrompt
             | RaidStep::StartScoringCard(..)
-            | RaidStep::ChampionScoreEvent(..)
+            | RaidStep::RiftcallerScoreEvent(..)
             | RaidStep::ScoreEvent(..)
             | RaidStep::MoveToScoredPosition(..)
             | RaidStep::StartRazingCard(..)

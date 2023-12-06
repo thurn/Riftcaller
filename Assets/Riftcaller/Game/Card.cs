@@ -790,7 +790,7 @@ namespace Riftcaller.Game
     {
       var side = _cardId?.Side switch
       {
-        PlayerSide.Overlord => "O", PlayerSide.Champion => "C", _ => "??"
+        PlayerSide.Covenant => "O", PlayerSide.Riftcaller => "C", _ => "??"
       };
 
       if (_cardId?.AbilityId != null)

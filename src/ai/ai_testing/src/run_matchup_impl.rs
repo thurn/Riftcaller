@@ -37,9 +37,9 @@ pub enum Verbosity {
 #[clap(author, version, about, long_about = None)]
 pub struct Args {
     #[clap(arg_enum, value_parser)]
-    pub overlord: AIPlayer,
+    pub covenant: AIPlayer,
     #[clap(arg_enum, value_parser)]
-    pub champion: AIPlayer,
+    pub riftcaller: AIPlayer,
     #[clap(long, value_parser, default_value_t = 5)]
     /// Maximum time in seconds for each agent to use for moves.
     pub move_time: u64,
@@ -63,19 +63,19 @@ pub fn main() -> Result<()> {
 
 pub fn run(args: Args) -> Result<()> {
     cards_all::initialize();
-    let overlord = agents::get(args.overlord);
-    let champion = agents::get(args.champion);
+    let covenant = agents::get(args.covenant);
+    let riftcaller = agents::get(args.riftcaller);
 
     for i in 1..=args.matches {
         if args.verbosity >= Verbosity::Matches {
-            println!(">>> Running match {} between {} and {}", i, overlord.name(), champion.name());
+            println!(">>> Running match {} between {} and {}", i, covenant.name(), riftcaller.name());
         }
         let mut game = GameState::new(
             GameId::new_from_u128(0),
-            PlayerId::AI(args.overlord),
-            decklists::canonical_deck(Side::Overlord),
-            PlayerId::AI(args.champion),
-            decklists::canonical_deck(Side::Champion),
+            PlayerId::AI(args.covenant),
+            decklists::canonical_deck(Side::Covenant),
+            PlayerId::AI(args.riftcaller),
+            decklists::canonical_deck(Side::Riftcaller),
             GameConfiguration {
                 deterministic: args.deterministic,
                 simulation: true,
@@ -93,7 +93,7 @@ pub fn run(args: Args) -> Result<()> {
         loop {
             match state.status() {
                 GameStatus::InProgress { current_turn } => {
-                    let agent = if current_turn == Side::Overlord { &overlord } else { &champion };
+                    let agent = if current_turn == Side::Covenant { &covenant } else { &riftcaller };
                     let config = AgentConfig {
                         panic_on_search_timeout: args.panic_on_search_timeout,
                         deadline: Instant::now() + Duration::from_secs(args.move_time),
@@ -106,7 +106,7 @@ pub fn run(args: Args) -> Result<()> {
                     }
                 }
                 GameStatus::Completed { winner } => {
-                    let agent = if winner == Side::Overlord { &overlord } else { &champion };
+                    let agent = if winner == Side::Covenant { &covenant } else { &riftcaller };
                     if args.verbosity >= Verbosity::Matches {
                         clear_action_line(args.verbosity);
                         println!(

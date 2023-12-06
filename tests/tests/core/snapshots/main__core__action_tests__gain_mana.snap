@@ -7,7 +7,7 @@ expression: "Summary::run(&response)"
 command_list: 
     UpdateGameView: 
         user: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 6
@@ -15,7 +15,7 @@ command_list:
             score: 0
             can_take_action: true
         opponent: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 999
@@ -46,7 +46,7 @@ command_list:
 channel_response: 
     UpdateGameView: 
         user: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 999
@@ -54,7 +54,7 @@ channel_response:
             score: 0
             can_take_action: false
         opponent: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 6

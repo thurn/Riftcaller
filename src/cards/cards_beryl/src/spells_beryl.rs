@@ -51,16 +51,16 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
         name: CardName::Restoration,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
-        image: assets::champion_card(meta, "restoration"),
+        image: assets::riftcaller_card(meta, "restoration"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Conjuration],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: abilities::some(vec![
             Some(abilities::silent_can_play(|g, _, _, current| {
                 current.add_constraint(
-                    g.discard_pile(Side::Champion).any(|c| c.definition().is_artifact()),
+                    g.discard_pile(Side::Riftcaller).any(|c| c.definition().is_artifact()),
                 )
             })),
             Some(Ability::new_with_delegate(
@@ -78,7 +78,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                         .context(PromptContext::PlayFromDiscard(CardType::Artifact))
                         .movement_effect(Projectile::Projectiles1(3))
                         .visual_effect(
-                            GameObjectId::DiscardPile(Side::Champion),
+                            GameObjectId::DiscardPile(Side::Riftcaller),
                             TimedEffectData::new(TimedEffect::MagicCircles1(2))
                                 .scale(2.0)
                                 .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff03_P1"))
@@ -106,10 +106,10 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
         name: CardName::StrikeTheHeart,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(3),
-        image: assets::champion_card(meta, "strike_the_heart"),
+        image: assets::riftcaller_card(meta, "strike_the_heart"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Raid],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new(text![
@@ -122,7 +122,7 @@ pub fn strike_the_heart(meta: CardMetadata) -> CardDefinition {
         .delegate(this::on_played(|g, s, _| {
             VisualEffects::new()
                 .timed_effect(
-                    GameObjectId::Character(Side::Overlord),
+                    GameObjectId::Character(Side::Covenant),
                     TimedEffectData::new(TimedEffect::MagicCircles1(1))
                         .scale(2.0)
                         .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
@@ -144,10 +144,10 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
         name: CardName::EnduringRadiance,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::champion_card(meta, "enduring_radiance"),
+        image: assets::riftcaller_card(meta, "enduring_radiance"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -163,7 +163,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
 
                 VisualEffects::new()
                     .timed_effect(
-                        GameObjectId::Character(Side::Champion),
+                        GameObjectId::Character(Side::Riftcaller),
                         TimedEffectData::new(TimedEffect::MagicCircles1(3))
                             .scale(2.0)
                             .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Heal02"))
@@ -202,10 +202,10 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
         name: CardName::SiftTheSands,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
-        image: assets::champion_card(meta, "sift_the_sands"),
+        image: assets::riftcaller_card(meta, "sift_the_sands"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Conjuration],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new(text![
@@ -224,7 +224,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
                 PlayCardBrowserBuilder::new(s, cards)
                     .movement_effect(Projectile::Projectiles1(3))
                     .visual_effect(
-                        GameObjectId::Deck(Side::Champion),
+                        GameObjectId::Deck(Side::Riftcaller),
                         TimedEffectData::new(TimedEffect::MagicCircles1(4))
                             .scale(2.0)
                             .sound(SoundEffect::LightMagic("RPG3_LightMagic4_P1_Cast"))
@@ -244,7 +244,7 @@ pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
     fn update(game: &mut GameState, alert: Option<AbilityId>) {
         VisualEffects::new()
             .timed_effect(
-                GameObjectId::Deck(Side::Champion),
+                GameObjectId::Deck(Side::Riftcaller),
                 TimedEffectData::new(TimedEffect::MagicCircles1(5))
                     .scale(4.0)
                     .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_HealingWing_P1"))
@@ -258,10 +258,10 @@ pub fn holy_aura(meta: CardMetadata) -> CardDefinition {
         name: CardName::HolyAura,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
-        image: assets::champion_card(meta, "holy_aura"),
+        image: assets::riftcaller_card(meta, "holy_aura"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -291,10 +291,10 @@ pub fn voidstep(meta: CardMetadata) -> CardDefinition {
         name: CardName::Voidstep,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(2, 0)),
-        image: assets::champion_card(meta, "voidstep"),
+        image: assets::riftcaller_card(meta, "voidstep"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Raid],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![Ability::new(text![
@@ -304,7 +304,7 @@ pub fn voidstep(meta: CardMetadata) -> CardDefinition {
         .delegate(this::on_played(|g, s, play_card| {
             VisualEffects::new()
                 .timed_effect(
-                    GameObjectId::Character(Side::Champion),
+                    GameObjectId::Character(Side::Riftcaller),
                     TimedEffectData::new(TimedEffect::MagicCircles1(2))
                         .scale(2.0)
                         .sound(SoundEffect::WaterMagic("RPG3_WaterMagic3_P1_Castv2"))
@@ -336,10 +336,10 @@ pub fn keensight(meta: CardMetadata) -> CardDefinition {
         name: CardName::Keensight,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::champion_card(meta, "keensight"),
+        image: assets::riftcaller_card(meta, "keensight"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Raid],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![Ability::new(text![
@@ -385,10 +385,10 @@ pub fn ethereal_incursion(meta: CardMetadata) -> CardDefinition {
         name: CardName::EtherealIncursion,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(2, 0)),
-        image: assets::champion_card(meta, "ethereal_incursion"),
+        image: assets::riftcaller_card(meta, "ethereal_incursion"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Raid],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![Ability::new(text![
@@ -418,10 +418,10 @@ pub fn time_stop(meta: CardMetadata) -> CardDefinition {
         name: CardName::TimeStop,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
-        image: assets::champion_card(meta, "time_stop"),
+        image: assets::riftcaller_card(meta, "time_stop"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Raid],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![
@@ -443,10 +443,10 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
         name: CardName::ChainsOfBinding,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(3, 0)),
-        image: assets::champion_card(meta, "chains_of_binding"),
+        image: assets::riftcaller_card(meta, "chains_of_binding"),
         card_type: CardType::Spell,
         subtypes: vec![],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Uncommon,
         abilities: vec![
@@ -508,10 +508,10 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
         name: CardName::DelveIntoDarkness,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(2),
-        image: assets::champion_card(meta, "delve_into_darkness"),
+        image: assets::riftcaller_card(meta, "delve_into_darkness"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Expedition],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Uncommon,
         abilities: vec![
@@ -522,7 +522,7 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                 text!["Shuffle the", Vault]
             ])
             .delegate(this::on_played(|g, s, _| {
-                let cards = mutations::realize_top_of_deck(g, Side::Overlord, 8)?;
+                let cards = mutations::realize_top_of_deck(g, Side::Covenant, 8)?;
                 custom_access::initiate(
                     g,
                     RoomId::Vault,
@@ -569,7 +569,7 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
             ))
             .delegate(delegates::on_custom_access_end(
                 |_, s, initiated_by| Some(s.ability_id()) == initiated_by.ability_id(),
-                |g, _, _| mutations::shuffle_deck(g, Side::Overlord),
+                |g, _, _| mutations::shuffle_deck(g, Side::Covenant),
             )),
         ],
         config: CardConfig::default(),
@@ -581,10 +581,10 @@ pub fn liminal_transposition(meta: CardMetadata) -> CardDefinition {
         name: CardName::LiminalTransposition,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(1, 0)),
-        image: assets::champion_card(meta, "liminal_transposition"),
+        image: assets::riftcaller_card(meta, "liminal_transposition"),
         card_type: CardType::Spell,
         subtypes: vec![CardSubtype::Raid],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![
@@ -599,7 +599,7 @@ pub fn liminal_transposition(meta: CardMetadata) -> CardDefinition {
                 |g, s, event| {
                     VisualEffects::new()
                         .timed_effect(
-                            GameObjectId::Character(Side::Champion),
+                            GameObjectId::Character(Side::Riftcaller),
                             TimedEffectData::new(TimedEffect::MagicCircles1(2))
                                 .scale(2.0)
                                 .sound(SoundEffect::WaterMagic("RPG3_WaterMagic2_Cast"))

@@ -22,7 +22,7 @@ use rules::{damage, mana, mutations};
 use crate::text_macro::text;
 use crate::{text_helpers, this};
 
-/// Minion combat ability which deals damage to the Champion player during
+/// Minion combat ability which deals damage to the Riftcaller player during
 /// combat, causing them to discard `N` random cards and lose the game if they
 /// cannot.
 pub fn deal_damage<const N: DamageAmount>() -> Ability {
@@ -33,12 +33,12 @@ pub fn deal_damage<const N: DamageAmount>() -> Ability {
     }
 }
 
-/// Minion combat ability which causes the Champion to lose `N` mana.
+/// Minion combat ability which causes the Riftcaller to lose `N` mana.
 pub fn lose_mana<const N: ManaValue>() -> Ability {
     Ability::new_with_delegate(
-        text![text_helpers::named_trigger(Combat, text!["The Champion", LosesMana(N)])],
+        text![text_helpers::named_trigger(Combat, text!["The Riftcaller", LosesMana(N)])],
         this::combat(|g, s, _| {
-            mana::lose_upto(g, Side::Champion, s.initiated_by(), ManaPurpose::CombatAbility, N)
+            mana::lose_upto(g, Side::Riftcaller, s.initiated_by(), ManaPurpose::CombatAbility, N)
         }),
     )
 }
@@ -60,20 +60,20 @@ pub fn gain_mana<const N: ManaValue>() -> Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text![GainMana(N)]),
         delegates: vec![this::combat(|g, _, _| {
-            mana::gain(g, Side::Overlord, N);
+            mana::gain(g, Side::Covenant, N);
             Ok(())
         })],
     }
 }
 
-/// Minion combat ability which causes the Champion player to lose action
+/// Minion combat ability which causes the Riftcaller player to lose action
 /// points.
 pub fn lose_action_points<const N: ActionCount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text!["Remove", Actions(1)]),
         delegates: vec![this::combat(|g, _s, _| {
-            mutations::lose_action_points_if_able(g, Side::Champion, N)
+            mutations::lose_action_points_if_able(g, Side::Riftcaller, N)
         })],
     }
 }

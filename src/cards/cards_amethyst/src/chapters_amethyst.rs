@@ -28,7 +28,7 @@ pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
         image: rexard_images::spell(8, "SpellBook08_22"),
         card_type: CardType::Chapter,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Shadow,
         rarity: Rarity::Riftcaller,
         abilities: vec![Ability::new_with_delegate(

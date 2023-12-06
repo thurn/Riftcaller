@@ -377,8 +377,8 @@ impl CardState {
     /// players.
     pub fn internal_turn_face_up(&mut self) {
         self.data.is_face_up = true;
-        self.internal_set_visible_to(Side::Overlord, true);
-        self.internal_set_visible_to(Side::Champion, true);
+        self.internal_set_visible_to(Side::Covenant, true);
+        self.internal_set_visible_to(Side::Riftcaller, true);
     }
 
     /// Change a card to the 'face down' state, but does *not* change its

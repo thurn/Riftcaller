@@ -24,7 +24,7 @@ pub fn create(side: Side) -> BattleData {
         opponent_deck: decklists::canonical_deck(side),
         opponent_name: "Cloaked Bandit".to_string(),
         reward: Coins(250),
-        character: CharacterPreset::Overlord,
+        character: CharacterPreset::Covenant,
         character_facing: CharacterFacing::Down,
         region_to_reveal: 2,
     }

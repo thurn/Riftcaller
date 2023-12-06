@@ -38,10 +38,10 @@ pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
         name: CardName::AstrianOracle,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(5, 8)),
-        image: assets::champion_card(meta, "astrian_oracle"),
+        image: assets::riftcaller_card(meta, "astrian_oracle"),
         card_type: CardType::Ally,
         subtypes: vec![CardSubtype::Noble],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new(text![
@@ -72,10 +72,10 @@ pub fn resplendent_channeler(meta: CardMetadata) -> CardDefinition {
         name: CardName::ResplendentChanneler,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(3),
-        image: assets::champion_card(meta, "resplendent_channeler"),
+        image: assets::riftcaller_card(meta, "resplendent_channeler"),
         card_type: CardType::Ally,
         subtypes: vec![CardSubtype::Cleric],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![Ability::new_with_delegate(
@@ -112,7 +112,7 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
     fn update(game: &mut GameState) {
         VisualEffects::new()
             .timed_effect(
-                GameObjectId::Character(Side::Champion),
+                GameObjectId::Character(Side::Riftcaller),
                 TimedEffectData::new(TimedEffect::MagicCircles1(7))
                     .scale(2.0)
                     .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_HealingWing_P1"))
@@ -125,10 +125,10 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
         name: CardName::StalwartProtector,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(1, 0)),
-        image: assets::champion_card(meta, "stalwart_protector"),
+        image: assets::riftcaller_card(meta, "stalwart_protector"),
         card_type: CardType::Ally,
         subtypes: vec![CardSubtype::Warrior],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -154,7 +154,7 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
             ),
             ActivatedAbility::new(costs::sacrifice(), text!["Remove a curse"])
                 .delegate(this::can_activate(|g, _, _, flag| {
-                    flag.add_constraint(curses::is_champion_cursed(g))
+                    flag.add_constraint(curses::is_riftcaller_cursed(g))
                 }))
                 .delegate(this::on_activated(|g, _, _| {
                     update(g);
@@ -171,10 +171,10 @@ pub fn dawnwarden(meta: CardMetadata) -> CardDefinition {
         name: CardName::Dawnwarden,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(1),
-        image: assets::champion_card(meta, "dawnwarden"),
+        image: assets::riftcaller_card(meta, "dawnwarden"),
         card_type: CardType::Ally,
         subtypes: vec![CardSubtype::Cleric],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
@@ -226,10 +226,10 @@ pub fn spellcraft_ritualist(meta: CardMetadata) -> CardDefinition {
         name: CardName::SpellcraftRitualist,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(2),
-        image: assets::champion_card(meta, "spellcraft_ritualist"),
+        image: assets::riftcaller_card(meta, "spellcraft_ritualist"),
         card_type: CardType::Ally,
         subtypes: vec![CardSubtype::Mage],
-        side: Side::Champion,
+        side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![

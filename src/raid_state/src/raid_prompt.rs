@@ -54,11 +54,11 @@ pub fn build(game: &GameState, raid: &RaidData, side: Side) -> Option<InterfaceM
             overlay: None,
             card_anchor_nodes,
         })
-    } else if raid.target == RoomId::Sanctum && side == Side::Overlord && !raid.accessed.is_empty()
+    } else if raid.target == RoomId::Sanctum && side == Side::Covenant && !raid.accessed.is_empty()
     {
         // During sanctum access, display an annotation on accessed cards for the
-        // Overlord
-        overlord_sanctum_access_info(raid)
+        // Covenant
+        covenant_sanctum_access_info(raid)
     } else {
         None
     }
@@ -88,7 +88,7 @@ fn current_prompt(game: &GameState, side: Side) -> Option<&RaidPrompt> {
     None
 }
 
-fn overlord_sanctum_access_info(raid: &RaidData) -> Option<InterfaceMainControls> {
+fn covenant_sanctum_access_info(raid: &RaidData) -> Option<InterfaceMainControls> {
     Some(InterfaceMainControls {
         node: None,
         overlay: None,

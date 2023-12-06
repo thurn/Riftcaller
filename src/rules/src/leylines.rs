@@ -21,8 +21,8 @@ use game_data::state_machine_data::{GiveLeylinesData, GiveLeylinesStep};
 use crate::state_machine::StateMachine;
 use crate::{dispatch, state_machine};
 
-/// Gives `quantity` leylines to the Champion player. Each leyline gives the
-/// Champion one mana to use during each raid.
+/// Gives `quantity` leylines to the Riftcaller player. Each leyline gives the
+/// Riftcaller one mana to use during each raid.
 pub fn give(game: &mut GameState, source: AbilityId, quantity: u32) -> Result<()> {
     state_machine::initiate(
         game,
@@ -67,7 +67,7 @@ impl StateMachine for GiveLeylinesData {
         Ok(match step {
             GiveLeylinesStep::Begin => Some(GiveLeylinesStep::AddLeylines),
             GiveLeylinesStep::AddLeylines => {
-                game.champion.leylines += data.quantity;
+                game.riftcaller.leylines += data.quantity;
                 Some(GiveLeylinesStep::LeylinesReceivedEvent)
             }
             GiveLeylinesStep::LeylinesReceivedEvent => {

@@ -20,7 +20,7 @@ use test_utils::*;
 
 #[test]
 fn test_keyword_aggregation() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     assert_eq!(
         format!("{}Combat: Deal 1 damage. End the raid.", icons::TRIGGER),

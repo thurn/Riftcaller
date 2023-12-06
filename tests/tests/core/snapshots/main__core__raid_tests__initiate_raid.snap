@@ -7,7 +7,7 @@ expression: "Summary::summarize(&response)"
 command_list: 
     UpdateGameView: 
         user: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 996
@@ -15,7 +15,7 @@ command_list:
             score: 0
             can_take_action: true
         opponent: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 999
@@ -83,7 +83,7 @@ command_list:
                 position: ObjectPositionItem { item_location: Left }
     UpdateGameView: 
         user: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 996
@@ -91,7 +91,7 @@ command_list:
             score: 0
             can_take_action: false
         opponent: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 999
@@ -160,7 +160,7 @@ command_list:
 channel_response: 
     UpdateGameView: 
         user: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 999
@@ -168,7 +168,7 @@ channel_response:
             score: 0
             can_take_action: false
         opponent: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 996
@@ -281,7 +281,7 @@ channel_response:
         visit_type: InitiateRaid
     UpdateGameView: 
         user: 
-            side: Overlord
+            side: Covenant
             player_info: 
             valid_rooms_to_visit: 
             mana: 999
@@ -289,7 +289,7 @@ channel_response:
             score: 0
             can_take_action: true
         opponent: 
-            side: Champion
+            side: Riftcaller
             player_info: 
             valid_rooms_to_visit: 
             mana: 996

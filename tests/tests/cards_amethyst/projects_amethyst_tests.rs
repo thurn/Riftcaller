@@ -19,12 +19,12 @@ use test_utils::*;
 
 #[test]
 fn test_card_stored_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::TestProjectTriggeredAbilityTakeManaAtDusk);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert!(g.dawn());
     assert_eq!(test_constants::STARTING_MANA, g.me().mana());
-    g.move_to_end_step(Side::Champion);
+    g.move_to_end_step(Side::Riftcaller);
     g.summon_project(id);
     assert_eq!(test_constants::STARTING_MANA - test_constants::SUMMON_PROJECT_COST, g.me().mana());
     g.click(Button::StartTurn);
@@ -43,31 +43,31 @@ fn test_card_stored_mana() {
 #[test]
 fn gemcarver() {
     let (card_cost, taken) = (2, 3);
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::Gemcarver);
-    g.pass_turn(Side::Overlord);
-    g.move_to_end_step(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
     g.summon_project(id);
     g.click(Button::StartTurn);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken, g.me().mana());
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken * 2, g.me().mana());
     assert_eq!(2, g.client.cards.hand().len());
-    g.pass_turn(Side::Overlord);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(test_constants::STARTING_MANA - card_cost + taken * 3, g.me().mana());
     assert_eq!(4, g.client.cards.hand().len());
 }
 
 #[test]
 fn spike_trap() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(5))
         .build();
     g.create_and_play(CardName::SpikeTrap);
     g.progress_room_times(2);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     assert!(g.dawn());
     assert_eq!(5, g.client.cards.opponent_hand().len());
@@ -77,11 +77,11 @@ fn spike_trap() {
 
 #[test]
 fn spike_trap_no_counters() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(5))
         .build();
     g.create_and_play(CardName::SpikeTrap);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert!(g.dawn());
     assert_eq!(5, g.client.cards.opponent_hand().len());
     g.initiate_raid(test_constants::ROOM_ID);
@@ -90,14 +90,14 @@ fn spike_trap_no_counters() {
 
 #[test]
 fn spike_trap_victory() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(0))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(0))
         .build();
     g.create_and_play(CardName::SpikeTrap);
     g.progress_room_times(2);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     assert!(g.dawn());
     g.initiate_raid(test_constants::ROOM_ID);
-    assert!(g.is_victory_for_player(Side::Overlord));
+    assert!(g.is_victory_for_player(Side::Covenant));
 }

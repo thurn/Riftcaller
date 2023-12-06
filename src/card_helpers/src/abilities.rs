@@ -186,10 +186,10 @@ pub fn play_as_first_action() -> Ability {
     )
 }
 
-/// Ability for cards that can only be played if the Champion is cursed
-pub fn play_only_if_champion_cursed() -> Ability {
+/// Ability for cards that can only be played if the Riftcaller is cursed
+pub fn play_only_if_riftcaller_cursed() -> Ability {
     Ability::new_with_delegate(
-        text!["Play only if the Champion is", Cursed],
+        text!["Play only if the Riftcaller is", Cursed],
         this::can_play(|g, _, _, current| current.add_constraint(curses::get(g) > 0)),
     )
 }

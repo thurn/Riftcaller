@@ -43,7 +43,7 @@ pub enum GameEffect {
     /// An action point cost for a prompt choice. Choices will not be shown if
     /// the player is unable to pay their costs.
     ActionCost(Side, ActionCount),
-    /// Deal damage to the Champion as a cost. Choice will not be shown if it
+    /// Deal damage to the Riftcaller as a cost. Choice will not be shown if it
     /// would cause this player to lose the game.
     TakeDamageCost(AbilityId, u32),
     /// Initiate a new raid on this room.

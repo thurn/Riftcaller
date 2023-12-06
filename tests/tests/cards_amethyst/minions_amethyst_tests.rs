@@ -21,8 +21,8 @@ use test_utils::*;
 
 #[test]
 fn test_minion_deal_damage_end_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(5))
         .build();
     g.create_and_play(CardName::TestMinionDealDamageEndRaid);
     g.set_up_minion_combat();
@@ -34,7 +34,7 @@ fn test_minion_deal_damage_end_raid() {
 
 #[test]
 fn time_golem_pay_mana() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TimeGolem);
     g.set_up_minion_combat();
     assert!(g.opponent.interface.controls().has_text("End Raid"));
@@ -47,7 +47,7 @@ fn time_golem_pay_mana() {
 
 #[test]
 fn time_golem_pay_actions() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TimeGolem);
     g.set_up_minion_combat();
     g.click_on(g.opponent_id(), format!("Pay 2{}", icons::ACTION));
@@ -59,7 +59,7 @@ fn time_golem_pay_actions() {
 
 #[test]
 fn time_golem_end_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::TimeGolem);
     g.set_up_minion_combat();
     g.click_on(g.opponent_id(), "End Raid");
@@ -69,7 +69,7 @@ fn time_golem_end_raid() {
 
 #[test]
 fn shadow_lurker_outer_room() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.add_to_hand(CardName::ShadowLurker);
     assert_eq!("2", g.client.get_card(id).bottom_right_icon());
     let id = g.create_and_play(CardName::ShadowLurker);
@@ -83,15 +83,15 @@ fn shadow_lurker_outer_room() {
 
 #[test]
 fn shadow_lurker_inner_room() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play_with_target(CardName::ShadowLurker, RoomId::Sanctum);
     assert_eq!("2", g.client.get_card(id).bottom_right_icon());
 }
 
 #[test]
 fn sphinx_of_winters_breath_discard_even() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).deck_top(CardName::Test0CostSpell))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).deck_top(CardName::Test0CostSpell))
         .build();
 
     g.create_and_play(CardName::SphinxOfWintersBreath);
@@ -105,8 +105,8 @@ fn sphinx_of_winters_breath_discard_even() {
 
 #[test]
 fn sphinx_of_winters_breath_discard_odd() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).deck_top(CardName::Test1CostSpell))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).deck_top(CardName::Test1CostSpell))
         .build();
 
     g.create_and_play(CardName::SphinxOfWintersBreath);
@@ -120,7 +120,7 @@ fn sphinx_of_winters_breath_discard_odd() {
 
 #[test]
 fn bridge_troll_continue() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::BridgeTroll);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -130,8 +130,8 @@ fn bridge_troll_continue() {
 
 #[test]
 fn bridge_troll_end_raid() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).mana(2))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).mana(2))
         .build();
     g.create_and_play(CardName::BridgeTroll);
     g.set_up_minion_combat();
@@ -142,8 +142,8 @@ fn bridge_troll_end_raid() {
 
 #[test]
 fn stormcaller_take_2() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(5))
         .build();
     g.create_and_play(CardName::Stormcaller);
     g.set_up_minion_combat();
@@ -155,8 +155,8 @@ fn stormcaller_take_2() {
 
 #[test]
 fn stormcaller_take_4() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(5))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(5))
         .build();
     g.create_and_play(CardName::Stormcaller);
     g.set_up_minion_combat();
@@ -168,11 +168,11 @@ fn stormcaller_take_4() {
 
 #[test]
 fn stormcaller_take_2_game_over() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord))
-        .opponent(TestSide::new(Side::Champion).hand_size(0))
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(0))
         .build();
     g.create_and_play(CardName::Stormcaller);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
-    assert!(g.is_victory_for_player(Side::Overlord));
+    assert!(g.is_victory_for_player(Side::Covenant));
 }

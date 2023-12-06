@@ -18,13 +18,13 @@ use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 // ========================================== //
-// ========== Overlord Riftcallers ========== //
+// ========== Covenant Riftcallers ========== //
 // ========================================== //
 
 #[test]
 pub fn zain() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).identity(CardName::ZainCunningDiplomat))
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::ZainCunningDiplomat))
             .build();
     g.create_and_play(CardName::TestMinionLoseMana);
     g.set_up_minion_combat();
@@ -40,33 +40,33 @@ pub fn zain() {
 #[test]
 pub fn algrak() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).identity(CardName::AlgrakCouncilsEnforcer))
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::AlgrakCouncilsEnforcer))
             .build();
     let scheme1 = g.add_to_hand(CardName::TestScheme3_10);
     g.play_card(scheme1, g.user_id(), Some(RoomId::RoomA));
     let scheme2 = g.add_to_hand(CardName::TestScheme4_20);
     g.play_card(scheme2, g.user_id(), Some(RoomId::RoomB));
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
 
     g.initiate_raid(RoomId::RoomA);
-    assert!(g.side_has(Button::Score, Side::Champion));
+    assert!(g.side_has(Button::Score, Side::Riftcaller));
     g.opponent_click(Button::Score);
     g.opponent_click(Button::EndRaid);
 
     g.initiate_raid(RoomId::RoomB);
-    assert!(!g.side_has(Button::Score, Side::Champion));
+    assert!(!g.side_has(Button::Score, Side::Riftcaller));
 }
 
 #[test]
 pub fn eria() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Overlord)
+        TestSide::new(Side::Covenant)
             .identity(CardName::EriaTimeConduit)
             .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
     )
     .build();
     let discarded = g.create_and_play(CardName::Test0CostRitual);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::Vault);
     g.opponent_click(Button::NoWeapon);
     g.move_selector_card(discarded);
@@ -78,14 +78,14 @@ pub fn eria() {
 #[test]
 pub fn eria_does_not_trigger_twice() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Overlord)
+        TestSide::new(Side::Covenant)
             .identity(CardName::EriaTimeConduit)
             .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
     )
     .build();
     let discarded1 = g.create_and_play(CardName::Test0CostRitual);
     g.create_and_play(CardName::Test0CostRitual);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::Vault);
     g.opponent_click(Button::NoWeapon);
     g.move_selector_card(discarded1);
@@ -99,12 +99,12 @@ pub fn eria_does_not_trigger_twice() {
 #[test]
 pub fn eria_does_not_trigger_with_no_cards_in_crypt() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Overlord)
+        TestSide::new(Side::Covenant)
             .identity(CardName::EriaTimeConduit)
             .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
     )
     .build();
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::Vault);
     g.opponent_click(Button::NoWeapon);
     assert!(!g.has(Button::SubmitCardSelector));
@@ -113,9 +113,9 @@ pub fn eria_does_not_trigger_with_no_cards_in_crypt() {
 #[test]
 pub fn vendoc() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).identity(CardName::VendocSeerInStarlight))
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::VendocSeerInStarlight))
             .build();
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.click(Button::ChooseCardTypeSpell);
     g.create_and_play(CardName::Test0CostSpell);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
@@ -127,9 +127,9 @@ pub fn vendoc() {
 #[test]
 pub fn vendoc_play_different_card_first() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).identity(CardName::VendocSeerInStarlight))
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::VendocSeerInStarlight))
             .build();
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.click(Button::ChooseCardTypeSpell);
     g.create_and_play(CardName::TestEvocation);
     g.create_and_play(CardName::Test0CostSpell);

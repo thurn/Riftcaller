@@ -24,14 +24,14 @@ const BATTLE_REWARD: u32 = 250;
 
 #[test]
 fn test_open_battle_screen() {
-    let mut adventure = TestAdventure::new(Side::Champion).build();
+    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
     let battle = adventure.insert_tile(TileEntity::Battle(BattleData {
         opponent_id: AIPlayer::NoAction,
-        opponent_deck: decklists::canonical_deck(Side::Overlord),
+        opponent_deck: decklists::canonical_deck(Side::Covenant),
         opponent_name: "Opponent Name".to_string(),
         reward: Coins(BATTLE_REWARD),
-        character: CharacterPreset::Overlord,
+        character: CharacterPreset::Covenant,
         character_facing: CharacterFacing::Down,
         region_to_reveal: 2,
     }));
@@ -43,14 +43,14 @@ fn test_open_battle_screen() {
 
 #[test]
 fn test_start_battle() {
-    let mut adventure = TestAdventure::new(Side::Champion).build();
+    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
     let battle = adventure.insert_tile(TileEntity::Battle(BattleData {
         opponent_id: AIPlayer::NoAction,
-        opponent_deck: decklists::canonical_deck(Side::Overlord),
+        opponent_deck: decklists::canonical_deck(Side::Covenant),
         opponent_name: "Opponent Name".to_string(),
         reward: Coins(BATTLE_REWARD),
-        character: CharacterPreset::Overlord,
+        character: CharacterPreset::Covenant,
         character_facing: CharacterFacing::Down,
         region_to_reveal: 2,
     }));

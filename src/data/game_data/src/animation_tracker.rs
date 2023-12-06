@@ -51,15 +51,15 @@ pub enum GameAnimation {
     SummonMinion(CardId),
     /// A minion card has been turned face-down.
     UnsummonMinion(CardId),
-    /// A face-down card has been revealed to the Champion
+    /// A face-down card has been revealed to the Riftcaller
     RevealCard(CardId),
-    /// The Overlord has progressed a room
+    /// The Covenant has progressed a room
     ProgressRoom(RoomId, InitiatedBy),
-    /// The Champion has initiated a raid on a room
+    /// The Riftcaller has initiated a raid on a room
     InitiateRaid(RoomId, InitiatedBy),
     /// Interaction between two cards during raid combat.
     CombatInteraction(TargetedInteraction),
-    /// The Champion has accessed the specified cards in the Sanctum
+    /// The Riftcaller has accessed the specified cards in the Sanctum
     AccessSanctumCards(Vec<CardId>),
     /// A player has scored a card
     ScoreCard(Side, CardId),

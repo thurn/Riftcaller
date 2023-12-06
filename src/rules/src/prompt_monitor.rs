@@ -31,8 +31,8 @@ use crate::mana::ManaPurpose;
 /// user is presented with an option with a mana cost, but is no longer able to
 /// pay that mana cost, that prompt option should be removed.
 pub fn run(game: &mut GameState) -> Result<()> {
-    run_for_side(game, Side::Overlord)?;
-    run_for_side(game, Side::Champion)?;
+    run_for_side(game, Side::Covenant)?;
+    run_for_side(game, Side::Riftcaller)?;
     Ok(())
 }
 
@@ -84,7 +84,7 @@ fn can_pay_effect_cost(game: &GameState, effect: &GameEffect) -> bool {
         }
         GameEffect::ActionCost(side, cost) => game.player(*side).actions >= *cost,
         GameEffect::TakeDamageCost(_, amount) => {
-            game.hand(Side::Champion).count() >= *amount as usize
+            game.hand(Side::Riftcaller).count() >= *amount as usize
         }
         _ => true,
     }

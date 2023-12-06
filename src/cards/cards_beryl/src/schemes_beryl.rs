@@ -29,10 +29,10 @@ pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
         name: CardName::EtherealForm,
         sets: vec![CardSetName::Beryl],
         cost: costs::scheme(),
-        image: assets::overlord_card(meta, "ethereal_form"),
+        image: assets::covenant_card(meta, "ethereal_form"),
         card_type: CardType::Scheme,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Beyond,
         rarity: Rarity::Rare,
         abilities: vec![ActivatedAbility::new(
@@ -40,15 +40,15 @@ pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
             text![
                 text!["Shuffle this card into the vault"],
                 text![
-                    "The Overlord may use this ability while this card is",
-                    "in the Champion's score area"
+                    "The Covenant may use this ability while this card is",
+                    "in the Riftcaller's score area"
                 ],
                 meta.upgraded_only_text(text![GainMana(1)])
             ],
         )
         .delegate(this::can_activate(|g, s, _, flag| {
             flag.add_permission(
-                g.card(s.card_id()).position() == CardPosition::Scored(Side::Champion),
+                g.card(s.card_id()).position() == CardPosition::Scored(Side::Riftcaller),
             )
         }))
         .delegate(this::on_activated(|g, s, _| {
@@ -70,16 +70,16 @@ pub fn echoing_cacophony(meta: CardMetadata) -> CardDefinition {
         name: CardName::EchoingCacophony,
         sets: vec![CardSetName::Beryl],
         cost: costs::scheme(),
-        image: assets::overlord_card(meta, "echoing_cacophony"),
+        image: assets::covenant_card(meta, "echoing_cacophony"),
         card_type: CardType::Scheme,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Beyond,
         rarity: Rarity::Uncommon,
         abilities: abilities::some(vec![
             Some(Ability::new_with_delegate(
-                text_helpers::named_trigger(Score, text!["Give the Champion 2 curses until", Dawn]),
-                this::on_scored_by_overlord(|g, s, _| {
+                text_helpers::named_trigger(Score, text!["Give the Riftcaller 2 curses until", Dawn]),
+                this::on_scored_by_covenant(|g, s, _| {
                     curses::give_curses_with_options(
                         g,
                         s,
@@ -91,7 +91,7 @@ pub fn echoing_cacophony(meta: CardMetadata) -> CardDefinition {
             meta.is_upgraded.then(|| {
                 Ability::new_with_delegate(
                     text_helpers::named_trigger(Score, text![GainMana(2)]),
-                    this::on_scored_by_overlord(|g, s, _| {
+                    this::on_scored_by_covenant(|g, s, _| {
                         mana::gain(g, s.side(), 2);
                         Ok(())
                     }),
@@ -109,18 +109,18 @@ pub fn solidarity(meta: CardMetadata) -> CardDefinition {
         name: CardName::Solidarity,
         sets: vec![CardSetName::Beryl],
         cost: costs::scheme(),
-        image: assets::overlord_card(meta, "solidarity"),
+        image: assets::covenant_card(meta, "solidarity"),
         card_type: CardType::Scheme,
         subtypes: vec![],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Uncommon,
         abilities: vec![Ability::new_with_delegate(
             text_helpers::named_trigger(
                 Score,
-                text![text![GainMana(7)], text!["Give the Champion a", Leyline]],
+                text![text![GainMana(7)], text!["Give the Riftcaller a", Leyline]],
             ),
-            this::on_scored_by_overlord(|g, s, _| {
+            this::on_scored_by_covenant(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 leylines::give(g, s.ability_id(), 1)
             }),

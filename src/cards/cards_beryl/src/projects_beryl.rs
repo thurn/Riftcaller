@@ -30,21 +30,21 @@ pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
         name: CardName::MagistratesThronehall,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(meta.upgrade(1, 0)),
-        image: assets::overlord_card(meta, "magistrates_thronehall"),
+        image: assets::covenant_card(meta, "magistrates_thronehall"),
         card_type: CardType::Project,
         subtypes: vec![CardSubtype::Nightbound, CardSubtype::Dictate],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![Ability::new_with_delegate(
-            text!["The Champion cannot draw more than", 2, "cards during their turn"],
+            text!["The Riftcaller cannot draw more than", 2, "cards during their turn"],
             in_play::on_will_draw_cards(|g, s, _| {
-                let drawn_this_turn = history::counters(g, Side::Champion).cards_drawn;
+                let drawn_this_turn = history::counters(g, Side::Riftcaller).cards_drawn;
                 let mut show_vfx = false;
                 let Some(state) = g.state_machines.draw_cards.last_mut() else {
                     fail!("Expected active draw_cards state machine");
                 };
-                if state.side == Side::Champion {
+                if state.side == Side::Riftcaller {
                     let new = cmp::min(2u32.saturating_sub(drawn_this_turn), state.quantity);
                     if new < state.quantity {
                         show_vfx = true;

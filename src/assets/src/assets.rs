@@ -47,8 +47,8 @@ pub enum CardIconType {
 pub fn side_badge(side: Side) -> SpriteAddress {
     SpriteAddress {
         address: match side {
-            Side::Overlord => "Rexard/BadgesMegapack/overlord.png",
-            Side::Champion => "Rexard/BadgesMegapack/champion.png",
+            Side::Covenant => "Rexard/BadgesMegapack/covenant.png",
+            Side::Riftcaller => "Rexard/BadgesMegapack/riftcaller.png",
         }
         .to_string(),
     }
@@ -221,7 +221,7 @@ pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
                     CardType::GameModifier => "SpriteWay/Icons/Clean Frames/9058",
                     CardType::Riftcaller =>
-                        if side == Side::Overlord {
+                        if side == Side::Covenant {
                             "SpriteWay/Icons/Clean Frames/9022"
                         } else {
                             "SpriteWay/Icons/Clean Frames/9040"
@@ -326,8 +326,8 @@ pub fn sound_effect(effect: SoundEffect) -> AudioClipAddress {
 pub fn character_preset(preset: CharacterPreset) -> CharacterPresetAddress {
     CharacterPresetAddress {
         address: match preset {
-            CharacterPreset::Champion => "CharacterPresets/Champion.asset",
-            CharacterPreset::Overlord => "CharacterPresets/Ovelord.asset",
+            CharacterPreset::Riftcaller => "CharacterPresets/Riftcaller.asset",
+            CharacterPreset::Covenant => "CharacterPresets/Covenant.asset",
         }
         .to_string(),
     }
@@ -340,21 +340,21 @@ pub fn ability_title_background() -> SpriteAddress {
     }
 }
 
-pub fn champion_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
+pub fn riftcaller_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
     Sprite {
         address: format!(
             "Cards/{}/{}.png",
-            if meta.full_art { "ChampionFullArt" } else { "Champion" },
+            if meta.full_art { "RiftcallerFullArt" } else { "Riftcaller" },
             name.into()
         ),
     }
 }
 
-pub fn overlord_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
+pub fn covenant_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
     Sprite {
         address: format!(
             "Cards/{}/{}.png",
-            if meta.full_art { "OverlordFullArt" } else { "Overlord" },
+            if meta.full_art { "CovenantFullArt" } else { "Covenant" },
             name.into()
         ),
     }

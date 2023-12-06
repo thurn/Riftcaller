@@ -28,8 +28,8 @@ pub const STARTING_COINS: Coins = Coins(500);
 pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
     let side = config.side;
     let deck = match side {
-        Side::Overlord => decklists::BASIC_OVERLORD.clone(),
-        Side::Champion => decklists::BASIC_CHAMPION.clone(),
+        Side::Covenant => decklists::BASIC_COVENANT.clone(),
+        Side::Riftcaller => decklists::BASIC_RIFTCALLER.clone(),
     };
     let identities = TileEntity::Draft(card_generator::identity_choice(&mut config));
     let draft = TileEntity::Draft(card_generator::draft_choices(&mut config));

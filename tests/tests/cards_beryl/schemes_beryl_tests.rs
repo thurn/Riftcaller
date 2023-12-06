@@ -19,13 +19,13 @@ use test_utils::*;
 
 #[test]
 fn ethereal_form() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::EtherealForm);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Score);
     g.opponent_click(Button::EndRaid);
-    g.pass_turn(Side::Champion);
+    g.pass_turn(Side::Riftcaller);
     assert_eq!(g.client.other_player.score(), 10);
     assert!(g.client.cards.opponent_score_area().contains_card(CardName::EtherealForm));
     g.activate_ability(id, 0);
@@ -35,14 +35,14 @@ fn ethereal_form() {
 
 #[test]
 fn ethereal_form_cannot_activate_in_play() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     let id = g.create_and_play(CardName::EtherealForm);
     assert!(g.activate_ability_with_result(id, 0).is_err());
 }
 
 #[test]
 fn echoing_cacophony() {
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::EchoingCacophony);
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
@@ -54,7 +54,7 @@ fn echoing_cacophony() {
 #[test]
 fn echoing_cacophony_upgraded() {
     let gained = 2;
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play_upgraded(CardName::EchoingCacophony);
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
@@ -64,7 +64,7 @@ fn echoing_cacophony_upgraded() {
 #[test]
 fn solidarity() {
     let gained = 7;
-    let mut g = TestGame::new(TestSide::new(Side::Overlord)).build();
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
     g.create_and_play(CardName::Solidarity);
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
@@ -75,12 +75,12 @@ fn solidarity() {
 #[test]
 fn solidarity_use_mana() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).deck_top(CardName::TestProject2Cost3Raze))
+        TestGame::new(TestSide::new(Side::Covenant).deck_top(CardName::TestProject2Cost3Raze))
             .build();
     g.create_and_play(CardName::Solidarity);
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert_eq!(g.client.other_player.bonus_mana(), 0);
     g.initiate_raid(RoomId::Vault);
     assert_eq!(g.client.other_player.bonus_mana(), 1);
@@ -94,12 +94,12 @@ fn solidarity_use_mana() {
 #[test]
 fn solidarity_two_raids() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).deck_top(CardName::TestProject2Cost3Raze))
+        TestGame::new(TestSide::new(Side::Covenant).deck_top(CardName::TestProject2Cost3Raze))
             .build();
     g.create_and_play(CardName::Solidarity);
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     g.initiate_raid(RoomId::Vault);
     assert_eq!(g.client.other_player.bonus_mana(), 1);
     g.opponent_click(Button::EndRaid);
@@ -113,7 +113,7 @@ fn solidarity_two_raids() {
 #[test]
 fn solidarity_two_copies() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).deck_top(CardName::TestProject2Cost3Raze))
+        TestGame::new(TestSide::new(Side::Covenant).deck_top(CardName::TestProject2Cost3Raze))
             .actions(6)
             .build();
     g.create_and_play(CardName::Solidarity);
@@ -122,7 +122,7 @@ fn solidarity_two_copies() {
     g.create_and_play(CardName::Solidarity);
     g.progress_room(test_constants::ROOM_ID);
     g.progress_room(test_constants::ROOM_ID);
-    g.pass_turn(Side::Overlord);
+    g.pass_turn(Side::Covenant);
     assert_eq!(g.client.other_player.bonus_mana(), 0);
     g.initiate_raid(RoomId::Vault);
     assert_eq!(g.client.other_player.bonus_mana(), 2);

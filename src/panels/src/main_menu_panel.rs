@@ -57,7 +57,7 @@ impl Component for MainMenuPanel {
                             .position(Edge::Bottom, 48.px())
                             .justify_content(FlexJustify::FlexEnd),
                     )
-                    .child(menu_button("Play", 0, UserAction::NewAdventure(Side::Champion)))
+                    .child(menu_button("Play", 0, UserAction::NewAdventure(Side::Riftcaller)))
                     .child(menu_button("Codex", 1, Panels::open(StandardPanel::Settings)))
                     .child(menu_button("Community", 2, Panels::open(StandardPanel::About)))
                     .child(menu_button("Settings", 3, Panels::open(StandardPanel::Settings)))

@@ -73,7 +73,7 @@ pub trait TestSessionHelpers {
     fn progress_room(&mut self, room_id: RoomId) -> GameResponseOutput;
 
     /// Progresses the [test_constants::CLIENT_ROOM_ID] room a specified number
-    /// of `times`. If this requires multiple turns, spends the Champion turns
+    /// of `times`. If this requires multiple turns, spends the Riftcaller turns
     /// doing nothing.
     fn progress_room_times(&mut self, times: u32);
 
@@ -168,32 +168,32 @@ pub trait TestSessionHelpers {
     /// player won the game
     fn is_victory_for_player(&self, winner: Side) -> bool;
 
-    /// Must be invoked during the Overlord turn. Performs the following
+    /// Must be invoked during the Covenant turn. Performs the following
     /// actions:
     /// - Plays a test Scheme card
-    /// - Ends the Overlord turn
+    /// - Ends the Covenant turn
     /// - Initiates a raid on the [test_constants::ROOM_ID] room
     /// - Summons the minion in the room
     fn set_up_minion_combat(&mut self);
 
     /// Equivalent to [Self::set_up_minion_combat] which invokes an `action`
-    /// function at the start of the Champion's turn.
+    /// function at the start of the Riftcaller's turn.
     fn set_up_minion_combat_with_action(&mut self, action: impl FnOnce(&mut TestSession));
 
-    /// Must be invoked during the Champion turn. Performs the following
+    /// Must be invoked during the Riftcaller turn. Performs the following
     /// actions:
     ///
-    /// - Ends the Champion turn
+    /// - Ends the Riftcaller turn
     /// - Plays a 3-1 scheme in the [test_constants::ROOM_ID] room.
     /// - Plays the provided `card_name` minion into that room.
-    /// - Ends the Overlord turn.
+    /// - Ends the Covenant turn.
     ///
     /// Returns a tuple of (scheme_id, minion_id).
     ///
-    /// WARNING: This causes the Overlord player to draw for their turn.
+    /// WARNING: This causes the Covenant player to draw for their turn.
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier);
 
-    /// Must be invoked during the Champion turn. Performs the following
+    /// Must be invoked during the Riftcaller turn. Performs the following
     /// actions:
     ///
     /// - Performs all actions described in [Self::setup_raid_target], creating
@@ -203,7 +203,7 @@ pub trait TestSessionHelpers {
     /// - Clicks on the button with text matching `name` in order to fire weapon
     ///   abilities.
     ///
-    /// WARNING: This causes the Overlord play to draw for their turn.
+    /// WARNING: This causes the Covenant play to draw for their turn.
     fn fire_weapon_combat_abilities(&mut self, resonance: Resonance, name: CardName);
 }
 
@@ -261,7 +261,7 @@ impl TestSessionHelpers for TestSession {
             Action::InitiateRaid(InitiateRaidAction {
                 room_id: adapters::room_identifier(room_id),
             }),
-            self.player_id_for_side(Side::Champion),
+            self.player_id_for_side(Side::Riftcaller),
         )
         .expect("Server Error")
     }
@@ -271,22 +271,22 @@ impl TestSessionHelpers for TestSession {
             Action::ProgressRoom(ProgressRoomAction {
                 room_id: adapters::room_identifier(room_id),
             }),
-            self.player_id_for_side(Side::Overlord),
+            self.player_id_for_side(Side::Covenant),
         )
         .expect("Server Error")
     }
 
     fn progress_room_times(&mut self, times: u32) {
         let mut levels = 0;
-        let overlord_id = self.player_id_for_side(Side::Overlord);
+        let covenant_id = self.player_id_for_side(Side::Covenant);
 
         loop {
-            while self.player(overlord_id).this_player.actions() > 0 {
+            while self.player(covenant_id).this_player.actions() > 0 {
                 self.perform(
                     Action::ProgressRoom(ProgressRoomAction {
                         room_id: test_constants::CLIENT_ROOM_ID.into(),
                     }),
-                    overlord_id,
+                    covenant_id,
                 );
                 levels += 1;
 
@@ -295,9 +295,9 @@ impl TestSessionHelpers for TestSession {
                 }
             }
 
-            self.pass_turn(Side::Overlord);
+            self.pass_turn(Side::Covenant);
             assert!(self.dawn());
-            self.pass_turn(Side::Champion);
+            self.pass_turn(Side::Riftcaller);
             assert!(self.dusk());
         }
     }
@@ -468,19 +468,19 @@ impl TestSessionHelpers for TestSession {
 
     fn set_up_minion_combat_with_action(&mut self, action: impl FnOnce(&mut TestSession)) {
         self.create_and_play(CardName::TestScheme3_10);
-        self.pass_turn(Side::Overlord);
+        self.pass_turn(Side::Covenant);
         assert!(self.dawn());
         action(self);
         self.initiate_raid(test_constants::ROOM_ID);
-        self.click_as_side(Button::Summon, Side::Overlord);
+        self.click_as_side(Button::Summon, Side::Covenant);
     }
 
     fn setup_raid_target(&mut self, card_name: CardName) -> (CardIdentifier, CardIdentifier) {
-        self.pass_turn(Side::Champion);
+        self.pass_turn(Side::Riftcaller);
         assert!(self.dusk());
         let scheme_id = self.create_and_play(CardName::TestScheme3_10);
         let minion_id = self.create_and_play(card_name);
-        self.pass_turn(Side::Overlord);
+        self.pass_turn(Side::Covenant);
         assert!(self.dawn());
         (scheme_id, minion_id)
     }
@@ -488,8 +488,8 @@ impl TestSessionHelpers for TestSession {
     fn fire_weapon_combat_abilities(&mut self, resonance: Resonance, name: CardName) {
         self.setup_raid_target(crate::test_helpers::minion_for_resonance(resonance));
         self.initiate_raid(test_constants::ROOM_ID);
-        self.click_as_side(Button::Summon, Side::Overlord);
-        self.click_on(self.player_id_for_side(Side::Champion), name.displayed_name());
+        self.click_as_side(Button::Summon, Side::Covenant);
+        self.click_on(self.player_id_for_side(Side::Riftcaller), name.displayed_name());
     }
 }
 

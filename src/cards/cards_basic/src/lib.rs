@@ -14,5 +14,5 @@
 
 //! Standard cards for tutorials and the adventure-mode starting decks
 
-pub mod champion_basics;
-pub mod overlord_basics;
+pub mod riftcaller_basics;
+pub mod covenant_basics;

@@ -27,12 +27,12 @@ pub fn standard_panels() -> Vec<StandardPanel> {
         StandardPanel::Disclaimer,
         StandardPanel::DebugPanel(PlayerActivityKind::None, None),
         StandardPanel::DebugPanel(PlayerActivityKind::Adventure, None),
-        StandardPanel::DebugPanel(PlayerActivityKind::PlayingGame, Some(Side::Overlord)),
-        StandardPanel::DebugPanel(PlayerActivityKind::PlayingGame, Some(Side::Champion)),
+        StandardPanel::DebugPanel(PlayerActivityKind::PlayingGame, Some(Side::Covenant)),
+        StandardPanel::DebugPanel(PlayerActivityKind::PlayingGame, Some(Side::Riftcaller)),
         StandardPanel::GameMenu,
         StandardPanel::AdventureMenu,
-        StandardPanel::SetPlayerName(Side::Champion),
-        StandardPanel::SetPlayerName(Side::Overlord),
+        StandardPanel::SetPlayerName(Side::Riftcaller),
+        StandardPanel::SetPlayerName(Side::Covenant),
         StandardPanel::DeckEditorLoading,
     ]
 }

@@ -31,14 +31,14 @@ pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
         name: CardName::IncarnationOfJustice,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(0),
-        image: assets::overlord_card(meta, "incarnation_of_justice"),
+        image: assets::covenant_card(meta, "incarnation_of_justice"),
         card_type: CardType::Minion,
         subtypes: vec![CardSubtype::Fey],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![Ability::new_with_delegate(
-            text_helpers::named_trigger(Combat, text!["The Champion cannot draw cards this turn"]),
+            text_helpers::named_trigger(Combat, text!["The Riftcaller cannot draw cards this turn"]),
             delegates::on_will_draw_cards(
                 requirements::combat_ability_fired_this_turn,
                 |g, s, _| {
@@ -81,10 +81,10 @@ pub fn sentinel_sphinx(meta: CardMetadata) -> CardDefinition {
         name: CardName::SentinelSphinx,
         sets: vec![CardSetName::Beryl],
         cost: costs::mana(4),
-        image: assets::overlord_card(meta, "sentinel_sphinx"),
+        image: assets::covenant_card(meta, "sentinel_sphinx"),
         card_type: CardType::Minion,
         subtypes: vec![CardSubtype::Beast],
-        side: Side::Overlord,
+        side: Side::Covenant,
         school: School::Beyond,
         rarity: Rarity::Common,
         abilities: vec![

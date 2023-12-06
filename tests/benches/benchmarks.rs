@@ -56,8 +56,8 @@ pub fn run_matchup(c: &mut Criterion) {
     group.bench_function("run_matchup", |b| {
         b.iter(|| {
             let _result = run_matchup_impl::run(Args {
-                overlord: AIPlayer::BenchmarkAlphaBetaDepth3,
-                champion: AIPlayer::BenchmarkAlphaBetaDepth3,
+                covenant: AIPlayer::BenchmarkAlphaBetaDepth3,
+                riftcaller: AIPlayer::BenchmarkAlphaBetaDepth3,
                 move_time: 3600,
                 matches: 1,
                 verbosity: Verbosity::None,
@@ -76,7 +76,7 @@ pub fn legal_actions(c: &mut Criterion) {
     group.bench_function("legal_actions", |b| {
         b.iter(|| {
             let _actions =
-                legal_actions::evaluate(&game, Side::Overlord).unwrap().collect::<Vec<_>>();
+                legal_actions::evaluate(&game, Side::Covenant).unwrap().collect::<Vec<_>>();
         })
     });
     group.finish();
@@ -146,7 +146,7 @@ pub fn uct1_search(c: &mut Criterion) {
     group.bench_function("uct1_search", |b| {
         b.iter(|| {
             monte_carlo
-                .run_search(|i| i == 1000, &game, &evaluator, Side::Overlord)
+                .run_search(|i| i == 1000, &game, &evaluator, Side::Covenant)
                 .expect("run_search() Error");
         })
     });
@@ -176,9 +176,9 @@ fn create_canonical_game() -> Result<GameState> {
     let mut game = GameState::new(
         GameId::new_from_u128(0),
         PlayerId::AI(AIPlayer::NoAction),
-        decklists::CANONICAL_OVERLORD.clone(),
+        decklists::CANONICAL_COVENANT.clone(),
         PlayerId::AI(AIPlayer::NoAction),
-        decklists::CANONICAL_CHAMPION.clone(),
+        decklists::CANONICAL_RIFTCALLER.clone(),
         GameConfiguration { deterministic: true, simulation: true, scripted_tutorial: false },
     );
 
@@ -186,12 +186,12 @@ fn create_canonical_game() -> Result<GameState> {
     mutations::deal_opening_hands(&mut game)?;
     actions::handle_game_action(
         &mut game,
-        Side::Overlord,
+        Side::Covenant,
         &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
     actions::handle_game_action(
         &mut game,
-        Side::Champion,
+        Side::Riftcaller,
         &GameAction::GameStateAction(GameStateAction::MulliganDecision(MulliganDecision::Keep)),
     )?;
 

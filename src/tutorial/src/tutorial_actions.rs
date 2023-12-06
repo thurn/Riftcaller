@@ -159,7 +159,7 @@ fn remove_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Resul
         mutations::overwrite_card(
             game,
             card_id,
-            CardVariant::standard(CardName::OverlordEmptyModifier),
+            CardVariant::standard(CardName::CovenantEmptyModifier),
         )?;
     }
 
