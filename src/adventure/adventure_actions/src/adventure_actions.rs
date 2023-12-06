@@ -19,7 +19,6 @@ use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
 use core_data::game_primitives::CardType;
-
 use with_error::{fail, verify};
 
 /// Handles an incoming [AdventureAction] and produces a client response.
@@ -77,7 +76,7 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
         if !state.deck.schools.contains(&definition.school) {
             state.deck.schools.push(definition.school);
         }
-        state.deck.riftcallers.push(definition.variant());
+        state.deck.identities.push(definition.variant());
     } else {
         state
             .collection

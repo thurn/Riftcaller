@@ -20,7 +20,7 @@ use test_utils::*;
 #[test]
 fn ubras_efaris() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::UbrasEfarisTimeShaper))
+        TestGame::new(TestSide::new(Side::Overlord).identity(CardName::UbrasEfarisTimeShaper))
             .build();
 
     assert_eq!(3, g.me().actions());

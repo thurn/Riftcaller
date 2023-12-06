@@ -31,7 +31,7 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
         Side::Overlord => decklists::BASIC_OVERLORD.clone(),
         Side::Champion => decklists::BASIC_CHAMPION.clone(),
     };
-    let riftcallers = TileEntity::Draft(card_generator::riftcaller_choices(&mut config));
+    let identities = TileEntity::Draft(card_generator::identity_choice(&mut config));
     let draft = TileEntity::Draft(card_generator::draft_choices(&mut config));
     let shop = TileEntity::Shop(card_generator::shop_options(&mut config));
     let battle = TileEntity::Battle(battle_generator::create(side.opponent()));
@@ -40,7 +40,7 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
         config,
         deck.clone(),
         deck.cards,
-        Some(riftcallers),
+        Some(identities),
         Some(draft),
         Some(shop),
         Some(battle),

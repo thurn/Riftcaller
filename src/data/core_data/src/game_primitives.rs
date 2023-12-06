@@ -510,6 +510,7 @@ pub enum Rarity {
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum CardType {
     Riftcaller,
+    Chapter,
     GameModifier,
     Spell,
     Artifact,
@@ -526,10 +527,15 @@ impl CardType {
         matches!(self, CardType::Spell | CardType::Ritual)
     }
 
+    pub fn is_identity(&self) -> bool {
+        matches!(self, CardType::Riftcaller | CardType::Chapter)
+    }
+
     /// Returns the english article 'a' or 'an' appropriate for this card type.
     pub fn article(&self) -> &'static str {
         match self {
             Self::Spell
+            | Self::Chapter
             | Self::Ritual
             | Self::Minion
             | Self::Project
@@ -553,6 +559,7 @@ impl Display for CardType {
             CardType::Project => write!(f, "Project"),
             CardType::Scheme => write!(f, "Scheme"),
             CardType::Riftcaller => write!(f, "Riftcaller"),
+            CardType::Chapter => write!(f, "Chapter"),
             CardType::GameModifier => write!(f, "Modifier"),
         }
     }

@@ -21,7 +21,7 @@ use test_utils::*;
 fn ennera_imris_blood_bound() {
     let gained = 1;
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::EnneraImrisBloodBound))
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::EnneraImrisBloodBound))
             .build();
 
     assert_eq!(0, g.client.cards.hand().len());
@@ -34,7 +34,7 @@ fn ennera_imris_blood_bound() {
 #[test]
 fn aris_fey_the_radiant_sun() {
     let mut g = TestGame::new(
-        TestSide::new(Side::Champion).hand_size(1).riftcaller(CardName::ArisFeyTheRadiantSun),
+        TestSide::new(Side::Champion).hand_size(1).identity(CardName::ArisFeyTheRadiantSun),
     )
     .build();
 
@@ -50,10 +50,9 @@ fn aris_fey_the_radiant_sun() {
 
 #[test]
 fn telantes_dugoth_earthbreaker() {
-    let mut g = TestGame::new(
-        TestSide::new(Side::Champion).riftcaller(CardName::TelantesDugothEarthbreaker),
-    )
-    .build();
+    let mut g =
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::TelantesDugothEarthbreaker))
+            .build();
 
     g.initiate_raid(RoomId::Sanctum);
     assert_eq!(0, g.client.cards.opponent_discard_pile().len());
@@ -64,7 +63,7 @@ fn telantes_dugoth_earthbreaker() {
 #[test]
 fn andvari_est_nights_warden() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::AndvariEstNightsWarden))
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::AndvariEstNightsWarden))
             .opponent(
                 TestSide::new(Side::Overlord)
                     .deck_top(CardName::TestSpell)

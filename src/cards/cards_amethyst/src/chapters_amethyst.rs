@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use assets::rexard_images;
+use card_helpers::{history, *};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-
-use assets::rexard_images;
-use card_helpers::{*, history};
 use rules::CardDefinitionExt;
 
 pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::UbrasEfarisTimeShaper,
         sets: vec![CardSetName::Amethyst],
-        cost: costs::riftcaller(),
+        cost: costs::identity(),
         image: rexard_images::spell(8, "SpellBook08_22"),
-        card_type: CardType::Riftcaller,
+        card_type: CardType::Chapter,
         subtypes: vec![],
         side: Side::Overlord,
         school: School::Shadow,

@@ -38,7 +38,7 @@ pub enum CustomCardState {
     ActiveForEncounter { encounter_id: MinionEncounterId },
 
     /// A Riftcaller's ability has triggered in the indicated turn.
-    RiftcallerTriggeredForTurn { turn: TurnData },
+    IdentityTriggeredForTurn { turn: TurnData },
 
     /// A card type selected for the duration of a given turn
     CardTypeForTurn { card_type: CardType, turn: TurnData },
@@ -122,12 +122,12 @@ impl CustomCardStateList {
         })
     }
 
-    /// Returns true if a [CustomCardState::RiftcallerTriggeredForTurn] entry
+    /// Returns true if a [CustomCardState::IdentityTriggeredForTurn] entry
     /// has been recorded for the provided turn.
-    pub fn riftcaller_triggered_for_turn(&self, turn_data: TurnData) -> bool {
+    pub fn identity_triggered_for_turn(&self, turn_data: TurnData) -> bool {
         self.list.iter().rev().any(|state| {
             matches!(state,
-                CustomCardState::RiftcallerTriggeredForTurn { turn } if turn_data == *turn)
+                CustomCardState::IdentityTriggeredForTurn { turn } if turn_data == *turn)
         })
     }
 

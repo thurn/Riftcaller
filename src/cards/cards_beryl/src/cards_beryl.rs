@@ -14,6 +14,7 @@
 
 pub mod allies_beryl;
 pub mod artifacts_beryl;
+pub mod chapters_beryl;
 pub mod evocations_beryl;
 pub mod minions_beryl;
 pub mod projects_beryl;

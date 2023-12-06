@@ -16,7 +16,7 @@ use adventure_data::adventure::{
     AdventureConfiguration, CardChoice, DraftContext, DraftData, ShopData,
 };
 use core_data::adventure_primitives::Coins;
-use core_data::game_primitives::{CardType, Rarity, School, Side, STANDARD_SCHOOLS};
+use core_data::game_primitives::{Rarity, School, Side, STANDARD_SCHOOLS};
 use game_data::card_name::CardVariant;
 use game_data::card_set_name::CardSetName;
 
@@ -25,12 +25,12 @@ pub fn draft_choices(config: &mut AdventureConfiguration) -> DraftData {
     draft_data(None, config.choose_multiple(3, common_cards(config.side)))
 }
 
-/// Generates riftcaller draft options from 3 randomly chosen schools
-pub fn riftcaller_choices(config: &mut AdventureConfiguration) -> DraftData {
+/// Generates identity draft options from 3 randomly chosen schools
+pub fn identity_choice(config: &mut AdventureConfiguration) -> DraftData {
     let schools = config.choose_multiple(3, STANDARD_SCHOOLS.iter());
     let cards =
-        schools.into_iter().filter_map(|school| random_riftcaller(config, config.side, *school));
-    draft_data(Some(DraftContext::StartingRiftcaller), cards.collect())
+        schools.into_iter().filter_map(|school| random_identity(config, config.side, *school));
+    draft_data(Some(DraftContext::StartingIdentity), cards.collect())
 }
 
 fn draft_data(context: Option<DraftContext>, cards: Vec<CardVariant>) -> DraftData {
@@ -59,7 +59,7 @@ pub fn shop_options(config: &mut AdventureConfiguration) -> ShopData {
     }
 }
 
-fn random_riftcaller(
+fn random_identity(
     config: &mut AdventureConfiguration,
     side: Side,
     school: School,
@@ -70,7 +70,7 @@ fn random_riftcaller(
                 definition.sets.contains(&CardSetName::Amethyst)
                     && definition.side == side
                     && definition.school == school
-                    && definition.card_type == CardType::Riftcaller
+                    && definition.card_type.is_identity()
             })
             .map(|definition| definition.variant()),
     )

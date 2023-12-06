@@ -37,8 +37,8 @@ pub fn scheme() -> Cost<CardId> {
     Cost { mana: None, actions: 1, custom_cost: None }
 }
 
-/// [Cost] for a riftcaller card
-pub fn riftcaller() -> Cost<CardId> {
+/// [Cost] for a riftcaller or chapter card
+pub fn identity() -> Cost<CardId> {
     Cost { mana: None, actions: 0, custom_cost: None }
 }
 

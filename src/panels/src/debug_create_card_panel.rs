@@ -140,12 +140,12 @@ impl Component for DebugCreateCardPanel {
                     ))
                     .child(self.button(
                         "User Riftcaller",
-                        CardPosition::Riftcaller(self.user_side),
+                        CardPosition::Identity(self.user_side),
                         true,
                     ))
                     .child(self.button(
                         "Opponent Riftcaller",
-                        CardPosition::Riftcaller(self.user_side.opponent()),
+                        CardPosition::Identity(self.user_side.opponent()),
                         true,
                     )),
             )

@@ -60,8 +60,8 @@ pub enum CardPosition {
     /// A card has been played by the [Side] player and is in the process of
     /// resolving with the provided target
     Played(CardPlayId, Side, CardTarget),
-    /// A riftcaller card owned by a player in the game.
-    Riftcaller(Side),
+    /// A riftcaller or chapter card owned by a player in the game.
+    Identity(Side),
     /// Global modifier cards which change the rules of the game
     GameModifier,
     /// A card has been banished, either temporarily or permanently removed from
@@ -89,12 +89,12 @@ impl CardPosition {
         }
     }
 
-    /// Returns true if this card is a riftcaller, is in a room, or has been
+    /// Returns true if this card is an identity, is in a room, or has been
     /// played as an item.
     pub fn in_play(&self) -> bool {
         matches!(
             self.kind(),
-            CardPositionKind::Riftcaller | CardPositionKind::Room | CardPositionKind::ArenaItem
+            CardPositionKind::Identity | CardPositionKind::Room | CardPositionKind::ArenaItem
         )
     }
 

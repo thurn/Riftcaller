@@ -33,10 +33,10 @@ pub struct Deck {
     /// school is often called the 'primary' school for a deck and is e.g. used
     /// to determine the card backs shown for this player.
     pub schools: Vec<School>,
-    /// Riftcaller cards for this deck, which start the game in play and provide
+    /// Identity cards for this deck, which start the game in play and provide
     /// global effects.
-    pub riftcallers: Vec<CardVariant>,
-    /// How many (non-riftcaller) cards with each name are present in this deck?
+    pub identities: Vec<CardVariant>,
+    /// How many (non-identity) cards with each name are present in this deck?
     #[serde_as(as = "Vec<(_, _)>")]
     pub cards: HashMap<CardVariant, u32>,
 }
@@ -44,7 +44,7 @@ pub struct Deck {
 impl Deck {
     /// Returns a vector which repeats each [CardVariant] in [Self::cards] in
     /// alphabetical order a number of times equal to its deck count. Note: The
-    /// returned vector does *not* contain riftcallers.
+    /// returned vector does *not* contain identity or sigil cards.
     pub fn card_names(&self) -> Vec<CardVariant> {
         let mut result = self
             .cards

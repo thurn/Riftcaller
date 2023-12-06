@@ -246,7 +246,7 @@ fn counter_card_view(builder: &ResponseBuilder, side: Side, card: CounterCard) -
     CardView {
         card_id: Some(adapters::custom_card_identifier(card.identifier, 0)),
         card_position: Some(positions::for_custom_card(
-            positions::riftcaller(builder, side),
+            positions::display_shelf(builder, side),
             card.identifier,
         )),
         prefab: CardPrefab::TokenCard.into(),

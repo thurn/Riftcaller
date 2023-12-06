@@ -15,7 +15,6 @@
 use adventure_data::adventure::{DraftContext, DraftData};
 use adventure_data::adventure_action::AdventureAction;
 use core_data::game_primitives::Milliseconds;
-
 use core_ui::action_builder::ActionBuilder;
 use core_ui::button::Button;
 use core_ui::design::FontSize;
@@ -45,7 +44,7 @@ impl<'a> Panel for DraftPanel<'a> {
 fn draft_title(data: &DraftData) -> Option<String> {
     Some(
         match data.context.as_ref()? {
-            DraftContext::StartingRiftcaller => "Pick a starting Riftcaller:",
+            DraftContext::StartingIdentity => "Pick a starting Riftcaller:",
         }
         .to_string(),
     )
@@ -54,7 +53,7 @@ fn draft_title(data: &DraftData) -> Option<String> {
 fn custom_button_label(data: &DraftData) -> Option<String> {
     Some(
         match data.context.as_ref()? {
-            DraftContext::StartingRiftcaller => "Start",
+            DraftContext::StartingIdentity => "Start",
         }
         .to_string(),
     )

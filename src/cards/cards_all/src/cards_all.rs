@@ -2,20 +2,11 @@
 
 use rules::DEFINITIONS;
 
-
 pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::marauders_axe);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::keen_halberd);
     DEFINITIONS.insert(cards_amethyst::artifacts_amethyst::bow_of_the_alliance);
-    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::ennera_imris);
-    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::aris_fey);
-    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::telantes_dugoth);
-    DEFINITIONS.insert(cards_amethyst::champion_riftcallers_amethyst::andvari_est);
-    DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::meditation);
-    DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::coup_de_grace);
-    DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::charged_strike);
-    DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::stealth_mission);
-    DEFINITIONS.insert(cards_amethyst::champion_spells_amethyst::preparation);
+    DEFINITIONS.insert(cards_amethyst::chapters_amethyst::ubras_efaris_time_shaper);
     DEFINITIONS.insert(cards_amethyst::evocations_amethyst::invisibility_ring);
     DEFINITIONS.insert(cards_amethyst::evocations_amethyst::accumulator);
     DEFINITIONS.insert(cards_amethyst::evocations_amethyst::mage_gloves);
@@ -26,14 +17,22 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::sphinx_of_winters_breath);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::bridge_troll);
     DEFINITIONS.insert(cards_amethyst::minions_amethyst::stormcaller);
-    DEFINITIONS.insert(cards_amethyst::overlord_riftcallers_amethyst::ubras_efaris_time_shaper);
-    DEFINITIONS.insert(cards_amethyst::overlord_spells_amethyst::overwhelming_power);
-    DEFINITIONS.insert(cards_amethyst::overlord_spells_amethyst::forced_march);
     DEFINITIONS.insert(cards_amethyst::projects_amethyst::gemcarver);
     DEFINITIONS.insert(cards_amethyst::projects_amethyst::spike_trap);
+    DEFINITIONS.insert(cards_amethyst::riftcallers_amethyst::ennera_imris);
+    DEFINITIONS.insert(cards_amethyst::riftcallers_amethyst::aris_fey);
+    DEFINITIONS.insert(cards_amethyst::riftcallers_amethyst::telantes_dugoth);
+    DEFINITIONS.insert(cards_amethyst::riftcallers_amethyst::andvari_est);
+    DEFINITIONS.insert(cards_amethyst::rituals_amethyst::overwhelming_power);
+    DEFINITIONS.insert(cards_amethyst::rituals_amethyst::forced_march);
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::gold_mine);
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::activate_reinforcements);
     DEFINITIONS.insert(cards_amethyst::schemes_amethyst::research_project);
+    DEFINITIONS.insert(cards_amethyst::spells_amethyst::meditation);
+    DEFINITIONS.insert(cards_amethyst::spells_amethyst::coup_de_grace);
+    DEFINITIONS.insert(cards_amethyst::spells_amethyst::charged_strike);
+    DEFINITIONS.insert(cards_amethyst::spells_amethyst::stealth_mission);
+    DEFINITIONS.insert(cards_amethyst::spells_amethyst::preparation);
     DEFINITIONS.insert(cards_basic::champion_basics::arcane_recovery);
     DEFINITIONS.insert(cards_basic::champion_basics::eldritch_surge);
     DEFINITIONS.insert(cards_basic::champion_basics::lodestone);
@@ -80,6 +79,10 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::foebane);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::whip_of_disjunction);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::glimmersong);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::zain_cunning_diplomat);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::algrak_councils_enforcer);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::eria_time_conduit);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::vendoc_seer_in_starlight);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);
@@ -91,10 +94,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::minions_beryl::incarnation_of_justice);
     DEFINITIONS.insert(cards_beryl::minions_beryl::sentinel_sphinx);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);
-    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::zain_cunning_diplomat);
-    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::algrak_councils_enforcer);
-    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::eria_time_conduit);
-    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::vendoc_seer_in_starlight);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illeas_the_high_sage);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::merethyl_lore_seeker);

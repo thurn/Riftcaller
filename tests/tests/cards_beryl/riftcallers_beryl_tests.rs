@@ -17,134 +17,10 @@ use game_data::card_name::CardName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
-// ========================================== //
-// ========== Overlord Riftcallers ========== //
-// ========================================== //
-
-#[test]
-pub fn zain() {
-    let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::ZainCunningDiplomat))
-            .build();
-    g.create_and_play(CardName::TestMinionLoseMana);
-    g.set_up_minion_combat();
-    g.opponent_click(Button::NoWeapon);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - test_constants::MINION_COST + 1);
-
-    g.opponent_click(Button::EndRaid);
-    g.initiate_raid(test_constants::ROOM_ID);
-    g.opponent_click(Button::NoWeapon);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - test_constants::MINION_COST + 2);
-}
-
-#[test]
-pub fn algrak() {
-    let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::AlgrakCouncilsEnforcer))
-            .build();
-    let scheme1 = g.add_to_hand(CardName::TestScheme3_10);
-    g.play_card(scheme1, g.user_id(), Some(RoomId::RoomA));
-    let scheme2 = g.add_to_hand(CardName::TestScheme4_20);
-    g.play_card(scheme2, g.user_id(), Some(RoomId::RoomB));
-    g.pass_turn(Side::Overlord);
-
-    g.initiate_raid(RoomId::RoomA);
-    assert!(g.side_has(Button::Score, Side::Champion));
-    g.opponent_click(Button::Score);
-    g.opponent_click(Button::EndRaid);
-
-    g.initiate_raid(RoomId::RoomB);
-    assert!(!g.side_has(Button::Score, Side::Champion));
-}
-
-#[test]
-pub fn eria() {
-    let mut g = TestGame::new(
-        TestSide::new(Side::Overlord)
-            .riftcaller(CardName::EriaTimeConduit)
-            .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
-    )
-    .build();
-    let discarded = g.create_and_play(CardName::Test0CostRitual);
-    g.pass_turn(Side::Overlord);
-    g.initiate_raid(RoomId::Vault);
-    g.opponent_click(Button::NoWeapon);
-    g.move_selector_card(discarded);
-    g.click(Button::SubmitCardSelector);
-    g.opponent_click(Button::EndRaid);
-    assert!(g.client.cards.deck_top().contains_card(CardName::Test0CostRitual))
-}
-
-#[test]
-pub fn eria_does_not_trigger_twice() {
-    let mut g = TestGame::new(
-        TestSide::new(Side::Overlord)
-            .riftcaller(CardName::EriaTimeConduit)
-            .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
-    )
-    .build();
-    let discarded1 = g.create_and_play(CardName::Test0CostRitual);
-    g.create_and_play(CardName::Test0CostRitual);
-    g.pass_turn(Side::Overlord);
-    g.initiate_raid(RoomId::Vault);
-    g.opponent_click(Button::NoWeapon);
-    g.move_selector_card(discarded1);
-    g.click(Button::SubmitCardSelector);
-    g.opponent_click(Button::EndRaid);
-    g.initiate_raid(RoomId::Vault);
-    g.opponent_click(Button::NoWeapon);
-    g.opponent_click(Button::EndRaid);
-}
-
-#[test]
-pub fn eria_does_not_trigger_with_no_cards_in_crypt() {
-    let mut g = TestGame::new(
-        TestSide::new(Side::Overlord)
-            .riftcaller(CardName::EriaTimeConduit)
-            .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
-    )
-    .build();
-    g.pass_turn(Side::Overlord);
-    g.initiate_raid(RoomId::Vault);
-    g.opponent_click(Button::NoWeapon);
-    assert!(!g.has(Button::SubmitCardSelector));
-}
-
-#[test]
-pub fn vendoc() {
-    let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::VendocSeerInStarlight))
-            .build();
-    g.pass_turn(Side::Overlord);
-    g.click(Button::ChooseCardTypeSpell);
-    g.create_and_play(CardName::Test0CostSpell);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
-    g.create_and_play(CardName::Test0CostSpell);
-    // Only triggers once
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
-}
-
-#[test]
-pub fn vendoc_play_different_card_first() {
-    let mut g =
-        TestGame::new(TestSide::new(Side::Overlord).riftcaller(CardName::VendocSeerInStarlight))
-            .build();
-    g.pass_turn(Side::Overlord);
-    g.click(Button::ChooseCardTypeSpell);
-    g.create_and_play(CardName::TestEvocation);
-    g.create_and_play(CardName::Test0CostSpell);
-    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
-}
-
-// ========================================== //
-// ========== Champion Riftcallers ========== //
-// ========================================== //
-
 #[test]
 pub fn illeas() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
-            .build();
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::IlleasTheHighSage)).build();
     g.create_and_play(CardName::AncestralKnowledge);
     assert_eq!(g.client.cards.hand().len(), 4);
 }
@@ -152,8 +28,7 @@ pub fn illeas() {
 #[test]
 pub fn illeas_does_not_trigger_on_action() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::IlleasTheHighSage))
-            .build();
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::IlleasTheHighSage)).build();
     g.draw_card();
     assert_eq!(g.client.cards.hand().len(), 1);
 }
@@ -161,7 +36,7 @@ pub fn illeas_does_not_trigger_on_action() {
 #[test]
 pub fn strazihar() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::StraziharTheAllSeeing))
             .current_turn(Side::Overlord)
             .build();
     let id = g.create_and_play(CardName::TestMinionEndRaid);
@@ -172,7 +47,7 @@ pub fn strazihar() {
 #[test]
 pub fn strazihar_pay_to_prevent() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::StraziharTheAllSeeing))
             .current_turn(Side::Overlord)
             .build();
     let id = g.create_and_play(CardName::TestMinionEndRaid);
@@ -184,7 +59,7 @@ pub fn strazihar_pay_to_prevent() {
 #[test]
 pub fn strazihar_insufficient_mana() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::StraziharTheAllSeeing))
             .opponent(TestSide::new(Side::Overlord).mana(0))
             .current_turn(Side::Overlord)
             .build();
@@ -196,7 +71,7 @@ pub fn strazihar_insufficient_mana() {
 #[test]
 pub fn strazihar_glimmersong() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::StraziharTheAllSeeing))
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::StraziharTheAllSeeing))
             .build();
     let id = g.create_and_play(CardName::Glimmersong);
     g.pass_turn(Side::Champion);
@@ -208,8 +83,7 @@ pub fn strazihar_glimmersong() {
 #[test]
 pub fn merethyl() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
-            .build();
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::MerethylLoreSeeker)).build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Sanctum);
@@ -221,8 +95,7 @@ pub fn merethyl() {
 #[test]
 pub fn merethyl_trigger_twice() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
-            .build();
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::MerethylLoreSeeker)).build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Sanctum);
@@ -237,8 +110,7 @@ pub fn merethyl_trigger_twice() {
 #[test]
 pub fn merethyl_works_with_raid_spell() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
-            .build();
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::MerethylLoreSeeker)).build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.create_and_play(CardName::StrikeTheHeart);
@@ -250,8 +122,7 @@ pub fn merethyl_works_with_raid_spell() {
 #[test]
 pub fn merethyl_effect_does_not_increase_delve_into_darkness() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::MerethylLoreSeeker))
-            .build();
+        TestGame::new(TestSide::new(Side::Champion).identity(CardName::MerethylLoreSeeker)).build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
     g.initiate_raid(RoomId::Sanctum);
@@ -264,7 +135,7 @@ pub fn merethyl_effect_does_not_increase_delve_into_darkness() {
 
 #[test]
 pub fn oleus() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::OleusTheWatcher))
+    let mut g = TestGame::new(TestSide::new(Side::Champion).identity(CardName::OleusTheWatcher))
         .opponent(
             TestSide::new(Side::Overlord)
                 .face_down_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),
@@ -277,7 +148,7 @@ pub fn oleus() {
 
 #[test]
 pub fn oleus_trigger_on_opponent_turn() {
-    let mut g = TestGame::new(TestSide::new(Side::Champion).riftcaller(CardName::OleusTheWatcher))
+    let mut g = TestGame::new(TestSide::new(Side::Champion).identity(CardName::OleusTheWatcher))
         .opponent(
             TestSide::new(Side::Overlord)
                 .face_down_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),

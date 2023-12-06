@@ -695,10 +695,10 @@ impl GameState {
     fn make_deck(deck: &Deck, side: Side) -> Vec<CardState> {
         let mut result = vec![];
 
-        for (i, riftcaller) in deck.riftcallers.iter().enumerate() {
-            // Put all riftcaller cards into play face up
-            let mut card = CardState::new(CardId::new(side, i), *riftcaller);
-            card.set_position_internal(i as u32, CardPosition::Riftcaller(side));
+        for (i, identity) in deck.identities.iter().enumerate() {
+            // Put all identity cards into play face up
+            let mut card = CardState::new(CardId::new(side, i), *identity);
+            card.set_position_internal(i as u32, CardPosition::Identity(side));
             card.internal_turn_face_up();
             result.push(card);
         }

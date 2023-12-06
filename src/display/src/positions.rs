@@ -132,7 +132,7 @@ pub fn character(builder: &ResponseBuilder, side: Side) -> Position {
     Position::Character(ObjectPositionCharacter { owner: builder.to_player_name(side) })
 }
 
-pub fn riftcaller(builder: &ResponseBuilder, side: Side) -> Position {
+pub fn display_shelf(builder: &ResponseBuilder, side: Side) -> Position {
     Position::Riftcaller(ObjectPositionRiftcallers { owner: builder.to_player_name(side) })
 }
 
@@ -230,7 +230,7 @@ fn adapt_position(
         CardPosition::DeckTop(side) => Some(deck(builder, side)),
         CardPosition::DiscardPile(side) => Some(discard(builder, side)),
         CardPosition::Scored(side) => Some(character(builder, side)),
-        CardPosition::Riftcaller(side) => Some(riftcaller(builder, side)),
+        CardPosition::Identity(side) => Some(display_shelf(builder, side)),
         CardPosition::Scoring => Some(staging()),
         CardPosition::Played(card_play_id, side, target) => {
             played_position(builder, game, side, card_id, target, card_play_id)

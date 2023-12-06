@@ -213,8 +213,8 @@ pub enum AbilityType {
     Activated { cost: Cost<AbilityId>, target_requirement: TargetRequirement<AbilityId> },
 }
 
-/// Abilities are the unit of action in Riftcaller. Their behavior is provided by
-/// the Delegate system, see delegate_data for more information.
+/// Abilities are the unit of action in Riftcaller. Their behavior is provided
+/// by the Delegate system, see delegate_data for more information.
 #[derive(Debug)]
 pub struct Ability {
     pub ability_type: AbilityType,
@@ -329,9 +329,9 @@ impl Resonance {
     }
 }
 
-/// Configuration for a Riftcaller card
+/// Configuration for an Identity card
 #[derive(Debug)]
-pub struct RiftcallerConfig {
+pub struct IdentityConfig {
     pub starting_coins: Coins,
     pub secondary_schools: Vec<School>,
     pub skills: Vec<Skill>,
@@ -357,8 +357,8 @@ pub struct CardConfig {
     pub choice_effect: Option<TimedEffectData>,
     /// Optionally, a clarifying note about how this card functions.
     pub note: Option<String>,
-    /// Configuration for a Riftcaller card
-    pub riftcaller: Option<RiftcallerConfig>,
+    /// Configuration for a Riftcaller or Chapter card
+    pub identity: Option<IdentityConfig>,
     /// Which card variant does this definition correspond to?
     ///
     /// It is never necessary to specify this value when building a card
@@ -441,8 +441,8 @@ impl CardConfigBuilder {
         self
     }
 
-    pub fn riftcaller(mut self, config: RiftcallerConfig) -> Self {
-        self.config.riftcaller = Some(config);
+    pub fn identity(mut self, config: IdentityConfig) -> Self {
+        self.config.identity = Some(config);
         self
     }
 }

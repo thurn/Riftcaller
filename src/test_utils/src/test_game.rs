@@ -135,25 +135,25 @@ impl TestGame {
             Side::Champion => (opponent_id, user_id),
         };
 
-        let (overlord_riftcallers, champion_riftcallers) = match self.user_side.side {
+        let (chapters, riftcallers) = match self.user_side.side {
             Side::Overlord => {
-                (self.user_side.riftcallers.clone(), self.opponent_side.riftcallers.clone())
+                (self.user_side.identities.clone(), self.opponent_side.identities.clone())
             }
             Side::Champion => {
-                (self.opponent_side.riftcallers.clone(), self.user_side.riftcallers.clone())
+                (self.opponent_side.identities.clone(), self.user_side.identities.clone())
             }
         };
 
         let overlord_deck = Deck {
             side: Side::Overlord,
             schools: vec![],
-            riftcallers: overlord_riftcallers.into_iter().map(CardVariant::standard).collect(),
+            identities: chapters.into_iter().map(CardVariant::standard).collect(),
             cards: hashmap! {CardVariant::standard(CardName::TestRitual) => self.deck_sizes},
         };
         let champion_deck = Deck {
             side: Side::Champion,
             schools: vec![],
-            riftcallers: champion_riftcallers.into_iter().map(CardVariant::standard).collect(),
+            identities: riftcallers.into_iter().map(CardVariant::standard).collect(),
             cards: hashmap! {CardVariant::standard(CardName::TestSpell) => self.deck_sizes},
         };
 
@@ -232,7 +232,7 @@ pub struct TestSide {
     deck_top: Vec<CardName>,
     in_discard_face_down: Vec<CardName>,
     in_discard_face_up: Vec<CardName>,
-    riftcallers: Vec<CardName>,
+    identities: Vec<CardName>,
     room_occupants: Vec<(RoomId, CardName)>,
     face_up_room_occupants: Vec<(RoomId, CardName)>,
     in_score_area: Vec<CardName>,
@@ -252,7 +252,7 @@ impl TestSide {
             deck_top: vec![],
             in_discard_face_down: vec![],
             in_discard_face_up: vec![],
-            riftcallers: vec![],
+            identities: vec![],
             room_occupants: vec![],
             face_up_room_occupants: vec![],
             in_score_area: vec![],
@@ -325,9 +325,9 @@ impl TestSide {
         self
     }
 
-    /// Riftcallers which start in play for this player.
-    pub fn riftcaller(mut self, card: CardName) -> Self {
-        self.riftcallers.push(card);
+    /// Identity cards which start in play for this player.
+    pub fn identity(mut self, card: CardName) -> Self {
+        self.identities.push(card);
         self
     }
 
