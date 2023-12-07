@@ -24,7 +24,8 @@ use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{
-    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
+    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, Cost,
+    TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -434,5 +435,43 @@ pub fn a_moments_peace(meta: CardMetadata) -> CardDefinition {
                     .effect_color(design::YELLOW_900),
             )
             .build(),
+    }
+}
+
+pub fn vortex_portal(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::VortexPortal,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::riftcaller_card(meta, "vortex_portal"),
+        card_type: CardType::Evocation,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new_with_delegate(
+                text!["When the Covenant scores a scheme,", AddPowerCharges(1)],
+                in_play::on_covenant_scored_card(|g, s, _| {
+                    g.card_mut(s).add_counters(CardCounter::PowerCharges, 1);
+                    Ok(())
+                }),
+            ),
+            ActivatedAbility::new(
+                Cost {
+                    mana: None,
+                    actions: 1,
+                    custom_cost: costs::power_charges_custom_cost::<1>(),
+                },
+                text![text!["Raid the sanctum,", Evading, "all defenders"], text![GainActions(1)]],
+            )
+            .delegate(this::on_activated(|g, s, _| raids::initiate(g, s, RoomId::Sanctum)))
+            .delegate(delegates::on_will_populate_summon_prompt(
+                requirements::matching_raid,
+                |g, _, _| mutations::evade_current_minion(g),
+            ))
+            .build(),
+        ],
+        config: CardConfig::default(),
     }
 }

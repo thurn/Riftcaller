@@ -337,6 +337,7 @@ pub enum CardName {
     VendocSeerInStarlight,
     AMomentsPeace,
     BlueWarden,
+    VortexPortal,
 }
 
 impl CardName {

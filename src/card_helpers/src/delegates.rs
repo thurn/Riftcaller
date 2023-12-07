@@ -69,6 +69,13 @@ pub fn on_played(
     Delegate::PlayCard(EventDelegate { requirement, mutation })
 }
 
+pub fn on_will_populate_summon_prompt(
+    requirement: RequirementFn<RaidEvent<CardId>>,
+    mutation: MutationFn<RaidEvent<CardId>>,
+) -> Delegate {
+    Delegate::WillPopulateSummonPrompt(EventDelegate { requirement, mutation })
+}
+
 pub fn on_minion_summoned(
     requirement: RequirementFn<CardId>,
     mutation: MutationFn<CardId>,

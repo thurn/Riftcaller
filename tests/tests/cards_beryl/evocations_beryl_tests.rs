@@ -455,3 +455,41 @@ fn a_moments_peace_return_to_hand() {
     g.create_and_play(CardName::TestSpellReturnAllPermanentsToHand);
     assert!(g.is_victory_for_player(Side::Covenant));
 }
+
+#[test]
+fn vortex_portal() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_down_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),
+        )
+        .build();
+    let id = g.create_and_play(CardName::VortexPortal);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    g.pass_turn(Side::Covenant);
+    g.activate_ability(id, 1);
+    assert_eq!(g.client.cards.browser().len(), 1);
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn vortex_portal_sentinel_sphinx() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_down_defender(RoomId::Sanctum, CardName::SentinelSphinx),
+        )
+        .build();
+    let id = g.create_and_play(CardName::VortexPortal);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    g.pass_turn(Side::Covenant);
+    g.activate_ability(id, 1);
+    g.opponent_click(Button::Summon);
+    g.click(Button::NoWeapon);
+    assert!(!g.client.data.raid_active());
+}

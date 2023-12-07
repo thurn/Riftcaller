@@ -22,8 +22,8 @@ use raid_state::InitiateRaidOptions;
 
 /// Starts a new raid from a card ability associated with the provided [Scope]
 /// and [CardTarget] room.
-pub fn initiate(game: &mut GameState, scope: Scope, target: CardTarget) -> Result<()> {
-    initiate_with_options(game, scope, target, InitiateRaidOptions::default())
+pub fn initiate(game: &mut GameState, scope: Scope, target: impl Into<CardTarget>) -> Result<()> {
+    initiate_with_options(game, scope, target.into(), InitiateRaidOptions::default())
 }
 
 /// Starts a new raid from a card ability associated with the provided [Scope],

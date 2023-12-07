@@ -3,7 +3,7 @@ set positional-arguments
 code-review: git-status disallowed check-format build clippy test check-docs git-status
 
 check:
-    cargo check --all-targets --all-features
+    RUSTFLAGS="--deny warnings" cargo check --workspace --all-targets --all-features --exclude "protos"
 
 build:
     cargo build --all-targets --all-features

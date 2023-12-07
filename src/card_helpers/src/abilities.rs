@@ -121,7 +121,7 @@ pub fn can_progress() -> Ability {
 /// An [AbilityType] for an ability with "Sacrifice:" as its only cost.
 pub fn sacrifice_this() -> AbilityType {
     AbilityType::Activated {
-        cost: Cost { mana: None, actions: 0, custom_cost: costs::sacrifice_cost() },
+        cost: Cost { mana: None, actions: 0, custom_cost: costs::sacrifice_custom_cost() },
         target_requirement: TargetRequirement::None,
     }
 }

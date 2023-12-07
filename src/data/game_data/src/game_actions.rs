@@ -166,6 +166,12 @@ impl CardTarget {
     }
 }
 
+impl From<RoomId> for CardTarget {
+    fn from(value: RoomId) -> Self {
+        CardTarget::Room(value)
+    }
+}
+
 #[derive(Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct RaidAction {
     /// Index position of the action to take in the current `RaidStep`.

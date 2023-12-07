@@ -264,6 +264,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Leyline => "leyline".to_string(),
         TextToken::Evade => "evade".to_string(),
         TextToken::Evaded => "evaded".to_string(),
+        TextToken::Evading => "evading".to_string(),
         TextToken::Unsummon => "unsummon".to_string(),
         TextToken::RazeAbility => format!("{} ability", icons::RAZE),
         TextToken::Banish => "banish".to_string(),

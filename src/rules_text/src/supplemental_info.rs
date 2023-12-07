@@ -141,7 +141,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         TextTokenKind::AddPowerCharges |
             TextTokenKind::PowerChargeSymbol |
             TextTokenKind::PowerCharges => Some(format!(
-            "{}: A power charge. Stored while in play to spend on abilities", 
+            "{}: A power charge. Stored while in play to spend on abilities.", 
             icons::POWER_CHARGE
         )),
         TextTokenKind::Play => entry("Play", "Triggers when this card enters the arena"),
@@ -187,7 +187,8 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             "Gives the Riftcaller 1{} to use during each raid.",
             icons::MANA
         )),
-        TextTokenKind::Evade | TextTokenKind::Evaded => entry("Evade", "Bypass a minion without combat"),
+        TextTokenKind::Evade | TextTokenKind::Evaded | TextTokenKind::Evading =>
+            entry("Evade", "Bypass a minion without combat"),
         TextTokenKind::Unsummon => entry("Unsummon", "Turn a minion face-down"),
         TextTokenKind::RazeAbility => Some(
             format!("{} <b>Ability</b>: Allows cards to be discarded/destroyed during a raid.",

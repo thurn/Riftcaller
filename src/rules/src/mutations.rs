@@ -650,10 +650,7 @@ pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
 
 /// Requests to evade the minion currently being encountered during a raid, if
 /// it can be evaded.
-///
-/// Returns an error if there is no active raid encounter.
 pub fn evade_current_minion(game: &mut GameState) -> Result<()> {
-    verify!(game.current_raid_defender().is_some(), "Expected current encounter");
     if flags::can_evade_current_minion(game) {
         apply_raid_jump(game, RaidJumpRequest::EvadeCurrentMinion);
     }

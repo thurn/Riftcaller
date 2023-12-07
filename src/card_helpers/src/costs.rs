@@ -45,30 +45,17 @@ pub fn identity() -> Cost<CardId> {
 /// Cost for an ability which costs 1 action point and requires the owning card
 /// to be sacrificed.
 pub fn sacrifice_for_action() -> Cost<AbilityId> {
-    Cost { mana: None, actions: 1, custom_cost: sacrifice_cost() }
+    Cost { mana: None, actions: 1, custom_cost: sacrifice_custom_cost() }
 }
 
 /// Cost for an ability which requires the owning card to be sacrificed.
 pub fn sacrifice() -> Cost<AbilityId> {
-    Cost { mana: None, actions: 0, custom_cost: sacrifice_cost() }
-}
-
-/// Cost for an ability which costs power charges to use.
-pub fn power_charges<const N: u32>() -> Cost<AbilityId> {
-    Cost {
-        mana: None,
-        actions: 0,
-        custom_cost: Some(CustomCost {
-            can_pay: |g, id| g.card(id.card_id).counters(CardCounter::PowerCharges) >= N,
-            pay: |g, id| mutations::spend_power_charges(g, id.card_id, N),
-            description: Some(TextElement::Token(TextToken::PowerCharges(N))),
-        }),
-    }
+    Cost { mana: None, actions: 0, custom_cost: sacrifice_custom_cost() }
 }
 
 /// A [CustomCost] which allows an ability to be activated by sacrificing the
 /// card.
-pub fn sacrifice_cost() -> Option<CustomCost<AbilityId>> {
+pub fn sacrifice_custom_cost() -> Option<CustomCost<AbilityId>> {
     Some(CustomCost {
         can_pay: |game, ability_id| {
             game.card(ability_id.card_id).is_face_up()
@@ -76,6 +63,20 @@ pub fn sacrifice_cost() -> Option<CustomCost<AbilityId>> {
         },
         pay: |game, ability_id| mutations::sacrifice_card(game, ability_id.card_id),
         description: Some(TextElement::Token(TextToken::SacrificeCost)),
+    })
+}
+
+/// Cost for an ability which costs power charges to use.
+pub fn power_charges<const N: u32>() -> Cost<AbilityId> {
+    Cost { mana: None, actions: 0, custom_cost: power_charges_custom_cost::<N>() }
+}
+
+/// A [CustomCost] for an ability which costs power charges to use.
+pub fn power_charges_custom_cost<const N: u32>() -> Option<CustomCost<AbilityId>> {
+    Some(CustomCost {
+        can_pay: |g, id| g.card(id.card_id).counters(CardCounter::PowerCharges) >= N,
+        pay: |g, id| mutations::spend_power_charges(g, id.card_id, N),
+        description: Some(TextElement::Token(TextToken::PowerCharges(N))),
     })
 }
 

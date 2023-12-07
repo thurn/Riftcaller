@@ -83,6 +83,7 @@ pub enum TextToken {
     Leyline,
     Evade,
     Evaded,
+    Evading,
     Unsummon,
     RazeAbility,
     Banish,

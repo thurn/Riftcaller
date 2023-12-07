@@ -174,6 +174,15 @@ pub fn vault_access_selected(mutation: MutationFn<RaidEvent<()>>) -> Delegate {
     })
 }
 
+/// A delegate which fires when its card is face up & in play when the Covenant
+/// scores a card.
+pub fn on_covenant_scored_card(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::CovenantScoreCard(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
+}
+
 /// A delegate which fires when its card is face up & in play when a card is
 /// scored
 pub fn on_card_scored(mutation: MutationFn<ScoreCard>) -> Delegate {

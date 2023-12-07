@@ -268,7 +268,8 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             RaidStep::Begin | RaidStep::GainLeylineMana | RaidStep::RaidStartEvent => {
                 RaidStatus::Begin
             }
-            RaidStep::PopulateSummonPrompt(..)
+            RaidStep::WillPopulateSummonPrompt(..)
+            | RaidStep::PopulateSummonPrompt(..)
             | RaidStep::SummonMinion(..)
             | RaidStep::DoNotSummon(..) => RaidStatus::Summon,
             RaidStep::NextEncounter

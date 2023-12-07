@@ -24,6 +24,7 @@ use game_data::delegate_data::{
     MinionDefeatedEvent, RaidAccessEndEvent, RaidAccessSelectedEvent, RaidAccessStartEvent,
     RaidOutcome, RaidStartEvent, RazeCardEvent, RiftcallerScoreCardEvent, ScoreCard,
     ScoreCardEvent, UsedWeapon, UsedWeaponEvent, WillPopulateAccessPromptEvent,
+    WillPopulateSummonPromptEvent,
 };
 use game_data::game_actions::RaidAction;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
@@ -214,6 +215,9 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::GainLeylineMana => gain_leyline_mana(game, info),
         RaidStep::RaidStartEvent => raid_start_event(game, info),
         RaidStep::NextEncounter => RaidState::step(defenders::next_encounter(game, info)?),
+        RaidStep::WillPopulateSummonPrompt(minion_id) => {
+            will_populate_summon_prompt(game, info, minion_id)
+        }
         RaidStep::PopulateSummonPrompt(minion_id) => populate_summon_prompt(minion_id),
         RaidStep::SummonMinion(minion_id) => summon_minion(game, info, minion_id),
         RaidStep::DoNotSummon(_) => RaidState::step(RaidStep::NextEncounter),
@@ -267,6 +271,15 @@ fn gain_leyline_mana(game: &mut GameState, info: RaidInfo) -> Result<RaidState> 
 fn raid_start_event(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     dispatch::invoke_event(game, RaidStartEvent(info.event(())))?;
     RaidState::step(RaidStep::NextEncounter)
+}
+
+fn will_populate_summon_prompt(
+    game: &mut GameState,
+    info: RaidInfo,
+    minion_id: CardId,
+) -> Result<RaidState> {
+    dispatch::invoke_event(game, WillPopulateSummonPromptEvent(info.event(minion_id)))?;
+    RaidState::step(RaidStep::PopulateSummonPrompt(minion_id))
 }
 
 fn populate_summon_prompt(minion_id: CardId) -> Result<RaidState> {

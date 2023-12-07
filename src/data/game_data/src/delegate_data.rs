@@ -469,6 +469,9 @@ pub enum Delegate {
     RazeCard(EventDelegate<CardId>),
     /// A Raid is initiated
     RaidStart(EventDelegate<RaidEvent<()>>),
+    /// The game is about to populate a summon prompt for the current minion
+    /// encounter
+    WillPopulateSummonPrompt(EventDelegate<RaidEvent<CardId>>),
     /// A summoned minion is about to be encountered during a raid
     ApproachMinion(EventDelegate<RaidEvent<CardId>>),
     /// A summoned minion is encountered during a raid
@@ -625,8 +628,8 @@ pub enum Delegate {
     /// Gets the number of cards the Riftcaller player can access from the Vault
     /// during this raid
     VaultAccessCount(QueryDelegate<RaidId, u32>),
-    /// Gets the number of cards the Riftcaller player can access from the Sanctum
-    /// during this raid
+    /// Gets the number of cards the Riftcaller player can access from the
+    /// Sanctum during this raid
     SanctumAccessCount(QueryDelegate<RaidId, u32>),
     /// Queries the maximum hand size of a player. Invoked with the default
     /// maximum hand size.

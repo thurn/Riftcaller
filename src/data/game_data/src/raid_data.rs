@@ -59,6 +59,7 @@ pub enum RaidStep {
     GainLeylineMana,
     RaidStartEvent,
     NextEncounter,
+    WillPopulateSummonPrompt(CardId),
     PopulateSummonPrompt(CardId),
     SummonMinion(CardId),
     DoNotSummon(CardId),

@@ -29,7 +29,7 @@ pub fn next_encounter(game: &mut GameState, info: RaidInfo) -> Result<RaidStep> 
         game.raid_mut()?.encounter = encounter;
         let defender = game.current_raid_defender().with_error(|| "No defender found")?;
         if game.card(defender).is_face_down() {
-            RaidStep::PopulateSummonPrompt(defender)
+            RaidStep::WillPopulateSummonPrompt(defender)
         } else {
             RaidStep::ApproachMinion(defender)
         }
