@@ -267,7 +267,7 @@ fn dispel_evocation_action(game: &mut GameState, user_side: Side) -> Result<()> 
         choices: game
             .evocations()
             .map(|card| PromptChoice {
-                effects: vec![GameEffect::DestroyCard(card.id)],
+                effects: vec![GameEffect::DestroyCard(card.id, InitiatedBy::GameAction)],
                 anchor_card: Some(card.id),
                 custom_label: None,
             })

@@ -547,6 +547,12 @@ pub enum Delegate {
     WillDrawCards(EventDelegate<Side>),
     /// The [Side] player has drawn cards via a card ability.
     DrawCardsViaAbility(EventDelegate<Side>),
+    /// The [CardId] card is about to be destroyed by one of the opponent's card
+    /// abilities.
+    WillDestroyCard(EventDelegate<CardId>),
+    /// The [CardId] card has been destroyed by one of the opponent's card
+    /// abilities.
+    CardDestroyed(EventDelegate<CardId>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.
@@ -585,8 +591,6 @@ pub enum Delegate {
     CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
     /// Should an 'end the raid' ability with the given ID be prevented?
     CanAbilityEndRaid(QueryDelegate<RaidEvent<AbilityId>, Flag>),
-    /// Should a 'destroy' ability with the given ID be prevented?
-    CanAbilityDestroyCard(QueryDelegate<AbilityId, Flag>),
     /// Can the minion with the given ID be evaded?
     CanEvadeMinion(QueryDelegate<CardId, Flag>),
     /// Can the [Side] player currently win the game by scoring points?

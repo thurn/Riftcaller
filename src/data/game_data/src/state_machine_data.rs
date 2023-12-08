@@ -203,6 +203,29 @@ pub struct GiveWoundsData {
     pub step: GiveWoundsStep,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum DestroyPermanentStep {
+    Begin,
+    WillDestroyEvent,
+    CheckIfDestroyPrevented,
+    Destroy,
+    CardDestroyedEvent,
+    Finish,
+}
+
+/// State data for destroying a card
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct DestroyPermanentData {
+    /// Target permanent to destroy.
+    pub target: CardId,
+    /// If true, the destroy event has been prevented and will not happen.
+    pub is_prevented: bool,
+    /// Source of the event
+    pub source: InitiatedBy,
+    /// Current state machine state
+    pub step: DestroyPermanentStep,
+}
+
 /// Data related to ongoing game events. Some types of updates are handled via a
 /// resumable state machine in order to allow interruptions in the resolution
 /// process when a player is required to make a prompt decision.
@@ -217,4 +240,5 @@ pub struct StateMachines {
     pub draw_cards: Vec<DrawCardsData>,
     pub give_leylines: Vec<GiveLeylinesData>,
     pub give_wounds: Vec<GiveWoundsData>,
+    pub destroy_permanent: Vec<DestroyPermanentData>,
 }

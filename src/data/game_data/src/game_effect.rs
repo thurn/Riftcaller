@@ -36,7 +36,7 @@ pub enum GameEffect {
     /// pile.
     SacrificeCard(CardId),
     /// Destroy the indicated permanent
-    DestroyCard(CardId),
+    DestroyCard(CardId, InitiatedBy),
     /// A mana cost for a prompt choice. Choices will not be shown if the player
     /// is unable to pay their costs.
     ManaCost(Side, ManaValue, InitiatedBy),

@@ -29,6 +29,7 @@ pub mod combat;
 pub mod curses;
 pub mod custom_state;
 pub mod damage;
+pub mod destroy;
 pub mod dispatch;
 pub mod draw_cards;
 pub mod flags;

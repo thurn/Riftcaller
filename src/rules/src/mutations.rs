@@ -165,16 +165,6 @@ pub fn move_cards(game: &mut GameState, cards: &[CardId], to_position: CardPosit
     Ok(())
 }
 
-/// Move a card to the discard pile. This should specifically be used when an
-/// opponent's effect uses the word 'destroy'.
-pub fn destroy_card(game: &mut GameState, card_id: CardId) -> Result<()> {
-    move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
-    if card_id.side == Side::Riftcaller {
-        turn_face_up(game, card_id);
-    }
-    Ok(())
-}
-
 /// Move a card to the discard pile. This should specifically be used when a
 /// player's *own* effect causes their card to be discarded.
 pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {

@@ -21,7 +21,7 @@ use game_data::game_state::GameState;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
-use rules::{curses, damage, mana, mutations, play_card, CardDefinitionExt};
+use rules::{curses, damage, destroy, mana, mutations, play_card, CardDefinitionExt};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
@@ -47,7 +47,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             })
         }
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
-        GameEffect::DestroyCard(card_id) => mutations::destroy_card(game, card_id)?,
+        GameEffect::DestroyCard(card_id, initiated_by) => {
+            destroy::run(game, card_id, initiated_by)?
+        }
         GameEffect::ManaCost(side, amount, initiated_by) => {
             mana::spend(game, side, initiated_by, ManaPurpose::PayForTriggeredAbility, amount)?
         }
