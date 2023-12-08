@@ -190,6 +190,7 @@ impl From<FontColor> for FlexColor {
 pub enum FontSize {
     ButtonLabel,
     ButtonLabelTwoLines,
+    MainMenuTitle,
     MainMenuButton,
     ButtonIcon,
     PanelTitle,
@@ -213,6 +214,7 @@ impl From<FontSize> for Dimension {
         (match size {
             FontSize::ButtonLabel => 32,
             FontSize::ButtonLabelTwoLines => 28,
+            FontSize::MainMenuTitle => 160,
             FontSize::MainMenuButton => 64,
             FontSize::ButtonIcon => 48,
             FontSize::PanelTitle => 48,
@@ -258,6 +260,7 @@ pub enum Font {
     ButtonLabel,
     CardIcon,
     CardVariant,
+    MainMenuTitle,
     MainMenuButton,
 }
 
@@ -269,6 +272,7 @@ impl From<Font> for FontAddress {
             Font::ButtonLabel => roboto(),
             Font::CardIcon => impact(),
             Font::CardVariant => bona_nova(),
+            Font::MainMenuTitle => bluu_next(),
             Font::MainMenuButton => bluu_next(),
         }
     }

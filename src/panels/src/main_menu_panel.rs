@@ -49,6 +49,17 @@ impl Component for MainMenuPanel {
         Row::new("MainMenuPanel")
             .style(Style::new().position(Edge::All, 0.px()).position_type(FlexPosition::Absolute))
             .child(
+                Text::new("Riftcaller")
+                    .layout(
+                        Layout::new()
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::Left, 48.px())
+                            .position(Edge::Top, 48.px()),
+                    )
+                    .font(Font::MainMenuButton)
+                    .font_size(FontSize::MainMenuTitle),
+            )
+            .child(
                 Column::new("MainMenu")
                     .style(
                         Style::new()

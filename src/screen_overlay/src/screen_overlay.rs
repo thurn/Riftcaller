@@ -105,30 +105,36 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
                             .action(panels)
                             .layout(Layout::new().margin(Edge::Left, 16.px()))
                     }))
-                    .child(
-                        IconButton::new(icons::BUG)
-                            .name(&element_names::FEEDBACK_BUTTON)
-                            .button_type(IconButtonType::NavBlue)
+                    .child(self.show_menu_button.then(|| {
+                        IconButton::new(icons::BARS)
+                            .name(&element_names::MENU_BUTTON)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
-                            .action(if cfg!(debug_assertions) {
-                                Panels::open(StandardPanel::DebugPanel(
-                                    activity.kind(),
-                                    activity.side(),
-                                ))
-                                .as_client_action()
-                            } else {
-                                ActionBuilder::new()
-                                    .update(Command::Debug(ClientDebugCommand {
-                                        debug_command: Some(DebugCommand::ShowFeedbackForm(())),
-                                    }))
-                                    .as_client_action()
-                            })
-                            .long_press_action(Panels::open(StandardPanel::DebugPanel(
-                                activity.kind(),
-                                activity.side(),
-                            ))),
-                    )
-                    .child(self.set_display_preference_button.map(set_display_preference_button))
+                            .button_type(IconButtonType::NavBrown)
+                            .action(Panels::open(
+                                if matches!(self.player.status, Some(PlayerStatus::Playing(_, _))) {
+                                    StandardPanel::GameMenu
+                                } else {
+                                    StandardPanel::AdventureMenu
+                                },
+                            ))
+                    }))
+                    .child(self.show_deck_button.then(|| {
+                        IconButton::new(icons::DECK)
+                            .name(&element_names::DECK_BUTTON)
+                            .button_type(IconButtonType::NavBrown)
+                            .action(
+                                if self.player.tutorial.has_seen(TutorialMessageKey::DeckEditor) {
+                                    Panels::open(PlayerPanel::DeckEditor(DeckEditorData::new(
+                                        DeckId::Adventure,
+                                    )))
+                                    .loading(StandardPanel::DeckEditorLoading)
+                                } else {
+                                    Panels::open(PlayerPanel::DeckEditorPrompt)
+                                        .loading(StandardPanel::DeckEditorLoading)
+                                },
+                            )
+                            .layout(Layout::new().margin(Edge::All, 12.px()))
+                    }))
                     .child(self.show_coin_count.then(|| {
                         self.player.adventure.as_ref().map(|adventure| {
                             Row::new("CoinCount")
@@ -155,36 +161,30 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
             )
             .child(
                 Row::new("Right")
-                    .child(self.show_deck_button.then(|| {
-                        IconButton::new(icons::DECK)
-                            .name(&element_names::DECK_BUTTON)
-                            .button_type(IconButtonType::NavBrown)
-                            .action(
-                                if self.player.tutorial.has_seen(TutorialMessageKey::DeckEditor) {
-                                    Panels::open(PlayerPanel::DeckEditor(DeckEditorData::new(
-                                        DeckId::Adventure,
-                                    )))
-                                    .loading(StandardPanel::DeckEditorLoading)
-                                } else {
-                                    Panels::open(PlayerPanel::DeckEditorPrompt)
-                                        .loading(StandardPanel::DeckEditorLoading)
-                                },
-                            )
+                    .child(
+                        IconButton::new(icons::BUG)
+                            .name(&element_names::FEEDBACK_BUTTON)
+                            .button_type(IconButtonType::NavBlue)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
-                    }))
-                    .child(self.show_menu_button.then(|| {
-                        IconButton::new(icons::BARS)
-                            .name(&element_names::MENU_BUTTON)
-                            .layout(Layout::new().margin(Edge::All, 12.px()))
-                            .button_type(IconButtonType::NavBrown)
-                            .action(Panels::open(
-                                if matches!(self.player.status, Some(PlayerStatus::Playing(_, _))) {
-                                    StandardPanel::GameMenu
-                                } else {
-                                    StandardPanel::AdventureMenu
-                                },
-                            ))
-                    })),
+                            .action(if cfg!(debug_assertions) {
+                                Panels::open(StandardPanel::DebugPanel(
+                                    activity.kind(),
+                                    activity.side(),
+                                ))
+                                .as_client_action()
+                            } else {
+                                ActionBuilder::new()
+                                    .update(Command::Debug(ClientDebugCommand {
+                                        debug_command: Some(DebugCommand::ShowFeedbackForm(())),
+                                    }))
+                                    .as_client_action()
+                            })
+                            .long_press_action(Panels::open(StandardPanel::DebugPanel(
+                                activity.kind(),
+                                activity.side(),
+                            ))),
+                    )
+                    .child(self.set_display_preference_button.map(set_display_preference_button)),
             )
             .build()
     }
