@@ -82,6 +82,11 @@ pub struct BattleData {
     pub region_to_reveal: RegionId,
 }
 
+/// Data for displaying a narrative event to the player with a fixed set of
+/// choices
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NarrativeEventData {}
+
 /// Possible events/actions which can take place on a tile, represented by map
 /// icons
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -89,6 +94,7 @@ pub enum TileEntity {
     Draft(DraftData),
     Shop(ShopData),
     Battle(BattleData),
+    NarrativeEvent(NarrativeEventData),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

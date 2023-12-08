@@ -18,21 +18,21 @@ use adventure_data::adventure::{AdventureState, TileEntity, TileState};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_data::adventure_primitives::TilePosition;
-
 use core_ui::actions::InterfaceAction;
 use core_ui::design;
 use core_ui::panels::Panels;
 use panel_address::{PanelAddress, PlayerPanel};
+use protos::riftcaller::game_command::Command;
 use protos::riftcaller::{
     FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
     WorldMapCharacter, WorldMapSprite, WorldMapTile,
 };
-use protos::riftcaller::game_command::Command;
 
 pub mod adventure_over_panel;
 pub mod adventure_panels;
 pub mod battle_panel;
 pub mod draft_panel;
+pub mod narrative_event_panel;
 pub mod shop_panel;
 
 /// Returns a sequence of game Commands to display the provided
@@ -139,6 +139,9 @@ fn sprite_address_for_entity(entity: &TileEntity) -> Option<SpriteAddress> {
                 .to_string(),
         ),
         TileEntity::Battle(_) => None,
+        TileEntity::NarrativeEvent(_) => {
+            Some("RainbowArt/CleanFlatIcon/png_128/icon/icon_game/icon_game_194.png".to_string())
+        }
     };
 
     address.map(|a| SpriteAddress { address: a })

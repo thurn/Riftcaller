@@ -24,6 +24,7 @@ const fn color(red: f32, green: f32, blue: f32, alpha: f32) -> FlexColor {
 }
 
 // Converted from hex using https://www.tydac.ch/color/
+pub const TRANSPARENT: FlexColor = color(1.0, 1.0, 1.0, 0.0);
 pub const WHITE: FlexColor = color(1.0, 1.0, 1.0, 1.0);
 pub const WHITE_ALPHA_25: FlexColor = color(1.0, 1.0, 1.0, 0.25);
 pub const WHITE_ALPHA_75: FlexColor = color(1.0, 1.0, 1.0, 0.75);
@@ -110,6 +111,7 @@ pub enum BackgroundColor {
     SpeechBubble,
     GameInstructionsBackground,
     AccessedNote,
+    NarrativeEventBackground,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -132,6 +134,7 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::SpeechBubble => WHITE,
             BackgroundColor::GameInstructionsBackground => BLACK_ALPHA_75,
             BackgroundColor::AccessedNote => BLACK_ALPHA_75,
+            BackgroundColor::NarrativeEventBackground => BLACK_ALPHA_75,
         }
     }
 }

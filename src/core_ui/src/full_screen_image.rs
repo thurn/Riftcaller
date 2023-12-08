@@ -16,6 +16,7 @@ use constants::ui_constants;
 use protos::riftcaller::{FlexAlign, FlexJustify, FlexPosition, ImageScaleMode, SpriteAddress};
 
 use crate::component::EmptyComponent;
+use crate::design;
 use crate::design::BackgroundColor;
 use crate::prelude::*;
 
@@ -23,11 +24,16 @@ use crate::prelude::*;
 pub struct FullScreenImage {
     image: SpriteAddress,
     content: Box<dyn ComponentObject>,
+    disable_overlay: bool,
 }
 
 impl Default for FullScreenImage {
     fn default() -> Self {
-        Self { image: SpriteAddress::default(), content: Box::new(EmptyComponent {}) }
+        Self {
+            image: SpriteAddress::default(),
+            content: Box::new(EmptyComponent {}),
+            disable_overlay: false,
+        }
     }
 }
 
@@ -43,6 +49,12 @@ impl FullScreenImage {
 
     pub fn content(mut self, content: impl Component + 'static) -> Self {
         self.content = Box::new(content);
+        self
+    }
+
+    /// Disabling showing a translucent black overlay on top of the image
+    pub fn disable_overlay(mut self, disable_overlay: bool) -> Self {
+        self.disable_overlay = disable_overlay;
         self
     }
 }
@@ -62,7 +74,11 @@ impl Component for FullScreenImage {
                     .style(
                         Style::new()
                             .position_type(FlexPosition::Absolute)
-                            .background_color(BackgroundColor::TilePanelOverlay)
+                            .background_color(if self.disable_overlay {
+                                design::TRANSPARENT
+                            } else {
+                                BackgroundColor::TilePanelOverlay.into()
+                            })
                             .position(Edge::All, 0.px())
                             .align_items(FlexAlign::Stretch)
                             .justify_content(FlexJustify::Center)

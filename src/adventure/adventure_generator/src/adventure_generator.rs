@@ -21,6 +21,7 @@ use core_data::game_primitives::{AdventureId, Side};
 pub mod battle_generator;
 pub mod card_generator;
 pub mod mock_adventure;
+pub mod narrative_event_generator;
 
 pub const STARTING_COINS: Coins = Coins(500);
 
@@ -35,6 +36,7 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
     let draft = TileEntity::Draft(card_generator::draft_choices(&mut config));
     let shop = TileEntity::Shop(card_generator::shop_options(&mut config));
     let battle = TileEntity::Battle(battle_generator::create(side.opponent()));
+    let narrative_event = TileEntity::NarrativeEvent(narrative_event_generator::generate());
     mock_adventure::create(
         AdventureId::generate(),
         config,
@@ -44,5 +46,6 @@ pub fn new_adventure(mut config: AdventureConfiguration) -> AdventureState {
         Some(draft),
         Some(shop),
         Some(battle),
+        Some(narrative_event),
     )
 }

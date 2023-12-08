@@ -15,14 +15,14 @@
 use adventure_data::adventure::TileEntity;
 use anyhow::Result;
 use core_data::adventure_primitives::TilePosition;
-use player_data::PlayerState;
-
 use panel_address::{Panel, PanelAddress, PlayerPanel};
+use player_data::PlayerState;
 use protos::riftcaller::InterfacePanel;
 use with_error::WithError;
 
 use crate::battle_panel::BattlePanel;
 use crate::draft_panel::DraftPanel;
+use crate::narrative_event_panel::NarrativeEventPanel;
 use crate::shop_panel::ShopPanel;
 
 /// Builds an [InterfacePanel] for the adventure world map entity at the
@@ -37,5 +37,8 @@ pub fn tile_entity_panel(
         TileEntity::Draft(data) => DraftPanel { address, data }.build_panel(),
         TileEntity::Shop(data) => ShopPanel { player, address, data }.build_panel(),
         TileEntity::Battle(data) => BattlePanel { player, address, data }.build_panel(),
+        TileEntity::NarrativeEvent(data) => {
+            NarrativeEventPanel { player, address, data }.build_panel()
+        }
     })
 }

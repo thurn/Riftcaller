@@ -215,6 +215,11 @@ pub fn sprite(string: impl Into<String>) -> SpriteAddress {
     SpriteAddress { address: format!("{}.png", string.into()) }
 }
 
+/// Turns a string into a [SpriteAddress].
+pub fn sprite_jpg(string: impl Into<String>) -> SpriteAddress {
+    SpriteAddress { address: format!("{}.jpg", string.into()) }
+}
+
 /// Controls the growth behavior of a component.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum WidthMode {
