@@ -85,7 +85,6 @@ pub fn currently_being_played_by(game: &GameState, card_id: CardId, scope: Scope
 }
 
 impl StateMachine for PlayCardData {
-    type Data = Self;
     type Step = PlayCardStep;
 
     fn get(game: &GameState) -> &Vec<Self> {
@@ -102,10 +101,6 @@ impl StateMachine for PlayCardData {
 
     fn step_mut(&mut self) -> &mut Self::Step {
         &mut self.step
-    }
-
-    fn data(&self) -> Self::Data {
-        *self
     }
 
     fn evaluate(

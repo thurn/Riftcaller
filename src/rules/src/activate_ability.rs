@@ -53,7 +53,6 @@ pub fn is_current_ability(game: &GameState, ability_id: AbilityId) -> bool {
 }
 
 impl StateMachine for ActivateAbilityData {
-    type Data = ActivateAbilityData;
     type Step = ActivateAbilityStep;
 
     fn get(game: &GameState) -> &Vec<Self> {
@@ -70,10 +69,6 @@ impl StateMachine for ActivateAbilityData {
 
     fn step_mut(&mut self) -> &mut Self::Step {
         &mut self.step
-    }
-
-    fn data(&self) -> Self::Data {
-        *self
     }
 
     fn evaluate(

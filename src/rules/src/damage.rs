@@ -18,8 +18,7 @@ use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DealtDamage, DealtDamageEvent, WillDealDamageEvent};
 use game_data::game_state::GameState;
 use game_data::random;
-use game_data::state_machine_data::{DealDamageData, DealDamageState, DealDamageStep};
-use with_error::WithError;
+use game_data::state_machine_data::{DealDamageData, DealDamageStep};
 
 use crate::state_machine::StateMachine;
 use crate::{dispatch, mutations, state_machine};
@@ -29,11 +28,7 @@ use crate::{dispatch, mutations, state_machine};
 pub fn deal(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Result<()> {
     state_machine::initiate(
         game,
-        DealDamageState {
-            data: DealDamageData { amount, source: source.ability_id() },
-            discarded: vec![],
-            step: DealDamageStep::Begin,
-        },
+        DealDamageData { amount, source: source.ability_id(), step: DealDamageStep::Begin },
     )
 }
 
@@ -41,14 +36,14 @@ pub fn deal(game: &mut GameState, source: impl HasAbilityId, amount: u32) -> Res
 /// topmost active `deal_damage` state machine.
 pub fn prevent(game: &mut GameState, amount: u32) {
     if let Some(damage) = &mut game.state_machines.deal_damage.last_mut() {
-        damage.data.amount = damage.data.amount.saturating_sub(amount);
+        damage.amount = damage.amount.saturating_sub(amount);
     }
 }
 
 /// Returns the amount of damage currently scheduled to be dealt to the
 /// Riftcaller in the topmost active `deal_damage` state machine.
 pub fn incoming_amount(game: &GameState) -> Option<u32> {
-    game.state_machines.deal_damage.last().map(|d| d.data.amount)
+    game.state_machines.deal_damage.last().map(|d| d.amount)
 }
 
 /// Returns a list of [CardId]s which have been discarded to the topmost active
@@ -56,21 +51,21 @@ pub fn incoming_amount(game: &GameState) -> Option<u32> {
 /// exists.
 pub fn discarded_to_current_event(game: &GameState) -> &[CardId] {
     static NO_CARDS: &Vec<CardId> = &Vec::new();
-    game.state_machines
-        .deal_damage
-        .last()
-        .as_ref()
-        .map(|state| &state.discarded)
-        .unwrap_or(NO_CARDS)
+    if let Some(DealDamageStep::DealtDamageEvent(discarded)) =
+        game.state_machines.deal_damage.last().as_ref().map(|d| &d.step)
+    {
+        discarded
+    } else {
+        NO_CARDS
+    }
 }
 
 /// Run the deal damage state machine, if needed.
 pub fn run_state_machine(game: &mut GameState) -> Result<()> {
-    state_machine::run::<DealDamageState>(game)
+    state_machine::run::<DealDamageData>(game)
 }
 
-impl StateMachine for DealDamageState {
-    type Data = DealDamageData;
+impl StateMachine for DealDamageData {
     type Step = DealDamageStep;
 
     fn get(game: &GameState) -> &Vec<Self> {
@@ -82,15 +77,11 @@ impl StateMachine for DealDamageState {
     }
 
     fn step(&self) -> Self::Step {
-        self.step
+        self.step.clone()
     }
 
     fn step_mut(&mut self) -> &mut Self::Step {
         &mut self.step
-    }
-
-    fn data(&self) -> Self::Data {
-        self.data
     }
 
     fn evaluate(
@@ -125,15 +116,9 @@ impl StateMachine for DealDamageState {
                         mutations::game_over(game, Side::Covenant)?;
                     }
                 }
-
-                game.state_machines
-                    .deal_damage
-                    .last_mut()
-                    .with_error(|| "deal_damage")?
-                    .discarded = discarded;
-                Some(DealDamageStep::DealtDamageEvent)
+                Some(DealDamageStep::DealtDamageEvent(discarded))
             }
-            DealDamageStep::DealtDamageEvent => {
+            DealDamageStep::DealtDamageEvent(..) => {
                 dispatch::invoke_event(
                     game,
                     DealtDamageEvent(DealtDamage { source: data.source, amount: data.amount }),

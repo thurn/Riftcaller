@@ -51,7 +51,6 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
 }
 
 impl StateMachine for DrawCardsData {
-    type Data = DrawCardsData;
     type Step = DrawCardsStep;
 
     fn get(game: &GameState) -> &Vec<Self> {
@@ -68,10 +67,6 @@ impl StateMachine for DrawCardsData {
 
     fn step_mut(&mut self) -> &mut Self::Step {
         &mut self.step
-    }
-
-    fn data(&self) -> Self::Data {
-        *self
     }
 
     fn evaluate(

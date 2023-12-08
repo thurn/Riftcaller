@@ -80,31 +80,22 @@ pub struct ActivateAbilityData {
     pub step: ActivateAbilityStep,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DealDamageStep {
     Begin,
     WillDealDamageEvent,
     DiscardCards,
-    DealtDamageEvent,
+    DealtDamageEvent(Vec<CardId>),
     Finish,
 }
 
 /// Data about an ongoing damage event
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DealDamageData {
     /// Amount of damage to deal
     pub amount: DamageAmount,
     /// Source of the damage
     pub source: AbilityId,
-}
-
-/// State data for dealing damage to the Riftcaller player
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DealDamageState {
-    /// Information about how much damage to deal
-    pub data: DealDamageData,
-    /// Cards which have been discarded to this damage event, if any
-    pub discarded: Vec<CardId>,
     /// Current state machine state
     pub step: DealDamageStep,
 }
@@ -235,7 +226,7 @@ pub struct DestroyPermanentData {
 pub struct StateMachines {
     pub play_card: Vec<PlayCardData>,
     pub activate_ability: Vec<ActivateAbilityData>,
-    pub deal_damage: Vec<DealDamageState>,
+    pub deal_damage: Vec<DealDamageData>,
     pub give_curses: Vec<GiveCursesData>,
     pub draw_cards: Vec<DrawCardsData>,
     pub give_leylines: Vec<GiveLeylinesData>,

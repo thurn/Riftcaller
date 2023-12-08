@@ -32,14 +32,10 @@ use game_data::prompt_data::GamePrompt;
 /// State machines operate on a stack (last in, first out) basis. If a second
 /// instance of a state machine is initiated, that instance runs to completion
 /// before the first state machine is resumed.
-pub trait StateMachine: Sized {
-    /// General data for all state machine states, indicating what kind of game
-    /// request we are processing.
-    type Data: Copy;
-
+pub trait StateMachine: Sized + Clone {
     /// A named step within the state machine, corresponding to some required
     /// game mutation.
-    type Step: Copy;
+    type Step;
 
     /// Obtain the current state machine stack from an ongoing game
     fn get(game: &GameState) -> &Vec<Self>;
@@ -53,20 +49,13 @@ pub trait StateMachine: Sized {
     /// Mutable version of [Self::step].
     fn step_mut(&mut self) -> &mut Self::Step;
 
-    /// Obtain a copy of the shared data for this state machine.
-    fn data(&self) -> Self::Data;
-
     /// Run the state mutation for a given state machine step, and then return
     /// the next step to enter, or None if the state machine should be
     /// terminated.
     ///
     /// State machines may also be terminated early by dropping the state
     /// machine struct.
-    fn evaluate(
-        game: &mut GameState,
-        step: Self::Step,
-        data: Self::Data,
-    ) -> Result<Option<Self::Step>>;
+    fn evaluate(game: &mut GameState, step: Self::Step, data: Self) -> Result<Option<Self::Step>>;
 
     /// Returns true if the current prompt in this [PromptStack] should pause
     /// the state machine.
@@ -101,8 +90,7 @@ pub fn run<T: StateMachine>(game: &mut GameState) -> Result<()> {
 
         if let Some(current) = T::get(game).last() {
             let step = current.step();
-            let data = current.data();
-            if let Some(next_step) = T::evaluate(game, step, data)? {
+            if let Some(next_step) = T::evaluate(game, step, current.clone())? {
                 if let Some(current) = T::get_mut(game).last_mut() {
                     *current.step_mut() = next_step;
                 }

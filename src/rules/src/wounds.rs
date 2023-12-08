@@ -39,7 +39,6 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
 }
 
 impl StateMachine for GiveWoundsData {
-    type Data = Self;
     type Step = GiveWoundsStep;
 
     fn get(game: &GameState) -> &Vec<Self> {
@@ -56,10 +55,6 @@ impl StateMachine for GiveWoundsData {
 
     fn step_mut(&mut self) -> &mut Self::Step {
         &mut self.step
-    }
-
-    fn data(&self) -> Self::Data {
-        *self
     }
 
     fn evaluate(

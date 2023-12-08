@@ -45,7 +45,6 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
 pub fn prevent(_: &mut GameState, _: CardId) {}
 
 impl StateMachine for DestroyPermanentData {
-    type Data = DestroyPermanentData;
     type Step = DestroyPermanentStep;
 
     fn get(game: &GameState) -> &Vec<Self> {
@@ -62,10 +61,6 @@ impl StateMachine for DestroyPermanentData {
 
     fn step_mut(&mut self) -> &mut Self::Step {
         &mut self.step
-    }
-
-    fn data(&self) -> Self::Data {
-        *self
     }
 
     fn evaluate(
