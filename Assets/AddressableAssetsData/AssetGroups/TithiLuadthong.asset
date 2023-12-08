@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: TithiLuadthong
   m_EditorClassIdentifier: 
-  m_GroupName: Tithi Luadthong
+  m_GroupName: TithiLuadthong
   m_Data:
     m_SerializedData: []
   m_GUID: 6f6af1cd89a684350994f2fa5a8fe23d
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 2ab43304cb29e46d78135b2998d36774
+    m_Address: Art/Tithi Luadthong
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

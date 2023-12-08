@@ -93,10 +93,6 @@ MonoBehaviour:
     m_Address: Cards/MiscFullArt
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 2ab43304cb29e46d78135b2998d36774
-    m_Address: Assets/ThirdParty/Art/Tithi Luadthong
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

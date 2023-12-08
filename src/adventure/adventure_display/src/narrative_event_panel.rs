@@ -23,7 +23,7 @@ use core_ui::style::{self, Corner};
 use core_ui::text::Text;
 use panel_address::{Panel, PanelAddress};
 use player_data::PlayerState;
-use protos::riftcaller::{FlexAlign, FlexJustify, FlexPosition, WhiteSpace};
+use protos::riftcaller::{FlexAlign, FlexJustify, FlexPosition, TextAlign, WhiteSpace};
 use screen_overlay::ScreenOverlay;
 
 pub struct NarrativeEventPanel<'a> {
@@ -73,7 +73,8 @@ impl<'a> Component for NarrativeEventPanel<'a> {
                     beast, and it's clear that only one of you will leave these heights as victor."
                         ))
                         .font_size(FontSize::Body)
-                        .white_space(WhiteSpace::Normal),
+                            .text_align(TextAlign::MiddleLeft)
+                            .white_space(WhiteSpace::Normal),
                     )
                     .child(
                         Button::new("Continue").layout(Layout::new().margin(Edge::Top, 24.px())),
