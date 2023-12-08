@@ -85,6 +85,7 @@ fn custom_label(label: PromptChoiceLabel) -> String {
     match label {
         PromptChoiceLabel::Play => "Play".to_string(),
         PromptChoiceLabel::Sacrifice => "Sacrifice".to_string(),
+        PromptChoiceLabel::Prevent => "Prevent".to_string(),
         PromptChoiceLabel::Return(cost) => {
             format!("{}{}: Return", cost, icons::MANA)
         }

@@ -498,6 +498,10 @@ impl CardDefinition {
         self.card_type == CardType::Artifact
     }
 
+    pub fn is_ally(&self) -> bool {
+        self.card_type == CardType::Ally
+    }
+
     pub fn is_permanent(&self) -> bool {
         !self.is_spell()
     }

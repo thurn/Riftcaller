@@ -493,3 +493,40 @@ fn vortex_portal_sentinel_sphinx() {
     g.click(Button::NoWeapon);
     assert!(!g.client.data.raid_active());
 }
+
+#[test]
+fn radiant_intervention() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    g.click(Button::Prevent);
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::RadiantIntervention));
+}
+
+#[test]
+fn radiant_intervention_do_not_use() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    g.click(Button::NoPromptAction);
+    assert!(g.client.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
+}
+
+#[test]
+fn radiant_intervention_two_cards() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.create_and_play(CardName::TestWeapon2Attack);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    g.click(Button::Prevent);
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestWeapon2Attack));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::RadiantIntervention));
+    assert!(g.client.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
+}

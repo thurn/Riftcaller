@@ -200,17 +200,15 @@ pub enum DestroyPermanentStep {
     WillDestroyEvent,
     CheckIfDestroyPrevented,
     Destroy,
-    CardDestroyedEvent,
+    CardsDestroyedEvent,
     Finish,
 }
 
 /// State data for destroying a card
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct DestroyPermanentData {
-    /// Target permanent to destroy.
-    pub target: CardId,
-    /// If true, the destroy event has been prevented and will not happen.
-    pub is_prevented: bool,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DestroyPermanentsData {
+    /// Target permanent(s) to destroy.
+    pub targets: Vec<CardId>,
     /// Source of the event
     pub source: InitiatedBy,
     /// Current state machine state
@@ -231,5 +229,5 @@ pub struct StateMachines {
     pub draw_cards: Vec<DrawCardsData>,
     pub give_leylines: Vec<GiveLeylinesData>,
     pub give_wounds: Vec<GiveWoundsData>,
-    pub destroy_permanent: Vec<DestroyPermanentData>,
+    pub destroy_permanent: Vec<DestroyPermanentsData>,
 }

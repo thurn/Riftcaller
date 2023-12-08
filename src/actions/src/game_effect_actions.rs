@@ -48,7 +48,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
         GameEffect::DestroyCard(card_id, initiated_by) => {
-            destroy::run(game, card_id, initiated_by)?
+            destroy::run(game, vec![card_id], initiated_by)?
         }
         GameEffect::ManaCost(side, amount, initiated_by) => {
             mana::spend(game, side, initiated_by, ManaPurpose::PayForTriggeredAbility, amount)?

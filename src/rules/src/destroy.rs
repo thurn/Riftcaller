@@ -15,36 +15,39 @@
 use anyhow::Result;
 use core_data::game_primitives::{CardId, InitiatedBy, Side};
 use game_data::card_state::CardPosition;
-use game_data::delegate_data::{CardDestroyedEvent, WillDestroyCardEvent};
+use game_data::delegate_data::{CardsDestroyedEvent, WillDestroyCardsEvent};
 use game_data::game_state::GameState;
-use game_data::state_machine_data::{DestroyPermanentData, DestroyPermanentStep};
+use game_data::state_machine_data::{DestroyPermanentStep, DestroyPermanentsData};
 
 use crate::state_machine::StateMachine;
 use crate::{dispatch, mutations, state_machine};
 
-/// Function to destroy a permanent, moving it to its owner's discard pile.
-pub fn run(game: &mut GameState, target: CardId, source: InitiatedBy) -> Result<()> {
+/// Function to destroy one or more permanents, moving them to their owner's
+/// discard pile.
+pub fn run(game: &mut GameState, targets: Vec<CardId>, source: InitiatedBy) -> Result<()> {
     state_machine::initiate(
         game,
-        DestroyPermanentData {
-            target,
-            is_prevented: false,
-            source,
-            step: DestroyPermanentStep::Begin,
-        },
+        DestroyPermanentsData { targets, source, step: DestroyPermanentStep::Begin },
     )
 }
 
 /// Run the state machine, if needed.
 pub fn run_state_machine(game: &mut GameState) -> Result<()> {
-    state_machine::run::<DestroyPermanentData>(game)
+    state_machine::run::<DestroyPermanentsData>(game)
 }
 
 /// Prevent the [CardId] card from being destroyed if it is currently queued as
 /// the target of a destroy card state machine.
-pub fn prevent(_: &mut GameState, _: CardId) {}
+pub fn prevent(game: &mut GameState, card_id: CardId) {
+    for state_machine in &mut game.state_machines.destroy_permanent.iter_mut().rev() {
+        if state_machine.targets.contains(&card_id) {
+            state_machine.targets.retain(|c| *c != card_id);
+            break;
+        }
+    }
+}
 
-impl StateMachine for DestroyPermanentData {
+impl StateMachine for DestroyPermanentsData {
     type Step = DestroyPermanentStep;
 
     fn get(game: &GameState) -> &Vec<Self> {
@@ -66,34 +69,33 @@ impl StateMachine for DestroyPermanentData {
     fn evaluate(
         game: &mut GameState,
         step: DestroyPermanentStep,
-        data: DestroyPermanentData,
+        data: DestroyPermanentsData,
     ) -> Result<Option<DestroyPermanentStep>> {
         Ok(match step {
             DestroyPermanentStep::Begin => Some(DestroyPermanentStep::WillDestroyEvent),
             DestroyPermanentStep::WillDestroyEvent => {
-                dispatch::invoke_event(game, WillDestroyCardEvent(data.target))?;
+                dispatch::invoke_event(game, WillDestroyCardsEvent(data.targets))?;
                 Some(DestroyPermanentStep::CheckIfDestroyPrevented)
             }
             DestroyPermanentStep::CheckIfDestroyPrevented => {
-                if data.is_prevented {
+                if data.targets.is_empty() {
                     None
                 } else {
                     Some(DestroyPermanentStep::Destroy)
                 }
             }
             DestroyPermanentStep::Destroy => {
-                mutations::move_card(
-                    game,
-                    data.target,
-                    CardPosition::DiscardPile(data.target.side),
-                )?;
-                if data.target.side == Side::Riftcaller {
-                    mutations::turn_face_up(game, data.target);
+                for card_id in &data.targets {
+                    mutations::move_card(game, *card_id, CardPosition::DiscardPile(card_id.side))?;
+                    if card_id.side == Side::Riftcaller {
+                        mutations::turn_face_up(game, *card_id)
+                    }
                 }
-                Some(DestroyPermanentStep::CardDestroyedEvent)
+
+                Some(DestroyPermanentStep::CardsDestroyedEvent)
             }
-            DestroyPermanentStep::CardDestroyedEvent => {
-                dispatch::invoke_event(game, CardDestroyedEvent(data.target))?;
+            DestroyPermanentStep::CardsDestroyedEvent => {
+                dispatch::invoke_event(game, CardsDestroyedEvent(data.targets))?;
                 Some(DestroyPermanentStep::Finish)
             }
             DestroyPermanentStep::Finish => None,

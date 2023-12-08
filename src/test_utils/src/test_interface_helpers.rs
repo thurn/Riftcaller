@@ -62,6 +62,7 @@ pub enum Button {
     Reveal,
     Pay,
     ChooseCardTypeSpell,
+    Prevent,
 }
 
 pub trait TestInterfaceHelpers {
@@ -235,6 +236,7 @@ fn resolve_button(button: Button) -> String {
         Button::Reveal => "Reveal",
         Button::Pay => "Pay",
         Button::ChooseCardTypeSpell => "Spell",
+        Button::Prevent => "Prevent",
     }
     .to_string()
 }

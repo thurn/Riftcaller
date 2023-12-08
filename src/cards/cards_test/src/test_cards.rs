@@ -750,9 +750,7 @@ pub fn test_ritual_destroy_all_enemy_permanents(metadata: CardMetadata) -> CardD
             text!["Destroy all Riftcaller permanents"],
             this::on_played(|g, s, _| {
                 let card_ids = g.all_permanents(Side::Riftcaller).card_ids();
-                for card_id in card_ids {
-                    destroy::run(g, card_id, s.initiated_by())?;
-                }
+                destroy::run(g, card_ids, s.initiated_by())?;
                 Ok(())
             }),
         )],

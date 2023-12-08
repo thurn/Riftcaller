@@ -33,8 +33,8 @@ use game_data::prompt_data::{
 use game_data::state_machine_data::PlayCardOptions;
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, damage, dispatch, draw_cards, flags, leylines, mana, mutations,
-    play_card, prompt_monitor, queries, wounds,
+    activate_ability, curses, damage, destroy, dispatch, draw_cards, flags, leylines, mana,
+    mutations, play_card, prompt_monitor, queries, wounds,
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
@@ -462,6 +462,7 @@ fn run_state_based_actions(game: &mut GameState) -> Result<()> {
     curses::run_state_machine(game)?;
     leylines::run_state_machine(game)?;
     wounds::run_state_machine(game)?;
+    destroy::run_state_machine(game)?;
     raid_state::run(game, None)?;
     play_card::run(game)?;
     activate_ability::run(game)?;

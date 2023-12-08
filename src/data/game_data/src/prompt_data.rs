@@ -105,6 +105,7 @@ pub struct PlayCardBrowser {
 pub enum PromptChoiceLabel {
     Play,
     Sacrifice,
+    Prevent,
     Return(ManaValue),
     Occupant,
     Defender,

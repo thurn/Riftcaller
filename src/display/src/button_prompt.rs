@@ -124,7 +124,7 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
             ))
             .build()
         }
-        ButtonPromptContext::SacrificeToPreventDestroyingCard { source, .. } => {
+        ButtonPromptContext::SacrificeToPreventDestroyingCard(source) => {
             GameInstructions::new(format!(
                 "Sacrifice {} to prevent a card from being destroyed?",
                 game.card(*source).variant.name.displayed_name(),

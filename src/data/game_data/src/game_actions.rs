@@ -88,9 +88,9 @@ pub enum ButtonPromptContext {
     /// the current incoming curse count and display only the lower of the two
     /// values.
     SacrificeToPreventCurses(CardId, CurseCount),
-    /// Prompt to sacrifice the 'source' card to prevent the 'target' card from
+    /// Prompt to sacrifice the [CardId] card to prevent the a card from
     /// being destroyed.
-    SacrificeToPreventDestroyingCard { source: CardId, target: CardId },
+    SacrificeToPreventDestroyingCard(CardId),
     /// Prompt for a card to give to the opponent
     CardToGiveToOpponent,
     /// Prompt for a card to take from the opponent
@@ -108,7 +108,6 @@ impl ButtonPromptContext {
             Self::Card(id) => Some(*id),
             Self::SacrificeToPreventDamage(id, _) => Some(*id),
             Self::SacrificeToPreventCurses(id, _) => Some(*id),
-            Self::SacrificeToPreventDestroyingCard { source, .. } => Some(*source),
             Self::ChooseCardType(id) => Some(*id),
             _ => None,
         }

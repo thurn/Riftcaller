@@ -547,12 +547,10 @@ pub enum Delegate {
     WillDrawCards(EventDelegate<Side>),
     /// The [Side] player has drawn cards via a card ability.
     DrawCardsViaAbility(EventDelegate<Side>),
-    /// The [CardId] card is about to be destroyed by one of the opponent's card
-    /// abilities.
-    WillDestroyCard(EventDelegate<CardId>),
-    /// The [CardId] card has been destroyed by one of the opponent's card
-    /// abilities.
-    CardDestroyed(EventDelegate<CardId>),
+    /// The provided cards are about to be destroyed
+    WillDestroyCards(EventDelegate<Vec<CardId>>),
+    /// The provided cards have been destroyed
+    CardsDestroyed(EventDelegate<Vec<CardId>>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

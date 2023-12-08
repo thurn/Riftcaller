@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::iter;
+
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{
     costs, delegates, in_play, play_card_browser_builder, raids, requirements, show_prompt, text,
@@ -492,20 +494,26 @@ pub fn radiant_intervention(meta: CardMetadata) -> CardDefinition {
                 cost: text![SacrificeCost],
                 effect: text!["Prevent an ally or artifact from being destroyed."]
             }],
-            in_play::on_will_destroy_card(|g, s, target| {
+            in_play::on_will_destroy_cards(|g, s, targets| {
                 show_prompt::with_context_and_choices(
                     g,
                     s,
-                    ButtonPromptContext::SacrificeToPreventDestroyingCard {
-                        source: s.card_id(),
-                        target: *target,
-                    },
-                    vec![
-                        PromptChoice::new()
-                            .effect(GameEffect::SacrificeCard(s.card_id()))
-                            .effect(GameEffect::PreventDestroyingCard(*target)),
-                        PromptChoice::new().effect(GameEffect::Continue),
-                    ],
+                    ButtonPromptContext::SacrificeToPreventDestroyingCard(s.card_id()),
+                    targets
+                        .iter()
+                        .filter(|card_id| {
+                            let definition = g.card(**card_id).definition();
+                            definition.is_ally() || definition.is_artifact()
+                        })
+                        .map(|card_id| {
+                            PromptChoice::new()
+                                .effect(GameEffect::SacrificeCard(s.card_id()))
+                                .effect(GameEffect::PreventDestroyingCard(*card_id))
+                                .custom_label(PromptChoiceLabel::Prevent)
+                                .anchor_card(*card_id)
+                        })
+                        .chain(iter::once(PromptChoice::new_continue()))
+                        .collect(),
                 );
                 Ok(())
             }),

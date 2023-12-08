@@ -70,10 +70,10 @@ pub fn on_curse(mutation: MutationFn<CurseCount>) -> Delegate {
     Delegate::CursesReceived(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
-/// A delegate which triggers if a card is face up in play before a card is
-/// destroyed
-pub fn on_will_destroy_card(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::WillDestroyCard(EventDelegate {
+/// A delegate which triggers if a card is face up in play before one or more
+/// cards are destroyed
+pub fn on_will_destroy_cards(mutation: MutationFn<Vec<CardId>>) -> Delegate {
+    Delegate::WillDestroyCards(EventDelegate {
         requirement: requirements::face_up_in_play,
         mutation,
     })

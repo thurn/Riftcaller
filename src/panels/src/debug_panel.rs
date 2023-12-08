@@ -45,10 +45,10 @@ impl DebugPanel {
 
     fn main_menu_buttons(&self, row: Row) -> Row {
         let close = Panels::close(self.address());
-        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Covenant)))
-            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Riftcaller)))
-            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Covenant)))
-            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Riftcaller)))
+        row.child(debug_button("New Game (C)", DebugAction::NewGame(Side::Covenant)))
+            .child(debug_button("New Game (R)", DebugAction::NewGame(Side::Riftcaller)))
+            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Covenant)))
+            .child(debug_button("Join Game (R)", DebugAction::JoinGame(Side::Riftcaller)))
             .child(debug_button(
                 "Show Logs",
                 vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
@@ -72,10 +72,10 @@ impl DebugPanel {
 
     fn game_mode_buttons(&self, row: Row, user_side: Side) -> Row {
         let close = Panels::close(self.address());
-        row.child(debug_button("New Game (O)", DebugAction::NewGame(Side::Covenant)))
-            .child(debug_button("New Game (C)", DebugAction::NewGame(Side::Riftcaller)))
-            .child(debug_button("Join Game (O)", DebugAction::JoinGame(Side::Covenant)))
-            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Riftcaller)))
+        row.child(debug_button("New Game (C)", DebugAction::NewGame(Side::Covenant)))
+            .child(debug_button("New Game (R)", DebugAction::NewGame(Side::Riftcaller)))
+            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Covenant)))
+            .child(debug_button("Join Game (R)", DebugAction::JoinGame(Side::Riftcaller)))
             .child(debug_button(
                 "Show Logs",
                 vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
