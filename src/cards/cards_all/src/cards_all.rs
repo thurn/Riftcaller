@@ -94,6 +94,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::splinter_of_twilight);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::a_moments_peace);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::vortex_portal);
+    DEFINITIONS.insert(cards_beryl::evocations_beryl::radiant_intervention);
     DEFINITIONS.insert(cards_beryl::minions_beryl::incarnation_of_justice);
     DEFINITIONS.insert(cards_beryl::minions_beryl::sentinel_sphinx);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);
@@ -176,5 +177,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_discard_to_hand);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_all_occupants_to_hand);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_summon_all_minions);
-    DEFINITIONS.insert(cards_test::test_cards::test_spell_return_all_permanents_to_hand);
+    DEFINITIONS.insert(cards_test::test_cards::test_spell_return_all_your_permanents_to_hand);
+    DEFINITIONS.insert(cards_test::test_cards::test_ritual_destroy_all_enemy_permanents);
 }

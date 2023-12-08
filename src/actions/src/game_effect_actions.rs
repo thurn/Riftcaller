@@ -73,6 +73,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::PreventDamage(amount) => damage::prevent(game, amount),
         GameEffect::PreventCurses(quantity) => curses::prevent_curses(game, quantity),
+        GameEffect::PreventDestroyingCard(id) => destroy::prevent(game, id),
         GameEffect::SelectCardForPrompt(side, card_id) => {
             game.player_mut(side).prompt_selected_cards.push(card_id);
         }

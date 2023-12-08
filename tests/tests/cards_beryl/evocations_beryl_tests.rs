@@ -452,7 +452,7 @@ fn a_moments_peace_return_to_hand() {
     g.progress_room(test_constants::ROOM_ID);
     assert_eq!(g.client.other_player.score(), 60);
     g.pass_turn(Side::Covenant);
-    g.create_and_play(CardName::TestSpellReturnAllPermanentsToHand);
+    g.create_and_play(CardName::TestSpellReturnAllYourPermanentsToHand);
     assert!(g.is_victory_for_player(Side::Covenant));
 }
 

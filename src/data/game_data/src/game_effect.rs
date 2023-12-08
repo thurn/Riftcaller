@@ -60,6 +60,9 @@ pub enum GameEffect {
     /// Prevent *up to* this quantity of incoming curses if there is an active
     /// curse event.
     PreventCurses(CurseCount),
+    /// Prevent the [CardId] card from being destroyed if it is currently the
+    /// target of a destruction event.
+    PreventDestroyingCard(CardId),
     /// Adds a card to the 'side' player's 'prompt_selected_cards' list.
     SelectCardForPrompt(Side, CardId),
     /// Swap a card's position with the last card in the 'side' player's

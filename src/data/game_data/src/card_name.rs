@@ -202,7 +202,9 @@ pub enum CardName {
     /// Summon all minion cards currently in play
     TestRitualSummonAllMinions,
     /// Spell to return all Riftcaller permanents to their hand
-    TestSpellReturnAllPermanentsToHand,
+    TestSpellReturnAllYourPermanentsToHand,
+    /// Destroy all Riftcaller permanents
+    TestRitualDestroyAllEnemyPermanents,
 
     // Proof of Concept
     GoldMine,
@@ -338,6 +340,7 @@ pub enum CardName {
     AMomentsPeace,
     BlueWarden,
     VortexPortal,
+    RadiantIntervention,
 }
 
 impl CardName {

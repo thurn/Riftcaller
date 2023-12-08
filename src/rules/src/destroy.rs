@@ -40,6 +40,10 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
     state_machine::run::<DestroyPermanentData>(game)
 }
 
+/// Prevent the [CardId] card from being destroyed if it is currently queued as
+/// the target of a destroy card state machine.
+pub fn prevent(_: &mut GameState, _: CardId) {}
+
 impl StateMachine for DestroyPermanentData {
     type Data = DestroyPermanentData;
     type Step = DestroyPermanentStep;

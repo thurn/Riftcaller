@@ -475,3 +475,41 @@ pub fn vortex_portal(meta: CardMetadata) -> CardDefinition {
         config: CardConfig::default(),
     }
 }
+
+pub fn radiant_intervention(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::RadiantIntervention,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::riftcaller_card(meta, "radiant_intervention"),
+        card_type: CardType::Evocation,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![Ability::new_with_delegate(
+            text![TextElement::Activated {
+                cost: text![SacrificeCost],
+                effect: text!["Prevent an ally or artifact from being destroyed."]
+            }],
+            in_play::on_will_destroy_card(|g, s, target| {
+                show_prompt::with_context_and_choices(
+                    g,
+                    s,
+                    ButtonPromptContext::SacrificeToPreventDestroyingCard {
+                        source: s.card_id(),
+                        target: *target,
+                    },
+                    vec![
+                        PromptChoice::new()
+                            .effect(GameEffect::SacrificeCard(s.card_id()))
+                            .effect(GameEffect::PreventDestroyingCard(*target)),
+                        PromptChoice::new().effect(GameEffect::Continue),
+                    ],
+                );
+                Ok(())
+            }),
+        )],
+        config: CardConfig::default(),
+    }
+}

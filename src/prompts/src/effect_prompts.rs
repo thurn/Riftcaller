@@ -70,6 +70,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::MoveCard(..) => "Move".to_string(),
         GameEffect::PreventDamage(..) => "Prevent".to_string(),
         GameEffect::PreventCurses(..) => "Prevent".to_string(),
+        GameEffect::PreventDestroyingCard(..) => "Prevent".to_string(),
         GameEffect::SelectCardForPrompt(..) => "Select".to_string(),
         GameEffect::SwapWithSelected(..) => "Swap".to_string(),
         GameEffect::AppendCustomCardState(..) => "Choose".to_string(),

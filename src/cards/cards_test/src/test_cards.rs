@@ -31,7 +31,7 @@ use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::{OnZeroStored, SummonMinion};
-use rules::{curses, damage, draw_cards, mutations, CardDefinitionExt};
+use rules::{curses, damage, destroy, draw_cards, mutations, CardDefinitionExt};
 
 pub fn test_ritual(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -720,9 +720,9 @@ pub fn test_ritual_summon_all_minions(metadata: CardMetadata) -> CardDefinition 
     }
 }
 
-pub fn test_spell_return_all_permanents_to_hand(metadata: CardMetadata) -> CardDefinition {
+pub fn test_spell_return_all_your_permanents_to_hand(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestSpellReturnAllPermanentsToHand,
+        name: CardName::TestSpellReturnAllYourPermanentsToHand,
         cost: cost(0),
         card_type: CardType::Spell,
         sets: vec![CardSetName::Test],
@@ -737,5 +737,25 @@ pub fn test_spell_return_all_permanents_to_hand(metadata: CardMetadata) -> CardD
             }),
         )],
         ..test_spell(metadata)
+    }
+}
+
+pub fn test_ritual_destroy_all_enemy_permanents(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestRitualDestroyAllEnemyPermanents,
+        cost: cost(0),
+        card_type: CardType::Ritual,
+        sets: vec![CardSetName::Test],
+        abilities: vec![Ability::new_with_delegate(
+            text!["Destroy all Riftcaller permanents"],
+            this::on_played(|g, s, _| {
+                let card_ids = g.all_permanents(Side::Riftcaller).card_ids();
+                for card_id in card_ids {
+                    destroy::run(g, card_id, s.initiated_by())?;
+                }
+                Ok(())
+            }),
+        )],
+        ..test_ritual(metadata)
     }
 }

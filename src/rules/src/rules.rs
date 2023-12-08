@@ -57,6 +57,7 @@ static CARDS: Lazy<HashMap<CardVariant, CardDefinition>> = Lazy::new(|| {
                 let mut card = card_fn(metadata);
                 card.config.metadata = metadata;
                 let variant = CardVariant { name: card.name, metadata };
+                assert!(!map.contains_key(&variant), "Duplicate card name found");
                 map.insert(variant, card);
             }
         }
