@@ -299,7 +299,7 @@ pub fn room_selector_card_view(
     game: &GameState,
 ) -> impl Iterator<Item = CardView> {
     let result = if let Some(GamePrompt::RoomSelector(prompt)) =
-        game.player(builder.user_side).prompt_stack.current()
+        game.player(builder.user_side).old_prompt_stack.current()
     {
         Some(room_selector(builder, game, prompt))
     } else {

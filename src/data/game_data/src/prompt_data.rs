@@ -189,7 +189,7 @@ pub struct RoomSelectorPrompt {
     pub context: Option<RoomSelectorPromptContext>,
 }
 
-/// Possible types of prompts which might be displayed to a user during the
+/// Possible types of prompt_ui which might be displayed to a user during the
 /// game.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GamePrompt {

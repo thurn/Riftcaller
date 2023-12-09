@@ -121,7 +121,9 @@ pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
     let mut regenerated_prompt = false;
 
     loop {
-        if !(game.covenant.prompt_stack.is_empty() && game.riftcaller.prompt_stack.is_empty()) {
+        if !(game.covenant.old_prompt_stack.is_empty()
+            && game.riftcaller.old_prompt_stack.is_empty())
+        {
             break;
         }
 

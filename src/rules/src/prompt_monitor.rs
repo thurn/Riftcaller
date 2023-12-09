@@ -23,10 +23,10 @@ use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice};
 use crate::mana;
 use crate::mana::ManaPurpose;
 
-/// Remove user button prompts which are no longer valid as a state-based
+/// Remove user button prompt_ui which are no longer valid as a state-based
 /// action.
 ///
-/// This function exists to inspect user prompts after every game action and
+/// This function exists to inspect user prompt_ui after every game action and
 /// filter out ones which no longer make sense in context. For example, if the
 /// user is presented with an option with a mana cost, but is no longer able to
 /// pay that mana cost, that prompt option should be removed.
@@ -37,7 +37,8 @@ pub fn run(game: &mut GameState) -> Result<()> {
 }
 
 fn run_for_side(game: &mut GameState, side: Side) -> Result<()> {
-    let Some(GamePrompt::ButtonPrompt(button_prompt)) = game.player(side).prompt_stack.current()
+    let Some(GamePrompt::ButtonPrompt(button_prompt)) =
+        game.player(side).old_prompt_stack.current()
     else {
         return Ok(());
     };
@@ -51,8 +52,8 @@ fn run_for_side(game: &mut GameState, side: Side) -> Result<()> {
         .collect::<HashSet<_>>();
     if !indices_to_remove.is_empty() {
         let new = GamePrompt::ButtonPrompt(remove_choice_indices(button_prompt, indices_to_remove));
-        game.player_mut(side).prompt_stack.pop();
-        game.player_mut(side).prompt_stack.push(new);
+        game.player_mut(side).old_prompt_stack.pop();
+        game.player_mut(side).old_prompt_stack.push(new);
     }
 
     Ok(())

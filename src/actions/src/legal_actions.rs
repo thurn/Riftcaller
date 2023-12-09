@@ -51,7 +51,7 @@ pub fn evaluate<'a>(
         GamePhase::GameOver { .. } => fail!("Game has ended"),
     }
 
-    if let Some(prompt) = &game.player(side).prompt_stack.current() {
+    if let Some(prompt) = &game.player(side).old_prompt_stack.current() {
         if let GamePrompt::ButtonPrompt(buttons) = prompt {
             return Ok(Box::new(
                 buttons
@@ -61,7 +61,7 @@ pub fn evaluate<'a>(
                     .map(|(i, _)| GameAction::PromptAction(PromptAction::ButtonPromptSelect(i))),
             ));
         } else {
-            todo!("Implement support for browser prompts");
+            todo!("Implement support for browser prompt_ui");
         }
     }
 

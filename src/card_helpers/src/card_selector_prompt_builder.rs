@@ -44,7 +44,7 @@ pub fn show(game: &mut GameState, builder: CardSelectorPromptBuilder) -> Result<
         effects.card_movement_effects(movement_effects, &cards).apply(game);
     }
 
-    game.player_mut(builder.scope.side()).prompt_stack.push(GamePrompt::CardSelector(
+    game.player_mut(builder.scope.side()).old_prompt_stack.push(GamePrompt::CardSelector(
         CardSelectorPrompt {
             context: builder.context,
             unchosen_subjects: builder.subjects,

@@ -33,7 +33,7 @@ pub fn show(game: &mut GameState, builder: PlayCardBrowserBuilder) -> Result<()>
     }
 
     game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards));
-    game.player_mut(builder.scope.side()).prompt_stack.push(GamePrompt::PlayCardBrowser(
+    game.player_mut(builder.scope.side()).old_prompt_stack.push(GamePrompt::PlayCardBrowser(
         PlayCardBrowser {
             context: Some(builder.context),
             initiated_by: builder.scope.ability_id(),

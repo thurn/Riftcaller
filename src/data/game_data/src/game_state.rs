@@ -18,8 +18,8 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{
-    ActionCount, CardId, CurseCount, GameId, HasCardId, ItemLocation, LeylineCount, ManaValue,
-    PointsValue, RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
+    AbilityId, ActionCount, CardId, CurseCount, GameId, HasCardId, ItemLocation, LeylineCount,
+    ManaValue, PointsValue, RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
 };
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
@@ -61,11 +61,11 @@ pub struct CurseState {
 
 /// A standard stack data structure for storing [GamePrompt]s.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct PromptStack {
+pub struct OldPromptStack {
     stack: Vec<GamePrompt>,
 }
 
-impl PromptStack {
+impl OldPromptStack {
     pub fn is_empty(&self) -> bool {
         self.stack.is_empty()
     }
@@ -85,6 +85,20 @@ impl PromptStack {
     pub fn pop(&mut self) -> Option<GamePrompt> {
         self.stack.pop()
     }
+}
+
+/// A stack data structure for storing [GamePrompt]s.
+///
+/// Instead of interacting with this struct directly, please use the functions
+/// in the `prompt_ui` module.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct PromptStack {
+    /// Stack of [AbilityId]s of abilities which have requested to show a prompt
+    pub stack: Vec<AbilityId>,
+    /// The [GamePrompt] to show for the ability currently on top of the stack,
+    /// if any. This is determined by invoking `ShowPromptQuery` for the stored
+    /// [AbilityId].
+    pub current: Option<GamePrompt>,
 }
 
 /// State of a player within a game, containing their score and available
@@ -107,12 +121,12 @@ pub struct GamePlayerData {
     ///
     /// Choices are resolved in a last-in, first-out manner, i.e. the prompt
     /// which has been most recently added is shown to the user first. All
-    /// prompts here take precedence over choices deriving from game rules
+    /// prompt_ui here take precedence over choices deriving from game rules
     /// such as raid actions.
-    pub prompt_stack: PromptStack,
+    pub old_prompt_stack: OldPromptStack,
 
     /// Storage area for cards this player has selected. Sometimes we show
-    /// multi-step prompts like "select 2 artifacts" and need a place to store
+    /// multi-step prompt_ui like "select 2 artifacts" and need a place to store
     /// the state while that is evaluating, and this seems like a fine enough
     /// place to put it.
     pub prompt_selected_cards: Vec<CardId>,
@@ -130,7 +144,7 @@ impl GamePlayerData {
             leylines: 0,
             bonus_points: 0,
             schools,
-            prompt_stack: PromptStack::default(),
+            old_prompt_stack: OldPromptStack::default(),
             prompt_selected_cards: vec![],
         }
     }
@@ -642,9 +656,9 @@ impl GameState {
     /// Covenant cards in an unspecified order followed by Riftcaller cards in
     /// an unspecified order.
     pub fn all_card_ids(&self) -> impl Iterator<Item = CardId> {
-        (0..self.covenant_cards.len())
-            .map(|index| CardId::new(Side::Covenant, index))
-            .chain((0..self.riftcaller_cards.len()).map(|index| CardId::new(Side::Riftcaller, index)))
+        (0..self.covenant_cards.len()).map(|index| CardId::new(Side::Covenant, index)).chain(
+            (0..self.riftcaller_cards.len()).map(|index| CardId::new(Side::Riftcaller, index)),
+        )
     }
 
     /// All cards in this game.

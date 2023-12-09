@@ -28,7 +28,7 @@ pub fn with_context_and_choices(
     choices: Vec<PromptChoice>,
 ) {
     game.player_mut(side.side())
-        .prompt_stack
+        .old_prompt_stack
         .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: Some(context), choices }))
 }
 
@@ -36,18 +36,18 @@ pub fn with_context_and_choices(
 /// `choices`.
 pub fn with_choices(game: &mut GameState, side: impl HasSide, choices: Vec<PromptChoice>) {
     game.player_mut(side.side())
-        .prompt_stack
+        .old_prompt_stack
         .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: None, choices }))
 }
 
 /// Show a priority window prompt if one is not already displayed. This prompt
 /// allows a player to activate abilities when they otherwise could not.
 pub fn priority_window(game: &mut GameState, scope: Scope) {
-    if let Some(GamePrompt::PriorityPrompt) = game.player(scope.side()).prompt_stack.current() {
+    if let Some(GamePrompt::PriorityPrompt) = game.player(scope.side()).old_prompt_stack.current() {
         return;
     }
 
-    game.player_mut(scope.side()).prompt_stack.push(GamePrompt::PriorityPrompt);
+    game.player_mut(scope.side()).old_prompt_stack.push(GamePrompt::PriorityPrompt);
 }
 
 /// Show a room selector prompt to a player.
@@ -58,6 +58,8 @@ pub fn room_selector(game: &mut GameState, prompt: RoomSelectorPrompt) -> Result
         return Ok(());
     }
 
-    game.player_mut(prompt.initiated_by.side()).prompt_stack.push(GamePrompt::RoomSelector(prompt));
+    game.player_mut(prompt.initiated_by.side())
+        .old_prompt_stack
+        .push(GamePrompt::RoomSelector(prompt));
     Ok(())
 }

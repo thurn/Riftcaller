@@ -19,7 +19,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice};
-use prompts::prompts;
+use prompts::prompt_display;
 use protos::riftcaller::InterfaceMainControls;
 use raid_state::raid_prompt;
 use rules::flags;
@@ -34,7 +34,7 @@ pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMa
     }
 
     let side = builder.user_side;
-    let current_prompt = &game.player(side).prompt_stack.current();
+    let current_prompt = &game.player(side).old_prompt_stack.current();
     if let Some(current) = current_prompt {
         return match current {
             GamePrompt::ButtonPrompt(prompt) => button_prompt::controls(game, side, prompt),
@@ -54,7 +54,7 @@ pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMa
         return raid_prompt::build(game, raid, side);
     } else if let GamePhase::ResolveMulligans(_) = &game.info.phase {
         if flags::can_make_mulligan_decision(game, side) {
-            return prompts::action_prompt(&ActionButtons {
+            return prompt_display::action_prompt(&ActionButtons {
                 context: None,
                 responses: vec![
                     GameStateAction::MulliganDecision(MulliganDecision::Keep),
@@ -63,12 +63,12 @@ pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMa
             });
         }
     } else if flags::can_take_start_turn_action(game, side) {
-        return prompts::action_prompt(&ActionButtons {
+        return prompt_display::action_prompt(&ActionButtons {
             context: None,
             responses: vec![GameStateAction::StartTurnAction],
         });
     } else if flags::can_take_end_turn_action(game, side) {
-        return prompts::action_prompt(&ActionButtons {
+        return prompt_display::action_prompt(&ActionButtons {
             context: None,
             responses: vec![GameStateAction::EndTurnAction],
         });

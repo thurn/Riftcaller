@@ -378,7 +378,7 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
     Ok(())
 }
 
-/// Deals initial hands to both players and prompts for mulligan decisions.
+/// Deals initial hands to both players and prompt_ui for mulligan decisions.
 #[instrument(skip(game))]
 pub fn deal_opening_hands(game: &mut GameState) -> Result<()> {
     debug!("Dealing opening hands");

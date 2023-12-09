@@ -185,7 +185,7 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<Option<
     };
 
     if let Some(p) = prompt {
-        game.player_mut(play_card.card_id.side).prompt_stack.push(p);
+        game.player_mut(play_card.card_id.side).old_prompt_stack.push(p);
     }
 
     Ok(Some(PlayCardStep::ClearPreviousState))
@@ -247,7 +247,8 @@ pub fn invoke_play_card_browser(
     side: Side,
     card_id: Option<CardId>,
 ) -> Result<()> {
-    if let Some(GamePrompt::PlayCardBrowser(prompt)) = game.player(side).prompt_stack.current() {
+    if let Some(GamePrompt::PlayCardBrowser(prompt)) = game.player(side).old_prompt_stack.current()
+    {
         if let Some(id) = card_id {
             verify!(prompt.cards.contains(&id), "Unexpected prompt card");
         }
@@ -267,7 +268,7 @@ pub fn invoke_play_card_browser(
             }
         }
 
-        game.player_mut(side).prompt_stack.pop();
+        game.player_mut(side).old_prompt_stack.pop();
     }
     Ok(())
 }

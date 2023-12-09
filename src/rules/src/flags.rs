@@ -51,9 +51,9 @@ pub fn current_priority(game: &GameState) -> Option<Side> {
             }
         }
         GamePhase::Play => {
-            if !game.covenant.prompt_stack.is_empty() {
+            if !game.covenant.old_prompt_stack.is_empty() {
                 Some(Side::Covenant)
-            } else if !game.riftcaller.prompt_stack.is_empty() {
+            } else if !game.riftcaller.old_prompt_stack.is_empty() {
                 Some(Side::Riftcaller)
             } else if let Some(raid) = &game.raid {
                 Some(match queries::raid_status(raid) {
@@ -119,7 +119,7 @@ pub fn can_take_play_card_action(
     target: CardTarget,
 ) -> bool {
     if let Some(GamePrompt::PlayCardBrowser(browser)) =
-        game.player(card_id.side).prompt_stack.current()
+        game.player(card_id.side).old_prompt_stack.current()
     {
         return can_play_from_browser(game, card_id, target, browser);
     }
@@ -367,7 +367,7 @@ pub fn can_progress_card(game: &GameState, card_id: CardId) -> bool {
 /// Whether the indicated player can currently take any type of game state
 /// actions.
 pub fn can_take_game_state_actions(game: &GameState, user_side: Side) -> bool {
-    game.player(user_side).prompt_stack.is_empty() && current_priority(game) == Some(user_side)
+    game.player(user_side).old_prompt_stack.is_empty() && current_priority(game) == Some(user_side)
 }
 
 /// Returns true if the `side` player is in their main phase as described in
@@ -388,8 +388,8 @@ pub fn in_main_phase(game: &GameState, side: Side) -> bool {
 /// Returns true if the `side` player's prompt queue is current empty *or* if
 /// their current prompt is a [GamePrompt::PriorityPrompt].
 pub fn prompt_queue_empty_or_has_priority_prompt(game: &GameState, side: Side) -> bool {
-    game.player(side).prompt_stack.is_empty()
-        || matches!(game.player(side).prompt_stack.current(), Some(GamePrompt::PriorityPrompt))
+    game.player(side).old_prompt_stack.is_empty()
+        || matches!(game.player(side).old_prompt_stack.current(), Some(GamePrompt::PriorityPrompt))
 }
 
 /// Returns true if either player can currently take game standard game actions
@@ -398,7 +398,7 @@ pub fn prompt_queue_empty_or_has_priority_prompt(game: &GameState, side: Side) -
 pub fn can_take_game_actions(game: &GameState, side: Side) -> bool {
     game.info.phase.is_playing()
         && prompt_queue_empty_or_has_priority_prompt(game, side)
-        && game.player(side.opponent()).prompt_stack.is_empty()
+        && game.player(side.opponent()).old_prompt_stack.is_empty()
 }
 
 /// Returns true if the `card_id` is currently face down and could be

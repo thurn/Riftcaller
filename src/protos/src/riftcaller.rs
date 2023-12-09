@@ -1213,7 +1213,7 @@ pub struct GameView {
     /// Positions of non-Card game objects.
     #[prost(message, optional, tag = "5")]
     pub game_object_positions: ::core::option::Option<GameObjectPositions>,
-    /// Controls for game actions such as interface prompts
+    /// Controls for game actions such as interface prompt_ui
     #[prost(message, optional, tag = "6")]
     pub main_controls: ::core::option::Option<InterfaceMainControls>,
     /// Tutorial UI elements

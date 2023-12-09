@@ -88,6 +88,7 @@ use crate::continuous_visual_effect::ContinuousDisplayEffect;
 use crate::flag_data::{AbilityFlag, Flag};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
+use crate::prompt_data::GamePrompt;
 use crate::raid_data::PopulateAccessPromptSource;
 use crate::text::TextElement;
 
@@ -598,6 +599,14 @@ pub enum Delegate {
     /// invoking `mutations::check_for_score_victory()`
     CanWinGameViaPoints(QueryDelegate<Side, AbilityFlag>),
 
+    /// Queries the [GamePrompt] to show when an ability requests to show a
+    /// prompt.
+    ///
+    /// The prompt system stores all abilities that currently wish to display
+    /// prompt_ui in a stack data structure. When an ability's turn to show a
+    /// prompt comes up, this delegate is invoked to get the content of the
+    /// prompt to show.
+    ShowPrompt(QueryDelegate<AbilityId, Option<GamePrompt>>),
     /// Query the current mana cost of a card. Invoked with [Cost::mana].
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),
     /// Query the current mana cost of an ability. Invoked with [Cost::mana].

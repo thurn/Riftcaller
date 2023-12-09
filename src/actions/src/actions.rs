@@ -138,7 +138,7 @@ fn play_card_action(
     );
 
     let initiated_by = if let Some(GamePrompt::PlayCardBrowser(prompt)) =
-        game.player(card_id.side).prompt_stack.current()
+        game.player(card_id.side).old_prompt_stack.current()
     {
         InitiatedBy::Ability(prompt.initiated_by)
     } else {
@@ -273,7 +273,7 @@ fn dispel_evocation_action(game: &mut GameState, user_side: Side) -> Result<()> 
             })
             .collect(),
     });
-    game.player_mut(user_side).prompt_stack.push(prompt);
+    game.player_mut(user_side).old_prompt_stack.push(prompt);
 
     Ok(())
 }
@@ -281,7 +281,7 @@ fn dispel_evocation_action(game: &mut GameState, user_side: Side) -> Result<()> 
 #[instrument(skip(game))]
 fn move_card_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
     let Some(GamePrompt::CardSelector(prompt)) =
-        game.player_mut(user_side).prompt_stack.current_mut()
+        game.player_mut(user_side).old_prompt_stack.current_mut()
     else {
         fail!("Expected active CardBrowserPrompt");
     };
@@ -370,7 +370,7 @@ fn handle_end_turn_action(game: &mut GameState, user_side: Side) -> Result<()> {
     if hand.len() > max_hand_size {
         // Must discard to hand size
         let discard = hand.len() - max_hand_size;
-        game.player_mut(user_side).prompt_stack.push(GamePrompt::CardSelector(
+        game.player_mut(user_side).old_prompt_stack.push(GamePrompt::CardSelector(
             CardSelectorPrompt {
                 context: Some(PromptContext::DiscardToHandSize(max_hand_size)),
                 unchosen_subjects: hand,
@@ -411,7 +411,7 @@ fn start_next_turn(game: &mut GameState) -> Result<()> {
 }
 
 fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAction) -> Result<()> {
-    let Some(prompt) = game.player(user_side).prompt_stack.current() else {
+    let Some(prompt) = game.player(user_side).old_prompt_stack.current() else {
         fail!("Expected active GamePrompt");
     };
 
@@ -421,8 +421,11 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
                 buttons.choices.get(index).with_error(|| format!("Index out of bounds {index}"))?;
 
             let effects = choice.effects.clone();
-            let removed =
-                game.player_mut(user_side).prompt_stack.pop().with_error(|| "Expected prompt")?;
+            let removed = game
+                .player_mut(user_side)
+                .old_prompt_stack
+                .pop()
+                .with_error(|| "Expected prompt")?;
 
             for effect in effects {
                 game_effect_actions::handle(game, effect)?;
@@ -443,7 +446,7 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
             play_card::invoke_play_card_browser(game, user_side, None)?;
         }
         (GamePrompt::PriorityPrompt, PromptAction::ButtonPromptSelect(0)) => {
-            game.player_mut(user_side).prompt_stack.pop();
+            game.player_mut(user_side).old_prompt_stack.pop();
         }
         (GamePrompt::RoomSelector(room_prompt), PromptAction::RoomPromptSelect(room_id)) => {
             verify!(room_prompt.valid_rooms.contains(&room_id), "Invalid room selected");
@@ -494,7 +497,7 @@ fn handle_card_selector_submit(
         }
     }
 
-    game.player_mut(user_side).prompt_stack.pop();
+    game.player_mut(user_side).old_prompt_stack.pop();
     check_start_next_turn(game)
 }
 
@@ -510,6 +513,6 @@ fn handle_room_selector_submit(
         }
     }
 
-    game.player_mut(user_side).prompt_stack.pop();
+    game.player_mut(user_side).old_prompt_stack.pop();
     check_start_next_turn(game)
 }
