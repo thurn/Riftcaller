@@ -1,5 +1,5 @@
 [package]
-name = "prompts"
+name = "prompt_ui"
 version = "0.0.0"
 description = "Renders UI prompts displayed during game sessions"
 license = "Apache-2.0"

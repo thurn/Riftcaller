@@ -18,7 +18,7 @@ use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{CardId, CardPlayId, CardSubtype, CardType, InitiatedBy, Side};
 use game_data::animation_tracker::GameAnimation;
-use game_data::card_state::{CardPosition, CardState};
+use game_data::card_state::{CardIdsExt, CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent, Scope};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
@@ -32,7 +32,7 @@ use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
 use crate::state_machine::StateMachine;
-use crate::{dispatch, flags, mana, mutations, queries, state_machine, CardDefinitionExt};
+use crate::{dispatch, flags, mana, mutations, prompts, queries, state_machine, CardDefinitionExt};
 
 /// Starts a new play card action, either as a result the explicit game action
 /// or as an effect of another card.
@@ -175,6 +175,8 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<Option<
             CardType::Project | CardType::Scheme
                 if game.occupants(room_id).count() >= game_constants::MAXIMUM_OCCUPANTS_IN_ROOM =>
             {
+                let occ = game.occupants(room_id).card_ids();
+                dbg!(occ);
                 Some(card_limit_prompt(
                     game.occupants(room_id),
                     ButtonPromptContext::CardLimit(definition.card_type, None),
@@ -185,7 +187,7 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<Option<
     };
 
     if let Some(p) = prompt {
-        game.player_mut(play_card.card_id.side).old_prompt_stack.push(p);
+        prompts::push_immediate(game, play_card.card_id.side, p);
     }
 
     Ok(Some(PlayCardStep::ClearPreviousState))
@@ -247,8 +249,7 @@ pub fn invoke_play_card_browser(
     side: Side,
     card_id: Option<CardId>,
 ) -> Result<()> {
-    if let Some(GamePrompt::PlayCardBrowser(prompt)) = game.player(side).old_prompt_stack.current()
-    {
+    if let Some(GamePrompt::PlayCardBrowser(prompt)) = prompts::current(game, side) {
         if let Some(id) = card_id {
             verify!(prompt.cards.contains(&id), "Unexpected prompt card");
         }
@@ -268,7 +269,7 @@ pub fn invoke_play_card_browser(
             }
         }
 
-        game.player_mut(side).old_prompt_stack.pop();
+        prompts::pop(game, side);
     }
     Ok(())
 }

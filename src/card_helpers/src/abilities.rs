@@ -21,10 +21,12 @@ use game_data::card_state::{CardCounter, CardPosition};
 use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate};
 use game_data::flag_data::Flag;
+use game_data::game_actions::CardTarget;
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
+use game_data::prompt_data::PromptData;
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
-use rules::{curses, mana, mutations};
+use rules::{curses, mana, mutations, prompts};
 
 use crate::text_helpers::named_trigger;
 use crate::text_macro::text;
@@ -211,13 +213,20 @@ pub fn play_if_accessed_all_inner_rooms_this_turn() -> Ability {
 
 /// Ability to choose a minion on play and store that choice for later.
 pub fn choose_a_minion_in_target_room() -> Ability {
-    Ability::new_with_delegate(
-        text![TextElement::NamedTrigger(Play, text!["Choose a minion in target room"])],
-        this::on_played(|g, s, played| {
+    Ability::new(text![TextElement::NamedTrigger(Play, text!["Choose a minion in target room"])])
+        .delegate(this::on_played(|g, s, played| {
+            prompts::push_with_data(g, s.side(), s, PromptData::CardPlay(*played));
+            Ok(())
+        }))
+        .delegate(this::prompt(|g, s, source, _| {
+            let PromptData::CardPlay(played) = source.data else {
+                return None;
+            };
+            let CardTarget::Room(room_id) = played.target else {
+                return None;
+            };
             show_prompt::with_choices(
-                g,
-                s,
-                g.defenders_unordered(played.target.room_id()?)
+                g.defenders_unordered(room_id)
                     .map(|card| {
                         PromptChoice::new()
                             .effect(GameEffect::AppendCustomCardState(
@@ -230,10 +239,8 @@ pub fn choose_a_minion_in_target_room() -> Ability {
                             .anchor_card(card.id)
                     })
                     .collect(),
-            );
-            Ok(())
-        }),
-    )
+            )
+        }))
 }
 
 /// Adds 1 attack to a weapon per power charge counter on it.

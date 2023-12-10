@@ -22,9 +22,9 @@ use game_data::game_actions::ButtonPromptContext;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{ButtonPrompt, PromptChoice};
 use game_data::tutorial_data::{SpeechBubble, TutorialDisplay};
-use prompts::effect_prompts;
-use prompts::game_instructions::GameInstructions;
-use prompts::prompt_container::PromptContainer;
+use prompt_ui::effect_prompts;
+use prompt_ui::game_instructions::GameInstructions;
+use prompt_ui::prompt_container::PromptContainer;
 use protos::riftcaller::{InterfaceMainControls, TutorialEffect};
 use rules::{curses, damage};
 

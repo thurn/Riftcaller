@@ -34,7 +34,7 @@ use game_data::game_state::GameState;
 use game_data::prompt_data::GamePrompt;
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
-use crate::{dispatch, CardDefinitionExt};
+use crate::{dispatch, prompts, CardDefinitionExt};
 
 /// Obtain the [CardStats] for a given card
 pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
@@ -89,9 +89,7 @@ pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<Mana
 /// Returns the action point cost for a given card
 pub fn action_cost(game: &GameState, card_id: CardId) -> ActionCount {
     let mut actions = crate::get(game.card(card_id).variant).cost.actions;
-    if let Some(GamePrompt::PlayCardBrowser(browser)) =
-        game.player(card_id.side).old_prompt_stack.current()
-    {
+    if let Some(GamePrompt::PlayCardBrowser(browser)) = prompts::current(game, card_id.side) {
         if browser.cards.contains(&card_id) {
             // Cards played from play browser implicitly cost 1 action point fewer
             actions = actions.saturating_sub(1);

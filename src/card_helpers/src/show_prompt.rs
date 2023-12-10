@@ -12,54 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use anyhow::Result;
-use core_data::game_primitives::HasSide;
-use game_data::delegate_data::Scope;
 use game_data::game_actions::ButtonPromptContext;
-use game_data::game_state::GameState;
 use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice, RoomSelectorPrompt};
 
 /// Adds a choice prompt for the `side` player containing the choices in
 /// `choices`.
 pub fn with_context_and_choices(
-    game: &mut GameState,
-    side: impl HasSide,
     context: ButtonPromptContext,
     choices: Vec<PromptChoice>,
-) {
-    game.player_mut(side.side())
-        .old_prompt_stack
-        .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: Some(context), choices }))
+) -> Option<GamePrompt> {
+    Some(GamePrompt::ButtonPrompt(ButtonPrompt { context: Some(context), choices }))
 }
 
 /// Adds a choice prompt for the `side` player containing the choices in
 /// `choices`.
-pub fn with_choices(game: &mut GameState, side: impl HasSide, choices: Vec<PromptChoice>) {
-    game.player_mut(side.side())
-        .old_prompt_stack
-        .push(GamePrompt::ButtonPrompt(ButtonPrompt { context: None, choices }))
+pub fn with_choices(choices: Vec<PromptChoice>) -> Option<GamePrompt> {
+    Some(GamePrompt::ButtonPrompt(ButtonPrompt { context: None, choices }))
 }
 
 /// Show a priority window prompt if one is not already displayed. This prompt
 /// allows a player to activate abilities when they otherwise could not.
-pub fn priority_window(game: &mut GameState, scope: Scope) {
-    if let Some(GamePrompt::PriorityPrompt) = game.player(scope.side()).old_prompt_stack.current() {
-        return;
-    }
-
-    game.player_mut(scope.side()).old_prompt_stack.push(GamePrompt::PriorityPrompt);
+pub fn priority_window() -> Option<GamePrompt> {
+    Some(GamePrompt::PriorityPrompt)
 }
 
 /// Show a room selector prompt to a player.
 ///
 /// Has no effect if the `valid_rooms` on the provided prompt is empty.
-pub fn room_selector(game: &mut GameState, prompt: RoomSelectorPrompt) -> Result<()> {
+pub fn room_selector(prompt: RoomSelectorPrompt) -> Option<GamePrompt> {
     if prompt.valid_rooms.is_empty() {
-        return Ok(());
+        return None;
     }
 
-    game.player_mut(prompt.initiated_by.side())
-        .old_prompt_stack
-        .push(GamePrompt::RoomSelector(prompt));
-    Ok(())
+    Some(GamePrompt::RoomSelector(prompt))
 }

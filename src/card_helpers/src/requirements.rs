@@ -22,7 +22,7 @@ use game_data::game_state::GameState;
 use game_data::history_data::{HistoryEvent, HistoryEventKind};
 use game_data::prompt_data::GamePrompt;
 use game_data::utils;
-use rules::{flags, play_card};
+use rules::{flags, play_card, prompts};
 
 use crate::{face_down_in_play, history};
 
@@ -74,9 +74,7 @@ pub fn in_hand<T>(game: &GameState, scope: Scope, _: &T) -> bool {
 ///      this card.
 pub fn matching_play_browser(game: &GameState, scope: Scope, id: &impl HasCardId) -> bool {
     let card_id = id.card_id();
-    if let Some(GamePrompt::PlayCardBrowser(browser)) =
-        game.player(card_id.side).old_prompt_stack.current()
-    {
+    if let Some(GamePrompt::PlayCardBrowser(browser)) = prompts::current(game, card_id.side) {
         if browser.cards.contains(&card_id) && browser.initiated_by.card_id == scope.card_id() {
             return true;
         }

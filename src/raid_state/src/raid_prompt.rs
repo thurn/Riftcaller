@@ -25,8 +25,8 @@ use game_data::raid_data::{
     RaidChoice, RaidData, RaidLabel, RaidPrompt, RaidState, RaidStep, WeaponInteraction,
 };
 use game_data::tutorial_data::TutorialTrigger;
-use prompts::prompt_container::PromptContainer;
-use prompts::response_button::ResponseButton;
+use prompt_ui::prompt_container::PromptContainer;
+use prompt_ui::response_button::ResponseButton;
 use protos::riftcaller::{
     AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify, InterfaceMainControls,
 };

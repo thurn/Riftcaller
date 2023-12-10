@@ -38,7 +38,10 @@ pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Rare,
         abilities: vec![Ability::new_with_delegate(
-            text_helpers::named_trigger(Combat, text!["The Riftcaller cannot draw cards this turn"]),
+            text_helpers::named_trigger(
+                Combat,
+                text!["The Riftcaller cannot draw cards this turn"],
+            ),
             delegates::on_will_draw_cards(
                 requirements::combat_ability_fired_this_turn,
                 |g, s, _| {

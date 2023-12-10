@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{costs, history, in_play, show_prompt, text};
+use card_helpers::{costs, history, in_play, show_prompt, text, this};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{
     CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
@@ -24,11 +24,11 @@ use game_data::card_set_name::CardSetName;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::prompt_data::PromptChoice;
+use game_data::prompt_data::{PromptChoice, PromptData};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::VisualEffects;
-use rules::{custom_state, draw_cards, mana, CardDefinitionExt};
+use rules::{custom_state, draw_cards, mana, prompts, CardDefinitionExt};
 
 pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -114,27 +114,36 @@ pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
                                     .effect_color(design::BLUE_500),
                             )
                             .apply(g);
-
-                        show_prompt::with_context_and_choices(
+                        prompts::push_with_data(
                             g,
                             Side::Covenant,
-                            ButtonPromptContext::PayToPreventRevealing(1),
-                            vec![
-                                PromptChoice::new().effect(GameEffect::ManaCost(
-                                    Side::Covenant,
-                                    1,
-                                    s.initiated_by(),
-                                )),
-                                PromptChoice::new().effect(GameEffect::RevealCard(played.card_id)),
-                            ],
+                            s,
+                            PromptData::Card(played.card_id),
                         );
+
                         Ok(())
                     })?;
                 }
 
                 Ok(())
             }),
-        )],
+        )
+        .delegate(this::prompt(|_, s, source, _| {
+            let PromptData::Card(card_id) = source.data else {
+                return None;
+            };
+            show_prompt::with_context_and_choices(
+                ButtonPromptContext::PayToPreventRevealing(1),
+                vec![
+                    PromptChoice::new().effect(GameEffect::ManaCost(
+                        Side::Covenant,
+                        1,
+                        s.initiated_by(),
+                    )),
+                    PromptChoice::new().effect(GameEffect::RevealCard(card_id)),
+                ],
+            )
+        }))],
         config: CardConfigBuilder::new()
             .identity(IdentityConfig {
                 starting_coins: Coins(400),

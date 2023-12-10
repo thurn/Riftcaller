@@ -12,37 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use anyhow::Result;
 use core_data::game_primitives::{CardId, GameObjectId};
-use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::Scope;
-use game_data::game_state::GameState;
 use game_data::prompt_data::{GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction};
 use game_data::special_effects::{Projectile, TimedEffectData};
-use rules::visual_effects::VisualEffects;
 
-pub fn show(game: &mut GameState, builder: PlayCardBrowserBuilder) -> Result<()> {
-    let mut effects = VisualEffects::new();
-    let cards = builder.cards.clone();
-    if let Some((id, data)) = builder.visual_effect {
-        effects = effects.timed_effect(id, data);
-    }
+pub fn show(builder: PlayCardBrowserBuilder) -> Option<GamePrompt> {
+    // let mut effects = VisualEffects::new();
+    // if let Some((id, data)) = builder.visual_effect {
+    //     effects = effects.timed_effect(id, data);
+    // }
 
-    if let Some(movement_effects) = builder.movement_effect {
-        effects.card_movement_effects(movement_effects, &cards).apply(game);
-    }
+    // if let Some(movement_effects) = builder.movement_effect {
+    //     effects.card_movement_effects(movement_effects, &cards).apply(game);
+    // }
+    //
+    // game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards));
 
-    game.add_animation(|| GameAnimation::ShowPlayCardBrowser(cards));
-    game.player_mut(builder.scope.side()).old_prompt_stack.push(GamePrompt::PlayCardBrowser(
-        PlayCardBrowser {
-            context: Some(builder.context),
-            initiated_by: builder.scope.ability_id(),
-            cards: builder.cards,
-            unplayed_action: builder.unplayed_action,
-        },
-    ));
-
-    Ok(())
+    Some(GamePrompt::PlayCardBrowser(PlayCardBrowser {
+        context: Some(builder.context),
+        initiated_by: builder.scope.ability_id(),
+        cards: builder.cards,
+        unplayed_action: builder.unplayed_action,
+    }))
 }
 
 pub struct PlayCardBrowserBuilder {

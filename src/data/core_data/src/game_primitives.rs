@@ -485,7 +485,8 @@ pub enum RoomLocation {
     Occupant,
 }
 
-/// Used to control where an item is rendered within the Riftcaller's item display
+/// Used to control where an item is rendered within the Riftcaller's item
+/// display
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum ItemLocation {
     Artifacts,

@@ -26,7 +26,7 @@ use protos::riftcaller::{
     card_targeting, ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
     RevealedCardView, RulesText, TargetingArrow,
 };
-use rules::{flags, queries, CardDefinitionExt};
+use rules::{flags, prompts, queries, CardDefinitionExt};
 use rules_text::{card_icons, supplemental_info};
 
 use crate::{card_sync, positions};
@@ -299,7 +299,7 @@ pub fn room_selector_card_view(
     game: &GameState,
 ) -> impl Iterator<Item = CardView> {
     let result = if let Some(GamePrompt::RoomSelector(prompt)) =
-        game.player(builder.user_side).old_prompt_stack.current()
+        &prompts::current(game, builder.user_side)
     {
         Some(room_selector(builder, game, prompt))
     } else {

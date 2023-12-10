@@ -88,7 +88,7 @@ use crate::continuous_visual_effect::ContinuousDisplayEffect;
 use crate::flag_data::{AbilityFlag, Flag};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
-use crate::prompt_data::GamePrompt;
+use crate::prompt_data::{AbilityPromptSource, GamePrompt};
 use crate::raid_data::PopulateAccessPromptSource;
 use crate::text::TextElement;
 
@@ -203,7 +203,7 @@ impl<T, R> QueryDelegate<T, R> {
 }
 
 /// Event data for when a card is played
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct CardPlayed {
     pub card_id: CardId,
     pub target: CardTarget,
@@ -606,7 +606,7 @@ pub enum Delegate {
     /// prompt_ui in a stack data structure. When an ability's turn to show a
     /// prompt comes up, this delegate is invoked to get the content of the
     /// prompt to show.
-    ShowPrompt(QueryDelegate<AbilityId, Option<GamePrompt>>),
+    ShowPrompt(QueryDelegate<AbilityPromptSource, Option<GamePrompt>>),
     /// Query the current mana cost of a card. Invoked with [Cost::mana].
     ManaCost(QueryDelegate<CardId, Option<ManaValue>>),
     /// Query the current mana cost of an ability. Invoked with [Cost::mana].

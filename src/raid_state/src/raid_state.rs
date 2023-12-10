@@ -35,7 +35,7 @@ use game_data::raid_data::{
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{combat, dispatch, flags, mana, mutations, queries};
+use rules::{combat, dispatch, flags, mana, mutations, prompts, queries};
 use tracing::debug;
 use with_error::{fail, verify, WithError};
 
@@ -121,9 +121,7 @@ pub fn run(game: &mut GameState, mut action: Option<RaidAction>) -> Result<()> {
     let mut regenerated_prompt = false;
 
     loop {
-        if !(game.covenant.old_prompt_stack.is_empty()
-            && game.riftcaller.old_prompt_stack.is_empty())
-        {
+        if !(prompts::is_empty(game, Side::Covenant) && prompts::is_empty(game, Side::Riftcaller)) {
             break;
         }
 

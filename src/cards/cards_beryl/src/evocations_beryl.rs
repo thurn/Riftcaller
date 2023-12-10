@@ -34,13 +34,13 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::{BanishedByCard, CardCounter, CardPosition};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
-use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, UnplayedAction};
+use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData, UnplayedAction};
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use raid_state::{custom_access, InitiateRaidOptions};
 use rules::visual_effects::VisualEffects;
-use rules::{curses, draw_cards, flags, mana, mutations, CardDefinitionExt};
+use rules::{curses, destroy, draw_cards, flags, mana, mutations, prompts, CardDefinitionExt};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -148,21 +148,22 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
             }],
             in_play::on_will_deal_damage(|g, s, damage| {
                 if damage.source.side() == Side::Covenant {
-                    show_prompt::with_context_and_choices(
-                        g,
-                        s,
-                        ButtonPromptContext::SacrificeToPreventDamage(s.card_id(), s.upgrade(2, 5)),
-                        vec![
-                            PromptChoice::new()
-                                .effect(GameEffect::SacrificeCard(s.card_id()))
-                                .effect(GameEffect::PreventDamage(s.upgrade(2, 5))),
-                            PromptChoice::new().effect(GameEffect::Continue),
-                        ],
-                    );
+                    prompts::push(g, Side::Riftcaller, s);
                 }
                 Ok(())
             }),
-        )],
+        )
+        .delegate(this::prompt(|_, s, _, _| {
+            show_prompt::with_context_and_choices(
+                ButtonPromptContext::SacrificeToPreventDamage(s.card_id(), s.upgrade(2, 5)),
+                vec![
+                    PromptChoice::new()
+                        .effect(GameEffect::SacrificeCard(s.card_id()))
+                        .effect(GameEffect::PreventDamage(s.upgrade(2, 5))),
+                    PromptChoice::new().effect(GameEffect::Continue),
+                ],
+            )
+        }))],
         config: CardConfig::default(),
     }
 }
@@ -242,16 +243,17 @@ pub fn planar_sanctuary(meta: CardMetadata) -> CardDefinition {
             Ability::new(text!["You may activate abilities after being cursed or damaged"])
                 .delegate(in_play::on_curse(|g, s, _| {
                     if g.card(s.card_id()).counters(CardCounter::PowerCharges) > 0 {
-                        show_prompt::priority_window(g, s);
+                        prompts::push(g, Side::Riftcaller, s);
                     }
                     Ok(())
                 }))
                 .delegate(in_play::on_damage(|g, s, _| {
                     if g.card(s.card_id()).counters(CardCounter::PowerCharges) > 0 {
-                        show_prompt::priority_window(g, s);
+                        prompts::push(g, Side::Riftcaller, s);
                     }
                     Ok(())
-                })),
+                }))
+                .delegate(this::prompt(|_, _, _, _| show_prompt::priority_window())),
         ],
         config: CardConfig::default(),
     }
@@ -306,10 +308,15 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                     .partition(|id| g.card(*id).definition().is_permanent());
 
                 mutations::move_cards(g, &spells, CardPosition::DiscardPile(s.side()))?;
-
+                prompts::push_with_data(g, Side::Riftcaller, s, PromptData::Cards(permanents));
+                Ok(())
+            }))
+            .delegate(this::prompt(|_, s, source, _| {
+                let PromptData::Cards(permanents) = &source.data else {
+                    return None;
+                };
                 play_card_browser_builder::show(
-                    g,
-                    PlayCardBrowserBuilder::new(s, permanents)
+                    PlayCardBrowserBuilder::new(s, permanents.clone())
                         .movement_effect(Projectile::Projectiles1(2))
                         .unplayed_action(UnplayedAction::Discard),
                 )
@@ -344,26 +351,25 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
                 ],
                 delegates::on_raid_access_start(requirements::in_hand, |g, s, event| {
                     if event.target == RoomId::Crypt {
-                        show_prompt::with_choices(
-                            g,
-                            s,
-                            vec![
-                                PromptChoice::new()
-                                    .custom_label(PromptChoiceLabel::Play)
-                                    .effect(GameEffect::PlayCardForNoMana(
-                                        s.card_id(),
-                                        CardTarget::None,
-                                        s.initiated_by(),
-                                    ))
-                                    .effect(GameEffect::PreventRaidCardAccess)
-                                    .anchor_card(s.card_id()),
-                                PromptChoice::new_continue(),
-                            ],
-                        )
+                        prompts::push(g, Side::Riftcaller, s);
                     }
                     Ok(())
                 }),
-            ),
+            )
+            .delegate(this::prompt(|_, s, _, _| {
+                show_prompt::with_choices(vec![
+                    PromptChoice::new()
+                        .custom_label(PromptChoiceLabel::Play)
+                        .effect(GameEffect::PlayCardForNoMana(
+                            s.card_id(),
+                            CardTarget::None,
+                            s.initiated_by(),
+                        ))
+                        .effect(GameEffect::PreventRaidCardAccess)
+                        .anchor_card(s.card_id()),
+                    PromptChoice::new_continue(),
+                ])
+            })),
             ActivatedAbility::new(
                 costs::sacrifice_for_action(),
                 text![text!["Access all cards in the", Crypt], text![GainActions(1)]],
@@ -494,30 +500,32 @@ pub fn radiant_intervention(meta: CardMetadata) -> CardDefinition {
                 cost: text![SacrificeCost],
                 effect: text!["Prevent an ally or artifact from being destroyed."]
             }],
-            in_play::on_will_destroy_cards(|g, s, targets| {
-                show_prompt::with_context_and_choices(
-                    g,
-                    s,
-                    ButtonPromptContext::SacrificeToPreventDestroyingCard(s.card_id()),
-                    targets
-                        .iter()
-                        .filter(|card_id| {
-                            let definition = g.card(**card_id).definition();
-                            definition.is_ally() || definition.is_artifact()
-                        })
-                        .map(|card_id| {
-                            PromptChoice::new()
-                                .effect(GameEffect::SacrificeCard(s.card_id()))
-                                .effect(GameEffect::PreventDestroyingCard(*card_id))
-                                .custom_label(PromptChoiceLabel::Prevent)
-                                .anchor_card(*card_id)
-                        })
-                        .chain(iter::once(PromptChoice::new_continue()))
-                        .collect(),
-                );
+            in_play::on_will_destroy_cards(|g, s, _| {
+                prompts::push(g, Side::Riftcaller, s);
                 Ok(())
             }),
-        )],
+        )
+        .delegate(this::prompt(|g, s, _, _| {
+            let targets = destroy::all_targets(g);
+            show_prompt::with_context_and_choices(
+                ButtonPromptContext::SacrificeToPreventDestroyingCard(s.card_id()),
+                targets
+                    .iter()
+                    .filter(|card_id| {
+                        let definition = g.card(**card_id).definition();
+                        definition.is_ally() || definition.is_artifact()
+                    })
+                    .map(|card_id| {
+                        PromptChoice::new()
+                            .effect(GameEffect::SacrificeCard(s.card_id()))
+                            .effect(GameEffect::PreventDestroyingCard(*card_id))
+                            .custom_label(PromptChoiceLabel::Prevent)
+                            .anchor_card(*card_id)
+                    })
+                    .chain(iter::once(PromptChoice::new_continue()))
+                    .collect(),
+            )
+        }))],
         config: CardConfig::default(),
     }
 }

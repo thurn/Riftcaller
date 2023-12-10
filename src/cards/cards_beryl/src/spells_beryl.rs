@@ -35,15 +35,15 @@ use game_data::game_actions::CardTarget;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{
-    PromptChoice, PromptChoiceLabel, PromptContext, RoomSelectorPrompt, RoomSelectorPromptContext,
-    RoomSelectorPromptEffect, UnplayedAction,
+    PromptChoice, PromptChoiceLabel, PromptContext, PromptData, RoomSelectorPrompt,
+    RoomSelectorPromptContext, RoomSelectorPromptEffect, UnplayedAction,
 };
 use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use raid_state::custom_access;
 use rules::visual_effects::VisualEffects;
-use rules::{curses, draw_cards, flags, mutations, CardDefinitionExt};
+use rules::{curses, draw_cards, flags, mutations, prompts, CardDefinitionExt};
 use with_error::fail;
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
@@ -63,11 +63,16 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                     g.discard_pile(Side::Riftcaller).any(|c| c.definition().is_artifact()),
                 )
             })),
-            Some(Ability::new_with_delegate(
-                text!["Play an artifact in your discard pile"],
-                this::on_played(|g, s, _| {
+            Some(
+                Ability::new_with_delegate(
+                    text!["Play an artifact in your discard pile"],
+                    this::on_played(|g, s, _| {
+                        prompts::push(g, Side::Riftcaller, s);
+                        Ok(())
+                    }),
+                )
+                .delegate(this::prompt(|g, s, _, _| {
                     play_card_browser_builder::show(
-                        g,
                         PlayCardBrowserBuilder::new(
                             s,
                             g.discard_pile(s.side())
@@ -85,8 +90,8 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                                 .effect_color(design::YELLOW_900),
                         ),
                     )
-                }),
-            )),
+                })),
+            ),
             abilities::when_upgraded(
                 meta,
                 Ability::new_with_delegate(
@@ -174,25 +179,21 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                 if s.is_upgraded() {
                     mutations::move_card(g, s.card_id(), CardPosition::Hand(s.side()))?;
                 } else {
-                    show_prompt::with_choices(
-                        g,
-                        s,
-                        vec![
-                            PromptChoice::new()
-                                .effect(GameEffect::MoveCard(
-                                    s.card_id(),
-                                    CardPosition::Hand(s.side()),
-                                ))
-                                .effect(GameEffect::ManaCost(s.side(), 1, s.initiated_by()))
-                                .custom_label(PromptChoiceLabel::Return(1)),
-                            PromptChoice::new().effect(GameEffect::Continue),
-                        ],
-                    );
+                    prompts::push(g, Side::Riftcaller, s);
                 }
 
                 Ok(())
             }),
-        )],
+        )
+        .delegate(this::prompt(|_, s, _, _| {
+            show_prompt::with_choices(vec![
+                PromptChoice::new()
+                    .effect(GameEffect::MoveCard(s.card_id(), CardPosition::Hand(s.side())))
+                    .effect(GameEffect::ManaCost(s.side(), 1, s.initiated_by()))
+                    .custom_label(PromptChoiceLabel::Return(1)),
+                PromptChoice::new().effect(GameEffect::Continue),
+            ])
+        }))],
         config: CardConfig::default(),
     }
 }
@@ -218,10 +219,15 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
             for card in &cards {
                 mutations::set_visible_to(g, *card, s.side(), true);
             }
-
+            prompts::push_with_data(g, Side::Riftcaller, s, PromptData::Cards(cards));
+            Ok(())
+        }))
+        .delegate(this::prompt(|_, s, source, _| {
+            let PromptData::Cards(cards) = &source.data else {
+                return None;
+            };
             play_card_browser_builder::show(
-                g,
-                PlayCardBrowserBuilder::new(s, cards)
+                PlayCardBrowserBuilder::new(s, cards.clone())
                     .movement_effect(Projectile::Projectiles1(3))
                     .visual_effect(
                         GameObjectId::Deck(Side::Riftcaller),
@@ -362,17 +368,18 @@ pub fn keensight(meta: CardMetadata) -> CardDefinition {
             for occupant in occupants {
                 mutations::reveal_card(g, occupant)?;
             }
-
-            show_prompt::with_choices(
-                g,
-                s,
-                vec![
-                    PromptChoice::new().effect(GameEffect::InitiateRaid(target, s.ability_id())),
-                    PromptChoice::new().effect(GameEffect::Continue),
-                ],
-            );
+            prompts::push_with_data(g, Side::Riftcaller, s, PromptData::Room(target));
 
             Ok(())
+        }))
+        .delegate(this::prompt(|_, s, source, _| {
+            let PromptData::Room(target) = source.data else {
+                return None;
+            };
+            show_prompt::with_choices(vec![
+                PromptChoice::new().effect(GameEffect::InitiateRaid(target, s.ability_id())),
+                PromptChoice::new().effect(GameEffect::Continue),
+            ])
         }))],
         config: CardConfigBuilder::new()
             .custom_targeting(requirements::any_outer_room_raid_target())
@@ -456,10 +463,21 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
                 text!["That card cannot be summoned this turn"]
             ])
             .delegate(this::on_played(|g, s, played| {
-                show_prompt::with_choices(
+                prompts::push_with_data(
                     g,
+                    Side::Riftcaller,
                     s,
-                    g.defenders_and_occupants(played.target.room_id()?)
+                    PromptData::Room(played.target.room_id()?),
+                );
+                Ok(())
+            }))
+            .delegate(this::prompt(|g, s, source, _| {
+                let PromptData::Room(room_id) = source.data else {
+                    return None;
+                };
+
+                show_prompt::with_choices(
+                    g.defenders_and_occupants(room_id)
                         .map(|card| {
                             PromptChoice::new()
                                 .effect(GameEffect::AppendCustomCardState(
@@ -477,8 +495,7 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
                                 })
                         })
                         .collect(),
-                );
-                Ok(())
+                )
             }))
             .delegate(delegates::can_summon(
                 requirements::card_targeted_for_this_turn,
@@ -544,20 +561,11 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                             && !g.card(s).custom_state.paid_for_enhancement(play_id)
                         {
                             // Prompt for second access
-                            show_prompt::with_choices(
+                            prompts::push_with_data(
                                 g,
-                                s.side(),
-                                vec![
-                                    PromptChoice::new()
-                                        .effect(GameEffect::ActionCost(s.side(), 1))
-                                        .effect(GameEffect::AppendCustomCardState(
-                                            s.card_id(),
-                                            CustomCardState::PaidForEnhancement { play_id },
-                                        ))
-                                        .custom_label(PromptChoiceLabel::PayActionAccessAnother),
-                                    PromptChoice::new()
-                                        .effect(GameEffect::EndCustomAccess(s.ability_id())),
-                                ],
+                                Side::Riftcaller,
+                                s,
+                                PromptData::CardPlayId(play_id),
                             );
                         } else {
                             custom_access::end(g, InitiatedBy::Ability(s.ability_id()))?;
@@ -567,6 +575,21 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 },
             ))
+            .delegate(this::prompt(|_, s, source, _| {
+                let PromptData::CardPlayId(play_id) = source.data else {
+                    return None;
+                };
+                show_prompt::with_choices(vec![
+                    PromptChoice::new()
+                        .effect(GameEffect::ActionCost(s.side(), 1))
+                        .effect(GameEffect::AppendCustomCardState(
+                            s.card_id(),
+                            CustomCardState::PaidForEnhancement { play_id },
+                        ))
+                        .custom_label(PromptChoiceLabel::PayActionAccessAnother),
+                    PromptChoice::new().effect(GameEffect::EndCustomAccess(s.ability_id())),
+                ])
+            }))
             .delegate(delegates::on_custom_access_end(
                 |_, s, initiated_by| Some(s.ability_id()) == initiated_by.ability_id(),
                 |g, _, _| mutations::shuffle_deck(g, Side::Covenant),
@@ -608,24 +631,27 @@ pub fn liminal_transposition(meta: CardMetadata) -> CardDefinition {
                         .ability_alert(s)
                         .apply(g);
 
-                    show_prompt::room_selector(
-                        g,
-                        RoomSelectorPrompt {
-                            initiated_by: s.ability_id(),
-                            effect: RoomSelectorPromptEffect::ChangeRaidTarget,
-                            valid_rooms: game_primitives::OUTER_ROOMS
-                                .iter()
-                                .map(|r| *r)
-                                .filter(|room_id| {
-                                    *room_id != event.target
-                                        && flags::is_valid_access_target(g, *room_id)
-                                })
-                                .collect(),
-                            context: Some(RoomSelectorPromptContext::Access),
-                        },
-                    )
+                    prompts::push_with_data(g, Side::Riftcaller, s, PromptData::Room(event.target));
+                    Ok(())
                 },
             ))
+            .delegate(this::prompt(|g, s, source, _| {
+                let PromptData::Room(target) = source.data else {
+                    return None;
+                };
+                show_prompt::room_selector(RoomSelectorPrompt {
+                    initiated_by: s.ability_id(),
+                    effect: RoomSelectorPromptEffect::ChangeRaidTarget,
+                    valid_rooms: game_primitives::OUTER_ROOMS
+                        .iter()
+                        .map(|r| *r)
+                        .filter(|room_id| {
+                            *room_id != target && flags::is_valid_access_target(g, *room_id)
+                        })
+                        .collect(),
+                    context: Some(RoomSelectorPromptContext::Access),
+                })
+            }))
             .delegate(delegates::can_score_accessed_card(
                 requirements::matching_raid,
                 |_, _, _, current| current.disallow(),

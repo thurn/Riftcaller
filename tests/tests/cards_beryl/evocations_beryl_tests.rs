@@ -288,11 +288,10 @@ fn knowledge_of_the_beyond_no_hits() {
     .build();
 
     // You can still activate it with no hits to e.g. put the cards into your
-    // discard pile
+    // discard pile. No prompt is shown.
     let id = g.create_and_play(CardName::KnowledgeOfTheBeyond);
     g.activate_ability(id, 1);
-    assert_eq!(g.client.cards.hand().len(), 0);
-    g.click(Button::SkipPlayingCard);
+    assert_eq!(g.client.cards.hand().len(), 5);
     assert_eq!(g.client.cards.discard_pile().len(), 4);
 }
 

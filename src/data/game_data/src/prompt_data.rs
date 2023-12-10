@@ -12,11 +12,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{AbilityId, CardId, CardType, ManaValue, RoomId};
+use core_data::game_primitives::{
+    AbilityId, CardId, CardPlayId, CardType, HasAbilityId, ManaValue, RoomId,
+};
 use serde::{Deserialize, Serialize};
 
+use crate::delegate_data::CardPlayed;
 use crate::game_actions::ButtonPromptContext;
 use crate::game_effect::GameEffect;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum PromptData {
+    None,
+    Index(u32),
+    Room(RoomId),
+    Card(CardId),
+    Cards(Vec<CardId>),
+    CardPlay(CardPlayed),
+    CardPlayId(CardPlayId),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AbilityPromptSource {
+    pub ability_id: AbilityId,
+    pub data: PromptData,
+}
+
+impl HasAbilityId for AbilityPromptSource {
+    fn ability_id(&self) -> AbilityId {
+        self.ability_id
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PromptEntry {
+    pub prompt: GamePrompt,
+    pub source: Option<AbilityPromptSource>,
+}
+
+/// A standard stack data structure for storing [GamePrompt]s.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct PromptStack {
+    pub stack: Vec<PromptEntry>,
+}
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum PromptContext {

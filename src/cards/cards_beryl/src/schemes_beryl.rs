@@ -78,7 +78,10 @@ pub fn echoing_cacophony(meta: CardMetadata) -> CardDefinition {
         rarity: Rarity::Uncommon,
         abilities: abilities::some(vec![
             Some(Ability::new_with_delegate(
-                text_helpers::named_trigger(Score, text!["Give the Riftcaller 2 curses until", Dawn]),
+                text_helpers::named_trigger(
+                    Score,
+                    text!["Give the Riftcaller 2 curses until", Dawn],
+                ),
                 this::on_scored_by_covenant(|g, s, _| {
                     curses::give_curses_with_options(
                         g,

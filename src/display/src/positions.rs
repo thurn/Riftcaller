@@ -37,7 +37,7 @@ use protos::riftcaller::{
     RoomIdentifier,
 };
 use raid_state::raid_display_state;
-use rules::{activate_ability, queries, CardDefinitionExt};
+use rules::{activate_ability, prompts, queries, CardDefinitionExt};
 
 pub const RELEASE_SORTING_KEY: u32 = 100;
 
@@ -343,7 +343,7 @@ fn non_card(
 fn disable_position_overrides(builder: &ResponseBuilder, game: &GameState) -> bool {
     builder.state.display_preference == Some(DisplayPreference::ShowArenaView(true))
         || matches!(
-            game.player(builder.user_side).old_prompt_stack.current(),
+            prompts::current(game, builder.user_side),
             Some(GamePrompt::PlayCardBrowser(..)) | Some(GamePrompt::RoomSelector(..))
         )
 }
@@ -379,7 +379,7 @@ fn prompt_position_override(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let current_prompt = game.player(builder.user_side).old_prompt_stack.current()?;
+    let current_prompt = prompts::current(game, builder.user_side)?;
 
     match current_prompt {
         GamePrompt::ButtonPrompt(prompt) => {
@@ -430,7 +430,7 @@ fn opponent_prompt_position_override(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let current_prompt = game.player(builder.user_side.opponent()).old_prompt_stack.current()?;
+    let current_prompt = prompts::current(game, builder.user_side.opponent())?;
     if let GamePrompt::ButtonPrompt(prompt) = current_prompt {
         if prompt.context.as_ref().and_then(|c| c.associated_card()) == Some(card.id) {
             return Some(for_card(card, card_browser()));
@@ -445,7 +445,7 @@ fn non_card_position_override(
     game: &GameState,
     id: GameObjectId,
 ) -> Option<ObjectPosition> {
-    let current_prompt = game.player(builder.user_side).old_prompt_stack.current();
+    let current_prompt = prompts::current(game, builder.user_side);
     if let Some(GamePrompt::CardSelector(browser)) = current_prompt {
         let target = match browser.target {
             BrowserPromptTarget::DiscardPile => GameObjectId::DiscardPile(builder.user_side),

@@ -26,10 +26,10 @@ use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::prompt_data::PromptChoice;
+use game_data::prompt_data::{PromptChoice, PromptData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::VisualEffects;
-use rules::{curses, mutations, CardDefinitionExt};
+use rules::{curses, mutations, prompts, CardDefinitionExt};
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -53,42 +53,52 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
                             > 0,
                 )
             })),
-            Some(Ability::new_with_delegate(
-                text!["Swap a scheme in your score area with one in the Riftcaller's score area"],
-                this::on_played(|g, s, _| {
-                    // Note that second option is shown first on prompt stack
+            Some(
+                Ability::new_with_delegate(
+                    text![
+                        "Swap a scheme in your score area with one in the Riftcaller's score area"
+                    ],
+                    this::on_played(|g, s, _| {
+                        // Note that second option is shown first on prompt stack
+                        prompts::push_with_data(g, Side::Covenant, s, PromptData::Index(0));
+                        prompts::push_with_data(g, Side::Covenant, s, PromptData::Index(1));
+                        Ok(())
+                    }),
+                )
+                .delegate(this::prompt(|g, s, source, _| {
+                    let PromptData::Index(i) = source.data else {
+                        return None;
+                    };
 
-                    show_prompt::with_context_and_choices(
-                        g,
-                        s,
-                        ButtonPromptContext::CardToTakeFromOpponent,
-                        g.score_area(Side::Riftcaller)
-                            .filter(|c| c.definition().is_scheme())
-                            .map(|c| {
-                                PromptChoice::new()
-                                    .effect(GameEffect::SwapWithSelected(s.side(), c.id))
-                                    .anchor_card(c.id)
-                            })
-                            .collect(),
-                    );
-
-                    show_prompt::with_context_and_choices(
-                        g,
-                        s,
-                        ButtonPromptContext::CardToGiveToOpponent,
-                        g.score_area(Side::Covenant)
-                            .filter(|c| c.definition().is_scheme())
-                            .map(|c| {
-                                PromptChoice::new()
-                                    .effect(GameEffect::SelectCardForPrompt(s.side(), c.id))
-                                    .anchor_card(c.id)
-                            })
-                            .collect(),
-                    );
-
-                    Ok(())
-                }),
-            )),
+                    if i == 0 {
+                        show_prompt::with_context_and_choices(
+                            ButtonPromptContext::CardToTakeFromOpponent,
+                            g.score_area(Side::Riftcaller)
+                                .filter(|c| c.definition().is_scheme())
+                                .map(|c| {
+                                    PromptChoice::new()
+                                        .effect(GameEffect::SwapWithSelected(s.side(), c.id))
+                                        .anchor_card(c.id)
+                                })
+                                .collect(),
+                        )
+                    } else if i == 1 {
+                        show_prompt::with_context_and_choices(
+                            ButtonPromptContext::CardToGiveToOpponent,
+                            g.score_area(Side::Covenant)
+                                .filter(|c| c.definition().is_scheme())
+                                .map(|c| {
+                                    PromptChoice::new()
+                                        .effect(GameEffect::SelectCardForPrompt(s.side(), c.id))
+                                        .anchor_card(c.id)
+                                })
+                                .collect(),
+                        )
+                    } else {
+                        None
+                    }
+                })),
+            ),
         ]),
         config: CardConfig::default(),
     }
@@ -119,13 +129,14 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
                     text!["When the Riftcaller accesses this scheme, give them", 2, Curses],
                 ])
                 .delegate(this::on_played(|g, s, _| {
-                    play_card_browser_builder::show(
-                        g,
-                        PlayCardBrowserBuilder::new(
-                            s,
-                            g.hand(s.side()).filter(|c| c.definition().is_scheme()).card_ids(),
-                        ),
-                    )
+                    prompts::push(g, Side::Covenant, s);
+                    Ok(())
+                }))
+                .delegate(this::prompt(|g, s, _, _| {
+                    play_card_browser_builder::show(PlayCardBrowserBuilder::new(
+                        s,
+                        g.hand(s.side()).filter(|c| c.definition().is_scheme()).card_ids(),
+                    ))
                 }))
                 .delegate(delegates::on_played(
                     requirements::matching_play_browser,

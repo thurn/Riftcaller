@@ -23,7 +23,7 @@ use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, GameStateA
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{GamePrompt, PromptAction};
 use raid_state::raid_prompt;
-use rules::{flags, queries, CardDefinitionExt};
+use rules::{flags, prompts, queries, CardDefinitionExt};
 use with_error::fail;
 
 /// Returns an iterator over currently-legal [GameAction]s for the `side` player
@@ -51,7 +51,7 @@ pub fn evaluate<'a>(
         GamePhase::GameOver { .. } => fail!("Game has ended"),
     }
 
-    if let Some(prompt) = &game.player(side).old_prompt_stack.current() {
+    if let Some(prompt) = prompts::current(game, side) {
         if let GamePrompt::ButtonPrompt(buttons) = prompt {
             return Ok(Box::new(
                 buttons

@@ -36,6 +36,15 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
     state_machine::run::<DestroyPermanentsData>(game)
 }
 
+pub fn all_targets(game: &GameState) -> Vec<CardId> {
+    game.state_machines
+        .destroy_permanent
+        .iter()
+        .flat_map(|state_machine| &state_machine.targets)
+        .copied()
+        .collect()
+}
+
 /// Prevent the [CardId] card from being destroyed if it is currently queued as
 /// the target of a destroy card state machine.
 pub fn prevent(game: &mut GameState, card_id: CardId) {

@@ -18,8 +18,8 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{
-    AbilityId, ActionCount, CardId, CurseCount, GameId, HasCardId, ItemLocation, LeylineCount,
-    ManaValue, PointsValue, RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
+    ActionCount, CardId, CurseCount, GameId, HasCardId, ItemLocation, LeylineCount, ManaValue,
+    PointsValue, RaidId, RoomId, RoomLocation, School, Side, TurnNumber, WoundCount,
 };
 use rand_xoshiro::rand_core::SeedableRng;
 use rand_xoshiro::Xoshiro256StarStar;
@@ -33,7 +33,7 @@ use crate::deck::Deck;
 use crate::delegate_data::DelegateCache;
 use crate::history_data::{GameHistory, HistoryCounters, HistoryEvent};
 use crate::player_name::PlayerId;
-use crate::prompt_data::GamePrompt;
+use crate::prompt_data::PromptStack;
 use crate::raid_data::RaidData;
 use crate::state_machine_data::StateMachines;
 use crate::tutorial_data::GameTutorialState;
@@ -59,48 +59,6 @@ pub struct CurseState {
     pub turn_curses: Option<(TurnData, CurseCount)>,
 }
 
-/// A standard stack data structure for storing [GamePrompt]s.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct OldPromptStack {
-    stack: Vec<GamePrompt>,
-}
-
-impl OldPromptStack {
-    pub fn is_empty(&self) -> bool {
-        self.stack.is_empty()
-    }
-
-    pub fn push(&mut self, prompt: GamePrompt) {
-        self.stack.push(prompt);
-    }
-
-    pub fn current(&self) -> Option<&GamePrompt> {
-        self.stack.last()
-    }
-
-    pub fn current_mut(&mut self) -> Option<&mut GamePrompt> {
-        self.stack.last_mut()
-    }
-
-    pub fn pop(&mut self) -> Option<GamePrompt> {
-        self.stack.pop()
-    }
-}
-
-/// A stack data structure for storing [GamePrompt]s.
-///
-/// Instead of interacting with this struct directly, please use the functions
-/// in the `prompt_ui` module.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct PromptStack {
-    /// Stack of [AbilityId]s of abilities which have requested to show a prompt
-    pub stack: Vec<AbilityId>,
-    /// The [GamePrompt] to show for the ability currently on top of the stack,
-    /// if any. This is determined by invoking `ShowPromptQuery` for the stored
-    /// [AbilityId].
-    pub current: Option<GamePrompt>,
-}
-
 /// State of a player within a game, containing their score and available
 /// resources
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -117,13 +75,7 @@ pub struct GamePlayerData {
     /// back & card frame assets get shown.
     pub schools: Vec<School>,
 
-    /// A stack of choices this player is facing related to game choices.
-    ///
-    /// Choices are resolved in a last-in, first-out manner, i.e. the prompt
-    /// which has been most recently added is shown to the user first. All
-    /// prompt_ui here take precedence over choices deriving from game rules
-    /// such as raid actions.
-    pub old_prompt_stack: OldPromptStack,
+    pub prompts: PromptStack,
 
     /// Storage area for cards this player has selected. Sometimes we show
     /// multi-step prompt_ui like "select 2 artifacts" and need a place to store
@@ -144,7 +96,7 @@ impl GamePlayerData {
             leylines: 0,
             bonus_points: 0,
             schools,
-            old_prompt_stack: OldPromptStack::default(),
+            prompts: PromptStack::default(),
             prompt_selected_cards: vec![],
         }
     }

@@ -14,7 +14,7 @@
 
 use core_ui::prelude::*;
 use game_data::prompt_data::{RoomSelectorPrompt, RoomSelectorPromptContext};
-use prompts::game_instructions::GameInstructions;
+use prompt_ui::game_instructions::GameInstructions;
 use protos::riftcaller::InterfaceMainControls;
 
 pub fn controls(prompt: &RoomSelectorPrompt) -> Option<InterfaceMainControls> {

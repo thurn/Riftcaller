@@ -37,7 +37,7 @@ pub mod leylines;
 pub mod mana;
 pub mod mutations;
 pub mod play_card;
-pub mod prompt_monitor;
+pub mod prompts;
 pub mod queries;
 pub mod state_machine;
 pub mod visual_effects;

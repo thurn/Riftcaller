@@ -31,7 +31,7 @@ use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
 use rules::visual_effects::VisualEffects;
-use rules::{curses, draw_cards, mana, mutations, wounds, CardDefinitionExt};
+use rules::{curses, draw_cards, mana, mutations, prompts, wounds, CardDefinitionExt};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -138,20 +138,21 @@ pub fn stalwart_protector(meta: CardMetadata) -> CardDefinition {
                     effect: text!["Prevent receiving a", Curse]
                 }],
                 in_play::on_will_receive_curses(|g, s, _| {
-                    show_prompt::with_context_and_choices(
-                        g,
-                        s,
-                        ButtonPromptContext::SacrificeToPreventCurses(s.card_id(), 1),
-                        vec![
-                            PromptChoice::new()
-                                .effect(GameEffect::SacrificeCard(s.card_id()))
-                                .effect(GameEffect::PreventCurses(1)),
-                            PromptChoice::new().effect(GameEffect::Continue),
-                        ],
-                    );
+                    prompts::push(g, Side::Riftcaller, s);
                     Ok(())
                 }),
-            ),
+            )
+            .delegate(this::prompt(|_, s, _, _| {
+                show_prompt::with_context_and_choices(
+                    ButtonPromptContext::SacrificeToPreventCurses(s.card_id(), 1),
+                    vec![
+                        PromptChoice::new()
+                            .effect(GameEffect::SacrificeCard(s.card_id()))
+                            .effect(GameEffect::PreventCurses(1)),
+                        PromptChoice::new().effect(GameEffect::Continue),
+                    ],
+                )
+            })),
             ActivatedAbility::new(costs::sacrifice(), text!["Remove a curse"])
                 .delegate(this::can_activate(|g, _, _, flag| {
                     flag.add_constraint(curses::is_riftcaller_cursed(g))
@@ -271,12 +272,12 @@ pub fn blue_warden(meta: CardMetadata) -> CardDefinition {
                     draw_cards::run(g, s.side(), s.upgrade(3, 4), s.initiated_by())
                 }))
                 .build(),
-            Ability::new(text!["You may activate abilities after being damaged"]).delegate(
-                in_play::on_damage(|g, s, _| {
-                    show_prompt::priority_window(g, s);
+            Ability::new(text!["You may activate abilities after being damaged"])
+                .delegate(in_play::on_damage(|g, s, _| {
+                    prompts::push(g, Side::Riftcaller, s);
                     Ok(())
-                }),
-            ),
+                }))
+                .delegate(this::prompt(|_, _, _, _| show_prompt::priority_window())),
         ],
         config: CardConfig::default(),
     }

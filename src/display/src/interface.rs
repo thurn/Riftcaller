@@ -19,7 +19,7 @@ use game_data::game_actions::{
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice};
-use prompts::prompt_display;
+use prompt_ui::prompt_display;
 use protos::riftcaller::InterfaceMainControls;
 use raid_state::raid_prompt;
 use rules::flags;
@@ -34,7 +34,7 @@ pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMa
     }
 
     let side = builder.user_side;
-    let current_prompt = &game.player(side).old_prompt_stack.current();
+    let current_prompt = &rules::prompts::current(game, side);
     if let Some(current) = current_prompt {
         return match current {
             GamePrompt::ButtonPrompt(prompt) => button_prompt::controls(game, side, prompt),

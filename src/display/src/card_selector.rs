@@ -18,9 +18,9 @@ use game_data::card_state::CardState;
 use game_data::game_actions::GameAction;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{CardSelectorPrompt, GamePrompt, PromptAction, PromptContext};
-use prompts::game_instructions::GameInstructions;
-use prompts::prompt_container::PromptContainer;
-use prompts::response_button::ResponseButton;
+use prompt_ui::game_instructions::GameInstructions;
+use prompt_ui::prompt_container::PromptContainer;
+use prompt_ui::response_button::ResponseButton;
 use protos::riftcaller::{InterfaceMainControls, ObjectPosition};
 use rules::flags;
 
@@ -65,8 +65,7 @@ pub fn move_target(
     game: &GameState,
     card: &CardState,
 ) -> Option<ObjectPosition> {
-    let Some(GamePrompt::CardSelector(prompt)) =
-        game.player(builder.user_side).old_prompt_stack.current()
+    let Some(GamePrompt::CardSelector(prompt)) = rules::prompts::current(game, builder.user_side)
     else {
         return None;
     };

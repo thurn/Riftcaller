@@ -13,8 +13,11 @@
 // limitations under the License.
 
 use anyhow::Result;
-use game_data::game_state::{GamePhase, GameState, OldPromptStack};
+use core_data::game_primitives::Side;
+use game_data::game_state::{GamePhase, GameState};
 use game_data::prompt_data::GamePrompt;
+
+use crate::prompts;
 
 /// Implements a simple state machine pattern. State machines have associated
 /// general data as well as named individual steps. A state machine
@@ -57,12 +60,12 @@ pub trait StateMachine: Sized + Clone {
     /// machine struct.
     fn evaluate(game: &mut GameState, step: Self::Step, data: Self) -> Result<Option<Self::Step>>;
 
-    /// Returns true if the current prompt in this [OldPromptStack] should pause
+    /// Returns true if the current prompt for the [Side] player should pause
     /// the state machine.
     ///
     /// By default state machines only pause for button prompt_ui.
-    fn has_blocking_prompt(stack: &OldPromptStack) -> bool {
-        matches!(stack.current(), Some(GamePrompt::ButtonPrompt(..)))
+    fn has_blocking_prompt(game: &mut GameState, side: Side) -> bool {
+        matches!(prompts::current(game, side), Some(GamePrompt::ButtonPrompt(..)))
     }
 }
 
@@ -78,8 +81,8 @@ pub fn initiate<T: StateMachine>(game: &mut GameState, data: T) -> Result<()> {
 /// see if they have further required updates.
 pub fn run<T: StateMachine>(game: &mut GameState) -> Result<()> {
     loop {
-        if T::has_blocking_prompt(&game.covenant.old_prompt_stack)
-            || T::has_blocking_prompt(&game.riftcaller.old_prompt_stack)
+        if T::has_blocking_prompt(game, Side::Covenant)
+            || T::has_blocking_prompt(game, Side::Riftcaller)
         {
             break;
         }

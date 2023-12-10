@@ -14,7 +14,7 @@
 
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::{
-    card_selector_prompt_builder, costs, history, in_play, show_prompt, text, text_helpers,
+    card_selector_prompt_builder, costs, history, in_play, show_prompt, text, text_helpers, this,
 };
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{CardType, GameObjectId, Rarity, School, Side};
@@ -32,7 +32,7 @@ use game_data::prompt_data::{
 use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::VisualEffects;
-use rules::{custom_state, flags, mana, CardDefinitionExt};
+use rules::{custom_state, flags, mana, prompts, CardDefinitionExt};
 
 pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -151,28 +151,30 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
             in_play::on_action_points_lost_during_raid(|g, s, side| {
                 if *side == Side::Riftcaller {
                     custom_state::identity_once_per_turn(g, s, |g, s| {
-                        card_selector_prompt_builder::show(
-                            g,
-                            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
-                                .subjects(g.discard_pile(Side::Covenant).card_ids())
-                                .movement_effect(Projectile::Projectiles1(2))
-                                .context(PromptContext::MoveToTopOfVault)
-                                .show_ability_alert(true)
-                                .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
-                                .visual_effect(
-                                    GameObjectId::CardId(s.card_id()),
-                                    TimedEffectData::new(TimedEffect::MagicCircles1(5))
-                                        .scale(2.0)
-                                        .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
-                                        .effect_color(design::BLUE_500),
-                                ),
-                        )
+                        prompts::push(g, Side::Covenant, s);
+                        Ok(())
                     })?;
                 }
-
                 Ok(())
             }),
-        )],
+        )
+        .delegate(this::prompt(|g, s, _, _| {
+            card_selector_prompt_builder::show(
+                CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
+                    .subjects(g.discard_pile(Side::Covenant).card_ids())
+                    .movement_effect(Projectile::Projectiles1(2))
+                    .context(PromptContext::MoveToTopOfVault)
+                    .show_ability_alert(true)
+                    .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
+                    .visual_effect(
+                        GameObjectId::CardId(s.card_id()),
+                        TimedEffectData::new(TimedEffect::MagicCircles1(5))
+                            .scale(2.0)
+                            .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
+                            .effect_color(design::BLUE_500),
+                    ),
+            )
+        }))],
         config: CardConfigBuilder::new()
             .identity(IdentityConfig {
                 starting_coins: Coins(525),
@@ -201,34 +203,31 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
             Ability::new_with_delegate(
                 text_helpers::named_trigger(Dawn, text![text!["Choose a card type"],]),
                 in_play::at_dawn(|g, s, _| {
-                    let types = vec![
-                        CardType::Artifact,
-                        CardType::Evocation,
-                        CardType::Ally,
-                        CardType::Spell,
-                    ];
-                    show_prompt::with_context_and_choices(
-                        g,
-                        Side::Covenant,
-                        ButtonPromptContext::ChooseCardType(s.card_id()),
-                        types
-                            .into_iter()
-                            .map(|t| {
-                                PromptChoice::new()
-                                    .effect(GameEffect::AppendCustomCardState(
-                                        s.card_id(),
-                                        CustomCardState::CardTypeForTurn {
-                                            card_type: t,
-                                            turn: g.info.turn,
-                                        },
-                                    ))
-                                    .custom_label(PromptChoiceLabel::CardType(t))
-                            })
-                            .collect(),
-                    );
+                    prompts::push(g, Side::Covenant, s);
                     Ok(())
                 }),
-            ),
+            )
+            .delegate(this::prompt(|g, s, _, _| {
+                let types =
+                    vec![CardType::Artifact, CardType::Evocation, CardType::Ally, CardType::Spell];
+                show_prompt::with_context_and_choices(
+                    ButtonPromptContext::ChooseCardType(s.card_id()),
+                    types
+                        .into_iter()
+                        .map(|t| {
+                            PromptChoice::new()
+                                .effect(GameEffect::AppendCustomCardState(
+                                    s.card_id(),
+                                    CustomCardState::CardTypeForTurn {
+                                        card_type: t,
+                                        turn: g.info.turn,
+                                    },
+                                ))
+                                .custom_label(PromptChoiceLabel::CardType(t))
+                        })
+                        .collect(),
+                )
+            })),
             Ability::new_with_delegate(
                 text![
                     "The first time the Riftcaller plays a card of the chosen type each turn,",

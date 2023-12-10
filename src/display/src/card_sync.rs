@@ -32,7 +32,7 @@ use protos::riftcaller::{
     CardTitle, CardView, EffectAddress, FlexColor, InfoZoomHighlight, NoTargeting, PlayInRoom,
     RevealedCardView, RulesText, TargetingArrow,
 };
-use rules::{dispatch, flags, queries};
+use rules::{dispatch, flags, prompts, queries};
 use rules_text::{card_icons, supplemental_info};
 use {adapters, assets, rules_text};
 
@@ -93,9 +93,7 @@ pub fn activated_ability_cards(
         return result;
     }
 
-    if let Some(GamePrompt::PlayCardBrowser(..)) =
-        game.player(card.side()).old_prompt_stack.current()
-    {
+    if let Some(GamePrompt::PlayCardBrowser(..)) = prompts::current(game, card.side()) {
         // Do not show ability activations while the play card browser is open.
         return result;
     }
@@ -317,9 +315,7 @@ pub fn card_targeting<T>(
 
 fn outline_color(context: &CardViewContext) -> Option<FlexColor> {
     if let CardViewContext::Game(_, game, card) = context {
-        if let Some(GamePrompt::PlayCardBrowser(browser)) =
-            &game.player(card.side()).old_prompt_stack.current()
-        {
+        if let Some(GamePrompt::PlayCardBrowser(browser)) = &prompts::current(game, card.side()) {
             if browser.cards.contains(&card.id) {
                 return Some(design::PLAY_CARD_BROWSER_OUTLINE);
             }

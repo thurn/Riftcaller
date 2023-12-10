@@ -30,7 +30,7 @@ use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::PromptChoice;
 use rules::mana::ManaPurpose;
-use rules::{damage, mana, mutations, queries};
+use rules::{damage, mana, mutations, prompts, queries};
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -49,22 +49,21 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
                 text!["End the raid unless the Riftcaller pays", Mana(5), "or", Actions(2)],
             ),
             on_encountered(|g, s, _| {
-                show_prompt::with_choices(
-                    g,
-                    Side::Riftcaller,
-                    vec![
-                        PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
-                        PromptChoice::new().effect(GameEffect::ManaCost(
-                            Side::Riftcaller,
-                            5,
-                            s.initiated_by(),
-                        )),
-                        PromptChoice::new().effect(GameEffect::ActionCost(Side::Riftcaller, 2)),
-                    ],
-                );
+                prompts::push(g, Side::Riftcaller, s);
                 Ok(())
             }),
-        )],
+        )
+        .delegate(this::prompt(|_, s, _, _| {
+            show_prompt::with_choices(vec![
+                PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
+                PromptChoice::new().effect(GameEffect::ManaCost(
+                    Side::Riftcaller,
+                    5,
+                    s.initiated_by(),
+                )),
+                PromptChoice::new().effect(GameEffect::ActionCost(Side::Riftcaller, 2)),
+            ])
+        }))],
         config: CardConfigBuilder::new().health(3).resonance(Resonance::infernal()).build(),
     }
 }
@@ -190,27 +189,24 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
         side: Side::Covenant,
         school: School::Law,
         rarity: Rarity::Common,
-        abilities: vec![Ability::new_with_delegate(
-            named_trigger(
-                Combat,
-                text![
-                    text![DealDamage(2)],
-                    text!["The Riftcaller must end the raid or take 2 more damage"]
-                ],
-            ),
-            combat(|g, s, _| {
-                damage::deal(g, s, 2)?;
-                show_prompt::with_choices(
-                    g,
-                    Side::Riftcaller,
-                    vec![
-                        PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
-                        PromptChoice::new().effect(GameEffect::TakeDamageCost(s.ability_id(), 2)),
-                    ],
-                );
-                Ok(())
-            }),
-        )],
+        abilities: vec![Ability::new(named_trigger(
+            Combat,
+            text![
+                text![DealDamage(2)],
+                text!["The Riftcaller must end the raid or take 2 more damage"]
+            ],
+        ))
+        .delegate(combat(|g, s, _| {
+            damage::deal(g, s, 2)?;
+            prompts::push(g, Side::Riftcaller, s);
+            Ok(())
+        }))
+        .delegate(this::prompt(|_, s, _, _| {
+            show_prompt::with_choices(vec![
+                PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
+                PromptChoice::new().effect(GameEffect::TakeDamageCost(s.ability_id(), 2)),
+            ])
+        }))],
         config: CardConfigBuilder::new()
             .health(3)
             .shield(2)

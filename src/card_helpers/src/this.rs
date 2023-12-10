@@ -19,6 +19,7 @@ use game_data::delegate_data::{
 };
 use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
+use game_data::prompt_data::{AbilityPromptSource, GamePrompt};
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.
@@ -35,6 +36,12 @@ pub fn ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilityId) 
 /// A delegate which triggers when this card is played
 pub fn on_played(mutation: MutationFn<CardPlayed>) -> Delegate {
     Delegate::PlayCard(EventDelegate { requirement: card, mutation })
+}
+
+pub fn prompt(
+    transformation: TransformationFn<AbilityPromptSource, Option<GamePrompt>>,
+) -> Delegate {
+    Delegate::ShowPrompt(QueryDelegate { requirement: ability, transformation })
 }
 
 /// A delegate which triggers when this card leaves play

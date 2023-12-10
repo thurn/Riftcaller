@@ -32,7 +32,7 @@ use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GameState, RaidJumpRequest};
-use game_data::prompt_data::PromptChoice;
+use game_data::prompt_data::{PromptChoice, PromptData};
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
@@ -40,7 +40,7 @@ use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::visual_effects::VisualEffects;
-use rules::{flags, mana, mutations, queries, CardDefinitionExt};
+use rules::{flags, mana, mutations, prompts, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
@@ -558,27 +558,31 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
                     if card.custom_state.targets_contain(card.last_card_play_id, event.data)
                         && flags::can_evade_current_minion(g)
                     {
-                        let shield = queries::shield(g, event.data, None);
-                        if mana::get(g, s.side(), ManaPurpose::PayForTriggeredAbility) >= shield {
-                            show_prompt::with_choices(
-                                g,
-                                s,
-                                vec![
-                                    PromptChoice::new()
-                                        .effect(GameEffect::ManaCost(
-                                            s.side(),
-                                            shield,
-                                            s.initiated_by(),
-                                        ))
-                                        .effect(GameEffect::EvadeCurrentEncounter),
-                                    PromptChoice::new().effect(GameEffect::Continue),
-                                ],
-                            )
-                        }
+                        prompts::push_with_data(
+                            g,
+                            Side::Riftcaller,
+                            s,
+                            PromptData::Card(event.data),
+                        );
                     }
                     Ok(())
                 }),
             )
+            .delegate(this::prompt(|g, s, source, _| {
+                if let PromptData::Card(card_id) = source.data {
+                    let shield = queries::shield(g, card_id, None);
+                    if mana::get(g, s.side(), ManaPurpose::PayForTriggeredAbility) >= shield {
+                        return show_prompt::with_choices(vec![
+                            PromptChoice::new()
+                                .effect(GameEffect::ManaCost(s.side(), shield, s.initiated_by()))
+                                .effect(GameEffect::EvadeCurrentEncounter),
+                            PromptChoice::new().effect(GameEffect::Continue),
+                        ]);
+                    }
+                }
+
+                None
+            }))
             .delegate(in_play::on_query_card_status_markers(
                 |g, s, card_id, mut markers| {
                     let card = g.card(s);
