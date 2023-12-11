@@ -27,6 +27,9 @@ pub fn build(player: &PlayerState, _: Option<&GameState>) -> Command {
     let activity = player.current_activity();
     let mut mapping_list = vec![];
 
+    mapping_list
+        .push(alt_command("s", Panels::open(StandardPanel::ApplyScenario).wait_to_load(true)));
+
     if let PlayerActivity::PlayingGame(_, user_side) = activity {
         mapping_list.push(alt_command(
             "c",
@@ -38,8 +41,6 @@ pub fn build(player: &PlayerState, _: Option<&GameState>) -> Command {
             .wait_to_load(true),
         ));
 
-        mapping_list
-            .push(alt_command("s", Panels::open(StandardPanel::ApplyScenario).wait_to_load(true)));
         mapping_list.push(alt_command("m", DebugAction::AddMana(10)));
         mapping_list.push(alt_command("z", DebugAction::DebugUndo));
         mapping_list.push(alt_command(

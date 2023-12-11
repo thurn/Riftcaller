@@ -53,6 +53,12 @@ impl DebugPanel {
                 "Show Logs",
                 vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
             ))
+            .child(debug_button(
+                "Scenario...",
+                Panels::open(StandardPanel::ApplyScenario)
+                    .wait_to_load(true)
+                    .and_close(self.address()),
+            ))
     }
 
     fn adventure_mode_buttons(&self, row: Row) -> Row {
