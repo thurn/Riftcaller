@@ -340,24 +340,12 @@ pub fn ability_title_background() -> SpriteAddress {
     }
 }
 
-pub fn riftcaller_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
-    Sprite {
-        address: format!(
-            "Cards/{}/{}.png",
-            if meta.full_art { "RiftcallerFullArt" } else { "Riftcaller" },
-            name.into()
-        ),
-    }
+pub fn riftcaller_card(_: CardMetadata, name: impl Into<String>) -> Sprite {
+    Sprite { address: format!("Cards/Riftcaller/{}.png", name.into()) }
 }
 
-pub fn covenant_card(meta: CardMetadata, name: impl Into<String>) -> Sprite {
-    Sprite {
-        address: format!(
-            "Cards/{}/{}.png",
-            if meta.full_art { "CovenantFullArt" } else { "Covenant" },
-            name.into()
-        ),
-    }
+pub fn covenant_card(_: CardMetadata, name: impl Into<String>) -> Sprite {
+    Sprite { address: format!("Cards/Covenant/{}.png", name.into()) }
 }
 
 pub fn misc_card(name: impl Into<String>, full_art: bool) -> Sprite {

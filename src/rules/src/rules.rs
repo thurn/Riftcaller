@@ -52,14 +52,12 @@ static CARDS: Lazy<HashMap<CardVariant, CardDefinition>> = Lazy::new(|| {
     let mut map = HashMap::new();
     for card_fn in DEFINITIONS.iter() {
         for upgraded in [false, true] {
-            for full_art in [false, true] {
-                let metadata = CardMetadata { is_upgraded: upgraded, full_art };
-                let mut card = card_fn(metadata);
-                card.config.metadata = metadata;
-                let variant = CardVariant { name: card.name, metadata };
-                assert!(!map.contains_key(&variant), "Duplicate card name found");
-                map.insert(variant, card);
-            }
+            let metadata = CardMetadata { is_upgraded: upgraded };
+            let mut card = card_fn(metadata);
+            card.config.metadata = metadata;
+            let variant = CardVariant { name: card.name, metadata };
+            assert!(!map.contains_key(&variant), "Duplicate card name found");
+            map.insert(variant, card);
         }
     }
     map

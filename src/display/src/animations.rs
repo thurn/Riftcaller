@@ -181,8 +181,7 @@ fn in_display_position(builder: &ResponseBuilder, card_id: CardId) -> bool {
 }
 
 fn show_ability(builder: &mut ResponseBuilder, snapshot: &GameState, ability_id: AbilityId) {
-    let full_height = snapshot.card(ability_id.card_id).variant.metadata.full_art;
-    let mut card = card_sync::ability_card_view(builder, snapshot, ability_id, full_height, None);
+    let mut card = card_sync::ability_card_view(builder, snapshot, ability_id, false, None);
     card.card_position = Some(positions::for_ability(snapshot, ability_id, positions::staging()));
 
     builder.push(Command::CreateTokenCard(CreateTokenCardCommand {

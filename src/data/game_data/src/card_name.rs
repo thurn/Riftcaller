@@ -29,7 +29,6 @@ use crate::text::TextElement;
 )]
 pub struct CardMetadata {
     pub is_upgraded: bool,
-    pub full_art: bool,
 }
 
 impl CardMetadata {
@@ -63,23 +62,22 @@ pub struct CardVariant {
 impl CardVariant {
     /// Base card variant with no upgrades or cosmetic modifications.
     pub const fn standard(name: CardName) -> Self {
-        Self { name, metadata: CardMetadata { is_upgraded: false, full_art: false } }
+        Self { name, metadata: CardMetadata { is_upgraded: false } }
     }
 
     /// Upgraded variant of a card
     pub const fn upgraded(name: CardName) -> Self {
-        Self { name, metadata: CardMetadata { is_upgraded: true, full_art: false } }
+        Self { name, metadata: CardMetadata { is_upgraded: true } }
     }
 
     /// Returns an integer which uniquely identifies this variant among all
     /// other variants.
     pub fn as_ident(&self) -> u64 {
         let result = self.name as u64;
-        match (self.metadata.is_upgraded, self.metadata.full_art) {
-            (true, true) => result + 3_000_000,
-            (true, false) => result + 2_000_000,
-            (false, true) => result + 1_000_000,
-            (false, false) => result,
+        if self.metadata.is_upgraded {
+            result + 1_000_000
+        } else {
+            result
         }
     }
 

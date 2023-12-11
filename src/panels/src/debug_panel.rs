@@ -110,7 +110,7 @@ impl DebugPanel {
                 "Upgraded Card...",
                 Panels::open(StandardPanel::DebugCreateCard(
                     user_side,
-                    CardMetadata { is_upgraded: true, full_art: true },
+                    CardMetadata { is_upgraded: true },
                 ))
                 .wait_to_load(true)
                 .and_close(self.address()),

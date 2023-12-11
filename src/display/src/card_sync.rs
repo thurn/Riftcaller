@@ -120,7 +120,7 @@ pub fn activated_ability_cards(
                     builder,
                     game,
                     ability_id,
-                    card.variant.metadata.full_art,
+                    false,
                     Some(target_requirement),
                 ));
             }
@@ -184,10 +184,7 @@ fn revealed_card_view(
     let resonance = context.query_id_or(definition.config.resonance, queries::resonance);
 
     Box::new(RevealedCardView {
-        card_frame: Some(assets::card_frame(
-            definition.school,
-            definition.config.metadata.full_art,
-        )),
+        card_frame: Some(assets::card_frame(definition.school, false)),
         title_background: Some(assets::title_background(resonance)),
         jewel: Some(assets::jewel(definition.rarity)),
         image: Some(adapters::sprite(&definition.image)),
