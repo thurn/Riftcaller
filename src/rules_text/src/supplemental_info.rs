@@ -183,7 +183,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
         ),
         TextTokenKind::Slow => entry("Slow", "Shield costs are doubled when using this weapon"),
         TextTokenKind::Wound => entry("Wound", "Reduces your maximum hand size by 1"),
-        TextTokenKind::Leyline => entry("Leyline", format!(
+        TextTokenKind::Leyline | TextTokenKind::Leylines => entry("Leyline", format!(
             "Gives the Riftcaller 1{} to use during each raid.",
             icons::MANA
         )),

@@ -13,15 +13,19 @@
 // limitations under the License.
 
 use card_helpers::{abilities, costs, text, text_helpers, this};
-use core_data::game_primitives::{CardType, Rarity, School, Side};
+use core_data::game_primitives::{CardType, GameObjectId, Rarity, School, Side};
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{
     Ability, ActivatedAbility, CardConfigBuilder, CardDefinition, SchemePoints,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
+use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::state_machine_data::GiveCurseOptions;
 use game_data::text::TextToken::*;
+use rules::visual_effects::VisualEffects;
 use rules::{curses, leylines, mana, mutations};
 
 pub fn ethereal_form(meta: CardMetadata) -> CardDefinition {
@@ -128,6 +132,54 @@ pub fn solidarity(meta: CardMetadata) -> CardDefinition {
                 leylines::give(g, s.ability_id(), 1)
             }),
         )],
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { progress_requirement: 2, points: 10 })
+            .build(),
+    }
+}
+
+pub fn brilliant_gambit(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::BrilliantGambit,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::scheme(),
+        image: assets::covenant_card(meta, "brilliant_gambit"),
+        card_type: CardType::Scheme,
+        subtypes: vec![],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            Ability::new_with_delegate(
+                text_helpers::named_trigger(
+                    Score,
+                    text![
+                        "Remove",
+                        meta.upgrade(text!["a", Leyline], text!["all", Leylines]),
+                        "from the Riftcaller"
+                    ],
+                ),
+                this::on_scored_by_covenant(|g, s, _| {
+                    leylines::remove(g, s.ability_id(), s.upgrade(1, g.riftcaller.leylines))
+                }),
+            ),
+            Ability::new_with_delegate(
+                text!["When the Riftcaller scores this scheme, give them a", Leyline],
+                this::on_scored_by_riftcaller(|g, s, _| {
+                    VisualEffects::new()
+                        .ability_alert(s)
+                        .timed_effect(
+                            GameObjectId::Character(Side::Riftcaller),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(6))
+                                .scale(2.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff01"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .apply(g);
+                    leylines::give(g, s.ability_id(), 1)
+                }),
+            ),
+        ],
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 2, points: 10 })
             .build(),

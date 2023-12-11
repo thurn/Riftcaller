@@ -83,6 +83,11 @@ pub fn on_scored_by_covenant(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::CovenantScoreCard(EventDelegate { requirement: card, mutation })
 }
 
+/// A delegate when a card is scored by the Riftcaller player
+pub fn on_scored_by_riftcaller(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::RiftcallerScoreCard(EventDelegate { requirement: card, mutation })
+}
+
 /// A delegate which prevents a card from being able to be played
 pub fn can_play(transformation: TransformationFn<CardId, Flag>) -> Delegate {
     Delegate::CanPlayCard(QueryDelegate { requirement: card, transformation })

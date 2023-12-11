@@ -81,6 +81,7 @@ pub enum TextToken {
     Prismatic,
     Wound,
     Leyline,
+    Leylines,
     Evade,
     Evaded,
     Evading,

@@ -132,3 +132,20 @@ fn solidarity_two_copies() {
     g.opponent_click(Button::EndRaid);
     assert_eq!(g.client.other_player.bonus_mana(), 0);
 }
+
+#[test]
+fn brilliant_gambit() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.create_and_play(CardName::BrilliantGambit);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.opponent_click(Button::Score);
+    g.opponent_click(Button::EndRaid);
+    assert_eq!(g.client.cards.opponent_display_shelf().leyline_count(), 1);
+
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::BrilliantGambit);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.client.cards.opponent_display_shelf().leyline_count(), 0);
+}

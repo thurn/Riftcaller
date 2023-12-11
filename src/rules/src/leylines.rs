@@ -30,6 +30,12 @@ pub fn give(game: &mut GameState, source: AbilityId, quantity: u32) -> Result<()
     )
 }
 
+/// Remove up to `quantity` leylines from the Riftcaller player.
+pub fn remove(game: &mut GameState, _: AbilityId, quantity: u32) -> Result<()> {
+    game.riftcaller.leylines = game.riftcaller.leylines.saturating_sub(quantity);
+    Ok(())
+}
+
 /// Run the state machine, if needed
 pub fn run_state_machine(game: &mut GameState) -> Result<()> {
     state_machine::run::<GiveLeylinesData>(game)

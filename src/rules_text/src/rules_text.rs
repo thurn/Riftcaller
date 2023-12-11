@@ -262,6 +262,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Prismatic => assets::resonance_string("prismatic"),
         TextToken::Wound => "wound".to_string(),
         TextToken::Leyline => "leyline".to_string(),
+        TextToken::Leylines => "leylines".to_string(),
         TextToken::Evade => "evade".to_string(),
         TextToken::Evaded => "evaded".to_string(),
         TextToken::Evading => "evading".to_string(),

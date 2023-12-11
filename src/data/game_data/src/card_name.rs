@@ -15,6 +15,7 @@
 //! Defines card names
 
 use std::cmp::Ordering;
+use std::fmt::{Debug, Formatter};
 
 use convert_case::{Case, Casing};
 use enum_iterator::Sequence;
@@ -53,7 +54,7 @@ impl CardMetadata {
 /// Identifies a specific card version within cards with the same name, covering
 /// both cosmetic and functional distinctions. Cards with the same variant are
 /// visually and functionally identical under the rules of the game.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct CardVariant {
     pub name: CardName,
     pub metadata: CardMetadata,
@@ -83,6 +84,12 @@ impl CardVariant {
 
     pub fn displayed_name(&self) -> String {
         self.name.displayed_name()
+    }
+}
+
+impl Debug for CardVariant {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.name)
     }
 }
 
@@ -339,6 +346,7 @@ pub enum CardName {
     BlueWarden,
     VortexPortal,
     RadiantIntervention,
+    BrilliantGambit,
 }
 
 impl CardName {
