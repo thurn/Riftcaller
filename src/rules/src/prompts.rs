@@ -130,7 +130,9 @@ fn remove_empty(game: &GameState, prompt: GamePrompt) -> Option<GamePrompt> {
     match prompt {
         GamePrompt::ButtonPrompt(mut button_prompt) => {
             button_prompt.choices.retain(|choice| valid_button_choice(game, choice));
-            if button_prompt.choices.iter().all(is_continue_choice) {
+            if button_prompt.choices.is_empty()
+                || button_prompt.choices.iter().all(is_continue_choice)
+            {
                 None
             } else {
                 Some(GamePrompt::ButtonPrompt(button_prompt))

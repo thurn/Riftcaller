@@ -199,6 +199,13 @@ impl PromptChoice {
         self
     }
 
+    pub fn effect_optional(mut self, effect: Option<GameEffect>) -> Self {
+        if let Some(e) = effect {
+            self.effects.push(e);
+        }
+        self
+    }
+
     pub fn anchor_card(mut self, card_id: CardId) -> Self {
         self.anchor_card = Some(card_id);
         self

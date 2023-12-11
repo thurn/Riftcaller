@@ -51,6 +51,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::Continue => "Continue".to_string(),
         GameEffect::AbortPlayingCard => "Cancel".to_string(),
         GameEffect::PlayChoiceEffect { .. } => String::new(),
+        GameEffect::DrawCards(..) => "Draw".to_string(),
         GameEffect::SacrificeCard(..) => "Sacrifice".to_string(),
         GameEffect::DestroyCard(..) => "Destroy".to_string(),
         GameEffect::ManaCost(side, amount, ..) => {

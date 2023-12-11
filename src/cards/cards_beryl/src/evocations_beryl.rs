@@ -495,7 +495,10 @@ pub fn radiant_intervention(meta: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new_with_delegate(
             text![TextElement::Activated {
                 cost: text![SacrificeCost],
-                effect: text!["Prevent an ally or artifact from being destroyed."]
+                effect: text![
+                    text!["Prevent an ally or artifact from being destroyed"],
+                    meta.upgraded_only_text(text!["Draw a card"])
+                ]
             }],
             in_play::on_will_destroy_cards(|g, s, _| {
                 prompts::push(g, Side::Riftcaller, s);
@@ -516,6 +519,9 @@ pub fn radiant_intervention(meta: CardMetadata) -> CardDefinition {
                         PromptChoice::new()
                             .effect(GameEffect::SacrificeCard(s.card_id()))
                             .effect(GameEffect::PreventDestroyingCard(*card_id))
+                            .effect_optional(s.is_upgraded().then(|| {
+                                GameEffect::DrawCards(Side::Riftcaller, 1, s.initiated_by())
+                            }))
                             .custom_label(PromptChoiceLabel::Prevent)
                             .anchor_card(*card_id)
                     })

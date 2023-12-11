@@ -426,12 +426,12 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
                 buttons.choices.get(index).with_error(|| format!("Index out of bounds {index}"))?;
 
             let effects = choice.effects.clone();
-            let removed = prompts::pop(game, user_side);
 
             for effect in effects {
                 game_effect_actions::handle(game, effect)?;
             }
 
+            let removed = prompts::pop(game, user_side);
             if let Some(r) = removed {
                 record_prompt_response(game, r, user_side, index);
             }

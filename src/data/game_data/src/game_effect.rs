@@ -32,6 +32,8 @@ pub enum GameEffect {
     /// Requests to play the `CardConfig::choice_effect` visual effect for
     /// `owner` on the indicated `target`.
     PlayChoiceEffect { owner: CardId, target: GameObjectId },
+    /// Have the [Side] player draw some number of cards
+    DrawCards(Side, u32, InitiatedBy),
     /// Sacrifice the indicated permanent, moving it to its owner's discard
     /// pile.
     SacrificeCard(CardId),

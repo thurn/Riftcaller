@@ -529,3 +529,44 @@ fn radiant_intervention_two_cards() {
     assert!(g.client.cards.discard_pile().contains_card(CardName::RadiantIntervention));
     assert!(g.client.cards.discard_pile().contains_card(CardName::TestSacrificeDrawCardArtifact));
 }
+
+#[test]
+fn radiant_intervention_multiple_copies() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    g.click(Button::Prevent);
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
+    assert!(!g.has(Button::Prevent))
+}
+
+#[test]
+fn radiant_intervention_multiple_copies_use_second() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    g.click(Button::NoPromptAction);
+    g.click(Button::Prevent);
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
+}
+
+#[test]
+fn radiant_intervention_multiple_copies_prevent_multiple() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.create_and_play(CardName::TestMortalWeapon);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.create_and_play(CardName::RadiantIntervention);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    g.click(Button::Prevent);
+    g.click(Button::Prevent);
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
+    assert!(g.client.cards.artifacts().contains_card(CardName::TestMortalWeapon));
+}

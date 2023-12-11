@@ -21,7 +21,7 @@ use game_data::game_state::GameState;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
-use rules::{curses, damage, destroy, mana, mutations, play_card, CardDefinitionExt};
+use rules::{curses, damage, destroy, draw_cards, mana, mutations, play_card, CardDefinitionExt};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
@@ -45,6 +45,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
                     effect: effect.clone().owner(GameObjectId::CardId(owner)),
                 }])
             })
+        }
+        GameEffect::DrawCards(side, count, initiated_by) => {
+            draw_cards::run(game, side, count, initiated_by)?;
         }
         GameEffect::SacrificeCard(card_id) => mutations::sacrifice_card(game, card_id)?,
         GameEffect::DestroyCard(card_id, initiated_by) => {
