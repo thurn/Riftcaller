@@ -6,7 +6,7 @@ check:
     RUSTFLAGS="--deny warnings" cargo check --workspace --all-targets --all-features --exclude "protos"
 
 build:
-    cargo build --all-targets --all-features
+    RUSTFLAGS="--deny warnings" cargo build --all-targets --all-features
 
 run:
     cargo run --bin riftcaller -- sled local forest
