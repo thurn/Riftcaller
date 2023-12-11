@@ -16,8 +16,7 @@ use std::iter;
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{
-    costs, delegates, in_play, play_card_browser_builder, raids, requirements, show_prompt, text,
-    text_helpers, this,
+    costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
 };
 use core_data::game_primitives::{
     CardId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
@@ -35,7 +34,7 @@ use game_data::card_state::{BanishedByCard, CardCounter, CardPosition};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData, UnplayedAction};
-use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
+use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use raid_state::{custom_access, InitiateRaidOptions};
@@ -315,11 +314,9 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                 let PromptData::Cards(permanents) = &source.data else {
                     return None;
                 };
-                play_card_browser_builder::show(
-                    PlayCardBrowserBuilder::new(s, permanents.clone())
-                        .movement_effect(Projectile::Projectiles1(2))
-                        .unplayed_action(UnplayedAction::Discard),
-                )
+                PlayCardBrowserBuilder::new(s, permanents.clone())
+                    .unplayed_action(UnplayedAction::Discard)
+                    .build()
             }))
             .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, s, _, cost| {
                 cost.map(|c| c.saturating_sub(s.upgrade(1, 4)))

@@ -36,6 +36,8 @@ pub fn run_state_machine(game: &mut GameState) -> Result<()> {
     state_machine::run::<DestroyPermanentsData>(game)
 }
 
+/// Returns all [CardId]s which are currently targeted for destruction as part
+/// of a destroy action.
 pub fn all_targets(game: &GameState) -> Vec<CardId> {
     game.state_machines
         .destroy_permanent

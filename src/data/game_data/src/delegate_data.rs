@@ -44,9 +44,9 @@
 //!
 //! ```
 //! #[derive(Debug, Copy, Clone)]
-//! pub struct OnDawnEvent(pub TurnNumber);
+//! pub struct OnDawnEvent<'a>(pub &'a TurnNumber);
 //!
-//! impl EventData<TurnNumber> for OnDawnEvent {
+//! impl<'a> EventData<TurnNumber> for OnDawnEvent<'a> {
 //!     fn data(&self) -> TurnNumber {
 //!         self.0
 //!     }

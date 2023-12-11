@@ -12,65 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardId, GameObjectId};
-use game_data::delegate_data::Scope;
+use core_data::game_primitives::CardId;
 use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PromptContext,
 };
-use game_data::special_effects::{Projectile, TimedEffectData};
-
-/// Display a new Card Selector prompt a [CardSelectorPromptBuilder].
-///
-/// Has no effect if no subject cards have been specified for this selector.
-pub fn show(builder: CardSelectorPromptBuilder) -> Option<GamePrompt> {
-    if builder.subjects.is_empty() {
-        return None;
-    }
-
-    // let mut effects = VisualEffects::new();
-    // let cards = builder.subjects.clone();
-    // if let Some((id, data)) = builder.visual_effect {
-    //     effects = effects.timed_effect(id, data);
-    // }
-    //
-    // if builder.show_ability_alert {
-    //     effects = effects.ability_alert(builder.scope);
-    // }
-    //
-    // if let Some(movement_effects) = builder.movement_effect {
-    //     effects.card_movement_effects(movement_effects, &cards).apply(game);
-    // }
-
-    Some(GamePrompt::CardSelector(CardSelectorPrompt {
-        context: builder.context,
-        unchosen_subjects: builder.subjects,
-        chosen_subjects: vec![],
-        target: builder.target,
-        validation: builder.validation,
-    }))
-}
 
 pub struct CardSelectorPromptBuilder {
-    _scope: Scope,
     target: BrowserPromptTarget,
     subjects: Vec<CardId>,
     context: Option<PromptContext>,
     validation: Option<BrowserPromptValidation>,
-    movement_effect: Option<Projectile>,
-    visual_effect: Option<(GameObjectId, TimedEffectData)>,
     show_ability_alert: bool,
 }
 
 impl CardSelectorPromptBuilder {
-    pub fn new(scope: Scope, target: BrowserPromptTarget) -> Self {
+    pub fn new(target: BrowserPromptTarget) -> Self {
         Self {
-            _scope: scope,
             target,
             subjects: vec![],
             context: None,
             validation: None,
-            movement_effect: None,
-            visual_effect: None,
             show_ability_alert: false,
         }
     }
@@ -90,18 +51,25 @@ impl CardSelectorPromptBuilder {
         self
     }
 
-    pub fn movement_effect(mut self, movement_effect: Projectile) -> Self {
-        self.movement_effect = Some(movement_effect);
-        self
-    }
-
-    pub fn visual_effect(mut self, id: GameObjectId, effect: TimedEffectData) -> Self {
-        self.visual_effect = Some((id, effect));
-        self
-    }
-
     pub fn show_ability_alert(mut self, show_ability_alert: bool) -> Self {
         self.show_ability_alert = show_ability_alert;
         self
+    }
+
+    /// Display a new Card Selector prompt a [CardSelectorPromptBuilder].
+    ///
+    /// Has no effect if no subject cards have been specified for this selector.
+    pub fn build(self) -> Option<GamePrompt> {
+        if self.subjects.is_empty() {
+            return None;
+        }
+
+        Some(GamePrompt::CardSelector(CardSelectorPrompt {
+            context: self.context,
+            unchosen_subjects: self.subjects,
+            chosen_subjects: vec![],
+            target: self.target,
+            validation: self.validation,
+        }))
     }
 }

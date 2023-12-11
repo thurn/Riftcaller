@@ -21,6 +21,13 @@ use crate::delegate_data::CardPlayed;
 use crate::game_actions::ButtonPromptContext;
 use crate::game_effect::GameEffect;
 
+/// Stores data associated with a GamePrompt for later use in rendering that
+/// prompt.
+///
+/// This essentially exists because of serialization: normally we would just
+/// have prompts be rendered by invoking a closure which captures relevant
+/// state. Unfortunately there is no way to serialize such a closure to JSON, so
+/// we instead store the relevant context in this enum.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PromptData {
     None,
@@ -32,6 +39,11 @@ pub enum PromptData {
     CardPlayId(CardPlayId),
 }
 
+/// Identifies where an ability prompt came from.
+///
+/// This is used as part of the prompt callback system to register an ability as
+/// having a prompt. The system later calls that ability back via its delegate
+/// to render that prompt.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AbilityPromptSource {
     pub ability_id: AbilityId,
@@ -44,6 +56,8 @@ impl HasAbilityId for AbilityPromptSource {
     }
 }
 
+/// Tuple of [GamePrompt] and [AbilityPromptSource], used to store a prompt and
+/// keep track of which ability generated it.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PromptEntry {
     pub prompt: GamePrompt,
@@ -51,11 +65,17 @@ pub struct PromptEntry {
 }
 
 /// A standard stack data structure for storing [GamePrompt]s.
+///
+/// Instead of directly manipulating this struct, you should always use the
+/// functions in the `mutations::prompts` module instead. See the documentation
+/// there, especially `prompts::push()`, for information about how the prompt
+/// system works.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PromptStack {
     pub stack: Vec<PromptEntry>,
 }
 
+/// Describes the reason why a prompt is being shown
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum PromptContext {
     /// Prompt is being shown related to a specific card

@@ -14,8 +14,7 @@
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{
-    abilities, costs, delegates, history, play_card_browser_builder, raids, requirements,
-    show_prompt, text, this,
+    abilities, costs, delegates, history, raids, requirements, show_prompt, text, this,
 };
 use core_data::game_primitives;
 use core_data::game_primitives::{
@@ -39,7 +38,7 @@ use game_data::prompt_data::{
     RoomSelectorPromptContext, RoomSelectorPromptEffect, UnplayedAction,
 };
 use game_data::raid_data::PopulateAccessPromptSource;
-use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
+use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use raid_state::custom_access;
 use rules::visual_effects::VisualEffects;
@@ -67,29 +66,29 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                 Ability::new_with_delegate(
                     text!["Play an artifact in your discard pile"],
                     this::on_played(|g, s, _| {
+                        VisualEffects::new()
+                            .timed_effect(
+                                GameObjectId::DiscardPile(Side::Riftcaller),
+                                TimedEffectData::new(TimedEffect::MagicCircles1(2))
+                                    .scale(2.0)
+                                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff03_P1"))
+                                    .effect_color(design::YELLOW_900),
+                            )
+                            .apply(g);
                         prompts::push(g, Side::Riftcaller, s);
                         Ok(())
                     }),
                 )
                 .delegate(this::prompt(|g, s, _, _| {
-                    play_card_browser_builder::show(
-                        PlayCardBrowserBuilder::new(
-                            s,
-                            g.discard_pile(s.side())
-                                .filter(|c| c.definition().is_artifact())
-                                .map(|c| c.id)
-                                .collect(),
-                        )
-                        .context(PromptContext::PlayFromDiscard(CardType::Artifact))
-                        .movement_effect(Projectile::Projectiles1(3))
-                        .visual_effect(
-                            GameObjectId::DiscardPile(Side::Riftcaller),
-                            TimedEffectData::new(TimedEffect::MagicCircles1(2))
-                                .scale(2.0)
-                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff03_P1"))
-                                .effect_color(design::YELLOW_900),
-                        ),
+                    PlayCardBrowserBuilder::new(
+                        s,
+                        g.discard_pile(s.side())
+                            .filter(|c| c.definition().is_artifact())
+                            .map(|c| c.id)
+                            .collect(),
                     )
+                    .context(PromptContext::PlayFromDiscard(CardType::Artifact))
+                    .build()
                 })),
             ),
             abilities::when_upgraded(
@@ -219,6 +218,15 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
             for card in &cards {
                 mutations::set_visible_to(g, *card, s.side(), true);
             }
+            VisualEffects::new()
+                .timed_effect(
+                    GameObjectId::Deck(Side::Riftcaller),
+                    TimedEffectData::new(TimedEffect::MagicCircles1(4))
+                        .scale(2.0)
+                        .sound(SoundEffect::LightMagic("RPG3_LightMagic4_P1_Cast"))
+                        .effect_color(design::YELLOW_900),
+                )
+                .apply(g);
             prompts::push_with_data(g, Side::Riftcaller, s, PromptData::Cards(cards));
             Ok(())
         }))
@@ -226,18 +234,9 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
             let PromptData::Cards(cards) = &source.data else {
                 return None;
             };
-            play_card_browser_builder::show(
-                PlayCardBrowserBuilder::new(s, cards.clone())
-                    .movement_effect(Projectile::Projectiles1(3))
-                    .visual_effect(
-                        GameObjectId::Deck(Side::Riftcaller),
-                        TimedEffectData::new(TimedEffect::MagicCircles1(4))
-                            .scale(2.0)
-                            .sound(SoundEffect::LightMagic("RPG3_LightMagic4_P1_Cast"))
-                            .effect_color(design::YELLOW_900),
-                    )
-                    .unplayed_action(UnplayedAction::Discard),
-            )
+            PlayCardBrowserBuilder::new(s, cards.clone())
+                .unplayed_action(UnplayedAction::Discard)
+                .build()
         }))
         .delegate(delegates::mana_cost(requirements::matching_play_browser, |_, _, _, cost| {
             cost.map(|c| c.saturating_sub(3))

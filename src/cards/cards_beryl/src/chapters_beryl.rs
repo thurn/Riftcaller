@@ -13,9 +13,7 @@
 // limitations under the License.
 
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
-use card_helpers::{
-    card_selector_prompt_builder, costs, history, in_play, show_prompt, text, text_helpers, this,
-};
+use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design::{self, TimedEffectDataExt};
@@ -29,7 +27,7 @@ use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptChoiceLabel, PromptContext,
 };
-use game_data::special_effects::{Projectile, SoundEffect, TimedEffect, TimedEffectData};
+use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::VisualEffects;
 use rules::{custom_state, flags, mana, prompts, CardDefinitionExt};
@@ -151,6 +149,15 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
             in_play::on_action_points_lost_during_raid(|g, s, side| {
                 if *side == Side::Riftcaller {
                     custom_state::identity_once_per_turn(g, s, |g, s| {
+                        VisualEffects::new()
+                            .timed_effect(
+                                s.card_id(),
+                                TimedEffectData::new(TimedEffect::MagicCircles1(5))
+                                    .scale(2.0)
+                                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
+                                    .effect_color(design::BLUE_500),
+                            )
+                            .apply(g);
                         prompts::push(g, Side::Covenant, s);
                         Ok(())
                     })?;
@@ -158,22 +165,13 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }),
         )
-        .delegate(this::prompt(|g, s, _, _| {
-            card_selector_prompt_builder::show(
-                CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
-                    .subjects(g.discard_pile(Side::Covenant).card_ids())
-                    .movement_effect(Projectile::Projectiles1(2))
-                    .context(PromptContext::MoveToTopOfVault)
-                    .show_ability_alert(true)
-                    .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
-                    .visual_effect(
-                        GameObjectId::CardId(s.card_id()),
-                        TimedEffectData::new(TimedEffect::MagicCircles1(5))
-                            .scale(2.0)
-                            .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
-                            .effect_color(design::BLUE_500),
-                    ),
-            )
+        .delegate(this::prompt(|g, _, _, _| {
+            CardSelectorPromptBuilder::new(BrowserPromptTarget::Deck)
+                .subjects(g.discard_pile(Side::Covenant).card_ids())
+                .context(PromptContext::MoveToTopOfVault)
+                .show_ability_alert(true)
+                .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
+                .build()
         }))],
         config: CardConfigBuilder::new()
             .identity(IdentityConfig {

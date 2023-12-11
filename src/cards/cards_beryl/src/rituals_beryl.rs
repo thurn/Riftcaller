@@ -13,9 +13,7 @@
 // limitations under the License.
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
-use card_helpers::{
-    abilities, costs, delegates, play_card_browser_builder, requirements, show_prompt, text, this,
-};
+use card_helpers::{abilities, costs, delegates, requirements, show_prompt, text, this};
 use core_data::game_primitives::{CardSubtype, CardType, HasCardId, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
@@ -133,10 +131,11 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }))
                 .delegate(this::prompt(|g, s, _, _| {
-                    play_card_browser_builder::show(PlayCardBrowserBuilder::new(
+                    PlayCardBrowserBuilder::new(
                         s,
                         g.hand(s.side()).filter(|c| c.definition().is_scheme()).card_ids(),
-                    ))
+                    )
+                    .build()
                 }))
                 .delegate(delegates::on_played(
                     requirements::matching_play_browser,

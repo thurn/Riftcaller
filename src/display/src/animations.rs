@@ -112,7 +112,6 @@ pub fn render(
         GameAnimation::ScoreCard(_, card_id) => score_card(builder, *card_id),
         GameAnimation::GameOver(_) => {}
         GameAnimation::BrowserSubmitted => {}
-        GameAnimation::ShowPlayCardBrowser(_) => {}
     }
     Ok(())
 }

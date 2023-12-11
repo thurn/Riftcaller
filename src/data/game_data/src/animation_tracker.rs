@@ -67,8 +67,6 @@ pub enum GameAnimation {
     GameOver(Side),
     /// Card selection browser has completed
     BrowserSubmitted,
-    /// Show a 'play card' browser to play one of the indicated cards.
-    ShowPlayCardBrowser(Vec<CardId>),
 }
 
 /// A step in the animation process

@@ -40,13 +40,8 @@ use game_data::delegate_data::{
     ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
 use game_data::flag_data::{AbilityFlag, Flag};
-use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
 use game_data::history_data::HistoryEvent;
-use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, GamePrompt,
-    PromptChoice, PromptContext,
-};
 use game_data::random;
 use tracing::{debug, instrument};
 use with_error::{fail, verify};
@@ -231,33 +226,6 @@ pub fn query_flag(game: &mut GameState, function: impl FnOnce(&GameState) -> Abi
         effects.apply(game);
     }
     flag.value()
-}
-
-pub fn dispel_evocation_prompt(game: &GameState) -> GamePrompt {
-    GamePrompt::ButtonPrompt(ButtonPrompt {
-        context: None,
-        choices: game
-            .evocations()
-            .map(|card| PromptChoice {
-                effects: vec![GameEffect::DestroyCard(card.id, InitiatedBy::GameAction)],
-                anchor_card: Some(card.id),
-                custom_label: None,
-            })
-            .collect(),
-    })
-}
-
-pub fn discard_to_hand_size_prompt(game: &GameState, side: Side) -> GamePrompt {
-    let max_hand_size = queries::maximum_hand_size(game, side) as usize;
-    let hand = game.card_list_for_position(side, CardPosition::Hand(side));
-    let discard = hand.len() - max_hand_size;
-    GamePrompt::CardSelector(CardSelectorPrompt {
-        context: Some(PromptContext::DiscardToHandSize(max_hand_size)),
-        unchosen_subjects: hand,
-        chosen_subjects: vec![],
-        target: BrowserPromptTarget::DiscardPile,
-        validation: Some(BrowserPromptValidation::ExactlyCount(discard)),
-    })
 }
 
 /// Lose action points if a player has more than 0.
