@@ -83,7 +83,7 @@ impl StateMachine for DestroyPermanentsData {
         Ok(match step {
             DestroyPermanentStep::Begin => Some(DestroyPermanentStep::WillDestroyEvent),
             DestroyPermanentStep::WillDestroyEvent => {
-                dispatch::invoke_event(game, WillDestroyCardsEvent(data.targets))?;
+                dispatch::invoke_event(game, WillDestroyCardsEvent(&data.targets))?;
                 Some(DestroyPermanentStep::CheckIfDestroyPrevented)
             }
             DestroyPermanentStep::CheckIfDestroyPrevented => {
@@ -104,7 +104,7 @@ impl StateMachine for DestroyPermanentsData {
                 Some(DestroyPermanentStep::CardsDestroyedEvent)
             }
             DestroyPermanentStep::CardsDestroyedEvent => {
-                dispatch::invoke_event(game, CardsDestroyedEvent(data.targets))?;
+                dispatch::invoke_event(game, CardsDestroyedEvent(&data.targets))?;
                 Some(DestroyPermanentStep::Finish)
             }
             DestroyPermanentStep::Finish => None,

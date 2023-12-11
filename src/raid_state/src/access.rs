@@ -94,7 +94,7 @@ fn can_score_card(game: &GameState, info: RaidInfo, card_id: CardId) -> bool {
 
     dispatch::perform_query(
         game,
-        CanScoreAccessedCardQuery(info.access_event(card_id)),
+        CanScoreAccessedCardQuery(&info.access_event(card_id)),
         Flag::new(result),
     )
     .into()

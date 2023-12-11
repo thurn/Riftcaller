@@ -114,7 +114,7 @@ fn draw_card_action(game: &mut GameState, user_side: Side) -> Result<()> {
     mutations::spend_action_points(game, user_side, 1)?;
     draw_cards::run(game, user_side, 1, InitiatedBy::GameAction)?;
     game.add_history_event(HistoryEvent::DrawCardAction(user_side));
-    dispatch::invoke_event(game, DrawCardActionEvent(user_side))?;
+    dispatch::invoke_event(game, DrawCardActionEvent(&user_side))?;
     Ok(())
 }
 

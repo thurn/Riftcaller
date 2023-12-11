@@ -94,7 +94,7 @@ impl StateMachine for DealDamageData {
             DealDamageStep::WillDealDamageEvent => {
                 dispatch::invoke_event(
                     game,
-                    WillDealDamageEvent(DealtDamage { source: data.source, amount: data.amount }),
+                    WillDealDamageEvent(&DealtDamage { source: data.source, amount: data.amount }),
                 )?;
                 Some(DealDamageStep::DiscardCards)
             }
@@ -121,7 +121,7 @@ impl StateMachine for DealDamageData {
             DealDamageStep::DealtDamageEvent(..) => {
                 dispatch::invoke_event(
                     game,
-                    DealtDamageEvent(DealtDamage { source: data.source, amount: data.amount }),
+                    DealtDamageEvent(&DealtDamage { source: data.source, amount: data.amount }),
                 )?;
 
                 Some(DealDamageStep::Finish)

@@ -134,9 +134,9 @@ fn generate_variant(variant: &ParsedVariant) -> impl ToTokens {
     quote! {
         #(#docs)*
         #[derive(Debug, Clone)]
-        pub struct #struct_name(pub #data);
+        pub struct #struct_name<'a>(pub &'a #data);
 
-        impl #trait_value for #struct_name {
+        impl<'a> #trait_value for #struct_name<'a> {
             fn data(&self) -> &#data {
                 &self.0
             }

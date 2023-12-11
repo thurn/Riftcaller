@@ -101,7 +101,7 @@ fn add_continuous_display_effects(result: &mut Vec<CardInfoElement>, context: &C
         return;
     };
 
-    let markers = dispatch::perform_query(game, CardStatusMarkersQuery(card.id), vec![]);
+    let markers = dispatch::perform_query(game, CardStatusMarkersQuery(&card.id), vec![]);
     for marker in markers {
         let kind = marker.marker_kind;
         result.push(CardInfoElement { text: crate::status_marker_text(context, marker), kind });

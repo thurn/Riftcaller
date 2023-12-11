@@ -119,7 +119,7 @@ impl StateMachine for GiveCursesData {
         Ok(match step {
             GiveCursesStep::Begin => Some(GiveCursesStep::WillReceiveCursesEvent),
             GiveCursesStep::WillReceiveCursesEvent => {
-                dispatch::invoke_event(game, WillReceiveCursesEvent(data.quantity))?;
+                dispatch::invoke_event(game, WillReceiveCursesEvent(&data.quantity))?;
                 Some(GiveCursesStep::AddCurses)
             }
             GiveCursesStep::AddCurses => {
@@ -135,7 +135,7 @@ impl StateMachine for GiveCursesData {
                 Some(GiveCursesStep::CursesReceivedEvent)
             }
             GiveCursesStep::CursesReceivedEvent => {
-                dispatch::invoke_event(game, CursesReceivedEvent(data.quantity))?;
+                dispatch::invoke_event(game, CursesReceivedEvent(&data.quantity))?;
                 Some(GiveCursesStep::Finish)
             }
             GiveCursesStep::Finish => {

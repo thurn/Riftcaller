@@ -99,7 +99,7 @@ pub fn spend(
         InitiatedBy::Ability(ability_id) if ability_id.side() != side => {
             dispatch::invoke_event(
                 game,
-                ManaLostToOpponentAbilityEvent(ManaLostToOpponentAbility { side, amount }),
+                ManaLostToOpponentAbilityEvent(&ManaLostToOpponentAbility { side, amount }),
             )?;
         }
         _ => {}

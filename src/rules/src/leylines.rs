@@ -66,7 +66,7 @@ impl StateMachine for GiveLeylinesData {
                 Some(GiveLeylinesStep::LeylinesReceivedEvent)
             }
             GiveLeylinesStep::LeylinesReceivedEvent => {
-                dispatch::invoke_event(game, LeylinesReceivedEvent(data.quantity))?;
+                dispatch::invoke_event(game, LeylinesReceivedEvent(&data.quantity))?;
                 Some(GiveLeylinesStep::Finish)
             }
             GiveLeylinesStep::Finish => None,

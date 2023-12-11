@@ -269,7 +269,7 @@ fn gain_leyline_mana(game: &mut GameState, info: RaidInfo) -> Result<RaidState> 
 }
 
 fn raid_start_event(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    dispatch::invoke_event(game, RaidStartEvent(info.event(())))?;
+    dispatch::invoke_event(game, RaidStartEvent(&info.event(())))?;
     RaidState::step(RaidStep::NextEncounter)
 }
 
@@ -278,7 +278,7 @@ fn will_populate_summon_prompt(
     info: RaidInfo,
     minion_id: CardId,
 ) -> Result<RaidState> {
-    dispatch::invoke_event(game, WillPopulateSummonPromptEvent(info.event(minion_id)))?;
+    dispatch::invoke_event(game, WillPopulateSummonPromptEvent(&info.event(minion_id)))?;
     RaidState::step(RaidStep::PopulateSummonPrompt(minion_id))
 }
 
@@ -302,13 +302,13 @@ fn summon_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> Res
 
 fn approach_minion(game: &mut GameState, info: RaidInfo, minion_id: CardId) -> Result<RaidState> {
     let event = info.event(minion_id);
-    dispatch::invoke_event(game, ApproachMinionEvent(event))?;
+    dispatch::invoke_event(game, ApproachMinionEvent(&event))?;
     game.add_history_event(HistoryEvent::MinionApproach(event));
     RaidState::step(RaidStep::EncounterMinion(minion_id))
 }
 
 fn encounter_minion(game: &mut GameState, minion_id: CardId) -> Result<RaidState> {
-    dispatch::invoke_event(game, EncounterMinionEvent(minion_id))?;
+    dispatch::invoke_event(game, EncounterMinionEvent(&minion_id))?;
     game.raid_mut()?.minion_encounter_id = Some(MinionEncounterId(game.info.next_event_id()));
     game.add_history_event(HistoryEvent::MinionEncounter(game.raid()?.info().event(minion_id)));
     RaidState::step(RaidStep::PopulateEncounterPrompt(minion_id))
@@ -388,13 +388,13 @@ fn use_weapon(
         })
     });
 
-    dispatch::invoke_event(game, UsedWeaponEvent(info.event(used_weapon)))?;
+    dispatch::invoke_event(game, UsedWeaponEvent(&info.event(used_weapon)))?;
 
     RaidState::step(RaidStep::MinionDefeated(interaction))
 }
 
 fn minion_defeated(game: &mut GameState, interaction: WeaponInteraction) -> Result<RaidState> {
-    dispatch::invoke_event(game, MinionDefeatedEvent(interaction.defender_id))?;
+    dispatch::invoke_event(game, MinionDefeatedEvent(&interaction.defender_id))?;
     RaidState::step(RaidStep::NextEncounter)
 }
 
@@ -412,7 +412,7 @@ fn fire_minion_combat_ability(
         })
     });
 
-    dispatch::invoke_event(game, MinionCombatAbilityEvent(minion_id))?;
+    dispatch::invoke_event(game, MinionCombatAbilityEvent(&minion_id))?;
     RaidState::step(RaidStep::NextEncounter)
 }
 
@@ -430,7 +430,7 @@ fn populate_approach_prompt(game: &mut GameState) -> Result<RaidState> {
 
 fn access_start(game: &mut GameState) -> Result<RaidState> {
     game.raid_mut()?.room_access_id = Some(RoomAccessId(game.info.next_event_id()));
-    dispatch::invoke_event(game, RaidAccessStartEvent(game.raid()?.info().event(())))?;
+    dispatch::invoke_event(game, RaidAccessStartEvent(&game.raid()?.info().event(())))?;
     RaidState::step(RaidStep::CheckIfCardAccessPrevented)
 }
 
@@ -448,7 +448,7 @@ fn build_access_set(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 }
 
 fn access_set_built(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
-    dispatch::invoke_event(game, RaidAccessSelectedEvent(info.event(())))?;
+    dispatch::invoke_event(game, RaidAccessSelectedEvent(&info.event(())))?;
     RaidState::step(RaidStep::RevealAccessedCards)
 }
 
@@ -468,7 +468,7 @@ fn reveal_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<RaidSta
 fn access_cards(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     let accessed = game.raid()?.accessed.clone();
     for card_id in &accessed {
-        dispatch::invoke_event(game, CardAccessEvent(info.access_event(*card_id)))?;
+        dispatch::invoke_event(game, CardAccessEvent(&info.access_event(*card_id)))?;
     }
 
     RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::Initial))
@@ -479,7 +479,7 @@ fn will_populate_access_prompt(
     info: RaidInfo,
     source: PopulateAccessPromptSource,
 ) -> Result<RaidState> {
-    dispatch::invoke_event(game, WillPopulateAccessPromptEvent(info.access_event(source)))?;
+    dispatch::invoke_event(game, WillPopulateAccessPromptEvent(&info.access_event(source)))?;
     RaidState::step(RaidStep::PopulateAccessPrompt)
 }
 
@@ -515,14 +515,14 @@ fn start_scoring_card(
 }
 
 fn riftcaller_score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
-    dispatch::invoke_event(game, RiftcallerScoreCardEvent(scored.id))?;
+    dispatch::invoke_event(game, RiftcallerScoreCardEvent(&scored.id))?;
     RaidState::step(RaidStep::ScoreEvent(scored))
 }
 
 fn score_event(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
     dispatch::invoke_event(
         game,
-        ScoreCardEvent(ScoreCard { player: Side::Riftcaller, card_id: scored.id }),
+        ScoreCardEvent(&ScoreCard { player: Side::Riftcaller, card_id: scored.id }),
     )?;
     RaidState::step(RaidStep::MoveToScoredPosition(scored))
 }
@@ -534,7 +534,7 @@ fn move_to_scored_position(game: &mut GameState, scored: ScoredCard) -> Result<R
 
 fn start_razing_card(game: &mut GameState, card_id: CardId, cost: u32) -> Result<RaidState> {
     game.raid_mut()?.accessed.retain(|c| *c != card_id);
-    dispatch::invoke_event(game, RazeCardEvent(card_id))?;
+    dispatch::invoke_event(game, RazeCardEvent(&card_id))?;
     RaidState::step(RaidStep::RazeCard(card_id, cost))
 }
 
@@ -560,7 +560,7 @@ fn finish_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
     if info.is_custom_access {
         custom_access::end(game, info.initiated_by)?;
     } else {
-        dispatch::invoke_event(game, RaidAccessEndEvent(info.event(())))?;
+        dispatch::invoke_event(game, RaidAccessEndEvent(&info.event(())))?;
     }
 
     RaidState::step(RaidStep::FinishRaid)

@@ -93,7 +93,7 @@ pub fn reveal_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     if !game.card(card_id).is_face_up() {
         set_visible_to(game, card_id, card_id.side.opponent(), true);
         game.add_animation(|| GameAnimation::RevealCard(card_id));
-        dispatch::invoke_event(game, CardRevealedEvent(card_id))?;
+        dispatch::invoke_event(game, CardRevealedEvent(&card_id))?;
     }
 
     Ok(())
@@ -118,16 +118,16 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
     }
 
     if old_position.in_deck() && new_position.in_hand() {
-        dispatch::invoke_event(game, DrawCardEvent(card_id))?;
+        dispatch::invoke_event(game, DrawCardEvent(&card_id))?;
     }
 
     if !old_position.in_play() && new_position.in_play() {
         game.card_mut(card_id).clear_counters();
-        dispatch::invoke_event(game, EnterArenaEvent(card_id))?;
+        dispatch::invoke_event(game, EnterArenaEvent(&card_id))?;
     }
 
     if old_position.in_play() && !new_position.in_play() {
-        dispatch::invoke_event(game, LeaveArenaEvent(card_id))?;
+        dispatch::invoke_event(game, LeaveArenaEvent(&card_id))?;
     }
 
     game.card_mut(card_id).last_card_play_id =
@@ -138,20 +138,20 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
         };
 
     if new_position.in_discard_pile() {
-        dispatch::invoke_event(game, MoveToDiscardPileEvent(card_id))?;
+        dispatch::invoke_event(game, MoveToDiscardPileEvent(&card_id))?;
     }
 
     if old_position.in_deck() && new_position.in_discard_pile() {
         dispatch::invoke_event(
             game,
-            DiscardCardEvent(DiscardedCard { card_id, discarded_from: DiscardedFrom::Deck }),
+            DiscardCardEvent(&DiscardedCard { card_id, discarded_from: DiscardedFrom::Deck }),
         )?;
     }
 
     if old_position.in_hand() && new_position.in_discard_pile() {
         dispatch::invoke_event(
             game,
-            DiscardCardEvent(DiscardedCard { card_id, discarded_from: DiscardedFrom::Hand }),
+            DiscardCardEvent(&DiscardedCard { card_id, discarded_from: DiscardedFrom::Hand }),
         )?;
     }
 
@@ -177,7 +177,7 @@ pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     if card_id.side == Side::Riftcaller {
         turn_face_up(game, card_id);
     }
-    dispatch::invoke_event(game, CardSacrificedEvent(card_id))
+    dispatch::invoke_event(game, CardSacrificedEvent(&card_id))
 }
 
 /// Moves a card to the discard pile. This is precisely identical to calling
@@ -281,7 +281,7 @@ pub fn spend_action_points(game: &mut GameState, side: Side, amount: ActionCount
     game.player_mut(side).actions -= amount;
 
     if flags::raid_active(game) && amount > 0 {
-        dispatch::invoke_event(game, ActionPointsLostDuringRaidEvent(side))?;
+        dispatch::invoke_event(game, ActionPointsLostDuringRaidEvent(&side))?;
     }
 
     Ok(())
@@ -337,7 +337,7 @@ pub fn take_stored_mana(
     let taken = cmp::min(available, maximum);
     game.card_mut(card_id).remove_counters_saturating(CardCounter::StoredMana, taken);
     mana::gain(game, card_id.side, taken);
-    dispatch::invoke_event(game, StoredManaTakenEvent(card_id))?;
+    dispatch::invoke_event(game, StoredManaTakenEvent(&card_id))?;
 
     if on_zero_stored == OnZeroStored::Sacrifice
         && game.card(card_id).counters(CardCounter::StoredMana) == 0
@@ -383,7 +383,7 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
     if let InitiatedBy::Ability(ability_id) = source {
         let can_end: bool = dispatch::perform_query(
             game,
-            CanAbilityEndRaidQuery(info.event(ability_id)),
+            CanAbilityEndRaidQuery(&info.event(ability_id)),
             Flag::new(true),
         )
         .into();
@@ -396,16 +396,16 @@ pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome)
     let event = info.event(());
     match outcome {
         RaidOutcome::Success => {
-            dispatch::invoke_event(game, RaidSuccessEvent(event))?;
+            dispatch::invoke_event(game, RaidSuccessEvent(&event))?;
             game.add_history_event(HistoryEvent::RaidSuccess(event));
         }
         RaidOutcome::Failure => {
-            dispatch::invoke_event(game, RaidFailureEvent(event))?;
+            dispatch::invoke_event(game, RaidFailureEvent(&event))?;
             game.add_history_event(HistoryEvent::RaidFailure(event));
         }
     }
 
-    dispatch::invoke_event(game, RaidEndEvent(info.event(outcome)))?;
+    dispatch::invoke_event(game, RaidEndEvent(&info.event(outcome)))?;
     game.raid = None;
     Ok(())
 }
@@ -514,10 +514,10 @@ pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32)
             turn_face_up(game, card_id);
             move_card(game, card_id, CardPosition::Scoring)?;
             game.add_animation(|| GameAnimation::ScoreCard(Side::Covenant, card_id));
-            dispatch::invoke_event(game, CovenantScoreCardEvent(card_id))?;
+            dispatch::invoke_event(game, CovenantScoreCardEvent(&card_id))?;
             dispatch::invoke_event(
                 game,
-                ScoreCardEvent(ScoreCard { player: Side::Covenant, card_id }),
+                ScoreCardEvent(&ScoreCard { player: Side::Covenant, card_id }),
             )?;
 
             move_card(game, card_id, CardPosition::Scored(Side::Covenant))?;
@@ -557,7 +557,7 @@ pub fn summon_project(
     }
 
     game.add_animation(|| GameAnimation::SummonProject(card_id));
-    dispatch::invoke_event(game, SummonProjectEvent(card_id))?;
+    dispatch::invoke_event(game, SummonProjectEvent(&card_id))?;
 
     Ok(())
 }
@@ -569,7 +569,7 @@ pub fn summon_project_ignoring_costs(game: &mut GameState, card_id: CardId) -> R
 
     turn_face_up(game, card_id);
     game.add_animation(|| GameAnimation::SummonProject(card_id));
-    dispatch::invoke_event(game, SummonProjectEvent(card_id))?;
+    dispatch::invoke_event(game, SummonProjectEvent(&card_id))?;
 
     Ok(())
 }
@@ -584,9 +584,9 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     game.add_animation(|| GameAnimation::StartTurn(next_side));
 
     if next_side == Side::Covenant {
-        dispatch::invoke_event(game, DuskEvent(turn_number))?;
+        dispatch::invoke_event(game, DuskEvent(&turn_number))?;
     } else {
-        dispatch::invoke_event(game, DawnEvent(turn_number))?;
+        dispatch::invoke_event(game, DawnEvent(&turn_number))?;
     }
     game.player_mut(next_side).actions = queries::start_of_turn_action_count(game, next_side);
 
@@ -647,7 +647,7 @@ pub fn summon_minion(
         }
     }
 
-    dispatch::invoke_event(game, SummonMinionEvent(card_id))?;
+    dispatch::invoke_event(game, SummonMinionEvent(&card_id))?;
     turn_face_up(game, card_id);
     game.add_animation(|| GameAnimation::SummonMinion(card_id));
     Ok(())

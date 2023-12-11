@@ -138,7 +138,7 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
 
     dispatch::perform_query(
         game,
-        CanDefeatTargetQuery(CardEncounter::new(source, target)),
+        CanDefeatTargetQuery(&CardEncounter::new(source, target)),
         Flag::new(can_defeat),
     )
     .into()
@@ -162,7 +162,7 @@ pub fn can_encounter_target(game: &GameState, weapon: CardId, minion: CardId) ->
 
     dispatch::perform_query(
         game,
-        CanEncounterTargetQuery(CardEncounter::new(weapon, minion)),
+        CanEncounterTargetQuery(&CardEncounter::new(weapon, minion)),
         Flag::new(can_encounter),
     )
     .into()
@@ -171,7 +171,7 @@ pub fn can_encounter_target(game: &GameState, weapon: CardId, minion: CardId) ->
 /// Queries the amount of attack to add to a card each time its weapon boost
 /// ability is activated.
 pub fn attack_boost_bonus(game: &GameState, card_id: CardId, boost: &AttackBoost) -> AttackValue {
-    dispatch::perform_query(game, AttackBoostBonusQuery(card_id), boost.bonus)
+    dispatch::perform_query(game, AttackBoostBonusQuery(&card_id), boost.bonus)
 }
 
 fn can_pay_custom_weapon_cost(game: &GameState, card_id: CardId, cost: &CustomWeaponCost) -> bool {

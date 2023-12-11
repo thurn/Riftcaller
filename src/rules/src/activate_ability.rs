@@ -147,7 +147,7 @@ fn finish(
 
     dispatch::invoke_event(
         game,
-        ActivateAbilityEvent(AbilityActivated {
+        ActivateAbilityEvent(&AbilityActivated {
             ability_id: activate.ability_id,
             target: activate.target,
         }),

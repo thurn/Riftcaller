@@ -33,7 +33,7 @@ pub fn build(builder: &ResponseBuilder, game: &GameState, card: &CardState) -> V
         return vec![];
     }
 
-    dispatch::perform_query(game, CardStatusMarkersQuery(card.id), vec![])
+    dispatch::perform_query(game, CardStatusMarkersQuery(&card.id), vec![])
         .into_iter()
         .map(|marker| marker_card(builder, game, card, marker))
         .collect()

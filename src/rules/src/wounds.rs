@@ -69,7 +69,7 @@ impl StateMachine for GiveWoundsData {
                 Some(GiveWoundsStep::WoundsReceivedEvent)
             }
             GiveWoundsStep::WoundsReceivedEvent => {
-                dispatch::invoke_event(game, WoundsReceivedEvent(data.quantity))?;
+                dispatch::invoke_event(game, WoundsReceivedEvent(&data.quantity))?;
                 Some(GiveWoundsStep::Finish)
             }
             GiveWoundsStep::Finish => None,

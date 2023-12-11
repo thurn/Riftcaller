@@ -95,17 +95,17 @@ pub fn invoke_event<D: Debug, E: EventData<D>>(game: &mut GameState, event: E) -
 /// Called when game state information is needed. Invokes each registered
 /// `Delegate` for this query and allows them to intercept &
 /// transform the final result.
-pub fn perform_query<D: Debug, R: Debug, E: QueryData<D, R>>(
+pub fn perform_query<D: Debug, V: Debug, Q: QueryData<D, V>>(
     game: &GameState,
-    query: E,
-    initial_value: R,
-) -> R {
+    query: Q,
+    initial_value: V,
+) -> V {
     let mut result = initial_value;
     let count = game.delegate_cache.delegate_count(query.kind());
     for i in 0..count {
         let delegate_context = game.delegate_cache.get(query.kind(), i);
         let scope = delegate_context.scope;
-        let functions = E::extract(&delegate_context.delegate).expect("Delegate not in cache!");
+        let functions = Q::extract(&delegate_context.delegate).expect("Delegate not in cache!");
         let data = query.data();
         if (functions.requirement)(game, scope, data) {
             result = (functions.transformation)(game, scope, data, result);

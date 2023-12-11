@@ -77,7 +77,7 @@ impl StateMachine for DrawCardsData {
         Ok(match step {
             DrawCardsStep::Begin => Some(DrawCardsStep::WillDrawCardsEvent),
             DrawCardsStep::WillDrawCardsEvent => {
-                dispatch::invoke_event(game, WillDrawCardsEvent(data.side))?;
+                dispatch::invoke_event(game, WillDrawCardsEvent(&data.side))?;
                 Some(DrawCardsStep::CheckIfDrawPrevented)
             }
             DrawCardsStep::CheckIfDrawPrevented => {
@@ -108,7 +108,7 @@ impl StateMachine for DrawCardsData {
             }
             DrawCardsStep::DrawCardsViaAbilityEvent(count) => {
                 if matches!(data.source, InitiatedBy::Ability(..)) {
-                    dispatch::invoke_event(game, DrawCardsViaAbilityEvent(data.side))?;
+                    dispatch::invoke_event(game, DrawCardsViaAbilityEvent(&data.side))?;
                 }
 
                 Some(DrawCardsStep::AddToHistory(count))

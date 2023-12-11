@@ -38,7 +38,7 @@ pub fn push_with_data(
     data: PromptData,
 ) {
     let source = AbilityPromptSource { ability_id: ability_id.ability_id(), data };
-    if let Some(prompt) = run_prompt_query(game, source.clone()) {
+    if let Some(prompt) = run_prompt_query(game, &source) {
         game.player_mut(side).prompts.stack.push(PromptEntry { prompt, source: Some(source) });
     }
 }
@@ -51,7 +51,7 @@ pub fn pop(game: &mut GameState, side: Side) -> Option<GamePrompt> {
     let previous = game.player_mut(side).prompts.stack.pop();
     while let Some(current) = game.player_mut(side).prompts.stack.pop() {
         if let Some(source) = current.source {
-            if let Some(prompt) = run_prompt_query(game, source.clone()) {
+            if let Some(prompt) = run_prompt_query(game, &source) {
                 // Updated prompt returned
                 game.player_mut(side)
                     .prompts
@@ -78,7 +78,7 @@ pub fn current(game: &GameState, side: Side) -> Option<&GamePrompt> {
     game.player(side).prompts.stack.last().map(|e| &e.prompt)
 }
 
-fn run_prompt_query(game: &GameState, source: AbilityPromptSource) -> Option<GamePrompt> {
+fn run_prompt_query(game: &GameState, source: &AbilityPromptSource) -> Option<GamePrompt> {
     dispatch::perform_query(game, ShowPromptQuery(source), None).and_then(|p| remove_empty(game, p))
 }
 

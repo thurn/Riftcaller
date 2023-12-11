@@ -332,7 +332,7 @@ fn move_to_target_position(
 fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCardStep>> {
     dispatch::invoke_event(
         game,
-        PlayCardEvent(CardPlayed {
+        PlayCardEvent(&CardPlayed {
             card_id: play_card.card_id,
             target: play_card.target,
             card_play_id: play_card.card_play_id,

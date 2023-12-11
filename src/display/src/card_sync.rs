@@ -332,7 +332,7 @@ fn continuous_display_effect(context: &CardViewContext) -> Option<EffectAddress>
 
     let effect = dispatch::perform_query(
         game,
-        ContinuousDisplayEffectQuery(card.id),
+        ContinuousDisplayEffectQuery(&card.id),
         ContinuousDisplayEffect::None,
     );
 

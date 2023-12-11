@@ -58,7 +58,7 @@ pub fn score(game: &GameState, side: Side) -> PointsValue {
 pub fn mana_cost(game: &GameState, card_id: CardId) -> Option<ManaValue> {
     dispatch::perform_query(
         game,
-        ManaCostQuery(card_id),
+        ManaCostQuery(&card_id),
         crate::get(game.card(card_id).variant).cost.mana,
     )
 }
@@ -83,7 +83,7 @@ pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<Mana
         };
     }
 
-    dispatch::perform_query(game, AbilityManaCostQuery(ability_id), cost)
+    dispatch::perform_query(game, AbilityManaCostQuery(&ability_id), cost)
 }
 
 /// Returns the action point cost for a given card
@@ -95,14 +95,14 @@ pub fn action_cost(game: &GameState, card_id: CardId) -> ActionCount {
             actions = actions.saturating_sub(1);
         }
     }
-    dispatch::perform_query(game, ActionCostQuery(card_id), actions)
+    dispatch::perform_query(game, ActionCostQuery(&card_id), actions)
 }
 
 /// Returns the attack power value for a given card, or 0 by default.
 pub fn base_attack(game: &GameState, card_id: CardId) -> AttackValue {
     dispatch::perform_query(
         game,
-        BaseAttackQuery(card_id),
+        BaseAttackQuery(&card_id),
         stats(game, card_id).base_attack.unwrap_or(0),
     )
 }
@@ -116,7 +116,7 @@ pub fn attack_boost(game: &GameState, card_id: CardId) -> Option<&AttackBoost> {
 pub fn health(game: &GameState, card_id: CardId) -> HealthValue {
     dispatch::perform_query(
         game,
-        HealthValueQuery(card_id),
+        HealthValueQuery(&card_id),
         stats(game, card_id).health.unwrap_or(0),
     )
 }
@@ -128,7 +128,7 @@ pub fn health(game: &GameState, card_id: CardId) -> HealthValue {
 pub fn shield(game: &GameState, minion_id: CardId, weapon_id: Option<CardId>) -> ShieldValue {
     dispatch::perform_query(
         game,
-        ShieldValueQuery(ShieldCardInfo { minion_id, weapon_id }),
+        ShieldValueQuery(&ShieldCardInfo { minion_id, weapon_id }),
         stats(game, minion_id).shield.unwrap_or(0),
     )
 }
@@ -137,7 +137,7 @@ pub fn shield(game: &GameState, minion_id: CardId, weapon_id: Option<CardId>) ->
 pub fn breach(game: &GameState, card_id: CardId) -> BreachValue {
     dispatch::perform_query(
         game,
-        BreachValueQuery(card_id),
+        BreachValueQuery(&card_id),
         stats(game, card_id).breach.unwrap_or(0),
     )
 }
@@ -147,7 +147,7 @@ pub fn breach(game: &GameState, card_id: CardId) -> BreachValue {
 pub fn raze_cost(game: &GameState, card_id: CardId) -> RazeCost {
     dispatch::perform_query(
         game,
-        RazeCostQuery(card_id),
+        RazeCostQuery(&card_id),
         stats(game, card_id).raze_cost.unwrap_or(0),
     )
 }
@@ -160,28 +160,28 @@ pub fn start_of_turn_action_count(game: &GameState, side: Side) -> ActionCount {
         Side::Riftcaller => game_constants::RIFTCALLER_START_OF_TURN_ACTIONS,
     };
 
-    dispatch::perform_query(game, StartOfTurnActionsQuery(side), default)
+    dispatch::perform_query(game, StartOfTurnActionsQuery(&side), default)
 }
 
 /// Look up the number of cards the Riftcaller player can access from the Vault
 /// during the current raid
 pub fn vault_access_count(game: &GameState) -> Result<u32> {
     let raid_id = game.raid()?.raid_id;
-    Ok(dispatch::perform_query(game, VaultAccessCountQuery(raid_id), 1))
+    Ok(dispatch::perform_query(game, VaultAccessCountQuery(&raid_id), 1))
 }
 
 /// Look up the number of cards the Riftcaller player can access from the
 /// Sanctum during the current raid
 pub fn sanctum_access_count(game: &GameState) -> Result<u32> {
     let raid_id = game.raid()?.raid_id;
-    Ok(dispatch::perform_query(game, SanctumAccessCountQuery(raid_id), 1))
+    Ok(dispatch::perform_query(game, SanctumAccessCountQuery(&raid_id), 1))
 }
 
 /// Queries the Resonance for a card (weapon or minion). Minions can only be
 /// damaged by weapons from the same resonance, or by Prismatic weapons.
 pub fn resonance(game: &GameState, card_id: CardId) -> Option<Resonance> {
     let resonance = game.card(card_id).definition().config.resonance?;
-    Some(dispatch::perform_query(game, ResonanceQuery(card_id), resonance))
+    Some(dispatch::perform_query(game, ResonanceQuery(&card_id), resonance))
 }
 
 /// Looks up what type of target a given card requires
@@ -216,7 +216,7 @@ pub fn highest_cost<'a>(card_iterator: impl Iterator<Item = &'a CardState>) -> O
 pub fn maximum_hand_size(game: &GameState, side: Side) -> u32 {
     dispatch::perform_query(
         game,
-        MaximumHandSizeQuery(side),
+        MaximumHandSizeQuery(&side),
         game_constants::STARTING_MAXIMUM_HAND_SIZE.saturating_sub(game.player(side).wounds),
     )
 }

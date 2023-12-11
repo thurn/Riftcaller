@@ -79,7 +79,7 @@ pub fn initiate(
 
 /// Ends an ongoing custom access raid.
 pub fn end(game: &mut GameState, initiated_by: InitiatedBy) -> Result<()> {
-    dispatch::invoke_event(game, CustomAccessEndEvent(initiated_by))?;
+    dispatch::invoke_event(game, CustomAccessEndEvent(&initiated_by))?;
     game.raid = None;
     Ok(())
 }

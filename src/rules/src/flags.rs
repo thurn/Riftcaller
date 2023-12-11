@@ -132,7 +132,7 @@ pub fn can_take_play_card_action(
         can_play &= can_pay_card_cost(game, card_id);
     }
 
-    dispatch::perform_query(game, CanPlayCardQuery(card_id), Flag::new(can_play)).into()
+    dispatch::perform_query(game, CanPlayCardQuery(&card_id), Flag::new(can_play)).into()
 }
 
 /// Checks whether a card can be played from a [PlayCardBrowser].
@@ -153,7 +153,7 @@ fn can_play_from_browser(
         can_play &= can_pay_card_cost(game, card_id);
     }
 
-    dispatch::perform_query(game, CanPlayCardQuery(card_id), Flag::new(can_play)).into()
+    dispatch::perform_query(game, CanPlayCardQuery(&card_id), Flag::new(can_play)).into()
 }
 
 /// Whether the `ability_id` ability can currently be activated with the
@@ -202,7 +202,7 @@ pub fn can_take_activate_ability_action(
 
     dispatch::perform_query(
         game,
-        CanActivateAbilityQuery(CanActivateAbility { ability_id, target }),
+        CanActivateAbilityQuery(&CanActivateAbility { ability_id, target }),
         Flag::new(can_activate),
     )
     .into()
@@ -295,14 +295,15 @@ pub fn enters_play_in_room(game: &GameState, card_id: CardId) -> bool {
 /// action to draw a card.
 pub fn can_take_draw_card_action(game: &GameState, side: Side) -> bool {
     let can_draw = in_main_phase_with_action_point(game, side) && game.deck(side).next().is_some();
-    dispatch::perform_query(game, CanTakeDrawCardActionQuery(side), Flag::new(can_draw)).into()
+    dispatch::perform_query(game, CanTakeDrawCardActionQuery(&side), Flag::new(can_draw)).into()
 }
 
 /// Returns whether the indicated player can currently take the basic game
 /// action to gain one mana.
 pub fn can_take_gain_mana_action(game: &GameState, side: Side) -> bool {
     let can_gain_mana = in_main_phase_with_action_point(game, side);
-    dispatch::perform_query(game, CanTakeGainManaActionQuery(side), Flag::new(can_gain_mana)).into()
+    dispatch::perform_query(game, CanTakeGainManaActionQuery(&side), Flag::new(can_gain_mana))
+        .into()
 }
 
 /// Returns whether the indicated room could be accessed by an ability based on
@@ -317,7 +318,7 @@ pub fn is_valid_access_target(game: &GameState, room_id: RoomId) -> bool {
 pub fn is_valid_raid_target(game: &GameState, room_id: RoomId) -> bool {
     dispatch::perform_query(
         game,
-        CanInitiateRaidQuery(room_id),
+        CanInitiateRaidQuery(&room_id),
         Flag::new(is_valid_access_target(game, room_id)),
     )
     .into()
@@ -352,14 +353,14 @@ pub fn can_take_progress_action(game: &GameState, side: Side, room_id: RoomId) -
         && side == Side::Covenant
         && mana::get(game, side, ManaPurpose::ProgressRoom(room_id)) > 0
         && in_main_phase_with_action_point(game, side);
-    dispatch::perform_query(game, CanProgressRoomQuery(room_id), Flag::new(can_progress)).into()
+    dispatch::perform_query(game, CanProgressRoomQuery(&room_id), Flag::new(can_progress)).into()
 }
 
 /// Whether the indicated card can be progressed up when the 'progress' action
 /// is taken for its room.
 pub fn can_progress_card(game: &GameState, card_id: CardId) -> bool {
     let can_progress = game.card(card_id).definition().card_type == CardType::Scheme;
-    dispatch::perform_query(game, CanProgressCardQuery(card_id), Flag::new(can_progress)).into()
+    dispatch::perform_query(game, CanProgressCardQuery(&card_id), Flag::new(can_progress)).into()
 }
 
 /// Whether the indicated player can currently take any type of game state
@@ -406,7 +407,7 @@ pub fn can_take_game_actions(game: &GameState, side: Side) -> bool {
 /// defender.
 pub fn can_summon(game: &GameState, card_id: CardId) -> bool {
     let can_summon = game.card(card_id).is_face_down() && can_pay_card_cost(game, card_id);
-    dispatch::perform_query(game, CanSummonQuery(card_id), Flag::new(can_summon)).into()
+    dispatch::perform_query(game, CanSummonQuery(&card_id), Flag::new(can_summon)).into()
 }
 
 /// Can the Riftcaller choose to not use a weapon ability when encountering
@@ -414,7 +415,7 @@ pub fn can_summon(game: &GameState, card_id: CardId) -> bool {
 pub fn can_take_use_no_weapon_action(game: &GameState, card_id: CardId) -> bool {
     dispatch::perform_query(
         game,
-        CanUseNoWeaponQuery(card_id),
+        CanUseNoWeaponQuery(&card_id),
         Flag::new(can_take_game_actions(game, Side::Riftcaller)),
     )
     .into()
@@ -425,7 +426,7 @@ pub fn can_evade_current_minion(game: &GameState) -> bool {
     let Some(minion_id) = game.current_raid_defender() else {
         return false;
     };
-    dispatch::perform_query(game, CanEvadeMinionQuery(minion_id), Flag::new(true)).into()
+    dispatch::perform_query(game, CanEvadeMinionQuery(&minion_id), Flag::new(true)).into()
 }
 
 /// Can the Riftcaller choose to use the 'End Raid' button to end the access
@@ -433,7 +434,7 @@ pub fn can_evade_current_minion(game: &GameState) -> bool {
 pub fn can_take_end_raid_access_phase_action(game: &GameState, raid_id: RaidId) -> bool {
     dispatch::perform_query(
         game,
-        CanEndRaidAccessPhaseQuery(raid_id),
+        CanEndRaidAccessPhaseQuery(&raid_id),
         Flag::new(can_take_game_actions(game, Side::Riftcaller)),
     )
     .into()
@@ -531,5 +532,5 @@ pub fn card_selector_state_is_valid(prompt: &CardSelectorPrompt) -> bool {
 
 /// Can the [Side] player currently win the game by scoring points?
 pub fn can_win_game_via_points(game: &GameState, side: Side) -> AbilityFlag {
-    dispatch::perform_query(game, CanWinGameViaPointsQuery(side), AbilityFlag::new(true))
+    dispatch::perform_query(game, CanWinGameViaPointsQuery(&side), AbilityFlag::new(true))
 }
