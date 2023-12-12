@@ -14,7 +14,7 @@
 
 use std::cmp;
 
-use card_helpers::{costs, history, in_play, text};
+use card_helpers::{costs, delegates, history, in_play, requirements, text};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -22,6 +22,8 @@ use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
+use game_data::text::TextToken::RazeAbility;
+use rules::damage;
 use rules::visual_effects::VisualEffects;
 use with_error::fail;
 
@@ -66,6 +68,40 @@ pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
                 }
                 Ok(())
             }),
+        )],
+        config: CardConfigBuilder::new().raze_cost(5).build(),
+    }
+}
+
+pub fn living_stone(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::LivingStone,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(5, 3)),
+        image: assets::covenant_card(meta, "living_stone"),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Roombound],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![Ability::new_with_delegate(
+            text!["When the Riftcaller uses a", RazeAbility, ", deal", 1, "damage"],
+            delegates::on_card_razed(
+                |g, s, &card_id| requirements::face_up_in_play(g, s, &()) || card_id == s.card_id(),
+                |g, s, _| {
+                    VisualEffects::new()
+                        .ability_alert(s)
+                        .timed_effect(
+                            GameObjectId::CardId(s.card_id()),
+                            TimedEffectData::new(TimedEffect::MagicCircles1(8))
+                                .scale(2.0)
+                                .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff01"))
+                                .effect_color(design::YELLOW_900),
+                        )
+                        .apply(g);
+                    damage::deal(g, s, 1)
+                },
+            ),
         )],
         config: CardConfigBuilder::new().raze_cost(5).build(),
     }

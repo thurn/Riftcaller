@@ -227,6 +227,7 @@ pub struct TestSide {
     mana: ManaValue,
     bonus_points: PointsValue,
     hand_size: usize,
+    in_hand: Vec<CardName>,
     curses: CurseCount,
     wounds: WoundCount,
     deck_top: Vec<CardName>,
@@ -249,6 +250,7 @@ impl TestSide {
             curses: 0,
             wounds: 0,
             hand_size: 0,
+            in_hand: vec![],
             deck_top: vec![],
             in_discard_face_down: vec![],
             in_discard_face_up: vec![],
@@ -270,6 +272,15 @@ impl TestSide {
     /// Bonus points score for this player. Defaults to 0.
     pub fn bonus_points(mut self, score: PointsValue) -> Self {
         self.bonus_points = score;
+        self
+    }
+
+    /// Card to be inserted into the player's hand
+    ///
+    /// If both this and [Self::hand_size] are specified, these cards are added
+    /// in *addition* to the count provided for the `hand_size`.
+    pub fn in_hand(mut self, card: CardName) -> Self {
+        self.in_hand.push(card);
         self
     }
 
@@ -424,6 +435,7 @@ impl TestSide {
             if self.side == Side::Covenant { CardName::TestRitual } else { CardName::TestSpell };
         let hand = iter::repeat(hand_card).take(self.hand_size).collect::<Vec<_>>();
         overwrite_positions(game, self.side, &hand, CardPosition::Hand(self.side), false);
+        overwrite_positions(game, self.side, &self.in_hand, CardPosition::Hand(self.side), false);
     }
 }
 

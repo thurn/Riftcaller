@@ -16,11 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 5ebcccf45a4474b968b152174fff6af0
-  m_SerializeEntries:
-  - m_GUID: 3b23e0c3e37f940b09132014daa82bc5
-    m_Address: Cards/RiftcallerFullArt
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

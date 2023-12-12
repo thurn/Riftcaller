@@ -84,6 +84,7 @@ pub enum RaidStep {
     MoveToScoredPosition(ScoredCard),
     StartRazingCard(CardId, ManaValue),
     RazeCard(CardId, ManaValue),
+    RazeCardEvent(CardId),
     FinishAccess,
     FinishRaid,
 }

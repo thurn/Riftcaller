@@ -16,11 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: ddfbe3d7458064886a118d76f3d03dae
-  m_SerializeEntries:
-  - m_GUID: 2825f7970da524b819e23202b18e2a89
-    m_Address: Cards/CovenantFullArt
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8c1b10ec577254edfa3cefff6f6e4873, type: 2}
   m_SchemaSet:

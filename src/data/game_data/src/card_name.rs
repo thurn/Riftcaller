@@ -349,6 +349,7 @@ pub enum CardName {
     BrilliantGambit,
     EllisarForgekeeper,
     Foresee,
+    LivingStone,
 }
 
 impl CardName {

@@ -191,7 +191,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             entry("Evade", "Bypass a minion without combat"),
         TextTokenKind::Unsummon => entry("Unsummon", "Turn a minion face-down"),
         TextTokenKind::RazeAbility => Some(
-            format!("{} <b>Ability</b>: Allows cards to be discarded/destroyed during a raid.",
+            format!("{} <b>Ability</b>: Allows cards to be discarded/destroyed when accessed during a raid.",
                     icons::RAZE)
         ),
         TextTokenKind::Banish => entry("Banish", "Remove from play and move to the Banished zone"),

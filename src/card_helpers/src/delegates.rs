@@ -111,6 +111,10 @@ pub fn on_card_access(
     Delegate::CardAccess(EventDelegate { requirement, mutation })
 }
 
+pub fn on_card_razed(requirement: RequirementFn<CardId>, mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::RazeCard(EventDelegate { requirement, mutation })
+}
+
 pub fn on_custom_access_end(
     requirement: RequirementFn<InitiatedBy>,
     mutation: MutationFn<InitiatedBy>,

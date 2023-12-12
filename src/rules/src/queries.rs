@@ -293,6 +293,7 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::MoveToScoredPosition(..)
             | RaidStep::StartRazingCard(..)
             | RaidStep::RazeCard(..)
+            | RaidStep::RazeCardEvent(..)
             | RaidStep::FinishAccess
             | RaidStep::FinishRaid => RaidStatus::Access,
         },
