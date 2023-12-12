@@ -416,6 +416,13 @@ pub fn check_start_game(game: &mut GameState) -> Result<()> {
     Ok(())
 }
 
+/// Options for [realize_top_of_deck]
+#[derive(Eq, PartialEq)]
+pub enum RealizeCards {
+    SetVisibleToOwner,
+    NotVisibleToOwner,
+}
+
 /// Returns a list of *up to* `count` cards from the top of the `side` player's
 /// deck, in sorting-key order (later indices are are closer to the top
 /// of the deck).
@@ -425,8 +432,14 @@ pub fn check_start_game(game: &mut GameState) -> Result<()> {
 /// cards. Cards are moved to the DeckTop position via [move_card],
 /// meaning that subsequent calls to this function will see the same results.
 ///
-/// Does not change the 'revealed' state of cards.
-pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Result<Vec<CardId>> {
+/// If [RealizeCards::SetVisibleToOwner] is passed, the cards are marked as
+/// visible to their owner.
+pub fn realize_top_of_deck(
+    game: &mut GameState,
+    side: Side,
+    count: u32,
+    realize_cards: RealizeCards,
+) -> Result<Vec<CardId>> {
     let count = count as usize; // don't run this on 16 bit processors please :)
     let mut cards = game.card_list_for_position(side, CardPosition::DeckTop(side));
     let len = cards.len();
@@ -442,6 +455,9 @@ pub fn realize_top_of_deck(game: &mut GameState, side: Side, count: u32) -> Resu
 
     for card_id in &result {
         move_card(game, *card_id, CardPosition::DeckTop(side))?;
+        if realize_cards == RealizeCards::SetVisibleToOwner {
+            set_visible_to(game, *card_id, card_id.side, true);
+        }
     }
 
     Ok(result)
@@ -628,11 +644,14 @@ pub fn unsummon_minion(game: &mut GameState, card_id: CardId) -> Result<()> {
     Ok(())
 }
 
-/// Discards `amount` cards from the top of the Covenant's deck.
+/// Discards `amount` cards from the top of the Covenant's deck. Cards are set
+/// as visible to the Covenant player.
 ///
 /// If insufficient cards are present, discards all available cards.
 pub fn discard_from_vault(game: &mut GameState, amount: u32) -> Result<()> {
-    for card_id in realize_top_of_deck(game, Side::Covenant, amount)? {
+    for card_id in
+        realize_top_of_deck(game, Side::Covenant, amount, RealizeCards::SetVisibleToOwner)?
+    {
         move_card(game, card_id, CardPosition::DiscardPile(Side::Covenant))?;
     }
     Ok(())

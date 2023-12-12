@@ -38,12 +38,15 @@ impl PromptContainer {
 
 impl Component for PromptContainer {
     fn build(self) -> Option<Node> {
+        // Note that if this container takes up too much space it can block mouse events
+        // during a game via MouseOverScreenElement(). Be careful to only size it to fit
+        // its visible contents.
         Row::new("PromptContainer")
             .style(
                 Style::new()
                     .justify_content(FlexJustify::FlexEnd)
                     .align_items(FlexAlign::Center)
-                    .flex_grow(1.0)
+                    .flex_grow(0.0)
                     .wrap(FlexWrap::WrapReverse)
                     .margin(Edge::Horizontal, 16.px()),
             )

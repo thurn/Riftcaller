@@ -399,10 +399,21 @@ fn prompt_position_override(
                 return None;
             }
 
-            if browser.unchosen_subjects.contains(&card.id) {
-                return Some(for_card(card, card_browser()));
-            } else if browser.chosen_subjects.contains(&card.id) {
-                return Some(for_card(card, card_browser_target_position()));
+            if let Some(i) = browser.unchosen_subjects.iter().position(|&id| id == card.id) {
+                // The position we set in [non_card_position_override] for the target is at
+                // sorting key 1, so this needs to be at least 2. I don't remember why I did
+                // this but it was probably important.
+                return Some(ObjectPosition {
+                    sorting_key: 10 + i as u32,
+                    sorting_subkey: 0,
+                    position: Some(card_browser()),
+                });
+            } else if let Some(i) = browser.chosen_subjects.iter().position(|&id| id == card.id) {
+                return Some(ObjectPosition {
+                    sorting_key: 10 + i as u32,
+                    sorting_subkey: 0,
+                    position: Some(card_browser_target_position()),
+                });
             } else if card.position() == CardPosition::Hand(builder.user_side) {
                 return Some(for_card(card, hand_storage()));
             }

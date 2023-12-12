@@ -41,6 +41,7 @@ use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use raid_state::custom_access;
+use rules::mutations::RealizeCards;
 use rules::visual_effects::VisualEffects;
 use rules::{curses, draw_cards, flags, mutations, prompts, CardDefinitionExt};
 use with_error::fail;
@@ -214,10 +215,12 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
             text!["Discard the rest"]
         ])
         .delegate(this::on_played(|g, s, _| {
-            let cards = mutations::realize_top_of_deck(g, s.side(), s.upgrade(4, 6))?;
-            for card in &cards {
-                mutations::set_visible_to(g, *card, s.side(), true);
-            }
+            let cards = mutations::realize_top_of_deck(
+                g,
+                s.side(),
+                s.upgrade(4, 6),
+                RealizeCards::SetVisibleToOwner,
+            )?;
             VisualEffects::new()
                 .timed_effect(
                     GameObjectId::Deck(Side::Riftcaller),
@@ -538,7 +541,13 @@ pub fn delve_into_darkness(meta: CardMetadata) -> CardDefinition {
                 text!["Shuffle the", Vault]
             ])
             .delegate(this::on_played(|g, s, _| {
-                let cards = mutations::realize_top_of_deck(g, Side::Covenant, 8)?;
+                let cards = mutations::realize_top_of_deck(
+                    g,
+                    Side::Covenant,
+                    8,
+                    RealizeCards::NotVisibleToOwner,
+                )?;
+
                 custom_access::initiate(
                     g,
                     RoomId::Vault,

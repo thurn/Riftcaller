@@ -203,7 +203,7 @@ pub enum GameAction {
     InitiateRaid(RoomId),
     ProgressRoom(RoomId),
     SpendActionPoint,
-    MoveSelectorCard(CardId),
+    MoveSelectorCard { card_id: CardId, index: Option<u32> },
     RaidAction(RaidAction),
     PromptAction(PromptAction),
     SetDisplayPreference(DisplayPreference),
@@ -238,7 +238,9 @@ impl fmt::Debug for GameAction {
             Self::InitiateRaid(arg0) => f.debug_tuple("@InitiateRaid").field(arg0).finish(),
             Self::ProgressRoom(arg0) => f.debug_tuple("@ProgressRoom").field(arg0).finish(),
             Self::SpendActionPoint => write!(f, "@SpendActionPoint"),
-            Self::MoveSelectorCard(id) => f.debug_tuple("@MoveCard").field(id).finish(),
+            Self::MoveSelectorCard { card_id, index } => {
+                f.debug_tuple("@MoveCard").field(card_id).field(index).finish()
+            }
             Self::RaidAction(action) => f.debug_tuple("@RaidAction").field(&action.index).finish(),
             Self::PromptAction(prompt) => write!(f, "@{prompt:?}"),
             Self::SetDisplayPreference(preference) => {

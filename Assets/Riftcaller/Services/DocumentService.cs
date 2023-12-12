@@ -379,6 +379,7 @@ namespace Riftcaller.Services
       {
         Position = FlexPosition.Absolute,
         Height = Px(125),
+        JustifyContent = FlexJustify.FlexEnd,
         Inset = new DimensionGroup
         {
           Left = Px(0),

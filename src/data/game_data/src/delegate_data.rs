@@ -552,6 +552,8 @@ pub enum Delegate {
     WillDestroyCards(EventDelegate<Vec<CardId>>),
     /// The provided cards have been destroyed
     CardsDestroyed(EventDelegate<Vec<CardId>>),
+    /// A Card Selector prompt for the provided ability has been submitted
+    CardSelectorSubmitted(EventDelegate<AbilityId>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.

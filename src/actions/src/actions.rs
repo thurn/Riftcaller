@@ -21,7 +21,7 @@ use constants::game_constants;
 use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
 use game_data::animation_tracker::{AnimationState, GameAnimation};
 use game_data::card_state::CardPosition;
-use game_data::delegate_data::DrawCardActionEvent;
+use game_data::delegate_data::{CardSelectorSubmittedEvent, DrawCardActionEvent};
 use game_data::game_actions::{CardTarget, GameAction, GameStateAction};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, RaidJumpRequest, TurnState};
@@ -31,6 +31,7 @@ use game_data::prompt_data::{
     PromptAction, PromptChoice, PromptContext, RoomSelectorPromptEffect,
 };
 use game_data::state_machine_data::PlayCardOptions;
+use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{
     activate_ability, curses, damage, destroy, dispatch, draw_cards, flags, leylines, mana,
@@ -78,7 +79,9 @@ pub fn handle_game_action(
         }
         GameAction::ProgressRoom(room_id) => progress_room_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
-        GameAction::MoveSelectorCard(card_id) => move_card_action(game, user_side, *card_id),
+        GameAction::MoveSelectorCard { card_id, index } => {
+            move_card_action(game, user_side, *card_id, *index)
+        }
         GameAction::RaidAction(action) => raid_state::run(game, Some(*action)),
         GameAction::PromptAction(action) => handle_prompt_action(game, user_side, *action),
         GameAction::SetDisplayPreference(..) => Ok(()),
@@ -282,17 +285,32 @@ pub fn dispel_evocation_prompt(game: &GameState) -> GamePrompt {
 }
 
 #[instrument(skip(game))]
-fn move_card_action(game: &mut GameState, user_side: Side, card_id: CardId) -> Result<()> {
+fn move_card_action(
+    game: &mut GameState,
+    user_side: Side,
+    card_id: CardId,
+    index: Option<u32>,
+) -> Result<()> {
     let Some(GamePrompt::CardSelector(prompt)) = prompts::current_mut(game, user_side) else {
         fail!("Expected active CardBrowserPrompt");
     };
 
     if let Some(position) = prompt.chosen_subjects.iter().position(|id| *id == card_id) {
         prompt.chosen_subjects.remove(position);
-        prompt.unchosen_subjects.push(card_id);
+        if let Some(i) = index {
+            // For the card ordering flow, once a card is chosen it *cannot* be
+            // moved back to unchosen.
+            utils::safe_insert(&mut prompt.chosen_subjects, i as usize, card_id);
+        } else {
+            prompt.unchosen_subjects.push(card_id);
+        }
     } else if let Some(position) = prompt.unchosen_subjects.iter().position(|id| *id == card_id) {
         prompt.unchosen_subjects.remove(position);
-        prompt.chosen_subjects.push(card_id);
+        if let Some(i) = index {
+            utils::safe_insert(&mut prompt.chosen_subjects, i as usize, card_id);
+        } else {
+            prompt.chosen_subjects.push(card_id);
+        }
     } else {
         fail!("Expected card to be a subject of the active browser");
     }
@@ -382,11 +400,13 @@ pub fn discard_to_hand_size_prompt(game: &GameState, side: Side) -> GamePrompt {
     let hand = game.card_list_for_position(side, CardPosition::Hand(side));
     let discard = hand.len() - max_hand_size;
     GamePrompt::CardSelector(CardSelectorPrompt {
+        initiated_by: InitiatedBy::GameAction,
         context: Some(PromptContext::DiscardToHandSize(max_hand_size)),
         unchosen_subjects: hand,
         chosen_subjects: vec![],
         target: BrowserPromptTarget::DiscardPile,
         validation: Some(BrowserPromptValidation::ExactlyCount(discard)),
+        can_reorder: false,
     })
 }
 
@@ -436,13 +456,17 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
                 record_prompt_response(game, r, user_side, index);
             }
         }
-        (GamePrompt::CardSelector(browser), PromptAction::CardSelectorSubmit) => {
-            verify!(flags::card_selector_state_is_valid(browser), "Invalid prompt selector state");
+        (GamePrompt::CardSelector(card_selector), PromptAction::CardSelectorSubmit) => {
+            verify!(
+                flags::card_selector_state_is_valid(card_selector),
+                "Invalid prompt selector state"
+            );
             handle_card_selector_submit(
                 game,
                 user_side,
-                browser.chosen_subjects.clone(),
-                browser.target,
+                card_selector.initiated_by,
+                card_selector.chosen_subjects.clone(),
+                card_selector.target,
             )?;
         }
         (GamePrompt::PlayCardBrowser(_), PromptAction::SkipPlayingCard) => {
@@ -488,6 +512,7 @@ fn record_prompt_response(game: &mut GameState, prompt: GamePrompt, side: Side, 
 fn handle_card_selector_submit(
     game: &mut GameState,
     user_side: Side,
+    initiated_by: InitiatedBy,
     subjects: Vec<CardId>,
     target: BrowserPromptTarget,
 ) -> Result<()> {
@@ -501,6 +526,11 @@ fn handle_card_selector_submit(
     }
 
     prompts::pop(game, user_side);
+
+    if let InitiatedBy::Ability(ability_id) = initiated_by {
+        dispatch::invoke_event(game, CardSelectorSubmittedEvent(&ability_id))?;
+    }
+
     check_start_next_turn(game)
 }
 

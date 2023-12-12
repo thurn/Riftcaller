@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{AttackValue, CardId, HasAbilityId, HasCardId};
+use core_data::game_primitives::{AbilityId, AttackValue, CardId, HasAbilityId, HasCardId};
 use game_data::delegate_data::{
     AbilityActivated, CanActivateAbility, CardPlayed, Delegate, DiscardedCard, EventDelegate,
     MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
@@ -78,14 +78,19 @@ pub fn on_weapon_used(mutation: MutationFn<RaidEvent<UsedWeapon>>) -> Delegate {
     })
 }
 
-/// A delegate when a card is scored by the Covenant player
+/// A delegate which triggers when a card is scored by the Covenant player
 pub fn on_scored_by_covenant(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::CovenantScoreCard(EventDelegate { requirement: card, mutation })
 }
 
-/// A delegate when a card is scored by the Riftcaller player
+/// A delegate which triggers when a card is scored by the Riftcaller player
 pub fn on_scored_by_riftcaller(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::RiftcallerScoreCard(EventDelegate { requirement: card, mutation })
+}
+
+/// A delegate which triggers when a card's CardSelector prompt is submitted.
+pub fn on_card_selector_submitted(mutation: MutationFn<AbilityId>) -> Delegate {
+    Delegate::CardSelectorSubmitted(EventDelegate { requirement: card, mutation })
 }
 
 /// A delegate which prevents a card from being able to be played

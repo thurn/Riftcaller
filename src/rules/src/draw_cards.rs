@@ -20,6 +20,7 @@ use game_data::delegate_data::{DrawCardsViaAbilityEvent, WillDrawCardsEvent};
 use game_data::game_state::GameState;
 use game_data::state_machine_data::{DrawCardsData, DrawCardsStep};
 
+use crate::mutations::RealizeCards;
 use crate::state_machine::StateMachine;
 use crate::{dispatch, mutations, state_machine};
 
@@ -88,15 +89,17 @@ impl StateMachine for DrawCardsData {
                 }
             }
             DrawCardsStep::DrawCards => {
-                let card_ids = mutations::realize_top_of_deck(game, data.side, data.quantity)?;
+                let card_ids = mutations::realize_top_of_deck(
+                    game,
+                    data.side,
+                    data.quantity,
+                    RealizeCards::SetVisibleToOwner,
+                )?;
 
                 if card_ids.len() != data.quantity as usize && data.side == Side::Covenant {
                     mutations::game_over(game, data.side.opponent())?;
                     None
                 } else {
-                    for card_id in &card_ids {
-                        mutations::set_visible_to(game, *card_id, data.side, true);
-                    }
                     game.add_animation(|| GameAnimation::DrawCards(data.side, card_ids.clone()));
 
                     for card_id in &card_ids {

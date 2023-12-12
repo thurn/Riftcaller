@@ -161,6 +161,7 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
             )
             .child(
                 Row::new("Right")
+                    .child(self.set_display_preference_button.map(set_display_preference_button))
                     .child(
                         IconButton::new(icons::BUG)
                             .name(&element_names::FEEDBACK_BUTTON)
@@ -183,8 +184,7 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
                                 activity.kind(),
                                 activity.side(),
                             ))),
-                    )
-                    .child(self.set_display_preference_button.map(set_display_preference_button)),
+                    ),
             )
             .build()
     }

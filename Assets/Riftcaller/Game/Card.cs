@@ -83,7 +83,7 @@ namespace Riftcaller.Game
     CardIdentifier? _cardId;
     bool? _serverCanPlay;
     bool? _serverRevealedInArena;
-    ObjectPosition? _moveTargetPosition;
+    CardMoveTarget? _cardMoveTarget;
     ISet<RoomIdentifier>? _validRoomTargets;
     ObjectPosition? _releasePosition;
     InfoZoomHighlight? _infoZoomHighlight;
@@ -130,7 +130,7 @@ namespace Riftcaller.Game
 
     public ObjectPosition? DestroyPosition { get; private set; }
     
-    public ObjectPosition? MoveTargetPosition => _moveTargetPosition;
+    public CardMoveTarget? CardMoveTarget => _cardMoveTarget;
 
     public Transform TopLeftAnchor => _topLeftAnchor;
 
@@ -250,7 +250,7 @@ namespace Riftcaller.Game
                       Registry.CapabilityService.CanMoveCards() &&
                       _isRevealed;
 
-    bool CanMove() => _moveTargetPosition != null &&
+    bool CanMove() => _cardMoveTarget != null &&
                       Registry.CapabilityService.CanMoveCards();
 
     public Card CloneForDisplay()
@@ -277,7 +277,7 @@ namespace Riftcaller.Game
       result._cardId = _cardId;
       result._outline.enabled = false;
       result._serverCanPlay = false;
-      result._moveTargetPosition = null;
+      result._cardMoveTarget = null;
       result._serverRevealedInArena = _serverRevealedInArena;
       result._validRoomTargets = _validRoomTargets;
       result._releasePosition = _releasePosition;
@@ -370,6 +370,8 @@ namespace Riftcaller.Game
     // always works for them and my code is probably wrong... cool.
     public override void MouseDown()
     {
+      Debug.Log($"{name} MouseDown");
+      
       var canPlay = CanPlay();
       _isMove = !canPlay && CanMove();
 
@@ -475,13 +477,21 @@ namespace Riftcaller.Game
         return;
       }
 
-      if (_moveTargetPosition != null)
+      if (_cardMoveTarget != null)
       {
+        uint? index = null;
+        if (_cardMoveTarget.CanReorder)
+        {
+          index = Registry.ObjectPositionService.HorizontalIndexPositionWithinDisplay(
+            _cardMoveTarget.TargetPosition,
+            transform);
+        }
         Registry.ActionService.HandleAction(new ClientAction
         {
           MoveCard = new MoveCardAction
           {
-            CardId = Errors.CheckNotNull(_cardId)
+            CardId = Errors.CheckNotNull(_cardId),
+            Index = index
           }
         });
       }
@@ -522,9 +532,14 @@ namespace Riftcaller.Game
         return true;
       }
 
-      if (_validRoomTargets == null || _moveTargetPosition != null)
+      var mousePosition = WorldMousePosition(Registry, _dragStartScreenZ);
+      if (_cardMoveTarget != null)
       {
-        var mousePosition = WorldMousePosition(Registry, _dragStartScreenZ);
+        var distanceDragged = Vector2.Distance(mousePosition, _dragStartPosition);
+        return distanceDragged < 0.25f;
+      }
+      else if (_validRoomTargets == null)
+      {
         var distanceDraggedZ = Mathf.Abs(mousePosition.z - _dragStartPosition.z);
         return distanceDraggedZ < 2.0f;
       }
@@ -589,7 +604,7 @@ namespace Riftcaller.Game
       gameObject.name = revealed.Title.Text + IdString();
       _validRoomTargets = null;
       _serverCanPlay = false;
-      _moveTargetPosition = revealed.CardMoveTarget;
+      _cardMoveTarget = revealed.CardMoveTarget;
       _arrowOnDrag = null;
 
       switch (revealed.Targeting?.TargetingCase)

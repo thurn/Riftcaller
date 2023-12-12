@@ -144,6 +144,24 @@ namespace Riftcaller.Services
       ObjectDisplayForPosition(targetPosition).AddObjectImmediate(displayable);
     }
 
+    public uint HorizontalIndexPositionWithinDisplay(ObjectPosition position, Transform t)
+    {
+      uint result = 0;
+      var minDistance = float.MaxValue;
+      var objects = ObjectDisplayForPosition(position).AllObjects;
+      for (uint i = 0; i < objects.Count; ++i) 
+      {
+        var distance = Math.Abs(t.position.x - objects[(int)i].transform.position.x);
+        if (distance < minDistance)
+        {
+          result = i;
+          minDistance = distance;
+        }
+      }
+
+      return result;
+    }
+
     Displayable CheckExists(GameObjectIdentifier gameObjectId)
     {
       switch (gameObjectId.IdCase)

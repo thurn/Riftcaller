@@ -37,7 +37,7 @@ use player_data::PlayerStatus;
 use protos::riftcaller::client_debug_command::DebugCommand;
 use protos::riftcaller::game_command::Command;
 use protos::riftcaller::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
-use rules::mutations::SummonMinion;
+use rules::mutations::{RealizeCards, SummonMinion};
 use rules::{curses, dispatch, draw_cards, mana, mutations, wounds};
 use serde_json::{de, ser};
 use sled::Db;
@@ -225,9 +225,11 @@ pub async fn handle_debug_action(
         DebugAction::AddToZone { variant, position, turn_face_up } => {
             debug_update_game(database, data, |game, _| {
                 let side = rules::get(*variant).side;
-                if let Some(card_id) = mutations::realize_top_of_deck(game, side, 1)?.get(0) {
+                if let Some(card_id) =
+                    mutations::realize_top_of_deck(game, side, 1, RealizeCards::SetVisibleToOwner)?
+                        .get(0)
+                {
                     mutations::overwrite_card(game, *card_id, *variant)?;
-                    mutations::set_visible_to(game, *card_id, card_id.side, true);
 
                     if matches!(position, CardPosition::Hand(s) if *s == side) {
                         draw_cards::run(game, side, 1, InitiatedBy::GameAction)?;
@@ -429,11 +431,11 @@ fn create_at_position(
     position: CardPosition,
 ) -> Result<CardId> {
     let side = rules::get(CardVariant::standard(card)).side;
-    let card_id =
-        *mutations::realize_top_of_deck(game, side, 1)?.get(0).with_error(|| "Deck is empty")?;
+    let card_id = *mutations::realize_top_of_deck(game, side, 1, RealizeCards::SetVisibleToOwner)?
+        .get(0)
+        .with_error(|| "Deck is empty")?;
     mutations::overwrite_card(game, card_id, CardVariant::standard(card))?;
     mutations::move_card(game, card_id, position)?;
-    mutations::set_visible_to(game, card_id, card_id.side, true);
     Ok(card_id)
 }
 

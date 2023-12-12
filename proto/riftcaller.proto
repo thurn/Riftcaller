@@ -910,6 +910,20 @@ message InfoZoomHighlight {
     }
 }
 
+// Target for this card to be moved to. If provided, the user will be able
+// to drag the card in the interface and it will animate to this position
+// when released and send a MoveCardAction. This is distinct from *playing*
+// a card and is used for operations like discarding from hand.
+//
+// Playing the card is disabled in this case.
+message CardMoveTarget {
+    // Position to move the card to when it is dragged
+    ObjectPosition target_position = 1;
+    // If true, the card can be reordered within the target_position. Used to
+    // e.g. pick the order of cards on top of the deck.
+    bool can_reorder = 2;
+}
+
 message RevealedCardView {
     SpriteAddress card_frame = 1;
     SpriteAddress title_background = 2;
@@ -935,14 +949,9 @@ message RevealedCardView {
     // Content to display behind the main image
     SpriteAddress image_background = 10;
 
-    // Target for this card to be moved to. If provided, the user will be able
-    // to drag the card in the interface and it will animate to this position
-    // when released and send a MoveCardAction. This is distinct from *playing*
-    // a card and is used for operations like discarding from hand.
-    //
-    // Card targeting is disabled in this case, i.e. is impossible to play
-    // a card with a move target.
-    ObjectPosition card_move_target = 11;
+    // Allows the card to be dragged in the UI for some effect. See CardMoveTarget
+    // for more information.
+    CardMoveTarget card_move_target = 11;
 
     // If provided, identifies a parent card for this card. An arrow will be
     // rendered from this card to its parent while it is being dragged,
@@ -1310,6 +1319,10 @@ message SpendActionPointAction {}
 //   - Card animates to its 'card_move_target' position.
 message MoveCardAction {
     CardIdentifier card_id = 1;
+
+    // Optionally, an index position within the target position to move the
+    // card to. Only included if 'can_reorder' is true on the CardMoveTarget.
+    google.protobuf.UInt32Value index = 2;
 }
 
 // Possible game actions taken by the user.

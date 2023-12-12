@@ -21,7 +21,7 @@ use game_data::prompt_data::{CardSelectorPrompt, GamePrompt, PromptAction, Promp
 use prompt_ui::game_instructions::GameInstructions;
 use prompt_ui::prompt_container::PromptContainer;
 use prompt_ui::response_button::ResponseButton;
-use protos::riftcaller::{InterfaceMainControls, ObjectPosition};
+use protos::riftcaller::{CardMoveTarget, InterfaceMainControls};
 use rules::flags;
 
 use crate::positions;
@@ -44,6 +44,7 @@ fn instructions(context: Option<PromptContext>) -> Option<String> {
         Some(PromptContext::MoveToTopOfVault) => {
             Some("Put a card from the crypt on top of the vault?".to_string())
         }
+        Some(PromptContext::ReorderTopOfVault) => Some("Reorder the top of the vault".to_string()),
         _ => None,
     }
 }
@@ -54,7 +55,10 @@ fn metatext(context: Option<PromptContext>) -> Option<String> {
             Some("<i>(Drag cards down from your hand to your deck.)</i>".to_string())
         }
         Some(PromptContext::MoveToTopOfVault) => {
-            Some("<i>(Drag cards down from the crypt to the sanctum.)</i>".to_string())
+            Some("<i>(Drag cards down from the crypt to the vault.)</i>".to_string())
+        }
+        Some(PromptContext::ReorderTopOfVault) => {
+            Some("<i>(Drag cards down in your preferred order)</i>".to_string())
         }
         _ => None,
     }
@@ -64,19 +68,27 @@ pub fn move_target(
     builder: &ResponseBuilder,
     game: &GameState,
     card: &CardState,
-) -> Option<ObjectPosition> {
+) -> Option<CardMoveTarget> {
     let Some(GamePrompt::CardSelector(prompt)) = rules::prompts::current(game, builder.user_side)
     else {
         return None;
     };
 
-    if prompt.unchosen_subjects.contains(&card.id) {
+    let target_position = if prompt.unchosen_subjects.contains(&card.id) {
         Some(positions::for_card(card, positions::card_browser_target_position()))
     } else if prompt.chosen_subjects.contains(&card.id) {
-        Some(positions::for_card(card, positions::revealed_cards(true)))
+        if prompt.can_reorder {
+            // For the 'can_reorder' flow, cards that have been chosen cannot
+            // be dragged back to their original position.
+            Some(positions::for_card(card, positions::card_browser_target_position()))
+        } else {
+            Some(positions::for_card(card, positions::revealed_cards(true)))
+        }
     } else {
         None
-    }
+    };
+
+    Some(CardMoveTarget { target_position, can_reorder: prompt.can_reorder })
 }
 
 fn buttons(prompt: &CardSelectorPrompt) -> PromptContainer {

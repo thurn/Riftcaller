@@ -149,6 +149,18 @@ pub trait TestSessionHelpers {
     /// result
     fn move_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput>;
 
+    /// Moves a card to a given index position during a 'card reordering' flow
+    /// (e.g. arrange the top cards of your deck in any order)
+    fn move_card_to_index(&mut self, card_id: CardIdentifier, index: u32);
+
+    /// Equivalent function to [Self::move_card_to_index] which returns the
+    /// result
+    fn move_card_to_index_with_result(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+    ) -> Result<GameResponseOutput>;
+
     /// Spends the `side` player's action points with no effect until they have
     /// no action points remaining and then clicks the "End Turn" button.
     fn move_to_end_step(&mut self, side: Side);
@@ -428,7 +440,23 @@ impl TestSessionHelpers for TestSession {
 
     fn move_card_with_result(&mut self, card_id: CardIdentifier) -> Result<GameResponseOutput> {
         self.perform_action(
-            Action::MoveCard(MoveCardAction { card_id: Some(card_id) }),
+            Action::MoveCard(MoveCardAction { card_id: Some(card_id), index: None }),
+            self.user_id(),
+        )
+    }
+
+    fn move_card_to_index(&mut self, card_id: CardIdentifier, index: u32) {
+        self.move_card_to_index_with_result(card_id, index)
+            .unwrap_or_else(|_| panic!("Error moving card {card_id:?} to index {index:?}"));
+    }
+
+    fn move_card_to_index_with_result(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+    ) -> Result<GameResponseOutput> {
+        self.perform_action(
+            Action::MoveCard(MoveCardAction { card_id: Some(card_id), index: Some(index) }),
             self.user_id(),
         )
     }

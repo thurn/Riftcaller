@@ -22,6 +22,7 @@ use game_data::game_state::GameState;
 use game_data::raid_data::{RaidChoice, RaidInfo, RaidLabel, RaidStep, ScoredCard};
 use game_data::random;
 use rules::mana::ManaPurpose;
+use rules::mutations::RealizeCards;
 use rules::{dispatch, mana, mutations, queries, CardDefinitionExt};
 
 /// Returns a vector of the cards accessed for the current raid target, mutating
@@ -34,6 +35,7 @@ pub fn select_accessed_cards(game: &mut GameState, info: RaidInfo) -> Result<Vec
             game,
             Side::Covenant,
             queries::vault_access_count(game)?,
+            RealizeCards::NotVisibleToOwner,
         )?,
         RoomId::Sanctum => {
             let count = queries::sanctum_access_count(game)?;

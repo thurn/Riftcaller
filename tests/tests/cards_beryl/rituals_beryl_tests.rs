@@ -163,3 +163,58 @@ fn lightbond_return_scheme_to_hand() {
     g.initiate_raid(RoomId::RoomA);
     assert_eq!(g.client.cards.opponent_hand().curse_count(), 2);
 }
+
+#[test]
+fn foresee() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .deck_top(CardName::TestInfernalMinion)
+            .deck_top(CardName::TestAstralMinion),
+    )
+    .build();
+    g.create_and_play(CardName::Foresee);
+    let infernal = g.client.cards.browser().find_card(CardName::TestInfernalMinion).id();
+    let astral = g.client.cards.browser().find_card(CardName::TestAstralMinion).id();
+    for card_id in g.client.cards.browser().iter().map(|c| c.id()).collect::<Vec<_>>() {
+        g.move_card_to_index(card_id, 0);
+    }
+    g.move_card_to_index(infernal, 4);
+    g.move_card_to_index(astral, 4);
+    g.click(Button::SubmitCardSelector);
+    g.draw_card();
+    test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestAstralMinion]);
+    g.draw_card();
+    test_helpers::assert_cards_match(
+        g.client.cards.hand(),
+        vec![CardName::TestAstralMinion, CardName::TestInfernalMinion],
+    );
+}
+
+#[test]
+fn foresee_upgraded() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Covenant).deck_top(CardName::TestMortalMinion)).build();
+    g.create_and_play_upgraded(CardName::Foresee);
+    let mortal = g.client.cards.browser().find_card(CardName::TestMortalMinion).id();
+    for card_id in g.client.cards.browser().iter().map(|c| c.id()).collect::<Vec<_>>() {
+        g.move_card_to_index(card_id, 2);
+    }
+    g.move_card_to_index(mortal, 4);
+    g.click(Button::SubmitCardSelector);
+    test_helpers::assert_cards_match(g.client.cards.hand(), vec![CardName::TestMortalMinion]);
+}
+
+#[test]
+fn foresee_must_submit_all() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .deck_top(CardName::TestMortalMinion)
+            .deck_top(CardName::TestInfernalMinion)
+            .deck_top(CardName::TestAstralMinion),
+    )
+    .build();
+    g.create_and_play(CardName::Foresee);
+    let id = g.client.cards.browser().find_card(CardName::TestInfernalMinion).id();
+    g.move_card_to_index(id, 4);
+    assert!(g.click_with_result(Button::SubmitCardSelector).is_err());
+}

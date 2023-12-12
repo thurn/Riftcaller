@@ -12,27 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::CardId;
+use core_data::game_primitives::{CardId, InitiatedBy};
+use game_data::delegate_data::Scope;
 use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PromptContext,
 };
 
 pub struct CardSelectorPromptBuilder {
+    initiated_by: InitiatedBy,
     target: BrowserPromptTarget,
     subjects: Vec<CardId>,
     context: Option<PromptContext>,
     validation: Option<BrowserPromptValidation>,
-    show_ability_alert: bool,
+    can_reorder: bool,
 }
 
 impl CardSelectorPromptBuilder {
-    pub fn new(target: BrowserPromptTarget) -> Self {
+    pub fn new(scope: Scope, target: BrowserPromptTarget) -> Self {
         Self {
+            initiated_by: scope.initiated_by(),
             target,
             subjects: vec![],
             context: None,
             validation: None,
-            show_ability_alert: false,
+            can_reorder: false,
         }
     }
 
@@ -51,8 +54,8 @@ impl CardSelectorPromptBuilder {
         self
     }
 
-    pub fn show_ability_alert(mut self, show_ability_alert: bool) -> Self {
-        self.show_ability_alert = show_ability_alert;
+    pub fn can_reorder(mut self, can_reorder: bool) -> Self {
+        self.can_reorder = can_reorder;
         self
     }
 
@@ -65,11 +68,13 @@ impl CardSelectorPromptBuilder {
         }
 
         Some(GamePrompt::CardSelector(CardSelectorPrompt {
+            initiated_by: self.initiated_by,
             context: self.context,
             unchosen_subjects: self.subjects,
             chosen_subjects: vec![],
             target: self.target,
             validation: self.validation,
+            can_reorder: self.can_reorder,
         }))
     }
 }

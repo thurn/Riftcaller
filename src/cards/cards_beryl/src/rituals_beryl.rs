@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{abilities, costs, delegates, requirements, show_prompt, text, this};
 use core_data::game_primitives::{CardSubtype, CardType, HasCardId, Rarity, School, Side};
@@ -24,10 +25,13 @@ use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::prompt_data::{PromptChoice, PromptData};
+use game_data::prompt_data::{
+    BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptContext, PromptData,
+};
 use game_data::text::TextToken::*;
+use rules::mutations::RealizeCards;
 use rules::visual_effects::VisualEffects;
-use rules::{curses, mutations, prompts, CardDefinitionExt};
+use rules::{curses, draw_cards, mutations, prompts, CardDefinitionExt};
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -173,6 +177,52 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
             })),
             meta.is_upgraded.then(|| abilities::gain_mana_on_play::<2>()),
         ]),
+        config: CardConfig::default(),
+    }
+}
+
+pub fn foresee(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Foresee,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::covenant_card(meta, "foresee"),
+        card_type: CardType::Ritual,
+        subtypes: vec![CardSubtype::Augury],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![Ability::new(text![
+            text!["Look at the top", 5, "cards of the", Vault, "and arrange them in any order"],
+            meta.upgraded_only_text(text!["Draw a card"])
+        ])
+        .delegate(this::on_played(|g, s, _| {
+            let cards = mutations::realize_top_of_deck(
+                g,
+                Side::Covenant,
+                5,
+                RealizeCards::SetVisibleToOwner,
+            )?;
+            prompts::push_with_data(g, Side::Covenant, s, PromptData::Cards(cards));
+            Ok(())
+        }))
+        .delegate(this::prompt(|_, s, source, _| {
+            let PromptData::Cards(cards) = &source.data else {
+                return None;
+            };
+            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
+                .subjects(cards.clone())
+                .context(PromptContext::ReorderTopOfVault)
+                .can_reorder(true)
+                .validation(BrowserPromptValidation::AllSubjects)
+                .build()
+        }))
+        .delegate(this::on_card_selector_submitted(|g, s, _| {
+            if s.is_upgraded() {
+                draw_cards::run(g, Side::Covenant, 1, s.initiated_by())?;
+            }
+            Ok(())
+        }))],
         config: CardConfig::default(),
     }
 }

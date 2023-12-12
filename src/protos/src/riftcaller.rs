@@ -888,6 +888,23 @@ pub mod info_zoom_highlight {
         Room(i32),
     }
 }
+/// Target for this card to be moved to. If provided, the user will be able
+/// to drag the card in the interface and it will animate to this position
+/// when released and send a MoveCardAction. This is distinct from *playing*
+/// a card and is used for operations like discarding from hand.
+///
+/// Playing the card is disabled in this case.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CardMoveTarget {
+    /// Position to move the card to when it is dragged
+    #[prost(message, optional, tag = "1")]
+    pub target_position: ::core::option::Option<ObjectPosition>,
+    /// If true, the card can be reordered within the target_position. Used to
+    /// e.g. pick the order of cards on top of the deck.
+    #[prost(bool, tag = "2")]
+    pub can_reorder: bool,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RevealedCardView {
@@ -920,15 +937,10 @@ pub struct RevealedCardView {
     /// Content to display behind the main image
     #[prost(message, optional, tag = "10")]
     pub image_background: ::core::option::Option<SpriteAddress>,
-    /// Target for this card to be moved to. If provided, the user will be able
-    /// to drag the card in the interface and it will animate to this position
-    /// when released and send a MoveCardAction. This is distinct from *playing*
-    /// a card and is used for operations like discarding from hand.
-    ///
-    /// Card targeting is disabled in this case, i.e. is impossible to play
-    /// a card with a move target.
+    /// Allows the card to be dragged in the UI for some effect. See
+    /// CardMoveTarget for more information.
     #[prost(message, optional, tag = "11")]
-    pub card_move_target: ::core::option::Option<ObjectPosition>,
+    pub card_move_target: ::core::option::Option<CardMoveTarget>,
     /// If provided, identifies a parent card for this card. An arrow will be
     /// rendered from this card to its parent while it is being dragged,
     /// indicating the relationship between these two cards.
@@ -1213,7 +1225,7 @@ pub struct GameView {
     /// Positions of non-Card game objects.
     #[prost(message, optional, tag = "5")]
     pub game_object_positions: ::core::option::Option<GameObjectPositions>,
-    /// Controls for game actions such as interface prompt_ui
+    /// Controls for game actions such as interface prompts
     #[prost(message, optional, tag = "6")]
     pub main_controls: ::core::option::Option<InterfaceMainControls>,
     /// Tutorial UI elements
@@ -1365,6 +1377,10 @@ pub struct SpendActionPointAction {}
 pub struct MoveCardAction {
     #[prost(message, optional, tag = "1")]
     pub card_id: ::core::option::Option<CardIdentifier>,
+    /// Optionally, an index position within the target position to move the
+    /// card to. Only included if 'can_reorder' is true on the CardMoveTarget.
+    #[prost(message, optional, tag = "2")]
+    pub index: ::core::option::Option<u32>,
 }
 /// Possible game actions taken by the user.
 ///
@@ -3756,9 +3772,7 @@ impl MapTileType {
 /// Generated server implementations.
 pub mod riftcaller_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-
     use tonic::codegen::*;
-
     /// Generated trait containing gRPC methods that should be implemented for
     /// use with RiftcallerServer.
     #[async_trait]

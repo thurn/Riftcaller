@@ -54,6 +54,16 @@ pub fn add_matching<T: PartialEq + Copy>(current: &mut Option<(T, u32)>, tag: T,
     *current = Some((tag, value));
 }
 
+/// Inserts `element` at an `index` position in `vector`, or at the end of the
+/// vector if the index is too large.
+pub fn safe_insert<T>(vector: &mut Vec<T>, index: usize, element: T) {
+    if index <= vector.len() {
+        vector.insert(index, element);
+    } else {
+        vector.push(element);
+    }
+}
+
 /// An incrementing counter for assigning event IDs for debug utils. There are
 /// only 294,967,295 IDs before this overflows so don't go crazy with it :)
 pub static DEBUG_EVENT_ID: AtomicU32 = AtomicU32::new(4000000000);

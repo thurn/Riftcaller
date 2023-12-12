@@ -21,6 +21,7 @@ use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{Delegate, EventDelegate};
+use rules::mutations::RealizeCards;
 use rules::visual_effects::VisualEffects;
 use rules::{draw_cards, mana, mutations, CardDefinitionExt};
 
@@ -117,7 +118,12 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
                 "cards, if present"
             ],
             in_play::vault_access_selected(|g, _, _| {
-                let cards = mutations::realize_top_of_deck(g, Side::Covenant, 5)?;
+                let cards = mutations::realize_top_of_deck(
+                    g,
+                    Side::Covenant,
+                    5,
+                    RealizeCards::NotVisibleToOwner,
+                )?;
                 if let Some(card_id) =
                     cards.into_iter().find(|id| g.card(*id).definition().is_scheme())
                 {

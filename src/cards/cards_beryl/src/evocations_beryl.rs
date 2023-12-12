@@ -38,6 +38,7 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use raid_state::{custom_access, InitiateRaidOptions};
+use rules::mutations::RealizeCards;
 use rules::visual_effects::VisualEffects;
 use rules::{curses, destroy, draw_cards, flags, mana, mutations, prompts, CardDefinitionExt};
 
@@ -275,8 +276,12 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                 text![Banish, "the top", 3, "cards of your deck"],
             ))
             .delegate(this::on_played(|g, s, play_card| {
-                let cards = mutations::realize_top_of_deck(g, s.side(), 3)?;
-                mutations::set_cards_visible_to(g, &cards, s.side(), true);
+                let cards = mutations::realize_top_of_deck(
+                    g,
+                    s.side(),
+                    3,
+                    RealizeCards::SetVisibleToOwner,
+                )?;
                 g.add_animation(|| GameAnimation::DrawCards(s.side(), cards.clone()));
                 g.card_mut(s).custom_state.record_targets(play_card.card_play_id, &cards);
                 mutations::move_cards(

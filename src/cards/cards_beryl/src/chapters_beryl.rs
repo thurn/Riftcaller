@@ -157,6 +157,7 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
                                     .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01"))
                                     .effect_color(design::BLUE_500),
                             )
+                            .ability_alert(s)
                             .apply(g);
                         prompts::push(g, Side::Covenant, s);
                         Ok(())
@@ -165,11 +166,10 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }),
         )
-        .delegate(this::prompt(|g, _, _, _| {
-            CardSelectorPromptBuilder::new(BrowserPromptTarget::Deck)
+        .delegate(this::prompt(|g, s, _, _| {
+            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
                 .subjects(g.discard_pile(Side::Covenant).card_ids())
                 .context(PromptContext::MoveToTopOfVault)
-                .show_ability_alert(true)
                 .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
                 .build()
         }))],

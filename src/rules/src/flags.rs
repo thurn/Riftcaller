@@ -526,6 +526,7 @@ pub fn card_selector_state_is_valid(prompt: &CardSelectorPrompt) -> bool {
         Some(BrowserPromptValidation::LessThanOrEqualTo(count)) => {
             prompt.chosen_subjects.len() <= count
         }
+        Some(BrowserPromptValidation::AllSubjects) => prompt.unchosen_subjects.is_empty(),
         None => true,
     }
 }

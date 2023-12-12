@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, CardId, CardPlayId, CardType, HasAbilityId, ManaValue, RoomId,
+    AbilityId, CardId, CardPlayId, CardType, HasAbilityId, InitiatedBy, ManaValue, RoomId,
 };
 use serde::{Deserialize, Serialize};
 
@@ -90,6 +90,8 @@ pub enum PromptContext {
     PlayFromDiscard(CardType),
     /// Move a card to the top of the vault
     MoveToTopOfVault,
+    /// Move cards to the top of the vault in a chosen order
+    ReorderTopOfVault,
 }
 
 /// Target game object for a [CardSelectorPrompt] to which cards must be
@@ -108,6 +110,8 @@ pub enum BrowserPromptValidation {
     ExactlyCount(usize),
     /// User must select at most this many cards.
     LessThanOrEqualTo(usize),
+    /// User must move all subject cards
+    AllSubjects,
 }
 
 /// A prompt which displays a selection of cards to the user and requests that
@@ -118,6 +122,8 @@ pub struct CardSelectorPrompt {
     /// Identifies the context for this prompt, i.e. why it is being shown to
     /// the user
     pub context: Option<PromptContext>,
+    /// Identifies the source which caused this selector to be displayed.
+    pub initiated_by: InitiatedBy,
     /// Cards which should be displayed in the browser and which have not
     /// been selected by dragging them to the target. Initially, this should
     /// contain all subject cards. As cards are dragged in the UI, they will be
@@ -130,11 +136,14 @@ pub struct CardSelectorPrompt {
     /// when performing the 'discard to hand size' flow. This should initially
     /// be empty.
     pub chosen_subjects: Vec<CardId>,
-    /// Target game object to which cards must be dragged.
+    /// Target game object to which cards card being moved.
     pub target: BrowserPromptTarget,
     /// Describes which configurations of subjects are valid and should allow
     /// the prompt to be exited.
     pub validation: Option<BrowserPromptValidation>,
+    /// If true, the player seeing this prompt can rearrange the cards within
+    /// the `target` position.
+    pub can_reorder: bool,
 }
 
 /// Action to take on cards which are *not* played via the [PlayCardBrowser].
