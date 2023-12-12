@@ -166,7 +166,7 @@ pub fn move_cards(game: &mut GameState, cards: &[CardId], to_position: CardPosit
 }
 
 /// Move a card to the discard pile. This should specifically be used when a
-/// player's *own* effect causes their card to be discarded.
+/// player's *own* effect causes their card to be discarded from play.
 pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))?;
     if card_id.side == Side::Riftcaller {

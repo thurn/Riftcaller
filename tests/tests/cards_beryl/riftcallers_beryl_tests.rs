@@ -18,7 +18,7 @@ use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
-pub fn illeas() {
+fn illeas() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::IlleasTheHighSage))
             .build();
@@ -27,7 +27,7 @@ pub fn illeas() {
 }
 
 #[test]
-pub fn illeas_does_not_trigger_on_action() {
+fn illeas_does_not_trigger_on_action() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::IlleasTheHighSage))
             .build();
@@ -36,7 +36,7 @@ pub fn illeas_does_not_trigger_on_action() {
 }
 
 #[test]
-pub fn strazihar() {
+fn strazihar() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::StraziharTheAllSeeing))
             .current_turn(Side::Covenant)
@@ -47,7 +47,7 @@ pub fn strazihar() {
 }
 
 #[test]
-pub fn strazihar_pay_to_prevent() {
+fn strazihar_pay_to_prevent() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::StraziharTheAllSeeing))
             .current_turn(Side::Covenant)
@@ -59,7 +59,7 @@ pub fn strazihar_pay_to_prevent() {
 }
 
 #[test]
-pub fn strazihar_insufficient_mana() {
+fn strazihar_insufficient_mana() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::StraziharTheAllSeeing))
             .opponent(TestSide::new(Side::Covenant).mana(0))
@@ -71,7 +71,7 @@ pub fn strazihar_insufficient_mana() {
 }
 
 #[test]
-pub fn strazihar_glimmersong() {
+fn strazihar_glimmersong() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::StraziharTheAllSeeing))
             .build();
@@ -83,7 +83,7 @@ pub fn strazihar_glimmersong() {
 }
 
 #[test]
-pub fn merethyl() {
+fn merethyl() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
             .build();
@@ -96,7 +96,7 @@ pub fn merethyl() {
 }
 
 #[test]
-pub fn merethyl_trigger_twice() {
+fn merethyl_trigger_twice() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
             .build();
@@ -112,7 +112,7 @@ pub fn merethyl_trigger_twice() {
 }
 
 #[test]
-pub fn merethyl_works_with_raid_spell() {
+fn merethyl_works_with_raid_spell() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
             .build();
@@ -125,7 +125,7 @@ pub fn merethyl_works_with_raid_spell() {
 }
 
 #[test]
-pub fn merethyl_effect_does_not_increase_delve_into_darkness() {
+fn merethyl_effect_does_not_increase_delve_into_darkness() {
     let mut g =
         TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
             .build();
@@ -140,7 +140,7 @@ pub fn merethyl_effect_does_not_increase_delve_into_darkness() {
 }
 
 #[test]
-pub fn oleus() {
+fn oleus() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::OleusTheWatcher))
         .opponent(
             TestSide::new(Side::Covenant)
@@ -153,7 +153,7 @@ pub fn oleus() {
 }
 
 #[test]
-pub fn oleus_trigger_on_opponent_turn() {
+fn oleus_trigger_on_opponent_turn() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::OleusTheWatcher))
         .opponent(
             TestSide::new(Side::Covenant)
@@ -163,4 +163,44 @@ pub fn oleus_trigger_on_opponent_turn() {
         .build();
     g.create_and_play(CardName::TestRitualSummonAllMinions);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
+}
+
+#[test]
+fn ellisar() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::EllisarForgekeeper))
+            .build();
+    let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.activate_ability(id, 0);
+    assert_eq!(g.me().actions(), 4);
+}
+
+#[test]
+fn ellisar_activate_during_raid() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::EllisarForgekeeper))
+            .opponent(
+                TestSide::new(Side::Covenant)
+                    .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
+            )
+            .build();
+    let id = g.create_and_play(CardName::TestSacrificeDrawCardArtifact);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 0);
+    assert_eq!(g.me().actions(), 3);
+}
+
+#[test]
+fn ellisar_resolution_sacrifice() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::EllisarForgekeeper))
+            .opponent(
+                TestSide::new(Side::Covenant)
+                    .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
+            )
+            .build();
+    g.create_and_play(CardName::Resolution);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Resolution);
+    assert_eq!(g.me().actions(), 3);
 }

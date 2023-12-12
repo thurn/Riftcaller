@@ -347,6 +347,7 @@ pub enum CardName {
     VortexPortal,
     RadiantIntervention,
     BrilliantGambit,
+    EllisarForgekeeper,
 }
 
 impl CardName {
@@ -366,6 +367,7 @@ impl CardName {
             Self::OleusTheWatcher => "Oleus, the Watcher",
             Self::VendocSeerInStarlight => "Vendoc, Seer in Starlight",
             Self::AMomentsPeace => "A Moment's Peace",
+            Self::EllisarForgekeeper => "Ellisar, Forgekeeper",
             _ => "",
         };
 

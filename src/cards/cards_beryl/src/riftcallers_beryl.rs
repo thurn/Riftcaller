@@ -28,7 +28,7 @@ use game_data::prompt_data::{PromptChoice, PromptData};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::VisualEffects;
-use rules::{custom_state, draw_cards, mana, prompts, CardDefinitionExt};
+use rules::{custom_state, draw_cards, mana, mutations, prompts, CardDefinitionExt};
 
 pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -263,6 +263,52 @@ pub fn oleus_the_watcher(meta: CardMetadata) -> CardDefinition {
                 bio: "Growing up in Elandor's Luminous Glades, Oleus was marked by an ancient \
                 prophecy. His gaze, sharper than the keenest blade, has unveiled secrets long \
                 buried beneath the whispering breeze of Mystwind Tower.",
+            })
+            .build(),
+    }
+}
+
+pub fn ellisar_forgekeeper(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::EllisarForgekeeper,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::riftcaller_card(meta, "ellisar"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![Ability::new_with_delegate(
+            text!["The first time each turn you sacrifice an artifact,", GainActions(1)],
+            in_play::on_card_sacrificed(|g, s, card_id| {
+                if card_id.side == Side::Riftcaller && g.card(*card_id).definition().is_artifact() {
+                    custom_state::identity_once_per_turn(g, s, |g, _| {
+                        VisualEffects::new()
+                            .ability_alert(s)
+                            .timed_effect(
+                                GameObjectId::CardId(s.card_id()),
+                                TimedEffectData::new(TimedEffect::MagicCircles1(10))
+                                    .scale(1.0)
+                                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff01"))
+                                    .effect_color(design::YELLOW_900),
+                            )
+                            .apply(g);
+                        mutations::gain_action_points(g, Side::Riftcaller, 1)
+                    })?;
+                }
+                Ok(())
+            }),
+        )],
+        config: CardConfigBuilder::new()
+            .identity(IdentityConfig {
+                starting_coins: Coins(500),
+                secondary_schools: vec![School::Pact],
+                skills: vec![Skill::Stealth, Skill::Persuasion],
+                bio: "Ellisar's tale was forged in the fiery heart of Khazpar, among cascading \
+                rivers of molten rock. His hands, once roughened by the relentless forge, now \
+                cradle the secrets of creation, guarding the sacred flame that births both weapon \
+                and wonder.",
             })
             .build(),
     }

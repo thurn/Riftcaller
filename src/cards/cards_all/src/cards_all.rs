@@ -102,6 +102,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::merethyl_lore_seeker);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::oleus_the_watcher);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::ellisar_forgekeeper);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);
