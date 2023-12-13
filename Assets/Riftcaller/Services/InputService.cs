@@ -193,11 +193,9 @@ namespace Riftcaller.Services
 
     Displayable? FireMouseDown()
     {
-      Debug.Log($"FireMouseDown");
       if (_registry.DocumentService.IsAnyPanelOpen() ||
           _registry.DocumentService.MouseOverScreenElement())
       {
-        Debug.Log($"FireMouseDown: MouseOverScreenElement");
         return null;
       }
       

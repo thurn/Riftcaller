@@ -12,7 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod adventure;
-pub mod adventure_action;
-pub mod adventure_cost;
-pub mod adventure_effect;
+use serde::{Deserialize, Serialize};
+
+use crate::adventure::CardSelector;
+
+/// A cost which must be paid to achieve some effect within an adventure.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum AdventureCost {
+    LoseKnownRandomCard(CardSelector),
+}

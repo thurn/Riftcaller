@@ -101,7 +101,7 @@ fn menu_button(
         .pressed_style(
             Style::new().color(FontColor::MainMenuButtonPress).margin(Edge::Left, 6.px()),
         )
-        .on_attach_style(Style::new().opacity(1.0))
+        .when_attached_style(Style::new().opacity(1.0))
         .on_click(action)
         .child(
             Text::new(label)

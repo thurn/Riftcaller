@@ -13,11 +13,11 @@
 // limitations under the License.
 
 use core_ui::action_builder::ActionBuilder;
-use core_ui::animations::{
-    self, AnimateStyle, AnimateToElement, DestroyElement, InterfaceAnimation,
-};
 use core_ui::conditional::Conditional;
 use core_ui::drop_target::DropTarget;
+use core_ui::interface_animations::{
+    self, AnimateStyle, AnimateToElement, DestroyElement, InterfaceAnimation,
+};
 use core_ui::prelude::*;
 use element_names::CurrentDraggable;
 use game_data::card_name::CardVariant;
@@ -93,7 +93,11 @@ fn drop_action(variant: CardVariant) -> ActionBuilder {
                         CurrentDraggable,
                         AnimateToElement::new(element_names::deck_card(variant)),
                     )
-                    .insert(animations::default_duration(), CurrentDraggable, DestroyElement),
+                    .insert(
+                        interface_animations::default_duration(),
+                        CurrentDraggable,
+                        DestroyElement,
+                    ),
             )
             .or_else(
                 InterfaceAnimation::new()
@@ -105,7 +109,11 @@ fn drop_action(variant: CardVariant) -> ActionBuilder {
                         CurrentDraggable,
                         AnimateToElement::new(element_names::COLLECTION_BROWSER),
                     )
-                    .insert(animations::default_duration(), CurrentDraggable, DestroyElement),
+                    .insert(
+                        interface_animations::default_duration(),
+                        CurrentDraggable,
+                        DestroyElement,
+                    ),
             ),
     )
 }

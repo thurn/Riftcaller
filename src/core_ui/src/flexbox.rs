@@ -111,7 +111,7 @@ pub trait HasRenderNode: Sized {
 
     /// [Style] to merge into this component's base style when it is first
     /// attached to a panel.
-    fn on_attach_style(mut self, style: Style) -> Self {
+    fn when_attached_style(mut self, style: Style) -> Self {
         self.render_node().on_attach_style = Some(style.wrapped_style());
         self
     }

@@ -15,6 +15,8 @@
 use core_data::adventure_primitives::TilePosition;
 use serde::{Deserialize, Serialize};
 
+use crate::adventure::NarrativeEventStep;
+
 /// Actions which can be taken for the 'adventure' game mode.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum AdventureAction {
@@ -30,4 +32,6 @@ pub enum AdventureAction {
     DraftCard(usize),
     /// Draft the purchase at the indicated index on the current shop screen
     BuyCard(usize),
+    /// Jump to one of the steps on a narrative choice screen
+    SetNarrativeStep(NarrativeEventStep),
 }

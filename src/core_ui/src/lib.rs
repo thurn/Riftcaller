@@ -16,7 +16,6 @@
 
 pub mod action_builder;
 pub mod actions;
-pub mod animations;
 pub mod bottom_sheet_content;
 pub mod button;
 pub mod component;
@@ -28,6 +27,7 @@ pub mod flexbox;
 pub mod full_screen_image;
 pub mod full_screen_loading;
 pub mod icons;
+pub mod interface_animations;
 pub mod list_cell;
 pub mod panel_window;
 pub mod panels;

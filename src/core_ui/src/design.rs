@@ -112,6 +112,9 @@ pub enum BackgroundColor {
     GameInstructionsBackground,
     AccessedNote,
     NarrativeEventBackground,
+    NarrativeEventChoice,
+    NarrativeEventChoiceHover,
+    NarrativeEventChoicePress,
 }
 
 impl From<BackgroundColor> for FlexColor {
@@ -135,6 +138,9 @@ impl From<BackgroundColor> for FlexColor {
             BackgroundColor::GameInstructionsBackground => BLACK_ALPHA_75,
             BackgroundColor::AccessedNote => BLACK_ALPHA_75,
             BackgroundColor::NarrativeEventBackground => BLACK_ALPHA_75,
+            BackgroundColor::NarrativeEventChoice => GRAY_900,
+            BackgroundColor::NarrativeEventChoiceHover => GRAY_700,
+            BackgroundColor::NarrativeEventChoicePress => GRAY_500,
         }
     }
 }
@@ -207,6 +213,7 @@ pub enum FontSize {
     SchoolLabel,
     GameInstructionsText,
     GameInstructionsMetaText,
+    NarrativeText,
 }
 
 impl From<FontSize> for Dimension {
@@ -231,6 +238,7 @@ impl From<FontSize> for Dimension {
             FontSize::SchoolLabel => 32,
             FontSize::GameInstructionsText => 36,
             FontSize::GameInstructionsMetaText => 28,
+            FontSize::NarrativeText => 24,
         })
         .px()
         .into()

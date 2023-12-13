@@ -15,14 +15,13 @@
 use std::collections::HashMap;
 
 use core_ui::action_builder::ActionBuilder;
-use core_ui::animations::{
-    self, default_duration, AnimateToElement, CreateTargetAtIndex, DestroyElement,
-    InterfaceAnimation,
-};
 use core_ui::conditional::Conditional;
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::draggable::Draggable;
 use core_ui::drop_target::DropTarget;
+use core_ui::interface_animations::{
+    self, AnimateToElement, CreateTargetAtIndex, DestroyElement, InterfaceAnimation,
+};
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
@@ -131,7 +130,11 @@ impl<'a> CollectionBrowser<'a> {
                 .then(
                     InterfaceAnimation::new()
                         .start(CurrentDraggable, AnimateToElement::new(element_name))
-                        .insert(animations::default_duration(), CurrentDraggable, DestroyElement),
+                        .insert(
+                            interface_animations::default_duration(),
+                            CurrentDraggable,
+                            DestroyElement,
+                        ),
                 )
                 .or_else(
                     InterfaceAnimation::new()
@@ -148,7 +151,11 @@ impl<'a> CollectionBrowser<'a> {
                             // moving to the target.
                             AnimateToElement::new(target_name).disable_height_half_offset(true),
                         )
-                        .insert(default_duration(), CurrentDraggable, DestroyElement),
+                        .insert(
+                            interface_animations::default_duration(),
+                            CurrentDraggable,
+                            DestroyElement,
+                        ),
                 ),
         )
     }

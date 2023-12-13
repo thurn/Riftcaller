@@ -20,7 +20,6 @@ use derive_more::{
     Add, AddAssign, Display, Div, DivAssign, From, Into, Mul, MulAssign, Sub, SubAssign, Sum,
 };
 use serde::{Deserialize, Serialize};
-
 use with_error::fail;
 
 /// Identifies a set of tiles which can be revealed via the 'explore' action.
@@ -51,6 +50,12 @@ pub type RegionId = u32;
     Deserialize,
 )]
 pub struct Coins(pub u32);
+
+/// Identifies a choice index within a narrative event.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub struct NarrativeChoiceIndex {
+    pub value: usize,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub enum AdventureOutcome {

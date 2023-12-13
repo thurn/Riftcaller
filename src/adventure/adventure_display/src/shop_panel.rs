@@ -14,24 +14,23 @@
 
 use adventure_data::adventure::{CardChoice, ShopData};
 use adventure_data::adventure_action::AdventureAction;
-use player_data::PlayerState;
-
-use core_ui::{icons, style};
 use core_ui::action_builder::ActionBuilder;
-use core_ui::animations::{
-    self, AnimateStyle, AnimateToElement, CloneElement, DestroyElement, InterfaceAnimation,
-};
 use core_ui::button::Button;
 use core_ui::full_screen_image::FullScreenImage;
+use core_ui::interface_animations::{
+    self, AnimateStyle, AnimateToElement, CloneElement, DestroyElement, InterfaceAnimation,
+};
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
-use deck_card::{CardHeight, DeckCard};
+use core_ui::{icons, style};
 use deck_card::deck_card_slot::DeckCardSlot;
+use deck_card::{CardHeight, DeckCard};
 use element_names::ElementName;
 use panel_address::{Panel, PanelAddress};
-use protos::riftcaller::{FlexAlign, FlexJustify, FlexVector2};
+use player_data::PlayerState;
 use protos::riftcaller::animate_element_style::Property;
 use protos::riftcaller::game_command::Command;
+use protos::riftcaller::{FlexAlign, FlexJustify, FlexVector2};
 use screen_overlay::ScreenOverlay;
 
 pub struct ShopPanel<'a> {
@@ -53,13 +52,13 @@ impl<'a> Panel for ShopPanel<'a> {
 }
 
 fn animate_card_to_deck(card_element: ElementName, pick_button: ElementName) -> impl Into<Command> {
-    animations::combine(vec![
-        animations::fade_out(pick_button),
+    interface_animations::combine(vec![
+        interface_animations::fade_out(pick_button),
         InterfaceAnimation::new()
             .start(card_element, CloneElement)
             .start(card_element, AnimateStyle::new(Property::Scale(FlexVector2 { x: 0.1, y: 0.1 })))
             .start(card_element, AnimateToElement::new(element_names::DECK_BUTTON))
-            .insert(animations::default_duration(), card_element, DestroyElement),
+            .insert(interface_animations::default_duration(), card_element, DestroyElement),
     ])
 }
 
