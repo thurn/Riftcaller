@@ -439,7 +439,7 @@ pub fn a_moments_peace(meta: CardMetadata) -> CardDefinition {
             .delegate(this::on_leaves_play(|g, _, _| mutations::check_for_score_victory(g))),
         ],
         config: CardConfigBuilder::new()
-            .choice_effect(
+            .visual_effect(
                 TimedEffectData::new(TimedEffect::MagicCircles2(12))
                     .scale(1.0)
                     .effect_color(design::YELLOW_900),

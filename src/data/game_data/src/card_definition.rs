@@ -354,7 +354,7 @@ pub struct CardConfig {
     pub image_background: Option<Sprite>,
     /// A visual effect associated with this card, selected via a prompt choice.
     /// Used to e.g. indicate targeting.
-    pub choice_effect: Option<TimedEffectData>,
+    pub visual_effect: Option<TimedEffectData>,
     /// Optionally, a clarifying note about how this card functions.
     pub note: Option<String>,
     /// Configuration for a Riftcaller or Chapter card
@@ -431,8 +431,8 @@ impl CardConfigBuilder {
         self
     }
 
-    pub fn choice_effect(mut self, effect: TimedEffectData) -> Self {
-        self.config.choice_effect = Some(effect);
+    pub fn visual_effect(mut self, effect: TimedEffectData) -> Self {
+        self.config.visual_effect = Some(effect);
         self
     }
 

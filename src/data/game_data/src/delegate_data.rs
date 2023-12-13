@@ -279,21 +279,28 @@ impl<T> HasRaidId for RaidEvent<T> {
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum AccessEvent<T> {
     RaidAccess(RaidEvent<T>),
-    CustomCardAccess(T),
+    CustomCardAccess { target: RoomId, data: T },
 }
 
 impl<T> AccessEvent<T> {
     pub fn data(&self) -> &T {
         match self {
             AccessEvent::RaidAccess(e) => &e.data,
-            AccessEvent::CustomCardAccess(data) => data,
+            AccessEvent::CustomCardAccess { data, .. } => data,
+        }
+    }
+
+    pub fn target(&self) -> RoomId {
+        match self {
+            AccessEvent::RaidAccess(e) => e.target,
+            AccessEvent::CustomCardAccess { target, .. } => *target,
         }
     }
 
     pub fn room_access_id(&self) -> Option<RoomAccessId> {
         match self {
             AccessEvent::RaidAccess(e) => e.room_access_id,
-            AccessEvent::CustomCardAccess(_) => None,
+            AccessEvent::CustomCardAccess { .. } => None,
         }
     }
 }
@@ -467,7 +474,7 @@ pub enum Delegate {
     /// Either player scores a card
     ScoreCard(EventDelegate<ScoreCard>),
     /// A card is razed (discarded by paying its raze cost) by the Riftcaller
-    RazeCard(EventDelegate<CardId>),
+    RazeCard(EventDelegate<AccessEvent<CardId>>),
     /// A Raid is initiated
     RaidStart(EventDelegate<RaidEvent<()>>),
     /// The game is about to populate a summon prompt for the current minion

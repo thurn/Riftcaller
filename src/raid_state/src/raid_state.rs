@@ -246,7 +246,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::MoveToScoredPosition(scored) => move_to_scored_position(game, scored),
         RaidStep::StartRazingCard(card_id, cost) => start_razing_card(game, card_id, cost),
         RaidStep::RazeCard(card_id, cost) => raze_card(game, info, card_id, cost),
-        RaidStep::RazeCardEvent(card_id) => raze_card_event(game, card_id),
+        RaidStep::RazeCardEvent(card_id) => raze_card_event(game, card_id, info),
         RaidStep::FinishAccess => finish_access(game, info),
         RaidStep::FinishRaid => finish_raid(game),
     };
@@ -552,12 +552,12 @@ fn raze_card(
         ManaPurpose::RazeCard(card_id),
         cost,
     )?;
-    mutations::move_card(game, card_id, CardPosition::DiscardPile(Side::Covenant))?;
+    mutations::discard_card(game, card_id)?;
     RaidState::step(RaidStep::RazeCardEvent(card_id))
 }
 
-fn raze_card_event(game: &mut GameState, card_id: CardId) -> Result<RaidState> {
-    dispatch::invoke_event(game, RazeCardEvent(&card_id))?;
+fn raze_card_event(game: &mut GameState, card_id: CardId, info: RaidInfo) -> Result<RaidState> {
+    dispatch::invoke_event(game, RazeCardEvent(&info.access_event(card_id)))?;
     RaidState::step(RaidStep::WillPopulateAccessPrompt(PopulateAccessPromptSource::FromRaze))
 }
 

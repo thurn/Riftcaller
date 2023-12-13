@@ -201,7 +201,7 @@ impl RaidInfo {
 
     pub fn access_event<T>(&self, data: T) -> AccessEvent<T> {
         if self.is_custom_access {
-            AccessEvent::CustomCardAccess(data)
+            AccessEvent::CustomCardAccess { target: self.target, data }
         } else {
             AccessEvent::RaidAccess(self.event(data))
         }

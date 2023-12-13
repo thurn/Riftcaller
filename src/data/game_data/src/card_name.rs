@@ -350,6 +350,7 @@ pub enum CardName {
     EllisarForgekeeper,
     Foresee,
     LivingStone,
+    SeldannaRegalPyromancer,
 }
 
 impl CardName {
@@ -370,6 +371,7 @@ impl CardName {
             Self::VendocSeerInStarlight => "Vendoc, Seer in Starlight",
             Self::AMomentsPeace => "A Moment's Peace",
             Self::EllisarForgekeeper => "Ellisar, Forgekeeper",
+            Self::SeldannaRegalPyromancer => "Seldanna, Regal Pyromancer",
             _ => "",
         };
 

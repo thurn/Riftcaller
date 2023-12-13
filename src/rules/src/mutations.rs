@@ -175,9 +175,10 @@ pub fn sacrifice_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     dispatch::invoke_event(game, CardSacrificedEvent(&card_id))
 }
 
-/// Moves a card to the discard pile. This is precisely identical to calling
-/// [move_card] for the discard pile position and only exists to improve
-/// readability of code.
+/// Moves a card to the discard pile.
+///
+/// This should only be used for card abilities which specifically use the word
+/// 'discard' to describe their effect.
 pub fn discard_card(game: &mut GameState, card_id: CardId) -> Result<()> {
     move_card(game, card_id, CardPosition::DiscardPile(card_id.side))
 }
@@ -219,7 +220,7 @@ pub fn query_flag(game: &mut GameState, function: impl FnOnce(&GameState) -> Abi
     if let Some(ability_id) = flag.ability_id() {
         let mut effects = VisualEffects::new().ability_alert(ability_id);
         if let Some(timed_effect) =
-            game.card(ability_id.card_id).definition().config.choice_effect.as_ref()
+            game.card(ability_id.card_id).definition().config.visual_effect.as_ref()
         {
             effects = effects.timed_effect(ability_id.card_id, timed_effect.clone());
         }

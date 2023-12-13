@@ -204,3 +204,14 @@ fn ellisar_resolution_sacrifice() {
     g.click_card_name(CardName::Resolution);
     assert_eq!(g.me().actions(), 3);
 }
+
+#[test]
+fn seldanna() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::SeldannaRegalPyromancer))
+            .opponent(TestSide::new(Side::Covenant).deck_top(CardName::TestProject2Cost3Raze))
+            .build();
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::Discard);
+    assert_eq!(g.client.cards.opponent_discard_pile().len(), 2);
+}

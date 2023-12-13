@@ -21,14 +21,18 @@ use core_ui::design::{self, TimedEffectDataExt};
 use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, IdentityConfig};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::CardPosition;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{PromptChoice, PromptData};
+use game_data::random;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
-use rules::visual_effects::VisualEffects;
-use rules::{custom_state, draw_cards, mana, mutations, prompts, CardDefinitionExt};
+use rules::visual_effects::{ShowAlert, VisualEffects};
+use rules::{
+    custom_state, draw_cards, mana, mutations, prompts, visual_effects, CardDefinitionExt,
+};
 
 pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -310,6 +314,57 @@ pub fn ellisar_forgekeeper(meta: CardMetadata) -> CardDefinition {
                 cradle the secrets of creation, guarding the sacred flame that births both weapon \
                 and wonder.",
             })
+            .build(),
+    }
+}
+
+pub fn seldanna_regal_pyromancer(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SeldannaRegalPyromancer,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::riftcaller_card(meta, "seldanna"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Riftcaller,
+        abilities: vec![Ability::new(text![
+            "When you use a",
+            RazeAbility,
+            "while accessing the",
+            Vault,
+            ", discard another random card from the",
+            Vault
+        ])
+        .delegate(in_play::on_card_razed(|g, s, event| {
+            if event.target() == RoomId::Vault {
+                if let Some(card_id) = random::card_in_position(
+                    g,
+                    Side::Covenant,
+                    CardPosition::DeckUnknown(Side::Covenant),
+                ) {
+                    visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                    mutations::discard_card(g, card_id)?;
+                }
+            }
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .identity(IdentityConfig {
+                starting_coins: Coins(450),
+                secondary_schools: vec![School::Shadow],
+                skills: vec![Skill::Stealth, Skill::Persuasion],
+                bio: "Seldanna's flames were kindled in the fiery depths of Khazpar's Cinderpeak \
+                Mountain. A mistress of fire, her presence is as mesmerizing and fierce as the \
+                blaze she commands, her touch igniting the very air with regal majesty.",
+            })
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(1))
+                    .scale(2.0)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic2_LightImpact03"))
+                    .effect_color(design::BLUE_500),
+            )
             .build(),
     }
 }

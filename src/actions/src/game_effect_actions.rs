@@ -35,7 +35,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
                 .card(owner)
                 .definition()
                 .config
-                .choice_effect
+                .visual_effect
                 .as_ref()
                 .with_error(|| "Expected choice_effect")?;
 

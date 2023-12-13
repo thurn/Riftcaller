@@ -87,7 +87,9 @@ pub fn living_stone(meta: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new_with_delegate(
             text!["When the Riftcaller uses a", RazeAbility, ", deal", 1, "damage"],
             delegates::on_card_razed(
-                |g, s, &card_id| requirements::face_up_in_play(g, s, &()) || card_id == s.card_id(),
+                |g, s, event| {
+                    requirements::face_up_in_play(g, s, &()) || *event.data() == s.card_id()
+                },
                 |g, s, _| {
                     VisualEffects::new()
                         .ability_alert(s)

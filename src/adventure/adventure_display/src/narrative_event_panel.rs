@@ -111,7 +111,7 @@ impl<'a> NarrativeEventPanel<'a> {
                 .position(Edge::Right, 16.px())
                 .position(Edge::Bottom, 16.px())
                 .width(400.px())
-                .height(600.px())
+                .height(700.px())
                 .background_color(BackgroundColor::NarrativeEventBackground)
                 .border_radius(Corner::All, 8.px())
                 .justify_content(FlexJustify::FlexStart)
