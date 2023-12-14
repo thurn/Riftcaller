@@ -224,8 +224,8 @@ impl TestSession {
                 .adventure
                 .as_mut()
                 .expect("No active adventure")
+                .world_map
                 .tiles
-                .map
                 .insert(position, state.clone());
         });
 

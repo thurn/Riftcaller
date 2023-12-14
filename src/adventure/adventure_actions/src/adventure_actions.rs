@@ -45,32 +45,32 @@ fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
 
 fn handle_visit_tile(state: &mut AdventureState, position: TilePosition) -> Result<()> {
     verify!(
-        state.revealed_regions.contains(&state.tiles.tile(position)?.region_id),
+        state.revealed_regions.contains(&state.world_map.tile(position)?.region_id),
         "Given tile position has not been revealed"
     );
-    state.tiles.tile_mut(position)?.visited = true;
-    state.tiles.visiting_position = Some(position);
+    state.world_map.tile_mut(position)?.visited = true;
+    state.world_map.visiting_position = Some(position);
     Ok(())
 }
 
 fn handle_end_visit(state: &mut AdventureState) -> Result<()> {
     verify!(is_blocking_screen(state) != Some(true), "Cannot end visit on this screen");
-    state.tiles.visiting_position = None;
+    state.world_map.visiting_position = None;
     Ok(())
 }
 
 /// Returns Some(true) if the player cannot end a visit on the current screen
 /// without taking some other game action.
 fn is_blocking_screen(state: &mut AdventureState) -> Option<bool> {
-    let position = state.tiles.visiting_position?;
-    match state.tiles.map.get(&position)?.entity.as_ref()? {
+    let position = state.world_map.visiting_position?;
+    match state.world_map.tiles.get(&position)?.entity.as_ref()? {
         TileEntity::Draft(_) => Some(true),
         _ => None,
     }
 }
 
 fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
-    let TileEntity::Draft(data) = state.tiles.visiting_tile_mut()? else {
+    let TileEntity::Draft(data) = state.world_map.visiting_tile_mut()? else {
         fail!("Expected active draft screen");
     };
 
@@ -91,12 +91,12 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
             .or_insert(choice.quantity);
     }
 
-    state.tiles.clear_visited_tile()?;
+    state.world_map.clear_visited_tile()?;
     Ok(())
 }
 
 fn handle_buy_card(state: &mut AdventureState, index: usize) -> Result<()> {
-    let TileEntity::Shop(data) = state.tiles.visiting_tile_mut()? else {
+    let TileEntity::Shop(data) = state.world_map.visiting_tile_mut()? else {
         fail!("Expected active shop screen");
     };
 

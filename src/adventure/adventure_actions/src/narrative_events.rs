@@ -25,7 +25,7 @@ pub fn set_narrative_step(
     state: &mut AdventureState,
     step: NarrativeEventStep,
 ) -> anyhow::Result<()> {
-    let TileEntity::NarrativeEvent(data) = state.tiles.visiting_tile_mut()? else {
+    let TileEntity::NarrativeEvent(data) = state.world_map.visiting_tile_mut()? else {
         fail!("Expected active narrative event screen");
     };
 

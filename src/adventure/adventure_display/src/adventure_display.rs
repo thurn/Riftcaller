@@ -40,8 +40,8 @@ pub mod shop_panel;
 pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     let mut commands = vec![Command::UpdateWorldMap(UpdateWorldMapCommand {
         tiles: state
+            .world_map
             .tiles
-            .map
             .iter()
             .filter(|(_, tile)| state.revealed_regions.contains(&tile.region_id))
             .map(|(position, state)| render_tile(*position, state))
@@ -50,7 +50,7 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
 
     if let Some(_) = &state.outcome {
         commands.push(Panels::open(PlayerPanel::AdventureOver).into());
-    } else if let Some(position) = state.tiles.visiting_position {
+    } else if let Some(position) = state.world_map.visiting_position {
         commands.push(Panels::open(PlayerPanel::AdventureTile(position)).into());
     }
 

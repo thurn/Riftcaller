@@ -48,7 +48,7 @@ pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
     if let Some(adventure) = &player.adventure {
         panels
             .into_iter()
-            .chain(adventure.tiles.map.iter().filter_map(|(position, state)| {
+            .chain(adventure.world_map.tiles.iter().filter_map(|(position, state)| {
                 state.entity.as_ref().map(|_| PlayerPanel::AdventureTile(*position))
             }))
             .chain(add_deck_editor_panels(adventure))

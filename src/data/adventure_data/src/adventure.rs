@@ -226,26 +226,26 @@ impl AdventureConfiguration {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AdventureTiles {
+pub struct WorldMap {
     /// Map from tile position to [TileState]
     #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    pub map: HashMap<TilePosition, TileState>,
+    pub tiles: HashMap<TilePosition, TileState>,
     /// Current tile entity position on the world map which the player is
     /// visiting. If not specified, the player is not currently visiting any
     /// tile.
     pub visiting_position: Option<TilePosition>,
 }
 
-impl AdventureTiles {
+impl WorldMap {
     /// Returns the [TileState] for a given tile position, or an error if no
     /// such tile position exists.
     pub fn tile(&self, position: TilePosition) -> Result<&TileState> {
-        self.map.get(&position).with_error(|| format!("Tile not found {position:?}"))
+        self.tiles.get(&position).with_error(|| format!("Tile not found {position:?}"))
     }
 
     /// Mutable version of [Self::tile].
     pub fn tile_mut(&mut self, position: TilePosition) -> Result<&mut TileState> {
-        self.map.get_mut(&position).with_error(|| format!("Tile not found {position:?}"))
+        self.tiles.get_mut(&position).with_error(|| format!("Tile not found {position:?}"))
     }
 
     /// Returns the [TileEntity] the player is currently visiting, or an error
@@ -255,7 +255,7 @@ impl AdventureTiles {
     }
 
     pub fn visiting_tile_option(&self) -> Option<&TileEntity> {
-        self.map.get(&self.visiting_position?)?.entity.as_ref()
+        self.tiles.get(&self.visiting_position?)?.entity.as_ref()
     }
 
     /// Mutable version of [Self::visiting_tile].
@@ -294,7 +294,7 @@ pub struct AdventureState {
     /// Result of the adventure, if it has ended.
     pub outcome: Option<AdventureOutcome>,
     /// States of world map tiles
-    pub tiles: AdventureTiles,
+    pub world_map: WorldMap,
     /// Regions which the player can currently see. By default Region 1 is
     /// revealed.
     pub revealed_regions: HashSet<RegionId>,

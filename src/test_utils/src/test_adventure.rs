@@ -14,7 +14,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use adventure_data::adventure::{AdventureConfiguration, AdventureState, AdventureTiles};
+use adventure_data::adventure::{AdventureConfiguration, AdventureState, WorldMap};
 use core_data::adventure_primitives::{Coins, TilePosition};
 use core_data::game_primitives::{AdventureId, Side};
 use game_data::card_name::{CardName, CardVariant};
@@ -86,8 +86,8 @@ impl TestAdventure {
             side: self.side,
             coins: self.coins,
             outcome: None,
-            tiles: AdventureTiles {
-                map: HashMap::new(),
+            world_map: WorldMap {
+                tiles: HashMap::new(),
                 visiting_position: self.visiting_position,
             },
             revealed_regions,
