@@ -15,19 +15,18 @@
 use adventure_data::adventure::{
     AdventureConfiguration, AdventureState, NarrativeEventData, NarrativeEventStep, TileEntity,
 };
+use adventure_data::adventure_action::NarrativeEffectIndex;
 use adventure_data::adventure_effect::{AdventureEffect, AdventureEffectData};
+use anyhow::Result;
 use core_data::adventure_primitives::NarrativeChoiceIndex;
 use game_data::deck::Deck;
 use with_error::{fail, verify};
 
-use crate::card_selector;
+use crate::{adventure_effect, card_selector};
 
 /// Handles a request from a user to advance to a given step within a narrative
 /// event screen.
-pub fn set_narrative_step(
-    state: &mut AdventureState,
-    step: NarrativeEventStep,
-) -> anyhow::Result<()> {
+pub fn set_narrative_step(state: &mut AdventureState, step: NarrativeEventStep) -> Result<()> {
     let TileEntity::NarrativeEvent(data) = state.world_map.visiting_tile_mut()? else {
         fail!("Expected active narrative event screen");
     };
@@ -46,6 +45,24 @@ pub fn set_narrative_step(
     }
 
     Ok(())
+}
+
+pub fn apply_narrative_effect(
+    state: &mut AdventureState,
+    choice_index: NarrativeChoiceIndex,
+    effect_index: NarrativeEffectIndex,
+) -> Result<()> {
+    let TileEntity::NarrativeEvent(data) = state.world_map.visiting_tile_mut()? else {
+        fail!("Expected active narrative event screen");
+    };
+    let choice = data.choice_mut(choice_index);
+    choice.applied.push(effect_index);
+
+    let effect_data = choice.effect(effect_index);
+    let effect = effect_data.effect.clone();
+    let card = effect_data.known_card;
+
+    adventure_effect::apply(state, effect, card)
 }
 
 /// Returns true if the player is allowed to pick the `index` option within the
@@ -68,7 +85,7 @@ fn reify_known_choices(
         for cost in &mut choice.costs {
             reify_known_effect(config, cost, deck);
         }
-        for effect in &mut choice.effects {
+        for effect in &mut choice.rewards {
             reify_known_effect(config, effect, deck);
         }
     }

@@ -21,6 +21,7 @@ use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
 use core_data::game_primitives::CardType;
 use with_error::{fail, verify};
 
+pub mod adventure_effect;
 pub mod card_selector;
 pub mod narrative_events;
 
@@ -34,6 +35,9 @@ pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAct
         AdventureAction::BuyCard(index) => handle_buy_card(state, *index),
         AdventureAction::SetNarrativeStep(step) => {
             narrative_events::set_narrative_step(state, *step)
+        }
+        AdventureAction::ApplyNarrativeEffect(choice_index, effect_index) => {
+            narrative_events::apply_narrative_effect(state, *choice_index, *effect_index)
         }
     }
 }

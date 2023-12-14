@@ -12,10 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::adventure_primitives::TilePosition;
+use core_data::adventure_primitives::{NarrativeChoiceIndex, TilePosition};
 use serde::{Deserialize, Serialize};
 
 use crate::adventure::NarrativeEventStep;
+
+/// Vector index for locating effects to apply within a given narrative
+/// encounter.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub enum NarrativeEffectIndex {
+    Cost(usize),
+    Reward(usize),
+}
 
 /// Actions which can be taken for the 'adventure' game mode.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -34,4 +42,7 @@ pub enum AdventureAction {
     BuyCard(usize),
     /// Jump to one of the steps on a narrative choice screen
     SetNarrativeStep(NarrativeEventStep),
+    /// Apply one effect of a narrative event. This can result in playing an
+    /// animation or opening another screen (such as showing a 'draft' panel).
+    ApplyNarrativeEffect(NarrativeChoiceIndex, NarrativeEffectIndex),
 }

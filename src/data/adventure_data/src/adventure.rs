@@ -32,6 +32,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DisplayFromStr};
 use with_error::WithError;
 
+use crate::adventure_action::NarrativeEffectIndex;
 use crate::adventure_effect::AdventureEffectData;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -101,8 +102,32 @@ pub struct NarrativeEventChoice {
     /// Choices will not be presented unless the player is able to pay all of
     /// their associated costs.
     pub costs: Vec<AdventureEffectData>,
-    /// Effect of selecting this choice.
-    pub effects: Vec<AdventureEffectData>,
+    /// Rewards for selecting this choice.
+    pub rewards: Vec<AdventureEffectData>,
+    /// Effects of this choice which the user has already applied and thus do
+    /// not need to shown on-screen.
+    pub applied: Vec<NarrativeEffectIndex>,
+}
+
+impl NarrativeEventChoice {
+    pub fn effect(&self, index: NarrativeEffectIndex) -> &AdventureEffectData {
+        match index {
+            NarrativeEffectIndex::Cost(i) => &self.costs[i],
+            NarrativeEffectIndex::Reward(i) => &self.rewards[i],
+        }
+    }
+
+    pub fn enumerate_costs(
+        &self,
+    ) -> impl Iterator<Item = (NarrativeEffectIndex, &AdventureEffectData)> {
+        self.costs.iter().enumerate().map(|(i, choice)| (NarrativeEffectIndex::Cost(i), choice))
+    }
+
+    pub fn enumerate_effects(
+        &self,
+    ) -> impl Iterator<Item = (NarrativeEffectIndex, &AdventureEffectData)> {
+        self.rewards.iter().enumerate().map(|(i, choice)| (NarrativeEffectIndex::Reward(i), choice))
+    }
 }
 
 /// Steps within the progress of resolving a narrative event.
@@ -136,6 +161,10 @@ pub struct NarrativeEventData {
     /// narrative event, but a few situations exist where multiple options may
     /// be selected.
     pub selected_choices: Vec<NarrativeChoiceIndex>,
+    /// A [TileEntity] to display instead of the narrative event panel for this
+    /// location. This is used to e.g. show a draft reward popup as part of
+    /// resolving a narrative event.
+    pub show_entity: Option<Box<TileEntity>>,
 }
 
 impl NarrativeEventData {
@@ -150,6 +179,10 @@ impl NarrativeEventData {
 
     pub fn choice(&self, index: NarrativeChoiceIndex) -> &NarrativeEventChoice {
         &self.choices[index.value]
+    }
+
+    pub fn choice_mut(&mut self, index: NarrativeChoiceIndex) -> &mut NarrativeEventChoice {
+        &mut self.choices[index.value]
     }
 }
 

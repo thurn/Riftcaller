@@ -39,13 +39,14 @@ pub fn generate() -> NarrativeEventData {
                         .to_string(),
                 skill: Some(Skill::Brawn),
                 costs: vec![],
-                effects: vec![AdventureEffectData {
+                rewards: vec![AdventureEffectData {
                     effect: AdventureEffect::Draft(
                         CardSelector::new().rarity(Rarity::Rare).card_type(CardType::Spell),
                     ),
                     description: "Draft a rare spell".to_string(),
                     known_card: None,
                 }],
+                applied: vec![]
             },
             NarrativeEventChoice {
                 choice_description: "\"I'll use the rocks for cover and move silently to find an \
@@ -58,7 +59,7 @@ pub fn generate() -> NarrativeEventData {
                     .to_string(),
                 skill: Some(Skill::Stealth),
                 costs: vec![],
-                effects: vec![
+                rewards: vec![
                     AdventureEffectData {
                         effect: AdventureEffect::PickCardForEffect(
                             CardSelector::default(),
@@ -84,6 +85,7 @@ pub fn generate() -> NarrativeEventData {
                         known_card: None,
                     },
                 ],
+                applied: vec![]
             },
             NarrativeEventChoice {
                 choice_description: "\"I offer my blade to you, oh great Stormfeather, as a \
@@ -104,13 +106,15 @@ pub fn generate() -> NarrativeEventData {
                     description: "Lose '{CardName}'".to_string(),
                     known_card: None,
                 }],
-                effects: vec![AdventureEffectData {
+                rewards: vec![AdventureEffectData {
                     effect: AdventureEffect::Shop(CardSelector::new()),
                     description: "Open a new shop screen".to_string(),
                     known_card: None,
                 }],
+                applied: vec![]
             },
         ],
         selected_choices: vec![],
+        show_entity: None
     }
 }

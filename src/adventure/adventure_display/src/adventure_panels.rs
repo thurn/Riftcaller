@@ -32,21 +32,27 @@ pub fn tile_entity_panel(
     position: TilePosition,
 ) -> Result<Option<InterfacePanel>> {
     let state = player.adventure()?;
+    let entity =
+        state.world_map.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")?;
+    build_panel(player, position, entity)
+}
+
+fn build_panel(
+    player: &PlayerState,
+    position: TilePosition,
+    entity: &TileEntity,
+) -> Result<Option<InterfacePanel>> {
     let address = PanelAddress::PlayerPanel(PlayerPanel::AdventureTile(position));
-    Ok(
-        match state
-            .world_map
-            .tile(position)?
-            .entity
-            .as_ref()
-            .with_error(|| "Expected tile entity")?
-        {
-            TileEntity::Draft(data) => DraftPanel { address, data }.build_panel(),
-            TileEntity::Shop(data) => ShopPanel { player, address, data }.build_panel(),
-            TileEntity::Battle(data) => BattlePanel { player, address, data }.build_panel(),
-            TileEntity::NarrativeEvent(data) => {
+    Ok(match entity {
+        TileEntity::Draft(data) => DraftPanel { address, data }.build_panel(),
+        TileEntity::Shop(data) => ShopPanel { player, address, data }.build_panel(),
+        TileEntity::Battle(data) => BattlePanel { player, address, data }.build_panel(),
+        TileEntity::NarrativeEvent(data) => {
+            if let Some(tile) = &data.show_entity {
+                build_panel(player, position, tile)?
+            } else {
                 NarrativeEventPanel { player, address, data }.build_panel()
             }
-        },
-    )
+        }
+    })
 }

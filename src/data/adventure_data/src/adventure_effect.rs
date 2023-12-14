@@ -100,6 +100,21 @@ pub enum AdventureEffect {
     LoseUnknownRandomCard(CardSelector),
 }
 
+impl AdventureEffect {
+    /// Whether this effect should be applied immediately when selected.
+    /// Otherwise the player must click a button apply the effect after
+    /// receiving it.
+    pub fn is_immediate(&self) -> bool {
+        match self {
+            AdventureEffect::GainCoins(..)
+            | AdventureEffect::LoseCoins(..)
+            | AdventureEffect::LoseAllCoins
+            | AdventureEffect::GainArcanite(..) => true,
+            _ => false,
+        }
+    }
+}
+
 /// State for an [AdventureEffect]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureEffectData {
