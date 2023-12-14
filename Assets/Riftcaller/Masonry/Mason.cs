@@ -110,11 +110,6 @@ namespace Riftcaller.Masonry
           hoverStyle.MergeFrom(node.HoverStyle);
           callbacks.SetCallback(Callbacks.Event.MouseEnter, () =>
           {
-            if (!string.IsNullOrEmpty(node.ShowChildOnHover))
-            {
-              element.Q(node.ShowChildOnHover).style.display = DisplayStyle.Flex;
-            }
-
             if (node.EventHandlers?.OnMouseEnter != null)
             {
               registry.ActionService.HandleAction(node.EventHandlers.OnMouseEnter);
@@ -124,11 +119,6 @@ namespace Riftcaller.Masonry
           });
           callbacks.SetCallback(Callbacks.Event.MouseLeave, () =>
           {
-            if (!string.IsNullOrEmpty(node.ShowChildOnHover))
-            {
-              element.Q(node.ShowChildOnHover).style.display = DisplayStyle.None;
-            }
-            
             if (node.EventHandlers?.OnMouseLeave != null)
             {
               registry.ActionService.HandleAction(node.EventHandlers.OnMouseLeave);
@@ -139,25 +129,6 @@ namespace Riftcaller.Masonry
             originalStyle.MergeFrom(node.OnAttachStyle);            
             ApplyStyle(registry, element, originalStyle);
           });
-        }
-        else if (!string.IsNullOrEmpty(node.ShowChildOnHover))
-        {
-          callbacks.SetCallback(Callbacks.Event.MouseEnter, () =>
-          {
-            element.Q(node.ShowChildOnHover).style.display = DisplayStyle.Flex;
-            if (node.EventHandlers?.OnMouseEnter != null)
-            {
-              registry.ActionService.HandleAction(node.EventHandlers.OnMouseEnter);
-            }            
-          });
-          callbacks.SetCallback(Callbacks.Event.MouseLeave, () =>
-          {
-            element.Q(node.ShowChildOnHover).style.display = DisplayStyle.None;
-            if (node.EventHandlers?.OnMouseLeave != null)
-            {
-              registry.ActionService.HandleAction(node.EventHandlers.OnMouseLeave);
-            }
-          });          
         }
         else
         {

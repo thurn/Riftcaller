@@ -139,6 +139,15 @@ pub struct NarrativeEventData {
 }
 
 impl NarrativeEventData {
+    pub fn enumerate_choices(
+        &self,
+    ) -> impl Iterator<Item = (NarrativeChoiceIndex, &NarrativeEventChoice)> {
+        self.choices
+            .iter()
+            .enumerate()
+            .map(|(value, choice)| (NarrativeChoiceIndex { value }, choice))
+    }
+
     pub fn choice(&self, index: NarrativeChoiceIndex) -> &NarrativeEventChoice {
         &self.choices[index.value]
     }

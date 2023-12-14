@@ -68,8 +68,19 @@ namespace Riftcaller.Services
           sequence.Insert(Seconds(step.StartTime), t2);
           break;
         case InterfaceUpdate.UpdateOneofCase.ApplyStyle:
-          AddCallbackOrInvoke(sequence, step.StartTime,
-            () => { Mason.ApplyStyle(_registry, element, update.ApplyStyle); });
+          AddCallbackOrInvoke(
+            sequence,
+            step.StartTime,
+            () =>
+            {
+              var style = new FlexStyle();
+              if ((element as NodeVisualElement)?.Node?.Style is { } current)
+              {
+                style.MergeFrom(current);
+              }
+              style.MergeFrom(update.ApplyStyle);
+              Mason.ApplyStyle(_registry, element, style);
+            });
           break;
         case InterfaceUpdate.UpdateOneofCase.AnimateStyle:
           sequence.Insert(Seconds(step.StartTime), AnimateStyle(element, update.AnimateStyle));

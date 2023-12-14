@@ -18,7 +18,8 @@ use protos::riftcaller::game_command::Command;
 use protos::riftcaller::interface_update::Update;
 use protos::riftcaller::{
     AnimateElementStyle, AnimateToPosition, CreateTargetAtChildIndex, EasingMode, ElementAnimation,
-    ElementSelector, InterfaceUpdate, TimeValue, UpdateInterfaceCommand, UpdateInterfaceStep,
+    ElementSelector, FlexDisplayStyle, InterfaceUpdate, TimeValue, UpdateInterfaceCommand,
+    UpdateInterfaceStep,
 };
 
 use crate::prelude::*;
@@ -37,6 +38,11 @@ pub fn fade_out(element: impl ElementNameSelector) -> InterfaceAnimation {
     InterfaceAnimation::new()
         .insert(0.milliseconds(), element, AnimateStyle::new(Property::Opacity(0.0)))
         .insert(default_duration(), element, DestroyElement)
+}
+
+/// [Command] to toggle whether an interface element is displayed.
+pub fn set_displayed(element: impl ElementNameSelector, displayed: bool) -> Command {
+    InterfaceAnimation::new().start(element, SetDisplayed { displayed }).into()
 }
 
 /// Builder to construct animated updates to user interface elements
@@ -79,7 +85,7 @@ impl InterfaceAnimation {
     }
 }
 
-/// Possible mutatations to user interface elements
+/// Possible mutations to user interface elements  
 pub trait ElementUpdate: Sized {
     fn build(self) -> Update;
 
@@ -171,6 +177,24 @@ impl ElementUpdate for AnimateToElement {
             disable_height_half_offset: self.disable_height_half_offset,
             disable_width_half_offset: self.disable_width_half_offset,
         })
+    }
+}
+
+pub struct SetDisplayed {
+    pub displayed: bool,
+}
+
+impl ElementUpdate for SetDisplayed {
+    fn build(self) -> Update {
+        Update::ApplyStyle(
+            *Style::new()
+                .display(if self.displayed {
+                    FlexDisplayStyle::Flex
+                } else {
+                    FlexDisplayStyle::None
+                })
+                .wrapped_style(),
+        )
     }
 }
 

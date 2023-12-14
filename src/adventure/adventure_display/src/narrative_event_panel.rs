@@ -19,6 +19,7 @@ use core_data::adventure_primitives::NarrativeChoiceIndex;
 use core_ui::actions::InterfaceAction;
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::full_screen_image::FullScreenImage;
+use core_ui::interface_animations;
 use core_ui::prelude::*;
 use core_ui::style::{self, Corner};
 use core_ui::text::Text;
@@ -55,12 +56,12 @@ impl<'a> NarrativeEventPanel<'a> {
     }
 
     fn view_choices(&self) -> Column {
-        self.container()
-            .children(self.data.choices.iter().enumerate().map(Self::narrative_choice))
-            .child(Self::button_row(
+        self.container().children(self.data.enumerate_choices().map(Self::narrative_choice)).child(
+            Self::button_row(
                 "Back",
                 AdventureAction::SetNarrativeStep(NarrativeEventStep::Introduction),
-            ))
+            ),
+        )
     }
 
     fn view_outcome(&self, index: NarrativeChoiceIndex) -> Column {
@@ -73,23 +74,34 @@ impl<'a> NarrativeEventPanel<'a> {
         )
     }
 
-    fn narrative_choice((index, choice): (usize, &NarrativeEventChoice)) -> impl Component {
+    fn narrative_choice(
+        (index, choice): (NarrativeChoiceIndex, &NarrativeEventChoice),
+    ) -> impl Component {
         let known = Self::known_cards(choice);
         Self::button_row(
             choice.choice_description.clone(),
-            AdventureAction::SetNarrativeStep(NarrativeEventStep::SelectChoice(
-                NarrativeChoiceIndex { value: index },
-            )),
+            AdventureAction::SetNarrativeStep(NarrativeEventStep::SelectChoice(index)),
         )
-        .show_child_on_hover("OutcomeTooltip")
-        .on_mouse_enter_optional((!known.is_empty()).then(|| {
-            Command::InfoZoom(InfoZoomCommand {
-                show: true,
-                card: Some(deck_card::card_view_for_variant(known[0])),
-            })
-        }))
-        .on_mouse_leave(Command::InfoZoom(InfoZoomCommand { show: false, card: None }))
-        .child(Self::outcome_tooltip(choice))
+        .on_mouse_enter(vec![
+            Some(interface_animations::set_displayed(
+                element_names::narrative_outcome_tooltip(index),
+                true,
+            )),
+            (!known.is_empty()).then(|| {
+                Command::InfoZoom(InfoZoomCommand {
+                    show: true,
+                    card: Some(deck_card::card_view_for_variant(known[0])),
+                })
+            }),
+        ])
+        .on_mouse_leave(vec![
+            interface_animations::set_displayed(
+                element_names::narrative_outcome_tooltip(index),
+                false,
+            ),
+            Command::InfoZoom(InfoZoomCommand { show: false, card: None }),
+        ])
+        .child(Self::outcome_tooltip(index, choice))
     }
 
     /// Returns a list of all `known_card`s associated with costs & effects of
@@ -103,8 +115,8 @@ impl<'a> NarrativeEventPanel<'a> {
             .collect()
     }
 
-    fn outcome_tooltip(choice: &NarrativeEventChoice) -> Column {
-        Column::new("OutcomeTooltip")
+    fn outcome_tooltip(index: NarrativeChoiceIndex, choice: &NarrativeEventChoice) -> Column {
+        Column::new(element_names::narrative_outcome_tooltip(index))
             .style(
                 Style::new()
                     .display(FlexDisplayStyle::None)

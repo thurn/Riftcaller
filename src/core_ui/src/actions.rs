@@ -128,6 +128,16 @@ impl InterfaceAction for Vec<Command> {
     }
 }
 
+impl InterfaceAction for Vec<Option<Command>> {
+    fn as_client_action(&self) -> Action {
+        Action::StandardAction(StandardAction {
+            payload: vec![],
+            update: Some(command_list(None, self.iter().flatten().cloned().collect())),
+            request_fields: HashMap::new(),
+        })
+    }
+}
+
 /// Returns a StandardAction to apply an optimistic UI update via a series on
 /// commands on click, followed by a regular game action specified as an
 /// InterfaceAction.

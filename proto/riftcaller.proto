@@ -633,10 +633,6 @@ message Node {
     FlexStyle hover_style = 6;
     FlexStyle pressed_style = 7;
     FlexStyle on_attach_style = 8;
-
-    // Name of a child element which should be shown (display: visible) when
-    // this node is hovered.
-    string show_child_on_hover = 9;
 }
 
 

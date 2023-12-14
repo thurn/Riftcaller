@@ -103,13 +103,6 @@ pub trait HasRenderNode: Sized {
         self
     }
 
-    /// Name of a child element which should be shown (display: visible) when
-    /// this node is hovered.    
-    fn show_child_on_hover(mut self, name: impl Into<String>) -> Self {
-        self.render_node().show_child_on_hover = name.into();
-        self
-    }
-
     /// [Style] to merge into this component's base style when it is pressed
     fn pressed_style(mut self, style: Style) -> Self {
         self.render_node().pressed_style = Some(style.wrapped_style());
@@ -144,27 +137,11 @@ pub trait HasRenderNode: Sized {
         self
     }
 
-    fn on_mouse_enter_optional(self, action: Option<impl InterfaceAction + 'static>) -> Self {
-        if let Some(a) = action {
-            self.on_mouse_enter(a)
-        } else {
-            self
-        }
-    }
-
     /// Action to invoke when this component stops being hovered
     fn on_mouse_leave(mut self, action: impl InterfaceAction + 'static) -> Self {
         self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_mouse_leave =
             Some(action.build());
         self
-    }
-
-    fn on_mouse_leave_optional(self, action: Option<impl InterfaceAction + 'static>) -> Self {
-        if let Some(a) = action {
-            self.on_mouse_leave(a)
-        } else {
-            self
-        }
     }
 
     /// Action to invoke when this component is pressed down
