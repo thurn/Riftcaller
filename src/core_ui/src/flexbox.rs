@@ -137,6 +137,36 @@ pub trait HasRenderNode: Sized {
         self
     }
 
+    /// Action to invoke when this component is hovered
+    fn on_mouse_enter(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_mouse_enter =
+            Some(action.build());
+        self
+    }
+
+    fn on_mouse_enter_optional(self, action: Option<impl InterfaceAction + 'static>) -> Self {
+        if let Some(a) = action {
+            self.on_mouse_enter(a)
+        } else {
+            self
+        }
+    }
+
+    /// Action to invoke when this component stops being hovered
+    fn on_mouse_leave(mut self, action: impl InterfaceAction + 'static) -> Self {
+        self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_mouse_leave =
+            Some(action.build());
+        self
+    }
+
+    fn on_mouse_leave_optional(self, action: Option<impl InterfaceAction + 'static>) -> Self {
+        if let Some(a) = action {
+            self.on_mouse_leave(a)
+        } else {
+            self
+        }
+    }
+
     /// Action to invoke when this component is pressed down
     fn on_mouse_down(mut self, action: impl InterfaceAction + 'static) -> Self {
         self.render_node().event_handlers.get_or_insert(EventHandlers::default()).on_mouse_down =

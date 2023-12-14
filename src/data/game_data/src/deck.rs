@@ -46,7 +46,7 @@ impl Deck {
     /// Returns a vector which repeats each [CardVariant] in [Self::cards] in
     /// alphabetical order a number of times equal to its deck count. Note: The
     /// returned vector does *not* contain identity or sigil cards.
-    pub fn card_names(&self) -> Vec<CardVariant> {
+    pub fn card_variants(&self) -> Vec<CardVariant> {
         let mut result = self
             .cards
             .iter()

@@ -522,10 +522,14 @@ pub struct EventHandlers {
     #[prost(message, optional, tag = "2")]
     pub on_long_press: ::core::option::Option<ClientAction>,
     #[prost(message, optional, tag = "3")]
-    pub on_mouse_down: ::core::option::Option<ClientAction>,
+    pub on_mouse_enter: ::core::option::Option<ClientAction>,
     #[prost(message, optional, tag = "4")]
-    pub on_mouse_up: ::core::option::Option<ClientAction>,
+    pub on_mouse_leave: ::core::option::Option<ClientAction>,
     #[prost(message, optional, tag = "5")]
+    pub on_mouse_down: ::core::option::Option<ClientAction>,
+    #[prost(message, optional, tag = "6")]
+    pub on_mouse_up: ::core::option::Option<ClientAction>,
+    #[prost(message, optional, tag = "7")]
     pub on_field_changed: ::core::option::Option<ClientAction>,
 }
 /// An element in the UI hierarchy of a given NodeType.

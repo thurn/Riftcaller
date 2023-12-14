@@ -15,7 +15,7 @@
 //! Renders cards as they're seen in the deck editor and adventure UI
 
 use adapters::response_builder::{ResponseBuilder, ResponseState};
-use core_data::game_primitives::{Milliseconds, Side};
+use core_data::game_primitives::Milliseconds;
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
@@ -34,10 +34,21 @@ pub mod deck_card_slot;
 
 pub const CARD_ASPECT_RATIO: f32 = 0.6348214;
 
-/// Abstraction representing the height of a card, allowing other measurments to
-/// be scaled proportionately.
+/// Abstraction representing the height of a card, allowing other measurements
+/// to be scaled proportionately.
 #[derive(Clone, Copy, Debug)]
 pub struct CardHeight(f32);
+
+/// Builds a new default [CardView] for a card based on its [CardVariant].
+pub fn card_view_for_variant(variant: CardVariant) -> CardView {
+    let definition = rules::get(variant);
+    let response_builder = ResponseBuilder::new(
+        definition.side,
+        ResponseState { animate: false, is_final_update: true, display_preference: None },
+    );
+    let context = CardViewContext::Default(definition);
+    card_sync::card_view(&response_builder, &context)
+}
 
 impl CardHeight {
     pub fn vh(value: f32) -> Self {
@@ -52,7 +63,7 @@ impl CardHeight {
 }
 
 pub struct DeckCard {
-    name: CardVariant,
+    variant: CardVariant,
     height: CardHeight,
     quantity: Option<u32>,
     layout: Layout,
@@ -63,7 +74,7 @@ pub struct DeckCard {
 impl DeckCard {
     pub fn new(variant: CardVariant) -> Self {
         Self {
-            name: variant,
+            variant,
             height: CardHeight::vh(36.0),
             quantity: None,
             layout: Layout::default(),
@@ -100,7 +111,7 @@ impl DeckCard {
     }
 }
 
-fn build_card_view(
+fn studio_display_card(
     quantity: Option<u32>,
     reveal_delay: Option<Milliseconds>,
     mut view: CardView,
@@ -130,15 +141,9 @@ fn build_card_view(
 
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
-        let definition = rules::get(self.name);
-        let response_builder = ResponseBuilder::new(
-            Side::Riftcaller,
-            ResponseState { animate: false, is_final_update: true, display_preference: None },
-        );
-        let context = CardViewContext::Default(definition);
-        let card_view = card_sync::card_view(&response_builder, &context);
+        let card_view = card_view_for_variant(self.variant);
 
-        let result = Column::new(element_names::deck_card(self.name))
+        let result = Column::new(element_names::deck_card(self.variant))
             .style(
                 self.layout
                     .to_style()
@@ -162,7 +167,7 @@ impl Component for DeckCard {
                         .width(self.height.dim(110.0 * CARD_ASPECT_RATIO))
                         .background_image_scale_mode(ImageScaleMode::ScaleAndCrop)
                         .background_display(StudioDisplay {
-                            display: Some(Display::Card(Box::new(build_card_view(
+                            display: Some(Display::Card(Box::new(studio_display_card(
                                 self.quantity,
                                 self.reveal_delay,
                                 card_view,

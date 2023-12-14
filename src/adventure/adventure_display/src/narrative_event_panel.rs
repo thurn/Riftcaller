@@ -22,10 +22,13 @@ use core_ui::full_screen_image::FullScreenImage;
 use core_ui::prelude::*;
 use core_ui::style::{self, Corner};
 use core_ui::text::Text;
+use game_data::card_name::CardVariant;
 use panel_address::{Panel, PanelAddress};
 use player_data::PlayerState;
+use protos::riftcaller::game_command::Command;
 use protos::riftcaller::{
-    FlexAlign, FlexDisplayStyle, FlexJustify, FlexPosition, FlexVector3, TextAlign, WhiteSpace,
+    FlexAlign, FlexDisplayStyle, FlexJustify, FlexPosition, FlexVector3, InfoZoomCommand,
+    TextAlign, WhiteSpace,
 };
 
 const CONTAINER_WIDTH: i32 = 400;
@@ -40,18 +43,7 @@ pub struct NarrativeEventPanel<'a> {
 impl<'a> NarrativeEventPanel<'a> {
     fn introduction(&self) -> Column {
         self.container()
-            .child(
-                Text::new(self.data.description.clone())
-                    .layout(
-                        Layout::new()
-                            .margin(Edge::Horizontal, 8.px())
-                            .margin(Edge::Top, 4.px())
-                            .margin(Edge::Bottom, 32.px()),
-                    )
-                    .font_size(FontSize::NarrativeText)
-                    .text_align(TextAlign::MiddleLeft)
-                    .white_space(WhiteSpace::Normal),
-            )
+            .child(Self::description(self.data.description.clone()))
             .child(Self::button_row(
                 "Continue",
                 AdventureAction::SetNarrativeStep(NarrativeEventStep::ViewChoices),
@@ -71,7 +63,18 @@ impl<'a> NarrativeEventPanel<'a> {
             ))
     }
 
+    fn view_outcome(&self, index: NarrativeChoiceIndex) -> Column {
+        let choice = self.data.choice(index);
+        self.container().child(Self::description(choice.result_description.clone())).child(
+            Self::button_row(
+                "Back",
+                AdventureAction::SetNarrativeStep(NarrativeEventStep::Introduction),
+            ),
+        )
+    }
+
     fn narrative_choice((index, choice): (usize, &NarrativeEventChoice)) -> impl Component {
+        let known = Self::known_cards(choice);
         Self::button_row(
             choice.choice_description.clone(),
             AdventureAction::SetNarrativeStep(NarrativeEventStep::SelectChoice(
@@ -79,7 +82,25 @@ impl<'a> NarrativeEventPanel<'a> {
             )),
         )
         .show_child_on_hover("OutcomeTooltip")
+        .on_mouse_enter_optional((!known.is_empty()).then(|| {
+            Command::InfoZoom(InfoZoomCommand {
+                show: true,
+                card: Some(deck_card::card_view_for_variant(known[0])),
+            })
+        }))
+        .on_mouse_leave(Command::InfoZoom(InfoZoomCommand { show: false, card: None }))
         .child(Self::outcome_tooltip(choice))
+    }
+
+    /// Returns a list of all `known_card`s associated with costs & effects of
+    /// this choice.
+    fn known_cards(choice: &NarrativeEventChoice) -> Vec<CardVariant> {
+        choice
+            .costs
+            .iter()
+            .flat_map(|e| e.known_card)
+            .chain(choice.effects.iter().flat_map(|e| e.known_card))
+            .collect()
     }
 
     fn outcome_tooltip(choice: &NarrativeEventChoice) -> Column {
@@ -99,8 +120,26 @@ impl<'a> NarrativeEventPanel<'a> {
     }
 
     fn effect_description(data: &AdventureEffectData, cost: bool) -> impl Component {
-        Text::new(format!("<b>{}:</b> {}", if cost { "Cost" } else { "Reward" }, data.description))
+        let mut text =
+            format!("<b>{}:</b> {}", if cost { "Cost" } else { "Reward" }, data.description);
+        if let Some(name) = data.known_card {
+            text = text.replace("{CardName}", &name.displayed_name());
+        }
+        Text::new(text)
             .layout(Layout::new().margin(Edge::Vertical, 4.px()))
+            .font_size(FontSize::NarrativeText)
+            .text_align(TextAlign::MiddleLeft)
+            .white_space(WhiteSpace::Normal)
+    }
+
+    fn description(text: impl Into<String>) -> impl Component {
+        Text::new(text)
+            .layout(
+                Layout::new()
+                    .margin(Edge::Horizontal, 8.px())
+                    .margin(Edge::Top, 4.px())
+                    .margin(Edge::Bottom, 32.px()),
+            )
             .font_size(FontSize::NarrativeText)
             .text_align(TextAlign::MiddleLeft)
             .white_space(WhiteSpace::Normal)
@@ -138,7 +177,7 @@ impl<'a> NarrativeEventPanel<'a> {
                 .position(Edge::Right, 16.px())
                 .position(Edge::Bottom, 16.px())
                 .width(CONTAINER_WIDTH.px())
-                .height(CONTAINER_HEIGHT.px())
+                .min_height(CONTAINER_HEIGHT.px())
                 .background_color(BackgroundColor::NarrativeEventBackground)
                 .border_radius(Corner::All, 8.px())
                 .justify_content(FlexJustify::FlexStart)
@@ -161,10 +200,10 @@ impl<'a> Component for NarrativeEventPanel<'a> {
         FullScreenImage::new()
             .image(style::sprite_jpg(BACKGROUND))
             .disable_overlay(true)
-            .content(if self.data.step == NarrativeEventStep::Introduction {
-                self.introduction()
-            } else {
-                self.view_choices()
+            .content(match self.data.step {
+                NarrativeEventStep::Introduction => self.introduction(),
+                NarrativeEventStep::ViewChoices => self.view_choices(),
+                NarrativeEventStep::SelectChoice(index) => self.view_outcome(index),
             })
             .build()
     }

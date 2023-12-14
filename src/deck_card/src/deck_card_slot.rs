@@ -46,7 +46,7 @@ impl Component for DeckCardSlot {
         Column::new(
             self.card
                 .as_ref()
-                .map(|c| element_names::deck_card_slot(c.name).into())
+                .map(|c| element_names::deck_card_slot(c.variant).into())
                 .unwrap_or_else(|| "DeckCardSlot".to_string()),
         )
         .style(

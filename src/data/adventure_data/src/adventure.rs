@@ -138,6 +138,12 @@ pub struct NarrativeEventData {
     pub selected_choices: Vec<NarrativeChoiceIndex>,
 }
 
+impl NarrativeEventData {
+    pub fn choice(&self, index: NarrativeChoiceIndex) -> &NarrativeEventChoice {
+        &self.choices[index.value]
+    }
+}
+
 /// Possible events/actions which can take place on a tile, represented by map
 /// icons
 #[derive(Debug, Clone, Serialize, Deserialize)]

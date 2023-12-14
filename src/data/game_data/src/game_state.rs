@@ -672,7 +672,7 @@ impl GameState {
 
         let offset = result.len();
         result.extend(
-            deck.card_names()
+            deck.card_variants()
                 .iter()
                 .enumerate()
                 .map(move |(index, name)| CardState::new(CardId::new(side, index + offset), *name)),

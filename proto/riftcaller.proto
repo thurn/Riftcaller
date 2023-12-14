@@ -607,11 +607,15 @@ message EventHandlers {
 
     ClientAction on_long_press = 2;
 
-    ClientAction on_mouse_down = 3;
+    ClientAction on_mouse_enter = 3;
 
-    ClientAction on_mouse_up = 4;
+    ClientAction on_mouse_leave = 4;
 
-    ClientAction on_field_changed = 5;
+    ClientAction on_mouse_down = 5;
+
+    ClientAction on_mouse_up = 6;
+
+    ClientAction on_field_changed = 7;
 }
 
 // An element in the UI hierarchy of a given NodeType.
@@ -1840,7 +1844,7 @@ message RenderScreenOverlayCommand {
     Node node = 1;
 }
 
-// A method for unqiuely identifying a single user interface element
+// A method for uniquely identifying a single user interface element
 message ElementSelector {
     oneof selector {
         // Identify an element by name

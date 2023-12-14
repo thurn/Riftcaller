@@ -34,7 +34,7 @@ pub fn generate() -> NarrativeEventData {
                         .to_string(),
                 result_description:
                     "The clash of your sword against the eagle's talons sends sparks \
-            flying. After a mighty struggle, the eagle yields, bestowing upon you the ancient \
+            flying.\n\nAfter a mighty struggle, the eagle yields, bestowing upon you the ancient \
             Spell of the Mountain's Might, a secret kept by the high winds for eons."
                         .to_string(),
                 skill: Some(Skill::Brawn),
@@ -52,8 +52,8 @@ pub fn generate() -> NarrativeEventData {
                     advantage point over the creature.\""
                     .to_string(),
                 result_description: "Slipping from boulder to boulder, your silent steps go \
-                unnoticed. The eagle, confused, eventually perches atop a craggy spire, granting \
-                you the chance to snatch a feather. This feather pulses with a magical blessing, \
+                unnoticed.\n\nThe eagle, confused, eventually perches atop a craggy spire, granting \
+                you the chance to snatch a feather.\n\nThis feather pulses with a magical blessing, \
                 duplicating items in your possession."
                     .to_string(),
                 skill: Some(Skill::Stealth),
@@ -89,7 +89,7 @@ pub fn generate() -> NarrativeEventData {
                 choice_description: "\"I offer my blade to you, oh great Stormfeather, as a \
                 token of respect and in exchange for safe passage.\""
                     .to_string(),
-                result_description: "Placing your weapon upon an altar of stone, you step back. \
+                result_description: "Placing your weapon upon an altar of stone, you step back.\n\n\
                 The eagle swoops down, taking the offering in its beak before soaring away, \
                 leaving behind a clear vision of a hidden shop on your map, tucked away in the \
                 mountains, a place of rare and powerful artifacts."
@@ -101,7 +101,7 @@ pub fn generate() -> NarrativeEventData {
                             .rarity(Rarity::Common)
                             .card_subtype(CardSubtype::Weapon),
                     ),
-                    description: "Lose {CardName}".to_string(),
+                    description: "Lose '{CardName}'".to_string(),
                     known_card: None,
                 }],
                 effects: vec![AdventureEffectData {

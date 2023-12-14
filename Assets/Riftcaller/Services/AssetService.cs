@@ -193,6 +193,9 @@ namespace Riftcaller.Services
           case GameCommand.CommandOneofCase.RenderScreenOverlay:
             LoadNodeAssets(requests, command.RenderScreenOverlay.Node);
             break;
+          case GameCommand.CommandOneofCase.InfoZoom:
+            LoadCardAssets(requests, command.InfoZoom.Card);
+            break;
           case GameCommand.CommandOneofCase.None:
           default:
             break;

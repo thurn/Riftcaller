@@ -114,6 +114,12 @@ namespace Riftcaller.Masonry
             {
               element.Q(node.ShowChildOnHover).style.display = DisplayStyle.Flex;
             }
+
+            if (node.EventHandlers?.OnMouseEnter != null)
+            {
+              registry.ActionService.HandleAction(node.EventHandlers.OnMouseEnter);
+            }
+            
             ApplyStyle(registry, element, hoverStyle);
           });
           callbacks.SetCallback(Callbacks.Event.MouseLeave, () =>
@@ -121,7 +127,13 @@ namespace Riftcaller.Masonry
             if (!string.IsNullOrEmpty(node.ShowChildOnHover))
             {
               element.Q(node.ShowChildOnHover).style.display = DisplayStyle.None;
+            }
+            
+            if (node.EventHandlers?.OnMouseLeave != null)
+            {
+              registry.ActionService.HandleAction(node.EventHandlers.OnMouseLeave);
             }            
+            
             var originalStyle = new FlexStyle();
             originalStyle.MergeFrom(node.Style);
             originalStyle.MergeFrom(node.OnAttachStyle);            
@@ -133,16 +145,24 @@ namespace Riftcaller.Masonry
           callbacks.SetCallback(Callbacks.Event.MouseEnter, () =>
           {
             element.Q(node.ShowChildOnHover).style.display = DisplayStyle.Flex;
+            if (node.EventHandlers?.OnMouseEnter != null)
+            {
+              registry.ActionService.HandleAction(node.EventHandlers.OnMouseEnter);
+            }            
           });
           callbacks.SetCallback(Callbacks.Event.MouseLeave, () =>
           {
             element.Q(node.ShowChildOnHover).style.display = DisplayStyle.None;
+            if (node.EventHandlers?.OnMouseLeave != null)
+            {
+              registry.ActionService.HandleAction(node.EventHandlers.OnMouseLeave);
+            }
           });          
         }
         else
         {
-          callbacks.SetCallback(Callbacks.Event.MouseEnter, null);
-          callbacks.SetCallback(Callbacks.Event.MouseLeave, null);
+          SetCallback(registry, callbacks, node.EventHandlers?.OnMouseEnter, Callbacks.Event.MouseEnter);
+          SetCallback(registry, callbacks, node.EventHandlers?.OnMouseEnter, Callbacks.Event.MouseLeave);
         }
 
         if (node.PressedStyle != null)

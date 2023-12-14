@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::adventure_primitives::Coins;
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use serde::{Deserialize, Serialize};
 
 use crate::adventure::CardSelector;
@@ -68,7 +68,8 @@ pub enum AdventureEffect {
     /// Add a quantity of standard narrative event tiles to the world map
     AddNarrativeTiles(u32),
     /// Add a known fixed card to the player's deck. The card is always the same
-    /// for this narrative event.
+    /// for this narrative event and will always be set as the value of
+    /// [AdventureEffectData::known_card].
     GainKnownFixedCard(CardName),
     /// Add a known random card to the player's deck matching this
     /// [CardSelector]. The card received is known to the player in advance.
@@ -111,5 +112,8 @@ pub struct AdventureEffectData {
     /// For "Known" effects like [AdventureEffect::GainKnownRandomCard], the
     /// card selected is picked in advance and stored here so that the player
     /// can see the outcome before acting.
-    pub known_card: Option<CardName>,
+    ///
+    /// If no valid card could be selected, this will be `None` and the option
+    /// should not be displayed.
+    pub known_card: Option<CardVariant>,
 }

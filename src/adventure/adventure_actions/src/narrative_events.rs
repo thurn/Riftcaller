@@ -17,7 +17,10 @@ use adventure_data::adventure::{
 };
 use adventure_data::adventure_effect::{AdventureEffect, AdventureEffectData};
 use core_data::adventure_primitives::NarrativeChoiceIndex;
+use game_data::deck::Deck;
 use with_error::{fail, verify};
+
+use crate::card_selector;
 
 /// Handles a request from a user to advance to a given step within a narrative
 /// event screen.
@@ -32,7 +35,7 @@ pub fn set_narrative_step(
     match step {
         NarrativeEventStep::Introduction => data.step = NarrativeEventStep::Introduction,
         NarrativeEventStep::ViewChoices => {
-            reify_known_choices(&mut state.config, data);
+            reify_known_choices(&mut state.config, data, &state.deck);
             data.step = NarrativeEventStep::ViewChoices
         }
         NarrativeEventStep::SelectChoice(index) => {
@@ -56,20 +59,33 @@ pub fn is_legal_choice(data: &NarrativeEventData, index: NarrativeChoiceIndex) -
 ///
 /// This function picks values for known random choices when the user requests
 /// to view the available choices for a narrative event.
-fn reify_known_choices(config: &mut AdventureConfiguration, data: &mut NarrativeEventData) {
+fn reify_known_choices(
+    config: &mut AdventureConfiguration,
+    data: &mut NarrativeEventData,
+    deck: &Deck,
+) {
     for choice in &mut data.choices {
         for cost in &mut choice.costs {
-            reify_known_effect(config, cost);
+            reify_known_effect(config, cost, deck);
         }
         for effect in &mut choice.effects {
-            reify_known_effect(config, effect);
+            reify_known_effect(config, effect, deck);
         }
     }
 }
 
-fn reify_known_effect(_: &mut AdventureConfiguration, effect_data: &mut AdventureEffectData) {
+fn reify_known_effect(
+    config: &mut AdventureConfiguration,
+    effect_data: &mut AdventureEffectData,
+    deck: &Deck,
+) {
     match &effect_data.effect {
-        AdventureEffect::LoseKnownRandomCard(_) => {}
+        AdventureEffect::LoseKnownRandomCard(selector) => {
+            let choice = config.choose(
+                deck.cards.keys().filter(|&&variant| card_selector::matches(selector, variant)),
+            );
+            effect_data.known_card = choice.copied();
+        }
         _ => {}
     }
 }
