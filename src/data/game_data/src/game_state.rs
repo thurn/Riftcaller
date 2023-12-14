@@ -532,8 +532,9 @@ impl GameState {
         self.cards(Side::Covenant).iter().filter(move |c| c.position().is_defender_of(room_id))
     }
 
-    /// Covenant cards defending a given room, in sorting-key order (higher
-    /// array indices are closer to the front of the room).
+    /// Covenant cards defending a given room, in sorting-key order. Later
+    /// elements in the returned Vector are closer to the front of the room and
+    /// are approached first during raids.
     pub fn defender_list(&self, room_id: RoomId) -> Vec<CardId> {
         self.card_list_for_iterator(
             self.cards(Side::Covenant).iter().filter(move |c| c.position().is_defender_of(room_id)),

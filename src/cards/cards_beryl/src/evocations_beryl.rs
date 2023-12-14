@@ -31,6 +31,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{BanishedByCard, CardCounter, CardPosition};
+use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData, UnplayedAction};
@@ -534,6 +535,55 @@ pub fn radiant_intervention(meta: CardMetadata) -> CardDefinition {
                     .collect(),
             )
         }))],
+        config: CardConfig::default(),
+    }
+}
+
+pub fn lightcallers_command(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::LightcallersCommand,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(3),
+        image: assets::riftcaller_card(meta, "lightcallers_command"),
+        card_type: CardType::Evocation,
+        subtypes: vec![CardSubtype::Decree],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![ActivatedAbility::new(
+            costs::sacrifice(),
+            meta.upgrade(
+                text!["The Covenant cannot summon the outermost minion in any room this turn"],
+                text!["The Covenant cannot summon minions this turn"],
+            ),
+        )
+        .delegate(delegates::can_summon(
+            requirements::ability_activated_this_turn,
+            |g, s, &card_id, flag| {
+                if s.is_upgraded() {
+                    flag.disallow()
+                } else {
+                    flag.add_constraint(!flags::is_outermost_defender(g, card_id))
+                }
+            },
+        ))
+        .delegate(delegates::status_markers(
+            requirements::ability_activated_this_turn,
+            |g, s, &card_id, mut markers| {
+                if g.card(card_id).definition().is_minion()
+                    && g.card(card_id).is_face_down()
+                    && (flags::is_outermost_defender(g, card_id) || s.is_upgraded())
+                {
+                    markers.push(CardStatusMarker {
+                        source: s.ability_id(),
+                        marker_kind: CardInfoElementKind::NegativeEffect,
+                        text: text!["Cannot be summoned this turn"],
+                    });
+                }
+                markers
+            },
+        ))
+        .build()],
         config: CardConfig::default(),
     }
 }

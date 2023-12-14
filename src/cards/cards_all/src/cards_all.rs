@@ -95,6 +95,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::evocations_beryl::a_moments_peace);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::vortex_portal);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::radiant_intervention);
+    DEFINITIONS.insert(cards_beryl::evocations_beryl::lightcallers_command);
     DEFINITIONS.insert(cards_beryl::minions_beryl::incarnation_of_justice);
     DEFINITIONS.insert(cards_beryl::minions_beryl::sentinel_sphinx);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);

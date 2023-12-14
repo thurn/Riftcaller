@@ -596,6 +596,7 @@ pub enum CardSubtype {
     Expedition,
     Augury,
     Dictate,
+    Decree,
     Fabrication,
 
     // Ally subtypes

@@ -16,7 +16,9 @@
 //! action can currently be taken
 
 use constants::game_constants;
-use core_data::game_primitives::{AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, Side};
+use core_data::game_primitives::{
+    AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, RoomLocation, Side,
+};
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -427,6 +429,16 @@ pub fn can_evade_current_minion(game: &GameState) -> bool {
         return false;
     };
     dispatch::perform_query(game, CanEvadeMinionQuery(&minion_id), Flag::new(true)).into()
+}
+
+/// Returns true if the [CardId] card is currently the outermost defender in a
+/// room.
+pub fn is_outermost_defender(game: &GameState, card_id: CardId) -> bool {
+    if let CardPosition::Room(_, room_id, RoomLocation::Defender) = game.card(card_id).position() {
+        game.defender_list(room_id).last() == Some(&card_id)
+    } else {
+        false
+    }
 }
 
 /// Can the Riftcaller choose to use the 'End Raid' button to end the access

@@ -136,6 +136,12 @@ pub fn no_damage_dealt<R: BaseRequirement>(
     R::run(game, scope) && history::counters(game, Side::Riftcaller).damage_received == 0
 }
 
+/// A [RequirementFn] which matches if the ability associated with the
+/// current [Scope] has been activated this this turn.
+pub fn ability_activated_this_turn<T>(game: &GameState, scope: Scope, _: &T) -> bool {
+    history::ability_activations_this_turn(game, scope.ability_id()).next().is_some()
+}
+
 /// A [RequirementFn] which matches if the indicated `card_id` was targeted by
 /// the parent card for the current turn via
 /// `CustomCardState::TargetCardForTurn`.

@@ -370,8 +370,6 @@ namespace Riftcaller.Game
     // always works for them and my code is probably wrong... cool.
     public override void MouseDown()
     {
-      Debug.Log($"{name} MouseDown");
-      
       var canPlay = CanPlay();
       _isMove = !canPlay && CanMove();
 

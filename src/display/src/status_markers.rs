@@ -14,7 +14,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
-use core_data::game_primitives::{HasAbilityId, School};
+use core_data::game_primitives::{CardId, School};
 use game_data::card_state::CardState;
 use game_data::card_view_context::CardViewContext;
 use game_data::delegate_data::{CardStatusMarker, CardStatusMarkersQuery};
@@ -35,7 +35,7 @@ pub fn build(builder: &ResponseBuilder, game: &GameState, card: &CardState) -> V
 
     dispatch::perform_query(game, CardStatusMarkersQuery(&card.id), vec![])
         .into_iter()
-        .map(|marker| marker_card(builder, game, card, marker))
+        .map(|marker| marker_card(builder, game, card, marker, card.id))
         .collect()
 }
 
@@ -44,6 +44,7 @@ fn marker_card(
     game: &GameState,
     card: &CardState,
     marker: CardStatusMarker,
+    target: CardId,
 ) -> CardView {
     let source_side = marker.source.side();
     let source_definition = game.card(marker.source.card_id).definition();
@@ -51,9 +52,9 @@ fn marker_card(
     CardView {
         card_id: Some(CardIdentifier {
             side: adapters::player_side(source_side),
-            index: marker.source.card_id.index as u32,
+            index: target.index as u32,
             game_action: Some(CustomCardIdentifier::StatusMarker as u32),
-            ability_id: Some(marker.source.ability_id().index.0 as u32),
+            ability_id: Some(marker.source.index.0 as u32),
         }),
         card_position: Some(positions::for_custom_card(
             positions::stacked_behind_card(card.id),

@@ -570,3 +570,68 @@ fn radiant_intervention_multiple_copies_prevent_multiple() {
     assert!(g.client.cards.artifacts().contains_card(CardName::TestSacrificeDrawCardArtifact));
     assert!(g.client.cards.artifacts().contains_card(CardName::TestMortalWeapon));
 }
+
+#[test]
+fn lightcallers_command() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_down_defender(RoomId::Vault, CardName::TestMinionEndRaid),
+        )
+        .build();
+    let id = g.create_and_play(CardName::LightcallersCommand);
+    g.activate_ability(id, 0);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.has(Button::EndRaid));
+}
+
+#[test]
+fn lightcallers_command_two_defenders() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_down_defender(RoomId::Vault, CardName::TestMinionDealDamage)
+                .face_down_defender(RoomId::Vault, CardName::TestMinionEndRaid),
+        )
+        .build();
+    let id = g.create_and_play(CardName::LightcallersCommand);
+    g.activate_ability(id, 0);
+    g.initiate_raid(RoomId::Vault);
+    g.opponent_click(Button::Summon);
+    g.click(Button::NoWeapon);
+    assert!(g.is_victory_for_player(Side::Covenant));
+}
+
+#[test]
+fn lightcallers_command_two_raids() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_down_defender(RoomId::Vault, CardName::TestMinionEndRaid)
+                .face_down_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),
+        )
+        .build();
+    let id = g.create_and_play(CardName::LightcallersCommand);
+    g.activate_ability(id, 0);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.has(Button::EndRaid));
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Sanctum);
+    assert!(g.has(Button::EndRaid));
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn lightcallers_command_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_down_defender(RoomId::Vault, CardName::TestMinionDealDamage)
+                .face_down_defender(RoomId::Vault, CardName::TestMinionEndRaid),
+        )
+        .build();
+    let id = g.create_and_play_upgraded(CardName::LightcallersCommand);
+    g.activate_ability(id, 0);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.has(Button::EndRaid));
+}

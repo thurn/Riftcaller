@@ -15,7 +15,7 @@ run-firestore:
     cargo run --bin riftcaller -- firestore local forest
 
 test:
-    cargo test
+    RUSTFLAGS="--deny warnings" cargo test
 
 disallowed:
     ! grep -r --include '*.rs' 'ERROR_PANIC: bool = true'
@@ -257,7 +257,7 @@ watch-firestore:
 fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 
 clippy:
-    cargo clippy --workspace --exclude "protos" -- -D warnings -D clippy::all
+    RUSTFLAGS="--deny warnings" cargo clippy --workspace --exclude "protos" -- -D warnings -D clippy::all
 
 clippy-fix:
     cargo clippy --fix --allow-dirty -- -D warnings -D clippy::all
@@ -268,7 +268,7 @@ fmt:
     cargo +nightly fmt
 
 check-format:
-    cargo +nightly fmt -- --check
+    RUSTFLAGS="--deny warnings" cargo +nightly fmt -- --check
 
 fix-lints:
     cargo fix --allow-dirty --all-targets
@@ -289,7 +289,7 @@ benchmark *args='':
 
 # Checks documentation lints, haven't figured out how to do this with a single command
 check-docs:
-    RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links -D rustdoc::private-intra-doc-links -D rustdoc::bare-urls" cargo doc --all
+    RUSTFLAGS="--deny warnings" RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links -D rustdoc::private-intra-doc-links -D rustdoc::bare-urls" cargo doc --all
 
 # Need to run
 # rustup target add x86_64-unknown-linux-gnu
