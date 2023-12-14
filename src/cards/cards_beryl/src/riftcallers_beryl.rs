@@ -44,7 +44,7 @@ pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Beyond,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text![
                 "The first time each turn you draw cards through a card ability,",
@@ -95,7 +95,7 @@ pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Beyond,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text![
                 "The first time the Covenant plays a",
@@ -177,7 +177,7 @@ pub fn merethyl_lore_seeker(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Law,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text![
                 "When you access the",
@@ -237,7 +237,7 @@ pub fn oleus_the_watcher(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Law,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text!["The first time each turn the Covenant summons a minion,", GainMana(2)],
             in_play::on_minion_summoned(|g, s, _| {
@@ -282,7 +282,7 @@ pub fn ellisar_forgekeeper(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Law,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text!["The first time each turn you sacrifice an artifact,", GainActions(1)],
             in_play::on_card_sacrificed(|g, s, card_id| {
@@ -328,7 +328,7 @@ pub fn seldanna_regal_pyromancer(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Beyond,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new(text![
             "When you use a",
             RazeAbility,

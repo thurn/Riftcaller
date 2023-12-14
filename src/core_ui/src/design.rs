@@ -238,7 +238,7 @@ impl From<FontSize> for Dimension {
             FontSize::SchoolLabel => 32,
             FontSize::GameInstructionsText => 36,
             FontSize::GameInstructionsMetaText => 28,
-            FontSize::NarrativeText => 24,
+            FontSize::NarrativeText => 28,
         })
         .px()
         .into()

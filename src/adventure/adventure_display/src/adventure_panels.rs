@@ -33,7 +33,7 @@ pub fn tile_entity_panel(
 ) -> Result<Option<InterfacePanel>> {
     let state = player.adventure()?;
     let address = PanelAddress::PlayerPanel(PlayerPanel::AdventureTile(position));
-    Ok(match state.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")? {
+    Ok(match state.tiles.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")? {
         TileEntity::Draft(data) => DraftPanel { address, data }.build_panel(),
         TileEntity::Shop(data) => ShopPanel { player, address, data }.build_panel(),
         TileEntity::Battle(data) => BattlePanel { player, address, data }.build_panel(),

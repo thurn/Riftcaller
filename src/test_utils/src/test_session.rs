@@ -225,6 +225,7 @@ impl TestSession {
                 .as_mut()
                 .expect("No active adventure")
                 .tiles
+                .map
                 .insert(position, state.clone());
         });
 

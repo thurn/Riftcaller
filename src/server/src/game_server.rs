@@ -69,14 +69,14 @@ pub async fn handle_leave_game(
     requests::with_player(database, data, |player| {
         player.status = None;
         let scene = if let Some(adventure) = player.adventure.as_mut() {
-            let TileEntity::Battle(battle) = adventure.visiting_tile()? else {
+            let TileEntity::Battle(battle) = adventure.tiles.visiting_tile()? else {
                 fail!("Expected player to be in a battle")
             };
 
             let region = battle.region_to_reveal;
             adventure.coins += battle.reward;
             adventure.revealed_regions.insert(region);
-            adventure.clear_visited_tile()?;
+            adventure.tiles.clear_visited_tile()?;
 
             match outcome {
                 GameOutcome::Victory => SceneName::World,

@@ -14,6 +14,7 @@
 
 use adventure_data::adventure::{NarrativeEventChoice, NarrativeEventData, NarrativeEventStep};
 use adventure_data::adventure_action::AdventureAction;
+use adventure_data::adventure_effect::AdventureEffectData;
 use core_data::adventure_primitives::NarrativeChoiceIndex;
 use core_ui::actions::InterfaceAction;
 use core_ui::design::{BackgroundColor, FontSize};
@@ -24,8 +25,11 @@ use core_ui::text::Text;
 use panel_address::{Panel, PanelAddress};
 use player_data::PlayerState;
 use protos::riftcaller::{
-    FlexAlign, FlexJustify, FlexPosition, FlexVector3, TextAlign, WhiteSpace,
+    FlexAlign, FlexDisplayStyle, FlexJustify, FlexPosition, FlexVector3, TextAlign, WhiteSpace,
 };
+
+const CONTAINER_WIDTH: i32 = 400;
+const CONTAINER_HEIGHT: i32 = 750;
 
 pub struct NarrativeEventPanel<'a> {
     pub player: &'a PlayerState,
@@ -59,27 +63,50 @@ impl<'a> NarrativeEventPanel<'a> {
     }
 
     fn view_choices(&self) -> Column {
-        self.container().children(self.data.choices.iter().map(Self::narrative_choice)).child(
-            Self::button_row(
+        self.container()
+            .children(self.data.choices.iter().enumerate().map(Self::narrative_choice))
+            .child(Self::button_row(
                 "Back",
                 AdventureAction::SetNarrativeStep(NarrativeEventStep::Introduction),
-            ),
-        )
+            ))
     }
 
-    fn narrative_choice(choice: &NarrativeEventChoice) -> impl Component {
+    fn narrative_choice((index, choice): (usize, &NarrativeEventChoice)) -> impl Component {
         Self::button_row(
             choice.choice_description.clone(),
             AdventureAction::SetNarrativeStep(NarrativeEventStep::SelectChoice(
-                NarrativeChoiceIndex { value: 0 },
+                NarrativeChoiceIndex { value: index },
             )),
         )
+        .show_child_on_hover("OutcomeTooltip")
+        .child(Self::outcome_tooltip(choice))
     }
 
-    fn button_row(
-        text: impl Into<String>,
-        action: impl InterfaceAction + 'static,
-    ) -> impl Component {
+    fn outcome_tooltip(choice: &NarrativeEventChoice) -> Column {
+        Column::new("OutcomeTooltip")
+            .style(
+                Style::new()
+                    .display(FlexDisplayStyle::None)
+                    .position_type(FlexPosition::Absolute)
+                    .position(Edge::Bottom, 0.px())
+                    .position(Edge::Right, CONTAINER_WIDTH.px())
+                    .background_color(BackgroundColor::NarrativeEventBackground)
+                    .padding(Edge::All, 8.px())
+                    .border_radius(Corner::All, 8.px()),
+            )
+            .children(choice.costs.iter().map(|choice| Self::effect_description(choice, true)))
+            .children(choice.effects.iter().map(|choice| Self::effect_description(choice, false)))
+    }
+
+    fn effect_description(data: &AdventureEffectData, cost: bool) -> impl Component {
+        Text::new(format!("<b>{}:</b> {}", if cost { "Cost" } else { "Reward" }, data.description))
+            .layout(Layout::new().margin(Edge::Vertical, 4.px()))
+            .font_size(FontSize::NarrativeText)
+            .text_align(TextAlign::MiddleLeft)
+            .white_space(WhiteSpace::Normal)
+    }
+
+    fn button_row(text: impl Into<String>, action: impl InterfaceAction + 'static) -> Row {
         Row::new("ButtonRow")
             .style(
                 Style::new()
@@ -110,8 +137,8 @@ impl<'a> NarrativeEventPanel<'a> {
                 .position_type(FlexPosition::Absolute)
                 .position(Edge::Right, 16.px())
                 .position(Edge::Bottom, 16.px())
-                .width(400.px())
-                .height(700.px())
+                .width(CONTAINER_WIDTH.px())
+                .height(CONTAINER_HEIGHT.px())
                 .background_color(BackgroundColor::NarrativeEventBackground)
                 .border_radius(Corner::All, 8.px())
                 .justify_content(FlexJustify::FlexStart)

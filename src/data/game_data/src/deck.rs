@@ -36,7 +36,8 @@ pub struct Deck {
     /// Identity cards for this deck, which start the game in play and provide
     /// global effects.
     pub identities: Vec<CardVariant>,
-    /// How many (non-identity) cards with each name are present in this deck?
+    /// How many (non-identity, non-sigil) cards with each name are present in
+    /// this deck?
     #[serde_as(as = "Vec<(_, _)>")]
     pub cards: HashMap<CardVariant, u32>,
 }

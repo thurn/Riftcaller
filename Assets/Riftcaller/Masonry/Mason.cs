@@ -110,15 +110,34 @@ namespace Riftcaller.Masonry
           hoverStyle.MergeFrom(node.HoverStyle);
           callbacks.SetCallback(Callbacks.Event.MouseEnter, () =>
           {
+            if (!string.IsNullOrEmpty(node.ShowChildOnHover))
+            {
+              element.Q(node.ShowChildOnHover).style.display = DisplayStyle.Flex;
+            }
             ApplyStyle(registry, element, hoverStyle);
           });
           callbacks.SetCallback(Callbacks.Event.MouseLeave, () =>
           {
+            if (!string.IsNullOrEmpty(node.ShowChildOnHover))
+            {
+              element.Q(node.ShowChildOnHover).style.display = DisplayStyle.None;
+            }            
             var originalStyle = new FlexStyle();
             originalStyle.MergeFrom(node.Style);
             originalStyle.MergeFrom(node.OnAttachStyle);            
             ApplyStyle(registry, element, originalStyle);
           });
+        }
+        else if (!string.IsNullOrEmpty(node.ShowChildOnHover))
+        {
+          callbacks.SetCallback(Callbacks.Event.MouseEnter, () =>
+          {
+            element.Q(node.ShowChildOnHover).style.display = DisplayStyle.Flex;
+          });
+          callbacks.SetCallback(Callbacks.Event.MouseLeave, () =>
+          {
+            element.Q(node.ShowChildOnHover).style.display = DisplayStyle.None;
+          });          
         }
         else
         {

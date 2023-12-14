@@ -614,6 +614,7 @@ message EventHandlers {
     ClientAction on_field_changed = 5;
 }
 
+// An element in the UI hierarchy of a given NodeType.
 message Node {
     // Used to identify this node in the view hierarchy
     string name = 1;
@@ -628,6 +629,10 @@ message Node {
     FlexStyle hover_style = 6;
     FlexStyle pressed_style = 7;
     FlexStyle on_attach_style = 8;
+
+    // Name of a child element which should be shown (display: visible) when
+    // this node is hovered.
+    string show_child_on_hover = 9;
 }
 
 

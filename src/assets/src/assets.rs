@@ -243,7 +243,7 @@ pub fn jewel(rarity: Rarity) -> SpriteAddress {
         address: format!(
             "{}.png",
             match rarity {
-                Rarity::Common | Rarity::None => {
+                Rarity::Common | Rarity::None | Rarity::Basic => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Jewels/Jewel_Elf_Color_01"
                 }
                 Rarity::Uncommon => {
@@ -252,7 +252,7 @@ pub fn jewel(rarity: Rarity) -> SpriteAddress {
                 Rarity::Rare => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Jewels/Jewel_Elf_Color_02"
                 }
-                Rarity::Riftcaller => {
+                Rarity::Identity => {
                     "LittleSweetDaemon/TCG_Card_Fantasy_Design/Jewels/Jewel_Steampunk_Color_02"
                 }
             }

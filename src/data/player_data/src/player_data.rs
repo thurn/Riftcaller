@@ -21,7 +21,6 @@ use game_data::player_name::PlayerId;
 use game_data::tutorial_data::TutorialData;
 use serde::{Deserialize, Serialize};
 use user_action_data::NewGameAction;
-
 use with_error::{fail, WithError};
 
 /// Represents the state of a game the player is participating in.
@@ -136,7 +135,7 @@ pub fn current_game_id(data: Option<PlayerState>) -> Option<GameId> {
 /// Returns the battle tile the player is currently visiting, or None if
 /// they are not currently visiting a battle tile.
 pub fn current_battle(player: &PlayerState) -> Option<&BattleData> {
-    if let TileEntity::Battle(data) = player.adventure.as_ref()?.visiting_tile_option()? {
+    if let TileEntity::Battle(data) = player.adventure.as_ref()?.tiles.visiting_tile_option()? {
         Some(data)
     } else {
         None

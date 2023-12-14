@@ -528,6 +528,7 @@ pub struct EventHandlers {
     #[prost(message, optional, tag = "5")]
     pub on_field_changed: ::core::option::Option<ClientAction>,
 }
+/// An element in the UI hierarchy of a given NodeType.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Node {
@@ -548,6 +549,10 @@ pub struct Node {
     pub pressed_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
     #[prost(message, optional, boxed, tag = "8")]
     pub on_attach_style: ::core::option::Option<::prost::alloc::boxed::Box<FlexStyle>>,
+    /// Name of a child element which should be shown (display: visible) when
+    /// this node is hovered.
+    #[prost(string, tag = "9")]
+    pub show_child_on_hover: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

@@ -496,15 +496,14 @@ pub enum ItemLocation {
 
 /// Rarity of a card, used to determine how likely it is to appear in randomized
 /// rewards.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub enum Rarity {
+    None,
+    Identity,
+    Basic,
     Common,
     Uncommon,
     Rare,
-    Riftcaller,
-
-    /// Card cannot be obtained via random rewards
-    None,
 }
 
 /// Possible types of cards

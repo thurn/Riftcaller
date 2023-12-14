@@ -15,8 +15,7 @@
 use adventure_data::adventure::{
     CardSelector, NarrativeEventChoice, NarrativeEventData, NarrativeEventStep,
 };
-use adventure_data::adventure_cost::AdventureCost;
-use adventure_data::adventure_effect::{AdventureEffect, DeckCardEffect};
+use adventure_data::adventure_effect::{AdventureEffect, AdventureEffectData, DeckCardEffect};
 use core_data::adventure_primitives::Skill;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity};
 
@@ -40,9 +39,13 @@ pub fn generate() -> NarrativeEventData {
                         .to_string(),
                 skill: Some(Skill::Brawn),
                 costs: vec![],
-                effects: vec![AdventureEffect::Draft(
-                    CardSelector::new().rarity(Rarity::Rare).card_type(CardType::Spell),
-                )],
+                effects: vec![AdventureEffectData {
+                    effect: AdventureEffect::Draft(
+                        CardSelector::new().rarity(Rarity::Rare).card_type(CardType::Spell),
+                    ),
+                    description: "Draft a rare spell".to_string(),
+                    known_card: None,
+                }],
             },
             NarrativeEventChoice {
                 choice_description: "\"I'll use the rocks for cover and move silently to find an \
@@ -56,9 +59,30 @@ pub fn generate() -> NarrativeEventData {
                 skill: Some(Skill::Stealth),
                 costs: vec![],
                 effects: vec![
-                    AdventureEffect::PickCardForEffect(DeckCardEffect::Duplicate(3)),
-                    AdventureEffect::PickCardForEffect(DeckCardEffect::Duplicate(3)),
-                    AdventureEffect::PickCardForEffect(DeckCardEffect::Duplicate(3)),
+                    AdventureEffectData {
+                        effect: AdventureEffect::PickCardForEffect(
+                            CardSelector::default(),
+                            DeckCardEffect::DuplicateTo3Copies,
+                        ),
+                        description: "Gain up to 3 copies of a card in your deck".to_string(),
+                        known_card: None,
+                    },
+                    AdventureEffectData {
+                        effect: AdventureEffect::PickCardForEffect(
+                            CardSelector::default(),
+                            DeckCardEffect::DuplicateTo3Copies,
+                        ),
+                        description: "Gain up to 3 copies of a card in your deck".to_string(),
+                        known_card: None,
+                    },
+                    AdventureEffectData {
+                        effect: AdventureEffect::PickCardForEffect(
+                            CardSelector::default(),
+                            DeckCardEffect::DuplicateTo3Copies,
+                        ),
+                        description: "Gain up to 3 copies of a card in your deck".to_string(),
+                        known_card: None,
+                    },
                 ],
             },
             NarrativeEventChoice {
@@ -71,10 +95,20 @@ pub fn generate() -> NarrativeEventData {
                 mountains, a place of rare and powerful artifacts."
                     .to_string(),
                 skill: None,
-                costs: vec![AdventureCost::LoseKnownRandomCard(
-                    CardSelector::new().non_basic(true).card_subtype(CardSubtype::Weapon),
-                )],
-                effects: vec![AdventureEffect::Shop(CardSelector::new())],
+                costs: vec![AdventureEffectData {
+                    effect: AdventureEffect::LoseKnownRandomCard(
+                        CardSelector::new()
+                            .rarity(Rarity::Common)
+                            .card_subtype(CardSubtype::Weapon),
+                    ),
+                    description: "Lose {CardName}".to_string(),
+                    known_card: None,
+                }],
+                effects: vec![AdventureEffectData {
+                    effect: AdventureEffect::Shop(CardSelector::new()),
+                    description: "Open a new shop screen".to_string(),
+                    known_card: None,
+                }],
             },
         ],
         selected_choices: vec![],

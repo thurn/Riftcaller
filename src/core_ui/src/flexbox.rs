@@ -103,6 +103,13 @@ pub trait HasRenderNode: Sized {
         self
     }
 
+    /// Name of a child element which should be shown (display: visible) when
+    /// this node is hovered.    
+    fn show_child_on_hover(mut self, name: impl Into<String>) -> Self {
+        self.render_node().show_child_on_hover = name.into();
+        self
+    }
+
     /// [Style] to merge into this component's base style when it is pressed
     fn pressed_style(mut self, style: Style) -> Self {
         self.render_node().pressed_style = Some(style.wrapped_style());

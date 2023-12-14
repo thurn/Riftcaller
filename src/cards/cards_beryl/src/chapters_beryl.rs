@@ -42,7 +42,7 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Covenant,
         school: School::Law,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text![
                 "When the Riftcaller spends or loses mana during a raid due to a Covenant ability,",
@@ -91,7 +91,7 @@ pub fn algrak_councils_enforcer(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Covenant,
         school: School::Law,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new(text![
             "The Riftcaller cannot score more than one scheme per turn"
         ])
@@ -136,7 +136,7 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Covenant,
         school: School::Beyond,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text![
                 "The first time each turn the Riftcaller loses or spends",
@@ -196,7 +196,7 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Covenant,
         school: School::Beyond,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![
             Ability::new_with_delegate(
                 text_helpers::named_trigger(Dawn, text![text!["Choose a card type"],]),

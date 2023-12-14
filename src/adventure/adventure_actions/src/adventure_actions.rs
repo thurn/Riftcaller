@@ -14,14 +14,15 @@
 
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
-use adventure_data::adventure::{AdventureState, NarrativeEventStep, TileEntity};
+use adventure_data::adventure::{AdventureState, TileEntity};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
 use core_data::game_primitives::CardType;
 use with_error::{fail, verify};
 
-pub mod narrative_event_rules;
+pub mod card_selector;
+pub mod narrative_events;
 
 /// Handles an incoming [AdventureAction] and produces a client response.
 pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAction) -> Result<()> {
@@ -31,7 +32,9 @@ pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAct
         AdventureAction::EndVisit => handle_end_visit(state),
         AdventureAction::DraftCard(index) => handle_draft(state, *index),
         AdventureAction::BuyCard(index) => handle_buy_card(state, *index),
-        AdventureAction::SetNarrativeStep(step) => set_narrative_step(state, *step),
+        AdventureAction::SetNarrativeStep(step) => {
+            narrative_events::set_narrative_step(state, *step)
+        }
     }
 }
 
@@ -42,32 +45,32 @@ fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
 
 fn handle_visit_tile(state: &mut AdventureState, position: TilePosition) -> Result<()> {
     verify!(
-        state.revealed_regions.contains(&state.tile(position)?.region_id),
+        state.revealed_regions.contains(&state.tiles.tile(position)?.region_id),
         "Given tile position has not been revealed"
     );
-    state.tile_mut(position)?.visited = true;
-    state.visiting_position = Some(position);
+    state.tiles.tile_mut(position)?.visited = true;
+    state.tiles.visiting_position = Some(position);
     Ok(())
 }
 
 fn handle_end_visit(state: &mut AdventureState) -> Result<()> {
     verify!(is_blocking_screen(state) != Some(true), "Cannot end visit on this screen");
-    state.visiting_position = None;
+    state.tiles.visiting_position = None;
     Ok(())
 }
 
 /// Returns Some(true) if the player cannot end a visit on the current screen
 /// without taking some other game action.
 fn is_blocking_screen(state: &mut AdventureState) -> Option<bool> {
-    let position = state.visiting_position?;
-    match state.tiles.get(&position)?.entity.as_ref()? {
+    let position = state.tiles.visiting_position?;
+    match state.tiles.map.get(&position)?.entity.as_ref()? {
         TileEntity::Draft(_) => Some(true),
         _ => None,
     }
 }
 
 fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
-    let TileEntity::Draft(data) = state.visiting_tile_mut()? else {
+    let TileEntity::Draft(data) = state.tiles.visiting_tile_mut()? else {
         fail!("Expected active draft screen");
     };
 
@@ -88,12 +91,12 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
             .or_insert(choice.quantity);
     }
 
-    state.clear_visited_tile()?;
+    state.tiles.clear_visited_tile()?;
     Ok(())
 }
 
 fn handle_buy_card(state: &mut AdventureState, index: usize) -> Result<()> {
-    let TileEntity::Shop(data) = state.visiting_tile_mut()? else {
+    let TileEntity::Shop(data) = state.tiles.visiting_tile_mut()? else {
         fail!("Expected active shop screen");
     };
 
@@ -108,24 +111,6 @@ fn handle_buy_card(state: &mut AdventureState, index: usize) -> Result<()> {
         .and_modify(|i| *i += choice.quantity)
         .or_insert(choice.quantity);
     spend_coins(state, choice.cost)?;
-
-    Ok(())
-}
-
-fn set_narrative_step(state: &mut AdventureState, step: NarrativeEventStep) -> Result<()> {
-    let TileEntity::NarrativeEvent(data) = state.visiting_tile_mut()? else {
-        fail!("Expected active narrative event screen");
-    };
-
-    match step {
-        NarrativeEventStep::Introduction => data.step = NarrativeEventStep::Introduction,
-        NarrativeEventStep::ViewChoices => data.step = NarrativeEventStep::ViewChoices,
-        NarrativeEventStep::SelectChoice(index) => {
-            verify!(narrative_event_rules::is_legal_choice(data, index), "Invalid choice!");
-            data.selected_choices.push(index);
-            data.step = step;
-        }
-    }
 
     Ok(())
 }

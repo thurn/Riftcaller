@@ -14,5 +14,4 @@
 
 pub mod adventure;
 pub mod adventure_action;
-pub mod adventure_cost;
 pub mod adventure_effect;

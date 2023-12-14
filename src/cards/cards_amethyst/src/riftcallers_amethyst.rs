@@ -60,7 +60,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Pact,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text!["The first time you take damage each turn, draw a card"],
             Delegate::DealtDamage(EventDelegate {
@@ -86,7 +86,7 @@ pub fn telantes_dugoth(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Primal,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text!["After you access the", Sanctum, ", discard the top card of the", Vault],
             in_play::after_sanctum_accessed(|g, s, _| {
@@ -108,7 +108,7 @@ pub fn andvari_est(_: CardMetadata) -> CardDefinition {
         subtypes: vec![],
         side: Side::Riftcaller,
         school: School::Shadow,
-        rarity: Rarity::Riftcaller,
+        rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text![
                 "When you access the",

@@ -32,8 +32,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DisplayFromStr};
 use with_error::WithError;
 
-use crate::adventure_cost::AdventureCost;
-use crate::adventure_effect::AdventureEffect;
+use crate::adventure_effect::AdventureEffectData;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardChoice {
@@ -101,9 +100,9 @@ pub struct NarrativeEventChoice {
     ///
     /// Choices will not be presented unless the player is able to pay all of
     /// their associated costs.
-    pub costs: Vec<AdventureCost>,
+    pub costs: Vec<AdventureEffectData>,
     /// Effect of selecting this choice.
-    pub effects: Vec<AdventureEffect>,
+    pub effects: Vec<AdventureEffectData>,
 }
 
 /// Steps within the progress of resolving a narrative event.
@@ -225,48 +224,28 @@ impl AdventureConfiguration {
     }
 }
 
-/// Stores the primary state for one player during an ongoing adventure
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AdventureState {
-    /// Unique identifier for this adventure
-    pub id: AdventureId,
-    /// Player type
-    pub side: Side,
-    /// Coin count, used to purchase more cards for deck
-    pub coins: Coins,
+pub struct AdventureTiles {
+    /// Map from tile position to [TileState]
+    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
+    pub map: HashMap<TilePosition, TileState>,
     /// Current tile entity position on the world map which the player is
     /// visiting. If not specified, the player is not currently visiting any
     /// tile.
     pub visiting_position: Option<TilePosition>,
-    /// Result of the adventure, if it has ended.
-    pub outcome: Option<AdventureOutcome>,
-    /// States of world map tiles
-    #[serde_as(as = "HashMap<DisplayFromStr, _>")]
-    pub tiles: HashMap<TilePosition, TileState>,
-    /// Regions which the player can currently see. By default Region 1 is
-    /// revealed.
-    pub revealed_regions: HashSet<RegionId>,
-    /// Deck being used for this adventure
-    pub deck: Deck,
-    /// Cards collected by this player during this adventure, inclusive of cards
-    /// in `deck` and cards not currently being used.
-    #[serde_as(as = "Vec<(_, _)>")]
-    pub collection: HashMap<CardVariant, u32>,
-    /// Customization options for this adventure
-    pub config: AdventureConfiguration,
 }
 
-impl AdventureState {
+impl AdventureTiles {
     /// Returns the [TileState] for a given tile position, or an error if no
     /// such tile position exists.
     pub fn tile(&self, position: TilePosition) -> Result<&TileState> {
-        self.tiles.get(&position).with_error(|| format!("Tile not found {position:?}"))
+        self.map.get(&position).with_error(|| format!("Tile not found {position:?}"))
     }
 
     /// Mutable version of [Self::tile].
     pub fn tile_mut(&mut self, position: TilePosition) -> Result<&mut TileState> {
-        self.tiles.get_mut(&position).with_error(|| format!("Tile not found {position:?}"))
+        self.map.get_mut(&position).with_error(|| format!("Tile not found {position:?}"))
     }
 
     /// Returns the [TileEntity] the player is currently visiting, or an error
@@ -276,7 +255,7 @@ impl AdventureState {
     }
 
     pub fn visiting_tile_option(&self) -> Option<&TileEntity> {
-        self.tiles.get(&self.visiting_position?)?.entity.as_ref()
+        self.map.get(&self.visiting_position?)?.entity.as_ref()
     }
 
     /// Mutable version of [Self::visiting_tile].
@@ -288,7 +267,7 @@ impl AdventureState {
     }
 
     /// Removes the entity from the currently-visited tile and clears the
-    /// visting position.
+    /// visiting position.
     pub fn clear_visited_tile(&mut self) -> Result<()> {
         self.tile_mut(self.visited_position()?)?.entity = None;
         self.visiting_position = None;
@@ -302,7 +281,34 @@ impl AdventureState {
     }
 }
 
-/// Specifies the parameters for picking a random card from a set
+/// Stores the primary state for one player during an ongoing adventure
+#[serde_as]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdventureState {
+    /// Unique identifier for this adventure
+    pub id: AdventureId,
+    /// Player type
+    pub side: Side,
+    /// Coin count, used to purchase more cards for deck
+    pub coins: Coins,
+    /// Result of the adventure, if it has ended.
+    pub outcome: Option<AdventureOutcome>,
+    /// States of world map tiles
+    pub tiles: AdventureTiles,
+    /// Regions which the player can currently see. By default Region 1 is
+    /// revealed.
+    pub revealed_regions: HashSet<RegionId>,
+    /// Deck being used for this adventure
+    pub deck: Deck,
+    /// Cards collected by this player during this adventure, inclusive of cards
+    /// in `deck` and cards not currently being used.
+    #[serde_as(as = "Vec<(_, _)>")]
+    pub collection: HashMap<CardVariant, u32>,
+    /// Customization options for this adventure
+    pub config: AdventureConfiguration,
+}
+
+/// Specifies the parameters for picking a card from a set
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CardSelector {
     /// Minimum rarity for cards
@@ -315,8 +321,6 @@ pub struct CardSelector {
     ///
     /// If empty, all card subtypes are allowed.    
     pub card_subtypes: Vec<CardSubtype>,
-    /// Prefer to select non-basic cards, if possible
-    pub non_basic: bool,
 }
 
 impl CardSelector {
@@ -336,11 +340,6 @@ impl CardSelector {
 
     pub fn card_subtype(mut self, card_subtype: CardSubtype) -> Self {
         self.card_subtypes.push(card_subtype);
-        self
-    }
-
-    pub fn non_basic(mut self, non_basic: bool) -> Self {
-        self.non_basic = non_basic;
         self
     }
 }

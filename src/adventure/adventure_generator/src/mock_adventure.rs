@@ -16,7 +16,9 @@
 
 use std::collections::{HashMap, HashSet};
 
-use adventure_data::adventure::{AdventureConfiguration, AdventureState, TileEntity, TileState};
+use adventure_data::adventure::{
+    AdventureConfiguration, AdventureState, AdventureTiles, TileEntity, TileState,
+};
 use core_data::adventure_primitives::{RegionId, TilePosition};
 use core_data::game_primitives::AdventureId;
 use game_data::card_name::CardVariant;
@@ -133,10 +135,9 @@ pub fn create(
     AdventureState {
         id,
         side,
-        visiting_position: Some(TilePosition { x: 0, y: 0 }),
         outcome: None,
         coins: crate::STARTING_COINS,
-        tiles,
+        tiles: AdventureTiles { map: tiles, visiting_position: Some(TilePosition { x: 0, y: 0 }) },
         revealed_regions,
         config,
         deck,
