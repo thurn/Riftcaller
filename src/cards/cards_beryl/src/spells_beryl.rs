@@ -34,7 +34,7 @@ use game_data::game_actions::CardTarget;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{
-    PromptChoice, PromptChoiceLabel, PromptContext, PromptData, RoomSelectorPrompt,
+    FromZone, PromptChoice, PromptChoiceLabel, PromptContext, PromptData, RoomSelectorPrompt,
     RoomSelectorPromptContext, RoomSelectorPromptEffect, UnplayedAction,
 };
 use game_data::raid_data::PopulateAccessPromptSource;
@@ -83,6 +83,7 @@ pub fn restoration(meta: CardMetadata) -> CardDefinition {
                 .delegate(this::prompt(|g, s, _, _| {
                     PlayCardBrowserBuilder::new(
                         s,
+                        FromZone::Discard,
                         g.discard_pile(s.side())
                             .filter(|c| c.definition().is_artifact())
                             .map(|c| c.id)
@@ -237,7 +238,7 @@ pub fn sift_the_sands(meta: CardMetadata) -> CardDefinition {
             let PromptData::Cards(cards) = &source.data else {
                 return None;
             };
-            PlayCardBrowserBuilder::new(s, cards.clone())
+            PlayCardBrowserBuilder::new(s, FromZone::Deck, cards.clone())
                 .unplayed_action(UnplayedAction::Discard)
                 .build()
         }))

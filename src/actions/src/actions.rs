@@ -27,8 +27,8 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, RaidJumpRequest, TurnState};
 use game_data::history_data::HistoryEvent;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, GamePrompt,
-    PromptAction, PromptChoice, PromptContext, RoomSelectorPromptEffect,
+    BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, FromZone,
+    GamePrompt, PromptAction, PromptChoice, PromptContext, RoomSelectorPromptEffect,
 };
 use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
@@ -140,14 +140,14 @@ fn play_card_action(
         card_id
     );
 
-    let initiated_by =
+    let (initiated_by, from_zone) =
         if let Some(GamePrompt::PlayCardBrowser(prompt)) = prompts::current(game, card_id.side) {
-            InitiatedBy::Ability(prompt.initiated_by)
+            (InitiatedBy::Ability(prompt.initiated_by), prompt.from_zone)
         } else {
-            InitiatedBy::GameAction
+            (InitiatedBy::GameAction, FromZone::Hand)
         };
 
-    play_card::initiate(game, card_id, target, initiated_by, PlayCardOptions::default())
+    play_card::initiate(game, card_id, target, from_zone, initiated_by, PlayCardOptions::default())
 }
 
 /// The basic game action to activate an ability of a card in play.

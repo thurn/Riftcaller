@@ -14,20 +14,24 @@
 
 use core_data::game_primitives::CardId;
 use game_data::delegate_data::Scope;
-use game_data::prompt_data::{GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction};
+use game_data::prompt_data::{
+    FromZone, GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction,
+};
 
 pub struct PlayCardBrowserBuilder {
     scope: Scope,
     cards: Vec<CardId>,
+    from_zone: FromZone,
     context: PromptContext,
     unplayed_action: UnplayedAction,
 }
 
 impl PlayCardBrowserBuilder {
-    pub fn new(scope: Scope, cards: Vec<CardId>) -> Self {
+    pub fn new(scope: Scope, from_zone: FromZone, cards: Vec<CardId>) -> Self {
         Self {
             scope,
             cards,
+            from_zone,
             context: PromptContext::PlayACard,
             unplayed_action: UnplayedAction::None,
         }
@@ -46,6 +50,7 @@ impl PlayCardBrowserBuilder {
     pub fn build(self) -> Option<GamePrompt> {
         Some(GamePrompt::PlayCardBrowser(PlayCardBrowser {
             context: Some(self.context),
+            from_zone: self.from_zone,
             initiated_by: self.scope.ability_id(),
             cards: self.cards,
             unplayed_action: self.unplayed_action,

@@ -153,6 +153,15 @@ pub enum UnplayedAction {
     Discard,
 }
 
+/// Possible points of origin for cards being played.
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize, Deserialize)]
+pub enum FromZone {
+    Hand,
+    Discard,
+    Deck,
+    Banished,
+}
+
 /// A browser shown to the user to allow them to play one or more cards from a
 /// set of cards.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -160,6 +169,8 @@ pub struct PlayCardBrowser {
     /// Identifies the context for this prompt, i.e. why it is being shown to
     /// the user
     pub context: Option<PromptContext>,
+    /// Zone of origin for the cards being played.
+    pub from_zone: FromZone,
     /// Identifies the ability which caused this browser to be displayed.
     pub initiated_by: AbilityId,
     /// Identifies the choices of cards that the user can possibly play.

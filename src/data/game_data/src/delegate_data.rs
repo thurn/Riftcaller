@@ -88,7 +88,7 @@ use crate::continuous_visual_effect::ContinuousDisplayEffect;
 use crate::flag_data::{AbilityFlag, Flag};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
-use crate::prompt_data::{AbilityPromptSource, GamePrompt};
+use crate::prompt_data::{AbilityPromptSource, FromZone, GamePrompt};
 use crate::raid_data::PopulateAccessPromptSource;
 use crate::text::TextElement;
 
@@ -207,6 +207,7 @@ impl<T, R> QueryDelegate<T, R> {
 pub struct CardPlayed {
     pub card_id: CardId,
     pub target: CardTarget,
+    pub from_zone: FromZone,
     pub card_play_id: CardPlayId,
 }
 

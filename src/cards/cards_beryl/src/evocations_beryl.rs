@@ -34,7 +34,9 @@ use game_data::card_state::{BanishedByCard, CardCounter, CardPosition};
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
-use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData, UnplayedAction};
+use game_data::prompt_data::{
+    FromZone, PromptChoice, PromptChoiceLabel, PromptData, UnplayedAction,
+};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
@@ -320,7 +322,7 @@ pub fn knowledge_of_the_beyond(meta: CardMetadata) -> CardDefinition {
                 let PromptData::Cards(permanents) = &source.data else {
                     return None;
                 };
-                PlayCardBrowserBuilder::new(s, permanents.clone())
+                PlayCardBrowserBuilder::new(s, FromZone::Banished, permanents.clone())
                     .unplayed_action(UnplayedAction::Discard)
                     .build()
             }))
@@ -366,6 +368,7 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
                         .effect(GameEffect::PlayCardForNoMana(
                             s.card_id(),
                             CardTarget::None,
+                            FromZone::Hand,
                             s.initiated_by(),
                         ))
                         .effect(GameEffect::PreventRaidCardAccess)

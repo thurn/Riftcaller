@@ -215,3 +215,17 @@ fn seldanna() {
     g.click(Button::Discard);
     assert_eq!(g.client.cards.opponent_discard_pile().len(), 2);
 }
+
+#[test]
+fn rolant_restoration() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Riftcaller)
+            .identity(CardName::RolantTheRestorer)
+            .in_discard_face_up(CardName::TestAstralWeapon),
+    )
+    .build();
+    g.create_and_play(CardName::Restoration);
+    let id = g.client.cards.hand().find_card_id(CardName::TestAstralWeapon);
+    g.play_card(id, g.user_id(), None);
+    assert_eq!(g.client.cards.hand().len(), 1);
+}

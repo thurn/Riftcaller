@@ -25,7 +25,7 @@ use game_data::card_state::CardPosition;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::prompt_data::{PromptChoice, PromptData};
+use game_data::prompt_data::{FromZone, PromptChoice, PromptData};
 use game_data::random;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
@@ -364,6 +364,51 @@ pub fn seldanna_regal_pyromancer(meta: CardMetadata) -> CardDefinition {
                     .scale(2.0)
                     .sound(SoundEffect::WaterMagic("RPG3_WaterMagic2_LightImpact03"))
                     .effect_color(design::BLUE_500),
+            )
+            .build(),
+    }
+}
+
+pub fn rolant_the_restorer(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::RolantTheRestorer,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::riftcaller_card(meta, "rolant"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Identity,
+        abilities: vec![Ability::new(text![
+            "When you play a",
+            Permanent,
+            "from your discard pile, draw a card"
+        ])
+        .delegate(in_play::on_card_played(|g, s, play| {
+            if play.from_zone == FromZone::Discard
+                && play.card_id.side == Side::Riftcaller
+                && g.card(play.card_id).definition().is_permanent()
+            {
+                visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                draw_cards::run(g, Side::Riftcaller, 1, s.initiated_by())?;
+            }
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .identity(IdentityConfig {
+                starting_coins: Coins(550),
+                secondary_schools: vec![School::Shadow],
+                skills: vec![Skill::Brawn, Skill::Persuasion],
+                bio: "In the heart of Khazpar's Magma Caverns, Rolant found his calling amidst \
+                smoldering ashes. From the cinders of destruction, he learned to resurrect and \
+                renew, wielding the fiery breath of creation with an artificer’s gentle touch.",
+            })
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(3))
+                    .scale(1.5)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff02"))
+                    .effect_color(design::YELLOW_900),
             )
             .build(),
     }

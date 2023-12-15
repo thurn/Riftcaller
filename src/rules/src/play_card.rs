@@ -25,7 +25,7 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::history_data::HistoryEvent;
 use game_data::prompt_data::{
-    ButtonPrompt, GamePrompt, PromptChoice, PromptChoiceLabel, UnplayedAction,
+    ButtonPrompt, FromZone, GamePrompt, PromptChoice, PromptChoiceLabel, UnplayedAction,
 };
 use game_data::state_machine_data::{PlayCardData, PlayCardOptions, PlayCardStep};
 use with_error::{verify, WithError};
@@ -40,6 +40,7 @@ pub fn initiate(
     game: &mut GameState,
     card_id: CardId,
     target: CardTarget,
+    from_zone: FromZone,
     initiated_by: InitiatedBy,
     options: PlayCardOptions,
 ) -> Result<()> {
@@ -48,6 +49,7 @@ pub fn initiate(
         game,
         PlayCardData {
             card_id,
+            from_zone,
             initiated_by,
             target,
             card_play_id,
@@ -335,6 +337,7 @@ fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCa
         PlayCardEvent(&CardPlayed {
             card_id: play_card.card_id,
             target: play_card.target,
+            from_zone: play_card.from_zone,
             card_play_id: play_card.card_play_id,
         }),
     )?;

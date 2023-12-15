@@ -19,6 +19,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
+use crate::prompt_data::FromZone;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PlayCardStep {
@@ -48,6 +49,8 @@ pub struct PlayCardOptions {
 pub struct PlayCardData {
     /// Card being played
     pub card_id: CardId,
+    /// Origin zone for the card being played
+    pub from_zone: FromZone,
     /// How this card play was started
     pub initiated_by: InitiatedBy,
     /// Room being targeted, if any

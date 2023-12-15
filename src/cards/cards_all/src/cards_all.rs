@@ -106,6 +106,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::oleus_the_watcher);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::ellisar_forgekeeper);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::seldanna_regal_pyromancer);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::rolant_the_restorer);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::foresee);

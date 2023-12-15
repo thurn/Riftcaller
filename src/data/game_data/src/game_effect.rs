@@ -21,6 +21,7 @@ use serde::{Deserialize, Serialize};
 use crate::card_state::CardPosition;
 use crate::custom_card_state::CustomCardState;
 use crate::game_actions::CardTarget;
+use crate::prompt_data::FromZone;
 
 /// An arbitrary modification to the state of an ongoing game.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
@@ -76,7 +77,7 @@ pub enum GameEffect {
     /// Evade the current raid encounter, jumping to the next raid state
     EvadeCurrentEncounter,
     /// Put a card into play for no mana cost
-    PlayCardForNoMana(CardId, CardTarget, InitiatedBy),
+    PlayCardForNoMana(CardId, CardTarget, FromZone, InitiatedBy),
     /// Prevent the current raid, if any, from accessing cards
     PreventRaidCardAccess,
     /// Reveal the indicated card. This is an explicit game event which must use

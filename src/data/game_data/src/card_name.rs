@@ -355,6 +355,7 @@ pub enum CardName {
     LivingStone,
     SeldannaRegalPyromancer,
     LightcallersCommand,
+    RolantTheRestorer,
 }
 
 impl CardName {
@@ -377,6 +378,7 @@ impl CardName {
             Self::EllisarForgekeeper => "Ellisar, Forgekeeper",
             Self::SeldannaRegalPyromancer => "Seldanna, Regal Pyromancer",
             Self::LightcallersCommand => "Lightcaller's Command",
+            Self::RolantTheRestorer => "Rolant the Restorer",
             _ => "",
         };
 

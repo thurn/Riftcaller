@@ -26,7 +26,7 @@ use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptContext, PromptData,
+    BrowserPromptTarget, BrowserPromptValidation, FromZone, PromptChoice, PromptContext, PromptData,
 };
 use game_data::text::TextToken::*;
 use rules::mutations::RealizeCards;
@@ -137,6 +137,7 @@ pub fn lightbond(meta: CardMetadata) -> CardDefinition {
                 .delegate(this::prompt(|g, s, _, _| {
                     PlayCardBrowserBuilder::new(
                         s,
+                        FromZone::Hand,
                         g.hand(s.side()).filter(|c| c.definition().is_scheme()).card_ids(),
                     )
                     .build()

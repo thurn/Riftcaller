@@ -97,11 +97,12 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::EvadeCurrentEncounter => {
             mutations::evade_current_minion(game)?;
         }
-        GameEffect::PlayCardForNoMana(card_id, target, initiated_by) => {
+        GameEffect::PlayCardForNoMana(card_id, target, from_zone, initiated_by) => {
             play_card::initiate(
                 game,
                 card_id,
                 target,
+                from_zone,
                 initiated_by,
                 PlayCardOptions { ignore_action_cost: true, ignore_mana_cost: true },
             )?;
