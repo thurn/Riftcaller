@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use anyhow::Result;
 use core_data::adventure_primitives::{
-    AdventureOutcome, Coins, NarrativeChoiceIndex, RegionId, Skill, TilePosition,
+    AdventureOutcome, Coins, NarrativeChoiceIndex, Skill, TilePosition,
 };
 use core_data::game_primitives::{AdventureId, CardSubtype, CardType, Rarity, Side};
+use enumset::EnumSet;
 use game_data::card_name::CardVariant;
-use game_data::character_preset::{CharacterFacing, CharacterPreset};
+use game_data::card_set_name::CardSetName;
 use game_data::deck::Deck;
 use game_data::player_name::{AIPlayer, PlayerId};
 use rand::distributions::uniform::{SampleRange, SampleUniform};
@@ -33,7 +34,7 @@ use serde_with::{serde_as, DisplayFromStr};
 use with_error::WithError;
 
 use crate::adventure_action::NarrativeEffectIndex;
-use crate::adventure_effect::AdventureEffectData;
+use crate::adventure_effect_data::{AdventureEffect, AdventureEffectData};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardChoice {
@@ -77,15 +78,6 @@ pub struct BattleData {
 
     /// Coins earned for winning this battle
     pub reward: Coins,
-
-    /// Opponent character appearance
-    pub character: CharacterPreset,
-
-    /// Direction character is facing
-    pub character_facing: CharacterFacing,
-
-    /// Map region which should be revealed if the player wins this battle.
-    pub region_to_reveal: RegionId,
 }
 
 /// One possible choice within a narrative event screen
@@ -161,10 +153,6 @@ pub struct NarrativeEventData {
     /// narrative event, but a few situations exist where multiple options may
     /// be selected.
     pub selected_choices: Vec<NarrativeChoiceIndex>,
-    /// A [TileEntity] to display instead of the narrative event panel for this
-    /// location. This is used to e.g. show a draft reward popup as part of
-    /// resolving a narrative event.
-    pub show_entity: Option<Box<TileEntity>>,
 }
 
 impl NarrativeEventData {
@@ -186,14 +174,12 @@ impl NarrativeEventData {
     }
 }
 
-/// Possible events/actions which can take place on a tile, represented by map
-/// icons
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum TileEntity {
-    Draft(DraftData),
-    Shop(ShopData),
-    Battle(BattleData),
-    NarrativeEvent(NarrativeEventData),
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum TileIcon {
+    Draft,
+    Shop,
+    Battle,
+    NarrativeEvent,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -202,16 +188,14 @@ pub struct TileState {
 
     pub road: Option<String>,
 
-    pub entity: Option<TileEntity>,
+    pub on_visited: Option<AdventureEffect>,
 
-    pub region_id: RegionId,
-
-    pub visited: bool,
+    pub icons: Vec<TileIcon>,
 }
 
 impl TileState {
     pub fn with_sprite(address: impl Into<String>) -> Self {
-        TileState { sprite: address.into(), road: None, entity: None, region_id: 1, visited: false }
+        TileState { sprite: address.into(), road: None, on_visited: None, icons: vec![] }
     }
 }
 
@@ -220,6 +204,8 @@ pub struct AdventureConfiguration {
     pub player_id: PlayerId,
     /// Side the user is playing as in this adventure
     pub side: Side,
+    /// Card set to draw cards from for this adventure
+    pub card_set: CardSetName,
     /// Optionally, a random number generator for this adventure to use. This
     /// generator is serializable, so the state will be deterministic even
     /// across different sessions. If not specified, `rand::thread_rng()` is
@@ -229,7 +215,7 @@ pub struct AdventureConfiguration {
 
 impl AdventureConfiguration {
     pub fn new(player_id: PlayerId, side: Side) -> Self {
-        Self { player_id, side, rng: None }
+        Self { player_id, side, card_set: CardSetName::Beryl, rng: None }
     }
 
     pub fn choose<I>(&mut self, iterator: I) -> Option<I::Item>
@@ -278,10 +264,6 @@ pub struct WorldMap {
     /// Map from tile position to [TileState]
     #[serde_as(as = "HashMap<DisplayFromStr, _>")]
     pub tiles: HashMap<TilePosition, TileState>,
-    /// Current tile entity position on the world map which the player is
-    /// visiting. If not specified, the player is not currently visiting any
-    /// tile.
-    pub visiting_position: Option<TilePosition>,
 }
 
 impl WorldMap {
@@ -295,37 +277,53 @@ impl WorldMap {
     pub fn tile_mut(&mut self, position: TilePosition) -> Result<&mut TileState> {
         self.tiles.get_mut(&position).with_error(|| format!("Tile not found {position:?}"))
     }
+}
 
-    /// Returns the [TileEntity] the player is currently visiting, or an error
-    /// if no such tile entity exists.
-    pub fn visiting_tile(&self) -> Result<&TileEntity> {
-        self.tile(self.visited_position()?)?.entity.as_ref().with_error(|| "Expected tile entity")
+/// Possible events/actions which can take place on a tile, represented by map
+/// icons
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum AdventureScreen {
+    Draft(DraftData),
+    Shop(ShopData),
+    Battle(BattleData),
+    NarrativeEvent(NarrativeEventData),
+}
+
+/// Stores a stack of screens for events the player is interacting with in the
+/// current adventure.
+///
+/// This is structured as a stack because screens sometimes show other screens,
+/// e.g. a narrative event screen showing a draft choice.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct AdventureScreens {
+    stack: Vec<AdventureScreen>,
+}
+
+impl AdventureScreens {
+    /// Returns true if the player is not currently viewing any adventure
+    /// screen.
+    pub fn is_empty(&self) -> bool {
+        self.stack.is_empty()
     }
 
-    pub fn visiting_tile_option(&self) -> Option<&TileEntity> {
-        self.tiles.get(&self.visiting_position?)?.entity.as_ref()
+    /// Returns the screen the player is currently viewing, if any.
+    pub fn current(&self) -> Option<&AdventureScreen> {
+        self.stack.last()
     }
 
-    /// Mutable version of [Self::visiting_tile].
-    pub fn visiting_tile_mut(&mut self) -> Result<&mut TileEntity> {
-        self.tile_mut(self.visited_position()?)?
-            .entity
-            .as_mut()
-            .with_error(|| "Expected tile entity")
+    /// Mutable version of [Self::current].
+    pub fn current_mut(&mut self) -> Option<&mut AdventureScreen> {
+        self.stack.last_mut()
     }
 
-    /// Removes the entity from the currently-visited tile and clears the
-    /// visiting position.
-    pub fn clear_visited_tile(&mut self) -> Result<()> {
-        self.tile_mut(self.visited_position()?)?.entity = None;
-        self.visiting_position = None;
-        Ok(())
+    /// Adds a new screen to the top of the stack
+    pub fn push(&mut self, screen: AdventureScreen) {
+        self.stack.push(screen);
     }
 
-    /// Returns the tile position currently being visited, or an error if no
-    /// such position exists.
-    fn visited_position(&self) -> Result<TilePosition> {
-        self.visiting_position.with_error(|| "Expected visited tile")
+    /// Removes the topmost element from the adventure screen stack.
+    pub fn pop(&mut self) {
+        self.stack.pop();
     }
 }
 
@@ -343,9 +341,8 @@ pub struct AdventureState {
     pub outcome: Option<AdventureOutcome>,
     /// States of world map tiles
     pub world_map: WorldMap,
-    /// Regions which the player can currently see. By default Region 1 is
-    /// revealed.
-    pub revealed_regions: HashSet<RegionId>,
+    /// Stack of interstitial screens the player can view during an adventure.
+    pub screens: AdventureScreens,
     /// Deck being used for this adventure
     pub deck: Deck,
     /// Cards collected by this player during this adventure, inclusive of cards
@@ -357,18 +354,31 @@ pub struct AdventureState {
 }
 
 /// Specifies the parameters for picking a card from a set
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardSelector {
-    /// Minimum rarity for cards
-    pub rarity: Option<Rarity>,
+    /// Minimum rarity for cards. Defaults to common.
+    pub minimum_rarity: Rarity,
     /// Card types to select from.
     ///
     /// If empty, all card types are allowed.
-    pub card_types: Vec<CardType>,
+    pub card_types: EnumSet<CardType>,
     /// Card subtypes to select from.
     ///
     /// If empty, all card subtypes are allowed.    
-    pub card_subtypes: Vec<CardSubtype>,
+    pub card_subtypes: EnumSet<CardSubtype>,
+    /// True if only upgraded cards should be matched
+    pub upgraded: bool,
+}
+
+impl Default for CardSelector {
+    fn default() -> Self {
+        Self {
+            minimum_rarity: Rarity::Common,
+            card_types: EnumSet::new(),
+            card_subtypes: EnumSet::new(),
+            upgraded: false,
+        }
+    }
 }
 
 impl CardSelector {
@@ -377,17 +387,22 @@ impl CardSelector {
     }
 
     pub fn rarity(mut self, rarity: Rarity) -> Self {
-        self.rarity = Some(rarity);
+        self.minimum_rarity = rarity;
         self
     }
 
     pub fn card_type(mut self, card_type: CardType) -> Self {
-        self.card_types.push(card_type);
+        self.card_types.insert(card_type);
         self
     }
 
     pub fn card_subtype(mut self, card_subtype: CardSubtype) -> Self {
-        self.card_subtypes.push(card_subtype);
+        self.card_subtypes.insert(card_subtype);
+        self
+    }
+
+    pub fn upgraded(mut self, upgraded: bool) -> Self {
+        self.upgraded = upgraded;
         self
     }
 }

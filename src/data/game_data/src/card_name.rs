@@ -112,6 +112,9 @@ pub enum CardName {
     // Cards for use in tests
     TestSpell,
     TestRitual,
+    /// Spell card which is the only member of the `TestSingletonSpellSet` card
+    /// set.
+    TestSingletonSetSpell,
     /// Scheme requiring 3 progress to score 10 points
     TestScheme3_10,
     /// Scheme requiring 4 progress to score 20 points

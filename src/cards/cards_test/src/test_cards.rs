@@ -65,6 +65,15 @@ pub fn test_spell(_: CardMetadata) -> CardDefinition {
     }
 }
 
+pub fn test_singleton_set_spell(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestSingletonSetSpell,
+        sets: vec![CardSetName::TestSingletonSpellSet],
+        rarity: Rarity::Common,
+        ..test_spell(metadata)
+    }
+}
+
 pub fn test_scheme_310(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestScheme3_10,

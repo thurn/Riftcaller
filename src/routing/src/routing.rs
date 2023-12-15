@@ -82,9 +82,7 @@ pub fn render_player_panel(
         .build_panel(),
         PlayerPanel::BattleVictory => BattleVictoryPanel::new(player).build_panel(),
         PlayerPanel::BattleDefeat => BattleDefeatPanel {}.build_panel(),
-        PlayerPanel::AdventureTile(position) => {
-            adventure_panels::tile_entity_panel(player, position)?
-        }
+        PlayerPanel::AdventureScreen => adventure_panels::tile_entity_panel(player)?,
         PlayerPanel::AdventureOver => AdventureOverPanel::new().build_panel(),
     })
 }

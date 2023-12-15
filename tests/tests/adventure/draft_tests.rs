@@ -12,38 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{CardChoice, DraftData, TileEntity};
-use core_data::adventure_primitives::Coins;
+use adventure_data::adventure::CardSelector;
+use adventure_data::adventure_effect_data::AdventureEffect;
 use core_data::game_primitives::Side;
 use game_data::card_name::{CardName, CardVariant};
+use game_data::card_set_name::CardSetName;
 use test_utils::client_interface::{self};
 use test_utils::test_adventure::TestAdventure;
 use test_utils::*;
 
-const EXAMPLE_CARD: CardVariant = CardVariant::standard(CardName::TestSpell);
+const CARD: CardVariant = CardVariant::standard(CardName::TestSingletonSetSpell);
 
 #[test]
 fn test_initiate_draft() {
-    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
-
-    let draft = adventure.insert_tile(TileEntity::Draft(DraftData {
-        context: None,
-        choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: Coins(0), sold: false }],
-    }));
-
+    let mut adventure =
+        TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
+    let draft = adventure.insert_tile(AdventureEffect::Draft(CardSelector::default()));
     adventure.visit_tile(draft);
-
     assert!(adventure.has(Button::DraftPick));
 }
 
 #[test]
 fn test_pick_card() {
-    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
-
-    let draft = adventure.insert_tile(TileEntity::Draft(DraftData {
-        context: None,
-        choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: Coins(0), sold: false }],
-    }));
+    let mut adventure =
+        TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
+    let draft = adventure.insert_tile(AdventureEffect::Draft(CardSelector::default()));
 
     adventure.visit_tile(draft);
     adventure.click(Button::DraftPick);
@@ -53,6 +46,6 @@ fn test_pick_card() {
 
     client_interface::assert_has_element_name(
         adventure.client.interface.top_panel(),
-        element_names::deck_card(EXAMPLE_CARD),
+        element_names::card_list_card_name(CARD),
     );
 }

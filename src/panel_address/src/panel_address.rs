@@ -14,7 +14,6 @@
 
 //! Addresses for user interface panels
 
-use core_data::adventure_primitives::TilePosition;
 use core_data::game_primitives::{DeckId, Side};
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
@@ -91,7 +90,7 @@ pub enum PlayerPanel {
     DeckEditor(DeckEditorData),
     BattleVictory,
     BattleDefeat,
-    AdventureTile(TilePosition),
+    AdventureScreen,
     AdventureOver,
 }
 

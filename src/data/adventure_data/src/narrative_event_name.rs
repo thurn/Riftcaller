@@ -12,7 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod adventure;
-pub mod adventure_action;
-pub mod adventure_effect_data;
-pub mod narrative_event_name;
+use enum_iterator::Sequence;
+use serde::{Deserialize, Serialize};
+use strum_macros::{Display, EnumString};
+
+/// Possible names of cards.
+///
+/// This enum is used to connect the state of a card to its game rules.
+#[derive(
+    PartialEq, Eq, Hash, Debug, Copy, Clone, Display, EnumString, Serialize, Deserialize, Sequence,
+)]
+pub enum NarrativeEventName {
+    StormfeatherEagle,
+}

@@ -12,7 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod adventure;
-pub mod adventure_action;
-pub mod adventure_effect_data;
-pub mod narrative_event_name;
+use core_data::adventure_primitives::Coins;
+
+pub mod battle_generator;
+pub mod card_selector;
+pub mod mock_adventure;
+pub mod narrative_event_generator;
+
+pub const STARTING_COINS: Coins = Coins(500);

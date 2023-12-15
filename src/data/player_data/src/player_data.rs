@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{AdventureState, BattleData, TileEntity};
+use adventure_data::adventure::{AdventureScreen, AdventureState, BattleData};
 use anyhow::Result;
 use core_data::game_primitives::{DeckId, GameId, Side};
 use enum_kinds::EnumKind;
@@ -135,7 +135,7 @@ pub fn current_game_id(data: Option<PlayerState>) -> Option<GameId> {
 /// Returns the battle tile the player is currently visiting, or None if
 /// they are not currently visiting a battle tile.
 pub fn current_battle(player: &PlayerState) -> Option<&BattleData> {
-    if let TileEntity::Battle(data) = player.adventure.as_ref()?.world_map.visiting_tile_option()? {
+    if let AdventureScreen::Battle(data) = player.adventure.as_ref()?.screens.current()? {
         Some(data)
     } else {
         None

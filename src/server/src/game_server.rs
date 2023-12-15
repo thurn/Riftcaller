@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use adapters::ServerCardId;
-use adventure_data::adventure::TileEntity;
+use adventure_data::adventure::AdventureScreen;
 use anyhow::Result;
 use core_data::game_primitives::{GameId, Side};
 use database::Database;
@@ -69,14 +69,12 @@ pub async fn handle_leave_game(
     requests::with_player(database, data, |player| {
         player.status = None;
         let scene = if let Some(adventure) = player.adventure.as_mut() {
-            let TileEntity::Battle(battle) = adventure.world_map.visiting_tile()? else {
+            let Some(AdventureScreen::Battle(battle)) = adventure.screens.current() else {
                 fail!("Expected player to be in a battle")
             };
 
-            let region = battle.region_to_reveal;
             adventure.coins += battle.reward;
-            adventure.revealed_regions.insert(region);
-            adventure.world_map.clear_visited_tile()?;
+            adventure.screens.pop();
 
             match outcome {
                 GameOutcome::Victory => SceneName::World,

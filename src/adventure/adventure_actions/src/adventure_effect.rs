@@ -12,19 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::AdventureState;
-use adventure_data::adventure_effect::AdventureEffect;
+use adventure_data::adventure::{AdventureScreen, AdventureState};
+use adventure_data::adventure_effect_data::AdventureEffect;
+use adventure_generator::{battle_generator, card_selector, narrative_event_generator};
 use anyhow::Result;
 use game_data::card_name::CardVariant;
 
 pub fn apply(
-    _state: &mut AdventureState,
+    state: &mut AdventureState,
     effect: AdventureEffect,
     _known_card: Option<CardVariant>,
 ) -> Result<()> {
     match effect {
-        AdventureEffect::Draft(_) => {}
-        _ => {}
+        AdventureEffect::Draft(selector) => {
+            let data = card_selector::draft_choices(state, selector);
+            state.screens.push(AdventureScreen::Draft(data));
+        }
+        AdventureEffect::Shop(selector) => {
+            let data = card_selector::shop_choices(state, selector);
+            state.screens.push(AdventureScreen::Shop(data));
+        }
+        AdventureEffect::NarrativeEvent(_) => {
+            let data = narrative_event_generator::generate();
+            state.screens.push(AdventureScreen::NarrativeEvent(data));
+        }
+        AdventureEffect::Battle => state
+            .screens
+            .push(AdventureScreen::Battle(battle_generator::create(state.side.opponent()))),
+        _ => {
+            panic!("Not implemented {effect:?}")
+        }
     }
     Ok(())
 }

@@ -17,12 +17,13 @@
 use std::collections::{HashMap, HashSet};
 
 use adventure_data::adventure::{
-    AdventureConfiguration, AdventureState, TileEntity, TileState, WorldMap,
+    AdventureConfiguration, AdventureScreens, AdventureState, CardSelector, TileIcon, TileState,
+    WorldMap,
 };
-use core_data::adventure_primitives::{RegionId, TilePosition};
-use core_data::game_primitives::AdventureId;
-use game_data::card_name::CardVariant;
-use game_data::deck::Deck;
+use adventure_data::adventure_effect_data::AdventureEffect;
+use adventure_data::narrative_event_name::NarrativeEventName;
+use core_data::adventure_primitives::TilePosition;
+use core_data::game_primitives::{AdventureId, Side};
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;
@@ -31,48 +32,22 @@ const BOTTOM_RIGHT: u8 = 0b00000100;
 const BOTTOM_LEFT: u8 = 0b00000010;
 const LEFT: u8 = 0b00000001;
 
-pub const BATTLE_POSITION: TilePosition = TilePosition { x: 3, y: 2 };
-
 /// Builds an 'adventure' mode world map for use in tests
-pub fn create(
-    id: AdventureId,
-    config: AdventureConfiguration,
-    deck: Deck,
-    collection: HashMap<CardVariant, u32>,
-    identities: Option<TileEntity>,
-    draft: Option<TileEntity>,
-    shop: Option<TileEntity>,
-    battle: Option<TileEntity>,
-    narrative_event: Option<TileEntity>,
-) -> AdventureState {
-    let mut tiles = HashMap::new();
+pub fn create(config: AdventureConfiguration) -> AdventureState {
+    let side = config.side;
+    let deck = match side {
+        Side::Covenant => decklists::BASIC_COVENANT.clone(),
+        Side::Riftcaller => decklists::BASIC_RIFTCALLER.clone(),
+    };
 
+    let mut tiles = HashMap::new();
     add_tile(&mut tiles, -3, 2, "hexGrassySandPalms02");
     add_tile(&mut tiles, -2, 2, "hexGrassySandPalms03");
     add_tile(&mut tiles, -1, 2, "hexPlainsCold03");
     add_tile(&mut tiles, 0, 2, "hexMarsh00");
     add_tile(&mut tiles, 1, 2, "hexPlainsHalflingVillage00");
     add_tile(&mut tiles, 2, 2, "hexDirtInn00");
-
-    if let Some(b) = battle {
-        add_with_entity_and_road(
-            &mut tiles,
-            3,
-            2,
-            "hexPlains00",
-            b,
-            road(TOP_RIGHT | BOTTOM_LEFT, 0),
-        );
-    } else {
-        add_with_road(
-            &mut tiles,
-            BATTLE_POSITION.x,
-            BATTLE_POSITION.y,
-            "hexPlains00",
-            road(TOP_RIGHT | BOTTOM_LEFT, 0),
-        );
-    }
-
+    add_with_road(&mut tiles, 3, 2, "hexPlains00", road(TOP_RIGHT | BOTTOM_LEFT, 0));
     add_tile(&mut tiles, 4, 2, "hexPlainsSmithy00");
     add_tile(&mut tiles, -4, 1, "hexGrassySandPalms01");
     add_tile(&mut tiles, -3, 1, "hexPlainsFarm02");
@@ -85,13 +60,7 @@ pub fn create(
     add_tile(&mut tiles, -3, 0, "hexDirtCastle00");
     add_with_road(&mut tiles, -2, 0, "hexPlains00", road(RIGHT | BOTTOM_LEFT, 0));
     add_with_road(&mut tiles, -1, 0, "hexPlains02", road(RIGHT | LEFT, 1));
-
-    if let Some(s) = identities {
-        add_with_entity_and_road(&mut tiles, 0, 0, "hexScrublands01", s, road(RIGHT | LEFT, 0));
-    } else {
-        add_with_road(&mut tiles, 0, 0, "hexScrublands01", road(RIGHT | LEFT, 0));
-    }
-
+    add_with_road(&mut tiles, 0, 0, "hexScrublands01", road(RIGHT | LEFT, 0));
     add_with_road(&mut tiles, 1, 0, "hexPlains01", road(RIGHT | LEFT, 0));
     add_with_road(&mut tiles, 2, 0, "hexPlains02", road(BOTTOM_RIGHT | LEFT | TOP_RIGHT, 0));
     add_tile(&mut tiles, 3, 0, "hexWoodlands00");
@@ -100,25 +69,34 @@ pub fn create(
     add_with_road(&mut tiles, -3, -1, "hexScrublands01", road(TOP_RIGHT | BOTTOM_LEFT, 1));
     add_tile(&mut tiles, -2, -1, "hexTropicalPlains00");
     add_tile(&mut tiles, -1, -1, "hexSwamp01");
-
-    if let Some(d) = draft {
-        add_with_entity(&mut tiles, 0, -1, "hexMountain03", d);
-    }
-
-    if let Some(e) = narrative_event {
-        add_with_entity(&mut tiles, 1, -1, "hexPlainsFarm00", e);
-    } else {
-        add_tile(&mut tiles, 1, -1, "hexPlainsFarm00");
-    }
+    add_with_entity(
+        &mut tiles,
+        0,
+        -1,
+        "hexMountain03",
+        AdventureEffect::Draft(CardSelector::default()),
+        TileIcon::Draft,
+    );
+    add_with_entity(
+        &mut tiles,
+        1,
+        -1,
+        "hexPlainsFarm00",
+        AdventureEffect::NarrativeEvent(NarrativeEventName::StormfeatherEagle),
+        TileIcon::NarrativeEvent,
+    );
 
     add_with_road(&mut tiles, 2, -1, "hexPlains00", road(TOP_LEFT | BOTTOM_RIGHT, 0));
     add_tile(&mut tiles, 3, -1, "hexJungle03");
     add_with_road(&mut tiles, -3, -2, "hexScrublands00", road(TOP_RIGHT | BOTTOM_LEFT, 1));
-
-    if let Some(s) = shop {
-        add_with_entity(&mut tiles, -2, -2, "hexForestBroadleafForester00", s);
-    }
-
+    add_with_entity(
+        &mut tiles,
+        -2,
+        -2,
+        "hexForestBroadleafForester00",
+        AdventureEffect::Shop(CardSelector::default()),
+        TileIcon::Shop,
+    );
     add_tile(&mut tiles, -1, -2, "hexSwamp00");
     add_tile(&mut tiles, 0, -2, "hexSwamp03");
     add_tile(&mut tiles, 1, -2, "hexForestBroadleaf00");
@@ -126,26 +104,24 @@ pub fn create(
     add_with_road(&mut tiles, 3, -2, "hexPlains00", road(TOP_LEFT | BOTTOM_RIGHT, 1));
     add_tile(&mut tiles, 4, -2, "hexJungle00");
 
-    tiles.extend(hidden_tiles(2).into_iter());
-
     let mut revealed_regions = HashSet::new();
     revealed_regions.insert(1);
     let side = config.side;
 
     AdventureState {
-        id,
+        id: AdventureId::generate(),
         side,
         outcome: None,
         coins: crate::STARTING_COINS,
-        world_map: WorldMap { tiles, visiting_position: Some(TilePosition { x: 0, y: 0 }) },
-        revealed_regions,
+        world_map: WorldMap { tiles },
+        screens: AdventureScreens::default(),
         config,
         deck,
-        collection,
+        collection: HashMap::new(),
     }
 }
 
-fn hidden_tiles(region_id: RegionId) -> HashMap<TilePosition, TileState> {
+fn _hidden_tiles() -> HashMap<TilePosition, TileState> {
     let mut result = HashMap::new();
 
     add_tile(&mut result, -4, 7, "hexHillsColdSnowTransition01");
@@ -188,11 +164,6 @@ fn hidden_tiles(region_id: RegionId) -> HashMap<TilePosition, TileState> {
     add_tile(&mut result, 1, 3, "hexDesertYellowSaltFlat00");
     add_tile(&mut result, 2, 3, "hexHighlands00");
     add_with_road(&mut result, 3, 3, "hexPlains00", road(TOP_LEFT | BOTTOM_LEFT, 0));
-
-    for (_, state) in result.iter_mut() {
-        state.region_id = region_id;
-    }
-
     result
 }
 
@@ -223,28 +194,11 @@ fn add_with_entity(
     x: i32,
     y: i32,
     sprite: &'static str,
-    entity: TileEntity,
+    effect: AdventureEffect,
+    icon: TileIcon,
 ) {
     map.insert(
         TilePosition { x, y },
-        TileState { entity: Some(entity), ..TileState::with_sprite(sprite) },
-    );
-}
-
-fn add_with_entity_and_road(
-    map: &mut HashMap<TilePosition, TileState>,
-    x: i32,
-    y: i32,
-    sprite: &'static str,
-    entity: TileEntity,
-    road: impl Into<String>,
-) {
-    map.insert(
-        TilePosition { x, y },
-        TileState {
-            entity: Some(entity),
-            road: Some(road.into()),
-            ..TileState::with_sprite(sprite)
-        },
+        TileState { on_visited: Some(effect), icons: vec![icon], ..TileState::with_sprite(sprite) },
     );
 }

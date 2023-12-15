@@ -14,10 +14,13 @@
 
 use std::collections::{HashMap, HashSet};
 
-use adventure_data::adventure::{AdventureConfiguration, AdventureState, WorldMap};
+use adventure_data::adventure::{
+    AdventureConfiguration, AdventureScreens, AdventureState, WorldMap,
+};
 use core_data::adventure_primitives::{Coins, TilePosition};
 use core_data::game_primitives::{AdventureId, Side};
 use game_data::card_name::{CardName, CardVariant};
+use game_data::card_set_name::CardSetName;
 use game_data::deck::Deck;
 use game_data::player_name::PlayerId;
 use rand_xoshiro::rand_core::SeedableRng;
@@ -32,6 +35,7 @@ pub struct TestAdventure {
     visiting_position: Option<TilePosition>,
     deck: HashMap<CardVariant, u32>,
     collection: HashMap<CardVariant, u32>,
+    set: CardSetName,
 }
 
 impl TestAdventure {
@@ -42,6 +46,7 @@ impl TestAdventure {
             visiting_position: None,
             deck: HashMap::new(),
             collection: HashMap::new(),
+            set: CardSetName::Beryl,
         }
     }
 
@@ -65,6 +70,11 @@ impl TestAdventure {
         self
     }
 
+    pub fn card_set(mut self, set: CardSetName) -> Self {
+        self.set = set;
+        self
+    }
+
     /// Creates a new adventure session using the configuration provided.
     pub fn build(self) -> TestSession {
         TestSessionBuilder::new().adventure(self).build()
@@ -78,6 +88,7 @@ impl TestAdventure {
         let config = AdventureConfiguration {
             player_id,
             side: self.side,
+            card_set: self.set,
             rng: Some(Xoshiro256StarStar::seed_from_u64(314159265358979323)),
         };
 
@@ -86,11 +97,8 @@ impl TestAdventure {
             side: self.side,
             coins: self.coins,
             outcome: None,
-            world_map: WorldMap {
-                tiles: HashMap::new(),
-                visiting_position: self.visiting_position,
-            },
-            revealed_regions,
+            world_map: WorldMap { tiles: HashMap::new() },
+            screens: AdventureScreens::default(),
             deck,
             collection: self.collection,
             config,

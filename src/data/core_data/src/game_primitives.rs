@@ -21,6 +21,7 @@ use std::str::FromStr;
 
 use anyhow::Result;
 use enum_iterator::Sequence;
+use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 use ulid::Ulid;
@@ -507,7 +508,7 @@ pub enum Rarity {
 }
 
 /// Possible types of cards
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
+#[derive(Hash, Debug, Serialize, Deserialize, Ord, PartialOrd, EnumSetType)]
 pub enum CardType {
     Riftcaller,
     Chapter,
@@ -566,7 +567,7 @@ impl Display for CardType {
 }
 
 /// Subtypes of cards
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Display, EnumString, Serialize, Deserialize)]
+#[derive(Hash, Debug, Display, EnumString, Serialize, Deserialize, EnumSetType)]
 pub enum CardSubtype {
     /// Cards with the "Trap" subtype cannot be summoned
     Trap,

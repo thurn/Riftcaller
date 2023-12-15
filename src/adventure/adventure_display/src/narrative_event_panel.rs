@@ -14,7 +14,7 @@
 
 use adventure_data::adventure::{NarrativeEventChoice, NarrativeEventData, NarrativeEventStep};
 use adventure_data::adventure_action::{AdventureAction, NarrativeEffectIndex};
-use adventure_data::adventure_effect::AdventureEffectData;
+use adventure_data::adventure_effect_data::AdventureEffectData;
 use core_data::adventure_primitives::NarrativeChoiceIndex;
 use core_ui::actions::InterfaceAction;
 use core_ui::design::{BackgroundColor, FontSize};
@@ -90,6 +90,7 @@ impl<'a> NarrativeEventPanel<'a> {
                 true,
             )),
             (!known.is_empty()).then(|| {
+                // TODO: Handle multiple known cards
                 Command::InfoZoom(InfoZoomCommand {
                     show: true,
                     card: Some(deck_card::card_view_for_variant(known[0])),

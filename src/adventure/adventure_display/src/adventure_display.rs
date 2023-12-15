@@ -14,7 +14,7 @@
 
 //! Implements rendering for the 'adventure' deckbuilding/drafting game mode
 
-use adventure_data::adventure::{AdventureState, TileEntity, TileState};
+use adventure_data::adventure::{AdventureState, TileIcon, TileState};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_data::adventure_primitives::TilePosition;
@@ -24,8 +24,8 @@ use core_ui::panels::Panels;
 use panel_address::{PanelAddress, PlayerPanel};
 use protos::riftcaller::game_command::Command;
 use protos::riftcaller::{
-    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand,
-    WorldMapCharacter, WorldMapSprite, WorldMapTile,
+    FlexVector3, InterfacePanel, MapTileType, SpriteAddress, UpdateWorldMapCommand, WorldMapSprite,
+    WorldMapTile,
 };
 
 pub mod adventure_over_panel;
@@ -43,15 +43,14 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
             .world_map
             .tiles
             .iter()
-            .filter(|(_, tile)| state.revealed_regions.contains(&tile.region_id))
             .map(|(position, state)| render_tile(*position, state))
             .collect(),
     })];
 
     if let Some(_) = &state.outcome {
         commands.push(Panels::open(PlayerPanel::AdventureOver).into());
-    } else if let Some(position) = state.world_map.visiting_position {
-        commands.push(Panels::open(PlayerPanel::AdventureTile(position)).into());
+    } else if !state.screens.is_empty() {
+        commands.push(Panels::open(PlayerPanel::AdventureScreen).into());
     }
 
     Ok(commands)
@@ -81,9 +80,9 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
         })
     }
 
-    let mut character = None;
-    if let Some(entity) = &tile.entity {
-        if let Some(sprite) = sprite_address_for_entity(entity) {
+    // TODO: Handle multiple icons
+    if let Some(icon) = tile.icons.last() {
+        if let Some(sprite) = sprite_address_for_icon(*icon) {
             sprites.push(WorldMapSprite {
                 sprite_address: Some(SpriteAddress {
                     address: "Sprites/MapIconBackground.png".to_string(),
@@ -100,47 +99,37 @@ fn render_tile(position: TilePosition, tile: &TileState) -> WorldMapTile {
                 scale: Some(FlexVector3 { x: 0.6, y: 0.6, z: 1.0 }),
             });
         }
-
-        if let TileEntity::Battle(battle) = entity {
-            character = Some(WorldMapCharacter {
-                appearance: Some(assets::character_preset(battle.character)),
-                facing_direction: adapters::game_character_facing_direction(
-                    battle.character_facing,
-                ),
-            });
-        }
     }
 
     WorldMapTile {
         sprites,
         position: Some(adapters::map_position(position)),
-        on_visit: tile.entity.as_ref().map(|_| {
-            Panels::open(PlayerPanel::AdventureTile(position))
-                .action(AdventureAction::VisitTileEntity(position))
-                .build()
-        }),
-        tile_type: if tile.entity.is_some() {
+        on_visit: tile
+            .on_visited
+            .is_some()
+            .then(|| AdventureAction::VisitTileEntity(position).build()),
+        tile_type: if tile.on_visited.is_some() {
             MapTileType::Visitable.into()
         } else if tile.road.is_some() {
             MapTileType::Walkable.into()
         } else {
             MapTileType::Obstacle.into()
         },
-        character,
+        character: None,
     }
 }
 
-fn sprite_address_for_entity(entity: &TileEntity) -> Option<SpriteAddress> {
-    let address = match entity {
-        TileEntity::Draft(_) => {
+fn sprite_address_for_icon(icon: TileIcon) -> Option<SpriteAddress> {
+    let address = match icon {
+        TileIcon::Draft => {
             Some("RainbowArt/CleanFlatIcon/png_128/icon/icon_store/icon_store_167.png".to_string())
         }
-        TileEntity::Shop(_) => Some(
+        TileIcon::Shop => Some(
             "RainbowArt/CleanFlatIcon/png_128/icon/icon_architecture/icon_architecture_6.png"
                 .to_string(),
         ),
-        TileEntity::Battle(_) => None,
-        TileEntity::NarrativeEvent(_) => {
+        TileIcon::Battle => None,
+        TileIcon::NarrativeEvent => {
             Some("RainbowArt/CleanFlatIcon/png_128/icon/icon_game/icon_game_194.png".to_string())
         }
     };

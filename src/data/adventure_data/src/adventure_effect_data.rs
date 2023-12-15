@@ -17,9 +17,10 @@ use game_data::card_name::{CardName, CardVariant};
 use serde::{Deserialize, Serialize};
 
 use crate::adventure::CardSelector;
+use crate::narrative_event_name::NarrativeEventName;
 
 /// A modification to a specific card in a player's deck
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum DeckCardEffect {
     /// Duplicate this card until the deck contains 3 copies of it
     DuplicateTo3Copies,
@@ -33,8 +34,16 @@ pub enum DeckCardEffect {
 }
 
 /// A modification to the state of an ongoing adventure.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum AdventureEffect {
+    /// Show a draft screen to select a card from a list of random choices
+    Draft(CardSelector),
+    /// Open a shop screen to purchase cards from a set of random choices.
+    Shop(CardSelector),
+    /// Open the narrative event with the given name
+    NarrativeEvent(NarrativeEventName),
+    /// Open a 'start battle' screen
+    Battle,
     /// Gain a quantity of coins
     GainCoins(Coins),
     /// Lose coins. This choice cannot be selected if insufficient coins are
@@ -44,10 +53,6 @@ pub enum AdventureEffect {
     LoseAllCoins,
     /// Gain a quantity of arcanite
     GainArcanite(u32),
-    /// Show a draft screen to select a card from a list of random choices
-    Draft(CardSelector),
-    /// Open a shop screen to purchase cards from a set of random choices.
-    Shop(CardSelector),
     /// The player may pick a card in their deck matching [CardSelector] to
     /// apply [DeckCardEffect] to.
     PickCardForEffect(CardSelector, DeckCardEffect),

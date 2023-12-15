@@ -14,7 +14,7 @@
 
 //! Implements game rules for the 'adventure' deckbuilding/drafting game mode
 
-use adventure_data::adventure::{AdventureState, TileEntity};
+use adventure_data::adventure::{AdventureScreen, AdventureState};
 use adventure_data::adventure_action::AdventureAction;
 use anyhow::Result;
 use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
@@ -22,7 +22,6 @@ use core_data::game_primitives::CardType;
 use with_error::{fail, verify};
 
 pub mod adventure_effect;
-pub mod card_selector;
 pub mod narrative_events;
 
 /// Handles an incoming [AdventureAction] and produces a client response.
@@ -31,7 +30,7 @@ pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAct
         AdventureAction::AbandonAdventure => handle_abandon_adventure(state),
         AdventureAction::VisitTileEntity(position) => handle_visit_tile(state, *position),
         AdventureAction::EndVisit => handle_end_visit(state),
-        AdventureAction::DraftCard(index) => handle_draft(state, *index),
+        AdventureAction::DraftCard(index) => handle_draft_choice(state, *index),
         AdventureAction::BuyCard(index) => handle_buy_card(state, *index),
         AdventureAction::SetNarrativeStep(step) => {
             narrative_events::set_narrative_step(state, *step)
@@ -48,33 +47,34 @@ fn handle_abandon_adventure(state: &mut AdventureState) -> Result<()> {
 }
 
 fn handle_visit_tile(state: &mut AdventureState, position: TilePosition) -> Result<()> {
-    verify!(
-        state.revealed_regions.contains(&state.world_map.tile(position)?.region_id),
-        "Given tile position has not been revealed"
-    );
-    state.world_map.tile_mut(position)?.visited = true;
-    state.world_map.visiting_position = Some(position);
+    if let Some(effect) = &state.world_map.tile(position)?.on_visited {
+        adventure_effect::apply(state, effect.clone(), None)?;
+    }
+
+    let tile = state.world_map.tile_mut(position)?;
+    tile.on_visited = None;
+    tile.icons.clear();
     Ok(())
 }
 
 fn handle_end_visit(state: &mut AdventureState) -> Result<()> {
     verify!(is_blocking_screen(state) != Some(true), "Cannot end visit on this screen");
-    state.world_map.visiting_position = None;
+    state.screens.pop();
     Ok(())
 }
 
 /// Returns Some(true) if the player cannot end a visit on the current screen
 /// without taking some other game action.
 fn is_blocking_screen(state: &mut AdventureState) -> Option<bool> {
-    let position = state.world_map.visiting_position?;
-    match state.world_map.tiles.get(&position)?.entity.as_ref()? {
-        TileEntity::Draft(_) => Some(true),
+    let screen = state.screens.current()?;
+    match screen {
+        AdventureScreen::Draft(_) => Some(true),
         _ => None,
     }
 }
 
-fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
-    let TileEntity::Draft(data) = state.world_map.visiting_tile_mut()? else {
+fn handle_draft_choice(state: &mut AdventureState, index: usize) -> Result<()> {
+    let Some(AdventureScreen::Draft(data)) = state.screens.current() else {
         fail!("Expected active draft screen");
     };
 
@@ -89,18 +89,19 @@ fn handle_draft(state: &mut AdventureState, index: usize) -> Result<()> {
         state.deck.identities.push(definition.variant());
     } else {
         state
-            .collection
+            .deck
+            .cards
             .entry(choice.card)
             .and_modify(|i| *i += choice.quantity)
             .or_insert(choice.quantity);
     }
 
-    state.world_map.clear_visited_tile()?;
+    state.screens.pop();
     Ok(())
 }
 
 fn handle_buy_card(state: &mut AdventureState, index: usize) -> Result<()> {
-    let TileEntity::Shop(data) = state.world_map.visiting_tile_mut()? else {
+    let Some(AdventureScreen::Shop(data)) = state.screens.current_mut() else {
         fail!("Expected active shop screen");
     };
 
@@ -110,7 +111,8 @@ fn handle_buy_card(state: &mut AdventureState, index: usize) -> Result<()> {
     data.choices[index].sold = true;
 
     state
-        .collection
+        .deck
+        .cards
         .entry(choice.card)
         .and_modify(|i| *i += choice.quantity)
         .or_insert(choice.quantity);

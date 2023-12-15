@@ -14,7 +14,8 @@
 
 use std::sync::atomic::{AtomicI32, Ordering};
 
-use adventure_data::adventure::{TileEntity, TileState};
+use adventure_data::adventure::TileState;
+use adventure_data::adventure_effect_data::AdventureEffect;
 use core_data::adventure_primitives::TilePosition;
 
 use crate::test_session::TestSession;
@@ -23,29 +24,28 @@ use crate::TestSessionHelpers;
 pub static NEXT_X_POSITION: AtomicI32 = AtomicI32::new(1);
 
 pub trait TestAdventureHelpers {
-    fn insert_tile(&mut self, entity: TileEntity) -> TilePosition;
+    fn insert_tile(&mut self, effect: AdventureEffect) -> TilePosition;
 
-    fn insert_tile_at_position(&mut self, entity: TileEntity, position: TilePosition);
+    fn insert_tile_at_position(&mut self, effect: AdventureEffect, position: TilePosition);
 
     fn visit_tile(&mut self, position: TilePosition);
 }
 
 impl TestAdventureHelpers for TestSession {
-    fn insert_tile(&mut self, entity: TileEntity) -> TilePosition {
+    fn insert_tile(&mut self, effect: AdventureEffect) -> TilePosition {
         let position = TilePosition::new(NEXT_X_POSITION.fetch_add(1, Ordering::SeqCst), 1);
-        self.insert_tile_at_position(entity, position);
+        self.insert_tile_at_position(effect, position);
         position
     }
 
-    fn insert_tile_at_position(&mut self, entity: TileEntity, position: TilePosition) {
+    fn insert_tile_at_position(&mut self, effect: AdventureEffect, position: TilePosition) {
         self.overwrite_adventure_tile(
             position,
             TileState {
                 sprite: "/sprite.png".to_string(),
                 road: None,
-                entity: Some(entity),
-                region_id: 1,
-                visited: false,
+                on_visited: Some(effect),
+                icons: vec![],
             },
         );
     }

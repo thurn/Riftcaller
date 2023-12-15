@@ -12,32 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{BattleData, TileEntity};
-use core_data::adventure_primitives::Coins;
+use adventure_data::adventure_effect_data::AdventureEffect;
 use core_data::game_primitives::Side;
-use game_data::character_preset::{CharacterFacing, CharacterPreset};
-use game_data::player_name::AIPlayer;
 use test_utils::test_adventure::TestAdventure;
 use test_utils::*;
-
-const BATTLE_REWARD: u32 = 250;
 
 #[test]
 fn test_open_battle_screen() {
     let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
-    let battle = adventure.insert_tile(TileEntity::Battle(BattleData {
-        opponent_id: AIPlayer::NoAction,
-        opponent_deck: decklists::canonical_deck(Side::Covenant),
-        opponent_name: "Opponent Name".to_string(),
-        reward: Coins(BATTLE_REWARD),
-        character: CharacterPreset::Covenant,
-        character_facing: CharacterFacing::Down,
-        region_to_reveal: 2,
-    }));
-
+    let battle = adventure.insert_tile(AdventureEffect::Battle);
     adventure.visit_tile(battle);
-
     assert!(adventure.has_text("Battle"));
 }
 
@@ -45,18 +30,8 @@ fn test_open_battle_screen() {
 fn test_start_battle() {
     let mut adventure = TestAdventure::new(Side::Riftcaller).build();
 
-    let battle = adventure.insert_tile(TileEntity::Battle(BattleData {
-        opponent_id: AIPlayer::NoAction,
-        opponent_deck: decklists::canonical_deck(Side::Covenant),
-        opponent_name: "Opponent Name".to_string(),
-        reward: Coins(BATTLE_REWARD),
-        character: CharacterPreset::Covenant,
-        character_facing: CharacterFacing::Down,
-        region_to_reveal: 2,
-    }));
-
+    let battle = adventure.insert_tile(AdventureEffect::Battle);
     adventure.visit_tile(battle);
-
     assert_eq!("World", adventure.client.current_scene());
     adventure.click(Button::StartBattle);
     assert_eq!("Game", adventure.client.current_scene());

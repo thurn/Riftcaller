@@ -21,6 +21,7 @@ use strum_macros::Display;
 pub enum CardSetName {
     Test,
     TutorialEffects,
+    TestSingletonSpellSet,
     Basics,
     Amethyst,
     Beryl,

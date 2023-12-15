@@ -15,7 +15,7 @@
 use adventure_data::adventure::{
     CardSelector, NarrativeEventChoice, NarrativeEventData, NarrativeEventStep,
 };
-use adventure_data::adventure_effect::{AdventureEffect, AdventureEffectData, DeckCardEffect};
+use adventure_data::adventure_effect_data::{AdventureEffect, AdventureEffectData, DeckCardEffect};
 use core_data::adventure_primitives::Skill;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity};
 
@@ -114,7 +114,6 @@ pub fn generate() -> NarrativeEventData {
                 applied: vec![]
             },
         ],
-        selected_choices: vec![],
-        show_entity: None
+        selected_choices: vec![]
     }
 }

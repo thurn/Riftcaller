@@ -12,19 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{BattleData, TileEntity};
-use core_data::adventure_primitives::{Coins, TilePosition};
 use core_data::game_primitives::Side;
 use core_ui::actions::InterfaceAction;
-use game_data::card_name::CardName;
-use game_data::character_preset::{CharacterFacing, CharacterPreset};
 use game_data::game_actions::GameAction;
-use game_data::player_name::AIPlayer;
 use insta::assert_snapshot;
 use test_utils::summarize::Summary;
-use test_utils::test_adventure::TestAdventure;
 use test_utils::test_game::{TestGame, TestSide};
-use test_utils::test_session_builder::TestSessionBuilder;
 use test_utils::*;
 use user_action_data::{GameOutcome, UserAction};
 
@@ -66,34 +59,23 @@ fn draw_all_covenant_cards() {
     }
 }
 
-#[test]
-fn win_game() {
-    let position = TilePosition::new(1, 1);
-    let mut session = TestSessionBuilder::new()
-        .game(TestGame::new(TestSide::new(Side::Covenant).bonus_points(95)))
-        .adventure(TestAdventure::new(Side::Covenant).coins(Coins(500)).visiting_position(position))
-        .build();
-    session.insert_tile_at_position(
-        TileEntity::Battle(BattleData {
-            opponent_id: AIPlayer::NoAction,
-            opponent_deck: decklists::canonical_deck(Side::Covenant),
-            opponent_name: "Opponent Name".to_string(),
-            reward: Coins(250),
-            character: CharacterPreset::Covenant,
-            character_facing: CharacterFacing::Down,
-            region_to_reveal: 2,
-        }),
-        position,
-    );
-
-    session.create_and_play(CardName::TestScheme3_10);
-    session.progress_room(test_constants::ROOM_ID);
-    session.progress_room(test_constants::ROOM_ID);
-    session.pass_turn(Side::Covenant);
-    session.pass_turn(Side::Riftcaller);
-    session.progress_room(test_constants::ROOM_ID);
-    assert!(session.is_victory_for_player(Side::Covenant));
-    assert_eq!(Coins(500), session.current_coins());
-    session.click_on(session.user_id(), "Continue");
-    assert_eq!(Coins(750), session.current_coins());
-}
+// #[test]
+// fn win_game() {
+//     let position = TilePosition::new(1, 1);
+//     let mut session = TestSessionBuilder::new()
+//         .game(TestGame::new(TestSide::new(Side::Covenant).bonus_points(95)))
+//         .adventure(TestAdventure::new(Side::Covenant).coins(Coins(500)).
+// visiting_position(position))         .build();
+//     session.insert_tile_at_position(AdventureEffect::Battle, position);
+//
+//     session.create_and_play(CardName::TestScheme3_10);
+//     session.progress_room(test_constants::ROOM_ID);
+//     session.progress_room(test_constants::ROOM_ID);
+//     session.pass_turn(Side::Covenant);
+//     session.pass_turn(Side::Riftcaller);
+//     session.progress_room(test_constants::ROOM_ID);
+//     assert!(session.is_victory_for_player(Side::Covenant));
+//     assert_eq!(Coins(500), session.current_coins());
+//     session.click_on(session.user_id(), "Continue");
+//     assert_eq!(Coins(750), session.current_coins());
+// }

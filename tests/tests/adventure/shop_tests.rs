@@ -12,38 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{CardChoice, ShopData, TileEntity};
+use adventure_data::adventure::CardSelector;
+use adventure_data::adventure_effect_data::AdventureEffect;
 use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::Side;
 use game_data::card_name::{CardName, CardVariant};
+use game_data::card_set_name::CardSetName;
 use test_utils::client_interface::{self};
 use test_utils::test_adventure::TestAdventure;
 use test_utils::*;
 
-const BUY_COST: Coins = Coins(75);
-const EXAMPLE_CARD: CardVariant = CardVariant::standard(CardName::TestSpell);
+// Cost will always be 50 because we use a deterministic random number
+// generator.
+const BUY_COST: Coins = Coins(50);
+const CARD: CardVariant = CardVariant::standard(CardName::TestSingletonSetSpell);
 
 #[test]
 fn test_visit_shop() {
-    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
-
-    let shop = adventure.insert_tile(TileEntity::Shop(ShopData {
-        choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: BUY_COST, sold: false }],
-    }));
-
+    let mut adventure =
+        TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
+    let shop = adventure.insert_tile(AdventureEffect::Shop(CardSelector::default()));
     adventure.visit_tile(shop);
-
     assert!(adventure.has_text(BUY_COST.to_string()));
 }
 
 #[test]
 fn test_buy_card() {
-    let mut adventure = TestAdventure::new(Side::Riftcaller).build();
-
-    let shop = adventure.insert_tile(TileEntity::Shop(ShopData {
-        choices: vec![CardChoice { quantity: 2, card: EXAMPLE_CARD, cost: BUY_COST, sold: false }],
-    }));
-
+    let mut adventure =
+        TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
+    let shop = adventure.insert_tile(AdventureEffect::Shop(CardSelector::default()));
     adventure.visit_tile(shop);
 
     assert!(adventure.has_text(test_constants::STARTING_COINS.to_string()));
@@ -55,6 +52,6 @@ fn test_buy_card() {
 
     client_interface::assert_has_element_name(
         adventure.client.interface.top_panel(),
-        element_names::deck_card(EXAMPLE_CARD),
+        element_names::card_list_card_name(CARD),
     );
 }

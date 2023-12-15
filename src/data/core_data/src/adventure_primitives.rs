@@ -22,9 +22,6 @@ use derive_more::{
 use serde::{Deserialize, Serialize};
 use with_error::fail;
 
-/// Identifies a set of tiles which can be revealed via the 'explore' action.
-pub type RegionId = u32;
-
 #[derive(
     Debug,
     Display,

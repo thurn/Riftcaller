@@ -14,6 +14,7 @@
 
 use adventure_data::adventure::{AdventureConfiguration, AdventureState};
 use adventure_data::adventure_action::AdventureAction;
+use adventure_generator::mock_adventure;
 use anyhow::Result;
 use core_data::game_primitives::Side;
 use database::Database;
@@ -44,8 +45,7 @@ pub async fn handle_new_adventure(
     side: Side,
 ) -> Result<GameResponse> {
     let mut result = requests::with_player(database, data, |player| {
-        let adventure =
-            adventure_generator::new_adventure(AdventureConfiguration::new(player.id, side));
+        let adventure = mock_adventure::create(AdventureConfiguration::new(player.id, side));
         let id = adventure.id;
         player.adventure = Some(adventure);
         Ok(GameResponse::new(ClientData::with_adventure_id(data, Some(id))))

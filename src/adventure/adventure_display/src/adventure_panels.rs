@@ -12,47 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::TileEntity;
+use adventure_data::adventure::AdventureScreen;
 use anyhow::Result;
-use core_data::adventure_primitives::TilePosition;
 use panel_address::{Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerState;
 use protos::riftcaller::InterfacePanel;
-use with_error::WithError;
 
 use crate::battle_panel::BattlePanel;
 use crate::draft_panel::DraftPanel;
 use crate::narrative_event_panel::NarrativeEventPanel;
 use crate::shop_panel::ShopPanel;
 
-/// Builds an [InterfacePanel] for the adventure world map entity at the
-/// specified position. Returns an error if no such entity exists.
-pub fn tile_entity_panel(
-    player: &PlayerState,
-    position: TilePosition,
-) -> Result<Option<InterfacePanel>> {
+/// Builds an [InterfacePanel] for the current adventure screen.
+pub fn tile_entity_panel(player: &PlayerState) -> Result<Option<InterfacePanel>> {
     let state = player.adventure()?;
-    let entity =
-        state.world_map.tile(position)?.entity.as_ref().with_error(|| "Expected tile entity")?;
-    build_panel(player, position, entity)
+    let Some(screen) = state.screens.current() else {
+        return Ok(None);
+    };
+    build_panel(player, screen)
 }
 
-fn build_panel(
-    player: &PlayerState,
-    position: TilePosition,
-    entity: &TileEntity,
-) -> Result<Option<InterfacePanel>> {
-    let address = PanelAddress::PlayerPanel(PlayerPanel::AdventureTile(position));
-    Ok(match entity {
-        TileEntity::Draft(data) => DraftPanel { address, data }.build_panel(),
-        TileEntity::Shop(data) => ShopPanel { player, address, data }.build_panel(),
-        TileEntity::Battle(data) => BattlePanel { player, address, data }.build_panel(),
-        TileEntity::NarrativeEvent(data) => {
-            if let Some(tile) = &data.show_entity {
-                build_panel(player, position, tile)?
-            } else {
-                NarrativeEventPanel { player, address, data }.build_panel()
-            }
+fn build_panel(player: &PlayerState, screen: &AdventureScreen) -> Result<Option<InterfacePanel>> {
+    let address = PanelAddress::PlayerPanel(PlayerPanel::AdventureScreen);
+    Ok(match screen {
+        AdventureScreen::Draft(data) => DraftPanel { address, data }.build_panel(),
+        AdventureScreen::Shop(data) => ShopPanel { player, address, data }.build_panel(),
+        AdventureScreen::Battle(data) => BattlePanel { player, address, data }.build_panel(),
+        AdventureScreen::NarrativeEvent(data) => {
+            NarrativeEventPanel { player, address, data }.build_panel()
         }
     })
 }

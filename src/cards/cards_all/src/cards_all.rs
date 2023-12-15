@@ -137,6 +137,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_force_sanctum_score);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual);
     DEFINITIONS.insert(cards_test::test_cards::test_spell);
+    DEFINITIONS.insert(cards_test::test_cards::test_singleton_set_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_310);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_420);
     DEFINITIONS.insert(cards_test::test_cards::test_scheme_110);

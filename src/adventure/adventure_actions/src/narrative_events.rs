@@ -13,21 +13,22 @@
 // limitations under the License.
 
 use adventure_data::adventure::{
-    AdventureConfiguration, AdventureState, NarrativeEventData, NarrativeEventStep, TileEntity,
+    AdventureConfiguration, AdventureScreen, AdventureState, NarrativeEventData, NarrativeEventStep,
 };
 use adventure_data::adventure_action::NarrativeEffectIndex;
-use adventure_data::adventure_effect::{AdventureEffect, AdventureEffectData};
+use adventure_data::adventure_effect_data::{AdventureEffect, AdventureEffectData};
+use adventure_generator::card_selector;
 use anyhow::Result;
 use core_data::adventure_primitives::NarrativeChoiceIndex;
 use game_data::deck::Deck;
 use with_error::{fail, verify};
 
-use crate::{adventure_effect, card_selector};
+use crate::adventure_effect;
 
 /// Handles a request from a user to advance to a given step within a narrative
 /// event screen.
 pub fn set_narrative_step(state: &mut AdventureState, step: NarrativeEventStep) -> Result<()> {
-    let TileEntity::NarrativeEvent(data) = state.world_map.visiting_tile_mut()? else {
+    let Some(AdventureScreen::NarrativeEvent(data)) = state.screens.current_mut() else {
         fail!("Expected active narrative event screen");
     };
 
@@ -52,7 +53,7 @@ pub fn apply_narrative_effect(
     choice_index: NarrativeChoiceIndex,
     effect_index: NarrativeEffectIndex,
 ) -> Result<()> {
-    let TileEntity::NarrativeEvent(data) = state.world_map.visiting_tile_mut()? else {
+    let Some(AdventureScreen::NarrativeEvent(data)) = state.screens.current_mut() else {
         fail!("Expected active narrative event screen");
     };
     let choice = data.choice_mut(choice_index);
@@ -98,10 +99,8 @@ fn reify_known_effect(
 ) {
     match &effect_data.effect {
         AdventureEffect::LoseKnownRandomCard(selector) => {
-            let choice = config.choose(
-                deck.cards.keys().filter(|&&variant| card_selector::matches(selector, variant)),
-            );
-            effect_data.known_card = choice.copied();
+            let choice = config.choose(card_selector::deck(deck, *selector));
+            effect_data.known_card = choice;
         }
         _ => {}
     }
