@@ -81,6 +81,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::foebane);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::whip_of_disjunction);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::glimmersong);
+    DEFINITIONS.insert(cards_beryl::artifacts_beryl::spear_of_ultimatum);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::zain_cunning_diplomat);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::algrak_councils_enforcer);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::eria_time_conduit);

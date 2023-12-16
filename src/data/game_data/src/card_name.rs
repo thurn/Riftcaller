@@ -356,6 +356,7 @@ pub enum CardName {
     SeldannaRegalPyromancer,
     LightcallersCommand,
     RolantTheRestorer,
+    SpearOfUltimatum,
 }
 
 impl CardName {

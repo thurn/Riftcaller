@@ -728,3 +728,34 @@ pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn spear_of_ultimatum(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SpearOfUltimatum,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::riftcaller_card(meta, "spear_of_ultimatum"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon, CardSubtype::Runic],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![],
+        config: CardConfigBuilder::new()
+            .base_attack(2)
+            .breach(meta.upgrade(1, 3))
+            .resonance(Resonance::infernal())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(26))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact03")),
+            )
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(4))
+                    .scale(1.5)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagicEpic_WaveImpact01"))
+                    .effect_color(design::BLUE_500),
+            )
+            .build(),
+    }
+}
