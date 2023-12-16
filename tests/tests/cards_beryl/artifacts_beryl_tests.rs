@@ -582,3 +582,73 @@ fn glimmersong_cannot_reveal_face_up() {
         g.client.cards.artifacts().find_card(CardName::Glimmersong).attack_icon()
     );
 }
+
+#[test]
+fn spear_of_ultimatum() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Sanctum, CardName::TestInfernalMinion)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::SpearOfUltimatum);
+    g.activate_ability_with_target(id, 0, RoomId::Sanctum);
+    g.click(Button::ChooseForPrompt);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_card_name(CardName::SpearOfUltimatum);
+    g.click(Button::EndRaid);
+
+    // Cannot use on different minion
+    g.initiate_raid(RoomId::Vault);
+    assert!(!g.has_card_name(CardName::SpearOfUltimatum));
+    g.click(Button::NoWeapon);
+}
+
+#[test]
+fn spear_of_ultimatum_cannot_use_without_activating() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::SpearOfUltimatum);
+    g.initiate_raid(RoomId::Vault);
+    assert!(!g.has_card_name(CardName::SpearOfUltimatum));
+}
+
+#[test]
+fn spear_of_ultimatum_cannot_target_non_infernal_minion() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Sanctum, CardName::TestAstralMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::SpearOfUltimatum);
+    assert!(g.activate_ability_with_target_and_result(id, 0, RoomId::Sanctum).is_err());
+}
+
+#[test]
+fn spear_of_ultimatum_change_target() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Sanctum, CardName::TestInfernalMinion)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::SpearOfUltimatum);
+    g.activate_ability_with_target(id, 0, RoomId::Sanctum);
+    g.click(Button::ChooseForPrompt);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_card_name(CardName::SpearOfUltimatum);
+    g.click(Button::EndRaid);
+
+    g.activate_ability_with_target(id, 0, RoomId::Vault);
+    g.click(Button::ChooseForPrompt);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::SpearOfUltimatum);
+    g.click(Button::EndRaid);
+}

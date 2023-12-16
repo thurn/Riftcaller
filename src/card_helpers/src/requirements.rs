@@ -22,7 +22,7 @@ use game_data::game_state::GameState;
 use game_data::history_data::{HistoryEvent, HistoryEventKind};
 use game_data::prompt_data::GamePrompt;
 use game_data::utils;
-use rules::{flags, play_card, prompts};
+use rules::{flags, play_card, prompts, CardDefinitionExt};
 
 use crate::{face_down_in_play, history};
 
@@ -193,5 +193,12 @@ pub fn any_room_with_defenders<T>() -> TargetRequirement<T> {
 pub fn any_room_with_defenders_or_occupants<T>() -> TargetRequirement<T> {
     TargetRequirement::TargetRoom(|game, _, room_id| {
         game.defenders_and_occupants(room_id).next().is_some()
+    })
+}
+
+/// A [TargetRequirement] targeting rooms with Infernal defenders.
+pub fn any_room_with_infernal_defenders<T>() -> TargetRequirement<T> {
+    TargetRequirement::TargetRoom(|game, _, room_id| {
+        game.defenders_unordered(room_id).any(|card| game.card(card.id).definition().is_infernal())
     })
 }

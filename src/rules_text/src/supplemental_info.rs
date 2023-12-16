@@ -130,8 +130,9 @@ fn add_tokens(tokens: &mut Vec<TextTokenKind>, text: &[TextElement]) {
                 add_tokens(tokens, cost);
                 add_tokens(tokens, effect)
             }
-            TextElement::Literal(_) => {}
-            TextElement::Reminder(_) => {}
+            TextElement::CardName(..) => {}
+            TextElement::Literal(..) => {}
+            TextElement::Reminder(..) => {}
         }
     }
 }

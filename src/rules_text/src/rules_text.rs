@@ -176,6 +176,7 @@ fn process_text(context: &CardViewContext, text: &TextElement) -> String {
         TextElement::EncounterAbility { cost, effect } => {
             format!("{}: {}", build_text(context, cost, false), build_text(context, effect, true))
         }
+        TextElement::CardName(name) => name.displayed_name(),
         TextElement::Literal(string) => string.clone(),
         TextElement::Reminder(string) => format!("<i>{string}</i>"),
         TextElement::Token(token) => process_token(context, token),

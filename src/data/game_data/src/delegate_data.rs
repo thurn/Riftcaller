@@ -218,7 +218,7 @@ impl HasCardId for CardPlayed {
 }
 
 /// Event data for when an ability is activated
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct AbilityActivated {
     pub ability_id: AbilityId,
     pub target: CardTarget,
@@ -240,14 +240,14 @@ impl HasAbilityId for AbilityActivated {
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
 pub struct CardEncounter {
     /// Card initiating the interaction
-    pub source: CardId,
+    pub weapon_id: CardId,
     /// Card being targeted
-    pub target: CardId,
+    pub minion_id: CardId,
 }
 
 impl CardEncounter {
     pub fn new(source: CardId, target: CardId) -> Self {
-        Self { source, target }
+        Self { weapon_id: source, minion_id: target }
     }
 }
 
@@ -591,7 +591,7 @@ pub enum Delegate {
     CanEncounterTarget(QueryDelegate<CardEncounter, Flag>),
     /// Can the source card (typically a weapon) apply an encounter
     /// action to defeat the target (typically a minion) during a raid?
-    CanDefeatTarget(QueryDelegate<CardEncounter, Flag>),
+    CanUseWeapon(QueryDelegate<CardEncounter, Flag>),
     /// Can the Riftcaller choose to not use a weapon ability when encountering
     /// the indicated minion card?
     CanUseNoWeapon(QueryDelegate<CardId, Flag>),

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_helpers::abilities::encounter_ability_text;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
@@ -740,9 +741,69 @@ pub fn spear_of_ultimatum(meta: CardMetadata) -> CardDefinition {
         side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
-        abilities: vec![],
+        abilities: vec![
+            ActivatedAbility::new(costs::ability_mana(2), text!["Choose a minion"])
+                .target_requirement(requirements::any_room_with_infernal_defenders())
+                .delegate(this::on_activated(|g, s, activation| {
+                    prompts::push_with_data(
+                        g,
+                        Side::Riftcaller,
+                        s,
+                        PromptData::AbilityActivation(*activation),
+                    );
+                    Ok(())
+                }))
+                .delegate(this::prompt(|g, s, source, _| {
+                    let PromptData::AbilityActivation(activation) = source.data else {
+                        return None;
+                    };
+                    let CardTarget::Room(room_id) = activation.target else {
+                        return None;
+                    };
+                    let play_id = g.card(s).last_card_play_id?;
+                    show_prompt::with_choices(
+                        g.defenders_unordered(room_id)
+                            .filter(|c| c.definition().is_infernal())
+                            .map(|card| {
+                                PromptChoice::new()
+                                    .effect(GameEffect::AppendCustomCardState(
+                                        s.card_id(),
+                                        CustomCardState::TargetCard {
+                                            target_card: card.id,
+                                            play_id,
+                                        },
+                                    ))
+                                    .anchor_card(card.id)
+                            })
+                            .collect(),
+                    )
+                }))
+                .delegate(in_play::on_query_card_status_markers(|g, s, &card_id, mut markers| {
+                    let card = g.card(s);
+                    if card.is_last_target(card_id) {
+                        markers.push(CardStatusMarker {
+                            source: s.ability_id(),
+                            marker_kind: CardInfoElementKind::NegativeEffect,
+                            text: text![CardName::SpearOfUltimatum, "target"],
+                        });
+                    }
+                    markers
+                }))
+                .build(),
+            Ability::new_with_delegate(
+                text!["Use this weapon only on chosen minion"],
+                this::can_use_weapon(|g, s, encounter, flag| {
+                    flag.add_constraint(g.card(s).is_last_target(encounter.minion_id))
+                }),
+            ),
+            Ability::new(text![
+                encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
+                text![Breach]
+            ]),
+        ],
         config: CardConfigBuilder::new()
             .base_attack(2)
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
             .breach(meta.upgrade(1, 3))
             .resonance(Resonance::infernal())
             .combat_projectile(

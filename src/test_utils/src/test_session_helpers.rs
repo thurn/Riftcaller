@@ -128,6 +128,14 @@ pub trait TestSessionHelpers {
     /// Activates an ability of a card with a target room
     fn activate_ability_with_target(&mut self, card_id: CardIdentifier, index: u32, target: RoomId);
 
+    /// Equivalent to [Self::activate_ability] which returns the result.
+    fn activate_ability_with_target_and_result(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+        target: RoomId,
+    ) -> Result<GameResponseOutput>;
+
     /// Summons a project card in play, paying its mana cost and turning it face
     /// up.
     fn summon_project(&mut self, card_id: CardIdentifier);
@@ -401,6 +409,15 @@ impl TestSessionHelpers for TestSession {
     ) {
         activate_ability_impl(self, card_id, index, Some(target))
             .expect("Error activating ability");
+    }
+
+    fn activate_ability_with_target_and_result(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+        target: RoomId,
+    ) -> Result<GameResponseOutput> {
+        activate_ability_impl(self, card_id, index, Some(target))
     }
 
     fn summon_project(&mut self, card_id: CardIdentifier) {

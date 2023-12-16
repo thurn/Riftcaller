@@ -18,7 +18,7 @@ use core_data::game_primitives::{AttackValue, CardId, ManaValue};
 use game_data::card_definition::{AttackBoost, CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
-    AttackBoostBonusQuery, CanDefeatTargetQuery, CanEncounterTargetQuery, CardEncounter,
+    AttackBoostBonusQuery, CanEncounterTargetQuery, CanUseWeaponQuery, CardEncounter,
 };
 use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
@@ -126,22 +126,26 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
     if !can_encounter_target(game, source, target) {
         return false;
     }
+
+    let can_use: bool = dispatch::perform_query(
+        game,
+        CanUseWeaponQuery(&CardEncounter::new(source, target)),
+        Flag::new(true),
+    )
+    .into();
+
+    if !can_use {
+        return false;
+    }
+
     let Some(cost_to_defeat) = cost_to_defeat_target(game, source, target) else {
         return false;
     };
 
-    let can_defeat = cost_to_defeat.mana_cost
-        <= mana::get(game, source.side, ManaPurpose::UseWeapon(source))
+    cost_to_defeat.mana_cost <= mana::get(game, source.side, ManaPurpose::UseWeapon(source))
         && cost_to_defeat.custom_boost_activation.as_ref().map_or(true, |custom| {
             can_pay_custom_boost_cost(game, source, &custom.cost, custom.activation_count)
-        });
-
-    dispatch::perform_query(
-        game,
-        CanDefeatTargetQuery(&CardEncounter::new(source, target)),
-        Flag::new(can_defeat),
-    )
-    .into()
+        })
 }
 
 /// Whether the provided `source` card is able to target the `target` card with

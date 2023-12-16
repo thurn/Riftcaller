@@ -15,12 +15,15 @@
 use core_data::game_primitives::{ActionCount, DamageAmount, ManaValue, PowerChargeValue};
 use enum_kinds::EnumKind;
 
+use crate::card_name::CardName;
+
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TextElement {
     Children(Vec<Self>),
     NamedTrigger(TextToken, Vec<TextElement>),
     Activated { cost: Vec<TextElement>, effect: Vec<TextElement> },
     EncounterAbility { cost: Vec<TextElement>, effect: Vec<TextElement> },
+    CardName(CardName),
     Literal(String),
     Reminder(String),
     Token(TextToken),
@@ -118,5 +121,11 @@ impl From<TextToken> for TextElement {
 impl From<Vec<TextElement>> for TextElement {
     fn from(children: Vec<TextElement>) -> Self {
         Self::Children(children)
+    }
+}
+
+impl From<CardName> for TextElement {
+    fn from(value: CardName) -> Self {
+        TextElement::CardName(value)
     }
 }

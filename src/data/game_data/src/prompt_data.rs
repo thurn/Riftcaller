@@ -17,7 +17,7 @@ use core_data::game_primitives::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::delegate_data::CardPlayed;
+use crate::delegate_data::{AbilityActivated, CardPlayed};
 use crate::game_actions::ButtonPromptContext;
 use crate::game_effect::GameEffect;
 
@@ -36,6 +36,7 @@ pub enum PromptData {
     Card(CardId),
     Cards(Vec<CardId>),
     CardPlay(CardPlayed),
+    AbilityActivation(AbilityActivated),
     CardPlayId(CardPlayId),
 }
 

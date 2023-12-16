@@ -505,4 +505,16 @@ impl CardDefinition {
     pub fn is_permanent(&self) -> bool {
         !self.is_spell()
     }
+
+    pub fn is_infernal(&self) -> bool {
+        self.config.resonance.map(|r| r.infernal) == Some(true)
+    }
+
+    pub fn is_mortal(&self) -> bool {
+        self.config.resonance.map(|r| r.mortal) == Some(true)
+    }
+
+    pub fn is_astral(&self) -> bool {
+        self.config.resonance.map(|r| r.astral) == Some(true)
+    }
 }

@@ -14,8 +14,8 @@
 
 use core_data::game_primitives::{AbilityId, AttackValue, CardId, HasAbilityId, HasCardId};
 use game_data::delegate_data::{
-    AbilityActivated, CanActivateAbility, CardPlayed, Delegate, DiscardedCard, EventDelegate,
-    MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
+    AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, Delegate, DiscardedCard,
+    EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
@@ -96,6 +96,14 @@ pub fn on_card_selector_submitted(mutation: MutationFn<AbilityId>) -> Delegate {
 /// A delegate which prevents a card from being able to be played
 pub fn can_play(transformation: TransformationFn<CardId, Flag>) -> Delegate {
     Delegate::CanPlayCard(QueryDelegate { requirement: card, transformation })
+}
+
+/// A delegate which prevents a weapon from being able to be used
+pub fn can_use_weapon(transformation: TransformationFn<CardEncounter, Flag>) -> Delegate {
+    Delegate::CanUseWeapon(QueryDelegate {
+        requirement: |_, s, encounter| encounter.weapon_id == s.card_id(),
+        transformation,
+    })
 }
 
 /// A delegate which prevents a card from being able to be evaded

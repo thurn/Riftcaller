@@ -373,6 +373,15 @@ impl CardState {
         }
     }
 
+    /// Returns true if the provided [CardId] is the last-selected target for
+    /// the current instance of this card being played.
+    pub fn is_last_target(&self, card_id: CardId) -> bool {
+        let Some(card_play_id) = self.last_card_play_id else {
+            return false;
+        };
+        self.custom_state.targets(card_play_id).last() == Some(card_id)
+    }
+
     /// Change a card to the 'face up' state and makes the card revealed to both
     /// players.
     pub fn internal_turn_face_up(&mut self) {
