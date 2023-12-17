@@ -253,23 +253,23 @@ namespace Riftcaller.Protos {
             "Y2tDb250YWluZXJIABI9CgxkaXNjYXJkX3BpbGUYCiABKAsyJS5yaWZ0Y2Fs",
             "bGVyLk9iamVjdFBvc2l0aW9uRGlzY2FyZFBpbGVIABJQChZkaXNjYXJkX3Bp",
             "bGVfY29udGFpbmVyGAsgASgLMi4ucmlmdGNhbGxlci5PYmplY3RQb3NpdGlv",
-            "bkRpc2NhcmRQaWxlQ29udGFpbmVySAASLgoEcmFpZBgNIAEoCzIeLnJpZnRj",
-            "YWxsZXIuT2JqZWN0UG9zaXRpb25SYWlkSAASNAoHYnJvd3NlchgOIAEoCzIh",
+            "bkRpc2NhcmRQaWxlQ29udGFpbmVySAASLgoEcmFpZBgMIAEoCzIeLnJpZnRj",
+            "YWxsZXIuT2JqZWN0UG9zaXRpb25SYWlkSAASNAoHYnJvd3NlchgNIAEoCzIh",
             "LnJpZnRjYWxsZXIuT2JqZWN0UG9zaXRpb25Ccm93c2VySAASOAoJY2hhcmFj",
-            "dGVyGA8gASgLMiMucmlmdGNhbGxlci5PYmplY3RQb3NpdGlvbkNoYXJhY3Rl",
-            "ckgAEksKE2NoYXJhY3Rlcl9jb250YWluZXIYECABKAsyLC5yaWZ0Y2FsbGVy",
-            "Lk9iamVjdFBvc2l0aW9uQ2hhcmFjdGVyQ29udGFpbmVySAASNwoJaW50b19j",
-            "YXJkGBEgASgLMiIucmlmdGNhbGxlci5PYmplY3RQb3NpdGlvbkludG9DYXJk",
-            "SAASSgoTc3RhY2tlZF9iZWhpbmRfY2FyZBgSIAEoCzIrLnJpZnRjYWxsZXIu",
-            "T2JqZWN0UG9zaXRpb25TdGFja2VkQmVoaW5kQ2FyZEgAEjsKCHJldmVhbGVk",
-            "GBMgASgLMicucmlmdGNhbGxlci5PYmplY3RQb3NpdGlvblJldmVhbGVkQ2Fy",
-            "ZHNIABI7CgpyaWZ0Y2FsbGVyGBQgASgLMiUucmlmdGNhbGxlci5PYmplY3RQ",
-            "b3NpdGlvblJpZnRjYWxsZXJzSAASSgoTYnJvd3Nlcl9kcmFnX3RhcmdldBgV",
-            "IAEoCzIrLnJpZnRjYWxsZXIuT2JqZWN0UG9zaXRpb25Ccm93c2VyRHJhZ1Rh",
-            "cmdldEgAEkoKE2NhcmRfY2hvaWNlX2Jyb3dzZXIYFiABKAsyKy5yaWZ0Y2Fs",
-            "bGVyLk9iamVjdFBvc2l0aW9uQ2FyZENob2ljZUJyb3dzZXJIABI9CgxoYW5k",
-            "X3N0b3JhZ2UYFyABKAsyJS5yaWZ0Y2FsbGVyLk9iamVjdFBvc2l0aW9uSGFu",
-            "ZFN0b3JhZ2VIAEIKCghwb3NpdGlvbiJ4ChFJbmZvWm9vbUhpZ2hsaWdodBIq",
+            "dGVyGA4gASgLMiMucmlmdGNhbGxlci5PYmplY3RQb3NpdGlvbkNoYXJhY3Rl",
+            "ckgAEksKE2NoYXJhY3Rlcl9jb250YWluZXIYDyABKAsyLC5yaWZ0Y2FsbGVy",
+            "Lk9iamVjdFBvc2l0aW9uQ2hhcmFjdGVyQ29udGFpbmVySAASOwoIcmV2ZWFs",
+            "ZWQYECABKAsyJy5yaWZ0Y2FsbGVyLk9iamVjdFBvc2l0aW9uUmV2ZWFsZWRD",
+            "YXJkc0gAEjsKCnJpZnRjYWxsZXIYESABKAsyJS5yaWZ0Y2FsbGVyLk9iamVj",
+            "dFBvc2l0aW9uUmlmdGNhbGxlcnNIABJKChNicm93c2VyX2RyYWdfdGFyZ2V0",
+            "GBIgASgLMisucmlmdGNhbGxlci5PYmplY3RQb3NpdGlvbkJyb3dzZXJEcmFn",
+            "VGFyZ2V0SAASSgoTY2FyZF9jaG9pY2VfYnJvd3NlchgTIAEoCzIrLnJpZnRj",
+            "YWxsZXIuT2JqZWN0UG9zaXRpb25DYXJkQ2hvaWNlQnJvd3NlckgAEj0KDGhh",
+            "bmRfc3RvcmFnZRgUIAEoCzIlLnJpZnRjYWxsZXIuT2JqZWN0UG9zaXRpb25I",
+            "YW5kU3RvcmFnZUgAEjcKCWludG9fY2FyZBgVIAEoCzIiLnJpZnRjYWxsZXIu",
+            "T2JqZWN0UG9zaXRpb25JbnRvQ2FyZEgAEkoKE3N0YWNrZWRfYmVoaW5kX2Nh",
+            "cmQYFiABKAsyKy5yaWZ0Y2FsbGVyLk9iamVjdFBvc2l0aW9uU3RhY2tlZEJl",
+            "aGluZENhcmRIAEIKCghwb3NpdGlvbiJ4ChFJbmZvWm9vbUhpZ2hsaWdodBIq",
             "CgRjYXJkGAEgASgLMhoucmlmdGNhbGxlci5DYXJkSWRlbnRpZmllckgAEioK",
             "BHJvb20YAiABKA4yGi5yaWZ0Y2FsbGVyLlJvb21JZGVudGlmaWVySABCCwoJ",
             "aGlnaGxpZ2h0IloKDkNhcmRNb3ZlVGFyZ2V0EjMKD3RhcmdldF9wb3NpdGlv",
@@ -819,7 +819,7 @@ namespace Riftcaller.Protos {
             new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.ObjectPositionBrowserDragTarget), global::Riftcaller.Protos.ObjectPositionBrowserDragTarget.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser), global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.ObjectPositionHandStorage), global::Riftcaller.Protos.ObjectPositionHandStorage.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.ObjectPosition), global::Riftcaller.Protos.ObjectPosition.Parser, new[]{ "SortingKey", "SortingSubkey", "Offscreen", "Room", "Item", "Staging", "Hand", "Deck", "DeckContainer", "DiscardPile", "DiscardPileContainer", "Raid", "Browser", "Character", "CharacterContainer", "IntoCard", "StackedBehindCard", "Revealed", "Riftcaller", "BrowserDragTarget", "CardChoiceBrowser", "HandStorage" }, new[]{ "Position" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.ObjectPosition), global::Riftcaller.Protos.ObjectPosition.Parser, new[]{ "SortingKey", "SortingSubkey", "Offscreen", "Room", "Item", "Staging", "Hand", "Deck", "DeckContainer", "DiscardPile", "DiscardPileContainer", "Raid", "Browser", "Character", "CharacterContainer", "Revealed", "Riftcaller", "BrowserDragTarget", "CardChoiceBrowser", "HandStorage", "IntoCard", "StackedBehindCard" }, new[]{ "Position" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.InfoZoomHighlight), global::Riftcaller.Protos.InfoZoomHighlight.Parser, new[]{ "Card", "Room" }, new[]{ "Highlight" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.CardMoveTarget), global::Riftcaller.Protos.CardMoveTarget.Parser, new[]{ "TargetPosition", "CanReorder" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Riftcaller.Protos.RevealedCardView), global::Riftcaller.Protos.RevealedCardView.Parser, new[]{ "CardFrame", "TitleBackground", "Jewel", "Image", "Title", "RulesText", "Targeting", "OnReleasePosition", "SupplementalInfo", "ImageBackground", "CardMoveTarget", "PointToParent", "InfoZoomHighlight" }, null, null, null, null),
@@ -19335,12 +19335,6 @@ namespace Riftcaller.Protos {
         case PositionOneofCase.CharacterContainer:
           CharacterContainer = other.CharacterContainer.Clone();
           break;
-        case PositionOneofCase.IntoCard:
-          IntoCard = other.IntoCard.Clone();
-          break;
-        case PositionOneofCase.StackedBehindCard:
-          StackedBehindCard = other.StackedBehindCard.Clone();
-          break;
         case PositionOneofCase.Revealed:
           Revealed = other.Revealed.Clone();
           break;
@@ -19355,6 +19349,12 @@ namespace Riftcaller.Protos {
           break;
         case PositionOneofCase.HandStorage:
           HandStorage = other.HandStorage.Clone();
+          break;
+        case PositionOneofCase.IntoCard:
+          IntoCard = other.IntoCard.Clone();
+          break;
+        case PositionOneofCase.StackedBehindCard:
+          StackedBehindCard = other.StackedBehindCard.Clone();
           break;
       }
 
@@ -19500,7 +19500,7 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "raid" field.</summary>
-    public const int RaidFieldNumber = 13;
+    public const int RaidFieldNumber = 12;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionRaid Raid {
       get { return positionCase_ == PositionOneofCase.Raid ? (global::Riftcaller.Protos.ObjectPositionRaid) position_ : null; }
@@ -19511,7 +19511,7 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "browser" field.</summary>
-    public const int BrowserFieldNumber = 14;
+    public const int BrowserFieldNumber = 13;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionBrowser Browser {
       get { return positionCase_ == PositionOneofCase.Browser ? (global::Riftcaller.Protos.ObjectPositionBrowser) position_ : null; }
@@ -19522,7 +19522,7 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "character" field.</summary>
-    public const int CharacterFieldNumber = 15;
+    public const int CharacterFieldNumber = 14;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionCharacter Character {
       get { return positionCase_ == PositionOneofCase.Character ? (global::Riftcaller.Protos.ObjectPositionCharacter) position_ : null; }
@@ -19533,7 +19533,7 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "character_container" field.</summary>
-    public const int CharacterContainerFieldNumber = 16;
+    public const int CharacterContainerFieldNumber = 15;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionCharacterContainer CharacterContainer {
       get { return positionCase_ == PositionOneofCase.CharacterContainer ? (global::Riftcaller.Protos.ObjectPositionCharacterContainer) position_ : null; }
@@ -19543,30 +19543,8 @@ namespace Riftcaller.Protos {
       }
     }
 
-    /// <summary>Field number for the "into_card" field.</summary>
-    public const int IntoCardFieldNumber = 17;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Riftcaller.Protos.ObjectPositionIntoCard IntoCard {
-      get { return positionCase_ == PositionOneofCase.IntoCard ? (global::Riftcaller.Protos.ObjectPositionIntoCard) position_ : null; }
-      set {
-        position_ = value;
-        positionCase_ = value == null ? PositionOneofCase.None : PositionOneofCase.IntoCard;
-      }
-    }
-
-    /// <summary>Field number for the "stacked_behind_card" field.</summary>
-    public const int StackedBehindCardFieldNumber = 18;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Riftcaller.Protos.ObjectPositionStackedBehindCard StackedBehindCard {
-      get { return positionCase_ == PositionOneofCase.StackedBehindCard ? (global::Riftcaller.Protos.ObjectPositionStackedBehindCard) position_ : null; }
-      set {
-        position_ = value;
-        positionCase_ = value == null ? PositionOneofCase.None : PositionOneofCase.StackedBehindCard;
-      }
-    }
-
     /// <summary>Field number for the "revealed" field.</summary>
-    public const int RevealedFieldNumber = 19;
+    public const int RevealedFieldNumber = 16;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionRevealedCards Revealed {
       get { return positionCase_ == PositionOneofCase.Revealed ? (global::Riftcaller.Protos.ObjectPositionRevealedCards) position_ : null; }
@@ -19577,7 +19555,7 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "riftcaller" field.</summary>
-    public const int RiftcallerFieldNumber = 20;
+    public const int RiftcallerFieldNumber = 17;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionRiftcallers Riftcaller {
       get { return positionCase_ == PositionOneofCase.Riftcaller ? (global::Riftcaller.Protos.ObjectPositionRiftcallers) position_ : null; }
@@ -19588,7 +19566,7 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "browser_drag_target" field.</summary>
-    public const int BrowserDragTargetFieldNumber = 21;
+    public const int BrowserDragTargetFieldNumber = 18;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionBrowserDragTarget BrowserDragTarget {
       get { return positionCase_ == PositionOneofCase.BrowserDragTarget ? (global::Riftcaller.Protos.ObjectPositionBrowserDragTarget) position_ : null; }
@@ -19599,7 +19577,7 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "card_choice_browser" field.</summary>
-    public const int CardChoiceBrowserFieldNumber = 22;
+    public const int CardChoiceBrowserFieldNumber = 19;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser CardChoiceBrowser {
       get { return positionCase_ == PositionOneofCase.CardChoiceBrowser ? (global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser) position_ : null; }
@@ -19610,13 +19588,38 @@ namespace Riftcaller.Protos {
     }
 
     /// <summary>Field number for the "hand_storage" field.</summary>
-    public const int HandStorageFieldNumber = 23;
+    public const int HandStorageFieldNumber = 20;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Riftcaller.Protos.ObjectPositionHandStorage HandStorage {
       get { return positionCase_ == PositionOneofCase.HandStorage ? (global::Riftcaller.Protos.ObjectPositionHandStorage) position_ : null; }
       set {
         position_ = value;
         positionCase_ = value == null ? PositionOneofCase.None : PositionOneofCase.HandStorage;
+      }
+    }
+
+    /// <summary>Field number for the "into_card" field.</summary>
+    public const int IntoCardFieldNumber = 21;
+    /// <summary>
+    /// Keep these at the end so they appear after their parents in sorted order
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Riftcaller.Protos.ObjectPositionIntoCard IntoCard {
+      get { return positionCase_ == PositionOneofCase.IntoCard ? (global::Riftcaller.Protos.ObjectPositionIntoCard) position_ : null; }
+      set {
+        position_ = value;
+        positionCase_ = value == null ? PositionOneofCase.None : PositionOneofCase.IntoCard;
+      }
+    }
+
+    /// <summary>Field number for the "stacked_behind_card" field.</summary>
+    public const int StackedBehindCardFieldNumber = 22;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Riftcaller.Protos.ObjectPositionStackedBehindCard StackedBehindCard {
+      get { return positionCase_ == PositionOneofCase.StackedBehindCard ? (global::Riftcaller.Protos.ObjectPositionStackedBehindCard) position_ : null; }
+      set {
+        position_ = value;
+        positionCase_ = value == null ? PositionOneofCase.None : PositionOneofCase.StackedBehindCard;
       }
     }
 
@@ -19633,17 +19636,17 @@ namespace Riftcaller.Protos {
       DeckContainer = 9,
       DiscardPile = 10,
       DiscardPileContainer = 11,
-      Raid = 13,
-      Browser = 14,
-      Character = 15,
-      CharacterContainer = 16,
-      IntoCard = 17,
-      StackedBehindCard = 18,
-      Revealed = 19,
-      Riftcaller = 20,
-      BrowserDragTarget = 21,
-      CardChoiceBrowser = 22,
-      HandStorage = 23,
+      Raid = 12,
+      Browser = 13,
+      Character = 14,
+      CharacterContainer = 15,
+      Revealed = 16,
+      Riftcaller = 17,
+      BrowserDragTarget = 18,
+      CardChoiceBrowser = 19,
+      HandStorage = 20,
+      IntoCard = 21,
+      StackedBehindCard = 22,
     }
     private PositionOneofCase positionCase_ = PositionOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19685,13 +19688,13 @@ namespace Riftcaller.Protos {
       if (!object.Equals(Browser, other.Browser)) return false;
       if (!object.Equals(Character, other.Character)) return false;
       if (!object.Equals(CharacterContainer, other.CharacterContainer)) return false;
-      if (!object.Equals(IntoCard, other.IntoCard)) return false;
-      if (!object.Equals(StackedBehindCard, other.StackedBehindCard)) return false;
       if (!object.Equals(Revealed, other.Revealed)) return false;
       if (!object.Equals(Riftcaller, other.Riftcaller)) return false;
       if (!object.Equals(BrowserDragTarget, other.BrowserDragTarget)) return false;
       if (!object.Equals(CardChoiceBrowser, other.CardChoiceBrowser)) return false;
       if (!object.Equals(HandStorage, other.HandStorage)) return false;
+      if (!object.Equals(IntoCard, other.IntoCard)) return false;
+      if (!object.Equals(StackedBehindCard, other.StackedBehindCard)) return false;
       if (PositionCase != other.PositionCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -19714,13 +19717,13 @@ namespace Riftcaller.Protos {
       if (positionCase_ == PositionOneofCase.Browser) hash ^= Browser.GetHashCode();
       if (positionCase_ == PositionOneofCase.Character) hash ^= Character.GetHashCode();
       if (positionCase_ == PositionOneofCase.CharacterContainer) hash ^= CharacterContainer.GetHashCode();
-      if (positionCase_ == PositionOneofCase.IntoCard) hash ^= IntoCard.GetHashCode();
-      if (positionCase_ == PositionOneofCase.StackedBehindCard) hash ^= StackedBehindCard.GetHashCode();
       if (positionCase_ == PositionOneofCase.Revealed) hash ^= Revealed.GetHashCode();
       if (positionCase_ == PositionOneofCase.Riftcaller) hash ^= Riftcaller.GetHashCode();
       if (positionCase_ == PositionOneofCase.BrowserDragTarget) hash ^= BrowserDragTarget.GetHashCode();
       if (positionCase_ == PositionOneofCase.CardChoiceBrowser) hash ^= CardChoiceBrowser.GetHashCode();
       if (positionCase_ == PositionOneofCase.HandStorage) hash ^= HandStorage.GetHashCode();
+      if (positionCase_ == PositionOneofCase.IntoCard) hash ^= IntoCard.GetHashCode();
+      if (positionCase_ == PositionOneofCase.StackedBehindCard) hash ^= StackedBehindCard.GetHashCode();
       hash ^= (int) positionCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -19783,48 +19786,48 @@ namespace Riftcaller.Protos {
         output.WriteMessage(DiscardPileContainer);
       }
       if (positionCase_ == PositionOneofCase.Raid) {
-        output.WriteRawTag(106);
+        output.WriteRawTag(98);
         output.WriteMessage(Raid);
       }
       if (positionCase_ == PositionOneofCase.Browser) {
-        output.WriteRawTag(114);
+        output.WriteRawTag(106);
         output.WriteMessage(Browser);
       }
       if (positionCase_ == PositionOneofCase.Character) {
-        output.WriteRawTag(122);
+        output.WriteRawTag(114);
         output.WriteMessage(Character);
       }
       if (positionCase_ == PositionOneofCase.CharacterContainer) {
-        output.WriteRawTag(130, 1);
+        output.WriteRawTag(122);
         output.WriteMessage(CharacterContainer);
       }
-      if (positionCase_ == PositionOneofCase.IntoCard) {
-        output.WriteRawTag(138, 1);
-        output.WriteMessage(IntoCard);
-      }
-      if (positionCase_ == PositionOneofCase.StackedBehindCard) {
-        output.WriteRawTag(146, 1);
-        output.WriteMessage(StackedBehindCard);
-      }
       if (positionCase_ == PositionOneofCase.Revealed) {
-        output.WriteRawTag(154, 1);
+        output.WriteRawTag(130, 1);
         output.WriteMessage(Revealed);
       }
       if (positionCase_ == PositionOneofCase.Riftcaller) {
-        output.WriteRawTag(162, 1);
+        output.WriteRawTag(138, 1);
         output.WriteMessage(Riftcaller);
       }
       if (positionCase_ == PositionOneofCase.BrowserDragTarget) {
-        output.WriteRawTag(170, 1);
+        output.WriteRawTag(146, 1);
         output.WriteMessage(BrowserDragTarget);
       }
       if (positionCase_ == PositionOneofCase.CardChoiceBrowser) {
-        output.WriteRawTag(178, 1);
+        output.WriteRawTag(154, 1);
         output.WriteMessage(CardChoiceBrowser);
       }
       if (positionCase_ == PositionOneofCase.HandStorage) {
-        output.WriteRawTag(186, 1);
+        output.WriteRawTag(162, 1);
         output.WriteMessage(HandStorage);
+      }
+      if (positionCase_ == PositionOneofCase.IntoCard) {
+        output.WriteRawTag(170, 1);
+        output.WriteMessage(IntoCard);
+      }
+      if (positionCase_ == PositionOneofCase.StackedBehindCard) {
+        output.WriteRawTag(178, 1);
+        output.WriteMessage(StackedBehindCard);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -19880,48 +19883,48 @@ namespace Riftcaller.Protos {
         output.WriteMessage(DiscardPileContainer);
       }
       if (positionCase_ == PositionOneofCase.Raid) {
-        output.WriteRawTag(106);
+        output.WriteRawTag(98);
         output.WriteMessage(Raid);
       }
       if (positionCase_ == PositionOneofCase.Browser) {
-        output.WriteRawTag(114);
+        output.WriteRawTag(106);
         output.WriteMessage(Browser);
       }
       if (positionCase_ == PositionOneofCase.Character) {
-        output.WriteRawTag(122);
+        output.WriteRawTag(114);
         output.WriteMessage(Character);
       }
       if (positionCase_ == PositionOneofCase.CharacterContainer) {
-        output.WriteRawTag(130, 1);
+        output.WriteRawTag(122);
         output.WriteMessage(CharacterContainer);
       }
-      if (positionCase_ == PositionOneofCase.IntoCard) {
-        output.WriteRawTag(138, 1);
-        output.WriteMessage(IntoCard);
-      }
-      if (positionCase_ == PositionOneofCase.StackedBehindCard) {
-        output.WriteRawTag(146, 1);
-        output.WriteMessage(StackedBehindCard);
-      }
       if (positionCase_ == PositionOneofCase.Revealed) {
-        output.WriteRawTag(154, 1);
+        output.WriteRawTag(130, 1);
         output.WriteMessage(Revealed);
       }
       if (positionCase_ == PositionOneofCase.Riftcaller) {
-        output.WriteRawTag(162, 1);
+        output.WriteRawTag(138, 1);
         output.WriteMessage(Riftcaller);
       }
       if (positionCase_ == PositionOneofCase.BrowserDragTarget) {
-        output.WriteRawTag(170, 1);
+        output.WriteRawTag(146, 1);
         output.WriteMessage(BrowserDragTarget);
       }
       if (positionCase_ == PositionOneofCase.CardChoiceBrowser) {
-        output.WriteRawTag(178, 1);
+        output.WriteRawTag(154, 1);
         output.WriteMessage(CardChoiceBrowser);
       }
       if (positionCase_ == PositionOneofCase.HandStorage) {
-        output.WriteRawTag(186, 1);
+        output.WriteRawTag(162, 1);
         output.WriteMessage(HandStorage);
+      }
+      if (positionCase_ == PositionOneofCase.IntoCard) {
+        output.WriteRawTag(170, 1);
+        output.WriteMessage(IntoCard);
+      }
+      if (positionCase_ == PositionOneofCase.StackedBehindCard) {
+        output.WriteRawTag(178, 1);
+        output.WriteMessage(StackedBehindCard);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -19975,13 +19978,7 @@ namespace Riftcaller.Protos {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Character);
       }
       if (positionCase_ == PositionOneofCase.CharacterContainer) {
-        size += 2 + pb::CodedOutputStream.ComputeMessageSize(CharacterContainer);
-      }
-      if (positionCase_ == PositionOneofCase.IntoCard) {
-        size += 2 + pb::CodedOutputStream.ComputeMessageSize(IntoCard);
-      }
-      if (positionCase_ == PositionOneofCase.StackedBehindCard) {
-        size += 2 + pb::CodedOutputStream.ComputeMessageSize(StackedBehindCard);
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CharacterContainer);
       }
       if (positionCase_ == PositionOneofCase.Revealed) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(Revealed);
@@ -19997,6 +19994,12 @@ namespace Riftcaller.Protos {
       }
       if (positionCase_ == PositionOneofCase.HandStorage) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(HandStorage);
+      }
+      if (positionCase_ == PositionOneofCase.IntoCard) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(IntoCard);
+      }
+      if (positionCase_ == PositionOneofCase.StackedBehindCard) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(StackedBehindCard);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -20094,18 +20097,6 @@ namespace Riftcaller.Protos {
           }
           CharacterContainer.MergeFrom(other.CharacterContainer);
           break;
-        case PositionOneofCase.IntoCard:
-          if (IntoCard == null) {
-            IntoCard = new global::Riftcaller.Protos.ObjectPositionIntoCard();
-          }
-          IntoCard.MergeFrom(other.IntoCard);
-          break;
-        case PositionOneofCase.StackedBehindCard:
-          if (StackedBehindCard == null) {
-            StackedBehindCard = new global::Riftcaller.Protos.ObjectPositionStackedBehindCard();
-          }
-          StackedBehindCard.MergeFrom(other.StackedBehindCard);
-          break;
         case PositionOneofCase.Revealed:
           if (Revealed == null) {
             Revealed = new global::Riftcaller.Protos.ObjectPositionRevealedCards();
@@ -20135,6 +20126,18 @@ namespace Riftcaller.Protos {
             HandStorage = new global::Riftcaller.Protos.ObjectPositionHandStorage();
           }
           HandStorage.MergeFrom(other.HandStorage);
+          break;
+        case PositionOneofCase.IntoCard:
+          if (IntoCard == null) {
+            IntoCard = new global::Riftcaller.Protos.ObjectPositionIntoCard();
+          }
+          IntoCard.MergeFrom(other.IntoCard);
+          break;
+        case PositionOneofCase.StackedBehindCard:
+          if (StackedBehindCard == null) {
+            StackedBehindCard = new global::Riftcaller.Protos.ObjectPositionStackedBehindCard();
+          }
+          StackedBehindCard.MergeFrom(other.StackedBehindCard);
           break;
       }
 
@@ -20241,7 +20244,7 @@ namespace Riftcaller.Protos {
             DiscardPileContainer = subBuilder;
             break;
           }
-          case 106: {
+          case 98: {
             global::Riftcaller.Protos.ObjectPositionRaid subBuilder = new global::Riftcaller.Protos.ObjectPositionRaid();
             if (positionCase_ == PositionOneofCase.Raid) {
               subBuilder.MergeFrom(Raid);
@@ -20250,7 +20253,7 @@ namespace Riftcaller.Protos {
             Raid = subBuilder;
             break;
           }
-          case 114: {
+          case 106: {
             global::Riftcaller.Protos.ObjectPositionBrowser subBuilder = new global::Riftcaller.Protos.ObjectPositionBrowser();
             if (positionCase_ == PositionOneofCase.Browser) {
               subBuilder.MergeFrom(Browser);
@@ -20259,7 +20262,7 @@ namespace Riftcaller.Protos {
             Browser = subBuilder;
             break;
           }
-          case 122: {
+          case 114: {
             global::Riftcaller.Protos.ObjectPositionCharacter subBuilder = new global::Riftcaller.Protos.ObjectPositionCharacter();
             if (positionCase_ == PositionOneofCase.Character) {
               subBuilder.MergeFrom(Character);
@@ -20268,7 +20271,7 @@ namespace Riftcaller.Protos {
             Character = subBuilder;
             break;
           }
-          case 130: {
+          case 122: {
             global::Riftcaller.Protos.ObjectPositionCharacterContainer subBuilder = new global::Riftcaller.Protos.ObjectPositionCharacterContainer();
             if (positionCase_ == PositionOneofCase.CharacterContainer) {
               subBuilder.MergeFrom(CharacterContainer);
@@ -20277,25 +20280,7 @@ namespace Riftcaller.Protos {
             CharacterContainer = subBuilder;
             break;
           }
-          case 138: {
-            global::Riftcaller.Protos.ObjectPositionIntoCard subBuilder = new global::Riftcaller.Protos.ObjectPositionIntoCard();
-            if (positionCase_ == PositionOneofCase.IntoCard) {
-              subBuilder.MergeFrom(IntoCard);
-            }
-            input.ReadMessage(subBuilder);
-            IntoCard = subBuilder;
-            break;
-          }
-          case 146: {
-            global::Riftcaller.Protos.ObjectPositionStackedBehindCard subBuilder = new global::Riftcaller.Protos.ObjectPositionStackedBehindCard();
-            if (positionCase_ == PositionOneofCase.StackedBehindCard) {
-              subBuilder.MergeFrom(StackedBehindCard);
-            }
-            input.ReadMessage(subBuilder);
-            StackedBehindCard = subBuilder;
-            break;
-          }
-          case 154: {
+          case 130: {
             global::Riftcaller.Protos.ObjectPositionRevealedCards subBuilder = new global::Riftcaller.Protos.ObjectPositionRevealedCards();
             if (positionCase_ == PositionOneofCase.Revealed) {
               subBuilder.MergeFrom(Revealed);
@@ -20304,7 +20289,7 @@ namespace Riftcaller.Protos {
             Revealed = subBuilder;
             break;
           }
-          case 162: {
+          case 138: {
             global::Riftcaller.Protos.ObjectPositionRiftcallers subBuilder = new global::Riftcaller.Protos.ObjectPositionRiftcallers();
             if (positionCase_ == PositionOneofCase.Riftcaller) {
               subBuilder.MergeFrom(Riftcaller);
@@ -20313,7 +20298,7 @@ namespace Riftcaller.Protos {
             Riftcaller = subBuilder;
             break;
           }
-          case 170: {
+          case 146: {
             global::Riftcaller.Protos.ObjectPositionBrowserDragTarget subBuilder = new global::Riftcaller.Protos.ObjectPositionBrowserDragTarget();
             if (positionCase_ == PositionOneofCase.BrowserDragTarget) {
               subBuilder.MergeFrom(BrowserDragTarget);
@@ -20322,7 +20307,7 @@ namespace Riftcaller.Protos {
             BrowserDragTarget = subBuilder;
             break;
           }
-          case 178: {
+          case 154: {
             global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser subBuilder = new global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser();
             if (positionCase_ == PositionOneofCase.CardChoiceBrowser) {
               subBuilder.MergeFrom(CardChoiceBrowser);
@@ -20331,13 +20316,31 @@ namespace Riftcaller.Protos {
             CardChoiceBrowser = subBuilder;
             break;
           }
-          case 186: {
+          case 162: {
             global::Riftcaller.Protos.ObjectPositionHandStorage subBuilder = new global::Riftcaller.Protos.ObjectPositionHandStorage();
             if (positionCase_ == PositionOneofCase.HandStorage) {
               subBuilder.MergeFrom(HandStorage);
             }
             input.ReadMessage(subBuilder);
             HandStorage = subBuilder;
+            break;
+          }
+          case 170: {
+            global::Riftcaller.Protos.ObjectPositionIntoCard subBuilder = new global::Riftcaller.Protos.ObjectPositionIntoCard();
+            if (positionCase_ == PositionOneofCase.IntoCard) {
+              subBuilder.MergeFrom(IntoCard);
+            }
+            input.ReadMessage(subBuilder);
+            IntoCard = subBuilder;
+            break;
+          }
+          case 178: {
+            global::Riftcaller.Protos.ObjectPositionStackedBehindCard subBuilder = new global::Riftcaller.Protos.ObjectPositionStackedBehindCard();
+            if (positionCase_ == PositionOneofCase.StackedBehindCard) {
+              subBuilder.MergeFrom(StackedBehindCard);
+            }
+            input.ReadMessage(subBuilder);
+            StackedBehindCard = subBuilder;
             break;
           }
         }
@@ -20443,7 +20446,7 @@ namespace Riftcaller.Protos {
             DiscardPileContainer = subBuilder;
             break;
           }
-          case 106: {
+          case 98: {
             global::Riftcaller.Protos.ObjectPositionRaid subBuilder = new global::Riftcaller.Protos.ObjectPositionRaid();
             if (positionCase_ == PositionOneofCase.Raid) {
               subBuilder.MergeFrom(Raid);
@@ -20452,7 +20455,7 @@ namespace Riftcaller.Protos {
             Raid = subBuilder;
             break;
           }
-          case 114: {
+          case 106: {
             global::Riftcaller.Protos.ObjectPositionBrowser subBuilder = new global::Riftcaller.Protos.ObjectPositionBrowser();
             if (positionCase_ == PositionOneofCase.Browser) {
               subBuilder.MergeFrom(Browser);
@@ -20461,7 +20464,7 @@ namespace Riftcaller.Protos {
             Browser = subBuilder;
             break;
           }
-          case 122: {
+          case 114: {
             global::Riftcaller.Protos.ObjectPositionCharacter subBuilder = new global::Riftcaller.Protos.ObjectPositionCharacter();
             if (positionCase_ == PositionOneofCase.Character) {
               subBuilder.MergeFrom(Character);
@@ -20470,7 +20473,7 @@ namespace Riftcaller.Protos {
             Character = subBuilder;
             break;
           }
-          case 130: {
+          case 122: {
             global::Riftcaller.Protos.ObjectPositionCharacterContainer subBuilder = new global::Riftcaller.Protos.ObjectPositionCharacterContainer();
             if (positionCase_ == PositionOneofCase.CharacterContainer) {
               subBuilder.MergeFrom(CharacterContainer);
@@ -20479,25 +20482,7 @@ namespace Riftcaller.Protos {
             CharacterContainer = subBuilder;
             break;
           }
-          case 138: {
-            global::Riftcaller.Protos.ObjectPositionIntoCard subBuilder = new global::Riftcaller.Protos.ObjectPositionIntoCard();
-            if (positionCase_ == PositionOneofCase.IntoCard) {
-              subBuilder.MergeFrom(IntoCard);
-            }
-            input.ReadMessage(subBuilder);
-            IntoCard = subBuilder;
-            break;
-          }
-          case 146: {
-            global::Riftcaller.Protos.ObjectPositionStackedBehindCard subBuilder = new global::Riftcaller.Protos.ObjectPositionStackedBehindCard();
-            if (positionCase_ == PositionOneofCase.StackedBehindCard) {
-              subBuilder.MergeFrom(StackedBehindCard);
-            }
-            input.ReadMessage(subBuilder);
-            StackedBehindCard = subBuilder;
-            break;
-          }
-          case 154: {
+          case 130: {
             global::Riftcaller.Protos.ObjectPositionRevealedCards subBuilder = new global::Riftcaller.Protos.ObjectPositionRevealedCards();
             if (positionCase_ == PositionOneofCase.Revealed) {
               subBuilder.MergeFrom(Revealed);
@@ -20506,7 +20491,7 @@ namespace Riftcaller.Protos {
             Revealed = subBuilder;
             break;
           }
-          case 162: {
+          case 138: {
             global::Riftcaller.Protos.ObjectPositionRiftcallers subBuilder = new global::Riftcaller.Protos.ObjectPositionRiftcallers();
             if (positionCase_ == PositionOneofCase.Riftcaller) {
               subBuilder.MergeFrom(Riftcaller);
@@ -20515,7 +20500,7 @@ namespace Riftcaller.Protos {
             Riftcaller = subBuilder;
             break;
           }
-          case 170: {
+          case 146: {
             global::Riftcaller.Protos.ObjectPositionBrowserDragTarget subBuilder = new global::Riftcaller.Protos.ObjectPositionBrowserDragTarget();
             if (positionCase_ == PositionOneofCase.BrowserDragTarget) {
               subBuilder.MergeFrom(BrowserDragTarget);
@@ -20524,7 +20509,7 @@ namespace Riftcaller.Protos {
             BrowserDragTarget = subBuilder;
             break;
           }
-          case 178: {
+          case 154: {
             global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser subBuilder = new global::Riftcaller.Protos.ObjectPositionCardChoiceBrowser();
             if (positionCase_ == PositionOneofCase.CardChoiceBrowser) {
               subBuilder.MergeFrom(CardChoiceBrowser);
@@ -20533,13 +20518,31 @@ namespace Riftcaller.Protos {
             CardChoiceBrowser = subBuilder;
             break;
           }
-          case 186: {
+          case 162: {
             global::Riftcaller.Protos.ObjectPositionHandStorage subBuilder = new global::Riftcaller.Protos.ObjectPositionHandStorage();
             if (positionCase_ == PositionOneofCase.HandStorage) {
               subBuilder.MergeFrom(HandStorage);
             }
             input.ReadMessage(subBuilder);
             HandStorage = subBuilder;
+            break;
+          }
+          case 170: {
+            global::Riftcaller.Protos.ObjectPositionIntoCard subBuilder = new global::Riftcaller.Protos.ObjectPositionIntoCard();
+            if (positionCase_ == PositionOneofCase.IntoCard) {
+              subBuilder.MergeFrom(IntoCard);
+            }
+            input.ReadMessage(subBuilder);
+            IntoCard = subBuilder;
+            break;
+          }
+          case 178: {
+            global::Riftcaller.Protos.ObjectPositionStackedBehindCard subBuilder = new global::Riftcaller.Protos.ObjectPositionStackedBehindCard();
+            if (positionCase_ == PositionOneofCase.StackedBehindCard) {
+              subBuilder.MergeFrom(StackedBehindCard);
+            }
+            input.ReadMessage(subBuilder);
+            StackedBehindCard = subBuilder;
             break;
           }
         }

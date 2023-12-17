@@ -893,17 +893,19 @@ message ObjectPosition {
         ObjectPositionDeckContainer deck_container = 9;
         ObjectPositionDiscardPile discard_pile = 10;
         ObjectPositionDiscardPileContainer discard_pile_container = 11;
-        ObjectPositionRaid raid = 13;
-        ObjectPositionBrowser browser = 14;
-        ObjectPositionCharacter character = 15;
-        ObjectPositionCharacterContainer character_container = 16;
-        ObjectPositionIntoCard into_card = 17;
-        ObjectPositionStackedBehindCard stacked_behind_card = 18;
-        ObjectPositionRevealedCards revealed = 19;
-        ObjectPositionRiftcallers riftcaller = 20;
-        ObjectPositionBrowserDragTarget browser_drag_target = 21;
-        ObjectPositionCardChoiceBrowser card_choice_browser = 22;
-        ObjectPositionHandStorage hand_storage = 23;
+        ObjectPositionRaid raid = 12;
+        ObjectPositionBrowser browser = 13;
+        ObjectPositionCharacter character = 14;
+        ObjectPositionCharacterContainer character_container = 15;
+        ObjectPositionRevealedCards revealed = 16;
+        ObjectPositionRiftcallers riftcaller = 17;
+        ObjectPositionBrowserDragTarget browser_drag_target = 18;
+        ObjectPositionCardChoiceBrowser card_choice_browser = 19;
+        ObjectPositionHandStorage hand_storage = 20;
+
+        // Keep these at the end so they appear after their parents in sorted order
+        ObjectPositionIntoCard into_card = 21;
+        ObjectPositionStackedBehindCard stacked_behind_card = 22;
     }
 }
 

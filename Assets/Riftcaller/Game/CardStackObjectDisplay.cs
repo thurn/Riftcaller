@@ -32,7 +32,6 @@ namespace Riftcaller.Game
 
     public IEnumerator AddObject(Displayable displayable, bool animate = true)
     {
-      Debug.Log($"{name} AddObject: {displayable}");
       if (animate && !_allObjects.Contains(displayable))
       {
         yield return TweenUtils.Sequence("CardStack")
@@ -52,7 +51,6 @@ namespace Riftcaller.Game
 
     public void AddObjectImmediate(Displayable displayable)
     {
-      Debug.Log($"{name} AddObjectImmediate: {displayable}");
       if (!_allObjects.Contains(displayable))
       {
         _allObjects.Add(displayable);
@@ -72,7 +70,6 @@ namespace Riftcaller.Game
 
     public void RemoveObject(Displayable displayable, bool animate = true)
     {
-      Debug.Log($"{name} RemoveObject: {displayable}");
       var index = _allObjects.FindIndex(c => c == displayable);
       Errors.CheckNonNegative(index);
       _allObjects.RemoveAt(index);
@@ -82,7 +79,6 @@ namespace Riftcaller.Game
 
     public void RemoveObjectIfPresent(Displayable displayable, bool animate = true)
     {
-      Debug.Log($"{name} RemoveObjectIfPresent: {displayable}");
       if (_allObjects.Contains(displayable))
       {
         RemoveObject(displayable, animate);

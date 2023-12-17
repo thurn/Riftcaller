@@ -824,7 +824,7 @@ pub struct ObjectPosition {
     pub sorting_subkey: u32,
     #[prost(
         oneof = "object_position::Position",
-        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
+        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22"
     )]
     pub position: ::core::option::Option<object_position::Position>,
 }
@@ -851,28 +851,30 @@ pub mod object_position {
         DiscardPile(super::ObjectPositionDiscardPile),
         #[prost(message, tag = "11")]
         DiscardPileContainer(super::ObjectPositionDiscardPileContainer),
-        #[prost(message, tag = "13")]
+        #[prost(message, tag = "12")]
         Raid(super::ObjectPositionRaid),
-        #[prost(message, tag = "14")]
+        #[prost(message, tag = "13")]
         Browser(super::ObjectPositionBrowser),
-        #[prost(message, tag = "15")]
+        #[prost(message, tag = "14")]
         Character(super::ObjectPositionCharacter),
-        #[prost(message, tag = "16")]
+        #[prost(message, tag = "15")]
         CharacterContainer(super::ObjectPositionCharacterContainer),
-        #[prost(message, tag = "17")]
-        IntoCard(super::ObjectPositionIntoCard),
-        #[prost(message, tag = "18")]
-        StackedBehindCard(super::ObjectPositionStackedBehindCard),
-        #[prost(message, tag = "19")]
+        #[prost(message, tag = "16")]
         Revealed(super::ObjectPositionRevealedCards),
-        #[prost(message, tag = "20")]
+        #[prost(message, tag = "17")]
         Riftcaller(super::ObjectPositionRiftcallers),
-        #[prost(message, tag = "21")]
+        #[prost(message, tag = "18")]
         BrowserDragTarget(super::ObjectPositionBrowserDragTarget),
-        #[prost(message, tag = "22")]
+        #[prost(message, tag = "19")]
         CardChoiceBrowser(super::ObjectPositionCardChoiceBrowser),
-        #[prost(message, tag = "23")]
+        #[prost(message, tag = "20")]
         HandStorage(super::ObjectPositionHandStorage),
+        /// Keep these at the end so they appear after their parents in sorted
+        /// order
+        #[prost(message, tag = "21")]
+        IntoCard(super::ObjectPositionIntoCard),
+        #[prost(message, tag = "22")]
+        StackedBehindCard(super::ObjectPositionStackedBehindCard),
     }
 }
 /// Object to highlight on info zoom

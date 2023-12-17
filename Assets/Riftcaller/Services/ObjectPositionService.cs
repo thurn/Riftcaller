@@ -211,15 +211,13 @@ namespace Riftcaller.Services
         ObjectPosition.PositionOneofCase.CharacterContainer =>
           _registry.CharacterPositionForPlayer(position.CharacterContainer.Owner),
         ObjectPosition.PositionOneofCase.IntoCard =>
-          // Parent card may not exist, e.g. because it has been shuffled into the
-          // deck. In this situation, we fall back to the user character.
           _registry.CardService.HasCard(position.IntoCard.CardId) ?
           _registry.CardService.FindCard(position.IntoCard.CardId).ContainedObjects :
-          _registry.CharacterPositionForPlayer(PlayerName.User),
+          ParentNotFound(position.IntoCard.CardId, _registry.CharacterPositionForPlayer(PlayerName.User)),
         ObjectPosition.PositionOneofCase.StackedBehindCard =>
           _registry.CardService.HasCard(position.StackedBehindCard.CardId) ?
             _registry.CardService.FindCard(position.StackedBehindCard.CardId).CardStackObjectDisplay :
-            _registry.OffscreenCards,
+            ParentNotFound(position.StackedBehindCard.CardId, _registry.OffscreenCards),
         ObjectPosition.PositionOneofCase.Revealed => position.Revealed.Size switch
         {
           RevealedCardsBrowserSize.Small => _registry.RevealedCardsBrowserSmall,
@@ -233,6 +231,12 @@ namespace Riftcaller.Services
         ObjectPosition.PositionOneofCase.HandStorage => _registry.HandStorage,
         _ => throw new ArgumentOutOfRangeException()
       };
+    }
+
+    IObjectDisplay ParentNotFound(CardIdentifier id, IObjectDisplay fallback)
+    {
+      LogUtils.LogError($"Parent card not found {id}");
+      return fallback;
     }
   }
 }

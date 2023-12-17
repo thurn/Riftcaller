@@ -51,6 +51,9 @@ namespace Riftcaller.Services
     {
       var toDelete = _cards.Keys.ToHashSet();
       var coroutines = new List<Coroutine>();
+      
+      // Sort the views by position type so that 'stacked behind card' comes after its parent.
+      views.Sort((x, y) => x.CardPosition.PositionCase.CompareTo(y.CardPosition.PositionCase));
 
       foreach (var view in views)
       {
@@ -94,11 +97,6 @@ namespace Riftcaller.Services
           IdUtil.DiscardPileObjectId(PlayerName.User), positions.UserDiscard, animate)));
         coroutines.Add(StartCoroutine(_registry.ObjectPositionService.MoveByIdentifier(
           IdUtil.DiscardPileObjectId(PlayerName.Opponent), positions.OpponentDiscard, animate)));
-      }
-
-      foreach (var ob in toDelete)
-      {
-        Debug.Log($"Sync: ToDelete: {ob}");
       }
 
       if (delete)
