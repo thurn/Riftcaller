@@ -316,6 +316,11 @@ namespace Riftcaller.Game
         {
           _contentProtection.SetActive(false);
         }
+
+        if (_cardStackObjectDisplay && _cardStackObjectDisplay != null)
+        {
+          _cardStackObjectDisplay.gameObject.SetActive(true);
+        }
       }
       else
       {
@@ -338,12 +343,17 @@ namespace Riftcaller.Game
         if (_contentProtection && _contentProtection != null)
         {
           _contentProtection.SetActive(true);
-        }        
+        }
+        
+        if (_cardStackObjectDisplay && _cardStackObjectDisplay != null)
+        {
+          _cardStackObjectDisplay.gameObject.SetActive(false);
+        }
       }
       
       EnableIconsForContext(newContext);
       UpdateRevealedToOpponent(newContext.ShouldRenderArenaCard());
-      RenderContinuousDisplayEffect();      
+      RenderContinuousDisplayEffect();
     }
 
     public override bool CanHandleMouseEvents() => 
