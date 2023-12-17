@@ -623,6 +623,9 @@ pub enum Delegate {
     AbilityManaCost(QueryDelegate<AbilityId, Option<ManaValue>>),
     /// Query the current action cost of a card. Invoked with [Cost::actions].
     ActionCost(QueryDelegate<CardId, ActionCount>),
+    /// Query an additional cost to score a scheme card the Riftcaller is
+    /// accessing.
+    ScoreAccessedCardCost(QueryDelegate<CardId, Cost<CardId>>),
     /// Query the current attack value of a card. Invoked with
     /// [CardStats::base_attack] or 0.
     BaseAttack(QueryDelegate<CardId, AttackValue>),

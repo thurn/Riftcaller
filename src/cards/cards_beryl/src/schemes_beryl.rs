@@ -185,3 +185,37 @@ pub fn brilliant_gambit(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn ritual_of_binding(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::RitualOfBinding,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::scheme(),
+        image: assets::covenant_card(meta, "ritual_of_binding"),
+        card_type: CardType::Scheme,
+        subtypes: vec![],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            Ability::new_with_delegate(
+                text_helpers::named_trigger(Score, text![GainMana(meta.upgrade(5, 7))]),
+                this::on_scored_by_covenant(|g, s, _| {
+                    mana::gain(g, Side::Covenant, s.upgrade(5, 7));
+                    Ok(())
+                }),
+            ),
+            Ability::new(text![
+                "The Riftcaller must",
+                PayMana(meta.upgrade(5, 7)),
+                "to score this card"
+            ])
+            .delegate(this::score_accessed_card_cost(|_, s, _, cost| {
+                cost.add_mana_cost(s.upgrade(5, 7))
+            })),
+        ],
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { progress_requirement: 5, points: 30 })
+            .build(),
+    }
+}

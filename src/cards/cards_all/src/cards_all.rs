@@ -115,6 +115,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::schemes_beryl::echoing_cacophony);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::solidarity);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::brilliant_gambit);
+    DEFINITIONS.insert(cards_beryl::schemes_beryl::ritual_of_binding);
     DEFINITIONS.insert(cards_beryl::spells_beryl::restoration);
     DEFINITIONS.insert(cards_beryl::spells_beryl::strike_the_heart);
     DEFINITIONS.insert(cards_beryl::spells_beryl::enduring_radiance);

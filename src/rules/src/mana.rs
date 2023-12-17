@@ -42,6 +42,7 @@ pub enum ManaPurpose {
     CombatAbility,
     RemoveCurse,
     DispelEvocation,
+    AdditionalActionCost,
     AllSources,
 }
 

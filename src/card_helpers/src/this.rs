@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{AbilityId, AttackValue, CardId, HasAbilityId, HasCardId};
+use game_data::card_definition::Cost;
 use game_data::delegate_data::{
     AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, Delegate, DiscardedCard,
     EventDelegate, MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
@@ -23,13 +24,13 @@ use game_data::prompt_data::{AbilityPromptSource, GamePrompt};
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.
-pub fn card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
+pub fn card(_: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
     scope.card_id() == card_id.card_id()
 }
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own ability.
-pub fn ability(_game: &GameState, scope: Scope, ability_id: &impl HasAbilityId) -> bool {
+pub fn ability(_: &GameState, scope: Scope, ability_id: &impl HasAbilityId) -> bool {
     scope.ability_id() == ability_id.ability_id()
 }
 
@@ -91,6 +92,14 @@ pub fn on_scored_by_riftcaller(mutation: MutationFn<CardId>) -> Delegate {
 /// A delegate which triggers when a card's CardSelector prompt is submitted.
 pub fn on_card_selector_submitted(mutation: MutationFn<AbilityId>) -> Delegate {
     Delegate::CardSelectorSubmitted(EventDelegate { requirement: card, mutation })
+}
+
+/// A delegate which computes a custom cost to score a scheme card the
+/// Riftcaller is accessing.
+pub fn score_accessed_card_cost(
+    transformation: TransformationFn<CardId, Cost<CardId>>,
+) -> Delegate {
+    Delegate::ScoreAccessedCardCost(QueryDelegate { requirement: card, transformation })
 }
 
 /// A delegate which prevents a card from being able to be played

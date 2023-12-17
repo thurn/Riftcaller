@@ -76,6 +76,17 @@ pub struct Cost<T> {
     pub custom_cost: Option<CustomCost<T>>,
 }
 
+impl<T> Cost<T> {
+    pub fn zero() -> Self {
+        Self { mana: None, actions: 0, custom_cost: None }
+    }
+
+    pub fn add_mana_cost(mut self, cost: ManaValue) -> Self {
+        self.mana = Some(self.mana.unwrap_or_default() + cost);
+        self
+    }
+}
+
 impl<T> Default for Cost<T> {
     fn default() -> Self {
         Self { mana: None, actions: 1, custom_cost: None }

@@ -241,6 +241,8 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         }
         RaidStep::PopulateAccessPrompt => populate_access_prompt(game, info),
         RaidStep::StartScoringCard(scored) => start_scoring_card(game, info, scored),
+        RaidStep::PayScoringCosts(scored) => pay_scoring_costs(game, scored),
+        RaidStep::ScoreCard(scored) => score_card(game, info, scored),
         RaidStep::RiftcallerScoreEvent(scored) => riftcaller_score_event(game, scored),
         RaidStep::ScoreEvent(scored) => score_event(game, scored),
         RaidStep::MoveToScoredPosition(scored) => move_to_scored_position(game, scored),
@@ -506,6 +508,34 @@ fn start_scoring_card(
     info: RaidInfo,
     scored: ScoredCard,
 ) -> Result<RaidState> {
+    game.add_history_event(HistoryEvent::ScoreAccessedCard(info.access_event(scored.id)));
+    game.current_history_counters(Side::Riftcaller).schemes_scored += 1;
+    RaidState::step(RaidStep::PayScoringCosts(scored))
+}
+
+fn pay_scoring_costs(game: &mut GameState, scored: ScoredCard) -> Result<RaidState> {
+    let cost = queries::score_accessed_card_cost(game, scored.id);
+
+    if let Some(mana) = cost.mana {
+        mana::spend(
+            game,
+            Side::Riftcaller,
+            InitiatedBy::GameAction,
+            ManaPurpose::AdditionalActionCost,
+            mana,
+        )?;
+    }
+
+    mutations::spend_action_points(game, Side::Riftcaller, cost.actions)?;
+
+    if let Some(custom_cost) = cost.custom_cost {
+        (custom_cost.pay)(game, scored.id)?;
+    }
+
+    RaidState::step(RaidStep::ScoreCard(scored))
+}
+
+fn score_card(game: &mut GameState, info: RaidInfo, scored: ScoredCard) -> Result<RaidState> {
     game.add_history_event(HistoryEvent::ScoreAccessedCard(info.access_event(scored.id)));
     game.current_history_counters(Side::Riftcaller).schemes_scored += 1;
     mutations::turn_face_up(game, scored.id);

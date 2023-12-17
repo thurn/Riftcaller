@@ -149,3 +149,34 @@ fn brilliant_gambit() {
     g.progress_room(test_constants::ROOM_ID);
     assert_eq!(g.client.cards.opponent_display_shelf().leyline_count(), 0);
 }
+
+#[test]
+fn ritual_of_binding() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.create_and_play(CardName::RitualOfBinding);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.opponent_click(Button::Score);
+    assert_eq!(g.client.other_player.mana(), test_constants::STARTING_MANA - 5);
+    assert_eq!(g.client.other_player.score(), 30);
+}
+
+#[test]
+fn ritual_of_binding_cannot_pay() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).mana(0))
+        .build();
+    g.create_and_play(CardName::RitualOfBinding);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(test_constants::ROOM_ID);
+    assert!(!g.side_has(Button::Score, Side::Riftcaller));
+}
+
+#[test]
+fn ritual_of_binding_score() {
+    let (gained, requirement) = (7, 5);
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.create_and_play_upgraded(CardName::RitualOfBinding);
+    g.progress_room_times(5);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + gained - requirement);
+}

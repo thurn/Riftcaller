@@ -357,6 +357,7 @@ pub enum CardName {
     LightcallersCommand,
     RolantTheRestorer,
     SpearOfUltimatum,
+    RitualOfBinding,
 }
 
 impl CardName {

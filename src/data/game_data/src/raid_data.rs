@@ -79,6 +79,8 @@ pub enum RaidStep {
     WillPopulateAccessPrompt(PopulateAccessPromptSource),
     PopulateAccessPrompt,
     StartScoringCard(ScoredCard),
+    PayScoringCosts(ScoredCard),
+    ScoreCard(ScoredCard),
     RiftcallerScoreEvent(ScoredCard),
     ScoreEvent(ScoredCard),
     MoveToScoredPosition(ScoredCard),

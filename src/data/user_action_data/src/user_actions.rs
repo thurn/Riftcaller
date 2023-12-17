@@ -109,6 +109,7 @@ pub enum DebugAction {
     /// Swaps which side the current player is playing as in their current game.
     FlipViewpoint,
     AddMana(ManaValue),
+    RemoveMana(ManaValue),
     AddActionPoints(ActionCount),
     AddScore(PointsValue),
     SaveGameState(u128),

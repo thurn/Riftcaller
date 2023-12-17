@@ -21,13 +21,14 @@ use core_data::game_primitives::{
     ItemLocation, ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
 use game_data::card_definition::{
-    AbilityType, AttackBoost, CardStats, Resonance, TargetRequirement,
+    AbilityType, AttackBoost, CardStats, Cost, Resonance, TargetRequirement,
 };
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, BaseAttackQuery, BreachValueQuery, HealthValueQuery,
     ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, ResonanceQuery, SanctumAccessCountQuery,
-    ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery, VaultAccessCountQuery,
+    ScoreAccessedCardCostQuery, ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery,
+    VaultAccessCountQuery,
 };
 use game_data::game_actions::{CardTarget, CardTargetKind};
 use game_data::game_state::GameState;
@@ -140,6 +141,11 @@ pub fn breach(game: &GameState, card_id: CardId) -> BreachValue {
         BreachValueQuery(&card_id),
         stats(game, card_id).breach.unwrap_or(0),
     )
+}
+
+/// Returns the cost for the Riftcaller to score an accessed card, if any
+pub fn score_accessed_card_cost(game: &GameState, card_id: CardId) -> Cost<CardId> {
+    dispatch::perform_query(game, ScoreAccessedCardCostQuery(&card_id), Cost::zero())
 }
 
 /// Returns the raze cost (cost to destroy/discard when accessed) for a given
@@ -266,10 +272,12 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             RaidStep::Begin | RaidStep::GainLeylineMana | RaidStep::RaidStartEvent => {
                 RaidStatus::Begin
             }
+
             RaidStep::WillPopulateSummonPrompt(..)
             | RaidStep::PopulateSummonPrompt(..)
             | RaidStep::SummonMinion(..)
             | RaidStep::DoNotSummon(..) => RaidStatus::Summon,
+
             RaidStep::NextEncounter
             | RaidStep::ApproachMinion(..)
             | RaidStep::EncounterMinion(..)
@@ -277,6 +285,7 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::UseWeapon(..)
             | RaidStep::MinionDefeated(..)
             | RaidStep::FireMinionCombatAbility(..) => RaidStatus::Encounter,
+
             RaidStep::PopulateApproachPrompt => RaidStatus::ApproachRoom,
 
             RaidStep::AccessStart
@@ -288,6 +297,8 @@ pub fn raid_status(raid: &RaidData) -> RaidStatus {
             | RaidStep::WillPopulateAccessPrompt(..)
             | RaidStep::PopulateAccessPrompt
             | RaidStep::StartScoringCard(..)
+            | RaidStep::PayScoringCosts(..)
+            | RaidStep::ScoreCard(..)
             | RaidStep::RiftcallerScoreEvent(..)
             | RaidStep::ScoreEvent(..)
             | RaidStep::MoveToScoredPosition(..)

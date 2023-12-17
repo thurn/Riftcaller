@@ -87,6 +87,7 @@ impl DebugPanel {
                 vec![close.into(), debug_command(DebugCommand::ShowLogs(()))],
             ))
             .child(debug_button(format!("+10{}", icons::MANA), DebugAction::AddMana(10)))
+            .child(debug_button(format!("-10{}", icons::MANA), DebugAction::RemoveMana(10)))
             .child(debug_button(format!("+{}", icons::ACTION), DebugAction::AddActionPoints(1)))
             .child(debug_button("+10p", DebugAction::AddScore(10)))
             .child(debug_button("+Curse", DebugAction::AddCurses(1)))

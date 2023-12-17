@@ -37,6 +37,7 @@ use player_data::PlayerStatus;
 use protos::riftcaller::client_debug_command::DebugCommand;
 use protos::riftcaller::game_command::Command;
 use protos::riftcaller::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
+use rules::mana::ManaPurpose;
 use rules::mutations::{RealizeCards, SummonMinion};
 use rules::{curses, dispatch, draw_cards, mana, mutations, wounds};
 use serde_json::{de, ser};
@@ -121,6 +122,19 @@ pub async fn handle_debug_action(
         DebugAction::AddMana(amount) => {
             debug_update_game(database, data, |game, user_side| {
                 mana::gain(game, user_side, *amount);
+                Ok(())
+            })
+            .await
+        }
+        DebugAction::RemoveMana(amount) => {
+            debug_update_game(database, data, |game, user_side| {
+                mana::lose_upto(
+                    game,
+                    user_side,
+                    InitiatedBy::GameAction,
+                    ManaPurpose::BaseMana,
+                    *amount,
+                )?;
                 Ok(())
             })
             .await

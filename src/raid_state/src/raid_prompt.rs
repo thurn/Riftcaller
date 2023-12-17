@@ -18,7 +18,7 @@ use core_ui::icons;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
+use game_data::card_definition::{Cost, CustomBoostCost, CustomWeaponCost};
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
 use game_data::game_state::GameState;
 use game_data::raid_data::{
@@ -164,7 +164,7 @@ fn render_button(game: &GameState, index: usize, choice: &RaidChoice) -> Respons
         RaidLabel::UseWeapon(interaction) => use_weapon_button(game, interaction),
         RaidLabel::DoNotUseWeapon => ResponseButton::new("Continue").primary(false),
         RaidLabel::ProceedToAccess => ResponseButton::new("Proceed to Access"),
-        RaidLabel::ScoreCard(card_id) => ResponseButton::new("Score!").anchor_to(card_id),
+        RaidLabel::ScoreCard(card_id) => score_button(game, card_id),
         RaidLabel::RazeCard(card_id, action) => raze_button(game, card_id, action),
         RaidLabel::EndRaid => ResponseButton::new("End Raid").primary(false).shift_down(true),
         RaidLabel::EndAccess => ResponseButton::new("End Access").primary(false).shift_down(true),
@@ -224,6 +224,27 @@ fn custom_weapon_activation_label(activation: &CustomBoostActivation, label: Str
             format!("{}\n{}{}", label, n * activation.activation_count, icons::POWER_CHARGE)
         }
     }
+}
+
+fn score_button(game: &GameState, card_id: CardId) -> ResponseButton {
+    let cost = cost_string(queries::score_accessed_card_cost(game, card_id));
+    if cost.is_empty() {
+        ResponseButton::new("Score!").anchor_to(card_id)
+    } else {
+        ResponseButton::new(format!("Score!\n{}", cost)).two_lines(true).anchor_to(card_id)
+    }
+}
+
+fn cost_string<T>(cost: Cost<T>) -> String {
+    let costs = vec![
+        cost.mana.map(|m| format!("{}{}", m, icons::MANA)),
+        (cost.actions > 0).then(|| format!("{},", icons::ACTION.repeat(cost.actions as usize))),
+    ]
+    .into_iter()
+    .flatten()
+    .collect::<Vec<String>>();
+
+    costs.join(",")
 }
 
 fn raze_button(game: &GameState, card_id: CardId, action: RazeCardActionType) -> ResponseButton {

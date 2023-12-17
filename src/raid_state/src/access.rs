@@ -94,12 +94,35 @@ fn can_score_card(game: &GameState, info: RaidInfo, card_id: CardId) -> bool {
     let result = raid.accessed.contains(&card_id)
         && game.card(card_id).definition().config.stats.scheme_points.is_some();
 
-    dispatch::perform_query(
+    let can_score: bool = dispatch::perform_query(
         game,
         CanScoreAccessedCardQuery(&info.access_event(card_id)),
         Flag::new(result),
     )
-    .into()
+    .into();
+    if !can_score {
+        return false;
+    }
+
+    let cost = queries::score_accessed_card_cost(game, card_id);
+
+    if let Some(mana) = cost.mana {
+        if mana::get(game, Side::Riftcaller, ManaPurpose::AdditionalActionCost) < mana {
+            return false;
+        }
+    }
+
+    if game.riftcaller.actions < cost.actions {
+        return false;
+    }
+
+    if let Some(custom_cost) = cost.custom_cost {
+        if !(custom_cost.can_pay)(game, card_id) {
+            return false;
+        }
+    }
+
+    true
 }
 
 /// Can the Riftcaller player raze the `card_id` project when accessed during a
