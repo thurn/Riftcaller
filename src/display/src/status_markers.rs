@@ -30,13 +30,13 @@ use crate::positions;
 /// underneath cards in the arena to indicate ongoing status effects.
 pub fn build(builder: &ResponseBuilder, game: &GameState, card: &CardState) -> Vec<CardView> {
     if !card.position().in_play() {
-        return vec![];
+        vec![]
+    } else {
+        dispatch::perform_query(game, CardStatusMarkersQuery(&card.id), vec![])
+            .into_iter()
+            .map(|marker| marker_card(builder, game, card, marker, card.id))
+            .collect()
     }
-
-    dispatch::perform_query(game, CardStatusMarkersQuery(&card.id), vec![])
-        .into_iter()
-        .map(|marker| marker_card(builder, game, card, marker, card.id))
-        .collect()
 }
 
 fn marker_card(

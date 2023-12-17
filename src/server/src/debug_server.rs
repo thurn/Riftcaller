@@ -274,13 +274,15 @@ pub async fn handle_debug_action(
         }
         DebugAction::DebugUndo => {
             debug_update_game(database, data, |game, _| {
-                let new_state = game
+                let mut new_state = game
                     .undo_tracker
                     .as_mut()
                     .with_error(|| "Expected undo_tracker")?
                     .undo
                     .take()
                     .with_error(|| "Expected undo state")?;
+                // Delegate map is not serialized & must be reconstructed
+                dispatch::populate_delegate_map(&mut new_state);
                 *game = *new_state;
                 Ok(())
             })
@@ -394,7 +396,7 @@ fn scenario_game(game_id: GameId, player_id: PlayerId, side: Side) -> Result<Gam
         decklists::CANONICAL_RIFTCALLER.clone(),
         GameConfiguration::default(),
     );
-    dispatch::populate_delegate_cache(&mut result);
+    dispatch::populate_delegate_map(&mut result);
     actions::handle_game_action(
         &mut result,
         Side::Covenant,

@@ -182,7 +182,7 @@ fn create_canonical_game() -> Result<GameState> {
         GameConfiguration { deterministic: true, simulation: true, scripted_tutorial: false },
     );
 
-    dispatch::populate_delegate_cache(&mut game);
+    dispatch::populate_delegate_map(&mut game);
     mutations::deal_opening_hands(&mut game)?;
     actions::handle_game_action(
         &mut game,

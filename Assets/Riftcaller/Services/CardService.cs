@@ -96,6 +96,11 @@ namespace Riftcaller.Services
           IdUtil.DiscardPileObjectId(PlayerName.Opponent), positions.OpponentDiscard, animate)));
       }
 
+      foreach (var ob in toDelete)
+      {
+        Debug.Log($"Sync: ToDelete: {ob}");
+      }
+
       if (delete)
       {
         coroutines.AddRange(
@@ -315,6 +320,7 @@ namespace Riftcaller.Services
     public IEnumerator HandleDestroyCard(CardIdentifier cardId, bool animate)
     {
       var card = FindCard(cardId);
+      Debug.Log($"HandleDestroyCard: {card.name}");
 
       Sequence? sequence = null;
 

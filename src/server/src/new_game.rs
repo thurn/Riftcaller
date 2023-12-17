@@ -85,7 +85,7 @@ pub async fn create(
         },
     );
 
-    dispatch::populate_delegate_cache(&mut game);
+    dispatch::populate_delegate_map(&mut game);
     mutations::deal_opening_hands(&mut game)?;
 
     if game.info.config.scripted_tutorial {

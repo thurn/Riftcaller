@@ -30,7 +30,7 @@ use with_error::{fail, WithError};
 use crate::animation_tracker::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};
 use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
-use crate::delegate_data::DelegateCache;
+use crate::delegate_data::DelegateMap;
 use crate::history_data::{GameHistory, HistoryCounters, HistoryEvent};
 use crate::player_name::PlayerId;
 use crate::prompt_data::PromptStack;
@@ -272,10 +272,9 @@ pub struct GameState {
     /// across different sessions. If not specified, `rand::thread_rng()` is
     /// used instead and behavior is not deterministic.
     pub rng: Option<Xoshiro256StarStar>,
-    /// Optional lookup table for delegates present on cards in this game in
-    /// order to improve performance
+    /// Lookup table for delegates present on cards in this game
     #[serde(skip)]
-    pub delegate_cache: DelegateCache,
+    pub delegate_map: DelegateMap,
     /// Handles state tracking for the 'undo' action.
     pub undo_tracker: Option<UndoTracker>,
 }
@@ -318,7 +317,7 @@ impl GameState {
                 AnimationState::Track
             }),
             next_sorting_key: 1,
-            delegate_cache: DelegateCache::default(),
+            delegate_map: DelegateMap::default(),
             rng: if config.deterministic {
                 Some(Xoshiro256StarStar::seed_from_u64(314159265358979323))
             } else {
@@ -345,7 +344,7 @@ impl GameState {
                 history: self.history.clone(),
                 next_sorting_key: self.next_sorting_key,
                 rng: None,
-                delegate_cache: DelegateCache::default(),
+                delegate_map: self.delegate_map.clone(),
                 undo_tracker: None,
             };
 
@@ -369,7 +368,7 @@ impl GameState {
             history: self.history.clone(),
             next_sorting_key: self.next_sorting_key,
             rng: self.rng.clone(),
-            delegate_cache: self.delegate_cache.clone(),
+            delegate_map: self.delegate_map.clone(),
             undo_tracker: None,
         }
     }

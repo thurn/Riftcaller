@@ -21,23 +21,23 @@ use anyhow::Result;
 use core_data::game_primitives::{AbilityId, CardId};
 use game_data::card_definition::CardDefinition;
 use game_data::card_name::CardMetadata;
-use game_data::delegate_data::{DelegateCache, DelegateContext, EventData, QueryData, Scope};
+use game_data::delegate_data::{DelegateContext, DelegateMap, EventData, QueryData, Scope};
 use game_data::game_state::GameState;
 
-/// Adds a [DelegateCache] for this game in order to improve lookup performance.
-pub fn populate_delegate_cache(game: &mut GameState) {
-    let mut result = DelegateCache::default();
+/// Adds a [DelegateMap] for this game to store active delegates..
+pub fn populate_delegate_map(game: &mut GameState) {
+    let mut result = DelegateMap::default();
     for card_id in game.all_card_ids() {
         let variant = game.card(card_id).variant;
         let definition = crate::get(variant);
-        add_card_to_delegate_cache(&mut result, definition, card_id, variant.metadata);
+        add_card_to_delegate_map(&mut result, definition, card_id, variant.metadata);
     }
-    game.delegate_cache = result;
+    game.delegate_map = result;
 }
 
-/// Adds a new card's [CardDefinition] to the delegate cache.
-pub fn add_card_to_delegate_cache(
-    cache: &mut DelegateCache,
+/// Adds a new card's [CardDefinition] to the delegate map.
+pub fn add_card_to_delegate_map(
+    map: &mut DelegateMap,
     definition: &CardDefinition,
     card_id: CardId,
     metadata: CardMetadata,
@@ -46,8 +46,7 @@ pub fn add_card_to_delegate_cache(
         let ability_id = AbilityId::new(card_id, index);
         let scope = Scope::new(ability_id, metadata);
         for delegate in &ability.delegates {
-            cache
-                .lookup
+            map.lookup
                 .entry(delegate.kind())
                 .or_insert_with(Vec::new)
                 .push(DelegateContext { delegate: delegate.clone(), scope });
@@ -55,19 +54,18 @@ pub fn add_card_to_delegate_cache(
     }
 }
 
-/// Removes all cached delegates for a given card.
+/// Removes all delegates for a given card.
 ///
 /// This function assumes that the set of delegates for the card has not
 /// changed, which is currently always the case.
-pub fn remove_card_from_delegate_cache(
-    cache: &mut DelegateCache,
+pub fn remove_card_from_delegate_map(
+    map: &mut DelegateMap,
     definition: &CardDefinition,
     card_id: CardId,
 ) {
     for (_, ability) in definition.abilities.iter().enumerate() {
         for delegate in &ability.delegates {
-            cache
-                .lookup
+            map.lookup
                 .entry(delegate.kind())
                 .and_modify(|list| list.retain(|context| context.scope.card_id() != card_id));
         }
@@ -78,11 +76,11 @@ pub fn remove_card_from_delegate_cache(
 /// `Delegate` for this event to mutate the [GameState]
 /// appropriately.
 pub fn invoke_event<D: Debug, E: EventData<D>>(game: &mut GameState, event: E) -> Result<()> {
-    let count = game.delegate_cache.delegate_count(event.kind());
+    let count = game.delegate_map.delegate_count(event.kind());
     for i in 0..count {
-        let delegate_context = game.delegate_cache.get(event.kind(), i);
+        let delegate_context = game.delegate_map.get(event.kind(), i);
         let scope = delegate_context.scope;
-        let functions = E::extract(&delegate_context.delegate).expect("Delegate not in cache!");
+        let functions = E::extract(&delegate_context.delegate).expect("Delegate not found!");
         let data = event.data();
         if (functions.requirement)(game, scope, data) {
             (functions.mutation)(game, scope, data)?;
@@ -101,11 +99,11 @@ pub fn perform_query<D: Debug, V: Debug, Q: QueryData<D, V>>(
     initial_value: V,
 ) -> V {
     let mut result = initial_value;
-    let count = game.delegate_cache.delegate_count(query.kind());
+    let count = game.delegate_map.delegate_count(query.kind());
     for i in 0..count {
-        let delegate_context = game.delegate_cache.get(query.kind(), i);
+        let delegate_context = game.delegate_map.get(query.kind(), i);
         let scope = delegate_context.scope;
-        let functions = Q::extract(&delegate_context.delegate).expect("Delegate not in cache!");
+        let functions = Q::extract(&delegate_context.delegate).expect("Delegate not found!");
         let data = query.data();
         if (functions.requirement)(game, scope, data) {
             result = (functions.transformation)(game, scope, data, result);

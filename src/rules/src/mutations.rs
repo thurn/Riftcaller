@@ -693,8 +693,8 @@ pub fn create_and_add_card(
         true, /* is_face_up */
     );
     game.cards_mut(side).push(state);
-    dispatch::add_card_to_delegate_cache(
-        &mut game.delegate_cache,
+    dispatch::add_card_to_delegate_map(
+        &mut game.delegate_map,
         definition,
         card_id,
         variant.metadata,
@@ -712,10 +712,10 @@ pub fn overwrite_card(game: &mut GameState, card_id: CardId, new: CardVariant) -
     let sorting_key = game.card(card_id).sorting_key;
     *game.card_mut(card_id) =
         CardState::new_with_position(card_id, new, position, sorting_key, false);
-    dispatch::remove_card_from_delegate_cache(&mut game.delegate_cache, old_definition, card_id);
+    dispatch::remove_card_from_delegate_map(&mut game.delegate_map, old_definition, card_id);
     let new_definition = crate::get(new);
-    dispatch::add_card_to_delegate_cache(
-        &mut game.delegate_cache,
+    dispatch::add_card_to_delegate_map(
+        &mut game.delegate_map,
         new_definition,
         card_id,
         new.metadata,

@@ -87,7 +87,7 @@ pub async fn fetch_player(database: &impl Database, player_id: PlayerId) -> Resu
 pub async fn fetch_game(database: &impl Database, game_id: Option<GameId>) -> Result<GameState> {
     let id = game_id.with_error(|| "Expected GameId to be included with client request")?;
     let mut game = database.fetch_game(id).await?.with_error(|| format!("Game not found {id}"))?;
-    dispatch::populate_delegate_cache(&mut game);
+    dispatch::populate_delegate_map(&mut game);
     game.animations = AnimationTracker::new(if game.info.config.simulation {
         AnimationState::Ignore
     } else {

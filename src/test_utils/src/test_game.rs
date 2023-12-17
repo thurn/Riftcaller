@@ -170,7 +170,7 @@ impl TestGame {
             },
         );
 
-        dispatch::populate_delegate_cache(&mut game);
+        dispatch::populate_delegate_map(&mut game);
 
         game.info.phase = GamePhase::Play;
         game.info.turn = TurnData { side: self.current_turn, turn_number: 0 };

@@ -49,7 +49,7 @@ pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_variant: CardV
 
     // Our delegate cache logic assumes the set of card names in a game will not
     // change while the game is in progress, so we need to delete the cache.
-    dispatch::populate_delegate_cache(game);
+    dispatch::populate_delegate_map(game);
 }
 
 /// Returns the [Side] player who owns the [CardName] card

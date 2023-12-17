@@ -43,7 +43,7 @@ use game_data::game_state::GameState;
 use game_data::player_name::PlayerId;
 use protos::riftcaller::game_command::Command;
 use protos::riftcaller::DelayCommand;
-use rules::flags;
+use rules::{dispatch, flags};
 use tracing::{debug, info, info_span, subscriber, Instrument, Level};
 use tutorial::tutorial_actions;
 use with_error::{fail, WithError};
@@ -90,6 +90,7 @@ pub async fn run_agent_loop_for_tests(
 ) -> Result<()> {
     let mut game =
         database.fetch_game(game_id).await?.with_error(|| format!("Game not found {game_id}"))?;
+    dispatch::populate_delegate_map(&mut game);
     run_agent_loop(
         player_id,
         ClientData { game_id: Some(game_id), adventure_id: None },

@@ -23,7 +23,6 @@ use clap::{ArgEnum, Parser};
 use core_data::game_primitives::{GameId, Side};
 use game_data::game_state::{GameConfiguration, GameState};
 use game_data::player_name::{AIPlayer, PlayerId};
-
 use rules::{dispatch, mutations, queries};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]
@@ -68,7 +67,12 @@ pub fn run(args: Args) -> Result<()> {
 
     for i in 1..=args.matches {
         if args.verbosity >= Verbosity::Matches {
-            println!(">>> Running match {} between {} and {}", i, covenant.name(), riftcaller.name());
+            println!(
+                ">>> Running match {} between {} and {}",
+                i,
+                covenant.name(),
+                riftcaller.name()
+            );
         }
         let mut game = GameState::new(
             GameId::new_from_u128(0),
@@ -82,7 +86,7 @@ pub fn run(args: Args) -> Result<()> {
                 ..GameConfiguration::default()
             },
         );
-        dispatch::populate_delegate_cache(&mut game);
+        dispatch::populate_delegate_map(&mut game);
         mutations::deal_opening_hands(&mut game)?;
 
         let mut state = RiftcallerState(game);
@@ -93,7 +97,8 @@ pub fn run(args: Args) -> Result<()> {
         loop {
             match state.status() {
                 GameStatus::InProgress { current_turn } => {
-                    let agent = if current_turn == Side::Covenant { &covenant } else { &riftcaller };
+                    let agent =
+                        if current_turn == Side::Covenant { &covenant } else { &riftcaller };
                     let config = AgentConfig {
                         panic_on_search_timeout: args.panic_on_search_timeout,
                         deadline: Instant::now() + Duration::from_secs(args.move_time),
