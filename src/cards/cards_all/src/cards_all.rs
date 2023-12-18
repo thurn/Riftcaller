@@ -82,10 +82,10 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::whip_of_disjunction);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::glimmersong);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::spear_of_ultimatum);
-    DEFINITIONS.insert(cards_beryl::chapters_beryl::zain_cunning_diplomat);
-    DEFINITIONS.insert(cards_beryl::chapters_beryl::algrak_councils_enforcer);
-    DEFINITIONS.insert(cards_beryl::chapters_beryl::eria_time_conduit);
-    DEFINITIONS.insert(cards_beryl::chapters_beryl::vendoc_seer_in_starlight);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::nimbus_enclave);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::enforcers_of_silence);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::keepers_of_the_eye);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::the_starseers);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::rivers_eye);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);

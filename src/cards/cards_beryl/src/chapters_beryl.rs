@@ -34,12 +34,12 @@ use rules::{
     curses, custom_state, flags, mana, mutations, prompts, visual_effects, CardDefinitionExt,
 };
 
-pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
+pub fn nimbus_enclave(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::ZainCunningDiplomat,
+        name: CardName::NimbusEnclave,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::covenant_card(meta, "zain"),
+        image: assets::chapter(meta, "SceneryClouds_1"),
         card_type: CardType::Chapter,
         subtypes: vec![],
         side: Side::Covenant,
@@ -74,21 +74,20 @@ pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(500),
                 secondary_schools: vec![School::Shadow],
                 skills: vec![Skill::Lore, Skill::Persuasion],
-                bio: "Born in the gilded courts of Elandor, Zain's silver tongue and sharp mind \
-                mask a heart marred by treachery. His diplomacy is a chess game, each move \
-                calculated to weave a web of deceit, turning allies into pawns in his quest for \
-                power.",
+                bio: "High above the clouds of Khazpar, the Nimbus Enclave manipulates the stormy \
+                heavens. In their floating citadels, they conjure tempests and gales, bending the \
+                sky's fury to their inscrutable will.",
             })
             .build(),
     }
 }
 
-pub fn algrak_councils_enforcer(meta: CardMetadata) -> CardDefinition {
+pub fn enforcers_of_silence(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::AlgrakCouncilsEnforcer,
+        name: CardName::EnforcersOfSilence,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::covenant_card(meta, "algrak"),
+        image: assets::chapter(meta, "SceneryClouds_2"),
         card_type: CardType::Chapter,
         subtypes: vec![],
         side: Side::Covenant,
@@ -120,20 +119,20 @@ pub fn algrak_councils_enforcer(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(475),
                 secondary_schools: vec![School::Beyond],
                 skills: vec![Skill::Brawn, Skill::Lore],
-                bio: "From the stern halls of Khazpar, Algrak emerged, an unyielding embodiment \
-                of the council's will. His mere presence quells dissent, his iron fist enforcing \
-                order with a resolve as relentless as the volcanic land he hails from.",
+                bio: "Born in the hushed cloisters of Elandor's forgotten monasteries, the \
+                Enforcers of Silence swore oaths to extinguish the world's clamor. Their magic, \
+                a silent shroud, smothers voices and secrets alike.",
             })
             .build(),
     }
 }
 
-pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
+pub fn keepers_of_the_eye(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::EriaTimeConduit,
+        name: CardName::KeepersOfTheEye,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::covenant_card(meta, "eria"),
+        image: assets::chapter(meta, "SceneryLighthouse_inside_1"),
         card_type: CardType::Chapter,
         subtypes: vec![],
         side: Side::Covenant,
@@ -180,20 +179,20 @@ pub fn eria_time_conduit(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(525),
                 secondary_schools: vec![School::Law],
                 skills: vec![Skill::Stealth, Skill::Lore],
-                bio: "Eria’s essence is intertwined with the fleeting threads of time, born under \
-                the cosmic alignments of Frostreach. Her journey through the ages is a dance on \
-                the edge of now and then, a reluctant guardian of time’s fragile tapestry.",
+                bio: "Veiled in the shadows of the Thylen Dominion, the Keepers of the Eye are \
+                the silent sentinels of the Mirage Labyrinths. Their vision, steeped in forbidden \
+                knowledge, unveils destinies whispered by timeless sands.",
             })
             .build(),
     }
 }
 
-pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
+pub fn the_starseers(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::VendocSeerInStarlight,
+        name: CardName::TheStarseers,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::covenant_card(meta, "vendoc"),
+        image: assets::chapter(meta, "SceneryFrozen_inside_2"),
         card_type: CardType::Chapter,
         subtypes: vec![],
         side: Side::Covenant,
@@ -268,10 +267,9 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(400),
                 secondary_schools: vec![School::Shadow],
                 skills: vec![Skill::Lore, Skill::Persuasion],
-                bio: "Vendoc’s eyes were opened to the celestial secrets in the starlit valleys \
-                of Frostreach. His visions, woven from the fabric of starlight, reveal truths \
-                that are as much a curse as they are a gift, a seer's burden carried under the \
-                cold gaze of the cosmos.",
+                bio: "Under Frostreach's starlit canopy, the Starseers commune with celestial \
+                whispers. Through the dance of snowflakes, they uncover cosmic secrets murmured \
+                by the icy heavens.",
             })
             .build(),
     }

@@ -21,10 +21,9 @@ use test_utils::test_session::TestSession;
 use test_utils::*;
 
 #[test]
-pub fn zain() {
+pub fn nimbus_enclave() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::ZainCunningDiplomat))
-            .build();
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::NimbusEnclave)).build();
     g.create_and_play(CardName::TestMinionLoseMana);
     g.set_up_minion_combat();
     g.opponent_click(Button::NoWeapon);
@@ -37,10 +36,9 @@ pub fn zain() {
 }
 
 #[test]
-pub fn algrak() {
+pub fn enforcers_of_silence() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::AlgrakCouncilsEnforcer))
-            .build();
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::EnforcersOfSilence)).build();
     let scheme1 = g.add_to_hand(CardName::TestScheme3_10);
     g.play_card(scheme1, g.user_id(), Some(RoomId::RoomA));
     let scheme2 = g.add_to_hand(CardName::TestScheme4_20);
@@ -57,10 +55,10 @@ pub fn algrak() {
 }
 
 #[test]
-pub fn eria() {
+pub fn keepers_of_the_eye() {
     let mut g = TestGame::new(
         TestSide::new(Side::Covenant)
-            .identity(CardName::EriaTimeConduit)
+            .identity(CardName::KeepersOfTheEye)
             .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
     )
     .build();
@@ -75,10 +73,10 @@ pub fn eria() {
 }
 
 #[test]
-pub fn eria_does_not_trigger_twice() {
+pub fn keepers_of_the_eye_does_not_trigger_twice() {
     let mut g = TestGame::new(
         TestSide::new(Side::Covenant)
-            .identity(CardName::EriaTimeConduit)
+            .identity(CardName::KeepersOfTheEye)
             .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
     )
     .build();
@@ -96,10 +94,10 @@ pub fn eria_does_not_trigger_twice() {
 }
 
 #[test]
-pub fn eria_does_not_trigger_with_no_cards_in_crypt() {
+pub fn keepers_of_the_eye_does_not_trigger_with_no_cards_in_crypt() {
     let mut g = TestGame::new(
         TestSide::new(Side::Covenant)
-            .identity(CardName::EriaTimeConduit)
+            .identity(CardName::KeepersOfTheEye)
             .face_up_defender(RoomId::Vault, CardName::TestMinionLoseActionPoints),
     )
     .build();
@@ -110,10 +108,9 @@ pub fn eria_does_not_trigger_with_no_cards_in_crypt() {
 }
 
 #[test]
-pub fn vendoc() {
+pub fn the_starseers() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::VendocSeerInStarlight))
-            .build();
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::TheStarseers)).build();
     g.pass_turn(Side::Covenant);
     g.click(Button::ChooseCardTypeSpell);
     g.create_and_play(CardName::Test0CostSpell);
@@ -124,10 +121,9 @@ pub fn vendoc() {
 }
 
 #[test]
-pub fn vendoc_play_different_card_first() {
+pub fn the_starseers_play_different_card_first() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::VendocSeerInStarlight))
-            .build();
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::TheStarseers)).build();
     g.pass_turn(Side::Covenant);
     g.click(Button::ChooseCardTypeSpell);
     g.create_and_play(CardName::TestEvocation);
