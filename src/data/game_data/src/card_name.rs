@@ -199,7 +199,7 @@ pub enum CardName {
     TestAttackWeapon,
     TestSacrificeDrawCardArtifact,
     TestWeaponReduceCostOnSuccessfulRaid,
-    TestSpellGiveCurse,
+    TestRitualGiveCurse,
     TestEvocation,
     TestSpellDeal1Damage,
     TestSpellDeal5Damage,
@@ -358,6 +358,7 @@ pub enum CardName {
     RolantTheRestorer,
     SpearOfUltimatum,
     RitualOfBinding,
+    RiversEye,
 }
 
 impl CardName {
@@ -381,6 +382,7 @@ impl CardName {
             Self::SeldannaRegalPyromancer => "Seldanna, Regal Pyromancer",
             Self::LightcallersCommand => "Lightcaller's Command",
             Self::RolantTheRestorer => "Rolant the Restorer",
+            Self::RiversEye => "River's Eye",
             _ => "",
         };
 

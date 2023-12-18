@@ -177,7 +177,7 @@ fn planar_sanctuary_activate_after_curse() {
         .find_card(CardName::PlanarSanctuary)
         .arena_icon()
         .contains('2'));
-    g.create_and_play(CardName::TestSpellGiveCurse);
+    g.create_and_play(CardName::TestRitualGiveCurse);
     assert!(g.me().can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
     assert_eq!(g.client.cards.hand().curse_count(), 1);

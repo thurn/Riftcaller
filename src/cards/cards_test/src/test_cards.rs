@@ -610,7 +610,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
 
 pub fn test_spell_give_curse(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestSpellGiveCurse,
+        name: CardName::TestRitualGiveCurse,
         cost: cost(0),
         card_type: CardType::Ritual,
         sets: vec![CardSetName::Test],

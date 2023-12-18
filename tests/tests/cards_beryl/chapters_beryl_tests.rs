@@ -14,12 +14,11 @@
 
 use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::CardName;
+use protos::riftcaller::client_action::Action;
+use protos::riftcaller::DrawCardAction;
 use test_utils::test_game::{TestGame, TestSide};
+use test_utils::test_session::TestSession;
 use test_utils::*;
-
-// ========================================== //
-// ========== Covenant Riftcallers ========== //
-// ========================================== //
 
 #[test]
 pub fn zain() {
@@ -134,4 +133,32 @@ pub fn vendoc_play_different_card_first() {
     g.create_and_play(CardName::TestEvocation);
     g.create_and_play(CardName::Test0CostSpell);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA + 2);
+}
+
+#[test]
+pub fn rivers_eye() {
+    fn revealed_count(session: &TestSession) -> usize {
+        session
+            .client
+            .cards
+            .opponent_hand()
+            .real_cards()
+            .iter()
+            .filter(|c| c.revealed_to_me())
+            .count()
+    }
+
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).identity(CardName::RiversEye))
+        .opponent(TestSide::new(Side::Riftcaller).in_hand(CardName::TestInfernalWeapon))
+        .build();
+    assert_eq!(revealed_count(&g), 0);
+    g.create_and_play(CardName::TestRitualGiveCurse);
+    assert_eq!(revealed_count(&g), 1);
+    g.pass_turn(Side::Covenant);
+    g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
+    assert_eq!(revealed_count(&g), 2);
+    g.remove_curse();
+    g.perform(Action::DrawCard(DrawCardAction {}), g.opponent_id());
+    // Previous cards still revealed
+    assert_eq!(revealed_count(&g), 2);
 }

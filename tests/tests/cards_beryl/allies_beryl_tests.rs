@@ -74,7 +74,7 @@ fn stalwart_protector() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellGiveCurse);
+    g.create_and_play(CardName::TestRitualGiveCurse);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().curse_count(), 0);
     assert!(g.client.cards.discard_pile().contains_card(CardName::StalwartProtector));
@@ -85,7 +85,7 @@ fn stalwart_protector_pass() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::StalwartProtector);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellGiveCurse);
+    g.create_and_play(CardName::TestRitualGiveCurse);
     g.click(Button::NoPromptAction);
     assert_eq!(g.client.cards.hand().curse_count(), 1);
     assert!(g.client.cards.evocations_and_allies().contains_card(CardName::StalwartProtector));
@@ -97,11 +97,11 @@ fn stalwart_protector_multiple_copies() {
     g.create_and_play(CardName::StalwartProtector);
     g.create_and_play(CardName::StalwartProtector);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellGiveCurse);
+    g.create_and_play(CardName::TestRitualGiveCurse);
     g.click(Button::NoPromptAction);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().curse_count(), 0);
-    g.create_and_play(CardName::TestSpellGiveCurse);
+    g.create_and_play(CardName::TestRitualGiveCurse);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().curse_count(), 0);
 }

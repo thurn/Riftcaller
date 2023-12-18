@@ -86,6 +86,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::chapters_beryl::algrak_councils_enforcer);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::eria_time_conduit);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::vendoc_seer_in_starlight);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::rivers_eye);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);

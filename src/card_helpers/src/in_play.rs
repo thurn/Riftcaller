@@ -38,6 +38,12 @@ pub fn at_dusk(mutation: MutationFn<TurnNumber>) -> Delegate {
     Delegate::Dusk(EventDelegate { requirement: requirements::face_up_in_play, mutation })
 }
 
+/// A delegate which triggers when a card enters a player's hand if this card is
+/// face up in play
+pub fn on_enter_hand(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::EnterHand(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
 /// A delegate which triggers when any card is played if this card is face up
 /// and in play
 pub fn on_card_played(mutation: MutationFn<CardPlayed>) -> Delegate {

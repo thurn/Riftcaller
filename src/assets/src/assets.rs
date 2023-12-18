@@ -205,7 +205,7 @@ pub fn title_background(_: Option<Resonance>) -> SpriteAddress {
 }
 
 /// Address for the frame of a card in the arena
-pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>) -> SpriteAddress {
+pub fn arena_frame(_: Side, card_type: CardType, resonance: Option<Resonance>) -> SpriteAddress {
     SpriteAddress {
         address: format!(
             "{}.png",
@@ -220,12 +220,8 @@ pub fn arena_frame(side: Side, card_type: CardType, resonance: Option<Resonance>
                     CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                     CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
                     CardType::GameModifier => "SpriteWay/Icons/Clean Frames/9058",
-                    CardType::Riftcaller =>
-                        if side == Side::Covenant {
-                            "SpriteWay/Icons/Clean Frames/9022"
-                        } else {
-                            "SpriteWay/Icons/Clean Frames/9040"
-                        },
+                    CardType::Chapter => "SpriteWay/Icons/Clean Frames/9022",
+                    CardType::Riftcaller => "SpriteWay/Icons/Clean Frames/9040",
                     _ => "SpriteWay/Icons/Clean Frames/9062",
                 },
             }
@@ -346,6 +342,10 @@ pub fn riftcaller_card(_: CardMetadata, name: impl Into<String>) -> Sprite {
 
 pub fn covenant_card(_: CardMetadata, name: impl Into<String>) -> Sprite {
     Sprite { address: format!("Cards/Covenant/{}.png", name.into()) }
+}
+
+pub fn chapter(_: CardMetadata, name: impl Into<String>) -> Sprite {
+    Sprite { address: format!("Cards/Covenant/Chapters/{}.png", name.into()) }
 }
 
 pub fn misc_card(name: impl Into<String>, full_art: bool) -> Sprite {

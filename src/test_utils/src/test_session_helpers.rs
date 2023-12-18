@@ -27,7 +27,7 @@ use server::server_data::GameResponseOutput;
 
 use crate::test_game_client::{ClientPlayer, TestGameClient};
 use crate::test_session::TestSession;
-use crate::{test_game_client, Button, TestInterfaceHelpers};
+use crate::{test_game_client, Button, CardNamesExt, TestInterfaceHelpers};
 
 pub trait TestSessionHelpers {
     fn user_id(&self) -> PlayerId;
@@ -135,6 +135,9 @@ pub trait TestSessionHelpers {
         index: u32,
         target: RoomId,
     ) -> Result<GameResponseOutput>;
+
+    /// Looks for a card named "curse" in the Riftcaller's hand and plays it.
+    fn remove_curse(&mut self);
 
     /// Summons a project card in play, paying its mana cost and turning it face
     /// up.
@@ -418,6 +421,20 @@ impl TestSessionHelpers for TestSession {
         target: RoomId,
     ) -> Result<GameResponseOutput> {
         activate_ability_impl(self, card_id, index, Some(target))
+    }
+
+    fn remove_curse(&mut self) {
+        let player_id = self.player_id_for_side(Side::Riftcaller);
+        let id = self
+            .player_for_side(Side::Riftcaller)
+            .cards
+            .hand()
+            .token_cards()
+            .iter()
+            .find(|c| c.title() == "Curse")
+            .map(|c| c.id())
+            .expect("Curse not found");
+        self.play_card(id, player_id, None);
     }
 
     fn summon_project(&mut self, card_id: CardIdentifier) {

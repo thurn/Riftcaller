@@ -29,8 +29,10 @@ use game_data::prompt_data::{
 };
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
-use rules::visual_effects::VisualEffects;
-use rules::{custom_state, flags, mana, prompts, CardDefinitionExt};
+use rules::visual_effects::{ShowAlert, VisualEffects};
+use rules::{
+    curses, custom_state, flags, mana, mutations, prompts, visual_effects, CardDefinitionExt,
+};
 
 pub fn zain_cunning_diplomat(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -270,6 +272,57 @@ pub fn vendoc_seer_in_starlight(meta: CardMetadata) -> CardDefinition {
                 of Frostreach. His visions, woven from the fabric of starlight, reveal truths \
                 that are as much a curse as they are a gift, a seer's burden carried under the \
                 cold gaze of the cosmos.",
+            })
+            .build(),
+    }
+}
+
+pub fn rivers_eye(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::RiversEye,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::chapter(meta, "SceneryWater_1"),
+        card_type: CardType::Chapter,
+        subtypes: vec![],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Identity,
+        abilities: vec![Ability::new(text![
+            "While the Riftcaller is",
+            Cursed,
+            ", the cards in their hand become visible"
+        ])
+        .delegate(in_play::on_curse(|g, s, _| {
+            visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+            mutations::set_cards_visible_to(
+                g,
+                &g.hand(Side::Riftcaller).card_ids(),
+                Side::Covenant,
+                true,
+            );
+            Ok(())
+        }))
+        .delegate(in_play::on_enter_hand(|g, _, &card_id| {
+            if card_id.side == Side::Riftcaller && curses::is_riftcaller_cursed(g) {
+                mutations::set_visible_to(g, card_id, Side::Covenant, true);
+            }
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(4))
+                    .scale(1.5)
+                    .effect_color(design::BLUE_500)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast01")),
+            )
+            .identity(IdentityConfig {
+                starting_coins: Coins(475),
+                secondary_schools: vec![School::Primal],
+                skills: vec![Skill::Stealth, Skill::Persuasion],
+                bio: "In Seba's lush heart, the River's Eye thrives, unseen and unpredictable. \
+                They weave illusions and realities in the watery depths where secrets flow \
+                endlessly.",
             })
             .build(),
     }

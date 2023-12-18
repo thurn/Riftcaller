@@ -35,7 +35,7 @@ use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
     ActionPointsLostDuringRaidEvent, CanAbilityEndRaidQuery, CardRevealedEvent,
     CardSacrificedEvent, CovenantScoreCardEvent, DawnEvent, DiscardCardEvent, DiscardedCard,
-    DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, LeaveArenaEvent,
+    DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, EnterHandEvent, LeaveArenaEvent,
     MoveToDiscardPileEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent,
     ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
 };
@@ -114,6 +114,10 @@ pub fn move_card(game: &mut GameState, card_id: CardId, new_position: CardPositi
 
     if old_position.in_deck() && new_position.in_hand() {
         dispatch::invoke_event(game, DrawCardEvent(&card_id))?;
+    }
+
+    if new_position.in_hand() {
+        dispatch::invoke_event(game, EnterHandEvent(&card_id))?;
     }
 
     if !old_position.in_play() && new_position.in_play() {
