@@ -98,7 +98,7 @@ impl<'a> Component for DraftPanel<'a> {
                                         .action(
                                             ActionBuilder::new()
                                                 .action(AdventureAction::DraftCard(i))
-                                                .update(Panels::close(self.address())),
+                                                .update(self.close()),
                                         ),
                                     )
                             })),

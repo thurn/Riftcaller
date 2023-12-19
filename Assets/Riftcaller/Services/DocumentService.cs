@@ -22,6 +22,7 @@ using static Riftcaller.Masonry.MasonUtil;
 using Riftcaller.Protos;
 using Riftcaller.Utils;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
@@ -156,6 +157,7 @@ namespace Riftcaller.Services
 
     public void TogglePanel(TogglePanelCommand command)
     {
+      Debug.Log($"TogglePanel: Current Panels {string.Join(",", _openPanels)} opening {command.Transition?.Open}");
       InterfacePanelAddress? fetch = null;
       switch (command.ToggleCommandCase)
       {

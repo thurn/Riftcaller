@@ -97,7 +97,7 @@ pub struct NarrativeEventChoice {
     /// Rewards for selecting this choice.
     pub rewards: Vec<AdventureEffectData>,
     /// Effects of this choice which the user has already applied and thus do
-    /// not need to shown on-screen.
+    /// not need to be shown on-screen.
     pub applied: Vec<NarrativeEffectIndex>,
 }
 
@@ -115,10 +115,18 @@ impl NarrativeEventChoice {
         self.costs.iter().enumerate().map(|(i, choice)| (NarrativeEffectIndex::Cost(i), choice))
     }
 
-    pub fn enumerate_effects(
+    pub fn enumerate_rewards(
         &self,
     ) -> impl Iterator<Item = (NarrativeEffectIndex, &AdventureEffectData)> {
         self.rewards.iter().enumerate().map(|(i, choice)| (NarrativeEffectIndex::Reward(i), choice))
+    }
+
+    /// Returns true if all of the costs and rewards for this choice have either
+    /// 1) been applied or 2) are immediate and thus do not need to be applied.
+    pub fn all_effects_applied(&self) -> bool {
+        self.enumerate_costs()
+            .chain(self.enumerate_rewards())
+            .all(|(i, e)| self.applied.contains(&i) || e.effect.is_immediate())
     }
 }
 

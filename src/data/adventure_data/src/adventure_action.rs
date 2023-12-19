@@ -45,4 +45,6 @@ pub enum AdventureAction {
     /// Apply one effect of a narrative event. This can result in playing an
     /// animation or opening another screen (such as showing a 'draft' panel).
     ApplyNarrativeEffect(NarrativeChoiceIndex, NarrativeEffectIndex),
+    /// Ends the current narrative event screen
+    EndNarrativeEvent,
 }

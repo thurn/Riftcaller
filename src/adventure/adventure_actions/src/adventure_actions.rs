@@ -38,6 +38,7 @@ pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAct
         AdventureAction::ApplyNarrativeEffect(choice_index, effect_index) => {
             narrative_events::apply_narrative_effect(state, *choice_index, *effect_index)
         }
+        AdventureAction::EndNarrativeEvent => narrative_events::end_narrative_event(state),
     }
 }
 

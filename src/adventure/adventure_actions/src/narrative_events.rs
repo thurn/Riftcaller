@@ -66,10 +66,28 @@ pub fn apply_narrative_effect(
     adventure_effect::apply(state, effect, card)
 }
 
+pub fn end_narrative_event(state: &mut AdventureState) -> Result<()> {
+    verify!(can_end_narrative_event(state), "Cannot currently end narrative event");
+    state.screens.pop();
+    Ok(())
+}
+
 /// Returns true if the player is allowed to pick the `index` option within the
 /// provided [NarrativeEventData].
 pub fn is_legal_choice(data: &NarrativeEventData, index: NarrativeChoiceIndex) -> bool {
     index.value < data.choices.len()
+}
+
+fn can_end_narrative_event(state: &AdventureState) -> bool {
+    let Some(AdventureScreen::NarrativeEvent(data)) = state.screens.current() else {
+        return false;
+    };
+
+    match data.step {
+        NarrativeEventStep::Introduction => true,
+        NarrativeEventStep::ViewChoices => false,
+        NarrativeEventStep::SelectChoice(index) => data.choice(index).all_effects_applied(),
+    }
 }
 
 /// "Known random" choices are ones that are random each time this narrative

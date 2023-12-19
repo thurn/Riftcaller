@@ -16,6 +16,7 @@ use adventure_data::adventure::{NarrativeEventChoice, NarrativeEventData, Narrat
 use adventure_data::adventure_action::{AdventureAction, NarrativeEffectIndex};
 use adventure_data::adventure_effect_data::AdventureEffectData;
 use core_data::adventure_primitives::NarrativeChoiceIndex;
+use core_ui::action_builder::ActionBuilder;
 use core_ui::actions::InterfaceAction;
 use core_ui::design::{BackgroundColor, FontSize};
 use core_ui::full_screen_image::FullScreenImage;
@@ -51,7 +52,9 @@ impl<'a> NarrativeEventPanel<'a> {
             ))
             .child(Self::button_row(
                 "Flee",
-                AdventureAction::SetNarrativeStep(NarrativeEventStep::ViewChoices),
+                ActionBuilder::new()
+                    .update(self.close())
+                    .action(AdventureAction::EndNarrativeEvent),
             ))
     }
 
@@ -69,10 +72,28 @@ impl<'a> NarrativeEventPanel<'a> {
         self.container()
             .child(Self::description(choice.result_description.clone()))
             .children(choice.enumerate_costs().map(|(effect_index, data)| {
-                Self::apply_effect_row(data, choice_index, effect_index)
+                Self::apply_effect_row(
+                    data,
+                    choice_index,
+                    effect_index,
+                    !data.effect.is_immediate() && !choice.applied.contains(&effect_index),
+                )
             }))
-            .children(choice.enumerate_effects().map(|(effect_index, data)| {
-                Self::apply_effect_row(data, choice_index, effect_index)
+            .children(choice.enumerate_rewards().map(|(effect_index, data)| {
+                Self::apply_effect_row(
+                    data,
+                    choice_index,
+                    effect_index,
+                    !data.effect.is_immediate() && !choice.applied.contains(&effect_index),
+                )
+            }))
+            .child(choice.all_effects_applied().then(|| {
+                Self::button_row(
+                    "Continue",
+                    ActionBuilder::new()
+                        .update(self.close())
+                        .action(AdventureAction::EndNarrativeEvent),
+                )
             }))
     }
 
@@ -111,15 +132,23 @@ impl<'a> NarrativeEventPanel<'a> {
         data: &AdventureEffectData,
         choice_index: NarrativeChoiceIndex,
         effect_index: NarrativeEffectIndex,
+        show_action: bool,
     ) -> impl Component {
         let is_cost = matches!(effect_index, NarrativeEffectIndex::Cost(..));
-        if data.effect.is_immediate() {
-            Row::new("ImmediateEffect").child(Self::effect_description(data, is_cost))
-        } else {
+        if show_action {
             Self::button_row(
                 Self::effect_text(data, is_cost),
                 AdventureAction::ApplyNarrativeEffect(choice_index, effect_index),
             )
+        } else {
+            Row::new("ImmediateEffect")
+                .style(
+                    Style::new()
+                        .margin(Edge::Vertical, 4.px())
+                        .padding(Edge::Horizontal, 8.px())
+                        .min_height(88.px()),
+                )
+                .child(Self::effect_description(data, is_cost))
         }
     }
 

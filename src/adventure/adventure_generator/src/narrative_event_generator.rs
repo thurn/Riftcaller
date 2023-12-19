@@ -34,8 +34,8 @@ pub fn generate() -> NarrativeEventData {
                         .to_string(),
                 result_description:
                     "The clash of your sword against the eagle's talons sends sparks \
-            flying.\n\nAfter a mighty struggle, the eagle yields, bestowing upon you the ancient \
-            Spell of the Mountain's Might, a secret kept by the high winds for eons."
+            flying.\n\nAfter a mighty struggle, the eagle yields, bestowing upon you an ancient \
+            spell of the mountain's might, a secret kept by the high winds for eons."
                         .to_string(),
                 skill: Some(Skill::Brawn),
                 costs: vec![],
@@ -88,7 +88,7 @@ pub fn generate() -> NarrativeEventData {
                 applied: vec![]
             },
             NarrativeEventChoice {
-                choice_description: "\"I offer my blade to you, oh great Stormfeather, as a \
+                choice_description: "\"I offer my weapon to you, oh great Stormfeather, as a \
                 token of respect and in exchange for safe passage.\""
                     .to_string(),
                 result_description: "Placing your weapon upon an altar of stone, you step back.\n\n\
