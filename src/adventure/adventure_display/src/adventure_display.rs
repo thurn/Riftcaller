@@ -50,7 +50,7 @@ pub fn render(state: &AdventureState) -> Result<Vec<Command>> {
     if let Some(_) = &state.outcome {
         commands.push(Panels::open(PlayerPanel::AdventureOver).into());
     } else if !state.screens.is_empty() {
-        commands.push(Panels::open(PlayerPanel::AdventureScreen).into());
+        commands.push(Panels::open(PlayerPanel::AdventureScreen(state.screens.count() - 1)).into());
     }
 
     Ok(commands)

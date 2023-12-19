@@ -97,7 +97,7 @@ pub enum PlayerPanel {
     DeckEditor(DeckEditorData),
     BattleVictory,
     BattleDefeat,
-    AdventureScreen,
+    AdventureScreen(usize),
     AdventureOver,
 }
 

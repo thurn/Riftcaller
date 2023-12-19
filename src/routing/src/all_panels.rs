@@ -46,7 +46,9 @@ pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
         PlayerPanel::BattleDefeat,
     ];
     if let Some(adventure) = &player.adventure {
-        panels.push(PlayerPanel::AdventureScreen);
+        for i in 0..adventure.screens.count() {
+            panels.push(PlayerPanel::AdventureScreen(i));
+        }
         panels.into_iter().chain(add_deck_editor_panels(adventure)).collect()
     } else {
         panels

@@ -24,16 +24,20 @@ use crate::narrative_event_panel::NarrativeEventPanel;
 use crate::shop_panel::ShopPanel;
 
 /// Builds an [InterfacePanel] for the current adventure screen.
-pub fn tile_entity_panel(player: &PlayerState) -> Result<Option<InterfacePanel>> {
+pub fn tile_entity_panel(player: &PlayerState, index: usize) -> Result<Option<InterfacePanel>> {
     let state = player.adventure()?;
-    let Some(screen) = state.screens.current() else {
+    let Some(screen) = state.screens.get(index) else {
         return Ok(None);
     };
-    build_panel(player, screen)
+    build_panel(player, screen, index)
 }
 
-fn build_panel(player: &PlayerState, screen: &AdventureScreen) -> Result<Option<InterfacePanel>> {
-    let address = PanelAddress::PlayerPanel(PlayerPanel::AdventureScreen);
+fn build_panel(
+    player: &PlayerState,
+    screen: &AdventureScreen,
+    count: usize,
+) -> Result<Option<InterfacePanel>> {
+    let address = PanelAddress::PlayerPanel(PlayerPanel::AdventureScreen(count));
     Ok(match screen {
         AdventureScreen::Draft(data) => DraftPanel { address, data }.build_panel(),
         AdventureScreen::Shop(data) => ShopPanel { player, address, data }.build_panel(),

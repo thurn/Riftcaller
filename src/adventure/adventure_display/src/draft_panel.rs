@@ -19,7 +19,6 @@ use core_ui::action_builder::ActionBuilder;
 use core_ui::button::Button;
 use core_ui::design::FontSize;
 use core_ui::full_screen_image::FullScreenImage;
-use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use core_ui::style;
 use core_ui::text::Text;

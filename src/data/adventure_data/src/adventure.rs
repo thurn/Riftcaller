@@ -319,9 +319,19 @@ impl AdventureScreens {
         self.stack.last()
     }
 
+    /// Gets the [AdventureScreen] at the provided index
+    pub fn get(&self, index: usize) -> Option<&AdventureScreen> {
+        self.stack.get(index)
+    }
+
     /// Mutable version of [Self::current].
     pub fn current_mut(&mut self) -> Option<&mut AdventureScreen> {
         self.stack.last_mut()
+    }
+
+    /// Number of screens currently stored
+    pub fn count(&self) -> usize {
+        self.stack.len()
     }
 
     /// Adds a new screen to the top of the stack
