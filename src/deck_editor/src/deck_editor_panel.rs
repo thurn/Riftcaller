@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure::CardSelector;
 use adventure_data::adventure_effect_data::DeckCardEffect;
 use core_ui::full_screen_image::FullScreenImage;
 use core_ui::panels::Panels;
@@ -21,7 +22,7 @@ use core_ui::style;
 use deck_card::deck_card_slot::DeckCardSlot;
 use deck_card::{CardHeight, DeckCard};
 use game_data::card_name::CardVariant;
-use panel_address::{Panel, PanelAddress, PlayerPanel};
+use panel_address::{Panel, PanelAddress};
 use player_data::PlayerState;
 use protos::riftcaller::{
     FlexAlign, FlexDirection, FlexJustify, ScrollBarVisibility, TouchScrollBehavior,
@@ -29,13 +30,20 @@ use protos::riftcaller::{
 use screen_overlay::ScreenOverlay;
 
 pub struct DeckEditorPanel<'a> {
+    /// Address of this panel
+    pub address: PanelAddress,
     /// Player state
     pub player: &'a PlayerState,
     /// Optionally an effect that can be applied to the cards being viewed.
     ///
     /// If specified, a button is displayed below each card allowing the player
     /// to apply this effect.
-    pub action: Option<DeckCardEffect>,
+    pub effect: Option<DeckCardEffect>,
+    /// Optionally, a selector for which set of cards can have [Self::effect]
+    /// applied to them.
+    ///
+    /// If not specified, all cards can be picked.
+    pub card_selector: Option<CardSelector>,
 }
 
 impl<'a> DeckEditorPanel<'a> {
@@ -63,7 +71,7 @@ impl<'a> DeckEditorPanel<'a> {
 }
 impl<'a> Panel for DeckEditorPanel<'a> {
     fn address(&self) -> PanelAddress {
-        PlayerPanel::DeckEditor(self.action).into()
+        self.address
     }
 
     fn screen_overlay(&self) -> Option<Node> {

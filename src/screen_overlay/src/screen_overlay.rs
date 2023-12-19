@@ -121,7 +121,7 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
                             .name(&element_names::DECK_BUTTON)
                             .button_type(IconButtonType::NavBrown)
                             .action(
-                                Panels::open(PlayerPanel::DeckEditor(None))
+                                Panels::open(PlayerPanel::DeckViewer)
                                     .loading(StandardPanel::DeckEditorLoading),
                             )
                             .layout(Layout::new().margin(Edge::All, 12.px()))

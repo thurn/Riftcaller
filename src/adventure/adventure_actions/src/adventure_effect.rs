@@ -39,6 +39,9 @@ pub fn apply(
         AdventureEffect::Battle => state
             .screens
             .push(AdventureScreen::Battle(battle_generator::create(state.side.opponent()))),
+        AdventureEffect::PickCardForEffect(selector, effect) => {
+            state.screens.push(AdventureScreen::ApplyDeckEffect(selector, effect))
+        }
         _ => {
             panic!("Not implemented {effect:?}")
         }

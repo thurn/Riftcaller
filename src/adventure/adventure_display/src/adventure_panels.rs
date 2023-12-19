@@ -14,6 +14,7 @@
 
 use adventure_data::adventure::AdventureScreen;
 use anyhow::Result;
+use deck_editor::deck_editor_panel::DeckEditorPanel;
 use panel_address::{Panel, PanelAddress, PlayerPanel};
 use player_data::PlayerState;
 use protos::riftcaller::InterfacePanel;
@@ -45,5 +46,12 @@ fn build_panel(
         AdventureScreen::NarrativeEvent(data) => {
             NarrativeEventPanel { player, address, data }.build_panel()
         }
+        AdventureScreen::ApplyDeckEffect(selector, effect) => DeckEditorPanel {
+            address,
+            player,
+            effect: Some(*effect),
+            card_selector: Some(*selector),
+        }
+        .build_panel(),
     })
 }

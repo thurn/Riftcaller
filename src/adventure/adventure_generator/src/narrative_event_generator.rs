@@ -15,7 +15,9 @@
 use adventure_data::adventure::{
     CardSelector, NarrativeEventChoice, NarrativeEventData, NarrativeEventStep,
 };
-use adventure_data::adventure_effect_data::{AdventureEffect, AdventureEffectData, DeckCardEffect};
+use adventure_data::adventure_effect_data::{
+    AdventureEffect, AdventureEffectData, DeckCardAction, DeckCardEffect,
+};
 use core_data::adventure_primitives::Skill;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity};
 
@@ -63,25 +65,9 @@ pub fn generate() -> NarrativeEventData {
                     AdventureEffectData {
                         effect: AdventureEffect::PickCardForEffect(
                             CardSelector::default(),
-                            DeckCardEffect::DuplicateTo3Copies,
+                            DeckCardEffect::new(DeckCardAction::DuplicateTo3Copies).times(3),
                         ),
-                        description: "Gain up to 3 copies of a card in your deck".to_string(),
-                        known_card: None,
-                    },
-                    AdventureEffectData {
-                        effect: AdventureEffect::PickCardForEffect(
-                            CardSelector::default(),
-                            DeckCardEffect::DuplicateTo3Copies,
-                        ),
-                        description: "Gain up to 3 copies of a card in your deck".to_string(),
-                        known_card: None,
-                    },
-                    AdventureEffectData {
-                        effect: AdventureEffect::PickCardForEffect(
-                            CardSelector::default(),
-                            DeckCardEffect::DuplicateTo3Copies,
-                        ),
-                        description: "Gain up to 3 copies of a card in your deck".to_string(),
+                        description: "Gain up to 3 copies of 3 cards in your deck".to_string(),
                         known_card: None,
                     },
                 ],

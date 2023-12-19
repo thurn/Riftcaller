@@ -71,7 +71,13 @@ pub fn render_player_panel(
     address: PlayerPanel,
 ) -> Result<Option<InterfacePanel>> {
     Ok(match address {
-        PlayerPanel::DeckEditor(action) => DeckEditorPanel { player, action }.build_panel(),
+        PlayerPanel::DeckViewer => DeckEditorPanel {
+            address: PlayerPanel::DeckViewer.into(),
+            player,
+            effect: None,
+            card_selector: None,
+        }
+        .build_panel(),
         PlayerPanel::BattleVictory => BattleVictoryPanel::new(player).build_panel(),
         PlayerPanel::BattleDefeat => BattleDefeatPanel {}.build_panel(),
         PlayerPanel::AdventureScreen(index) => adventure_panels::tile_entity_panel(player, index)?,

@@ -137,7 +137,7 @@ impl<'a> NarrativeEventPanel<'a> {
         let is_cost = matches!(effect_index, NarrativeEffectIndex::Cost(..));
         if show_action {
             Self::button_row(
-                Self::effect_text(data, is_cost),
+                Self::effect_text(data, if is_cost { "Cost" } else { "Reward" }),
                 AdventureAction::ApplyNarrativeEffect(choice_index, effect_index),
             )
         } else {
@@ -148,7 +148,7 @@ impl<'a> NarrativeEventPanel<'a> {
                         .padding(Edge::Horizontal, 8.px())
                         .min_height(88.px()),
                 )
-                .child(Self::effect_description(data, is_cost))
+                .child(Self::effect_description(data, "Received"))
         }
     }
 
@@ -175,21 +175,22 @@ impl<'a> NarrativeEventPanel<'a> {
                     .padding(Edge::All, 8.px())
                     .border_radius(Corner::All, 8.px()),
             )
-            .children(choice.costs.iter().map(|choice| Self::effect_description(choice, true)))
-            .children(choice.rewards.iter().map(|choice| Self::effect_description(choice, false)))
+            .children(choice.costs.iter().map(|choice| Self::effect_description(choice, "Cost")))
+            .children(
+                choice.rewards.iter().map(|choice| Self::effect_description(choice, "Reward")),
+            )
     }
 
-    fn effect_text(data: &AdventureEffectData, cost: bool) -> String {
-        let mut text =
-            format!("<b>{}:</b> {}", if cost { "Cost" } else { "Reward" }, data.description);
+    fn effect_text(data: &AdventureEffectData, label: &'static str) -> String {
+        let mut text = format!("<b>{}:</b> {}", label, data.description);
         if let Some(name) = data.known_card {
             text = text.replace("{CardName}", &name.displayed_name());
         }
         text
     }
 
-    fn effect_description(data: &AdventureEffectData, cost: bool) -> impl Component {
-        Text::new(Self::effect_text(data, cost))
+    fn effect_description(data: &AdventureEffectData, label: &'static str) -> impl Component {
+        Text::new(Self::effect_text(data, label))
             .layout(Layout::new().margin(Edge::Vertical, 4.px()))
             .font_size(FontSize::NarrativeText)
             .text_align(TextAlign::MiddleLeft)

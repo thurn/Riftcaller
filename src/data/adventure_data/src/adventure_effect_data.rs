@@ -21,7 +21,7 @@ use crate::narrative_event_name::NarrativeEventName;
 
 /// A modification to a specific card in a player's deck
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DeckCardEffect {
+pub enum DeckCardAction {
     /// Duplicate this card until the deck contains 3 copies of it
     DuplicateTo3Copies,
     /// Transform all copies of a card into another randomly-chosen card of a
@@ -31,6 +31,35 @@ pub enum DeckCardEffect {
     UpgradeAllCopies,
     /// Remove one copy of a card from the player's deck
     RemoveOne,
+}
+
+/// Modifications to cards in a player's deck, used to construct the Deck
+/// Editor screen.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct DeckCardEffect {
+    /// Action to take on cards being modified
+    pub action: DeckCardAction,
+    /// Cost to modify these cards, if any
+    pub cost: Option<Coins>,
+    /// Number of times the user is allowed to perform this modification.
+    /// Defaults to unlimited.
+    pub times: Option<u32>,
+}
+
+impl DeckCardEffect {
+    pub fn new(action: DeckCardAction) -> Self {
+        Self { action, cost: None, times: None }
+    }
+
+    pub fn cost(mut self, cost: Coins) -> Self {
+        self.cost = Some(cost);
+        self
+    }
+
+    pub fn times(mut self, times: u32) -> Self {
+        self.times = Some(times);
+        self
+    }
 }
 
 /// A modification to the state of an ongoing adventure.
@@ -57,15 +86,16 @@ pub enum AdventureEffect {
     /// apply [DeckCardEffect] to.
     PickCardForEffect(CardSelector, DeckCardEffect),
     /// Modify a random card in the player's deck matching this [CardSelector]
-    /// by applying a [DeckCardEffect] to it. The card chosen is known to the
-    /// player in advance.
-    KnownRandomCardEffect(CardSelector, DeckCardEffect),
+    /// by applying a [DeckCardAction] to it. The card chosen is known to
+    /// the player in advance.
+    KnownRandomCardEffect(CardSelector, DeckCardAction),
     /// Modify a random card in the player's deck matching this [CardSelector]
-    /// by applying a [DeckCardEffect] to it. The card chosen is not known
+    /// by applying a [DeckCardAction] to it. The card chosen is not known
     /// to the player in advance.
-    UnknownRandomCardEffect(CardSelector, DeckCardEffect),
-    /// Apply a [DeckCardEffect] to all cards matching this [CardSelector].
-    ApplyCardEffectToAllMatching(CardSelector, DeckCardEffect),
+    UnknownRandomCardEffect(CardSelector, DeckCardAction),
+    /// Apply a [DeckCardAction] to all cards matching this
+    /// [CardSelector].
+    ApplyCardEffectToAllMatching(CardSelector, DeckCardAction),
     /// Add a quantity of random additional tiles to the world map
     AddMapTiles(u32),
     /// Add a quantity of standard draft tiles to the world map
@@ -86,21 +116,21 @@ pub enum AdventureEffect {
     /// [CardSelector].
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
-    /// [DeckCardEffect], meaning that this option cannot be selected if a
+    /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.    
     PickCardToLose(CardSelector),
     /// Lose a known random card from the player's deck matching this
     /// [CardSelector]. The card lost is known to the player in advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
-    /// [DeckCardEffect], meaning that this option cannot be selected if a
+    /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
     LoseKnownRandomCard(CardSelector),
     /// Lose an unknown random card from the player's deck matching this
     /// [CardSelector]. The card lost is not known to the player in advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
-    /// [DeckCardEffect], meaning that this option cannot be selected if a
+    /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
     LoseUnknownRandomCard(CardSelector),
 }

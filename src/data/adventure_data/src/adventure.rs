@@ -34,7 +34,7 @@ use serde_with::{serde_as, DisplayFromStr};
 use with_error::WithError;
 
 use crate::adventure_action::NarrativeEffectIndex;
-use crate::adventure_effect_data::{AdventureEffect, AdventureEffectData};
+use crate::adventure_effect_data::{AdventureEffect, AdventureEffectData, DeckCardEffect};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardChoice {
@@ -295,6 +295,7 @@ pub enum AdventureScreen {
     Shop(ShopData),
     Battle(BattleData),
     NarrativeEvent(NarrativeEventData),
+    ApplyDeckEffect(CardSelector, DeckCardEffect),
 }
 
 /// Stores a stack of screens for events the player is interacting with in the

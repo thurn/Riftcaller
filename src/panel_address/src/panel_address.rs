@@ -14,7 +14,6 @@
 
 //! Addresses for user interface panels
 
-use adventure_data::adventure_effect_data::DeckCardEffect;
 use core_data::game_primitives::{DeckId, Side};
 use core_ui::panels::Panels;
 use core_ui::prelude::Component;
@@ -94,7 +93,7 @@ impl From<StandardPanel> for InterfacePanelAddress {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, EnumKind)]
 #[enum_kind(PlayerPanelKind)]
 pub enum PlayerPanel {
-    DeckEditor(Option<DeckCardEffect>),
+    DeckViewer,
     BattleVictory,
     BattleDefeat,
     AdventureScreen(usize),

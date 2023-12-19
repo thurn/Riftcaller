@@ -18,7 +18,7 @@ use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{CardId, CardPlayId, CardSubtype, CardType, InitiatedBy, Side};
 use game_data::animation_tracker::GameAnimation;
-use game_data::card_state::{CardIdsExt, CardPosition, CardState};
+use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{CardPlayed, PlayCardEvent, Scope};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
@@ -177,8 +177,6 @@ fn check_limits(game: &mut GameState, play_card: PlayCardData) -> Result<Option<
             CardType::Project | CardType::Scheme
                 if game.occupants(room_id).count() >= game_constants::MAXIMUM_OCCUPANTS_IN_ROOM =>
             {
-                let occ = game.occupants(room_id).card_ids();
-                dbg!(occ);
                 Some(card_limit_prompt(
                     game.occupants(room_id),
                     ButtonPromptContext::CardLimit(definition.card_type, None),

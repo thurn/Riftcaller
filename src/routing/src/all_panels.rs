@@ -44,7 +44,7 @@ pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
         for i in 0..adventure.screens.count() {
             panels.push(PlayerPanel::AdventureScreen(i));
         }
-        panels.push(PlayerPanel::DeckEditor(None));
+        panels.push(PlayerPanel::DeckViewer);
         panels
     } else {
         panels
