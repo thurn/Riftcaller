@@ -17,7 +17,6 @@
 using System;
 using Riftcaller.Protos;
 using Riftcaller.Services;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Riftcaller.Masonry
@@ -28,7 +27,10 @@ namespace Riftcaller.Masonry
     {
       view.elasticity = data.Elasticity ?? 0.1f;
       view.horizontalPageSize = data.HorizontalPageSize ?? -1;
-      Mason.ApplyStyle(registry, view.horizontalScroller, data.HorizontalScrollBar?.Style);
+      if (data.HorizontalScrollBar != null)
+      {
+        ApplyScrollerStyle(registry, view.horizontalScroller, data.HorizontalScrollBar);
+      }
       view.horizontalScrollerVisibility = AdaptVisibility(data.HorizontalScrollBarVisibility);
       view.scrollDecelerationRate = data.ScrollDecelerationRate ?? 0.135f;
       view.touchScrollBehavior = data.TouchScrollBehavior switch
@@ -40,9 +42,20 @@ namespace Riftcaller.Masonry
         _ => throw new ArgumentOutOfRangeException()
       };
       view.verticalPageSize = data.VerticalPageSize ?? -1;
-      Mason.ApplyStyle(registry, view.verticalScroller, data.VerticalScrollBar?.Style);
       view.verticalScrollerVisibility = AdaptVisibility(data.VerticalScrollBarVisibility);
+      if (data.VerticalScrollBar != null)
+      {
+        ApplyScrollerStyle(registry, view.verticalScroller, data.VerticalScrollBar);
+      }
       view.mouseWheelScrollSize = data.MouseWheelScrollSize ?? 1.0f;
+    }
+
+    static void ApplyScrollerStyle(Registry registry, Scroller scroller, ScrollBar data)
+    {
+      foreach (var child in scroller.Query<VisualElement>().Build()) 
+      {
+        Mason.ApplyStyle(registry, child, data.Style);
+      }
     }
     
     static ScrollerVisibility AdaptVisibility(ScrollBarVisibility visibility) =>

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use protos::riftcaller::{
-    node_type, Node, NodeType, ScrollBarVisibility, ScrollViewNode, TouchScrollBehavior,
+    node_type, Node, NodeType, ScrollBar, ScrollBarVisibility, ScrollViewNode, TouchScrollBehavior,
 };
 
 use crate::flexbox;
@@ -61,6 +61,12 @@ impl ScrollView {
 
     pub fn mouse_wheel_scroll_size(mut self, size: f32) -> Self {
         self.scroll_node.mouse_wheel_scroll_size = Some(size);
+        self
+    }
+
+    pub fn vertical_scroll_bar_style(mut self, style: Style) -> Self {
+        self.scroll_node.vertical_scroll_bar =
+            Some(Box::new(ScrollBar { style: Some(style.wrapped_style()) }));
         self
     }
 }

@@ -51,7 +51,7 @@ impl<'a> DeckEditorPanel<'a> {
             .children(cards.iter().map(|(n, quantity)| Self::collection_card(**n, **quantity)))
             .children((0..empty_slots).map(|_| {
                 DeckCardSlot::new(CardHeight::vh(36.0))
-                    .layout(Layout::new().margin(Edge::All, 4.px()))
+                    .layout(Layout::new().margin(Edge::All, 16.px()))
             }))
     }
 
@@ -83,8 +83,9 @@ impl<'a> Component for DeckEditorPanel<'a> {
             ))
             .content(
                 ScrollView::new("DeckEditor")
-                    .mouse_wheel_scroll_size(10_000.0)
+                    .mouse_wheel_scroll_size(1000.0)
                     .horizontal_scrollbar_visibility(ScrollBarVisibility::Hidden)
+                    .vertical_scrollbar_visibility(ScrollBarVisibility::Hidden)
                     .touch_scroll_behavior(TouchScrollBehavior::Clamped)
                     .scroll_deceleration_rate(0.0)
                     .style(

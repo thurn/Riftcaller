@@ -133,7 +133,7 @@ namespace Riftcaller.Masonry
         else
         {
           SetCallback(registry, callbacks, node.EventHandlers?.OnMouseEnter, Callbacks.Event.MouseEnter);
-          SetCallback(registry, callbacks, node.EventHandlers?.OnMouseEnter, Callbacks.Event.MouseLeave);
+          SetCallback(registry, callbacks, node.EventHandlers?.OnMouseLeave, Callbacks.Event.MouseLeave);
         }
 
         if (node.PressedStyle != null)

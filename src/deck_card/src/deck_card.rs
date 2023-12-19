@@ -142,8 +142,7 @@ fn studio_display_card(
 impl Component for DeckCard {
     fn build(self) -> Option<Node> {
         let card_view = card_view_for_variant(self.variant);
-
-        let result = Column::new(element_names::deck_card(self.variant))
+        Column::new(element_names::deck_card(self.variant))
             .style(
                 self.layout
                     .to_style()
@@ -151,11 +150,11 @@ impl Component for DeckCard {
                     .height(self.height.dim(100.0))
                     .width(self.height.dim(100.0 * CARD_ASPECT_RATIO)),
             )
-            .on_mouse_down(Command::InfoZoom(InfoZoomCommand {
+            .on_mouse_enter(Command::InfoZoom(InfoZoomCommand {
                 show: true,
                 card: Some(card_view.clone()),
             }))
-            .on_mouse_up(Command::InfoZoom(InfoZoomCommand { show: false, card: None }))
+            .on_mouse_leave(Command::InfoZoom(InfoZoomCommand { show: false, card: None }))
             .child(
                 Row::new("Card").style(
                     Style::new()
@@ -176,12 +175,7 @@ impl Component for DeckCard {
                         .position(Edge::Top, self.height.dim(-6.0))
                         .position(Edge::Left, self.height.dim(-2.5)),
                 ),
-            );
-
-        if let Some(draggable) = self.draggable {
-            draggable.child(result).build()
-        } else {
-            result.build()
-        }
+            )
+            .build()
     }
 }

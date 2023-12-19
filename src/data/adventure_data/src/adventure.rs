@@ -345,7 +345,7 @@ impl AdventureScreens {
     }
 }
 
-/// Stores the primary state for one player during an ongoing adventure
+/// Stores the primary state for a player during an ongoing adventure
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventureState {
