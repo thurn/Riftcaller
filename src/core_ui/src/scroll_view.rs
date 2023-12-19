@@ -58,6 +58,11 @@ impl ScrollView {
         self.scroll_node.set_touch_scroll_behavior(behavior);
         self
     }
+
+    pub fn mouse_wheel_scroll_size(mut self, size: f32) -> Self {
+        self.scroll_node.mouse_wheel_scroll_size = Some(size);
+        self
+    }
 }
 
 impl HasRenderNode for ScrollView {

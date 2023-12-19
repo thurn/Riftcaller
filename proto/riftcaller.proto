@@ -460,6 +460,9 @@ message ScrollViewNode {
 
     // Specifies whether the vertical scroll bar is visible.
     ScrollBarVisibility vertical_scroll_bar_visibility = 9;
+
+    // Controls the scrolling speed when using the mouse wheel.
+    google.protobuf.FloatValue mouse_wheel_scroll_size = 10;
 }
 
 message DraggableNode {

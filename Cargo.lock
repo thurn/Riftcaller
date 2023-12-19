@@ -964,6 +964,7 @@ name = "deck_editor"
 version = "0.0.0"
 dependencies = [
  "adapters",
+ "adventure_data",
  "anyhow",
  "assets",
  "core_data",

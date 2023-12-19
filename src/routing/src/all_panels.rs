@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::AdventureState;
-use core_data::game_primitives::{DeckId, Side};
-use panel_address::{CollectionBrowserFilters, DeckEditorData, PlayerPanel, StandardPanel};
+use core_data::game_primitives::Side;
+use panel_address::{PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState};
 
 /// Enumerates all standard panel addresses
@@ -39,28 +38,15 @@ pub fn standard_panels() -> Vec<StandardPanel> {
 
 /// Enumerates all player panel addresses
 pub fn player_panels(player: &PlayerState) -> Vec<PlayerPanel> {
-    let mut panels = vec![
-        PlayerPanel::DeckEditorPrompt,
-        PlayerPanel::AdventureOver,
-        PlayerPanel::BattleVictory,
-        PlayerPanel::BattleDefeat,
-    ];
+    let mut panels =
+        vec![PlayerPanel::AdventureOver, PlayerPanel::BattleVictory, PlayerPanel::BattleDefeat];
     if let Some(adventure) = &player.adventure {
         for i in 0..adventure.screens.count() {
             panels.push(PlayerPanel::AdventureScreen(i));
         }
-        panels.into_iter().chain(add_deck_editor_panels(adventure)).collect()
+        panels.push(PlayerPanel::DeckEditor(None));
+        panels
     } else {
         panels
     }
-}
-
-fn add_deck_editor_panels(adventure: &AdventureState) -> impl Iterator<Item = PlayerPanel> {
-    // Return deck editor pages for every 8 cards in the player's collection
-    (0..=adventure.collection.len() / 8).map(|i| {
-        PlayerPanel::DeckEditor(DeckEditorData {
-            deck_id: DeckId::Adventure,
-            collection_filters: CollectionBrowserFilters { offset: i * 8 },
-        })
-    })
 }

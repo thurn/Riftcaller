@@ -151,22 +151,6 @@ pub enum DebugAction {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub enum DeckEditorAction {
-    /// Mark the user as having seen the prompt screen
-    ViewedPrompt,
-    /// Add one copy of a card to a deck
-    AddToDeck(CardVariant),
-    /// Remove one copy of a card from a deck
-    RemoveFromDeck(CardVariant),
-}
-
-impl From<DeckEditorAction> for UserAction {
-    fn from(a: DeckEditorAction) -> Self {
-        UserAction::DeckEditorAction(a)
-    }
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum GameOutcome {
     Victory,
     Defeat,
@@ -197,9 +181,6 @@ pub enum UserAction {
     /// invoked from the game over screen, the 'resign' action is used to
     /// end the game itself.
     LeaveGame(GameOutcome),
-
-    /// Perform an action in the deck editor
-    DeckEditorAction(DeckEditorAction),
 }
 
 impl From<GameAction> for UserAction {
@@ -224,7 +205,6 @@ impl fmt::Debug for UserAction {
             Self::NewGame(a) => f.debug_tuple("NewGame").field(a).finish(),
             Self::GameAction(a) => write!(f, "{a:?}"),
             Self::LeaveGame(a) => f.debug_tuple("LeaveGame").field(a).finish(),
-            Self::DeckEditorAction(a) => write!(f, "{a:?}"),
         }
     }
 }

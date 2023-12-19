@@ -16,7 +16,6 @@
 //! and provide navigation
 
 use constants::ui_constants;
-use core_data::game_primitives::DeckId;
 use core_ui::action_builder::ActionBuilder;
 use core_ui::actions::InterfaceAction;
 use core_ui::button::{IconButton, IconButtonType};
@@ -28,8 +27,7 @@ use core_ui::style::Corner;
 use core_ui::text::Text;
 use game_data::game_actions::{DisplayPreference, GameAction};
 use game_data::game_state::GameState;
-use game_data::tutorial_data::TutorialMessageKey;
-use panel_address::{DeckEditorData, PlayerPanel, StandardPanel};
+use panel_address::{PlayerPanel, StandardPanel};
 use player_data::{PlayerActivityKind, PlayerState, PlayerStatus};
 use protos::riftcaller::client_debug_command::DebugCommand;
 use protos::riftcaller::game_command::Command;
@@ -123,15 +121,8 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
                             .name(&element_names::DECK_BUTTON)
                             .button_type(IconButtonType::NavBrown)
                             .action(
-                                if self.player.tutorial.has_seen(TutorialMessageKey::DeckEditor) {
-                                    Panels::open(PlayerPanel::DeckEditor(DeckEditorData::new(
-                                        DeckId::Adventure,
-                                    )))
-                                    .loading(StandardPanel::DeckEditorLoading)
-                                } else {
-                                    Panels::open(PlayerPanel::DeckEditorPrompt)
-                                        .loading(StandardPanel::DeckEditorLoading)
-                                },
+                                Panels::open(PlayerPanel::DeckEditor(None))
+                                    .loading(StandardPanel::DeckEditorLoading),
                             )
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                     }))

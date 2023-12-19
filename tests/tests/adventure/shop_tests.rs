@@ -52,6 +52,6 @@ fn test_buy_card() {
 
     client_interface::assert_has_element_name(
         adventure.client.interface.top_panel(),
-        element_names::card_list_card_name(CARD),
+        element_names::deck_card(CARD),
     );
 }

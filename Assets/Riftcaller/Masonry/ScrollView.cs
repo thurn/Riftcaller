@@ -42,6 +42,7 @@ namespace Riftcaller.Masonry
       view.verticalPageSize = data.VerticalPageSize ?? -1;
       Mason.ApplyStyle(registry, view.verticalScroller, data.VerticalScrollBar?.Style);
       view.verticalScrollerVisibility = AdaptVisibility(data.VerticalScrollBarVisibility);
+      view.mouseWheelScrollSize = data.MouseWheelScrollSize ?? 1.0f;
     }
     
     static ScrollerVisibility AdaptVisibility(ScrollBarVisibility visibility) =>

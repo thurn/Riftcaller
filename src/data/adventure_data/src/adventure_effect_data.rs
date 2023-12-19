@@ -20,7 +20,7 @@ use crate::adventure::CardSelector;
 use crate::narrative_event_name::NarrativeEventName;
 
 /// A modification to a specific card in a player's deck
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum DeckCardEffect {
     /// Duplicate this card until the deck contains 3 copies of it
     DuplicateTo3Copies,

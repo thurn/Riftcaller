@@ -157,7 +157,6 @@ namespace Riftcaller.Services
 
     public void TogglePanel(TogglePanelCommand command)
     {
-      Debug.Log($"TogglePanel: Current Panels {string.Join(",", _openPanels)} opening {command.Transition?.Open}");
       InterfacePanelAddress? fetch = null;
       switch (command.ToggleCommandCase)
       {

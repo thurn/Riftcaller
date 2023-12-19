@@ -365,6 +365,9 @@ pub struct ScrollViewNode {
     /// Specifies whether the vertical scroll bar is visible.
     #[prost(enumeration = "ScrollBarVisibility", tag = "9")]
     pub vertical_scroll_bar_visibility: i32,
+    /// Controls the scrolling speed when using the mouse wheel.
+    #[prost(message, optional, tag = "10")]
+    pub mouse_wheel_scroll_size: ::core::option::Option<f32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

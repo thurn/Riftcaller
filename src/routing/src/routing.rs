@@ -19,7 +19,6 @@ use adventure_display::adventure_over_panel::AdventureOverPanel;
 use adventure_display::adventure_panels;
 use anyhow::Result;
 use deck_editor::deck_editor_panel::DeckEditorPanel;
-use deck_editor::deck_editor_prompt::DeckEditorPromptPanel;
 use panel_address::{Panel, PlayerPanel, StandardPanel};
 use panels::about_panel::AboutPanel;
 use panels::add_to_zone_panel::AddToZonePanel;
@@ -72,14 +71,7 @@ pub fn render_player_panel(
     address: PlayerPanel,
 ) -> Result<Option<InterfacePanel>> {
     Ok(match address {
-        PlayerPanel::DeckEditorPrompt => DeckEditorPromptPanel { player }.build_panel(),
-        PlayerPanel::DeckEditor(data) => DeckEditorPanel {
-            player,
-            data,
-            deck: player.deck(data.deck_id)?,
-            collection: &player.adventure()?.collection,
-        }
-        .build_panel(),
+        PlayerPanel::DeckEditor(action) => DeckEditorPanel { player, action }.build_panel(),
         PlayerPanel::BattleVictory => BattleVictoryPanel::new(player).build_panel(),
         PlayerPanel::BattleDefeat => BattleDefeatPanel {}.build_panel(),
         PlayerPanel::AdventureScreen(index) => adventure_panels::tile_entity_panel(player, index)?,

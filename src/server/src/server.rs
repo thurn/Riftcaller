@@ -44,7 +44,6 @@ pub mod game_server;
 pub mod keyboard_shortcuts;
 pub mod main_menu_server;
 pub mod new_game;
-pub mod player_server;
 pub mod requests;
 pub mod server_data;
 
@@ -238,9 +237,6 @@ async fn handle_standard_action(
         }
         UserAction::LeaveGame(o) => {
             game_server::handle_leave_game(database, data, o).instrument(span).await
-        }
-        UserAction::DeckEditorAction(a) => {
-            player_server::handle_deck_editor_action(database, data, &a).instrument(span).await
         }
     }
 }
