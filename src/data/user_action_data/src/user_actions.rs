@@ -96,6 +96,18 @@ impl DebugScenario {
     }
 }
 
+#[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Sequence, Display)]
+pub enum DebugAdventureScenario {
+    NewAdventureCovenant,
+    NewAdventureRiftcaller,
+}
+
+impl DebugAdventureScenario {
+    pub fn displayed_name(&self) -> String {
+        format!("{self}").from_case(Case::Pascal).to_case(Case::Title)
+    }
+}
+
 /// Actions that can be taken from the debug panel, should not be exposed in
 /// production.
 #[derive(Eq, PartialEq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
@@ -134,6 +146,7 @@ pub enum DebugAction {
         turn_face_up: bool,
     },
     ApplyScenario(DebugScenario),
+    ApplyAdventureScenario(DebugAdventureScenario),
     DebugUndo,
 }
 

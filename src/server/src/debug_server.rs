@@ -17,6 +17,8 @@ use std::mem;
 use std::sync::atomic::Ordering;
 
 use ::panels::add_to_zone_panel::AddToZonePanel;
+use adventure_data::adventure::AdventureConfiguration;
+use adventure_generator::mock_adventure;
 use anyhow::Result;
 use core_data::game_primitives::{
     AbilityId, AbilityIndex, CardId, CardPlayId, GameId, InitiatedBy, RoomId, RoomLocation, Side,
@@ -44,11 +46,12 @@ use serde_json::{de, ser};
 use sled::Db;
 use ulid::Ulid;
 use user_action_data::{
-    DebugAction, DebugScenario, NamedDeck, NewGameAction, NewGameDebugOptions, NewGameDeck,
-    UserAction,
+    DebugAction, DebugAdventureScenario, DebugScenario, NamedDeck, NewGameAction,
+    NewGameDebugOptions, NewGameDeck, UserAction,
 };
 use with_error::WithError;
 
+use crate::requests::SceneName;
 use crate::server_data::{ClientData, GameResponse, RequestData};
 use crate::{adventure_server, requests};
 
@@ -286,6 +289,9 @@ pub async fn handle_debug_action(
                 &game,
             )
         }
+        DebugAction::ApplyAdventureScenario(scenario) => {
+            apply_adventure_scenario(database, data, *scenario).await
+        }
         DebugAction::DebugUndo => {
             debug_update_game(database, data, |game, _| {
                 let mut new_state = game
@@ -475,4 +481,25 @@ async fn debug_update_game(
             .opponent_response(opponent_id, opponent_commands))
     })
     .await
+}
+
+async fn apply_adventure_scenario(
+    database: &impl Database,
+    data: &RequestData,
+    scenario: DebugAdventureScenario,
+) -> Result<GameResponse> {
+    let side = match scenario {
+        DebugAdventureScenario::NewAdventureCovenant => Side::Covenant,
+        DebugAdventureScenario::NewAdventureRiftcaller => Side::Riftcaller,
+    };
+    let mut result = requests::with_player(database, data, |player| {
+        let adventure = mock_adventure::create(AdventureConfiguration::new(player.id, side));
+        let id = adventure.id;
+        player.adventure = Some(adventure);
+        Ok(GameResponse::new(ClientData::with_adventure_id(data, Some(id))))
+    })
+    .await?;
+
+    result.insert_command(0, requests::force_load_scene(SceneName::World));
+    Ok(result)
 }

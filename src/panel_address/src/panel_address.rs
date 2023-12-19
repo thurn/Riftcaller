@@ -52,6 +52,13 @@ pub trait Panel: Component {
     }
 }
 
+/// Possible kinds of debug scenario
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ScenarioKind {
+    Game,
+    Adventure,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, EnumKind)]
 #[enum_kind(StandardPanelKind)]
 pub enum StandardPanel {
@@ -67,7 +74,7 @@ pub enum StandardPanel {
     SetPlayerName(Side),
     DebugCreateCard(Side, CardMetadata),
     AddToZone { position: CardPosition, metadata: CardMetadata, turn_face_up: bool },
-    ApplyScenario,
+    ApplyScenario(ScenarioKind),
 }
 
 impl From<StandardPanel> for PanelAddress {

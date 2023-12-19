@@ -25,7 +25,7 @@ use core_ui::panel_window::PanelWindow;
 use core_ui::panels::Panels;
 use core_ui::prelude::*;
 use game_data::card_name::CardMetadata;
-use panel_address::{Panel, PanelAddress, StandardPanel};
+use panel_address::{Panel, PanelAddress, ScenarioKind, StandardPanel};
 use player_data::PlayerActivityKind;
 use protos::riftcaller::client_debug_command::DebugCommand;
 use protos::riftcaller::game_command::Command;
@@ -45,9 +45,7 @@ impl DebugPanel {
 
     fn main_menu_buttons(&self, row: Row) -> Row {
         let close = Panels::close(self.address());
-        row.child(debug_button("New Game (C)", DebugAction::NewGame(Side::Covenant)))
-            .child(debug_button("New Game (R)", DebugAction::NewGame(Side::Riftcaller)))
-            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Covenant)))
+        row.child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Covenant)))
             .child(debug_button("Join Game (R)", DebugAction::JoinGame(Side::Riftcaller)))
             .child(debug_button(
                 "Show Logs",
@@ -55,7 +53,13 @@ impl DebugPanel {
             ))
             .child(debug_button(
                 "Scenario...",
-                Panels::open(StandardPanel::ApplyScenario)
+                Panels::open(StandardPanel::ApplyScenario(ScenarioKind::Game))
+                    .wait_to_load(true)
+                    .and_close(self.address()),
+            ))
+            .child(debug_button(
+                "Adventure Scenario...",
+                Panels::open(StandardPanel::ApplyScenario(ScenarioKind::Adventure))
                     .wait_to_load(true)
                     .and_close(self.address()),
             ))
@@ -74,13 +78,17 @@ impl DebugPanel {
         .child(debug_button(format!("{} 3", icons::SAVE), DebugAction::SavePlayerState(3)))
         .child(debug_button(format!("{} 3", icons::RESTORE), DebugAction::LoadPlayerState(3)))
         .child(debug_button(format!("+100{}", icons::COINS), DebugAction::AddCoins(Coins(100))))
+        .child(debug_button(
+            "Adventure Scenario...",
+            Panels::open(StandardPanel::ApplyScenario(ScenarioKind::Adventure))
+                .wait_to_load(true)
+                .and_close(self.address()),
+        ))
     }
 
     fn game_mode_buttons(&self, row: Row, user_side: Side) -> Row {
         let close = Panels::close(self.address());
-        row.child(debug_button("New Game (C)", DebugAction::NewGame(Side::Covenant)))
-            .child(debug_button("New Game (R)", DebugAction::NewGame(Side::Riftcaller)))
-            .child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Covenant)))
+        row.child(debug_button("Join Game (C)", DebugAction::JoinGame(Side::Covenant)))
             .child(debug_button("Join Game (R)", DebugAction::JoinGame(Side::Riftcaller)))
             .child(debug_button(
                 "Show Logs",
@@ -118,7 +126,7 @@ impl DebugPanel {
             ))
             .child(debug_button(
                 "Scenario...",
-                Panels::open(StandardPanel::ApplyScenario)
+                Panels::open(StandardPanel::ApplyScenario(ScenarioKind::Game))
                     .wait_to_load(true)
                     .and_close(self.address()),
             ))

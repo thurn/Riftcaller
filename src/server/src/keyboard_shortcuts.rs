@@ -17,7 +17,7 @@ use core_ui::panels::Panels;
 use game_data::card_name::CardMetadata;
 use game_data::card_state::CardPosition;
 use game_data::game_state::GameState;
-use panel_address::StandardPanel;
+use panel_address::{ScenarioKind, StandardPanel};
 use player_data::{PlayerActivity, PlayerActivityKind, PlayerState};
 use protos::riftcaller::game_command::Command;
 use protos::riftcaller::{KeyboardMapping, KeyboardShortcut, SetKeyboardShortcutsCommand};
@@ -27,8 +27,14 @@ pub fn build(player: &PlayerState, _: Option<&GameState>) -> Command {
     let activity = player.current_activity();
     let mut mapping_list = vec![];
 
-    mapping_list
-        .push(alt_command("s", Panels::open(StandardPanel::ApplyScenario).wait_to_load(true)));
+    mapping_list.push(alt_command(
+        "s",
+        Panels::open(StandardPanel::ApplyScenario(ScenarioKind::Game)).wait_to_load(true),
+    ));
+    mapping_list.push(alt_command(
+        "a",
+        Panels::open(StandardPanel::ApplyScenario(ScenarioKind::Adventure)).wait_to_load(true),
+    ));
 
     if let PlayerActivity::PlayingGame(_, user_side) = activity {
         mapping_list.push(alt_command(

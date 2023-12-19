@@ -18,21 +18,23 @@ use core_ui::list_cell::ListCell;
 use core_ui::panel_window::PanelWindow;
 use core_ui::prelude::*;
 use core_ui::scroll_view::ScrollView;
-use panel_address::{Panel, PanelAddress, StandardPanel};
-use user_action_data::{DebugAction, DebugScenario, UserAction};
+use panel_address::{Panel, PanelAddress, ScenarioKind, StandardPanel};
+use user_action_data::{DebugAction, DebugAdventureScenario, DebugScenario, UserAction};
 
-#[derive(Debug, Default)]
-pub struct ApplyScenarioPanel {}
+#[derive(Debug)]
+pub struct ApplyScenarioPanel {
+    kind: ScenarioKind,
+}
 
 impl ApplyScenarioPanel {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(kind: ScenarioKind) -> Self {
+        Self { kind }
     }
 }
 
 impl Panel for ApplyScenarioPanel {
     fn address(&self) -> PanelAddress {
-        PanelAddress::StandardPanel(StandardPanel::ApplyScenario)
+        PanelAddress::StandardPanel(StandardPanel::ApplyScenario(self.kind))
     }
 }
 
@@ -44,15 +46,40 @@ impl Component for ApplyScenarioPanel {
             .content(
                 ScrollView::new("Scenario List")
                     .style(Style::new().margin(Edge::Vertical, 16.px()).flex_grow(1.0))
-                    .children(enum_iterator::all::<DebugScenario>().map(|scenario| {
-                        ListCell::new(scenario.displayed_name()).button(
-                            Button::new("Apply").action(
-                                ActionBuilder::new()
-                                    .action(UserAction::Debug(DebugAction::ApplyScenario(scenario)))
-                                    .update(self.close()),
-                            ),
-                        )
-                    })),
+                    .child_nodes(match self.kind {
+                        ScenarioKind::Game => enum_iterator::all::<DebugScenario>()
+                            .map(|scenario| {
+                                ListCell::new(scenario.displayed_name())
+                                    .button(
+                                        Button::new("Apply").action(
+                                            ActionBuilder::new()
+                                                .action(UserAction::Debug(
+                                                    DebugAction::ApplyScenario(scenario),
+                                                ))
+                                                .update(self.close()),
+                                        ),
+                                    )
+                                    .build()
+                            })
+                            .collect::<Vec<_>>()
+                            .into_iter(),
+                        ScenarioKind::Adventure => enum_iterator::all::<DebugAdventureScenario>()
+                            .map(|scenario| {
+                                ListCell::new(scenario.displayed_name())
+                                    .button(
+                                        Button::new("Apply").action(
+                                            ActionBuilder::new()
+                                                .action(UserAction::Debug(
+                                                    DebugAction::ApplyAdventureScenario(scenario),
+                                                ))
+                                                .update(self.close()),
+                                        ),
+                                    )
+                                    .build()
+                            })
+                            .collect::<Vec<_>>()
+                            .into_iter(),
+                    }),
             )
             .build()
     }

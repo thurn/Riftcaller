@@ -63,7 +63,7 @@ pub fn render_standard_panel(panel: StandardPanel) -> Result<Option<InterfacePan
         StandardPanel::AddToZone { position, metadata, turn_face_up } => {
             AddToZonePanel::new("", position, metadata, turn_face_up).build_panel()
         }
-        StandardPanel::ApplyScenario => ApplyScenarioPanel::new().build_panel(),
+        StandardPanel::ApplyScenario(kind) => ApplyScenarioPanel::new(kind).build_panel(),
     })
 }
 
