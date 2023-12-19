@@ -18,19 +18,17 @@ use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
 #[test]
-fn illeas() {
+fn illea() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::IlleasTheHighSage))
-            .build();
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::IlleaTheHighSage)).build();
     g.create_and_play(CardName::AncestralKnowledge);
     assert_eq!(g.client.cards.hand().len(), 4);
 }
 
 #[test]
-fn illeas_does_not_trigger_on_action() {
+fn illea_does_not_trigger_on_action() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::IlleasTheHighSage))
-            .build();
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::IlleaTheHighSage)).build();
     g.draw_card();
     assert_eq!(g.client.cards.hand().len(), 1);
 }
@@ -83,9 +81,9 @@ fn strazihar_glimmersong() {
 }
 
 #[test]
-fn merethyl() {
+fn godmir() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::GodmirSparkOfDefiance))
             .build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
@@ -96,9 +94,9 @@ fn merethyl() {
 }
 
 #[test]
-fn merethyl_trigger_twice() {
+fn godmir_trigger_twice() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::GodmirSparkOfDefiance))
             .build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
@@ -112,9 +110,9 @@ fn merethyl_trigger_twice() {
 }
 
 #[test]
-fn merethyl_works_with_raid_spell() {
+fn godmir_works_with_raid_spell() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::GodmirSparkOfDefiance))
             .build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);
@@ -125,9 +123,9 @@ fn merethyl_works_with_raid_spell() {
 }
 
 #[test]
-fn merethyl_effect_does_not_increase_delve_into_darkness() {
+fn godmir_effect_does_not_increase_delve_into_darkness() {
     let mut g =
-        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::MerethylLoreSeeker))
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::GodmirSparkOfDefiance))
             .build();
     g.initiate_raid(RoomId::Crypt);
     g.click(Button::EndRaid);

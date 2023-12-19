@@ -34,12 +34,12 @@ use rules::{
     custom_state, draw_cards, mana, mutations, prompts, visual_effects, CardDefinitionExt,
 };
 
-pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
+pub fn illea_the_high_sage(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::IlleasTheHighSage,
+        name: CardName::IlleaTheHighSage,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::riftcaller_card(meta, "illeas"),
+        image: assets::riftcaller_card(meta, "Riptaid/illea"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
         side: Side::Riftcaller,
@@ -77,8 +77,8 @@ pub fn illeas_the_high_sage(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(500),
                 secondary_schools: vec![School::Law],
                 skills: vec![Skill::Lore, Skill::Persuasion],
-                bio: "Illeas's wisdom was nurtured in the ancient libraries of Elandor, where the \
-                whispers of the past and future converge. A guardian of knowledge, his mind is a \
+                bio: "Illea's wisdom was nurtured in the ancient libraries of Elandor, where the \
+                whispers of the past and future converge. A guardian of knowledge, her mind is a \
                 living archive of the ages, every word a thread in the tapestry of history.",
             })
             .build(),
@@ -90,7 +90,7 @@ pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
         name: CardName::StraziharTheAllSeeing,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::riftcaller_card(meta, "strazihar"),
+        image: assets::riftcaller_card(meta, "Riptaid/strazihar"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
         side: Side::Riftcaller,
@@ -162,17 +162,17 @@ pub fn strazihar_the_all_seeing(meta: CardMetadata) -> CardDefinition {
     }
 }
 
-pub fn merethyl_lore_seeker(meta: CardMetadata) -> CardDefinition {
+pub fn godmir_spark_of_defiance(meta: CardMetadata) -> CardDefinition {
     fn should_fire(g: &GameState) -> bool {
         history::accessed_this_turn(g, RoomId::Crypt)
             && history::accessed_this_turn(g, RoomId::Sanctum)
     }
 
     CardDefinition {
-        name: CardName::MerethylLoreSeeker,
+        name: CardName::GodmirSparkOfDefiance,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::riftcaller_card(meta, "merethyl"),
+        image: assets::riftcaller_card(meta, "iobard/godmir"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
         side: Side::Riftcaller,
@@ -218,10 +218,11 @@ pub fn merethyl_lore_seeker(meta: CardMetadata) -> CardDefinition {
                 starting_coins: Coins(425),
                 secondary_schools: vec![School::Beyond],
                 skills: vec![Skill::Brawn, Skill::Lore],
-                bio: "From the verdant depths of the Seban Empire, Merethyl grew up amidst the \
-                ancient stones of the Temple of Whispering Vines. Her thirst for ancient knowledge \
-                led her through forgotten paths, where the very leaves seemed to murmur arcane \
-                secrets into her soul.",
+                bio: "Godmir, hailed as the Spark of Defiance, emerged from the scorching heart \
+                of Khazpar's volcanic realms, a warrior tempered by fire and strife. Wielding an \
+                axe that blazed like the molten rivers of his homeland, he became a legend through \
+                his fiery raids, his attacks as unpredictable and ferocious as the land that \
+                forged him.",
             })
             .build(),
     }
@@ -232,7 +233,7 @@ pub fn oleus_the_watcher(meta: CardMetadata) -> CardDefinition {
         name: CardName::OleusTheWatcher,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::riftcaller_card(meta, "oleus"),
+        image: assets::riftcaller_card(meta, "Riptaid/oleus"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
         side: Side::Riftcaller,
@@ -277,7 +278,7 @@ pub fn ellisar_forgekeeper(meta: CardMetadata) -> CardDefinition {
         name: CardName::EllisarForgekeeper,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::riftcaller_card(meta, "ellisar"),
+        image: assets::riftcaller_card(meta, "Riptaid/ellisar"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
         side: Side::Riftcaller,
@@ -374,7 +375,7 @@ pub fn rolant_the_restorer(meta: CardMetadata) -> CardDefinition {
         name: CardName::RolantTheRestorer,
         sets: vec![CardSetName::Beryl],
         cost: costs::identity(),
-        image: assets::riftcaller_card(meta, "rolant"),
+        image: assets::riftcaller_card(meta, "Kalleeck/rolant"),
         card_type: CardType::Riftcaller,
         subtypes: vec![],
         side: Side::Riftcaller,

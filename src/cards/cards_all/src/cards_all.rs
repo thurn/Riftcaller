@@ -102,9 +102,9 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::minions_beryl::sentinel_sphinx);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);
     DEFINITIONS.insert(cards_beryl::projects_beryl::living_stone);
-    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illeas_the_high_sage);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illea_the_high_sage);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
-    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::merethyl_lore_seeker);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::godmir_spark_of_defiance);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::oleus_the_watcher);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::ellisar_forgekeeper);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::seldanna_regal_pyromancer);
