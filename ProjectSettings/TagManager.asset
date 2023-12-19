@@ -78,6 +78,9 @@ TagManager:
   - name: Browser
     uniqueID: 3182936583
     locked: 0
+  - name: Scoring
+    uniqueID: 3363705753
+    locked: 0
   - name: Staging
     uniqueID: 2244730151
     locked: 0

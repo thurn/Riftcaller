@@ -71,6 +71,10 @@ pub fn power_charges<const N: u32>() -> Cost<AbilityId> {
     Cost { mana: None, actions: 0, custom_cost: power_charges_custom_cost::<N>() }
 }
 
+pub fn power_charges_and_action<const N: u32>() -> Cost<AbilityId> {
+    Cost { mana: None, actions: 1, custom_cost: power_charges_custom_cost::<N>() }
+}
+
 /// A [CustomCost] for an ability which costs power charges to use.
 pub fn power_charges_custom_cost<const N: u32>() -> Option<CustomCost<AbilityId>> {
     Some(CustomCost {

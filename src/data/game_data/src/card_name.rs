@@ -359,6 +359,7 @@ pub enum CardName {
     SpearOfUltimatum,
     RitualOfBinding,
     RiversEye,
+    TheConjurersCircle,
 }
 
 impl CardName {
@@ -380,6 +381,7 @@ impl CardName {
             Self::LightcallersCommand => "Lightcaller's Command",
             Self::RolantTheRestorer => "Rolant the Restorer",
             Self::RiversEye => "River's Eye",
+            Self::TheConjurersCircle => "The Conjurer's Circle",
             _ => "",
         };
 

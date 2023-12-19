@@ -807,6 +807,10 @@ pub struct ObjectPositionCardChoiceBrowser {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPositionHandStorage {}
+/// / Position of cards which are being scored
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ObjectPositionScoring {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ObjectPosition {
@@ -824,7 +828,7 @@ pub struct ObjectPosition {
     pub sorting_subkey: u32,
     #[prost(
         oneof = "object_position::Position",
-        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22"
+        tags = "3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
     )]
     pub position: ::core::option::Option<object_position::Position>,
 }
@@ -869,11 +873,13 @@ pub mod object_position {
         CardChoiceBrowser(super::ObjectPositionCardChoiceBrowser),
         #[prost(message, tag = "20")]
         HandStorage(super::ObjectPositionHandStorage),
+        #[prost(message, tag = "21")]
+        Scoring(super::ObjectPositionScoring),
         /// Keep these at the end so they appear after their parents in sorted
         /// order
-        #[prost(message, tag = "21")]
-        IntoCard(super::ObjectPositionIntoCard),
         #[prost(message, tag = "22")]
+        IntoCard(super::ObjectPositionIntoCard),
+        #[prost(message, tag = "23")]
         StackedBehindCard(super::ObjectPositionStackedBehindCard),
     }
 }

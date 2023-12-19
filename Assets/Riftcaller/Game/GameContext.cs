@@ -52,6 +52,7 @@ namespace Riftcaller.Game
     RewardBrowser = 14,
     InfoZoom = 15,
     SplashScreen = 20,
+    Scoring = 26,
 
   }
 
@@ -72,19 +73,20 @@ namespace Riftcaller.Game
       GameContext.HandStorage => 10,
       GameContext.Interface => 11,
       GameContext.Browser => 12,
-      GameContext.Staging => 13,
-      GameContext.RevealedCardsBrowser => 14,
-      GameContext.Hand => 15,
-      GameContext.CardChoiceBrowser => 16,
-      GameContext.BrowserDragTarget => 17,
-      GameContext.Scored => 18,
-      GameContext.Effects => 19,
-      GameContext.Dragging => 20,
-      GameContext.UserMessage => 21,
-      GameContext.LongPressBrowser => 22,
-      GameContext.RewardBrowser => 23,
-      GameContext.InfoZoom => 24,
-      GameContext.SplashScreen => 25,
+      GameContext.Scoring => 13,
+      GameContext.Staging => 14,
+      GameContext.RevealedCardsBrowser => 15,
+      GameContext.Hand => 16,
+      GameContext.CardChoiceBrowser => 17,
+      GameContext.BrowserDragTarget => 18,
+      GameContext.Scored => 19,
+      GameContext.Effects => 20,
+      GameContext.Dragging => 21,
+      GameContext.UserMessage => 22,
+      GameContext.LongPressBrowser => 23,
+      GameContext.RewardBrowser => 24,
+      GameContext.InfoZoom => 25,
+      GameContext.SplashScreen => 26,
       _ => throw new ArgumentOutOfRangeException(nameof(gameContext), gameContext, null)
     };
 

@@ -33,8 +33,8 @@ use protos::riftcaller::{
     ObjectPositionDiscardPileContainer, ObjectPositionHand, ObjectPositionHandStorage,
     ObjectPositionIntoCard, ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid,
     ObjectPositionRevealedCards, ObjectPositionRiftcallers, ObjectPositionRoom,
-    ObjectPositionStackedBehindCard, ObjectPositionStaging, RevealedCardsBrowserSize,
-    RoomIdentifier,
+    ObjectPositionScoring, ObjectPositionStackedBehindCard, ObjectPositionStaging,
+    RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raid_state::raid_display_state;
 use rules::{activate_ability, prompts, queries, CardDefinitionExt};
@@ -142,6 +142,10 @@ pub fn character_container(builder: &ResponseBuilder, side: Side) -> Position {
     })
 }
 
+pub fn scoring() -> Position {
+    Position::Scoring(ObjectPositionScoring {})
+}
+
 pub fn staging() -> Position {
     Position::Staging(ObjectPositionStaging {})
 }
@@ -231,7 +235,7 @@ fn adapt_position(
         CardPosition::DiscardPile(side) => Some(discard(builder, side)),
         CardPosition::Scored(side) => Some(character(builder, side)),
         CardPosition::Identity(side) => Some(display_shelf(builder, side)),
-        CardPosition::Scoring => Some(staging()),
+        CardPosition::Scoring => Some(scoring()),
         CardPosition::Played(card_play_id, side, target) => {
             played_position(builder, game, side, card_id, target, card_play_id)
         }

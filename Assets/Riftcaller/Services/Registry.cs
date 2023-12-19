@@ -93,6 +93,9 @@ namespace Riftcaller.Services
     [SerializeField] StackObjectDisplay _offscreenCards = null!;
     public StackObjectDisplay OffscreenCards => _offscreenCards;
 
+    [SerializeField] CurveObjectDisplay _cardScoring = null!;
+    public CurveObjectDisplay CardScoring => _cardScoring;    
+    
     [SerializeField] CurveObjectDisplay _cardStaging = null!;
     public CurveObjectDisplay CardStaging => _cardStaging;
     
@@ -157,9 +160,6 @@ namespace Riftcaller.Services
 
     public DiscardPile DiscardPileForPlayer(PlayerName playerName) =>
       playerName == PlayerName.User ? _userDiscardPile : _opponentDiscardPile;
-
-    [SerializeField] Transform _cardStagingArea = null!;
-    public Transform CardStagingArea => _cardStagingArea;
 
     [SerializeField] ManaDisplay _userManaDisplay = null!;
     [SerializeField] ManaDisplay _opponentManaDisplay = null!;

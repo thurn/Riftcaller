@@ -870,6 +870,10 @@ message ObjectPositionCardChoiceBrowser {
 message ObjectPositionHandStorage {
 }
 
+/// Position of cards which are being scored
+message ObjectPositionScoring {
+}
+
 message ObjectPosition {
     // A key by which to sort this object -- objects with higher sorting keys
     // should be displayed 'on top of' or 'in front of' objects with lower
@@ -902,10 +906,11 @@ message ObjectPosition {
         ObjectPositionBrowserDragTarget browser_drag_target = 18;
         ObjectPositionCardChoiceBrowser card_choice_browser = 19;
         ObjectPositionHandStorage hand_storage = 20;
+        ObjectPositionScoring scoring = 21;
 
         // Keep these at the end so they appear after their parents in sorted order
-        ObjectPositionIntoCard into_card = 21;
-        ObjectPositionStackedBehindCard stacked_behind_card = 22;
+        ObjectPositionIntoCard into_card = 22;
+        ObjectPositionStackedBehindCard stacked_behind_card = 23;
     }
 }
 

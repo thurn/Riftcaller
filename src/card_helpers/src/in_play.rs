@@ -198,6 +198,15 @@ pub fn on_covenant_scored_card(mutation: MutationFn<CardId>) -> Delegate {
     })
 }
 
+/// A delegate which fires when its card is face up & in play when the
+/// Riftcaller scores a card.
+pub fn on_riftcaller_scored_card(mutation: MutationFn<CardId>) -> Delegate {
+    Delegate::RiftcallerScoreCard(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
+}
+
 /// A delegate which fires when its card is face up & in play when a card is
 /// scored
 pub fn on_card_scored(mutation: MutationFn<ScoreCard>) -> Delegate {

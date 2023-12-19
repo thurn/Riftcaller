@@ -25,8 +25,7 @@ use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_definition::{
-    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, Cost,
-    TargetRequirement,
+    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -472,11 +471,7 @@ pub fn vortex_portal(meta: CardMetadata) -> CardDefinition {
                 }),
             ),
             ActivatedAbility::new(
-                Cost {
-                    mana: None,
-                    actions: 1,
-                    custom_cost: costs::power_charges_custom_cost::<1>(),
-                },
+                costs::power_charges_and_action::<1>(),
                 text![text!["Raid the sanctum,", Evading, "all defenders"], text![GainActions(1)]],
             )
             .delegate(this::on_activated(|g, s, _| raids::initiate(g, s, RoomId::Sanctum)))

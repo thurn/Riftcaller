@@ -158,3 +158,73 @@ pub fn rivers_eye() {
     // Previous cards still revealed
     assert_eq!(revealed_count(&g), 2);
 }
+
+#[test]
+fn the_conjurers_circle() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::TheConjurersCircle)).build();
+    g.create_and_play_with_target(CardName::TestScheme1_10, RoomId::RoomA);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::RoomA);
+    g.opponent_click(Button::Score);
+    assert!(g
+        .client
+        .cards
+        .display_shelf()
+        .find_card(CardName::TheConjurersCircle)
+        .arena_icon()
+        .contains("1"));
+
+    g.opponent_click(Button::EndRaid);
+    g.pass_turn(Side::Riftcaller);
+    let id = g.client.cards.hand().find_ability_card(CardName::TheConjurersCircle).id();
+    g.activate_ability(id, 1);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 3);
+    let play = g.client.cards.hand()[0].id();
+    g.play_card(play, g.user_id(), None);
+}
+
+#[test]
+fn the_conjurers_circle_raze() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .identity(CardName::TheConjurersCircle)
+            .in_hand(CardName::TestProject2Cost3Raze),
+    )
+    .build();
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Sanctum);
+    g.opponent_click(Button::Discard);
+    g.opponent_click(Button::EndRaid);
+    g.pass_turn(Side::Riftcaller);
+    let id = g.client.cards.hand().find_ability_card(CardName::TheConjurersCircle).id();
+    g.activate_ability(id, 1);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 3);
+}
+
+#[test]
+fn the_conjurers_circle_does_not_trigger_twice() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .identity(CardName::TheConjurersCircle)
+            .in_hand(CardName::TestProject2Cost3Raze),
+    )
+    .build();
+    g.create_and_play_with_target(CardName::TestScheme1_10, RoomId::RoomA);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Sanctum);
+    g.opponent_click(Button::Discard);
+    g.opponent_click(Button::EndRaid);
+    g.initiate_raid(RoomId::RoomA);
+    g.opponent_click(Button::Score);
+    g.opponent_click(Button::EndRaid);
+    g.pass_turn(Side::Riftcaller);
+
+    assert!(g
+        .client
+        .cards
+        .display_shelf()
+        .find_card(CardName::TheConjurersCircle)
+        .arena_icon()
+        .contains("1"));
+}

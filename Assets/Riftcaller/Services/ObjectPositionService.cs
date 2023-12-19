@@ -229,6 +229,7 @@ namespace Riftcaller.Services
           _registry.RiftcallerDisplayForPlayer(position.Riftcaller.Owner),
         ObjectPosition.PositionOneofCase.BrowserDragTarget => _registry.BrowserDragTarget,
         ObjectPosition.PositionOneofCase.HandStorage => _registry.HandStorage,
+        ObjectPosition.PositionOneofCase.Scoring => _registry.CardScoring,
         _ => throw new ArgumentOutOfRangeException()
       };
     }

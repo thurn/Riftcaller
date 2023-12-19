@@ -560,6 +560,7 @@ impl Summarize for Position {
             Self::BrowserDragTarget(v) => summary.primitive(v),
             Self::CardChoiceBrowser(v) => summary.primitive(v),
             Self::HandStorage(v) => summary.primitive(v),
+            Self::Scoring(v) => summary.primitive(v),
         }
     }
 }

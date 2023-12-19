@@ -13,22 +13,27 @@
 // limitations under the License.
 
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
+use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design::{self, TimedEffectDataExt};
-use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, IdentityConfig};
+use game_data::card_definition::{
+    Ability, ActivatedAbility, CardConfigBuilder, CardDefinition, IdentityConfig,
+};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::CardIdsExt;
+use game_data::card_state::{CardCounter, CardIdsExt};
 use game_data::custom_card_state::CustomCardState;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, PromptChoice, PromptChoiceLabel, PromptContext,
+    BrowserPromptTarget, BrowserPromptValidation, FromZone, PromptChoice, PromptChoiceLabel,
+    PromptContext, PromptData,
 };
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
+use rules::mutations::RealizeCards;
 use rules::visual_effects::{ShowAlert, VisualEffects};
 use rules::{
     curses, custom_state, flags, mana, mutations, prompts, visual_effects, CardDefinitionExt,
@@ -321,6 +326,80 @@ pub fn rivers_eye(meta: CardMetadata) -> CardDefinition {
                 bio: "In Seba's lush heart, the River's Eye thrives, unseen and unpredictable. \
                 They weave illusions and realities in the watery depths where secrets flow \
                 endlessly.",
+            })
+            .build(),
+    }
+}
+
+pub fn the_conjurers_circle(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TheConjurersCircle,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::chapter(meta, "ScenerySnowMountain_2"),
+        card_type: CardType::Chapter,
+        subtypes: vec![],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Identity,
+        abilities: vec![
+            Ability::new(text![
+                "The first time each turn the Riftcaller scores a card or uses a",
+                RazeAbility,
+                ",",
+                AddPowerCharges(1)
+            ])
+            .delegate(in_play::on_riftcaller_scored_card(|g, s, _| {
+                custom_state::identity_once_per_turn(g, s, |g, s| {
+                    visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                    g.card_mut(s).add_counters(CardCounter::PowerCharges, 1);
+                    Ok(())
+                })
+            }))
+            .delegate(in_play::on_card_razed(|g, s, _| {
+                custom_state::identity_once_per_turn(g, s, |g, s| {
+                    visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                    g.card_mut(s).add_counters(CardCounter::PowerCharges, 1);
+                    Ok(())
+                })
+            })),
+            ActivatedAbility::new(
+                costs::power_charges_and_action::<1>(),
+                text![
+                    text!["Look at the top", 3, "cards of the", Vault],
+                    text!["You may play one of them"]
+                ],
+            )
+            .delegate(this::on_activated(|g, s, _| {
+                let cards = mutations::realize_top_of_deck(
+                    g,
+                    Side::Covenant,
+                    3,
+                    RealizeCards::SetVisibleToOwner,
+                )?;
+
+                prompts::push_with_data(g, Side::Covenant, s, PromptData::Cards(cards));
+                Ok(())
+            }))
+            .delegate(this::prompt(|_, s, source, _| {
+                let PromptData::Cards(cards) = &source.data else { return None };
+                PlayCardBrowserBuilder::new(s, FromZone::Deck, cards.clone()).build()
+            }))
+            .build(),
+        ],
+        config: CardConfigBuilder::new()
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(5))
+                    .scale(1.5)
+                    .effect_color(design::BLUE_500)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast02")),
+            )
+            .identity(IdentityConfig {
+                starting_coins: Coins(500),
+                secondary_schools: vec![School::Primal],
+                skills: vec![Skill::Stealth, Skill::Persuasion],
+                bio: "In the silent snowfall of Frostreach, the Conjurer’s Circle summons \
+                moonlit spirits. Their magic conjures ephemeral wonders, disappearing at dawn.",
             })
             .build(),
     }
