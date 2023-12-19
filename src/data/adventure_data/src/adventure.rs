@@ -363,10 +363,6 @@ pub struct AdventureState {
     pub screens: AdventureScreens,
     /// Deck being used for this adventure
     pub deck: Deck,
-    /// Cards collected by this player during this adventure, inclusive of cards
-    /// in `deck` and cards not currently being used.
-    #[serde_as(as = "Vec<(_, _)>")]
-    pub collection: HashMap<CardVariant, u32>,
     /// Customization options for this adventure
     pub config: AdventureConfiguration,
 }

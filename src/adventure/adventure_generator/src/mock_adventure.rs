@@ -117,7 +117,6 @@ pub fn create(config: AdventureConfiguration) -> AdventureState {
         screens: AdventureScreens::default(),
         config,
         deck,
-        collection: HashMap::new(),
     }
 }
 

@@ -100,7 +100,6 @@ impl TestAdventure {
             world_map: WorldMap { tiles: HashMap::new() },
             screens: AdventureScreens::default(),
             deck,
-            collection: self.collection,
             config,
         }
     }
