@@ -31,7 +31,8 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::{ShowAlert, VisualEffects};
 use rules::{
-    custom_state, draw_cards, mana, mutations, prompts, visual_effects, CardDefinitionExt,
+    curses, custom_state, draw_cards, end_raid, mana, mutations, prompts, visual_effects,
+    CardDefinitionExt,
 };
 
 pub fn illea_the_high_sage(meta: CardMetadata) -> CardDefinition {
@@ -427,10 +428,20 @@ pub fn eria_the_ghost_of_vasilor(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Identity,
         abilities: vec![Ability::new(text![
-            "The first time each turn a minion ability would end the raid,",
+            "The first time each turn a Covenant ability would end the raid,",
             "prevent that ability and take a",
             Curse
-        ])],
+        ])
+        .delegate(in_play::on_ability_will_end_raid(|g, s, event| {
+            if event.data.side() == Side::Covenant {
+                custom_state::identity_once_per_turn(g, s, |g, s| {
+                    visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                    end_raid::prevent(g);
+                    curses::give_curses(g, s, 1)
+                })?;
+            }
+            Ok(())
+        }))],
         config: CardConfigBuilder::new()
             .identity(IdentityConfig {
                 starting_coins: Coins(400),

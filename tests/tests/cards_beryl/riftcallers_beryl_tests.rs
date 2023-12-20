@@ -227,3 +227,24 @@ fn rolant_restoration() {
     g.play_card(id, g.user_id(), None);
     assert_eq!(g.client.cards.hand().len(), 1);
 }
+
+#[test]
+fn eria() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::EriaTheGhostOfVasilor))
+            .opponent(
+                TestSide::new(Side::Covenant)
+                    .face_up_defender(RoomId::Vault, CardName::TestMinionEndRaid),
+            )
+            .build();
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    assert!(g.client.data.raid_active());
+    assert_eq!(g.client.cards.hand().curse_count(), 1);
+
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    assert!(!g.client.data.raid_active());
+    assert_eq!(g.client.cards.hand().curse_count(), 1);
+}

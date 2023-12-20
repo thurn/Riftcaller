@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypt, RoomIdMarker,
-    RoomIdSanctum, RoomIdVault, Side, TurnNumber,
+    AbilityId, ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypt,
+    RoomIdMarker, RoomIdSanctum, RoomIdVault, Side, TurnNumber,
 };
 use game_data::card_definition::Resonance;
 use game_data::delegate_data::{
@@ -110,6 +110,12 @@ pub fn on_minion_summoned(mutation: MutationFn<CardId>) -> Delegate {
 /// approached.
 pub fn on_minion_approached(mutation: MutationFn<RaidEvent<CardId>>) -> Delegate {
     delegates::on_minion_approached(requirements::face_up_in_play, mutation)
+}
+
+/// A delegate which fires when a card is face up & in play when an ability is
+/// about to end the current raid.
+pub fn on_ability_will_end_raid(mutation: MutationFn<RaidEvent<AbilityId>>) -> Delegate {
+    delegates::on_ability_will_end_raid(requirements::face_up_in_play, mutation)
 }
 
 /// Delegate which fires when the 'access' phase of a raid begins.
