@@ -32,6 +32,7 @@ pub mod damage;
 pub mod destroy;
 pub mod dispatch;
 pub mod draw_cards;
+pub mod end_raid;
 pub mod flags;
 pub mod leylines;
 pub mod mana;

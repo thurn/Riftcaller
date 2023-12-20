@@ -337,7 +337,7 @@ impl HasCardId for ScoreCard {
 }
 
 /// Result of a raid
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum RaidOutcome {
     Success,
     Failure,
@@ -564,6 +564,8 @@ pub enum Delegate {
     CardsDestroyed(EventDelegate<Vec<CardId>>),
     /// A Card Selector prompt for the provided ability has been submitted
     CardSelectorSubmitted(EventDelegate<AbilityId>),
+    /// An ability is about to end the current raid
+    AbilityWillEndRaid(EventDelegate<RaidEvent<AbilityId>>),
 
     /// Query whether the indicated player can currently take the basic game
     /// action to spend an action point to draw a card.
@@ -600,8 +602,6 @@ pub enum Delegate {
     /// Can the Riftcaller choose to use the 'End Raid' button to end the access
     /// phase of a raid?
     CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
-    /// Should an 'end the raid' ability with the given ID be prevented?
-    CanAbilityEndRaid(QueryDelegate<RaidEvent<AbilityId>, Flag>),
     /// Can the minion with the given ID be evaded?
     CanEvadeMinion(QueryDelegate<CardId, Flag>),
     /// Can the [Side] player currently win the game by scoring points?

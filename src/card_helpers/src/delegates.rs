@@ -125,6 +125,13 @@ pub fn on_custom_access_end(
     Delegate::CustomAccessEnd(EventDelegate { requirement, mutation })
 }
 
+pub fn on_ability_will_end_raid(
+    requirement: RequirementFn<RaidEvent<AbilityId>>,
+    mutation: MutationFn<RaidEvent<AbilityId>>,
+) -> Delegate {
+    Delegate::AbilityWillEndRaid(EventDelegate { requirement, mutation })
+}
+
 pub fn on_raid_end(
     requirement: RequirementFn<RaidEvent<RaidOutcome>>,
     mutation: MutationFn<RaidEvent<RaidOutcome>>,
@@ -158,13 +165,6 @@ pub fn can_summon(
     transformation: TransformationFn<CardId, Flag>,
 ) -> Delegate {
     Delegate::CanSummon(QueryDelegate { requirement, transformation })
-}
-
-pub fn can_ability_end_raid(
-    requirement: RequirementFn<RaidEvent<AbilityId>>,
-    transformation: TransformationFn<RaidEvent<AbilityId>, Flag>,
-) -> Delegate {
-    Delegate::CanAbilityEndRaid(QueryDelegate { requirement, transformation })
 }
 
 pub fn can_score_accessed_card(

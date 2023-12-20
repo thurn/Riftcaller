@@ -30,7 +30,7 @@ use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::PromptChoice;
 use rules::mana::ManaPurpose;
-use rules::{damage, mana, mutations, prompts, queries};
+use rules::{damage, end_raid, mana, prompts, queries};
 
 pub fn time_golem(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -124,11 +124,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                             })
                     },
                     mutation: |g, s, _| {
-                        mutations::end_raid(
-                            g,
-                            InitiatedBy::Ability(s.ability_id()),
-                            RaidOutcome::Failure,
-                        )
+                        end_raid::run(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
                     },
                 }),
             ],
@@ -165,11 +161,7 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
                     3,
                 )?;
                 if mana::get(g, Side::Riftcaller, ManaPurpose::BaseMana) <= 6 {
-                    mutations::end_raid(
-                        g,
-                        InitiatedBy::Ability(s.ability_id()),
-                        RaidOutcome::Failure,
-                    )?;
+                    end_raid::run(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)?;
                 }
                 Ok(())
             }),

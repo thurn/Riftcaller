@@ -21,7 +21,9 @@ use game_data::game_state::GameState;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
-use rules::{curses, damage, destroy, draw_cards, mana, mutations, play_card, CardDefinitionExt};
+use rules::{
+    curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, CardDefinitionExt,
+};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
@@ -65,7 +67,7 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
             |_, _| {},
         )?,
         GameEffect::EndRaid(ability_id) => {
-            mutations::end_raid(game, InitiatedBy::Ability(ability_id), RaidOutcome::Failure)?
+            end_raid::run(game, InitiatedBy::Ability(ability_id), RaidOutcome::Failure)?
         }
         GameEffect::EndCustomAccess(ability_id) => {
             custom_access::end(game, InitiatedBy::Ability(ability_id))?;

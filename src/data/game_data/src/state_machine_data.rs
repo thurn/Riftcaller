@@ -17,6 +17,7 @@ use core_data::game_primitives::{
 };
 use serde::{Deserialize, Serialize};
 
+use crate::delegate_data::RaidOutcome;
 use crate::game_actions::CardTarget;
 use crate::game_state::TurnData;
 use crate::prompt_data::FromZone;
@@ -218,6 +219,31 @@ pub struct DestroyPermanentsData {
     pub step: DestroyPermanentStep,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum EndRaidStep {
+    Begin,
+    FireAbilityWillEndRaid,
+    CheckIfPrevented,
+    FireOutcomeEvents,
+    AddToHistory,
+    FireEndRaidEvent,
+    EndRaid,
+    Finish,
+}
+
+/// State data for ending a raid
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct EndRaidData {
+    /// Proposed outcome of the raid
+    pub outcome: RaidOutcome,
+    /// Source attempting to end the current raid
+    pub source: InitiatedBy,
+    /// True if this 'end raid' event has been prevented
+    pub prevented: bool,
+    /// Current state machine state
+    pub step: EndRaidStep,
+}
+
 /// Data related to ongoing game events. Some types of updates are handled via a
 /// resumable state machine in order to allow interruptions in the resolution
 /// process when a player is required to make a prompt decision.
@@ -233,4 +259,5 @@ pub struct StateMachines {
     pub give_leylines: Vec<GiveLeylinesData>,
     pub give_wounds: Vec<GiveWoundsData>,
     pub destroy_permanent: Vec<DestroyPermanentsData>,
+    pub end_raid: Vec<EndRaidData>,
 }

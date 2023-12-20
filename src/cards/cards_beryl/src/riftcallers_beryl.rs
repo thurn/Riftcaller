@@ -414,3 +414,38 @@ pub fn rolant_the_restorer(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn eria_the_ghost_of_vasilor(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::EriaTheGhostOfVasilor,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::riftcaller_card(meta, "iobard/eria"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Identity,
+        abilities: vec![Ability::new(text![
+            "The first time each turn a minion ability would end the raid,",
+            "prevent that ability and take a",
+            Curse
+        ])],
+        config: CardConfigBuilder::new()
+            .identity(IdentityConfig {
+                starting_coins: Coins(400),
+                secondary_schools: vec![School::Pact],
+                skills: vec![Skill::Stealth, Skill::Lore],
+                bio: "Eria’s legend echoes through the abandoned streets of Vasilor, a haunting \
+                melody of loss and vengeance. Emerging from the shadows of betrayal, she moves \
+                like a wraith, her vengeance a cold wind sweeping through the forsaken ruins.",
+            })
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(6))
+                    .scale(1.5)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
+                    .effect_color(design::YELLOW_900),
+            )
+            .build(),
+    }
+}

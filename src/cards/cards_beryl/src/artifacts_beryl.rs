@@ -41,7 +41,7 @@ use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::visual_effects::VisualEffects;
-use rules::{flags, mana, mutations, prompts, queries, CardDefinitionExt};
+use rules::{end_raid, flags, mana, mutations, prompts, queries, CardDefinitionExt};
 use with_error::WithError;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
@@ -650,12 +650,15 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
             g.card_mut(s).custom_state.push(CustomCardState::ActiveForEncounter { encounter_id });
             Ok(())
         }))
-        .delegate(delegates::can_ability_end_raid(
+        .delegate(delegates::on_ability_will_end_raid(
             requirements::active_this_encounter,
-            |g, _, event, flag| {
+            |g, _, event| {
                 let health = queries::health(g, event.data.card_id);
                 let resonance = queries::resonance(g, event.data.card_id);
-                flag.add_constraint(health > 5 || resonance.map_or(true, |r| !r.astral))
+                if !(health > 5 || resonance.map_or(true, |r| !r.astral)) {
+                    end_raid::prevent(g)
+                }
+                Ok(())
             },
         ))
         .build()],

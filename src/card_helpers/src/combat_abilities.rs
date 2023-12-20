@@ -17,7 +17,7 @@ use game_data::card_definition::{Ability, AbilityType};
 use game_data::delegate_data::RaidOutcome;
 use game_data::text::TextToken::*;
 use rules::mana::ManaPurpose;
-use rules::{damage, mana, mutations};
+use rules::{damage, end_raid, mana, mutations};
 
 use crate::text_macro::text;
 use crate::{text_helpers, this};
@@ -49,7 +49,7 @@ pub fn end_raid() -> Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text!["End the raid"]),
         delegates: vec![this::combat(|g, s, _| {
-            mutations::end_raid(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
+            end_raid::run(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
         })],
     }
 }

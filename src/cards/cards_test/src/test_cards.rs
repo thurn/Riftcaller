@@ -31,7 +31,7 @@ use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::{OnZeroStored, SummonMinion};
-use rules::{curses, damage, destroy, draw_cards, mutations, CardDefinitionExt};
+use rules::{curses, damage, destroy, draw_cards, end_raid, mutations, CardDefinitionExt};
 
 pub fn test_ritual(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -562,7 +562,7 @@ pub fn test_sacrifice_end_raid_project(metadata: CardMetadata) -> CardDefinition
             ability_type: abilities::sacrifice_this(),
             text: text!["End the raid"],
             delegates: vec![on_activated(|g, s, _| {
-                mutations::end_raid(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
+                end_raid::run(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
             })],
         }],
         config: CardConfig::default(),

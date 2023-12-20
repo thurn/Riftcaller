@@ -34,8 +34,8 @@ use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, damage, destroy, dispatch, draw_cards, flags, leylines, mana,
-    mutations, play_card, prompts, queries, wounds,
+    activate_ability, curses, damage, destroy, dispatch, draw_cards, end_raid, flags, leylines,
+    mana, mutations, play_card, prompts, queries, wounds,
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};
@@ -493,6 +493,7 @@ fn run_state_based_actions(game: &mut GameState) -> Result<()> {
     leylines::run_state_machine(game)?;
     wounds::run_state_machine(game)?;
     destroy::run_state_machine(game)?;
+    end_raid::run_state_machine(game)?;
     raid_state::run(game, None)?;
     play_card::run(game)?;
     activate_ability::run(game)?;

@@ -35,7 +35,7 @@ use game_data::raid_data::{
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{combat, dispatch, flags, mana, mutations, prompts, queries};
+use rules::{combat, dispatch, end_raid, flags, mana, mutations, prompts, queries};
 use tracing::debug;
 use with_error::{fail, verify, WithError};
 
@@ -602,6 +602,6 @@ fn finish_access(game: &mut GameState, info: RaidInfo) -> Result<RaidState> {
 }
 
 fn finish_raid(game: &mut GameState) -> Result<RaidState> {
-    mutations::end_raid(game, InitiatedBy::GameAction, RaidOutcome::Success)?;
+    end_raid::run(game, InitiatedBy::GameAction, RaidOutcome::Success)?;
     RaidState::step(RaidStep::FinishRaid)
 }

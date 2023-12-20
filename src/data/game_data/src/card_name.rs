@@ -360,6 +360,7 @@ pub enum CardName {
     RitualOfBinding,
     RiversEye,
     TheConjurersCircle,
+    EriaTheGhostOfVasilor,
 }
 
 impl CardName {
@@ -382,6 +383,7 @@ impl CardName {
             Self::RolantTheRestorer => "Rolant the Restorer",
             Self::RiversEye => "River's Eye",
             Self::TheConjurersCircle => "The Conjurer's Circle",
+            Self::EriaTheGhostOfVasilor => "Eria, the Ghost of Vasilor",
             _ => "",
         };
 

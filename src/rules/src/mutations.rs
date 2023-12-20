@@ -33,15 +33,14 @@ use game_data::card_state::{CardCounter, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
-    ActionPointsLostDuringRaidEvent, CanAbilityEndRaidQuery, CardRevealedEvent,
-    CardSacrificedEvent, CovenantScoreCardEvent, DawnEvent, DiscardCardEvent, DiscardedCard,
-    DiscardedFrom, DrawCardEvent, DuskEvent, EnterArenaEvent, EnterHandEvent, LeaveArenaEvent,
-    MoveToDiscardPileEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent,
-    ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent, SummonProjectEvent,
+    ActionPointsLostDuringRaidEvent, CardRevealedEvent, CardSacrificedEvent,
+    CovenantScoreCardEvent, DawnEvent, DiscardCardEvent, DiscardedCard, DiscardedFrom,
+    DrawCardEvent, DuskEvent, EnterArenaEvent, EnterHandEvent, LeaveArenaEvent,
+    MoveToDiscardPileEvent, ScoreCard, ScoreCardEvent, StoredManaTakenEvent, SummonMinionEvent,
+    SummonProjectEvent,
 };
-use game_data::flag_data::{AbilityFlag, Flag};
+use game_data::flag_data::AbilityFlag;
 use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
-use game_data::history_data::HistoryEvent;
 use game_data::random;
 use tracing::{debug, instrument};
 use with_error::{fail, verify};
@@ -345,41 +344,6 @@ pub fn spend_power_charges(
         "Insufficient power charges available"
     );
     card.remove_counters_saturating(CardCounter::PowerCharges, count);
-    Ok(())
-}
-
-/// Ends the current raid. Returns an error if no raid is currently active.
-pub fn end_raid(game: &mut GameState, source: InitiatedBy, outcome: RaidOutcome) -> Result<()> {
-    debug!("Ending raid");
-    let info = game.raid()?.info();
-
-    if let InitiatedBy::Ability(ability_id) = source {
-        let can_end: bool = dispatch::perform_query(
-            game,
-            CanAbilityEndRaidQuery(&info.event(ability_id)),
-            Flag::new(true),
-        )
-        .into();
-
-        if !can_end {
-            return Ok(());
-        }
-    }
-
-    let event = info.event(());
-    match outcome {
-        RaidOutcome::Success => {
-            dispatch::invoke_event(game, RaidSuccessEvent(&event))?;
-            game.add_history_event(HistoryEvent::RaidSuccess(event));
-        }
-        RaidOutcome::Failure => {
-            dispatch::invoke_event(game, RaidFailureEvent(&event))?;
-            game.add_history_event(HistoryEvent::RaidFailure(event));
-        }
-    }
-
-    dispatch::invoke_event(game, RaidEndEvent(&info.event(outcome)))?;
-    game.raid = None;
     Ok(())
 }
 
