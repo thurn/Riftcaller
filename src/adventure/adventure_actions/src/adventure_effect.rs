@@ -17,11 +17,12 @@ use adventure_data::adventure_effect_data::AdventureEffect;
 use adventure_generator::{battle_generator, card_filter, narrative_event_generator};
 use anyhow::Result;
 use game_data::card_name::CardVariant;
+use with_error::WithError;
 
 pub fn apply(
     state: &mut AdventureState,
     effect: AdventureEffect,
-    _known_card: Option<CardVariant>,
+    known_card: Option<CardVariant>,
 ) -> Result<()> {
     match effect {
         AdventureEffect::Draft(selector) => {
@@ -41,6 +42,13 @@ pub fn apply(
             .push(AdventureScreen::Battle(battle_generator::create(state.side.opponent()))),
         AdventureEffect::PickCardForEffect(selector, effect) => {
             state.screens.push(AdventureScreen::ApplyDeckEffect(selector, effect))
+        }
+        AdventureEffect::LoseKnownRandomCard(_, copies) => {
+            state
+                .deck
+                .cards
+                .entry(known_card.with_error(|| "Expected known_card")?)
+                .and_modify(|count| *count = count.saturating_sub(copies));
         }
         _ => {
             panic!("Not implemented {effect:?}")

@@ -84,9 +84,12 @@ namespace Riftcaller.Services
 
       yield return _registry.AssetService.LoadAssets(commandList);
 
-      var names = string.Join(",", commandList.Commands.Select(c => c.CommandCase));
-      LogUtils.Log($"Handling Commands: {names}");
-
+      if (commandList.Commands.Any(c => c.CommandCase != GameCommand.CommandOneofCase.InfoZoom))
+      {
+        var names = string.Join(",", commandList.Commands.Select(c => c.CommandCase));
+        LogUtils.Log($"Handling Commands: {names}");        
+      }
+      
       foreach (var command in commandList.Commands)
       {
         switch (command.CommandCase)

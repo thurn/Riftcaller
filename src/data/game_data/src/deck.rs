@@ -17,7 +17,7 @@
 use std::collections::HashMap;
 use std::iter;
 
-use core_data::game_primitives::{School, Side};
+use core_data::game_primitives::{CopiesCount, School, Side};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
@@ -42,7 +42,7 @@ pub struct Deck {
     /// How many (non-identity, non-sigil) cards with each name are present in
     /// this deck?
     #[serde_as(as = "Vec<(_, _)>")]
-    pub cards: HashMap<CardVariant, u32>,
+    pub cards: HashMap<CardVariant, CopiesCount>,
 }
 
 impl Deck {

@@ -42,6 +42,17 @@ pub fn set_narrative_step(state: &mut AdventureState, step: NarrativeEventStep) 
             verify!(is_legal_choice(data, index), "Invalid choice!");
             data.selected_choices.push(index);
             data.step = step;
+
+            let choice = data.choice(index);
+            let immediate_effects = choice
+                .enumerate_costs()
+                .chain(choice.enumerate_rewards())
+                .filter_map(|(i, e)| e.effect.is_immediate().then_some(i))
+                .collect::<Vec<_>>();
+
+            for effect_index in immediate_effects {
+                apply_narrative_effect(state, index, effect_index)?;
+            }
         }
     }
 
@@ -107,7 +118,7 @@ fn reify_known_effect(
     deck: &Deck,
 ) {
     match &effect_data.effect {
-        AdventureEffect::LoseKnownRandomCard(selector) => {
+        AdventureEffect::LoseKnownRandomCard(selector, _) => {
             let choice = config.choose(card_filter::deck(deck, *selector));
             effect_data.known_card = choice;
         }

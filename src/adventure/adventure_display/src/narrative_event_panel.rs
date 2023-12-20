@@ -101,6 +101,13 @@ impl<'a> NarrativeEventPanel<'a> {
         (index, choice): (NarrativeChoiceIndex, &NarrativeEventChoice),
     ) -> impl Component {
         let known = Self::known_cards(choice);
+        let clear = vec![
+            interface_animations::set_displayed(
+                element_names::narrative_outcome_tooltip(index),
+                false,
+            ),
+            Command::InfoZoom(InfoZoomCommand { show: false, card: None }),
+        ];
         Self::button_row(
             choice.choice_description.clone(),
             AdventureAction::SetNarrativeStep(NarrativeEventStep::SelectChoice(index)),
@@ -118,13 +125,8 @@ impl<'a> NarrativeEventPanel<'a> {
                 })
             }),
         ])
-        .on_mouse_leave(vec![
-            interface_animations::set_displayed(
-                element_names::narrative_outcome_tooltip(index),
-                false,
-            ),
-            Command::InfoZoom(InfoZoomCommand { show: false, card: None }),
-        ])
+        .on_mouse_leave(clear.clone())
+        .on_mouse_down(clear)
         .child(Self::outcome_tooltip(index, choice))
     }
 
@@ -148,7 +150,7 @@ impl<'a> NarrativeEventPanel<'a> {
                         .padding(Edge::Horizontal, 8.px())
                         .min_height(88.px()),
                 )
-                .child(Self::effect_description(data, "Received"))
+                .child(Self::effect_description(data, "Applied"))
         }
     }
 

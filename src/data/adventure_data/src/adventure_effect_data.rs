@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use core_data::adventure_primitives::Coins;
+use core_data::game_primitives::CopiesCount;
 use game_data::card_name::{CardName, CardVariant};
 use serde::{Deserialize, Serialize};
 
@@ -83,8 +84,8 @@ pub enum AdventureEffect {
     LoseAllCoins,
     /// Gain a quantity of arcanite
     GainArcanite(u32),
-    /// The player may pick a card in their deck matching [CardFilter] to
-    /// apply [DeckCardEffect] to.
+    /// The player may pick some number of cards in their deck matching
+    /// [CardFilter] to apply a [DeckCardEffect] to, potentially paying a cost.
     PickCardForEffect(CardFilter, DeckCardEffect),
     /// Modify a random card in the player's deck matching this [CardFilter]
     /// by applying a [DeckCardAction] to it. The card chosen is known to
@@ -103,37 +104,41 @@ pub enum AdventureEffect {
     AddDraftTiles(u32),
     /// Add a quantity of standard narrative event tiles to the world map
     AddNarrativeTiles(u32),
-    /// Add a known fixed card to the player's deck. The card is always the same
-    /// for this narrative event and will always be set as the value of
-    /// [AdventureEffectData::known_card].
-    GainKnownFixedCard(CardName),
-    /// Add a known random card to the player's deck matching this
-    /// [CardFilter]. The card received is known to the player in advance.
-    GainKnownRandomCard(CardFilter),
-    /// Add an unknown random card to the player's deck matching this
-    /// [CardFilter]. The card received is not known to the player in advance.
-    GainUnknownRandomCard(CardFilter),
-    /// Pick a card from the deck for the player to lose, matching this
-    /// [CardFilter].
+    /// Add 'count' copies of a known fixed card to the player's deck. The card
+    /// is always the same for this narrative event and will always be set
+    /// as the value of [AdventureEffectData::known_card].
+    GainKnownFixedCard(CardName, CopiesCount),
+    /// Add 'count' copies of a known random card to the player's deck matching
+    /// this [CardFilter]. The card received is known to the player in
+    /// advance.
+    GainKnownRandomCard(CardFilter, CopiesCount),
+    /// Add 'count' copies of an unknown random card to the player's deck
+    /// matching this [CardFilter]. The card received is not known to the
+    /// player in advance.
+    GainUnknownRandomCard(CardFilter, CopiesCount),
+    /// Pick a card from the deck for the player to lose 'count' copies of,
+    /// matching this [CardFilter].
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.    
-    PickCardToLose(CardFilter),
-    /// Lose a known random card from the player's deck matching this
-    /// [CardFilter]. The card lost is known to the player in advance.
+    PickCardToLose(CardFilter, CopiesCount),
+    /// Lose 'count' copies of a known random card from the player's deck
+    /// matching this [CardFilter]. The card lost is known to the player in
+    /// advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
-    LoseKnownRandomCard(CardFilter),
-    /// Lose an unknown random card from the player's deck matching this
-    /// [CardFilter]. The card lost is not known to the player in advance.
+    LoseKnownRandomCard(CardFilter, CopiesCount),
+    /// Lose 'count' copies of an unknown random card from the player's deck
+    /// matching this [CardFilter]. The card lost is not known to the player
+    /// in advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
-    LoseUnknownRandomCard(CardFilter),
+    LoseUnknownRandomCard(CardFilter, CopiesCount),
 }
 
 impl AdventureEffect {
@@ -145,7 +150,9 @@ impl AdventureEffect {
             AdventureEffect::GainCoins(..)
             | AdventureEffect::LoseCoins(..)
             | AdventureEffect::LoseAllCoins
-            | AdventureEffect::GainArcanite(..) => true,
+            | AdventureEffect::GainArcanite(..)
+            | AdventureEffect::GainKnownRandomCard(..)
+            | AdventureEffect::LoseKnownRandomCard(..) => true,
             _ => false,
         }
     }

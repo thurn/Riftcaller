@@ -79,8 +79,8 @@ pub fn generate() -> NarrativeEventData {
                     .to_string(),
                 result_description: "Placing your weapon upon an altar of stone, you step back.\n\n\
                 The eagle swoops down, taking the offering in its beak before soaring away, \
-                leaving behind a clear vision of a hidden shop on your map, tucked away in the \
-                mountains, a place of rare and powerful artifacts."
+                leaving behind a clear vision of a hidden shop, tucked away in the mountains, a \
+                place of rare and powerful artifacts."
                     .to_string(),
                 skill: None,
                 costs: vec![AdventureEffectData {
@@ -88,8 +88,9 @@ pub fn generate() -> NarrativeEventData {
                         CardFilter::new()
                             .rarity(Rarity::Common)
                             .card_subtype(CardSubtype::Weapon),
+                        1
                     ),
-                    description: "Lose '{CardName}'".to_string(),
+                    description: "Lose 1x '{CardName}'".to_string(),
                     known_card: None,
                 }],
                 rewards: vec![AdventureEffectData {
