@@ -17,7 +17,7 @@ use adventure_data::adventure::{
 };
 use adventure_data::adventure_action::NarrativeEffectIndex;
 use adventure_data::adventure_effect_data::{AdventureEffect, AdventureEffectData};
-use adventure_generator::card_selector;
+use adventure_generator::card_filter;
 use anyhow::Result;
 use core_data::adventure_primitives::NarrativeChoiceIndex;
 use game_data::deck::Deck;
@@ -117,7 +117,7 @@ fn reify_known_effect(
 ) {
     match &effect_data.effect {
         AdventureEffect::LoseKnownRandomCard(selector) => {
-            let choice = config.choose(card_selector::deck(deck, *selector));
+            let choice = config.choose(card_filter::deck(deck, *selector));
             effect_data.known_card = choice;
         }
         _ => {}

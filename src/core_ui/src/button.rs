@@ -243,7 +243,7 @@ impl Component for IconButton {
                 "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Square/Button_RED_s"
             }
             IconButtonType::DestructiveLarge => {
-                "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Rescaled/Button_Red"
+                "Poneti/ClassicFantasyRPG_UI/ARTWORKS/UIelements/Buttons/Square/Button_RED_s"
             }
             IconButtonType::NavBlue => "Sprites/Circle1",
             IconButtonType::NavBrown => "Sprites/Circle2",

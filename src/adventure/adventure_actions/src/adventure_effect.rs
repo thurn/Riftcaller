@@ -14,7 +14,7 @@
 
 use adventure_data::adventure::{AdventureScreen, AdventureState};
 use adventure_data::adventure_effect_data::AdventureEffect;
-use adventure_generator::{battle_generator, card_selector, narrative_event_generator};
+use adventure_generator::{battle_generator, card_filter, narrative_event_generator};
 use anyhow::Result;
 use game_data::card_name::CardVariant;
 
@@ -25,11 +25,11 @@ pub fn apply(
 ) -> Result<()> {
     match effect {
         AdventureEffect::Draft(selector) => {
-            let data = card_selector::draft_choices(state, selector);
+            let data = card_filter::draft_choices(state, selector);
             state.screens.push(AdventureScreen::Draft(data));
         }
         AdventureEffect::Shop(selector) => {
-            let data = card_selector::shop_choices(state, selector);
+            let data = card_filter::shop_choices(state, selector);
             state.screens.push(AdventureScreen::Shop(data));
         }
         AdventureEffect::NarrativeEvent(_) => {

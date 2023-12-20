@@ -46,12 +46,9 @@ fn build_panel(
         AdventureScreen::NarrativeEvent(data) => {
             NarrativeEventPanel { player, address, data }.build_panel()
         }
-        AdventureScreen::ApplyDeckEffect(selector, effect) => DeckEditorPanel {
-            address,
-            player,
-            effect: Some(*effect),
-            card_selector: Some(*selector),
+        AdventureScreen::ApplyDeckEffect(selector, effect) => {
+            DeckEditorPanel { address, player, effect: Some(*effect), filter: Some(*selector) }
+                .build_panel()
         }
-        .build_panel(),
     })
 }

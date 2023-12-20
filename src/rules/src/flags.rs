@@ -255,7 +255,9 @@ fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> boo
         CardType::Project | CardType::Scheme => {
             matches!(target, CardTarget::Room(room_id) if room_id.is_outer_room())
         }
-        CardType::GameModifier | CardType::Riftcaller | CardType::Chapter => false,
+        CardType::GameModifier | CardType::Riftcaller | CardType::Chapter | CardType::Sigil => {
+            false
+        }
     }
 }
 

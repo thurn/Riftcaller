@@ -295,7 +295,7 @@ pub enum AdventureScreen {
     Shop(ShopData),
     Battle(BattleData),
     NarrativeEvent(NarrativeEventData),
-    ApplyDeckEffect(CardSelector, DeckCardEffect),
+    ApplyDeckEffect(CardFilter, DeckCardEffect),
 }
 
 /// Stores a stack of screens for events the player is interacting with in the
@@ -370,7 +370,7 @@ pub struct AdventureState {
 
 /// Specifies the parameters for picking a card from a set
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct CardSelector {
+pub struct CardFilter {
     /// Minimum rarity for cards. Defaults to common.
     pub minimum_rarity: Rarity,
     /// Card types to select from.
@@ -385,7 +385,7 @@ pub struct CardSelector {
     pub upgraded: bool,
 }
 
-impl Default for CardSelector {
+impl Default for CardFilter {
     fn default() -> Self {
         Self {
             minimum_rarity: Rarity::Common,
@@ -396,7 +396,7 @@ impl Default for CardSelector {
     }
 }
 
-impl CardSelector {
+impl CardFilter {
     pub fn new() -> Self {
         Self::default()
     }

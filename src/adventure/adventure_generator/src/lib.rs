@@ -15,7 +15,7 @@
 use core_data::adventure_primitives::Coins;
 
 pub mod battle_generator;
-pub mod card_selector;
+pub mod card_filter;
 pub mod mock_adventure;
 pub mod narrative_event_generator;
 

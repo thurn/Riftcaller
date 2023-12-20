@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use adventure_data::adventure::{
-    CardSelector, NarrativeEventChoice, NarrativeEventData, NarrativeEventStep,
+    CardFilter, NarrativeEventChoice, NarrativeEventData, NarrativeEventStep,
 };
 use adventure_data::adventure_effect_data::{
     AdventureEffect, AdventureEffectData, DeckCardAction, DeckCardEffect,
@@ -43,7 +43,7 @@ pub fn generate() -> NarrativeEventData {
                 costs: vec![],
                 rewards: vec![AdventureEffectData {
                     effect: AdventureEffect::Draft(
-                        CardSelector::new().rarity(Rarity::Rare).card_type(CardType::Spell),
+                        CardFilter::new().rarity(Rarity::Rare).card_type(CardType::Spell),
                     ),
                     description: "Draft a rare spell".to_string(),
                     known_card: None,
@@ -64,7 +64,7 @@ pub fn generate() -> NarrativeEventData {
                 rewards: vec![
                     AdventureEffectData {
                         effect: AdventureEffect::PickCardForEffect(
-                            CardSelector::default(),
+                            CardFilter::default(),
                             DeckCardEffect::new(DeckCardAction::DuplicateTo3Copies).times(3),
                         ),
                         description: "Gain up to 3 copies of 3 cards in your deck".to_string(),
@@ -85,7 +85,7 @@ pub fn generate() -> NarrativeEventData {
                 skill: None,
                 costs: vec![AdventureEffectData {
                     effect: AdventureEffect::LoseKnownRandomCard(
-                        CardSelector::new()
+                        CardFilter::new()
                             .rarity(Rarity::Common)
                             .card_subtype(CardSubtype::Weapon),
                     ),
@@ -93,7 +93,7 @@ pub fn generate() -> NarrativeEventData {
                     known_card: None,
                 }],
                 rewards: vec![AdventureEffectData {
-                    effect: AdventureEffect::Shop(CardSelector::new()),
+                    effect: AdventureEffect::Shop(CardFilter::new()),
                     description: "Open a new shop screen".to_string(),
                     known_card: None,
                 }],

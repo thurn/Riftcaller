@@ -33,9 +33,12 @@ pub struct Deck {
     /// school is often called the 'primary' school for a deck and is e.g. used
     /// to determine the card backs shown for this player.
     pub schools: Vec<School>,
-    /// Identity cards for this deck, which start the game in play and provide
-    /// global effects.
+    /// Identity cards for this deck. Currently you can only ever have one
+    /// identity card, but who knows.
     pub identities: Vec<CardVariant>,
+    /// Sigil cards for this deck, which start the game in play and provide
+    /// global effects.
+    pub sigils: Vec<CardVariant>,
     /// How many (non-identity, non-sigil) cards with each name are present in
     /// this deck?
     #[serde_as(as = "Vec<(_, _)>")]

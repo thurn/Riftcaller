@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{AdventureState, CardChoice, CardSelector, DraftData, ShopData};
+use adventure_data::adventure::{AdventureState, CardChoice, CardFilter, DraftData, ShopData};
 use core_data::adventure_primitives::Coins;
 use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
 
-/// Cards in the player's deck which match this [CardSelector].
-pub fn deck(deck: &Deck, selector: CardSelector) -> impl Iterator<Item = CardVariant> + '_ {
-    deck.cards.keys().filter(move |&&variant| matches(selector.clone(), variant)).copied()
+/// Cards in the player's deck which match this [CardFilter].
+pub fn deck(deck: &Deck, filter: CardFilter) -> impl Iterator<Item = CardVariant> + '_ {
+    deck.cards.keys().filter(move |&&variant| matches(filter.clone(), variant)).copied()
 }
 
 /// All possible cards for the current adventure which match this
-/// [CardSelector].
+/// [CardFilter].
 pub fn all_cards(
     state: &AdventureState,
-    selector: CardSelector,
+    selector: CardFilter,
 ) -> impl Iterator<Item = CardVariant> + '_ {
     rules::all_cards()
         .filter(move |definition| {
@@ -38,8 +38,8 @@ pub fn all_cards(
 }
 
 /// Builds a standard [DraftData] set of draft choices for the provided
-/// [CardSelector].
-pub fn draft_choices(state: &mut AdventureState, selector: CardSelector) -> DraftData {
+/// [CardFilter].
+pub fn draft_choices(state: &mut AdventureState, selector: CardFilter) -> DraftData {
     let cards: Vec<_> = all_cards(state, selector).collect();
     DraftData {
         context: None,
@@ -53,8 +53,8 @@ pub fn draft_choices(state: &mut AdventureState, selector: CardSelector) -> Draf
 }
 
 /// Builds a standard [ShopData] set of shop choices for the provided
-/// [CardSelector].
-pub fn shop_choices(state: &mut AdventureState, selector: CardSelector) -> ShopData {
+/// [CardFilter].
+pub fn shop_choices(state: &mut AdventureState, selector: CardFilter) -> ShopData {
     let cards: Vec<_> = all_cards(state, selector).collect();
     ShopData {
         choices: state
@@ -72,8 +72,8 @@ pub fn shop_choices(state: &mut AdventureState, selector: CardSelector) -> ShopD
 }
 
 /// Returns true if the specified [CardVariant] is selected by the provided
-/// [CardSelector].
-pub fn matches(selector: CardSelector, variant: CardVariant) -> bool {
+/// [CardFilter].
+pub fn matches(selector: CardFilter, variant: CardVariant) -> bool {
     let definition = rules::get(variant);
 
     let mut result = definition.rarity >= selector.minimum_rarity;

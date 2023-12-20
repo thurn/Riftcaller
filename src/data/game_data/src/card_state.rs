@@ -64,6 +64,8 @@ pub enum CardPosition {
     Identity(Side),
     /// Global modifier cards which change the rules of the game
     GameModifier,
+    /// A sigil card which starts the game in play and provides ongoing effects
+    Sigil(Side),
     /// A card has been banished, either temporarily or permanently removed from
     /// the game. A [BanishedByCard] can be provided to record data around how
     /// the card was banished.

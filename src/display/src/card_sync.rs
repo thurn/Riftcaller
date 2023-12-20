@@ -207,7 +207,7 @@ fn revealed_card_view(
                 CardType::Minion => positions::unspecified_room(RoomLocation::Defender),
                 CardType::Project => positions::unspecified_room(RoomLocation::Occupant),
                 CardType::Scheme => positions::unspecified_room(RoomLocation::Occupant),
-                CardType::Riftcaller | CardType::Chapter => {
+                CardType::Riftcaller | CardType::Chapter | CardType::Sigil => {
                     positions::character_container(builder, definition.side)
                 }
                 CardType::GameModifier => positions::offscreen(),

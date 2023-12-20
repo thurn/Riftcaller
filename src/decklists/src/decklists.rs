@@ -28,6 +28,7 @@ pub static EMPTY_COVENANT: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Covenant,
     schools: vec![],
     identities: vec![],
+    sigils: vec![],
     cards: HashMap::new(),
 });
 
@@ -36,6 +37,7 @@ pub static COVENANT_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Covenant,
     schools: vec![],
     identities: vec![],
+    sigils: vec![],
     cards: hashmap! {CardVariant::standard(CardName::TestRitual) => 45},
 });
 
@@ -44,6 +46,7 @@ pub static BASIC_COVENANT: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Covenant,
     schools: vec![],
     identities: vec![],
+    sigils: vec![],
     cards: hashmap! {
         CardVariant::standard(CardName::Conspire) => 3,
         CardVariant::standard(CardName::Devise) => 3,
@@ -70,6 +73,7 @@ pub static CANONICAL_COVENANT: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Covenant,
     schools: vec![School::Law],
     identities: vec![],
+    sigils: vec![],
     cards: hashmap! {
         CardVariant::standard(CardName::GoldMine) => 3,
         CardVariant::standard(CardName::ActivateReinforcements) => 2,
@@ -94,6 +98,7 @@ pub static EMPTY_RIFTCALLER: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Riftcaller,
     schools: vec![],
     identities: vec![],
+    sigils: vec![],
     cards: HashMap::new(),
 });
 
@@ -102,6 +107,7 @@ pub static RIFTCALLER_TEST_SPELLS: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Riftcaller,
     schools: vec![],
     identities: vec![],
+    sigils: vec![],
     cards: hashmap! {CardVariant::standard(CardName::TestSpell) => 45},
 });
 
@@ -110,12 +116,13 @@ pub static BASIC_RIFTCALLER: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Riftcaller,
     schools: vec![],
     identities: vec![],
+    sigils: vec![],
     cards: hashmap! {
         CardVariant::standard(CardName::ArcaneRecovery) => 3,
         CardVariant::standard(CardName::EldritchSurge) => 3,
         CardVariant::standard(CardName::Lodestone) => 3,
         CardVariant::standard(CardName::ManaBattery) => 3,
-        CardVariant::standard(CardName::Contemplate) => 3,
+        CardVariant::standard(CardName::Contemplate) => 2,
         CardVariant::standard(CardName::AncestralKnowledge) => 3,
         CardVariant::standard(CardName::SimpleBlade) => 3,
         CardVariant::standard(CardName::SimpleAxe) => 3,
@@ -136,6 +143,7 @@ pub static CANONICAL_RIFTCALLER: Lazy<Deck> = Lazy::new(|| Deck {
     side: Side::Riftcaller,
     schools: vec![School::Primal],
     identities: vec![],
+    sigils: vec![],
     cards: hashmap! {
         CardVariant::standard(CardName::Meditation) => 2,
         CardVariant::standard(CardName::CoupDeGrace) => 3,

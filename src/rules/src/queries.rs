@@ -262,6 +262,7 @@ pub fn played_position(
         }
         CardType::Riftcaller | CardType::Chapter => CardPosition::Identity(side),
         CardType::GameModifier => CardPosition::GameModifier,
+        CardType::Sigil => CardPosition::Sigil(side),
     })
 }
 

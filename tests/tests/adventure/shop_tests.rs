@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::CardSelector;
+use adventure_data::adventure::CardFilter;
 use adventure_data::adventure_effect_data::AdventureEffect;
 use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::Side;
@@ -31,7 +31,7 @@ const CARD: CardVariant = CardVariant::standard(CardName::TestSingletonSetSpell)
 fn test_visit_shop() {
     let mut adventure =
         TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
-    let shop = adventure.insert_tile(AdventureEffect::Shop(CardSelector::default()));
+    let shop = adventure.insert_tile(AdventureEffect::Shop(CardFilter::default()));
     adventure.visit_tile(shop);
     assert!(adventure.has_text(BUY_COST.to_string()));
 }
@@ -40,7 +40,7 @@ fn test_visit_shop() {
 fn test_buy_card() {
     let mut adventure =
         TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
-    let shop = adventure.insert_tile(AdventureEffect::Shop(CardSelector::default()));
+    let shop = adventure.insert_tile(AdventureEffect::Shop(CardFilter::default()));
     adventure.visit_tile(shop);
 
     assert!(adventure.has_text(test_constants::STARTING_COINS.to_string()));

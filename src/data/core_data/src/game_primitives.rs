@@ -513,13 +513,14 @@ pub enum CardType {
     Riftcaller,
     Chapter,
     GameModifier,
+    Sigil,
+    Scheme,
     Spell,
-    Artifact,
+    Ritual,
     Evocation,
     Ally,
-    Scheme,
-    Ritual,
     Project,
+    Artifact,
     Minion,
 }
 
@@ -542,7 +543,8 @@ impl CardType {
             | Self::Project
             | Self::Scheme
             | Self::Riftcaller
-            | Self::GameModifier => "a",
+            | Self::GameModifier
+            | Self::Sigil => "a",
             Self::Artifact | Self::Evocation | Self::Ally => "an",
         }
     }
@@ -562,6 +564,7 @@ impl Display for CardType {
             CardType::Riftcaller => write!(f, "Riftcaller"),
             CardType::Chapter => write!(f, "Chapter"),
             CardType::GameModifier => write!(f, "Modifier"),
+            CardType::Sigil => write!(f, "Sigil"),
         }
     }
 }

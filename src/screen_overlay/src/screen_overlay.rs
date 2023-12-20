@@ -101,7 +101,7 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
                         IconButton::new(icons::CLOSE)
                             .button_type(IconButtonType::DestructiveLarge)
                             .action(panels)
-                            .layout(Layout::new().margin(Edge::Left, 16.px()))
+                            .layout(Layout::new().margin(Edge::All, 12.px()))
                     }))
                     .child(self.show_menu_button.then(|| {
                         IconButton::new(icons::BARS)

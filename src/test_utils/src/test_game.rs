@@ -148,12 +148,14 @@ impl TestGame {
             side: Side::Covenant,
             schools: vec![],
             identities: chapters.into_iter().map(CardVariant::standard).collect(),
+            sigils: vec![],
             cards: hashmap! {CardVariant::standard(CardName::TestRitual) => self.deck_sizes},
         };
         let riftcaller_deck = Deck {
             side: Side::Riftcaller,
             schools: vec![],
             identities: riftcallers.into_iter().map(CardVariant::standard).collect(),
+            sigils: vec![],
             cards: hashmap! {CardVariant::standard(CardName::TestSpell) => self.deck_sizes},
         };
 

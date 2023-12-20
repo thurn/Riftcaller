@@ -173,7 +173,7 @@ fn the_conjurers_circle() {
         .display_shelf()
         .find_card(CardName::TheConjurersCircle)
         .arena_icon()
-        .contains("1"));
+        .contains('1'));
 
     g.opponent_click(Button::EndRaid);
     g.pass_turn(Side::Riftcaller);
@@ -226,5 +226,5 @@ fn the_conjurers_circle_does_not_trigger_twice() {
         .display_shelf()
         .find_card(CardName::TheConjurersCircle)
         .arena_icon()
-        .contains("1"));
+        .contains('1'));
 }

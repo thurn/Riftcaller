@@ -17,13 +17,15 @@
 use std::collections::{HashMap, HashSet};
 
 use adventure_data::adventure::{
-    AdventureConfiguration, AdventureScreens, AdventureState, CardSelector, TileIcon, TileState,
+    AdventureConfiguration, AdventureScreens, AdventureState, CardFilter, TileIcon, TileState,
     WorldMap,
 };
 use adventure_data::adventure_effect_data::AdventureEffect;
 use adventure_data::narrative_event_name::NarrativeEventName;
 use core_data::adventure_primitives::TilePosition;
 use core_data::game_primitives::{AdventureId, Side};
+use game_data::card_name::{CardName, CardVariant};
+use game_data::deck::Deck;
 
 const TOP_LEFT: u8 = 0b00100000;
 const TOP_RIGHT: u8 = 0b00010000;
@@ -36,8 +38,14 @@ const LEFT: u8 = 0b00000001;
 pub fn create(config: AdventureConfiguration) -> AdventureState {
     let side = config.side;
     let deck = match side {
-        Side::Covenant => decklists::BASIC_COVENANT.clone(),
-        Side::Riftcaller => decklists::BASIC_RIFTCALLER.clone(),
+        Side::Covenant => Deck {
+            identities: vec![CardVariant::standard(CardName::RiversEye)],
+            ..decklists::BASIC_COVENANT.clone()
+        },
+        Side::Riftcaller => Deck {
+            identities: vec![CardVariant::standard(CardName::OleusTheWatcher)],
+            ..decklists::BASIC_RIFTCALLER.clone()
+        },
     };
 
     let mut tiles = HashMap::new();
@@ -74,7 +82,7 @@ pub fn create(config: AdventureConfiguration) -> AdventureState {
         0,
         -1,
         "hexMountain03",
-        AdventureEffect::Draft(CardSelector::default()),
+        AdventureEffect::Draft(CardFilter::default()),
         TileIcon::Draft,
     );
     add_with_entity(
@@ -94,7 +102,7 @@ pub fn create(config: AdventureConfiguration) -> AdventureState {
         -2,
         -2,
         "hexForestBroadleafForester00",
-        AdventureEffect::Shop(CardSelector::default()),
+        AdventureEffect::Shop(CardFilter::default()),
         TileIcon::Shop,
     );
     add_tile(&mut tiles, -1, -2, "hexSwamp00");

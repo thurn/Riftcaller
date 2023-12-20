@@ -16,7 +16,7 @@ use core_data::adventure_primitives::Coins;
 use game_data::card_name::{CardName, CardVariant};
 use serde::{Deserialize, Serialize};
 
-use crate::adventure::CardSelector;
+use crate::adventure::CardFilter;
 use crate::narrative_event_name::NarrativeEventName;
 
 /// A modification to a specific card in a player's deck
@@ -42,13 +42,14 @@ pub struct DeckCardEffect {
     /// Cost to modify these cards, if any
     pub cost: Option<Coins>,
     /// Number of times the user is allowed to perform this modification.
-    /// Defaults to unlimited.
-    pub times: Option<u32>,
+    ///
+    /// Defaults to 1.
+    pub times: u32,
 }
 
 impl DeckCardEffect {
     pub fn new(action: DeckCardAction) -> Self {
-        Self { action, cost: None, times: None }
+        Self { action, cost: None, times: 1 }
     }
 
     pub fn cost(mut self, cost: Coins) -> Self {
@@ -57,7 +58,7 @@ impl DeckCardEffect {
     }
 
     pub fn times(mut self, times: u32) -> Self {
-        self.times = Some(times);
+        self.times = times;
         self
     }
 }
@@ -66,9 +67,9 @@ impl DeckCardEffect {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum AdventureEffect {
     /// Show a draft screen to select a card from a list of random choices
-    Draft(CardSelector),
+    Draft(CardFilter),
     /// Open a shop screen to purchase cards from a set of random choices.
-    Shop(CardSelector),
+    Shop(CardFilter),
     /// Open the narrative event with the given name
     NarrativeEvent(NarrativeEventName),
     /// Open a 'start battle' screen
@@ -82,20 +83,20 @@ pub enum AdventureEffect {
     LoseAllCoins,
     /// Gain a quantity of arcanite
     GainArcanite(u32),
-    /// The player may pick a card in their deck matching [CardSelector] to
+    /// The player may pick a card in their deck matching [CardFilter] to
     /// apply [DeckCardEffect] to.
-    PickCardForEffect(CardSelector, DeckCardEffect),
-    /// Modify a random card in the player's deck matching this [CardSelector]
+    PickCardForEffect(CardFilter, DeckCardEffect),
+    /// Modify a random card in the player's deck matching this [CardFilter]
     /// by applying a [DeckCardAction] to it. The card chosen is known to
     /// the player in advance.
-    KnownRandomCardEffect(CardSelector, DeckCardAction),
-    /// Modify a random card in the player's deck matching this [CardSelector]
+    KnownRandomCardEffect(CardFilter, DeckCardAction),
+    /// Modify a random card in the player's deck matching this [CardFilter]
     /// by applying a [DeckCardAction] to it. The card chosen is not known
     /// to the player in advance.
-    UnknownRandomCardEffect(CardSelector, DeckCardAction),
+    UnknownRandomCardEffect(CardFilter, DeckCardAction),
     /// Apply a [DeckCardAction] to all cards matching this
-    /// [CardSelector].
-    ApplyCardEffectToAllMatching(CardSelector, DeckCardAction),
+    /// [CardFilter].
+    ApplyCardEffectToAllMatching(CardFilter, DeckCardAction),
     /// Add a quantity of random additional tiles to the world map
     AddMapTiles(u32),
     /// Add a quantity of standard draft tiles to the world map
@@ -107,32 +108,32 @@ pub enum AdventureEffect {
     /// [AdventureEffectData::known_card].
     GainKnownFixedCard(CardName),
     /// Add a known random card to the player's deck matching this
-    /// [CardSelector]. The card received is known to the player in advance.
-    GainKnownRandomCard(CardSelector),
+    /// [CardFilter]. The card received is known to the player in advance.
+    GainKnownRandomCard(CardFilter),
     /// Add an unknown random card to the player's deck matching this
-    /// [CardSelector]. The card received is not known to the player in advance.
-    GainUnknownRandomCard(CardSelector),
+    /// [CardFilter]. The card received is not known to the player in advance.
+    GainUnknownRandomCard(CardFilter),
     /// Pick a card from the deck for the player to lose, matching this
-    /// [CardSelector].
+    /// [CardFilter].
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.    
-    PickCardToLose(CardSelector),
+    PickCardToLose(CardFilter),
     /// Lose a known random card from the player's deck matching this
-    /// [CardSelector]. The card lost is known to the player in advance.
+    /// [CardFilter]. The card lost is known to the player in advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
-    LoseKnownRandomCard(CardSelector),
+    LoseKnownRandomCard(CardFilter),
     /// Lose an unknown random card from the player's deck matching this
-    /// [CardSelector]. The card lost is not known to the player in advance.
+    /// [CardFilter]. The card lost is not known to the player in advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
-    LoseUnknownRandomCard(CardSelector),
+    LoseUnknownRandomCard(CardFilter),
 }
 
 impl AdventureEffect {

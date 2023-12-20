@@ -428,13 +428,13 @@ fn a_moments_peace() {
     let id = g.create_and_play(CardName::AMomentsPeace);
     g.pass_turn(Side::Riftcaller);
     g.pass_turn(Side::Covenant);
-    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    assert!(g.client.cards.get(id).arena_icon().contains('1'));
     g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestScheme1_10);
     g.progress_room(test_constants::ROOM_ID);
     assert_eq!(g.client.other_player.score(), 60);
     g.pass_turn(Side::Covenant);
-    assert!(g.client.cards.get(id).arena_icon().contains("2"));
+    assert!(g.client.cards.get(id).arena_icon().contains('2'));
     g.pass_turn(Side::Riftcaller);
     g.pass_turn(Side::Covenant);
     assert!(g.is_victory_for_player(Side::Covenant));
@@ -467,7 +467,7 @@ fn vortex_portal() {
     g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestScheme1_10);
     g.progress_room(test_constants::ROOM_ID);
-    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    assert!(g.client.cards.get(id).arena_icon().contains('1'));
     g.pass_turn(Side::Covenant);
     g.activate_ability(id, 1);
     assert_eq!(g.client.cards.browser().len(), 1);

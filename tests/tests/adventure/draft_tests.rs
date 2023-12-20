@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::CardSelector;
+use adventure_data::adventure::CardFilter;
 use adventure_data::adventure_effect_data::AdventureEffect;
 use core_data::game_primitives::Side;
 use game_data::card_name::{CardName, CardVariant};
@@ -27,7 +27,7 @@ const CARD: CardVariant = CardVariant::standard(CardName::TestSingletonSetSpell)
 fn test_initiate_draft() {
     let mut adventure =
         TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
-    let draft = adventure.insert_tile(AdventureEffect::Draft(CardSelector::default()));
+    let draft = adventure.insert_tile(AdventureEffect::Draft(CardFilter::default()));
     adventure.visit_tile(draft);
     assert!(adventure.has(Button::DraftPick));
 }
@@ -36,7 +36,7 @@ fn test_initiate_draft() {
 fn test_pick_card() {
     let mut adventure =
         TestAdventure::new(Side::Riftcaller).card_set(CardSetName::TestSingletonSpellSet).build();
-    let draft = adventure.insert_tile(AdventureEffect::Draft(CardSelector::default()));
+    let draft = adventure.insert_tile(AdventureEffect::Draft(CardFilter::default()));
 
     adventure.visit_tile(draft);
     adventure.click(Button::DraftPick);

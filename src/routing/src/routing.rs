@@ -75,7 +75,7 @@ pub fn render_player_panel(
             address: PlayerPanel::DeckViewer.into(),
             player,
             effect: None,
-            card_selector: None,
+            filter: None,
         }
         .build_panel(),
         PlayerPanel::BattleVictory => BattleVictoryPanel::new(player).build_panel(),
