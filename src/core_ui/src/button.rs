@@ -210,6 +210,11 @@ impl IconButton {
         self
     }
 
+    pub fn action_boxed(mut self, action: Box<dyn InterfaceAction>) -> Self {
+        self.action = action;
+        self
+    }
+
     pub fn long_press_action(mut self, action: impl InterfaceAction + 'static) -> Self {
         self.long_press_action = Box::new(action);
         self

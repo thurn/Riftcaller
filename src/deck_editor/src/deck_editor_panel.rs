@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_actions::adventure_flags;
 use adventure_data::adventure::CardFilter;
+use adventure_data::adventure_action::AdventureAction;
 use adventure_data::adventure_effect_data::{DeckCardAction, DeckCardEffect};
-use adventure_generator::card_filter;
+use core_ui::action_builder::ActionBuilder;
 use core_ui::button::{Button, ButtonType};
 use core_ui::design::FontSize;
 use core_ui::full_screen_image::FullScreenImage;
@@ -86,46 +88,36 @@ impl<'a> DeckEditorPanel<'a> {
                 DeckCardSlot::new(CardHeight::vh(36.0))
                     .card(Some(DeckCard::new(variant).quantity(quantity))),
             )
-            .child(self.action_button(variant, quantity))
+            .child(self.action_button(variant))
     }
 
-    fn action_button(&self, variant: CardVariant, quantity: Option<u32>) -> impl Component {
-        self.deck_card_effect(variant, quantity).map(|effect| {
-            Button::new(match effect.action {
-                DeckCardAction::DuplicateTo3Copies => "Duplicate",
-                DeckCardAction::TransmuteAllCopies => "Transmute",
-                DeckCardAction::UpgradeAllCopies => "Upgrade",
-                DeckCardAction::RemoveOne => "Remove",
-            })
-            .layout(
-                Layout::new()
-                    .position_type(FlexPosition::Absolute)
-                    .position(Edge::Bottom, 0.px())
-                    .position(Edge::Left, 50.pct())
-                    .translate((-50).pct(), 50.pct()),
-            )
-            .button_type(ButtonType::Secondary)
-        })
-    }
-
-    fn deck_card_effect(
-        &self,
-        variant: CardVariant,
-        quantity: Option<u32>,
-    ) -> Option<&DeckCardEffect> {
-        if let Some(filter) = self.filter {
-            if !card_filter::matches(filter, variant) {
-                return None;
+    fn action_button(&self, variant: CardVariant) -> impl Component {
+        match self.effect {
+            Some(effect)
+                if adventure_flags::can_apply_deck_card_effect(
+                    self.player.adventure.as_ref(),
+                    variant,
+                ) =>
+            {
+                Some(
+                    Button::new(match effect.action {
+                        DeckCardAction::DuplicateTo3Copies => "Duplicate",
+                        DeckCardAction::TransmuteAllCopies => "Transmute",
+                        DeckCardAction::UpgradeAllCopies => "Upgrade",
+                        DeckCardAction::RemoveOne => "Remove",
+                    })
+                    .layout(
+                        Layout::new()
+                            .position_type(FlexPosition::Absolute)
+                            .position(Edge::Bottom, 0.px())
+                            .position(Edge::Left, 50.pct())
+                            .translate((-50).pct(), 50.pct()),
+                    )
+                    .action(AdventureAction::ApplyDeckCardEffect(variant))
+                    .button_type(ButtonType::Secondary),
+                )
             }
-        }
-
-        if let Some(effect) = self.effect.as_ref() {
-            match effect.action {
-                DeckCardAction::DuplicateTo3Copies if quantity.unwrap_or_default() >= 3 => None,
-                _ => Some(effect),
-            }
-        } else {
-            None
+            _ => None,
         }
     }
 
@@ -174,10 +166,18 @@ impl<'a> Panel for DeckEditorPanel<'a> {
     }
 
     fn screen_overlay(&self) -> Option<Node> {
-        ScreenOverlay::new(self.player)
-            .show_deck_button(false)
-            .show_close_button(Panels::close(self.address()))
-            .build()
+        if self.effect.is_some() {
+            ScreenOverlay::new(self.player).show_deck_button(false).show_close_button(
+                ActionBuilder::new()
+                    .action(AdventureAction::CloseDeckCardEffects)
+                    .update(Panels::close(self.address())),
+            )
+        } else {
+            ScreenOverlay::new(self.player)
+                .show_deck_button(false)
+                .show_close_button(Panels::close(self.address()))
+        }
+        .build()
     }
 }
 

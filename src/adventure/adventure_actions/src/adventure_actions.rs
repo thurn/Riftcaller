@@ -16,12 +16,15 @@
 
 use adventure_data::adventure::{AdventureScreen, AdventureState};
 use adventure_data::adventure_action::AdventureAction;
+use adventure_data::adventure_effect_data::DeckCardAction;
 use anyhow::Result;
 use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
 use core_data::game_primitives::CardType;
+use game_data::card_name::{CardMetadata, CardVariant};
 use with_error::{fail, verify};
 
 pub mod adventure_effect;
+pub mod adventure_flags;
 pub mod narrative_events;
 
 /// Handles an incoming [AdventureAction] and produces a client response.
@@ -39,6 +42,8 @@ pub fn handle_adventure_action(state: &mut AdventureState, action: &AdventureAct
             narrative_events::apply_narrative_effect(state, *choice_index, *effect_index)
         }
         AdventureAction::EndNarrativeEvent => narrative_events::end_narrative_event(state),
+        AdventureAction::ApplyDeckCardEffect(card) => handle_deck_card_effect(state, *card),
+        AdventureAction::CloseDeckCardEffects => handle_close_deck_card_effects(state),
     }
 }
 
@@ -119,6 +124,54 @@ fn handle_buy_card(state: &mut AdventureState, index: usize) -> Result<()> {
         .or_insert(choice.quantity);
     spend_coins(state, choice.cost)?;
 
+    Ok(())
+}
+
+fn handle_deck_card_effect(state: &mut AdventureState, card: CardVariant) -> Result<()> {
+    verify!(adventure_flags::can_apply_deck_card_effect(Some(state), card), "Cannot apply effect");
+    let Some(AdventureScreen::ApplyDeckEffect(_, effect)) = state.screens.current_mut() else {
+        fail!("Expected active ApplyDeckEffect screen");
+    };
+    let action = effect.action;
+    effect.times = effect.times.saturating_sub(1);
+    if let Some(cost) = effect.cost {
+        spend_coins(state, cost)?;
+    }
+
+    match action {
+        DeckCardAction::DuplicateTo3Copies => {
+            state.deck.cards.insert(card, 3);
+        }
+        DeckCardAction::TransmuteAllCopies => {
+            todo!("Implement this")
+        }
+        DeckCardAction::UpgradeAllCopies => {
+            let count = state.deck.cards.get(&card).copied().unwrap_or_default();
+            state.deck.cards.remove(&card);
+            state.deck.cards.insert(
+                CardVariant { name: card.name, metadata: CardMetadata { is_upgraded: true } },
+                count,
+            );
+        }
+        DeckCardAction::RemoveOne => {
+            let count = state.deck.cards.get(&card).copied().unwrap_or_default();
+            if count <= 1 {
+                state.deck.cards.remove(&card);
+            } else {
+                state.deck.cards.insert(card, count - 1);
+            }
+        }
+    }
+    Ok(())
+}
+
+fn handle_close_deck_card_effects(state: &mut AdventureState) -> Result<()> {
+    verify!(
+        matches!(state.screens.current(), Some(AdventureScreen::ApplyDeckEffect(..))),
+        "No active ApplyDeckEffect screen"
+    );
+
+    state.screens.pop();
     Ok(())
 }
 

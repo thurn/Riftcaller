@@ -23,7 +23,7 @@ use core_data::adventure_primitives::NarrativeChoiceIndex;
 use game_data::deck::Deck;
 use with_error::{fail, verify};
 
-use crate::adventure_effect;
+use crate::{adventure_effect, adventure_flags};
 
 /// Handles a request from a user to advance to a given step within a narrative
 /// event screen.
@@ -67,7 +67,10 @@ pub fn apply_narrative_effect(
 }
 
 pub fn end_narrative_event(state: &mut AdventureState) -> Result<()> {
-    verify!(can_end_narrative_event(state), "Cannot currently end narrative event");
+    verify!(
+        adventure_flags::can_end_narrative_event(state),
+        "Cannot currently end narrative event"
+    );
     state.screens.pop();
     Ok(())
 }
@@ -76,18 +79,6 @@ pub fn end_narrative_event(state: &mut AdventureState) -> Result<()> {
 /// provided [NarrativeEventData].
 pub fn is_legal_choice(data: &NarrativeEventData, index: NarrativeChoiceIndex) -> bool {
     index.value < data.choices.len()
-}
-
-fn can_end_narrative_event(state: &AdventureState) -> bool {
-    let Some(AdventureScreen::NarrativeEvent(data)) = state.screens.current() else {
-        return false;
-    };
-
-    match data.step {
-        NarrativeEventStep::Introduction => true,
-        NarrativeEventStep::ViewChoices => false,
-        NarrativeEventStep::SelectChoice(index) => data.choice(index).all_effects_applied(),
-    }
 }
 
 /// "Known random" choices are ones that are random each time this narrative

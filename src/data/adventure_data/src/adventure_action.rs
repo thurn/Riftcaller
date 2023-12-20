@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use core_data::adventure_primitives::{NarrativeChoiceIndex, TilePosition};
+use game_data::card_name::CardVariant;
 use serde::{Deserialize, Serialize};
 
 use crate::adventure::NarrativeEventStep;
@@ -47,4 +48,11 @@ pub enum AdventureAction {
     ApplyNarrativeEffect(NarrativeChoiceIndex, NarrativeEffectIndex),
     /// Ends the current narrative event screen
     EndNarrativeEvent,
+    /// Apply the current deck card effect to a named card.
+    ///
+    /// The current screen must be an 'ApplyDeckEffect' screen, and the effect
+    /// to use is queried from that screen's state.
+    ApplyDeckCardEffect(CardVariant),
+    /// Stop showing the deck card effects editor screen.
+    CloseDeckCardEffects,
 }

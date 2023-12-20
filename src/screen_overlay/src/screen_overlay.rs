@@ -36,7 +36,7 @@ use protos::riftcaller::{ClientDebugCommand, FlexAlign, FlexJustify, FlexPositio
 pub struct ScreenOverlay<'a, 'b> {
     player: &'a PlayerState,
     game: Option<&'b GameState>,
-    show_close_button: Option<Panels>,
+    show_close_button: Option<Box<dyn InterfaceAction>>,
     show_deck_button: bool,
     show_coin_count: bool,
     show_menu_button: bool,
@@ -61,8 +61,8 @@ impl<'a, 'b> ScreenOverlay<'a, 'b> {
         self
     }
 
-    pub fn show_close_button(mut self, show_close_button: Panels) -> Self {
-        self.show_close_button = Some(show_close_button);
+    pub fn show_close_button(mut self, show_close_button: impl InterfaceAction + 'static) -> Self {
+        self.show_close_button = Some(Box::new(show_close_button));
         self
     }
 
@@ -97,10 +97,10 @@ impl<'a, 'b> Component for ScreenOverlay<'a, 'b> {
             .child(
                 Row::new("Left")
                     .style(Style::new().align_items(FlexAlign::Center))
-                    .child(self.show_close_button.map(|panels| {
+                    .child(self.show_close_button.map(|action| {
                         IconButton::new(icons::CLOSE)
                             .button_type(IconButtonType::DestructiveLarge)
-                            .action(panels)
+                            .action_boxed(action)
                             .layout(Layout::new().margin(Edge::All, 12.px()))
                     }))
                     .child(self.show_menu_button.then(|| {

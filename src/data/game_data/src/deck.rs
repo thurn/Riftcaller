@@ -58,4 +58,10 @@ impl Deck {
         result.sort();
         result
     }
+
+    /// Returns an iterator over all [CardVariant]s in this deck, including
+    /// identity and sigil cards.
+    pub fn all_cards(&self) -> impl Iterator<Item = CardVariant> + '_ {
+        self.identities.iter().chain(self.sigils.iter()).chain(self.cards.keys()).copied()
+    }
 }

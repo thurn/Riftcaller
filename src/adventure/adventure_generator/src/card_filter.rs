@@ -73,19 +73,18 @@ pub fn shop_choices(state: &mut AdventureState, selector: CardFilter) -> ShopDat
 
 /// Returns true if the specified [CardVariant] is selected by the provided
 /// [CardFilter].
-pub fn matches(selector: CardFilter, variant: CardVariant) -> bool {
+pub fn matches(filter: CardFilter, variant: CardVariant) -> bool {
     let definition = rules::get(variant);
 
-    let mut result = definition.rarity >= selector.minimum_rarity;
-    result &= (definition.config.metadata.is_upgraded && selector.upgraded)
-        || (!definition.config.metadata.is_upgraded && !selector.upgraded);
+    let mut result = definition.rarity >= filter.minimum_rarity;
+    result &= (definition.config.metadata.is_upgraded && filter.upgraded)
+        || (!definition.config.metadata.is_upgraded && !filter.upgraded);
 
-    if !selector.card_types.is_empty() {
-        result &= selector.card_types.contains(definition.card_type);
+    if !filter.card_types.is_empty() {
+        result &= filter.card_types.contains(definition.card_type);
     }
-    if !selector.card_subtypes.is_empty() {
-        result &=
-            selector.card_subtypes.iter().any(|subtype| definition.subtypes.contains(&subtype));
+    if !filter.card_subtypes.is_empty() {
+        result &= filter.card_subtypes.iter().any(|subtype| definition.subtypes.contains(&subtype));
     }
 
     result

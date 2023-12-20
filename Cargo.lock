@@ -63,6 +63,7 @@ dependencies = [
  "anyhow",
  "core_data",
  "game_data",
+ "player_data",
  "rules",
  "with_error",
 ]
@@ -965,8 +966,8 @@ name = "deck_editor"
 version = "0.0.0"
 dependencies = [
  "adapters",
+ "adventure_actions",
  "adventure_data",
- "adventure_generator",
  "anyhow",
  "assets",
  "core_data",
