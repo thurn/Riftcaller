@@ -11,7 +11,10 @@ doctest = false
 
 [dependencies]
 adventure_data = { path = "../../data/adventure_data", version = "0.0.0" }
-game_data = { path = "../../data/game_data", version = "0.0.0" }
 core_data = { path = "../../data/core_data", version = "0.0.0" }
 decklists = { path = "../../decklists", version = "0.0.0" }
+game_data = { path = "../../data/game_data", version = "0.0.0" }
+game_tables = { path = "../../game_tables", version = "0.0.0" }
 rules = { path = "../../rules", version = "0.0.0" }
+
+enumset = { version = "1.1.3", features = ["serde"] }

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::adventure_primitives::{NarrativeChoiceIndex, TilePosition};
+use core_data::adventure_primitives::{NarrativeChoiceId, TilePosition};
 use game_data::card_name::CardVariant;
 use serde::{Deserialize, Serialize};
 
-use crate::adventure::NarrativeEventStep;
+use crate::narrative_event_data::NarrativeEventStep;
 
 /// Vector index for locating effects to apply within a given narrative
 /// encounter.
@@ -45,7 +45,7 @@ pub enum AdventureAction {
     SetNarrativeStep(NarrativeEventStep),
     /// Apply one effect of a narrative event. This can result in playing an
     /// animation or opening another screen (such as showing a 'draft' panel).
-    ApplyNarrativeEffect(NarrativeChoiceIndex, NarrativeEffectIndex),
+    ApplyNarrativeEffect(NarrativeChoiceId, NarrativeEffectIndex),
     /// Ends the current narrative event screen
     EndNarrativeEvent,
     /// Apply the current deck card effect to a named card.

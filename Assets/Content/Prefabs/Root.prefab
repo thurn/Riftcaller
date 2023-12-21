@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 9218228602600786081}
   - component: {fileID: 8679095155801471873}
   - component: {fileID: 5046173552731427907}
+  - component: {fileID: 5655522961466216953}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -208,6 +209,7 @@ MonoBehaviour:
   _arenaService: {fileID: 0}
   _raidService: {fileID: 0}
   _offscreenCards: {fileID: 0}
+  _cardScoring: {fileID: 0}
   _cardStaging: {fileID: 0}
   _revealedCardsBrowserSmall: {fileID: 0}
   _revealedCardsBrowserLarge: {fileID: 0}
@@ -230,7 +232,6 @@ MonoBehaviour:
   _opponentDiscardPilePosition: {fileID: 0}
   _userDiscardPile: {fileID: 0}
   _opponentDiscardPile: {fileID: 0}
-  _cardStagingArea: {fileID: 0}
   _userManaDisplay: {fileID: 0}
   _opponentManaDisplay: {fileID: 0}
   _userActionDisplay: {fileID: 0}
@@ -255,6 +256,7 @@ MonoBehaviour:
   _opponentRiftcallerDisplay: {fileID: 0}
   _browserDragTarget: {fileID: 0}
   _handStorage: {fileID: 0}
+  _gameDataService: {fileID: 5655522961466216953}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,7 +396,6 @@ MonoBehaviour:
   _tokenCardPrefab: {fileID: 8205451300665919485, guid: 417cf2c9967ba4ce4af88afcb0180754, type: 3}
   _fullHeightCardPrefab: {fileID: 273438924950617825, guid: aedc5381427064f94929ac604a4af54a, type: 3}
   _fullHeightCardTokenPrefab: {fileID: 3506438849900608313, guid: 7c6a6f7de89bf4339a3257e293023001, type: 3}
-  _optimisticCard: {fileID: 0}
 --- !u!114 &205228965686964172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,6 +456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
+  _currentPriority: 0
 --- !u!114 &205228965686964222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,6 +469,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f848ca0eb9e947cb86bced53cb6dac75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _lastClicked: {fileID: 0}
+  _lastHovered: {fileID: 0}
   _registry: {fileID: 205228965686964167}
 --- !u!114 &205228965686964221
 MonoBehaviour:
@@ -576,6 +580,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
   _studioPrefab: {fileID: 8868668501757707318, guid: c42080a601804497988b1bf23051d052, type: 3}
+--- !u!114 &5655522961466216953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205228965686964173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cece2fd05cdc44d7a8845fab60c6a08e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tables:
+  - _tableName: 3
+    _asset: {fileID: 4900000, guid: 02576df1a51174ea69d11454c627a47c, type: 3}
+  - _tableName: 2
+    _asset: {fileID: 4900000, guid: 9c0e8ef9027874495b333da9a5ff0f03, type: 3}
+  - _tableName: 4
+    _asset: {fileID: 4900000, guid: 63b84a0716ee440f99edc197147df6e8, type: 3}
 --- !u!1 &205228965825750781
 GameObject:
   m_ObjectHideFlags: 0

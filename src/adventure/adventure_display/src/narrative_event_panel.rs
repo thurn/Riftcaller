@@ -12,10 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{NarrativeEventChoice, NarrativeEventData, NarrativeEventStep};
+use adventure_actions::adventure_flags;
 use adventure_data::adventure_action::{AdventureAction, NarrativeEffectIndex};
 use adventure_data::adventure_effect_data::AdventureEffectData;
-use core_data::adventure_primitives::NarrativeChoiceIndex;
+use adventure_data::narrative_event_data::{
+    NarrativeChoiceState, NarrativeEventChoice, NarrativeEventData, NarrativeEventState,
+    NarrativeEventStep,
+};
+use core_data::adventure_primitives::NarrativeChoiceId;
 use core_ui::action_builder::ActionBuilder;
 use core_ui::actions::InterfaceAction;
 use core_ui::design::{BackgroundColor, FontSize};
@@ -39,6 +43,7 @@ const CONTAINER_HEIGHT: i32 = 750;
 pub struct NarrativeEventPanel<'a> {
     pub player: &'a PlayerState,
     pub address: PanelAddress,
+    pub state: &'a NarrativeEventState,
     pub data: &'a NarrativeEventData,
 }
 
@@ -59,35 +64,41 @@ impl<'a> NarrativeEventPanel<'a> {
     }
 
     fn view_choices(&self) -> Column {
-        self.container().children(self.data.enumerate_choices().map(Self::narrative_choice)).child(
-            Self::button_row(
+        self.container()
+            .children(
+                self.data
+                    .enumerate_choices()
+                    .map(|(choice_id, choice)| self.narrative_choice(choice_id, choice)),
+            )
+            .child(Self::button_row(
                 "Back",
                 AdventureAction::SetNarrativeStep(NarrativeEventStep::Introduction),
-            ),
-        )
+            ))
     }
 
-    fn view_outcome(&self, choice_index: NarrativeChoiceIndex) -> Column {
-        let choice = self.data.choice(choice_index);
+    fn view_outcome(&self, choice_id: NarrativeChoiceId) -> Column {
+        let choice = self.data.choice(choice_id);
+        let choice_state = self.state.choice(choice_id);
         self.container()
             .child(Self::description(choice.result_description.clone()))
             .children(choice.enumerate_costs().map(|(effect_index, data)| {
-                Self::apply_effect_row(
+                self.apply_effect_row(
                     data,
-                    choice_index,
+                    choice_id,
                     effect_index,
-                    !data.effect.is_immediate() && !choice.applied.contains(&effect_index),
+                    !data.effect.is_immediate()
+                        && !self.state.choice(choice_id).effect(effect_index).applied,
                 )
             }))
             .children(choice.enumerate_rewards().map(|(effect_index, data)| {
-                Self::apply_effect_row(
+                self.apply_effect_row(
                     data,
-                    choice_index,
+                    choice_id,
                     effect_index,
-                    !data.effect.is_immediate() && !choice.applied.contains(&effect_index),
+                    !data.effect.is_immediate() && !choice_state.effect(effect_index).applied,
                 )
             }))
-            .child(choice.all_effects_applied().then(|| {
+            .child(adventure_flags::all_effects_applied(choice, choice_state).then(|| {
                 Self::button_row(
                     "Continue",
                     ActionBuilder::new()
@@ -98,23 +109,25 @@ impl<'a> NarrativeEventPanel<'a> {
     }
 
     fn narrative_choice(
-        (index, choice): (NarrativeChoiceIndex, &NarrativeEventChoice),
+        &self,
+        choice_id: NarrativeChoiceId,
+        choice: &NarrativeEventChoice,
     ) -> impl Component {
-        let known = Self::known_cards(choice);
+        let known = Self::known_cards(self.state.choice(choice_id));
         let clear = vec![
             interface_animations::set_displayed(
-                element_names::narrative_outcome_tooltip(index),
+                element_names::narrative_outcome_tooltip(choice_id),
                 false,
             ),
             Command::InfoZoom(InfoZoomCommand { show: false, card: None }),
         ];
         Self::button_row(
             choice.choice_description.clone(),
-            AdventureAction::SetNarrativeStep(NarrativeEventStep::SelectChoice(index)),
+            AdventureAction::SetNarrativeStep(NarrativeEventStep::SelectChoice(choice_id)),
         )
         .on_mouse_enter(vec![
             Some(interface_animations::set_displayed(
-                element_names::narrative_outcome_tooltip(index),
+                element_names::narrative_outcome_tooltip(choice_id),
                 true,
             )),
             (!known.is_empty()).then(|| {
@@ -127,20 +140,26 @@ impl<'a> NarrativeEventPanel<'a> {
         ])
         .on_mouse_leave(clear.clone())
         .on_mouse_down(clear)
-        .child(Self::outcome_tooltip(index, choice))
+        .child(self.outcome_tooltip(choice_id, choice))
     }
 
     fn apply_effect_row(
+        &self,
         data: &AdventureEffectData,
-        choice_index: NarrativeChoiceIndex,
+        choice_id: NarrativeChoiceId,
         effect_index: NarrativeEffectIndex,
         show_action: bool,
     ) -> impl Component {
         let is_cost = matches!(effect_index, NarrativeEffectIndex::Cost(..));
         if show_action {
             Self::button_row(
-                Self::effect_text(data, if is_cost { "Cost" } else { "Reward" }),
-                AdventureAction::ApplyNarrativeEffect(choice_index, effect_index),
+                self.effect_text(
+                    data,
+                    choice_id,
+                    effect_index,
+                    if is_cost { "Cost" } else { "Reward" },
+                ),
+                AdventureAction::ApplyNarrativeEffect(choice_id, effect_index),
             )
         } else {
             Row::new("ImmediateEffect")
@@ -150,23 +169,22 @@ impl<'a> NarrativeEventPanel<'a> {
                         .padding(Edge::Horizontal, 8.px())
                         .min_height(88.px()),
                 )
-                .child(Self::effect_description(data, "Applied"))
+                .child(self.effect_description(data, choice_id, effect_index, "Applied"))
         }
     }
 
     /// Returns a list of all `known_card`s associated with costs & effects of
     /// this choice.
-    fn known_cards(choice: &NarrativeEventChoice) -> Vec<CardVariant> {
-        choice
-            .costs
-            .iter()
-            .flat_map(|e| e.known_card)
-            .chain(choice.rewards.iter().flat_map(|e| e.known_card))
-            .collect()
+    fn known_cards(choice: &NarrativeChoiceState) -> Vec<CardVariant> {
+        choice.effects.values().flat_map(|v| v.known_card).collect()
     }
 
-    fn outcome_tooltip(index: NarrativeChoiceIndex, choice: &NarrativeEventChoice) -> Column {
-        Column::new(element_names::narrative_outcome_tooltip(index))
+    fn outcome_tooltip(
+        &self,
+        choice_id: NarrativeChoiceId,
+        choice: &NarrativeEventChoice,
+    ) -> Column {
+        Column::new(element_names::narrative_outcome_tooltip(choice_id))
             .style(
                 Style::new()
                     .display(FlexDisplayStyle::None)
@@ -177,22 +195,36 @@ impl<'a> NarrativeEventPanel<'a> {
                     .padding(Edge::All, 8.px())
                     .border_radius(Corner::All, 8.px()),
             )
-            .children(choice.costs.iter().map(|choice| Self::effect_description(choice, "Cost")))
-            .children(
-                choice.rewards.iter().map(|choice| Self::effect_description(choice, "Reward")),
-            )
+            .children(choice.enumerate_costs().map(|(effect_index, effect)| {
+                self.effect_description(effect, choice_id, effect_index, "Cost")
+            }))
+            .children(choice.enumerate_rewards().map(|(effect_index, effect)| {
+                self.effect_description(effect, choice_id, effect_index, "Reward")
+            }))
     }
 
-    fn effect_text(data: &AdventureEffectData, label: &'static str) -> String {
+    fn effect_text(
+        &self,
+        data: &AdventureEffectData,
+        choice_id: NarrativeChoiceId,
+        effect_index: NarrativeEffectIndex,
+        label: &'static str,
+    ) -> String {
         let mut text = format!("<b>{}:</b> {}", label, data.description);
-        if let Some(name) = data.known_card {
+        if let Some(name) = self.state.choice(choice_id).effect(effect_index).known_card {
             text = text.replace("{CardName}", &name.displayed_name());
         }
         text
     }
 
-    fn effect_description(data: &AdventureEffectData, label: &'static str) -> impl Component {
-        Text::new(Self::effect_text(data, label))
+    fn effect_description(
+        &self,
+        data: &AdventureEffectData,
+        choice_id: NarrativeChoiceId,
+        effect_index: NarrativeEffectIndex,
+        label: &'static str,
+    ) -> impl Component {
+        Text::new(self.effect_text(data, choice_id, effect_index, label))
             .layout(Layout::new().margin(Edge::Vertical, 4.px()))
             .font_size(FontSize::NarrativeText)
             .text_align(TextAlign::MiddleLeft)
@@ -267,7 +299,7 @@ impl<'a> Component for NarrativeEventPanel<'a> {
         FullScreenImage::new()
             .image(style::sprite_jpg(BACKGROUND))
             .disable_overlay(true)
-            .content(match self.data.step {
+            .content(match self.state.step {
                 NarrativeEventStep::Introduction => self.introduction(),
                 NarrativeEventStep::ViewChoices => self.view_choices(),
                 NarrativeEventStep::SelectChoice(index) => self.view_outcome(index),

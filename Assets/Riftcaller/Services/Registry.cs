@@ -235,6 +235,8 @@ namespace Riftcaller.Services
     [FormerlySerializedAs("_playCardBrowser")] [SerializeField] CurveObjectDisplay _handStorage = null!;
     public CurveObjectDisplay HandStorage => _handStorage;
 
+    [SerializeField] GameDataService _gameDataService = null!;
+
     void Awake()
     {
       LogUtils.Log($"Starting '{SceneManager.GetActiveScene().name}' Scene");
@@ -256,8 +258,11 @@ namespace Riftcaller.Services
       
       DocumentService.Initialize();
       MusicService.Initialize(GlobalGameMode);
-      GameService.Initialize(GlobalGameMode);
+      
+      yield return _gameDataService.Initialize(this);
 
+      GameService.Initialize(GlobalGameMode);
+      
       if (ArenaService != null)
       {
         yield return ArenaService.Initialize();

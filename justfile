@@ -54,6 +54,16 @@ protos:
     rm -r proto/obj
     cargo +nightly fmt
 
+sheet_id := "12TjvWunLnf_JX7GZkZ9R3ivMjrbhZou22hGYKzDFD9o"
+
+csv:
+    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=981334943" -o Assets/Data/narrative_events.csv
+    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=1418995193" -o Assets/Data/narrative_event_details.csv
+    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=1721526268" -o Assets/Data/card_filters.csv
+    # Rust CSV crate only supports lowercase
+    sed -i '' 's/TRUE/true/g' Assets/Data/card_filters.csv
+    sed -i '' 's/FALSE/false/g' Assets/Data/card_filters.csv
+
 @dropbox-ignore:
     find . -name '*conflicted*' -delete
     mkdir -p Library
@@ -166,6 +176,9 @@ target_x86 := "x86_64-apple-darwin"
 clean-plugin:
     rm -r Assets/Plugins/
 
+# Builds a Unity native plugin.
+#
+# You should typically not need to restart Unity after running this.
 mac-plugin:
     # you may need to run codesign --deep -s - -f riftcaller.app before running
     cargo build -p plugin --release --target={{target_arm}}

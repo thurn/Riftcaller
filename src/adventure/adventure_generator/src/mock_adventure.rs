@@ -17,12 +17,10 @@
 use std::collections::{HashMap, HashSet};
 
 use adventure_data::adventure::{
-    AdventureConfiguration, AdventureScreens, AdventureState, CardFilter, TileIcon, TileState,
-    WorldMap,
+    AdventureConfiguration, AdventureScreens, AdventureState, TileIcon, TileState, WorldMap,
 };
 use adventure_data::adventure_effect_data::AdventureEffect;
-use adventure_data::narrative_event_name::NarrativeEventName;
-use core_data::adventure_primitives::TilePosition;
+use core_data::adventure_primitives::{CardFilterId, NarrativeEventId, TilePosition};
 use core_data::game_primitives::{AdventureId, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::deck::Deck;
@@ -82,7 +80,7 @@ pub fn create(config: AdventureConfiguration) -> AdventureState {
         0,
         -1,
         "hexMountain03",
-        AdventureEffect::Draft(CardFilter::default()),
+        AdventureEffect::Draft(CardFilterId::new(3)),
         TileIcon::Draft,
     );
     add_with_entity(
@@ -90,7 +88,7 @@ pub fn create(config: AdventureConfiguration) -> AdventureState {
         1,
         -1,
         "hexPlainsFarm00",
-        AdventureEffect::NarrativeEvent(NarrativeEventName::StormfeatherEagle),
+        AdventureEffect::NarrativeEvent(NarrativeEventId::new(1)),
         TileIcon::NarrativeEvent,
     );
 
@@ -102,7 +100,7 @@ pub fn create(config: AdventureConfiguration) -> AdventureState {
         -2,
         -2,
         "hexForestBroadleafForester00",
-        AdventureEffect::Shop(CardFilter::default()),
+        AdventureEffect::Shop(CardFilterId::new(2)),
         TileIcon::Shop,
     );
     add_tile(&mut tiles, -1, -2, "hexSwamp00");

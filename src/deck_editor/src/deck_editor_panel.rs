@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use adventure_actions::adventure_flags;
-use adventure_data::adventure::CardFilter;
 use adventure_data::adventure_action::AdventureAction;
 use adventure_data::adventure_effect_data::{DeckCardAction, DeckCardEffect};
+use core_data::adventure_primitives::CardFilterId;
 use core_ui::action_builder::ActionBuilder;
 use core_ui::button::{Button, ButtonType};
 use core_ui::design::FontSize;
@@ -49,7 +49,7 @@ pub struct DeckEditorPanel<'a> {
     /// applied to them.
     ///
     /// If not specified, all cards can be picked.
-    pub filter: Option<CardFilter>,
+    pub filter: Option<CardFilterId>,
 }
 
 impl<'a> DeckEditorPanel<'a> {

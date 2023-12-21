@@ -14,7 +14,7 @@
 
 //! Unique identifiers for UI elements
 
-use core_data::adventure_primitives::NarrativeChoiceIndex;
+use core_data::adventure_primitives::NarrativeChoiceId;
 use game_data::card_name::CardVariant;
 use protos::riftcaller::element_selector::Selector;
 use protos::riftcaller::ElementSelector;
@@ -108,6 +108,6 @@ pub fn draft_card(variant: CardVariant) -> ElementName {
     ElementName { tag: "DraftCard", count: variant.as_ident() }
 }
 
-pub fn narrative_outcome_tooltip(index: NarrativeChoiceIndex) -> ElementName {
+pub fn narrative_outcome_tooltip(index: NarrativeChoiceId) -> ElementName {
     ElementName { tag: "OutcomeTooltip", count: index.value as u64 }
 }

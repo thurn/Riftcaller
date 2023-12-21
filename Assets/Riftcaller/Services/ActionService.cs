@@ -110,6 +110,24 @@ namespace Riftcaller.Services
       _actionQueue.Enqueue(action);
     }
 
+    public IEnumerator SetGameTable(SetGameTableRequest request)
+    {
+      _registry.DocumentService.WaitFor(WaitingFor.Connection);
+      var call = _client.Value.SetGameTableAsync(request);
+      var task = call.GetAwaiter();
+      yield return new WaitUntil(() => task.IsCompleted);
+
+      _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
+      switch (call.GetStatus().StatusCode)
+      {
+        case StatusCode.OK:
+          break;
+        default:
+          LogUtils.LogError($"Error setting GameTable {request.TableName}: {call.GetStatus().Detail}");
+          break;
+      }      
+    }
+
     void Update()
     {
       if (_actionQueue.Count > 0 && _currentlyHandlingAction == null)
@@ -192,7 +210,7 @@ namespace Riftcaller.Services
     }
     
     /// <summary>Connects to an existing offline game, handling responses.</summary>
-    public IEnumerator ConnectToOfflineGame(ConnectRequest request)
+    IEnumerator ConnectToOfflineGame(ConnectRequest request)
     {
       var commands = Plugin.Connect(request);
       if (commands != null)
@@ -200,7 +218,7 @@ namespace Riftcaller.Services
         _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
         yield return _registry.CommandService.HandleCommands(commands);
       }
-    }    
+    }
 
     IEnumerator HandleActionAsync(ClientAction action)
     {

@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{
-    AdventureConfiguration, AdventureScreen, AdventureState, NarrativeEventData, NarrativeEventStep,
-};
+use adventure_data::adventure::{AdventureConfiguration, AdventureScreen, AdventureState};
 use adventure_data::adventure_action::NarrativeEffectIndex;
 use adventure_data::adventure_effect_data::{AdventureEffect, AdventureEffectData};
+use adventure_data::narrative_event_data::{
+    NarrativeEffectState, NarrativeEventData, NarrativeEventState, NarrativeEventStep,
+};
 use adventure_generator::card_filter;
 use anyhow::Result;
-use core_data::adventure_primitives::NarrativeChoiceIndex;
+use core_data::adventure_primitives::NarrativeChoiceId;
 use game_data::deck::Deck;
 use with_error::{fail, verify};
 
@@ -28,20 +29,21 @@ use crate::{adventure_effect, adventure_flags};
 /// Handles a request from a user to advance to a given step within a narrative
 /// event screen.
 pub fn set_narrative_step(state: &mut AdventureState, step: NarrativeEventStep) -> Result<()> {
-    let Some(AdventureScreen::NarrativeEvent(data)) = state.screens.current_mut() else {
+    let Some(AdventureScreen::NarrativeEvent(narrative)) = state.screens.current_mut() else {
         fail!("Expected active narrative event screen");
     };
+    let data = game_tables::narrative_event(narrative.id);
 
     match step {
-        NarrativeEventStep::Introduction => data.step = NarrativeEventStep::Introduction,
+        NarrativeEventStep::Introduction => narrative.step = NarrativeEventStep::Introduction,
         NarrativeEventStep::ViewChoices => {
-            reify_known_choices(&mut state.config, data, &state.deck);
-            data.step = NarrativeEventStep::ViewChoices
+            reify_known_choices(&mut state.config, data, narrative, &state.deck);
+            narrative.step = NarrativeEventStep::ViewChoices
         }
         NarrativeEventStep::SelectChoice(index) => {
             verify!(is_legal_choice(data, index), "Invalid choice!");
-            data.selected_choices.push(index);
-            data.step = step;
+            narrative.choice_mut(index).selected = true;
+            narrative.step = step;
 
             let choice = data.choice(index);
             let immediate_effects = choice
@@ -61,18 +63,19 @@ pub fn set_narrative_step(state: &mut AdventureState, step: NarrativeEventStep) 
 
 pub fn apply_narrative_effect(
     state: &mut AdventureState,
-    choice_index: NarrativeChoiceIndex,
+    choice_index: NarrativeChoiceId,
     effect_index: NarrativeEffectIndex,
 ) -> Result<()> {
-    let Some(AdventureScreen::NarrativeEvent(data)) = state.screens.current_mut() else {
+    let Some(AdventureScreen::NarrativeEvent(narrative)) = state.screens.current_mut() else {
         fail!("Expected active narrative event screen");
     };
-    let choice = data.choice_mut(choice_index);
-    choice.applied.push(effect_index);
 
-    let effect_data = choice.effect(effect_index);
-    let effect = effect_data.effect.clone();
-    let card = effect_data.known_card;
+    let choice_state = narrative.choice_mut(choice_index).effect_mut(effect_index);
+    choice_state.applied = true;
+    let card = choice_state.known_card;
+    let data = game_tables::narrative_event(narrative.id);
+    let effect_data = data.choice(choice_index).effect(effect_index);
+    let effect = effect_data.effect;
 
     adventure_effect::apply(state, effect, card)
 }
@@ -88,8 +91,8 @@ pub fn end_narrative_event(state: &mut AdventureState) -> Result<()> {
 
 /// Returns true if the player is allowed to pick the `index` option within the
 /// provided [NarrativeEventData].
-pub fn is_legal_choice(data: &NarrativeEventData, index: NarrativeChoiceIndex) -> bool {
-    index.value < data.choices.len()
+pub fn is_legal_choice(data: &NarrativeEventData, id: NarrativeChoiceId) -> bool {
+    data.choices.contains_key(&id)
 }
 
 /// "Known random" choices are ones that are random each time this narrative
@@ -99,28 +102,30 @@ pub fn is_legal_choice(data: &NarrativeEventData, index: NarrativeChoiceIndex) -
 /// to view the available choices for a narrative event.
 fn reify_known_choices(
     config: &mut AdventureConfiguration,
-    data: &mut NarrativeEventData,
+    data: &NarrativeEventData,
+    state: &mut NarrativeEventState,
     deck: &Deck,
 ) {
-    for choice in &mut data.choices {
-        for cost in &mut choice.costs {
-            reify_known_effect(config, cost, deck);
+    for (id, choice) in &data.choices {
+        for (index, cost) in choice.enumerate_costs() {
+            reify_known_effect(config, cost, state.choice_mut(*id).effect_mut(index), deck);
         }
-        for effect in &mut choice.rewards {
-            reify_known_effect(config, effect, deck);
+        for (index, effect) in choice.enumerate_rewards() {
+            reify_known_effect(config, effect, state.choice_mut(*id).effect_mut(index), deck);
         }
     }
 }
 
 fn reify_known_effect(
     config: &mut AdventureConfiguration,
-    effect_data: &mut AdventureEffectData,
+    effect_data: &AdventureEffectData,
+    effect_state: &mut NarrativeEffectState,
     deck: &Deck,
 ) {
     match &effect_data.effect {
         AdventureEffect::LoseKnownRandomCard(selector, _) => {
             let choice = config.choose(card_filter::deck(deck, *selector));
-            effect_data.known_card = choice;
+            effect_state.known_card = choice;
         }
         _ => {}
     }

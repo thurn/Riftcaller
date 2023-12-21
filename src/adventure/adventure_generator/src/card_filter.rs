@@ -12,35 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{AdventureState, CardChoice, CardFilter, DraftData, ShopData};
-use core_data::adventure_primitives::Coins;
+use adventure_data::adventure::{AdventureState, CardChoice, DraftData, ShopData};
+use adventure_data::card_filter_data::{CardFilterCategoryOperator, UpgradedStatus};
+use core_data::adventure_primitives::{CardFilterId, Coins};
+use core_data::game_primitives::CardSubtype;
+use enumset::{EnumSet, EnumSetType};
 use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
 
-/// Cards in the player's deck which match this [CardFilter].
-pub fn deck(deck: &Deck, filter: CardFilter) -> impl Iterator<Item = CardVariant> + '_ {
-    deck.cards.keys().filter(move |&&variant| matches(filter.clone(), variant)).copied()
+/// Cards in the player's deck which match this [CardFilterId].
+pub fn deck(deck: &Deck, filter: CardFilterId) -> impl Iterator<Item = CardVariant> + '_ {
+    deck.cards.keys().filter(move |&&variant| matches(filter, variant)).copied()
 }
 
 /// All possible cards for the current adventure which match this
-/// [CardFilter].
+/// [CardFilterId].
 pub fn all_cards(
     state: &AdventureState,
-    selector: CardFilter,
+    filter: CardFilterId,
 ) -> impl Iterator<Item = CardVariant> + '_ {
     rules::all_cards()
         .filter(move |definition| {
             definition.sets.contains(&state.config.card_set)
                 && definition.side == state.side
-                && matches(selector.clone(), definition.variant())
+                && matches(filter, definition.variant())
         })
         .map(|definition| definition.variant())
 }
 
 /// Builds a standard [DraftData] set of draft choices for the provided
-/// [CardFilter].
-pub fn draft_choices(state: &mut AdventureState, selector: CardFilter) -> DraftData {
-    let cards: Vec<_> = all_cards(state, selector).collect();
+/// [CardFilterId].
+pub fn draft_choices(state: &mut AdventureState, filter: CardFilterId) -> DraftData {
+    let cards: Vec<_> = all_cards(state, filter).collect();
     DraftData {
         context: None,
         choices: state
@@ -53,9 +56,9 @@ pub fn draft_choices(state: &mut AdventureState, selector: CardFilter) -> DraftD
 }
 
 /// Builds a standard [ShopData] set of shop choices for the provided
-/// [CardFilter].
-pub fn shop_choices(state: &mut AdventureState, selector: CardFilter) -> ShopData {
-    let cards: Vec<_> = all_cards(state, selector).collect();
+/// [CardFilterId].
+pub fn shop_choices(state: &mut AdventureState, filter: CardFilterId) -> ShopData {
+    let cards: Vec<_> = all_cards(state, filter).collect();
     ShopData {
         choices: state
             .config
@@ -72,20 +75,36 @@ pub fn shop_choices(state: &mut AdventureState, selector: CardFilter) -> ShopDat
 }
 
 /// Returns true if the specified [CardVariant] is selected by the provided
-/// [CardFilter].
-pub fn matches(filter: CardFilter, variant: CardVariant) -> bool {
+/// [CardFilterId].
+pub fn matches(filter_id: CardFilterId, variant: CardVariant) -> bool {
+    let filter = game_tables::card_filter(filter_id);
     let definition = rules::get(variant);
-
-    let mut result = definition.rarity >= filter.minimum_rarity;
-    result &= (definition.config.metadata.is_upgraded && filter.upgraded)
-        || (!definition.config.metadata.is_upgraded && !filter.upgraded);
-
-    if !filter.card_types.is_empty() {
-        result &= filter.card_types.contains(definition.card_type);
-    }
-    if !filter.card_subtypes.is_empty() {
-        result &= filter.card_subtypes.iter().any(|subtype| definition.subtypes.contains(&subtype));
+    if definition.subtypes.contains(&CardSubtype::Weapon) {
+        eprintln!("Weapon");
     }
 
-    result
+    let rarity = check_set(filter.rarity, definition.rarity);
+    let types = check_set(filter.card_types, definition.card_type);
+    let subtypes = (!filter.card_subtypes.is_empty())
+        .then(|| filter.card_subtypes.iter().any(|subtype| definition.subtypes.contains(&subtype)));
+    let upgraded = check_set(
+        filter.upgraded,
+        if definition.config.metadata.is_upgraded {
+            UpgradedStatus::Upgraded
+        } else {
+            UpgradedStatus::Default
+        },
+    );
+    let sides = check_set(filter.sides, definition.side);
+    let result =
+        vec![rarity, types, subtypes, upgraded, sides].into_iter().flatten().collect::<Vec<_>>();
+
+    match filter.operator {
+        CardFilterCategoryOperator::And => result.iter().all(|v| *v),
+        CardFilterCategoryOperator::Or => result.iter().any(|v| *v),
+    }
+}
+
+fn check_set<T: EnumSetType>(set: EnumSet<T>, value: T) -> Option<bool> {
+    (!set.is_empty()).then(|| set.contains(value))
 }

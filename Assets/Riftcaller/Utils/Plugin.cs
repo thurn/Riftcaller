@@ -46,6 +46,14 @@ namespace Riftcaller.Utils
       return responseSize > 0 ? CommandList.Parser.ParseFrom(output, 0, responseSize) : null;
     }
 
+    public static void SetGameTable(GameTableName name, string content)
+    {
+        var encoded = Encoding.UTF8.GetBytes(content);
+        Errors.CheckNonNegative(
+            riftcaller_set_game_table((int)name, encoded, encoded.Length),
+            "GameTable Import Error");
+    }
+
     public static CommandList? Poll(PollRequest request)
     {
       var input = request.ToByteArray();
@@ -72,6 +80,13 @@ namespace Riftcaller.Utils
 #endif
     public static extern int riftcaller_initialize(byte[] path, int pathLength);
 
+#if !UNITY_EDITOR && (UNITY_IOS || UNITY_WEBGL)
+    [DllImport("__Internal")]
+#else
+    [DllImport("plugin")]
+#endif
+    public static extern int riftcaller_set_game_table(int tableNumber, byte[] content, int contentLength);
+    
 #if !UNITY_EDITOR && (UNITY_IOS || UNITY_WEBGL)
     [DllImport("__Internal")]
 #else

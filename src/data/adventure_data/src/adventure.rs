@@ -15,11 +15,8 @@
 use std::collections::HashMap;
 
 use anyhow::Result;
-use core_data::adventure_primitives::{
-    AdventureOutcome, Coins, NarrativeChoiceIndex, Skill, TilePosition,
-};
-use core_data::game_primitives::{AdventureId, CardSubtype, CardType, Rarity, Side};
-use enumset::EnumSet;
+use core_data::adventure_primitives::{AdventureOutcome, CardFilterId, Coins, TilePosition};
+use core_data::game_primitives::{AdventureId, Side};
 use game_data::card_name::CardVariant;
 use game_data::card_set_name::CardSetName;
 use game_data::deck::Deck;
@@ -33,8 +30,8 @@ use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DisplayFromStr};
 use with_error::WithError;
 
-use crate::adventure_action::NarrativeEffectIndex;
-use crate::adventure_effect_data::{AdventureEffect, AdventureEffectData, DeckCardEffect};
+use crate::adventure_effect_data::{AdventureEffect, DeckCardEffect};
+use crate::narrative_event_data::NarrativeEventState;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CardChoice {
@@ -78,108 +75,6 @@ pub struct BattleData {
 
     /// Coins earned for winning this battle
     pub reward: Coins,
-}
-
-/// One possible choice within a narrative event screen
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NarrativeEventChoice {
-    /// Narrative description of the action for this choice.
-    pub choice_description: String,
-    /// Narrative description of the outcome of this choice.
-    pub result_description: String,
-    /// Skill required to select this choice, if any.
-    pub skill: Option<Skill>,
-    /// Costs to select this choice.
-    ///
-    /// Choices will not be presented unless the player is able to pay all of
-    /// their associated costs.
-    pub costs: Vec<AdventureEffectData>,
-    /// Rewards for selecting this choice.
-    pub rewards: Vec<AdventureEffectData>,
-    /// Effects of this choice which the user has already applied and thus do
-    /// not need to be shown on-screen.
-    pub applied: Vec<NarrativeEffectIndex>,
-}
-
-impl NarrativeEventChoice {
-    pub fn effect(&self, index: NarrativeEffectIndex) -> &AdventureEffectData {
-        match index {
-            NarrativeEffectIndex::Cost(i) => &self.costs[i],
-            NarrativeEffectIndex::Reward(i) => &self.rewards[i],
-        }
-    }
-
-    pub fn enumerate_costs(
-        &self,
-    ) -> impl Iterator<Item = (NarrativeEffectIndex, &AdventureEffectData)> {
-        self.costs.iter().enumerate().map(|(i, choice)| (NarrativeEffectIndex::Cost(i), choice))
-    }
-
-    pub fn enumerate_rewards(
-        &self,
-    ) -> impl Iterator<Item = (NarrativeEffectIndex, &AdventureEffectData)> {
-        self.rewards.iter().enumerate().map(|(i, choice)| (NarrativeEffectIndex::Reward(i), choice))
-    }
-
-    /// Returns true if all of the costs and rewards for this choice have either
-    /// 1) been applied or 2) are immediate and thus do not need to be applied.
-    pub fn all_effects_applied(&self) -> bool {
-        self.enumerate_costs()
-            .chain(self.enumerate_rewards())
-            .all(|(i, e)| self.applied.contains(&i) || e.effect.is_immediate())
-    }
-}
-
-/// Steps within the progress of resolving a narrative event.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub enum NarrativeEventStep {
-    /// Introductory text for this event.
-    Introduction,
-    /// View valid narrative choices for this event which have not yet been
-    /// selected.
-    ViewChoices,
-    /// View the result of selecting the narrative choice with the provided
-    /// [NarrativeChoiceIndex].
-    SelectChoice(NarrativeChoiceIndex),
-}
-
-/// Data for displaying a narrative event to the player with a fixed set of
-/// choices
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NarrativeEventData {
-    /// Current screen within the event.
-    pub step: NarrativeEventStep,
-    /// Narrative description introducing this event.
-    pub description: String,
-    /// List of possible choices within this narrative event, indexed by
-    /// [NarrativeChoiceIndex].
-    pub choices: Vec<NarrativeEventChoice>,
-    /// Indices of [Self::choices] which the player has selected, in order of
-    /// selection.
-    ///
-    /// In almost all cases, the player only selects a single choice within a
-    /// narrative event, but a few situations exist where multiple options may
-    /// be selected.
-    pub selected_choices: Vec<NarrativeChoiceIndex>,
-}
-
-impl NarrativeEventData {
-    pub fn enumerate_choices(
-        &self,
-    ) -> impl Iterator<Item = (NarrativeChoiceIndex, &NarrativeEventChoice)> {
-        self.choices
-            .iter()
-            .enumerate()
-            .map(|(value, choice)| (NarrativeChoiceIndex { value }, choice))
-    }
-
-    pub fn choice(&self, index: NarrativeChoiceIndex) -> &NarrativeEventChoice {
-        &self.choices[index.value]
-    }
-
-    pub fn choice_mut(&mut self, index: NarrativeChoiceIndex) -> &mut NarrativeEventChoice {
-        &mut self.choices[index.value]
-    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -294,8 +189,8 @@ pub enum AdventureScreen {
     Draft(DraftData),
     Shop(ShopData),
     Battle(BattleData),
-    NarrativeEvent(NarrativeEventData),
-    ApplyDeckEffect(CardFilter, DeckCardEffect),
+    NarrativeEvent(NarrativeEventState),
+    ApplyDeckEffect(CardFilterId, DeckCardEffect),
 }
 
 /// Stores a stack of screens for events the player is interacting with in the
@@ -366,58 +261,4 @@ pub struct AdventureState {
     pub deck: Deck,
     /// Customization options for this adventure
     pub config: AdventureConfiguration,
-}
-
-/// Specifies the parameters for picking a card from a set
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct CardFilter {
-    /// Minimum rarity for cards. Defaults to common.
-    pub minimum_rarity: Rarity,
-    /// Card types to select from.
-    ///
-    /// If empty, all card types are allowed.
-    pub card_types: EnumSet<CardType>,
-    /// Card subtypes to select from.
-    ///
-    /// If empty, all card subtypes are allowed.    
-    pub card_subtypes: EnumSet<CardSubtype>,
-    /// True if only upgraded cards should be matched
-    pub upgraded: bool,
-}
-
-impl Default for CardFilter {
-    fn default() -> Self {
-        Self {
-            minimum_rarity: Rarity::Common,
-            card_types: EnumSet::new(),
-            card_subtypes: EnumSet::new(),
-            upgraded: false,
-        }
-    }
-}
-
-impl CardFilter {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn rarity(mut self, rarity: Rarity) -> Self {
-        self.minimum_rarity = rarity;
-        self
-    }
-
-    pub fn card_type(mut self, card_type: CardType) -> Self {
-        self.card_types.insert(card_type);
-        self
-    }
-
-    pub fn card_subtype(mut self, card_subtype: CardSubtype) -> Self {
-        self.card_subtypes.insert(card_subtype);
-        self
-    }
-
-    pub fn upgraded(mut self, upgraded: bool) -> Self {
-        self.upgraded = upgraded;
-        self
-    }
 }

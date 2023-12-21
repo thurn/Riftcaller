@@ -23,7 +23,8 @@ use player_data::PlayerState;
 use protos::riftcaller::client_action::Action;
 use protos::riftcaller::riftcaller_server::Riftcaller;
 use protos::riftcaller::{
-    CommandList, ConnectRequest, FetchPanelAction, GameRequest, PlayerIdentifier, StandardAction,
+    CommandList, ConnectRequest, FetchPanelAction, GameRequest, PlayerIdentifier,
+    SetGameTableRequest, SetGameTableResponse, StandardAction,
 };
 use serde_json::de;
 use tokio::sync::mpsc;
@@ -107,6 +108,21 @@ impl<T: Database + 'static> Riftcaller for GameService<T> {
             Err(error) => {
                 error!(?error, "Server Error!");
                 Err(Status::internal(format!("Server Error: {error:#}")))
+            }
+        }
+    }
+
+    async fn set_game_table(
+        &self,
+        request: Request<SetGameTableRequest>,
+    ) -> Result<Response<SetGameTableResponse>, Status> {
+        let result =
+            game_tables::import(request.get_ref().table_name, &request.get_ref().file_content);
+        match result {
+            Ok(_) => Ok(Response::new(SetGameTableResponse {})),
+            Err(error) => {
+                error!(?error, "Error Importing Table!");
+                Err(Status::internal(format!("Error Importing Table: {error:#}")))
             }
         }
     }

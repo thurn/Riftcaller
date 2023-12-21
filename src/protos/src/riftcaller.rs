@@ -2304,6 +2304,25 @@ pub struct CommandList {
     #[prost(message, optional, tag = "3")]
     pub metadata: ::core::option::Option<ClientMetadata>,
 }
+/// Sets the contents of a GameTable
+///
+/// GameTables are CSV (comma separated value) files which specify data about
+/// how the game will function. They typically contain the most frequently
+/// changing pieces of gameplay information in order to facilitate
+/// faster updates.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetGameTableRequest {
+    #[prost(enumeration = "GameTableName", tag = "1")]
+    pub table_name: i32,
+    #[prost(string, tag = "2")]
+    pub file_content: ::prost::alloc::string::String,
+}
+/// Response to setting the contents of a GameTable, containing the name of the
+/// table which was updated.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetGameTableResponse {}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum FlexAlign {
@@ -3785,6 +3804,45 @@ impl MapTileType {
         }
     }
 }
+/// Known names of GameTables
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum GameTableName {
+    Unspecified = 0,
+    Cards = 1,
+    NarrativeEvents = 2,
+    NarrativeEventDetails = 3,
+    /// Please keep this enum in sync with the constants in game_tables.rs!
+    CardFilters = 4,
+}
+impl GameTableName {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic
+    /// use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            GameTableName::Unspecified => "GAME_TABLE_NAME_UNSPECIFIED",
+            GameTableName::Cards => "GAME_TABLE_NAME_CARDS",
+            GameTableName::NarrativeEvents => "GAME_TABLE_NAME_NARRATIVE_EVENTS",
+            GameTableName::NarrativeEventDetails => "GAME_TABLE_NAME_NARRATIVE_EVENT_DETAILS",
+            GameTableName::CardFilters => "GAME_TABLE_NAME_CARD_FILTERS",
+        }
+    }
+
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "GAME_TABLE_NAME_UNSPECIFIED" => Some(Self::Unspecified),
+            "GAME_TABLE_NAME_CARDS" => Some(Self::Cards),
+            "GAME_TABLE_NAME_NARRATIVE_EVENTS" => Some(Self::NarrativeEvents),
+            "GAME_TABLE_NAME_NARRATIVE_EVENT_DETAILS" => Some(Self::NarrativeEventDetails),
+            "GAME_TABLE_NAME_CARD_FILTERS" => Some(Self::CardFilters),
+            _ => None,
+        }
+    }
+}
 /// Generated server implementations.
 pub mod riftcaller_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
@@ -3807,6 +3865,11 @@ pub mod riftcaller_server {
             &self,
             request: tonic::Request<super::GameRequest>,
         ) -> Result<tonic::Response<super::CommandList>, tonic::Status>;
+        /// Sets data to use in this game for a named GameTable
+        async fn set_game_table(
+            &self,
+            request: tonic::Request<super::SetGameTableRequest>,
+        ) -> Result<tonic::Response<super::SetGameTableResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct RiftcallerServer<T: Riftcaller> {
@@ -3924,6 +3987,38 @@ pub mod riftcaller_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = PerformActionSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
+                            accept_compression_encodings,
+                            send_compression_encodings,
+                        );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/riftcaller.Riftcaller/SetGameTable" => {
+                    #[allow(non_camel_case_types)]
+                    struct SetGameTableSvc<T: Riftcaller>(pub Arc<T>);
+                    impl<T: Riftcaller> tonic::server::UnaryService<super::SetGameTableRequest> for SetGameTableSvc<T> {
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Response = super::SetGameTableResponse;
+
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::SetGameTableRequest>,
+                        ) -> Self::Future {
+                            let inner = self.0.clone();
+                            let fut = async move { (*inner).set_game_table(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = SetGameTableSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
                             accept_compression_encodings,

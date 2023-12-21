@@ -120,7 +120,7 @@ impl fmt::Display for AdventureId {
 }
 
 /// The two players in a game: Covenant & Riftcaller
-#[derive(PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd, Sequence)]
+#[derive(Hash, Serialize, Deserialize, Ord, PartialOrd, Sequence, EnumSetType)]
 pub enum Side {
     Covenant,
     Riftcaller,
@@ -498,7 +498,7 @@ pub enum ItemLocation {
 
 /// Rarity of a card, used to determine how likely it is to appear in randomized
 /// rewards.
-#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
+#[derive(Hash, Debug, Serialize, Deserialize, Ord, PartialOrd, EnumSetType)]
 pub enum Rarity {
     None,
     Identity,

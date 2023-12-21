@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::{AdventureScreen, AdventureState, NarrativeEventStep};
+use adventure_data::adventure::{AdventureScreen, AdventureState};
 use adventure_data::adventure_effect_data::DeckCardAction;
+use adventure_data::narrative_event_data::{
+    NarrativeChoiceState, NarrativeEventChoice, NarrativeEventStep,
+};
 use adventure_generator::card_filter;
 use game_data::card_name::CardVariant;
 
@@ -48,13 +51,25 @@ pub fn can_apply_deck_card_effect(option: Option<&AdventureState>, card: CardVar
 }
 
 pub fn can_end_narrative_event(state: &AdventureState) -> bool {
-    let Some(AdventureScreen::NarrativeEvent(data)) = state.screens.current() else {
+    let Some(AdventureScreen::NarrativeEvent(narrative_state)) = state.screens.current() else {
         return false;
     };
+    let data = game_tables::narrative_event(narrative_state.id);
 
-    match data.step {
+    match narrative_state.step {
         NarrativeEventStep::Introduction => true,
         NarrativeEventStep::ViewChoices => false,
-        NarrativeEventStep::SelectChoice(index) => data.choice(index).all_effects_applied(),
+        NarrativeEventStep::SelectChoice(choice_id) => {
+            all_effects_applied(data.choice(choice_id), narrative_state.choice(choice_id))
+        }
     }
+}
+
+/// Returns true if all of the costs and rewards for this [NarrativeEventChoice]
+/// have either
+/// 1) been applied or 2) are immediate and thus do not need to be applied.
+pub fn all_effects_applied(data: &NarrativeEventChoice, state: &NarrativeChoiceState) -> bool {
+    data.enumerate_costs()
+        .chain(data.enumerate_rewards())
+        .all(|(i, e)| state.effect(i).applied || e.effect.is_immediate())
 }

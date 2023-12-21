@@ -66,6 +66,10 @@ namespace Riftcaller.Protos {
     static readonly grpc::Marshaller<global::Riftcaller.Protos.CommandList> __Marshaller_riftcaller_CommandList = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Riftcaller.Protos.CommandList.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Riftcaller.Protos.GameRequest> __Marshaller_riftcaller_GameRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Riftcaller.Protos.GameRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Riftcaller.Protos.SetGameTableRequest> __Marshaller_riftcaller_SetGameTableRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Riftcaller.Protos.SetGameTableRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Riftcaller.Protos.SetGameTableResponse> __Marshaller_riftcaller_SetGameTableResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Riftcaller.Protos.SetGameTableResponse.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Riftcaller.Protos.ConnectRequest, global::Riftcaller.Protos.CommandList> __Method_Connect = new grpc::Method<global::Riftcaller.Protos.ConnectRequest, global::Riftcaller.Protos.CommandList>(
@@ -82,6 +86,14 @@ namespace Riftcaller.Protos {
         "PerformAction",
         __Marshaller_riftcaller_GameRequest,
         __Marshaller_riftcaller_CommandList);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Riftcaller.Protos.SetGameTableRequest, global::Riftcaller.Protos.SetGameTableResponse> __Method_SetGameTable = new grpc::Method<global::Riftcaller.Protos.SetGameTableRequest, global::Riftcaller.Protos.SetGameTableResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "SetGameTable",
+        __Marshaller_riftcaller_SetGameTableRequest,
+        __Marshaller_riftcaller_SetGameTableResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -114,6 +126,18 @@ namespace Riftcaller.Protos {
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       public virtual global::System.Threading.Tasks.Task<global::Riftcaller.Protos.CommandList> PerformAction(global::Riftcaller.Protos.GameRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Sets data to use in this game for a named GameTable
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::Riftcaller.Protos.SetGameTableResponse> SetGameTable(global::Riftcaller.Protos.SetGameTableRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -219,6 +243,54 @@ namespace Riftcaller.Protos {
       {
         return CallInvoker.AsyncUnaryCall(__Method_PerformAction, null, options, request);
       }
+      /// <summary>
+      /// Sets data to use in this game for a named GameTable
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Riftcaller.Protos.SetGameTableResponse SetGameTable(global::Riftcaller.Protos.SetGameTableRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return SetGameTable(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Sets data to use in this game for a named GameTable
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Riftcaller.Protos.SetGameTableResponse SetGameTable(global::Riftcaller.Protos.SetGameTableRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_SetGameTable, null, options, request);
+      }
+      /// <summary>
+      /// Sets data to use in this game for a named GameTable
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Riftcaller.Protos.SetGameTableResponse> SetGameTableAsync(global::Riftcaller.Protos.SetGameTableRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return SetGameTableAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Sets data to use in this game for a named GameTable
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Riftcaller.Protos.SetGameTableResponse> SetGameTableAsync(global::Riftcaller.Protos.SetGameTableRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_SetGameTable, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       protected override RiftcallerClient NewInstance(ClientBaseConfiguration configuration)
@@ -234,7 +306,8 @@ namespace Riftcaller.Protos {
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_Connect, serviceImpl.Connect)
-          .AddMethod(__Method_PerformAction, serviceImpl.PerformAction).Build();
+          .AddMethod(__Method_PerformAction, serviceImpl.PerformAction)
+          .AddMethod(__Method_SetGameTable, serviceImpl.SetGameTable).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
@@ -246,6 +319,7 @@ namespace Riftcaller.Protos {
     {
       serviceBinder.AddMethod(__Method_Connect, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Riftcaller.Protos.ConnectRequest, global::Riftcaller.Protos.CommandList>(serviceImpl.Connect));
       serviceBinder.AddMethod(__Method_PerformAction, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Riftcaller.Protos.GameRequest, global::Riftcaller.Protos.CommandList>(serviceImpl.PerformAction));
+      serviceBinder.AddMethod(__Method_SetGameTable, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Riftcaller.Protos.SetGameTableRequest, global::Riftcaller.Protos.SetGameTableResponse>(serviceImpl.SetGameTable));
     }
 
   }

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use adventure_data::adventure::CardFilter;
 use adventure_data::adventure_effect_data::AdventureEffect;
+use adventure_data::card_filter_data::CardFilter;
 use core_data::game_primitives::Side;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_set_name::CardSetName;

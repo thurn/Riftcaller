@@ -1,0 +1,22 @@
+Image,ID,Name,Entry Kind,Choice ID,Description,Required Skill,Effect Kind,Quantity,Card Filter ID,Card Filter Name,Deck Card Action,Card Name
+,1,The Stormfeather Eagle,Introduction,,"As the dust and debris swirl around the jagged peaks, you find yourself face-to-face with the legendary Stormfeather Eagle, its eyes ablaze with a fierce intelligence.
+
+The air crackles with the power of this mythical beast, and it's clear that only one of you will leave these heights as victor.",,,,,,,
+,1,The Stormfeather Eagle,Choice,1,"[Brawn] ""With my sword drawn, I challenge the mighty eagle to a duel of strength!""",Brawn,,,,,,
+,1,The Stormfeather Eagle,Outcome,1,"The clash of your sword against the eagle's talons sends sparks flying.
+
+After a mighty struggle, the eagle yields, bestowing upon you an ancient spell from the mountain's might, a secret kept by the high winds for eons.",,,,,,,
+,1,The Stormfeather Eagle,Reward,1,Draft a rare {spell:ritual},,Draft,,5,Rare Spell/Ritual,,
+,1,The Stormfeather Eagle,Choice,2,"[Stealth] ""I'll use the rocks for cover and move silently to find an advantage point over the creature.""",Stealth,,,,,,
+,1,The Stormfeather Eagle,Outcome,2,"Slipping from boulder to boulder, your silent steps go unnoticed.
+
+The eagle, confused, eventually perches atop a craggy spire, granting you the chance to snatch a feather.
+
+This feather pulses with a magical blessing, duplicating items in your possession.",,,,,,,
+,1,The Stormfeather Eagle,Reward,2,Gain up to 3 copies of 3 cards in your deck,,PickCardForEffect,3,1,Standard Card,DuplicateTo3Copies,
+,1,The Stormfeather Eagle,Choice,3,"""I offer my {weapon:servant} to you, oh great Stormfeather, as a token of respect and in exchange for safe passage.""",,,,,,,
+,1,The Stormfeather Eagle,Outcome,3,"Placing your {weapon:gift} upon an altar of stone, you step back.
+
+The eagle swoops down, taking the {offering:creature} in its beak before soaring away, leaving behind a clear vision of a hidden shop, tucked away in the mountains, a place of rare and powerful artifacts.",,,,,,,
+,1,The Stormfeather Eagle,Cost,3,Lose 1x '{CardName}',,LoseKnownRandomCard,,6,Weapon or Minion,,
+,1,The Stormfeather Eagle,Reward,3,Open a new shop screen,,Shop,,2,Standard Shop,,

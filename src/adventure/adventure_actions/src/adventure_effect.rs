@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::HashMap;
+
 use adventure_data::adventure::{AdventureScreen, AdventureState};
 use adventure_data::adventure_effect_data::AdventureEffect;
-use adventure_generator::{battle_generator, card_filter, narrative_event_generator};
+use adventure_data::narrative_event_data::{NarrativeEventState, NarrativeEventStep};
+use adventure_generator::{battle_generator, card_filter};
 use anyhow::Result;
 use game_data::card_name::CardVariant;
 use with_error::WithError;
@@ -33,15 +36,18 @@ pub fn apply(
             let data = card_filter::shop_choices(state, selector);
             state.screens.push(AdventureScreen::Shop(data));
         }
-        AdventureEffect::NarrativeEvent(_) => {
-            let data = narrative_event_generator::generate();
-            state.screens.push(AdventureScreen::NarrativeEvent(data));
+        AdventureEffect::NarrativeEvent(id) => {
+            state.screens.push(AdventureScreen::NarrativeEvent(NarrativeEventState {
+                id,
+                step: NarrativeEventStep::Introduction,
+                choices: HashMap::new(),
+            }));
         }
         AdventureEffect::Battle => state
             .screens
             .push(AdventureScreen::Battle(battle_generator::create(state.side.opponent()))),
-        AdventureEffect::PickCardForEffect(selector, effect) => {
-            state.screens.push(AdventureScreen::ApplyDeckEffect(selector, effect))
+        AdventureEffect::PickCardForEffect(filter, effect) => {
+            state.screens.push(AdventureScreen::ApplyDeckEffect(filter, effect))
         }
         AdventureEffect::LoseKnownRandomCard(_, copies) => {
             state

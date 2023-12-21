@@ -12,13 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::adventure_primitives::Coins;
+use core_data::adventure_primitives::{CardFilterId, Coins, NarrativeEventId};
 use core_data::game_primitives::CopiesCount;
-use game_data::card_name::{CardName, CardVariant};
+use enum_kinds::EnumKind;
+use game_data::card_name::CardName;
 use serde::{Deserialize, Serialize};
-
-use crate::adventure::CardFilter;
-use crate::narrative_event_name::NarrativeEventName;
 
 /// A modification to a specific card in a player's deck
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -65,14 +63,15 @@ impl DeckCardEffect {
 }
 
 /// A modification to the state of an ongoing adventure.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, EnumKind)]
+#[enum_kind(AdventureEffectKind, derive(Serialize, Deserialize))]
 pub enum AdventureEffect {
     /// Show a draft screen to select a card from a list of random choices
-    Draft(CardFilter),
+    Draft(CardFilterId),
     /// Open a shop screen to purchase cards from a set of random choices.
-    Shop(CardFilter),
-    /// Open the narrative event with the given name
-    NarrativeEvent(NarrativeEventName),
+    Shop(CardFilterId),
+    /// Open the narrative event with the given ID
+    NarrativeEvent(NarrativeEventId),
     /// Open a 'start battle' screen
     Battle,
     /// Gain a quantity of coins
@@ -85,19 +84,20 @@ pub enum AdventureEffect {
     /// Gain a quantity of arcanite
     GainArcanite(u32),
     /// The player may pick some number of cards in their deck matching
-    /// [CardFilter] to apply a [DeckCardEffect] to, potentially paying a cost.
-    PickCardForEffect(CardFilter, DeckCardEffect),
-    /// Modify a random card in the player's deck matching this [CardFilter]
+    /// [CardFilterId] to apply a [DeckCardEffect] to, potentially paying a
+    /// cost.
+    PickCardForEffect(CardFilterId, DeckCardEffect),
+    /// Modify a random card in the player's deck matching this [CardFilterId]
     /// by applying a [DeckCardAction] to it. The card chosen is known to
     /// the player in advance.
-    KnownRandomCardEffect(CardFilter, DeckCardAction),
-    /// Modify a random card in the player's deck matching this [CardFilter]
+    KnownRandomCardEffect(CardFilterId, DeckCardAction),
+    /// Modify a random card in the player's deck matching this [CardFilterId]
     /// by applying a [DeckCardAction] to it. The card chosen is not known
     /// to the player in advance.
-    UnknownRandomCardEffect(CardFilter, DeckCardAction),
+    UnknownRandomCardEffect(CardFilterId, DeckCardAction),
     /// Apply a [DeckCardAction] to all cards matching this
-    /// [CardFilter].
-    ApplyCardEffectToAllMatching(CardFilter, DeckCardAction),
+    /// [CardFilterId].
+    ApplyCardEffectToAllMatching(CardFilterId, DeckCardAction),
     /// Add a quantity of random additional tiles to the world map
     AddMapTiles(u32),
     /// Add a quantity of standard draft tiles to the world map
@@ -106,39 +106,39 @@ pub enum AdventureEffect {
     AddNarrativeTiles(u32),
     /// Add 'count' copies of a known fixed card to the player's deck. The card
     /// is always the same for this narrative event and will always be set
-    /// as the value of [AdventureEffectData::known_card].
+    /// as the value of the `known_card` field on `NarrativeChoiceState`.
     GainKnownFixedCard(CardName, CopiesCount),
     /// Add 'count' copies of a known random card to the player's deck matching
-    /// this [CardFilter]. The card received is known to the player in
+    /// this [CardFilterId]. The card received is known to the player in
     /// advance.
-    GainKnownRandomCard(CardFilter, CopiesCount),
+    GainKnownRandomCard(CardFilterId, CopiesCount),
     /// Add 'count' copies of an unknown random card to the player's deck
-    /// matching this [CardFilter]. The card received is not known to the
+    /// matching this [CardFilterId]. The card received is not known to the
     /// player in advance.
-    GainUnknownRandomCard(CardFilter, CopiesCount),
+    GainUnknownRandomCard(CardFilterId, CopiesCount),
     /// Pick a card from the deck for the player to lose 'count' copies of,
-    /// matching this [CardFilter].
+    /// matching this [CardFilterId].
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.    
-    PickCardToLose(CardFilter, CopiesCount),
+    PickCardToLose(CardFilterId, CopiesCount),
     /// Lose 'count' copies of a known random card from the player's deck
-    /// matching this [CardFilter]. The card lost is known to the player in
+    /// matching this [CardFilterId]. The card lost is known to the player in
     /// advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
-    LoseKnownRandomCard(CardFilter, CopiesCount),
+    LoseKnownRandomCard(CardFilterId, CopiesCount),
     /// Lose 'count' copies of an unknown random card from the player's deck
-    /// matching this [CardFilter]. The card lost is not known to the player
+    /// matching this [CardFilterId]. The card lost is not known to the player
     /// in advance.
     ///
     /// "Losing" a card is treated as a cost, unlike "removing" a card via
     /// [DeckCardAction], meaning that this option cannot be selected if a
     /// matching card is not available.
-    LoseUnknownRandomCard(CardFilter, CopiesCount),
+    LoseUnknownRandomCard(CardFilterId, CopiesCount),
 }
 
 impl AdventureEffect {
@@ -165,13 +165,4 @@ pub struct AdventureEffectData {
     pub effect: AdventureEffect,
     /// Describes the result of evaluating this effect
     pub description: String,
-    /// Optionally, a known card name associated with this effect.
-    ///
-    /// For "Known" effects like [AdventureEffect::GainKnownRandomCard], the
-    /// card selected is picked in advance and stored here so that the player
-    /// can see the outcome before acting.
-    ///
-    /// If no valid card could be selected, this will be `None` and the option
-    /// should not be displayed.
-    pub known_card: Option<CardVariant>,
 }

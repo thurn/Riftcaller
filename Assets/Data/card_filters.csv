@@ -1,0 +1,6 @@
+ID,Name,Category Operator,Upgraded: No,Upgraded: Yes,Rarity: Common,Rarity: Uncommon,Rarity: Rare,Rarity: Basic,Rarity: Identity,Rarity: None,Type: Riftcaller,Type: Chapter,Type: Game Modifier,Type: Sigil,Type: Scheme,Type: Spell,Type: Ritual,Type: Evocation,Type: Ally,Type: Project,Type: Artifact,Type: Minion,Side: Covenant,Side: Riftcaller,Subtype: Weapon
+1,Standard Card,And,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+2,Standard Shop,And,true,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+3,Standard Draft,And,true,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false
+5,Rare Spell/Ritual,And,true,false,false,false,true,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false
+6,Weapon or Minion,Or,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,true

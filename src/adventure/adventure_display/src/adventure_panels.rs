@@ -43,11 +43,12 @@ fn build_panel(
         AdventureScreen::Draft(data) => DraftPanel { address, data }.build_panel(),
         AdventureScreen::Shop(data) => ShopPanel { player, address, data }.build_panel(),
         AdventureScreen::Battle(data) => BattlePanel { player, address, data }.build_panel(),
-        AdventureScreen::NarrativeEvent(data) => {
-            NarrativeEventPanel { player, address, data }.build_panel()
+        AdventureScreen::NarrativeEvent(state) => {
+            let data = game_tables::narrative_event(state.id);
+            NarrativeEventPanel { player, address, state, data }.build_panel()
         }
-        AdventureScreen::ApplyDeckEffect(selector, effect) => {
-            DeckEditorPanel { address, player, effect: Some(*effect), filter: Some(*selector) }
+        AdventureScreen::ApplyDeckEffect(filter, effect) => {
+            DeckEditorPanel { address, player, effect: Some(*effect), filter: Some(*filter) }
                 .build_panel()
         }
     })

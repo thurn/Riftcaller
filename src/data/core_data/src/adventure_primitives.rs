@@ -48,10 +48,40 @@ use with_error::fail;
 )]
 pub struct Coins(pub u32);
 
+/// Unique identifier for a card filter
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub struct CardFilterId {
+    pub value: u32,
+}
+
+impl CardFilterId {
+    pub fn new(value: u32) -> Self {
+        Self { value }
+    }
+}
+
+/// Unique identifier for a narrative event
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub struct NarrativeEventId {
+    pub value: u32,
+}
+
+impl NarrativeEventId {
+    pub fn new(value: u32) -> Self {
+        Self { value }
+    }
+}
+
 /// Identifies a choice index within a narrative event.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
-pub struct NarrativeChoiceIndex {
-    pub value: usize,
+pub struct NarrativeChoiceId {
+    pub value: u32,
+}
+
+impl NarrativeChoiceId {
+    pub fn new(value: u32) -> Self {
+        Self { value }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]

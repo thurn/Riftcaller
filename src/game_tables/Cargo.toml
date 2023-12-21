@@ -1,0 +1,23 @@
+[package]
+name = "game_tables"
+version = "0.0.0"
+description = "Parses game-specific CSV files into data structures"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+path = "src/game_tables.rs"
+doctest = false
+test = false
+
+[dependencies]
+adventure_data = { path = "../data/adventure_data", version = "0.0.0" }
+core_data = { path = "../data/core_data", version = "0.0.0" }
+game_data = { path = "../data/game_data", version = "0.0.0" }
+with_error = { path = "../with_error", version = "0.0.0" }
+
+anyhow = { features = ["backtrace"], version = "1.0.75" }
+csv = "1.3.0"
+enumset = { version = "1.1.3", features = ["serde"] }
+once_cell = "1.17.1"
+serde = { version = "1.0.138", features = ["derive"] }
