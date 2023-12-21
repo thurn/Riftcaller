@@ -89,3 +89,48 @@ fn sentinel_sphinx_foebane() {
     assert!(!g.has(Button::Evade));
     g.click(Button::NoWeapon);
 }
+
+#[test]
+fn lawhold_cavalier() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .actions(6)
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::LawholdCavalier),
+        )
+        .build();
+
+    // 3 Permanents: opponent picks
+    g.create_and_play(CardName::TestEvocation);
+    g.create_and_play(CardName::TestAstralWeapon);
+    g.create_and_play(CardName::TestAlly);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    g.opponent_click(Button::SelectForMultipart);
+    g.opponent_click(Button::SelectForMultipart);
+    g.click(Button::ReturnToDeck);
+    g.click(Button::EndRaid);
+    assert!(g.client.cards.deck_top().contains_card(CardName::TestAlly));
+
+    // Cannot play a permanent from hand after a minion encounter
+    let artifact = g.add_to_hand(CardName::TestInfernalWeapon);
+    assert!(g.play_card_with_result(artifact, g.user_id(), None).is_err());
+
+    // With only 2 permanents, opponent does not have to pick
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    g.click(Button::ReturnToDeck);
+    g.click(Button::EndRaid);
+    assert!(g.client.cards.deck_top().contains_card(CardName::TestAstralWeapon));
+
+    // With 1 permanent, no prompt happens
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    g.click(Button::EndRaid);
+
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
+
+    // Can now play permanents again
+    assert!(g.play_card_with_result(artifact, g.user_id(), None).is_ok());
+}

@@ -160,6 +160,13 @@ pub fn on_query_card_status_markers(
     Delegate::CardStatusMarkers(QueryDelegate { requirement, transformation })
 }
 
+pub fn can_play_card(
+    requirement: RequirementFn<CardId>,
+    transformation: TransformationFn<CardId, Flag>,
+) -> Delegate {
+    Delegate::CanPlayCard(QueryDelegate { requirement, transformation })
+}
+
 pub fn can_summon(
     requirement: RequirementFn<CardId>,
     transformation: TransformationFn<CardId, Flag>,

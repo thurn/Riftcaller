@@ -68,6 +68,12 @@ pub enum GameEffect {
     PreventDestroyingCard(CardId),
     /// Adds a card to the 'side' player's 'prompt_selected_cards' list.
     SelectCardForPrompt(Side, CardId),
+    /// Removes all selected cards for the 'side' player.
+    ClearAllSelectedCards(Side),
+    /// Adds a new prompt request for the [Side] player for [AbilityId]. The
+    /// prompt will be supplied with the provided index via
+    /// `PromptData::Index`.
+    PushPromptWithIndex(Side, AbilityId, u32),
     /// Swap a card's position with the last card in the 'side' player's
     /// 'prompt_selected_cards' list. Returns an error if no card is selected.
     /// Removes the chosen card from the 'prompt_selected_cards' list.

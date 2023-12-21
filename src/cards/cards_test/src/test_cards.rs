@@ -633,6 +633,17 @@ pub fn test_evocation(metadata: CardMetadata) -> CardDefinition {
     }
 }
 
+pub fn test_ally(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestAlly,
+        cost: cost(test_constants::ALLY_COST),
+        card_type: CardType::Ally,
+        sets: vec![CardSetName::Test],
+        abilities: vec![],
+        ..test_spell(metadata)
+    }
+}
+
 pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestSpellDeal1Damage,

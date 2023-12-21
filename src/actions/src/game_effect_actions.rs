@@ -18,11 +18,13 @@ use game_data::animation_tracker::GameAnimation;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
+use game_data::prompt_data::PromptData;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
 use rules::{
-    curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, CardDefinitionExt,
+    curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, prompts,
+    CardDefinitionExt,
 };
 use with_error::WithError;
 
@@ -81,6 +83,12 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::PreventDestroyingCard(id) => destroy::prevent(game, id),
         GameEffect::SelectCardForPrompt(side, card_id) => {
             game.player_mut(side).prompt_selected_cards.push(card_id);
+        }
+        GameEffect::ClearAllSelectedCards(side) => {
+            game.player_mut(side).prompt_selected_cards.clear();
+        }
+        GameEffect::PushPromptWithIndex(side, ability_id, index) => {
+            prompts::push_with_data(game, side, ability_id, PromptData::Index(index));
         }
         GameEffect::SwapWithSelected(side, card_id) => {
             let source_position = game.card(card_id).position();

@@ -62,8 +62,8 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
                     ],
                     this::on_played(|g, s, _| {
                         // Note that second option is shown first on prompt stack
-                        prompts::push_with_data(g, Side::Covenant, s, PromptData::Index(0));
                         prompts::push_with_data(g, Side::Covenant, s, PromptData::Index(1));
+                        prompts::push_with_data(g, Side::Covenant, s, PromptData::Index(0));
                         Ok(())
                     }),
                 )
@@ -74,24 +74,24 @@ pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
 
                     if i == 0 {
                         show_prompt::with_context_and_choices(
-                            ButtonPromptContext::CardToTakeFromOpponent,
-                            g.score_area(Side::Riftcaller)
-                                .filter(|c| c.definition().is_scheme())
-                                .map(|c| {
-                                    PromptChoice::new()
-                                        .effect(GameEffect::SwapWithSelected(s.side(), c.id))
-                                        .anchor_card(c.id)
-                                })
-                                .collect(),
-                        )
-                    } else if i == 1 {
-                        show_prompt::with_context_and_choices(
                             ButtonPromptContext::CardToGiveToOpponent,
                             g.score_area(Side::Covenant)
                                 .filter(|c| c.definition().is_scheme())
                                 .map(|c| {
                                     PromptChoice::new()
                                         .effect(GameEffect::SelectCardForPrompt(s.side(), c.id))
+                                        .anchor_card(c.id)
+                                })
+                                .collect(),
+                        )
+                    } else if i == 1 {
+                        show_prompt::with_context_and_choices(
+                            ButtonPromptContext::CardToTakeFromOpponent,
+                            g.score_area(Side::Riftcaller)
+                                .filter(|c| c.definition().is_scheme())
+                                .map(|c| {
+                                    PromptChoice::new()
+                                        .effect(GameEffect::SwapWithSelected(s.side(), c.id))
                                         .anchor_card(c.id)
                                 })
                                 .collect(),

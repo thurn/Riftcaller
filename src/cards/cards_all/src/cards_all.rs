@@ -186,6 +186,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_weapon_reduce_cost_on_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_give_curse);
     DEFINITIONS.insert(cards_test::test_cards::test_evocation);
+    DEFINITIONS.insert(cards_test::test_cards::test_ally);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_1_damage);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_deal_5_damage);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_return_discard_to_hand);

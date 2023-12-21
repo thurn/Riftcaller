@@ -12,18 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{combat_abilities, costs, delegates, requirements, text, text_helpers, this};
+use card_helpers::{
+    combat_abilities, costs, delegates, requirements, show_prompt, text, text_helpers, this,
+};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, Resonance};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::{CardIdsExt, CardPosition};
+use game_data::game_effect::GameEffect;
+use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData};
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
 use game_data::text::TextToken::*;
-use rules::visual_effects::VisualEffects;
+use rules::visual_effects::{ShowAlert, VisualEffects};
+use rules::{prompts, visual_effects, CardDefinitionExt};
 use with_error::fail;
 
 pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
@@ -125,6 +131,15 @@ pub fn lawhold_cavalier(meta: CardMetadata) -> CardDefinition {
             Ability::new(text_helpers::named_trigger(
                 Encounter,
                 text!["The Riftcaller cannot play permanents this turn"],
+            ))
+            .delegate(delegates::can_play_card(
+                requirements::combat_ability_fired_this_turn,
+                |g, _, &card_id, flag| {
+                    flag.prevent_if(
+                        card_id.side == Side::Riftcaller
+                            && g.card(card_id).definition().is_permanent(),
+                    )
+                },
             )),
             Ability::new(text_helpers::named_trigger(
                 Combat,
@@ -132,7 +147,89 @@ pub fn lawhold_cavalier(meta: CardMetadata) -> CardDefinition {
                     text!["Choose", 2, "Riftcaller permanents, if able"],
                     text!["The Riftcaller must return one of them to the top of their deck"]
                 ],
-            )),
+            ))
+            .delegate(this::combat(|g, s, _| {
+                let permanents = g.all_permanents(Side::Riftcaller).card_ids();
+                if permanents.len() > 1 {
+                    visual_effects::show(
+                        g,
+                        s,
+                        GameObjectId::Character(Side::Covenant),
+                        ShowAlert::Yes,
+                    );
+                }
+
+                if permanents.len() == 2 {
+                    g.covenant.prompt_selected_cards.push(permanents[0]);
+                    g.covenant.prompt_selected_cards.push(permanents[1]);
+                    prompts::push_with_data(g, Side::Riftcaller, s, PromptData::Index(2));
+                } else if permanents.len() > 2 {
+                    // Note that second option is shown first on prompt stack
+                    prompts::push_with_data(g, Side::Covenant, s, PromptData::Index(1));
+                    prompts::push_with_data(g, Side::Covenant, s, PromptData::Index(0));
+                }
+
+                Ok(())
+            }))
+            .delegate(this::prompt(|g, s, source, _| {
+                let permanents = g.all_permanents(Side::Riftcaller).card_ids();
+                let PromptData::Index(index) = source.data else {
+                    return None;
+                };
+
+                match index {
+                    0 => show_prompt::with_choices(
+                        permanents
+                            .into_iter()
+                            .map(|card_id| {
+                                PromptChoice::new()
+                                    .effect(GameEffect::SelectCardForPrompt(
+                                        Side::Covenant,
+                                        card_id,
+                                    ))
+                                    .anchor_card(card_id)
+                            })
+                            .collect(),
+                    ),
+                    1 => show_prompt::with_choices(
+                        permanents
+                            .into_iter()
+                            .filter(|card_id| !g.covenant.prompt_selected_cards.contains(&card_id))
+                            .map(|card_id| {
+                                PromptChoice::new()
+                                    .effect(GameEffect::SelectCardForPrompt(
+                                        Side::Covenant,
+                                        card_id,
+                                    ))
+                                    .effect(GameEffect::PushPromptWithIndex(
+                                        Side::Riftcaller,
+                                        s.ability_id(),
+                                        2,
+                                    ))
+                                    .anchor_card(card_id)
+                                    .custom_label(PromptChoiceLabel::Select)
+                            })
+                            .collect(),
+                    ),
+                    2 => show_prompt::with_choices(
+                        g.covenant
+                            .prompt_selected_cards
+                            .iter()
+                            .map(|&card_id| {
+                                PromptChoice::new()
+                                    .effect(GameEffect::MoveCard(
+                                        card_id,
+                                        CardPosition::DeckTop(Side::Riftcaller),
+                                    ))
+                                    .effect(GameEffect::ClearAllSelectedCards(Side::Covenant))
+                                    .anchor_card(card_id)
+                                    .custom_label(PromptChoiceLabel::Return)
+                            })
+                            .collect(),
+                    ),
+                    _ => None,
+                }
+            })),
         ],
         config: CardConfigBuilder::new()
             .health(meta.upgrade(3, 5))

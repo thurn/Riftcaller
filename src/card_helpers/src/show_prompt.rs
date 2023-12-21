@@ -24,8 +24,7 @@ pub fn with_context_and_choices(
     Some(GamePrompt::ButtonPrompt(ButtonPrompt { context: Some(context), choices }))
 }
 
-/// Adds a choice prompt for the `side` player containing the choices in
-/// `choices`.
+/// Adds a choice prompt  containing the choices in `choices`.
 pub fn with_choices(choices: Vec<PromptChoice>) -> Option<GamePrompt> {
     Some(GamePrompt::ButtonPrompt(ButtonPrompt { context: None, choices }))
 }

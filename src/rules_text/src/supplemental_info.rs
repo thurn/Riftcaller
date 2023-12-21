@@ -153,7 +153,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             entry("Combat", "Triggers if this minion is not defeated during a raid")
         }
         TextTokenKind::Encounter => {
-            entry("Encounter", "Triggers when this minion is approached during a raid")
+            entry("Encounter", "Triggers when this minion is encountered during a raid, before weapons are used")
         }
         TextTokenKind::StoreMana => {
             entry("Store", format!("Add {} to this card to take later", icons::MANA))

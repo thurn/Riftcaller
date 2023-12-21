@@ -201,6 +201,7 @@ pub enum CardName {
     TestWeaponReduceCostOnSuccessfulRaid,
     TestRitualGiveCurse,
     TestEvocation,
+    TestAlly,
     TestSpellDeal1Damage,
     TestSpellDeal5Damage,
     /// Ritual to return all discarded cards to the Covenant's hand

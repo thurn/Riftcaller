@@ -191,7 +191,7 @@ pub fn enduring_radiance(meta: CardMetadata) -> CardDefinition {
                 PromptChoice::new()
                     .effect(GameEffect::MoveCard(s.card_id(), CardPosition::Hand(s.side())))
                     .effect(GameEffect::ManaCost(s.side(), 1, s.initiated_by()))
-                    .custom_label(PromptChoiceLabel::Return(1)),
+                    .custom_label(PromptChoiceLabel::ReturnForCost(1)),
                 PromptChoice::new().effect(GameEffect::Continue),
             ])
         }))],

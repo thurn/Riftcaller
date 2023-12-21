@@ -73,6 +73,8 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::PreventCurses(..) => "Prevent".to_string(),
         GameEffect::PreventDestroyingCard(..) => "Prevent".to_string(),
         GameEffect::SelectCardForPrompt(..) => "Select".to_string(),
+        GameEffect::ClearAllSelectedCards(..) => "Clear".to_string(),
+        GameEffect::PushPromptWithIndex(..) => "Select".to_string(),
         GameEffect::SwapWithSelected(..) => "Swap".to_string(),
         GameEffect::AppendCustomCardState(..) => "Choose".to_string(),
         GameEffect::EvadeCurrentEncounter => "Evade".to_string(),
@@ -87,13 +89,15 @@ fn custom_label(label: PromptChoiceLabel) -> String {
         PromptChoiceLabel::Play => "Play".to_string(),
         PromptChoiceLabel::Sacrifice => "Sacrifice".to_string(),
         PromptChoiceLabel::Prevent => "Prevent".to_string(),
-        PromptChoiceLabel::Return(cost) => {
+        PromptChoiceLabel::Return => "Return".to_string(),
+        PromptChoiceLabel::ReturnForCost(cost) => {
             format!("{}{}: Return", cost, icons::MANA)
         }
         PromptChoiceLabel::Occupant => "Occupant".to_string(),
         PromptChoiceLabel::Defender => "Defender".to_string(),
         PromptChoiceLabel::PayActionAccessAnother => format!("Access Another? ({})", icons::ACTION),
         PromptChoiceLabel::CardType(card_type) => card_type.to_string(),
+        PromptChoiceLabel::Select => "Select".to_string(),
     }
 }
 

@@ -22,6 +22,8 @@ use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{AbilityPromptSource, GamePrompt};
 
+use crate::delegates;
+
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.
 pub fn card(_: &GameState, scope: Scope, card_id: &impl HasCardId) -> bool {
@@ -39,6 +41,8 @@ pub fn on_played(mutation: MutationFn<CardPlayed>) -> Delegate {
     Delegate::PlayCard(EventDelegate { requirement: card, mutation })
 }
 
+/// Implements a callback to build a [GamePrompt] for this card when one is
+/// requested via `prompts::push();`
 pub fn prompt(
     transformation: TransformationFn<AbilityPromptSource, Option<GamePrompt>>,
 ) -> Delegate {
@@ -104,7 +108,7 @@ pub fn score_accessed_card_cost(
 
 /// A delegate which prevents a card from being able to be played
 pub fn can_play(transformation: TransformationFn<CardId, Flag>) -> Delegate {
-    Delegate::CanPlayCard(QueryDelegate { requirement: card, transformation })
+    delegates::can_play_card(card, transformation)
 }
 
 /// A delegate which prevents a weapon from being able to be used

@@ -64,6 +64,12 @@ impl Flag {
         }
     }
 
+    /// Prevents a flag's action if `value` is true. This is the negation of
+    /// [Self::add_constraint].
+    pub fn prevent_if(self, value: bool) -> Self {
+        self.add_constraint(!value)
+    }
+
     /// Overrides this flag if `value` is true. This is used to modify
     /// something that a player *could not* otherwise do with an additional
     /// capability. It expands the scope of where an action can happen, but

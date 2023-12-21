@@ -185,11 +185,13 @@ pub enum PromptChoiceLabel {
     Play,
     Sacrifice,
     Prevent,
-    Return(ManaValue),
+    Return,
+    ReturnForCost(ManaValue),
     Occupant,
     Defender,
     PayActionAccessAnother,
     CardType(CardType),
+    Select,
 }
 
 /// A specific card choice shown in a [ButtonPrompt].
