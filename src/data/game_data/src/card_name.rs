@@ -361,6 +361,7 @@ pub enum CardName {
     RiversEye,
     TheConjurersCircle,
     EriaTheGhostOfVasilor,
+    LawholdCavalier,
 }
 
 impl CardName {

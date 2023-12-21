@@ -36,14 +36,24 @@ use crate::{dispatch, flags, mana, mutations, prompts, queries, state_machine, C
 
 /// Starts a new play card action, either as a result the explicit game action
 /// or as an effect of another card.
+///
+/// Returns an error if this card cannot currently be played as determined by
+/// [flags::can_play_card].
 pub fn initiate(
     game: &mut GameState,
+    side: Side,
     card_id: CardId,
     target: CardTarget,
     from_zone: FromZone,
     initiated_by: InitiatedBy,
     options: PlayCardOptions,
 ) -> Result<()> {
+    verify!(
+        flags::can_play_card(game, side, card_id, target, options),
+        "Cannot play card {:?}",
+        card_id
+    );
+
     let card_play_id = CardPlayId(game.info.next_event_id());
     state_machine::initiate(
         game,

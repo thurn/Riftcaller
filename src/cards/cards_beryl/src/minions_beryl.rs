@@ -109,3 +109,46 @@ pub fn sentinel_sphinx(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn lawhold_cavalier(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::LawholdCavalier,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(2),
+        image: assets::covenant_card(meta, "lawhold_cavalier"),
+        card_type: CardType::Minion,
+        subtypes: vec![CardSubtype::Humanoid],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new(text_helpers::named_trigger(
+                Encounter,
+                text!["The Riftcaller cannot play permanents this turn"],
+            )),
+            Ability::new(text_helpers::named_trigger(
+                Combat,
+                text![
+                    text!["Choose", 2, "Riftcaller permanents, if able"],
+                    text!["The Riftcaller must return one of them to the top of their deck"]
+                ],
+            )),
+        ],
+        config: CardConfigBuilder::new()
+            .health(meta.upgrade(3, 5))
+            .shield(1)
+            .resonance(Resonance::infernal())
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(7))
+                    .scale(1.5)
+                    .effect_color(design::YELLOW_900)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02")),
+            )
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(4))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
+            )
+            .build(),
+    }
+}

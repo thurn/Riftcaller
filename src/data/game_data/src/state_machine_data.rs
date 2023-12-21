@@ -41,8 +41,14 @@ pub enum PlayCardStep {
 /// Data related to an ongoing action to play a card.
 #[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
 pub struct PlayCardOptions {
+    /// Play the card without paying its action points cost
     pub ignore_action_cost: bool,
+    /// Play the card without paying its mana cost
     pub ignore_mana_cost: bool,
+    /// Play the card even if it's not the owner's main phase during their turn
+    pub ignore_phase: bool,
+    /// Play the card even if it's not in the owner's hand
+    pub ignore_position: bool,
 }
 
 /// Data related to an ongoing action to play a card.

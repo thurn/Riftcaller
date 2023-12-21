@@ -34,6 +34,7 @@ use game_data::prompt_data::{
     BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PlayCardBrowser,
 };
 use game_data::raid_data::RaidStatus;
+use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
 
 use crate::mana::ManaPurpose;
@@ -100,11 +101,15 @@ pub fn can_make_mulligan_decision(game: &GameState, side: Side) -> bool {
 
 /// Returns true if the owner of the `card_id` card can currently pay its cost.
 ///
-/// See [can_take_play_card_action] for a function which checks all factors
-/// related to playing a card.
-pub fn can_pay_card_cost(game: &GameState, card_id: CardId) -> bool {
-    let mut can_pay = matches!(queries::mana_cost(game, card_id), Some(cost)
-                             if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)));
+/// See [can_play_card] for a function which checks all factor related to
+/// playing a card.
+pub fn can_pay_card_cost(game: &GameState, card_id: CardId, options: PlayCardOptions) -> bool {
+    let mut can_pay = if options.ignore_mana_cost {
+        true
+    } else {
+        matches!(queries::mana_cost(game, card_id), Some(cost)
+                             if cost <= mana::get(game, card_id.side, ManaPurpose::PayForCard(card_id)))
+    };
     if let Some(custom_cost) = &game.card(card_id).definition().cost.custom_cost {
         can_pay &= (custom_cost.can_pay)(game, card_id);
     }
@@ -112,29 +117,36 @@ pub fn can_pay_card_cost(game: &GameState, card_id: CardId) -> bool {
     can_pay
 }
 
-/// Returns whether a given card can currently be played via the basic game
-/// action to play a card.
-pub fn can_take_play_card_action(
+/// Returns whether a given card can currently be played.
+pub fn can_play_card(
     game: &GameState,
     side: Side,
     card_id: CardId,
     target: CardTarget,
+    options: PlayCardOptions,
 ) -> bool {
+    let query: bool =
+        dispatch::perform_query(game, CanPlayCardQuery(&card_id), Flag::new(true)).into();
+    if !query {
+        return false;
+    }
+
     if let Some(GamePrompt::PlayCardBrowser(browser)) = &prompts::current(game, card_id.side) {
         return can_play_from_browser(game, card_id, target, browser);
     }
 
-    let mut can_play = in_main_phase_with_action_point(game, side)
+    let mut can_play = (in_main_phase_with_action_point(game, side) || options.ignore_phase)
         && side == card_id.side
-        && game.card(card_id).position() == CardPosition::Hand(side)
+        && (game.card(card_id).position() == CardPosition::Hand(side) || options.ignore_position)
         && is_valid_target(game, card_id, target)
-        && queries::action_cost(game, card_id) <= game.player(side).actions;
+        && (options.ignore_action_cost
+            || queries::action_cost(game, card_id) <= game.player(side).actions);
 
     if enters_play_face_up(game, card_id) {
-        can_play &= can_pay_card_cost(game, card_id);
+        can_play &= can_pay_card_cost(game, card_id, options);
     }
 
-    dispatch::perform_query(game, CanPlayCardQuery(&card_id), Flag::new(can_play)).into()
+    can_play
 }
 
 /// Checks whether a card can be played from a [PlayCardBrowser].
@@ -152,7 +164,7 @@ fn can_play_from_browser(
         && queries::action_cost(game, card_id) <= game.player(card_id.side).actions;
 
     if enters_play_face_up(game, card_id) {
-        can_play &= can_pay_card_cost(game, card_id);
+        can_play &= can_pay_card_cost(game, card_id, PlayCardOptions::default());
     }
 
     dispatch::perform_query(game, CanPlayCardQuery(&card_id), Flag::new(can_play)).into()
@@ -410,7 +422,8 @@ pub fn can_take_game_actions(game: &GameState, side: Side) -> bool {
 /// Returns an error if there is no active raid or if this is an invalid
 /// defender.
 pub fn can_summon(game: &GameState, card_id: CardId) -> bool {
-    let can_summon = game.card(card_id).is_face_down() && can_pay_card_cost(game, card_id);
+    let can_summon = game.card(card_id).is_face_down()
+        && can_pay_card_cost(game, card_id, PlayCardOptions::default());
     dispatch::perform_query(game, CanSummonQuery(&card_id), Flag::new(can_summon)).into()
 }
 

@@ -102,11 +102,17 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::PlayCardForNoMana(card_id, target, from_zone, initiated_by) => {
             play_card::initiate(
                 game,
+                card_id.side,
                 card_id,
                 target,
                 from_zone,
                 initiated_by,
-                PlayCardOptions { ignore_action_cost: true, ignore_mana_cost: true },
+                PlayCardOptions {
+                    ignore_action_cost: true,
+                    ignore_mana_cost: true,
+                    ignore_phase: true,
+                    ignore_position: true,
+                },
             )?;
         }
         GameEffect::PreventRaidCardAccess => {

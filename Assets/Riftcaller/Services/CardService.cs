@@ -318,7 +318,6 @@ namespace Riftcaller.Services
     public IEnumerator HandleDestroyCard(CardIdentifier cardId, bool animate)
     {
       var card = FindCard(cardId);
-      Debug.Log($"HandleDestroyCard: {card.name}");
 
       Sequence? sequence = null;
 

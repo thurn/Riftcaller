@@ -26,6 +26,7 @@ use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::prompt_data::GamePrompt;
 use game_data::special_effects::TimedEffect;
+use game_data::state_machine_data::PlayCardOptions;
 use protos::riftcaller::card_targeting::Targeting;
 use protos::riftcaller::{
     info_zoom_highlight, ArrowTargetRoom, CardEffects, CardIcons, CardPrefab, CardTargeting,
@@ -193,7 +194,15 @@ fn revealed_card_view(
             card_targeting(
                 definition.config.custom_targeting.as_ref(),
                 flags::enters_play_in_room(game, card.id),
-                |target| flags::can_take_play_card_action(game, builder.user_side, card.id, target),
+                |target| {
+                    flags::can_play_card(
+                        game,
+                        builder.user_side,
+                        card.id,
+                        target,
+                        PlayCardOptions::default(),
+                    )
+                },
             )
         }),
         on_release_position: Some(positions::for_sorting_key(

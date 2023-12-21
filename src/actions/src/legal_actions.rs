@@ -22,6 +22,7 @@ use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, GameStateAction};
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{GamePrompt, PromptAction};
+use game_data::state_machine_data::PlayCardOptions;
 use raid_state::raid_prompt;
 use rules::{flags, prompts, queries, CardDefinitionExt};
 use with_error::fail;
@@ -113,7 +114,13 @@ fn legal_card_actions(
     // https://stackoverflow.com/a/52064434/298036
     let play_in_room = if target_kind == CardTargetKind::Room {
         Some(enum_iterator::all::<RoomId>().filter_map(move |room_id| {
-            if flags::can_take_play_card_action(game, side, card_id, CardTarget::Room(room_id)) {
+            if flags::can_play_card(
+                game,
+                side,
+                card_id,
+                CardTarget::Room(room_id),
+                PlayCardOptions::default(),
+            ) {
                 Some(GameAction::PlayCard(card_id, CardTarget::Room(room_id)))
             } else {
                 None
@@ -124,7 +131,7 @@ fn legal_card_actions(
     };
 
     let play_card = if target_kind == CardTargetKind::None
-        && flags::can_take_play_card_action(game, side, card_id, CardTarget::None)
+        && flags::can_play_card(game, side, card_id, CardTarget::None, PlayCardOptions::default())
     {
         Some(iter::once(GameAction::PlayCard(card_id, CardTarget::None)))
     } else {

@@ -134,12 +134,6 @@ fn play_card_action(
     card_id: CardId,
     target: CardTarget,
 ) -> Result<()> {
-    verify!(
-        flags::can_take_play_card_action(game, user_side, card_id, target),
-        "Cannot play card {:?}",
-        card_id
-    );
-
     let (initiated_by, from_zone) =
         if let Some(GamePrompt::PlayCardBrowser(prompt)) = prompts::current(game, card_id.side) {
             (InitiatedBy::Ability(prompt.initiated_by), prompt.from_zone)
@@ -147,7 +141,15 @@ fn play_card_action(
             (InitiatedBy::GameAction, FromZone::Hand)
         };
 
-    play_card::initiate(game, card_id, target, from_zone, initiated_by, PlayCardOptions::default())
+    play_card::initiate(
+        game,
+        user_side,
+        card_id,
+        target,
+        from_zone,
+        initiated_by,
+        PlayCardOptions::default(),
+    )
 }
 
 /// The basic game action to activate an ability of a card in play.
