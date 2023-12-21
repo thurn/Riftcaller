@@ -18,6 +18,7 @@ use core_ui::icons;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
 use protos::riftcaller::client_action::Action;
+use protos::riftcaller::{CardIdentifier, EventHandlers};
 use server::server_data::GameResponseOutput;
 use with_error::{verify, WithError};
 
@@ -25,6 +26,7 @@ use crate::client_interface::HasText;
 use crate::test_session::TestSession;
 use crate::TestSessionHelpers;
 
+#[derive(Debug)]
 pub enum Button {
     Summon,
     NoSummon,
@@ -72,6 +74,16 @@ pub trait TestInterfaceHelpers {
     fn click(&mut self, button: Button) -> GameResponseOutput;
 
     fn click_with_result(&mut self, button: Button) -> Result<GameResponseOutput>;
+
+    /// Click a button attached to a given card
+    fn click_card_button(&mut self, player_id: PlayerId, card_id: CardIdentifier, button: Button);
+
+    fn click_card_button_with_result(
+        &mut self,
+        player_id: PlayerId,
+        card_id: CardIdentifier,
+        button: Button,
+    ) -> Result<GameResponseOutput>;
 
     /// Look for a button in the user interface and invoke its action as the
     /// opponent of the current user.
@@ -121,6 +133,34 @@ impl TestInterfaceHelpers for TestSession {
     fn click_with_result(&mut self, button: Button) -> Result<GameResponseOutput> {
         let text = resolve_button(button);
         self.click_on_with_result(self.user_id(), text)
+    }
+
+    fn click_card_button(&mut self, player_id: PlayerId, card_id: CardIdentifier, button: Button) {
+        self.click_card_button_with_result(player_id, card_id, button)
+            .expect("Error clicking card button");
+    }
+
+    fn click_card_button_with_result(
+        &mut self,
+        player_id: PlayerId,
+        card_id: CardIdentifier,
+        button: Button,
+    ) -> Result<GameResponseOutput> {
+        let player = self.player(player_id);
+        let node = player
+            .interface
+            .card_anchors()
+            .iter()
+            .find(|card_anchor| card_anchor.card_id == Some(card_id))
+            .as_ref()
+            .unwrap_or_else(|| panic!("Button {button:?} not found for card {card_id:?}"))
+            .node
+            .as_ref()
+            .unwrap_or_else(|| panic!("Node button {button:?} not found for card {card_id:?}"));
+
+        let text = resolve_button(button);
+        let handlers = node.find_handlers(text);
+        invoke_click(self, player_id, handlers)
     }
 
     fn opponent_click(&mut self, button: Button) -> GameResponseOutput {
@@ -175,19 +215,7 @@ impl TestInterfaceHelpers for TestSession {
     ) -> Result<GameResponseOutput> {
         let player = self.player(player_id);
         let handlers = player.interface.all_active_nodes().find_handlers(text);
-        let action = handlers
-            .with_error(|| "Button not found")?
-            .on_click
-            .with_error(|| "OnClick not found")?
-            .action
-            .with_error(|| "Action not found")?;
-        if let Action::StandardAction(a) = &action {
-            verify!(
-                !(a.payload.is_empty() && a.update.is_none()),
-                "Attempted to invoke empty action"
-            );
-        }
-        self.perform_action(action, player_id)
+        invoke_click(self, player_id, handlers)
     }
 
     fn has_text(&self, text: impl Into<String>) -> bool {
@@ -197,6 +225,23 @@ impl TestInterfaceHelpers for TestSession {
     fn open_panel_count(&self) -> usize {
         self.client.interface.panel_count()
     }
+}
+
+fn invoke_click(
+    session: &mut TestSession,
+    player_id: PlayerId,
+    handlers: Option<EventHandlers>,
+) -> Result<GameResponseOutput> {
+    let action = handlers
+        .with_error(|| "Button not found")?
+        .on_click
+        .with_error(|| "OnClick not found")?
+        .action
+        .with_error(|| "Action not found")?;
+    if let Action::StandardAction(a) = &action {
+        verify!(!(a.payload.is_empty() && a.update.is_none()), "Attempted to invoke empty action");
+    }
+    session.perform_action(action, player_id)
 }
 
 fn resolve_button(button: Button) -> String {

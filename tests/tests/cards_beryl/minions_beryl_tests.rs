@@ -101,16 +101,16 @@ fn lawhold_cavalier() {
         .build();
 
     // 3 Permanents: opponent picks
-    g.create_and_play(CardName::TestEvocation);
-    g.create_and_play(CardName::TestAstralWeapon);
-    g.create_and_play(CardName::TestAlly);
+    let evocation_id = g.create_and_play(CardName::TestEvocation);
+    let artifact_id = g.create_and_play(CardName::TestAstralWeapon);
+    let ally_id = g.create_and_play(CardName::TestAlly);
     g.initiate_raid(RoomId::Vault);
     g.click(Button::NoWeapon);
-    g.opponent_click(Button::SelectForMultipart);
-    g.opponent_click(Button::SelectForMultipart);
-    g.click(Button::ReturnToDeck);
+    g.click_card_button(g.opponent_id(), ally_id, Button::SelectForMultipart);
+    g.click_card_button(g.opponent_id(), evocation_id, Button::SelectForMultipart);
+    g.click_card_button(g.user_id(), evocation_id, Button::ReturnToDeck);
     g.click(Button::EndRaid);
-    assert!(g.client.cards.deck_top().contains_card(CardName::TestAlly));
+    assert!(g.client.cards.deck_top().contains_card(CardName::TestEvocation));
 
     // Cannot play a permanent from hand after a minion encounter
     let artifact = g.add_to_hand(CardName::TestInfernalWeapon);
@@ -119,7 +119,7 @@ fn lawhold_cavalier() {
     // With only 2 permanents, opponent does not have to pick
     g.initiate_raid(RoomId::Vault);
     g.click(Button::NoWeapon);
-    g.click(Button::ReturnToDeck);
+    g.click_card_button(g.user_id(), artifact_id, Button::ReturnToDeck);
     g.click(Button::EndRaid);
     assert!(g.client.cards.deck_top().contains_card(CardName::TestAstralWeapon));
 
