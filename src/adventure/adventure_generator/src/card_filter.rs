@@ -15,7 +15,6 @@
 use adventure_data::adventure::{AdventureState, CardChoice, DraftData, ShopData};
 use adventure_data::card_filter_data::{CardFilterCategoryOperator, UpgradedStatus};
 use core_data::adventure_primitives::{CardFilterId, Coins};
-use core_data::game_primitives::CardSubtype;
 use enumset::{EnumSet, EnumSetType};
 use game_data::card_name::CardVariant;
 use game_data::deck::Deck;
@@ -79,9 +78,6 @@ pub fn shop_choices(state: &mut AdventureState, filter: CardFilterId) -> ShopDat
 pub fn matches(filter_id: CardFilterId, variant: CardVariant) -> bool {
     let filter = game_tables::card_filter(filter_id);
     let definition = rules::get(variant);
-    if definition.subtypes.contains(&CardSubtype::Weapon) {
-        eprintln!("Weapon");
-    }
 
     let rarity = check_set(filter.rarity, definition.rarity);
     let types = check_set(filter.card_types, definition.card_type);

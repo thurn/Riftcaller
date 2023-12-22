@@ -156,7 +156,6 @@ GameObject:
   - component: {fileID: 9218228602600786081}
   - component: {fileID: 8679095155801471873}
   - component: {fileID: 5046173552731427907}
-  - component: {fileID: 5655522961466216953}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -256,7 +255,7 @@ MonoBehaviour:
   _opponentRiftcallerDisplay: {fileID: 0}
   _browserDragTarget: {fileID: 0}
   _handStorage: {fileID: 0}
-  _gameDataService: {fileID: 5655522961466216953}
+  _gameDataService: {fileID: 0}
 --- !u!114 &205228965686964160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580,25 +579,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _registry: {fileID: 205228965686964167}
   _studioPrefab: {fileID: 8868668501757707318, guid: c42080a601804497988b1bf23051d052, type: 3}
---- !u!114 &5655522961466216953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 205228965686964173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cece2fd05cdc44d7a8845fab60c6a08e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tables:
-  - _tableName: 3
-    _asset: {fileID: 4900000, guid: 02576df1a51174ea69d11454c627a47c, type: 3}
-  - _tableName: 2
-    _asset: {fileID: 4900000, guid: 9c0e8ef9027874495b333da9a5ff0f03, type: 3}
-  - _tableName: 4
-    _asset: {fileID: 4900000, guid: 63b84a0716ee440f99edc197147df6e8, type: 3}
 --- !u!1 &205228965825750781
 GameObject:
   m_ObjectHideFlags: 0

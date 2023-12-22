@@ -110,24 +110,6 @@ namespace Riftcaller.Services
       _actionQueue.Enqueue(action);
     }
 
-    public IEnumerator SetGameTable(SetGameTableRequest request)
-    {
-      _registry.DocumentService.WaitFor(WaitingFor.Connection);
-      var call = _client.Value.SetGameTableAsync(request);
-      var task = call.GetAwaiter();
-      yield return new WaitUntil(() => task.IsCompleted);
-
-      _registry.DocumentService.EndWaitFor(WaitingFor.Connection);
-      switch (call.GetStatus().StatusCode)
-      {
-        case StatusCode.OK:
-          break;
-        default:
-          LogUtils.LogError($"Error setting GameTable {request.TableName}: {call.GetStatus().Detail}");
-          break;
-      }      
-    }
-
     void Update()
     {
       if (_actionQueue.Count > 0 && _currentlyHandlingAction == null)

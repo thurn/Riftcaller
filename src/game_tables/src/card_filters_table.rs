@@ -13,29 +13,16 @@
 // limitations under the License.
 
 use std::collections::HashMap;
-use std::sync::Mutex;
 
 use adventure_data::card_filter_data::{CardFilter, UpgradedStatus};
 use anyhow::Result;
 use core_data::adventure_primitives::CardFilterId;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, Side};
 use enumset::{EnumSet, EnumSetType};
-use once_cell::sync::Lazy;
 
 use crate::csv_datatypes::CardFilterRow;
 
-static ROWS: Lazy<Mutex<Vec<CardFilterRow>>> = Lazy::new(|| Mutex::new(Vec::new()));
-
-pub fn clear() {
-    ROWS.lock().expect("Unable to lock ROWS").clear();
-}
-
-pub fn import_row(row: CardFilterRow) {
-    ROWS.lock().expect("Unable to lock ROWS").push(row)
-}
-
-pub fn build() -> Result<HashMap<CardFilterId, CardFilter>> {
-    let rows = ROWS.lock().expect("Unable to lock ROWS");
+pub fn build(rows: Vec<CardFilterRow>) -> Result<HashMap<CardFilterId, CardFilter>> {
     Ok(rows.iter().map(|row| (CardFilterId::new(row.id), build_filter(row))).collect())
 }
 

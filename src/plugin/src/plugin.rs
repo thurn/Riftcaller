@@ -58,27 +58,6 @@ async unsafe fn initialize_impl(path: *const u8, path_length: i32) -> Result<i32
     Ok(0)
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn riftcaller_set_game_table(
-    table_number: i32,
-    content: *const u8,
-    content_length: i32,
-) -> i32 {
-    panic::catch_unwind(|| set_game_table_impl(table_number, content, content_length).unwrap_or(-1))
-        .unwrap_or(-1)
-}
-
-unsafe fn set_game_table_impl(
-    table_number: i32,
-    content: *const u8,
-    content_length: i32,
-) -> Result<i32> {
-    let string = std::slice::from_raw_parts(content, content_length as usize);
-    let decoded = str::from_utf8(string)?;
-    game_tables::import(table_number, decoded)?;
-    Ok(decoded.len() as i32)
-}
-
 /// Synchronize the state of an ongoing game, downloading a full description of
 /// the game state.
 ///

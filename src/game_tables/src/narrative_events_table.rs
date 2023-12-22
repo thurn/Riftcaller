@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use std::collections::HashMap;
-use std::sync::Mutex;
 
 use adventure_data::adventure_effect_data::{
     AdventureEffect, AdventureEffectData, AdventureEffectKind, DeckCardAction, DeckCardEffect,
@@ -23,37 +22,18 @@ use anyhow::Result;
 use core_data::adventure_primitives::{CardFilterId, Coins, NarrativeChoiceId, NarrativeEventId};
 use core_data::game_primitives::Sprite;
 use game_data::card_name::CardName;
-use once_cell::sync::Lazy;
 use with_error::{fail, verify, WithError};
 
 use crate::csv_datatypes::{NarrativeEventDetailsRow, NarrativeEventEntryKind, NarrativeEventRow};
 
-static ROWS: Lazy<Mutex<Vec<NarrativeEventRow>>> = Lazy::new(|| Mutex::new(Vec::new()));
-static DETAILS: Lazy<Mutex<Vec<NarrativeEventDetailsRow>>> = Lazy::new(|| Mutex::new(Vec::new()));
-
-pub fn clear_rows() {
-    ROWS.lock().expect("Unable to lock ROWS").clear();
-}
-
-pub fn clear_details() {
-    DETAILS.lock().expect("Unable to lock DETAILS").clear();
-}
-
-pub fn import_row(row: NarrativeEventRow) {
-    ROWS.lock().expect("Unable to lock ROWS").push(row)
-}
-
-pub fn import_details_row(row: NarrativeEventDetailsRow) {
-    DETAILS.lock().expect("Unable to lock DETAILS").push(row)
-}
-
-pub fn build() -> Result<HashMap<NarrativeEventId, NarrativeEventData>> {
+pub fn build(
+    rows: Vec<NarrativeEventRow>,
+    details: Vec<NarrativeEventDetailsRow>,
+) -> Result<HashMap<NarrativeEventId, NarrativeEventData>> {
     let mut result = HashMap::new();
-    let rows = &ROWS.lock().expect("Unable to lock ROWS");
-    let details = &DETAILS.lock().expect("Unable to lock DETAILS");
     for row in rows.iter() {
         let id = NarrativeEventId::new(row.id);
-        let details = find_details(details, id);
+        let details = find_details(&details, id);
         result.insert(
             id,
             NarrativeEventData {

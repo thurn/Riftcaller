@@ -2076,38 +2076,10 @@ message CommandList {
     ClientMetadata metadata = 3;
 }
 
-// Known names of GameTables
-enum GameTableName {
-    GAME_TABLE_NAME_UNSPECIFIED = 0;
-    GAME_TABLE_NAME_CARDS = 1;
-    GAME_TABLE_NAME_NARRATIVE_EVENTS = 2;
-    GAME_TABLE_NAME_NARRATIVE_EVENT_DETAILS = 3;
-    GAME_TABLE_NAME_CARD_FILTERS = 4;
-    // Please keep this enum in sync with the constants in game_tables.rs!
-}
-
-// Sets the contents of a GameTable
-//
-// GameTables are CSV (comma separated value) files which specify data about
-// how the game will function. They typically contain the most frequently
-// changing pieces of gameplay information in order to facilitate
-// faster updates.
-message SetGameTableRequest {
-    GameTableName table_name = 1;
-    string file_content = 2;
-}
-
-// Response to setting the contents of a GameTable, containing the name of the
-// table which was updated.
-message SetGameTableResponse {}
-
 service Riftcaller {
     // Initiate a new server connection.
     rpc Connect(ConnectRequest) returns (stream CommandList);
 
     // Perform a game action.
     rpc PerformAction(GameRequest) returns (CommandList);
-
-    // Sets data to use in this game for a named GameTable
-    rpc SetGameTable(SetGameTableRequest) returns (SetGameTableResponse);
 }

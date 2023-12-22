@@ -57,12 +57,12 @@ protos:
 sheet_id := "12TjvWunLnf_JX7GZkZ9R3ivMjrbhZou22hGYKzDFD9o"
 
 csv:
-    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=981334943" -o Assets/Data/narrative_events.csv
-    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=1418995193" -o Assets/Data/narrative_event_details.csv
-    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=1721526268" -o Assets/Data/card_filters.csv
+    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=981334943" -o src/game_tables/src/narrative_events.csv
+    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=1418995193" -o src/game_tables/src/narrative_event_details.csv
+    curl -L "https://docs.google.com/spreadsheets/d/{{sheet_id}}/export?exportFormat=csv&gid=1721526268" -o src/game_tables/src/card_filters.csv
     # Rust CSV crate only supports lowercase
-    sed -i '' 's/TRUE/true/g' Assets/Data/card_filters.csv
-    sed -i '' 's/FALSE/false/g' Assets/Data/card_filters.csv
+    sed -i '' 's/TRUE/true/g' src/game_tables/src/card_filters.csv
+    sed -i '' 's/FALSE/false/g' src/game_tables/src/card_filters.csv
 
 @dropbox-ignore:
     find . -name '*conflicted*' -delete
