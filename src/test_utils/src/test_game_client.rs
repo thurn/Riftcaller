@@ -30,9 +30,9 @@ use protos::riftcaller::{
     ArrowTargetRoom, CardIdentifier, CardView, ClientItemLocation, ClientRoomLocation, CommandList,
     GameMessageType, GameObjectIdentifier, NoTargeting, ObjectPosition, ObjectPositionBrowser,
     ObjectPositionCharacter, ObjectPositionDeck, ObjectPositionDiscardPile, ObjectPositionHand,
-    ObjectPositionItem, ObjectPositionRaid, ObjectPositionRevealedCards, ObjectPositionRiftcallers,
-    ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView, RevealedCardView,
-    RevealedCardsBrowserSize, RoomIdentifier,
+    ObjectPositionItem, ObjectPositionOffscreen, ObjectPositionRaid, ObjectPositionRevealedCards,
+    ObjectPositionRiftcallers, ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView,
+    RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
 use rules::dispatch;
 
@@ -514,6 +514,10 @@ impl ClientCards {
         self.in_position(Position::Character(ObjectPositionCharacter {
             owner: PlayerName::User.into(),
         }))
+    }
+
+    pub fn offscreen(&self) -> Vec<&ClientCard> {
+        self.in_position(Position::Offscreen(ObjectPositionOffscreen {}))
     }
 
     pub fn opponent_score_area(&self) -> Vec<&ClientCard> {

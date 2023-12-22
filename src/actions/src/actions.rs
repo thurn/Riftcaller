@@ -523,8 +523,11 @@ fn handle_card_selector_submit(
         BrowserPromptTarget::DiscardPile => {
             mutations::move_cards(game, &subjects, CardPosition::DiscardPile(user_side))?;
         }
-        BrowserPromptTarget::Deck => {
+        BrowserPromptTarget::DeckTop => {
             mutations::move_cards(game, &subjects, CardPosition::DeckTop(user_side))?;
+        }
+        BrowserPromptTarget::DeckShuffled => {
+            mutations::shuffle_into_deck(game, user_side, &subjects)?;
         }
     }
 

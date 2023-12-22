@@ -56,7 +56,7 @@ pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![ActivatedAbility::new(
-            costs::sacrifice_for_action(),
+            costs::sacrifice_and_action(),
             text![
                 text!["Raid target outer room"],
                 text![
@@ -376,7 +376,7 @@ pub fn splinter_of_twilight(meta: CardMetadata) -> CardDefinition {
                 ])
             })),
             ActivatedAbility::new(
-                costs::sacrifice_for_action(),
+                costs::sacrifice_and_action(),
                 text![text!["Access all cards in the", Crypt], text![GainActions(1)]],
             )
             .delegate(this::on_activated(|g, s, _| {

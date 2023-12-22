@@ -14,17 +14,20 @@
 
 use std::cmp;
 
-use card_helpers::{costs, delegates, history, in_play, requirements, text};
+use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
+use card_helpers::{costs, delegates, history, in_play, requirements, text, this};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition};
+use game_data::card_definition::{Ability, ActivatedAbility, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
+use game_data::card_state::CardIdsExt;
+use game_data::prompt_data::{BrowserPromptTarget, BrowserPromptValidation, PromptContext};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::RazeAbility;
-use rules::damage;
 use rules::visual_effects::VisualEffects;
+use rules::{damage, draw_cards, prompts};
 use with_error::fail;
 
 pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
@@ -106,5 +109,43 @@ pub fn living_stone(meta: CardMetadata) -> CardDefinition {
             ),
         )],
         config: CardConfigBuilder::new().raze_cost(5).build(),
+    }
+}
+
+pub fn sealed_necropolis(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SealedNecropolis,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::covenant_card(meta, "sealed_necropolis"),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Roombound, CardSubtype::Nightbound],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Common,
+        abilities: vec![
+            ActivatedAbility::new(costs::actions(1), text!["Draw", 2, "cards"])
+                .delegate(this::on_activated(|g, s, _| {
+                    draw_cards::run(g, Side::Covenant, 2, s.initiated_by())
+                }))
+                .build(),
+            ActivatedAbility::new(
+                costs::banish(),
+                text!["Shuffle up to", 3, "cards from the crypt into the vault"],
+            )
+            .delegate(this::on_activated(|g, s, _| {
+                prompts::push(g, Side::Covenant, s.ability_id());
+                Ok(())
+            }))
+            .delegate(this::prompt(|g, s, _, _| {
+                CardSelectorPromptBuilder::new(s, BrowserPromptTarget::DeckShuffled)
+                    .subjects(g.discard_pile(Side::Covenant).card_ids())
+                    .context(PromptContext::ShuffleIntoVault)
+                    .validation(BrowserPromptValidation::LessThanOrEqualTo(3))
+                    .build()
+            }))
+            .build(),
+        ],
+        config: CardConfigBuilder::new().raze_cost(meta.upgrade(3, 5)).build(),
     }
 }

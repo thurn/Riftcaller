@@ -17,7 +17,7 @@ use game_data::card_name::CardName;
 use protos::riftcaller::client_action::Action;
 use protos::riftcaller::DrawCardAction;
 use test_utils::test_game::{TestGame, TestSide};
-use test_utils::{Button, TestInterfaceHelpers, TestSessionHelpers};
+use test_utils::{test_helpers, Button, CardNamesExt, TestInterfaceHelpers, TestSessionHelpers};
 
 #[test]
 fn magistrates_thronehall() {
@@ -123,4 +123,91 @@ fn living_stone_triggers_on_vault() {
     g.opponent_click(Button::Discard);
     g.opponent_click(Button::EndRaid);
     assert_eq!(g.client.cards.opponent_hand().len(), 4);
+}
+
+#[test]
+fn sealed_necropolis() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .in_discard_face_up(CardName::TestProject2Cost3Raze)
+            .in_discard_face_up(CardName::TestScheme1_10)
+            .in_discard_face_up(CardName::TestScheme3_10),
+    )
+    .build();
+    let id = g.create_and_play(CardName::SealedNecropolis);
+    g.summon_project(id);
+    g.activate_ability(id, 0);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 2);
+
+    let scheme1 = g.client.cards.discard_pile().find_card_id(CardName::TestScheme1_10);
+    let scheme2 = g.client.cards.discard_pile().find_card_id(CardName::TestScheme3_10);
+    g.activate_ability(id, 1);
+    assert!(g.client.cards.offscreen().contains_card(CardName::SealedNecropolis));
+    g.move_selector_card(scheme1);
+    g.move_selector_card(scheme2);
+    g.click(Button::SubmitCardSelector);
+    test_helpers::assert_cards_match(
+        g.client.cards.discard_pile(),
+        vec![CardName::TestProject2Cost3Raze],
+    );
+}
+
+#[test]
+fn sealed_necropolis_during_raid() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .in_discard_face_up(CardName::TestProject2Cost3Raze)
+            .in_discard_face_up(CardName::TestScheme1_10)
+            .in_discard_face_up(CardName::TestScheme3_10),
+    )
+    .build();
+    let id = g.create_and_play(CardName::SealedNecropolis);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.summon_project(id);
+
+    // Cannot use action ability
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+
+    let scheme1 = g.client.cards.discard_pile().find_card_id(CardName::TestScheme1_10);
+    let scheme2 = g.client.cards.discard_pile().find_card_id(CardName::TestScheme3_10);
+    g.activate_ability(id, 1);
+    assert!(g.client.cards.offscreen().contains_card(CardName::SealedNecropolis));
+    g.move_selector_card(scheme1);
+    g.move_selector_card(scheme2);
+    g.click(Button::SubmitCardSelector);
+    test_helpers::assert_cards_match(
+        g.client.cards.discard_pile(),
+        vec![CardName::TestProject2Cost3Raze],
+    );
+
+    // The Raid still active even though the target is gone
+    assert!(g.client.data.raid_active());
+    g.opponent_click(Button::EndRaid);
+}
+
+#[test]
+fn sealed_necropolis_during_raid_different_room() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .in_discard_face_up(CardName::TestProject2Cost3Raze)
+            .in_discard_face_up(CardName::TestScheme1_10)
+            .in_discard_face_up(CardName::TestScheme3_10),
+    )
+    .build();
+    let id = g.create_and_play(CardName::SealedNecropolis);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Vault);
+    g.summon_project(id);
+
+    // Cannot use action ability
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+
+    let scheme1 = g.client.cards.discard_pile().find_card_id(CardName::TestScheme1_10);
+    g.activate_ability(id, 1);
+    assert!(g.client.cards.offscreen().contains_card(CardName::SealedNecropolis));
+    g.move_selector_card(scheme1);
+    g.click(Button::SubmitCardSelector);
+    assert_eq!(g.client.cards.discard_pile().len(), 2);
+    g.opponent_click(Button::EndRaid);
 }

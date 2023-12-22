@@ -465,7 +465,8 @@ fn non_card_position_override(
     if let Some(GamePrompt::CardSelector(browser)) = current_prompt {
         let target = match browser.target {
             BrowserPromptTarget::DiscardPile => GameObjectId::DiscardPile(builder.user_side),
-            BrowserPromptTarget::Deck => GameObjectId::Deck(builder.user_side),
+            BrowserPromptTarget::DeckTop => GameObjectId::Deck(builder.user_side),
+            BrowserPromptTarget::DeckShuffled => GameObjectId::Deck(builder.user_side),
         };
         if id == target {
             return Some(for_sorting_key(

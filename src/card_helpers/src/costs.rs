@@ -18,7 +18,7 @@ use game_data::card_state::CardCounter;
 use game_data::text::{TextElement, TextToken};
 use rules::mutations;
 
-use crate::history;
+use crate::{history, text};
 
 /// Provides the cost for a card, with 1 action point required and `mana` mana
 /// points
@@ -44,7 +44,7 @@ pub fn identity() -> Cost<CardId> {
 
 /// Cost for an ability which costs 1 action point and requires the owning card
 /// to be sacrificed.
-pub fn sacrifice_for_action() -> Cost<AbilityId> {
+pub fn sacrifice_and_action() -> Cost<AbilityId> {
     Cost { mana: None, actions: 1, custom_cost: sacrifice_custom_cost() }
 }
 
@@ -63,6 +63,24 @@ pub fn sacrifice_custom_cost() -> Option<CustomCost<AbilityId>> {
         },
         pay: |game, ability_id| mutations::sacrifice_card(game, ability_id.card_id),
         description: Some(TextElement::Token(TextToken::SacrificeCost)),
+    })
+}
+
+/// Cost for an ability which requires the owning card to be banished.
+pub fn banish() -> Cost<AbilityId> {
+    Cost { mana: None, actions: 0, custom_cost: banish_custom_cost() }
+}
+
+/// A [CustomCost] which allows an ability to be activated by banishing the
+/// card.
+pub fn banish_custom_cost() -> Option<CustomCost<AbilityId>> {
+    Some(CustomCost {
+        can_pay: |game, ability_id| {
+            game.card(ability_id.card_id).is_face_up()
+                && game.card(ability_id.card_id).position().in_play()
+        },
+        pay: |game, ability_id| mutations::banish_card(game, ability_id.card_id),
+        description: Some(TextElement::Children(text![TextToken::Banish, "this card"])),
     })
 }
 

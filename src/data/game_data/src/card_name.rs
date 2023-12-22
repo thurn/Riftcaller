@@ -363,6 +363,7 @@ pub enum CardName {
     TheConjurersCircle,
     EriaTheGhostOfVasilor,
     LawholdCavalier,
+    SealedNecropolis,
 }
 
 impl CardName {

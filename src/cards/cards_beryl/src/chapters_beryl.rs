@@ -173,7 +173,7 @@ pub fn keepers_of_the_eye(meta: CardMetadata) -> CardDefinition {
             }),
         )
         .delegate(this::prompt(|g, s, _, _| {
-            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
+            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::DeckTop)
                 .subjects(g.discard_pile(Side::Covenant).card_ids())
                 .context(PromptContext::MoveToTopOfVault)
                 .validation(BrowserPromptValidation::LessThanOrEqualTo(1))

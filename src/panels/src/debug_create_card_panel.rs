@@ -95,10 +95,15 @@ impl Component for DebugCreateCardPanel {
                     .child(self.button(
                         "User Discard",
                         CardPosition::DiscardPile(self.user_side),
-                        false,
+                        true,
                     ))
                     .child(self.button(
                         "Opponent Discard",
+                        CardPosition::DiscardPile(self.user_side.opponent()),
+                        true,
+                    ))
+                    .child(self.button(
+                        "Opponent Discard Face-Down",
                         CardPosition::DiscardPile(self.user_side.opponent()),
                         false,
                     ))

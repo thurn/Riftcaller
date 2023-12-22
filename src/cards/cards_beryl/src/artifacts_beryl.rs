@@ -320,7 +320,7 @@ pub fn starlight_lantern(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            ActivatedAbility::new(costs::sacrifice_for_action(), text!["Take all stored mana"])
+            ActivatedAbility::new(costs::sacrifice_and_action(), text!["Take all stored mana"])
                 .delegate(this::on_activated(|g, s, _| {
                     mana::gain(
                         g,

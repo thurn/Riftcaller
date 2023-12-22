@@ -93,6 +93,8 @@ pub enum PromptContext {
     MoveToTopOfVault,
     /// Move cards to the top of the vault in a chosen order
     ReorderTopOfVault,
+    /// Shuffle cards into the vault
+    ShuffleIntoVault,
 }
 
 /// Target game object for a [CardSelectorPrompt] to which cards must be
@@ -100,7 +102,8 @@ pub enum PromptContext {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum BrowserPromptTarget {
     DiscardPile,
-    Deck,
+    DeckTop,
+    DeckShuffled,
 }
 
 /// Describes which configurations of subjects for a [CardSelectorPrompt] are

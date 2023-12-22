@@ -211,7 +211,7 @@ pub fn foresee(meta: CardMetadata) -> CardDefinition {
             let PromptData::Cards(cards) = &source.data else {
                 return None;
             };
-            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::Deck)
+            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::DeckTop)
                 .subjects(cards.clone())
                 .context(PromptContext::ReorderTopOfVault)
                 .can_reorder(true)

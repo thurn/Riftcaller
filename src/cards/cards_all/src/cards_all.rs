@@ -104,6 +104,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::minions_beryl::lawhold_cavalier);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);
     DEFINITIONS.insert(cards_beryl::projects_beryl::living_stone);
+    DEFINITIONS.insert(cards_beryl::projects_beryl::sealed_necropolis);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illea_the_high_sage);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::godmir_spark_of_defiance);

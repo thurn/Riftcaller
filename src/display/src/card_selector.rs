@@ -45,6 +45,9 @@ fn instructions(context: Option<PromptContext>) -> Option<String> {
             Some("Put a card from the crypt on top of the vault?".to_string())
         }
         Some(PromptContext::ReorderTopOfVault) => Some("Reorder the top of the vault".to_string()),
+        Some(PromptContext::ShuffleIntoVault) => {
+            Some("Select cards to shuffle into the vault".to_string())
+        }
         _ => None,
     }
 }
@@ -58,7 +61,10 @@ fn metatext(context: Option<PromptContext>) -> Option<String> {
             Some("<i>(Drag cards down from the crypt to the vault.)</i>".to_string())
         }
         Some(PromptContext::ReorderTopOfVault) => {
-            Some("<i>(Drag cards down in your preferred order)</i>".to_string())
+            Some("<i>(Drag cards down in your preferred order.)</i>".to_string())
+        }
+        Some(PromptContext::ShuffleIntoVault) => {
+            Some("<i>(Drag cards down to the vault.)</i>".to_string())
         }
         _ => None,
     }
