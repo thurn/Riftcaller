@@ -129,7 +129,10 @@ pub enum CardName {
     TestMinionShield1Infernal,
     /// Equivalent to `TestMinionEndRaid` with 2 shield point & abyssal
     /// resonance
-    TestMinionShield2Abyssal,
+    TestMinionShield2Astral,
+    /// Equivalent to `TestMinionEndRaid` with 3 shield point & mortal
+    /// resonance
+    TestMinionShield3Mortal,
     /// Minion with 5 health, 1 mana cost, and a "deal 1 damage" ability.
     TestMinionDealDamage,
     /// Minion with MINION_HEALTH health, MINION_COST mana cost, and a "the
@@ -365,6 +368,7 @@ pub enum CardName {
     LawholdCavalier,
     SealedNecropolis,
     HasteResonator,
+    MaulOfDevastation,
 }
 
 impl CardName {

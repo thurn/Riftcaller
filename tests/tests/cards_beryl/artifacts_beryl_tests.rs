@@ -652,3 +652,49 @@ fn spear_of_ultimatum_change_target() {
     g.click_card_name(CardName::SpearOfUltimatum);
     g.click(Button::EndRaid);
 }
+
+#[test]
+fn maul_of_devastation() {
+    let (cost, shield, base_attack) = (0, 3, 1);
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionShield3Mortal),
+        )
+        .build();
+    g.create_and_play(CardName::MaulOfDevastation);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::MaulOfDevastation);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA
+            - cost
+            - (shield * 2)
+            - (test_constants::MINION_HEALTH - base_attack)
+    );
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn maul_of_devastation_after_access() {
+    let (cost, shield, base_attack) = (0, 3, 1);
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionShield3Mortal),
+        )
+        .build();
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.create_and_play(CardName::MaulOfDevastation);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::MaulOfDevastation);
+    assert_eq!(
+        g.me().mana(),
+        test_constants::STARTING_MANA
+            - cost
+            - shield
+            - (test_constants::MINION_HEALTH - base_attack)
+    );
+    g.click(Button::EndRaid);
+}

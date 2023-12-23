@@ -77,7 +77,7 @@ pub enum TextToken {
     Curse,
     Curses,
     Cursed,
-    Slow,
+    SlowAbility,
     Mortal,
     Astral,
     Infernal,

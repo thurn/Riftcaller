@@ -19,6 +19,7 @@ use game_data::card_definition::{AttackBoost, CustomBoostCost, CustomWeaponCost}
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
     AttackBoostBonusQuery, CanEncounterTargetQuery, CanUseWeaponQuery, CardEncounter,
+    IsSlowWeaponQuery,
 };
 use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
@@ -45,25 +46,25 @@ pub struct CostToDefeatTarget {
     pub custom_boost_activation: Option<CustomBoostActivation>,
 }
 
-/// Returns the costs the owner of `card_id` would need to spend to raise its
-/// [AttackValue] to the provided `target` by activating its weapon boost
+/// Returns the costs the owner of `weapon_id` would need to spend to raise its
+/// [AttackValue] to the provided `minion_id` by activating its weapon boost
 /// ability. See [CostToDefeatTarget].
 ///
 /// - Returns a mana cost of 0 if this card can already defeat the target.
 /// - Returns None if it is impossible for this card to defeat the target.
 pub fn cost_to_defeat_target(
     game: &GameState,
-    card_id: CardId,
-    target_id: CardId,
+    weapon_id: CardId,
+    minion_id: CardId,
 ) -> Option<CostToDefeatTarget> {
-    let target = queries::health(game, target_id);
-    let current = queries::base_attack(game, card_id);
+    let target = queries::health(game, minion_id);
+    let current = queries::base_attack(game, weapon_id);
 
     // Handle custom weapon costs
     let custom_weapon_cost = if let Some(custom) =
-        queries::attack_boost(game, card_id).and_then(|b| b.custom_weapon_cost.as_ref())
+        queries::attack_boost(game, weapon_id).and_then(|b| b.custom_weapon_cost.as_ref())
     {
-        if !can_pay_custom_weapon_cost(game, card_id, custom) {
+        if !can_pay_custom_weapon_cost(game, weapon_id, custom) {
             return None;
         }
         Some(custom.clone())
@@ -79,11 +80,11 @@ pub fn cost_to_defeat_target(
             custom_boost_activation: None,
         }
     } else {
-        let Some(boost) = queries::attack_boost(game, card_id) else {
+        let Some(boost) = queries::attack_boost(game, weapon_id) else {
             return None;
         };
 
-        let bonus = attack_boost_bonus(game, card_id, boost);
+        let bonus = attack_boost_bonus(game, weapon_id, boost);
         if bonus == 0 {
             return None;
         } else {
@@ -97,7 +98,7 @@ pub fn cost_to_defeat_target(
 
             // Handle applying custom (non-mana) weapon boost abilities
             let custom_boost_activation = if let Some(custom) = &boost.custom_boost_cost {
-                if !can_pay_custom_boost_cost(game, card_id, custom, boost_count) {
+                if !can_pay_custom_boost_cost(game, weapon_id, custom, boost_count) {
                     return None;
                 }
                 Some(CustomBoostActivation { activation_count: boost_count, cost: custom.clone() })
@@ -114,8 +115,11 @@ pub fn cost_to_defeat_target(
         }
     };
 
-    result.mana_cost += queries::shield(game, target_id, Some(card_id))
-        .saturating_sub(queries::breach(game, card_id));
+    let mut shield = queries::shield(game, minion_id, Some(weapon_id));
+    if dispatch::perform_query(game, IsSlowWeaponQuery(&weapon_id), false) {
+        shield *= 2;
+    }
+    result.mana_cost += shield.saturating_sub(queries::breach(game, weapon_id));
     Some(result)
 }
 

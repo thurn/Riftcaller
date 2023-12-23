@@ -645,6 +645,9 @@ pub enum Delegate {
     /// Query the current shield value of a card. Invoked with
     /// [CardStats::shield] or 0.
     ShieldValue(QueryDelegate<ShieldCardInfo, ShieldValue>),
+    /// Query whether a weapon has the 'slow' attribute and thus should pay
+    /// double for shield costs.
+    IsSlowWeapon(QueryDelegate<CardId, bool>),
     /// Queries the current breach value of a card. Invoked with
     /// [CardStats::breach] or 0.
     BreachValue(QueryDelegate<CardId, BreachValue>),

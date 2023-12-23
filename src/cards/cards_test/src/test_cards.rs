@@ -149,9 +149,9 @@ pub fn test_minion_shield_1(metadata: CardMetadata) -> CardDefinition {
     }
 }
 
-pub fn test_minion_shield_2_abyssal(metadata: CardMetadata) -> CardDefinition {
+pub fn test_minion_shield_2_astral(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestMinionShield2Abyssal,
+        name: CardName::TestMinionShield2Astral,
         cost: cost(test_constants::MINION_COST),
         abilities: vec![combat_abilities::end_raid()],
         card_type: CardType::Minion,
@@ -159,6 +159,21 @@ pub fn test_minion_shield_2_abyssal(metadata: CardMetadata) -> CardDefinition {
             .health(test_constants::MINION_HEALTH)
             .shield(2)
             .resonance(Resonance::astral())
+            .build(),
+        ..test_ritual(metadata)
+    }
+}
+
+pub fn test_minion_shield_3_mortal(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestMinionShield3Mortal,
+        cost: cost(test_constants::MINION_COST),
+        abilities: vec![combat_abilities::end_raid()],
+        card_type: CardType::Minion,
+        config: CardConfigBuilder::new()
+            .health(test_constants::MINION_HEALTH)
+            .shield(3)
+            .resonance(Resonance::mortal())
             .build(),
         ..test_ritual(metadata)
     }

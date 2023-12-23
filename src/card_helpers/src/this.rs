@@ -128,3 +128,9 @@ pub fn can_evade(transformation: TransformationFn<CardId, Flag>) -> Delegate {
 pub fn base_attack(transformation: TransformationFn<CardId, AttackValue>) -> Delegate {
     Delegate::BaseAttack(QueryDelegate { requirement: card, transformation })
 }
+
+/// A delegate which modifies whether this card is a 'slow' weapon (paying
+/// double for shield costs)
+pub fn is_slow_weapon(transformation: TransformationFn<CardId, bool>) -> Delegate {
+    Delegate::IsSlowWeapon(QueryDelegate { requirement: card, transformation })
+}

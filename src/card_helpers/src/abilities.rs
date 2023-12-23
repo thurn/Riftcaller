@@ -137,16 +137,7 @@ pub fn encounter_ability_text(
 
 /// The "slow" ability, which doubles shield costs when using a weapon
 pub fn slow() -> Ability {
-    Ability::new_with_delegate(
-        text![
-            encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
-            text![Slow]
-        ],
-        delegates::shield_value(
-            |_, s, info| info.weapon_id == Some(s.card_id()),
-            |_, _, _, current| current * 2,
-        ),
-    )
+    Ability::new_with_delegate(text![SlowAbility], this::is_slow_weapon(|_, _, _, _| true))
 }
 
 /// Creates a silent 'can play?' ability, usually used to help prevent user

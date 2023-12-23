@@ -154,7 +154,7 @@ fn keen_halberd() {
     let (card_cost, activation_cost) = (3, 2);
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::KeenHalberd);
-    g.setup_raid_target(CardName::TestMinionShield2Abyssal);
+    g.setup_raid_target(CardName::TestMinionShield2Astral);
     g.initiate_raid(test_constants::ROOM_ID);
     g.opponent_click(Button::Summon);
     g.click_on(g.user_id(), "Keen Halberd");

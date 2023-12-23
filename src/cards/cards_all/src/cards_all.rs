@@ -82,6 +82,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::whip_of_disjunction);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::glimmersong);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::spear_of_ultimatum);
+    DEFINITIONS.insert(cards_beryl::artifacts_beryl::maul_of_devastation);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::nimbus_enclave);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::enforcers_of_silence);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::keepers_of_the_eye);
@@ -153,7 +154,8 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_project_2_cost_3_raze);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_1);
-    DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_2_abyssal);
+    DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_2_astral);
+    DEFINITIONS.insert(cards_test::test_cards::test_minion_shield_3_mortal);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_deal_damage);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_lose_mana);
     DEFINITIONS.insert(cards_test::test_cards::test_minion_lose_action_points);

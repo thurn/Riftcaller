@@ -40,8 +40,10 @@ use game_data::special_effects::{
 use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mana::ManaPurpose;
-use rules::visual_effects::VisualEffects;
-use rules::{end_raid, flags, mana, mutations, prompts, queries, CardDefinitionExt};
+use rules::visual_effects::{ShowAlert, VisualEffects};
+use rules::{
+    end_raid, flags, mana, mutations, prompts, queries, visual_effects, CardDefinitionExt,
+};
 use with_error::WithError;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
@@ -163,7 +165,13 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
                     Ok(())
                 }),
             ),
-            abilities::slow(),
+            Ability::new_with_delegate(
+                text![
+                    encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
+                    text![SlowAbility]
+                ],
+                this::is_slow_weapon(|_, _, _, _| true),
+            ),
         ],
         config: CardConfigBuilder::new()
             .base_attack(0)
@@ -818,6 +826,50 @@ pub fn spear_of_ultimatum(meta: CardMetadata) -> CardDefinition {
                 TimedEffectData::new(TimedEffect::MagicCircles1(4))
                     .scale(1.5)
                     .sound(SoundEffect::WaterMagic("RPG3_WaterMagicEpic_WaveImpact01"))
+                    .effect_color(design::BLUE_500),
+            )
+            .build(),
+    }
+}
+
+pub fn maul_of_devastation(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::MaulOfDevastation,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::riftcaller_card(meta, "maul_of_devastation"),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Weapon],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            Ability::new(text![SlowAbility]),
+            Ability::new(text!["When you access a room, this weapon loses slow until end of turn"])
+                .delegate(this::is_slow_weapon(|g, _, _, _| {
+                    history::rooms_accessed_this_turn(g).next().is_none()
+                }))
+                .delegate(in_play::on_raid_success(|g, s, _| {
+                    if history::rooms_accessed_this_turn(g).next().is_none() {
+                        visual_effects::show(g, s, s.card_id(), ShowAlert::No);
+                    }
+                    Ok(())
+                })),
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(meta.upgrade(1, 2))
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
+            .resonance(Resonance::mortal())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles2(5))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagicEpic_Impact01")),
+            )
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(9))
+                    .scale(1.5)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast03"))
                     .effect_color(design::BLUE_500),
             )
             .build(),

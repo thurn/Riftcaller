@@ -16,9 +16,10 @@ use core_data::game_primitives::AbilityId;
 use core_ui::icons;
 use game_data::card_definition::{Ability, AbilityType, AttackBoost, Cost};
 use game_data::card_view_context::CardViewContext;
-use game_data::delegate_data::CardStatusMarker;
+use game_data::delegate_data::{CardStatusMarker, IsSlowWeaponQuery};
 use game_data::text::{TextElement, TextToken};
 use protos::riftcaller::RulesText;
+use rules::dispatch;
 
 pub mod card_icons;
 pub mod card_info;
@@ -256,7 +257,14 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Curse => "curse".to_string(),
         TextToken::Curses => "curses".to_string(),
         TextToken::Cursed => "cursed".to_string(),
-        TextToken::Slow => "slow".to_string(),
+        TextToken::SlowAbility => if context.query_id_or(true, |g, card_id| {
+            dispatch::perform_query(g, IsSlowWeaponQuery(&card_id), false)
+        }) {
+            "slow"
+        } else {
+            "<s><i>Slow</i></s>"
+        }
+        .to_string(),
         TextToken::Mortal => assets::resonance_string("mortal"),
         TextToken::Infernal => assets::resonance_string("infernal"),
         TextToken::Astral => assets::resonance_string("astral"),
