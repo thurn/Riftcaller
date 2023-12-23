@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomIdCrypt,
+    AbilityId, ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomId, RoomIdCrypt,
     RoomIdMarker, RoomIdSanctum, RoomIdVault, Side, TurnNumber,
 };
 use game_data::card_definition::Resonance;
@@ -48,6 +48,27 @@ pub fn on_enter_hand(mutation: MutationFn<CardId>) -> Delegate {
 /// and in play
 pub fn on_card_played(mutation: MutationFn<CardPlayed>) -> Delegate {
     Delegate::PlayCard(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
+/// A delegate which triggers when a player takes the basic action to draw a
+/// card if this card is face up and in play
+pub fn on_draw_card_action(mutation: MutationFn<Side>) -> Delegate {
+    Delegate::DrawCardAction(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
+/// A delegate which triggers when a player takes the basic action to gain mana
+/// if this card is face up and in play
+pub fn on_gain_mana_action(mutation: MutationFn<Side>) -> Delegate {
+    Delegate::GainManaAction(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+}
+
+/// A delegate which triggers when a player takes the basic action to progress a
+/// room if this card is face up and in play
+pub fn on_progress_card_action(mutation: MutationFn<RoomId>) -> Delegate {
+    Delegate::ProgressCardAction(EventDelegate {
+        requirement: requirements::face_up_in_play,
+        mutation,
+    })
 }
 
 /// A delegate which triggers if a card is face up in play before damage is

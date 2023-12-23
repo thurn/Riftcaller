@@ -211,3 +211,88 @@ fn sealed_necropolis_during_raid_different_room() {
     assert_eq!(g.client.cards.discard_pile().len(), 2);
     g.opponent_click(Button::EndRaid);
 }
+
+#[test]
+fn haste_resonator_mana() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(4).build();
+    let id = g.create_and_play(CardName::HasteResonator);
+    g.summon_project(id);
+    g.gain_mana();
+    g.gain_mana();
+    g.gain_mana();
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn haste_resonator_draw() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(4).build();
+    let id = g.create_and_play(CardName::HasteResonator);
+    g.summon_project(id);
+    g.draw_card();
+    g.draw_card();
+    g.draw_card();
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn haste_resonator_progress() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant).room_occupant(RoomId::RoomB, CardName::TestScheme4_20),
+    )
+    .actions(4)
+    .build();
+    let id = g.create_and_play(CardName::HasteResonator);
+    g.summon_project(id);
+    g.progress_room(RoomId::RoomB);
+    g.progress_room(RoomId::RoomB);
+    g.progress_room(RoomId::RoomB);
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn haste_resonator_play_cards() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(5).build();
+    let id = g.create_and_play(CardName::HasteResonator);
+    g.summon_project(id);
+    g.create_and_play_with_target(CardName::TestAstralMinion, RoomId::Vault);
+    g.create_and_play_with_target(CardName::TestInfernalMinion, RoomId::Sanctum);
+    g.create_and_play_with_target(CardName::TestMortalMinion, RoomId::Crypt);
+    assert_eq!(g.me().actions(), 2);
+}
+
+#[test]
+fn haste_resonator_summon_after_actions() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(4).build();
+    let id = g.create_and_play(CardName::HasteResonator);
+    g.draw_card();
+    g.draw_card();
+    g.summon_project(id);
+    g.draw_card();
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn haste_resonator_play_after_actions() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(4).build();
+    g.gain_mana();
+    g.gain_mana();
+    let id = g.create_and_play(CardName::HasteResonator);
+    g.summon_project(id);
+    g.gain_mana();
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn haste_resonator_multiple_action_types() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(6).build();
+    let id = g.create_and_play(CardName::HasteResonator);
+    g.summon_project(id);
+    g.draw_card();
+    g.draw_card();
+    g.draw_card();
+    assert_eq!(g.me().actions(), 3);
+    g.gain_mana();
+    g.gain_mana();
+    g.gain_mana();
+    assert_eq!(g.me().actions(), 1);
+}

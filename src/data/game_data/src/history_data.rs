@@ -75,7 +75,7 @@ pub enum HistoryEvent {
     ActivateAbility(AbilityActivation),
     /// A face-down card has been summoned.
     SummonProject(CardId),
-    /// A room was progressed some number of times via the standard game action
+    /// A card was progressed some number of times via the standard game action
     CardProgressAction(RoomId),
     /// A raid was started, either via a card effect or the standard game action
     RaidBegin(RaidEvent<InitiatedBy>),
@@ -116,6 +116,10 @@ struct HistoryEntry {
 static DEFAULT_COUNTERS: HistoryCounters = HistoryCounters {
     cards_drawn: 0,
     cards_drawn_via_abilities: 0,
+    draw_card_actions: 0,
+    gain_mana_actions: 0,
+    play_card_actions: 0,
+    progress_card_actions: 0,
     curses_received: 0,
     damage_received: 0,
     schemes_scored: 0,
@@ -136,9 +140,19 @@ pub struct HistoryCounters {
     pub cards_drawn: u32,
     /// Cards drawn this turn via card abilities by this player
     pub cards_drawn_via_abilities: u32,
-    /// Number of curses received this turn, only valid for the Riftcaller player.
+    /// Number of times the basic action to draw a card has been taken.
+    pub draw_card_actions: u32,
+    /// Number of times the basic action to gain mana has been taken.
+    pub gain_mana_actions: u32,
+    /// Number of times the basic action to play a card has been taken.
+    pub play_card_actions: u32,
+    /// Number of times the basic action to progress a card has been taken.
+    pub progress_card_actions: u32,
+    /// Number of curses received this turn, only valid for the Riftcaller
+    /// player.
     pub curses_received: u32,
-    /// Amount of damage received this turn, only valid for the Riftcaller player.
+    /// Amount of damage received this turn, only valid for the Riftcaller
+    /// player.
     pub damage_received: u32,
     /// Number of schemes scored this turn by this player
     pub schemes_scored: u32,

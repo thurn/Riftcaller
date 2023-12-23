@@ -14,6 +14,7 @@
 
 use std::cmp;
 
+use anyhow::Result;
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::{costs, delegates, history, in_play, requirements, text, this};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
@@ -23,11 +24,14 @@ use game_data::card_definition::{Ability, ActivatedAbility, CardConfigBuilder, C
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
+use game_data::delegate_data::Scope;
+use game_data::game_state::GameState;
+use game_data::history_data::HistoryCounters;
 use game_data::prompt_data::{BrowserPromptTarget, BrowserPromptValidation, PromptContext};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
-use game_data::text::TextToken::RazeAbility;
-use rules::visual_effects::VisualEffects;
-use rules::{damage, draw_cards, prompts};
+use game_data::text::TextToken::*;
+use rules::visual_effects::{ShowAlert, VisualEffects};
+use rules::{damage, draw_cards, mutations, prompts, visual_effects};
 use with_error::fail;
 
 pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
@@ -147,5 +151,58 @@ pub fn sealed_necropolis(meta: CardMetadata) -> CardDefinition {
             .build(),
         ],
         config: CardConfigBuilder::new().raze_cost(meta.upgrade(3, 5)).build(),
+    }
+}
+
+pub fn haste_resonator(meta: CardMetadata) -> CardDefinition {
+    fn gain_action_if_3x(
+        game: &mut GameState,
+        scope: Scope,
+        function: impl Fn(&HistoryCounters) -> u32,
+    ) -> Result<()> {
+        if function(game.current_history_counters(Side::Covenant)) == 3 {
+            visual_effects::show(game, scope, scope.card_id(), ShowAlert::Yes);
+            mutations::gain_action_points(game, Side::Covenant, 1)?;
+        }
+        Ok(())
+    }
+
+    CardDefinition {
+        name: CardName::HasteResonator,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(2, 0)),
+        image: assets::covenant_card(meta, "haste_resonator"),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Nightbound],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![Ability::new(text![
+            "When you take the gain mana, progress card, play card, or draw card basic action",
+            3,
+            "times in a turn,",
+            GainActions(1)
+        ])
+        .delegate(in_play::on_gain_mana_action(|g, s, _| {
+            gain_action_if_3x(g, s, |counters| counters.gain_mana_actions)
+        }))
+        .delegate(in_play::on_progress_card_action(|g, s, _| {
+            gain_action_if_3x(g, s, |counters| counters.progress_card_actions)
+        }))
+        .delegate(in_play::on_card_played(|g, s, _| {
+            gain_action_if_3x(g, s, |counters| counters.play_card_actions)
+        }))
+        .delegate(in_play::on_draw_card_action(|g, s, _| {
+            gain_action_if_3x(g, s, |counters| counters.draw_card_actions)
+        }))],
+        config: CardConfigBuilder::new()
+            .raze_cost(5)
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(8))
+                    .scale(1.5)
+                    .effect_color(design::BLUE_500)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast02")),
+            )
+            .build(),
     }
 }

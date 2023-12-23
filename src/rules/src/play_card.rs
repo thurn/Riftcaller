@@ -217,6 +217,9 @@ fn add_to_history(game: &mut GameState, play_card: PlayCardData) -> Result<Optio
         play_card.target,
         play_card.initiated_by,
     ));
+    if play_card.initiated_by == InitiatedBy::GameAction {
+        game.current_history_counters(play_card.card_id.side).play_card_actions += 1;
+    }
     Ok(Some(PlayCardStep::MoveToPlayedPosition))
 }
 
@@ -347,6 +350,7 @@ fn finish(game: &mut GameState, play_card: PlayCardData) -> Result<Option<PlayCa
             target: play_card.target,
             from_zone: play_card.from_zone,
             card_play_id: play_card.card_play_id,
+            initiated_by: play_card.initiated_by,
         }),
     )?;
 

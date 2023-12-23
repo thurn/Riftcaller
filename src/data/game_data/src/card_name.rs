@@ -364,6 +364,7 @@ pub enum CardName {
     EriaTheGhostOfVasilor,
     LawholdCavalier,
     SealedNecropolis,
+    HasteResonator,
 }
 
 impl CardName {

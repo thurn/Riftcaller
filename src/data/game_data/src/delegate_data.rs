@@ -209,6 +209,7 @@ pub struct CardPlayed {
     pub target: CardTarget,
     pub from_zone: FromZone,
     pub card_play_id: CardPlayId,
+    pub initiated_by: InitiatedBy,
 }
 
 impl HasCardId for CardPlayed {
@@ -447,6 +448,8 @@ pub enum Delegate {
     Dawn(EventDelegate<TurnNumber>),
     /// The Covenant's turn begins
     Dusk(EventDelegate<TurnNumber>),
+    /// The [Side] player has taken the basic action to gain mana
+    GainManaAction(EventDelegate<Side>),
     /// A card is moved from a Deck position to a Hand position
     DrawCard(EventDelegate<CardId>),
     /// A card has moved to a player's hand from any other position.
@@ -466,6 +469,8 @@ pub enum Delegate {
     MoveToDiscardPile(EventDelegate<CardId>),
     /// A card ability with a cost is activated
     ActivateAbility(EventDelegate<AbilityActivated>),
+    /// The Covenant player has taken the basic action to progress a card
+    ProgressCardAction(EventDelegate<RoomId>),
     /// A card Project is turned face up by paying its cost
     SummonProject(EventDelegate<CardId>),
     /// A minion card is turned face up.

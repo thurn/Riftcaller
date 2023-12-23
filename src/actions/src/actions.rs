@@ -21,7 +21,9 @@ use constants::game_constants;
 use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
 use game_data::animation_tracker::{AnimationState, GameAnimation};
 use game_data::card_state::CardPosition;
-use game_data::delegate_data::{CardSelectorSubmittedEvent, DrawCardActionEvent};
+use game_data::delegate_data::{
+    CardSelectorSubmittedEvent, DrawCardActionEvent, GainManaActionEvent, ProgressCardActionEvent,
+};
 use game_data::game_actions::{CardTarget, GameAction, GameStateAction};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, RaidJumpRequest, TurnState};
@@ -77,7 +79,7 @@ pub fn handle_game_action(
         GameAction::InitiateRaid(room_id) => {
             raid_state::handle_initiate_action(game, user_side, *room_id)
         }
-        GameAction::ProgressRoom(room_id) => progress_room_action(game, user_side, *room_id),
+        GameAction::ProgressRoom(room_id) => progress_card_action(game, user_side, *room_id),
         GameAction::SpendActionPoint => spend_action_point_action(game, user_side),
         GameAction::MoveSelectorCard { card_id, index } => {
             move_card_action(game, user_side, *card_id, *index)
@@ -90,7 +92,7 @@ pub fn handle_game_action(
     if !action.is_stateless_action() {
         run_state_based_actions(game)?;
 
-        // Clear & store the 'current event' in game history
+        // Clear & store the 'current events' in game history
         game.history.write_events();
     }
 
@@ -119,6 +121,7 @@ fn draw_card_action(game: &mut GameState, user_side: Side) -> Result<()> {
     mutations::spend_action_points(game, user_side, 1)?;
     draw_cards::run(game, user_side, 1, InitiatedBy::GameAction)?;
     game.add_history_event(HistoryEvent::DrawCardAction(user_side));
+    game.current_history_counters(user_side).draw_card_actions += 1;
     dispatch::invoke_event(game, DrawCardActionEvent(&user_side))?;
     Ok(())
 }
@@ -195,23 +198,27 @@ fn gain_mana_action(game: &mut GameState, user_side: Side) -> Result<()> {
 
     debug!(?user_side, "Applying gain mana action");
     game.add_history_event(HistoryEvent::GainManaAction);
+    game.current_history_counters(user_side).gain_mana_actions += 1;
     mutations::spend_action_points(game, user_side, 1)?;
     mana::gain(game, user_side, 1);
+    dispatch::invoke_event(game, GainManaActionEvent(&user_side))?;
     Ok(())
 }
 
-fn progress_room_action(game: &mut GameState, user_side: Side, room_id: RoomId) -> Result<()> {
+fn progress_card_action(game: &mut GameState, user_side: Side, room_id: RoomId) -> Result<()> {
     verify!(
         flags::can_take_progress_action(game, user_side, room_id),
-        "Cannot progress room for {:?}",
+        "Cannot progress card for {:?}",
         user_side
     );
-    debug!(?user_side, "Applying progress room action");
+    debug!(?user_side, "Applying progress card action");
     game.add_history_event(HistoryEvent::CardProgressAction(room_id));
+    game.current_history_counters(user_side).progress_card_actions += 1;
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, InitiatedBy::GameAction, ManaPurpose::ProgressRoom(room_id), 1)?;
     game.add_animation(|| GameAnimation::ProgressRoom(room_id, InitiatedBy::GameAction));
     mutations::progress_room(game, room_id)?;
+    dispatch::invoke_event(game, ProgressCardActionEvent(&room_id))?;
     Ok(())
 }
 
