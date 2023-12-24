@@ -60,8 +60,11 @@ pub fn append_prompt_speech_bubble<'a>(
     builder: &'a ResponseBuilder,
     game: &'a GameState,
 ) -> impl Iterator<Item = TutorialEffect> + 'a {
-    game.animations.last_prompt_response.iter().filter_map(move |(side, choice)| {
-        should_show_bubble(builder, *side, choice).then(|| TutorialEffect {
+    game.animations
+        .last_prompt_response
+        .iter()
+        .filter(|&(side, choice)| should_show_bubble(builder, *side, choice))
+        .map(|(side, choice)| TutorialEffect {
             tutorial_effect_type: Some(tutorial_display::render_effect(
                 builder,
                 &TutorialDisplay::SpeechBubble(SpeechBubble {
@@ -72,7 +75,6 @@ pub fn append_prompt_speech_bubble<'a>(
                 }),
             )),
         })
-    })
 }
 
 /// Whether a speech bubble should be shown for this user choice.

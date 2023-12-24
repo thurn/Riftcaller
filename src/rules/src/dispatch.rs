@@ -48,7 +48,7 @@ pub fn add_card_to_delegate_map(
         for delegate in &ability.delegates {
             map.lookup
                 .entry(delegate.kind())
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(DelegateContext { delegate: delegate.clone(), scope });
         }
     }

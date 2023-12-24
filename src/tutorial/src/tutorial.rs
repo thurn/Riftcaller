@@ -33,8 +33,8 @@ pub const OPPONENT_SIDE: Side = Side::Covenant;
 pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
     TutorialSequence {
 
-        /// The first few turns of the tutorial game are pre-scripted and
-        /// defined here
+        // The first few turns of the tutorial game are pre-scripted and
+        // defined here
         steps: vec![
             TutorialStep::SetHand(Side::Covenant, vec![CardName::Frog]),
             TutorialStep::SetHand(Side::Riftcaller, vec![CardName::EldritchSurge, CardName::SimpleAxe]),

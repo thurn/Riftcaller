@@ -231,7 +231,7 @@ pub fn maximum_hand_size(game: &GameState, side: Side) -> u32 {
 /// within that room, if any.
 pub fn minion_position(game: &GameState, minion_id: CardId) -> Option<(RoomId, usize)> {
     match game.card(minion_id).position() {
-        CardPosition::Room(_, room_id, location) if location == RoomLocation::Defender => {
+        CardPosition::Room(_, room_id, RoomLocation::Defender) => {
             let index = game.defender_list(room_id).iter().position(|cid| *cid == minion_id);
             index.map(|i| (room_id, i))
         }
